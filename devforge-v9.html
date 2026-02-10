@@ -5222,7 +5222,7 @@ function showTourStep(){
   const steps=_getTourSteps();
   if(tourStep<0||tourStep>=steps.length){closeTour();return;}
   const step=steps[tourStep];
-  const dots=steps.map((_,i)=>'<div class="tour-dot'+(i===tourStep?' on':'')+'">&lt;/div>').join('');
+  const dots=steps.map((_,i)=>'<div class="tour-dot'+(i===tourStep?' on':'')+'"></div>').join('');
   tc.innerHTML='<div class="tour-card"><h4 class="tour-title">'+step.title+'</h4><p class="tour-desc">'+step.desc+'</p><div class="tour-dots">'+dots+'</div><div class="tour-acts" id="tourActs"></div></div>';
   const acts=$('tourActs');
   if(tourStep>0){const pb=document.createElement('button');pb.className='btn btn-g btn-xs';pb.textContent=t('tourPrev');pb.onclick=()=>{tourStep--;showTourStep();};acts.appendChild(pb);}
