@@ -3,7 +3,7 @@ function _getTourSteps(){
   const _ja=S.lang==='ja';
   return [
   {title:_ja?'🌱 スキルレベル':'🌱 Skill Level',desc:_ja?'Beginner / Intermediate / Pro を選ぶと、質問の選択肢が自動調整されます。':'Choose Beginner / Intermediate / Pro to auto-adjust question options.'},
-  {title:_ja?'📝 テンプレート':'📝 Templates',desc:_ja?'26種類のプリセットから選ぶと、回答が自動入力されます。':'Pick from 26 presets to auto-fill answers.'},
+  {title:_ja?'📝 テンプレート':'📝 Templates',desc:_ja?'36種類のプリセットから選ぶと、回答が自動入力されます。':'Pick from 36 presets to auto-fill answers.'},
   {title:_ja?'💬 質問フロー':'💬 Q&A Flow',desc:_ja?'Phase 1-3 の質問に答えるだけ。スキップも後で回答も可能です。':'Just answer Phase 1-3 questions. Skip and answer later anytime.'},
   {title:_ja?'✎ 回答編集':'✎ Edit Answers',desc:_ja?'送信済みの回答に表示される ✎ ボタンで修正できます。':'Click the ✎ button on submitted answers to edit them.'},
   {title:_ja?'📦 60+ファイル生成':'📦 60+ File Generation',desc:_ja?'全質問回答後、8つの柱で60+ファイルが自動生成されます。':'After all questions, 60+ files auto-generate across 8 pillars.'},
