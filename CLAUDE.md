@@ -308,6 +308,55 @@ const PR = {
 
 ⚠️ **Update preset count in README.md if adding/removing presets.**
 
+### Compression Patterns (Critical for Size Management)
+
+To stay under 510KB limit, the codebase uses compression patterns:
+
+**1. Preset Defaults (`src/data/presets.js`)**
+```javascript
+// Default values shared by most presets
+const _PD = {
+  frontend: 'React + Next.js',
+  backend: 'Supabase',
+  mobile: 'none',
+  ai_auto: 'none',
+  payment: 'none'
+};
+
+// Helper merges defaults with preset-specific values
+function _mp(p) { return Object.assign({}, _PD, p); }
+
+// Usage: Only specify values that differ from defaults
+const PR = {
+  saas: _mp({
+    name: 'SaaSアプリ',
+    features: [...],
+    payment: 'stripe'  // Override default
+    // frontend, backend, mobile, ai_auto inherit from _PD
+  })
+};
+```
+
+⚠️ **When adding presets:** Use `_mp()` and only specify non-default fields to save ~200 bytes per preset.
+
+**2. Common Entity Columns (`src/generators/common.js`)**
+```javascript
+// Reusable column definitions (used 50+ times across entities)
+const _U = 'user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID';
+const _SA = "status:VARCHAR(20):DEFAULT 'active':ステータス:Status";
+const _SD = "status:VARCHAR(20):DEFAULT 'draft':ステータス:Status";
+const _T = 'title:VARCHAR(255):NOT NULL:タイトル:Title';
+const _D = 'description:TEXT::説明:Description';
+
+// Usage in ENTITY_COLUMNS
+const ENTITY_COLUMNS = {
+  Post: [_U, _T, _D, _SA],  // Reuses common columns
+  Comment: [_U, 'post_id:UUID:FK(Post) NOT NULL:...', _D, _SA]
+};
+```
+
+⚠️ **When adding entities:** Check if columns match existing constants (\_U, \_SA, \_SD, \_T, \_D, etc.) to maintain compression.
+
 ## Generated Output (66 files)
 When users complete the wizard, DevForge generates:
 - **.spec/** — constitution.md, specification.md, technical-plan.md, tasks.md, verification.md
