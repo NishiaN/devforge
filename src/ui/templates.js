@@ -42,10 +42,10 @@ function showManual(sec){
   const _ja=S.lang==='ja';
   const MANUAL=[
     {id:'overview',title:_ja?'概要':'Overview',body:_ja?'<h2>DevForge v9.0 とは</h2><p>質問に答えるだけで、プロジェクトに必要な66+ファイルを自動生成するAI駆動開発プラットフォームです。'+_TECH_COUNT+'テクノロジー対応。</p>'+
-      '<h3>9つの柱</h3><table><tr><th>柱</th><th>内容</th><th>ファイル数</th></tr><tr><td>①SDD統合</td><td>Spec Kit互換の仕様書</td><td>5</td></tr><tr><td>②DevContainer</td><td>Docker開発環境</td><td>4</td></tr><tr><td>③MCP設定</td><td>Model Context Protocol</td><td>3</td></tr><tr><td>④AIルール</td><td>10ツール分の設定</td><td>10</td></tr>'+
+      '<h3>9つの柱</h3><table><tr><th>柱</th><th>内容</th><th>ファイル数</th></tr><tr><td>①SDD統合</td><td>Spec Kit互換の仕様書</td><td>5</td></tr><tr><td>②DevContainer</td><td>Docker開発環境</td><td>4</td></tr><tr><td>③MCP設定</td><td>Model Context Protocol</td><td>3</td></tr><tr><td>④AIルール</td><td>10+ツール設定+スキル</td><td>10+</td></tr>'+
       '<tr><td>⑤並列探索</td><td>スタック比較+おすすめランキング</td><td>UI</td></tr><tr><td>⑥Dashboard</td><td>コンテキスト可視化+技術DB</td><td>UI</td></tr><tr><td>⑦ロードマップ</td><td>学習パス（インタラクティブ）</td><td>9+UI</td></tr><tr><td>⑧AIランチャー</td><td>プロンプトテンプレート+トークン推定</td><td>UI</td></tr><tr><td>⑨デザインシステム</td><td>デザイントークン+シーケンス図</td><td>2</td></tr></table>'+
       '<p>+ docs（25仕様書）+ 共通ファイル（4）= <strong>66+ファイル</strong></p>':'<h2>What is DevForge v9.0?</h2><p>An AI-driven dev platform that auto-generates 66+ project files just by answering questions. Supports '+_TECH_COUNT+' technologies.</p>'+
-      '<h3>9 Pillars</h3><table><tr><th>Pillar</th><th>Content</th><th>Files</th></tr><tr><td>①SDD</td><td>Spec Kit compatible specs</td><td>5</td></tr><tr><td>②DevContainer</td><td>Docker dev environment</td><td>4</td></tr><tr><td>③MCP</td><td>Model Context Protocol</td><td>3</td></tr><tr><td>④AI Rules</td><td>10 tool configurations</td><td>10</td></tr>'+
+      '<h3>9 Pillars</h3><table><tr><th>Pillar</th><th>Content</th><th>Files</th></tr><tr><td>①SDD</td><td>Spec Kit compatible specs</td><td>5</td></tr><tr><td>②DevContainer</td><td>Docker dev environment</td><td>4</td></tr><tr><td>③MCP</td><td>Model Context Protocol</td><td>3</td></tr><tr><td>④AI Rules</td><td>10+ tool configs + skills</td><td>10+</td></tr>'+
       ''+
       '<tr><td>⑤Explorer</td><td>Stack comparison + recommendation</td><td>UI</td></tr><tr><td>⑥Dashboard</td><td>Context visualization + Tech DB</td><td>UI</td></tr><tr><td>⑦Roadmap</td><td>Learning path (interactive)</td><td>9+UI</td></tr><tr><td>⑧AI Launcher</td><td>Prompt templates + token estimation</td><td>UI</td></tr><tr><td>⑨Design System</td><td>Design tokens + Sequence diagrams</td><td>2</td></tr></table>'+
       '<p>+ docs (25 specs) + common (4) = <strong>66+ files</strong></p>'},
@@ -62,8 +62,8 @@ function showManual(sec){
       '<p>devcontainer.json / Dockerfile / docker-compose.yml / post-create.sh — VSCode/Cursorで開くだけ。</p>'+
       '<h3>③ MCP設定 (3ファイル)</h3>'+
       '<p>project-context.md / tools-manifest.json / mcp-config.json</p>'+
-      '<h3>④ AIルール (10ファイル)</h3>'+
-      '<p>Cursor / Antigravity / Claude Code (CLAUDE.md, AGENTS.md) / Copilot / Windsurf / Cline / Kiro / Codex / Skills / Hooks</p>'+
+      '<h3>④ AIルール (10+ファイル)</h3>'+
+      '<p>Cursor / Antigravity / Claude Code (CLAUDE.md, AGENTS.md) / Copilot / Windsurf / Cline / Kiro / Codex / Skills (project/catalog/pipelines) / Hooks</p>'+
       '<h3>⑤ 並列実装探索 (UI)</h3>'+
       '<p>7パターンのスタックを2つ選んで比較。開発速度・スケーラビリティ・学習容易性・エコシステムで評価。</p>'+
       '<h3>⑥ Context Dashboard (UI)</h3>'+

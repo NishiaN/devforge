@@ -46,7 +46,8 @@ describe('Snapshot A: LMS/Supabase/Stripe', () => {
     mvp_features: 'ユーザー認証, コース管理, 進捗管理, サブスクリプション, 管理ダッシュボード',
     screens: 'ランディング, ダッシュボード, コース詳細, 設定, 管理画面, 決済ページ',
     data_entities: 'User, Course, Lesson, Progress, Enrollment',
-    dev_methods: 'TDD', ai_tools: 'Cursor', orm: 'Prisma', scope_out: 'ネイティブアプリ'
+    dev_methods: 'TDD', ai_tools: 'Cursor', orm: 'Prisma', scope_out: 'ネイティブアプリ',
+    ai_auto: 'マルチAgent協調'
   }, 'LMS');
 
   test('file count in range 60-76', () => {
@@ -203,6 +204,20 @@ describe('Snapshot A: LMS/Supabase/Stripe', () => {
     assert.ok(seq.includes('Supabase Auth') || seq.includes('signIn'), 'Missing Supabase auth details');
     assert.ok(seq.includes('Stripe') || seq.includes('checkout'), 'Missing Stripe payment flow');
   });
+
+  test('skills catalog exists with domain skills', () => {
+    assert.ok(files['skills/catalog.md'], 'skills/catalog.md missing');
+    const cat = files['skills/catalog.md'];
+    assert.match(cat, /Factory Template|工場テンプレート/);
+    assert.match(cat, /Purpose|目的/);
+  });
+
+  test('pipelines has Mermaid flowcharts', () => {
+    assert.ok(files['skills/pipelines.md'], 'skills/pipelines.md missing');
+    const pipe = files['skills/pipelines.md'];
+    assert.match(pipe, /graph LR|graph TD/);
+    assert.match(pipe, /Trigger|トリガー/);
+  });
 });
 
 // ═══ Scenario B: Blog (Vite + Netlify, no Stripe, no Admin) ═══
@@ -255,6 +270,11 @@ describe('Snapshot B: Blog/Vite/Netlify', () => {
   test('deploy checklist matches Netlify', () => {
     const rl = files['docs/09_release_checklist.md'];
     assert.ok(rl.includes('Netlify'), 'Release checklist not adapted to Netlify');
+  });
+
+  test('no skills catalog/pipelines when ai_auto absent', () => {
+    assert.ok(!files['skills/catalog.md'], 'skills/catalog.md should not exist without ai_auto');
+    assert.ok(!files['skills/pipelines.md'], 'skills/pipelines.md should not exist without ai_auto');
   });
 });
 

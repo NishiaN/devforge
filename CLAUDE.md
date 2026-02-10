@@ -19,7 +19,7 @@ node build.js --report     # Show size report
 node build.js --check-css  # Validate CSS custom properties
 
 # Test
-npm test                   # Run all tests (134 tests passing)
+npm test                   # Run all tests (137 tests passing)
 npm run test:watch         # Watch mode for test development
 node --test test/gen-coherence.test.js  # Run single test file
 
@@ -357,13 +357,33 @@ const ENTITY_COLUMNS = {
 
 ⚠️ **When adding entities:** Check if columns match existing constants (\_U, \_SA, \_SD, \_T, \_D, etc.) to maintain compression.
 
-## Generated Output (66 files)
+## Generated Output (66-68 files)
 When users complete the wizard, DevForge generates:
 - **.spec/** — constitution.md, specification.md, technical-plan.md, tasks.md, verification.md
 - **.devcontainer/** — devcontainer.json, Dockerfile, docker-compose.yml, post-create.sh
 - **docs/** — architecture.md, ER.md, API.md, screen.md, test-cases.md, security.md, release.md, WBS.md, prompt-playbook.md, tasks.md, **progress.md (24)**, **error_logs.md (25)**, **design_system.md (26)**, **sequence_diagrams.md (27)**
-- **AI rules** — CLAUDE.md (with Workflow Cycle & Context Management), AI_BRIEF.md (with Context Protocol, ~1200 tokens), .cursorrules, .clinerules, .windsurfrules, AGENTS.md, .cursor/rules
+- **AI rules** — CLAUDE.md (with Workflow Cycle & Context Management), AI_BRIEF.md (with Context Protocol, ~1200 tokens), .cursorrules, .clinerules, .windsurfrules, AGENTS.md, .cursor/rules, **skills/** (project.md, catalog.md*, pipelines.md*)
 - **CI/CD** — .github/workflows/ci.yml
+
+\* **skills/catalog.md** and **skills/pipelines.md** are generated only when ai_auto ≠ None
+
+### Skills System (Manus Skills Integration)
+**skills/project.md** (always generated):
+- 5 core skills: spec-review, code-gen, test-gen, doc-gen, refactor
+- Factory Template for creating custom skills
+- Each skill has: Role, Purpose, Input, Judgment, Output, Next
+
+**skills/catalog.md** (when ai_auto ≠ None):
+- 4 core development skills (Planning, Design, Production, Operations)
+- 2-4 domain-specific skills per domain (10 domains: education, ec, saas, community, booking, health, marketplace, content, analytics, business)
+- 4 detailed skills with Input/Process/Output (教材設計, 機能仕様, API設計, 決済検証)
+- Advanced skills for Multi-Agent/Full Autonomous levels
+
+**skills/pipelines.md** (when ai_auto ≠ None):
+- 1-5 autonomous pipelines based on ai_auto level (vibe/agentic/multi/full/orch)
+- Feature Development, Bug Fix, Release, CI/CD Integration pipelines
+- Mermaid flowcharts for each pipeline
+- Decision gates and error handling protocols
 
 **Recent Enhancement (Phase 1 Context Engineering):**
 - Added `docs/24_progress.md` — AI-updateable progress tracker with Sprint-based task management
@@ -374,6 +394,13 @@ When users complete the wizard, DevForge generates:
 **Recent Enhancement (Pillar 9: Design System):**
 - Added `docs/26_design_system.md` — Design tokens, color palettes, typography, spacing, component catalog (framework-aware for Tailwind/Vuetify/Material)
 - Added `docs/27_sequence_diagrams.md` — Mermaid sequence diagrams for auth flows (Supabase/Firebase/Auth.js), CRUD operations, payment flows (Stripe)
+
+**Recent Enhancement (AI Skills & Agent Pipelines):**
+- Enhanced `skills/project.md` — Factory Template format with 5 core skills
+- Added `skills/catalog.md` — Domain-specific skills for 10 domains (education, ec, saas, community, booking, health, marketplace, content, analytics, business)
+- Added `skills/pipelines.md` — Autonomous agent pipelines with Mermaid flowcharts (1-5 pipelines based on ai_auto level)
+- Enhanced `AGENTS.md` — Pipeline coordination section
+- 4 detailed skills with Input/Process/Output specifications
 
 ## Test Architecture
 | File | Tests | Purpose |
@@ -386,7 +413,7 @@ When users complete the wizard, DevForge generates:
 | compat.test.js | 45 tests | Compatibility validation |
 | Others | ~21 tests | i18n, presets, state, techdb |
 
-**Total: 134 tests passing**
+**Total: 137 tests passing**
 
 ## Writing Tests
 
