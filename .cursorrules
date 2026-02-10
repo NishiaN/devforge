@@ -1,0 +1,32 @@
+# DevForge v9.0
+
+You are working on DevForge v9.0, a wizard-based project spec generator.
+39 JS modules in src/ build into a single devforge-v9.html (~484KB).
+
+## Essential Commands
+- Build: `node build.js`
+- Test: `npm test` (127 tests + 248 assertions)
+- Always run tests before committing
+
+## Architecture
+- Vanilla JS, no frameworks
+- Global state object `S` — call `save()` after mutations
+- Generator functions must start with `const G = S.genLang==='ja';`
+- Never use template literals (`${}`) inside single-quoted strings
+- CSS: custom properties only (--accent, --bg-2, --text)
+
+## Key Data Structures (src/generators/common.js)
+- ENTITY_COLUMNS: 30+ entity schemas with FK/constraints
+- ENTITY_METHODS: REST API method restrictions per entity
+- FEATURE_DETAILS: domain-specific acceptance criteria
+- getEntityColumns(name, G, knownEntities) — ALWAYS pass 3rd arg
+- getEntityMethods(name) — returns allowed HTTP methods
+- detectDomain(purpose) — returns domain key for inference
+
+## Output
+Generates 62 files including:
+- .spec/ (constitution, specification, technical-plan, tasks, verification)
+- .devcontainer/ (devcontainer.json, Dockerfile, compose, post-create)
+- docs/ (architecture, ER, API, screen, test, security, release, WBS, prompt, tasks)
+- AI rules (CLAUDE.md, AI_BRIEF.md, .cursorrules, .clinerules, AGENTS.md)
+- CI/CD (.github/workflows/ci.yml)

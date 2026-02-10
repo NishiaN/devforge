@@ -1,0 +1,7 @@
+DevForge v9.0 — 39-module web app.
+Build: `node build.js` → devforge-v9.html (~484KB)
+Test: `npm test` → 127 tests + 248 assertions
+Edit files in src/, never the output. Vanilla JS only.
+Key rules: define `const G=S.genLang==='ja'` in gen functions, never ${} in single quotes.
+getEntityColumns always needs 3rd arg knownEntities.
+After edits: `npm test && node build.js`

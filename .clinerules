@@ -1,0 +1,5 @@
+DevForge v9.0 — src/ modules → build.js → devforge-v9.html (~484KB)
+39 modules. 127 tests + 248 assertions.
+Rules: edit src/ only, const G at gen func top, no ${} in single quotes
+getEntityColumns(name, G, knownEntities) — always pass 3rd arg
+Build: node build.js | Test: npm test | Check: npm run check

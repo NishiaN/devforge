@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="ja" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>DevForge v9.0 — AI駆動開発 統合プラットフォーム</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js" onerror="window._noZip=true"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js" onerror="window._noMarked=true"></script>
+<style>
+/* __CSS__ */
+</style>
+</head>
+<body>
+<a href="#cbody" class="skip-link">Skip to content</a>
+<div class="app" id="app">
+  <!-- Topbar -->
+  <header class="topbar" role="banner">
+    <div class="topbar-left">
+      <div class="topbar-brand">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+        <span>DevForge <small>v9</small></span>
+      </div>
+
+    </div>
+    <div class="topbar-right">
+      <button class="theme-btn" onclick="toggleLang()" title="EN/JA" aria-label="Toggle language" id="langBtn">🌐</button>
+      <button class="theme-btn" onclick="toggleTheme()" title="Theme" aria-label="Toggle theme" id="themeBtn">🌙</button>
+      <button class="theme-btn" onclick="showManual()" title="Help" id="helpBtn">❓</button>
+      <button class="theme-btn" onclick="showKB()" title="Shortcuts" id="kbBtn">⌨️</button>
+      <button class="theme-btn" onclick="showPM()" title="Projects" id="pmBtn">📁</button>
+    </div>
+  </header>
+  <div class="pstrip"><div class="pstrip-fill" id="pbar" style="width:0%"></div></div>
+
+  <!-- Left Hover Navigation Drawer -->
+  <nav class="pill-drawer" role="navigation" aria-label="Progress" id="pillDrawer">
+    <div class="pill-drawer-tab">PHASE</div>
+    <div class="pill-drawer-body">
+      <div class="pd-title" id="pdTitle">Progress</div>
+      <div id="pills"></div>
+      <div class="pd-progress"><div class="pd-bar"><div class="pd-bar-fill" id="pdBar" style="width:0%"></div></div><span id="pdPct">0%</span></div>
+      <button class="btn btn-p pd-gen" id="pdGenBtn" onclick="generateAll()">🚀 生成</button>
+    </div>
+  </nav>
+
+
+  <!-- Onboarding -->
+  <div class="onboard" id="onboard" role="region" aria-label="Onboarding">
+    <div class="hero-anim">
+      <div class="hero-content">
+        <div class="version-badge">v9.0 — 2026 Edition</div>
+        <h1 id="heroTitle">DevForge v9</h1>
+        <p id="heroDesc">質問に答えるだけで、60+ファイルの開発ドキュメント・環境設定・AIルール・学習ロードマップを自動生成。8つの柱でAI駆動開発をゼロから完全サポート。</p>
+      </div>
+    </div>
+    <div class="stat-row">
+      <div class="stat-item"><div class="num" id="statFileNum">60+</div><div class="lbl" id="statFiles">生成ファイル</div></div>
+      <div class="stat-item"><div class="num" id="statTechNum"></div><div class="lbl" id="statTech">技術エントリ</div></div>
+      <div class="stat-item"><div class="num">8</div><div class="lbl" id="statPillars">柱 (Pillars)</div></div>
+      <div class="stat-item"><div class="num">10</div><div class="lbl" id="statAI">AIツール対応</div></div>
+    </div>
+    <div class="info-grid">
+      <div class="icard"><h4>📝 60+ファイル生成</h4><p>SDD仕様書・Docker・MCP・AIルール10種・ロードマップ9種・仕様書23種</p></div>
+      <div class="icard"><h4>🧪 8つの柱</h4><p>SDD・DevContainer・MCP・AIルール・並列探索・Dashboard・ロードマップ・AIランチャー</p></div>
+      <div class="icard"><h4>📱 モバイル対応</h4><p>Expo / React Native 開発パス・EAS Build・OTA更新</p></div>
+      <div class="icard"><h4>🤖 AI自律開発</h4><p>Vibe Coding・マルチAgent・Claude Code Subagents</p></div>
+      <div class="icard"><h4>💳 決済・CMS・EC</h4><p>Stripe・microCMS・Medusa・Shopify Hydrogen</p></div>
+      <div class="icard"><h4>📦 フルエクスポート</h4><p>ZIP・PDF・全ファイル結合コピー・URLシェア</p></div>
+    </div>
+    <div class="pillars-badge">
+      <span class="pbadge">①SDD統合</span><span class="pbadge">②DevContainer</span><span class="pbadge">③MCP設定</span>
+      <span class="pbadge">④AIエージェント×10</span><span class="pbadge">⑤並列探索</span><span class="pbadge">⑥Context Dashboard</span><span class="pbadge">⑦技術ロードマップ</span><span class="pbadge">⑧AIランチャー</span>
+    </div>
+    <div class="start-zone">
+      <div class="szl" id="skillAsk">Select your skill level</div>
+      <div class="skill-sel" id="skillSel" role="radiogroup" aria-label="Skill level">
+        <div class="skcard" data-lv="beginner" onclick="pickSkill('beginner')" role="radio" aria-checked="false" tabindex="0"><div class="em">🌱</div><h4 class="sk-title">Beginner</h4><p class="sk-desc">初めてのWeb開発。最適な選択肢をガイドします</p></div>
+        <div class="skcard on" data-lv="intermediate" onclick="pickSkill('intermediate')" role="radio" aria-checked="true" tabindex="0"><div class="em">⚡</div><h4 class="sk-title">Intermediate</h4><p class="sk-desc">1年以上の経験。Svelte, DDD等の中級オプション解放</p></div>
+        <div class="skcard" data-lv="pro" onclick="pickSkill('pro')" role="radio" aria-checked="false" tabindex="0"><div class="em">🔥</div><h4 class="sk-title">Professional</h4><p class="sk-desc">全オプション解放。MDD, RBAC, SSO等＋確認ダイアログ付き</p></div>
+      </div>
+      <input class="nameIn" id="nameIn" placeholder="" aria-label="Project name">
+      <div class="preset-row" id="presetRow"></div>
+      <button class="btn btn-g btn-xs" onclick="showPresetCompare()" style="margin-bottom:8px" id="compareBtn">⚔️ <span id="compareLbl">テンプレート比較</span></button>
+      <button class="btn btn-p btn-start" onclick="start()" id="startBtn">🚀 開始する</button>
+    </div>
+    <div class="app-footer">© 2026 エンジニアリングのタネ制作委員会 ｜ 作成者：にしあん</div>
+  </div>
+
+  <!-- Workspace -->
+  <main id="ws" role="main" aria-label="Workspace" style="display:none;">
+    <div class="toc-panel" id="tocPanel" role="navigation" aria-label="Table of contents"></div>
+    <div class="mobtabs" role="tablist" aria-label="View switch"><div class="mobtab on" onclick="mobSw('c')" role="tab" aria-selected="true">💬 チャット</div><div class="mobtab" onclick="mobSw('p')" role="tab" aria-selected="false">📄 プレビュー</div></div>
+    <div class="ws">
+      <div class="panel-c" id="panC">
+        <div class="cbody" id="cbody" role="log" aria-live="polite" aria-label="Conversation"></div>
+        <div class="izone" id="izone" role="form" aria-label="Answer input"></div>
+      </div>
+      <div class="panel-p" id="panP" role="complementary" aria-label="Preview panel">
+        <div class="prev-head">
+          <h3 id="panPTitle">📁 生成ファイル</h3>
+          <div class="prev-tabs" id="prevTabs" role="tablist" aria-label="Preview tabs"></div>
+        </div>
+        <div class="pillar-tabs" id="pillarTabs" role="tablist" aria-label="Pillar tabs"></div>
+        <div class="prev-body" id="prevBody" aria-live="polite"><p class="prev-placeholder">質問に回答するとリアルタイムでプレビューが更新されます</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Help Overlay -->
+  <div class="help-overlay" id="helpOverlay" role="dialog" aria-modal="true" aria-label="Help manual" onclick="if(event.target===this)closeManual()">
+    <div class="help-modal" role="document">
+      <div class="help-nav" id="helpNav" role="navigation" aria-label="Help navigation">
+        <input id="helpSearch" class="help-search" placeholder="🔍" oninput="filterManual(this.value)" aria-label="Search help">
+      </div>
+      <div class="help-body" id="helpBody"></div>
+    </div>
+  </div>
+
+  <!-- Keyboard Shortcut Overlay -->
+  <div class="kb-overlay" id="kbOverlay" role="dialog" aria-modal="true" aria-label="Keyboard shortcuts" onclick="if(event.target===this)closeKB()">
+    <div class="kb-modal" role="document">
+      <h3 id="kbTitle">⌨️ ショートカット</h3>
+      <div class="kb-row"><span class="kblbl">ヘルプ・マニュアル</span><span class="kb-key">F1 / Ctrl+H</span></div>
+      <div class="kb-row"><span class="kblbl">ショートカット一覧</span><span class="kb-key">Ctrl+K</span></div>
+      <div class="kb-row"><span class="kblbl">テーマ切替</span><span class="kb-key">Ctrl+T</span></div>
+      <div class="kb-row"><span class="kblbl">言語切替</span><span class="kb-key">Ctrl+L</span></div>
+      <div class="kb-row"><span class="kblbl">エクスポート</span><span class="kb-key">Ctrl+E</span></div>
+      <div class="kb-row"><span class="kblbl">全ファイルコピー</span><span class="kb-key">Ctrl+Shift+C</span></div>
+      <div class="kb-row"><span class="kblbl">プロジェクト管理</span><span class="kb-key">Ctrl+M</span></div>
+    </div>
+  </div>
+</div>
+  <!-- Help Popup (per-question) -->
+  <div id="helpPopup" role="tooltip" aria-live="polite" style="display:none;"></div>
+  <!-- Confirm Overlay (Pro mode) -->
+  <div class="confirm-overlay" id="confirmOverlay" role="alertdialog" aria-modal="true" aria-label="Confirmation"></div>
+  <!-- Project Manager Overlay -->
+  <div class="pm-overlay" id="pmOverlay" role="dialog" aria-modal="true" aria-label="Project manager" onclick="if(event.target===this)closePM()"></div>
+  <!-- Tour Container -->
+  <div class="tour-container" id="tourContainer" role="complementary" aria-label="Guided tour"></div>
+<script>
+/* __JS__ */
+</script>
+</body>
+</html>

@@ -1,0 +1,26 @@
+# DevForge v9.0 — 39-module web app → builds to single HTML (~484KB)
+
+## Build: `node build.js` (produces devforge-v9.html)
+## Test: `npm test` (127 tests + 248 assertions)
+## Verify: `npm run check`
+
+## Rules
+1. Edit source in src/ — never edit devforge-v9.html directly
+2. Never use ${expr} inside single-quoted strings
+3. Gen files: `const G = S.genLang==='ja';` at function start
+4. UI text: `S.lang` + `t('key')` or ternary
+5. TechDB req: use English codes + reqLabel() for display
+6. CSS: use custom properties (--accent, --bg-2, --text, etc.)
+7. State: `save()` after S mutations
+8. getEntityColumns: always pass 3rd arg `knownEntities`
+9. ENTITY_METHODS: REST API methods are entity-specific (common.js)
+10. After edits: `npm test && node build.js`
+
+## Key Files
+- src/generators/common.js — ENTITY_COLUMNS, ENTITY_METHODS, FEATURE_DETAILS, detectDomain()
+- src/generators/p1-sdd.js — Specification/constitution/technical-plan/tasks/verification
+- src/generators/docs.js — API design, screen design, test cases, tasks (23), prompt playbook
+- src/generators/p4-airules.js — CLAUDE.md, AI_BRIEF.md, .cursorrules generation
+- src/data/presets.js — 26 project presets
+- src/data/compat-rules.js — 35 compatibility validation rules
+- test/ — 127 tests (run `npm test` before committing)

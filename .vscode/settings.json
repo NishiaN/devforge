@@ -1,0 +1,11 @@
+{
+  "editor.formatOnSave": true,
+  "editor.tabSize": 2,
+  "files.trimTrailingWhitespace": true,
+  "files.insertFinalNewline": true,
+  "javascript.suggest.autoImports": false,
+  "search.exclude": {
+    "devforge-v9.html": true,
+    "node_modules": true
+  }
+}

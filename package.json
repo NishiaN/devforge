@@ -1,0 +1,18 @@
+{
+  "name": "devforge-v9",
+  "version": "9.0.0",
+  "description": "AI-driven development platform — 60+ file generator with inline editor & diff view",
+  "private": true,
+  "scripts": {
+    "build": "node build.js",
+    "test": "node --test test/*.test.js",
+    "test:watch": "node --test --watch test/*.test.js",
+    "start": "node build.js && npx serve -l 3000 -s .",
+    "dev": "node build.js && npx live-server --port=3000 --entry-file=devforge-v9.html",
+    "check": "node build.js && node -e \"const fs=require('fs'),c=fs.readFileSync('devforge-v9.html','utf8'),m=c.match(/<script>([\\\\s\\\\S]*?)<\\\\/script>/g);let js='';m.forEach(s=>js+=s.replace(/<\\\\/?script>/g,'')+'\\n');fs.writeFileSync('/tmp/_df_check.js',js);\" && node --check /tmp/_df_check.js && echo '✅ Syntax OK'",
+    "open": "node build.js && open devforge-v9.html || xdg-open devforge-v9.html || start devforge-v9.html"
+  },
+  "keywords": ["devforge", "sdd", "spec-driven-development", "code-generator", "ai-rules"],
+  "author": "にしあん (Engineering no Tane Committee)",
+  "license": "MIT"
+}

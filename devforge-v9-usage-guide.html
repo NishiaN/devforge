@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DevForge v9 — 生成ファイル活用ガイド</title>
+<style>
+:root {
+  --bg: #0a0c10;
+  --bg2: #12151c;
+  --bg3: #1a1e28;
+  --surface: #222838;
+  --border: #2a3040;
+  --text: #e4e8f0;
+  --text2: #98a2b8;
+  --text3: #5c6680;
+  --accent: #3b82f6;
+  --accent2: #22d3ee;
+  --green: #34d399;
+  --amber: #fbbf24;
+  --rose: #fb7185;
+  --purple: #a78bfa;
+  --orange: #fb923c;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Hiragino Sans', 'Noto Sans JP', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.8;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ═══ HERO ═══ */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 60px 24px;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -200px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 800px;
+  height: 800px;
+  background: radial-gradient(circle, rgba(59,130,246,0.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px;
+  border: 1px solid var(--border);
+  border-radius: 40px;
+  font-size: 12px;
+  color: var(--accent2);
+  letter-spacing: 0.08em;
+  margin-bottom: 32px;
+  backdrop-filter: blur(8px);
+  background: rgba(34,211,238,0.04);
+}
+.hero-badge .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+.hero h1 {
+  font-size: clamp(36px, 6vw, 64px);
+  font-weight: 900;
+  letter-spacing: -0.04em;
+  line-height: 1.15;
+  margin-bottom: 20px;
+  background: linear-gradient(135deg, var(--text) 30%, var(--accent) 60%, var(--accent2) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.hero-sub {
+  font-size: clamp(15px, 2vw, 19px);
+  color: var(--text2);
+  max-width: 640px;
+  line-height: 1.9;
+  margin-bottom: 40px;
+}
+.hero-sub strong { color: var(--text); font-weight: 600; }
+.hero-stats {
+  display: flex;
+  gap: 40px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.hero-stat {
+  text-align: center;
+}
+.hero-stat .num {
+  font-size: 36px;
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.hero-stat .lbl { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.1em; margin-top: 2px; }
+.scroll-hint {
+  position: absolute;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 12px;
+  color: var(--text3);
+  animation: bounce 2s infinite;
+}
+@keyframes bounce { 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(8px)} }
+
+/* ═══ CONTAINER ═══ */
+.container { max-width: 920px; margin: 0 auto; padding: 0 24px; }
+section { padding: 80px 0; }
+
+/* ═══ SECTION TITLE ═══ */
+.stitle {
+  text-align: center;
+  margin-bottom: 56px;
+}
+.stitle-tag {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  margin-bottom: 12px;
+  padding: 4px 14px;
+  border: 1px solid rgba(59,130,246,0.25);
+  border-radius: 40px;
+  background: rgba(59,130,246,0.06);
+}
+.stitle h2 {
+  font-size: clamp(26px, 4vw, 38px);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  margin-bottom: 12px;
+}
+.stitle p {
+  font-size: 15px;
+  color: var(--text2);
+  max-width: 560px;
+  margin: 0 auto;
+}
+
+/* ═══ WHY SECTION ═══ */
+.why-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+  margin-bottom: 40px;
+}
+.why-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 28px 24px;
+  transition: all 0.25s;
+}
+.why-card:hover { border-color: var(--accent); transform: translateY(-3px); box-shadow: 0 12px 40px rgba(59,130,246,0.08); }
+.why-icon { font-size: 28px; margin-bottom: 14px; }
+.why-card h3 { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
+.why-card p { font-size: 13px; color: var(--text2); line-height: 1.7; }
+.why-card .tag { display: inline-block; font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 4px; margin-top: 10px; }
+.tag-only { background: rgba(59,130,246,0.1); color: var(--accent); }
+.tag-auto { background: rgba(52,211,153,0.1); color: var(--green); }
+.tag-ai { background: rgba(167,139,250,0.1); color: var(--purple); }
+
+/* ═══ COMPARISON TABLE ═══ */
+.comp-table-wrap { overflow-x: auto; margin: 32px 0; }
+.comp-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.comp-table th {
+  padding: 12px 16px;
+  text-align: left;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text3);
+  border-bottom: 2px solid var(--border);
+  white-space: nowrap;
+}
+.comp-table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+.comp-table tr:hover td { background: var(--bg2); }
+.comp-table .feat { font-weight: 600; white-space: nowrap; }
+.comp-yes { color: var(--green); font-weight: 600; }
+.comp-no { color: var(--text3); }
+.comp-partial { color: var(--amber); }
+
+/* ═══ LEVEL SECTIONS ═══ */
+.level-section {
+  margin-bottom: 64px;
+}
+.level-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 28px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid;
+}
+.level-header .em { font-size: 36px; }
+.level-header h3 { font-size: 22px; font-weight: 800; letter-spacing: -0.02em; }
+.level-header .sub { font-size: 13px; color: var(--text2); margin-top: 2px; }
+.level-beginner .level-header { border-color: var(--green); }
+.level-intermediate .level-header { border-color: var(--amber); }
+.level-pro .level-header { border-color: var(--rose); }
+
+.step-flow {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.step {
+  display: flex;
+  gap: 20px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 24px;
+  transition: all 0.2s;
+}
+.step:hover { border-color: rgba(59,130,246,0.3); }
+.step-num {
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 14px;
+}
+.level-beginner .step-num { background: rgba(52,211,153,0.12); color: var(--green); }
+.level-intermediate .step-num { background: rgba(251,191,36,0.12); color: var(--amber); }
+.level-pro .step-num { background: rgba(251,113,133,0.12); color: var(--rose); }
+.step-body h4 { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
+.step-body p { font-size: 13px; color: var(--text2); line-height: 1.75; }
+.step-body code {
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+  font-size: 12px;
+  background: var(--bg3);
+  padding: 2px 7px;
+  border-radius: 5px;
+  color: var(--accent2);
+}
+.step-file-list {
+  margin-top: 10px;
+  padding: 12px 14px;
+  background: var(--bg);
+  border-radius: 8px;
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+  font-size: 12px;
+  line-height: 2;
+  color: var(--text2);
+}
+.step-file-list .fname { color: var(--accent); font-weight: 600; }
+.step-file-list .fdesc { color: var(--text3); }
+.step-tip {
+  margin-top: 10px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 12px;
+  line-height: 1.7;
+}
+.tip-green { background: rgba(52,211,153,0.06); border: 1px solid rgba(52,211,153,0.15); color: var(--green); }
+.tip-amber { background: rgba(251,191,36,0.06); border: 1px solid rgba(251,191,36,0.15); color: var(--amber); }
+.tip-rose { background: rgba(251,113,133,0.06); border: 1px solid rgba(251,113,133,0.15); color: var(--rose); }
+.tip-blue { background: rgba(59,130,246,0.06); border: 1px solid rgba(59,130,246,0.15); color: var(--accent); }
+.wireframe { width: 100%; max-width: 420px; margin: 12px 0 4px; border-radius: 8px; overflow: hidden; }
+.wireframe text { font-family: -apple-system, sans-serif; }
+
+/* ═══ FILE MAP ═══ */
+.file-map {
+  margin-top: 40px;
+}
+.file-map table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+.file-map th {
+  padding: 10px 12px;
+  text-align: left;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text3);
+  border-bottom: 2px solid var(--border);
+  position: sticky;
+  top: 0;
+  background: var(--bg);
+}
+.file-map td {
+  padding: 8px 12px;
+  border-bottom: 1px solid rgba(42,48,64,0.6);
+  vertical-align: middle;
+}
+.file-map tr:hover td { background: var(--bg2); }
+.file-map .fname { font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace; color: var(--accent); font-weight: 600; font-size: 11px; }
+.use-tag {
+  display: inline-block;
+  font-size: 9px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 3px;
+  text-align: center;
+  min-width: 50px;
+}
+.use-essential { background: rgba(52,211,153,0.15); color: var(--green); }
+.use-customize { background: rgba(251,191,36,0.15); color: var(--amber); }
+.use-master { background: rgba(251,113,133,0.15); color: var(--rose); }
+.use-later { background: rgba(92,102,128,0.2); color: var(--text3); }
+
+/* ═══ WORKFLOW ═══ */
+.workflow-visual {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 32px 0;
+  padding: 32px 16px;
+  background: var(--bg2);
+  border-radius: 16px;
+  border: 1px solid var(--border);
+}
+.wf-node {
+  padding: 10px 18px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
+  min-width: 100px;
+}
+.wf-arrow { color: var(--text3); font-size: 18px; }
+.wf-blue { background: rgba(59,130,246,0.12); color: var(--accent); border: 1px solid rgba(59,130,246,0.2); }
+.wf-cyan { background: rgba(34,211,238,0.12); color: var(--accent2); border: 1px solid rgba(34,211,238,0.2); }
+.wf-green { background: rgba(52,211,153,0.12); color: var(--green); border: 1px solid rgba(52,211,153,0.2); }
+.wf-purple { background: rgba(167,139,250,0.12); color: var(--purple); border: 1px solid rgba(167,139,250,0.2); }
+
+/* ═══ CTA ═══ */
+.cta-section {
+  text-align: center;
+  padding: 80px 0 100px;
+}
+.cta-section h2 {
+  font-size: clamp(24px, 4vw, 36px);
+  font-weight: 800;
+  margin-bottom: 16px;
+  letter-spacing: -0.02em;
+}
+.cta-section p {
+  font-size: 15px;
+  color: var(--text2);
+  max-width: 560px;
+  margin: 0 auto 32px;
+}
+.cta-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 32px;
+  background: linear-gradient(135deg, var(--accent), #2563eb);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-decoration: none;
+}
+.cta-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(59,130,246,0.3); }
+
+/* ═══ FOOTER ═══ */
+.footer {
+  text-align: center;
+  padding: 32px 0;
+  border-top: 1px solid var(--border);
+  font-size: 12px;
+  color: var(--text3);
+}
+
+/* ═══ RESPONSIVE ═══ */
+@media (max-width: 640px) {
+  .hero-stats { gap: 24px; }
+  .step { flex-direction: column; gap: 12px; }
+  .comp-table { font-size: 11px; }
+  .workflow-visual { gap: 8px; }
+  .wf-node { min-width: 80px; font-size: 11px; padding: 8px 12px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════ HERO ═══ -->
+<header class="hero">
+  <div class="hero-badge"><span class="dot"></span>DevForge v9.0 — Open Source</div>
+  <h1>生成ファイルを<br>最大限に活かす</h1>
+  <p class="hero-sub">
+    DevForge v9 は、プロジェクトの<strong>設計・環境・ルール・学習計画</strong>を<br>
+    ワンクリックで60+ファイルに具現化する、<strong>世界で唯一の仕様駆動AIプロジェクトジェネレーター</strong>です。<br>
+    でも、本当の価値は「生成した後」にあります。
+  </p>
+  <div class="hero-stats">
+    <div class="hero-stat"><div class="num">60+</div><div class="lbl">Generated Files</div></div>
+    <div class="hero-stat"><div class="num">244</div><div class="lbl">Tech DB Entries</div></div>
+    <div class="hero-stat"><div class="num">10</div><div class="lbl">AI Tool Rules</div></div>
+    <div class="hero-stat"><div class="num">8</div><div class="lbl">Pillar System</div></div>
+  </div>
+  <div class="scroll-hint">↓ スクロールして活用法を見る</div>
+</header>
+
+<!-- ═══════════════════════════════════════ WHY UNIQUE ═══ -->
+<section>
+  <div class="container">
+    <div class="stitle">
+      <div class="stitle-tag">What Makes DevForge Different</div>
+      <h2>なぜDevForgeだけなのか</h2>
+      <p>他のスキャフォールディングツールは「コード」を生成します。DevForgeは「開発の知性」を生成します。</p>
+    </div>
+    <div class="why-grid">
+      <div class="why-card">
+        <div class="why-icon">🧠</div>
+        <h3>仕様が先、コードは後</h3>
+        <p>constitution.md（不変の原則）→ specification.md（機能要件）→ tasks.md（実行計画）。AIがブレない開発の「軸」を生成します。コードを書き始める前に、何を作るかが定義されている状態。</p>
+        <div class="tag tag-only">DevForge ONLY</div>
+      </div>
+      <div class="why-card">
+        <div class="why-icon">🔀</div>
+        <h3>10ツール同時対応AIルール</h3>
+        <p>Cursor、Claude Code、Copilot、Antigravity、Windsurf、Cline、Kiro、Codex ── どのツールに乗り換えても同じルールが適用されます。プロジェクトフォルダに置くだけ。</p>
+        <div class="tag tag-only">DevForge ONLY</div>
+      </div>
+      <div class="why-card">
+        <div class="why-icon">🗺️</div>
+        <h3>あなた専用のロードマップ</h3>
+        <p>選んだスタックに最適化された7層の学習パス。Layer間の依存関係ロック、時間見積り、公式ドキュメントへのリンク付き。ダッシュボードで進捗管理。</p>
+        <div class="tag tag-auto">Auto-Generated</div>
+      </div>
+      <div class="why-card">
+        <div class="why-icon">📊</div>
+        <h3>244テクノロジーの知識ベース</h3>
+        <p>16カテゴリに分類された業界最大級のTech DB。23の互換性ルールでスタックの相性を自動判定。「その組み合わせ大丈夫？」をAIの代わりに答えます。</p>
+        <div class="tag tag-ai">AI-Powered</div>
+      </div>
+      <div class="why-card">
+        <div class="why-icon">📦</div>
+        <h3>ゼロコンフィグ開発環境</h3>
+        <p>DevContainer設定一式を自動生成。VS Code/Cursorで「フォルダを開く」→「コンテナで開く」。チームメンバー全員が同一環境を30秒で手に入れます。</p>
+        <div class="tag tag-auto">Auto-Generated</div>
+      </div>
+      <div class="why-card">
+        <div class="why-icon">🔗</div>
+        <h3>MCP × Agent協調</h3>
+        <p>MCPサーバー設定（context7/filesystem/playwright）とAGENTS.md（エージェント役割定義）を同時生成。マルチAgent並列開発の即時スタートが可能。</p>
+        <div class="tag tag-only">DevForge ONLY</div>
+      </div>
+    </div>
+
+    <!-- ── Comparison ── -->
+    <div class="comp-table-wrap">
+      <table class="comp-table">
+        <thead>
+          <tr>
+            <th>機能</th>
+            <th>DevForge v9</th>
+            <th>create-next-app等</th>
+            <th>AI直接依頼</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="feat">仕様書（5ファイルSDD）</td><td class="comp-yes">✅ 自動生成</td><td class="comp-no">—</td><td class="comp-partial">△ 都度指示</td></tr>
+          <tr><td class="feat">10ツールAIルール同時生成</td><td class="comp-yes">✅ 10ファイル</td><td class="comp-no">—</td><td class="comp-no">—</td></tr>
+          <tr><td class="feat">スタック互換性チェック</td><td class="comp-yes">✅ 23ルール自動</td><td class="comp-no">—</td><td class="comp-partial">△ 知識依存</td></tr>
+          <tr><td class="feat">インタラクティブ学習ロードマップ</td><td class="comp-yes">✅ 7層+進捗管理</td><td class="comp-no">—</td><td class="comp-no">—</td></tr>
+          <tr><td class="feat">DevContainer一式</td><td class="comp-yes">✅ 4ファイル</td><td class="comp-partial">△ 部分的</td><td class="comp-partial">△ 都度指示</td></tr>
+          <tr><td class="feat">MCP + Agent設定</td><td class="comp-yes">✅ 自動</td><td class="comp-no">—</td><td class="comp-no">—</td></tr>
+          <tr><td class="feat">244テクノロジーDB</td><td class="comp-yes">✅ 内蔵</td><td class="comp-no">—</td><td class="comp-no">—</td></tr>
+          <tr><td class="feat">オフライン動作</td><td class="comp-yes">✅ 完全ローカル</td><td class="comp-partial">△ npm必要</td><td class="comp-no">✗ API必須</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════ BEGINNER ═══ -->
+<section>
+  <div class="container">
+    <div class="stitle">
+      <div class="stitle-tag">Level-Based Guide</div>
+      <h2>レベル別 活用ガイド</h2>
+      <p>あなたのスキルレベルに合わせた、最短で成果を出す使い方</p>
+    </div>
+
+    <!-- ── Beginner ── -->
+    <div class="level-section level-beginner">
+      <div class="level-header">
+        <span class="em">🌱</span>
+        <div>
+          <h3>Beginner — まず動かす</h3>
+          <div class="sub">「何から始めればいいかわからない」を解決する3ステップ</div>
+        </div>
+      </div>
+      <div class="step-flow">
+
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <h4>ロードマップに従って歩く</h4>
+            <p>ダッシュボード（柱⑦）のロードマップUIがそのまま学習計画です。Layer 1「Web基盤」から順にチェックを入れるだけ。依存関係ロックが「次にやるべきこと」を自動的に教えてくれます。各タスクの <code>📖</code> ボタンから公式ドキュメントに直接ジャンプできるので、教材探しで時間を無駄にしません。</p>
+            <div class="step-tip tip-green">💡 初心者モードでは時間見積りが2倍になっています。焦らず自分のペースで進めてください。</div>
+            <svg class="wireframe" viewBox="0 0 360 120" xmlns="http://www.w3.org/2000/svg"><rect width="360" height="120" rx="8" fill="#13161d" stroke="#2e3446"/><text x="12" y="20" fill="#3b82f6" font-size="10" font-weight="700">🗺️ Interactive Roadmap</text><rect x="12" y="30" width="336" height="10" rx="4" fill="#1a1e28"/><rect x="12" y="30" width="120" height="10" rx="4" fill="url(#rg)"/><text x="140" y="38" fill="#a4adc0" font-size="8">33%</text><g transform="translate(12,48)"><rect width="336" height="18" rx="4" fill="#1a1e28" stroke="#2e3446"/><rect x="4" y="4" width="10" height="10" rx="2" fill="#3b82f6"/><text x="20" y="12" fill="#34d399" font-size="9">✓ HTML/CSS基礎を学ぶ</text><text x="290" y="12" fill="#6b7590" font-size="8">📖 W1</text></g><g transform="translate(12,70)"><rect width="336" height="18" rx="4" fill="#1a1e28" stroke="#2e3446"/><rect x="4" y="4" width="10" height="10" rx="2" fill="#3b82f6"/><text x="20" y="12" fill="#34d399" font-size="9">✓ JavaScript基礎</text><text x="290" y="12" fill="#6b7590" font-size="8">📖 W1</text></g><g transform="translate(12,92)"><rect width="336" height="18" rx="4" fill="#1a1e28" stroke="#3b82f6" stroke-dasharray="3"/><rect x="4" y="4" width="10" height="10" rx="2" fill="#1a1e28" stroke="#3b82f6"/><text x="20" y="12" fill="#e8ecf4" font-size="9">→ React入門</text><text x="290" y="12" fill="#6b7590" font-size="8">📖 W2</text></g><defs><linearGradient id="rg" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#3b82f6"/><stop offset="1" stop-color="#34d399"/></linearGradient></defs></svg>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <h4>3つのファイルだけ覚える</h4>
+            <p>60以上のファイルがありますが、最初に覚えるのは3つだけ。残りは必要になったときに自然と出会います。</p>
+            <div class="step-file-list">
+              <span class="fname">README.md</span> <span class="fdesc">— プロジェクト概要。GitHubにそのまま公開OK</span><br>
+              <span class="fname">.devcontainer/</span> <span class="fdesc">— VS Code/Cursorで開くだけで開発環境が完成</span><br>
+              <span class="fname">CLAUDE.md</span> <span class="fdesc">— AIに「これ読んで」で全仕様を理解してもらえる</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <h4>AIに丸ごと渡す</h4>
+            <p>エクスポート画面の「全ファイルコピー」（<code>Ctrl+Shift+C</code>）で全ドキュメントをクリップボードにコピー。CursorやClaude Codeに貼り付けるだけで、AIが仕様・技術スタック・タスク一覧をすべて把握した状態からスタートします。「何を作ればいいか」をAIに説明する手間がゼロになります。</p>
+            <div class="workflow-visual">
+              <div class="wf-node wf-blue">DevForge<br>生成</div>
+              <span class="wf-arrow">→</span>
+              <div class="wf-node wf-cyan">全ファイル<br>コピー</div>
+              <span class="wf-arrow">→</span>
+              <div class="wf-node wf-purple">AIに<br>貼り付け</div>
+              <span class="wf-arrow">→</span>
+              <div class="wf-node wf-green">開発<br>スタート</div>
+            </div>
+            <div class="step-tip tip-green">⚠️ ファイルを全部読もうとしないでください。最初は <code>LEARNING_PATH.md</code> と <code>CLAUDE.md</code> だけで十分です。</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ── Intermediate ── -->
+    <div class="level-section level-intermediate">
+      <div class="level-header">
+        <span class="em">🔥</span>
+        <div>
+          <h3>Intermediate — 効率を極める</h3>
+          <div class="sub">生成ファイルをワークフローの中核に据え、開発速度を3倍にする</div>
+        </div>
+      </div>
+      <div class="step-flow">
+
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <h4>SDD（仕様駆動開発）で「ブレない開発」</h4>
+            <p><code>.spec/</code> フォルダがプロジェクトの<strong>信頼できる唯一の情報源（SSOT）</strong>になります。AIへの指示は「tasks.mdの○○を実装して。specification.mdの要件に従い、technical-plan.mdのアーキテクチャに沿って」の一文で済みます。</p>
+            <div class="step-file-list">
+              <span class="fname">constitution.md</span> <span class="fdesc">— プロジェクトの憲法（変えない原則）</span><br>
+              <span class="fname">specification.md</span> <span class="fdesc">— 機能要件（AIはこれに従う）</span><br>
+              <span class="fname">technical-plan.md</span> <span class="fdesc">— アーキテクチャ設計図</span><br>
+              <span class="fname">tasks.md</span> <span class="fdesc">— 実行タスク一覧（AIに1つずつ渡す）</span><br>
+              <span class="fname">verification.md</span> <span class="fdesc">— 完了判定基準（テスト合格条件）</span>
+            </div>
+            <div class="step-tip tip-amber">🔑 「仕様書を先に書く」のが面倒だから多くの人がスキップします。DevForgeはその面倒を自動化しました。</div>
+            <svg class="wireframe" viewBox="0 0 360 100" xmlns="http://www.w3.org/2000/svg"><rect width="360" height="100" rx="8" fill="#13161d" stroke="#2e3446"/><text x="12" y="18" fill="#fbbf24" font-size="10" font-weight="700">📁 .spec/ — SSoT (信頼できる唯一の情報源)</text><g font-size="9"><text x="20" y="36" fill="#22d3ee">📄 constitution.md</text><text x="170" y="36" fill="#6b7590" font-size="8">← 原則</text><line x1="250" y1="34" x2="350" y2="34" stroke="#2e3446" stroke-dasharray="2"/><text x="20" y="52" fill="#22d3ee">📄 specification.md</text><text x="170" y="52" fill="#6b7590" font-size="8">← 要件</text><text x="260" y="52" fill="#3b82f6" font-size="8">AIに渡す →</text><text x="20" y="68" fill="#22d3ee">📄 tasks.md</text><text x="170" y="68" fill="#6b7590" font-size="8">← タスク</text><text x="260" y="68" fill="#34d399" font-size="8">1つずつ実行</text><text x="20" y="84" fill="#22d3ee">📄 verification.md</text><text x="170" y="84" fill="#6b7590" font-size="8">← 完了基準</text><text x="260" y="84" fill="#fbbf24" font-size="8">✓ 品質判定</text></g></svg>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <h4>マルチAIツール「どれでも同じルール」</h4>
+            <p>柱④で生成される10ファイルは、各AIツールの専用設定ファイルです。プロジェクトフォルダに配置するだけで各ツールが自動認識。ツールを乗り換えても出力が一貫します。</p>
+            <div class="step-file-list">
+              <span class="fname">.cursor/rules</span> <span class="fdesc">— Cursor（IDE内自動読込）</span><br>
+              <span class="fname">CLAUDE.md + AGENTS.md</span> <span class="fdesc">— Claude Code（自動読込）</span><br>
+              <span class="fname">.github/copilot-instructions.md</span> <span class="fdesc">— GitHub Copilot</span><br>
+              <span class="fname">.windsurfrules</span> <span class="fdesc">— Windsurf / Antigravity</span><br>
+              <span class="fname">.clinerules</span> <span class="fdesc">— Cline / RooCode</span><br>
+              <span class="fname">.gemini/settings.json</span> <span class="fdesc">— Gemini CLI（Gemini 3 Pro）</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <h4>MCP設定で「AIの能力を拡張」</h4>
+            <p><code>mcp-config.json</code> をプロジェクトルートに配置すると、Claude Codeが context7（最新ドキュメント参照）、filesystem（プロジェクト全体把握）、playwright（E2Eテスト自動化）等のMCPサーバーを即座に利用開始できます。</p>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-body">
+            <h4>23ファイルの仕様書をレビュー素材に</h4>
+            <p><code>docs/</code> の23ファイルをチームやAIレビュアーに共有。「<code>docs/07_test_cases.md</code> に沿ってテストを書いて」「<code>docs/06_api_spec.md</code> に準拠しているか確認して」── 仕様ベースのレビューが即座に実行できます。</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ── Professional ── -->
+    <div class="level-section level-pro">
+      <div class="level-header">
+        <span class="em">⚡</span>
+        <div>
+          <h3>Professional — 自動化を支配する</h3>
+          <div class="sub">チーム開発・CI/CD・マルチAgent並列の中枢としてDevForge出力を運用する</div>
+        </div>
+      </div>
+      <div class="step-flow">
+
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <h4>Agent Teams：並列自律開発</h4>
+            <p><code>AGENTS.md</code> が定義するエージェント役割分担を、Claude Code SubagentsやAntigravity Manager Viewで実行。<code>tasks.md</code> がタスクキューとして機能し、複数エージェントが独立して並列作業→人間がレビューするワークフローを構築できます。</p>
+            <div class="workflow-visual">
+              <div class="wf-node wf-purple">Manager<br>Agent</div>
+              <span class="wf-arrow">→</span>
+              <div class="wf-node wf-blue">Frontend<br>Agent</div>
+              <div class="wf-node wf-green">Backend<br>Agent</div>
+              <div class="wf-node wf-cyan">Test<br>Agent</div>
+              <span class="wf-arrow">→</span>
+              <div class="wf-node wf-purple">Human<br>Review</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <h4>CI/CDゲートとしての仕様書</h4>
+            <p><code>.ai/hooks.yml</code>（pre-commit/pre-push/post-generateフック）をGitHub Actionsに変換。<code>docs/09_release_checklist.md</code> をデプロイゲートに、<code>verification.md</code> を品質基準に。仕様書が「動くドキュメント」として自動テストパイプラインに組み込まれます。</p>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <h4>トークン最適化：モデル別コンテキスト戦略</h4>
+            <p>ダッシュボードの<strong>モデル適合度</strong>と<strong>ファイルサイズ分布</strong>を使い、AIに渡すコンテキストを最適化。Claude Opus 4.6（1Mトークン）なら全ファイル投入可能、GPT-5.2（400K）やGemini 3 Flash（200K）では仕様書を選別──その判断をダッシュボードが可視化します。</p>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-body">
+            <h4>6工程完全自動パイプライン</h4>
+            <p>AIプロンプトランチャー（柱⑧）の6テンプレートを順番に実行し、仕様レビュー→実装→テスト→リファクタ→セキュリティ→ドキュメント更新を連続処理。仕様書がすべての工程の「入力」になるため、各工程間の齟齬がゼロになります。</p>
+            <div class="step-file-list">
+              <span class="fname">📋 仕様レビュー</span> <span class="fdesc">— specification.md の矛盾・漏れを検出</span><br>
+              <span class="fname">🔨 実装</span> <span class="fdesc">— tasks.md ベースのコード生成</span><br>
+              <span class="fname">🧪 テスト生成</span> <span class="fdesc">— test_cases.md ベースの自動テスト</span><br>
+              <span class="fname">♻️ リファクタ</span> <span class="fdesc">— technical-plan.md 準拠の構造改善</span><br>
+              <span class="fname">🔒 セキュリティ</span> <span class="fdesc">— security.md ベースの脆弱性スキャン</span><br>
+              <span class="fname">📝 ドキュメント</span> <span class="fdesc">— API・画面設計書の自動更新</span>
+            </div>
+            <div class="step-tip tip-rose">🏆 DevForgeが生成する仕様書は「一度書いて終わり」ではなく、開発サイクル全体を駆動する燃料です。</div>
+            <svg class="wireframe" viewBox="0 0 360 70" xmlns="http://www.w3.org/2000/svg"><rect width="360" height="70" rx="8" fill="#13161d" stroke="#2e3446"/><text x="12" y="16" fill="#fb7185" font-size="9" font-weight="700">⚡ 6-Stage AI Pipeline — 仕様書が全工程を駆動</text><g transform="translate(10,28)"><rect width="50" height="32" rx="6" fill="#3b82f620" stroke="#3b82f6"/><text x="25" y="14" text-anchor="middle" fill="#3b82f6" font-size="8">📋</text><text x="25" y="25" text-anchor="middle" fill="#a4adc0" font-size="7">Review</text></g><text x="64" y="48" fill="#6b7590" font-size="10">→</text><g transform="translate(72,28)"><rect width="50" height="32" rx="6" fill="#22d3ee20" stroke="#22d3ee"/><text x="25" y="14" text-anchor="middle" fill="#22d3ee" font-size="8">🔨</text><text x="25" y="25" text-anchor="middle" fill="#a4adc0" font-size="7">Build</text></g><text x="126" y="48" fill="#6b7590" font-size="10">→</text><g transform="translate(134,28)"><rect width="50" height="32" rx="6" fill="#34d39920" stroke="#34d399"/><text x="25" y="14" text-anchor="middle" fill="#34d399" font-size="8">🧪</text><text x="25" y="25" text-anchor="middle" fill="#a4adc0" font-size="7">Test</text></g><text x="188" y="48" fill="#6b7590" font-size="10">→</text><g transform="translate(196,28)"><rect width="50" height="32" rx="6" fill="#fbbf2420" stroke="#fbbf24"/><text x="25" y="14" text-anchor="middle" fill="#fbbf24" font-size="8">♻️</text><text x="25" y="25" text-anchor="middle" fill="#a4adc0" font-size="7">Refactor</text></g><text x="250" y="48" fill="#6b7590" font-size="10">→</text><g transform="translate(258,28)"><rect width="50" height="32" rx="6" fill="#f8717120" stroke="#f87171"/><text x="25" y="14" text-anchor="middle" fill="#f87171" font-size="8">🔒</text><text x="25" y="25" text-anchor="middle" fill="#a4adc0" font-size="7">Security</text></g><text x="312" y="48" fill="#6b7590" font-size="10">→</text><g transform="translate(320,28)"><rect width="34" height="32" rx="6" fill="#a855f720" stroke="#a855f7"/><text x="17" y="14" text-anchor="middle" fill="#a855f7" font-size="8">📝</text><text x="17" y="25" text-anchor="middle" fill="#a4adc0" font-size="7">Docs</text></g></svg>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">5</div>
+          <div class="step-body">
+            <h4>技術選定根拠としてのエクスポート</h4>
+            <p>Context Dashboardの<strong>互換性チェック</strong>（23ルール）と<strong>Tech DB</strong>（244エントリ）は、チームへの技術選定提案書としてそのまま活用できます。PDF一括出力で「なぜこのスタックを選んだか」の根拠資料が30秒で完成。</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════ FILE MAP ═══ -->
+<section>
+  <div class="container">
+    <div class="stitle">
+      <div class="stitle-tag">Quick Reference</div>
+      <h2>ファイル活用マップ</h2>
+      <p>レベル別の活用度を一目で確認</p>
+    </div>
+    <div class="file-map">
+      <table>
+        <thead>
+          <tr>
+            <th>ファイル / フォルダ</th>
+            <th>用途</th>
+            <th>🌱 初心者</th>
+            <th>🔥 中級者</th>
+            <th>⚡ 上級者</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="fname">CLAUDE.md</td>
+            <td>AI統合ルール</td>
+            <td><span class="use-tag use-essential">そのまま</span></td>
+            <td><span class="use-tag use-customize">カスタマイズ</span></td>
+            <td><span class="use-tag use-master">Agent共有設定</span></td>
+          </tr>
+          <tr>
+            <td class="fname">.spec/</td>
+            <td>SDD仕様書5点</td>
+            <td><span class="use-tag use-essential">読むだけ</span></td>
+            <td><span class="use-tag use-customize">AIに1つずつ</span></td>
+            <td><span class="use-tag use-master">タスクキュー化</span></td>
+          </tr>
+          <tr>
+            <td class="fname">.devcontainer/</td>
+            <td>開発環境4点</td>
+            <td><span class="use-tag use-essential">そのまま</span></td>
+            <td><span class="use-tag use-customize">カスタマイズ</span></td>
+            <td><span class="use-tag use-master">チーム標準化</span></td>
+          </tr>
+          <tr>
+            <td class="fname">roadmap/</td>
+            <td>学習パス9点</td>
+            <td><span class="use-tag use-essential">学習ガイド</span></td>
+            <td><span class="use-tag use-customize">進捗管理</span></td>
+            <td><span class="use-tag use-master">オンボーディング</span></td>
+          </tr>
+          <tr>
+            <td class="fname">docs/ 23ファイル</td>
+            <td>設計ドキュメント</td>
+            <td><span class="use-tag use-later">後で参照</span></td>
+            <td><span class="use-tag use-customize">レビュー素材</span></td>
+            <td><span class="use-tag use-master">CI/CDゲート</span></td>
+          </tr>
+          <tr>
+            <td class="fname">柱④ AIルール10点</td>
+            <td>マルチツール設定</td>
+            <td><span class="use-tag use-later">触らない</span></td>
+            <td><span class="use-tag use-customize">ルール追加</span></td>
+            <td><span class="use-tag use-master">全ツール統一</span></td>
+          </tr>
+          <tr>
+            <td class="fname">柱⑧ ランチャー</td>
+            <td>AIプロンプト6種</td>
+            <td><span class="use-tag use-later">使わない</span></td>
+            <td><span class="use-tag use-customize">部分利用</span></td>
+            <td><span class="use-tag use-master">全工程自動化</span></td>
+          </tr>
+          <tr>
+            <td class="fname">.mcp/ + config</td>
+            <td>MCPサーバー設定</td>
+            <td><span class="use-tag use-later">後で</span></td>
+            <td><span class="use-tag use-essential">そのまま</span></td>
+            <td><span class="use-tag use-master">カスタムMCP</span></td>
+          </tr>
+          <tr>
+            <td class="fname">AGENTS.md</td>
+            <td>Agent役割定義</td>
+            <td><span class="use-tag use-later">不要</span></td>
+            <td><span class="use-tag use-later">参照</span></td>
+            <td><span class="use-tag use-master">並列Agent</span></td>
+          </tr>
+          <tr>
+            <td class="fname">.ai/hooks.yml</td>
+            <td>自動化フック</td>
+            <td><span class="use-tag use-later">不要</span></td>
+            <td><span class="use-tag use-later">参照</span></td>
+            <td><span class="use-tag use-master">CI/CD統合</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════ CTA ═══ -->
+<section class="cta-section">
+  <div class="container">
+    <h2>あなたの開発に、知性を。</h2>
+    <p>
+      DevForge v9 は「コードを書く前の設計」を自動化する、世界で唯一のツールです。<br>
+      レベルに関係なく、今日から使えます。
+    </p>
+    <a href="#" class="cta-btn" onclick="history.back();return false;">← DevForge v9 に戻る</a>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    © 2026 エンジニアリングのタネ制作委員会 — DevForge v9.0 Usage Guide<br>
+    Built with 🧠 by にしあん
+  </div>
+</footer>
+
+</body>
+</html>
