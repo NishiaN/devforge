@@ -18,6 +18,7 @@ eval(fs.readFileSync('src/generators/p3-mcp.js','utf-8'));
 eval(fs.readFileSync('src/generators/p4-airules.js','utf-8'));
 eval(fs.readFileSync('src/data/gen-templates.js','utf-8').replace('const GT','var GT'));
 eval(fs.readFileSync('src/generators/p7-roadmap.js','utf-8'));
+eval(fs.readFileSync('src/generators/p9-designsystem.js','utf-8'));
 
 // ═══ Helper ═══
 function generate(answers, name, lang) {
@@ -30,6 +31,7 @@ function generate(answers, name, lang) {
   genPillar3_MCP(answers, name);
   genPillar4_AIRules(answers, name);
   genPillar7_Roadmap(answers, name);
+  genPillar9_DesignSystem(answers, name);
   return { ...S.files };
 }
 
@@ -47,14 +49,14 @@ describe('Snapshot A: LMS/Supabase/Stripe', () => {
     dev_methods: 'TDD', ai_tools: 'Cursor', orm: 'Prisma', scope_out: 'ネイティブアプリ'
   }, 'LMS');
 
-  test('file count in range 58-70', () => {
+  test('file count in range 60-76', () => {
     const count = Object.keys(files).length;
-    assert.ok(count >= 58 && count <= 70, `Expected 58-70 files, got ${count}`);
+    assert.ok(count >= 60 && count <= 76, `Expected 60-76 files, got ${count}`);
   });
 
-  test('total tokens in range 12000-16000', () => {
+  test('total tokens in range 12000-18000', () => {
     const total = Object.values(files).reduce((s, v) => s + tokens(v), 0);
-    assert.ok(total >= 12000 && total <= 16000, `Expected 12K-16K tokens, got ${total}`);
+    assert.ok(total >= 12000 && total <= 18000, `Expected 12K-18K tokens, got ${total}`);
   });
 
   // Core files existence
@@ -64,10 +66,15 @@ describe('Snapshot A: LMS/Supabase/Stripe', () => {
     });
   });
 
-  test('AI_BRIEF.md exists and < 1200 tokens', () => {
+  test('AI_BRIEF.md exists and < 1400 tokens', () => {
     assert.ok(files['AI_BRIEF.md'], 'AI_BRIEF.md missing');
     const t = tokens(files['AI_BRIEF.md']);
-    assert.ok(t < 1200, `AI_BRIEF.md too large: ${t} tokens`);
+    assert.ok(t < 1400, `AI_BRIEF.md too large: ${t} tokens`);
+  });
+
+  test('progress tracker and error logs exist', () => {
+    assert.ok(files['docs/24_progress.md'], 'docs/24_progress.md missing');
+    assert.ok(files['docs/25_error_logs.md'], 'docs/25_error_logs.md missing');
   });
 
   test('CI/CD workflow exists', () => {
@@ -145,6 +152,57 @@ describe('Snapshot A: LMS/Supabase/Stripe', () => {
     assert.ok(brief.includes('instructor_id'), 'Missing domain-specific columns');
     assert.ok(brief.includes('Supabase Auth'), 'Missing auth info');
   });
+
+  test('CLAUDE.md has workflow cycle and context management', () => {
+    const claude = files['CLAUDE.md'];
+    assert.ok(claude.includes('Workflow Cycle'), 'Missing Workflow Cycle section');
+    assert.ok(claude.includes('Context Management'), 'Missing Context Management section');
+    assert.ok(claude.includes('docs/24_progress.md'), 'Missing progress.md reference');
+    assert.ok(claude.includes('docs/25_error_logs.md'), 'Missing error_logs.md reference');
+  });
+
+  test('AI_BRIEF.md has context protocol', () => {
+    const brief = files['AI_BRIEF.md'];
+    assert.ok(brief.includes('Context Protocol'), 'Missing Context Protocol section');
+    assert.ok(brief.includes('docs/24_progress.md'), 'Missing progress.md reference');
+    assert.ok(brief.includes('docs/25_error_logs.md'), 'Missing error_logs.md reference');
+  });
+
+  test('progress tracker has sprints and features', () => {
+    const progress = files['docs/24_progress.md'];
+    assert.ok(progress.includes('Sprint 0'), 'Missing Sprint 0');
+    assert.ok(progress.includes('Sprint 1-2'), 'Missing Sprint 1-2');
+    assert.ok(progress.includes('Sprint 3'), 'Missing Sprint 3');
+    assert.ok(progress.includes('ユーザー認証') || progress.includes('コース管理'), 'Missing features');
+    assert.ok((progress.match(/- \[ \]/g) || []).length >= 10, 'Expected 10+ task checkboxes');
+  });
+
+  test('error logs has format and example', () => {
+    const errors = files['docs/25_error_logs.md'];
+    assert.ok(errors.includes('RLS') || errors.includes('API'), 'Missing example error type');
+    assert.ok(errors.includes('症状') || errors.includes('Symptom'), 'Missing symptom field');
+    assert.ok(errors.includes('原因') || errors.includes('Cause'), 'Missing cause field');
+    assert.ok(errors.includes('解決策') || errors.includes('Fix'), 'Missing fix field');
+    assert.ok(errors.includes('防止策') || errors.includes('Prevention'), 'Missing prevention field');
+  });
+
+  test('design system has tokens and components', () => {
+    const ds = files['docs/26_design_system.md'];
+    assert.ok(ds, 'docs/26_design_system.md missing');
+    assert.ok(ds.includes('デザイントークン') || ds.includes('Design Tokens'), 'Missing Design Tokens section');
+    assert.ok(ds.includes('カラーパレット') || ds.includes('Color Palette'), 'Missing Color Palette');
+    assert.ok(ds.includes('Tailwind') || ds.includes('shadcn'), 'Missing framework-specific guidance');
+    assert.ok(ds.includes('AI実装ガイドライン') || ds.includes('AI Implementation Guidelines'), 'Missing AI guidelines');
+  });
+
+  test('sequence diagrams has auth and CRUD flows', () => {
+    const seq = files['docs/27_sequence_diagrams.md'];
+    assert.ok(seq, 'docs/27_sequence_diagrams.md missing');
+    assert.ok(seq.includes('sequenceDiagram'), 'Missing mermaid sequence diagrams');
+    assert.ok(seq.includes('認証フロー') || seq.includes('Authentication Flow'), 'Missing auth flow');
+    assert.ok(seq.includes('Supabase Auth') || seq.includes('signIn'), 'Missing Supabase auth details');
+    assert.ok(seq.includes('Stripe') || seq.includes('checkout'), 'Missing Stripe payment flow');
+  });
 });
 
 // ═══ Scenario B: Blog (Vite + Netlify, no Stripe, no Admin) ═══
@@ -159,9 +217,9 @@ describe('Snapshot B: Blog/Vite/Netlify', () => {
     dev_methods: 'TDD', ai_tools: 'Cursor', orm: ''
   }, 'Blog');
 
-  test('file count in range 55-70', () => {
+  test('file count in range 57-76', () => {
     const count = Object.keys(files).length;
-    assert.ok(count >= 55 && count <= 70, `Expected 55-70 files, got ${count}`);
+    assert.ok(count >= 57 && count <= 76, `Expected 57-76 files, got ${count}`);
   });
 
   test('no Stripe content when payment absent', () => {
@@ -169,6 +227,8 @@ describe('Snapshot B: Blog/Vite/Netlify', () => {
     assert.ok(!tp.includes('Stripe'), 'Unexpected Stripe in tech-plan');
     const brief = files['AI_BRIEF.md'];
     assert.ok(!brief.includes('Payment (Stripe)'), 'Unexpected Stripe in AI_BRIEF');
+    const seq = files['docs/27_sequence_diagrams.md'];
+    assert.ok(!seq.includes('Stripe'), 'Unexpected Stripe in sequence diagrams');
   });
 
   test('no RBAC when no admin target', () => {

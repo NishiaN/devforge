@@ -1,10 +1,10 @@
 # DevForge v9.0
 
-> ウィザード形式でプロジェクト仕様書62ファイルを自動生成するWebアプリ
+> ウィザード形式でプロジェクト仕様書66ファイルを自動生成するWebアプリ
 
 ## 概要
 
-DevForgeは、対話形式の質問に答えるだけで、プロジェクト開発に必要な仕様書・設計書・AI設定ファイル・DevContainer環境・CI/CDパイプラインなど **62ファイル** を自動生成するツールです。
+DevForgeは、対話形式の質問に答えるだけで、プロジェクト開発に必要な仕様書・設計書・AI設定ファイル・DevContainer環境・CI/CDパイプラインなど **66ファイル** を自動生成するツールです。
 
 ### 特徴
 - 🏗️ **36プリセット** — LMS, EC, SaaS, ブログ, コミュニティ, 不動産管理, 契約管理, ヘルプデスク, 家庭教師, 動物病院, 飲食店等
@@ -28,13 +28,13 @@ npm install
 node build.js
 
 # テスト
-npm test  # 127テスト + 248アサーション
+npm test  # 134テスト + 248アサーション
 
 # 使う
 open devforge-v9.html  # ブラウザで開く
 ```
 
-## 生成ファイル (62ファイル)
+## 生成ファイル (66ファイル)
 
 ### .spec/ — SDD仕様書
 | ファイル | 内容 |
@@ -49,7 +49,7 @@ open devforge-v9.html  # ブラウザで開く
 devcontainer.json, Dockerfile, docker-compose.yml, post-create.sh
 
 ### docs/ — ドキュメント群
-アーキテクチャ, ER図, API設計, 画面設計, テストケース, セキュリティ, リリースチェックリスト, WBS, プロンプトプレイブック, タスク(GitHub Issues形式)
+アーキテクチャ, ER図, API設計, 画面設計, テストケース, セキュリティ, リリースチェックリスト, WBS, プロンプトプレイブック, タスク(GitHub Issues形式), 進捗管理, エラーログ, デザインシステム, シーケンス図
 
 ### AI設定ファイル
 CLAUDE.md, AI_BRIEF.md, .cursorrules, .clinerules, .windsurfrules, AGENTS.md, .cursor/rules
@@ -63,12 +63,12 @@ CLAUDE.md, AI_BRIEF.md, .cursorrules, .clinerules, .windsurfrules, AGENTS.md, .c
 ```
 src/
 ├── core/       # state, i18n, events, tour, init
-├── data/       # presets(26), questions, techdb, compat-rules
-├── generators/ # p1-sdd, p2-devcontainer, p3-mcp, p4-airules, p7-roadmap, docs, common
+├── data/       # presets(36), questions, techdb, compat-rules
+├── generators/ # p1-sdd, p2-devcontainer, p3-mcp, p4-airules, p7-roadmap, p9-designsystem, docs, common
 ├── ui/         # wizard, render, edit, preview, export, explorer, dashboard...
 └── styles/     # all.css (dark/light theme)
-test/           # 9 test files, 127 tests
-build.js        # Concatenates 39 modules → single HTML
+test/           # 9 test files, 134 tests
+build.js        # Concatenates 40 modules → single HTML
 ```
 
 ### ルール
@@ -82,12 +82,12 @@ build.js        # Concatenates 39 modules → single HTML
 | ファイル | テスト数 | 内容 |
 |---------|---------|------|
 | gen-coherence | 248 assertions | LMS全体生成+構造検証 |
-| snapshot | 28 | 4シナリオ回帰テスト |
+| snapshot | 35 | 4シナリオ回帰テスト (Pillar 9含む) |
 | r27-regression | 17 | バグ修正検証 |
 | r28-regression | 19 | 品質改善検証 |
-| build | 1 | ビルドサイズ ≤500KB |
-| compat | 8 | 互換性ルール |
-| その他 | ~14 | i18n, presets, state, techdb |
+| build | 1 | ビルドサイズ ≤510KB |
+| compat | 45 | 互換性ルール |
+| その他 | ~21 | i18n, presets, state, techdb |
 
 ## AI Coding対応
 

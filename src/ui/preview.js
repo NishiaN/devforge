@@ -35,6 +35,7 @@ function initPillarTabs(){
       else if(i===5) showDashboard();
       else if(i===6&&Object.keys(S.files).length>0) showRoadmapUI();
       else if(i===7) showAILauncher();
+      else if(i===8) showFileTree(); // Design System
       else showFileTree();
     };tabs.appendChild(b);
   });
@@ -54,7 +55,8 @@ function showFileTree(){
   if(pillar===5){showDashboard();return;}
   if(pillar===6&&Object.keys(S.files).length>0){showRoadmapUI();return;}
   if(pillar===7){showAILauncher();return;}
-  
+  // pillar===8: Design System - show file tree (no special UI)
+
   const tree=buildFileTree();
   const hasFiles=Object.keys(S.files).length>0;
   
@@ -117,6 +119,10 @@ function buildFileTree(){
     ].forEach(f=>files.push({name:'  '+f,path:'roadmap/'+f}));
   } else if(pillar===7){ // AI Launcher
     files.push({name:_ja?'(AIランチャー — UIのみ)':'(AI Launcher — UI only)',path:'_launcher'});
+  } else if(pillar===8){ // Design System
+    files.push({folder:true,name:'docs'});
+    ['26_design_system','27_sequence_diagrams'].forEach(f=>
+      files.push({name:'  '+f+'.md',path:'docs/'+f+'.md'}));
   }
   // Common files
   files.push({name:'───────────',path:''});
@@ -126,7 +132,8 @@ function buildFileTree(){
    '09_release_checklist','10_gantt','11_wbs','12_driven_dev','13_glossary',
    '14_risk','15_meeting','16_review','17_monitoring',
    '18_data_migration','19_performance','20_a11y','21_changelog',
-   '22_prompt_playbook','23_tasks'].forEach(f=>
+   '22_prompt_playbook','23_tasks','24_progress','25_error_logs',
+   '26_design_system','27_sequence_diagrams'].forEach(f=>
     files.push({name:'  '+f+'.md',path:'docs/'+f+'.md'}));
   files.push({name:'───────────',path:''});
   ['README.md','.gitignore','package.json','LICENSE'].forEach(f=>files.push({name:f,path:f}));

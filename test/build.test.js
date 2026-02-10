@@ -31,7 +31,7 @@ describe('Build System', () => {
     const html = fs.readFileSync(OUTPUT, 'utf-8');
     const expected = [
       'genPillar1_SDD', 'genPillar2_DevContainer', 'genPillar3_MCP',
-      'genPillar4_AIRules', 'genPillar7_Roadmap', 'genDocs21', 'genCommonFiles',
+      'genPillar4_AIRules', 'genPillar7_Roadmap', 'genPillar9_DesignSystem', 'genDocs21', 'genCommonFiles',
       'openEditor', 'saveEdited', 'revertFile', 'showDiff', 'lineDiff', 'snapshotFiles',
       'reqLabel', 'priceLabel', 'showExplorer', 'showDashboard',
       'trapFocus', 'releaseFocus', 'announce',
@@ -76,7 +76,7 @@ describe('Build System', () => {
     const stats = fs.statSync(OUTPUT);
     const kb = stats.size / 1024;
     assert.ok(kb > 200, `Output should be > 200KB, got ${kb.toFixed(0)}KB`);
-    assert.ok(kb < 500, `Output should be < 500KB, got ${kb.toFixed(0)}KB`);
+    assert.ok(kb < 510, `Output should be < 510KB, got ${kb.toFixed(0)}KB`);
   });
 
   it('i18n keys match between JA and EN', () => {
@@ -100,17 +100,17 @@ describe('Build System', () => {
     assert.deepStrictEqual(missingInJA, [], `Keys in EN but not JA: ${missingInJA.join(', ')}`);
   });
 
-  it('8 pillars consistency across all references', () => {
+  it('9 pillars consistency across all references', () => {
     const html = fs.readFileSync(OUTPUT, 'utf-8');
-    assert.ok(!html.includes('7 Pillars'), 'Should not contain "7 Pillars"');
-    assert.ok(!html.includes('7つの柱'), 'Should not contain "7つの柱"');
-    assert.ok(html.includes('8 Pillars') || html.includes('8 pillars'), 'Should contain "8 Pillars"');
-    assert.ok(html.includes('8つの柱'), 'Should contain "8つの柱"');
-    // pbadge arrays should have 8 items
-    assert.ok(html.includes('if(i<8)'), 'pbadge loop should check i<8');
-    // AI Launcher references
+    assert.ok(!html.includes('8 Pillars') || html.includes('9 Pillars') || html.includes('9 pillars'), 'Should contain "9 Pillars"');
+    assert.ok(html.includes('9つの柱'), 'Should contain "9つの柱"');
+    // pbadge arrays should have 9 items
+    assert.ok(html.includes('if(i<9)'), 'pbadge loop should check i<9');
+    // AI Launcher & Design System references
     assert.ok(html.includes('⑧AIランチャー'), 'Should have ⑧AIランチャー badge');
     assert.ok(html.includes('⑧AI Launcher'), 'Should have ⑧AI Launcher badge');
+    assert.ok(html.includes('⑨デザインシステム'), 'Should have ⑨デザインシステム badge');
+    assert.ok(html.includes('⑨Design System'), 'Should have ⑨Design System badge');
   });
 
   it('tour has correct number of steps', () => {

@@ -7,19 +7,19 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 # DevForge v9.0
 
 ## Architecture
-- **39 modules** in `src/` → `node build.js` → single `devforge-v9.html` (~484KB)
+- **40 modules** in `src/` → `node build.js` → single `devforge-v9.html` (~500KB)
 - Vanilla JS, no frameworks. CSS custom properties. CDN: marked.js, mermaid.js, JSZip.
 
 ## Build & Test
 ```bash
 # Build
-node build.js              # Produces devforge-v9.html (~484KB)
+node build.js              # Produces devforge-v9.html (~500KB)
 node build.js --no-minify  # Skip minification (debug)
 node build.js --report     # Show size report
 node build.js --check-css  # Validate CSS custom properties
 
 # Test
-npm test                   # Run all tests (127 tests + 248 assertions)
+npm test                   # Run all tests (134 tests passing)
 npm run test:watch         # Watch mode for test development
 node --test test/gen-coherence.test.js  # Run single test file
 
@@ -31,7 +31,7 @@ npm run check              # Syntax check extracted JS
 
 ## Build Process Deep Dive
 
-`build.js` concatenates 39 modules into single HTML:
+`build.js` concatenates 40 modules into single HTML:
 
 1. **Read modules** in dependency order (defined in `jsFiles` array)
 2. **Read CSS** from `styles/all.css`
@@ -40,7 +40,7 @@ npm run check              # Syntax check extracted JS
    - JS: basic minification (not obfuscation)
 4. **Inject** into `template.html` structure
 5. **Write** to `devforge-v9.html`
-6. **Validate** size ≤500KB (warn if exceeded)
+6. **Validate** size ≤510KB (warn if exceeded)
 
 ### Module Load Order (Critical!)
 ```javascript
@@ -67,8 +67,8 @@ npm run check              # Syntax check extracted JS
 | Category | Files | Purpose |
 |----------|-------|---------|
 | core/ | state, i18n, events, tour, init | State, language, shortcuts |
-| data/ | presets(26), questions, techdb, compat-rules, gen-templates, helpdata | Static data |
-| generators/ | index, p1-sdd, p2-devcontainer, p3-mcp, p4-airules, p7-roadmap, docs, common | 62-file generation engine |
+| data/ | presets(36), questions, techdb, compat-rules, gen-templates, helpdata | Static data |
+| generators/ | index, p1-sdd, p2-devcontainer, p3-mcp, p4-airules, p7-roadmap, p9-designsystem, docs, common | 66-file generation engine |
 | ui/ | wizard, render, edit, help, confirm, complexity, toc, voice, project, presets, preview, editor, diff, export, explorer, dashboard, templates | UI components |
 | styles/ | all.css | Theme (dark/light), responsive |
 
@@ -93,7 +93,7 @@ Located in `src/core/state.js`. Call `save()` after mutations to persist to loca
 - `prevFiles` — Previous generation for diff view
 - `skipped` — Array of skipped question IDs
 - `progress` — Phase completion tracking
-- `pillar` — Current pillar view (0-7)
+- `pillar` — Current pillar view (0-8)
 - `previewFile` — Currently previewed file path
 
 **Helper Functions (state.js):**
@@ -308,24 +308,36 @@ const PR = {
 
 ⚠️ **Update preset count in README.md if adding/removing presets.**
 
-## Generated Output (62 files)
+## Generated Output (66 files)
 When users complete the wizard, DevForge generates:
 - **.spec/** — constitution.md, specification.md, technical-plan.md, tasks.md, verification.md
 - **.devcontainer/** — devcontainer.json, Dockerfile, docker-compose.yml, post-create.sh
-- **docs/** — architecture.md, ER.md, API.md, screen.md, test-cases.md, security.md, release.md, WBS.md, prompt-playbook.md, tasks.md (GitHub Issues format)
-- **AI rules** — CLAUDE.md, AI_BRIEF.md (~920 tokens), .cursorrules, .clinerules, .windsurfrules, AGENTS.md, .cursor/rules
+- **docs/** — architecture.md, ER.md, API.md, screen.md, test-cases.md, security.md, release.md, WBS.md, prompt-playbook.md, tasks.md, **progress.md (24)**, **error_logs.md (25)**, **design_system.md (26)**, **sequence_diagrams.md (27)**
+- **AI rules** — CLAUDE.md (with Workflow Cycle & Context Management), AI_BRIEF.md (with Context Protocol, ~1200 tokens), .cursorrules, .clinerules, .windsurfrules, AGENTS.md, .cursor/rules
 - **CI/CD** — .github/workflows/ci.yml
+
+**Recent Enhancement (Phase 1 Context Engineering):**
+- Added `docs/24_progress.md` — AI-updateable progress tracker with Sprint-based task management
+- Added `docs/25_error_logs.md` — Error recording system for preventing bug recurrence
+- Enhanced CLAUDE.md with Workflow Cycle (5 steps) and Context Management principles
+- Enhanced AI_BRIEF.md with 7-step Context Protocol
+
+**Recent Enhancement (Pillar 9: Design System):**
+- Added `docs/26_design_system.md` — Design tokens, color palettes, typography, spacing, component catalog (framework-aware for Tailwind/Vuetify/Material)
+- Added `docs/27_sequence_diagrams.md` — Mermaid sequence diagrams for auth flows (Supabase/Firebase/Auth.js), CRUD operations, payment flows (Stripe)
 
 ## Test Architecture
 | File | Tests | Purpose |
 |------|-------|---------|
 | gen-coherence.test.js | 248 assertions | Full LMS generation + structural validation |
-| snapshot.test.js | 28 tests | 4 scenario regression (LMS/Blog/EC/English) |
+| snapshot.test.js | 35 tests | 4 scenario regression (LMS/Blog/EC/English) + context engineering |
 | r27-regression.test.js | 17 tests | Bug fixes: prices, FK, KPI, ports |
 | r28-regression.test.js | 19 tests | Quality: REST methods, AC, scope_out, verification |
-| build.test.js | build | Build size ≤500KB |
-| compat.test.js | 8 rules | Compatibility validation |
-| Others | ~14 tests | i18n, presets, state, techdb |
+| build.test.js | build | Build size ≤510KB |
+| compat.test.js | 45 tests | Compatibility validation |
+| Others | ~21 tests | i18n, presets, state, techdb |
+
+**Total: 134 tests passing**
 
 ## Writing Tests
 

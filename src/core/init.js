@@ -50,9 +50,9 @@ function applyLang(){
   icards.forEach((el,i)=>{if(i<6){const d=ja?icJa[i]:icEn[i];const h4=el.querySelector('h4');const p=el.querySelector('p');if(h4)h4.textContent=d[0];if(p)p.textContent=d[1];}});
   // Pillar badges
   const pbadges=document.querySelectorAll('.pbadge');
-  const pbJa=['①SDD統合','②DevContainer','③MCP設定','④AIエージェント×10','⑤並列探索','⑥Context Dashboard','⑦技術ロードマップ','⑧AIランチャー'];
-  const pbEn=['①SDD','②DevContainer','③MCP Config','④AI Agent×10','⑤Explorer','⑥Context Dashboard','⑦Tech Roadmap','⑧AI Launcher'];
-  pbadges.forEach((el,i)=>{if(i<8)el.textContent=ja?pbJa[i]:pbEn[i];});
+  const pbJa=['①SDD統合','②DevContainer','③MCP設定','④AIエージェント×10','⑤並列探索','⑥Context Dashboard','⑦技術ロードマップ','⑧AIランチャー','⑨デザインシステム'];
+  const pbEn=['①SDD','②DevContainer','③MCP Config','④AI Agent×10','⑤Explorer','⑥Context Dashboard','⑦Tech Roadmap','⑧AI Launcher','⑨Design System'];
+  pbadges.forEach((el,i)=>{if(i<9)el.textContent=ja?pbJa[i]:pbEn[i];});
   // Keyboard shortcuts overlay
   const kbT=$('kbTitle');if(kbT)kbT.textContent=t('kbTitle');
   const kbLabels=document.querySelectorAll('.kblbl');

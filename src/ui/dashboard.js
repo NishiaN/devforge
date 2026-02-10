@@ -183,6 +183,7 @@ function getHealthHTML(_ja,fileCount,answered){
     {key:'mcp',label:_ja?'③MCP':'③MCP'},
     {key:'CLAUDE.md',label:_ja?'④AIルール':'④AI Rules'},
     {key:'roadmap/',label:_ja?'⑦ロードマップ':'⑦Roadmap'},
+    {key:'docs/26_',label:_ja?'⑨デザインシステム':'⑨Design System'},
   ];
   const fileKeys=Object.keys(S.files);
   let pillarOK=0;

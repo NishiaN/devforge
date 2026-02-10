@@ -56,12 +56,12 @@
     <div class="stat-row">
       <div class="stat-item"><div class="num" id="statFileNum">60+</div><div class="lbl" id="statFiles">生成ファイル</div></div>
       <div class="stat-item"><div class="num" id="statTechNum"></div><div class="lbl" id="statTech">技術エントリ</div></div>
-      <div class="stat-item"><div class="num">8</div><div class="lbl" id="statPillars">柱 (Pillars)</div></div>
+      <div class="stat-item"><div class="num">9</div><div class="lbl" id="statPillars">柱 (Pillars)</div></div>
       <div class="stat-item"><div class="num">10</div><div class="lbl" id="statAI">AIツール対応</div></div>
     </div>
     <div class="info-grid">
       <div class="icard"><h4>📝 60+ファイル生成</h4><p>SDD仕様書・Docker・MCP・AIルール10種・ロードマップ9種・仕様書23種</p></div>
-      <div class="icard"><h4>🧪 8つの柱</h4><p>SDD・DevContainer・MCP・AIルール・並列探索・Dashboard・ロードマップ・AIランチャー</p></div>
+      <div class="icard"><h4>🧪 9つの柱</h4><p>SDD・DevContainer・MCP・AIルール・並列探索・Dashboard・ロードマップ・AIランチャー・デザインシステム</p></div>
       <div class="icard"><h4>📱 モバイル対応</h4><p>Expo / React Native 開発パス・EAS Build・OTA更新</p></div>
       <div class="icard"><h4>🤖 AI自律開発</h4><p>Vibe Coding・マルチAgent・Claude Code Subagents</p></div>
       <div class="icard"><h4>💳 決済・CMS・EC</h4><p>Stripe・microCMS・Medusa・Shopify Hydrogen</p></div>
@@ -69,7 +69,7 @@
     </div>
     <div class="pillars-badge">
       <span class="pbadge">①SDD統合</span><span class="pbadge">②DevContainer</span><span class="pbadge">③MCP設定</span>
-      <span class="pbadge">④AIエージェント×10</span><span class="pbadge">⑤並列探索</span><span class="pbadge">⑥Context Dashboard</span><span class="pbadge">⑦技術ロードマップ</span><span class="pbadge">⑧AIランチャー</span>
+      <span class="pbadge">④AIエージェント×10</span><span class="pbadge">⑤並列探索</span><span class="pbadge">⑥Context Dashboard</span><span class="pbadge">⑦技術ロードマップ</span><span class="pbadge">⑧AIランチャー</span><span class="pbadge">⑨デザインシステム</span>
     </div>
     <div class="start-zone">
       <div class="szl" id="skillAsk">Select your skill level</div>
@@ -104,7 +104,7 @@
         <div class="prev-body" id="prevBody" aria-live="polite"><p class="prev-placeholder">質問に回答するとリアルタイムでプレビューが更新されます</p></div>
       </div>
     </div>
-  </div>
+  </main>
 
   <!-- Help Overlay -->
   <div class="help-overlay" id="helpOverlay" role="dialog" aria-modal="true" aria-label="Help manual" onclick="if(event.target===this)closeManual()">
@@ -137,6 +137,7 @@
   <div class="pm-overlay" id="pmOverlay" role="dialog" aria-modal="true" aria-label="Project manager" onclick="if(event.target===this)closePM()"></div>
   <!-- Tour Container -->
   <div class="tour-container" id="tourContainer" role="complementary" aria-label="Guided tour"></div>
+</div>
 <script>
 const $=id=>document.getElementById(id);
 const KEY='devforge-v9';
@@ -176,7 +177,7 @@ const I18N={
 ja:{
 p1:'Phase 1',p2:'Phase 2',p3:'Phase 3',
 heroTitle:'DevForge v9',
-heroDesc:'質問に答えるだけで、60+ファイルの開発ドキュメント・環境設定・AIルール・学習ロードマップを自動生成。8つの柱でAI駆動開発をゼロから完全サポート。',
+heroDesc:'質問に答えるだけで、60+ファイルの開発ドキュメント・環境設定・AIルール・学習ロードマップを自動生成。9つの柱でAI駆動開発をゼロから完全サポート。',
 startBtn:'🚀 開始する',
 statFiles:'生成ファイル',statTech:'技術エントリ',statPillars:'柱 (Pillars)',statAI:'AIツール対応',
 skillAsk:'スキルレベルを選択',
@@ -200,12 +201,12 @@ pmTitle:'📁 プロジェクト管理',pmNew:'新規プロジェクト',pmEmpty
 helpClose:'閉じる',
 kbTitle:'⌨️ ショートカット',
 kb:['ヘルプ・マニュアル','ショートカット一覧','テーマ切替','言語切替','エクスポート','全ファイルコピー','プロジェクト管理'],
-pillar:['①SDD統合','②DevContainer','③MCP設定','④AIルール','⑤並列探索','⑥Dashboard','⑦ロードマップ','⑧AIランチャー']
+pillar:['①SDD統合','②DevContainer','③MCP設定','④AIルール','⑤並列探索','⑥Dashboard','⑦ロードマップ','⑧AIランチャー','⑨デザインシステム']
 },
 en:{
 p1:'Phase 1',p2:'Phase 2',p3:'Phase 3',
 heroTitle:'DevForge v9',
-heroDesc:'Answer questions to auto-generate 56 development documents, environment configs, AI rules & learning roadmaps. 8 pillars for complete AI-driven development support.',
+heroDesc:'Answer questions to auto-generate 60+ development documents, environment configs, AI rules & learning roadmaps. 9 pillars for complete AI-driven development support.',
 startBtn:'🚀 Get Started',
 statFiles:'Generated Files',statTech:'Tech Entries',statPillars:'Pillars',statAI:'AI Tools',
 skillAsk:'Select your skill level',
@@ -229,67 +230,69 @@ pmTitle:'📁 Project Manager',pmNew:'New Project',pmEmpty:'No saved projects',
 helpClose:'Close',
 kbTitle:'⌨️ Shortcuts',
 kb:['Help / Manual','Shortcuts','Toggle Theme','Toggle Language','Export','Copy All Files','Project Manager'],
-pillar:['①SDD','②DevContainer','③MCP','④AI Rules','⑤Explorer','⑥Dashboard','⑦Roadmap','⑧AI Launcher']
+pillar:['①SDD','②DevContainer','③MCP','④AI Rules','⑤Explorer','⑥Dashboard','⑦Roadmap','⑧AI Launcher','⑨Design System']
 }
 };
 const t=k=>I18N[S.lang][k]||k;
+const _PD={frontend:'React + Next.js',backend:'Supabase',mobile:'none',ai_auto:'none',payment:'none'};
+function _mp(p){return Object.assign({},_PD,p);}
 const PR={
-saas:{name:'SaaSアプリ',nameEn:'SaaS App',icon:'☁️',purpose:'サブスクリプション型Webサービスの構築',purposeEn:'Build a subscription-based web service',target:['スタートアップ','中小企業','フリーランス'],targetEn:['Startups','SMBs','Freelancers'],frontend:'React + Next.js',backend:'Supabase',features:['ユーザー登録・ログイン','ダッシュボード','課金・プラン管理','チーム招待','分析レポート'],featuresEn:['User Registration & Login','Dashboard','Billing & Plan Management','Team Invitations','Analytics Reports'],
-entities:'User, Team, Subscription, Invoice, Activity',mobile:'none',ai_auto:'none',payment:'stripe'},
-ai_agent:{name:'AIエージェント',nameEn:'AI Agent',icon:'🤖',purpose:'AIを活用したタスク自動化・対話型アシスタント',purposeEn:'AI-powered task automation & conversational assistant',target:['エンジニア','スタートアップ'],targetEn:['Engineers','Startups'],frontend:'React + Next.js',backend:'Supabase',features:['チャットインターフェース','プロンプト管理','履歴・コンテキスト管理','API連携','使用量ダッシュボード'],featuresEn:['Chat Interface','Prompt Management','History & Context Management','API Integration','Usage Dashboard'],
-entities:'User, Conversation, Message, Prompt, ApiUsage, Agent, Tool',mobile:'none',ai_auto:'マルチAgent協調',payment:'stripe'},
-ai_content:{name:'AIコンテンツ生成',nameEn:'AI Content Gen',icon:'✨',purpose:'AIを活用した文章・画像・動画の自動生成プラットフォーム',purposeEn:'AI-powered text, image & video auto-generation platform',target:['マーケター','ブロガー','クリエイター'],targetEn:['Marketers','Bloggers','Creators'],frontend:'React + Next.js',backend:'Supabase',features:['テンプレート選択','AIコンテンツ生成','編集・リライト','SEO最適化','エクスポート'],featuresEn:['Template Selection','AI Content Generation','Edit & Rewrite','SEO Optimization','Export'],
-entities:'User, Template, Generation, Content, Project, CreditUsage',mobile:'none',ai_auto:'Vibe Coding入門',payment:'stripe'},
-automation:{name:'ワークフロー自動化',nameEn:'Workflow Automation',icon:'⚙️',purpose:'タスクやプロセスを自動化するiPaaS/ノーコード連携ツール',purposeEn:'iPaaS/no-code tool for automating tasks and processes',target:['中小企業','マーケター','管理者'],targetEn:['SMBs','Marketers','Admins'],frontend:'React (Vite SPA)',backend:'Node.js + Express',features:['ビジュアルフローエディタ','トリガー・アクション設定','API連携','実行ログ','スケジュール実行'],featuresEn:['Visual Flow Editor','Trigger & Action Config','API Integration','Execution Logs','Scheduled Runs'],
-entities:'User, Workflow, Trigger, Action, Execution, Connection, Log',mobile:'none',ai_auto:'none',payment:'stripe'},
-marketplace:{name:'マーケットプレイス',nameEn:'Marketplace',icon:'🏪',purpose:'売り手と買い手をつなぐ双方向プラットフォーム',purposeEn:'Two-sided platform connecting buyers and sellers',target:['一般消費者','フリーランス','スモールビジネス'],targetEn:['Consumers','Freelancers','Small Businesses'],frontend:'React + Next.js',backend:'Supabase',features:['出品・商品登録','検索・フィルタ','メッセージ機能','決済・エスクロー','レビュー・評価'],featuresEn:['Product Listing','Search & Filter','Messaging','Payment & Escrow','Reviews & Ratings'],
-entities:'User, Listing, Category, Order, Transaction, Review, Message',mobile:'none',ai_auto:'none',payment:'stripe'},
-ec:{name:'ECサイト',nameEn:'E-Commerce',icon:'🛍️',purpose:'オンラインショップの構築',purposeEn:'Build an online shop',target:['一般消費者','ショップオーナー'],targetEn:['Consumers','Shop Owners'],frontend:'React + Next.js',backend:'Node.js + Express',features:['商品管理','カート・決済','注文管理','在庫管理','レビュー機能'],featuresEn:['Product Management','Cart & Checkout','Order Management','Inventory Management','Reviews'],entities:'Product, Order, User, Category, Cart, Payment',mobile:'none',ai_auto:'none',payment:'ec_build'},
-dashboard:{name:'ダッシュボード',nameEn:'Dashboard',icon:'📊',purpose:'データを集約・可視化してインサイトを提供する分析ツール',purposeEn:'Analytics tool to aggregate and visualize data for insights',target:['経営者','マーケター','データアナリスト'],targetEn:['Executives','Marketers','Data Analysts'],frontend:'React + Next.js',backend:'Supabase',features:['KPIウィジェット','グラフ・チャート','データフィルタ','レポート出力','アラート通知'],featuresEn:['KPI Widgets','Charts & Graphs','Data Filters','Report Export','Alert Notifications'],
-entities:'User, DataSource, Widget, Dashboard, Report, Alert',mobile:'none',ai_auto:'none',payment:'none'},
-chatbot:{name:'チャットボット',nameEn:'Chatbot',icon:'💬',purpose:'AIカスタマーサポート・FAQ自動応答システム',purposeEn:'AI customer support & FAQ auto-response system',target:['中小企業','EC事業者'],targetEn:['SMBs','E-commerce Businesses'],frontend:'React (Vite SPA)',backend:'Supabase',features:['チャットウィジェット','FAQ学習・管理','会話フロー設計','有人エスカレーション','分析レポート'],featuresEn:['Chat Widget','FAQ Learning & Management','Conversation Flow Design','Human Escalation','Analytics Reports'],
-entities:'User, Bot, Conversation, Message, Intent, KnowledgeBase, Handoff',mobile:'none',ai_auto:'Vibe Coding入門',payment:'none'},
-fintech:{name:'フィンテック',nameEn:'Fintech',icon:'💰',purpose:'決済・家計管理・請求書など金融系Webアプリ',purposeEn:'Financial web app for payments, budgeting & invoicing',target:['フリーランス','中小企業','一般消費者'],targetEn:['Freelancers','SMBs','Consumers'],frontend:'React + Next.js',backend:'Node.js + NestJS',features:['口座連携','収支ダッシュボード','請求書発行','自動カテゴリ分類','レポート出力'],featuresEn:['Account Linking','Income/Expense Dashboard','Invoice Generation','Auto-categorization','Report Export'],
-entities:'User, Account, Transaction, Invoice, Category, Budget, Report',mobile:'Expo (React Native)',ai_auto:'none',payment:'stripe'},
-devtool:{name:'開発者ツール',nameEn:'Dev Tool',icon:'🛠️',purpose:'開発者の生産性を向上させるユーティリティ・API',purposeEn:'Developer utility & API to boost productivity',target:['エンジニア','スタートアップ'],frontend:'React + Next.js',backend:'Node.js + Express',features:['APIキー管理','ドキュメント','使用量モニタ','Webhook設定','Playground'],featuresEn:['API Key Management','Documentation','Usage Monitor','Webhook Config','Playground'],
-entities:'User, ApiKey, Project, RequestLog, Webhook, Documentation',mobile:'none',ai_auto:'none',payment:'stripe'},
-creator:{name:'クリエイターエコノミー',nameEn:'Creator Economy',icon:'🎨',purpose:'コンテンツ販売・ファンコミュニティ・サブスク課金プラットフォーム',purposeEn:'Content sales, fan community & subscription platform',target:['クリエイター','インフルエンサー'],targetEn:['Creators','Influencers'],frontend:'React + Next.js',backend:'Supabase',features:['プロフィール・ポートフォリオ','有料コンテンツ配信','サブスク課金','ファンコメント・投げ銭','アナリティクス'],featuresEn:['Profile & Portfolio','Paid Content Distribution','Subscription Billing','Fan Comments & Tips','Analytics'],
-entities:'User, Content, Subscription, Payment, Comment, Tip, Tier',mobile:'none',ai_auto:'none',payment:'stripe'},
-newsletter:{name:'ニュースレター/メディア',nameEn:'Newsletter/Media',icon:'📰',purpose:'ニュースレター配信・メディア運営プラットフォーム',purposeEn:'Newsletter distribution & media management platform',target:['ライター','メディア運営者','マーケター'],targetEn:['Writers','Media Operators','Marketers'],frontend:'React + Next.js',backend:'Supabase',features:['記事エディタ','購読者管理','配信スケジュール','開封・クリック分析','有料プラン'],featuresEn:['Article Editor','Subscriber Management','Delivery Schedule','Open & Click Analytics','Paid Plans'],
-entities:'User, Post, Subscriber, Campaign, Analytics, Plan',mobile:'none',ai_auto:'none',payment:'stripe'},
-pwa:{name:'PWAアプリ',nameEn:'PWA App',icon:'📱',purpose:'ネイティブアプリ体験をWebで提供するモバイルファースト',purposeEn:'Mobile-first web app with native app experience',target:['一般消費者','スタートアップ'],targetEn:['Consumers','Startups'],frontend:'React (Vite SPA)',backend:'Firebase',features:['オフライン対応','プッシュ通知','ホーム画面追加','カメラ・位置情報','データ同期'],featuresEn:['Offline Support','Push Notifications','Add to Home Screen','Camera & Location','Data Sync'],
-entities:'User, Content, Notification, SyncQueue, Setting',mobile:'Expo (React Native)',ai_auto:'none',payment:'none'},
-booking:{name:'予約システム',nameEn:'Booking System',icon:'📅',purpose:'サービスやリソースの予約・スケジュールを管理するシステム',purposeEn:'Booking & schedule management system for services',target:['店舗オーナー','フリーランス','一般消費者'],targetEn:['Shop Owners','Freelancers','Consumers'],frontend:'React + Next.js',backend:'Supabase',features:['カレンダー表示','予約作成・変更','リマインダー通知','決済連携','スタッフ管理'],featuresEn:['Calendar View','Create & Modify Bookings','Reminder Notifications','Payment Integration','Staff Management'],
-entities:'User, Service, Booking, TimeSlot, Staff, Payment, Reminder',mobile:'none',ai_auto:'none',payment:'stripe'},
-event:{name:'イベントプラットフォーム',nameEn:'Event Platform',icon:'🎪',purpose:'オンライン・オフラインイベントの開催・参加管理',purposeEn:'Online/offline event hosting & attendance management',target:['イベント主催者','コミュニティ','企業'],targetEn:['Event Organizers','Communities','Companies'],frontend:'React + Next.js',backend:'Supabase',features:['イベント作成・公開','チケット販売','参加者管理','ライブ配信連携','アンケート'],featuresEn:['Event Creation & Publishing','Ticket Sales','Attendee Management','Live Streaming Integration','Surveys'],
-entities:'User, Event, Ticket, Attendee, Venue, Session, Survey',mobile:'none',ai_auto:'none',payment:'stripe'},
-health:{name:'ヘルステック',nameEn:'Health Tech',icon:'🏥',purpose:'健康・フィットネス・ウェルネスの記録と改善を支援するアプリ',purposeEn:'Health, fitness & wellness tracking and improvement app',target:['一般消費者','トレーナー'],targetEn:['Consumers','Trainers'],frontend:'React (Vite SPA)',backend:'Firebase',features:['健康データ記録','トレーニング管理','食事ログ','目標・進捗グラフ','リマインダー'],featuresEn:['Health Data Logging','Training Management','Meal Logs','Goals & Progress Graphs','Reminders'],
-entities:'User, HealthLog, Workout, Meal, Goal, Progress, Reminder',mobile:'Expo (React Native)',ai_auto:'none',payment:'none'},
-hr:{name:'HR/採用管理',nameEn:'HR/Recruiting',icon:'👥',purpose:'採用プロセスと人事管理を効率化するツール',purposeEn:'Tool to streamline recruiting and HR management',target:['人事担当者','採用担当者','経営者'],targetEn:['HR Staff','Recruiters','Executives'],frontend:'React + Next.js',backend:'Supabase',features:['求人管理','応募者トラッキング','面接スケジュール','評価・スコアカード','オンボーディング'],featuresEn:['Job Management','Applicant Tracking','Interview Scheduling','Evaluation Scorecards','Onboarding'],
-entities:'User, JobPosting, Applicant, Interview, Evaluation, Department, Onboarding',mobile:'none',ai_auto:'none',payment:'none'},
-linkbio:{name:'Link in Bio',nameEn:'Link in Bio',icon:'🔗',purpose:'SNSプロフィール用のマイクロサイト・リンク集約ツール',purposeEn:'Micro-site & link aggregation tool for social profiles',target:['インフルエンサー','クリエイター','フリーランス'],targetEn:['Influencers','Creators','Freelancers'],frontend:'React + Next.js',backend:'Supabase',features:['カスタムリンクページ','テーマ・デザイン編集','アクセス解析','SNS連携','収益化リンク'],featuresEn:['Custom Link Page','Theme & Design Editor','Access Analytics','Social Integration','Monetization Links'],
-entities:'User, Page, Link, Theme, ClickLog, Integration',mobile:'none',ai_auto:'none',payment:'none'},
-gamify:{name:'ゲーミフィケーション',nameEn:'Gamification',icon:'🎮',purpose:'ゲーム要素でユーザーエンゲージメントを向上',purposeEn:'Boost user engagement with game elements',target:['教育者','マーケター','コミュニティ管理者'],targetEn:['Educators','Marketers','Community Managers'],frontend:'React (Vite SPA)',backend:'Firebase',features:['ポイント・バッジシステム','リーダーボード','チャレンジ・ミッション','報酬・交換','進捗ダッシュボード'],featuresEn:['Points & Badge System','Leaderboard','Challenges & Missions','Rewards & Redemption','Progress Dashboard'],
-entities:'User, Badge, Challenge, Reward, Leaderboard, PointLog, Achievement',mobile:'none',ai_auto:'none',payment:'none'},
-collab:{name:'リアルタイムコラボ',nameEn:'Realtime Collab',icon:'👥',purpose:'チームが同時編集・共同作業できるリアルタイムツール',purposeEn:'Real-time tool for team collaborative editing',target:['リモートチーム','スタートアップ','教育者'],targetEn:['Remote Teams','Startups','Educators'],frontend:'React + Next.js',backend:'Supabase',features:['リアルタイム同時編集','カーソル共有','コメント・メンション','バージョン履歴','権限管理'],featuresEn:['Real-time Co-editing','Cursor Sharing','Comments & Mentions','Version History','Permission Management'],
-entities:'User, Document, Workspace, Comment, Version, Permission, Activity',mobile:'none',ai_auto:'none',payment:'stripe'},
-iot:{name:'IoTダッシュボード',nameEn:'IoT Dashboard',icon:'📡',purpose:'IoTデバイスのデータ監視・制御・可視化ツール',purposeEn:'IoT device data monitoring, control & visualization',target:['エンジニア','製造業'],targetEn:['Engineers','Manufacturing'],frontend:'React (Vite SPA)',backend:'Node.js + Express',features:['デバイス登録・管理','リアルタイムデータ表示','アラート設定','遠隔制御','履歴データ分析'],featuresEn:['Device Registration & Management','Real-time Data Display','Alert Settings','Remote Control','Historical Data Analysis'],
-entities:'User, Device, SensorData, Alert, Command, DeviceGroup, Log',mobile:'none',ai_auto:'none',payment:'none'},
-portfolio:{name:'ポートフォリオ',nameEn:'Portfolio',icon:'🖼️',purpose:'スキル・実績を魅力的に紹介するサイト',purposeEn:'Showcase skills and achievements attractively',target:['学生','フリーランス'],targetEn:['Students','Freelancers'],frontend:'Astro',backend:'Supabase',features:['自己紹介','プロジェクト一覧','スキル表示','お問い合わせ'],featuresEn:['About Me','Project Gallery','Skills Display','Contact Form'],entities:'Project, Skill, Contact',mobile:'none',ai_auto:'none',payment:'none'},
-cms:{name:'CMS/ブログ',nameEn:'CMS/Blog',icon:'📝',purpose:'コンテンツを投稿・管理・公開できるシステム',purposeEn:'System to create, manage and publish content',target:['ブロガー','編集者'],targetEn:['Bloggers','Editors'],frontend:'React + Next.js',backend:'Supabase',features:['記事作成・編集','カテゴリ管理','画像アップロード','SEO設定','下書き保存'],featuresEn:['Article Editor','Category Management','Image Upload','SEO Settings','Draft Saving'],entities:'User, Post, Category, Tag, Media',mobile:'none',ai_auto:'none',payment:'none'},
-lms:{name:'学習プラットフォーム',nameEn:'Learning Platform',icon:'📚',purpose:'体系的に知識を習得できる教育システム',purposeEn:'Structured education system for knowledge acquisition',target:['学生','社会人学習者','教育者'],targetEn:['Students','Working Professionals','Educators'],frontend:'React (Vite SPA)',backend:'Firebase',features:['コース一覧','レッスン視聴','進捗管理','クイズ機能','修了証発行'],featuresEn:['Course Catalog','Lesson Viewing','Progress Tracking','Quiz System','Certificate Issuance'],
-entities:'User, Course, Lesson, Progress, Quiz, Certificate',mobile:'Expo (React Native)',ai_auto:'none',payment:'stripe'},
-community:{name:'コミュニティ',nameEn:'Community',icon:'🌐',purpose:'共通の関心を持つ人々が交流できるプラットフォーム',purposeEn:'Platform for people with common interests to interact',target:['コミュニティメンバー','管理者'],targetEn:['Community Members','Admins'],frontend:'React + Next.js',backend:'Supabase',features:['プロフィール','投稿・コメント','グループ','イベント管理','通知'],featuresEn:['Profiles','Posts & Comments','Groups','Event Management','Notifications'],entities:'User, Post, Comment, Group, Event',mobile:'none',ai_auto:'none',payment:'none'},
-property_mgmt:{name:'不動産管理',nameEn:'Property Management',icon:'🏢',purpose:'賃貸・売買物件の管理、入居者対応、家賃回収を一元管理',purposeEn:'Centralized rental/sales property management, tenant communication & rent collection',target:['不動産オーナー','管理会社','仲介業者'],targetEn:['Property Owners','Management Companies','Real Estate Agents'],frontend:'React + Next.js',backend:'Supabase',features:['物件登録・管理','入居者情報管理','契約・更新管理','家賃請求・督促','修繕依頼トラッキング','収支レポート'],featuresEn:['Property Registration & Management','Tenant Info Management','Contract & Renewal Management','Rent Billing & Reminders','Repair Request Tracking','Financial Reports'],entities:'Property, Unit, Tenant, Lease, Payment, MaintenanceRequest, Owner, Invoice',mobile:'none',ai_auto:'none',payment:'stripe'},
-contract_mgmt:{name:'契約管理',nameEn:'Contract Management',icon:'📜',purpose:'契約書の作成・承認フロー・期限管理・電子署名を統合管理',purposeEn:'Integrated contract creation, approval workflow, deadline tracking & e-signature',target:['法務部','営業部','中小企業','フリーランス'],targetEn:['Legal Dept','Sales Dept','SMBs','Freelancers'],frontend:'React + Next.js',backend:'Supabase',features:['契約書テンプレート','承認ワークフロー','電子署名連携','期限・更新アラート','バージョン管理','検索・タグ付け'],featuresEn:['Contract Templates','Approval Workflow','E-signature Integration','Deadline & Renewal Alerts','Version Control','Search & Tagging'],entities:'Contract, Template, Party, Approval, Signature, Milestone, Alert, Clause',mobile:'none',ai_auto:'none',payment:'stripe'},
-helpdesk:{name:'ヘルプデスク',nameEn:'Help Desk',icon:'🎧',purpose:'カスタマーサポートのチケット管理とナレッジベース統合',purposeEn:'Customer support ticket management with integrated knowledge base',target:['サポートチーム','IT部門','SaaS企業'],targetEn:['Support Teams','IT Departments','SaaS Companies'],frontend:'React + Next.js',backend:'Supabase',features:['チケット起票・管理','優先度・ステータス設定','担当者アサイン','ナレッジベース連携','SLA追跡','顧客満足度評価'],featuresEn:['Ticket Creation & Management','Priority & Status Settings','Agent Assignment','Knowledge Base Integration','SLA Tracking','Customer Satisfaction Rating'],entities:'Ticket, User, Agent, Category, Priority, KnowledgeArticle, Response, SLA',mobile:'none',ai_auto:'Vibe Coding入門',payment:'stripe'},
-tutoring:{name:'家庭教師マッチング',nameEn:'Tutoring Marketplace',icon:'👨‍🏫',purpose:'講師と生徒をマッチングし、オンライン・対面授業を予約管理',purposeEn:'Match tutors with students, manage online/in-person lesson bookings',target:['学生','保護者','講師','教育事業者'],targetEn:['Students','Parents','Tutors','Education Businesses'],frontend:'React + Next.js',backend:'Supabase',features:['講師プロフィール・検索','科目・スキルフィルタ','レッスン予約','オンライン授業連携','レビュー・評価','決済・手数料管理'],featuresEn:['Tutor Profiles & Search','Subject & Skill Filters','Lesson Booking','Online Class Integration','Reviews & Ratings','Payment & Fee Management'],entities:'Tutor, Student, Subject, Lesson, Booking, Review, Payment, Availability',mobile:'none',ai_auto:'none',payment:'stripe'},
-veterinary:{name:'動物病院',nameEn:'Veterinary Clinic',icon:'🐾',purpose:'動物病院のカルテ管理・予約・ワクチン接種記録システム',purposeEn:'Vet clinic medical records, appointments & vaccination tracking',target:['獣医師','動物病院スタッフ','ペットオーナー'],targetEn:['Veterinarians','Clinic Staff','Pet Owners'],frontend:'React + Next.js',backend:'Supabase',features:['ペット情報・カルテ管理','診察予約','ワクチン接種履歴','処方箋管理','会計・請求','リマインダー通知'],featuresEn:['Pet Info & Medical Records','Appointment Scheduling','Vaccination History','Prescription Management','Billing & Invoicing','Reminder Notifications'],entities:'Pet, Owner, Appointment, MedicalRecord, Vaccination, Prescription, Invoice, Veterinarian',mobile:'none',ai_auto:'none',payment:'stripe'},
-restaurant:{name:'飲食店管理',nameEn:'Restaurant Management',icon:'🍽️',purpose:'飲食店のPOS・予約・在庫・スタッフ管理を統合',purposeEn:'Integrated POS, reservations, inventory & staff management for restaurants',target:['飲食店オーナー','店長','スタッフ'],targetEn:['Restaurant Owners','Managers','Staff'],frontend:'React (Vite SPA)',backend:'Supabase',features:['テーブル予約管理','POS・注文管理','在庫・発注管理','メニュー編集','売上レポート','スタッフシフト'],featuresEn:['Table Reservation Management','POS & Order Management','Inventory & Ordering','Menu Editor','Sales Reports','Staff Scheduling'],entities:'Table, Reservation, Order, MenuItem, Inventory, Staff, Shift, Payment',mobile:'none',ai_auto:'none',payment:'stripe'},
-construction_pay:{name:'建設業決済',nameEn:'Construction Payment',icon:'🏗️',purpose:'建設プロジェクトの支払管理・請求書発行・進捗連動決済',purposeEn:'Construction project payment management, invoicing & milestone-based payments',target:['建設会社','下請け業者','元請け'],targetEn:['Construction Companies','Subcontractors','General Contractors'],frontend:'React + Next.js',backend:'Supabase',features:['プロジェクト管理','マイルストーン設定','進捗報告','請求書発行','支払スケジュール','承認ワークフロー'],featuresEn:['Project Management','Milestone Setup','Progress Reporting','Invoice Generation','Payment Schedule','Approval Workflow'],entities:'Project, Contractor, Milestone, Invoice, Payment, ProgressReport, Approval, Estimate',mobile:'none',ai_auto:'none',payment:'stripe'},
-clinic:{name:'クリニック・医院',nameEn:'Medical Clinic',icon:'🏥',purpose:'診療所の電子カルテ・予約・処方箋・会計を統合管理',purposeEn:'Integrated EMR, appointments, prescriptions & billing for clinics',target:['医師','看護師','医療事務','患者'],targetEn:['Doctors','Nurses','Medical Admin','Patients'],frontend:'React + Next.js',backend:'Supabase',features:['電子カルテ','診察予約','処方箋管理','検査結果記録','会計・レセプト','待合状況表示'],featuresEn:['Electronic Medical Records','Appointment Scheduling','Prescription Management','Test Result Logging','Billing & Claims','Waiting Room Status'],entities:'Patient, Appointment, MedicalRecord, Prescription, Examination, Invoice, Doctor, Claim',mobile:'none',ai_auto:'none',payment:'stripe'},
-knowledge_base:{name:'ナレッジベース',nameEn:'Knowledge Base',icon:'📖',purpose:'組織の知識・ノウハウを体系化し検索可能にするドキュメントDB',purposeEn:'Systematize and search organizational knowledge & know-how documentation',target:['全社員','カスタマーサポート','教育担当'],targetEn:['All Employees','Customer Support','Training Staff'],frontend:'React + Next.js',backend:'Supabase',features:['記事作成・編集','カテゴリ・タグ管理','全文検索','バージョン履歴','アクセス権限','AI検索提案'],featuresEn:['Article Creation & Editing','Category & Tag Management','Full-text Search','Version History','Access Control','AI Search Suggestions'],entities:'Article, Category, Tag, Version, User, AccessControl, SearchLog, Feedback',mobile:'none',ai_auto:'Vibe Coding入門',payment:'none'},
-field_service:{name:'現場サービス',nameEn:'Field Service',icon:'🚚',purpose:'現場作業員の派遣・スケジュール・作業報告を一元管理',purposeEn:'Centralized dispatch, scheduling & work reporting for field workers',target:['サービス企業','技術者','ディスパッチャー'],targetEn:['Service Companies','Technicians','Dispatchers'],frontend:'React + Next.js',backend:'Supabase',features:['作業オーダー管理','スケジューリング','リアルタイム位置追跡','作業報告・写真','在庫管理','請求書発行'],featuresEn:['Work Order Management','Scheduling','Real-time Location Tracking','Work Reports & Photos','Inventory Management','Invoice Generation'],entities:'WorkOrder, Technician, Schedule, Location, Report, Inventory, Customer, Invoice',mobile:'Expo (React Native)',ai_auto:'none',payment:'stripe'},
+saas:_mp({name:'SaaSアプリ',nameEn:'SaaS App',icon:'☁️',purpose:'サブスクリプション型Webサービスの構築',purposeEn:'Build a subscription-based web service',target:['スタートアップ','中小企業','フリーランス'],targetEn:['Startups','SMBs','Freelancers'],features:['ユーザー登録・ログイン','ダッシュボード','課金・プラン管理','チーム招待','分析レポート'],featuresEn:['User Registration & Login','Dashboard','Billing & Plan Management','Team Invitations','Analytics Reports'],
+entities:'User, Team, Subscription, Invoice, Activity',payment:'stripe'}),
+ai_agent:_mp({name:'AIエージェント',nameEn:'AI Agent',icon:'🤖',purpose:'AIを活用したタスク自動化・対話型アシスタント',purposeEn:'AI-powered task automation & conversational assistant',target:['エンジニア','スタートアップ'],targetEn:['Engineers','Startups'],features:['チャットインターフェース','プロンプト管理','履歴・コンテキスト管理','API連携','使用量ダッシュボード'],featuresEn:['Chat Interface','Prompt Management','History & Context Management','API Integration','Usage Dashboard'],
+entities:'User, Conversation, Message, Prompt, ApiUsage, Agent, Tool',ai_auto:'マルチAgent協調',payment:'stripe'}),
+ai_content:_mp({name:'AIコンテンツ生成',nameEn:'AI Content Gen',icon:'✨',purpose:'AIを活用した文章・画像・動画の自動生成プラットフォーム',purposeEn:'AI-powered text, image & video auto-generation platform',target:['マーケター','ブロガー','クリエイター'],targetEn:['Marketers','Bloggers','Creators'],features:['テンプレート選択','AIコンテンツ生成','編集・リライト','SEO最適化','エクスポート'],featuresEn:['Template Selection','AI Content Generation','Edit & Rewrite','SEO Optimization','Export'],
+entities:'User, Template, Generation, Content, Project, CreditUsage',ai_auto:'Vibe Coding入門',payment:'stripe'}),
+automation:_mp({name:'ワークフロー自動化',nameEn:'Workflow Automation',icon:'⚙️',purpose:'タスクやプロセスを自動化するiPaaS/ノーコード連携ツール',purposeEn:'iPaaS/no-code tool for automating tasks and processes',target:['中小企業','マーケター','管理者'],targetEn:['SMBs','Marketers','Admins'],frontend:'React (Vite SPA)',backend:'Node.js + Express',features:['ビジュアルフローエディタ','トリガー・アクション設定','API連携','実行ログ','スケジュール実行'],featuresEn:['Visual Flow Editor','Trigger & Action Config','API Integration','Execution Logs','Scheduled Runs'],
+entities:'User, Workflow, Trigger, Action, Execution, Connection, Log',payment:'stripe'}),
+marketplace:_mp({name:'マーケットプレイス',nameEn:'Marketplace',icon:'🏪',purpose:'売り手と買い手をつなぐ双方向プラットフォーム',purposeEn:'Two-sided platform connecting buyers and sellers',target:['一般消費者','フリーランス','スモールビジネス'],targetEn:['Consumers','Freelancers','Small Businesses'],features:['出品・商品登録','検索・フィルタ','メッセージ機能','決済・エスクロー','レビュー・評価'],featuresEn:['Product Listing','Search & Filter','Messaging','Payment & Escrow','Reviews & Ratings'],
+entities:'User, Listing, Category, Order, Transaction, Review, Message',payment:'stripe'}),
+ec:_mp({name:'ECサイト',nameEn:'E-Commerce',icon:'🛍️',purpose:'オンラインショップの構築',purposeEn:'Build an online shop',target:['一般消費者','ショップオーナー'],targetEn:['Consumers','Shop Owners'],backend:'Node.js + Express',features:['商品管理','カート・決済','注文管理','在庫管理','レビュー機能'],featuresEn:['Product Management','Cart & Checkout','Order Management','Inventory Management','Reviews'],entities:'Product, Order, User, Category, Cart, Payment',payment:'ec_build'}),
+dashboard:_mp({name:'ダッシュボード',nameEn:'Dashboard',icon:'📊',purpose:'データを集約・可視化してインサイトを提供する分析ツール',purposeEn:'Analytics tool to aggregate and visualize data for insights',target:['経営者','マーケター','データアナリスト'],targetEn:['Executives','Marketers','Data Analysts'],features:['KPIウィジェット','グラフ・チャート','データフィルタ','レポート出力','アラート通知'],featuresEn:['KPI Widgets','Charts & Graphs','Data Filters','Report Export','Alert Notifications'],
+entities:'User, DataSource, Widget, Dashboard, Report, Alert'}),
+chatbot:_mp({name:'チャットボット',nameEn:'Chatbot',icon:'💬',purpose:'AIカスタマーサポート・FAQ自動応答システム',purposeEn:'AI customer support & FAQ auto-response system',target:['中小企業','EC事業者'],targetEn:['SMBs','E-commerce Businesses'],frontend:'React (Vite SPA)',features:['チャットウィジェット','FAQ学習・管理','会話フロー設計','有人エスカレーション','分析レポート'],featuresEn:['Chat Widget','FAQ Learning & Management','Conversation Flow Design','Human Escalation','Analytics Reports'],
+entities:'User, Bot, Conversation, Message, Intent, KnowledgeBase, Handoff',ai_auto:'Vibe Coding入門'}),
+fintech:_mp({name:'フィンテック',nameEn:'Fintech',icon:'💰',purpose:'決済・家計管理・請求書など金融系Webアプリ',purposeEn:'Financial web app for payments, budgeting & invoicing',target:['フリーランス','中小企業','一般消費者'],targetEn:['Freelancers','SMBs','Consumers'],backend:'Node.js + NestJS',features:['口座連携','収支ダッシュボード','請求書発行','自動カテゴリ分類','レポート出力'],featuresEn:['Account Linking','Income/Expense Dashboard','Invoice Generation','Auto-categorization','Report Export'],
+entities:'User, Account, Transaction, Invoice, Category, Budget, Report',mobile:'Expo (React Native)',payment:'stripe'}),
+devtool:_mp({name:'開発者ツール',nameEn:'Dev Tool',icon:'🛠️',purpose:'開発者の生産性を向上させるユーティリティ・API',purposeEn:'Developer utility & API to boost productivity',target:['エンジニア','スタートアップ'],backend:'Node.js + Express',features:['APIキー管理','ドキュメント','使用量モニタ','Webhook設定','Playground'],featuresEn:['API Key Management','Documentation','Usage Monitor','Webhook Config','Playground'],
+entities:'User, ApiKey, Project, RequestLog, Webhook, Documentation',payment:'stripe'}),
+creator:_mp({name:'クリエイターエコノミー',nameEn:'Creator Economy',icon:'🎨',purpose:'コンテンツ販売・ファンコミュニティ・サブスク課金プラットフォーム',purposeEn:'Content sales, fan community & subscription platform',target:['クリエイター','インフルエンサー'],targetEn:['Creators','Influencers'],features:['プロフィール・ポートフォリオ','有料コンテンツ配信','サブスク課金','ファンコメント・投げ銭','アナリティクス'],featuresEn:['Profile & Portfolio','Paid Content Distribution','Subscription Billing','Fan Comments & Tips','Analytics'],
+entities:'User, Content, Subscription, Payment, Comment, Tip, Tier',payment:'stripe'}),
+newsletter:_mp({name:'ニュースレター/メディア',nameEn:'Newsletter/Media',icon:'📰',purpose:'ニュースレター配信・メディア運営プラットフォーム',purposeEn:'Newsletter distribution & media management platform',target:['ライター','メディア運営者','マーケター'],targetEn:['Writers','Media Operators','Marketers'],features:['記事エディタ','購読者管理','配信スケジュール','開封・クリック分析','有料プラン'],featuresEn:['Article Editor','Subscriber Management','Delivery Schedule','Open & Click Analytics','Paid Plans'],
+entities:'User, Post, Subscriber, Campaign, Analytics, Plan',payment:'stripe'}),
+pwa:_mp({name:'PWAアプリ',nameEn:'PWA App',icon:'📱',purpose:'ネイティブアプリ体験をWebで提供するモバイルファースト',purposeEn:'Mobile-first web app with native app experience',target:['一般消費者','スタートアップ'],targetEn:['Consumers','Startups'],frontend:'React (Vite SPA)',backend:'Firebase',features:['オフライン対応','プッシュ通知','ホーム画面追加','カメラ・位置情報','データ同期'],featuresEn:['Offline Support','Push Notifications','Add to Home Screen','Camera & Location','Data Sync'],
+entities:'User, Content, Notification, SyncQueue, Setting',mobile:'Expo (React Native)'}),
+booking:_mp({name:'予約システム',nameEn:'Booking System',icon:'📅',purpose:'サービスやリソースの予約・スケジュールを管理するシステム',purposeEn:'Booking & schedule management system for services',target:['店舗オーナー','フリーランス','一般消費者'],targetEn:['Shop Owners','Freelancers','Consumers'],features:['カレンダー表示','予約作成・変更','リマインダー通知','決済連携','スタッフ管理'],featuresEn:['Calendar View','Create & Modify Bookings','Reminder Notifications','Payment Integration','Staff Management'],
+entities:'User, Service, Booking, TimeSlot, Staff, Payment, Reminder',payment:'stripe'}),
+event:_mp({name:'イベントプラットフォーム',nameEn:'Event Platform',icon:'🎪',purpose:'オンライン・オフラインイベントの開催・参加管理',purposeEn:'Online/offline event hosting & attendance management',target:['イベント主催者','コミュニティ','企業'],targetEn:['Event Organizers','Communities','Companies'],features:['イベント作成・公開','チケット販売','参加者管理','ライブ配信連携','アンケート'],featuresEn:['Event Creation & Publishing','Ticket Sales','Attendee Management','Live Streaming Integration','Surveys'],
+entities:'User, Event, Ticket, Attendee, Venue, Session, Survey',payment:'stripe'}),
+health:_mp({name:'ヘルステック',nameEn:'Health Tech',icon:'🏥',purpose:'健康・フィットネス・ウェルネスの記録と改善を支援するアプリ',purposeEn:'Health, fitness & wellness tracking and improvement app',target:['一般消費者','トレーナー'],targetEn:['Consumers','Trainers'],frontend:'React (Vite SPA)',backend:'Firebase',features:['健康データ記録','トレーニング管理','食事ログ','目標・進捗グラフ','リマインダー'],featuresEn:['Health Data Logging','Training Management','Meal Logs','Goals & Progress Graphs','Reminders'],
+entities:'User, HealthLog, Workout, Meal, Goal, Progress, Reminder',mobile:'Expo (React Native)'}),
+hr:_mp({name:'HR/採用管理',nameEn:'HR/Recruiting',icon:'👥',purpose:'採用プロセスと人事管理を効率化するツール',purposeEn:'Tool to streamline recruiting and HR management',target:['人事担当者','採用担当者','経営者'],targetEn:['HR Staff','Recruiters','Executives'],features:['求人管理','応募者トラッキング','面接スケジュール','評価・スコアカード','オンボーディング'],featuresEn:['Job Management','Applicant Tracking','Interview Scheduling','Evaluation Scorecards','Onboarding'],
+entities:'User, JobPosting, Applicant, Interview, Evaluation, Department, Onboarding'}),
+linkbio:_mp({name:'Link in Bio',nameEn:'Link in Bio',icon:'🔗',purpose:'SNSプロフィール用のマイクロサイト・リンク集約ツール',purposeEn:'Micro-site & link aggregation tool for social profiles',target:['インフルエンサー','クリエイター','フリーランス'],targetEn:['Influencers','Creators','Freelancers'],features:['カスタムリンクページ','テーマ・デザイン編集','アクセス解析','SNS連携','収益化リンク'],featuresEn:['Custom Link Page','Theme & Design Editor','Access Analytics','Social Integration','Monetization Links'],
+entities:'User, Page, Link, Theme, ClickLog, Integration'}),
+gamify:_mp({name:'ゲーミフィケーション',nameEn:'Gamification',icon:'🎮',purpose:'ゲーム要素でユーザーエンゲージメントを向上',purposeEn:'Boost user engagement with game elements',target:['教育者','マーケター','コミュニティ管理者'],targetEn:['Educators','Marketers','Community Managers'],frontend:'React (Vite SPA)',backend:'Firebase',features:['ポイント・バッジシステム','リーダーボード','チャレンジ・ミッション','報酬・交換','進捗ダッシュボード'],featuresEn:['Points & Badge System','Leaderboard','Challenges & Missions','Rewards & Redemption','Progress Dashboard'],
+entities:'User, Badge, Challenge, Reward, Leaderboard, PointLog, Achievement'}),
+collab:_mp({name:'リアルタイムコラボ',nameEn:'Realtime Collab',icon:'👥',purpose:'チームが同時編集・共同作業できるリアルタイムツール',purposeEn:'Real-time tool for team collaborative editing',target:['リモートチーム','スタートアップ','教育者'],targetEn:['Remote Teams','Startups','Educators'],features:['リアルタイム同時編集','カーソル共有','コメント・メンション','バージョン履歴','権限管理'],featuresEn:['Real-time Co-editing','Cursor Sharing','Comments & Mentions','Version History','Permission Management'],
+entities:'User, Document, Workspace, Comment, Version, Permission, Activity',payment:'stripe'}),
+iot:_mp({name:'IoTダッシュボード',nameEn:'IoT Dashboard',icon:'📡',purpose:'IoTデバイスのデータ監視・制御・可視化ツール',purposeEn:'IoT device data monitoring, control & visualization',target:['エンジニア','製造業'],targetEn:['Engineers','Manufacturing'],frontend:'React (Vite SPA)',backend:'Node.js + Express',features:['デバイス登録・管理','リアルタイムデータ表示','アラート設定','遠隔制御','履歴データ分析'],featuresEn:['Device Registration & Management','Real-time Data Display','Alert Settings','Remote Control','Historical Data Analysis'],
+entities:'User, Device, SensorData, Alert, Command, DeviceGroup, Log'}),
+portfolio:_mp({name:'ポートフォリオ',nameEn:'Portfolio',icon:'🖼️',purpose:'スキル・実績を魅力的に紹介するサイト',purposeEn:'Showcase skills and achievements attractively',target:['学生','フリーランス'],targetEn:['Students','Freelancers'],frontend:'Astro',features:['自己紹介','プロジェクト一覧','スキル表示','お問い合わせ'],featuresEn:['About Me','Project Gallery','Skills Display','Contact Form'],entities:'Project, Skill, Contact'}),
+cms:_mp({name:'CMS/ブログ',nameEn:'CMS/Blog',icon:'📝',purpose:'コンテンツを投稿・管理・公開できるシステム',purposeEn:'System to create, manage and publish content',target:['ブロガー','編集者'],targetEn:['Bloggers','Editors'],features:['記事作成・編集','カテゴリ管理','画像アップロード','SEO設定','下書き保存'],featuresEn:['Article Editor','Category Management','Image Upload','SEO Settings','Draft Saving'],entities:'User, Post, Category, Tag, Media'}),
+lms:_mp({name:'学習プラットフォーム',nameEn:'Learning Platform',icon:'📚',purpose:'体系的に知識を習得できる教育システム',purposeEn:'Structured education system for knowledge acquisition',target:['学生','社会人学習者','教育者'],targetEn:['Students','Working Professionals','Educators'],frontend:'React (Vite SPA)',backend:'Firebase',features:['コース一覧','レッスン視聴','進捗管理','クイズ機能','修了証発行'],featuresEn:['Course Catalog','Lesson Viewing','Progress Tracking','Quiz System','Certificate Issuance'],
+entities:'User, Course, Lesson, Progress, Quiz, Certificate',mobile:'Expo (React Native)',payment:'stripe'}),
+community:_mp({name:'コミュニティ',nameEn:'Community',icon:'🌐',purpose:'共通の関心を持つ人々が交流できるプラットフォーム',purposeEn:'Platform for people with common interests to interact',target:['コミュニティメンバー','管理者'],targetEn:['Community Members','Admins'],features:['プロフィール','投稿・コメント','グループ','イベント管理','通知'],featuresEn:['Profiles','Posts & Comments','Groups','Event Management','Notifications'],entities:'User, Post, Comment, Group, Event'}),
+property_mgmt:_mp({name:'不動産管理',nameEn:'Property Management',icon:'🏢',purpose:'賃貸・売買物件の管理、入居者対応、家賃回収を一元管理',purposeEn:'Centralized rental/sales property management, tenant communication & rent collection',target:['不動産オーナー','管理会社','仲介業者'],targetEn:['Property Owners','Management Companies','Real Estate Agents'],features:['物件登録・管理','入居者情報管理','契約・更新管理','家賃請求・督促','修繕依頼トラッキング','収支レポート'],featuresEn:['Property Registration & Management','Tenant Info Management','Contract & Renewal Management','Rent Billing & Reminders','Repair Request Tracking','Financial Reports'],entities:'Property, Unit, Tenant, Lease, Payment, MaintenanceRequest, Owner, Invoice',payment:'stripe'}),
+contract_mgmt:_mp({name:'契約管理',nameEn:'Contract Management',icon:'📜',purpose:'契約書の作成・承認フロー・期限管理・電子署名を統合管理',purposeEn:'Integrated contract creation, approval workflow, deadline tracking & e-signature',target:['法務部','営業部','中小企業','フリーランス'],targetEn:['Legal Dept','Sales Dept','SMBs','Freelancers'],features:['契約書テンプレート','承認ワークフロー','電子署名連携','期限・更新アラート','バージョン管理','検索・タグ付け'],featuresEn:['Contract Templates','Approval Workflow','E-signature Integration','Deadline & Renewal Alerts','Version Control','Search & Tagging'],entities:'Contract, Template, Party, Approval, Signature, Milestone, Alert, Clause',payment:'stripe'}),
+helpdesk:_mp({name:'ヘルプデスク',nameEn:'Help Desk',icon:'🎧',purpose:'カスタマーサポートのチケット管理とナレッジベース統合',purposeEn:'Customer support ticket management with integrated knowledge base',target:['サポートチーム','IT部門','SaaS企業'],targetEn:['Support Teams','IT Departments','SaaS Companies'],features:['チケット起票・管理','優先度・ステータス設定','担当者アサイン','ナレッジベース連携','SLA追跡','顧客満足度評価'],featuresEn:['Ticket Creation & Management','Priority & Status Settings','Agent Assignment','Knowledge Base Integration','SLA Tracking','Customer Satisfaction Rating'],entities:'Ticket, User, Agent, Category, Priority, KnowledgeArticle, Response, SLA',ai_auto:'Vibe Coding入門',payment:'stripe'}),
+tutoring:_mp({name:'家庭教師マッチング',nameEn:'Tutoring Marketplace',icon:'👨‍🏫',purpose:'講師と生徒をマッチングし、オンライン・対面授業を予約管理',purposeEn:'Match tutors with students, manage online/in-person lesson bookings',target:['学生','保護者','講師','教育事業者'],targetEn:['Students','Parents','Tutors','Education Businesses'],features:['講師プロフィール・検索','科目・スキルフィルタ','レッスン予約','オンライン授業連携','レビュー・評価','決済・手数料管理'],featuresEn:['Tutor Profiles & Search','Subject & Skill Filters','Lesson Booking','Online Class Integration','Reviews & Ratings','Payment & Fee Management'],entities:'Tutor, Student, Subject, Lesson, Booking, Review, Payment, Availability',payment:'stripe'}),
+veterinary:_mp({name:'動物病院',nameEn:'Veterinary Clinic',icon:'🐾',purpose:'動物病院のカルテ管理・予約・ワクチン接種記録システム',purposeEn:'Vet clinic medical records, appointments & vaccination tracking',target:['獣医師','動物病院スタッフ','ペットオーナー'],targetEn:['Veterinarians','Clinic Staff','Pet Owners'],features:['ペット情報・カルテ管理','診察予約','ワクチン接種履歴','処方箋管理','会計・請求','リマインダー通知'],featuresEn:['Pet Info & Medical Records','Appointment Scheduling','Vaccination History','Prescription Management','Billing & Invoicing','Reminder Notifications'],entities:'Pet, Owner, Appointment, MedicalRecord, Vaccination, Prescription, Invoice, Veterinarian',payment:'stripe'}),
+restaurant:_mp({name:'飲食店管理',nameEn:'Restaurant Management',icon:'🍽️',purpose:'飲食店のPOS・予約・在庫・スタッフ管理を統合',purposeEn:'Integrated POS, reservations, inventory & staff management for restaurants',target:['飲食店オーナー','店長','スタッフ'],targetEn:['Restaurant Owners','Managers','Staff'],frontend:'React (Vite SPA)',features:['テーブル予約管理','POS・注文管理','在庫・発注管理','メニュー編集','売上レポート','スタッフシフト'],featuresEn:['Table Reservation Management','POS & Order Management','Inventory & Ordering','Menu Editor','Sales Reports','Staff Scheduling'],entities:'Table, Reservation, Order, MenuItem, Inventory, Staff, Shift, Payment',payment:'stripe'}),
+construction_pay:_mp({name:'建設業決済',nameEn:'Construction Payment',icon:'🏗️',purpose:'建設プロジェクトの支払管理・請求書発行・進捗連動決済',purposeEn:'Construction project payment management, invoicing & milestone-based payments',target:['建設会社','下請け業者','元請け'],targetEn:['Construction Companies','Subcontractors','General Contractors'],features:['プロジェクト管理','マイルストーン設定','進捗報告','請求書発行','支払スケジュール','承認ワークフロー'],featuresEn:['Project Management','Milestone Setup','Progress Reporting','Invoice Generation','Payment Schedule','Approval Workflow'],entities:'Project, Contractor, Milestone, Invoice, Payment, ProgressReport, Approval, Estimate',payment:'stripe'}),
+clinic:_mp({name:'クリニック・医院',nameEn:'Medical Clinic',icon:'🏥',purpose:'診療所の電子カルテ・予約・処方箋・会計を統合管理',purposeEn:'Integrated EMR, appointments, prescriptions & billing for clinics',target:['医師','看護師','医療事務','患者'],targetEn:['Doctors','Nurses','Medical Admin','Patients'],features:['電子カルテ','診察予約','処方箋管理','検査結果記録','会計・レセプト','待合状況表示'],featuresEn:['Electronic Medical Records','Appointment Scheduling','Prescription Management','Test Result Logging','Billing & Claims','Waiting Room Status'],entities:'Patient, Appointment, MedicalRecord, Prescription, Examination, Invoice, Doctor, Claim',payment:'stripe'}),
+knowledge_base:_mp({name:'ナレッジベース',nameEn:'Knowledge Base',icon:'📖',purpose:'組織の知識・ノウハウを体系化し検索可能にするドキュメントDB',purposeEn:'Systematize and search organizational knowledge & know-how documentation',target:['全社員','カスタマーサポート','教育担当'],targetEn:['All Employees','Customer Support','Training Staff'],features:['記事作成・編集','カテゴリ・タグ管理','全文検索','バージョン履歴','アクセス権限','AI検索提案'],featuresEn:['Article Creation & Editing','Category & Tag Management','Full-text Search','Version History','Access Control','AI Search Suggestions'],entities:'Article, Category, Tag, Version, User, AccessControl, SearchLog, Feedback',ai_auto:'Vibe Coding入門'}),
+field_service:_mp({name:'現場サービス',nameEn:'Field Service',icon:'🚚',purpose:'現場作業員の派遣・スケジュール・作業報告を一元管理',purposeEn:'Centralized dispatch, scheduling & work reporting for field workers',target:['サービス企業','技術者','ディスパッチャー'],targetEn:['Service Companies','Technicians','Dispatchers'],features:['作業オーダー管理','スケジューリング','リアルタイム位置追跡','作業報告・写真','在庫管理','請求書発行'],featuresEn:['Work Order Management','Scheduling','Real-time Location Tracking','Work Reports & Photos','Inventory Management','Invoice Generation'],entities:'WorkOrder, Technician, Schedule, Location, Report, Inventory, Customer, Invoice',mobile:'Expo (React Native)',payment:'stripe'}),
 custom:{name:'',icon:'⚡'},
 };
 function _kpiChips(ja,lv){
@@ -1930,6 +1933,7 @@ function initPillarTabs(){
       else if(i===5) showDashboard();
       else if(i===6&&Object.keys(S.files).length>0) showRoadmapUI();
       else if(i===7) showAILauncher();
+      else if(i===8) showFileTree(); // Design System
       else showFileTree();
     };tabs.appendChild(b);
   });
@@ -1945,7 +1949,6 @@ function showFileTree(){
   if(pillar===5){showDashboard();return;}
   if(pillar===6&&Object.keys(S.files).length>0){showRoadmapUI();return;}
   if(pillar===7){showAILauncher();return;}
-  
   const tree=buildFileTree();
   const hasFiles=Object.keys(S.files).length>0;
   
@@ -2007,6 +2010,10 @@ function buildFileTree(){
     ].forEach(f=>files.push({name:'  '+f,path:'roadmap/'+f}));
   } else if(pillar===7){ // AI Launcher
     files.push({name:_ja?'(AIランチャー — UIのみ)':'(AI Launcher — UI only)',path:'_launcher'});
+  } else if(pillar===8){ // Design System
+    files.push({folder:true,name:'docs'});
+    ['26_design_system','27_sequence_diagrams'].forEach(f=>
+      files.push({name:'  '+f+'.md',path:'docs/'+f+'.md'}));
   }
   files.push({name:'───────────',path:''});
   files.push({folder:true,name:'docs'});
@@ -2015,7 +2022,8 @@ function buildFileTree(){
    '09_release_checklist','10_gantt','11_wbs','12_driven_dev','13_glossary',
    '14_risk','15_meeting','16_review','17_monitoring',
    '18_data_migration','19_performance','20_a11y','21_changelog',
-   '22_prompt_playbook','23_tasks'].forEach(f=>
+   '22_prompt_playbook','23_tasks','24_progress','25_error_logs',
+   '26_design_system','27_sequence_diagrams'].forEach(f=>
     files.push({name:'  '+f+'.md',path:'docs/'+f+'.md'}));
   files.push({name:'───────────',path:''});
   ['README.md','.gitignore','package.json','LICENSE'].forEach(f=>files.push({name:f,path:f}));
@@ -2142,6 +2150,7 @@ function doGenerate(lang){
     {fn:()=>genPillar3_MCP(a,pn),lbl:_j?'柱③ MCP':'Pillar ③ MCP',err:'P3-MCP'},
     {fn:()=>genPillar4_AIRules(a,pn),lbl:_j?'柱④ AIルール':'Pillar ④ AI Rules',err:'P4-AI'},
     {fn:()=>genPillar7_Roadmap(a,pn),lbl:_j?'柱⑦ ロードマップ':'Pillar ⑦ Roadmap',err:'P7-Road'},
+    {fn:()=>genPillar9_DesignSystem(a,pn),lbl:_j?'柱⑨ デザインシステム':'Pillar ⑨ Design System',err:'P9-DS'},
     {fn:()=>genDocs21(a,pn),lbl:_j?'仕様書23種':'23 Spec Docs',err:'Docs'},
     {fn:()=>genCommonFiles(a,pn),lbl:_j?'共通ファイル':'Common Files',err:'Common'},
   ];
@@ -2755,7 +2764,7 @@ ${core}
   S.files['.windsurfrules']=rules;
   S.files['.clinerules']=rules;
   S.files['.kiro/spec.md']=`# Kiro Spec\n${core}\n\n## Spec Files\nSee .spec/ directory for full specifications.`;
-  S.files['CLAUDE.md']=`# CLAUDE.md — ${pn}\n${core}\n\n## Spec-Driven Development\nRead .spec/constitution.md first.\nAll changes must align with .spec/specification.md.\nUse .spec/tasks.md as the source of truth for work items.\n\n## Auth\n- Source of Truth: ${auth.sot}\n- Token: ${auth.tokenType}\n- Verification: ${auth.tokenVerify}\n${auth.social.length?'- Providers: '+auth.social.join(', '):''}\n\n## Code Style\n- TypeScript strict\n- ESLint + Prettier\n- Vitest for testing\n- ${orm} for ${db}\n\n## Forbidden\n${forbidden}`;
+  S.files['CLAUDE.md']=`# CLAUDE.md — ${pn}\n${core}\n\n## Spec-Driven Development\nRead .spec/constitution.md first.\nAll changes must align with .spec/specification.md.\nUse .spec/tasks.md as the source of truth for work items.\n\n## Auth\n- Source of Truth: ${auth.sot}\n- Token: ${auth.tokenType}\n- Verification: ${auth.tokenVerify}\n${auth.social.length?'- Providers: '+auth.social.join(', '):''}\n\n## Code Style\n- TypeScript strict\n- ESLint + Prettier\n- Vitest for testing\n- ${orm} for ${db}\n\n## Forbidden\n${forbidden}\n\n## Workflow Cycle\n1. Read docs/ → Select needed context\n2. Plan → Outline approach before coding\n3. Implement → Code with tests\n4. Update docs/24_progress.md → Mark completed tasks\n5. Log errors to docs/25_error_logs.md → Prevent recurrence\n\n## Context Management\n- Write: All specs live in docs/ — read before coding\n- Select: Only load files relevant to current task\n- Compress: If context is large, read AI_BRIEF.md (~3K tokens) instead\n- Isolate: Use subagents for research, keep main context clean\n\n## Key Context Files\n| File | When to Read | Tokens |\n|------|-------------|--------|\n| AI_BRIEF.md | Always (start here) | ~3K |\n| .spec/constitution.md | Before any change | ~1K |\n| .spec/tasks.md | Before picking work | ~1K |\n| docs/24_progress.md | Before/after tasks | ~0.5K |\n| docs/25_error_logs.md | When debugging | ~0.5K |`;
   S.files['AGENTS.md']=`# AGENTS.md — ${pn}\n\n## Agent Guidelines\n${core}\n\n## Task Assignment\n- Frontend agent: UI components, pages, styling\n- Backend agent: ${arch.isBaaS?a.backend+' functions, RLS policies':arch.pattern==='bff'?'Next.js API Routes, middleware':'API routes, database, auth'}\n- Test agent: Unit tests, E2E tests\n- DevOps agent: CI/CD, deployment\n\n## Coordination\n- All agents must read .spec/ before starting\n- Use tasks.md for work coordination\n- Commit with conventional commits`;
   S.files['codex-instructions.md']=`# Codex Instructions (OpenAI)\n${rules}\n\n## Codex Agent Mode\n- Use agentic mode for multi-file refactoring\n- Verify changes with npm test before committing\n- Respect .spec/ constraints`;
   S.files['skills/project.md']=`# Project Skills — ${pn}\n${core}\n\n## Available Skills\n- spec-review: Review changes against .spec/\n- test-gen: Generate tests for new code\n- doc-gen: Generate documentation\n- refactor: Suggest refactoring opportunities`;
@@ -2836,6 +2845,14 @@ ${fe} + ${be} + ${a.database||'PostgreSQL'} → ${deploy}
 Auth: ${auth.sot} (${auth.tokenType})
 ORM: ${orm}
 Pattern: ${archNote}
+## Context Protocol
+1. Start: Read THIS file (AI_BRIEF.md)
+2. Deep dive: .spec/{constitution,specification}.md
+3. Current state: docs/24_progress.md
+4. Before coding: Relevant docs/ file
+5. After task: Update docs/24_progress.md
+6. On error: Log to docs/25_error_logs.md
+7. Context full: Keep AI_BRIEF.md + current task only
 ## DB Schema
 \`\`\`
 ${dbSchema}
@@ -3131,6 +3148,96 @@ npx create-medusa-app@latest
 `:''}
 `:`# ${T('sc_title')}\n\n${T('sc_none')}`;
 }
+function genPillar9_DesignSystem(a,pn){
+  const G=S.genLang==='ja';
+  const fe=a.frontend||'React + Next.js';
+  const be=a.backend||'Supabase';
+  const auth=resolveAuth(a);
+  const arch=resolveArch(a);
+  const hasPay=a.payment&&!/なし|None|none/.test(a.payment);
+  const entities=(a.data_entities||'').split(/[,、]/).map(s=>s.trim()).filter(Boolean);
+  const screens=(a.screens||'').split(/[,、]/).map(s=>s.trim()).filter(Boolean);
+  const isTailwind=fe.includes('Next')||fe.includes('Vite')||fe.includes('React');
+  const isVuetify=fe.includes('Vue');
+  const isMaterial=fe.includes('Angular');
+  const colorSection=G?'## デザイントークン':'## Design Tokens';
+  const colorPalette=G?'### カラーパレット':'### Color Palette';
+  const typography=G?'### タイポグラフィ':'### Typography Scale';
+  const spacing=G?'### スペーシング':'### Spacing Scale';
+  const breakpoints=G?'### ブレークポイント':'### Breakpoints';
+  const components=G?'## コンポーネントカタログ':'## Component Catalog';
+  const darkMode=G?'## ダーク/ライトモード':'## Dark/Light Mode';
+  const guidelines=G?'## AI実装ガイドライン':'## AI Implementation Guidelines';
+  let designDoc='# '+(G?'デザインシステム':'Design System')+'\n\n';
+  designDoc+=G?'**重要**: AIエージェントは、UI実装時に必ずこのデザインシステムを参照し、一貫性を保ってください。':'**IMPORTANT**: AI agents MUST reference this design system when implementing UI to maintain consistency.\n\n';
+  designDoc+=colorSection+'\n\n'+colorPalette+'\n\n';
+  if(isTailwind){
+    designDoc+='```css\n\ntheme: {\n  extend: {\n    colors: {\n      primary: {\n        50: \'#f0f9ff\',\n        500: \'#0ea5e9\',\n        900: \'#0c4a6e\'\n      },\n      surface: {\n        light: \'#ffffff\',\n        dark: \'#1e293b\'\n      }\n    }\n  }\n}\n```\n';
+  }else if(isVuetify){
+    designDoc+='```js\n// Vuetify theme (vuetify.config.js)\ntheme: {\n  themes: {\n    light: {\n      primary: \'#1976D2\',\n      secondary: \'#424242\',\n      accent: \'#82B1FF\'\n    },\n    dark: {\n      primary: \'#2196F3\',\n      secondary: \'#424242\',\n      accent: \'#FF4081\'\n    }\n  }\n}\n```\n';
+  }else{
+    designDoc+='```css\n:root {\n  --color-primary: #0ea5e9;\n  --color-bg: #ffffff;\n  --color-surface: #f8fafc;\n  --color-text: #0f172a;\n  --color-success: #10b981;\n  --color-warning: #f59e0b;\n  --color-error: #ef4444;\n}\n[data-theme="dark"] {\n  --color-bg: #0f172a;\n  --color-surface: #1e293b;\n  --color-text: #f1f5f9;\n}\n```\n';
+  }
+  designDoc+='\n'+typography+'\n\n| '+(G?'要素':'Element')+' | '+(G?'サイズ':'Size')+' | '+(G?'ウェイト':'Weight')+' | '+(G?'行間':'Line Height')+' |\n|------|------|--------|-------------|\n';
+  designDoc+='| h1 | 36px/2.25rem | 700 | 1.2 |\n| h2 | 30px/1.875rem | 600 | 1.3 |\n| h3 | 24px/1.5rem | 600 | 1.4 |\n| body | 16px/1rem | 400 | 1.5 |\n| small | 14px/0.875rem | 400 | 1.4 |\n| xs | 12px/0.75rem | 400 | 1.3 |\n\n';
+  designDoc+=spacing+'\n\n| '+(G?'トークン':'Token')+' | '+(G?'値':'Value')+' | '+(G?'用途':'Usage')+' |\n|------|-------|-------|\n';
+  designDoc+='| xs | 4px | '+(G?'アイコン間隔':'Icon gaps')+'|\n| sm | 8px | '+(G?'コンパクト間隔':'Compact spacing')+'|\n| md | 16px | '+(G?'標準間隔':'Standard spacing')+'|\n| lg | 24px | '+(G?'セクション間':'Section gaps')+'|\n| xl | 32px | '+(G?'カード間':'Card spacing')+'|\n| 2xl | 48px | '+(G?'大セクション間':'Large sections')+'|\n\n';
+  designDoc+=breakpoints+'\n\n```css\n\n\n\n\n```\n\n';
+  designDoc+=components+'\n\n';
+  if(screens.length>0){
+    screens.slice(0,5).forEach(scr=>{
+      const comps=getScreenComponents(scr,G);
+      if(comps){
+        designDoc+='### '+(G?'画面：':'Screen: ')+scr+'\n';
+        comps.forEach(c=>designDoc+='- '+c+'\n');
+        designDoc+='\n';
+      }
+    });
+  }
+  if(isTailwind){
+    designDoc+=(G?'**ライブラリ**: shadcn/ui または Headless UI を推奨\n':'**Library**: Recommend shadcn/ui or Headless UI\n')+'\n';
+  }else if(isVuetify){
+    designDoc+=(G?'**ライブラリ**: Vuetify 標準コンポーネント\n':'**Library**: Vuetify standard components\n')+'\n';
+  }else if(isMaterial){
+    designDoc+=(G?'**ライブラリ**: Angular Material\n':'**Library**: Angular Material\n')+'\n';
+  }
+  designDoc+=darkMode+'\n\n';
+  if(isTailwind){
+    designDoc+='```jsx\n// app/layout.tsx\nimport { ThemeProvider } from "next-themes"\n\nexport default function RootLayout({ children }) {\n  return (\n    <html suppressHydrationWarning>\n      <body>\n        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>\n          {children}\n        </ThemeProvider>\n      </body>\n    </html>\n  )\n}\n```\n\n'+(G?'使用例: `className="bg-white dark:bg-gray-900"`':'Usage: `className="bg-white dark:bg-gray-900"`')+'\n\n';
+  }else{
+    designDoc+='```js\n// Toggle theme\nfunction toggleTheme() {\n  document.documentElement.dataset.theme = \n    document.documentElement.dataset.theme === "dark" ? "light" : "dark";\n}\n```\n\n';
+  }
+  designDoc+=guidelines+'\n\n';
+  designDoc+=(G?'1. **色**: 必ず定義済みトークンを使用。直接カラーコード（#000 等）を記述しない\n2. **スペーシング**: 4px グリッドに従う (xs/sm/md/lg/xl/2xl)\n3. **タイポグラフィ**: 定義されたスケールのみ使用\n4. **コンポーネント**: 推奨ライブラリから選択（独自実装は最小限）\n5. **ダークモード**: すべてのUI要素でLight/Dark対応を実装\n6. **レスポンシブ**: モバイルファースト設計（最小→最大）\n7. **アクセシビリティ**: ARIA属性、キーボードナビゲーション、コントラスト比 4.5:1 以上\n':'1. **Colors**: Always use predefined tokens. Never hardcode colors (#000)\n2. **Spacing**: Follow 4px grid (xs/sm/md/lg/xl/2xl)\n3. **Typography**: Use defined scale only\n4. **Components**: Choose from recommended library (minimize custom)\n5. **Dark Mode**: Implement Light/Dark support for all UI elements\n6. **Responsive**: Mobile-first design (min → max)\n7. **Accessibility**: ARIA attributes, keyboard navigation, contrast ratio ≥ 4.5:1\n')+'\n';
+  S.files['docs/26_design_system.md']=designDoc;
+  let seqDoc='# '+(G?'シーケンス図':'Sequence Diagrams')+'\n\n';
+  seqDoc+=G?'**重要**: AIエージェントは、複雑なフローを実装する前にこのシーケンス図を参照してください。':'**IMPORTANT**: AI agents MUST reference these sequence diagrams before implementing complex flows.\n\n';
+  seqDoc+=(G?'## 認証フロー':'## Authentication Flow')+'\n\n```mermaid\nsequenceDiagram\n  participant U as User\n  participant C as Client\n  participant ';
+  if(auth.provider==='supabase'){
+    seqDoc+='S as Supabase Auth\n  U->>C: '+(G?'ログイン要求':'Login request')+'\n  C->>S: signInWithPassword(email, password)\n  S-->>C: {access_token, refresh_token}\n  C->>C: '+(G?'トークン保存':'Store tokens')+'\n  C->>S: getUser() with access_token\n  S-->>C: User object\n  C-->>U: '+(G?'ダッシュボード表示':'Show dashboard')+'\n```\n\n';
+  }else if(auth.provider==='firebase'){
+    seqDoc+='F as Firebase Auth\n  U->>C: '+(G?'ログイン要求':'Login request')+'\n  C->>F: signInWithEmailAndPassword()\n  F-->>C: User + ID Token\n  C->>C: '+(G?'トークン保存':'Store token')+'\n  C-->>U: '+(G?'ダッシュボード表示':'Show dashboard')+'\n```\n\n';
+  }else if(auth.provider==='authjs'){
+    seqDoc+='A as Auth.js\n  U->>C: '+(G?'ログイン要求':'Login request')+'\n  C->>A: signIn("credentials")\n  A->>A: '+(G?'認証情報検証':'Verify credentials')+'\n  A-->>C: Session cookie\n  C-->>U: '+(G?'ダッシュボード表示':'Show dashboard')+'\n```\n\n';
+  }else{
+    seqDoc+='API as Backend API\n  U->>C: '+(G?'ログイン要求':'Login request')+'\n  C->>API: POST /api/auth/login\n  API->>API: '+(G?'認証情報検証':'Verify credentials')+'\n  API-->>C: {token, user}\n  C->>C: '+(G?'トークン保存':'Store token')+'\n  C-->>U: '+(G?'ダッシュボード表示':'Show dashboard')+'\n```\n\n';
+  }
+  if(entities.length>0){
+    const firstEntity=entities[0];
+    seqDoc+=(G?'## CRUD操作（':'## CRUD Operation (')+firstEntity+(G?'）':')')+'\n\n```mermaid\nsequenceDiagram\n  participant U as User\n  participant C as Client\n  participant ';
+    if(arch.isBaaS){
+      const baasName=be.includes('Supabase')?'Supabase':be.includes('Firebase')?'Firebase':'Convex';
+      seqDoc+=baasName[0]+' as '+baasName+'\n  U->>C: '+(G?'作成ボタンクリック':'Click create button')+'\n  C->>'+baasName[0]+': insert({...data})\n  '+baasName[0]+'-->>C: '+(G?'作成成功':'Created successfully')+'\n  C-->>U: '+(G?'成功通知':'Show success')+'\n  U->>C: '+(G?'一覧表示要求':'Request list')+'\n  C->>'+baasName[0]+': select().eq(...)\n  '+baasName[0]+'-->>C: '+firstEntity+' list\n  C-->>U: '+(G?'一覧表示':'Display list')+'\n```\n\n';
+    }else{
+      seqDoc+='API as Backend API\n  U->>C: '+(G?'作成ボタンクリック':'Click create button')+'\n  C->>API: POST /api/'+pluralize(firstEntity)+'\n  API->>API: '+(G?'バリデーション':'Validate')+'\n  API->>API: '+(G?'DB保存':'Save to DB')+'\n  API-->>C: '+(G?'作成成功':'201 Created')+'\n  C-->>U: '+(G?'成功通知':'Show success')+'\n```\n\n';
+    }
+  }
+  if(hasPay&&(a.payment||'').includes('Stripe')){
+    seqDoc+=(G?'## 決済フロー（Stripe）':'## Payment Flow (Stripe)')+'\n\n```mermaid\nsequenceDiagram\n  participant U as User\n  participant C as Client\n  participant API as Backend\n  participant S as Stripe\n  participant W as Webhook\n  U->>C: '+(G?'プラン選択':'Select plan')+'\n  C->>API: POST /api/checkout\n  API->>S: stripe.checkout.sessions.create()\n  S-->>API: session_id\n  API-->>C: {session_id}\n  C->>S: '+(G?'Checkoutページへリダイレクト':'Redirect to Checkout')+'\n  U->>S: '+(G?'カード情報入力':'Enter card info')+'\n  S->>W: webhook: checkout.session.completed\n  W->>W: '+(G?'DB更新（サブスク作成）':'Update DB (create subscription)')+'\n  W-->>S: 200 OK\n  S-->>U: '+(G?'完了ページへリダイレクト':'Redirect to success page')+'\n```\n\n';
+  }
+  seqDoc+=(G?'## エラーハンドリング':'## Error Handling')+'\n\n```mermaid\nsequenceDiagram\n  participant C as Client\n  participant API as Backend\n  C->>API: '+(G?'リクエスト':'Request')+'\n  API-->>C: 400/401/403/500\n  C->>C: '+(G?'エラーメッセージ抽出':'Parse error message')+'\n  C->>C: '+(G?'トースト表示':'Show toast notification')+'\n  alt '+(G?'401 認証エラー':'401 Unauthorized')+'\n    C->>C: '+(G?'ログイン画面へリダイレクト':'Redirect to login')+'\n  else '+(G?'5xx サーバーエラー':'5xx Server Error')+'\n    C->>C: '+(G?'リトライボタン表示':'Show retry button')+'\n  end\n```\n\n';
+  S.files['docs/27_sequence_diagrams.md']=seqDoc;
+}
 function genDocs21(a,pn){
   const G=S.genLang==='ja';
   const date=new Date().toISOString().split('T')[0];
@@ -3361,6 +3468,59 @@ ${(G?['Lighthouse 90+','LCP < 2.5s','画像最適化','バンドルサイズ確�
     ['19_performance',G?'パフォーマンス設計書':'Performance Design',`${G?'## 目標値':'## Targets'}\n- LCP: < 2.5s\n- FID: < 100ms\n- CLS: < 0.1\n\n${G?'## 最適化施策':'## Optimizations'}\n- ${G?'画像最適化':'Image optimization'} (${fe.includes('Next')?'next/image':fe.includes('Vite')||fe.includes('SPA')?'vite-imagetools / sharp':'sharp / imagemin'})\n- Code Splitting${fe.includes('Vite')||fe.includes('SPA')?' (Vite dynamic import)':fe.includes('Next')?' (Next.js dynamic)':''}\n- ${deployTarget.includes('Vercel')||deployTarget.includes('Netlify')?'Edge Caching (CDN)':'CDN Caching'}`],
     ['20_a11y',G?'アクセシビリティ設計書':'Accessibility Design',`## WCAG 2.1 AA\n- ${G?'キーボードナビゲーション':'Keyboard navigation'}\n- ${G?'スクリーンリーダー対応':'Screen reader support'}\n- ${G?'カラーコントラスト比':'Color contrast ratio'} 4.5:1+\n- ${G?'フォーカス管理':'Focus management'}`],
     ['21_changelog',G?'変更履歴':'Changelog',`## v1.0.0 (${date})\n- ${G?'初期リリース':'Initial release'}\n- ${features.slice(0,3).join(', ')} 実装\n\n## ${G?'DevForge v9による自動生成':'Auto-generated by DevForge v9'}\n- ${G?'60+ファイル生成':'60+ files generated'}\n- ${G?'8つの柱対応':'8 pillars support'}\n- ${G?'Mermaid図・プロンプトプレイブック・タスク分解対応':'Mermaid diagrams, Prompt Playbook, Task decomposition'}`],
+    ['24_progress',G?'進捗管理表':'Progress Tracker',
+  `${G?'> AIエージェントはタスク完了後にこのファイルを更新してください。':
+       '> AI agents should update this file after completing each task.'}
+## ${G?'凡例':'Legend'}
+- [ ] ${G?'未着手':'Not started'} / [x] ${G?'完了':'Done'}
+## Sprint 0: ${G?'環境構築':'Setup'}
+- [ ] ${G?'リポジトリ初期化':'Repo init'}
+- [ ] DevContainer ${G?'構築':'setup'}
+- [ ] CI/CD
+- [ ] ${G?'DBスキーマ':'DB schema'}
+- [ ] ${G?'認証基盤':'Auth'} (${auth.sot})
+## Sprint 1-2: ${G?'機能開発':'Features'}
+${features.map(f=>'- [ ] '+f).join('\n')}
+## Sprint 3: ${G?'テスト・リリース':'Test & Release'}
+- [ ] ${G?'テスト 80%+':'Tests 80%+'}
+- [ ] E2E
+- [ ] ${G?'パフォーマンス最適化':'Perf optimization'}
+- [ ] ${G?'本番デプロイ':'Production deploy'}
+## ${G?'サマリー':'Summary'}
+| ${G?'フェーズ':'Phase'} | ${G?'完了':'Done'} | ${G?'合計':'Total'} |
+|---|---|---|
+| Sprint 0 | 0 | 5 |
+| Sprint 1-2 | 0 | ${features.length} |
+| Sprint 3 | 0 | 4 |
+## ${G?'更新履歴':'Log'}
+| ${G?'日付':'Date'} | ${G?'内容':'Update'} | ${G?'更新者':'By'} |
+|---|---|---|
+| ${date} | ${G?'初期生成':'Initial'} | DevForge |`],
+    ['25_error_logs',G?'エラーログ':'Error Logs',
+  `${G?'> 解決済みエラーをここに記録し、再発を防いでください。':
+       '> Log resolved errors here to prevent recurrence.'}
+## ${G?'記録フォーマット':'Format'}
+### [${G?'日付':'Date'}] ${G?'エラー概要':'Summary'}
+- **${G?'症状':'Symptom'}**:
+- **${G?'原因':'Cause'}**:
+- **${G?'解決策':'Fix'}**:
+- **${G?'防止策':'Prevention'}**:
+- **${G?'ファイル':'Files'}**: \`path/to/file\`
+---
+## ${G?'記録例':'Example'}
+### [${date}] ${arch.isBaaS?(G?'RLSポリシーエラー':'RLS Policy Error'):(G?'API認証エラー':'API Auth Error')}
+- **${G?'症状':'Symptom'}**: ${arch.isBaaS?(G?'INSERT時に403':'403 on INSERT'):(G?'401 Unauthorized':'401 Unauthorized')}
+- **${G?'原因':'Cause'}**: ${arch.isBaaS?(G?'auth.uid()チェック不足':'Missing auth.uid() check'):(G?'トークン検証ミドルウェア未適用':'Missing auth middleware')}
+- **${G?'解決策':'Fix'}**: ${arch.isBaaS?'\\`WITH CHECK (auth.uid() = user_id)\\`':'\\`app.use(authMiddleware)\\`'}
+- **${G?'防止策':'Prevention'}**: ${arch.isBaaS?(G?'新テーブルには必ずRLSテンプレート適用':'Always apply RLS template for new tables'):(G?'新ルートには必ずauthMiddleware適用':'Always apply authMiddleware to new routes')}
+---
+## ${G?'パターン別':'By Pattern'}
+### ${G?'認証・認可':'Auth'}
+_(${G?'追記してください':'Add entries here'})_
+### ${G?'データベース':'Database'}
+_(${G?'追記してください':'Add entries here'})_
+### ${G?'デプロイ':'Deploy'}
+_(${G?'追記してください':'Add entries here'})_`],
   ];
   docTemplates.forEach(([file,title,content])=>{
     S.files[`docs/${file}.md`]=`# ${pn} — ${title}\n> ${date}\n\n${content}`;
@@ -3575,120 +3735,131 @@ const DOMAIN_ENTITIES={
   portfolio:{core:['User','Project','Skill','Experience','Contact'],warn:['Product','Order','Cart','Payment'],suggest:{}},
   tool:{core:['User','Workspace','Task','Setting','Log'],warn:['Product','Order','Cart'],suggest:{}},
 };
+const _U='user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID';
+const _SA="status:VARCHAR(20):DEFAULT 'active':ステータス:Status";
+const _SD="status:VARCHAR(20):DEFAULT 'draft':ステータス:Status";
+const _SP="status:VARCHAR(20):DEFAULT 'pending':ステータス:Status";
+const _T='title:VARCHAR(255):NOT NULL:タイトル:Title';
+const _D='description:TEXT::説明:Description';
+const _CN='config:JSONB::設定:Config';
+const _M='metadata:JSONB::メタデータ:Metadata';
+const _B='body:TEXT::本文:Body';
+const _BN='body:TEXT:NOT NULL:本文:Body';
+const _TS='created_at:TIMESTAMP:DEFAULT NOW:作成日時:Created at';
 const ENTITY_COLUMNS={
   User:['email:VARCHAR(255):UNIQUE NOT NULL:メールアドレス:Email','avatar_url:TEXT::アバターURL:Avatar URL','role:VARCHAR(20):DEFAULT \'user\':ユーザー権限:User role'],
   Course:['description:TEXT::コース説明:Course description','price:DECIMAL(10,2):DEFAULT 0:価格:Price','status:VARCHAR(20):DEFAULT \'draft\':公開状態:Publish status','thumbnail_url:TEXT::サムネイル:Thumbnail','instructor_id:UUID:FK(User):講師ID:Instructor ID'],
   Lesson:['sort_order:INT:DEFAULT 0:表示順:Display order','content_type:VARCHAR(20):DEFAULT \'text\':コンテンツ種別:Content type','duration_min:INT::所要時間(分):Duration(min)','video_url:TEXT::動画URL:Video URL','is_free:BOOLEAN:DEFAULT false:無料公開:Free access'],
-  Progress:['user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID','lesson_id:UUID:FK(Lesson) NOT NULL:レッスンID:Lesson ID','status:VARCHAR(20):DEFAULT \'not_started\':進捗状態:Progress status','completed_at:TIMESTAMP::完了日時:Completed at','score:INT::スコア:Score'],
+  Progress:[_U,'lesson_id:UUID:FK(Lesson) NOT NULL:レッスンID:Lesson ID','status:VARCHAR(20):DEFAULT \'not_started\':進捗状態:Progress status','completed_at:TIMESTAMP::完了日時:Completed at','score:INT::スコア:Score'],
   Quiz:['lesson_id:UUID:FK(Lesson) NOT NULL:レッスンID:Lesson ID','question:TEXT:NOT NULL:問題文:Question text','options:JSONB::選択肢:Options','correct_answer:TEXT:NOT NULL:正解:Correct answer','order:INT:DEFAULT 0:表示順:Display order'],
-  Enrollment:['user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID','course_id:UUID:FK(Course) NOT NULL:コースID:Course ID','enrolled_at:TIMESTAMP:DEFAULT NOW:受講開始日:Enrolled at','expires_at:TIMESTAMP::有効期限:Expires at','status:VARCHAR(20):DEFAULT \'active\':受講状態:Enrollment status'],
-  Certificate:['user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID','course_id:UUID:FK(Course) NOT NULL:コースID:Course ID','issued_at:TIMESTAMP:DEFAULT NOW:発行日:Issued at','certificate_url:TEXT::証明書URL:Certificate URL'],
-  Product:['description:TEXT::商品説明:Product description','price:DECIMAL(10,2):NOT NULL:価格:Price','stock:INT:DEFAULT 0:在庫数:Stock','sku:VARCHAR(100):UNIQUE:SKU:SKU','image_url:TEXT::商品画像:Product image','category_id:UUID:FK(Category):カテゴリID:Category ID','status:VARCHAR(20):DEFAULT \'active\':販売状態:Status'],
-  Category:['slug:VARCHAR(100):UNIQUE:スラグ:Slug','description:TEXT::カテゴリ説明:Description','parent_id:UUID:FK(Category):親カテゴリ:Parent category','sort_order:INT:DEFAULT 0:表示順:Display order'],
-  Order:['user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID','total:DECIMAL(10,2):NOT NULL:合計金額:Total','status:VARCHAR(20):DEFAULT \'pending\':注文状態:Order status','stripe_session_id:TEXT::Stripe Session ID:Stripe Session ID','shipping_address:JSONB::配送先:Shipping address'],
-  Cart:['user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID','product_id:UUID:FK(Product) NOT NULL:商品ID:Product ID','quantity:INT:DEFAULT 1:数量:Quantity'],
-  Review:['user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID','rating:INT:NOT NULL:評価(1-5):Rating(1-5)','body:TEXT::レビュー本文:Review body'],
-  Post:['user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID','title:VARCHAR(255):NOT NULL:タイトル:Title','body:TEXT::本文:Body','status:VARCHAR(20):DEFAULT \'draft\':公開状態:Status','published_at:TIMESTAMP::公開日時:Published at','slug:VARCHAR(255):UNIQUE:スラグ:Slug'],
-  Comment:['user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID','post_id:UUID:FK(Post) NOT NULL:投稿ID:Post ID','body:TEXT:NOT NULL:コメント本文:Comment body'],
+  Enrollment:[_U,'course_id:UUID:FK(Course) NOT NULL:コースID:Course ID','enrolled_at:TIMESTAMP:DEFAULT NOW:受講開始日:Enrolled at','expires_at:TIMESTAMP::有効期限:Expires at',_SA],
+  Certificate:[_U,'course_id:UUID:FK(Course) NOT NULL:コースID:Course ID','issued_at:TIMESTAMP:DEFAULT NOW:発行日:Issued at','certificate_url:TEXT::証明書URL:Certificate URL'],
+  Product:[_D,'price:DECIMAL(10,2):NOT NULL:価格:Price','stock:INT:DEFAULT 0:在庫数:Stock','sku:VARCHAR(100):UNIQUE:SKU:SKU','image_url:TEXT::商品画像:Product image','category_id:UUID:FK(Category):カテゴリID:Category ID',_SA],
+  Category:['slug:VARCHAR(100):UNIQUE:スラグ:Slug',_D,'parent_id:UUID:FK(Category):親カテゴリ:Parent category','sort_order:INT:DEFAULT 0:表示順:Display order'],
+  Order:[_U,'total:DECIMAL(10,2):NOT NULL:合計金額:Total',_SP,'stripe_session_id:TEXT::Stripe Session ID:Stripe Session ID','shipping_address:JSONB::配送先:Shipping address'],
+  Cart:[_U,'product_id:UUID:FK(Product) NOT NULL:商品ID:Product ID','quantity:INT:DEFAULT 1:数量:Quantity'],
+  Review:[_U,'rating:INT:NOT NULL:評価(1-5):Rating(1-5)',_B],
+  Post:[_U,_T,_B,_SD,'published_at:TIMESTAMP::公開日時:Published at','slug:VARCHAR(255):UNIQUE:スラグ:Slug'],
+  Comment:[_U,'post_id:UUID:FK(Post) NOT NULL:投稿ID:Post ID',_BN],
   Tag:['slug:VARCHAR(100):UNIQUE NOT NULL:スラグ:Slug'],
-  Media:['user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID','url:TEXT:NOT NULL:ファイルURL:File URL','mime_type:VARCHAR(50)::MIMEタイプ:MIME type','size_bytes:BIGINT::ファイルサイズ:File size'],
-  Like:['user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID','post_id:UUID:FK(Post) NOT NULL:投稿ID:Post ID'],
+  Media:[_U,'url:TEXT:NOT NULL:ファイルURL:File URL','mime_type:VARCHAR(50)::MIMEタイプ:MIME type','size_bytes:BIGINT::ファイルサイズ:File size'],
+  Like:[_U,'post_id:UUID:FK(Post) NOT NULL:投稿ID:Post ID'],
   Follow:['follower_id:UUID:FK(User) NOT NULL:フォロワーID:Follower ID','following_id:UUID:FK(User) NOT NULL:フォロー対象ID:Following ID'],
-  Message:['sender_id:UUID:FK(User) NOT NULL:送信者ID:Sender ID','receiver_id:UUID:FK(User) NOT NULL:受信者ID:Receiver ID','body:TEXT:NOT NULL:メッセージ本文:Message body','read_at:TIMESTAMP::既読日時:Read at'],
-  Listing:['user_id:UUID:FK(User) NOT NULL:出品者ID:Seller ID','title:VARCHAR(255):NOT NULL:タイトル:Title','description:TEXT::説明:Description','price:DECIMAL(10,2):NOT NULL:価格:Price','status:VARCHAR(20):DEFAULT \'active\':出品状態:Status','category_id:UUID:FK(Category):カテゴリID:Category ID'],
-  Service:['provider_id:UUID:FK(User) NOT NULL:提供者ID:Provider ID','description:TEXT::サービス説明:Description','price:DECIMAL(10,2)::料金:Price','duration_min:INT::所要時間(分):Duration(min)'],
-  Booking:['user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID','service_id:UUID:FK(Service) NOT NULL:サービスID:Service ID','starts_at:TIMESTAMP:NOT NULL:開始日時:Starts at','ends_at:TIMESTAMP:NOT NULL:終了日時:Ends at','status:VARCHAR(20):DEFAULT \'pending\':予約状態:Status'],
+  Message:['sender_id:UUID:FK(User) NOT NULL:送信者ID:Sender ID','receiver_id:UUID:FK(User) NOT NULL:受信者ID:Receiver ID',_BN,'read_at:TIMESTAMP::既読日時:Read at'],
+  Listing:[_U,_T,_D,'price:DECIMAL(10,2):NOT NULL:価格:Price',_SA,'category_id:UUID:FK(Category):カテゴリID:Category ID'],
+  Service:['provider_id:UUID:FK(User) NOT NULL:提供者ID:Provider ID',_D,'price:DECIMAL(10,2)::料金:Price','duration_min:INT::所要時間(分):Duration(min)'],
+  Booking:[_U,'service_id:UUID:FK(Service) NOT NULL:サービスID:Service ID','starts_at:TIMESTAMP:NOT NULL:開始日時:Starts at','ends_at:TIMESTAMP:NOT NULL:終了日時:Ends at',_SP],
   TimeSlot:['service_id:UUID:FK(Service) NOT NULL:サービスID:Service ID','day_of_week:INT:NOT NULL:曜日(0-6):Day of week','start_time:TIME:NOT NULL:開始時刻:Start time','end_time:TIME:NOT NULL:終了時刻:End time','is_available:BOOLEAN:DEFAULT true:利用可能:Available'],
   Workspace:['owner_id:UUID:FK(User) NOT NULL:オーナーID:Owner ID','slug:VARCHAR(100):UNIQUE:スラグ:Slug','plan:VARCHAR(20):DEFAULT \'free\':プラン:Plan'],
-  Project:['workspace_id:UUID:FK(Workspace):ワークスペースID:Workspace ID','status:VARCHAR(20):DEFAULT \'active\':プロジェクト状態:Status','description:TEXT::説明:Description'],
+  Project:['workspace_id:UUID:FK(Workspace):ワークスペースID:Workspace ID',_SA,_D],
   Task:['project_id:UUID:FK(Project):プロジェクトID:Project ID','assignee_id:UUID:FK(User):担当者ID:Assignee ID','status:VARCHAR(20):DEFAULT \'todo\':タスク状態:Status','priority:INT:DEFAULT 0:優先度:Priority','due_date:DATE::期日:Due date'],
-  Subscription:['user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID','stripe_subscription_id:TEXT:UNIQUE:StripeサブスクID:Stripe Sub ID','stripe_customer_id:TEXT::Stripe顧客ID:Stripe Customer ID','status:VARCHAR(20):DEFAULT \'active\':契約状態:Status','plan:VARCHAR(20):NOT NULL:プラン名:Plan name','current_period_end:TIMESTAMP::現在期間終了:Current period end'],
-  Invoice:['user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID','amount:DECIMAL(10,2):NOT NULL:金額:Amount','status:VARCHAR(20):DEFAULT \'pending\':請求状態:Status','stripe_invoice_id:TEXT::Stripe請求ID:Stripe Invoice ID','paid_at:TIMESTAMP::支払日:Paid at'],
-  Payment:['user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID','amount:DECIMAL(10,2):NOT NULL:金額:Amount','method:VARCHAR(20)::支払方法:Payment method','status:VARCHAR(20):DEFAULT \'pending\':支払状態:Status','stripe_payment_id:TEXT::Stripe決済ID:Stripe Payment ID'],
-  Dashboard:['user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID','layout:JSONB::レイアウト設定:Layout config'],
-  Widget:['dashboard_id:UUID:FK(Dashboard) NOT NULL:ダッシュボードID:Dashboard ID','type:VARCHAR(50):NOT NULL:ウィジェット種別:Widget type','config:JSONB::設定:Config','position:INT:DEFAULT 0:表示位置:Position'],
+  Subscription:[_U,'stripe_subscription_id:TEXT:UNIQUE:StripeサブスクID:Stripe Sub ID','stripe_customer_id:TEXT::Stripe顧客ID:Stripe Customer ID',_SA,'plan:VARCHAR(20):NOT NULL:プラン名:Plan name','current_period_end:TIMESTAMP::現在期間終了:Current period end'],
+  Invoice:[_U,'amount:DECIMAL(10,2):NOT NULL:金額:Amount',_SP,'stripe_invoice_id:TEXT::Stripe請求ID:Stripe Invoice ID','paid_at:TIMESTAMP::支払日:Paid at'],
+  Payment:[_U,'amount:DECIMAL(10,2):NOT NULL:金額:Amount','method:VARCHAR(20)::支払方法:Payment method',_SP,'stripe_payment_id:TEXT::Stripe決済ID:Stripe Payment ID'],
+  Dashboard:[_U,'layout:JSONB::レイアウト設定:Layout config'],
+  Widget:['dashboard_id:UUID:FK(Dashboard) NOT NULL:ダッシュボードID:Dashboard ID','type:VARCHAR(50):NOT NULL:ウィジェット種別:Widget type',_CN,'position:INT:DEFAULT 0:表示位置:Position'],
   DataSource:['workspace_id:UUID:FK(Workspace):ワークスペースID:Workspace ID','type:VARCHAR(50):NOT NULL:データソース種別:Source type','connection_config:JSONB::接続設定:Connection config'],
-  Device:['user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID','device_name:VARCHAR(255):NOT NULL:デバイス名:Device name','device_type:VARCHAR(50)::デバイス種別:Device type','status:VARCHAR(20):DEFAULT \'active\':状態:Status'],
+  Device:[_U,'device_name:VARCHAR(255):NOT NULL:デバイス名:Device name','device_type:VARCHAR(50)::デバイス種別:Device type',_SA],
   Sensor:['device_id:UUID:FK(Device) NOT NULL:デバイスID:Device ID','sensor_type:VARCHAR(50):NOT NULL:センサー種別:Sensor type','unit:VARCHAR(20)::単位:Unit'],
-  Alert:['user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID','severity:VARCHAR(20):DEFAULT \'info\':重要度:Severity','message:TEXT:NOT NULL:メッセージ:Message','acknowledged_at:TIMESTAMP::確認日時:Acknowledged at'],
-  Notification:['user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID','title:VARCHAR(255):NOT NULL:タイトル:Title','body:TEXT::本文:Body','read_at:TIMESTAMP::既読日時:Read at','type:VARCHAR(50):DEFAULT \'general\':通知種別:Type'],
-  AuditLog:['user_id:UUID:FK(User):ユーザーID:User ID','action:VARCHAR(100):NOT NULL:操作:Action','resource_type:VARCHAR(50)::対象リソース:Resource type','resource_id:UUID::対象ID:Resource ID','metadata:JSONB::メタデータ:Metadata'],
+  Alert:[_U,'severity:VARCHAR(20):DEFAULT \'info\':重要度:Severity','message:TEXT:NOT NULL:メッセージ:Message','acknowledged_at:TIMESTAMP::確認日時:Acknowledged at'],
+  Notification:[_U,_T,_B,'read_at:TIMESTAMP::既読日時:Read at','type:VARCHAR(50):DEFAULT \'general\':通知種別:Type'],
+  AuditLog:[_U,'action:VARCHAR(100):NOT NULL:操作:Action','resource_type:VARCHAR(50)::対象リソース:Resource type','resource_id:UUID::対象ID:Resource ID',_M],
   Skill:['category:VARCHAR(100)::スキルカテゴリ:Skill category','level:INT:DEFAULT 0:レベル:Level'],
   Experience:['user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID','company:VARCHAR(255)::企業名:Company','title:VARCHAR(255)::役職:Title','start_date:DATE::開始日:Start date','end_date:DATE::終了日:End date','description:TEXT::説明:Description'],
   Contact:['email:VARCHAR(255):NOT NULL:メールアドレス:Email','subject:VARCHAR(255)::件名:Subject','body:TEXT:NOT NULL:本文:Body','status:VARCHAR(20):DEFAULT \'unread\':対応状態:Status'],
   Team:['workspace_id:UUID:FK(Workspace) NOT NULL:ワークスペースID:Workspace ID','role:VARCHAR(20):DEFAULT \'member\':チーム権限:Team role'],
-  Activity:['user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID','action:VARCHAR(100):NOT NULL:操作種別:Action type','resource_type:VARCHAR(50)::対象リソース:Resource type','resource_id:UUID::対象ID:Resource ID','metadata:JSONB::メタデータ:Metadata'],
-  Conversation:['user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID','title:VARCHAR(255)::会話タイトル:Conversation title','model:VARCHAR(50)::使用モデル:Model used','token_count:INT:DEFAULT 0:トークン数:Token count','status:VARCHAR(20):DEFAULT \'active\':ステータス:Status'],
-  Prompt:['user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID','title:VARCHAR(255):NOT NULL:プロンプト名:Prompt title','content:TEXT:NOT NULL:プロンプト内容:Prompt content','category:VARCHAR(50)::カテゴリ:Category','is_public:BOOLEAN:DEFAULT false:公開設定:Public'],
-  ApiUsage:['user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID','endpoint:VARCHAR(255):NOT NULL:エンドポイント:Endpoint','tokens_used:INT:NOT NULL:使用トークン:Tokens used','cost:DECIMAL(10,4)::コスト:Cost','request_at:TIMESTAMP:DEFAULT NOW:リクエスト日時:Request at'],
-  Agent:['user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID','agent_name:VARCHAR(255):NOT NULL:エージェント名:Agent name','system_prompt:TEXT::システムプロンプト:System prompt','model:VARCHAR(50)::使用モデル:Model','status:VARCHAR(20):DEFAULT \'active\':ステータス:Status','config:JSONB::設定:Config'],
-  Tool:['agent_id:UUID:FK(Agent) NOT NULL:エージェントID:Agent ID','tool_name:VARCHAR(100):NOT NULL:ツール名:Tool name','tool_type:VARCHAR(50)::ツール種別:Tool type','config:JSONB::設定:Config','is_enabled:BOOLEAN:DEFAULT true:有効:Enabled'],
-  Template:['user_id:UUID:FK(User):ユーザーID:User ID','title:VARCHAR(255):NOT NULL:テンプレート名:Template title','content:TEXT:NOT NULL:テンプレート内容:Content','category:VARCHAR(50)::カテゴリ:Category','usage_count:INT:DEFAULT 0:使用回数:Usage count'],
-  Generation:['user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID','template_id:UUID:FK(Template):テンプレートID:Template ID','input:TEXT::入力:Input','output:TEXT::出力:Output','model:VARCHAR(50)::使用モデル:Model','tokens_used:INT::使用トークン:Tokens used','status:VARCHAR(20):DEFAULT \'completed\':ステータス:Status'],
-  Content:['user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID','title:VARCHAR(255):NOT NULL:タイトル:Title','body:TEXT::本文:Body','content_type:VARCHAR(50)::コンテンツ種別:Content type','status:VARCHAR(20):DEFAULT \'draft\':ステータス:Status','published_at:TIMESTAMP::公開日時:Published at'],
-  CreditUsage:['user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID','credits_used:INT:NOT NULL:使用クレジット:Credits used','action:VARCHAR(100)::操作:Action','balance_after:INT::残高:Balance after'],
-  Workflow:['user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID','title:VARCHAR(255):NOT NULL:ワークフロー名:Workflow name','description:TEXT::説明:Description','status:VARCHAR(20):DEFAULT \'draft\':ステータス:Status','is_active:BOOLEAN:DEFAULT false:有効:Active','config:JSONB::設定:Config'],
-  Trigger:['workflow_id:UUID:FK(Workflow) NOT NULL:ワークフローID:Workflow ID','trigger_type:VARCHAR(50):NOT NULL:トリガー種別:Trigger type','config:JSONB::設定:Config','is_enabled:BOOLEAN:DEFAULT true:有効:Enabled'],
-  Action:['workflow_id:UUID:FK(Workflow) NOT NULL:ワークフローID:Workflow ID','action_type:VARCHAR(50):NOT NULL:アクション種別:Action type','sort_order:INT:DEFAULT 0:実行順:Order','config:JSONB::設定:Config'],
+  Activity:[_U,'action:VARCHAR(100):NOT NULL:操作種別:Action type','resource_type:VARCHAR(50)::対象リソース:Resource type','resource_id:UUID::対象ID:Resource ID',_M],
+  Conversation:[_U,_T,'model:VARCHAR(50)::使用モデル:Model used','token_count:INT:DEFAULT 0:トークン数:Token count',_SA],
+  Prompt:[_U,_T,'content:TEXT:NOT NULL:プロンプト内容:Prompt content','category:VARCHAR(50)::カテゴリ:Category','is_public:BOOLEAN:DEFAULT false:公開設定:Public'],
+  ApiUsage:[_U,'endpoint:VARCHAR(255):NOT NULL:エンドポイント:Endpoint','tokens_used:INT:NOT NULL:使用トークン:Tokens used','cost:DECIMAL(10,4)::コスト:Cost','request_at:TIMESTAMP:DEFAULT NOW:リクエスト日時:Request at'],
+  Agent:[_U,'agent_name:VARCHAR(255):NOT NULL:エージェント名:Agent name','system_prompt:TEXT::システムプロンプト:System prompt','model:VARCHAR(50)::使用モデル:Model',_SA,_CN],
+  Tool:['agent_id:UUID:FK(Agent) NOT NULL:エージェントID:Agent ID','tool_name:VARCHAR(100):NOT NULL:ツール名:Tool name','tool_type:VARCHAR(50)::ツール種別:Tool type',_CN,'is_enabled:BOOLEAN:DEFAULT true:有効:Enabled'],
+  Template:[_U,_T,'content:TEXT:NOT NULL:テンプレート内容:Content','category:VARCHAR(50)::カテゴリ:Category','usage_count:INT:DEFAULT 0:使用回数:Usage count'],
+  Generation:[_U,'template_id:UUID:FK(Template):テンプレートID:Template ID','input:TEXT::入力:Input','output:TEXT::出力:Output','model:VARCHAR(50)::使用モデル:Model','tokens_used:INT::使用トークン:Tokens used','status:VARCHAR(20):DEFAULT \'completed\':ステータス:Status'],
+  Content:[_U,_T,_B,'content_type:VARCHAR(50)::コンテンツ種別:Content type',_SD,'published_at:TIMESTAMP::公開日時:Published at'],
+  CreditUsage:[_U,'credits_used:INT:NOT NULL:使用クレジット:Credits used','action:VARCHAR(100)::操作:Action','balance_after:INT::残高:Balance after'],
+  Workflow:[_U,_T,_D,_SD,'is_active:BOOLEAN:DEFAULT false:有効:Active',_CN],
+  Trigger:['workflow_id:UUID:FK(Workflow) NOT NULL:ワークフローID:Workflow ID','trigger_type:VARCHAR(50):NOT NULL:トリガー種別:Trigger type',_CN,'is_enabled:BOOLEAN:DEFAULT true:有効:Enabled'],
+  Action:['workflow_id:UUID:FK(Workflow) NOT NULL:ワークフローID:Workflow ID','action_type:VARCHAR(50):NOT NULL:アクション種別:Action type','sort_order:INT:DEFAULT 0:実行順:Order',_CN],
   Execution:['workflow_id:UUID:FK(Workflow) NOT NULL:ワークフローID:Workflow ID','status:VARCHAR(20):DEFAULT \'running\':実行状態:Status','started_at:TIMESTAMP:DEFAULT NOW:開始日時:Started at','completed_at:TIMESTAMP::完了日時:Completed at','error:TEXT::エラー:Error','output:JSONB::出力:Output'],
-  Connection:['user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID','service:VARCHAR(100):NOT NULL:サービス名:Service','credentials:JSONB::認証情報:Credentials','status:VARCHAR(20):DEFAULT \'active\':ステータス:Status'],
-  Log:['user_id:UUID:FK(User):ユーザーID:User ID','level:VARCHAR(20):DEFAULT \'info\':レベル:Level','message:TEXT:NOT NULL:メッセージ:Message','metadata:JSONB::メタデータ:Metadata'],
-  Transaction:['buyer_id:UUID:FK(User) NOT NULL:購入者ID:Buyer ID','seller_id:UUID:FK(User) NOT NULL:販売者ID:Seller ID','amount:DECIMAL(10,2):NOT NULL:金額:Amount','fee:DECIMAL(10,2):DEFAULT 0:手数料:Fee','status:VARCHAR(20):DEFAULT \'pending\':取引状態:Status','stripe_transfer_id:TEXT::Stripe送金ID:Stripe transfer ID'],
-  Bot:['user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID','bot_name:VARCHAR(255):NOT NULL:ボット名:Bot name','welcome_message:TEXT::ウェルカムメッセージ:Welcome message','model:VARCHAR(50)::使用モデル:Model','status:VARCHAR(20):DEFAULT \'active\':ステータス:Status'],
+  Connection:[_U,'service:VARCHAR(100):NOT NULL:サービス名:Service','credentials:JSONB::認証情報:Credentials',_SA],
+  Log:[_U,'level:VARCHAR(20):DEFAULT \'info\':レベル:Level','message:TEXT:NOT NULL:メッセージ:Message',_M],
+  Transaction:['buyer_id:UUID:FK(User) NOT NULL:購入者ID:Buyer ID','seller_id:UUID:FK(User) NOT NULL:販売者ID:Seller ID','amount:DECIMAL(10,2):NOT NULL:金額:Amount','fee:DECIMAL(10,2):DEFAULT 0:手数料:Fee',_SP,'stripe_transfer_id:TEXT::Stripe送金ID:Stripe transfer ID'],
+  Bot:[_U,'bot_name:VARCHAR(255):NOT NULL:ボット名:Bot name','welcome_message:TEXT::ウェルカムメッセージ:Welcome message','model:VARCHAR(50)::使用モデル:Model',_SA],
   Intent:['bot_id:UUID:FK(Bot) NOT NULL:ボットID:Bot ID','intent_name:VARCHAR(100):NOT NULL:インテント名:Intent name','examples:JSONB::例文:Examples','response_template:TEXT::応答テンプレート:Response template'],
-  KnowledgeBase:['bot_id:UUID:FK(Bot) NOT NULL:ボットID:Bot ID','title:VARCHAR(255):NOT NULL:タイトル:Title','content:TEXT:NOT NULL:内容:Content','embedding:JSONB::埋め込みベクトル:Embedding vector','source_url:TEXT::ソースURL:Source URL'],
-  Handoff:['conversation_id:UUID:FK(Conversation) NOT NULL:会話ID:Conversation ID','agent_id:UUID:FK(User):担当者ID:Agent ID','reason:TEXT::理由:Reason','status:VARCHAR(20):DEFAULT \'pending\':ステータス:Status','resolved_at:TIMESTAMP::解決日時:Resolved at'],
-  Account:['user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID','account_name:VARCHAR(255):NOT NULL:口座名:Account name','account_type:VARCHAR(50)::口座種別:Account type','balance:DECIMAL(12,2):DEFAULT 0:残高:Balance','currency:VARCHAR(3):DEFAULT \'JPY\':通貨:Currency','institution:VARCHAR(255)::金融機関:Institution'],
-  Budget:['user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID','category:VARCHAR(100):NOT NULL:カテゴリ:Category','amount:DECIMAL(10,2):NOT NULL:予算額:Budget amount','period:VARCHAR(20):DEFAULT \'monthly\':期間:Period','spent:DECIMAL(10,2):DEFAULT 0:使用額:Spent'],
-  Report:['user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID','title:VARCHAR(255):NOT NULL:レポート名:Report title','report_type:VARCHAR(50)::レポート種別:Report type','config:JSONB::設定:Config','generated_at:TIMESTAMP::生成日時:Generated at','data:JSONB::データ:Data'],
-  ApiKey:['user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID','key_prefix:VARCHAR(20):NOT NULL:キー接頭辞:Key prefix','key_hash:TEXT:NOT NULL:キーハッシュ:Key hash','label:VARCHAR(100)::ラベル:Label','permissions:JSONB::権限:Permissions','last_used_at:TIMESTAMP::最終使用日:Last used','expires_at:TIMESTAMP::有効期限:Expires at'],
+  KnowledgeBase:['bot_id:UUID:FK(Bot) NOT NULL:ボットID:Bot ID',_T,'content:TEXT:NOT NULL:内容:Content','embedding:JSONB::埋め込みベクトル:Embedding vector','source_url:TEXT::ソースURL:Source URL'],
+  Handoff:['conversation_id:UUID:FK(Conversation) NOT NULL:会話ID:Conversation ID','agent_id:UUID:FK(User):担当者ID:Agent ID','reason:TEXT::理由:Reason',_SP,'resolved_at:TIMESTAMP::解決日時:Resolved at'],
+  Account:[_U,'account_name:VARCHAR(255):NOT NULL:口座名:Account name','account_type:VARCHAR(50)::口座種別:Account type','balance:DECIMAL(12,2):DEFAULT 0:残高:Balance','currency:VARCHAR(3):DEFAULT \'JPY\':通貨:Currency','institution:VARCHAR(255)::金融機関:Institution'],
+  Budget:[_U,'category:VARCHAR(100):NOT NULL:カテゴリ:Category','amount:DECIMAL(10,2):NOT NULL:予算額:Budget amount','period:VARCHAR(20):DEFAULT \'monthly\':期間:Period','spent:DECIMAL(10,2):DEFAULT 0:使用額:Spent'],
+  Report:[_U,_T,'report_type:VARCHAR(50)::レポート種別:Report type',_CN,'generated_at:TIMESTAMP::生成日時:Generated at','data:JSONB::データ:Data'],
+  ApiKey:[_U,'key_prefix:VARCHAR(20):NOT NULL:キー接頭辞:Key prefix','key_hash:TEXT:NOT NULL:キーハッシュ:Key hash','label:VARCHAR(100)::ラベル:Label','permissions:JSONB::権限:Permissions','last_used_at:TIMESTAMP::最終使用日:Last used','expires_at:TIMESTAMP::有効期限:Expires at'],
   RequestLog:['api_key_id:UUID:FK(ApiKey):APIキーID:API Key ID','method:VARCHAR(10):NOT NULL:HTTPメソッド:HTTP method','path:VARCHAR(500):NOT NULL:パス:Path','status_code:INT::ステータスコード:Status code','latency_ms:INT::レイテンシ(ms):Latency(ms)','ip_address:VARCHAR(45)::IPアドレス:IP address'],
-  Documentation:['title:VARCHAR(255):NOT NULL:タイトル:Title','slug:VARCHAR(255):UNIQUE:スラグ:Slug','content:TEXT:NOT NULL:内容:Content','category:VARCHAR(100)::カテゴリ:Category','sort_order:INT:DEFAULT 0:表示順:Sort order','version:VARCHAR(20)::バージョン:Version'],
+  Documentation:[_T,'slug:VARCHAR(255):UNIQUE:スラグ:Slug','content:TEXT:NOT NULL:内容:Content','category:VARCHAR(100)::カテゴリ:Category','sort_order:INT:DEFAULT 0:表示順:Sort order','version:VARCHAR(20)::バージョン:Version'],
   Tip:['sender_id:UUID:FK(User) NOT NULL:送信者ID:Sender ID','receiver_id:UUID:FK(User) NOT NULL:受信者ID:Receiver ID','amount:DECIMAL(10,2):NOT NULL:金額:Amount','message:TEXT::メッセージ:Message','status:VARCHAR(20):DEFAULT \'completed\':ステータス:Status'],
-  Tier:['user_id:UUID:FK(User) NOT NULL:クリエイターID:Creator ID','tier_name:VARCHAR(100):NOT NULL:ティア名:Tier name','price:DECIMAL(10,2):NOT NULL:月額:Monthly price','description:TEXT::説明:Description','benefits:JSONB::特典:Benefits'],
-  Subscriber:['email:VARCHAR(255):UNIQUE NOT NULL:メールアドレス:Email','user_id:UUID:FK(User):ユーザーID:User ID','status:VARCHAR(20):DEFAULT \'active\':購読状態:Status','subscribed_at:TIMESTAMP:DEFAULT NOW:購読開始日:Subscribed at','tags:JSONB::タグ:Tags'],
-  Campaign:['user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID','title:VARCHAR(255):NOT NULL:キャンペーン名:Campaign title','subject:VARCHAR(255)::件名:Subject','body:TEXT::本文:Body','status:VARCHAR(20):DEFAULT \'draft\':ステータス:Status','scheduled_at:TIMESTAMP::配信予定:Scheduled at','sent_at:TIMESTAMP::配信日時:Sent at'],
+  Tier:[_U,'tier_name:VARCHAR(100):NOT NULL:ティア名:Tier name','price:DECIMAL(10,2):NOT NULL:月額:Monthly price',_D,'benefits:JSONB::特典:Benefits'],
+  Subscriber:['email:VARCHAR(255):UNIQUE NOT NULL:メールアドレス:Email',_U,_SA,'subscribed_at:TIMESTAMP:DEFAULT NOW:購読開始日:Subscribed at','tags:JSONB::タグ:Tags'],
+  Campaign:[_U,_T,'subject:VARCHAR(255)::件名:Subject',_B,_SD,'scheduled_at:TIMESTAMP::配信予定:Scheduled at','sent_at:TIMESTAMP::配信日時:Sent at'],
   Analytics:['campaign_id:UUID:FK(Campaign):キャンペーンID:Campaign ID','metric:VARCHAR(50):NOT NULL:指標:Metric','value:DECIMAL(12,2):NOT NULL:値:Value','recorded_at:TIMESTAMP:DEFAULT NOW:記録日時:Recorded at'],
   Plan:['plan_name:VARCHAR(100):NOT NULL:プラン名:Plan name','price:DECIMAL(10,2):NOT NULL:価格:Price','interval:VARCHAR(20):DEFAULT \'monthly\':課金間隔:Billing interval','features:JSONB::機能:Features','stripe_price_id:TEXT::Stripe価格ID:Stripe price ID','is_active:BOOLEAN:DEFAULT true:有効:Active'],
-  SyncQueue:['user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID','action:VARCHAR(50):NOT NULL:操作:Action','payload:JSONB:NOT NULL:データ:Payload','status:VARCHAR(20):DEFAULT \'pending\':同期状態:Sync status','retry_count:INT:DEFAULT 0:リトライ数:Retry count'],
-  Setting:['user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID','key:VARCHAR(100):NOT NULL:設定キー:Setting key','value:JSONB::設定値:Value'],
-  Staff:['user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID','specialty:VARCHAR(100)::専門分野:Specialty','is_available:BOOLEAN:DEFAULT true:利用可能:Available','calendar_config:JSONB::カレンダー設定:Calendar config'],
+  SyncQueue:[_U,'action:VARCHAR(50):NOT NULL:操作:Action','payload:JSONB:NOT NULL:データ:Payload',_SP,'retry_count:INT:DEFAULT 0:リトライ数:Retry count'],
+  Setting:[_U,'key:VARCHAR(100):NOT NULL:設定キー:Setting key','value:JSONB::設定値:Value'],
+  Staff:[_U,'specialty:VARCHAR(100)::専門分野:Specialty','is_available:BOOLEAN:DEFAULT true:利用可能:Available','calendar_config:JSONB::カレンダー設定:Calendar config'],
   Reminder:['booking_id:UUID:FK(Booking):予約ID:Booking ID','remind_at:TIMESTAMP:NOT NULL:リマインド日時:Remind at','method:VARCHAR(20):DEFAULT \'email\':通知方法:Method','sent:BOOLEAN:DEFAULT false:送信済:Sent'],
-  Event:['user_id:UUID:FK(User) NOT NULL:主催者ID:Organizer ID','title:VARCHAR(255):NOT NULL:イベント名:Event title','description:TEXT::説明:Description','venue_id:UUID:FK(Venue):会場ID:Venue ID','starts_at:TIMESTAMP:NOT NULL:開始日時:Starts at','ends_at:TIMESTAMP:NOT NULL:終了日時:Ends at','capacity:INT::定員:Capacity','status:VARCHAR(20):DEFAULT \'draft\':ステータス:Status','is_online:BOOLEAN:DEFAULT false:オンライン:Online'],
+  Event:[_U,_T,_D,'venue_id:UUID:FK(Venue):会場ID:Venue ID','starts_at:TIMESTAMP:NOT NULL:開始日時:Starts at','ends_at:TIMESTAMP:NOT NULL:終了日時:Ends at','capacity:INT::定員:Capacity',_SD,'is_online:BOOLEAN:DEFAULT false:オンライン:Online'],
   Ticket:['event_id:UUID:FK(Event) NOT NULL:イベントID:Event ID','ticket_type:VARCHAR(50):NOT NULL:チケット種別:Ticket type','price:DECIMAL(10,2):DEFAULT 0:価格:Price','quantity:INT:NOT NULL:枚数:Quantity','sold:INT:DEFAULT 0:販売済:Sold'],
-  Attendee:['event_id:UUID:FK(Event) NOT NULL:イベントID:Event ID','user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID','ticket_id:UUID:FK(Ticket):チケットID:Ticket ID','status:VARCHAR(20):DEFAULT \'registered\':参加状態:Status','checked_in_at:TIMESTAMP::チェックイン日時:Checked in at'],
+  Attendee:['event_id:UUID:FK(Event) NOT NULL:イベントID:Event ID',_U,'ticket_id:UUID:FK(Ticket):チケットID:Ticket ID','status:VARCHAR(20):DEFAULT \'registered\':参加状態:Status','checked_in_at:TIMESTAMP::チェックイン日時:Checked in at'],
   Venue:['venue_name:VARCHAR(255):NOT NULL:会場名:Venue name','address:TEXT::住所:Address','capacity:INT::収容人数:Capacity','latitude:DECIMAL(10,7)::緯度:Latitude','longitude:DECIMAL(10,7)::経度:Longitude'],
-  Session:['event_id:UUID:FK(Event) NOT NULL:イベントID:Event ID','title:VARCHAR(255):NOT NULL:セッション名:Session title','speaker:VARCHAR(255)::登壇者:Speaker','starts_at:TIMESTAMP:NOT NULL:開始:Starts at','ends_at:TIMESTAMP:NOT NULL:終了:Ends at','room:VARCHAR(100)::部屋:Room'],
-  Survey:['event_id:UUID:FK(Event):イベントID:Event ID','title:VARCHAR(255):NOT NULL:アンケート名:Survey title','questions:JSONB:NOT NULL:質問:Questions','is_active:BOOLEAN:DEFAULT true:受付中:Active'],
-  HealthLog:['user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID','log_type:VARCHAR(50):NOT NULL:記録種別:Log type','value:DECIMAL(10,2):NOT NULL:値:Value','unit:VARCHAR(20)::単位:Unit','logged_at:TIMESTAMP:DEFAULT NOW:記録日時:Logged at','notes:TEXT::メモ:Notes'],
-  Workout:['user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID','workout_type:VARCHAR(50):NOT NULL:運動種別:Workout type','duration_min:INT::所要時間(分):Duration(min)','calories:INT::消費カロリー:Calories','intensity:VARCHAR(20)::強度:Intensity','notes:TEXT::メモ:Notes'],
-  Meal:['user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID','meal_type:VARCHAR(20):NOT NULL:食事種別:Meal type','food_items:JSONB::食品:Food items','calories:INT::カロリー:Calories','photo_url:TEXT::写真URL:Photo URL','logged_at:TIMESTAMP:DEFAULT NOW:記録日時:Logged at'],
-  Goal:['user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID','goal_type:VARCHAR(50):NOT NULL:目標種別:Goal type','target_value:DECIMAL(10,2):NOT NULL:目標値:Target value','current_value:DECIMAL(10,2):DEFAULT 0:現在値:Current value','unit:VARCHAR(20)::単位:Unit','deadline:DATE::期限:Deadline','status:VARCHAR(20):DEFAULT \'active\':ステータス:Status'],
-  JobPosting:['department_id:UUID:FK(Department):部署ID:Department ID','title:VARCHAR(255):NOT NULL:求人タイトル:Job title','description:TEXT::説明:Description','employment_type:VARCHAR(50)::雇用形態:Employment type','salary_range:VARCHAR(100)::給与レンジ:Salary range','status:VARCHAR(20):DEFAULT \'open\':募集状態:Status','closes_at:DATE::締切日:Closes at'],
-  Applicant:['job_id:UUID:FK(JobPosting) NOT NULL:求人ID:Job ID','user_id:UUID:FK(User):ユーザーID:User ID','applicant_name:VARCHAR(255):NOT NULL:氏名:Name','email:VARCHAR(255):NOT NULL:メール:Email','resume_url:TEXT::履歴書URL:Resume URL','status:VARCHAR(20):DEFAULT \'applied\':選考状態:Status','applied_at:TIMESTAMP:DEFAULT NOW:応募日:Applied at'],
+  Session:['event_id:UUID:FK(Event) NOT NULL:イベントID:Event ID',_T,'speaker:VARCHAR(255)::登壇者:Speaker','starts_at:TIMESTAMP:NOT NULL:開始:Starts at','ends_at:TIMESTAMP:NOT NULL:終了:Ends at','room:VARCHAR(100)::部屋:Room'],
+  Survey:['event_id:UUID:FK(Event):イベントID:Event ID',_T,'questions:JSONB:NOT NULL:質問:Questions','is_active:BOOLEAN:DEFAULT true:受付中:Active'],
+  HealthLog:[_U,'log_type:VARCHAR(50):NOT NULL:記録種別:Log type','value:DECIMAL(10,2):NOT NULL:値:Value','unit:VARCHAR(20)::単位:Unit','logged_at:TIMESTAMP:DEFAULT NOW:記録日時:Logged at','notes:TEXT::メモ:Notes'],
+  Workout:[_U,'workout_type:VARCHAR(50):NOT NULL:運動種別:Workout type','duration_min:INT::所要時間(分):Duration(min)','calories:INT::消費カロリー:Calories','intensity:VARCHAR(20)::強度:Intensity','notes:TEXT::メモ:Notes'],
+  Meal:[_U,'meal_type:VARCHAR(20):NOT NULL:食事種別:Meal type','food_items:JSONB::食品:Food items','calories:INT::カロリー:Calories','photo_url:TEXT::写真URL:Photo URL','logged_at:TIMESTAMP:DEFAULT NOW:記録日時:Logged at'],
+  Goal:[_U,'goal_type:VARCHAR(50):NOT NULL:目標種別:Goal type','target_value:DECIMAL(10,2):NOT NULL:目標値:Target value','current_value:DECIMAL(10,2):DEFAULT 0:現在値:Current value','unit:VARCHAR(20)::単位:Unit','deadline:DATE::期限:Deadline',_SA],
+  JobPosting:['department_id:UUID:FK(Department):部署ID:Department ID',_T,_D,'employment_type:VARCHAR(50)::雇用形態:Employment type','salary_range:VARCHAR(100)::給与レンジ:Salary range','status:VARCHAR(20):DEFAULT \'open\':募集状態:Status','closes_at:DATE::締切日:Closes at'],
+  Applicant:['job_id:UUID:FK(JobPosting) NOT NULL:求人ID:Job ID',_U,'applicant_name:VARCHAR(255):NOT NULL:氏名:Name','email:VARCHAR(255):NOT NULL:メール:Email','resume_url:TEXT::履歴書URL:Resume URL','status:VARCHAR(20):DEFAULT \'applied\':選考状態:Status','applied_at:TIMESTAMP:DEFAULT NOW:応募日:Applied at'],
   Interview:['applicant_id:UUID:FK(Applicant) NOT NULL:応募者ID:Applicant ID','interviewer_id:UUID:FK(User) NOT NULL:面接官ID:Interviewer ID','scheduled_at:TIMESTAMP:NOT NULL:予定日時:Scheduled at','duration_min:INT:DEFAULT 60:所要時間(分):Duration(min)','interview_type:VARCHAR(50)::面接種別:Type','status:VARCHAR(20):DEFAULT \'scheduled\':ステータス:Status','notes:TEXT::メモ:Notes'],
   Evaluation:['applicant_id:UUID:FK(Applicant) NOT NULL:応募者ID:Applicant ID','evaluator_id:UUID:FK(User) NOT NULL:評価者ID:Evaluator ID','score:INT:NOT NULL:スコア:Score','criteria:JSONB::評価基準:Criteria','comments:TEXT::コメント:Comments'],
   Department:['department_name:VARCHAR(255):NOT NULL:部署名:Department name','parent_id:UUID:FK(Department):親部署ID:Parent ID','head_id:UUID:FK(User):部長ID:Head ID'],
-  Onboarding:['user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID','checklist:JSONB::チェックリスト:Checklist','progress:INT:DEFAULT 0:進捗(%):Progress(%)','mentor_id:UUID:FK(User):メンターID:Mentor ID','start_date:DATE::開始日:Start date','status:VARCHAR(20):DEFAULT \'in_progress\':ステータス:Status'],
-  Page:['user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID','slug:VARCHAR(100):UNIQUE NOT NULL:スラグ:Slug','title:VARCHAR(255)::タイトル:Title','bio:TEXT::自己紹介:Bio','theme_id:UUID:FK(Theme):テーマID:Theme ID','is_published:BOOLEAN:DEFAULT true:公開:Published'],
-  Link:['page_id:UUID:FK(Page) NOT NULL:ページID:Page ID','title:VARCHAR(255):NOT NULL:リンク名:Link title','url:TEXT:NOT NULL:URL:URL','sort_order:INT:DEFAULT 0:表示順:Sort order','is_active:BOOLEAN:DEFAULT true:有効:Active','click_count:INT:DEFAULT 0:クリック数:Clicks'],
+  Onboarding:[_U,'checklist:JSONB::チェックリスト:Checklist','progress:INT:DEFAULT 0:進捗(%):Progress(%)','mentor_id:UUID:FK(User):メンターID:Mentor ID','start_date:DATE::開始日:Start date','status:VARCHAR(20):DEFAULT \'in_progress\':ステータス:Status'],
+  Page:[_U,'slug:VARCHAR(100):UNIQUE NOT NULL:スラグ:Slug',_T,'bio:TEXT::自己紹介:Bio','theme_id:UUID:FK(Theme):テーマID:Theme ID','is_published:BOOLEAN:DEFAULT true:公開:Published'],
+  Link:['page_id:UUID:FK(Page) NOT NULL:ページID:Page ID',_T,'url:TEXT:NOT NULL:URL:URL','sort_order:INT:DEFAULT 0:表示順:Sort order','is_active:BOOLEAN:DEFAULT true:有効:Active','click_count:INT:DEFAULT 0:クリック数:Clicks'],
   Theme:['theme_name:VARCHAR(100):NOT NULL:テーマ名:Theme name','css_config:JSONB::CSSスタイル:CSS config','preview_url:TEXT::プレビューURL:Preview URL','is_premium:BOOLEAN:DEFAULT false:プレミアム:Premium'],
   ClickLog:['link_id:UUID:FK(Link) NOT NULL:リンクID:Link ID','referrer:TEXT::リファラー:Referrer','user_agent:TEXT::ユーザーエージェント:User agent','ip_hash:VARCHAR(64)::IPハッシュ:IP hash','country:VARCHAR(2)::国コード:Country code'],
-  Integration:['user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID','service:VARCHAR(100):NOT NULL:サービス名:Service','access_token:TEXT::アクセストークン:Access token','config:JSONB::設定:Config','status:VARCHAR(20):DEFAULT \'active\':ステータス:Status'],
-  Badge:['badge_name:VARCHAR(100):NOT NULL:バッジ名:Badge name','description:TEXT::説明:Description','icon_url:TEXT::アイコンURL:Icon URL','criteria:JSONB::獲得条件:Criteria','points:INT:DEFAULT 0:ポイント:Points'],
-  Challenge:['title:VARCHAR(255):NOT NULL:チャレンジ名:Challenge title','description:TEXT::説明:Description','challenge_type:VARCHAR(50)::種別:Type','reward_points:INT:DEFAULT 0:報酬ポイント:Reward points','starts_at:TIMESTAMP::開始日:Starts at','ends_at:TIMESTAMP::終了日:Ends at','status:VARCHAR(20):DEFAULT \'active\':ステータス:Status'],
-  Reward:['reward_name:VARCHAR(255):NOT NULL:報酬名:Reward name','description:TEXT::説明:Description','cost_points:INT:NOT NULL:必要ポイント:Cost points','stock:INT:DEFAULT -1:在庫(-1=無制限):Stock','reward_type:VARCHAR(50)::報酬種別:Type'],
-  Leaderboard:['user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID','score:INT:DEFAULT 0:スコア:Score','rank:INT::順位:Rank','period:VARCHAR(20):DEFAULT \'all_time\':期間:Period'],
-  PointLog:['user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID','points:INT:NOT NULL:ポイント:Points','action:VARCHAR(100):NOT NULL:操作:Action','balance_after:INT::残高:Balance after'],
-  Achievement:['user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID','badge_id:UUID:FK(Badge) NOT NULL:バッジID:Badge ID','earned_at:TIMESTAMP:DEFAULT NOW:獲得日時:Earned at'],
-  Document:['workspace_id:UUID:FK(Workspace):ワークスペースID:Workspace ID','owner_id:UUID:FK(User) NOT NULL:オーナーID:Owner ID','title:VARCHAR(255):NOT NULL:タイトル:Title','content:TEXT::内容:Content','doc_type:VARCHAR(50):DEFAULT \'text\':ドキュメント種別:Document type','is_public:BOOLEAN:DEFAULT false:公開:Public'],
+  Integration:[_U,'service:VARCHAR(100):NOT NULL:サービス名:Service','access_token:TEXT::アクセストークン:Access token',_CN,_SA],
+  Badge:['badge_name:VARCHAR(100):NOT NULL:バッジ名:Badge name',_D,'icon_url:TEXT::アイコンURL:Icon URL','criteria:JSONB::獲得条件:Criteria','points:INT:DEFAULT 0:ポイント:Points'],
+  Challenge:[_T,_D,'challenge_type:VARCHAR(50)::種別:Type','reward_points:INT:DEFAULT 0:報酬ポイント:Reward points','starts_at:TIMESTAMP::開始日:Starts at','ends_at:TIMESTAMP::終了日:Ends at',_SA],
+  Reward:['reward_name:VARCHAR(255):NOT NULL:報酬名:Reward name',_D,'cost_points:INT:NOT NULL:必要ポイント:Cost points','stock:INT:DEFAULT -1:在庫(-1=無制限):Stock','reward_type:VARCHAR(50)::報酬種別:Type'],
+  Leaderboard:[_U,'score:INT:DEFAULT 0:スコア:Score','rank:INT::順位:Rank','period:VARCHAR(20):DEFAULT \'all_time\':期間:Period'],
+  PointLog:[_U,'points:INT:NOT NULL:ポイント:Points','action:VARCHAR(100):NOT NULL:操作:Action','balance_after:INT::残高:Balance after'],
+  Achievement:[_U,'badge_id:UUID:FK(Badge) NOT NULL:バッジID:Badge ID','earned_at:TIMESTAMP:DEFAULT NOW:獲得日時:Earned at'],
+  Document:['workspace_id:UUID:FK(Workspace):ワークスペースID:Workspace ID','owner_id:UUID:FK(User) NOT NULL:オーナーID:Owner ID',_T,'content:TEXT::内容:Content','doc_type:VARCHAR(50):DEFAULT \'text\':ドキュメント種別:Document type','is_public:BOOLEAN:DEFAULT false:公開:Public'],
   Version:['document_id:UUID:FK(Document) NOT NULL:ドキュメントID:Document ID','author_id:UUID:FK(User) NOT NULL:著者ID:Author ID','content:TEXT:NOT NULL:内容:Content','version_number:INT:NOT NULL:バージョン:Version number','change_summary:TEXT::変更概要:Change summary'],
-  Permission:['document_id:UUID:FK(Document) NOT NULL:ドキュメントID:Document ID','user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID','role:VARCHAR(20):DEFAULT \'viewer\':権限:Role','granted_at:TIMESTAMP:DEFAULT NOW:付与日時:Granted at'],
+  Permission:['document_id:UUID:FK(Document) NOT NULL:ドキュメントID:Document ID',_U,'role:VARCHAR(20):DEFAULT \'viewer\':権限:Role','granted_at:TIMESTAMP:DEFAULT NOW:付与日時:Granted at'],
   SensorData:['sensor_id:UUID:FK(Sensor) NOT NULL:センサーID:Sensor ID','value:DECIMAL(15,5):NOT NULL:測定値:Value','recorded_at:TIMESTAMP:DEFAULT NOW:記録日時:Recorded at','quality:VARCHAR(20):DEFAULT \'good\':品質:Quality'],
-  Command:['device_id:UUID:FK(Device) NOT NULL:デバイスID:Device ID','command_type:VARCHAR(50):NOT NULL:コマンド種別:Command type','payload:JSONB::ペイロード:Payload','status:VARCHAR(20):DEFAULT \'pending\':ステータス:Status','executed_at:TIMESTAMP::実行日時:Executed at'],
-  DeviceGroup:['group_name:VARCHAR(255):NOT NULL:グループ名:Group name','description:TEXT::説明:Description','user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID'],
-  Group:['owner_id:UUID:FK(User) NOT NULL:オーナーID:Owner ID','group_name:VARCHAR(255):NOT NULL:グループ名:Group name','description:TEXT::説明:Description','is_private:BOOLEAN:DEFAULT false:非公開:Private','member_count:INT:DEFAULT 0:メンバー数:Member count'],
-  Webhook:['user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID','url:TEXT:NOT NULL:Webhook URL:Webhook URL','events:JSONB:NOT NULL:イベント:Events','secret:TEXT::シークレット:Secret','is_active:BOOLEAN:DEFAULT true:有効:Active','last_triggered_at:TIMESTAMP::最終実行:Last triggered'],
+  Command:['device_id:UUID:FK(Device) NOT NULL:デバイスID:Device ID','command_type:VARCHAR(50):NOT NULL:コマンド種別:Command type','payload:JSONB::ペイロード:Payload',_SP,'executed_at:TIMESTAMP::実行日時:Executed at'],
+  DeviceGroup:['group_name:VARCHAR(255):NOT NULL:グループ名:Group name',_D,_U],
+  Group:['owner_id:UUID:FK(User) NOT NULL:オーナーID:Owner ID','group_name:VARCHAR(255):NOT NULL:グループ名:Group name',_D,'is_private:BOOLEAN:DEFAULT false:非公開:Private','member_count:INT:DEFAULT 0:メンバー数:Member count'],
+  Webhook:[_U,'url:TEXT:NOT NULL:Webhook URL:Webhook URL','events:JSONB:NOT NULL:イベント:Events','secret:TEXT::シークレット:Secret','is_active:BOOLEAN:DEFAULT true:有効:Active','last_triggered_at:TIMESTAMP::最終実行:Last triggered'],
 };
 const ENTITY_METHODS={
   Payment:['GET','GET/:id','POST'],
@@ -4651,6 +4822,7 @@ function getHealthHTML(_ja,fileCount,answered){
     {key:'mcp',label:_ja?'③MCP':'③MCP'},
     {key:'CLAUDE.md',label:_ja?'④AIルール':'④AI Rules'},
     {key:'roadmap/',label:_ja?'⑦ロードマップ':'⑦Roadmap'},
+    {key:'docs/26_',label:_ja?'⑨デザインシステム':'⑨Design System'},
   ];
   const fileKeys=Object.keys(S.files);
   let pillarOK=0;
@@ -4966,22 +5138,22 @@ function showManual(sec){
   pushModal(o,()=>{o.classList.remove('show');releaseFocus(o);});
   const _ja=S.lang==='ja';
   const MANUAL=[
-    {id:'overview',title:_ja?'概要':'Overview',body:_ja?'<h2>DevForge v9.0 とは</h2><p>質問に答えるだけで、プロジェクトに必要な60+ファイルを自動生成するAI駆動開発プラットフォームです。'+_TECH_COUNT+'テクノロジー対応。</p>'+
-      '<h3>8つの柱</h3><table><tr><th>柱</th><th>内容</th><th>ファイル数</th></tr><tr><td>①SDD統合</td><td>Spec Kit互換の仕様書</td><td>5</td></tr><tr><td>②DevContainer</td><td>Docker開発環境</td><td>4</td></tr><tr><td>③MCP設定</td><td>Model Context Protocol</td><td>3</td></tr><tr><td>④AIルール</td><td>10ツール分の設定</td><td>10</td></tr>'+
-      '<tr><td>⑤並列探索</td><td>スタック比較+おすすめランキング</td><td>UI</td></tr><tr><td>⑥Dashboard</td><td>コンテキスト可視化+技術DB</td><td>UI</td></tr><tr><td>⑦ロードマップ</td><td>学習パス（インタラクティブ）</td><td>9+UI</td></tr><tr><td>⑧AIランチャー</td><td>プロンプトテンプレート+トークン推定</td><td>UI</td></tr></table>'+
-      '<p>+ docs（23仕様書）+ 共通ファイル（4）= <strong>60+ファイル</strong></p>':'<h2>What is DevForge v9.0?</h2><p>An AI-driven dev platform that auto-generates 60+ project files just by answering questions. Supports '+_TECH_COUNT+' technologies.</p>'+
-      '<h3>8 Pillars</h3><table><tr><th>Pillar</th><th>Content</th><th>Files</th></tr><tr><td>①SDD</td><td>Spec Kit compatible specs</td><td>5</td></tr><tr><td>②DevContainer</td><td>Docker dev environment</td><td>4</td></tr><tr><td>③MCP</td><td>Model Context Protocol</td><td>3</td></tr><tr><td>④AI Rules</td><td>10 tool configurations</td><td>10</td></tr>'+
+    {id:'overview',title:_ja?'概要':'Overview',body:_ja?'<h2>DevForge v9.0 とは</h2><p>質問に答えるだけで、プロジェクトに必要な66+ファイルを自動生成するAI駆動開発プラットフォームです。'+_TECH_COUNT+'テクノロジー対応。</p>'+
+      '<h3>9つの柱</h3><table><tr><th>柱</th><th>内容</th><th>ファイル数</th></tr><tr><td>①SDD統合</td><td>Spec Kit互換の仕様書</td><td>5</td></tr><tr><td>②DevContainer</td><td>Docker開発環境</td><td>4</td></tr><tr><td>③MCP設定</td><td>Model Context Protocol</td><td>3</td></tr><tr><td>④AIルール</td><td>10ツール分の設定</td><td>10</td></tr>'+
+      '<tr><td>⑤並列探索</td><td>スタック比較+おすすめランキング</td><td>UI</td></tr><tr><td>⑥Dashboard</td><td>コンテキスト可視化+技術DB</td><td>UI</td></tr><tr><td>⑦ロードマップ</td><td>学習パス（インタラクティブ）</td><td>9+UI</td></tr><tr><td>⑧AIランチャー</td><td>プロンプトテンプレート+トークン推定</td><td>UI</td></tr><tr><td>⑨デザインシステム</td><td>デザイントークン+シーケンス図</td><td>2</td></tr></table>'+
+      '<p>+ docs（25仕様書）+ 共通ファイル（4）= <strong>66+ファイル</strong></p>':'<h2>What is DevForge v9.0?</h2><p>An AI-driven dev platform that auto-generates 66+ project files just by answering questions. Supports '+_TECH_COUNT+' technologies.</p>'+
+      '<h3>9 Pillars</h3><table><tr><th>Pillar</th><th>Content</th><th>Files</th></tr><tr><td>①SDD</td><td>Spec Kit compatible specs</td><td>5</td></tr><tr><td>②DevContainer</td><td>Docker dev environment</td><td>4</td></tr><tr><td>③MCP</td><td>Model Context Protocol</td><td>3</td></tr><tr><td>④AI Rules</td><td>10 tool configurations</td><td>10</td></tr>'+
       ''+
-      '<tr><td>⑤Explorer</td><td>Stack comparison + recommendation</td><td>UI</td></tr><tr><td>⑥Dashboard</td><td>Context visualization + Tech DB</td><td>UI</td></tr><tr><td>⑦Roadmap</td><td>Learning path (interactive)</td><td>9+UI</td></tr><tr><td>⑧AI Launcher</td><td>Prompt templates + token estimation</td><td>UI</td></tr></table>'+
-      '<p>+ docs (23 specs) + common (4) = <strong>60+ files</strong></p>'},
-    {id:'start',title:_ja?'はじめ方':'Getting Started',body:'<h2>はじめ方</h2><p>1. スキルレベルを選択（Beginner/Intermediate/Pro）<br>2. プロジェクト名を入力<br>3. テンプレート選択（任意・36種類）<br>4. Phase 1-3の質問に回答（スキップ＆後で回答可）<br>5. 生成ボタンで60+ファイル作成<br>6. ZIPダウンロードまたはPDF印刷</p>'+
+      '<tr><td>⑤Explorer</td><td>Stack comparison + recommendation</td><td>UI</td></tr><tr><td>⑥Dashboard</td><td>Context visualization + Tech DB</td><td>UI</td></tr><tr><td>⑦Roadmap</td><td>Learning path (interactive)</td><td>9+UI</td></tr><tr><td>⑧AI Launcher</td><td>Prompt templates + token estimation</td><td>UI</td></tr><tr><td>⑨Design System</td><td>Design tokens + Sequence diagrams</td><td>2</td></tr></table>'+
+      '<p>+ docs (25 specs) + common (4) = <strong>66+ files</strong></p>'},
+    {id:'start',title:_ja?'はじめ方':'Getting Started',body:'<h2>はじめ方</h2><p>1. スキルレベルを選択（Beginner/Intermediate/Pro）<br>2. プロジェクト名を入力<br>3. テンプレート選択（任意・36種類）<br>4. Phase 1-3の質問に回答（スキップ＆後で回答可）<br>5. 生成ボタンで66+ファイル作成<br>6. ZIPダウンロードまたはPDF印刷</p>'+
       '<h3>UX機能</h3>'+
       '<p>• 🌱⚡🔥 スキルレベルで質問の選択肢が動的変化<br>• 🎯 36プリセットテンプレート<br>• ✎ 回答の編集（✎ボタン）<br>• ⏭️ スキップ＆後で回答<br>• 📊 複雑度分析（0-100スコア）<br>• 📁 プロジェクト管理（Ctrl+M）<br>• 🎙️ 音声入力<br>• ? 質問ごとのヘルプアイコン<br>• 🔀 ドラッグ&ドロップ優先度ソート</p>'+
       '<h3>V8 新機能</h3>'+
       '<p>• 📱 モバイル開発パス (Expo/React Native)<br>• 🤖 AI自律開発ガイド (Vibe Coding/マルチAgent)<br>• 💳 決済・CMS・EC統合ガイド<br>• ⚡ 並列スタック比較 (7パターン)<br>• 📊 技術マスターテーブル / Tech Master Table ('+_TECH_COUNT+' entries)<br>• 🗺️ インタラクティブロードマップ (進捗管理)</p>'+
       '<h3>V8.3 新機能</h3>'+
       '<p>• 📊 Mermaid図ライブレンダリング (ER図・画面遷移・ガント)<br>• 📝 OpenAPI準拠API仕様書<br>• ✅ テストケースマトリクス (機能×正常/異常)<br>• 📋 リリースチェックリスト (デプロイ先別動的生成)<br>• 🔨 WBS 3階層+工数見積り<br>• 🎯 プロンプトプレイブック (フェーズ別AI投入プロンプト集)<br>• 📎 GitHub Issues風タスク分解<br>• 📋 全ファイル結合コピー (AI一括投入用)</p>'},
-    {id:'pillars',title:_ja?'8つの柱':'8 Pillars',body:'<h2>8つの柱の詳細</h2><h3>① SDD統合 (5ファイル)</h3>'+
+    {id:'pillars',title:_ja?'9つの柱':'9 Pillars',body:'<h2>9つの柱の詳細</h2><h3>① SDD統合 (5ファイル)</h3>'+
       '<p>constitution.md / specification.md / technical-plan.md / tasks.md / verification.md</p>'+
       '<h3>② DevContainer (4ファイル)</h3>'+
       '<p>devcontainer.json / Dockerfile / docker-compose.yml / post-create.sh — VSCode/Cursorで開くだけ。</p>'+
@@ -4996,11 +5168,13 @@ function showManual(sec){
       '<h3>⑦ ロードマップ (9ファイル+UI)</h3>'+
       '<p>LEARNING_PATH / TECH_STACK_GUIDE / MOBILE_GUIDE / TOOLS_SETUP / RESOURCES / MILESTONES / AI_WORKFLOW / AI_AUTONOMOUS / SAAS_COMMERCE_GUIDE — インタラクティブUIで進捗管理可能。</p>'+
       '<h3>⑧ AIプロンプトランチャー (UI)</h3>'+
-      '<p>生成した仕様書をAIツールに一括投入。6つのプロンプトテンプレート（レビュー・実装・テスト・リファクタ・セキュリティ・ドキュメント）。フォルダ別トークン推定・モデル適合度表示。</p>'},
-    {id:'export',title:_ja?'エクスポート':'Export',body:'<h2>エクスポート方法</h2><p><strong>ZIP</strong>: 全60+ファイルをフォルダ構造付きでZIP圧縮ダウンロード。<br><strong>PDF</strong>: Markdownファイルを整形してブラウザのPDF印刷で出力。<br><strong>URL共有</strong>: プロジェクト設定をBase64エンコードしてURL共有。<br><strong>全ファイルコピー</strong>: 全ドキュメントを1テキストに結合してクリップボードにコピー（Ctrl+Shift+C）。AIへの一括投入に最適。</p><h3>テンプレート保存</h3><p>プロジェクト設定をlocalStorageに保存し、次回起動時に読み込み可能。</p>'},
+      '<p>生成した仕様書をAIツールに一括投入。6つのプロンプトテンプレート（レビュー・実装・テスト・リファクタ・セキュリティ・ドキュメント）。フォルダ別トークン推定・モデル適合度表示。</p>'+
+      '<h3>⑨ デザインシステム (2ファイル)</h3>'+
+      '<p>design_system.md (デザイントークン・色・タイポ・コンポーネントカタログ) / sequence_diagrams.md (認証・CRUD・決済フローのMermaidシーケンス図) — フレームワーク別実装ガイド。</p>'},
+    {id:'export',title:_ja?'エクスポート':'Export',body:'<h2>エクスポート方法</h2><p><strong>ZIP</strong>: 全66+ファイルをフォルダ構造付きでZIP圧縮ダウンロード。<br><strong>PDF</strong>: Markdownファイルを整形してブラウザのPDF印刷で出力。<br><strong>URL共有</strong>: プロジェクト設定をBase64エンコードしてURL共有。<br><strong>全ファイルコピー</strong>: 全ドキュメントを1テキストに結合してクリップボードにコピー（Ctrl+Shift+C）。AIへの一括投入に最適。</p><h3>テンプレート保存</h3><p>プロジェクト設定をlocalStorageに保存し、次回起動時に読み込み可能。</p>'},
     {id:'guide',title:_ja?'🚀 活用ガイド':'🚀 Usage Guide',body:_ja?
       '<h2>🚀 生成ファイル活用ガイド</h2>'+
-      '<p>DevForge v9 は世界で唯一の<strong>仕様駆動AIプロジェクトジェネレーター</strong>です。他のツールが「コード」を生成するのに対し、DevForge は「開発の知性」── 設計・環境・ルール・学習計画を生成します。</p>'+
+      '<p>DevForge v9 は世界で唯一の<strong>仕様駆動AIプロジェクトジェネレーター</strong>です。他のツールが「コード」を生成するのに対し、DevForge は「開発の知性」── 設計・環境・ルール・学習計画を66+ファイルで生成します。</p>'+
       '<h3>🌱 Beginner — まず動かす</h3>'+
       '<p><strong>Step 1: ロードマップに従う</strong><br>ダッシュボード（柱⑦）のロードマップUIがそのまま学習計画。Layer 1から順にチェック。📖ボタンで公式ドキュメントに直接ジャンプ。</p>'+
       '<p><strong>Step 2: 3つだけ覚える</strong><br>• <code>README.md</code> — GitHubにそのまま公開OK<br>• <code>.devcontainer/</code> — VS Code/Cursorで開くだけで環境完成<br>• <code>CLAUDE.md</code> — AIに「これ読んで」で全仕様を理解</p>'+
@@ -5031,13 +5205,13 @@ function showManual(sec){
       '<tr><td><code>.spec/</code></td><td>読むだけ</td><td>AIに1つずつ</td><td>タスクキュー化</td></tr>'+
       '<tr><td><code>.devcontainer/</code></td><td>そのまま</td><td>カスタマイズ</td><td>チーム標準化</td></tr>'+
       '<tr><td><code>roadmap/</code></td><td>学習ガイド</td><td>進捗管理</td><td>オンボーディング</td></tr>'+
-      '<tr><td><code>docs/</code> 23ファイル</td><td>後で参照</td><td>レビュー素材</td><td>CI/CDゲート</td></tr>'+
+      '<tr><td><code>docs/</code> 25ファイル</td><td>後で参照</td><td>レビュー素材</td><td>CI/CDゲート</td></tr>'+
       '<tr><td>柱④ AIルール</td><td>触らない</td><td>ルール追加</td><td>全ツール統一</td></tr>'+
       '<tr><td>柱⑧ ランチャー</td><td>使わない</td><td>部分利用</td><td>全工程自動化</td></tr></table>'+
       '<p class="guide-action-p"><button class="btn btn-p btn-sm" onclick="closeManual();showPostGenGuide(true)">🚀 レベル別ガイドを表示</button></p>'
       :
       '<h2>🚀 Generated Files Usage Guide</h2>'+
-      '<p>DevForge v9 is the world\'s only <strong>spec-driven AI project generator</strong>. While other tools generate code, DevForge generates "development intelligence" — design, environment, rules, and learning plans.</p>'+
+      '<p>DevForge v9 is the world\'s only <strong>spec-driven AI project generator</strong>. While other tools generate code, DevForge generates "development intelligence" — design, environment, rules, and learning plans through 66+ files.</p>'+
       '<h3>🌱 Beginner — Get Started</h3>'+
       '<p><strong>Step 1: Follow the Roadmap</strong><br>The Dashboard (Pillar ⑦) roadmap UI is your learning plan. Check off from Layer 1. Hit 📖 to jump to official docs.</p>'+
       '<p><strong>Step 2: Remember Just 3 Files</strong><br>• <code>README.md</code> — Publish directly to GitHub<br>• <code>.devcontainer/</code> — Open in VS Code/Cursor and dev env is ready<br>• <code>CLAUDE.md</code> — Tell AI "read this" and it understands your entire project</p>'+
@@ -5067,7 +5241,7 @@ function showManual(sec){
       '<tr><td><code>.spec/</code></td><td>Read only</td><td>Feed AI one by one</td><td>Task queue</td></tr>'+
       '<tr><td><code>.devcontainer/</code></td><td>As-is</td><td>Customize</td><td>Team standard</td></tr>'+
       '<tr><td><code>roadmap/</code></td><td>Learning</td><td>Progress</td><td>Onboarding</td></tr>'+
-      '<tr><td><code>docs/</code> 23 files</td><td>Later</td><td>Review material</td><td>CI/CD gates</td></tr>'+
+      '<tr><td><code>docs/</code> 25 files</td><td>Later</td><td>Review material</td><td>CI/CD gates</td></tr>'+
       '<tr><td>Pillar ④ AI Rules</td><td>Don\'t touch</td><td>Add rules</td><td>Unified ops</td></tr>'+
       '<tr><td>Pillar ⑧ Launcher</td><td>Skip</td><td>Partial use</td><td>Full pipeline</td></tr></table>'+
       '<p class="guide-action-p"><button class="btn btn-p btn-sm" onclick="closeManual();showPostGenGuide(true)">🚀 Show Level Guide</button></p>'
@@ -5083,7 +5257,7 @@ function showManual(sec){
       '<h3>🔴 ストレージ上限</h3>'+
       '<p>localStorageの上限は約5MBです。20〜30プロジェクトで上限に達する可能性があります。古いプロジェクトはエクスポート後に削除してください。</p>'+
       '<h3>🟡 生成ファイルについて</h3>'+
-      '<p>生成される60+ファイルは<strong>設計ドキュメント</strong>（SDD仕様書・DevContainer設定・AIルール等）です。npm installで即座に動くアプリケーションコードではありません。Claude Code / Cursor等のAIツールに入力して実コードを生成する運用が前提です。</p>'+
+      '<p>生成される66+ファイルは<strong>設計ドキュメント</strong>（SDD仕様書・DevContainer設定・AIルール等）です。npm installで即座に動くアプリケーションコードではありません。Claude Code / Cursor等のAIツールに入力して実コードを生成する運用が前提です。</p>'+
       '<h3>🟡 スキルレベル</h3>'+
       '<p>スキルレベルにより表示される選択肢が変わります。途中変更すると既回答との不整合が起きうるため、<strong>最初に正しく設定</strong>してください。</p>'+
       '<h3>🟡 言語切り替え</h3>'+
@@ -5099,7 +5273,7 @@ function showManual(sec){
       '<h3>🔴 Storage Limit</h3>'+
       '<p>localStorage limit is ~5MB. You may reach the limit with 20-30 projects. Export and delete old projects.</p>'+
       '<h3>🟡 Generated Files</h3>'+
-      '<p>60+ generated files are <strong>design documents</strong> (SDD specs, DevContainer configs, AI rules). They are not runnable app code. Feed them to AI tools like Claude Code / Cursor to generate actual code.</p>'+
+      '<p>66+ generated files are <strong>design documents</strong> (SDD specs, DevContainer configs, AI rules). They are not runnable app code. Feed them to AI tools like Claude Code / Cursor to generate actual code.</p>'+
       '<h3>🟡 Skill Level</h3>'+
       '<p>Changing skill level mid-project may cause inconsistencies with existing answers. <strong>Set it correctly at the start.</strong></p>'+
       '<h3>🟡 Language Switch</h3>'+
@@ -5107,7 +5281,7 @@ function showManual(sec){
       '<h3>🔵 Other</h3>'+
       '<p>・ZIP export requires JSZip via CDN (use "Copy All" Ctrl+Shift+C offline)<br>・Switch to light mode before PDF export<br>・URL sharing may truncate on SNS for complex projects</p>'
     },
-    {id:'about',title:'About',body:'<h2>DevForge v9.0</h2><p>'+(_ja?'AI駆動開発 統合プラットフォーム':'AI-Driven Dev Platform')+'</p><p>Version 9.0.0 — 2026 Edition (Modular Architecture)</p><p>'+(_ja?''+_TECH_COUNT+'テクノロジー ・ 60+ファイル ・ 8つの柱 ・ 26テンプレート ・ Mermaid図 ・ プロンプトプレイブック':''+_TECH_COUNT+' technologies ・ 60+ files ・ 8 pillars ・ 26 templates ・ Mermaid diagrams ・ Prompt playbook')+'</p><p>© 2026 エンジニアリングのタネ制作委員会<br>by にしあん</p>'},
+    {id:'about',title:'About',body:'<h2>DevForge v9.0</h2><p>'+(_ja?'AI駆動開発 統合プラットフォーム':'AI-Driven Dev Platform')+'</p><p>Version 9.0.0 — 2026 Edition (Modular Architecture)</p><p>'+(_ja?''+_TECH_COUNT+'テクノロジー ・ 66+ファイル ・ 9つの柱 ・ 36テンプレート ・ Mermaid図 ・ プロンプトプレイブック':''+_TECH_COUNT+' technologies ・ 66+ files ・ 9 pillars ・ 36 templates ・ Mermaid diagrams ・ Prompt playbook')+'</p><p>© 2026 エンジニアリングのタネ制作委員会<br>by にしあん</p>'},
   ];
   const nav=$('helpNav');
   const searchEl=$('helpSearch');
@@ -5285,9 +5459,9 @@ function applyLang(){
   const icEn=[['📝 60+ File Generation','SDD specs, Docker, MCP, 10 AI rules, 9 roadmaps, 23 specs'],['🧪 8 Pillars','SDD, DevContainer, MCP, AI Rules, Explorer, Dashboard, Roadmap, AI Launcher'],['📱 Mobile Support','Expo / React Native dev path, EAS Build, OTA updates'],['🤖 AI Autonomous Dev','Vibe Coding, Multi-Agent, Claude Code Subagents'],['💳 Payment/CMS/EC','Stripe, microCMS, Medusa, Shopify Hydrogen'],['📦 Full Export','ZIP, PDF, Copy All Files, URL Share']];
   icards.forEach((el,i)=>{if(i<6){const d=ja?icJa[i]:icEn[i];const h4=el.querySelector('h4');const p=el.querySelector('p');if(h4)h4.textContent=d[0];if(p)p.textContent=d[1];}});
   const pbadges=document.querySelectorAll('.pbadge');
-  const pbJa=['①SDD統合','②DevContainer','③MCP設定','④AIエージェント×10','⑤並列探索','⑥Context Dashboard','⑦技術ロードマップ','⑧AIランチャー'];
-  const pbEn=['①SDD','②DevContainer','③MCP Config','④AI Agent×10','⑤Explorer','⑥Context Dashboard','⑦Tech Roadmap','⑧AI Launcher'];
-  pbadges.forEach((el,i)=>{if(i<8)el.textContent=ja?pbJa[i]:pbEn[i];});
+  const pbJa=['①SDD統合','②DevContainer','③MCP設定','④AIエージェント×10','⑤並列探索','⑥Context Dashboard','⑦技術ロードマップ','⑧AIランチャー','⑨デザインシステム'];
+  const pbEn=['①SDD','②DevContainer','③MCP Config','④AI Agent×10','⑤Explorer','⑥Context Dashboard','⑦Tech Roadmap','⑧AI Launcher','⑨Design System'];
+  pbadges.forEach((el,i)=>{if(i<9)el.textContent=ja?pbJa[i]:pbEn[i];});
   const kbT=$('kbTitle');if(kbT)kbT.textContent=t('kbTitle');
   const kbLabels=document.querySelectorAll('.kblbl');
   const kbArr=t('kb');
