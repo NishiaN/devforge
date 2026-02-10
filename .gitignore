@@ -5,5 +5,5 @@ Thumbs.db
 .env
 .env.local
 coverage/
-# Built output (regenerate with `node build.js`)
-devforge-v9.html
+# Built output is now tracked for GitHub Pages deployment
+# devforge-v9.html
