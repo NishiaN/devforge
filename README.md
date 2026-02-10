@@ -92,7 +92,7 @@ build.js        # Concatenates 40 modules → single HTML
 | snapshot | 38 | 4シナリオ回帰テスト (Pillar 9 + Skills含む) |
 | r27-regression | 17 | バグ修正検証 |
 | r28-regression | 19 | 品質改善検証 |
-| build | 1 | ビルドサイズ ≤510KB |
+| build | 1 | ビルドサイズ ≤550KB |
 | compat | 45 | 互換性ルール |
 | その他 | ~21 | i18n, presets, state, techdb |
 

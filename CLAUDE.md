@@ -40,7 +40,7 @@ npm run check              # Syntax check extracted JS
    - JS: basic minification (not obfuscation)
 4. **Inject** into `template.html` structure
 5. **Write** to `devforge-v9.html`
-6. **Validate** size ≤510KB (warn if exceeded)
+6. **Validate** size ≤550KB (warn if exceeded)
 
 ### Module Load Order (Critical!)
 ```javascript
@@ -310,7 +310,7 @@ const PR = {
 
 ### Compression Patterns (Critical for Size Management)
 
-To stay under 510KB limit, the codebase uses compression patterns:
+To stay under 550KB limit, the codebase uses compression patterns:
 
 **1. Preset Defaults (`src/data/presets.js`)**
 ```javascript
@@ -409,7 +409,7 @@ When users complete the wizard, DevForge generates:
 | snapshot.test.js | 35 tests | 4 scenario regression (LMS/Blog/EC/English) + context engineering |
 | r27-regression.test.js | 17 tests | Bug fixes: prices, FK, KPI, ports |
 | r28-regression.test.js | 19 tests | Quality: REST methods, AC, scope_out, verification |
-| build.test.js | build | Build size ≤510KB |
+| build.test.js | build | Build size ≤550KB |
 | compat.test.js | 45 tests | Compatibility validation |
 | Others | ~21 tests | i18n, presets, state, techdb |
 
