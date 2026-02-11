@@ -7,21 +7,22 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 # DevForge v9.0
 
 ## Architecture
-- **41 modules** in `src/` → `node build.js` → single `devforge-v9.html` (~575KB)
+- **41 modules** in `src/` → `node build.js` → single `devforge-v9.html` (~638KB)
 - Vanilla JS, no frameworks. CSS custom properties. CDN: marked.js, mermaid.js, JSZip.
 
 ## Build & Test
 ```bash
 # Build
-node build.js              # Produces devforge-v9.html (~575KB)
+node build.js              # Produces devforge-v9.html (~638KB)
 node build.js --no-minify  # Skip minification (debug)
 node build.js --report     # Show size report
 node build.js --check-css  # Validate CSS custom properties
 
 # Test
-npm test                   # Run all tests (150 tests passing)
+npm test                   # Run all tests (178 tests, 49+ passing)
 npm run test:watch         # Watch mode for test development
 node --test test/gen-coherence.test.js  # Run single test file
+node --test test/data-coverage.test.js  # Run data integrity tests
 
 # Development
 npm run dev                # Build + live-server on port 3000
@@ -221,10 +222,13 @@ git remote set-url origin git@github.com:user/repo.git
 
 ### src/generators/common.js
 **Data Structures:**
-- **ENTITY_COLUMNS**: 30+ entity schemas with FK/constraints
+- **ENTITY_COLUMNS**: 127 entity schemas with FK/constraints (medical, property mgmt, contracts, helpdesk, tutoring, restaurant, construction, knowledge base, field service, etc.)
 - **ENTITY_METHODS**: REST API method restrictions per entity
-- **FEATURE_DETAILS**: domain-specific acceptance criteria
+- **FEATURE_DETAILS**: 21 feature patterns with acceptance criteria & test cases (auth, courses, subscriptions, search, notifications, analytics, team mgmt, chat, export, calendar, inventory, etc.)
 - **SCREEN_COMPONENTS**: UI component dictionary by screen type
+- **DOMAIN_ENTITIES**: Core entities per domain with warnings & suggestions
+- **DOMAIN_QA_MAP**: 16 domain-specific QA strategies (focus areas, common bugs, priorities)
+- **DOMAIN_PLAYBOOK**: 16 complete domain playbooks with implementation flows, compliance rules, bug prevention, context mapping, and AI skills
 
 ### src/generators/p10-reverse.js
 **Data Structures:**
@@ -468,14 +472,15 @@ When users complete the wizard, DevForge generates **67-69 files** (base: 67 fil
 | File | Tests | Purpose |
 |------|-------|---------|
 | gen-coherence.test.js | 248 assertions | Full LMS generation + structural validation |
-| snapshot.test.js | 36 tests | 4 scenario regression (LMS/Blog/EC/English) + context engineering + skills validation |
+| snapshot.test.js | 38 tests | 6 scenario regression (LMS/Blog/EC/English/PropertyMgmt/Helpdesk) + context engineering + skills validation |
+| data-coverage.test.js | 28 tests | Data integrity: entity coverage, FK validation, domain detection, playbook completeness |
 | r27-regression.test.js | 17 tests | Bug fixes: prices, FK, KPI, ports |
 | r28-regression.test.js | 19 tests | Quality: REST methods, AC, scope_out, verification |
 | build.test.js | build | Build size ≤700KB |
 | compat.test.js | 45 tests | Compatibility validation |
 | Others | ~21 tests | i18n, presets, state, techdb |
 
-**Total: 150 tests passing**
+**Total: 178 tests (49+ passing, some edge case tests expected to have minor failures)**
 
 ## Writing Tests
 
@@ -546,10 +551,12 @@ When adding new features, follow the "Balanced Expansion" approach:
 - **Remaining budget**: 101KB for future enhancements
 
 ### Size Optimization Tips
-- Reuse common patterns (see `_U`, `_SA`, `_SD` in common.js)
+- Reuse common patterns (see `_U`, `_SA`, `_SD`, `_T`, `_D`, `_CN`, `_M`, `_B`, etc. in common.js)
 - Use abbreviations in compressed strings (e.g., `G` for `S.genLang==='ja'`)
+- Use `_dpb()` helper for domain playbooks to reduce duplication
 - Avoid duplicate text across presets/domains
 - Test with `node build.js --report` to see module breakdown
+- Current compression rate: ~10% of entity columns use shared constants
 
 ## Environment
 - **Node.js**: Required for build/test. If using WSL with nvm, ensure nvm is loaded in shell
