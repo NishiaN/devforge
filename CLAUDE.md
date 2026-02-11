@@ -7,13 +7,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 # DevForge v9.0
 
 ## Architecture
-- **41 modules** in `src/` → `node build.js` → single `devforge-v9.html` (~638KB)
+- **41 modules** in `src/` → `node build.js` → single `devforge-v9.html` (~639KB)
 - Vanilla JS, no frameworks. CSS custom properties. CDN: marked.js, mermaid.js, JSZip.
 
 ## Build & Test
 ```bash
 # Build
-node build.js              # Produces devforge-v9.html (~638KB)
+node build.js              # Produces devforge-v9.html (~639KB)
 node build.js --no-minify  # Skip minification (debug)
 node build.js --report     # Show size report
 node build.js --check-css  # Validate CSS custom properties
@@ -260,6 +260,30 @@ git remote set-url origin git@github.com:user/repo.git
 ### src/core/i18n.js
 - **`t(key)`** — Get translated string for current `S.lang`
 - **`I18N`** — Translation dictionary (ja/en)
+
+### src/ui/wizard.js
+- **`isQActive(q)`** — Check if question's condition is met (centralizes conditional question evaluation)
+- **`updProgress()`** — Update progress bar and sidebar (only counts active questions)
+- **`showQ()`** — Display current question (skips inactive conditional questions)
+- **`findNext()`** — Find next unanswered question (respects conditions)
+
+**Conditional Questions:**
+Questions can have a `condition` field that determines if they should be shown:
+```javascript
+{
+  id: 'orm',
+  condition: {
+    backend: (v) => !['Firebase', 'Supabase', 'Convex', 'static', 'None'].includes(v)
+  }
+  // Only shown when backend is NOT a BaaS or static
+}
+```
+
+**Critical:** When working with wizard questions:
+- Use `isQActive(q)` to check if question should be shown/counted
+- Progress counting must exclude inactive questions (`if(!isQActive(q))return;`)
+- UI styling: inactive questions get `.q-na` class (opacity:0.3, line-through)
+- Affected questions: `database`, `orm`, `data_entities`, `auth`, `ai_tools`
 
 ## Adding Translations
 
@@ -535,7 +559,7 @@ test('pluralize', () => {
 
 ## Size Budget Management
 
-DevForge has a strict **700KB size limit** for the built HTML file. Current size: **599KB** (~101KB under budget).
+DevForge has a strict **700KB size limit** for the built HTML file. Current size: **639KB** (~61KB under budget).
 
 ### Expansion Strategy
 When adding new features, follow the "Balanced Expansion" approach:
@@ -657,3 +681,26 @@ node build.js
 ```
 
 **Permanent fix:** Add to `~/.bashrc` (already done if nvm installed correctly)
+
+### Wizard progress shows wrong completion percentage
+**Symptom:** Progress bar shows questions as "unanswered" even though they're not applicable (e.g., `orm` question when using Supabase)
+
+**Cause:** Progress counting doesn't respect conditional questions
+
+**Fix:** Ensure all progress-related functions use `isQActive(q)`:
+```javascript
+// ✅ Correct: Only count active questions
+ph.questions.forEach(q => {
+  if(!isQActive(q)) return;  // Skip inactive
+  total++;
+  if(S.answers[q.id]) done++;
+});
+
+// ❌ Wrong: Counts all questions regardless of conditions
+total += ph.questions.length;
+```
+
+**Common locations to check:**
+- `updProgress()` — Progress bar calculation
+- `initPills()` — Sidebar question list initialization
+- `findNext()` — Next unanswered question search
