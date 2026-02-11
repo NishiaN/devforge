@@ -24,9 +24,14 @@ function initPills(){
   const tl=$('pdTitle');if(tl)tl.textContent=_ja?'進捗':'Progress';
   const gb=$('pdGenBtn');if(gb)gb.textContent=_ja?'🚀 生成':'🚀 Generate';
 }
+function isQActive(q){
+  if(!q.condition)return true;
+  const[k,fn]=Object.entries(q.condition)[0];
+  return fn(S.answers[k]||'');
+}
 function updProgress(){
   const qs=getQ();let total=0,done=0;
-  for(let p=1;p<=3;p++){const ph=qs[p];if(!ph)continue;total+=ph.questions.length;ph.questions.forEach(q=>{if(S.answers[q.id])done++;});}
+  for(let p=1;p<=3;p++){const ph=qs[p];if(!ph)continue;ph.questions.forEach(q=>{if(!isQActive(q))return;total++;if(S.answers[q.id])done++;});}
   const pct=total?Math.round(done/total*100):0;
   $('pbar').style.width=pct+'%';
   
@@ -39,8 +44,10 @@ function updProgress(){
     ph.questions.forEach((q,si)=>{
       const li=document.querySelector('.pd-q[data-qid="'+q.id+'"]');
       if(!li)return;
-      li.classList.toggle('answered',!!S.answers[q.id]);
-      li.classList.toggle('current',S.phase===i&&S.step===si);
+      const active=isQActive(q);
+      li.classList.toggle('answered',active&&!!S.answers[q.id]);
+      li.classList.toggle('current',active&&S.phase===i&&S.step===si);
+      li.classList.toggle('q-na',!active);
     });
   }
   updTOC();
@@ -80,7 +87,7 @@ function showQ(){
   // Skip conditional questions
   while(S.step<ph.questions.length){
     const q=ph.questions[S.step];
-    if(q.condition){const[k,fn]=Object.entries(q.condition)[0];if(!fn(S.answers[k]||'')){S.step++;continue;}}
+    if(!isQActive(q)){S.step++;continue;}
     break;
   }
   if(S.step>=ph.questions.length){phaseEnd();return;}
@@ -187,7 +194,7 @@ function findNext(){
   for(let p=1;p<=3;p++){const ph=qs[p];if(!ph)continue;
     for(let s=0;s<ph.questions.length;s++){
       const q=ph.questions[s];
-      if(q.condition){const[k,fn]=Object.entries(q.condition)[0];if(!fn(S.answers[k]||''))continue;}
+      if(!isQActive(q))continue;
       if(!S.answers[q.id]){S.phase=p;S.step=s;showQ();return;}
     }
   }

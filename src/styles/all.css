@@ -526,6 +526,7 @@ mark{background:var(--accent-soft);color:var(--accent);padding:0 2px;border-radi
 .pd-q.answered .pd-qmark{background:var(--success);}
 .pd-q:not(.answered) .pd-qmark{background:var(--border-light);}
 .pd-q.current .pd-qmark{background:var(--accent);box-shadow:0 0 4px var(--accent);}
+.pd-q.q-na{opacity:0.3;pointer-events:none;text-decoration:line-through;}
 
 .gen-lang-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:1100;display:flex;align-items:center;justify-content:center;animation:fadeIn 0.2s;}
 .gen-lang-modal{background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;max-width:360px;width:90%;text-align:center;}
