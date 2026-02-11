@@ -50,8 +50,8 @@ function applyLang(){
   icards.forEach((el,i)=>{if(i<6){const d=ja?icJa[i]:icEn[i];const h4=el.querySelector('h4');const p=el.querySelector('p');if(h4)h4.textContent=d[0];if(p)p.textContent=d[1];}});
   // Pillar badges
   const pbadges=document.querySelectorAll('.pbadge');
-  const pbJa=['①SDD統合','②DevContainer','③MCP設定','④AIエージェント×10','⑤並列探索','⑥Context Dashboard','⑦技術ロードマップ','⑧AIランチャー','⑨デザインシステム','⑩リバースEng'];
-  const pbEn=['①SDD','②DevContainer','③MCP Config','④AI Agent×10','⑤Explorer','⑥Context Dashboard','⑦Tech Roadmap','⑧AI Launcher','⑨Design System','⑩Reverse Eng'];
+  const pbJa=['①SDD統合','②DevContainer','③MCP設定','④AIルール','⑤並列探索','⑥Dashboard','⑦ロードマップ','⑧AIランチャー','⑨デザインシステム','⑩リバースEng'];
+  const pbEn=['①SDD','②DevContainer','③MCP','④AI Rules','⑤Explorer','⑥Dashboard','⑦Roadmap','⑧AI Launcher','⑨Design System','⑩Reverse Eng'];
   pbadges.forEach((el,i)=>{if(i<10)el.textContent=ja?pbJa[i]:pbEn[i];});
   // Keyboard shortcuts overlay
   const kbT=$('kbTitle');if(kbT)kbT.textContent=t('kbTitle');
@@ -109,7 +109,14 @@ applyLang();
   try{
     const h=location.hash;if(!h||!h.startsWith('#df='))return;
     const data=JSON.parse(atob(h.slice(4)));
-    if(data.projectName){data.projectName=sanitizeName(data.projectName);Object.assign(S,data);save();location.hash='';location.reload();}
+    if(data.projectName){
+      S.projectName=sanitizeName(data.projectName);
+      if(data.answers)S.answers=data.answers;
+      if(data.preset)S.preset=data.preset;
+      if(data.skill)S.skill=data.skill;
+      if(data.lang)S.lang=data.lang;
+      save();location.hash='';location.reload();
+    }
   }catch(e){}
 })();
 // Restore session

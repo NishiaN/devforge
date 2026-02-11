@@ -174,7 +174,12 @@ function showDashboard(){
 function getHealthHTML(_ja,fileCount,answered){
   const qs=getQ();
   let totalQ=0;
-  for(let p=1;p<=3;p++){if(qs[p])totalQ+=qs[p].questions.length;}
+  for(let p=1;p<=3;p++){
+    if(qs[p])qs[p].questions.forEach(q=>{
+      if(!isQActive(q))return;
+      totalQ++;
+    });
+  }
   const answerPct=totalQ?Math.round(answered/totalQ*100):0;
   // Pillar coverage
   const pillarChecks=[

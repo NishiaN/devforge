@@ -38,6 +38,13 @@ function importProject(){
         const data=JSON.parse(ev.target.result);
         if(!data.state||!data.state.projectName){toast(_ja?'❌ 無効なファイル形式':'❌ Invalid file format');return;}
         data.state.projectName=sanitizeName(data.state.projectName);
+        if(data.state.answers){
+          Object.keys(data.state.answers).forEach(k=>{
+            if(typeof data.state.answers[k]==='string'){
+              data.state.answers[k]=sanitize(data.state.answers[k]);
+            }
+          });
+        }
         const ps=getProjects();
         ps[data.state.projectName]=data;
         _lsSet('devforge-projects',JSON.stringify(ps));

@@ -213,17 +213,17 @@ function genPillar10_ReverseEngineering(a,pn){
   flowSteps.slice(0,2).forEach((step,i)=>{
     const start=i===0?'2026-03-01':'2026-03-15';
     const end=i===0?'2026-03-14':'2026-03-31';
-    doc29+'    '+step.replace(/[:\-（）()]/g,' ')+' :'+start+', '+end+'\n';
+    doc29+='    '+step.replace(/[:\-（）()]/g,' ')+' :'+start+', '+end+'\n';
   });
   doc29+='    section '+(G?'Phase 2: MVP実装':'Phase 2: MVP Implementation')+'\n';
   if(flowSteps.length>2){
     const step=flowSteps[2];
-    doc29+'    '+step.replace(/[:\-（）()]/g,' ')+' :2026-04-01, 2026-04-21\n';
+    doc29+='    '+step.replace(/[:\-（）()]/g,' ')+' :2026-04-01, 2026-04-21\n';
   }
   doc29+='    section '+(G?'Phase 3: 最適化':'Phase 3: Optimization')+'\n';
   if(flowSteps.length>3){
     const step=flowSteps[3];
-    doc29+'    '+step.replace(/[:\-（）()]/g,' ')+' :2026-04-22, 2026-05-10\n';
+    doc29+='    '+step.replace(/[:\-（）()]/g,' ')+' :2026-04-22, 2026-05-10\n';
   }
   doc29+='    section '+(G?'Phase 4: ローンチ':'Phase 4: Launch')+'\n';
   doc29+='    '+(G?'最終テスト・デプロイ':'Final testing & deploy')+' :milestone, 2026-05-11, 0d\n';
@@ -264,20 +264,20 @@ function genPillar10_ReverseEngineering(a,pn){
   doc30+=(G?'## ゴールツリー':'## Goal Tree')+'\n\n```mermaid\nmindmap\n  root(('+(G?rf.goal_ja:rf.goal_en)+'))\n';
   // Level 1: Flow steps
   flowSteps.slice(0,3).forEach((step,i)=>{
-    doc30+'    '+step.replace(/[（）()]/g,'')+'\n';
+    doc30+='    '+step.replace(/[（）()]/g,'')+'\n';
     // Level 2: Features (sample 2 per step)
     if(i===0&&kpis.length>0){
-      doc30+'      '+kpis[0].split(' ')[0]+'\n';
-      if(kpis.length>1)doc30+'      '+kpis[1].split(' ')[0]+'\n';
+      doc30+='      '+kpis[0].split(' ')[0]+'\n';
+      if(kpis.length>1)doc30+='      '+kpis[1].split(' ')[0]+'\n';
     }else if(i===1&&features.length>0){
-      doc30+'      '+features[0]+'\n';
-      if(features.length>1)doc30+'      '+features[1]+'\n';
+      doc30+='      '+features[0]+'\n';
+      if(features.length>1)doc30+='      '+features[1]+'\n';
     }else if(i===2&&entities.length>0){
-      doc30+'      '+entities[0]+(G?' 実装':' implementation')+'\n';
-      if(entities.length>1)doc30+'      '+entities[1]+(G?' 実装':' implementation')+'\n';
+      doc30+='      '+entities[0]+(G?' 実装':' implementation')+'\n';
+      if(entities.length>1)doc30+='      '+entities[1]+(G?' 実装':' implementation')+'\n';
     }
   });
-  doc30+'```\n\n';
+  doc30+='```\n\n';
 
   // ── Sub-Goal Decomposition (3-5 levels) ──
   doc30+=(G?'## サブゴール分解（3-5階層）':'## Sub-Goal Decomposition (3-5 Levels)')+'\n\n';
@@ -326,7 +326,7 @@ function genPillar10_ReverseEngineering(a,pn){
   doc30+='          ─────┼─────\n';
   doc30+='          '+(G?'低':'Low')+'  '+(G?'高':'High')+'\n';
   doc30+='             Effort\n';
-  doc30+'```\n\n';
+  doc30+='```\n\n';
   doc30+='**'+(G?'優先順位':'Priority')+'**:\n';
   doc30+='- '+(G?'🟢 P1 (高Impact・低Effort): ':'🟢 P1 (High Impact, Low Effort): ')+(flowSteps[0]||'Core feature')+'\n';
   doc30+='- '+(G?'🟡 P2 (高Impact・高Effort または 中Impact): ':'🟡 P2 (High Impact & Effort or Med Impact): ')+(flowSteps[1]||'Secondary features')+'\n';
@@ -341,12 +341,12 @@ function genPillar10_ReverseEngineering(a,pn){
   const node5=G?'E[UI実装]':'E[Implement UI]';
   const node6=G?'F[テスト]':'F[Testing]';
   const node7=G?'G[デプロイ]':'G[Deploy]';
-  doc30+'  '+node1+' --> '+node2+'\n';
-  doc30+'  '+node2+' --> '+node3+'\n';
-  doc30+'  '+node3+' --> '+node4+'\n';
-  doc30+'  '+node4+' --> '+node5+'\n';
-  doc30+'  '+node5+' --> '+node6+'\n';
-  doc30+'  '+node6+' --> '+node7+'\n';
+  doc30+='  '+node1+' --> '+node2+'\n';
+  doc30+='  '+node2+' --> '+node3+'\n';
+  doc30+='  '+node3+' --> '+node4+'\n';
+  doc30+='  '+node4+' --> '+node5+'\n';
+  doc30+='  '+node5+' --> '+node6+'\n';
+  doc30+='  '+node6+' --> '+node7+'\n';
   doc30+='  style A fill:#4ade80\n';
   doc30+='  style B fill:#4ade80\n';
   doc30+='  style C fill:#fbbf24\n';

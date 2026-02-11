@@ -135,7 +135,7 @@ const en={
   ts_deps:'Technology Dependencies',ts_versions:'Recommended Versions',
   mob_title:'Mobile Dev Guide',mob_env:'Environment Setup',mob_dir:'Directory Structure',
   mob_home:'Home screen',mob_explore:'Explore screen',mob_profile:'Profile',
-  mob_root:'Root layout',mob_eas:' Config',mob_libs:'Recommended Libraries',
+  mob_root:'Root layout',mob_eas:'Config',mob_libs:'Recommended Libraries',
   mob_anim:'Animations',mob_list:'High-perf list',mob_img:'Image optimization',
   mob_none:'Mobile development is not in scope for this project.\nConsider Expo (React Native) for future mobile support.',
   tool_title:'Dev Tools Setup Guide',tool_essential:'Essential Tools',

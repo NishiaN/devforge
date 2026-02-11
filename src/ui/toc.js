@@ -6,7 +6,7 @@ function updTOC(){
   for(let p=1;p<=3;p++){
     const ph=qs[p];if(!ph)continue;
     for(const q of ph.questions){
-      if(q.condition){const[k,fn]=Object.entries(q.condition)[0];if(!fn(S.answers[k]||''))continue;}
+      if(!isQActive(q))continue;
       const done=!!S.answers[q.id];
       const active=S.phase===p&&ph.questions.indexOf(q)===S.step;
       items.push('<div class="toc-item'+(done?' done':'')+(active?' active':'')+'" onclick="jumpToQ(\''+q.id+'\')" title="'+esc(q.q)+'"><span class="toc-dot"></span><span>'+esc(q.q)+'</span></div>');

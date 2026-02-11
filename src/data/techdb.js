@@ -113,7 +113,7 @@ const TECH_DB=[
 {name:'Kubernetes',cat:'devops',sub:'k8s',req:'optional',level:'pro'},
 {name:'Terraform',cat:'devops',sub:'iac',req:'optional',level:'pro'},
 {name:'Nginx',cat:'devops',sub:'web',req:'optional',level:'pro'},
-{name:S.lang==='ja'?'Linux基礎':'Linux Basics',cat:'devops',sub:'os',req:'recommended',level:'int'},
+{name:'Linux Basics',cat:'devops',sub:'os',req:'recommended',level:'int'},
 // AI Tools (22)
 {name:'Cursor',cat:'ai',sub:'ide',req:'top1',level:'int',price:'$20'},
 {name:'Claude Code',cat:'ai',sub:'cli',req:'recommended',level:'int',price:'$20〜$200'},

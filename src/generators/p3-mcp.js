@@ -218,7 +218,15 @@ function _domainTools(domain,G){
     saas:G?['postgres/supabase — RLS設定・マルチテナント']:['postgres/supabase — RLS config, multi-tenant'],
     fintech:G?['postgres — トランザクションテスト']:['postgres — Transaction testing'],
     iot:G?['docker — デバイスシミュレーション']:['docker — Device simulation'],
-    health:G?['playwright — HIPAA準拠テスト']:['playwright — HIPAA compliance tests']
+    health:G?['playwright — HIPAA準拠テスト']:['playwright — HIPAA compliance tests'],
+    ai:G?['context7 — AI APIドキュメント']:['context7 — AI API docs'],
+    automation:G?['playwright — ワークフロー自動テスト']:['playwright — Workflow automation tests'],
+    event:G?['postgres — イベント集計']:['postgres — Event aggregation'],
+    gamify:G?['postgres — ポイント・ランキング計算']:['postgres — Point & ranking calculation'],
+    collab:G?['docker — リアルタイム同期テスト']:['docker — Real-time sync tests'],
+    devtool:G?['postgres — Webhook配信ログ']:['postgres — Webhook delivery logs'],
+    creator:G?['stripe — サブスク決済テスト']:['stripe — Subscription payment tests'],
+    newsletter:G?['postgres — 配信統計分析']:['postgres — Send analytics']
   };
   return tools[domain]||[];
 }

@@ -11,6 +11,7 @@ function initVoice(){
     if(voiceBtn){voiceBtn.classList.remove('recording');voiceBtn.textContent='🎙️';}
   };
   voiceRec.onend=()=>{if(voiceBtn){voiceBtn.classList.remove('recording');voiceBtn.textContent='🎙️';}};
+  voiceRec.onerror=()=>{if(voiceBtn){voiceBtn.classList.remove('recording');voiceBtn.textContent='🎙️';}};
 }
 function toggleVoice(btn){
   const _ja=S.lang==='ja';
