@@ -63,6 +63,24 @@ const ja={
 .spec/specification.mdの要件に従い、
 .spec/technical-plan.mdのアーキテクチャに沿って実装してください。
 テストも同時に作成してください。`,
+  aiw_bugfixPrompt:'バグ修正',
+  aiw_bugfixText:`以下のエラーを修正してください:
+[エラー内容を貼り付け]
+
+手順:
+1. docs/25_error_logs.mdを参照し、既知の問題か確認
+2. 根本原因を特定
+3. 修正とテストを実装
+4. docs/25_error_logs.mdにエラーを記録`,
+  aiw_refactorPrompt:'リファクタリング',
+  aiw_refactorText:`以下のコードをリファクタリングしてください:
+[対象ファイル/コードを貼り付け]
+
+手順:
+1. .spec/specification.mdの要件を再確認
+2. 問題点を特定 (SOLID原則違反、重複コード等)
+3. 段階的に改善 (テストを壊さない)
+4. docs/24_progress.mdを更新`,
   /* AI_AUTONOMOUS.md */
   aia_title:'AI自律開発ガイド',aia_level:'レベル',
   aia_vibe:'Vibe Codingの実践',aia_vibeDesc:'自然言語で意図を伝え、AIが実装する開発スタイル。',
@@ -146,6 +164,24 @@ const en={
 Follow the requirements in .spec/specification.md
 and the architecture defined in .spec/technical-plan.md.
 Create tests alongside the implementation.`,
+  aiw_bugfixPrompt:'Bug Fix',
+  aiw_bugfixText:`Fix the following error:
+[Paste error here]
+
+Steps:
+1. Reference docs/25_error_logs.md to check if it is a known issue
+2. Identify root cause
+3. Implement fix and tests
+4. Log error to docs/25_error_logs.md`,
+  aiw_refactorPrompt:'Refactoring',
+  aiw_refactorText:`Refactor the following code:
+[Paste target file/code here]
+
+Steps:
+1. Re-verify requirements in .spec/specification.md
+2. Identify issues (SOLID violations, code duplication, etc.)
+3. Improve gradually (do not break tests)
+4. Update docs/24_progress.md`,
   aia_title:'AI Autonomous Dev Guide',aia_level:'Level',
   aia_vibe:'Vibe Coding in Practice',aia_vibeDesc:'A development style where you express intent in natural language and AI implements it.',
   aia_basic:'Basic Flow',

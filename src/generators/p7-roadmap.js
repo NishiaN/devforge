@@ -215,9 +215,20 @@ ${Array.from({length:months},(_,i)=>`## Month ${i+1}: ${(typeof msLabels==='obje
 3. **playwright**: ${T('aiw_mcp3')}
 
 ## ${T('aiw_prompt')}
-### ${T('aiw_addFeature')}
+
+### 1. ${T('aiw_addFeature')}
 \`\`\`
 ${T('aiw_promptText')}
+\`\`\`
+
+### 2. ${T('aiw_bugfixPrompt')}
+\`\`\`
+${T('aiw_bugfixText')}
+\`\`\`
+
+### 3. ${T('aiw_refactorPrompt')}
+\`\`\`
+${T('aiw_refactorText')}
 \`\`\`
 `;
 

@@ -162,6 +162,25 @@ describe('Snapshot A: LMS/Supabase/Stripe', () => {
     assert.ok(claude.includes('docs/25_error_logs.md'), 'Missing error_logs.md reference');
   });
 
+  test('CLAUDE.md has Thinking Protocol section', () => {
+    const claude = files['CLAUDE.md'];
+    assert.ok(claude.includes('Thinking Protocol'), 'Missing Thinking Protocol section');
+    assert.ok(claude.includes('State the task in one sentence'), 'Missing Thinking Protocol step 1');
+    assert.ok(claude.includes('List files that will be modified'), 'Missing Thinking Protocol step 2');
+    assert.ok(claude.includes('Identify potential side effects'), 'Missing Thinking Protocol step 3');
+    assert.ok(claude.includes('Implement → Test → Verify'), 'Missing Thinking Protocol step 4');
+  });
+
+  test('AI_WORKFLOW has 3 prompt templates', () => {
+    const aiw = files['roadmap/AI_WORKFLOW.md'];
+    assert.ok(aiw, 'roadmap/AI_WORKFLOW.md missing');
+    assert.ok(aiw.includes('新機能追加') || aiw.includes('Add New Feature'), 'Missing new feature template');
+    assert.ok(aiw.includes('バグ修正') || aiw.includes('Bug Fix'), 'Missing bug fix template');
+    assert.ok(aiw.includes('リファクタリング') || aiw.includes('Refactoring'), 'Missing refactoring template');
+    const templateCount = (aiw.match(/###\s+\d\./g) || []).length;
+    assert.equal(templateCount, 3, `Expected 3 prompt templates, got ${templateCount}`);
+  });
+
   test('AI_BRIEF.md has context protocol', () => {
     const brief = files['AI_BRIEF.md'];
     assert.ok(brief.includes('Context Protocol'), 'Missing Context Protocol section');
