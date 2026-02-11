@@ -100,17 +100,19 @@ describe('Build System', () => {
     assert.deepStrictEqual(missingInJA, [], `Keys in EN but not JA: ${missingInJA.join(', ')}`);
   });
 
-  it('9 pillars consistency across all references', () => {
+  it('10 pillars consistency across all references', () => {
     const html = fs.readFileSync(OUTPUT, 'utf-8');
-    assert.ok(!html.includes('8 Pillars') || html.includes('9 Pillars') || html.includes('9 pillars'), 'Should contain "9 Pillars"');
-    assert.ok(html.includes('9つの柱'), 'Should contain "9つの柱"');
-    // pbadge arrays should have 9 items
-    assert.ok(html.includes('if(i<9)'), 'pbadge loop should check i<9');
-    // AI Launcher & Design System references
+    assert.ok(!html.includes('9 Pillars') || html.includes('10 Pillars') || html.includes('10 pillars'), 'Should contain "10 Pillars"');
+    assert.ok(html.includes('10の柱'), 'Should contain "10の柱"');
+    // pbadge arrays should have 10 items
+    assert.ok(html.includes('if(i<10)'), 'pbadge loop should check i<10');
+    // AI Launcher, Design System & Reverse Engineering references
     assert.ok(html.includes('⑧AIランチャー'), 'Should have ⑧AIランチャー badge');
     assert.ok(html.includes('⑧AI Launcher'), 'Should have ⑧AI Launcher badge');
     assert.ok(html.includes('⑨デザインシステム'), 'Should have ⑨デザインシステム badge');
     assert.ok(html.includes('⑨Design System'), 'Should have ⑨Design System badge');
+    assert.ok(html.includes('⑩リバースEng'), 'Should have ⑩リバースEng badge');
+    assert.ok(html.includes('⑩Reverse Eng'), 'Should have ⑩Reverse Eng badge');
   });
 
   it('tour has correct number of steps', () => {

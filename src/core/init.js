@@ -45,14 +45,14 @@ function applyLang(){
   statLbls.forEach((el,i)=>{if(i<4)el.textContent=ja?slJa[i]:slEn[i];});
   // Info cards
   const icards=document.querySelectorAll('.icard');
-  const icJa=[['📝 60+ファイル生成','SDD仕様書・Docker・MCP・AIルール10種・ロードマップ9種・仕様書23種'],['🧪 9つの柱','SDD・DevContainer・MCP・AIルール・並列探索・Dashboard・ロードマップ・AIランチャー・デザインシステム'],['📱 モバイル対応','Expo / React Native 開発パス・EAS Build・OTA更新'],['🤖 AI自律開発','Vibe Coding・マルチAgent・Claude Code Subagents'],['💳 決済・CMS・EC','Stripe・microCMS・Medusa・Shopify Hydrogen'],['📦 フルエクスポート','ZIP・PDF・全ファイル結合コピー・URLシェア']];
-  const icEn=[['📝 60+ File Generation','SDD specs, Docker, MCP, 10 AI rules, 9 roadmaps, 23 specs'],['🧪 9 Pillars','SDD, DevContainer, MCP, AI Rules, Explorer, Dashboard, Roadmap, AI Launcher, Design System'],['📱 Mobile Support','Expo / React Native dev path, EAS Build, OTA updates'],['🤖 AI Autonomous Dev','Vibe Coding, Multi-Agent, Claude Code Subagents'],['💳 Payment/CMS/EC','Stripe, microCMS, Medusa, Shopify Hydrogen'],['📦 Full Export','ZIP, PDF, Copy All Files, URL Share']];
+  const icJa=[['📝 60+ファイル生成','SDD仕様書・Docker・MCP・AIルール10種・ロードマップ9種・仕様書23種'],['🧪 10の柱','SDD・DevContainer・MCP・AIルール・並列探索・Dashboard・ロードマップ・AIランチャー・デザインシステム・リバースEng'],['📱 モバイル対応','Expo / React Native 開発パス・EAS Build・OTA更新'],['🤖 AI自律開発','Vibe Coding・マルチAgent・Claude Code Subagents'],['💳 決済・CMS・EC','Stripe・microCMS・Medusa・Shopify Hydrogen'],['📦 フルエクスポート','ZIP・PDF・全ファイル結合コピー・URLシェア']];
+  const icEn=[['📝 60+ File Generation','SDD specs, Docker, MCP, 10 AI rules, 9 roadmaps, 23 specs'],['🧪 10 Pillars','SDD, DevContainer, MCP, AI Rules, Explorer, Dashboard, Roadmap, AI Launcher, Design System, Reverse Eng'],['📱 Mobile Support','Expo / React Native dev path, EAS Build, OTA updates'],['🤖 AI Autonomous Dev','Vibe Coding, Multi-Agent, Claude Code Subagents'],['💳 Payment/CMS/EC','Stripe, microCMS, Medusa, Shopify Hydrogen'],['📦 Full Export','ZIP, PDF, Copy All Files, URL Share']];
   icards.forEach((el,i)=>{if(i<6){const d=ja?icJa[i]:icEn[i];const h4=el.querySelector('h4');const p=el.querySelector('p');if(h4)h4.textContent=d[0];if(p)p.textContent=d[1];}});
   // Pillar badges
   const pbadges=document.querySelectorAll('.pbadge');
-  const pbJa=['①SDD統合','②DevContainer','③MCP設定','④AIエージェント×10','⑤並列探索','⑥Context Dashboard','⑦技術ロードマップ','⑧AIランチャー','⑨デザインシステム'];
-  const pbEn=['①SDD','②DevContainer','③MCP Config','④AI Agent×10','⑤Explorer','⑥Context Dashboard','⑦Tech Roadmap','⑧AI Launcher','⑨Design System'];
-  pbadges.forEach((el,i)=>{if(i<9)el.textContent=ja?pbJa[i]:pbEn[i];});
+  const pbJa=['①SDD統合','②DevContainer','③MCP設定','④AIエージェント×10','⑤並列探索','⑥Context Dashboard','⑦技術ロードマップ','⑧AIランチャー','⑨デザインシステム','⑩リバースEng'];
+  const pbEn=['①SDD','②DevContainer','③MCP Config','④AI Agent×10','⑤Explorer','⑥Context Dashboard','⑦Tech Roadmap','⑧AI Launcher','⑨Design System','⑩Reverse Eng'];
+  pbadges.forEach((el,i)=>{if(i<10)el.textContent=ja?pbJa[i]:pbEn[i];});
   // Keyboard shortcuts overlay
   const kbT=$('kbTitle');if(kbT)kbT.textContent=t('kbTitle');
   const kbLabels=document.querySelectorAll('.kblbl');

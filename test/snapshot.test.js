@@ -10,7 +10,7 @@ const save=()=>{};const _lsGet=()=>null;const _lsSet=()=>{};const _lsRm=()=>{};c
 eval(fs.readFileSync('src/data/questions.js','utf-8'));
 eval(fs.readFileSync('src/data/presets.js','utf-8').replace('const PR','var PR'));
 eval(fs.readFileSync('src/data/compat-rules.js','utf-8'));
-eval(fs.readFileSync('src/generators/common.js','utf-8'));
+eval(fs.readFileSync('src/generators/common.js','utf-8').replace('const DOMAIN_PLAYBOOK','var DOMAIN_PLAYBOOK'));
 eval(fs.readFileSync('src/generators/p1-sdd.js','utf-8'));
 eval(fs.readFileSync('src/generators/p2-devcontainer.js','utf-8'));
 eval(fs.readFileSync('src/generators/docs.js','utf-8'));
@@ -19,6 +19,7 @@ eval(fs.readFileSync('src/generators/p4-airules.js','utf-8'));
 eval(fs.readFileSync('src/data/gen-templates.js','utf-8').replace('const GT','var GT'));
 eval(fs.readFileSync('src/generators/p7-roadmap.js','utf-8'));
 eval(fs.readFileSync('src/generators/p9-designsystem.js','utf-8'));
+eval(fs.readFileSync('src/generators/p10-reverse.js','utf-8').replace('const REVERSE_FLOW_MAP','var REVERSE_FLOW_MAP'));
 
 // ═══ Helper ═══
 function generate(answers, name, lang) {
@@ -32,6 +33,7 @@ function generate(answers, name, lang) {
   genPillar4_AIRules(answers, name);
   genPillar7_Roadmap(answers, name);
   genPillar9_DesignSystem(answers, name);
+  genPillar10_ReverseEngineering(answers, name);
   return { ...S.files };
 }
 
@@ -50,14 +52,14 @@ describe('Snapshot A: LMS/Supabase/Stripe', () => {
     ai_auto: 'マルチAgent協調'
   }, 'LMS');
 
-  test('file count in range 60-76', () => {
+  test('file count in range 63-79', () => {
     const count = Object.keys(files).length;
-    assert.ok(count >= 60 && count <= 76, `Expected 60-76 files, got ${count}`);
+    assert.ok(count >= 63 && count <= 79, `Expected 63-79 files, got ${count}`);
   });
 
-  test('total tokens in range 12000-18000', () => {
+  test('total tokens in range 12000-19500', () => {
     const total = Object.values(files).reduce((s, v) => s + tokens(v), 0);
-    assert.ok(total >= 12000 && total <= 18000, `Expected 12K-18K tokens, got ${total}`);
+    assert.ok(total >= 12000 && total <= 19500, `Expected 12K-19.5K tokens, got ${total}`);
   });
 
   // Core files existence
@@ -76,6 +78,27 @@ describe('Snapshot A: LMS/Supabase/Stripe', () => {
   test('progress tracker and error logs exist', () => {
     assert.ok(files['docs/24_progress.md'], 'docs/24_progress.md missing');
     assert.ok(files['docs/25_error_logs.md'], 'docs/25_error_logs.md missing');
+  });
+
+  test('reverse engineering and goal decomposition exist', () => {
+    assert.ok(files['docs/29_reverse_engineering.md'], 'docs/29_reverse_engineering.md missing');
+    assert.ok(files['docs/30_goal_decomposition.md'], 'docs/30_goal_decomposition.md missing');
+  });
+
+  test('reverse engineering has domain-specific flow', () => {
+    const rev = files['docs/29_reverse_engineering.md'];
+    assert.ok(rev.includes('ゴール定義') || rev.includes('Goal Definition'), 'Missing goal definition section');
+    assert.ok(rev.includes('逆算フロー') || rev.includes('Reverse Flow'), 'Missing reverse flow section');
+    assert.ok(rev.includes('マイルストーン') || rev.includes('Milestone'), 'Missing milestone section');
+    assert.ok(rev.includes('リスク') || rev.includes('Risk'), 'Missing risk analysis');
+  });
+
+  test('goal decomposition has priority matrix', () => {
+    const goal = files['docs/30_goal_decomposition.md'];
+    assert.ok(goal.includes('ゴールツリー') || goal.includes('Goal Tree'), 'Missing goal tree');
+    assert.ok(goal.includes('優先度マトリクス') || goal.includes('Priority Matrix'), 'Missing priority matrix');
+    assert.ok(goal.includes('依存関係') || goal.includes('Dependency'), 'Missing dependency chain');
+    assert.ok(goal.includes('Impact') && goal.includes('Effort'), 'Missing Impact/Effort matrix');
   });
 
   test('CI/CD workflow exists', () => {
@@ -169,6 +192,42 @@ describe('Snapshot A: LMS/Supabase/Stripe', () => {
     assert.ok(claude.includes('List files that will be modified'), 'Missing Thinking Protocol step 2');
     assert.ok(claude.includes('Identify potential side effects'), 'Missing Thinking Protocol step 3');
     assert.ok(claude.includes('Implement → Test → Verify'), 'Missing Thinking Protocol step 4');
+  });
+
+  test('docs/31_industry_playbook.md exists and has domain intelligence', () => {
+    const playbook = files['docs/31_industry_playbook.md'];
+    assert.ok(playbook, 'docs/31_industry_playbook.md missing');
+    assert.ok(playbook.includes('Target Domain') || playbook.includes('対象ドメイン'), 'Missing domain section');
+    assert.ok(playbook.includes('Implementation') || playbook.includes('実装'), 'Missing implementation patterns');
+    assert.ok(playbook.includes('Bug') || playbook.includes('バグ'), 'Missing bug predictions');
+    assert.ok(playbook.includes('Compliance') || playbook.includes('コンプライアンス'), 'Missing compliance checklist');
+  });
+
+  test('docs/31 contains education-specific content (FERPA)', () => {
+    const playbook = files['docs/31_industry_playbook.md'];
+    // LMS project should detect education domain
+    assert.ok(playbook.includes('FERPA') || playbook.includes('education') || playbook.includes('学習'),
+      'Expected education-specific content (FERPA or learning-related)');
+  });
+
+  test('CLAUDE.md has Domain Context Rotation table', () => {
+    const claude = files['CLAUDE.md'];
+    // Should have domain context rotation table for education domain
+    const hasDomainTable = claude.includes('Domain Context Rotation') ||
+                          claude.includes('ドメインコンテキスト') ||
+                          claude.includes('Task Type') ||
+                          claude.includes('タスク種別');
+    assert.ok(hasDomainTable, 'Missing Domain Context Rotation table in CLAUDE.md');
+  });
+
+  test('skills/catalog.md has domain-specific skill', () => {
+    const catalog = files['skills/catalog.md'];
+    // Should have domain-specific skill section
+    const hasDomainSkill = catalog.includes('Domain-Specific') ||
+                           catalog.includes('業種特化') ||
+                           catalog.includes('Custom Domain Skill') ||
+                           catalog.includes('業種カスタム');
+    assert.ok(hasDomainSkill, 'Missing domain-specific skill in skills/catalog.md');
   });
 
   test('AI_WORKFLOW has 3 prompt templates', () => {
@@ -285,9 +344,9 @@ describe('Snapshot B: Blog/Vite/Netlify', () => {
     dev_methods: 'TDD', ai_tools: 'Cursor', orm: ''
   }, 'Blog');
 
-  test('file count in range 57-76', () => {
+  test('file count in range 58-77', () => {
     const count = Object.keys(files).length;
-    assert.ok(count >= 57 && count <= 76, `Expected 57-76 files, got ${count}`);
+    assert.ok(count >= 58 && count <= 77, `Expected 58-77 files, got ${count}`);
   });
 
   test('no Stripe content when payment absent', () => {

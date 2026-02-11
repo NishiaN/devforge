@@ -417,11 +417,11 @@ const ENTITY_COLUMNS = {
 
 ⚠️ **When adding entities:** Check if columns match existing constants (\_U, \_SA, \_SD, \_T, \_D, etc.) to maintain compression.
 
-## Generated Output (66-68 files)
-When users complete the wizard, DevForge generates **66-68 files** (base: 66 files, +2 when ai_auto ≠ None for skills/catalog.md and skills/pipelines.md):
+## Generated Output (67-69 files)
+When users complete the wizard, DevForge generates **67-69 files** (base: 67 files, +2 when ai_auto ≠ None for skills/catalog.md and skills/pipelines.md):
 - **.spec/** — constitution.md, specification.md, technical-plan.md, tasks.md, verification.md
 - **.devcontainer/** — devcontainer.json, Dockerfile, docker-compose.yml, post-create.sh
-- **docs/** — architecture.md, ER.md, API.md, screen.md, test-cases.md, security.md, release.md, WBS.md, prompt-playbook.md, tasks.md, **progress.md (24)**, **error_logs.md (25)**, **design_system.md (26)**, **sequence_diagrams.md (27)**, **qa_strategy.md (28)**, **reverse_engineering.md (29)**, **goal_decomposition.md (30)**
+- **docs/** — architecture.md, ER.md, API.md, screen.md, test-cases.md, security.md, release.md, WBS.md, prompt-playbook.md, tasks.md, **progress.md (24)**, **error_logs.md (25)**, **design_system.md (26)**, **sequence_diagrams.md (27)**, **qa_strategy.md (28)**, **reverse_engineering.md (29)**, **goal_decomposition.md (30)**, **industry_playbook.md (31)**
 - **AI rules** — CLAUDE.md (with Workflow Cycle & Context Management), AI_BRIEF.md (with Context Protocol, ~1200 tokens), .cursorrules, .clinerules, .windsurfrules, AGENTS.md, .cursor/rules, **skills/** (project.md, catalog.md*, pipelines.md*)
 - **CI/CD** — .github/workflows/ci.yml
 

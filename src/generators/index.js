@@ -1,4 +1,4 @@
-/* ═══ FILE GENERATION ENGINE — 9 PILLARS ═══ */
+/* ═══ FILE GENERATION ENGINE — 10 PILLARS ═══ */
 function generateAll(){
   const _minKeys=['frontend','backend','database'];
   if(_minKeys.some(k=>!S.answers[k])){
@@ -50,6 +50,7 @@ function doGenerate(lang){
     {fn:()=>genPillar4_AIRules(a,pn),lbl:_j?'柱④ AIルール':'Pillar ④ AI Rules',err:'P4-AI'},
     {fn:()=>genPillar7_Roadmap(a,pn),lbl:_j?'柱⑦ ロードマップ':'Pillar ⑦ Roadmap',err:'P7-Road'},
     {fn:()=>genPillar9_DesignSystem(a,pn),lbl:_j?'柱⑨ デザインシステム':'Pillar ⑨ Design System',err:'P9-DS'},
+    {fn:()=>genPillar10_ReverseEngineering(a,pn),lbl:_j?'柱⑩ リバースEng':'Pillar ⑩ Reverse Eng',err:'P10-Rev'},
     {fn:()=>genDocs21(a,pn),lbl:_j?'仕様書23種':'23 Spec Docs',err:'Docs'},
     {fn:()=>genCommonFiles(a,pn),lbl:_j?'共通ファイル':'Common Files',err:'Common'},
   ];

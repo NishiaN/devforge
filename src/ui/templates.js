@@ -41,16 +41,16 @@ function showManual(sec){
   pushModal(o,()=>{o.classList.remove('show');releaseFocus(o);});
   const _ja=S.lang==='ja';
   const MANUAL=[
-    {id:'overview',title:_ja?'概要':'Overview',body:_ja?'<h2>DevForge v9.0 とは</h2><p>質問に答えるだけで、プロジェクトに必要な66+ファイルを自動生成するAI駆動開発プラットフォームです。'+_TECH_COUNT+'テクノロジー対応。</p>'+
-      '<h3>9つの柱</h3><table><tr><th>柱</th><th>内容</th><th>ファイル数</th></tr><tr><td>①SDD統合</td><td>Spec Kit互換の仕様書</td><td>5</td></tr><tr><td>②DevContainer</td><td>Docker開発環境</td><td>4</td></tr><tr><td>③MCP設定</td><td>Model Context Protocol</td><td>3</td></tr><tr><td>④AIルール</td><td>10+ツール設定+スキル</td><td>10+</td></tr>'+
-      '<tr><td>⑤並列探索</td><td>スタック比較+おすすめランキング</td><td>UI</td></tr><tr><td>⑥Dashboard</td><td>コンテキスト可視化+技術DB</td><td>UI</td></tr><tr><td>⑦ロードマップ</td><td>学習パス（インタラクティブ）</td><td>9+UI</td></tr><tr><td>⑧AIランチャー</td><td>プロンプトテンプレート+トークン推定</td><td>UI</td></tr><tr><td>⑨デザインシステム</td><td>デザイントークン+シーケンス図</td><td>2</td></tr></table>'+
-      '<p>+ docs（28仕様書）+ 共通ファイル（4）= <strong>66+ファイル</strong></p>':'<h2>What is DevForge v9.0?</h2><p>An AI-driven dev platform that auto-generates 66+ project files just by answering questions. Supports '+_TECH_COUNT+' technologies.</p>'+
-      '<h3>9 Pillars</h3><table><tr><th>Pillar</th><th>Content</th><th>Files</th></tr><tr><td>①SDD</td><td>Spec Kit compatible specs</td><td>5</td></tr><tr><td>②DevContainer</td><td>Docker dev environment</td><td>4</td></tr><tr><td>③MCP</td><td>Model Context Protocol</td><td>3</td></tr><tr><td>④AI Rules</td><td>10+ tool configs + skills</td><td>10+</td></tr>'+
+    {id:'overview',title:_ja?'概要':'Overview',body:_ja?'<h2>DevForge v9.0 とは</h2><p>質問に答えるだけで、プロジェクトに必要な68+ファイルを自動生成するAI駆動開発プラットフォームです。'+_TECH_COUNT+'テクノロジー対応。</p>'+
+      '<h3>10の柱</h3><table><tr><th>柱</th><th>内容</th><th>ファイル数</th></tr><tr><td>①SDD統合</td><td>Spec Kit互換の仕様書</td><td>5</td></tr><tr><td>②DevContainer</td><td>Docker開発環境</td><td>4</td></tr><tr><td>③MCP設定</td><td>Model Context Protocol</td><td>3</td></tr><tr><td>④AIルール</td><td>10+ツール設定+スキル</td><td>10+</td></tr>'+
+      '<tr><td>⑤並列探索</td><td>スタック比較+おすすめランキング</td><td>UI</td></tr><tr><td>⑥Dashboard</td><td>コンテキスト可視化+技術DB</td><td>UI</td></tr><tr><td>⑦ロードマップ</td><td>学習パス（インタラクティブ）</td><td>9+UI</td></tr><tr><td>⑧AIランチャー</td><td>プロンプトテンプレート+トークン推定</td><td>UI</td></tr><tr><td>⑨デザインシステム</td><td>デザイントークン+シーケンス図</td><td>2</td></tr><tr><td>⑩リバースEng</td><td>ゴール逆算型プランニング</td><td>2</td></tr></table>'+
+      '<p>+ docs（31仕様書）+ 共通ファイル（4）= <strong>69+ファイル</strong></p>':'<h2>What is DevForge v9.0?</h2><p>An AI-driven dev platform that auto-generates 69+ project files just by answering questions. Supports '+_TECH_COUNT+' technologies.</p>'+
+      '<h3>10 Pillars</h3><table><tr><th>Pillar</th><th>Content</th><th>Files</th></tr><tr><td>①SDD</td><td>Spec Kit compatible specs</td><td>5</td></tr><tr><td>②DevContainer</td><td>Docker dev environment</td><td>4</td></tr><tr><td>③MCP</td><td>Model Context Protocol</td><td>3</td></tr><tr><td>④AI Rules</td><td>10+ tool configs + skills</td><td>10+</td></tr>'+
       ''+
-      '<tr><td>⑤Explorer</td><td>Stack comparison + recommendation</td><td>UI</td></tr><tr><td>⑥Dashboard</td><td>Context visualization + Tech DB</td><td>UI</td></tr><tr><td>⑦Roadmap</td><td>Learning path (interactive)</td><td>9+UI</td></tr><tr><td>⑧AI Launcher</td><td>Prompt templates + token estimation</td><td>UI</td></tr><tr><td>⑨Design System</td><td>Design tokens + Sequence diagrams</td><td>2</td></tr></table>'+
-      '<p>+ docs (28 specs) + common (4) = <strong>66+ files</strong></p>'},
+      '<tr><td>⑤Explorer</td><td>Stack comparison + recommendation</td><td>UI</td></tr><tr><td>⑥Dashboard</td><td>Context visualization + Tech DB</td><td>UI</td></tr><tr><td>⑦Roadmap</td><td>Learning path (interactive)</td><td>9+UI</td></tr><tr><td>⑧AI Launcher</td><td>Prompt templates + token estimation</td><td>UI</td></tr><tr><td>⑨Design System</td><td>Design tokens + Sequence diagrams</td><td>2</td></tr><tr><td>⑩Reverse Eng</td><td>Goal-driven reverse planning</td><td>2</td></tr></table>'+
+      '<p>+ docs (31 specs) + common (4) = <strong>69+ files</strong></p>'},
     {id:'start',title:_ja?'はじめ方':'Getting Started',body:_ja?
-      '<h2>はじめ方</h2><p>1. スキルレベルを選択（Beginner/Intermediate/Pro）<br>2. プロジェクト名を入力<br>3. テンプレート選択（任意・36種類）<br>4. Phase 1-3の質問に回答（スキップ＆後で回答可）<br>5. 生成ボタンで66+ファイル作成<br>6. ZIPダウンロードまたはPDF印刷</p>'+
+      '<h2>はじめ方</h2><p>1. スキルレベルを選択（Beginner/Intermediate/Pro）<br>2. プロジェクト名を入力<br>3. テンプレート選択（任意・36種類）<br>4. Phase 1-3の質問に回答（スキップ＆後で回答可）<br>5. 生成ボタンで67+ファイル作成<br>6. ZIPダウンロードまたはPDF印刷</p>'+
       '<h3>UX機能</h3>'+
       '<p>• 🌱⚡🔥 スキルレベルで質問の選択肢が動的変化<br>• 🎯 36プリセットテンプレート<br>• ✎ 回答の編集（✎ボタン）<br>• ⏭️ スキップ＆後で回答<br>• 📊 複雑度分析（0-100スコア）<br>• 📁 プロジェクト管理（Ctrl+M）<br>• 🎙️ 音声入力<br>• ? 質問ごとのヘルプアイコン<br>• 🔀 ドラッグ&ドロップ優先度ソート</p>'+
       '<h3>V8 新機能</h3>'+
@@ -66,8 +66,8 @@ function showManual(sec){
       '<h3>V8.3 Features</h3>'+
       '<p>• 📊 Mermaid diagram live rendering (ER/screen flow/Gantt)<br>• 📝 OpenAPI-compliant API specs<br>• ✅ Test case matrix (feature × normal/abnormal)<br>• 📋 Release checklist (per deploy target)<br>• 🔨 WBS 3-level + effort estimation<br>• 🎯 Prompt playbook (phase-specific AI prompts)<br>• 📎 GitHub Issues-style task breakdown<br>• 📋 Copy all files combined (for bulk AI input)</p>'
     },
-    {id:'pillars',title:_ja?'9つの柱':'9 Pillars',body:_ja?
-      '<h2>9つの柱の詳細</h2><h3>① SDD統合 (5ファイル)</h3>'+
+    {id:'pillars',title:_ja?'10の柱':'10 Pillars',body:_ja?
+      '<h2>10の柱の詳細</h2><h3>① SDD統合 (5ファイル)</h3>'+
       '<p>constitution.md / specification.md / technical-plan.md / tasks.md / verification.md</p>'+
       '<h3>② DevContainer (4ファイル)</h3>'+
       '<p>devcontainer.json / Dockerfile / docker-compose.yml / post-create.sh — VSCode/Cursorで開くだけ。</p>'+
@@ -84,9 +84,11 @@ function showManual(sec){
       '<h3>⑧ AIプロンプトランチャー (UI)</h3>'+
       '<p>生成した仕様書をAIツールに一括投入。6つのプロンプトテンプレート（レビュー・実装・テスト・リファクタ・セキュリティ・ドキュメント）。フォルダ別トークン推定・モデル適合度表示。</p>'+
       '<h3>⑨ デザインシステム (2ファイル)</h3>'+
-      '<p>design_system.md (デザイントークン・色・タイポ・コンポーネントカタログ) / sequence_diagrams.md (認証・CRUD・決済フローのMermaidシーケンス図) — フレームワーク別実装ガイド。</p>'
+      '<p>design_system.md (デザイントークン・色・タイポ・コンポーネントカタログ) / sequence_diagrams.md (認証・CRUD・決済フローのMermaidシーケンス図) — フレームワーク別実装ガイド。</p>'+
+      '<h3>⑩ リバースエンジニアリング (2ファイル)</h3>'+
+      '<p>reverse_engineering.md (ゴール定義→逆算フロー・マイルストーンGantt・リスク分析) / goal_decomposition.md (ゴールツリー・サブゴール分解・ギャップ分析・優先度マトリクス・依存関係チェーン) — 15ドメイン対応の逆算型プランニング。</p>'
       :
-      '<h2>9 Pillars in Detail</h2><h3>① SDD Integration (5 files)</h3>'+
+      '<h2>10 Pillars in Detail</h2><h3>① SDD Integration (5 files)</h3>'+
       '<p>constitution.md / specification.md / technical-plan.md / tasks.md / verification.md</p>'+
       '<h3>② DevContainer (4 files)</h3>'+
       '<p>devcontainer.json / Dockerfile / docker-compose.yml / post-create.sh — Just open in VS Code/Cursor.</p>'+
@@ -103,16 +105,18 @@ function showManual(sec){
       '<h3>⑧ AI Prompt Launcher (UI)</h3>'+
       '<p>Bulk-feed generated specs to AI tools. 6 prompt templates (Review, Implement, Test, Refactor, Security, Docs). Per-folder token estimation and model fit display.</p>'+
       '<h3>⑨ Design System (2 files)</h3>'+
-      '<p>design_system.md (design tokens, colors, typography, component catalog) / sequence_diagrams.md (auth, CRUD, payment Mermaid sequence diagrams) — Framework-specific guides.</p>'
+      '<p>design_system.md (design tokens, colors, typography, component catalog) / sequence_diagrams.md (auth, CRUD, payment Mermaid sequence diagrams) — Framework-specific guides.</p>'+
+      '<h3>⑩ Reverse Engineering (2 files)</h3>'+
+      '<p>reverse_engineering.md (goal definition → reverse flow, milestone Gantt, risk analysis) / goal_decomposition.md (goal tree, sub-goal breakdown, gap analysis, priority matrix, dependency chain) — 15 domain-specific reverse planning.</p>'
     },
     {id:'export',title:_ja?'エクスポート':'Export',body:_ja?
-      '<h2>エクスポート方法</h2><p><strong>ZIP</strong>: 全66+ファイルをフォルダ構造付きでZIP圧縮ダウンロード。<br><strong>PDF</strong>: Markdownファイルを整形してブラウザのPDF印刷で出力。<br><strong>URL共有</strong>: プロジェクト設定をBase64エンコードしてURL共有。<br><strong>全ファイルコピー</strong>: 全ドキュメントを1テキストに結合してクリップボードにコピー（Ctrl+Shift+C）。AIへの一括投入に最適。</p><h3>テンプレート保存</h3><p>プロジェクト設定をlocalStorageに保存し、次回起動時に読み込み可能。</p>'
+      '<h2>エクスポート方法</h2><p><strong>ZIP</strong>: 全68+ファイルをフォルダ構造付きでZIP圧縮ダウンロード。<br><strong>PDF</strong>: Markdownファイルを整形してブラウザのPDF印刷で出力。<br><strong>URL共有</strong>: プロジェクト設定をBase64エンコードしてURL共有。<br><strong>全ファイルコピー</strong>: 全ドキュメントを1テキストに結合してクリップボードにコピー（Ctrl+Shift+C）。AIへの一括投入に最適。</p><h3>テンプレート保存</h3><p>プロジェクト設定をlocalStorageに保存し、次回起動時に読み込み可能。</p>'
       :
-      '<h2>Export Methods</h2><p><strong>ZIP</strong>: Download all 66+ files as a ZIP with folder structure.<br><strong>PDF</strong>: Format Markdown files and print via browser PDF.<br><strong>URL Sharing</strong>: Base64-encode project settings and share via URL.<br><strong>Copy All Files</strong>: Combine all documents into one text and copy to clipboard (Ctrl+Shift+C). Ideal for bulk AI input.</p><h3>Template Save</h3><p>Save project settings to localStorage and load them on next launch.</p>'
+      '<h2>Export Methods</h2><p><strong>ZIP</strong>: Download all 68+ files as a ZIP with folder structure.<br><strong>PDF</strong>: Format Markdown files and print via browser PDF.<br><strong>URL Sharing</strong>: Base64-encode project settings and share via URL.<br><strong>Copy All Files</strong>: Combine all documents into one text and copy to clipboard (Ctrl+Shift+C). Ideal for bulk AI input.</p><h3>Template Save</h3><p>Save project settings to localStorage and load them on next launch.</p>'
     },
     {id:'guide',title:_ja?'🚀 活用ガイド':'🚀 Usage Guide',body:_ja?
       '<h2>🚀 生成ファイル活用ガイド</h2>'+
-      '<p>DevForge v9 は世界で唯一の<strong>仕様駆動AIプロジェクトジェネレーター</strong>です。他のツールが「コード」を生成するのに対し、DevForge は「開発の知性」── 設計・環境・ルール・学習計画を66+ファイルで生成します。</p>'+
+      '<p>DevForge v9 は世界で唯一の<strong>仕様駆動AIプロジェクトジェネレーター</strong>です。他のツールが「コード」を生成するのに対し、DevForge は「開発の知性」── 設計・環境・ルール・学習計画を68+ファイルで生成します。</p>'+
       '<h3>🌱 Beginner — まず動かす</h3>'+
       '<p><strong>Step 1: ロードマップに従う</strong><br>ダッシュボード（柱⑦）のロードマップUIがそのまま学習計画。Layer 1から順にチェック。📖ボタンで公式ドキュメントに直接ジャンプ。</p>'+
       '<p><strong>Step 2: 3つだけ覚える</strong><br>• <code>README.md</code> — GitHubにそのまま公開OK<br>• <code>.devcontainer/</code> — VS Code/Cursorで開くだけで環境完成<br>• <code>CLAUDE.md</code> — AIに「これ読んで」で全仕様を理解</p>'+
@@ -143,7 +147,9 @@ function showManual(sec){
       '<tr><td><code>.spec/</code></td><td>読むだけ</td><td>AIに1つずつ</td><td>タスクキュー化</td></tr>'+
       '<tr><td><code>.devcontainer/</code></td><td>そのまま</td><td>カスタマイズ</td><td>チーム標準化</td></tr>'+
       '<tr><td><code>roadmap/</code></td><td>学習ガイド</td><td>進捗管理</td><td>オンボーディング</td></tr>'+
-      '<tr><td><code>docs/</code> 28ファイル</td><td>後で参照</td><td>レビュー素材</td><td>CI/CDゲート</td></tr>'+
+      '<tr><td><code>docs/</code> 30ファイル</td><td>後で参照</td><td>レビュー素材</td><td>CI/CDゲート</td></tr>'+
+      '<tr><td><code>docs/29_reverse_engineering</code></td><td>読むだけ</td><td>逆算計画</td><td>マイルストーン管理</td></tr>'+
+      '<tr><td><code>docs/30_goal_decomposition</code></td><td>後で参照</td><td>優先順位付け</td><td>タスク依存分析</td></tr>'+
       '<tr><td>柱④ AIルール</td><td>触らない</td><td>ルール追加</td><td>全ツール統一</td></tr>'+
       '<tr><td>柱⑧ ランチャー</td><td>使わない</td><td>部分利用</td><td>全工程自動化</td></tr>'+
       '<tr><td><code>.mcp/ + config</code></td><td>後で</td><td>そのまま</td><td>カスタムMCP</td></tr>'+
@@ -152,7 +158,7 @@ function showManual(sec){
       '<p class="guide-action-p"><button class="btn btn-p btn-sm" onclick="closeManual();showPostGenGuide(true)">🚀 レベル別ガイドを表示</button></p>'
       :
       '<h2>🚀 Generated Files Usage Guide</h2>'+
-      '<p>DevForge v9 is the world\'s only <strong>spec-driven AI project generator</strong>. While other tools generate code, DevForge generates "development intelligence" — design, environment, rules, and learning plans through 66+ files.</p>'+
+      '<p>DevForge v9 is the world\'s only <strong>spec-driven AI project generator</strong>. While other tools generate code, DevForge generates "development intelligence" — design, environment, rules, and learning plans through 69+ files.</p>'+
       '<h3>🌱 Beginner — Get Started</h3>'+
       '<p><strong>Step 1: Follow the Roadmap</strong><br>The Dashboard (Pillar ⑦) roadmap UI is your learning plan. Check off from Layer 1. Hit 📖 to jump to official docs.</p>'+
       '<p><strong>Step 2: Remember Just 3 Files</strong><br>• <code>README.md</code> — Publish directly to GitHub<br>• <code>.devcontainer/</code> — Open in VS Code/Cursor and dev env is ready<br>• <code>CLAUDE.md</code> — Tell AI "read this" and it understands your entire project</p>'+

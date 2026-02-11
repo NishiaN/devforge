@@ -732,6 +732,107 @@ const QA_CROSS_CUTTING={
   audit:{ja:'監査ログ完全性',en:'Audit log completeness',domains:['fintech','saas','hr','legal']}
 };
 
+// ── Domain Intelligence Playbook (Implementation/Compliance/Prevention/Context/Skills) ──
+const _CF='FERPA';const _CP='PCI DSS';const _CH='HIPAA';const _CG='GDPR';
+const _dpb=(i_ja,i_en,c_ja,c_en,p_ja,p_en,ctx_ja,ctx_en,sk_ja,sk_en)=>({impl_ja:i_ja,impl_en:i_en,compliance_ja:c_ja,compliance_en:c_en,prevent_ja:p_ja,prevent_en:p_en,ctx_ja:ctx_ja,ctx_en:ctx_en,skill_ja:sk_ja,skill_en:sk_en});
+
+const DOMAIN_PLAYBOOK={
+  education:_dpb(
+    ['学習目標→知識体系→カリキュラム→評価基準(例:TOEIC 650→900=300h)','成績データ→パターン分析→弱点特定→個別最適化(正答率<60%優先)','理解度テスト→習熟判定→次単元解放(≥80%進む、<60%再履修)'],
+    ['Goal→Knowledge map→Curriculum→Assessment (e.g. TOEIC 650→900=300hrs)','Grade data→Pattern analysis→Weakness ID→Personalization (prioritize <60%)','Test→Mastery→Unlock next (≥80% proceed, <60% retry)'],
+    [_CF+':学生データ暗号化、保護者同意、保持5年','WCAG 2.1 AA、スクリーンリーダー対応',_CG+':Right to be forgotten'],
+    [_CF+': student data encrypt, parental consent, 5yr retention','WCAG 2.1 AA, screen reader',_CG+': Right to be forgotten'],
+    ['進捗消失|localStorage超過|対策:IndexedDB移行','カンニング検出漏れ|タブ監視のみ|対策:Proctorio+視線追跡','学習時間水増し|非アクティブカウント|対策:操作監視、5分で停止'],
+    ['Progress loss|localStorage quota|Fix: IndexedDB','Cheating miss|Tab-only monitor|Fix: Proctorio+eye track','Time inflation|Counts inactive|Fix: Activity monitor, 5min pause'],
+    ['新機能→requirements.md, design_system.md, error_logs.md','バグ→error_logs.md, test_cases/, architecture.md','分析→architecture.md(model), api_spec.md'],
+    ['Feature→requirements.md, design_system.md, error_logs.md','Bug→error_logs.md, test_cases/, architecture.md','Analysis→architecture.md(model), api_spec.md'],
+    '学習効果測定|カリキュラム最適化|入力:学習履歴JSON、目標|判断:<60%復習、60-79%補助、≥80%解放|出力:優先リスト、推定時間',
+    'Learning Effectiveness|Optimize curriculum|Input: history JSON, target|Judgment: <60% review, 60-79% supplemental, ≥80% unlock|Output: priority list, estimate'
+  ),
+  ec:_dpb(
+    ['購買→カート→決済完了→リピート(初回割30%→LTV 3.2x、カゴ落ち60%→回収18%)','在庫→需要予測→発注→欠品防止(90日平均+季節係数)','客単価→レコメンド→クロスセル→向上(3点提示でCTR 12%)'],
+    ['Intent→Cart→Checkout→Repeat (30% discount→3.2x LTV, 60% abandon→18% recovery)','Inventory→Forecast→Reorder→Prevention (90d avg+seasonal)','Spending→Recommend→Cross-sell→Increase (3 items→12% CTR)'],
+    [_CP+':トークン化、Stripe Radar、年次認証','特商法:運営者、返品、配送料','薬機法/景表法:誇大禁止'],
+    [_CP+': tokenization, Stripe Radar, annual cert','Commercial Act: operator, return, shipping','Pharma/Ad Law: no exaggeration'],
+    ['二重決済|冪等性未実装|対策:Stripe key、ボタン無効化','在庫切れ購入|race condition|対策:SELECT FOR UPDATE、3フェーズ','カゴ落ち60%|決済離脱|対策:住所補完、Apple Pay、ゲスト許可'],
+    ['Double charge|No idempotency|Fix: Stripe key, disable button','Stockout purchase|Race condition|Fix: SELECT FOR UPDATE, 3-phase','60% abandon|Checkout friction|Fix: Address autocomplete, Apple Pay, guest'],
+    ['決済→architecture.md(Stripe), security.md, error_logs.md','在庫→architecture.md(inventory), api_spec.md(stock)','レコメンド→stakeholders.md(ML), api_spec.md'],
+    ['Payment→architecture.md(Stripe), security.md, error_logs.md','Inventory→architecture.md(inventory), api_spec.md(stock)','Recommend→stakeholders.md(ML), api_spec.md'],
+    'カゴ落ち防止|決済完了率向上|入力:Analytics、Stripe、アンケート|判断:離脱>50%要改善、入力>3分補完、エラー>5%手段追加|出力:改善リスト、A/Bテスト、期待効果',
+    'Cart Abandon Prevention|Improve completion|Input: Analytics, Stripe, survey|Judgment: abandon>50% improve, fill>3min autocomplete, error>5% add methods|Output: improvement list, A/B test, impact'
+  ),
+  saas:_dpb(
+    ['MRR目標→顧客数→CAC→予算(MRR $50k、チャーン5%→+30顧客/月)','解約率→施策→改善→削減(オンボード<50%→ツアー+22%)','使用率→指標→アップセル→ARPU(週ログイン<2回リスク)'],
+    ['MRR target→Customers→CAC→Budget (MRR $50k, 5% churn→+30/mo)','Churn→Tactics→Improve→Reduce (onboard<50%→tour+22%)','Usage→Metrics→Upsell→ARPU (weekly<2 risk)'],
+    ['SOC 2 Type II:暗号化、検知、監査',_CG+':DPA、開示、ポータビリティ','利用規約:SLA 99.9%、削除30日'],
+    ['SOC 2 Type II: encrypt, detect, audit',_CG+': DPA, disclose, portability','ToS: SLA 99.9%, delete 30d'],
+    ['テナント分離漏れ|RLS未設定|対策:RLS必須、tenant_id必須','Rate limit突破|backoff未実装|対策:2^n待機、Circuit Breaker','オンボード離脱50%|設定複雑|対策:ツアー、プリセット、Aha!短縮'],
+    ['Tenant isolation|Missing RLS|Fix: Enforce RLS, tenant_id required','Rate limit|No backoff|Fix: 2^n wait, Circuit Breaker','50% onboard drop|Complex setup|Fix: Tour, presets, shorten Aha!'],
+    ['分離→architecture.md(RLS), security.md, test_cases/','解約→stakeholders.md(CS), progress.md, api_spec.md','機能→requirements.md, design_system.md'],
+    ['Isolation→architecture.md(RLS), security.md, test_cases/','Churn→stakeholders.md(CS), progress.md, api_spec.md','Feature→requirements.md, design_system.md'],
+    'チャーン予測|解約リスク検知|入力:行動ログ、契約情報|判断:ログイン<2かつ問合せ≥3高リスク、使用率<30%中リスク|出力:スコア、予測日、アクション',
+    'Churn Prediction|Detect risk|Input: behavior logs, contract|Judgment: logins<2 AND tickets≥3 high risk, usage<30% medium|Output: score, date, actions'
+  ),
+  fintech:_dpb(
+    ['投資目標→リターン→リスク→配分(60歳5,000万円→年利6.8%)','信用→与信→金利→管理(FICO 650-699→50万円、15%)','取引→異常検知→判定→ブロック(深夜高額→ML 92%→凍結)'],
+    ['Goal→Return→Risk→Allocation (60yo ¥50M→6.8% return)','Credit→Limit→Rate→Manage (FICO 650-699→¥500k, 15%)','Transaction→Detect→Judge→Block (3AM high→ML 92%→freeze)'],
+    ['金融庁:第二種、資金移動業',_CP+':600万件超、四半期スキャン','収益移転防止:eKYC、届出、7年保存'],
+    ['FSA: Type II, Funds Transfer',_CP+': >6M/yr, quarterly scan','AML/KYC: eKYC, report, 7yr retention'],
+    ['二重送金|残高チェック不足|対策:SELECT FOR UPDATE、冪等性','不正検出漏れ|ルールのみ|対策:LightGBM、行動学習','金利ズレ|浮動小数点誤差|対策:Decimal、整数演算'],
+    ['Double transfer|Insufficient check|Fix: SELECT FOR UPDATE, idempotency','Fraud miss|Rule-only|Fix: LightGBM, behavior learning','Interest error|Float rounding|Fix: Decimal, integer math'],
+    ['送金→architecture.md(transaction), security.md(PCI DSS)','検知→architecture.md(ML), api_spec.md(fraud)','計算→architecture.md(interest), test_cases/, error_logs.md'],
+    ['Transfer→architecture.md(transaction), security.md(PCI DSS)','Fraud→architecture.md(ML), api_spec.md(fraud)','Interest→architecture.md(interest), test_cases/, error_logs.md'],
+    '与信審査|融資判定|入力:スコア、年収、勤続、借入、延滞|判断:≥720承認30%8%、650-719承認20%15%、<650人間審査|出力:可否、限度額、金利、返済計画',
+    'Credit Underwriting|Loan decision|Input: score, income, tenure, debt, delinquency|Judgment: ≥720 approve 30% 8%, 650-719 approve 20% 15%, <650 manual|Output: decision, limit, rate, repayment'
+  ),
+  health:_dpb(
+    ['目標→リスク→改善プラン→予防(糖尿病35%→17.5%に体重-8kg)','症状→候補→検査→医療機関(頭痛+熱38.5℃+咳→インフルA 78%)','服薬→遵守率→効果→最適化(飲み忘れ30%→リマインダー85%)'],
+    ['Goal→Risk→Plan→Prevention (diabetes 35%→17.5% via -8kg)','Symptom→Candidates→Tests→Facility (headache+fever 38.5℃+cough→Flu A 78%)','Medication→Adherence→Effect→Optimize (30% miss→reminder 85%)'],
+    [_CH+':PHI暗号化、監査、BAA','医療機器:診断=クラスII、記録=非該当、届出','個情保護:匿名加工、オプトアウト'],
+    [_CH+': PHI encrypt, audit, BAA','Medical device: diagnostic=Class II, records=non-device','Privacy: anonymize, opt-out'],
+    ['診断ミス|データ不足|対策:必須入力増、禁忌チェック','通知されない|許可OFF|対策:ガイダンス、PWA、SMS','連携エラー|スコープ不足|対策:権限明示、再認証、リトライ'],
+    ['Diagnostic error|Insufficient data|Fix: Increase inputs, contraindication check','No notification|Permission OFF|Fix: Guidance, PWA, SMS','Integration error|Scope insufficient|Fix: Specify permissions, re-auth, retry'],
+    ['診断→architecture.md(ML), security.md(HIPAA), test_cases/','服薬→architecture.md(notification), api_spec.md, error_logs.md','連携→architecture.md(HealthKit), sequence_diagrams/'],
+    ['Diagnostic→architecture.md(ML), security.md(HIPAA), test_cases/','Medication→architecture.md(notification), api_spec.md, error_logs.md','Integration→architecture.md(HealthKit), sequence_diagrams/'],
+    '健康リスク予測|発症リスク予測|入力:健診データ、生活習慣、家族歴|判断:10年>30%高リスク、BMI≥25かつ血糖≥110糖尿病予備群|出力:スコア、目標、削減率、根拠',
+    'Health Risk Prediction|Predict onset|Input: checkup data, lifestyle, family history|Judgment: 10yr>30% high risk, BMI≥25 AND sugar≥110 prediabetes|Output: scores, goals, reduction, evidence'
+  ),
+  booking:_dpb(
+    ['可能枠→予測→動的価格→稼働率(19-20時満席→18時割20%)','空室→判定→制限→収益(週末2泊以上、直前50%オフ)','キャンセル率→前払い→防止→保護(15%→カード登録で3%)'],
+    ['Slots→Forecast→Dynamic price→Occupancy (7-8PM full→6PM 20% off)','Vacancy→Detect→Restriction→Revenue (weekend 2-night min, last-min 50% off)','Cancel rate→Prepay→Prevent→Protect (15%→card reg 3%)'],
+    ['旅行業法:第三種登録、管理、掲示','景表法:二重価格規制、おとり禁止','キャンセル:返金明示、手数料上限'],
+    ['Travel Act: Type III reg, mgmt, display','Gift Act: dual price reg, bait prohibit','Cancel: refund disclose, fee cap'],
+    ['ダブルブッキング|競合状態|対策:Lock、3段階、5分同期+バッファ','待ち通知されない|接続切断|対策:SSE fallback、SMS/Email、30秒以内','価格急変クレーム|更新頻度高|対策:30分固定、理由表示'],
+    ['Double booking|Race condition|Fix: Lock, 3-phase, 5min sync+buffer','Waitlist no notify|Connection loss|Fix: SSE fallback, SMS/Email, within 30sec','Price change complaint|Too frequent|Fix: 30min hold, show reason'],
+    ['予約→architecture.md(inventory), sequence_diagrams/(flow), security.md','価格→architecture.md(pricing), api_spec.md, stakeholders.md','キャンセル→architecture.md(policy), api_spec.md, error_logs.md'],
+    ['Booking→architecture.md(inventory), sequence_diagrams/(flow), security.md','Pricing→architecture.md(pricing), api_spec.md, stakeholders.md','Cancel→architecture.md(policy), api_spec.md, error_logs.md'],
+    '在庫最適化|稼働率収益最大化|入力:履歴、季節変動、イベント|判断:<60%割引、>90%値上げ、繁忙期制限、直前大幅割|出力:価格帯、制御ルール、期待値',
+    'Inventory Optimization|Maximize occupancy revenue|Input: history, seasonal, events|Judgment: <60% discount, >90% increase, peak restrict, last-min deep discount|Output: price range, rules, expected'
+  ),
+  _default:_dpb(
+    ['目標→KPI→機能→優先度(売上月100万円→CVR 2%→決済最優先)','ペイン→解決策→MVP→検証(情報過多→AIレコメンド→3パターン→A/B)','データ→ロジック→API→UI(User-Post-Comment→CRUD+検索→REST→画面)'],
+    ['Goal→KPI→Features→Priority (sales ¥1M/mo→CVR 2%→payment first)','Pain→Solution→MVP→Validation (overload→AI recommend→3 patterns→A/B)','Data→Logic→API→UI (User-Post-Comment→CRUD+search→REST→screens)'],
+    [_CG+':処理合法性、権利(アクセス・削除)、Cookie同意','OWASP Top 10、SQLi/XSS防止、パスワードハッシュ(bcrypt)','規約:必須記載、保持期限、第三者提供'],
+    [_CG+': lawful processing, rights (access, delete), cookie consent','OWASP Top 10, SQLi/XSS prevent, password hash (bcrypt)','ToS: mandatory items, retention, third-party'],
+    ['認証バイパス|JWT検証不足|対策:全ルートで検証、7日期限、リフレッシュ','N+1クエリ|個別取得|対策:JOIN、eager loading、監視>10アラート','遅延|全件取得、INDEX未設定|対策:ページネーション(limit 20)、INDEX、APM'],
+    ['Auth bypass|Insufficient JWT validation|Fix: Enforce all routes, 7d expiry, refresh','N+1 query|Individual fetch|Fix: JOIN, eager loading, monitor>10 alert','Delay|Fetch all, no INDEX|Fix: Pagination (limit 20), INDEX, APM'],
+    ['機能→requirements.md, architecture.md, design_system.md','バグ→error_logs.md, test_cases/, architecture.md','性能→architecture.md(optimize), sequence_diagrams/'],
+    ['Feature→requirements.md, architecture.md, design_system.md','Bug→error_logs.md, test_cases/, architecture.md','Performance→architecture.md(optimize), sequence_diagrams/'],
+    '要件整理|曖昧→構造化|入力:議事録、ストーリー、目標|判断:Must/Should/Won'+"'"+'t、Mustは数値目標、依存明示|出力:要件定義書、ER図、遷移図、選定理由',
+    'Requirements Refinement|Ambiguous→Structured|Input: minutes, stories, goals|Judgment: Must/Should/Won'+"'"+'t, Must has numeric targets, dependencies explicit|Output: requirements doc, ER, transitions, rationale'
+  ),
+  marketplace:_dpb([],[],['特商法:販売者開示、エスクロー、解決支援'],[_CP+', Commercial Act: seller disclosure, escrow, dispute'],['マッチング精度低|データ不足|ルール→100件でML'],['Matching accuracy low|Insufficient data|Rules→ML after 100'],[],[],[],[]),
+  community:_dpb([],[],['投稿ガイド:誹謗中傷禁止、モデレーション、通報'],[_CG+', Posting: prohibit defamation, moderation, report'],['スパム|reCAPTCHA未導入|対策:v3、5件/分制限'],['Spam|No reCAPTCHA|Fix: v3, 5/min limit'],[],[],[],[]),
+  content:_dpb([],[],['著作権:DMCA対応、コンテンツID、ライセンス(CC BY-SA)'],[_CG+', Copyright: DMCA, content ID, license (CC BY-SA)'],['再生エラー|非対応コーデック|HLS、複数解像度'],['Playback error|Unsupported codec|HLS, multiple resolutions'],[],[],[],[]),
+  analytics:_dpb([],[],[_CG+':匿名化、集計のみ、個人特定不可'],[_CG+': anonymize, aggregated only, no personal ID'],['表示遅延|リアルタイム集計重い|事前集計、Redis、materialized view'],['Display delay|Heavy real-time aggregation|Pre-aggregate, Redis, materialized view'],[],[],[],[]),
+  iot:_dpb([],[],['電波法:技適、周波数遵守','製造物責任法:欠陥損害賠償'],[_CG+', Radio Act: tech conformity, frequency','Product Liability: defect liability'],['切断|不安定ネットワーク|オフライン動作、ローカルキュー、指数バックオフ'],['Disconnect|Unstable network|Offline operation, local queue, exponential backoff'],[],[],[],[]),
+  realestate:_dpb([],[],['宅建業法:重要事項説明、契約書交付、クーリングオフ','表示規約:徒歩80m/分、築年数、面積正確'],[_CG+', Real Estate Act: important matters, contract, cooling-off','Display Standards: walking 80m/min, age, area accurate'],['情報不整合|外部連携遅延|1時間同期、差分検知、成約済み非表示'],['Info inconsistency|External sync delay|Hourly sync, detect diff, hide sold'],[],[],[],[]),
+  legal:_dpb([],[],['弁護士法:非弁禁止、法律相談は有資格者','個情保護:守秘義務、報告義務'],[_CG+', Attorney Act: prohibit unauthorized, licensed only','Privacy: confidentiality, reporting obligation'],['契約生成ミス|変数置換漏れ|必須チェックリスト、プレビュー必須、レビューフロー'],['Contract error|Missing variable substitution|Mandatory checklist, preview required, review flow'],[],[],[],[]),
+  hr:_dpb([],[],['労働基準法:勤怠記録3年、残業45h上限','個情保護:不適切質問禁止、候補者情報管理'],[_CG+', Labor Standards: attendance 3yr, overtime 45h max','Privacy: prohibit inappropriate questions, candidate info mgmt'],['勤怠ミス|TZ未考慮、深夜日跨ぎ|UTC統一、深夜割増22-5時、月次突合'],['Attendance error|TZ not considered, midnight crossing|Unify UTC, late-night premium 10PM-5AM, monthly reconcile'],[],[],[],[]),
+  portfolio:_dpb([],[],[],[],['画像未最適化|元サイズ配信|WebP、srcset、lazy loading'],['Image unoptimized|Serve original size|WebP, srcset, lazy loading'],[],[],[],[]),
+  tool:_dpb([],[],[_CG+', ToS'],[_CG+', ToS'],['互換性|最新API(Safari未対応)|Polyfill、Can I Use、クロスブラウザテスト'],['Compatibility|Latest API (Safari unsupported)|Polyfill, Can I Use, cross-browser test'],[],[],[],[])
+};
+
 // Get domain-specific QA strategy
 function getDomainQA(domain,G){
   const qa=DOMAIN_QA_MAP[domain];
@@ -740,7 +841,7 @@ function getDomainQA(domain,G){
   return {focus:G?qa.focus_ja:qa.focus_en,bugs:G?qa.bugs_ja:qa.bugs_en,priority:qa.priority,crossCutting:cross.map(c=>G?c.ja:c.en)};
 }
 
-// ── B9: URL/Routing Table Generation ──
+/// ── B9: URL/Routing Table Generation ──
 function genRoutes(a){
   const G=S.genLang==='ja';
   const routes=[

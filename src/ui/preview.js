@@ -36,6 +36,7 @@ function initPillarTabs(){
       else if(i===6&&Object.keys(S.files).length>0) showRoadmapUI();
       else if(i===7) showAILauncher();
       else if(i===8) showFileTree(); // Design System
+      else if(i===9) showFileTree(); // Reverse Engineering
       else showFileTree();
     };tabs.appendChild(b);
   });
@@ -123,6 +124,10 @@ function buildFileTree(){
     files.push({folder:true,name:'docs'});
     ['26_design_system','27_sequence_diagrams'].forEach(f=>
       files.push({name:'  '+f+'.md',path:'docs/'+f+'.md'}));
+  } else if(pillar===9){ // Reverse Engineering
+    files.push({folder:true,name:'docs'});
+    ['29_reverse_engineering','30_goal_decomposition'].forEach(f=>
+      files.push({name:'  '+f+'.md',path:'docs/'+f+'.md'}));
   }
   // Common files
   files.push({name:'───────────',path:''});
@@ -133,7 +138,7 @@ function buildFileTree(){
    '14_risk','15_meeting','16_review','17_monitoring',
    '18_data_migration','19_performance','20_a11y','21_changelog',
    '22_prompt_playbook','23_tasks','24_progress','25_error_logs',
-   '26_design_system','27_sequence_diagrams','28_qa_strategy'].forEach(f=>
+   '26_design_system','27_sequence_diagrams','28_qa_strategy','31_industry_playbook'].forEach(f=>
     files.push({name:'  '+f+'.md',path:'docs/'+f+'.md'}));
   files.push({name:'───────────',path:''});
   ['README.md','.gitignore','package.json','LICENSE'].forEach(f=>files.push({name:f,path:f}));

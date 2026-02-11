@@ -6,13 +6,14 @@ const save=()=>{};const _lsGet=()=>null;const _lsSet=()=>{};const _lsRm=()=>{};c
 eval(fs.readFileSync('src/data/questions.js','utf-8'));
 eval(fs.readFileSync('src/data/presets.js','utf-8').replace('const PR','var PR'));
 eval(fs.readFileSync('src/data/compat-rules.js','utf-8'));
-eval(fs.readFileSync('src/generators/common.js','utf-8'));
+eval(fs.readFileSync('src/generators/common.js','utf-8').replace('const DOMAIN_PLAYBOOK','var DOMAIN_PLAYBOOK'));
 eval(fs.readFileSync('src/generators/p1-sdd.js','utf-8'));
 eval(fs.readFileSync('src/generators/p2-devcontainer.js','utf-8'));
 eval(fs.readFileSync('src/generators/p3-mcp.js','utf-8'));
 eval(fs.readFileSync('src/generators/p4-airules.js','utf-8'));
 eval(fs.readFileSync('src/data/gen-templates.js','utf-8').replace('const GT','var GT'));
 eval(fs.readFileSync('src/generators/p7-roadmap.js','utf-8'));
+eval(fs.readFileSync('src/generators/p10-reverse.js','utf-8').replace('const REVERSE_FLOW_MAP','var REVERSE_FLOW_MAP'));
 eval(fs.readFileSync('src/generators/docs.js','utf-8'));
 
 let pass=0,fail=0;

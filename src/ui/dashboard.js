@@ -153,7 +153,7 @@ function showDashboard(){
     });
     const sorted=Object.entries(pillarSizes).sort((a,b)=>b[1]-a[1]);
     const max=sorted[0]?sorted[0][1]:1;
-    const pillarColors={'P1 SDD':'var(--accent)','P2 DevContainer':'var(--accent-2)','P3 MCP':'var(--success)','P4 AI Rules':'var(--warn)','P7 Roadmap':'var(--danger)','Docs':'var(--layer-5)','Common':'var(--text-3)'};
+    const pillarColors={'P1 SDD':'var(--accent)','P2 DevContainer':'var(--accent-2)','P3 MCP':'var(--success)','P4 AI Rules':'var(--warn)','P7 Roadmap':'var(--danger)','P9 Design System':'var(--accent)','P10 Reverse Eng':'var(--success)','Docs':'var(--layer-5)','Common':'var(--text-3)'};
     h+='<h4 class="dash-h4-mt">'+(_ja?'📦 ファイルサイズ分布':'📦 File Size Distribution')+'</h4>';
     h+='<div class="fsize-chart">';
     sorted.forEach(([pil,sz])=>{
@@ -184,6 +184,7 @@ function getHealthHTML(_ja,fileCount,answered){
     {key:'CLAUDE.md',label:_ja?'④AIルール':'④AI Rules'},
     {key:'roadmap/',label:_ja?'⑦ロードマップ':'⑦Roadmap'},
     {key:'docs/26_',label:_ja?'⑨デザインシステム':'⑨Design System'},
+    {key:'docs/29_',label:_ja?'⑩リバースEng':'⑩Reverse Eng'},
   ];
   const fileKeys=Object.keys(S.files);
   let pillarOK=0;
