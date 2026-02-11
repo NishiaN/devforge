@@ -7,19 +7,19 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 # DevForge v9.0
 
 ## Architecture
-- **40 modules** in `src/` → `node build.js` → single `devforge-v9.html` (~500KB)
+- **41 modules** in `src/` → `node build.js` → single `devforge-v9.html` (~575KB)
 - Vanilla JS, no frameworks. CSS custom properties. CDN: marked.js, mermaid.js, JSZip.
 
 ## Build & Test
 ```bash
 # Build
-node build.js              # Produces devforge-v9.html (~500KB)
+node build.js              # Produces devforge-v9.html (~575KB)
 node build.js --no-minify  # Skip minification (debug)
 node build.js --report     # Show size report
 node build.js --check-css  # Validate CSS custom properties
 
 # Test
-npm test                   # Run all tests (138 tests passing)
+npm test                   # Run all tests (150 tests passing)
 npm run test:watch         # Watch mode for test development
 node --test test/gen-coherence.test.js  # Run single test file
 
@@ -31,7 +31,7 @@ npm run check              # Syntax check extracted JS
 
 ## Build Process Deep Dive
 
-`build.js` concatenates 40 modules into single HTML:
+`build.js` concatenates 41 modules into single HTML:
 
 1. **Read modules** in dependency order (defined in `jsFiles` array)
 2. **Read CSS** from `styles/all.css`
@@ -68,7 +68,7 @@ npm run check              # Syntax check extracted JS
 |----------|-------|---------|
 | core/ | state, i18n, events, tour, init | State, language, shortcuts |
 | data/ | presets(36), questions, techdb, compat-rules, gen-templates, helpdata | Static data |
-| generators/ | index, p1-sdd, p2-devcontainer, p3-mcp, p4-airules, p7-roadmap, p9-designsystem, docs, common | 66-file generation engine |
+| generators/ | index, p1-sdd, p2-devcontainer, p3-mcp, p4-airules, p7-roadmap, p9-designsystem, p10-reverse, docs, common | 68-file generation engine |
 | ui/ | wizard, render, edit, help, confirm, complexity, toc, voice, project, presets, preview, editor, diff, export, explorer, dashboard, templates | UI components |
 | styles/ | all.css | Theme (dark/light), responsive |
 
@@ -226,6 +226,12 @@ git remote set-url origin git@github.com:user/repo.git
 - **FEATURE_DETAILS**: domain-specific acceptance criteria
 - **SCREEN_COMPONENTS**: UI component dictionary by screen type
 
+### src/generators/p10-reverse.js
+**Data Structures:**
+- **REVERSE_FLOW_MAP**: 15 domain-specific reverse engineering templates + \_default
+  - Each domain has: goal (ja/en), flow steps (ja/en), KPIs (ja/en), risks (ja/en)
+  - Used by `genPillar10_ReverseEngineering()` with `detectDomain()` to select template
+
 **Helper Functions:**
 - **`pluralize(name)`** — Smart table name pluralization
 - **`getEntityColumns(name, G, knownEntities)`** — Get columns for entity (ALWAYS pass 3 args)
@@ -311,6 +317,57 @@ const PR = {
 
 ⚠️ **Update preset count in README.md if adding/removing presets.**
 
+## Adding New Pillars
+
+Adding a new pillar (like Pillar ⑩ Reverse Engineering) requires coordinated changes across 10+ files:
+
+### 1. Create Generator (`src/generators/pN-name.js`)
+```javascript
+function genPillarN_Name(a, pn) {
+  const G = S.genLang === 'ja';
+  // Use detectDomain() if domain-specific
+  const domain = detectDomain(a.purpose) || '_default';
+
+  // Generate files
+  S.files['docs/XX_filename.md'] = content;
+}
+```
+
+### 2. Register in Build System
+- **`build.js`**: Add to `jsFiles` array (order matters!)
+- **`src/generators/index.js`**: Add step to `steps` array
+- Update header comment: `/* ═══ FILE GENERATION ENGINE — N PILLARS ═══ */`
+
+### 3. Update UI & i18n
+- **`src/core/i18n.js`**: Add pillar name to `pillar` arrays (ja/en), update `heroDesc` counts
+- **`src/core/init.js`**: Add to `pbJa`/`pbEn` arrays, update `if(i<N)` guard, update `icJa`/`icEn` text
+- **`src/ui/preview.js`**:
+  - Add `else if(i===N)` in `initPillarTabs()`
+  - Add `else if(pillar===N)` in `buildFileTree()`
+- **`src/ui/dashboard.js`**: Add to `pillarChecks` array, add color to `pillarColors`
+- **`src/ui/templates.js`**: Update help modal (overview, pillars section, guide section), update all file counts
+
+### 4. Update Documentation
+- **`devforge-v9-usage-guide.html`**: Update stats and file counts
+- **`CLAUDE.md`**: Update module count, generator list, file count, generated output section
+- **`README.md`** (if exists): Update pillar count
+
+### 5. Add Tests
+- **`test/snapshot.test.js`**:
+  - `eval()` the new generator file
+  - Call `genPillarN_Name()` in `generate()` function
+  - Add file existence tests
+  - Add content validation tests
+  - Update file count range
+- **`test/build.test.js`**: Update pillar consistency test
+
+### 6. Size Budget Check
+- Estimate new generator size (~10-20KB typical)
+- Run `node build.js --report` to verify ≤600KB
+- Current budget remaining: ~25KB (as of Pillar 10)
+
+**Reference Implementation:** See commits for Pillar ⑩ (Reverse Engineering) for complete example.
+
 ### Compression Patterns (Critical for Size Management)
 
 To stay under 600KB limit, the codebase uses compression patterns:
@@ -361,10 +418,10 @@ const ENTITY_COLUMNS = {
 ⚠️ **When adding entities:** Check if columns match existing constants (\_U, \_SA, \_SD, \_T, \_D, etc.) to maintain compression.
 
 ## Generated Output (66-68 files)
-When users complete the wizard, DevForge generates:
+When users complete the wizard, DevForge generates **66-68 files** (base: 66 files, +2 when ai_auto ≠ None for skills/catalog.md and skills/pipelines.md):
 - **.spec/** — constitution.md, specification.md, technical-plan.md, tasks.md, verification.md
 - **.devcontainer/** — devcontainer.json, Dockerfile, docker-compose.yml, post-create.sh
-- **docs/** — architecture.md, ER.md, API.md, screen.md, test-cases.md, security.md, release.md, WBS.md, prompt-playbook.md, tasks.md, **progress.md (24)**, **error_logs.md (25)**, **design_system.md (26)**, **sequence_diagrams.md (27)**
+- **docs/** — architecture.md, ER.md, API.md, screen.md, test-cases.md, security.md, release.md, WBS.md, prompt-playbook.md, tasks.md, **progress.md (24)**, **error_logs.md (25)**, **design_system.md (26)**, **sequence_diagrams.md (27)**, **qa_strategy.md (28)**, **reverse_engineering.md (29)**, **goal_decomposition.md (30)**
 - **AI rules** — CLAUDE.md (with Workflow Cycle & Context Management), AI_BRIEF.md (with Context Protocol, ~1200 tokens), .cursorrules, .clinerules, .windsurfrules, AGENTS.md, .cursor/rules, **skills/** (project.md, catalog.md*, pipelines.md*)
 - **CI/CD** — .github/workflows/ci.yml
 
@@ -418,7 +475,7 @@ When users complete the wizard, DevForge generates:
 | compat.test.js | 45 tests | Compatibility validation |
 | Others | ~21 tests | i18n, presets, state, techdb |
 
-**Total: 138 tests passing**
+**Total: 150 tests passing**
 
 ## Writing Tests
 
@@ -473,7 +530,7 @@ test('pluralize', () => {
 
 ## Size Budget Management
 
-DevForge has a strict **600KB size limit** for the built HTML file. Current size: **548KB** (~52KB under budget).
+DevForge has a strict **600KB size limit** for the built HTML file. Current size: **575KB** (~25KB under budget).
 
 ### Expansion Strategy
 When adding new features, follow the "Balanced Expansion" approach:
@@ -484,9 +541,9 @@ When adding new features, follow the "Balanced Expansion" approach:
 
 ### Recent Expansion (Feb 2026)
 - **Budget allocated**: 90KB (from 510KB→600KB limit increase)
-- **Actual usage**: ~38KB
-- **Added**: 10 detailed skills, 5 domains, 2 advanced skills, updated help system
-- **Remaining budget**: 52KB for future enhancements
+- **Actual usage**: ~65KB (from 510KB→575KB)
+- **Added**: 10 detailed skills, 5 domains, 2 advanced skills, updated help system, Pillar ⑩ Reverse Engineering
+- **Remaining budget**: 25KB for future enhancements
 
 ### Size Optimization Tips
 - Reuse common patterns (see `_U`, `_SA`, `_SD` in common.js)

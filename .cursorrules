@@ -1,11 +1,11 @@
 # DevForge v9.0
 
 You are working on DevForge v9.0, a wizard-based project spec generator.
-39 JS modules in src/ build into a single devforge-v9.html (~484KB).
+41 JS modules in src/ build into a single devforge-v9.html (~575KB).
 
 ## Essential Commands
 - Build: `node build.js`
-- Test: `npm test` (127 tests + 248 assertions)
+- Test: `npm test` (150 tests + 248 assertions)
 - Always run tests before committing
 
 ## Architecture
@@ -21,12 +21,15 @@ You are working on DevForge v9.0, a wizard-based project spec generator.
 - FEATURE_DETAILS: domain-specific acceptance criteria
 - getEntityColumns(name, G, knownEntities) — ALWAYS pass 3rd arg
 - getEntityMethods(name) — returns allowed HTTP methods
-- detectDomain(purpose) — returns domain key for inference
+- detectDomain(purpose) — returns domain key for 15 domains
 
 ## Output
-Generates 62 files including:
+Generates 66-68 files including:
 - .spec/ (constitution, specification, technical-plan, tasks, verification)
 - .devcontainer/ (devcontainer.json, Dockerfile, compose, post-create)
-- docs/ (architecture, ER, API, screen, test, security, release, WBS, prompt, tasks)
-- AI rules (CLAUDE.md, AI_BRIEF.md, .cursorrules, .clinerules, AGENTS.md)
+- docs/ (architecture, ER, API, screen, test, security, release, WBS, prompt, tasks, progress, error_logs, design_system, sequence_diagrams, qa_strategy, reverse_engineering, goal_decomposition)
+- AI rules (CLAUDE.md, AI_BRIEF.md, .cursorrules, .clinerules, .windsurfrules, AGENTS.md, .cursor/rules, skills/)
 - CI/CD (.github/workflows/ci.yml)
+
+## Critical
+See CLAUDE.md for full documentation. This file may be outdated - CLAUDE.md is the source of truth.
