@@ -446,6 +446,7 @@ function detectDomain(purpose){
     [/法務|契約|legal|contract|コンプライアンス/i,'legal'],
     [/人事|HR|採用|recruit|hiring/i,'hr'],
     [/金融|fintech|銀行|bank|決済管理/i,'fintech'],
+    [/医療|ヘルスケア|health|medical|clinic|病院|patient|患者/i,'health'],
     [/ポートフォリオ|portfolio/i,'portfolio'],
     [/業務|business|効率化|ツール|tool/i,'tool'],
   ];
@@ -608,6 +609,135 @@ function getFeatureDetail(featureName){
     if(new RegExp(pattern,'i').test(featureName)) return detail;
   }
   return null;
+}
+
+// ── Domain-specific QA Strategy Map ──
+const DOMAIN_QA_MAP={
+  education:{
+    focus_ja:['学習進捗のバックエンド同期','WCAG 2.1 AA準拠','未成年データ保護(FERPA)','コンテンツ配信安定性'],
+    focus_en:['Backend sync for progress','WCAG 2.1 AA compliance','Minor data protection (FERPA)','Content delivery stability'],
+    bugs_ja:['localStorage依存による進捗消失','クイズ正誤判定ミス','ブラウザ別音声再生不具合'],
+    bugs_en:['Progress lost on localStorage clear','Quiz scoring errors','Audio playback failures per browser'],
+    priority:'Security:HIGH|Performance:MED|DataIntegrity:HIGH|UX:CRITICAL|Compliance:HIGH'
+  },
+  ec:{
+    focus_ja:['同時購入の在庫競合','決済フロー完全性','カート操作の冪等性','スパイクトラフィック耐性'],
+    focus_en:['Concurrent inventory conflicts','Payment flow integrity','Cart operation idempotency','Spike traffic resilience'],
+    bugs_ja:['同一商品を複数ユーザーが同時購入','カート追加ボタン連打で数量倍増','決済中断時の在庫戻し漏れ'],
+    bugs_en:['Same item bought by multiple users simultaneously','Rapid cart add button clicks double quantity','Inventory not returned on payment cancellation'],
+    priority:'Security:CRITICAL|Performance:HIGH|DataIntegrity:CRITICAL|UX:HIGH|Compliance:MED'
+  },
+  saas:{
+    focus_ja:['マルチテナント分離(RLS)','プラン別機能制限','サブスク更新・解約処理','API rate limiting'],
+    focus_en:['Multi-tenant isolation (RLS)','Plan-based feature restrictions','Subscription renewal/cancellation','API rate limiting'],
+    bugs_ja:['テナント間データ漏洩','プラン変更時の機能アクセス制御不備','サブスク解約後も課金継続'],
+    bugs_en:['Data leakage between tenants','Feature access control failure on plan change','Billing continues after cancellation'],
+    priority:'Security:CRITICAL|Performance:HIGH|DataIntegrity:HIGH|UX:MED|Compliance:HIGH'
+  },
+  community:{
+    focus_ja:['投稿フィルタリング(不適切コンテンツ)','通報・モデレーション','スパム対策','リアルタイム同期'],
+    focus_en:['Content filtering (inappropriate)','Reporting & moderation','Spam prevention','Real-time sync'],
+    bugs_ja:['XSS脆弱性(投稿にスクリプト注入)','通報機能の不正利用','スパムボットによる大量投稿'],
+    bugs_en:['XSS vulnerability (script injection in posts)','Report feature abuse','Mass posting by spam bots'],
+    priority:'Security:HIGH|Performance:MED|DataIntegrity:MED|UX:HIGH|Compliance:MED'
+  },
+  booking:{
+    focus_ja:['同時予約競合','キャンセル・変更処理','タイムゾーン処理','外部カレンダー連携'],
+    focus_en:['Concurrent booking conflicts','Cancellation/modification handling','Timezone handling','External calendar integration'],
+    bugs_ja:['同一枠を複数ユーザーが予約','タイムゾーン計算ミスで時刻ずれ','キャンセル時の返金処理漏れ'],
+    bugs_en:['Same slot booked by multiple users','Timezone calculation errors cause time mismatches','Refund process omitted on cancellation'],
+    priority:'Security:MED|Performance:HIGH|DataIntegrity:CRITICAL|UX:CRITICAL|Compliance:MED'
+  },
+  fintech:{
+    focus_ja:['トランザクション完全性(ACID)','二重処理防止','監査ログ完全性','PCI DSS準拠'],
+    focus_en:['Transaction integrity (ACID)','Double-processing prevention','Audit log completeness','PCI DSS compliance'],
+    bugs_ja:['送金ボタン連打で二重送金','残高計算の浮動小数点誤差','監査ログの欠損'],
+    bugs_en:['Double transfer on rapid send button clicks','Floating-point errors in balance calculations','Missing audit log entries'],
+    priority:'Security:CRITICAL|Performance:MED|DataIntegrity:CRITICAL|UX:MED|Compliance:CRITICAL'
+  },
+  iot:{
+    focus_ja:['デバイス認証・認可','オフライン動作','ファームウェア更新','デバイス間同期'],
+    focus_en:['Device authentication & authorization','Offline operation','Firmware updates','Device-to-device sync'],
+    bugs_ja:['不正デバイスのAPI接続','オフライン時のデータ消失','ファームウェア更新失敗で文鎮化'],
+    bugs_en:['Unauthorized device API access','Data loss in offline mode','Bricked devices from failed firmware updates'],
+    priority:'Security:CRITICAL|Performance:MED|DataIntegrity:HIGH|UX:MED|Compliance:MED'
+  },
+  realestate:{
+    focus_ja:['物件検索パフォーマンス','地図連携精度','内見予約管理','物件状態同期'],
+    focus_en:['Property search performance','Map integration accuracy','Viewing appointment management','Property status sync'],
+    bugs_ja:['成約済み物件が検索表示','地図ピン位置のずれ','内見予約の重複'],
+    bugs_en:['Sold properties shown in search','Map pin location misalignment','Duplicate viewing appointments'],
+    priority:'Security:MED|Performance:HIGH|DataIntegrity:HIGH|UX:CRITICAL|Compliance:MED'
+  },
+  content:{
+    focus_ja:['CDN配信最適化','画像・動画エンコード','オフライン閲覧','コンテンツ推薦精度'],
+    focus_en:['CDN delivery optimization','Image/video encoding','Offline viewing','Content recommendation accuracy'],
+    bugs_ja:['高負荷時の動画再生停止','画像遅延読み込み失敗','オフラインキャッシュ容量超過'],
+    bugs_en:['Video playback stops under high load','Image lazy loading failures','Offline cache quota exceeded'],
+    priority:'Security:LOW|Performance:CRITICAL|DataIntegrity:MED|UX:CRITICAL|Compliance:LOW'
+  },
+  hr:{
+    focus_ja:['個人情報保護(GDPR/CCPA)','採用プロセス公平性','評価データ整合性','権限管理'],
+    focus_en:['Personal data protection (GDPR/CCPA)','Hiring process fairness','Evaluation data integrity','Permission management'],
+    bugs_ja:['退職者のデータアクセス残存','評価スコア計算ミス','応募者情報の漏洩'],
+    bugs_en:['Former employee retains data access','Evaluation score calculation errors','Applicant info leakage'],
+    priority:'Security:CRITICAL|Performance:MED|DataIntegrity:HIGH|UX:MED|Compliance:CRITICAL'
+  },
+  analytics:{
+    focus_ja:['集計パフォーマンス','データパイプライン信頼性','リアルタイム更新','可視化精度'],
+    focus_en:['Aggregation performance','Data pipeline reliability','Real-time updates','Visualization accuracy'],
+    bugs_ja:['大量データ集計でタイムアウト','ETL処理の部分失敗','グラフ表示の数値ずれ'],
+    bugs_en:['Timeout on large data aggregation','Partial ETL process failures','Graph display value discrepancies'],
+    priority:'Security:MED|Performance:CRITICAL|DataIntegrity:CRITICAL|UX:HIGH|Compliance:MED'
+  },
+  health:{
+    focus_ja:['患者データ保護(HIPAA)','処方・診断記録の正確性','医療機器連携','緊急時可用性'],
+    focus_en:['Patient data protection (HIPAA)','Prescription/diagnosis record accuracy','Medical device integration','Emergency availability'],
+    bugs_ja:['患者間データ混在','処方箋の記録ミス','医療機器データ取得失敗'],
+    bugs_en:['Patient data cross-contamination','Prescription record errors','Medical device data acquisition failures'],
+    priority:'Security:CRITICAL|Performance:HIGH|DataIntegrity:CRITICAL|UX:CRITICAL|Compliance:CRITICAL'
+  },
+  marketplace:{
+    focus_ja:['出品者・購入者間トラスト','エスクロー処理','レビュー信頼性','手数料計算'],
+    focus_en:['Seller-buyer trust','Escrow processing','Review authenticity','Fee calculation'],
+    bugs_ja:['評価の不正操作','エスクロー解放タイミングミス','手数料計算エラー'],
+    bugs_en:['Review manipulation','Escrow release timing errors','Fee calculation mistakes'],
+    priority:'Security:HIGH|Performance:MED|DataIntegrity:HIGH|UX:HIGH|Compliance:MED'
+  },
+  legal:{
+    focus_ja:['契約ドキュメント完全性','電子署名有効性','バージョン管理','監査証跡'],
+    focus_en:['Contract document integrity','Electronic signature validity','Version control','Audit trail'],
+    bugs_ja:['契約書の改ざん','署名検証失敗','バージョン履歴消失'],
+    bugs_en:['Contract document tampering','Signature verification failures','Version history loss'],
+    priority:'Security:CRITICAL|Performance:MED|DataIntegrity:CRITICAL|UX:MED|Compliance:CRITICAL'
+  },
+  tool:{
+    focus_ja:['操作レスポンス速度','データエクスポート完全性','ショートカット動作','エラー復旧'],
+    focus_en:['Operation response speed','Data export completeness','Shortcut functionality','Error recovery'],
+    bugs_ja:['大量データ操作で固まる','エクスポート時の文字化け','ショートカットキー競合'],
+    bugs_en:['Freezes on large data operations','Character encoding issues in exports','Shortcut key conflicts'],
+    priority:'Security:LOW|Performance:HIGH|DataIntegrity:MED|UX:CRITICAL|Compliance:LOW'
+  }
+};
+
+// ── Cross-cutting QA Patterns ──
+const QA_CROSS_CUTTING={
+  concurrency:{ja:'同時アクセス競合テスト',en:'Concurrent access race condition test',domains:['fintech','ec','booking','community','saas']},
+  idempotency:{ja:'二重処理防止(冪等性)',en:'Double-processing prevention (idempotency)',domains:['fintech','ec','booking']},
+  spike:{ja:'スパイクトラフィック耐性(通常の100倍)',en:'Spike traffic resilience (100x normal)',domains:['ec','content','community','booking']},
+  offline:{ja:'オフライン/劣化ネットワーク動作',en:'Offline/degraded network operation',domains:['iot','content','community']},
+  tenant:{ja:'マルチテナント分離(RLS)',en:'Multi-tenant isolation (RLS)',domains:['saas','analytics']},
+  api_resilience:{ja:'外部API耐障害性(タイムアウト/リトライ/フォールバック)',en:'External API resilience (timeout/retry/fallback)',domains:['booking','saas','ec','analytics']},
+  a11y:{ja:'アクセシビリティ(WCAG)',en:'Accessibility (WCAG)',domains:['education','content','hr']},
+  audit:{ja:'監査ログ完全性',en:'Audit log completeness',domains:['fintech','saas','hr','legal']}
+};
+
+// Get domain-specific QA strategy
+function getDomainQA(domain,G){
+  const qa=DOMAIN_QA_MAP[domain];
+  if(!qa)return null;
+  const cross=Object.values(QA_CROSS_CUTTING).filter(c=>c.domains.includes(domain));
+  return {focus:G?qa.focus_ja:qa.focus_en,bugs:G?qa.bugs_ja:qa.bugs_en,priority:qa.priority,crossCutting:cross.map(c=>G?c.ja:c.en)};
 }
 
 // ── B9: URL/Routing Table Generation ──

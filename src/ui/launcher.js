@@ -67,6 +67,10 @@ function showAILauncher(){
       sys:'You are a technical writer focused on development documentation quality.',
       prompt:'Analyze these specs and output in 2 parts:\n\n**Part 1: Gap Analysis**\nList gaps between existing docs and ideal state in table format\n\n**Part 2: Generate Critical Document**\nGenerate ONE highest-priority document from gap analysis in full.\n\nCandidates:\n- API spec details (OpenAPI YAML)\n- Sequence diagrams (Mermaid)\n- Deployment guide (step-by-step)\n- Error handling design',
       fmt:'Part 1: Markdown table\nPart 2: Complete document (Markdown)'},
+    qa:{icon:'🐛',label:_ja?'QA・バグ検出':'QA & Bug Detection',desc:_ja?'ドメイン別バグパターンとQA戦略を基にテスト計画を生成':'Generate test plan based on domain-specific bug patterns and QA strategy',
+      sys:_ja?'あなたはQAエンジニアです。docs/28_qa_strategy.mdのドメイン別バグパターンを参照し、具体的なテストシナリオを設計してください。':'You are a QA engineer. Reference docs/28_qa_strategy.md domain-specific bug patterns to design concrete test scenarios.',
+      prompt:_ja?'以下の手順で実行:\n1. docs/28_qa_strategy.mdの重点領域を確認\n2. 各重点領域に対し具体的テストケースを3つ以上作成\n3. よくあるバグパターンに対する回帰テストを設計\n4. 業界横断チェックリストの該当項目を検証\n5. 優先度マトリクスに基づきテスト実行順序を決定':'Follow these steps:\n1. Review focus areas from docs/28_qa_strategy.md\n2. Create 3+ concrete test cases per focus area\n3. Design regression tests for common bug patterns\n4. Verify applicable cross-cutting checklist items\n5. Determine test execution order based on priority matrix',
+      fmt:_ja?'Markdown表形式: テストID|カテゴリ|シナリオ|期待結果|優先度(CRITICAL/HIGH/MED/LOW)':'Markdown table: TestID|Category|Scenario|Expected Result|Priority(CRITICAL/HIGH/MED/LOW)'},
   };
 
   /* ── Header ── */

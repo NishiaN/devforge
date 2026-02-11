@@ -247,6 +247,30 @@ describe('Snapshot A: LMS/Supabase/Stripe', () => {
     assert.match(pipe, /graph LR|graph TD/);
     assert.match(pipe, /Trigger|トリガー/);
   });
+
+  test('QA strategy document exists', () => {
+    assert.ok(files['docs/28_qa_strategy.md'], 'docs/28_qa_strategy.md missing');
+  });
+
+  test('QA strategy has education domain focus areas', () => {
+    const qa = files['docs/28_qa_strategy.md'];
+    assert.ok(qa.includes('education') || qa.includes('教育'), 'Missing education domain marker');
+    assert.ok(qa.includes('学習進捗') || qa.includes('Backend sync for progress'), 'Missing education-specific QA focus area');
+    assert.ok(qa.includes('WCAG'), 'Missing WCAG compliance focus');
+  });
+
+  test('QA strategy has common bug patterns', () => {
+    const qa = files['docs/28_qa_strategy.md'];
+    assert.ok(qa.includes('よくあるバグパターン') || qa.includes('Common Bug Patterns'), 'Missing bug patterns section');
+    assert.ok(qa.includes('localStorage') || qa.includes('クイズ') || qa.includes('Quiz'), 'Missing education-specific bugs');
+  });
+
+  test('QA strategy has priority matrix', () => {
+    const qa = files['docs/28_qa_strategy.md'];
+    assert.ok(qa.includes('優先度マトリクス') || qa.includes('Priority Matrix'), 'Missing priority matrix section');
+    assert.ok(qa.includes('Security') || qa.includes('セキュリティ'), 'Missing security priority');
+    assert.ok(qa.includes('UX'), 'Missing UX priority');
+  });
 });
 
 // ═══ Scenario B: Blog (Vite + Netlify, no Stripe, no Admin) ═══
@@ -305,6 +329,12 @@ describe('Snapshot B: Blog/Vite/Netlify', () => {
     assert.ok(!files['skills/catalog.md'], 'skills/catalog.md should not exist without ai_auto');
     assert.ok(!files['skills/pipelines.md'], 'skills/pipelines.md should not exist without ai_auto');
   });
+
+  test('QA strategy has content domain focus areas', () => {
+    const qa = files['docs/28_qa_strategy.md'];
+    assert.ok(qa.includes('content') || qa.includes('コンテンツ'), 'Missing content domain marker');
+    assert.ok(qa.includes('CDN') || qa.includes('配信'), 'Missing content-specific QA focus area');
+  });
 });
 
 // ═══ Scenario C: EC (Express + Railway, non-BaaS) ═══
@@ -344,6 +374,12 @@ describe('Snapshot C: EC/Express/Railway', () => {
     const brief = files['AI_BRIEF.md'];
     assert.ok(brief.includes('Auth.js') || brief.includes('NextAuth'), 'Missing NextAuth in AI_BRIEF');
   });
+
+  test('QA strategy has EC domain focus areas', () => {
+    const qa = files['docs/28_qa_strategy.md'];
+    assert.ok(qa.includes('ec') || qa.includes('EC'), 'Missing EC domain marker');
+    assert.ok(qa.includes('在庫競合') || qa.includes('inventory conflicts') || qa.includes('同時購入'), 'Missing EC-specific QA focus area');
+  });
 });
 
 // ═══ Scenario D: English output ═══
@@ -371,5 +407,13 @@ describe('Snapshot D: English Output', () => {
     assert.ok(brief.includes('Start coding'), 'Missing English intro');
     assert.ok(brief.includes('DB Schema'), 'Missing DB Schema');
     assert.ok(brief.includes('Workspace'), 'Missing entity in brief');
+  });
+
+  test('QA strategy in English has saas domain', () => {
+    const qa = files['docs/28_qa_strategy.md'];
+    assert.ok(qa, 'docs/28_qa_strategy.md missing');
+    assert.ok(qa.includes('saas'), 'Missing saas domain marker');
+    assert.ok(qa.includes('Multi-tenant') || qa.includes('tenant'), 'Missing saas-specific QA focus area');
+    assert.ok(qa.includes('Priority Matrix'), 'Missing English priority matrix');
   });
 });
