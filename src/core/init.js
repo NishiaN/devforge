@@ -91,6 +91,11 @@ function applyLang(){
   initPills();
   // Refresh presets for lang
   if($('presetRow'))initPresets();
+  // Update html lang attribute and document title (D3)
+  document.documentElement.lang=S.lang;
+  document.title=ja?'DevForge v9.0 — AI駆動開発 統合プラットフォーム':'DevForge v9.0 — AI-Driven Development Platform';
+  // Compare button translation (D4)
+  const cl=$('compareLbl');if(cl)cl.textContent=ja?'テンプレート比較':'Compare Templates';
 }
 
 // Initialize

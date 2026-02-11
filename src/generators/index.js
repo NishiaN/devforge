@@ -60,6 +60,7 @@ function doGenerate(lang){
     const s=steps[si];const pct=Math.round((si/steps.length)*100);
     const fill=$('genProgFill');if(fill)fill.style.width=pct+'%';
     const lbl=$('genProgLabel');if(lbl)lbl.textContent=s.lbl;
+    if(typeof announce==='function')announce(s.lbl);
     setTimeout(()=>{
       try{s.fn();}catch(e){_errs.push(s.err);console.error('❌ '+s.err+' error:',e);}
       si++;runStep();

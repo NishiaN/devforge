@@ -7,7 +7,7 @@ function esc(s){const d=document.createElement('div');d.textContent=s;return d.i
 function sanitize(s,max=500){if(!s||typeof s!=='string')return '';return s.replace(/<[^>]*>/g,'').slice(0,max).trim();}
 function sanitizeName(s){if(!s||typeof s!=='string')return '';return s.replace(/[<>"'&\\\/]/g,'').slice(0,100).trim();}
 function fileSlug(s){if(!s)return 'devforge-project';const r=s.replace(/[^a-zA-Z0-9\s_-]/g,'').replace(/[\s_]+/g,'-').replace(/-{2,}/g,'-').replace(/^-|-$/g,'').slice(0,80);return r||'devforge-project';}
-function toast(m){const t=document.createElement('div');t.className='toast-msg';t.textContent=m;t.setAttribute('role','alert');document.body.appendChild(t);setTimeout(()=>t.remove(),2200);}
+function toast(m){const t=document.createElement('div');t.className='toast-msg';t.textContent=m;t.setAttribute('role','alert');document.body.appendChild(t);if(typeof announce==='function')announce(m);setTimeout(()=>t.remove(),2200);}
 function hasDM(m){return (S.answers.dev_methods||'').includes(m);}
 let _lsOK=true;try{localStorage.setItem('_t','1');localStorage.removeItem('_t');}catch(e){_lsOK=false;}
 function _lsGet(k){if(!_lsOK)return null;try{return localStorage.getItem(k);}catch(e){return null;}}

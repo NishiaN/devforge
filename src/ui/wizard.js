@@ -129,7 +129,9 @@ function showCompatAlert(answers){
 
 function phaseEnd(){
   if(S.phase<3){
-    addMsg('bot',t('phEnd'+S.phase));
+    const msg=t('phEnd'+S.phase);
+    addMsg('bot',msg);
+    if(typeof announce==='function')announce(msg);
     S.phase++;S.step=0;save();
     setTimeout(()=>showQ(),400);
   } else {

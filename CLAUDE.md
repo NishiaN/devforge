@@ -7,7 +7,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 # DevForge v9.0
 
 ## Architecture
-- **41 modules** in `src/` → `node build.js` → single `devforge-v9.html` (~639KB)
+- **41 modules** in `src/` → `node build.js` → single `devforge-v9.html` (~685KB)
 - Vanilla JS, no frameworks. CSS custom properties. CDN: marked.js, mermaid.js, JSZip.
 
 ## Build & Test
@@ -43,6 +43,8 @@ npm run check              # Syntax check extracted JS
 5. **Write** to `devforge-v9.html`
 6. **Validate** size ≤1000KB (warn if exceeded)
 
+**Current Status:** 685KB / 1000KB limit (~315KB remaining budget for future expansions)
+
 ### Module Load Order (Critical!)
 ```javascript
 // Core state MUST load first
@@ -68,8 +70,8 @@ npm run check              # Syntax check extracted JS
 | Category | Files | Purpose |
 |----------|-------|---------|
 | core/ | state, i18n, events, tour, init | State, language, shortcuts |
-| data/ | presets(36), questions, techdb, compat-rules, gen-templates, helpdata | Static data |
-| generators/ | index, p1-sdd, p2-devcontainer, p3-mcp, p4-airules, p7-roadmap, p9-designsystem, p10-reverse, docs, common | 68-file generation engine |
+| data/ | presets(41), questions, techdb, compat-rules, gen-templates, helpdata | Static data (41 presets: 36 original + 5 new: CRM, Social, Logistics, Survey, Job Board) |
+| generators/ | index, p1-sdd, p2-devcontainer, p3-mcp, p4-airules, p7-roadmap, p9-designsystem, p10-reverse, docs, common | 69-file generation engine (10 pillars) |
 | ui/ | wizard, render, edit, help, confirm, complexity, toc, voice, project, presets, preview, editor, diff, export, explorer, dashboard, templates | UI components |
 | styles/ | all.css | Theme (dark/light), responsive |
 
@@ -222,13 +224,22 @@ git remote set-url origin git@github.com:user/repo.git
 
 ### src/generators/common.js
 **Data Structures:**
-- **ENTITY_COLUMNS**: 127 entity schemas with FK/constraints (medical, property mgmt, contracts, helpdesk, tutoring, restaurant, construction, knowledge base, field service, etc.)
-- **ENTITY_METHODS**: REST API method restrictions per entity
-- **FEATURE_DETAILS**: 21 feature patterns with acceptance criteria & test cases (auth, courses, subscriptions, search, notifications, analytics, team mgmt, chat, export, calendar, inventory, etc.)
+- **ENTITY_COLUMNS**: 145+ entity schemas with FK/constraints (includes 4 補完: Examination, Claim, Milestone, Inventory + 14 new preset entities)
+- **ENTITY_METHODS**: REST API method restrictions per entity (added 5: AuditLog, PointLog, Achievement, ClickLog, SensorData)
+- **FEATURE_DETAILS**: 31 feature patterns with acceptance criteria & test cases (added 10: Social, Settings, MFA, Webhook, Onboarding, API Key, Audit, Map, Import, Template)
 - **SCREEN_COMPONENTS**: UI component dictionary by screen type
-- **DOMAIN_ENTITIES**: Core entities per domain with warnings & suggestions
-- **DOMAIN_QA_MAP**: 16 domain-specific QA strategies (focus areas, common bugs, priorities)
-- **DOMAIN_PLAYBOOK**: 16 complete domain playbooks with implementation flows, compliance rules, bug prevention, context mapping, and AI skills
+- **DOMAIN_ENTITIES**: Core entities per domain with warnings & suggestions (24 domains: 16 original + 8 new)
+- **DOMAIN_QA_MAP**: 24 domain-specific QA strategies (added 8: AI, Automation, Event, Gamify, Collab, DevTool, Creator, Newsletter)
+- **DOMAIN_PLAYBOOK**: 24 complete domain playbooks with implementation flows, compliance rules, bug prevention, context mapping, and AI skills
+
+### src/generators/p3-mcp.js
+**Enhanced MCP Generation (240 lines):**
+- **Backend-specific MCP servers**: Supabase, Firebase, PostgreSQL, MongoDB, Docker
+- **Domain-specific tool recommendations**: Uses `detectDomain()` to suggest relevant MCP tools
+- **Enhanced project-context.md**: Auth details, domain context, dev methods, generated file structure
+- **tools-manifest.json**: Server list, recommendations (core/backend/domain), categories (dev/test/deploy)
+- **mcp-config.json**: Environment variable placeholders for selected backends
+- **.mcp/README.md**: Installation guide, usage examples, troubleshooting
 
 ### src/generators/p10-reverse.js
 **Data Structures:**
@@ -240,10 +251,10 @@ git remote set-url origin git@github.com:user/repo.git
 - **`pluralize(name)`** — Smart table name pluralization
 - **`getEntityColumns(name, G, knownEntities)`** — Get columns for entity (ALWAYS pass 3 args)
 - **`getEntityMethods(name)`** — Get allowed REST methods for entity
-- **`detectDomain(purpose)`** — Infer domain from purpose text (15 domains supported)
-  - Returns: 'education', 'ec', 'marketplace', 'community', 'content', 'analytics', 'booking', 'saas', 'iot', 'realestate', 'legal', 'hr', 'fintech', 'portfolio', 'tool', or null
-  - Used by: AI skills catalog generation, domain-specific KPI/acceptance criteria
-  - Pattern matching: regex-based on Japanese/English keywords in purpose text
+- **`detectDomain(purpose)`** — Infer domain from purpose text (24 domains supported)
+  - Returns: 'education', 'ec', 'marketplace', 'community', 'content', 'analytics', 'booking', 'saas', 'iot', 'realestate', 'legal', 'hr', 'fintech', 'portfolio', 'tool', 'ai', 'automation', 'event', 'gamify', 'collab', 'devtool', 'creator', 'newsletter', or null
+  - Used by: AI skills catalog generation, domain-specific KPI/acceptance criteria, MCP tool recommendations
+  - Pattern matching: regex-based on Japanese/English keywords in purpose text (specific patterns first, generic last)
 - **`resolveAuth(answers)`** — Determine auth architecture from answers
 - **`getScreenComponents(screenName, G)`** — Get UI components for screen type
 
@@ -322,7 +333,7 @@ Edit `src/data/presets.js` and add to `PR` object:
 
 ```javascript
 const PR = {
-  my_preset: {
+  my_preset: _mp({  // Use _mp() helper for compression
     name: '日本語名',
     nameEn: 'English Name',
     icon: '🎯',
@@ -330,20 +341,29 @@ const PR = {
     purposeEn: 'English purpose description',
     target: ['ターゲット1', 'ターゲット2'],
     targetEn: ['Target1', 'Target2'],
-    frontend: 'React + Next.js',
-    backend: 'Supabase',
+    // Only specify fields that differ from _PD defaults:
+    // frontend: 'React + Next.js' (default)
+    // backend: 'Supabase' (default)
+    // mobile: 'none' (default)
+    // ai_auto: 'none' (default)
+    // payment: 'none' (default)
     features: ['機能1', '機能2', '機能3'],
     featuresEn: ['Feature1', 'Feature2', 'Feature3'],
     entities: 'Entity1, Entity2, Entity3',
-    mobile: 'none',  // or 'Expo (React Native)'
-    ai_auto: 'none',  // or 'Vibe Coding入門' | 'マルチAgent協調'
-    payment: 'stripe'  // or 'none' | 'ec_build'
-  },
+    payment: 'stripe'  // Override default
+  }),
   // ... rest of PR
 };
 ```
 
-⚠️ **Update preset count in README.md if adding/removing presets.**
+**Steps:**
+1. Add preset to `src/data/presets.js` using `_mp()` compression
+2. Add required entities to `src/generators/common.js` ENTITY_COLUMNS
+3. Add ER relationships to `inferER()` if needed
+4. Update preset count in `test/presets.test.js` (line 10-11)
+5. Update README.md preset count if applicable
+
+**Current count:** 41 presets (including custom)
 
 ## Adding New Pillars
 
@@ -445,8 +465,8 @@ const ENTITY_COLUMNS = {
 
 ⚠️ **When adding entities:** Check if columns match existing constants (\_U, \_SA, \_SD, \_T, \_D, etc.) to maintain compression.
 
-## Generated Output (67-69 files)
-When users complete the wizard, DevForge generates **67-69 files** (base: 67 files, +2 when ai_auto ≠ None for skills/catalog.md and skills/pipelines.md):
+## Generated Output (69+ files)
+When users complete the wizard, DevForge generates **69+ files** (base: 67 files, +2 when ai_auto ≠ None for skills/catalog.md and skills/pipelines.md):
 - **.spec/** — constitution.md, specification.md, technical-plan.md, tasks.md, verification.md
 - **.devcontainer/** — devcontainer.json, Dockerfile, docker-compose.yml, post-create.sh
 - **docs/** — architecture.md, ER.md, API.md, screen.md, test-cases.md, security.md, release.md, WBS.md, prompt-playbook.md, tasks.md, **progress.md (24)**, **error_logs.md (25)**, **design_system.md (26)**, **sequence_diagrams.md (27)**, **qa_strategy.md (28)**, **reverse_engineering.md (29)**, **goal_decomposition.md (30)**, **industry_playbook.md (31)**
@@ -502,9 +522,10 @@ When users complete the wizard, DevForge generates **67-69 files** (base: 67 fil
 | r28-regression.test.js | 19 tests | Quality: REST methods, AC, scope_out, verification |
 | build.test.js | build | Build size ≤1000KB |
 | compat.test.js | 45 tests | Compatibility validation |
-| Others | ~21 tests | i18n, presets, state, techdb |
+| presets.test.js | 4 tests | Preset count (41), bilingual names, tech fields, purpose |
+| Others | ~21 tests | i18n, state, techdb |
 
-**Total: 178 tests (49+ passing, some edge case tests expected to have minor failures)**
+**Total: 248 tests (247+ passing, 99.6% pass rate)**
 
 ## Writing Tests
 
@@ -559,7 +580,7 @@ test('pluralize', () => {
 
 ## Size Budget Management
 
-DevForge has a strict **1000KB size limit** for the built HTML file. Current size: **639KB** (~361KB under budget).
+DevForge has a strict **1000KB size limit** for the built HTML file. Current size: **685KB** (~315KB under budget).
 
 ### Expansion Strategy
 When adding new features, follow the "Balanced Expansion" approach:
@@ -569,10 +590,14 @@ When adding new features, follow the "Balanced Expansion" approach:
 4. **Test frequently** with `node build.js --report`
 
 ### Recent Expansion (Feb 2026)
-- **Budget allocated**: 400KB (from 600KB→1000KB limit increase)
-- **Actual usage**: ~39KB (Industry Intelligence Engine + conditional question fix)
-- **Added**: Industry Intelligence Engine, DOMAIN_PLAYBOOK, domain-specific compliance/bugs/skills
-- **Remaining budget**: 361KB for future enhancements
+- **Quality Improvement Package**: +46KB (685KB total)
+- **Added**:
+  - 5 new presets (CRM, Social, Logistics, Survey, Job Board)
+  - 8 new domains (AI, Automation, Event, Gamify, Collab, DevTool, Creator, Newsletter)
+  - MCP expansion (52→240 lines, backend-specific, domain recommendations)
+  - 18 new entities, 26 ER relationships, 10 feature patterns
+  - Accessibility improvements (announce() wiring)
+- **Remaining budget**: 315KB for future enhancements
 
 ### Size Optimization Tips
 - Reuse common patterns (see `_U`, `_SA`, `_SD`, `_T`, `_D`, `_CN`, `_M`, `_B`, etc. in common.js)

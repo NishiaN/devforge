@@ -228,6 +228,14 @@ const DOMAIN_ENTITIES={
   hr:{core:['User','JobPosting','Applicant','Interview','Evaluation','Department'],warn:['Product','Order','Cart'],suggest:{}},
   fintech:{core:['User','Account','Transaction','Transfer','Card','Statement'],warn:['Post','Comment','Course'],suggest:{}},
   health:{core:['User','Patient','Doctor','Appointment','MedicalRecord','Prescription'],warn:['Product','Order','Cart'],suggest:{Product:'Service',Order:'Appointment'}},
+  ai:{core:['User','Conversation','Message','Prompt','Agent','Tool','ApiUsage'],warn:['Product','Order','Cart'],suggest:{}},
+  automation:{core:['User','Workflow','Trigger','Action','Execution','Connection','Log'],warn:['Product','Order'],suggest:{}},
+  event:{core:['User','Event','Ticket','Attendee','Venue','Session','Survey'],warn:['Product','Order'],suggest:{Product:'Ticket',Order:'Booking'}},
+  gamify:{core:['User','Badge','Challenge','Reward','Leaderboard','PointLog','Achievement'],warn:['Product','Order','Cart'],suggest:{}},
+  collab:{core:['User','Document','Workspace','Comment','Version','Permission','Activity'],warn:['Product','Order','Cart'],suggest:{}},
+  devtool:{core:['User','ApiKey','Project','RequestLog','Webhook','Documentation'],warn:['Product','Order','Cart'],suggest:{}},
+  creator:{core:['User','Content','Subscription','Payment','Tier','Comment','Tip'],warn:['Order','Cart'],suggest:{}},
+  newsletter:{core:['User','Post','Subscriber','Campaign','Analytics','Plan'],warn:['Product','Order','Cart'],suggest:{Product:'Plan',Order:'Subscription'}},
 };
 
 // ── Entity Column Dictionary ──
@@ -434,6 +442,25 @@ const ENTITY_COLUMNS={
   Technician:[_U,'technician_name:VARCHAR(255):NOT NULL:技術者名:Technician name','skills:JSONB::スキル:Skills','certification:TEXT::資格:Certification','is_available:BOOLEAN:DEFAULT true:対応可能:Available','current_location:TEXT::現在地:Current location'],
   Location:['location_name:VARCHAR(255):NOT NULL:場所名:Location name','address:TEXT:NOT NULL:住所:Address','latitude:DECIMAL(10,7)::緯度:Latitude','longitude:DECIMAL(10,7)::経度:Longitude','contact_name:VARCHAR(255)::担当者名:Contact name','contact_phone:VARCHAR(50)::電話番号:Contact phone'],
   Customer:[_U,'customer_name:VARCHAR(255):NOT NULL:顧客名:Customer name','company:VARCHAR(255)::会社名:Company','email:VARCHAR(255)::メール:Email','phone:VARCHAR(50)::電話番号:Phone','billing_address:TEXT::請求先住所:Billing address',_N],
+  // ── Missing entities (A1) ──
+  Examination:['patient_id:UUID:FK(Patient) NOT NULL:患者ID:Patient ID','doctor_id:UUID:FK(Doctor) NOT NULL:医師ID:Doctor ID','exam_date:TIMESTAMP:DEFAULT NOW:検査日:Exam date','exam_type:VARCHAR(100)::検査種別:Exam type','findings:TEXT::所見:Findings','diagnosis_code:VARCHAR(50)::診断コード:Diagnosis code',_N,_SA],
+  Claim:['patient_id:UUID:FK(Patient) NOT NULL:患者ID:Patient ID','invoice_id:UUID:FK(Invoice):請求書ID:Invoice ID','claim_number:VARCHAR(100):UNIQUE:請求番号:Claim number','claim_date:DATE:NOT NULL:請求日:Claim date','amount:DECIMAL(10,2):NOT NULL:金額:Amount','insurance_provider:VARCHAR(255)::保険者:Insurance provider',_SP,'paid_at:TIMESTAMP::支払日:Paid at'],
+  Milestone:['contract_id:UUID:FK(Contract) NOT NULL:契約ID:Contract ID',_T,_D,'due_date:DATE::期限:Due date','completion_percentage:INT:DEFAULT 0:完了率(%):Completion(%)','payment_amount:DECIMAL(12,2)::支払額:Payment amount',_SP,'completed_at:TIMESTAMP::完了日時:Completed at'],
+  Inventory:['item_name:VARCHAR(255):NOT NULL:品目名:Item name','sku:VARCHAR(100):UNIQUE:SKU:SKU','quantity:INT:DEFAULT 0:在庫数:Quantity','unit:VARCHAR(20)::単位:Unit','location:VARCHAR(255)::保管場所:Location','reorder_level:INT:DEFAULT 0:発注点:Reorder level',_SA],
+  // ── New preset entities (C1) ──
+  Contact:[_U,'contact_name:VARCHAR(255):NOT NULL:連絡先名:Contact name','company_id:UUID:FK(Company):企業ID:Company ID','email:VARCHAR(255)::メール:Email','phone:VARCHAR(50)::電話番号:Phone','position:VARCHAR(100)::役職:Position',_N,_SA],
+  Deal:[_U,'deal_name:VARCHAR(255):NOT NULL:案件名:Deal name','contact_id:UUID:FK(Contact):連絡先ID:Contact ID','company_id:UUID:FK(Company):企業ID:Company ID','amount:DECIMAL(12,2)::金額:Amount','stage:VARCHAR(50):DEFAULT \'lead\':ステージ:Stage','probability:INT:DEFAULT 0:確度(%):Probability(%)','expected_close_date:DATE::成約予定日:Expected close',_N],
+  Company:['company_name:VARCHAR(255):NOT NULL:企業名:Company name','industry:VARCHAR(100)::業種:Industry','website:TEXT::ウェブサイト:Website','employee_count:INT::従業員数:Employee count','annual_revenue:DECIMAL(15,2)::年間売上:Annual revenue',_N,_SA],
+  Pipeline:['pipeline_name:VARCHAR(255):NOT NULL:パイプライン名:Pipeline name','stages:JSONB:NOT NULL:ステージ:Stages',_SO,_IA],
+  Shipment:['tracking_number:VARCHAR(100):UNIQUE NOT NULL:追跡番号:Tracking number','origin:TEXT:NOT NULL:出発地:Origin','destination:TEXT:NOT NULL:目的地:Destination','route_id:UUID:FK(Route):ルートID:Route ID','driver_id:UUID:FK(Driver):ドライバーID:Driver ID',_SP,'shipped_at:TIMESTAMP::出荷日時:Shipped at','delivered_at:TIMESTAMP::配達日時:Delivered at','weight_kg:DECIMAL(8,2)::重量(kg):Weight(kg)'],
+  Route:['route_name:VARCHAR(255):NOT NULL:ルート名:Route name','waypoints:JSONB:NOT NULL:経由地:Waypoints','distance_km:DECIMAL(10,2)::距離(km):Distance(km)','estimated_duration_min:INT::所要時間(分):Duration(min)',_IA],
+  Warehouse:['warehouse_name:VARCHAR(255):NOT NULL:倉庫名:Warehouse name','address:TEXT:NOT NULL:住所:Address','capacity:INT::容量:Capacity','current_stock_count:INT:DEFAULT 0:現在庫数:Current stock',_SA],
+  Driver:[_U,'driver_name:VARCHAR(255):NOT NULL:ドライバー名:Driver name','license_number:VARCHAR(100)::免許番号:License number','vehicle_type:VARCHAR(50)::車両種別:Vehicle type','is_available:BOOLEAN:DEFAULT true:稼働可能:Available','current_location:TEXT::現在地:Current location'],
+  Form:[_U,_T,_D,_SA,'is_template:BOOLEAN:DEFAULT false:テンプレート:Template','response_count:INT:DEFAULT 0:回答数:Response count'],
+  Question:['form_id:UUID:FK(Form) NOT NULL:フォームID:Form ID','question_text:TEXT:NOT NULL:質問文:Question text','question_type:VARCHAR(50):NOT NULL:質問種別:Question type','options:JSONB::選択肢:Options','is_required:BOOLEAN:DEFAULT false:必須:Required',_SO],
+  Answer:['form_id:UUID:FK(Form) NOT NULL:フォームID:Form ID','question_id:UUID:FK(Question) NOT NULL:質問ID:Question ID',_U,'answer_value:TEXT::回答値:Answer value','submitted_at:TIMESTAMP:DEFAULT NOW:回答日時:Submitted at'],
+  Job:['job_title:VARCHAR(255):NOT NULL:職種:Job title','company:VARCHAR(255):NOT NULL:企業名:Company','location:VARCHAR(255)::勤務地:Location','salary_range:VARCHAR(100)::給与レンジ:Salary range','job_type:VARCHAR(50)::雇用形態:Job type',_D,'status:VARCHAR(20):DEFAULT \'open\':募集状態:Status','posted_at:TIMESTAMP:DEFAULT NOW:掲載日:Posted at'],
+  SavedJob:[_U,'job_id:UUID:FK(Job) NOT NULL:求人ID:Job ID','saved_at:TIMESTAMP:DEFAULT NOW:保存日時:Saved at',_N],
 };
 
 // ═══ Entity REST method restrictions ═══
@@ -469,6 +496,12 @@ const ENTITY_METHODS={
   // Contracts & Leases: limited modification (status updates only via PATCH)
   Lease:['GET','GET/:id','POST','PATCH/:id'],
   Contract:['GET','GET/:id','POST','PATCH/:id'],
+  // Append-only/Read-only (A3)
+  AuditLog:['GET','GET/:id'],
+  PointLog:['GET','GET/:id'],
+  Achievement:['GET','GET/:id','POST'],
+  ClickLog:['GET','GET/:id','POST'],
+  SensorData:['GET','GET/:id','POST'],
 };
 function getEntityMethods(entityName){
   return ENTITY_METHODS[entityName]||['GET','GET/:id','POST','PUT/:id','DELETE/:id'];
@@ -493,14 +526,23 @@ function getEntityColumns(entityName,G,knownEntities){
 function detectDomain(purpose){
   const p=(purpose||'').toLowerCase();
   const detect=[
+    // Specific patterns first (higher priority)
     [/教育|学習|education|learning|lms|コース|course|tutoring|家庭教師/i,'education'],
     [/\bEC\b|eコマース|e-commerce|ショップ|\bshop\b|\bcommerce\b/i,'ec'],
     [/マーケットプレイス|marketplace/i,'marketplace'],
-    [/コミュニティ|community|フォーラム|forum|gamification|gamify/i,'community'],
+    [/ゲーミ|gamification|gamify|バッジ|ポイント|リーダーボード/i,'gamify'],
+    [/イベント|event|チケット|カンファレンス|セミナー/i,'event'],
+    [/ニュースレター|newsletter|メール配信|メルマガ|購読/i,'newsletter'],
+    [/クリエイター|creator|ファン|コンテンツ販売|投げ銭/i,'creator'],
+    [/コミュニティ|community|フォーラム|forum/i,'community'],
     [/コンテンツ|content|メディア|media|ブログ|blog|knowledge.?base|ナレッジベース/i,'content'],
     [/分析|analytics|可視化|ダッシュボード/i,'analytics'],
-    [/予約|booking|スケジュール|restaurant|レストラン|飲食店|event|イベント/i,'booking'],
-    [/saas|サブスク|subscription|helpdesk|ヘルプデスク|collab|collaboration/i,'saas'],
+    [/予約|booking|スケジュール|restaurant|レストラン|飲食店/i,'booking'],
+    [/AIエージェント|ai.?agent|chatbot|チャットボット|対話型|FAQ/i,'ai'],
+    [/自動化|automation|workflow|ワークフロー|RPA|ノーコード/i,'automation'],
+    [/共同編集|collaboration|collab|リアルタイム編集/i,'collab'],
+    [/開発者ツール|dev.?tool|API管理|APIキー/i,'devtool'],
+    [/saas|サブスク|subscription|helpdesk|ヘルプデスク/i,'saas'],
     [/IoT|デバイス|device|sensor|センサー|field.?service|フィールドサービス/i,'iot'],
     [/不動産|物件|real.?estate|property.?mgmt|property.?management/i,'realestate'],
     [/法務|契約|legal|contract.?mgmt|contract.?management|コンプライアンス/i,'legal'],
@@ -509,7 +551,7 @@ function detectDomain(purpose){
     [/医療|ヘルスケア|health|medical|clinic|病院|patient|患者|veterinary|動物病院|ペット/i,'health'],
     [/ポートフォリオ|portfolio|link.?in.?bio|linkbio/i,'portfolio'],
     [/pwa|progressive.?web|オフライン|offline/i,'tool'],
-    [/chatbot|チャットボット|ai.?agent|AIエージェント/i,'saas'],
+    // Generic patterns last (lower priority)
     [/業務|business|効率化|ツール|tool/i,'tool'],
   ];
   for(const[rx,key]of detect){if(rx.test(p))return key;}
@@ -600,6 +642,38 @@ function inferER(a){
   if(has('Contract')&&has('Party')) rels.push('Contract 1 ──N Party');
   if(has('Contract')&&has('Approval')) rels.push('Contract 1 ──N Approval');
   if(has('Contract')&&has('Signature')) rels.push('Contract 1 ──N Signature');
+  if(has('Contract')&&has('Milestone')) rels.push('Contract 1 ──N Milestone');
+  // Restaurant
+  if(has('Table')&&has('Reservation')) rels.push('Table 1 ──N Reservation');
+  if(has('Order')&&has('MenuItem')) rels.push('Order N ──M MenuItem (via OrderItem)');
+  if(has('Table')&&has('Order')) rels.push('Table 1 ──N Order');
+  // HR
+  if(has('JobPosting')&&has('Applicant')) rels.push('JobPosting 1 ──N Applicant');
+  if(has('Applicant')&&has('Interview')) rels.push('Applicant 1 ──N Interview');
+  if(has('Applicant')&&has('Evaluation')) rels.push('Applicant 1 ──N Evaluation');
+  if(has('Department')&&has('JobPosting')) rels.push('Department 1 ──N JobPosting');
+  // Construction
+  if(has('Project')&&has('Contractor')) rels.push('Project N ──M Contractor');
+  if(has('Project')&&has('ProgressReport')) rels.push('Project 1 ──N ProgressReport');
+  if(has('Project')&&has('Estimate')) rels.push('Project 1 ──N Estimate');
+  // Knowledge Base
+  if(has('Article')&&has('SearchLog')) rels.push('Article 1 ──N SearchLog');
+  if(has('Article')&&has('AccessControl')) rels.push('Article 1 ──N AccessControl');
+  // Field Service
+  if(has('WorkOrder')&&has('Technician')) rels.push('WorkOrder N ──1 Technician');
+  if(has('WorkOrder')&&has('Location')) rels.push('WorkOrder N ──1 Location');
+  if(has('Customer')&&has('WorkOrder')) rels.push('Customer 1 ──N WorkOrder');
+  if(has('WorkOrder')&&has('Inventory')) rels.push('WorkOrder N ──M Inventory (via WorkOrderItem)');
+  // Gaming
+  if(has('User')&&has('Badge')) rels.push('User N ──M Badge (via Achievement)');
+  if(has('User')&&has('Challenge')) rels.push('User N ──M Challenge');
+  if(has('User')&&has('PointLog')) rels.push('User 1 ──N PointLog');
+  if(has('Badge')&&has('Achievement')) rels.push('Badge 1 ──N Achievement');
+  // Medical (Examination & Claim)
+  if(has('Patient')&&has('Examination')) rels.push('Patient 1 ──N Examination');
+  if(has('Doctor')&&has('Examination')) rels.push('Doctor 1 ──N Examination');
+  if(has('Patient')&&has('Claim')) rels.push('Patient 1 ──N Claim');
+  if(has('Invoice')&&has('Claim')) rels.push('Invoice 1 ──1 Claim');
 
   return {domain,warnings,suggestions,relationships:rels};
 }
@@ -727,6 +801,66 @@ const FEATURE_DETAILS={
     tests_ja:[['正常系: 入庫記録','201, 在庫数増加'],['正常系: 出庫記録','200, 在庫数減少'],['正常系: 低在庫アラート','200, stock<10で通知'],['異常系: 在庫0で出庫','422, 在庫不足'],['異常系: 負数で入庫','422, 数量バリデーション']],
     tests_en:[['Normal: Inbound record','201, stock increased'],['Normal: Outbound record','200, stock decreased'],['Normal: Low stock alert','200, notify when stock<10'],['Error: Outbound with 0 stock','422, out of stock'],['Error: Negative inbound','422, quantity validation']],
   },
+  'ソーシャル|フォロー|いいね|Social|Follow|Like|Share':{
+    criteria_ja:['ユーザーフォロー/アンフォロー','フォロワー/フォロー中一覧','いいね機能','シェア機能','フィードタイムライン(フォロー中のみ)','ブロック機能'],
+    criteria_en:['User follow/unfollow','Followers/following list','Like feature','Share feature','Feed timeline (following only)','Block feature'],
+    tests_ja:[['正常系: ユーザーフォロー','201, フォロー記録'],['正常系: いいね追加','201, Like記録'],['正常系: フィード取得','200, フォロー中の投稿のみ'],['異常系: 自分をフォロー','422, 自己フォロー不可'],['異常系: 重複いいね','409, 既存いいね']],
+    tests_en:[['Normal: Follow user','201, follow recorded'],['Normal: Add like','201, Like saved'],['Normal: Get feed','200, following posts only'],['Error: Self-follow','422, cannot follow self'],['Error: Duplicate like','409, already liked']],
+  },
+  '設定|環境設定|Settings|Preferences|Config':{
+    criteria_ja:['プロフィール編集','パスワード変更','メール通知設定','プライバシー設定','テーマ切替(ダーク/ライト)','言語設定','アカウント削除'],
+    criteria_en:['Profile edit','Password change','Email notification settings','Privacy settings','Theme toggle (dark/light)','Language settings','Account deletion'],
+    tests_ja:[['正常系: プロフィール更新','200, 変更反映'],['正常系: パスワード変更','200, パスワードハッシュ更新'],['正常系: 通知OFF','200, 設定保存'],['異常系: 弱いパスワード','422, バリデーション'],['異常系: アカウント削除(確認なし)','400, 確認必須']],
+    tests_en:[['Normal: Update profile','200, changes applied'],['Normal: Change password','200, hash updated'],['Normal: Notifications OFF','200, setting saved'],['Error: Weak password','422, validation'],['Error: Delete account (no confirm)','400, confirmation required']],
+  },
+  'MFA|2FA|二段階認証|多要素認証|TOTP':{
+    criteria_ja:['TOTPセットアップ(QRコード表示)','バックアップコード生成','ログイン時のOTP検証','信頼済みデバイス登録','MFA無効化(パスワード確認)'],
+    criteria_en:['TOTP setup (QR code)','Backup code generation','OTP verification on login','Trusted device registration','Disable MFA (password confirm)'],
+    tests_ja:[['正常系: TOTP有効化','200, QRコード+秘密鍵返却'],['正常系: OTP検証','200, ログイン成功'],['正常系: バックアップコード使用','200, コード無効化'],['異常系: 不正OTP','401, 認証失敗'],['異常系: 期限切れOTP','401, タイムアウト']],
+    tests_en:[['Normal: Enable TOTP','200, QR code + secret returned'],['Normal: Verify OTP','200, login success'],['Normal: Use backup code','200, code invalidated'],['Error: Invalid OTP','401, auth failed'],['Error: Expired OTP','401, timeout']],
+  },
+  'Webhook|連携|Integration|API連携':{
+    criteria_ja:['Webhook URL登録','イベント選択(作成/更新/削除)','署名検証(HMAC)','リトライ設定(最大3回)','Webhook履歴・ログ','テストペイロード送信'],
+    criteria_en:['Webhook URL registration','Event selection (create/update/delete)','Signature verification (HMAC)','Retry settings (max 3)','Webhook history & logs','Test payload send'],
+    tests_ja:[['正常系: Webhook登録','201, URL保存+シークレット生成'],['正常系: イベントトリガー','200, Webhook送信'],['正常系: 署名検証','200, HMACマッチ'],['異常系: 不正署名','401, 検証失敗'],['異常系: 3回リトライ失敗','500, Webhook無効化']],
+    tests_en:[['Normal: Register webhook','201, URL saved + secret generated'],['Normal: Event trigger','200, webhook sent'],['Normal: Verify signature','200, HMAC match'],['Error: Invalid signature','401, verification failed'],['Error: 3 retries failed','500, webhook disabled']],
+  },
+  'オンボーディング|チュートリアル|Onboarding|Tutorial|ガイド':{
+    criteria_ja:['初回ログイン時のステップ表示','チェックリスト進捗管理','ツールチップガイド','スキップ機能','完了時のバッジ/報酬'],
+    criteria_en:['Step display on first login','Checklist progress tracking','Tooltip guides','Skip feature','Badge/reward on completion'],
+    tests_ja:[['正常系: チェックリスト表示','200, 未完了ステップ返却'],['正常系: ステップ完了','200, 進捗更新'],['正常系: スキップ','200, オンボーディング終了'],['異常系: 完了済みステップを再度完了','200, 冪等'],['正常系: 全ステップ完了','200, バッジ付与']],
+    tests_en:[['Normal: Show checklist','200, incomplete steps returned'],['Normal: Complete step','200, progress updated'],['Normal: Skip','200, onboarding ended'],['Error: Re-complete finished step','200, idempotent'],['Normal: All steps done','200, badge granted']],
+  },
+  'APIキー|開発者|API Key|Developer|トークン管理':{
+    criteria_ja:['APIキー発行(プレフィックス表示)','権限スコープ設定(read/write)','有効期限設定','キー無効化/削除','使用状況ダッシュボード','レート制限設定'],
+    criteria_en:['API key issuance (prefix display)','Permission scope (read/write)','Expiration date setting','Key revocation/deletion','Usage dashboard','Rate limit config'],
+    tests_ja:[['正常系: APIキー発行','201, キー返却(1回のみ)'],['正常系: スコープ制限でアクセス','200, read権限OK'],['正常系: キー無効化','204, 以降401'],['異常系: 有効期限切れキー','401, Expired'],['異常系: レート制限超過','429, Too Many Requests']],
+    tests_en:[['Normal: Issue API key','201, key returned (once)'],['Normal: Scoped access','200, read permission OK'],['Normal: Revoke key','204, 401 after'],['Error: Expired key','401, Expired'],['Error: Rate limit exceeded','429, Too Many Requests']],
+  },
+  '監査ログ|履歴|Audit|Log|History|アクティビティ':{
+    criteria_ja:['全操作の記録(作成/更新/削除)','ユーザー・IPアドレス記録','タイムスタンプ','フィルタ・検索機能','エクスポート(CSV/JSON)','保持期間設定(90日)'],
+    criteria_en:['Record all operations (create/update/delete)','User & IP address logging','Timestamp','Filter & search','Export (CSV/JSON)','Retention period (90 days)'],
+    tests_ja:[['正常系: ログ記録','201, AuditLog保存'],['正常系: ログ検索','200, フィルタ結果返却'],['正常系: CSV エクスポート','200, CSV生成'],['異常系: 管理者以外がアクセス','403, 権限不足'],['正常系: 90日以前のログ削除','200, 自動削除']],
+    tests_en:[['Normal: Log record','201, AuditLog saved'],['Normal: Log search','200, filtered results'],['Normal: CSV export','200, CSV generated'],['Error: Non-admin access','403, insufficient permissions'],['Normal: Delete logs >90 days','200, auto-deleted']],
+  },
+  '地図|位置情報|Map|Location|Geo|GPS':{
+    criteria_ja:['地図表示(Google Maps/Mapbox)','位置情報取得(Geolocation API)','住所→座標変換(Geocoding)','近隣検索(半径N km以内)','ルート案内','マーカー/ピン表示'],
+    criteria_en:['Map display (Google Maps/Mapbox)','Location acquisition (Geolocation API)','Address→coordinate (Geocoding)','Nearby search (within N km)','Route guidance','Marker/pin display'],
+    tests_ja:[['正常系: 位置情報取得','200, 緯度経度返却'],['正常系: 住所→座標変換','200, ジオコーディング成功'],['正常系: 近隣検索','200, 半径5km以内の結果'],['異常系: 位置情報拒否','403, Geolocation denied'],['異常系: 不正な住所','422, ジオコーディング失敗']],
+    tests_en:[['Normal: Get location','200, lat/lng returned'],['Normal: Address→coordinate','200, geocoding success'],['Normal: Nearby search','200, results within 5km'],['Error: Location denied','403, Geolocation denied'],['Error: Invalid address','422, geocoding failed']],
+  },
+  'インポート|移行|Import|Migration|データ取込':{
+    criteria_ja:['CSVインポート','Excel(XLSX)インポート','データバリデーション','重複チェック','エラーレポート','バックグラウンド処理(大量データ)','ロールバック機能'],
+    criteria_en:['CSV import','Excel (XLSX) import','Data validation','Duplicate check','Error report','Background processing (large data)','Rollback feature'],
+    tests_ja:[['正常系: CSVインポート(100件)','201, 100件登録'],['正常系: バリデーションエラー','422, エラー行リスト返却'],['正常系: 重複スキップ','200, 重複行除外'],['異常系: 不正フォーマット','422, CSVパース失敗'],['正常系: 大量データ(10万件)','202, バックグラウンド処理']],
+    tests_en:[['Normal: Import CSV (100 rows)','201, 100 rows inserted'],['Normal: Validation error','422, error row list returned'],['Normal: Skip duplicates','200, duplicate rows excluded'],['Error: Invalid format','422, CSV parse failed'],['Normal: Large data (100k rows)','202, background processing']],
+  },
+  'テンプレート|ワークフロー|Template|Workflow|自動化':{
+    criteria_ja:['テンプレート作成・保存','変数/プレースホルダー','条件分岐','承認フロー','スケジュール実行','実行履歴・ログ'],
+    criteria_en:['Template creation & save','Variables/placeholders','Conditional branching','Approval flow','Scheduled execution','Execution history & logs'],
+    tests_ja:[['正常系: テンプレート作成','201, テンプレート保存'],['正常系: 変数展開','200, プレースホルダー置換'],['正常系: 条件分岐実行','200, 条件マッチで分岐'],['異常系: 不正な変数名','422, バリデーション'],['正常系: スケジュール実行','200, 毎日9時に自動実行']],
+    tests_en:[['Normal: Create template','201, template saved'],['Normal: Variable expansion','200, placeholders replaced'],['Normal: Conditional execution','200, branched on condition'],['Error: Invalid variable name','422, validation'],['Normal: Scheduled execution','200, auto-run daily at 9am']],
+  },
 };
 
 // Match feature name to FEATURE_DETAILS entry
@@ -850,6 +984,62 @@ const DOMAIN_QA_MAP={
     bugs_ja:['モバイル表示崩れ','画像遅延読み込み失敗','SNS OGP未設定'],
     bugs_en:['Mobile layout breaks','Image lazy loading failures','Missing SNS OGP tags'],
     priority:'Security:LOW|Performance:HIGH|DataIntegrity:LOW|UX:CRITICAL|Compliance:LOW'
+  },
+  ai:{
+    focus_ja:['プロンプトインジェクション対策','トークン使用量管理','レスポンス速度','会話履歴保存'],
+    focus_en:['Prompt injection prevention','Token usage management','Response speed','Conversation history persistence'],
+    bugs_ja:['プロンプト漏洩','トークン超過課金','会話履歴消失','レート制限超過'],
+    bugs_en:['Prompt leakage','Token overcharge','Conversation loss','Rate limit exceeded'],
+    priority:'Security:HIGH|Performance:MED|DataIntegrity:HIGH|UX:HIGH|Compliance:MED'
+  },
+  automation:{
+    focus_ja:['ワークフロー実行信頼性','エラーハンドリング','リトライ設定','実行履歴保存'],
+    focus_en:['Workflow execution reliability','Error handling','Retry configuration','Execution history logging'],
+    bugs_ja:['無限ループ','エラー時の通知漏れ','リトライ回数制限なし','実行ログ欠損'],
+    bugs_en:['Infinite loops','Missing error notifications','Unlimited retries','Missing execution logs'],
+    priority:'Security:MED|Performance:HIGH|DataIntegrity:HIGH|UX:MED|Compliance:LOW'
+  },
+  event:{
+    focus_ja:['チケット在庫管理','QRコード検証','キャンセルポリシー','タイムゾーン処理'],
+    focus_en:['Ticket inventory management','QR code verification','Cancellation policy','Timezone handling'],
+    bugs_ja:['定員超過販売','QRコード重複','返金処理漏れ','時刻ずれ'],
+    bugs_en:['Overselling capacity','Duplicate QR codes','Missing refunds','Time mismatches'],
+    priority:'Security:MED|Performance:HIGH|DataIntegrity:CRITICAL|UX:HIGH|Compliance:MED'
+  },
+  gamify:{
+    focus_ja:['ポイント計算正確性','バッジ獲得条件','ランキング公平性','不正防止'],
+    focus_en:['Point calculation accuracy','Badge criteria enforcement','Ranking fairness','Fraud prevention'],
+    bugs_ja:['ポイント重複付与','バッジ不正獲得','ランキング操作','負数ポイント'],
+    bugs_en:['Duplicate point grants','Badge exploitation','Ranking manipulation','Negative points'],
+    priority:'Security:MED|Performance:MED|DataIntegrity:HIGH|UX:HIGH|Compliance:LOW'
+  },
+  collab:{
+    focus_ja:['同時編集競合解決','バージョン管理','権限管理','リアルタイム同期'],
+    focus_en:['Concurrent edit conflict resolution','Version control','Permission management','Real-time sync'],
+    bugs_ja:['編集内容消失','バージョン履歴欠損','権限チェック漏れ','同期遅延'],
+    bugs_en:['Edit loss','Missing version history','Permission bypass','Sync delays'],
+    priority:'Security:HIGH|Performance:HIGH|DataIntegrity:CRITICAL|UX:CRITICAL|Compliance:MED'
+  },
+  devtool:{
+    focus_ja:['APIキー管理','レート制限','使用量追跡','Webhook信頼性'],
+    focus_en:['API key management','Rate limiting','Usage tracking','Webhook reliability'],
+    bugs_ja:['キー漏洩','レート制限バイパス','使用量カウント漏れ','Webhook失敗'],
+    bugs_en:['Key leakage','Rate limit bypass','Usage count miss','Webhook failures'],
+    priority:'Security:CRITICAL|Performance:MED|DataIntegrity:HIGH|UX:MED|Compliance:MED'
+  },
+  creator:{
+    focus_ja:['サブスク課金管理','コンテンツ配信','投げ銭処理','ファン管理'],
+    focus_en:['Subscription billing','Content delivery','Tip processing','Fan management'],
+    bugs_ja:['解約後も課金','コンテンツ漏洩','投げ銭未着金','ファン通知漏れ'],
+    bugs_en:['Billing after cancellation','Content leakage','Tip not received','Missing fan notifications'],
+    priority:'Security:HIGH|Performance:MED|DataIntegrity:HIGH|UX:HIGH|Compliance:HIGH'
+  },
+  newsletter:{
+    focus_ja:['配信到達率','購読解除','スパムフィルタ回避','開封率追跡'],
+    focus_en:['Delivery rate','Unsubscribe handling','Spam filter avoidance','Open rate tracking'],
+    bugs_ja:['メール未到達','購読解除後も配信','スパム判定','開封トラッキング失敗'],
+    bugs_en:['Email not delivered','Sending after unsubscribe','Spam flagged','Open tracking failures'],
+    priority:'Security:MED|Performance:MED|DataIntegrity:MED|UX:HIGH|Compliance:HIGH'
   }
 };
 
@@ -1073,7 +1263,15 @@ const DOMAIN_PLAYBOOK={
     ['Automation→architecture.md(automation), api_spec.md, test_cases/','Export→architecture.md(export), error_logs.md, stakeholders.md','Settings→design_system.md, requirements.md, api_spec.md'],
     'ワークフロー自動化|反復作業削減|入力:タスクログ、操作履歴、頻度|判断:週≥3回→自動化候補、手順≥5ステップ優先、エラー率>10%要改善|出力:自動化案、期待削減時間、実装難易度',
     'Workflow Automation|Reduce repetitive tasks|Input: task logs, operation history, frequency|Judgment: weekly≥3 times→automation candidate, steps≥5 prioritize, error rate>10% improve|Output: automation plan, expected time savings, implementation difficulty'
-  )
+  ),
+  ai:_dpb(['プロンプト→生成→評価→改善','会話履歴→コンテキスト→応答品質','トークン→コスト→最適化'],['Prompt→Generate→Evaluate→Improve','History→Context→Quality','Token→Cost→Optimize'],[_CG+':データ処理同意','OpenAI ToS準拠','プロンプト暗号化'],[_CG+': data consent','OpenAI ToS compliance','Prompt encryption'],['プロンプト漏洩|ログ保存|対策:暗号化、アクセス制御','トークン超過|無制限生成|対策:制限設定、アラート'],[' Prompt leak|Log storage|Fix: encrypt, access control','Token overuse|Unlimited|Fix: limits, alerts'],['生成→architecture.md(AI), api_spec.md','履歴→stakeholders.md, security.md'],['Generate→architecture.md(AI), api_spec.md','History→stakeholders.md, security.md'],'プロンプト最適化|コスト削減|入力:履歴、トークン数|判断:>1000トークン→要約、重複→キャッシュ|出力:最適化案','Prompt Optimization|Cost reduction|Input: history, tokens|Judgment: >1000 tokens→summarize, duplicate→cache|Output: optimization plan'),
+  automation:_dpb(['トリガー→実行→完了→通知','エラー→リトライ→成功→記録','ワークフロー→最適化→測定'],['Trigger→Execute→Complete→Notify','Error→Retry→Success→Log','Workflow→Optimize→Measure'],[_CG+':自動化同意','実行ログ保存','エラー通知'],[_CG+': automation consent','Execution logs','Error notification'],['無限ループ|終了条件なし|対策:最大実行回数、タイムアウト','リトライ過多|無制限|対策:指数バックオフ、上限設定'],['Infinite loop|No exit|Fix: max runs, timeout','Retry overuse|Unlimited|Fix: exponential backoff, limit'],['実行→architecture.md(workflow), api_spec.md','エラー→error_logs.md, stakeholders.md'],['Execute→architecture.md(workflow), api_spec.md','Error→error_logs.md, stakeholders.md'],'ワークフロー効率化|実行時間短縮|入力:実行ログ、ステップ時間|判断:>60s→並列化候補、失敗率>10%→要改善|出力:最適化案、期待時間削減','Workflow Efficiency|Reduce execution time|Input: logs, step duration|Judgment: >60s→parallel candidate, fail>10%→improve|Output: optimization, expected savings'),
+  event:_dpb(['企画→告知→販売→開催','チケット→購入→検証→入場','キャンセル→返金→再販売'],['Plan→Announce→Sell→Hold','Ticket→Purchase→Verify→Entry','Cancel→Refund→Resell'],['個人情報保護法:氏名、メール暗号化','特商法:返金規定明記','会場規約:安全管理'],[' Privacy Act: name, email encrypt','Commercial Act: refund policy','Venue: safety management'],['定員超過|競合販売|対策:SELECT FOR UPDATE、在庫ロック','QR重複|生成ミス|対策:UUID、検証チェック'],['Oversell|Race condition|Fix: SELECT FOR UPDATE, lock','QR duplicate|Generation error|Fix: UUID, validation'],['販売→architecture.md(ticket), security.md','検証→architecture.md(QR), api_spec.md'],['Sales→architecture.md(ticket), security.md','Verify→architecture.md(QR), api_spec.md'],'チケット販売最適化|売上最大化|入力:販売履歴、残席、需要|判断:残席<20%→値上げ候補、売行き悪い→割引検討|出力:価格戦略、期待売上','Ticket Sales Optimization|Maximize revenue|Input: sales history, remaining, demand|Judgment: remaining<20%→price up candidate, slow sales→discount|Output: pricing strategy, expected revenue'),
+  gamify:_dpb(['参加→達成→獲得→継続','ポイント→バッジ→ランキング→報酬','行動→測定→分析→最適化'],['Join→Achieve→Earn→Continue','Points→Badges→Ranking→Rewards','Behavior→Measure→Analyze→Optimize'],[_CG+':ポイント管理透明性','利用規約:ポイント有効期限','不正防止:行動監視'],[_CG+': point management transparency','ToS: point expiration','Fraud: behavior monitoring'],['ポイント重複付与|冪等性なし|対策:トランザクション、重複チェック','ランキング操作|不正行動|対策:異常検知、手動確認'],['Duplicate points|No idempotency|Fix: transaction, duplicate check','Ranking manipulation|Fraud|Fix: anomaly detection, manual review'],['達成→architecture.md(gamify), api_spec.md','不正→error_logs.md, security.md'],['Achievement→architecture.md(gamify), api_spec.md','Fraud→error_logs.md, security.md'],'エンゲージメント向上|継続率改善|入力:行動ログ、達成率|判断:完了<30%→難易度調整、離脱>50%→報酬見直し|出力:改善案、期待継続率','Engagement Improvement|Retention increase|Input: behavior logs, completion|Judgment: complete<30%→adjust difficulty, churn>50%→review rewards|Output: improvement plan, expected retention'),
+  collab:_dpb(['作成→編集→同期→保存','競合→解決→マージ→履歴','権限→承認→共有→通知'],['Create→Edit→Sync→Save','Conflict→Resolve→Merge→History','Permission→Approve→Share→Notify'],[_CG+':データ処理同意','利用規約:編集権限、削除30日','セキュリティ:暗号化通信、アクセスログ'],[_CG+': data processing consent','ToS: edit permission, delete 30d','Security: encrypted communication, access log'],['編集消失|競合解決失敗|対策:OT/CRDT、定期保存','権限漏れ|チェック不足|対策:RLS、middleware検証'],['Edit loss|Conflict resolution failure|Fix: OT/CRDT, periodic save','Permission bypass|Insufficient check|Fix: RLS, middleware validation'],['同期→architecture.md(realtime), api_spec.md','権限→security.md, test_cases/'],['Sync→architecture.md(realtime), api_spec.md','Permission→security.md, test_cases/'],'競合解決最適化|編集消失防止|入力:編集履歴、競合頻度|判断:競合>5/h→通知強化、消失>1%→保存頻度増|出力:最適化案','Conflict Resolution Optimization|Prevent edit loss|Input: edit history, conflict rate|Judgment: conflicts>5/h→enhance notification, loss>1%→increase save frequency|Output: optimization plan'),
+  devtool:_dpb(['登録→発行→使用→追跡','リクエスト→検証→実行→記録','エラー→通知→対応→改善'],['Register→Issue→Use→Track','Request→Verify→Execute→Log','Error→Notify→Respond→Improve'],[_CG+':データ処理同意','利用規約:レート制限、使用制限','セキュリティ:APIキー暗号化、IP制限'],[_CG+': data processing consent','ToS: rate limits, usage limits','Security: API key encryption, IP restriction'],['キー漏洩|平文保存|対策:暗号化、ハッシュ化、定期ローテーション','レート突破|制限なし|対策:Redis、sliding window'],['Key leakage|Plain text|Fix: encrypt, hash, regular rotation','Rate bypass|No limits|Fix: Redis, sliding window'],['認証→security.md, api_spec.md','使用→architecture.md(tracking), stakeholders.md'],['Auth→security.md, api_spec.md','Usage→architecture.md(tracking), stakeholders.md'],'API使用最適化|コスト削減|入力:リクエストログ、エラー率|判断:エラー>5%→要改善、重複>30%→キャッシュ候補|出力:最適化案、期待削減率','API Usage Optimization|Cost reduction|Input: request logs, error rate|Judgment: error>5%→improve, duplicate>30%→cache candidate|Output: optimization plan, expected reduction'),
+  creator:_dpb(['作成→公開→収益化→分析','サブスク→課金→継続→解約','ファン→交流→支援→成長'],['Create→Publish→Monetize→Analyze','Subscribe→Charge→Continue→Cancel','Fan→Engage→Support→Grow'],[_CG+':データ処理同意','資金決済法:前払式、第三者型','利用規約:手数料、返金規定'],[_CG+': data processing consent','Payment Services Act: prepaid, third-party','ToS: fees, refund policy'],['解約後課金|サブスク解約漏れ|対策:Webhook検証、定期確認','投げ銭未着|決済失敗|対策:リトライ、通知'],['Charge after cancel|Subscription cancel miss|Fix: webhook verification, periodic check','Tip not received|Payment failure|Fix: retry, notification'],['課金→architecture.md(subscription), security.md','支援→architecture.md(tip), api_spec.md'],['Billing→architecture.md(subscription), security.md','Support→architecture.md(tip), api_spec.md'],'収益最適化|ファン増加|入力:収益データ、ファン行動|判断:離脱>30%→ティア見直し、成長<10%→施策追加|出力:改善案、期待収益','Revenue Optimization|Fan growth|Input: revenue data, fan behavior|Judgment: churn>30%→review tiers, growth<10%→add tactics|Output: improvement plan, expected revenue'),
+  newsletter:_dpb(['作成→配信→開封→分析','購読→確認→受信→解除','セグメント→ターゲット→パーソナライズ'],['Create→Send→Open→Analyze','Subscribe→Confirm→Receive→Unsubscribe','Segment→Target→Personalize'],[_CG+':配信同意、オプトイン','特定電子メール法:配信者明記、解除リンク','個人情報保護法:購読者情報暗号化'],[_CG+': sending consent, opt-in','Anti-Spam Act: sender info, unsubscribe link','Privacy Act: subscriber info encryption'],['解除後配信|リスト更新漏れ|対策:即時反映、定期同期','スパム判定|SPF/DKIM未設定|対策:認証設定、レピュテーション管理'],['Send after unsubscribe|List update miss|Fix: immediate reflect, periodic sync','Spam flagged|No SPF/DKIM|Fix: auth setup, reputation management'],['配信→architecture.md(email), api_spec.md','分析→stakeholders.md, architecture.md(analytics)'],['Send→architecture.md(email), api_spec.md','Analytics→stakeholders.md, architecture.md(analytics)'],'配信最適化|開封率向上|入力:配信履歴、開封率、クリック率|判断:開封<20%→件名改善、クリック<5%→CTA最適化|出力:改善案、期待開封率','Delivery Optimization|Improve open rate|Input: send history, open rate, click rate|Judgment: open<20%→improve subject, click<5%→optimize CTA|Output: improvement plan, expected open rate')
 };
 
 // Get domain-specific QA strategy
