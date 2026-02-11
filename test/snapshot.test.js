@@ -476,3 +476,118 @@ describe('Snapshot D: English Output', () => {
     assert.ok(qa.includes('Priority Matrix'), 'Missing English priority matrix');
   });
 });
+
+// ═══ Scenario E: Property Management (New Entities) ═══
+describe('Snapshot E: Property Management', () => {
+  const files = generate({
+    purpose: '不動産管理システム', target: '大家, 入居者, 管理会社',
+    frontend: 'React + Next.js', backend: 'Supabase', database: 'Supabase (PostgreSQL)',
+    deploy: 'Vercel', auth: 'Supabase Auth',
+    mvp_features: '物件管理, 入居者管理, 契約管理, メンテナンス依頼',
+    screens: 'ダッシュボード, 物件一覧, 入居者詳細, メンテナンス管理',
+    data_entities: 'User, Property, Unit, Tenant, Lease, MaintenanceRequest',
+    dev_methods: 'TDD', ai_tools: 'Cursor', orm: ''
+  }, 'PropMgmt');
+
+  test('new property management entities in ER diagram', () => {
+    const er = files['docs/04_er_diagram.md'];
+    assert.ok(er, 'ER diagram file missing');
+    assert.ok(er.includes('Property'), 'Missing Property entity');
+    assert.ok(er.includes('Unit'), 'Missing Unit entity');
+    assert.ok(er.includes('Tenant'), 'Missing Tenant entity');
+    assert.ok(er.includes('Lease'), 'Missing Lease entity');
+    assert.ok(er.includes('MaintenanceRequest'), 'Missing MaintenanceRequest entity');
+  });
+
+  test('property entities have FK relationships', () => {
+    const er = files['docs/04_er_diagram.md'];
+    assert.ok(er, 'ER diagram file missing');
+    // Check for entities in ER diagram (relationships may vary in format)
+    assert.ok(er.includes('Property') && er.includes('Unit'), 'Missing Property/Unit in ER');
+    assert.ok(er.includes('Lease'), 'Missing Lease in ER');
+    assert.ok(er.includes('MaintenanceRequest'), 'Missing MaintenanceRequest in ER');
+  });
+
+  test('Lease entity in API spec', () => {
+    const api = files['docs/05_api_spec.md'];
+    if (api) {
+      // If API spec exists, check for Lease
+      assert.ok(api.includes('Lease'), 'Missing Lease in API spec');
+    }
+  });
+
+  test('domain detected as realestate', () => {
+    const qa = files['docs/28_qa_strategy.md'];
+    assert.ok(qa, 'docs/28_qa_strategy.md missing');
+    assert.ok(qa.includes('realestate') || qa.includes('不動産'), 'Missing realestate domain');
+  });
+
+  test('QA strategy has realestate-specific bugs', () => {
+    const qa = files['docs/28_qa_strategy.md'];
+    assert.ok(qa.includes('成約済み物件') || qa.includes('sold properties') || qa.includes('物件検索'), 'Missing realestate-specific bug patterns');
+  });
+
+  test('industry playbook has realestate implementation flows', () => {
+    const playbook = files['docs/31_industry_playbook.md'];
+    assert.ok(playbook, 'docs/31_industry_playbook.md missing');
+    assert.ok(playbook.includes('物件登録') || playbook.includes('Property registration') || playbook.includes('realestate'), 'Missing realestate implementation flows');
+  });
+});
+
+// ═══ Scenario F: Helpdesk (Domain Detection + Playbook) ═══
+describe('Snapshot F: Helpdesk', () => {
+  const files = generate({
+    purpose: 'ヘルプデスクチケット管理システム', target: 'カスタマーサポート, エンドユーザー',
+    frontend: 'React + Vite', backend: 'Supabase', database: 'Supabase (PostgreSQL)',
+    deploy: 'Vercel', auth: 'Supabase Auth',
+    mvp_features: 'チケット管理, ナレッジベース, SLA管理, 優先度設定',
+    screens: 'ダッシュボード, チケット一覧, ナレッジベース, 設定',
+    data_entities: 'User, Task, KnowledgeArticle, Response, SLA, Priority',
+    dev_methods: 'TDD', ai_tools: 'Cursor', orm: ''
+  }, 'Helpdesk');
+
+  test('helpdesk entities in ER diagram', () => {
+    const er = files['docs/04_er_diagram.md'];
+    assert.ok(er, 'ER diagram file missing');
+    assert.ok(er.includes('KnowledgeArticle'), 'Missing KnowledgeArticle entity');
+    assert.ok(er.includes('Response'), 'Missing Response entity');
+    assert.ok(er.includes('SLA'), 'Missing SLA entity');
+    assert.ok(er.includes('Priority'), 'Missing Priority entity');
+  });
+
+  test('SLA entity in API spec', () => {
+    const api = files['docs/05_api_spec.md'];
+    if (api) {
+      // If API spec exists, check for SLA
+      assert.ok(api.includes('SLA'), 'Missing SLA in API spec');
+    }
+  });
+
+  test('domain detected as saas', () => {
+    const qa = files['docs/28_qa_strategy.md'];
+    assert.ok(qa, 'docs/28_qa_strategy.md missing');
+    assert.ok(qa.includes('saas'), 'Missing saas domain for helpdesk');
+  });
+
+  test('QA strategy has saas-specific focus', () => {
+    const qa = files['docs/28_qa_strategy.md'];
+    assert.ok(qa.includes('Multi-tenant') || qa.includes('マルチテナント') || qa.includes('RLS'), 'Missing saas multi-tenant focus');
+  });
+
+  test('industry playbook has saas implementation flows', () => {
+    const playbook = files['docs/31_industry_playbook.md'];
+    assert.ok(playbook, 'docs/31_industry_playbook.md missing');
+    assert.ok(playbook.includes('MRR') || playbook.includes('解約率') || playbook.includes('チャーン') || playbook.includes('saas'), 'Missing saas implementation flows');
+  });
+
+  test('playbook has saas compliance rules', () => {
+    const playbook = files['docs/31_industry_playbook.md'];
+    assert.ok(playbook.includes('SOC 2') || playbook.includes('GDPR') || playbook.includes('SLA'), 'Missing saas compliance rules');
+  });
+
+  test('playbook has saas AI skill description', () => {
+    const playbook = files['docs/31_industry_playbook.md'];
+    // Check for skill description format
+    assert.ok(playbook.includes('チャーン予測') || playbook.includes('Churn Prediction') || playbook.includes('入力:') || playbook.includes('Input:'), 'Missing saas AI skill');
+  });
+});

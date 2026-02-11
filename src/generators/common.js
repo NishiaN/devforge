@@ -227,6 +227,7 @@ const DOMAIN_ENTITIES={
   legal:{core:['User','Contract','Template','Review','Client','Document'],warn:['Product','Order','Cart'],suggest:{}},
   hr:{core:['User','JobPosting','Applicant','Interview','Evaluation','Department'],warn:['Product','Order','Cart'],suggest:{}},
   fintech:{core:['User','Account','Transaction','Transfer','Card','Statement'],warn:['Post','Comment','Course'],suggest:{}},
+  health:{core:['User','Patient','Doctor','Appointment','MedicalRecord','Prescription'],warn:['Product','Order','Cart'],suggest:{Product:'Service',Order:'Appointment'}},
 };
 
 // ── Entity Column Dictionary ──
@@ -383,6 +384,56 @@ const ENTITY_COLUMNS={
   Group:['owner_id:UUID:FK(User) NOT NULL:オーナーID:Owner ID','group_name:VARCHAR(255):NOT NULL:グループ名:Group name',_D,'is_private:BOOLEAN:DEFAULT false:非公開:Private','member_count:INT:DEFAULT 0:メンバー数:Member count'],
   // Webhook (devtool)
   Webhook:[_U,'url:TEXT:NOT NULL:Webhook URL:Webhook URL','events:JSONB:NOT NULL:イベント:Events','secret:TEXT::シークレット:Secret',_IA,'last_triggered_at:TIMESTAMP::最終実行:Last triggered'],
+  // ── Medical/Clinic ──
+  Patient:[_U,'patient_name:VARCHAR(255):NOT NULL:患者名:Patient name','date_of_birth:DATE::生年月日:Date of birth','gender:VARCHAR(20)::性別:Gender','blood_type:VARCHAR(10)::血液型:Blood type','allergies:TEXT::アレルギー:Allergies','emergency_contact:VARCHAR(255)::緊急連絡先:Emergency contact'],
+  Doctor:[_U,'doctor_name:VARCHAR(255):NOT NULL:医師名:Doctor name','specialty:VARCHAR(100)::専門分野:Specialty','license_number:VARCHAR(100)::医師免許番号:License number','is_available:BOOLEAN:DEFAULT true:対応可能:Available'],
+  MedicalRecord:['patient_id:UUID:FK(Patient) NOT NULL:患者ID:Patient ID','doctor_id:UUID:FK(Doctor) NOT NULL:医師ID:Doctor ID','visit_date:TIMESTAMP:DEFAULT NOW:受診日:Visit date','diagnosis:TEXT::診断:Diagnosis','treatment:TEXT::治療:Treatment','symptoms:TEXT::症状:Symptoms',_N],
+  Prescription:['medical_record_id:UUID:FK(MedicalRecord) NOT NULL:診療記録ID:Medical record ID','medication_name:VARCHAR(255):NOT NULL:薬剤名:Medication name','dosage:VARCHAR(100):NOT NULL:用量:Dosage','frequency:VARCHAR(100)::頻度:Frequency','duration_days:INT::処方日数:Duration(days)',_N],
+  Appointment:['patient_id:UUID:FK(Patient) NOT NULL:患者ID:Patient ID','doctor_id:UUID:FK(Doctor) NOT NULL:医師ID:Doctor ID','scheduled_at:TIMESTAMP:NOT NULL:予約日時:Scheduled at',_DUR,'reason:TEXT::受診理由:Reason',_SP,_N],
+  Pet:['owner_id:UUID:FK(User) NOT NULL:飼い主ID:Owner ID','pet_name:VARCHAR(255):NOT NULL:ペット名:Pet name','species:VARCHAR(50):NOT NULL:種別:Species','breed:VARCHAR(100)::品種:Breed','date_of_birth:DATE::生年月日:Date of birth','weight_kg:DECIMAL(5,2)::体重(kg):Weight(kg)','medical_notes:TEXT::医療メモ:Medical notes'],
+  Vaccination:['pet_id:UUID:FK(Pet) NOT NULL:ペットID:Pet ID','vaccine_name:VARCHAR(255):NOT NULL:ワクチン名:Vaccine name','administered_at:TIMESTAMP:NOT NULL:接種日:Administered at','next_due:DATE::次回予定:Next due','veterinarian_id:UUID:FK(Doctor):獣医ID:Veterinarian ID',_N],
+  Veterinarian:[_U,'vet_name:VARCHAR(255):NOT NULL:獣医名:Vet name','specialty:VARCHAR(100)::専門分野:Specialty','license_number:VARCHAR(100)::免許番号:License number','is_available:BOOLEAN:DEFAULT true:対応可能:Available'],
+  // ── Property Management ──
+  Property:['owner_id:UUID:FK(User) NOT NULL:オーナーID:Owner ID','property_name:VARCHAR(255):NOT NULL:物件名:Property name','address:TEXT:NOT NULL:住所:Address','property_type:VARCHAR(50)::物件種別:Property type','units:INT:DEFAULT 1:ユニット数:Units',_SA],
+  Unit:['property_id:UUID:FK(Property) NOT NULL:物件ID:Property ID','unit_number:VARCHAR(50):NOT NULL:ユニット番号:Unit number','bedrooms:INT::寝室数:Bedrooms','bathrooms:INT::浴室数:Bathrooms','area_sqm:DECIMAL(8,2)::面積(m²):Area(sqm)','monthly_rent:DECIMAL(10,2)::月額家賃:Monthly rent','status:VARCHAR(20):DEFAULT \'available\':状態:Status'],
+  Tenant:[_U,'tenant_name:VARCHAR(255):NOT NULL:入居者名:Tenant name','email:VARCHAR(255)::メール:Email','phone:VARCHAR(50)::電話番号:Phone',_N],
+  Lease:['unit_id:UUID:FK(Unit) NOT NULL:ユニットID:Unit ID','tenant_id:UUID:FK(Tenant) NOT NULL:入居者ID:Tenant ID','start_date:DATE:NOT NULL:開始日:Start date','end_date:DATE:NOT NULL:終了日:End date','monthly_rent:DECIMAL(10,2):NOT NULL:月額家賃:Monthly rent','deposit:DECIMAL(10,2)::敷金:Deposit','status:VARCHAR(20):DEFAULT \'active\':状態:Status'],
+  MaintenanceRequest:['unit_id:UUID:FK(Unit) NOT NULL:ユニットID:Unit ID','tenant_id:UUID:FK(Tenant) NOT NULL:入居者ID:Tenant ID',_T,_D,'category:VARCHAR(50)::カテゴリ:Category',_SP,'assigned_to:UUID:FK(User):担当者ID:Assigned to','completed_at:TIMESTAMP::完了日時:Completed at'],
+  Owner:[_U,'owner_name:VARCHAR(255):NOT NULL:オーナー名:Owner name','email:VARCHAR(255)::メール:Email','phone:VARCHAR(50)::電話番号:Phone','properties_count:INT:DEFAULT 0:所有物件数:Properties count'],
+  // ── Contract Management ──
+  Contract:['contract_name:VARCHAR(255):NOT NULL:契約名:Contract name','contract_type:VARCHAR(50)::契約種別:Contract type','start_date:DATE::開始日:Start date','end_date:DATE::終了日:End date','auto_renew:BOOLEAN:DEFAULT false:自動更新:Auto renew','status:VARCHAR(20):DEFAULT \'draft\':ステータス:Status','document_url:TEXT::契約書URL:Document URL','value:DECIMAL(12,2)::契約額:Contract value'],
+  Party:['contract_id:UUID:FK(Contract) NOT NULL:契約ID:Contract ID','party_name:VARCHAR(255):NOT NULL:当事者名:Party name','party_type:VARCHAR(50):NOT NULL:当事者種別:Party type','contact_email:VARCHAR(255)::連絡先メール:Contact email','signatory:VARCHAR(255)::署名者:Signatory'],
+  Approval:['contract_id:UUID:FK(Contract) NOT NULL:契約ID:Contract ID','approver_id:UUID:FK(User) NOT NULL:承認者ID:Approver ID','status:VARCHAR(20):DEFAULT \'pending\':ステータス:Status','approved_at:TIMESTAMP::承認日時:Approved at','comments:TEXT::コメント:Comments'],
+  Signature:['contract_id:UUID:FK(Contract) NOT NULL:契約ID:Contract ID','signer_id:UUID:FK(User) NOT NULL:署名者ID:Signer ID','signed_at:TIMESTAMP:DEFAULT NOW:署名日時:Signed at','signature_hash:TEXT::署名ハッシュ:Signature hash','ip_address:VARCHAR(45)::IPアドレス:IP address'],
+  Clause:['contract_id:UUID:FK(Contract) NOT NULL:契約ID:Contract ID','clause_number:VARCHAR(20)::条項番号:Clause number',_T,'content:TEXT:NOT NULL:内容:Content',_SO],
+  // ── Helpdesk ──
+  KnowledgeArticle:[_T,'slug:VARCHAR(255):UNIQUE:スラグ:Slug','content:TEXT:NOT NULL:内容:Content',_CAT,_SA,'view_count:INT:DEFAULT 0:閲覧数:View count','helpful_count:INT:DEFAULT 0:役立った数:Helpful count'],
+  Response:['ticket_id:UUID:FK(Task) NOT NULL:チケットID:Ticket ID','responder_id:UUID:FK(User) NOT NULL:回答者ID:Responder ID','content:TEXT:NOT NULL:内容:Content','is_public:BOOLEAN:DEFAULT true:公開:Public'],
+  SLA:['name:VARCHAR(100):NOT NULL:SLA名:SLA name','priority:VARCHAR(20):NOT NULL:優先度:Priority','response_time_hours:INT:NOT NULL:応答時間(時):Response time(hours)','resolution_time_hours:INT:NOT NULL:解決時間(時):Resolution time(hours)',_IA],
+  Priority:[_U,'priority_level:VARCHAR(20):NOT NULL:優先度:Priority level','color:VARCHAR(7)::色:Color',_SO],
+  // ── Tutoring ──
+  Tutor:[_U,'tutor_name:VARCHAR(255):NOT NULL:講師名:Tutor name','bio:TEXT::自己紹介:Bio','hourly_rate:DECIMAL(8,2)::時給:Hourly rate','is_verified:BOOLEAN:DEFAULT false:認証済:Verified','rating:DECIMAL(3,2)::評価:Rating'],
+  Student:[_U,'student_name:VARCHAR(255):NOT NULL:生徒名:Student name','grade_level:VARCHAR(50)::学年:Grade level','parent_email:VARCHAR(255)::保護者メール:Parent email',_N],
+  Subject:['subject_name:VARCHAR(100):NOT NULL:科目名:Subject name',_D,_CAT],
+  Availability:['tutor_id:UUID:FK(Tutor) NOT NULL:講師ID:Tutor ID','day_of_week:INT:NOT NULL:曜日(0-6):Day of week','start_time:TIME:NOT NULL:開始時刻:Start time','end_time:TIME:NOT NULL:終了時刻:End time','is_available:BOOLEAN:DEFAULT true:利用可能:Available'],
+  // ── Restaurant ──
+  Table:['table_number:VARCHAR(20):NOT NULL:テーブル番号:Table number','capacity:INT:NOT NULL:定員:Capacity','location:VARCHAR(50)::場所:Location',_SA],
+  Reservation:['table_id:UUID:FK(Table) NOT NULL:テーブルID:Table ID',_U,'guest_name:VARCHAR(255):NOT NULL:予約者名:Guest name','guest_count:INT:NOT NULL:人数:Guest count','reserved_at:TIMESTAMP:NOT NULL:予約日時:Reserved at',_SP,'special_requests:TEXT::特別リクエスト:Special requests'],
+  MenuItem:[_T,_D,'category:VARCHAR(50)::カテゴリ:Category',_PR,'image_url:TEXT::画像URL:Image URL','is_available:BOOLEAN:DEFAULT true:提供可能:Available','allergens:JSONB::アレルゲン:Allergens'],
+  Shift:['staff_id:UUID:FK(User) NOT NULL:スタッフID:Staff ID','shift_date:DATE:NOT NULL:勤務日:Shift date','start_time:TIME:NOT NULL:開始時刻:Start time','end_time:TIME:NOT NULL:終了時刻:End time','role:VARCHAR(50)::役割:Role',_SA],
+  // ── Construction Payment ──
+  Contractor:['contractor_name:VARCHAR(255):NOT NULL:業者名:Contractor name','contact_person:VARCHAR(255)::担当者:Contact person','email:VARCHAR(255)::メール:Email','phone:VARCHAR(50)::電話番号:Phone','license_number:VARCHAR(100)::免許番号:License number',_SA],
+  ProgressReport:['project_id:UUID:FK(Project) NOT NULL:プロジェクトID:Project ID','contractor_id:UUID:FK(Contractor) NOT NULL:業者ID:Contractor ID','report_date:DATE:NOT NULL:報告日:Report date','completion_percentage:INT:NOT NULL:完了率(%):Completion(%)','work_summary:TEXT::作業概要:Work summary','photo_urls:JSONB::写真URL:Photo URLs',_SP],
+  Estimate:['project_id:UUID:FK(Project) NOT NULL:プロジェクトID:Project ID','contractor_id:UUID:FK(Contractor) NOT NULL:業者ID:Contractor ID','estimate_number:VARCHAR(50)::見積番号:Estimate number','total_amount:DECIMAL(12,2):NOT NULL:総額:Total amount','line_items:JSONB::明細:Line items',_SP,'valid_until:DATE::有効期限:Valid until'],
+  // ── Knowledge Base (Advanced) ──
+  Article:[_U,_T,'slug:VARCHAR(255):UNIQUE:スラグ:Slug','content:TEXT:NOT NULL:内容:Content',_CAT,_SD,'view_count:INT:DEFAULT 0:閲覧数:View count','version:INT:DEFAULT 1:バージョン:Version'],
+  AccessControl:['article_id:UUID:FK(Article) NOT NULL:記事ID:Article ID',_U,'role:VARCHAR(20):DEFAULT \'viewer\':権限:Role','granted_at:TIMESTAMP:DEFAULT NOW:付与日時:Granted at'],
+  SearchLog:['query:VARCHAR(500):NOT NULL:検索クエリ:Search query',_U,'results_count:INT::結果数:Results count','clicked_article_id:UUID:FK(Article):クリック記事ID:Clicked article ID','searched_at:TIMESTAMP:DEFAULT NOW:検索日時:Searched at'],
+  // ── Field Service ──
+  WorkOrder:['customer_id:UUID:FK(User) NOT NULL:顧客ID:Customer ID','technician_id:UUID:FK(User):技術者ID:Technician ID',_T,_D,'location:TEXT:NOT NULL:場所:Location','scheduled_at:TIMESTAMP::予定日時:Scheduled at',_SP,'priority:VARCHAR(20):DEFAULT \'medium\':優先度:Priority','completed_at:TIMESTAMP::完了日時:Completed at'],
+  Technician:[_U,'technician_name:VARCHAR(255):NOT NULL:技術者名:Technician name','skills:JSONB::スキル:Skills','certification:TEXT::資格:Certification','is_available:BOOLEAN:DEFAULT true:対応可能:Available','current_location:TEXT::現在地:Current location'],
+  Location:['location_name:VARCHAR(255):NOT NULL:場所名:Location name','address:TEXT:NOT NULL:住所:Address','latitude:DECIMAL(10,7)::緯度:Latitude','longitude:DECIMAL(10,7)::経度:Longitude','contact_name:VARCHAR(255)::担当者名:Contact name','contact_phone:VARCHAR(50)::電話番号:Contact phone'],
+  Customer:[_U,'customer_name:VARCHAR(255):NOT NULL:顧客名:Customer name','company:VARCHAR(255)::会社名:Company','email:VARCHAR(255)::メール:Email','phone:VARCHAR(50)::電話番号:Phone','billing_address:TEXT::請求先住所:Billing address',_N],
 };
 
 // ═══ Entity REST method restrictions ═══
@@ -409,6 +460,15 @@ const ENTITY_METHODS={
   Attendee:['GET','GET/:id','POST','PATCH/:id','DELETE/:id'],
   // Certificate: issue only
   Certificate:['GET','GET/:id','POST'],
+  // Medical records: create + read only (no modification for compliance)
+  MedicalRecord:['GET','GET/:id','POST'],
+  Vaccination:['GET','GET/:id','POST'],
+  Prescription:['GET','GET/:id','POST'],
+  // SLA: read-only (managed by admin)
+  SLA:['GET','GET/:id'],
+  // Contracts & Leases: limited modification (status updates only via PATCH)
+  Lease:['GET','GET/:id','POST','PATCH/:id'],
+  Contract:['GET','GET/:id','POST','PATCH/:id'],
 };
 function getEntityMethods(entityName){
   return ENTITY_METHODS[entityName]||['GET','GET/:id','POST','PUT/:id','DELETE/:id'];
@@ -433,21 +493,23 @@ function getEntityColumns(entityName,G,knownEntities){
 function detectDomain(purpose){
   const p=(purpose||'').toLowerCase();
   const detect=[
-    [/教育|学習|education|learning|lms|コース|course/i,'education'],
+    [/教育|学習|education|learning|lms|コース|course|tutoring|家庭教師/i,'education'],
     [/\bEC\b|eコマース|e-commerce|ショップ|\bshop\b|\bcommerce\b/i,'ec'],
     [/マーケットプレイス|marketplace/i,'marketplace'],
-    [/コミュニティ|community|フォーラム|forum/i,'community'],
-    [/コンテンツ|content|メディア|media|ブログ|blog/i,'content'],
+    [/コミュニティ|community|フォーラム|forum|gamification|gamify/i,'community'],
+    [/コンテンツ|content|メディア|media|ブログ|blog|knowledge.?base|ナレッジベース/i,'content'],
     [/分析|analytics|可視化|ダッシュボード/i,'analytics'],
-    [/予約|booking|スケジュール/i,'booking'],
-    [/saas|サブスク|subscription/i,'saas'],
-    [/IoT|デバイス|device|sensor|センサー/i,'iot'],
-    [/不動産|物件|real.?estate|property/i,'realestate'],
-    [/法務|契約|legal|contract|コンプライアンス/i,'legal'],
+    [/予約|booking|スケジュール|restaurant|レストラン|飲食店|event|イベント/i,'booking'],
+    [/saas|サブスク|subscription|helpdesk|ヘルプデスク|collab|collaboration/i,'saas'],
+    [/IoT|デバイス|device|sensor|センサー|field.?service|フィールドサービス/i,'iot'],
+    [/不動産|物件|real.?estate|property.?mgmt|property.?management/i,'realestate'],
+    [/法務|契約|legal|contract.?mgmt|contract.?management|コンプライアンス/i,'legal'],
     [/人事|HR|採用|recruit|hiring/i,'hr'],
-    [/金融|fintech|銀行|bank|決済管理/i,'fintech'],
-    [/医療|ヘルスケア|health|medical|clinic|病院|patient|患者/i,'health'],
-    [/ポートフォリオ|portfolio/i,'portfolio'],
+    [/金融|fintech|銀行|bank|決済管理|construction.?pay|工事代金/i,'fintech'],
+    [/医療|ヘルスケア|health|medical|clinic|病院|patient|患者|veterinary|動物病院|ペット/i,'health'],
+    [/ポートフォリオ|portfolio|link.?in.?bio|linkbio/i,'portfolio'],
+    [/pwa|progressive.?web|オフライン|offline/i,'tool'],
+    [/chatbot|チャットボット|ai.?agent|AIエージェント/i,'saas'],
     [/業務|business|効率化|ツール|tool/i,'tool'],
   ];
   for(const[rx,key]of detect){if(rx.test(p))return key;}
@@ -522,6 +584,22 @@ function inferER(a){
   if(has('Device')&&has('Sensor')) rels.push('Device 1 ──N Sensor');
   // Category self-ref
   if(has('Category')) rels.push('Category 0 ──N Category');
+  // Medical/Clinic
+  if(has('Patient')&&has('MedicalRecord')) rels.push('Patient 1 ──N MedicalRecord');
+  if(has('Doctor')&&has('MedicalRecord')) rels.push('Doctor 1 ──N MedicalRecord');
+  if(has('MedicalRecord')&&has('Prescription')) rels.push('MedicalRecord 1 ──N Prescription');
+  if(has('Patient')&&has('Appointment')) rels.push('Patient 1 ──N Appointment');
+  if(has('Doctor')&&has('Appointment')) rels.push('Doctor 1 ──N Appointment');
+  if(has('Pet')&&has('Vaccination')) rels.push('Pet 1 ──N Vaccination');
+  // Property Management
+  if(has('Property')&&has('Unit')) rels.push('Property 1 ──N Unit');
+  if(has('Unit')&&has('Lease')) rels.push('Unit 1 ──N Lease');
+  if(has('Tenant')&&has('Lease')) rels.push('Tenant 1 ──N Lease');
+  if(has('Unit')&&has('MaintenanceRequest')) rels.push('Unit 1 ──N MaintenanceRequest');
+  // Contract Management
+  if(has('Contract')&&has('Party')) rels.push('Contract 1 ──N Party');
+  if(has('Contract')&&has('Approval')) rels.push('Contract 1 ──N Approval');
+  if(has('Contract')&&has('Signature')) rels.push('Contract 1 ──N Signature');
 
   return {domain,warnings,suggestions,relationships:rels};
 }
@@ -600,6 +678,54 @@ const FEATURE_DETAILS={
     criteria_en:['File upload (drag & drop)','Upload limit (10MB/image/PDF)','Preview display','Storage (Supabase Storage/S3)'],
     tests_ja:[['正常系: 画像アップロード','201, URL返却'],['正常系: プレビュー表示','200, 画像取得'],['異常系: 10MB超ファイル','413/422, サイズ制限'],['異常系: 非対応形式(.exe)','422, 形式エラー'],['異常系: 未認証アップロード','401']],
     tests_en:[['Normal: Image upload','201, URL returned'],['Normal: Preview','200, image fetched'],['Error: >10MB file','413/422, size limit'],['Error: Unsupported format(.exe)','422'],['Error: Upload without auth','401']],
+  },
+  '検索|フィルタ|Search|Filter|絞り込み':{
+    criteria_ja:['全文検索(タイトル/本文)','複合フィルタ(カテゴリ/タグ/日付範囲)','ソート(新着/人気/価格)','ページネーション(無限スクロール対応)','検索履歴保存'],
+    criteria_en:['Full-text search (title/body)','Multi-filter (category/tag/date range)','Sort (newest/popular/price)','Pagination (infinite scroll)','Search history'],
+    tests_ja:[['正常系: キーワード検索','200, マッチ結果返却'],['正常系: フィルタ+ソート組合せ','200, 複合条件適用'],['正常系: ページネーション','200, offset/limit適用'],['異常系: 不正なソート値','422, バリデーション'],['異常系: 空クエリ','200, 全件返却']],
+    tests_en:[['Normal: Keyword search','200, matched results'],['Normal: Filter + sort combo','200, multi-condition applied'],['Normal: Pagination','200, offset/limit applied'],['Error: Invalid sort value','422, validation'],['Error: Empty query','200, all results']],
+  },
+  '通知|リマインダー|Notification|Reminder|アラート':{
+    criteria_ja:['プッシュ通知(ブラウザ/モバイル)','メール通知(Resend/SendGrid)','通知一覧表示','既読/未読管理','通知設定(ON/OFF切替)','リマインダー自動送信'],
+    criteria_en:['Push notifications (browser/mobile)','Email notifications (Resend/SendGrid)','Notification list','Read/unread management','Notification settings toggle','Auto reminder send'],
+    tests_ja:[['正常系: 通知作成+送信','201, 通知DB保存+送信'],['正常系: 既読更新','200, read_at記録'],['正常系: 通知設定OFF','200, 送信スキップ'],['異常系: 未認証で通知一覧','401'],['異常系: 他ユーザーの通知既読','403']],
+    tests_en:[['Normal: Create + send notification','201, saved + sent'],['Normal: Mark as read','200, read_at set'],['Normal: Notifications OFF','200, sending skipped'],['Error: List without auth','401'],['Error: Mark other\'s notification','403']],
+  },
+  '分析|レポート|Analytics|Report|統計|集計':{
+    criteria_ja:['KPI集計(日次/週次/月次)','グラフ表示(recharts/Chart.js)','CSV/PDFエクスポート','カスタムレポート作成','リアルタイム更新(WebSocket/SSE)'],
+    criteria_en:['KPI aggregation (daily/weekly/monthly)','Chart display (recharts/Chart.js)','CSV/PDF export','Custom report builder','Real-time updates (WebSocket/SSE)'],
+    tests_ja:[['正常系: 期間指定集計','200, 集計結果返却'],['正常系: CSVエクスポート','200, CSV生成'],['正常系: グラフデータ取得','200, データポイント配列'],['異常系: 未来日で集計','422, 日付バリデーション'],['異常系: 大量データでタイムアウト','503/504, クエリ最適化必要']],
+    tests_en:[['Normal: Aggregate by period','200, aggregated results'],['Normal: CSV export','200, CSV generated'],['Normal: Get chart data','200, data points array'],['Error: Aggregate future dates','422, date validation'],['Error: Large data timeout','503/504, query optimization needed']],
+  },
+  'チーム|権限|Team|Permission|RBAC|招待':{
+    criteria_ja:['チーム作成・メンバー招待','ロール管理(owner/admin/member/viewer)','招待メール送信','権限チェック(RLS/middleware)','チームメンバー一覧表示'],
+    criteria_en:['Create team & invite members','Role management (owner/admin/member/viewer)','Send invitation email','Permission check (RLS/middleware)','Team member list'],
+    tests_ja:[['正常系: メンバー招待','201, 招待メール送信'],['正常系: ロール変更(member→admin)','200, 権限更新'],['正常系: メンバー削除','204'],['異常系: viewer権限でメンバー招待','403, 権限不足'],['異常系: 重複招待','409, 既存メンバー']],
+    tests_en:[['Normal: Invite member','201, invitation sent'],['Normal: Change role (member→admin)','200, permission updated'],['Normal: Remove member','204'],['Error: Viewer invites member','403, insufficient permissions'],['Error: Duplicate invitation','409, already member']],
+  },
+  'チャット|メッセージ|Chat|Message|DM|リアルタイム':{
+    criteria_ja:['リアルタイムメッセージ送受信(WebSocket/Supabase Realtime)','メッセージ一覧(ページネーション)','未読件数表示','既読管理','ファイル添付','メッセージ削除(24時間以内)'],
+    criteria_en:['Real-time messaging (WebSocket/Supabase Realtime)','Message list (pagination)','Unread count','Read receipts','File attachment','Delete message (within 24h)'],
+    tests_ja:[['正常系: メッセージ送信','201, 送受信者に配信'],['正常系: 既読更新','200, read_at記録'],['正常系: 未読件数取得','200, {unread: 5}'],['異常系: 未認証で送信','401'],['異常系: 24時間後に削除','422, 削除不可']],
+    tests_en:[['Normal: Send message','201, delivered to sender/receiver'],['Normal: Mark as read','200, read_at set'],['Normal: Get unread count','200, {unread: 5}'],['Error: Send without auth','401'],['Error: Delete after 24h','422, cannot delete']],
+  },
+  'エクスポート|Export|PDF|CSV|ダウンロード':{
+    criteria_ja:['CSV一括エクスポート','PDF生成(請求書/契約書/レポート)','エクスポート履歴保存','バックグラウンド処理(大量データ)','ZIP圧縮(複数ファイル)'],
+    criteria_en:['Bulk CSV export','PDF generation (invoices/contracts/reports)','Export history','Background processing (large data)','ZIP compression (multi-file)'],
+    tests_ja:[['正常系: CSV一括エクスポート','200, CSV生成+ダウンロード'],['正常系: PDF請求書生成','200, PDF URL返却'],['正常系: 複数ファイルZIP','200, ZIP生成'],['異常系: 大量データでメモリ不足','500, バッチ処理推奨'],['異常系: 未認証でエクスポート','401']],
+    tests_en:[['Normal: Bulk CSV export','200, CSV generated + download'],['Normal: Generate PDF invoice','200, PDF URL returned'],['Normal: Multi-file ZIP','200, ZIP created'],['Error: Large data OOM','500, recommend batch'],['Error: Export without auth','401']],
+  },
+  'カレンダー|スケジュール|Calendar|Schedule|日程調整':{
+    criteria_ja:['カレンダー表示(日/週/月ビュー)','予定作成・編集・削除','ドラッグ&ドロップで日時変更','Googleカレンダー連携','定期予定設定(毎週/毎月)'],
+    criteria_en:['Calendar view (day/week/month)','Create/edit/delete events','D&D reschedule','Google Calendar sync','Recurring events (weekly/monthly)'],
+    tests_ja:[['正常系: 予定作成','201, カレンダーに表示'],['正常系: D&Dで日時変更','200, starts_at更新'],['正常系: 定期予定作成','201, 繰り返し設定保存'],['異常系: 過去日時で作成','422, 日付バリデーション'],['異常系: 重複予定作成','409, 枠なし']],
+    tests_en:[['Normal: Create event','201, shown on calendar'],['Normal: D&D reschedule','200, starts_at updated'],['Normal: Create recurring event','201, recurrence saved'],['Error: Create in past','422, date validation'],['Error: Double-book slot','409, conflict']],
+  },
+  '在庫管理|Inventory|在庫|Stock|入出庫':{
+    criteria_ja:['在庫数リアルタイム表示','入庫/出庫記録','在庫アラート(低在庫/過剰在庫)','ロット管理(賞味期限/シリアル番号)','棚卸し機能'],
+    criteria_en:['Real-time stock display','Inbound/outbound records','Stock alerts (low/excess)','Lot management (expiry/serial)','Inventory count'],
+    tests_ja:[['正常系: 入庫記録','201, 在庫数増加'],['正常系: 出庫記録','200, 在庫数減少'],['正常系: 低在庫アラート','200, stock<10で通知'],['異常系: 在庫0で出庫','422, 在庫不足'],['異常系: 負数で入庫','422, 数量バリデーション']],
+    tests_en:[['Normal: Inbound record','201, stock increased'],['Normal: Outbound record','200, stock decreased'],['Normal: Low stock alert','200, notify when stock<10'],['Error: Outbound with 0 stock','422, out of stock'],['Error: Negative inbound','422, quantity validation']],
   },
 };
 
@@ -717,6 +843,13 @@ const DOMAIN_QA_MAP={
     bugs_ja:['大量データ操作で固まる','エクスポート時の文字化け','ショートカットキー競合'],
     bugs_en:['Freezes on large data operations','Character encoding issues in exports','Shortcut key conflicts'],
     priority:'Security:LOW|Performance:HIGH|DataIntegrity:MED|UX:CRITICAL|Compliance:LOW'
+  },
+  portfolio:{
+    focus_ja:['SEO最適化','レスポンシブ対応','画像最適化(WebP)','表示速度(Core Web Vitals)'],
+    focus_en:['SEO optimization','Responsive design','Image optimization (WebP)','Display speed (Core Web Vitals)'],
+    bugs_ja:['モバイル表示崩れ','画像遅延読み込み失敗','SNS OGP未設定'],
+    bugs_en:['Mobile layout breaks','Image lazy loading failures','Missing SNS OGP tags'],
+    priority:'Security:LOW|Performance:HIGH|DataIntegrity:LOW|UX:CRITICAL|Compliance:LOW'
   }
 };
 
@@ -821,16 +954,126 @@ const DOMAIN_PLAYBOOK={
     '要件整理|曖昧→構造化|入力:議事録、ストーリー、目標|判断:Must/Should/Won'+"'"+'t、Mustは数値目標、依存明示|出力:要件定義書、ER図、遷移図、選定理由',
     'Requirements Refinement|Ambiguous→Structured|Input: minutes, stories, goals|Judgment: Must/Should/Won'+"'"+'t, Must has numeric targets, dependencies explicit|Output: requirements doc, ER, transitions, rationale'
   ),
-  marketplace:_dpb([],[],['特商法:販売者開示、エスクロー、解決支援'],[_CP+', Commercial Act: seller disclosure, escrow, dispute'],['マッチング精度低|データ不足|ルール→100件でML'],['Matching accuracy low|Insufficient data|Rules→ML after 100'],[],[],[],[]),
-  community:_dpb([],[],['投稿ガイド:誹謗中傷禁止、モデレーション、通報'],[_CG+', Posting: prohibit defamation, moderation, report'],['スパム|reCAPTCHA未導入|対策:v3、5件/分制限'],['Spam|No reCAPTCHA|Fix: v3, 5/min limit'],[],[],[],[]),
-  content:_dpb([],[],['著作権:DMCA対応、コンテンツID、ライセンス(CC BY-SA)'],[_CG+', Copyright: DMCA, content ID, license (CC BY-SA)'],['再生エラー|非対応コーデック|HLS、複数解像度'],['Playback error|Unsupported codec|HLS, multiple resolutions'],[],[],[],[]),
-  analytics:_dpb([],[],[_CG+':匿名化、集計のみ、個人特定不可'],[_CG+': anonymize, aggregated only, no personal ID'],['表示遅延|リアルタイム集計重い|事前集計、Redis、materialized view'],['Display delay|Heavy real-time aggregation|Pre-aggregate, Redis, materialized view'],[],[],[],[]),
-  iot:_dpb([],[],['電波法:技適、周波数遵守','製造物責任法:欠陥損害賠償'],[_CG+', Radio Act: tech conformity, frequency','Product Liability: defect liability'],['切断|不安定ネットワーク|オフライン動作、ローカルキュー、指数バックオフ'],['Disconnect|Unstable network|Offline operation, local queue, exponential backoff'],[],[],[],[]),
-  realestate:_dpb([],[],['宅建業法:重要事項説明、契約書交付、クーリングオフ','表示規約:徒歩80m/分、築年数、面積正確'],[_CG+', Real Estate Act: important matters, contract, cooling-off','Display Standards: walking 80m/min, age, area accurate'],['情報不整合|外部連携遅延|1時間同期、差分検知、成約済み非表示'],['Info inconsistency|External sync delay|Hourly sync, detect diff, hide sold'],[],[],[],[]),
-  legal:_dpb([],[],['弁護士法:非弁禁止、法律相談は有資格者','個情保護:守秘義務、報告義務'],[_CG+', Attorney Act: prohibit unauthorized, licensed only','Privacy: confidentiality, reporting obligation'],['契約生成ミス|変数置換漏れ|必須チェックリスト、プレビュー必須、レビューフロー'],['Contract error|Missing variable substitution|Mandatory checklist, preview required, review flow'],[],[],[],[]),
-  hr:_dpb([],[],['労働基準法:勤怠記録3年、残業45h上限','個情保護:不適切質問禁止、候補者情報管理'],[_CG+', Labor Standards: attendance 3yr, overtime 45h max','Privacy: prohibit inappropriate questions, candidate info mgmt'],['勤怠ミス|TZ未考慮、深夜日跨ぎ|UTC統一、深夜割増22-5時、月次突合'],['Attendance error|TZ not considered, midnight crossing|Unify UTC, late-night premium 10PM-5AM, monthly reconcile'],[],[],[],[]),
-  portfolio:_dpb([],[],[],[],['画像未最適化|元サイズ配信|WebP、srcset、lazy loading'],['Image unoptimized|Serve original size|WebP, srcset, lazy loading'],[],[],[],[]),
-  tool:_dpb([],[],[_CG+', ToS'],[_CG+', ToS'],['互換性|最新API(Safari未対応)|Polyfill、Can I Use、クロスブラウザテスト'],['Compatibility|Latest API (Safari unsupported)|Polyfill, Can I Use, cross-browser test'],[],[],[],[])
+  marketplace:_dpb(
+    ['出品→審査→マッチング→取引(手数料10%、エスクロー48h保護)','評価→信頼→プレミアム販売者(評価4.8+、100件→優先表示)','トラブル→仲裁→解決(通常7日、エスクロー解放延長)'],
+    ['Listing→Review→Match→Transaction (10% fee, 48h escrow protection)','Rating→Trust→Premium seller (4.8+, 100 items→priority)','Dispute→Arbitrate→Resolve (7d standard, escrow hold extended)'],
+    ['特商法:販売者開示、エスクロー、解決支援','景表法:おとり広告禁止、二重価格規制',_CG+':販売者・購入者情報保護'],
+    [_CP+', Commercial Act: seller disclosure, escrow, dispute','Gift Act: prohibit bait ads, dual price reg',_CG+': seller/buyer info protection'],
+    ['マッチング精度低|データ不足|ルール→100件でML','不正評価|サクラ|検知:短期間集中、IPクラスタ','手数料計算ミス|複雑割引|対策:事前見積、決済前確認'],
+    ['Matching accuracy low|Insufficient data|Rules→ML after 100','Fake reviews|Shilling|Detect: burst period, IP cluster','Fee calc error|Complex discount|Fix: Pre-estimate, confirm before payment'],
+    ['出品→requirements.md, api_spec.md(listing), test_cases/','評価→architecture.md(trust), api_spec.md, error_logs.md','仲裁→architecture.md(dispute), sequence_diagrams/, stakeholders.md'],
+    ['Listing→requirements.md, api_spec.md(listing), test_cases/','Rating→architecture.md(trust), api_spec.md, error_logs.md','Arbitration→architecture.md(dispute), sequence_diagrams/, stakeholders.md'],
+    'マッチング最適化|需給最適化|入力:履歴、評価、在庫、需要|判断:評価≥4.5優先、過去取引>10優遇、需要>供給値上げ推奨|出力:ランキング、価格提案、需給バランス',
+    'Matching Optimization|Supply-demand optimization|Input: history, ratings, inventory, demand|Judgment: rating≥4.5 priority, past trades>10 favor, demand>supply suggest increase|Output: ranking, price suggestions, balance'
+  ),
+  community:_dpb(
+    ['投稿→モデレーション→配信→エンゲージメント(自動検知+人間審査)','ユーザー→フォロー→フィード生成→ランキング(友達→興味→トレンド)','通報→審査→対応→再発防止(24h以内対応、3回で自動BAN)'],
+    ['Post→Moderate→Distribute→Engage (auto-detect+human review)','User→Follow→Feed generation→Ranking (friends→interests→trending)','Report→Review→Action→Prevention (respond within 24h, 3 strikes auto-ban)'],
+    ['投稿ガイド:誹謗中傷禁止、モデレーション、通報',_CG+':ユーザー生成コンテンツ責任、削除権','利用規約:著作権侵害即削除、荒らし対策'],
+    [_CG+', Posting: prohibit defamation, moderation, report',_CG+': UGC liability, right to delete','ToS: copyright infringement immediate delete, anti-trolling'],
+    ['スパム|reCAPTCHA未導入|対策:v3、5件/分制限','XSS脆弱性|サニタイズ不足|対策:DOMPurify、CSP','フィルターバブル|類似のみ|対策:多様性注入20%'],
+    ['Spam|No reCAPTCHA|Fix: v3, 5/min limit','XSS vulnerability|Insufficient sanitize|Fix: DOMPurify, CSP','Filter bubble|Similarity only|Fix: Inject diversity 20%'],
+    ['投稿→requirements.md, api_spec.md(post), security.md(XSS)','モデレーション→architecture.md(ML), stakeholders.md, error_logs.md','エンゲージメント→architecture.md(feed), api_spec.md, test_cases/'],
+    ['Posting→requirements.md, api_spec.md(post), security.md(XSS)','Moderation→architecture.md(ML), stakeholders.md, error_logs.md','Engagement→architecture.md(feed), api_spec.md, test_cases/'],
+    'コンテンツモデレーション|不適切投稿検知|入力:投稿テキスト、画像、通報履歴|判断:NGワード→即削除、グレー→人間審査、通報≥3緊急、過去違反者厳格|出力:判定、理由、対応、学習データ',
+    'Content Moderation|Detect inappropriate posts|Input: post text, images, report history|Judgment: banned words→immediate delete, gray→human review, reports≥3 urgent, past violators strict|Output: decision, reason, action, training data'
+  ),
+  content:_dpb(
+    ['制作→公開→配信→分析(CDN、画像最適化、SEO)','SEO→キーワード→ランク→流入(タイトル60字、メタ160字、構造化データ)','著作権→ライセンス→保護→収益化(CC BY-SA、DMCA対応)'],
+    ['Create→Publish→Distribute→Analyze (CDN, image optimization, SEO)','SEO→Keywords→Rank→Traffic (title 60 chars, meta 160, structured data)','Copyright→License→Protect→Monetize (CC BY-SA, DMCA response)'],
+    ['著作権:DMCA対応、コンテンツID、ライセンス(CC BY-SA)','肖像権:モデルリリース、ぼかし処理',_CG+':Cookie同意、アクセス解析匿名化'],
+    [_CG+', Copyright: DMCA, content ID, license (CC BY-SA)','Portrait rights: model release, blur processing',_CG+': cookie consent, analytics anonymization'],
+    ['再生エラー|非対応コーデック|HLS、複数解像度','画像遅延|最適化不足|WebP、srcset、CDN','SEO順位低|構造化データ不足|JSON-LD、sitemap、robots.txt'],
+    ['Playback error|Unsupported codec|HLS, multiple resolutions','Image lag|Insufficient optimization|WebP, srcset, CDN','Low SEO rank|Missing structured data|JSON-LD, sitemap, robots.txt'],
+    ['配信→architecture.md(CDN), api_spec.md, design_system.md','SEO→requirements.md, api_spec.md(sitemap), test_cases/','著作権→architecture.md(DMCA), stakeholders.md, error_logs.md'],
+    ['Distribution→architecture.md(CDN), api_spec.md, design_system.md','SEO→requirements.md, api_spec.md(sitemap), test_cases/','Copyright→architecture.md(DMCA), stakeholders.md, error_logs.md'],
+    'SEO最適化|検索順位向上|入力:ページ、キーワード、競合|判断:タイトル≤60字、h1-h6階層、内部リンク≥3、表示速度≤2.5s|出力:最適化案、期待順位、修正箇所',
+    'SEO Optimization|Improve search rank|Input: pages, keywords, competitors|Judgment: title≤60 chars, h1-h6 hierarchy, internal links≥3, load time≤2.5s|Output: optimization plan, expected rank, fixes'
+  ),
+  analytics:_dpb(
+    ['データ収集→集計→可視化→洞察(イベント追跡、セッション分析)','異常検知→アラート→調査→対応(閾値監視、パターン学習)','レポート→ダッシュボード→共有→意思決定(KPI、トレンド、予測)'],
+    ['Collect→Aggregate→Visualize→Insight (event tracking, session analysis)','Anomaly detect→Alert→Investigate→Respond (threshold monitor, pattern learning)','Report→Dashboard→Share→Decide (KPI, trends, forecasts)'],
+    [_CG+':匿名化、集計のみ、個人特定不可','アクセス解析:Cookie同意、オプトアウト','データ保持:分析用1年、ログ3ヶ月'],
+    [_CG+': anonymize, aggregated only, no personal ID','Analytics: cookie consent, opt-out','Data retention: analytics 1yr, logs 3mo'],
+    ['表示遅延|リアルタイム集計重い|事前集計、Redis、materialized view','精度低|サンプリング不足|最低1000件、季節調整','ダッシュボード遅延|N+1クエリ|集計テーブル、キャッシュ5分'],
+    ['Display delay|Heavy real-time aggregation|Pre-aggregate, Redis, materialized view','Low accuracy|Insufficient sampling|Minimum 1000 records, seasonal adjustment','Dashboard lag|N+1 queries|Aggregation tables, cache 5min'],
+    ['収集→architecture.md(pipeline), api_spec.md, sequence_diagrams/','集計→architecture.md(aggregation), test_cases/, error_logs.md','可視化→design_system.md, api_spec.md(dashboard), requirements.md'],
+    ['Collection→architecture.md(pipeline), api_spec.md, sequence_diagrams/','Aggregation→architecture.md(aggregation), test_cases/, error_logs.md','Visualization→design_system.md, api_spec.md(dashboard), requirements.md'],
+    '異常検知|パターン異常検出|入力:時系列データ、閾値、履歴|判断:3σ超→アラート、前日比>50%注意、週次トレンド乖離|出力:異常スコア、原因候補、推奨対応',
+    'Anomaly Detection|Pattern anomaly detection|Input: time-series, thresholds, history|Judgment: >3σ→alert, day-over-day>50% caution, weekly trend deviation|Output: anomaly score, cause candidates, recommended actions'
+  ),
+  iot:_dpb(
+    ['デバイス登録→認証→データ収集→制御(MQTT、CoAP、証明書認証)','センサーデータ→処理→アラート→対応(閾値監視、異常検知)','ファームウェア更新→配信→適用→確認(OTA、ロールバック)'],
+    ['Device registration→Auth→Data collection→Control (MQTT, CoAP, cert auth)','Sensor data→Process→Alert→Respond (threshold monitor, anomaly detection)','Firmware update→Distribute→Apply→Verify (OTA, rollback)'],
+    ['電波法:技適、周波数遵守','製造物責任法:欠陥損害賠償',_CG+':デバイスデータ収集同意、匿名化'],
+    [_CG+', Radio Act: tech conformity, frequency','Product Liability: defect liability',_CG+': device data collection consent, anonymization'],
+    ['切断|不安定ネットワーク|オフライン動作、ローカルキュー、指数バックオフ','ファームウェア失敗|文鎮化|A/Bパーティション、ロールバック、チェックサム','バッテリー消耗|ポーリング頻度高|間引き、差分送信、スリープモード'],
+    ['Disconnect|Unstable network|Offline operation, local queue, exponential backoff','Firmware failure|Bricked device|A/B partition, rollback, checksum','Battery drain|High polling frequency|Throttling, delta transmission, sleep mode'],
+    ['デバイス→architecture.md(MQTT), security.md(auth), api_spec.md','データ→architecture.md(pipeline), sequence_diagrams/, test_cases/','更新→architecture.md(OTA), error_logs.md, stakeholders.md'],
+    ['Device→architecture.md(MQTT), security.md(auth), api_spec.md','Data→architecture.md(pipeline), sequence_diagrams/, test_cases/','Update→architecture.md(OTA), error_logs.md, stakeholders.md'],
+    'デバイス管理|接続状態監視制御|入力:デバイスID、センサー値、接続履歴|判断:切断>5分アラート、異常値→再送要求、バッテリー<10%省電力|出力:ステータス、コマンド、予測寿命',
+    'Device Management|Monitor connection & control|Input: device ID, sensor values, connection history|Judgment: disconnect>5min alert, anomalous values→resend request, battery<10% power save|Output: status, commands, predicted lifespan'
+  ),
+  realestate:_dpb(
+    ['物件登録→審査→公開→検索(画像、間取り、地図連携)','内見予約→確認→実施→フィードバック(カレンダー、リマインダー)','契約→重要事項説明→署名→完了(電子契約、クーリングオフ8日)'],
+    ['Property registration→Review→Publish→Search (images, floor plan, map integration)','Viewing→Confirm→Conduct→Feedback (calendar, reminders)','Contract→Important matters→Sign→Complete (e-contract, 8d cooling-off)'],
+    ['宅建業法:重要事項説明、契約書交付、クーリングオフ','表示規約:徒歩80m/分、築年数、面積正確',_CG+':個人情報保護、物件情報管理'],
+    [_CG+', Real Estate Act: important matters, contract, cooling-off','Display Standards: walking 80m/min, age, area accurate',_CG+': personal info protection, property info mgmt'],
+    ['情報不整合|外部連携遅延|1時間同期、差分検知、成約済み非表示','地図ずれ|ジオコーディング精度|Google Maps API、緯度経度検証','内見重複|空き枠管理不足|Lock、3段階確認、バッファ30分'],
+    ['Info inconsistency|External sync delay|Hourly sync, detect diff, hide sold','Map misalignment|Geocoding accuracy|Google Maps API, lat/long validation','Viewing conflict|Insufficient slot mgmt|Lock, 3-phase confirm, 30min buffer'],
+    ['物件→architecture.md(search), api_spec.md(property), design_system.md','内見→architecture.md(booking), sequence_diagrams/, test_cases/','契約→architecture.md(e-contract), security.md, stakeholders.md'],
+    ['Property→architecture.md(search), api_spec.md(property), design_system.md','Viewing→architecture.md(booking), sequence_diagrams/, test_cases/','Contract→architecture.md(e-contract), security.md, stakeholders.md'],
+    '物件管理|検索最適化推奨|入力:物件DB、検索履歴、成約データ|判断:検索上位≤10件、成約率<3%価格見直し、問合せ≥5未成約要改善|出力:ランキング、価格提案、改善点',
+    'Property Management|Search optimization & recommendations|Input: property DB, search history, contract data|Judgment: top search results≤10, contract rate<3% revise price, inquiries≥5 without contract→improve|Output: ranking, price suggestions, improvements'
+  ),
+  legal:_dpb(
+    ['契約作成→レビュー→承認→署名(テンプレート、バージョン管理)','案件管理→期日→アラート→対応(タスク、カレンダー、通知)','ドキュメント管理→検索→共有→監査証跡(暗号化、アクセス制御)'],
+    ['Contract creation→Review→Approve→Sign (templates, versioning)','Case management→Deadline→Alert→Respond (tasks, calendar, notifications)','Document mgmt→Search→Share→Audit trail (encryption, access control)'],
+    ['弁護士法:非弁禁止、法律相談は有資格者','個情保護:守秘義務、報告義務','電子署名法:電子署名の有効性、タイムスタンプ'],
+    [_CG+', Attorney Act: prohibit unauthorized, licensed only','Privacy: confidentiality, reporting obligation','E-Signature Act: e-signature validity, timestamp'],
+    ['契約生成ミス|変数置換漏れ|必須チェックリスト、プレビュー必須、レビューフロー','バージョン混在|履歴管理不足|Git-like管理、diff表示、ロック','期日漏れ|通知設定不足|3段階リマインダー(7日前、3日前、当日)'],
+    ['Contract error|Missing variable substitution|Mandatory checklist, preview required, review flow','Version confusion|Insufficient history|Git-like management, diff display, locking','Deadline miss|Insufficient notifications|3-tier reminders (7d, 3d, same-day)'],
+    ['契約→architecture.md(template), api_spec.md, sequence_diagrams/','レビュー→architecture.md(approval), stakeholders.md, test_cases/','監査→architecture.md(audit), security.md, error_logs.md'],
+    ['Contract→architecture.md(template), api_spec.md, sequence_diagrams/','Review→architecture.md(approval), stakeholders.md, test_cases/','Audit→architecture.md(audit), security.md, error_logs.md'],
+    '契約レビュー|リスク条項検出|入力:契約書テキスト、テンプレート、チェックリスト|判断:必須条項欠落→警告、リスク用語検出(無制限責任、排他的)、期限≤7日注意|出力:検出リスト、重要度、修正案',
+    'Contract Review|Detect risk clauses|Input: contract text, templates, checklist|Judgment: missing mandatory clauses→warn, detect risk terms (unlimited liability, exclusive), deadline≤7d caution|Output: detected list, severity, revision suggestions'
+  ),
+  hr:_dpb(
+    ['求人作成→公開→応募→選考(ATS、スクリーニング、面接)','評価→フィードバック→育成→昇進(1on1、目標管理、360度評価)','勤怠→集計→給与→支払(打刻、残業、有休管理)'],
+    ['Job posting→Publish→Apply→Screen (ATS, screening, interviews)','Evaluation→Feedback→Develop→Promote (1-on-1, goal mgmt, 360 review)','Attendance→Aggregate→Payroll→Pay (clock-in, overtime, leave mgmt)'],
+    ['労働基準法:勤怠記録3年、残業45h上限','個情保護:不適切質問禁止、候補者情報管理','雇用機会均等法:差別禁止、公平な選考'],
+    [_CG+', Labor Standards: attendance 3yr, overtime 45h max','Privacy: prohibit inappropriate questions, candidate info mgmt','Equal Opportunity: prohibit discrimination, fair screening'],
+    ['勤怠ミス|TZ未考慮、深夜日跨ぎ|UTC統一、深夜割増22-5時、月次突合','評価バイアス|主観のみ|360度評価、定量指標、校正会議','応募者漏れ|手動管理|ATS、自動ステータス更新、リマインダー'],
+    ['Attendance error|TZ not considered, midnight crossing|Unify UTC, late-night premium 10PM-5AM, monthly reconcile','Evaluation bias|Subjective only|360 review, quantitative metrics, calibration meeting','Applicant miss|Manual mgmt|ATS, auto-status update, reminders'],
+    ['勤怠→architecture.md(attendance), api_spec.md, test_cases/','評価→architecture.md(evaluation), stakeholders.md, requirements.md','採用→architecture.md(ATS), sequence_diagrams/, error_logs.md'],
+    ['Attendance→architecture.md(attendance), api_spec.md, test_cases/','Evaluation→architecture.md(evaluation), stakeholders.md, requirements.md','Hiring→architecture.md(ATS), sequence_diagrams/, error_logs.md'],
+    '採用フロー|選考最適化|入力:応募者データ、履歴書、面接記録|判断:必須スキル不足→不合格、経験≥3年優遇、カルチャーフィット評価|出力:合否判定、スコア、次ステップ',
+    'Hiring Flow|Optimize screening|Input: applicant data, resumes, interview records|Judgment: missing required skills→reject, experience≥3yrs favor, culture fit assessment|Output: pass/fail, score, next steps'
+  ),
+  portfolio:_dpb(
+    ['制作→公開→SEO→集客(レスポンシブ、画像最適化、Core Web Vitals)','プロジェクト→カテゴリ→フィルタ→表示(ポートフォリオサイト)','問合せ→フォーム→通知→対応(スパム対策、自動返信)'],
+    ['Create→Publish→SEO→Attract (responsive, image optimization, Core Web Vitals)','Project→Category→Filter→Display (portfolio site)','Contact→Form→Notify→Respond (spam protection, auto-reply)'],
+    [_CG+':Cookie同意、アクセス解析','著作権:作品ライセンス明示、転載禁止','肖像権:モデルリリース、ぼかし'],
+    [_CG+': cookie consent, analytics','Copyright: specify work license, prohibit repost','Portrait rights: model release, blur'],
+    ['画像未最適化|元サイズ配信|WebP、srcset、lazy loading','モバイル崩れ|レスポンシブ不足|Tailwind、ブレークポイント検証','SEO低順位|メタ不足|OGP、構造化データ、sitemap'],
+    ['Image unoptimized|Serve original size|WebP, srcset, lazy loading','Mobile layout breaks|Insufficient responsive|Tailwind, breakpoint validation','Low SEO rank|Missing meta|OGP, structured data, sitemap'],
+    ['制作→design_system.md, requirements.md, api_spec.md','SEO→architecture.md(SEO), test_cases/, stakeholders.md','問合せ→architecture.md(contact), security.md, error_logs.md'],
+    ['Creation→design_system.md, requirements.md, api_spec.md','SEO→architecture.md(SEO), test_cases/, stakeholders.md','Contact→architecture.md(contact), security.md, error_logs.md'],
+    'SEO最適化|表示速度改善|入力:ページHTML、画像、CSS|判断:LCP≤2.5s、FID≤100ms、CLS≤0.1、画像WebP化、CSS圧縮|出力:スコア、改善リスト、期待順位',
+    'SEO Optimization|Improve page speed|Input: page HTML, images, CSS|Judgment: LCP≤2.5s, FID≤100ms, CLS≤0.1, image→WebP, CSS minify|Output: score, improvement list, expected rank'
+  ),
+  tool:_dpb(
+    ['タスク→自動化→効率化→測定(ショートカット、マクロ、スクリプト)','データ→エクスポート→変換→活用(CSV、JSON、API連携)','設定→カスタマイズ→共有→同期(テーマ、プリセット、クラウド)'],
+    ['Task→Automate→Streamline→Measure (shortcuts, macros, scripts)','Data→Export→Transform→Utilize (CSV, JSON, API integration)','Settings→Customize→Share→Sync (themes, presets, cloud)'],
+    [_CG+':データ処理同意、エクスポート権','利用規約:使用制限、データ保持期間','セキュリティ:API認証、暗号化通信'],
+    [_CG+': data processing consent, export rights','ToS: usage limits, data retention','Security: API auth, encrypted communication'],
+    ['互換性|最新API(Safari未対応)|Polyfill、Can I Use、クロスブラウザテスト','エクスポート失敗|文字コード|UTF-8 BOM、CSV区切り文字検証','ショートカット競合|他ツール衝突|設定可能化、デフォルト変更、ガイド'],
+    ['Compatibility|Latest API (Safari unsupported)|Polyfill, Can I Use, cross-browser test','Export failure|Character encoding|UTF-8 BOM, CSV delimiter validation','Shortcut conflict|Collision with other tools|Make configurable, change defaults, guide'],
+    ['自動化→architecture.md(automation), api_spec.md, test_cases/','エクスポート→architecture.md(export), error_logs.md, stakeholders.md','設定→design_system.md, requirements.md, api_spec.md'],
+    ['Automation→architecture.md(automation), api_spec.md, test_cases/','Export→architecture.md(export), error_logs.md, stakeholders.md','Settings→design_system.md, requirements.md, api_spec.md'],
+    'ワークフロー自動化|反復作業削減|入力:タスクログ、操作履歴、頻度|判断:週≥3回→自動化候補、手順≥5ステップ優先、エラー率>10%要改善|出力:自動化案、期待削減時間、実装難易度',
+    'Workflow Automation|Reduce repetitive tasks|Input: task logs, operation history, frequency|Judgment: weekly≥3 times→automation candidate, steps≥5 prioritize, error rate>10% improve|Output: automation plan, expected time savings, implementation difficulty'
+  )
 };
 
 // Get domain-specific QA strategy
