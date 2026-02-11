@@ -10,6 +10,7 @@ DevForgeは、対話形式の質問に答えるだけで、プロジェクト開
 - 🏗️ **36プリセット** — LMS, EC, SaaS, ブログ, コミュニティ, 不動産管理, 契約管理, ヘルプデスク, 家庭教師, 動物病院, 飲食店等
 - 🌐 **日英バイリンガル** — UI・生成物ともに日本語/英語対応
 - 🤖 **AI最適化出力** — CLAUDE.md, AI_BRIEF.md (~920トークン), .cursorrules
+- 🚀 **AIプロンプトランチャー** — プロジェクトコンテキスト自動注入、6種のプロンプトテンプレート（仕様レビュー、MVP実装、テスト生成、リファクタ、セキュリティ監査、ドキュメント補完）
 - 🔧 **BaaS対応** — Supabase/Firebase/Convex のアーキテクチャ自動判定
 - 💳 **Stripe統合** — 料金プラン, Webhook, RLS自動生成
 - 🔒 **RBAC自動生成** — ロール別権限, RLSポリシー
@@ -28,7 +29,7 @@ npm install
 node build.js
 
 # テスト
-npm test  # 137テスト + 248アサーション
+npm test  # 140テスト + 248アサーション
 
 # 使う
 open devforge-v9.html  # ブラウザで開く
@@ -64,6 +65,51 @@ CLAUDE.md, AI_BRIEF.md, .cursorrules, .clinerules, .windsurfrules, AGENTS.md, .c
 ### CI/CD
 .github/workflows/ci.yml
 
+## Pillar ⑧ AI プロンプトランチャー
+
+生成した仕様書をAIツールに一括投入するための機能。プロジェクトコンテキスト（プロジェクト名・スタック・認証・エンティティ）を自動注入し、構造化されたプロンプトを生成します。
+
+### 6つのプロンプトテンプレート
+
+| テンプレート | 説明 | 出力形式 |
+|-------------|------|---------|
+| 🔍 **仕様レビュー** | 4ステップ構造化レビュー（使命確認→要件網羅性→アーキテクチャ評価→整合性チェック） | Markdown表（#/ファイル/指摘/優先度/アクション） |
+| 🚀 **MVP実装** | tasks.mdから最優先タスク1件を選択して実装（型定義→データアクセス→ビジネスロジック→UI→テスト） | ファイルパス付きコードブロック + テスト |
+| 🧪 **テスト生成** | docs/07参照、正常系→異常系→境界値の順序でテスト作成 | Vitestテストファイル |
+| ♻️ **リファクタ提案** | SOLID原則違反・責務分離不足を検出、工数見積り(S/M/L)付き | Markdown表（問題/違反原則/改善案/工数/優先度） |
+| 🔒 **セキュリティ監査** | OWASP Top 10項目別チェック、状態評価(✅/⚠️/❌) | Markdown表（OWASP#/項目/状態/詳細/対策） |
+| 📝 **ドキュメント補完** | 2パート構成（ギャップ分析表 + 最重要ドキュメント全文生成） | Part 1: 表 / Part 2: 完全ドキュメント |
+
+### 使い方
+
+1. プロジェクト設定を完了し、ファイルを生成
+2. **Pillar ⑧ AI プロンプトランチャー**を開く
+3. フォルダ別トークン数を確認し、必要なフォルダを選択
+4. テンプレートを選択（例: 仕様レビュー）
+5. 生成されたプロンプトをコピー
+6. AIツール（Claude、Cursor、Windsurf等）に貼り付けて実行
+
+### 自動注入されるコンテキスト
+
+```markdown
+# Context
+Project: プロジェクト名
+Stack: React + Next.js + Supabase (PostgreSQL)
+Auth: Supabase Auth
+Entities: User, Course, Lesson, Progress
+```
+
+### ツール別AI設定ファイル
+
+プロンプトランチャーと連携して、各ツール専用の最適化ルールを生成：
+
+- **Cursor** (`.cursor/rules`): `@workspace`/`@file` 参照、マルチファイル編集
+- **Cline** (`.clinerules`): Plan→Act ループ、`npm test`、`progress.md` 更新
+- **Windsurf** (`.windsurfrules`): Cascade 活用、Flows 作成、コンテキスト集中
+- **Copilot** (`.github/copilot-instructions.md`): コア開発ルール
+
+すべてのツールに **Thinking Protocol** 搭載（実装前4ステップチェックリスト）。
+
 ## 開発
 
 ### プロジェクト構造
@@ -96,7 +142,7 @@ build.js        # Concatenates 40 modules → single HTML
 | compat | 45 | 互換性ルール |
 | その他 | ~21 | i18n, presets, state, techdb |
 
-**Total: 137 tests** (スキルカタログ・パイプライン検証含む)
+**Total: 140 tests** (スキルカタログ・パイプライン・プロンプトランチャー検証含む)
 
 ## AI Coding対応
 
