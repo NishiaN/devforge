@@ -21,8 +21,8 @@ const HELP_DATA={
     en:{title:'Release Target',desc:'2 weeks = ultra MVP, 1 month = basic MVP, 3 months = full version.',example:'TIP: Deploy in 2 weeks first, then iterate fast'}
   },
   frontend:{
-    ja:{title:'フロントエンド',desc:'既に知っている技術を選ぶのが最速。',example:'初心者→React、SSR→Next.js',link:'https://2024.stateofjs.com'},
-    en:{title:'Frontend',desc:'Choosing a tech you already know is fastest.',example:'Beginner→React, SSR→Next.js',link:'https://2024.stateofjs.com'}
+    ja:{title:'フロントエンド',desc:'既に知っている技術を選ぶのが最速。',example:'初心者→React、SSR→Next.js',link:'https://stateofjs.com'},
+    en:{title:'Frontend',desc:'Choosing a tech you already know is fastest.',example:'Beginner→React, SSR→Next.js',link:'https://stateofjs.com'}
   },
   backend:{
     ja:{title:'バックエンド/DB',desc:'BaaS(Firebase/Supabase)はサーバーコード不要で最速。',example:'静的サイト→なし、認証あり→Firebase/Supabase'},
