@@ -3,11 +3,11 @@
 function genPillar9_DesignSystem(a,pn){
   const G=S.genLang==='ja';
   const fe=a.frontend||'React + Next.js';
-  const be=a.backend||'Supabase';
+  const be=a.backend||'Node.js + Express';
   const auth=resolveAuth(a);
   const arch=resolveArch(a);
   const hasPay=a.payment&&!/なし|None|none/.test(a.payment);
-  const entities=(a.data_entities||'').split(/[,、]/).map(s=>s.trim()).filter(Boolean);
+  const entities=(a.data_entities||'').split(/[,、]\s*/).map(s=>s.trim()).filter(Boolean);
   const screens=(a.screens||'').split(/[,、]/).map(s=>s.trim()).filter(Boolean);
 
   // Framework-specific CSS approach
@@ -26,7 +26,7 @@ function genPillar9_DesignSystem(a,pn){
   const guidelines=G?'## AI実装ガイドライン':'## AI Implementation Guidelines';
 
   let designDoc='# '+(G?'デザインシステム':'Design System')+'\n\n';
-  designDoc+=G?'**重要**: AIエージェントは、UI実装時に必ずこのデザインシステムを参照し、一貫性を保ってください。':'**IMPORTANT**: AI agents MUST reference this design system when implementing UI to maintain consistency.\n\n';
+  designDoc+=G?'**重要**: AIエージェントは、UI実装時に必ずこのデザインシステムを参照し、一貫性を保ってください。\n\n':'**IMPORTANT**: AI agents MUST reference this design system when implementing UI to maintain consistency.\n\n';
 
   // Color Palette
   designDoc+=colorSection+'\n\n'+colorPalette+'\n\n';
@@ -85,7 +85,7 @@ function genPillar9_DesignSystem(a,pn){
 
   // Sequence Diagrams
   let seqDoc='# '+(G?'シーケンス図':'Sequence Diagrams')+'\n\n';
-  seqDoc+=G?'**重要**: AIエージェントは、複雑なフローを実装する前にこのシーケンス図を参照してください。':'**IMPORTANT**: AI agents MUST reference these sequence diagrams before implementing complex flows.\n\n';
+  seqDoc+=G?'**重要**: AIエージェントは、複雑なフローを実装する前にこのシーケンス図を参照してください。\n\n':'**IMPORTANT**: AI agents MUST reference these sequence diagrams before implementing complex flows.\n\n';
 
   // Auth Flow
   seqDoc+=(G?'## 認証フロー':'## Authentication Flow')+'\n\n```mermaid\nsequenceDiagram\n  participant U as User\n  participant C as Client\n  participant ';

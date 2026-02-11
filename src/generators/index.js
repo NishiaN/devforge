@@ -113,7 +113,7 @@ function finishGen(_errs){
 function showExportGrid(){
   const _ja=S.lang==='ja';const fc=Object.keys(S.files).length;
   const totalChars=Object.values(S.files).reduce((s,v)=>s+v.length,0);
-  const tokens=Math.round(totalChars/3.5);
+  const tokens=Math.round(totalChars/4);
   const sizeKB=Math.round(totalChars/1024);
   const summary=`<div class="export-summary">
     <span>📁 ${fc} ${_ja?'ファイル':'files'}</span>

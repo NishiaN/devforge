@@ -25,7 +25,7 @@ function genPillar1_SDD(a,pn){
     };
     return defaults[domain] || (G?'ネイティブアプリ, モバイルアプリ':'Native apps, Mobile apps');
   })();
-  if(a.mobile&&a.mobile!=='none'&&!String(a.mobile).includes('PWA')){
+  if(a.mobile&&!isNone(a.mobile)&&!String(a.mobile).includes('PWA')){
     scopeOut=scopeOut.replace(/ネイティブアプリ/g,G?'ストア配布用ネイティブビルド（Expo Web UIは対象内）':'Native app store builds (Expo Web UI is in scope)');
     scopeOut=scopeOut.replace(/native apps?/gi,'Native app store builds (Expo Web UI is in scope)');
   }
@@ -89,8 +89,8 @@ function genPillar1_SDD(a,pn){
     apiDesignLines=['- RESTful API (OpenAPI 3.0)','- '+(G?'バージョニング':'Versioning')+': /api/v1/','- '+(G?'認証':'Auth')+': '+auth.tokenType,'- '+(G?'レスポンス':'Response')+': JSON'];
   }
 
-  const hasMob=a.mobile&&a.mobile!=='なし'&&a.mobile!=='None'&&a.mobile!=='none';
-  const hasPay=a.payment&&a.payment!=='なし'&&a.payment!=='None'&&a.payment!=='none';
+  const hasMob=a.mobile&&!isNone(a.mobile);
+  const hasPay=a.payment&&!isNone(a.payment);
 
   // ════ Specification ════
   const specLines=[
@@ -221,7 +221,7 @@ function genPillar1_SDD(a,pn){
     '└── docs/             # '+(G?'ドキュメント':'Documents'));
   const dirNote=arch.pattern==='bff'?'\n> '+(G?'Note: Express のロジックは src/app/api/ 配下の Route Handlers に統合':'Note: Express logic integrated into src/app/api/ Route Handlers')+'\n':'';
 
-  const entities=(a.data_entities||'users, items').split(', ').map(e=>e.trim()).filter(Boolean);
+  const entities=(a.data_entities||'users, items').split(/[,、]\s*/).map(e=>e.trim()).filter(Boolean);
   const entityLines=entities.map(en=>{
     const cols=getEntityColumns(en,G,entities);
     const lines=['### '+en,'- id: UUID (PK)'];
@@ -241,7 +241,7 @@ function genPillar1_SDD(a,pn){
   if(arch.isBaaS&&be.includes('Supabase')){
     const rlsLines=[G?'### RLS（Row Level Security）方針':'### RLS (Row Level Security) Policy',
       G?'全テーブルにRLS有効化。ポリシー例:':'Enable RLS on all tables. Policy examples:','','```sql'];
-    (a.data_entities||'').split(', ').forEach(e=>{
+    (a.data_entities||'').split(/[,、]\s*/).map(e=>e.trim()).filter(Boolean).forEach(e=>{
       const en=e.trim();const tbl=pluralize(en);
       const cols=getEntityColumns(en,G,entities);
       const hasUserId=cols.some(c=>c.col==='user_id');

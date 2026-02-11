@@ -2,13 +2,14 @@
 function genPillar4_AIRules(a,pn){
   const G=S.genLang==='ja';
   const db=a.database||'PostgreSQL';
+  const be=a.backend||'Node.js + Express';
   const auth=resolveAuth(a);
   const arch=resolveArch(a);
-  const orm=arch.isBaaS?(a.backend.includes('Supabase')?'Supabase Client SDK':a.backend.includes('Firebase')?'Firebase SDK':'Convex Client'):(a.orm&&a.orm.includes('Drizzle')?'Drizzle ORM':'Prisma ORM');
+  const orm=arch.isBaaS?(be.includes('Supabase')?'Supabase Client SDK':be.includes('Firebase')?'Firebase SDK':'Convex Client'):(a.orm&&a.orm.includes('Drizzle')?'Drizzle ORM':'Prisma ORM');
   const archNote=G?{baas:'BaaS統合パターン（サーバーレス）',bff:'BFF パターン（Next.js API Routes統合）',split:'フロント/バック分離（別ホスト）',traditional:'従来型クライアント-サーバー'}[arch.pattern]:{baas:'BaaS Integration (serverless)',bff:'BFF Pattern (Next.js API Routes)',split:'FE/BE Split (separate hosts)',traditional:'Traditional Client-Server'}[arch.pattern];
 
   const core=`Project: ${pn}
-Stack: ${a.frontend||'React'} + ${a.backend||'Node.js'} + ${db}
+Stack: ${a.frontend||'React'} + ${be} + ${db}
 Architecture: ${archNote}
 Auth SoT: ${auth.sot}
 Methods: ${a.dev_methods||'TDD'}
@@ -35,7 +36,7 @@ ${core}
   const forbidden=arch.isBaaS?
     `- No raw SQL in application code (use ${orm} methods)
   - OK: DDL/RLS/migration SQL in supabase/migrations/
-- No separate Express/Fastify server (use ${a.backend} functions)
+- No separate Express/Fastify server (use ${be} functions)
 - No manual JWT handling (use ${auth.sot})`:
     arch.pattern==='bff'?
     `- No separate Express server (use Next.js API Routes)
@@ -75,10 +76,10 @@ hooks:
 
   // ═══ AI_BRIEF.md — Condensed Single-File Spec for AI Agents ═══
   // Goal: ~3000 tokens containing everything an AI needs to start coding
-  const entities=(a.data_entities||'User').split(', ').filter(Boolean);
+  const entities=(a.data_entities||'User').split(/[,、]\s*/).map(e=>e.trim()).filter(Boolean);
   const features=(a.mvp_features||'CRUD').split(', ').filter(Boolean);
   const screens=(a.screens||'Dashboard').split(', ').filter(Boolean);
-  const fe=a.frontend||'React';const be=a.backend||'Node.js';
+  const fe=a.frontend||'React';
   const deploy=a.deploy||'Vercel';
 
   // Build compact DB schema
@@ -203,7 +204,7 @@ CLAUDE.md        → ${G?'Claude Code用ルール':'Claude Code rules'}
 
   // ═══ Phase 2 & 3: Skills Catalog + Pipelines (only if ai_auto ≠ None) ═══
   const aiAuto=a.ai_auto||'';
-  if(aiAuto&&aiAuto!=='none'&&!aiAuto.includes('なし')){
+  if(aiAuto&&!isNone(aiAuto)){
     // Detect domain for domain-specific skills
     const domain=detectDomain(a.purpose);
 
@@ -220,7 +221,12 @@ CLAUDE.md        → ${G?'Claude Code用ルール':'Claude Code rules'}
       marketplace:['0:取引設計:Trade Design:取引フロー設計:Design trade flow:安全性確保:Safety ensured','1:レビュー検証:Review Check:レビュー信頼性検証:Verify review trust:偽装0:0 fake'],
       content:['2:配信最適化:Delivery Opt:コンテンツ配信最適化:Optimize content delivery:遅延100ms↓:≤100ms delay','3:分析:Analytics:閲覧分析:View analytics:エンゲージ可視化:Engagement vis'],
       analytics:['1:ダッシュボード設計:Dashboard:ダッシュボード設計:Design dashboard:KPI明確:Clear KPI','2:レポート生成:Report Gen:レポート自動生成:Auto-gen reports:正確性100%:100% accuracy'],
-      business:['0:CRM設計:CRM Design:顧客管理設計:Design CRM:リード漏れ0:0 lead loss','1:営業フロー:Sales Flow:営業プロセス最適化:Optimize sales process:CVR向上:Improve CVR']
+      business:['0:CRM設計:CRM Design:顧客管理設計:Design CRM:リード漏れ0:0 lead loss','1:営業フロー:Sales Flow:営業プロセス最適化:Optimize sales process:CVR向上:Improve CVR'],
+      iot:['1:デバイス管理:Device Mgmt:デバイス管理:Device management:全台接続:All connected','2:センサー分析:Sensor Analysis:センサーデータ分析:Analyze sensor data:異常検知:Anomaly detected','3:アラート設計:Alert Design:アラート設計:Design alerts:誤報1%↓:≤1% false alarm'],
+      realestate:['0:物件管理:Property Mgmt:物件データ管理:Manage property data:登録100%:100% listed','1:内見予約:Viewing:内見予約管理:Manage viewings:重複0:0 overlaps','2:契約検証:Contract:契約書検証:Verify contracts:必須項目100%:100% required'],
+      legal:['0:契約レビュー:Contract Review:契約書レビュー:Review contracts:リスク条項0:0 risk clauses','1:コンプライアンス:Compliance:法令準拠チェック:Compliance check:違反0:0 violations','3:文書管理:Doc Mgmt:文書バージョン管理:Doc version control:最新版追跡:Latest tracked'],
+      hr:['0:採用フロー:Hiring Flow:採用プロセス設計:Design hiring flow:漏れ0:0 gaps','1:評価設計:Eval Design:評価制度設計:Design evaluation:基準明確:Clear criteria','3:オンボーディング:Onboarding:入社手続き管理:Manage onboarding:完了率100%:100% completion'],
+      fintech:['1:取引検証:Tx Validation:取引データ検証:Validate transactions:不正0:0 fraud','1:リスク分析:Risk Analysis:リスク評価:Risk assessment:P0対応済:P0 addressed','3:レポート生成:Report Gen:財務レポート:Financial reports:正確性100%:100% accuracy']
     };
 
     const domainSkills=domainSkillsMap[domain]||[];
@@ -228,12 +234,27 @@ CLAUDE.md        → ${G?'Claude Code用ルール':'Claude Code rules'}
 
     const roleNames=G?['企画 (Planning)','設計 (Design)','制作 (Production)','運用 (Operations)']:['Planning','Design','Production','Operations'];
 
-    // Enhanced skill details (top 4 only, for size)
+    // Enhanced skill details (19 skills: 14 core + 5 domain-specific)
     const skillDetails={
       '教材設計':{input:'docs/03,04',process:G?'ER図→学習フロー抽出→難易度分類→構成生成':'ER→flow→difficulty→curriculum',output:G?'構成マップ(md)':'Curriculum (md)'},
       '機能仕様':{input:'.spec/constitution',process:G?'使命→ストーリー抽出→受入条件3つ→優先度付与':'Mission→stories→3 AC→priority',output:G?'仕様書(md)':'Spec (md)'},
       'API設計':{input:'docs/04,05',process:G?'ER→エンドポイント生成→REST命名チェック→標準化':'ER→endpoints→REST check→standardize',output:G?'API仕様(OpenAPI)':'API spec (OpenAPI)'},
-      '決済検証':{input:'docs/08',process:G?'OWASP照合→Webhook検証→RLSチェック':'OWASP→webhook→RLS',output:G?'チェックリスト':'Checklist'}
+      '決済検証':{input:'docs/08',process:G?'OWASP照合→Webhook検証→RLSチェック':'OWASP→webhook→RLS',output:G?'チェックリスト':'Checklist'},
+      '要件レビュー':{input:'.spec/constitution,specification',process:G?'使命→KPI照合→機能網羅チェック→欠落列挙':'Mission→KPI check→feature coverage→list gaps',output:G?'矛盾リスト+修正案':'Gap list + fix proposal'},
+      '設計検証':{input:'.spec/technical-plan',process:G?'スタック評価→依存関係チェック→リスク分析→代替案':'Stack eval→deps check→risk→alternatives',output:G?'リスク評価表':'Risk assessment'},
+      '実装支援':{input:'.spec/specification,technical-plan',process:G?'仕様読込→型定義→CRUD実装→テスト生成':'Read spec→types→CRUD impl→gen tests',output:G?'実装コード+テスト':'Code + tests'},
+      'デプロイ検証':{input:'docs/09,ci.yml',process:G?'環境変数チェック→ビルド検証→ヘルスチェック→ロールバック確認':'Env check→build verify→health→rollback',output:G?'デプロイレポート':'Deploy report'},
+      '問題生成':{input:'docs/03,Lesson',process:G?'学習目標抽出→難易度設定→正常系3問+異常系3問→解説生成':'Goals→difficulty→3 normal+3 edge→explanations',output:G?'問題セット(JSON)':'Quiz set (JSON)'},
+      '商品検証':{input:'Product,Category',process:G?'必須フィールド検査→SKU重複チェック→価格妥当性→画像存在確認':'Required fields→SKU dup→price valid→image check',output:G?'検証レポート':'Validation report'},
+      'モデレーション':{input:'Post,Comment',process:G?'禁止語チェック→スパム判定→報告集計→対応優先度付与':'Banned words→spam detect→report aggregate→priority',output:G?'モデレーションキュー':'Moderation queue'},
+      '予約設計':{input:'Service,TimeSlot',process:G?'空き枠計算→重複検出→バッファ設定→通知設計':'Availability calc→dup detect→buffer→notify design',output:G?'予約ロジック仕様':'Booking logic spec'},
+      '記録検証':{input:'HealthLog,Goal',process:G?'入力値範囲チェック→異常値検出→トレンド分析→アラート条件設定':'Range check→anomaly detect→trend→alert config',output:G?'健康レポート':'Health report'},
+      'CRM設計':{input:'User,Contact',process:G?'リード定義→ファネル設計→スコアリング→自動化ルール':'Lead def→funnel→scoring→automation rules',output:G?'CRM設計書':'CRM design doc'},
+      'デバイス管理':{input:'Device,Sensor',process:G?'デバイス登録→接続状態監視→ファーム更新管理→ログ収集':'Register→monitor→firmware→logs',output:G?'デバイス管理画面':'Device dashboard'},
+      '物件管理':{input:'Property,Category',process:G?'物件登録→写真管理→間取り設定→公開管理':'Register→photos→floor plan→publish',output:G?'物件データベース':'Property DB'},
+      '契約レビュー':{input:'Contract,Template',process:G?'テンプレート照合→リスク条項検出→期限チェック→承認フロー':'Template match→risk detect→deadline→approval',output:G?'レビュー結果':'Review result'},
+      '採用フロー':{input:'JobPosting,Applicant',process:G?'求人作成→応募管理→面接調整→評価集約→内定':'Post→apply→interview→eval→offer',output:G?'採用パイプライン':'Hiring pipeline'},
+      '取引検証':{input:'Transaction,Account',process:G?'残高確認→二重支払チェック→限度額検証→監査ログ':'Balance→dup check→limit→audit log',output:G?'検証レポート':'Validation report'}
     };
 
     let catalogMd=`# ${pn} ${G?'— AIスキルカタログ':'— AI Skills Catalog'}\n${G?'ドメイン特化スキル + コア開発スキル':'Domain-specific skills + core development skills'}\n\n`;
@@ -263,7 +284,11 @@ CLAUDE.md        → ${G?'Claude Code用ルール':'Claude Code rules'}
     const hasFullAuto=aiAuto.includes('Full')||aiAuto.includes('フル')||aiAuto.includes('Orch');
 
     if(hasMultiAgent){
-      catalogMd+=`## ${G?'高度スキル':'Advanced'}\n### ${G?'並列レビュー':'Parallel Review'}\n- **${G?'判断':'Judgment'}**: ${G?'全合意':'All agree'}\n### ${G?'圧縮':'Compression'}\n- **${G?'判断':'Judgment'}**: ${G?'トークン80%削減':'80% token reduction'}\n\n`;
+      catalogMd+=`## ${G?'高度スキル':'Advanced'}\n`;
+      catalogMd+=`### ${G?'並列レビュー':'Parallel Review'}\n- **${G?'目的':'Purpose'}**: ${G?'複数エージェントで同時レビュー':'Multi-agent simultaneous review'}\n- **${G?'判断':'Judgment'}**: ${G?'全合意':'All agree'}\n- **${G?'入力':'Input'}**: ${G?'対象コード':'Target code'}\n- **${G?'処理':'Process'}**: ${G?'分割→並列レビュー→結果マージ→合意形成':'Split→parallel review→merge→consensus'}\n- **${G?'出力':'Output'}**: ${G?'統合レビュー':'Unified review'}\n\n`;
+      catalogMd+=`### ${G?'コードレビュー自動化':'Auto Code Review'}\n- **${G?'目的':'Purpose'}**: ${G?'PR単位で自動コードレビュー':'Auto review per PR'}\n- **${G?'判断':'Judgment'}**: ${G?'問題0件':'0 issues'}\n- **${G?'入力':'Input'}**: ${G?'PRの差分':'PR diff'}\n- **${G?'処理':'Process'}**: ${G?'差分解析→パターンチェック→セキュリティスキャン→提案生成':'Diff→pattern check→security scan→suggestions'}\n- **${G?'出力':'Output'}**: ${G?'レビューコメント':'Review comments'}\n\n`;
+      catalogMd+=`### ${G?'ドキュメント自動更新':'Auto Doc Update'}\n- **${G?'目的':'Purpose'}**: ${G?'コード変更に連動してドキュメント更新':'Update docs on code changes'}\n- **${G?'判断':'Judgment'}**: ${G?'乖離0':'0 drift'}\n- **${G?'入力':'Input'}**: ${G?'変更コード+既存docs/':'Changed code + existing docs/'}\n- **${G?'処理':'Process'}**: ${G?'変更検出→影響ドキュメント特定→差分生成→反映':'Detect change→find affected docs→gen diff→apply'}\n- **${G?'出力':'Output'}**: ${G?'更新済ドキュメント':'Updated docs'}\n\n`;
+      catalogMd+=`### ${G?'圧縮':'Compression'}\n- **${G?'判断':'Judgment'}**: ${G?'トークン80%削減':'80% token reduction'}\n\n`;
     }
     if(hasFullAuto){
       catalogMd+=`## ${G?'自律':'Autonomous'}\n### ${G?'統括':'Orchestration'}\n- **${G?'判断':'Judgment'}**: ${G?'全完了':'All done'}\n### ${G?'自己修復':'Self-Heal'}\n- **${G?'判断':'Judgment'}**: ${G?'リトライ成功':'Retry OK'}\n\n`;

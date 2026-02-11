@@ -28,7 +28,7 @@ function shareURL(){
   const _ja=S.lang==='ja';
   const data={p:S.projectName,a:S.answers,pr:S.preset};
   const encoded=btoa(unescape(encodeURIComponent(JSON.stringify(data))));
-  const url=location.origin+location.pathname+'#'+encoded;
+  const url=location.origin+location.pathname+'#df='+encoded;
   navigator.clipboard.writeText(url).then(()=>{
     addMsg('bot',_ja?`🔗 URLをクリップボードにコピーしました。このURLを共有すると同じ設定で開けます。`:`🔗 URL copied to clipboard. Share it to open with the same settings.`);
   }).catch(()=>{

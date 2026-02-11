@@ -45,5 +45,4 @@ function revertFile(path){
   save();
   toast(_ja?'↩️ 元に戻しました':'↩️ Reverted');
   openEditor(path);
-  showFileTree();
 }

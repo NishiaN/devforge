@@ -1,12 +1,13 @@
 function genDocs21(a,pn){
   const G=S.genLang==='ja';
   const date=new Date().toISOString().split('T')[0];
+  const ganttStart=new Date().toISOString().split('T')[0];
   const fe=a.frontend||'React';const be=a.backend||'Node.js';
   const auth=resolveAuth(a);
   const arch=resolveArch(a);
   const orm=arch.isBaaS?(be.includes('Supabase')?'Supabase Client':be.includes('Firebase')?'Firebase SDK':'Convex'):(a.orm&&a.orm.includes('Drizzle')?'Drizzle':'Prisma');
   const stripPri=s=>(s||'').replace(/\[P[0-2]\]\s*/g,'');
-  const entities=(stripPri(a.data_entities)||'users, items').split(', ').filter(Boolean);
+  const entities=(stripPri(a.data_entities)||'users, items').split(/[,、]\s*/).map(e=>e.trim()).filter(Boolean);
   const features=(stripPri(a.mvp_features)||(G?'CRUD操作':'CRUD')).split(', ').filter(Boolean);
   const screens=(stripPri(a.screens)||(G?'ダッシュボード, ログイン':'Dashboard, Login')).split(', ').filter(Boolean);
   const methods=(stripPri(a.dev_methods)||'TDD').split(', ').filter(Boolean);
@@ -248,7 +249,7 @@ function genDocs21(a,pn){
     ['09_release_checklist',G?'リリースチェックリスト':'Release Checklist',`## ${G?'デプロイ先':'Deploy Target'}: ${deployTarget}\n\n### 1. ${G?'コード品質':'Code Quality'}\n${(G?['TypeScript 型エラー 0件','ESLint エラー 0件','全テストパス','カバレッジ 80%+']:['TypeScript: 0 type errors','ESLint: 0 errors','All tests pass','Coverage 80%+']).map(c=>'- [ ] '+c).join('\n')}\n\n### 2. ${G?'セキュリティ':'Security'}\n
 ${(G?['環境変数にシークレット未ハードコード','CORS設定','CSP設定','認証・認可テスト完了']:['No hardcoded secrets in env vars','CORS config','CSP config','Auth/authz tests done']).map(c=>'- [ ] '+c).join('\n')}\n\n### 3. ${G?'インフラ':'Infrastructure'} (${deployTarget})\n${deployChecks.map(c=>'- [ ] '+c).join('\n')}\n\n### 4. ${G?'データベース':'Database'} (${dbName})\n${dbChecks.map(c=>'- [ ] '+c).join('\n')}\n\n### 5. ${G?'パフォーマンス':'Performance'}\n
 ${(G?['Lighthouse 90+','LCP < 2.5s','画像最適化','バンドルサイズ確認']:['Lighthouse 90+','LCP < 2.5s','Image optimization','Bundle size check']).map(c=>'- [ ] '+c).join('\n')}\n\n### 6. ${G?'モニタリング':'Monitoring'}\n${(G?['Sentry設定','アクセスログ','アラート閾値']:['Sentry setup','Access logs','Alert thresholds']).map(c=>'- [ ] '+c).join('\n')}`],
-    ['10_gantt',G?'ガントチャート':'Gantt Chart',`${G?'## プロジェクトスケジュール':'## Project Schedule'}\n\n\`\`\`mermaid\ngantt\n  title ${pn} ${G?'開発スケジュール':'Development Schedule'}\n  dateFormat YYYY-MM-DD\n  axisFormat %m/%d\n  section Sprint 0\n  ${G?'プロジェクトセットアップ':'Project Setup'} :env, 2026-01-01, 2d\n  ${G?'DevContainer構築':'DevContainer Setup'} :dc, after env, 1d\n  ${G?'CI/CD設定':'CI/CD Setup'} :ci, after dc, 1d\n  section Sprint 1-2\n${ganttTasks}\n  section Sprint 3\n
+    ['10_gantt',G?'ガントチャート':'Gantt Chart',`${G?'## プロジェクトスケジュール':'## Project Schedule'}\n\n\`\`\`mermaid\ngantt\n  title ${pn} ${G?'開発スケジュール':'Development Schedule'}\n  dateFormat YYYY-MM-DD\n  axisFormat %m/%d\n  section Sprint 0\n  ${G?'プロジェクトセットアップ':'Project Setup'} :env, ${ganttStart}, 2d\n  ${G?'DevContainer構築':'DevContainer Setup'} :dc, after env, 1d\n  ${G?'CI/CD設定':'CI/CD Setup'} :ci, after dc, 1d\n  section Sprint 1-2\n${ganttTasks}\n  section Sprint 3\n
   ${G?'E2Eテスト':'E2E Tests'} :test, after s${features.length-1}, 3d\n  ${G?'パフォーマンス最適化':'Perf Optimization'} :perf, after test, 2d\n  ${G?'リリース':'Release'} :rel, after perf, 1d\n\`\`\`\n\n${G?'## マイルストーン':'## Milestones'}\n| MS | ${G?'目標':'Goal'} | ${G?'成果物':'Deliverable'} |\n|----|------|--------|\n| Alpha | Sprint 1 ${G?'完了':'done'} | ${G?'コア機能動作':'Core features working'} |\n| Beta | Sprint 2 ${G?'完了':'done'} | ${G?'全機能実装':'All features implemented'} |\n
 | RC | Sprint 3 ${G?'中盤':'mid'} | ${G?'テスト完了':'Tests complete'} |\n| GA | Sprint 3 ${G?'末':'end'} | ${G?'本番リリース':'Production release'} |`],
     ['11_wbs',G?'WBS (作業分解構造)':'WBS (Work Breakdown)',`${G?'## WBS — 総工数:':'## WBS — Total Hours:'} 約${totalH+26}h\n\n### 1. ${G?'プロジェクト管理':'Project Management'} (8h)\n- 1.1 ${G?'要件定義・SDD作成':'Requirements & SDD'} (3h)\n- 1.2 ${G?'技術選定・環境構築':'Tech selection & setup'} (3h)\n- 1.3 ${G?'進捗管理・レビュー':'Progress mgmt & review'} (2h)\n\n## 2. ${G?'機能開発':'Feature Development'} (${totalH}h)\n\n${wbsTasks}\n\n### 3. ${G?'テスト':'Testing'} (12h)\n- 3.1 ${G?'ユニットテスト':'Unit tests'} (4h)\n
@@ -262,7 +263,7 @@ ${(G?['Lighthouse 90+','LCP < 2.5s','画像最適化','バンドルサイズ確�
     ['18_data_migration',G?'データ移行計画書':'Data Migration Plan',`${G?'## 移行戦略':'## Migration Strategy'}\n- ${G?'段階的移行':'Phased migration'}\n- ${G?'ロールバック計画':'Rollback plan'}\n- ${G?'データ検証手順':'Data validation'}`],
     ['19_performance',G?'パフォーマンス設計書':'Performance Design',`${G?'## 目標値':'## Targets'}\n- LCP: < 2.5s\n- FID: < 100ms\n- CLS: < 0.1\n\n${G?'## 最適化施策':'## Optimizations'}\n- ${G?'画像最適化':'Image optimization'} (${fe.includes('Next')?'next/image':fe.includes('Vite')||fe.includes('SPA')?'vite-imagetools / sharp':'sharp / imagemin'})\n- Code Splitting${fe.includes('Vite')||fe.includes('SPA')?' (Vite dynamic import)':fe.includes('Next')?' (Next.js dynamic)':''}\n- ${deployTarget.includes('Vercel')||deployTarget.includes('Netlify')?'Edge Caching (CDN)':'CDN Caching'}`],
     ['20_a11y',G?'アクセシビリティ設計書':'Accessibility Design',`## WCAG 2.1 AA\n- ${G?'キーボードナビゲーション':'Keyboard navigation'}\n- ${G?'スクリーンリーダー対応':'Screen reader support'}\n- ${G?'カラーコントラスト比':'Color contrast ratio'} 4.5:1+\n- ${G?'フォーカス管理':'Focus management'}`],
-    ['21_changelog',G?'変更履歴':'Changelog',`## v1.0.0 (${date})\n- ${G?'初期リリース':'Initial release'}\n- ${features.slice(0,3).join(', ')} 実装\n\n## ${G?'DevForge v9による自動生成':'Auto-generated by DevForge v9'}\n- ${G?'60+ファイル生成':'60+ files generated'}\n- ${G?'8つの柱対応':'8 pillars support'}\n- ${G?'Mermaid図・プロンプトプレイブック・タスク分解対応':'Mermaid diagrams, Prompt Playbook, Task decomposition'}`],
+    ['21_changelog',G?'変更履歴':'Changelog',`## v1.0.0 (${date})\n- ${G?'初期リリース':'Initial release'}\n- ${features.slice(0,3).join(', ')} 実装\n\n## ${G?'DevForge v9による自動生成':'Auto-generated by DevForge v9'}\n- ${G?'60+ファイル生成':'60+ files generated'}\n- ${G?'9つの柱対応':'9 pillars support'}\n- ${G?'Mermaid図・プロンプトプレイブック・タスク分解対応':'Mermaid diagrams, Prompt Playbook, Task decomposition'}`],
     ['24_progress',G?'進捗管理表':'Progress Tracker',
   `${G?'> AIエージェントはタスク完了後にこのファイルを更新してください。':
        '> AI agents should update this file after completing each task.'}
@@ -337,6 +338,7 @@ _(${G?'追記してください':'Add entries here'})_`],
 
   // CI/CD Workflow YAML
   const buildCmd=fe.includes('Next')?'next build':fe.includes('Vite')||fe.includes('SPA')?'vite build':'npm run build';
+  const buildPrefix=buildCmd.startsWith('npm')?'':'npx ';
   const nodeV='22';
   S.files['.github/workflows/ci.yml']=[
     'name: CI',
@@ -358,7 +360,7 @@ _(${G?'追記してください':'Add entries here'})_`],
     '      - run: npm ci',
     '      - run: npm run lint',
     '      - run: npm run test',
-    '      - run: npx '+buildCmd,
+    '      - run: '+buildPrefix+buildCmd,
     ''
   ].join('\n');
 }

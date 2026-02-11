@@ -8,7 +8,7 @@ function initPresets(){
     if(k==='custom'||!v.name)return;
     const c=document.createElement('span');c.className='prchip';
     c.textContent=(v.icon||'')+(v.icon?' ':'')+(!_ja&&v.nameEn?v.nameEn:v.name);
-    c.onclick=()=>pickPreset(k);
+    c.onclick=(e)=>pickPreset(k,e);
     // Preview tooltip
     const _en=!_ja;
     const desc=(_en&&v.purposeEn)?v.purposeEn:v.purpose||'';
@@ -66,10 +66,10 @@ function renderCompare(){
   $('cmpBody').innerHTML=h;
 }
 
-function pickPreset(k){
+function pickPreset(k,e){
   S.preset=k;
   document.querySelectorAll('.prchip').forEach(c=>c.classList.remove('on'));
-  event.target.classList.add('on');
+  if(e&&e.target)e.target.classList.add('on');
   const p=PR[k];
   if(p&&p.name)$('nameIn').value=(S.lang==='en'&&p.nameEn)?p.nameEn:p.name;
   save();

@@ -194,7 +194,6 @@ const TECH_DB=[
 {name:'Grafana',cat:'devops',sub:'viz',req:'optional',level:'pro'},
 {name:'Let\'s Encrypt',cat:'devops',sub:'ssl',req:'recommended',level:'prod'},
 {name:'Cloudflare',cat:'devops',sub:'cdn',req:'optional',level:'pro'},
-{name:'Nginx',cat:'devops',sub:'web',req:'optional',level:'pro'},
 // ── Additional AI Tools (10) ──
 {name:'Claude (Chat)',cat:'ai',sub:'chat',req:'recommended',level:'all',price:'$20'},
 {name:'ChatGPT',cat:'ai',sub:'chat',req:'optional',level:'all',price:'$20'},

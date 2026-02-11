@@ -109,7 +109,7 @@ function showDashboard(){
   // Project info
   h+=`<h4 class="dash-h4-mt">📋 ${_ja?'プロジェクト情報':'Project Info'}</h4><div class="dash-info">`;
   const info=_ja?[['プロジェクト名',S.projectName],['フロント',a.frontend],['バック',a.backend],['DB',a.database],['デプロイ',a.deploy],['モバイル',a.mobile],['AI自律',a.ai_auto],['決済/CMS',a.payment],['駆動開発',a.dev_methods],['スキル',a.skill_level]]:[['Project',S.projectName],['Frontend',a.frontend],['Backend',a.backend],['DB',a.database],['Deploy',a.deploy],['Mobile',a.mobile],['AI Auto',a.ai_auto],['Payment/CMS',a.payment],['Dev Methods',a.dev_methods],['Skill',a.skill_level]];
-  info.forEach(([k,v])=>{if(v&&v!==_ja?(_ja?'（未指定）':'(Unset)'):'(Unset)'&&v!=='(Unset)')h+=`<div class="exp-row"><span class="label">${k}</span><span class="val">${v}</span></div>`;});
+  info.forEach(([k,v])=>{if(v&&v!==(_ja?'（未指定）':'(Unset)')&&v!=='(Unset)')h+=`<div class="exp-row"><span class="label">${k}</span><span class="val">${v}</span></div>`;});
   h+='</div>';
   
   // Stack compatibility report

@@ -21,7 +21,7 @@ function editAnswer(qid,msgEl){
   banner.appendChild(cancelBtn);zone.appendChild(banner);
   renderInputFor(targetQ,(newVal)=>{
     if(!isEditing)return;isEditing=false;
-    S.answers[qid]=newVal;
+    S.answers[qid]=sanitize(newVal.trim?newVal.trim():String(newVal));
     const bd=msgEl.querySelector('.m-body');bd.textContent='';
     String(newVal).split('\n').forEach((l,i,a)=>{bd.appendChild(document.createTextNode(l));if(i<a.length-1)bd.appendChild(document.createElement('br'));});
     msgEl.style.outline='';msgEl.style.borderRadius='';zone.innerHTML='';

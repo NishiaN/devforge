@@ -14,6 +14,11 @@ function pluralize(name){
   return lower+'s';
 }
 
+// ── Check if value is "none" in any language ──
+function isNone(v){
+  return !v||v==='none'||v==='None'||v==='なし';
+}
+
 // ── Screen Component Dictionary ──
 const SCREEN_COMPONENTS={
   'ランディング|landing|LP|トップ|home':{
@@ -114,25 +119,25 @@ function resolveArch(a){
     pattern='baas';
     const baasName=be.includes('Supabase')?'Supabase':be.includes('Firebase')?'Firebase':'Convex';
     diagram=`[Client] → [${fe}] → [${baasName} (Auth + DB + Functions)]`;
-    if(mob&&mob!=='none'&&!mob.includes('PWA'))
+    if(mob&&!isNone(mob)&&!mob.includes('PWA'))
       diagram+=`\n[Mobile - ${mob}] → [${baasName} (Auth + DB + Functions)]`;
     note=`${baasName} handles auth, database, and serverless functions as a unified backend.`;
   } else if(isVercel&&isNextJS&&isServerBE){
     pattern='bff';
     diagram=`[Client] → [Next.js (SSR + API Routes)] → [${db}]`;
-    if(mob&&mob!=='none'&&!mob.includes('PWA'))
+    if(mob&&!isNone(mob)&&!mob.includes('PWA'))
       diagram+=`\n[Mobile - ${mob}] → [Next.js API Routes] → [${db}]`;
     note=`Express logic is integrated into Next.js API Routes for Vercel deployment. No separate backend server needed.`;
   } else if(isVercel&&isServerBE&&!isNextJS){
     pattern='split';
     diagram=`[Client] → [${fe} (Vercel)]\n       → [${be} (Railway/Render)] → [${db}]`;
-    if(mob&&mob!=='none'&&!mob.includes('PWA'))
+    if(mob&&!isNone(mob)&&!mob.includes('PWA'))
       diagram+=`\n[Mobile - ${mob}] → [${be} (Railway/Render)] → [${db}]`;
     note=`${be} requires a separate server host (Railway/Render/Fly.io). Vercel serves frontend only.`;
   } else {
     pattern='traditional';
     diagram=`[Client] → [${fe}] → [${be}] → [${db}]`;
-    if(mob&&mob!=='none'&&!mob.includes('PWA'))
+    if(mob&&!isNone(mob)&&!mob.includes('PWA'))
       diagram+=`\n[Mobile - ${mob}] → [${be}] → [${db}]`;
   }
   return {pattern,diagram,note,isBaaS,isNextJS};
@@ -140,7 +145,7 @@ function resolveArch(a){
 
 // ── B7: Schedule Single Source ──
 function buildSchedule(a){
-  const hasMobile=a.mobile&&a.mobile!=='none'&&!a.mobile.includes('PWA');
+  const hasMobile=a.mobile&&!isNone(a.mobile)&&!a.mobile.includes('PWA');
   const startDate=new Date().toISOString().split('T')[0];
   const sprints=[
     {name:'Sprint 0',weeks:'Week 1',focus_ja:'環境構築',focus_en:'Setup'},
@@ -217,6 +222,11 @@ const DOMAIN_ENTITIES={
   saas:{core:['User','Workspace','Project','Task','Subscription','Invoice'],warn:[],suggest:{Product:'Plan',Order:'Subscription'}},
   portfolio:{core:['User','Project','Skill','Experience','Contact'],warn:['Product','Order','Cart','Payment'],suggest:{}},
   tool:{core:['User','Workspace','Task','Setting','Log'],warn:['Product','Order','Cart'],suggest:{}},
+  iot:{core:['User','Device','Sensor','SensorData','Alert','Dashboard'],warn:['Product','Order','Cart'],suggest:{}},
+  realestate:{core:['User','Property','Category','Viewing','Contract','Agent'],warn:['Product','Order','Cart'],suggest:{Product:'Property',Order:'Viewing'}},
+  legal:{core:['User','Contract','Template','Review','Client','Document'],warn:['Product','Order','Cart'],suggest:{}},
+  hr:{core:['User','JobPosting','Applicant','Interview','Evaluation','Department'],warn:['Product','Order','Cart'],suggest:{}},
+  fintech:{core:['User','Account','Transaction','Transfer','Card','Statement'],warn:['Post','Comment','Course'],suggest:{}},
 };
 
 // ── Entity Column Dictionary ──
@@ -424,13 +434,18 @@ function detectDomain(purpose){
   const p=(purpose||'').toLowerCase();
   const detect=[
     [/教育|学習|education|learning|lms|コース|course/i,'education'],
-    [/EC|eコマース|e-commerce|ショップ|shop|commerce/i,'ec'],
+    [/\bEC\b|eコマース|e-commerce|ショップ|\bshop\b|\bcommerce\b/i,'ec'],
     [/マーケットプレイス|marketplace/i,'marketplace'],
     [/コミュニティ|community|フォーラム|forum/i,'community'],
     [/コンテンツ|content|メディア|media|ブログ|blog/i,'content'],
     [/分析|analytics|可視化|ダッシュボード/i,'analytics'],
     [/予約|booking|スケジュール/i,'booking'],
     [/saas|サブスク|subscription/i,'saas'],
+    [/IoT|デバイス|device|sensor|センサー/i,'iot'],
+    [/不動産|物件|real.?estate|property/i,'realestate'],
+    [/法務|契約|legal|contract|コンプライアンス/i,'legal'],
+    [/人事|HR|採用|recruit|hiring/i,'hr'],
+    [/金融|fintech|銀行|bank|決済管理/i,'fintech'],
     [/ポートフォリオ|portfolio/i,'portfolio'],
     [/業務|business|効率化|ツール|tool/i,'tool'],
   ];
@@ -440,7 +455,7 @@ function detectDomain(purpose){
 function inferER(a){
   const G=S.genLang==='ja';
   const domain=detectDomain(a.purpose);
-  const entities=(a.data_entities||'').split(', ').map(e=>e.trim()).filter(Boolean);
+  const entities=(a.data_entities||'').split(/[,、]\s*/).map(e=>e.trim()).filter(Boolean);
   const warnings=[];
   const suggestions=[];
 
@@ -744,7 +759,7 @@ ${a.purpose||'N/A'}
 - Backend: ${a.backend||'Node.js'}
 - Database: ${a.database||'PostgreSQL'}
 - Deploy: ${a.deploy||'Vercel'}
-${a.mobile!=='なし'&&a.mobile!=='None'?`- Mobile: ${a.mobile}\n`:''}
+${!isNone(a.mobile)?`- Mobile: ${a.mobile}\n`:''}
 ## ${G?'セットアップ':'Setup'}
 \`\`\`bash
 git clone https://github.com/YOUR_USERNAME/${pn.toLowerCase().replace(/[^a-z0-9]/g,'-')}.git

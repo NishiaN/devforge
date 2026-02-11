@@ -15,7 +15,7 @@ function genPillar3_MCP(a,pn){
 - Architecture: ${archLabel}
 - Auth SoT: ${auth.sot}
 - Deploy: ${a.deploy||'Vercel'}${arch.pattern==='split'?' (FE) + Railway/Render (BE)':''}
-${a.mobile&&a.mobile!=='none'?`- Mobile: ${a.mobile}\n`:''}${a.payment&&a.payment!=='none'?`- Payment: ${a.payment}\n`:''}
+${!isNone(a.mobile)?`- Mobile: ${a.mobile}\n`:''}${!isNone(a.payment)?`- Payment: ${a.payment}\n`:''}
 ## Key Entities
 ${a.data_entities||'users, items'}
 ${er.relationships.length?'\n## Relationships\n'+er.relationships.join('\n'):''}

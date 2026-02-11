@@ -50,7 +50,7 @@
       <div class="hero-content">
         <div class="version-badge">v9.0 — 2026 Edition</div>
         <h1 id="heroTitle">DevForge v9</h1>
-        <p id="heroDesc">質問に答えるだけで、60+ファイルの開発ドキュメント・環境設定・AIルール・学習ロードマップを自動生成。8つの柱でAI駆動開発をゼロから完全サポート。</p>
+        <p id="heroDesc">質問に答えるだけで、60+ファイルの開発ドキュメント・環境設定・AIルール・学習ロードマップを自動生成。9つの柱でAI駆動開発をゼロから完全サポート。</p>
       </div>
     </div>
     <div class="stat-row">
@@ -274,7 +274,7 @@ linkbio:_mp({name:'Link in Bio',nameEn:'Link in Bio',icon:'🔗',purpose:'SNSプ
 entities:'User, Page, Link, Theme, ClickLog, Integration'}),
 gamify:_mp({name:'ゲーミフィケーション',nameEn:'Gamification',icon:'🎮',purpose:'ゲーム要素でユーザーエンゲージメントを向上',purposeEn:'Boost user engagement with game elements',target:['教育者','マーケター','コミュニティ管理者'],targetEn:['Educators','Marketers','Community Managers'],frontend:'React (Vite SPA)',backend:'Firebase',features:['ポイント・バッジシステム','リーダーボード','チャレンジ・ミッション','報酬・交換','進捗ダッシュボード'],featuresEn:['Points & Badge System','Leaderboard','Challenges & Missions','Rewards & Redemption','Progress Dashboard'],
 entities:'User, Badge, Challenge, Reward, Leaderboard, PointLog, Achievement'}),
-collab:_mp({name:'リアルタイムコラボ',nameEn:'Realtime Collab',icon:'👥',purpose:'チームが同時編集・共同作業できるリアルタイムツール',purposeEn:'Real-time tool for team collaborative editing',target:['リモートチーム','スタートアップ','教育者'],targetEn:['Remote Teams','Startups','Educators'],features:['リアルタイム同時編集','カーソル共有','コメント・メンション','バージョン履歴','権限管理'],featuresEn:['Real-time Co-editing','Cursor Sharing','Comments & Mentions','Version History','Permission Management'],
+collab:_mp({name:'リアルタイムコラボ',nameEn:'Realtime Collab',icon:'🤝',purpose:'チームが同時編集・共同作業できるリアルタイムツール',purposeEn:'Real-time tool for team collaborative editing',target:['リモートチーム','スタートアップ','教育者'],targetEn:['Remote Teams','Startups','Educators'],features:['リアルタイム同時編集','カーソル共有','コメント・メンション','バージョン履歴','権限管理'],featuresEn:['Real-time Co-editing','Cursor Sharing','Comments & Mentions','Version History','Permission Management'],
 entities:'User, Document, Workspace, Comment, Version, Permission, Activity',payment:'stripe'}),
 iot:_mp({name:'IoTダッシュボード',nameEn:'IoT Dashboard',icon:'📡',purpose:'IoTデバイスのデータ監視・制御・可視化ツール',purposeEn:'IoT device data monitoring, control & visualization',target:['エンジニア','製造業'],targetEn:['Engineers','Manufacturing'],frontend:'React (Vite SPA)',backend:'Node.js + Express',features:['デバイス登録・管理','リアルタイムデータ表示','アラート設定','遠隔制御','履歴データ分析'],featuresEn:['Device Registration & Management','Real-time Data Display','Alert Settings','Remote Control','Historical Data Analysis'],
 entities:'User, Device, SensorData, Alert, Command, DeviceGroup, Log'}),
@@ -622,7 +622,6 @@ const TECH_DB=[
 {name:'Grafana',cat:'devops',sub:'viz',req:'optional',level:'pro'},
 {name:'Let\'s Encrypt',cat:'devops',sub:'ssl',req:'recommended',level:'prod'},
 {name:'Cloudflare',cat:'devops',sub:'cdn',req:'optional',level:'pro'},
-{name:'Nginx',cat:'devops',sub:'web',req:'optional',level:'pro'},
 {name:'Claude (Chat)',cat:'ai',sub:'chat',req:'recommended',level:'all',price:'$20'},
 {name:'ChatGPT',cat:'ai',sub:'chat',req:'optional',level:'all',price:'$20'},
 {name:'Gemini',cat:'ai',sub:'chat',req:'optional',level:'all',price:'free-20'},
@@ -1528,7 +1527,7 @@ function editAnswer(qid,msgEl){
   banner.appendChild(cancelBtn);zone.appendChild(banner);
   renderInputFor(targetQ,(newVal)=>{
     if(!isEditing)return;isEditing=false;
-    S.answers[qid]=newVal;
+    S.answers[qid]=sanitize(newVal.trim?newVal.trim():String(newVal));
     const bd=msgEl.querySelector('.m-body');bd.textContent='';
     String(newVal).split('\n').forEach((l,i,a)=>{bd.appendChild(document.createTextNode(l));if(i<a.length-1)bd.appendChild(document.createElement('br'));});
     msgEl.style.outline='';msgEl.style.borderRadius='';zone.innerHTML='';
@@ -1799,7 +1798,7 @@ function initPresets(){
     if(k==='custom'||!v.name)return;
     const c=document.createElement('span');c.className='prchip';
     c.textContent=(v.icon||'')+(v.icon?' ':'')+(!_ja&&v.nameEn?v.nameEn:v.name);
-    c.onclick=()=>pickPreset(k);
+    c.onclick=(e)=>pickPreset(k,e);
     const _en=!_ja;
     const desc=(_en&&v.purposeEn)?v.purposeEn:v.purpose||'';
     const fe=v.frontend||'-';
@@ -1853,10 +1852,10 @@ function renderCompare(){
   h+='</table>';
   $('cmpBody').innerHTML=h;
 }
-function pickPreset(k){
+function pickPreset(k,e){
   S.preset=k;
   document.querySelectorAll('.prchip').forEach(c=>c.classList.remove('on'));
-  event.target.classList.add('on');
+  if(e&&e.target)e.target.classList.add('on');
   const p=PR[k];
   if(p&&p.name)$('nameIn').value=(S.lang==='en'&&p.nameEn)?p.nameEn:p.name;
   save();
@@ -2210,7 +2209,7 @@ function finishGen(_errs){
 function showExportGrid(){
   const _ja=S.lang==='ja';const fc=Object.keys(S.files).length;
   const totalChars=Object.values(S.files).reduce((s,v)=>s+v.length,0);
-  const tokens=Math.round(totalChars/3.5);
+  const tokens=Math.round(totalChars/4);
   const sizeKB=Math.round(totalChars/1024);
   const summary=`<div class="export-summary">
     <span>📁 ${fc} ${_ja?'ファイル':'files'}</span>
@@ -2261,7 +2260,7 @@ function genPillar1_SDD(a,pn){
     };
     return defaults[domain] || (G?'ネイティブアプリ, モバイルアプリ':'Native apps, Mobile apps');
   })();
-  if(a.mobile&&a.mobile!=='none'&&!String(a.mobile).includes('PWA')){
+  if(a.mobile&&!isNone(a.mobile)&&!String(a.mobile).includes('PWA')){
     scopeOut=scopeOut.replace(/ネイティブアプリ/g,G?'ストア配布用ネイティブビルド（Expo Web UIは対象内）':'Native app store builds (Expo Web UI is in scope)');
     scopeOut=scopeOut.replace(/native apps?/gi,'Native app store builds (Expo Web UI is in scope)');
   }
@@ -2316,8 +2315,8 @@ function genPillar1_SDD(a,pn){
   } else {
     apiDesignLines=['- RESTful API (OpenAPI 3.0)','- '+(G?'バージョニング':'Versioning')+': /api/v1/','- '+(G?'認証':'Auth')+': '+auth.tokenType,'- '+(G?'レスポンス':'Response')+': JSON'];
   }
-  const hasMob=a.mobile&&a.mobile!=='なし'&&a.mobile!=='None'&&a.mobile!=='none';
-  const hasPay=a.payment&&a.payment!=='なし'&&a.payment!=='None'&&a.payment!=='none';
+  const hasMob=a.mobile&&!isNone(a.mobile);
+  const hasPay=a.payment&&!isNone(a.payment);
   const specLines=[
     '# '+pn+' — '+(G?'要件仕様書 (Specification)':'Specification'),
     '> Generated by DevForge v9 — '+date,'',
@@ -2438,7 +2437,7 @@ function genPillar1_SDD(a,pn){
     '├── roadmap/          # '+(G?'学習ロードマップ':'Learning roadmap'),
     '└── docs/             # '+(G?'ドキュメント':'Documents'));
   const dirNote=arch.pattern==='bff'?'\n> '+(G?'Note: Express のロジックは src/app/api/ 配下の Route Handlers に統合':'Note: Express logic integrated into src/app/api/ Route Handlers')+'\n':'';
-  const entities=(a.data_entities||'users, items').split(', ').map(e=>e.trim()).filter(Boolean);
+  const entities=(a.data_entities||'users, items').split(/[,、]\s*/).map(e=>e.trim()).filter(Boolean);
   const entityLines=entities.map(en=>{
     const cols=getEntityColumns(en,G,entities);
     const lines=['### '+en,'- id: UUID (PK)'];
@@ -2455,7 +2454,7 @@ function genPillar1_SDD(a,pn){
   if(arch.isBaaS&&be.includes('Supabase')){
     const rlsLines=[G?'### RLS（Row Level Security）方針':'### RLS (Row Level Security) Policy',
       G?'全テーブルにRLS有効化。ポリシー例:':'Enable RLS on all tables. Policy examples:','','```sql'];
-    (a.data_entities||'').split(', ').forEach(e=>{
+    (a.data_entities||'').split(/[,、]\s*/).map(e=>e.trim()).filter(Boolean).forEach(e=>{
       const en=e.trim();const tbl=pluralize(en);
       const cols=getEntityColumns(en,G,entities);
       const hasUserId=cols.some(c=>c.col==='user_id');
@@ -2686,7 +2685,7 @@ function genPillar3_MCP(a,pn){
 - Architecture: ${archLabel}
 - Auth SoT: ${auth.sot}
 - Deploy: ${a.deploy||'Vercel'}${arch.pattern==='split'?' (FE) + Railway/Render (BE)':''}
-${a.mobile&&a.mobile!=='none'?`- Mobile: ${a.mobile}\n`:''}${a.payment&&a.payment!=='none'?`- Payment: ${a.payment}\n`:''}
+${!isNone(a.mobile)?`- Mobile: ${a.mobile}\n`:''}${!isNone(a.payment)?`- Payment: ${a.payment}\n`:''}
 ## Key Entities
 ${a.data_entities||'users, items'}
 ${er.relationships.length?'\n## Relationships\n'+er.relationships.join('\n'):''}
@@ -2718,12 +2717,13 @@ ${tools.join(', ')}
 function genPillar4_AIRules(a,pn){
   const G=S.genLang==='ja';
   const db=a.database||'PostgreSQL';
+  const be=a.backend||'Node.js + Express';
   const auth=resolveAuth(a);
   const arch=resolveArch(a);
-  const orm=arch.isBaaS?(a.backend.includes('Supabase')?'Supabase Client SDK':a.backend.includes('Firebase')?'Firebase SDK':'Convex Client'):(a.orm&&a.orm.includes('Drizzle')?'Drizzle ORM':'Prisma ORM');
+  const orm=arch.isBaaS?(be.includes('Supabase')?'Supabase Client SDK':be.includes('Firebase')?'Firebase SDK':'Convex Client'):(a.orm&&a.orm.includes('Drizzle')?'Drizzle ORM':'Prisma ORM');
   const archNote=G?{baas:'BaaS統合パターン（サーバーレス）',bff:'BFF パターン（Next.js API Routes統合）',split:'フロント/バック分離（別ホスト）',traditional:'従来型クライアント-サーバー'}[arch.pattern]:{baas:'BaaS Integration (serverless)',bff:'BFF Pattern (Next.js API Routes)',split:'FE/BE Split (separate hosts)',traditional:'Traditional Client-Server'}[arch.pattern];
   const core=`Project: ${pn}
-Stack: ${a.frontend||'React'} + ${a.backend||'Node.js'} + ${db}
+Stack: ${a.frontend||'React'} + ${be} + ${db}
 Architecture: ${archNote}
 Auth SoT: ${auth.sot}
 Methods: ${a.dev_methods||'TDD'}
@@ -2747,7 +2747,7 @@ ${core}
   const forbidden=arch.isBaaS?
     `- No raw SQL in application code (use ${orm} methods)
   - OK: DDL/RLS/migration SQL in supabase/migrations/
-- No separate Express/Fastify server (use ${a.backend} functions)
+- No separate Express/Fastify server (use ${be} functions)
 - No manual JWT handling (use ${auth.sot})`:
     arch.pattern==='bff'?
     `- No separate Express server (use Next.js API Routes)
@@ -2783,10 +2783,10 @@ hooks:
     - name: format
       command: npx prettier --write .
 `;
-  const entities=(a.data_entities||'User').split(', ').filter(Boolean);
+  const entities=(a.data_entities||'User').split(/[,、]\s*/).map(e=>e.trim()).filter(Boolean);
   const features=(a.mvp_features||'CRUD').split(', ').filter(Boolean);
   const screens=(a.screens||'Dashboard').split(', ').filter(Boolean);
-  const fe=a.frontend||'React';const be=a.backend||'Node.js';
+  const fe=a.frontend||'React';
   const deploy=a.deploy||'Vercel';
   const dbSchema=entities.map(en=>{
     const cols=getEntityColumns(en,G,entities);
@@ -2885,7 +2885,7 @@ CLAUDE.md        → ${G?'Claude Code用ルール':'Claude Code rules'}
 5. Run \`npm test\` after each feature
 `;
   const aiAuto=a.ai_auto||'';
-  if(aiAuto&&aiAuto!=='none'&&!aiAuto.includes('なし')){
+  if(aiAuto&&!isNone(aiAuto)){
     const domain=detectDomain(a.purpose);
     const coreSkills=['0:要件レビュー:Req Review:要件検証:Verify reqs:欠落0:0 gaps','1:設計検証:Arch Review:技術評価:Eval tech:P0リスク0:0 P0 risks','2:実装支援:Code Support:実装支援:Impl support:エラー0:0 errors','3:デプロイ検証:Deploy Check:デプロイ前チェック:Pre-deploy check:全PASS:All PASS'];
     const domainSkillsMap={
@@ -2898,7 +2898,12 @@ CLAUDE.md        → ${G?'Claude Code用ルール':'Claude Code rules'}
       marketplace:['0:取引設計:Trade Design:取引フロー設計:Design trade flow:安全性確保:Safety ensured','1:レビュー検証:Review Check:レビュー信頼性検証:Verify review trust:偽装0:0 fake'],
       content:['2:配信最適化:Delivery Opt:コンテンツ配信最適化:Optimize content delivery:遅延100ms↓:≤100ms delay','3:分析:Analytics:閲覧分析:View analytics:エンゲージ可視化:Engagement vis'],
       analytics:['1:ダッシュボード設計:Dashboard:ダッシュボード設計:Design dashboard:KPI明確:Clear KPI','2:レポート生成:Report Gen:レポート自動生成:Auto-gen reports:正確性100%:100% accuracy'],
-      business:['0:CRM設計:CRM Design:顧客管理設計:Design CRM:リード漏れ0:0 lead loss','1:営業フロー:Sales Flow:営業プロセス最適化:Optimize sales process:CVR向上:Improve CVR']
+      business:['0:CRM設計:CRM Design:顧客管理設計:Design CRM:リード漏れ0:0 lead loss','1:営業フロー:Sales Flow:営業プロセス最適化:Optimize sales process:CVR向上:Improve CVR'],
+      iot:['1:デバイス管理:Device Mgmt:デバイス管理:Device management:全台接続:All connected','2:センサー分析:Sensor Analysis:センサーデータ分析:Analyze sensor data:異常検知:Anomaly detected','3:アラート設計:Alert Design:アラート設計:Design alerts:誤報1%↓:≤1% false alarm'],
+      realestate:['0:物件管理:Property Mgmt:物件データ管理:Manage property data:登録100%:100% listed','1:内見予約:Viewing:内見予約管理:Manage viewings:重複0:0 overlaps','2:契約検証:Contract:契約書検証:Verify contracts:必須項目100%:100% required'],
+      legal:['0:契約レビュー:Contract Review:契約書レビュー:Review contracts:リスク条項0:0 risk clauses','1:コンプライアンス:Compliance:法令準拠チェック:Compliance check:違反0:0 violations','3:文書管理:Doc Mgmt:文書バージョン管理:Doc version control:最新版追跡:Latest tracked'],
+      hr:['0:採用フロー:Hiring Flow:採用プロセス設計:Design hiring flow:漏れ0:0 gaps','1:評価設計:Eval Design:評価制度設計:Design evaluation:基準明確:Clear criteria','3:オンボーディング:Onboarding:入社手続き管理:Manage onboarding:完了率100%:100% completion'],
+      fintech:['1:取引検証:Tx Validation:取引データ検証:Validate transactions:不正0:0 fraud','1:リスク分析:Risk Analysis:リスク評価:Risk assessment:P0対応済:P0 addressed','3:レポート生成:Report Gen:財務レポート:Financial reports:正確性100%:100% accuracy']
     };
     const domainSkills=domainSkillsMap[domain]||[];
     const allSkills=[...coreSkills,...domainSkills];
@@ -2907,7 +2912,22 @@ CLAUDE.md        → ${G?'Claude Code用ルール':'Claude Code rules'}
       '教材設計':{input:'docs/03,04',process:G?'ER図→学習フロー抽出→難易度分類→構成生成':'ER→flow→difficulty→curriculum',output:G?'構成マップ(md)':'Curriculum (md)'},
       '機能仕様':{input:'.spec/constitution',process:G?'使命→ストーリー抽出→受入条件3つ→優先度付与':'Mission→stories→3 AC→priority',output:G?'仕様書(md)':'Spec (md)'},
       'API設計':{input:'docs/04,05',process:G?'ER→エンドポイント生成→REST命名チェック→標準化':'ER→endpoints→REST check→standardize',output:G?'API仕様(OpenAPI)':'API spec (OpenAPI)'},
-      '決済検証':{input:'docs/08',process:G?'OWASP照合→Webhook検証→RLSチェック':'OWASP→webhook→RLS',output:G?'チェックリスト':'Checklist'}
+      '決済検証':{input:'docs/08',process:G?'OWASP照合→Webhook検証→RLSチェック':'OWASP→webhook→RLS',output:G?'チェックリスト':'Checklist'},
+      '要件レビュー':{input:'.spec/constitution,specification',process:G?'使命→KPI照合→機能網羅チェック→欠落列挙':'Mission→KPI check→feature coverage→list gaps',output:G?'矛盾リスト+修正案':'Gap list + fix proposal'},
+      '設計検証':{input:'.spec/technical-plan',process:G?'スタック評価→依存関係チェック→リスク分析→代替案':'Stack eval→deps check→risk→alternatives',output:G?'リスク評価表':'Risk assessment'},
+      '実装支援':{input:'.spec/specification,technical-plan',process:G?'仕様読込→型定義→CRUD実装→テスト生成':'Read spec→types→CRUD impl→gen tests',output:G?'実装コード+テスト':'Code + tests'},
+      'デプロイ検証':{input:'docs/09,ci.yml',process:G?'環境変数チェック→ビルド検証→ヘルスチェック→ロールバック確認':'Env check→build verify→health→rollback',output:G?'デプロイレポート':'Deploy report'},
+      '問題生成':{input:'docs/03,Lesson',process:G?'学習目標抽出→難易度設定→正常系3問+異常系3問→解説生成':'Goals→difficulty→3 normal+3 edge→explanations',output:G?'問題セット(JSON)':'Quiz set (JSON)'},
+      '商品検証':{input:'Product,Category',process:G?'必須フィールド検査→SKU重複チェック→価格妥当性→画像存在確認':'Required fields→SKU dup→price valid→image check',output:G?'検証レポート':'Validation report'},
+      'モデレーション':{input:'Post,Comment',process:G?'禁止語チェック→スパム判定→報告集計→対応優先度付与':'Banned words→spam detect→report aggregate→priority',output:G?'モデレーションキュー':'Moderation queue'},
+      '予約設計':{input:'Service,TimeSlot',process:G?'空き枠計算→重複検出→バッファ設定→通知設計':'Availability calc→dup detect→buffer→notify design',output:G?'予約ロジック仕様':'Booking logic spec'},
+      '記録検証':{input:'HealthLog,Goal',process:G?'入力値範囲チェック→異常値検出→トレンド分析→アラート条件設定':'Range check→anomaly detect→trend→alert config',output:G?'健康レポート':'Health report'},
+      'CRM設計':{input:'User,Contact',process:G?'リード定義→ファネル設計→スコアリング→自動化ルール':'Lead def→funnel→scoring→automation rules',output:G?'CRM設計書':'CRM design doc'},
+      'デバイス管理':{input:'Device,Sensor',process:G?'デバイス登録→接続状態監視→ファーム更新管理→ログ収集':'Register→monitor→firmware→logs',output:G?'デバイス管理画面':'Device dashboard'},
+      '物件管理':{input:'Property,Category',process:G?'物件登録→写真管理→間取り設定→公開管理':'Register→photos→floor plan→publish',output:G?'物件データベース':'Property DB'},
+      '契約レビュー':{input:'Contract,Template',process:G?'テンプレート照合→リスク条項検出→期限チェック→承認フロー':'Template match→risk detect→deadline→approval',output:G?'レビュー結果':'Review result'},
+      '採用フロー':{input:'JobPosting,Applicant',process:G?'求人作成→応募管理→面接調整→評価集約→内定':'Post→apply→interview→eval→offer',output:G?'採用パイプライン':'Hiring pipeline'},
+      '取引検証':{input:'Transaction,Account',process:G?'残高確認→二重支払チェック→限度額検証→監査ログ':'Balance→dup check→limit→audit log',output:G?'検証レポート':'Validation report'}
     };
     let catalogMd=`# ${pn} ${G?'— AIスキルカタログ':'— AI Skills Catalog'}\n${G?'ドメイン特化スキル + コア開発スキル':'Domain-specific skills + core development skills'}\n\n`;
     roleNames.forEach((role,idx)=>{
@@ -2932,7 +2952,11 @@ CLAUDE.md        → ${G?'Claude Code用ルール':'Claude Code rules'}
     const hasMultiAgent=aiAuto.includes('Multi')||aiAuto.includes('マルチ')||aiAuto.includes('Full')||aiAuto.includes('フル')||aiAuto.includes('Orch');
     const hasFullAuto=aiAuto.includes('Full')||aiAuto.includes('フル')||aiAuto.includes('Orch');
     if(hasMultiAgent){
-      catalogMd+=`## ${G?'高度スキル':'Advanced'}\n### ${G?'並列レビュー':'Parallel Review'}\n- **${G?'判断':'Judgment'}**: ${G?'全合意':'All agree'}\n### ${G?'圧縮':'Compression'}\n- **${G?'判断':'Judgment'}**: ${G?'トークン80%削減':'80% token reduction'}\n\n`;
+      catalogMd+=`## ${G?'高度スキル':'Advanced'}\n`;
+      catalogMd+=`### ${G?'並列レビュー':'Parallel Review'}\n- **${G?'目的':'Purpose'}**: ${G?'複数エージェントで同時レビュー':'Multi-agent simultaneous review'}\n- **${G?'判断':'Judgment'}**: ${G?'全合意':'All agree'}\n- **${G?'入力':'Input'}**: ${G?'対象コード':'Target code'}\n- **${G?'処理':'Process'}**: ${G?'分割→並列レビュー→結果マージ→合意形成':'Split→parallel review→merge→consensus'}\n- **${G?'出力':'Output'}**: ${G?'統合レビュー':'Unified review'}\n\n`;
+      catalogMd+=`### ${G?'コードレビュー自動化':'Auto Code Review'}\n- **${G?'目的':'Purpose'}**: ${G?'PR単位で自動コードレビュー':'Auto review per PR'}\n- **${G?'判断':'Judgment'}**: ${G?'問題0件':'0 issues'}\n- **${G?'入力':'Input'}**: ${G?'PRの差分':'PR diff'}\n- **${G?'処理':'Process'}**: ${G?'差分解析→パターンチェック→セキュリティスキャン→提案生成':'Diff→pattern check→security scan→suggestions'}\n- **${G?'出力':'Output'}**: ${G?'レビューコメント':'Review comments'}\n\n`;
+      catalogMd+=`### ${G?'ドキュメント自動更新':'Auto Doc Update'}\n- **${G?'目的':'Purpose'}**: ${G?'コード変更に連動してドキュメント更新':'Update docs on code changes'}\n- **${G?'判断':'Judgment'}**: ${G?'乖離0':'0 drift'}\n- **${G?'入力':'Input'}**: ${G?'変更コード+既存docs/':'Changed code + existing docs/'}\n- **${G?'処理':'Process'}**: ${G?'変更検出→影響ドキュメント特定→差分生成→反映':'Detect change→find affected docs→gen diff→apply'}\n- **${G?'出力':'Output'}**: ${G?'更新済ドキュメント':'Updated docs'}\n\n`;
+      catalogMd+=`### ${G?'圧縮':'Compression'}\n- **${G?'判断':'Judgment'}**: ${G?'トークン80%削減':'80% token reduction'}\n\n`;
     }
     if(hasFullAuto){
       catalogMd+=`## ${G?'自律':'Autonomous'}\n### ${G?'統括':'Orchestration'}\n- **${G?'判断':'Judgment'}**: ${G?'全完了':'All done'}\n### ${G?'自己修復':'Self-Heal'}\n- **${G?'判断':'Judgment'}**: ${G?'リトライ成功':'Retry OK'}\n\n`;
@@ -3222,11 +3246,11 @@ npx create-medusa-app@latest
 function genPillar9_DesignSystem(a,pn){
   const G=S.genLang==='ja';
   const fe=a.frontend||'React + Next.js';
-  const be=a.backend||'Supabase';
+  const be=a.backend||'Node.js + Express';
   const auth=resolveAuth(a);
   const arch=resolveArch(a);
   const hasPay=a.payment&&!/なし|None|none/.test(a.payment);
-  const entities=(a.data_entities||'').split(/[,、]/).map(s=>s.trim()).filter(Boolean);
+  const entities=(a.data_entities||'').split(/[,、]\s*/).map(s=>s.trim()).filter(Boolean);
   const screens=(a.screens||'').split(/[,、]/).map(s=>s.trim()).filter(Boolean);
   const isTailwind=fe.includes('Next')||fe.includes('Vite')||fe.includes('React');
   const isVuetify=fe.includes('Vue');
@@ -3240,7 +3264,7 @@ function genPillar9_DesignSystem(a,pn){
   const darkMode=G?'## ダーク/ライトモード':'## Dark/Light Mode';
   const guidelines=G?'## AI実装ガイドライン':'## AI Implementation Guidelines';
   let designDoc='# '+(G?'デザインシステム':'Design System')+'\n\n';
-  designDoc+=G?'**重要**: AIエージェントは、UI実装時に必ずこのデザインシステムを参照し、一貫性を保ってください。':'**IMPORTANT**: AI agents MUST reference this design system when implementing UI to maintain consistency.\n\n';
+  designDoc+=G?'**重要**: AIエージェントは、UI実装時に必ずこのデザインシステムを参照し、一貫性を保ってください。\n\n':'**IMPORTANT**: AI agents MUST reference this design system when implementing UI to maintain consistency.\n\n';
   designDoc+=colorSection+'\n\n'+colorPalette+'\n\n';
   if(isTailwind){
     designDoc+='```css\n\ntheme: {\n  extend: {\n    colors: {\n      primary: {\n        50: \'#f0f9ff\',\n        500: \'#0ea5e9\',\n        900: \'#0c4a6e\'\n      },\n      surface: {\n        light: \'#ffffff\',\n        dark: \'#1e293b\'\n      }\n    }\n  }\n}\n```\n';
@@ -3282,7 +3306,7 @@ function genPillar9_DesignSystem(a,pn){
   designDoc+=(G?'1. **色**: 必ず定義済みトークンを使用。直接カラーコード（#000 等）を記述しない\n2. **スペーシング**: 4px グリッドに従う (xs/sm/md/lg/xl/2xl)\n3. **タイポグラフィ**: 定義されたスケールのみ使用\n4. **コンポーネント**: 推奨ライブラリから選択（独自実装は最小限）\n5. **ダークモード**: すべてのUI要素でLight/Dark対応を実装\n6. **レスポンシブ**: モバイルファースト設計（最小→最大）\n7. **アクセシビリティ**: ARIA属性、キーボードナビゲーション、コントラスト比 4.5:1 以上\n':'1. **Colors**: Always use predefined tokens. Never hardcode colors (#000)\n2. **Spacing**: Follow 4px grid (xs/sm/md/lg/xl/2xl)\n3. **Typography**: Use defined scale only\n4. **Components**: Choose from recommended library (minimize custom)\n5. **Dark Mode**: Implement Light/Dark support for all UI elements\n6. **Responsive**: Mobile-first design (min → max)\n7. **Accessibility**: ARIA attributes, keyboard navigation, contrast ratio ≥ 4.5:1\n')+'\n';
   S.files['docs/26_design_system.md']=designDoc;
   let seqDoc='# '+(G?'シーケンス図':'Sequence Diagrams')+'\n\n';
-  seqDoc+=G?'**重要**: AIエージェントは、複雑なフローを実装する前にこのシーケンス図を参照してください。':'**IMPORTANT**: AI agents MUST reference these sequence diagrams before implementing complex flows.\n\n';
+  seqDoc+=G?'**重要**: AIエージェントは、複雑なフローを実装する前にこのシーケンス図を参照してください。\n\n':'**IMPORTANT**: AI agents MUST reference these sequence diagrams before implementing complex flows.\n\n';
   seqDoc+=(G?'## 認証フロー':'## Authentication Flow')+'\n\n```mermaid\nsequenceDiagram\n  participant U as User\n  participant C as Client\n  participant ';
   if(auth.provider==='supabase'){
     seqDoc+='S as Supabase Auth\n  U->>C: '+(G?'ログイン要求':'Login request')+'\n  C->>S: signInWithPassword(email, password)\n  S-->>C: {access_token, refresh_token}\n  C->>C: '+(G?'トークン保存':'Store tokens')+'\n  C->>S: getUser() with access_token\n  S-->>C: User object\n  C-->>U: '+(G?'ダッシュボード表示':'Show dashboard')+'\n```\n\n';
@@ -3312,12 +3336,13 @@ function genPillar9_DesignSystem(a,pn){
 function genDocs21(a,pn){
   const G=S.genLang==='ja';
   const date=new Date().toISOString().split('T')[0];
+  const ganttStart=new Date().toISOString().split('T')[0];
   const fe=a.frontend||'React';const be=a.backend||'Node.js';
   const auth=resolveAuth(a);
   const arch=resolveArch(a);
   const orm=arch.isBaaS?(be.includes('Supabase')?'Supabase Client':be.includes('Firebase')?'Firebase SDK':'Convex'):(a.orm&&a.orm.includes('Drizzle')?'Drizzle':'Prisma');
   const stripPri=s=>(s||'').replace(/\[P[0-2]\]\s*/g,'');
-  const entities=(stripPri(a.data_entities)||'users, items').split(', ').filter(Boolean);
+  const entities=(stripPri(a.data_entities)||'users, items').split(/[,、]\s*/).map(e=>e.trim()).filter(Boolean);
   const features=(stripPri(a.mvp_features)||(G?'CRUD操作':'CRUD')).split(', ').filter(Boolean);
   const screens=(stripPri(a.screens)||(G?'ダッシュボード, ログイン':'Dashboard, Login')).split(', ').filter(Boolean);
   const methods=(stripPri(a.dev_methods)||'TDD').split(', ').filter(Boolean);
@@ -3524,7 +3549,7 @@ function genDocs21(a,pn){
     ['09_release_checklist',G?'リリースチェックリスト':'Release Checklist',`## ${G?'デプロイ先':'Deploy Target'}: ${deployTarget}\n\n### 1. ${G?'コード品質':'Code Quality'}\n${(G?['TypeScript 型エラー 0件','ESLint エラー 0件','全テストパス','カバレッジ 80%+']:['TypeScript: 0 type errors','ESLint: 0 errors','All tests pass','Coverage 80%+']).map(c=>'- [ ] '+c).join('\n')}\n\n### 2. ${G?'セキュリティ':'Security'}\n
 ${(G?['環境変数にシークレット未ハードコード','CORS設定','CSP設定','認証・認可テスト完了']:['No hardcoded secrets in env vars','CORS config','CSP config','Auth/authz tests done']).map(c=>'- [ ] '+c).join('\n')}\n\n### 3. ${G?'インフラ':'Infrastructure'} (${deployTarget})\n${deployChecks.map(c=>'- [ ] '+c).join('\n')}\n\n### 4. ${G?'データベース':'Database'} (${dbName})\n${dbChecks.map(c=>'- [ ] '+c).join('\n')}\n\n### 5. ${G?'パフォーマンス':'Performance'}\n
 ${(G?['Lighthouse 90+','LCP < 2.5s','画像最適化','バンドルサイズ確認']:['Lighthouse 90+','LCP < 2.5s','Image optimization','Bundle size check']).map(c=>'- [ ] '+c).join('\n')}\n\n### 6. ${G?'モニタリング':'Monitoring'}\n${(G?['Sentry設定','アクセスログ','アラート閾値']:['Sentry setup','Access logs','Alert thresholds']).map(c=>'- [ ] '+c).join('\n')}`],
-    ['10_gantt',G?'ガントチャート':'Gantt Chart',`${G?'## プロジェクトスケジュール':'## Project Schedule'}\n\n\`\`\`mermaid\ngantt\n  title ${pn} ${G?'開発スケジュール':'Development Schedule'}\n  dateFormat YYYY-MM-DD\n  axisFormat %m/%d\n  section Sprint 0\n  ${G?'プロジェクトセットアップ':'Project Setup'} :env, 2026-01-01, 2d\n  ${G?'DevContainer構築':'DevContainer Setup'} :dc, after env, 1d\n  ${G?'CI/CD設定':'CI/CD Setup'} :ci, after dc, 1d\n  section Sprint 1-2\n${ganttTasks}\n  section Sprint 3\n
+    ['10_gantt',G?'ガントチャート':'Gantt Chart',`${G?'## プロジェクトスケジュール':'## Project Schedule'}\n\n\`\`\`mermaid\ngantt\n  title ${pn} ${G?'開発スケジュール':'Development Schedule'}\n  dateFormat YYYY-MM-DD\n  axisFormat %m/%d\n  section Sprint 0\n  ${G?'プロジェクトセットアップ':'Project Setup'} :env, ${ganttStart}, 2d\n  ${G?'DevContainer構築':'DevContainer Setup'} :dc, after env, 1d\n  ${G?'CI/CD設定':'CI/CD Setup'} :ci, after dc, 1d\n  section Sprint 1-2\n${ganttTasks}\n  section Sprint 3\n
   ${G?'E2Eテスト':'E2E Tests'} :test, after s${features.length-1}, 3d\n  ${G?'パフォーマンス最適化':'Perf Optimization'} :perf, after test, 2d\n  ${G?'リリース':'Release'} :rel, after perf, 1d\n\`\`\`\n\n${G?'## マイルストーン':'## Milestones'}\n| MS | ${G?'目標':'Goal'} | ${G?'成果物':'Deliverable'} |\n|----|------|--------|\n| Alpha | Sprint 1 ${G?'完了':'done'} | ${G?'コア機能動作':'Core features working'} |\n| Beta | Sprint 2 ${G?'完了':'done'} | ${G?'全機能実装':'All features implemented'} |\n
 | RC | Sprint 3 ${G?'中盤':'mid'} | ${G?'テスト完了':'Tests complete'} |\n| GA | Sprint 3 ${G?'末':'end'} | ${G?'本番リリース':'Production release'} |`],
     ['11_wbs',G?'WBS (作業分解構造)':'WBS (Work Breakdown)',`${G?'## WBS — 総工数:':'## WBS — Total Hours:'} 約${totalH+26}h\n\n### 1. ${G?'プロジェクト管理':'Project Management'} (8h)\n- 1.1 ${G?'要件定義・SDD作成':'Requirements & SDD'} (3h)\n- 1.2 ${G?'技術選定・環境構築':'Tech selection & setup'} (3h)\n- 1.3 ${G?'進捗管理・レビュー':'Progress mgmt & review'} (2h)\n\n## 2. ${G?'機能開発':'Feature Development'} (${totalH}h)\n\n${wbsTasks}\n\n### 3. ${G?'テスト':'Testing'} (12h)\n- 3.1 ${G?'ユニットテスト':'Unit tests'} (4h)\n
@@ -3538,7 +3563,7 @@ ${(G?['Lighthouse 90+','LCP < 2.5s','画像最適化','バンドルサイズ確�
     ['18_data_migration',G?'データ移行計画書':'Data Migration Plan',`${G?'## 移行戦略':'## Migration Strategy'}\n- ${G?'段階的移行':'Phased migration'}\n- ${G?'ロールバック計画':'Rollback plan'}\n- ${G?'データ検証手順':'Data validation'}`],
     ['19_performance',G?'パフォーマンス設計書':'Performance Design',`${G?'## 目標値':'## Targets'}\n- LCP: < 2.5s\n- FID: < 100ms\n- CLS: < 0.1\n\n${G?'## 最適化施策':'## Optimizations'}\n- ${G?'画像最適化':'Image optimization'} (${fe.includes('Next')?'next/image':fe.includes('Vite')||fe.includes('SPA')?'vite-imagetools / sharp':'sharp / imagemin'})\n- Code Splitting${fe.includes('Vite')||fe.includes('SPA')?' (Vite dynamic import)':fe.includes('Next')?' (Next.js dynamic)':''}\n- ${deployTarget.includes('Vercel')||deployTarget.includes('Netlify')?'Edge Caching (CDN)':'CDN Caching'}`],
     ['20_a11y',G?'アクセシビリティ設計書':'Accessibility Design',`## WCAG 2.1 AA\n- ${G?'キーボードナビゲーション':'Keyboard navigation'}\n- ${G?'スクリーンリーダー対応':'Screen reader support'}\n- ${G?'カラーコントラスト比':'Color contrast ratio'} 4.5:1+\n- ${G?'フォーカス管理':'Focus management'}`],
-    ['21_changelog',G?'変更履歴':'Changelog',`## v1.0.0 (${date})\n- ${G?'初期リリース':'Initial release'}\n- ${features.slice(0,3).join(', ')} 実装\n\n## ${G?'DevForge v9による自動生成':'Auto-generated by DevForge v9'}\n- ${G?'60+ファイル生成':'60+ files generated'}\n- ${G?'8つの柱対応':'8 pillars support'}\n- ${G?'Mermaid図・プロンプトプレイブック・タスク分解対応':'Mermaid diagrams, Prompt Playbook, Task decomposition'}`],
+    ['21_changelog',G?'変更履歴':'Changelog',`## v1.0.0 (${date})\n- ${G?'初期リリース':'Initial release'}\n- ${features.slice(0,3).join(', ')} 実装\n\n## ${G?'DevForge v9による自動生成':'Auto-generated by DevForge v9'}\n- ${G?'60+ファイル生成':'60+ files generated'}\n- ${G?'9つの柱対応':'9 pillars support'}\n- ${G?'Mermaid図・プロンプトプレイブック・タスク分解対応':'Mermaid diagrams, Prompt Playbook, Task decomposition'}`],
     ['24_progress',G?'進捗管理表':'Progress Tracker',
   `${G?'> AIエージェントはタスク完了後にこのファイルを更新してください。':
        '> AI agents should update this file after completing each task.'}
@@ -3597,6 +3622,7 @@ _(${G?'追記してください':'Add entries here'})_`],
     S.files[`docs/${file}.md`]=`# ${pn} — ${title}\n> ${date}\n\n${content}`;
   });
   const buildCmd=fe.includes('Next')?'next build':fe.includes('Vite')||fe.includes('SPA')?'vite build':'npm run build';
+  const buildPrefix=buildCmd.startsWith('npm')?'':'npx ';
   const nodeV='22';
   S.files['.github/workflows/ci.yml']=[
     'name: CI',
@@ -3618,7 +3644,7 @@ _(${G?'追記してください':'Add entries here'})_`],
     '      - run: npm ci',
     '      - run: npm run lint',
     '      - run: npm run test',
-    '      - run: npx '+buildCmd,
+    '      - run: '+buildPrefix+buildCmd,
     ''
   ].join('\n');
 }
@@ -3630,6 +3656,9 @@ function pluralize(name){
   if(lower.endsWith('s')||lower.endsWith('x')||lower.endsWith('ch')||lower.endsWith('sh')) return lower+'es';
   if(lower.endsWith('y')&&!/[aeiou]y$/i.test(lower)) return lower.slice(0,-1)+'ies';
   return lower+'s';
+}
+function isNone(v){
+  return !v||v==='none'||v==='None'||v==='なし';
 }
 const SCREEN_COMPONENTS={
   'ランディング|landing|LP|トップ|home':{
@@ -3721,31 +3750,31 @@ function resolveArch(a){
     pattern='baas';
     const baasName=be.includes('Supabase')?'Supabase':be.includes('Firebase')?'Firebase':'Convex';
     diagram=`[Client] → [${fe}] → [${baasName} (Auth + DB + Functions)]`;
-    if(mob&&mob!=='none'&&!mob.includes('PWA'))
+    if(mob&&!isNone(mob)&&!mob.includes('PWA'))
       diagram+=`\n[Mobile - ${mob}] → [${baasName} (Auth + DB + Functions)]`;
     note=`${baasName} handles auth, database, and serverless functions as a unified backend.`;
   } else if(isVercel&&isNextJS&&isServerBE){
     pattern='bff';
     diagram=`[Client] → [Next.js (SSR + API Routes)] → [${db}]`;
-    if(mob&&mob!=='none'&&!mob.includes('PWA'))
+    if(mob&&!isNone(mob)&&!mob.includes('PWA'))
       diagram+=`\n[Mobile - ${mob}] → [Next.js API Routes] → [${db}]`;
     note=`Express logic is integrated into Next.js API Routes for Vercel deployment. No separate backend server needed.`;
   } else if(isVercel&&isServerBE&&!isNextJS){
     pattern='split';
     diagram=`[Client] → [${fe} (Vercel)]\n       → [${be} (Railway/Render)] → [${db}]`;
-    if(mob&&mob!=='none'&&!mob.includes('PWA'))
+    if(mob&&!isNone(mob)&&!mob.includes('PWA'))
       diagram+=`\n[Mobile - ${mob}] → [${be} (Railway/Render)] → [${db}]`;
     note=`${be} requires a separate server host (Railway/Render/Fly.io). Vercel serves frontend only.`;
   } else {
     pattern='traditional';
     diagram=`[Client] → [${fe}] → [${be}] → [${db}]`;
-    if(mob&&mob!=='none'&&!mob.includes('PWA'))
+    if(mob&&!isNone(mob)&&!mob.includes('PWA'))
       diagram+=`\n[Mobile - ${mob}] → [${be}] → [${db}]`;
   }
   return {pattern,diagram,note,isBaaS,isNextJS};
 }
 function buildSchedule(a){
-  const hasMobile=a.mobile&&a.mobile!=='none'&&!a.mobile.includes('PWA');
+  const hasMobile=a.mobile&&!isNone(a.mobile)&&!a.mobile.includes('PWA');
   const startDate=new Date().toISOString().split('T')[0];
   const sprints=[
     {name:'Sprint 0',weeks:'Week 1',focus_ja:'環境構築',focus_en:'Setup'},
@@ -3805,6 +3834,11 @@ const DOMAIN_ENTITIES={
   saas:{core:['User','Workspace','Project','Task','Subscription','Invoice'],warn:[],suggest:{Product:'Plan',Order:'Subscription'}},
   portfolio:{core:['User','Project','Skill','Experience','Contact'],warn:['Product','Order','Cart','Payment'],suggest:{}},
   tool:{core:['User','Workspace','Task','Setting','Log'],warn:['Product','Order','Cart'],suggest:{}},
+  iot:{core:['User','Device','Sensor','SensorData','Alert','Dashboard'],warn:['Product','Order','Cart'],suggest:{}},
+  realestate:{core:['User','Property','Category','Viewing','Contract','Agent'],warn:['Product','Order','Cart'],suggest:{Product:'Property',Order:'Viewing'}},
+  legal:{core:['User','Contract','Template','Review','Client','Document'],warn:['Product','Order','Cart'],suggest:{}},
+  hr:{core:['User','JobPosting','Applicant','Interview','Evaluation','Department'],warn:['Product','Order','Cart'],suggest:{}},
+  fintech:{core:['User','Account','Transaction','Transfer','Card','Statement'],warn:['Post','Comment','Course'],suggest:{}},
 };
 const _U='user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID';
 const _SA="status:VARCHAR(20):DEFAULT 'active':ステータス:Status";
@@ -3975,13 +4009,18 @@ function detectDomain(purpose){
   const p=(purpose||'').toLowerCase();
   const detect=[
     [/教育|学習|education|learning|lms|コース|course/i,'education'],
-    [/EC|eコマース|e-commerce|ショップ|shop|commerce/i,'ec'],
+    [/\bEC\b|eコマース|e-commerce|ショップ|\bshop\b|\bcommerce\b/i,'ec'],
     [/マーケットプレイス|marketplace/i,'marketplace'],
     [/コミュニティ|community|フォーラム|forum/i,'community'],
     [/コンテンツ|content|メディア|media|ブログ|blog/i,'content'],
     [/分析|analytics|可視化|ダッシュボード/i,'analytics'],
     [/予約|booking|スケジュール/i,'booking'],
     [/saas|サブスク|subscription/i,'saas'],
+    [/IoT|デバイス|device|sensor|センサー/i,'iot'],
+    [/不動産|物件|real.?estate|property/i,'realestate'],
+    [/法務|契約|legal|contract|コンプライアンス/i,'legal'],
+    [/人事|HR|採用|recruit|hiring/i,'hr'],
+    [/金融|fintech|銀行|bank|決済管理/i,'fintech'],
     [/ポートフォリオ|portfolio/i,'portfolio'],
     [/業務|business|効率化|ツール|tool/i,'tool'],
   ];
@@ -3991,7 +4030,7 @@ function detectDomain(purpose){
 function inferER(a){
   const G=S.genLang==='ja';
   const domain=detectDomain(a.purpose);
-  const entities=(a.data_entities||'').split(', ').map(e=>e.trim()).filter(Boolean);
+  const entities=(a.data_entities||'').split(/[,、]\s*/).map(e=>e.trim()).filter(Boolean);
   const warnings=[];
   const suggestions=[];
   if(domain&&DOMAIN_ENTITIES[domain]){
@@ -4246,7 +4285,7 @@ ${a.purpose||'N/A'}
 - Backend: ${a.backend||'Node.js'}
 - Database: ${a.database||'PostgreSQL'}
 - Deploy: ${a.deploy||'Vercel'}
-${a.mobile!=='なし'&&a.mobile!=='None'?`- Mobile: ${a.mobile}\n`:''}
+${!isNone(a.mobile)?`- Mobile: ${a.mobile}\n`:''}
 ## ${G?'セットアップ':'Setup'}
 \`\`\`bash
 git clone https://github.com/YOUR_USERNAME/${pn.toLowerCase().replace(/[^a-z0-9]/g,'-')}.git
@@ -4329,7 +4368,6 @@ function revertFile(path){
   save();
   toast(_ja?'↩️ 元に戻しました':'↩️ Reverted');
   openEditor(path);
-  showFileTree();
 }
 function lineDiff(oldText,newText){
   const oldL=oldText.split('\n'),newL=newText.split('\n');
@@ -4835,7 +4873,7 @@ function showDashboard(){
   h+=`<div class="dg-total"><span>📊 ${_ja?'技術マスターテーブル':'Tech Master Table'}</span><strong>${TECH_DB.length}</strong></div>`;
   h+=`<h4 class="dash-h4-mt">📋 ${_ja?'プロジェクト情報':'Project Info'}</h4><div class="dash-info">`;
   const info=_ja?[['プロジェクト名',S.projectName],['フロント',a.frontend],['バック',a.backend],['DB',a.database],['デプロイ',a.deploy],['モバイル',a.mobile],['AI自律',a.ai_auto],['決済/CMS',a.payment],['駆動開発',a.dev_methods],['スキル',a.skill_level]]:[['Project',S.projectName],['Frontend',a.frontend],['Backend',a.backend],['DB',a.database],['Deploy',a.deploy],['Mobile',a.mobile],['AI Auto',a.ai_auto],['Payment/CMS',a.payment],['Dev Methods',a.dev_methods],['Skill',a.skill_level]];
-  info.forEach(([k,v])=>{if(v&&v!==_ja?(_ja?'（未指定）':'(Unset)'):'(Unset)'&&v!=='(Unset)')h+=`<div class="exp-row"><span class="label">${k}</span><span class="val">${v}</span></div>`;});
+  info.forEach(([k,v])=>{if(v&&v!==(_ja?'（未指定）':'(Unset)')&&v!=='(Unset)')h+=`<div class="exp-row"><span class="label">${k}</span><span class="val">${v}</span></div>`;});
   h+='</div>';
   const compat=checkCompat(a);
   const errs=compat.filter(c=>c.level==='error');
@@ -5203,7 +5241,7 @@ function shareURL(){
   const _ja=S.lang==='ja';
   const data={p:S.projectName,a:S.answers,pr:S.preset};
   const encoded=btoa(unescape(encodeURIComponent(JSON.stringify(data))));
-  const url=location.origin+location.pathname+'#'+encoded;
+  const url=location.origin+location.pathname+'#df='+encoded;
   navigator.clipboard.writeText(url).then(()=>{
     addMsg('bot',_ja?`🔗 URLをクリップボードにコピーしました。このURLを共有すると同じ設定で開けます。`:`🔗 URL copied to clipboard. Share it to open with the same settings.`);
   }).catch(()=>{
@@ -5441,19 +5479,20 @@ function removeModal(el){
   if(idx>=0)_modalStack.splice(idx,1);
 }
 document.addEventListener('keydown',e=>{
-  if(e.key==='F1'||(e.ctrlKey&&e.key==='h')){e.preventDefault();showManual();}
-  if(e.ctrlKey&&e.key==='k'){e.preventDefault();showKB();}
-  if(e.ctrlKey&&e.key==='t'){e.preventDefault();toggleTheme();}
-  if(e.ctrlKey&&e.key==='l'){e.preventDefault();toggleLang();}
-  if(e.ctrlKey&&e.key==='e'){e.preventDefault();exportZIP();}
-  if(e.ctrlKey&&e.shiftKey&&e.key==='C'){e.preventDefault();copyAllFiles();}
-  if(e.ctrlKey&&e.key==='m'){e.preventDefault();showPM();}
+  const k=e.key.toLowerCase();
+  if(k==='f1'||(e.ctrlKey&&k==='h')){e.preventDefault();showManual();}
+  if(e.ctrlKey&&k==='k'){e.preventDefault();showKB();}
+  if(e.ctrlKey&&k==='t'){e.preventDefault();toggleTheme();}
+  if(e.ctrlKey&&k==='l'){e.preventDefault();toggleLang();}
+  if(e.ctrlKey&&k==='e'){e.preventDefault();exportZIP();}
+  if(e.ctrlKey&&e.shiftKey&&k==='c'){e.preventDefault();copyAllFiles();}
+  if(e.ctrlKey&&k==='m'){e.preventDefault();showPM();}
   if(e.key==='Escape'){
     if(!popModal()){
       closeManual();closeHelpPopup();
-      $('confirmOverlay').style.display='none';
-      $('pmOverlay').style.display='none';releaseFocus($('pmOverlay'));
-      $('kbOverlay').classList.remove('show');releaseFocus($('kbOverlay'));
+      const co=$('confirmOverlay');if(co)co.style.display='none';
+      const pm=$('pmOverlay');if(pm){pm.style.display='none';releaseFocus(pm);}
+      const kb=$('kbOverlay');if(kb){kb.classList.remove('show');releaseFocus(kb);}
     }
   }
 });
@@ -5464,7 +5503,7 @@ function _getTourSteps(){
   {title:_ja?'📝 テンプレート':'📝 Templates',desc:_ja?'36種類のプリセットから選ぶと、回答が自動入力されます。':'Pick from 36 presets to auto-fill answers.'},
   {title:_ja?'💬 質問フロー':'💬 Q&A Flow',desc:_ja?'Phase 1-3 の質問に答えるだけ。スキップも後で回答も可能です。':'Just answer Phase 1-3 questions. Skip and answer later anytime.'},
   {title:_ja?'✎ 回答編集':'✎ Edit Answers',desc:_ja?'送信済みの回答に表示される ✎ ボタンで修正できます。':'Click the ✎ button on submitted answers to edit them.'},
-  {title:_ja?'📦 60+ファイル生成':'📦 60+ File Generation',desc:_ja?'全質問回答後、8つの柱で60+ファイルが自動生成されます。':'After all questions, 60+ files auto-generate across 8 pillars.'},
+  {title:_ja?'📦 60+ファイル生成':'📦 60+ File Generation',desc:_ja?'全質問回答後、9つの柱で60+ファイルが自動生成されます。':'After all questions, 60+ files auto-generate across 9 pillars.'},
   {title:_ja?'⚡ 並列探索':'⚡ Parallel Explorer',desc:_ja?'Pillar ⑤ で7スタックを比較。回答に基づくおすすめランキング付き。':'Compare 7 stacks in Pillar ⑤ with recommendation ranking based on your answers.'},
   {title:'📊 Dashboard',desc:_ja?'Pillar ⑥ でコンテキスト可視化＋'+_TECH_COUNT+'技術DBを閲覧。':'Visualize context + browse '+_TECH_COUNT+' tech DB in Pillar ⑥.'},
   {title:_ja?'🤖 AIランチャー':'🤖 AI Launcher',desc:_ja?'Pillar ⑧ で仕様書をAIツールにワンクリック投入。6テンプレート＋トークン推定。':'Feed specs to AI tools in one click from Pillar ⑧. 6 templates + token estimation.'},
@@ -5532,8 +5571,8 @@ function applyLang(){
   const slEn=['Generated Files','Tech Entries','Pillars','AI Tools'];
   statLbls.forEach((el,i)=>{if(i<4)el.textContent=ja?slJa[i]:slEn[i];});
   const icards=document.querySelectorAll('.icard');
-  const icJa=[['📝 60+ファイル生成','SDD仕様書・Docker・MCP・AIルール10種・ロードマップ9種・仕様書23種'],['🧪 8つの柱','SDD・DevContainer・MCP・AIルール・並列探索・Dashboard・ロードマップ'],['📱 モバイル対応','Expo / React Native 開発パス・EAS Build・OTA更新'],['🤖 AI自律開発','Vibe Coding・マルチAgent・Claude Code Subagents'],['💳 決済・CMS・EC','Stripe・microCMS・Medusa・Shopify Hydrogen'],['📦 フルエクスポート','ZIP・PDF・全ファイル結合コピー・URLシェア']];
-  const icEn=[['📝 60+ File Generation','SDD specs, Docker, MCP, 10 AI rules, 9 roadmaps, 23 specs'],['🧪 8 Pillars','SDD, DevContainer, MCP, AI Rules, Explorer, Dashboard, Roadmap, AI Launcher'],['📱 Mobile Support','Expo / React Native dev path, EAS Build, OTA updates'],['🤖 AI Autonomous Dev','Vibe Coding, Multi-Agent, Claude Code Subagents'],['💳 Payment/CMS/EC','Stripe, microCMS, Medusa, Shopify Hydrogen'],['📦 Full Export','ZIP, PDF, Copy All Files, URL Share']];
+  const icJa=[['📝 60+ファイル生成','SDD仕様書・Docker・MCP・AIルール10種・ロードマップ9種・仕様書23種'],['🧪 9つの柱','SDD・DevContainer・MCP・AIルール・並列探索・Dashboard・ロードマップ・AIランチャー・デザインシステム'],['📱 モバイル対応','Expo / React Native 開発パス・EAS Build・OTA更新'],['🤖 AI自律開発','Vibe Coding・マルチAgent・Claude Code Subagents'],['💳 決済・CMS・EC','Stripe・microCMS・Medusa・Shopify Hydrogen'],['📦 フルエクスポート','ZIP・PDF・全ファイル結合コピー・URLシェア']];
+  const icEn=[['📝 60+ File Generation','SDD specs, Docker, MCP, 10 AI rules, 9 roadmaps, 23 specs'],['🧪 9 Pillars','SDD, DevContainer, MCP, AI Rules, Explorer, Dashboard, Roadmap, AI Launcher, Design System'],['📱 Mobile Support','Expo / React Native dev path, EAS Build, OTA updates'],['🤖 AI Autonomous Dev','Vibe Coding, Multi-Agent, Claude Code Subagents'],['💳 Payment/CMS/EC','Stripe, microCMS, Medusa, Shopify Hydrogen'],['📦 Full Export','ZIP, PDF, Copy All Files, URL Share']];
   icards.forEach((el,i)=>{if(i<6){const d=ja?icJa[i]:icEn[i];const h4=el.querySelector('h4');const p=el.querySelector('p');if(h4)h4.textContent=d[0];if(p)p.textContent=d[1];}});
   const pbadges=document.querySelectorAll('.pbadge');
   const pbJa=['①SDD統合','②DevContainer','③MCP設定','④AIエージェント×10','⑤並列探索','⑥Context Dashboard','⑦技術ロードマップ','⑧AIランチャー','⑨デザインシステム'];
@@ -5555,8 +5594,8 @@ function applyLang(){
     if(Array.isArray(names)){Array.from($('pillarTabs').children).forEach((b,i)=>{if(names[i])b.textContent=names[i];});}
   }
   const kbRows=document.querySelectorAll('.kb-row span:first-child');
-  const kbJa=['ヘルプ・マニュアル','ショートカット一覧','テーマ切替','言語切替','エクスポート','戻る','プロジェクト管理'];
-  const kbEn=['Help / Manual','Shortcut List','Toggle Theme','Toggle Language','Export','Undo','Project Manager'];
+  const kbJa=['ヘルプ・マニュアル','ショートカット一覧','テーマ切替','言語切替','エクスポート','全ファイルコピー','プロジェクト管理'];
+  const kbEn=['Help / Manual','Shortcut List','Toggle Theme','Toggle Language','Export','Copy All Files','Project Manager'];
   kbRows.forEach((el,i)=>{if(i<7)el.textContent=ja?kbJa[i]:kbEn[i];});
   const mobtabs=document.querySelectorAll('.mobtab');
   if(mobtabs.length>=2){mobtabs[0].textContent=ja?'💬 チャット':'💬 Chat';mobtabs[1].textContent=ja?'📄 プレビュー':'📄 Preview';}
