@@ -40,7 +40,7 @@ npm run check              # Syntax check extracted JS
    - JS: basic minification (not obfuscation)
 4. **Inject** into `template.html` structure
 5. **Write** to `devforge-v9.html`
-6. **Validate** size ≤550KB (warn if exceeded)
+6. **Validate** size ≤600KB (warn if exceeded)
 
 ### Module Load Order (Critical!)
 ```javascript
@@ -313,7 +313,7 @@ const PR = {
 
 ### Compression Patterns (Critical for Size Management)
 
-To stay under 550KB limit, the codebase uses compression patterns:
+To stay under 600KB limit, the codebase uses compression patterns:
 
 **1. Preset Defaults (`src/data/presets.js`)**
 ```javascript
@@ -414,7 +414,7 @@ When users complete the wizard, DevForge generates:
 | snapshot.test.js | 36 tests | 4 scenario regression (LMS/Blog/EC/English) + context engineering + skills validation |
 | r27-regression.test.js | 17 tests | Bug fixes: prices, FK, KPI, ports |
 | r28-regression.test.js | 19 tests | Quality: REST methods, AC, scope_out, verification |
-| build.test.js | build | Build size ≤550KB |
+| build.test.js | build | Build size ≤600KB |
 | compat.test.js | 45 tests | Compatibility validation |
 | Others | ~21 tests | i18n, presets, state, techdb |
 
@@ -473,7 +473,7 @@ test('pluralize', () => {
 
 ## Size Budget Management
 
-DevForge has a strict **550KB size limit** for the built HTML file. Current size: **517KB** (~33KB under budget).
+DevForge has a strict **600KB size limit** for the built HTML file. Current size: **548KB** (~52KB under budget).
 
 ### Expansion Strategy
 When adding new features, follow the "Balanced Expansion" approach:
@@ -483,10 +483,10 @@ When adding new features, follow the "Balanced Expansion" approach:
 4. **Test frequently** with `node build.js --report`
 
 ### Recent Expansion (Feb 2026)
-- **Budget allocated**: 40KB (from 510KB→550KB limit increase)
-- **Actual usage**: ~8KB
-- **Added**: 10 detailed skills, 5 domains, 2 advanced skills
-- **Remaining budget**: 32KB for future enhancements
+- **Budget allocated**: 90KB (from 510KB→600KB limit increase)
+- **Actual usage**: ~38KB
+- **Added**: 10 detailed skills, 5 domains, 2 advanced skills, updated help system
+- **Remaining budget**: 52KB for future enhancements
 
 ### Size Optimization Tips
 - Reuse common patterns (see `_U`, `_SA`, `_SD` in common.js)
