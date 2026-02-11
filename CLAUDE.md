@@ -7,7 +7,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 # DevForge v9.0
 
 ## Architecture
-- **41 modules** in `src/` → `node build.js` → single `devforge-v9.html` (~685KB)
+- **41 modules** in `src/` → `node build.js` → single `devforge-v9.html` (~686KB)
 - Vanilla JS, no frameworks. CSS custom properties. CDN: marked.js, mermaid.js, JSZip.
 
 ## Build & Test
@@ -43,7 +43,7 @@ npm run check              # Syntax check extracted JS
 5. **Write** to `devforge-v9.html`
 6. **Validate** size ≤1000KB (warn if exceeded)
 
-**Current Status:** 685KB / 1000KB limit (~315KB remaining budget for future expansions)
+**Current Status:** 686KB / 1000KB limit (~314KB remaining budget for future expansions)
 
 ### Module Load Order (Critical!)
 ```javascript
@@ -119,6 +119,130 @@ Located in `src/core/state.js`. Call `save()` after mutations to persist to loca
 7. **State**: call `save()` after S mutations
 8. **getEntityColumns**: always pass 3rd arg `knownEntities` to filter undefined FK refs
 9. **ENTITY_METHODS**: REST API methods are entity-specific (see common.js)
+
+## Common Bugs & Security Best Practices
+
+### String Concatenation Bugs
+**Most Common Error:** Missing `+=` operator when building strings
+
+```javascript
+// ❌ CRITICAL BUG: Results in empty output
+let doc = '# Title\n';
+doc + 'Content here\n';  // This does NOTHING!
+
+// ✅ Correct: Use += to append
+let doc = '# Title\n';
+doc += 'Content here\n';
+```
+
+**Detection:** If generated files (especially Mermaid diagrams) appear empty, check for missing `+=` operators.
+
+### Entity Name Collisions
+**Problem:** Different presets may define entities with the same name but different schemas.
+
+**Example:** `Contact` used for both:
+- Portfolio contact form messages (email, subject, body)
+- CRM contact records (contact_name, company_id, phone)
+
+**Solution:**
+1. Use descriptive names: `ContactMessage` vs `Contact` (CRM)
+2. Check `ENTITY_COLUMNS` for existing keys before adding new entities
+3. Update `DOMAIN_ENTITIES` to use the new name
+4. Update preset `entities` field
+
+### CSS Custom Property Undefined
+**Symptom:** UI elements have no background/border/color
+
+**Cause:** Using `var(--bg-1)` when `--bg-1` is not defined in `:root` or `[data-theme="light"]`
+
+**Fix:**
+```css
+:root {
+  --bg-1: #1e1e2e;  /* Add missing variable */
+  --bg-s: var(--bg-2);  /* Can alias existing ones */
+}
+[data-theme="light"] {
+  --bg-1: #e8ecf0;  /* Don't forget light theme! */
+}
+```
+
+### Conditional Question Progress Bugs
+**Problem:** Progress bar counts questions that aren't applicable (e.g., ORM question when using Supabase)
+
+**Solution:** Always use `isQActive(q)` before counting/displaying questions:
+```javascript
+// ✅ Correct
+ph.questions.forEach(q => {
+  if(!isQActive(q)) return;  // Skip inactive questions
+  total++;
+});
+
+// ❌ Wrong: Counts all questions
+total += ph.questions.length;
+```
+
+**Affected Functions:** `updProgress()`, `initPills()`, `findNext()`, `getHealthHTML()`, TOC rendering
+
+### Security: Input Sanitization
+
+**Always sanitize user input** before:
+1. Storing in state
+2. Displaying in UI
+3. Using in file paths
+
+```javascript
+// ✅ URL hash import (allowlist approach)
+if(data.projectName) {
+  S.projectName = sanitizeName(data.projectName);
+  if(data.answers) S.answers = data.answers;  // Only allowed fields
+  if(data.preset) S.preset = data.preset;
+  // Never: Object.assign(S, data) — allows injection!
+}
+
+// ✅ JSON import sanitization
+if(data.state.answers) {
+  Object.keys(data.state.answers).forEach(k => {
+    if(typeof data.state.answers[k] === 'string') {
+      data.state.answers[k] = sanitize(data.state.answers[k]);
+    }
+  });
+}
+```
+
+### Bilingual Consistency
+**Common Mistakes:**
+1. Adding Japanese-only fields to presets (missing `targetEn`, `featuresEn`, `purposeEn`)
+2. Updating numbers in one language but not the other
+3. Using dynamic `S.lang` in data files (gets evaluated once at load time)
+
+**Fix:**
+- Always add both `ja` and `en` versions
+- Search for all instances when updating numbers (41 presets, 69+ files, 10 pillars)
+- Use static strings in data files, not `S.lang` conditionals
+
+### Accessibility (a11y)
+Don't forget ARIA attributes:
+```javascript
+// ❌ Missing accessibility
+tabs.forEach(t => t.classList.add('active'));
+
+// ✅ Include aria-selected
+tabs.forEach(t => {
+  t.classList.add('active');
+  t.setAttribute('aria-selected', 'true');
+});
+```
+
+### Error Handling
+Always add error handlers for async operations:
+```javascript
+// ❌ Missing error handler
+voiceRec.onend = () => { resetUI(); };
+
+// ✅ Add onerror
+voiceRec.onend = () => { resetUI(); };
+voiceRec.onerror = () => { resetUI(); };  // Prevents UI freeze
+```
 
 ## Coding Examples
 
@@ -580,7 +704,7 @@ test('pluralize', () => {
 
 ## Size Budget Management
 
-DevForge has a strict **1000KB size limit** for the built HTML file. Current size: **685KB** (~315KB under budget).
+DevForge has a strict **1000KB size limit** for the built HTML file. Current size: **686KB** (~314KB under budget).
 
 ### Expansion Strategy
 When adding new features, follow the "Balanced Expansion" approach:
@@ -590,14 +714,18 @@ When adding new features, follow the "Balanced Expansion" approach:
 4. **Test frequently** with `node build.js --report`
 
 ### Recent Expansion (Feb 2026)
-- **Quality Improvement Package**: +46KB (685KB total)
+- **Quality Improvement Package**: +46KB (686KB total)
 - **Added**:
   - 5 new presets (CRM, Social, Logistics, Survey, Job Board)
   - 8 new domains (AI, Automation, Event, Gamify, Collab, DevTool, Creator, Newsletter)
   - MCP expansion (52→240 lines, backend-specific, domain recommendations)
   - 18 new entities, 26 ER relationships, 10 feature patterns
   - Accessibility improvements (announce() wiring)
-- **Remaining budget**: 315KB for future enhancements
+- **Bug Fix Package (Feb 12, 2026)**: +1KB — 16 critical/high/medium fixes
+  - CRITICAL: p10-reverse.js += operators (18 fixes), Contact entity collision
+  - HIGH: devtool targetEn, number updates, CSS variables, Health score, MCP domains
+  - MEDIUM: URL hash security, import sanitization, aria-selected, error handlers
+- **Remaining budget**: 314KB for future enhancements
 
 ### Size Optimization Tips
 - Reuse common patterns (see `_U`, `_SA`, `_SD`, `_T`, `_D`, `_CN`, `_M`, `_B`, etc. in common.js)
