@@ -40,7 +40,7 @@ npm run check              # Syntax check extracted JS
    - JS: basic minification (not obfuscation)
 4. **Inject** into `template.html` structure
 5. **Write** to `devforge-v9.html`
-6. **Validate** size ≤600KB (warn if exceeded)
+6. **Validate** size ≤700KB (warn if exceeded)
 
 ### Module Load Order (Critical!)
 ```javascript
@@ -363,14 +363,14 @@ function genPillarN_Name(a, pn) {
 
 ### 6. Size Budget Check
 - Estimate new generator size (~10-20KB typical)
-- Run `node build.js --report` to verify ≤600KB
-- Current budget remaining: ~25KB (as of Pillar 10)
+- Run `node build.js --report` to verify ≤700KB
+- Current budget remaining: ~101KB (as of Industry Intelligence Engine)
 
 **Reference Implementation:** See commits for Pillar ⑩ (Reverse Engineering) for complete example.
 
 ### Compression Patterns (Critical for Size Management)
 
-To stay under 600KB limit, the codebase uses compression patterns:
+To stay under 700KB limit, the codebase uses compression patterns:
 
 **1. Preset Defaults (`src/data/presets.js`)**
 ```javascript
@@ -471,7 +471,7 @@ When users complete the wizard, DevForge generates **67-69 files** (base: 67 fil
 | snapshot.test.js | 36 tests | 4 scenario regression (LMS/Blog/EC/English) + context engineering + skills validation |
 | r27-regression.test.js | 17 tests | Bug fixes: prices, FK, KPI, ports |
 | r28-regression.test.js | 19 tests | Quality: REST methods, AC, scope_out, verification |
-| build.test.js | build | Build size ≤600KB |
+| build.test.js | build | Build size ≤700KB |
 | compat.test.js | 45 tests | Compatibility validation |
 | Others | ~21 tests | i18n, presets, state, techdb |
 
@@ -530,7 +530,7 @@ test('pluralize', () => {
 
 ## Size Budget Management
 
-DevForge has a strict **600KB size limit** for the built HTML file. Current size: **575KB** (~25KB under budget).
+DevForge has a strict **700KB size limit** for the built HTML file. Current size: **599KB** (~101KB under budget).
 
 ### Expansion Strategy
 When adding new features, follow the "Balanced Expansion" approach:
@@ -540,10 +540,10 @@ When adding new features, follow the "Balanced Expansion" approach:
 4. **Test frequently** with `node build.js --report`
 
 ### Recent Expansion (Feb 2026)
-- **Budget allocated**: 90KB (from 510KB→600KB limit increase)
-- **Actual usage**: ~65KB (from 510KB→575KB)
-- **Added**: 10 detailed skills, 5 domains, 2 advanced skills, updated help system, Pillar ⑩ Reverse Engineering
-- **Remaining budget**: 25KB for future enhancements
+- **Budget allocated**: 100KB (from 600KB→700KB limit increase)
+- **Actual usage**: ~24KB (Industry Intelligence Engine: 15 domains, docs/31, context protocols)
+- **Added**: Industry Intelligence Engine, DOMAIN_PLAYBOOK, domain-specific compliance/bugs/skills
+- **Remaining budget**: 101KB for future enhancements
 
 ### Size Optimization Tips
 - Reuse common patterns (see `_U`, `_SA`, `_SD` in common.js)
