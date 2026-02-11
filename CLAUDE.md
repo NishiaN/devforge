@@ -19,7 +19,7 @@ node build.js --report     # Show size report
 node build.js --check-css  # Validate CSS custom properties
 
 # Test
-npm test                   # Run all tests (137 tests passing)
+npm test                   # Run all tests (138 tests passing)
 npm run test:watch         # Watch mode for test development
 node --test test/gen-coherence.test.js  # Run single test file
 
@@ -230,7 +230,10 @@ git remote set-url origin git@github.com:user/repo.git
 - **`pluralize(name)`** — Smart table name pluralization
 - **`getEntityColumns(name, G, knownEntities)`** — Get columns for entity (ALWAYS pass 3 args)
 - **`getEntityMethods(name)`** — Get allowed REST methods for entity
-- **`detectDomain(purpose)`** — Infer domain from purpose text
+- **`detectDomain(purpose)`** — Infer domain from purpose text (15 domains supported)
+  - Returns: 'education', 'ec', 'marketplace', 'community', 'content', 'analytics', 'booking', 'saas', 'iot', 'realestate', 'legal', 'hr', 'fintech', 'portfolio', 'tool', or null
+  - Used by: AI skills catalog generation, domain-specific KPI/acceptance criteria
+  - Pattern matching: regex-based on Japanese/English keywords in purpose text
 - **`resolveAuth(answers)`** — Determine auth architecture from answers
 - **`getScreenComponents(screenName, G)`** — Get UI components for screen type
 
@@ -375,9 +378,9 @@ When users complete the wizard, DevForge generates:
 
 **skills/catalog.md** (when ai_auto ≠ None):
 - 4 core development skills (Planning, Design, Production, Operations)
-- 2-4 domain-specific skills per domain (10 domains: education, ec, saas, community, booking, health, marketplace, content, analytics, business)
-- 4 detailed skills with Input/Process/Output (教材設計, 機能仕様, API設計, 決済検証)
-- Advanced skills for Multi-Agent/Full Autonomous levels
+- 2-4 domain-specific skills per domain (15 domains: education, ec, saas, community, booking, health, marketplace, content, analytics, business, iot, realestate, legal, hr, fintech)
+- 19 detailed skills with Input/Process/Output (14 core skills + 5 domain-specific skills)
+- Advanced skills for Multi-Agent/Full Autonomous levels (including Auto Code Review and Auto Doc Update)
 
 **skills/pipelines.md** (when ai_auto ≠ None):
 - 1-5 autonomous pipelines based on ai_auto level (vibe/agentic/multi/full/orch)
@@ -395,25 +398,27 @@ When users complete the wizard, DevForge generates:
 - Added `docs/26_design_system.md` — Design tokens, color palettes, typography, spacing, component catalog (framework-aware for Tailwind/Vuetify/Material)
 - Added `docs/27_sequence_diagrams.md` — Mermaid sequence diagrams for auth flows (Supabase/Firebase/Auth.js), CRUD operations, payment flows (Stripe)
 
-**Recent Enhancement (AI Skills & Agent Pipelines):**
+**Recent Enhancement (AI Skills & Agent Pipelines - Balanced Expansion):**
 - Enhanced `skills/project.md` — Factory Template format with 5 core skills
-- Added `skills/catalog.md` — Domain-specific skills for 10 domains (education, ec, saas, community, booking, health, marketplace, content, analytics, business)
+- Expanded `skills/catalog.md` — 15 domains supported (education, ec, saas, community, booking, health, marketplace, content, analytics, business, iot, realestate, legal, hr, fintech)
+- 19 detailed skills with Input/Process/Output specifications (14 core + 5 domain-specific: デバイス管理, 物件管理, 契約レビュー, 採用フロー, 取引検証)
+- 4 advanced skills with full details for Multi-Agent level (Parallel Review, Auto Code Review, Auto Doc Update, Compression)
 - Added `skills/pipelines.md` — Autonomous agent pipelines with Mermaid flowcharts (1-5 pipelines based on ai_auto level)
 - Enhanced `AGENTS.md` — Pipeline coordination section
-- 4 detailed skills with Input/Process/Output specifications
+- Enhanced `detectDomain()` in common.js — Now supports 15 domains with IoT, real estate, legal, HR, and fintech detection patterns
 
 ## Test Architecture
 | File | Tests | Purpose |
 |------|-------|---------|
 | gen-coherence.test.js | 248 assertions | Full LMS generation + structural validation |
-| snapshot.test.js | 35 tests | 4 scenario regression (LMS/Blog/EC/English) + context engineering |
+| snapshot.test.js | 36 tests | 4 scenario regression (LMS/Blog/EC/English) + context engineering + skills validation |
 | r27-regression.test.js | 17 tests | Bug fixes: prices, FK, KPI, ports |
 | r28-regression.test.js | 19 tests | Quality: REST methods, AC, scope_out, verification |
 | build.test.js | build | Build size ≤550KB |
 | compat.test.js | 45 tests | Compatibility validation |
 | Others | ~21 tests | i18n, presets, state, techdb |
 
-**Total: 137 tests passing**
+**Total: 138 tests passing**
 
 ## Writing Tests
 
@@ -465,6 +470,29 @@ test('pluralize', () => {
   assert.equal(pluralize('Category'), 'categories');
 });
 ```
+
+## Size Budget Management
+
+DevForge has a strict **550KB size limit** for the built HTML file. Current size: **517KB** (~33KB under budget).
+
+### Expansion Strategy
+When adding new features, follow the "Balanced Expansion" approach:
+1. **Estimate size impact** before implementing
+2. **Use compression patterns** (see Compression Patterns section)
+3. **Prioritize high-value additions** (core skills > niche features)
+4. **Test frequently** with `node build.js --report`
+
+### Recent Expansion (Feb 2026)
+- **Budget allocated**: 40KB (from 510KB→550KB limit increase)
+- **Actual usage**: ~8KB
+- **Added**: 10 detailed skills, 5 domains, 2 advanced skills
+- **Remaining budget**: 32KB for future enhancements
+
+### Size Optimization Tips
+- Reuse common patterns (see `_U`, `_SA`, `_SD` in common.js)
+- Use abbreviations in compressed strings (e.g., `G` for `S.genLang==='ja'`)
+- Avoid duplicate text across presets/domains
+- Test with `node build.js --report` to see module breakdown
 
 ## Environment
 - **Node.js**: Required for build/test. If using WSL with nvm, ensure nvm is loaded in shell

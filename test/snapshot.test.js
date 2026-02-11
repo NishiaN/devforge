@@ -212,6 +212,16 @@ describe('Snapshot A: LMS/Supabase/Stripe', () => {
     assert.match(cat, /Purpose|目的/);
   });
 
+  test('skills catalog has detailed skills with Input/Process/Output', () => {
+    const cat = files['skills/catalog.md'];
+    assert.match(cat, /Input|入力/, 'Missing Input field in skills');
+    assert.match(cat, /Process|処理/, 'Missing Process field in skills');
+    assert.match(cat, /Output|出力/, 'Missing Output field in skills');
+    // Check for at least one detailed skill example
+    const detailedSkillPattern = /教材設計|機能仕様|API設計|Curriculum|Feature Spec|API Design/;
+    assert.match(cat, detailedSkillPattern, 'Missing detailed skill examples');
+  });
+
   test('pipelines has Mermaid flowcharts', () => {
     assert.ok(files['skills/pipelines.md'], 'skills/pipelines.md missing');
     const pipe = files['skills/pipelines.md'];
