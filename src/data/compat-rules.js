@@ -1,4 +1,4 @@
-/* ═══ STACK COMPATIBILITY & SEMANTIC CONSISTENCY RULES — 31 rules (ERROR×6 + WARN×22 + INFO×3) ═══ */
+/* ═══ STACK COMPATIBILITY & SEMANTIC CONSISTENCY RULES — 43 rules (ERROR×8 + WARN×29 + INFO×6) ═══ */
 const COMPAT_RULES=[
   // ── FE ↔ Mobile (2 ERROR) ──
   {id:'fe-mob-expo',p:['frontend','mobile'],lv:'error',
@@ -110,6 +110,78 @@ const COMPAT_RULES=[
    t:a=>inc(a.ai_tools,'OpenRouter'),
    ja:'OpenRouterはBYOKハブです。Aider/Cline等のAPIバックエンドとして活用できます',
    en:'OpenRouter is a BYOK hub. Use as API backend for Aider/Cline etc.'},
+  // ── ORM ↔ DB (2 WARN/ERROR) ──
+  {id:'orm-prisma-mongo',p:['orm','database'],lv:'warn',
+   t:a=>inc(a.orm,'Prisma')&&inc(a.database,'MongoDB'),
+   ja:'PrismaのMongoDB対応はPreview段階です。本番環境では注意が必要',
+   en:'Prisma MongoDB support is in Preview. Use with caution in production'},
+  {id:'orm-drizzle-fs',p:['orm','database'],lv:'error',
+   t:a=>inc(a.orm,'Drizzle')&&inc(a.database,'Firestore'),
+   ja:'DrizzleはSQL専用です。Firestore非対応',
+   en:'Drizzle is SQL-only, not compatible with Firestore',
+   fix:{f:'orm',s:'None / Using BaaS'}},
+  // ── Deploy ↔ DB (2 WARN/INFO) ──
+  {id:'dep-db-vercel-pg',p:['deploy','database'],lv:'warn',
+   t:a=>inc(a.deploy,'Vercel')&&inc(a.database,'PostgreSQL')&&!inc(a.database,'Neon')&&!inc(a.database,'Supabase'),
+   ja:'Vercel+PostgreSQLは外部ホスティング必要。Neon/Supabase/Vercel Postgresを推奨',
+   en:'Vercel+PostgreSQL needs external hosting. Use Neon/Supabase/Vercel Postgres'},
+  {id:'dep-db-cf-pg',p:['deploy','database'],lv:'info',
+   t:a=>inc(a.deploy,'Cloudflare')&&inc(a.database,'PostgreSQL'),
+   ja:'Cloudflare Workers→外部DBはHyperdriveまたはD1への移行を推奨',
+   en:'Cloudflare Workers → external DB: use Hyperdrive or consider D1'},
+  // ── Domain ↔ Auth/Payment (2 ERROR/WARN) ──
+  {id:'dom-sec-noauth',p:['purpose','auth'],lv:'error',
+   t:a=>{
+    if(!a.purpose||!a.auth)return false;
+    const dom=detectDomain(a.purpose);
+    const highSecDomains=['fintech','health','legal'];
+    const hasAuth=a.auth&&!inc(a.auth,'なし')&&!inc(a.auth,'None')&&a.auth!=='none';
+    return highSecDomains.includes(dom)&&!hasAuth;
+   },
+   ja:'金融/医療/法務ドメインでは認証必須です',
+   en:'Auth is required for fintech/health/legal domains',
+   fix:{f:'auth',s:'Supabase Auth'}},
+  {id:'dom-ec-nopay',p:['purpose','payment'],lv:'warn',
+   t:a=>{
+    if(!a.purpose||!a.payment)return false;
+    const dom=detectDomain(a.purpose);
+    const hasPay=a.payment&&!inc(a.payment,'なし')&&!inc(a.payment,'None')&&a.payment!=='none';
+    return dom==='ec'&&!hasPay;
+   },
+   ja:'ECドメインで決済未選択です。Stripe等の決済方式を検討してください',
+   en:'EC domain without payment. Consider Stripe or other payment methods'},
+  // ── AI Auto ↔ Tools (1 WARN) ──
+  {id:'ai-auto-notools',p:['ai_auto','ai_tools'],lv:'warn',
+   t:a=>{
+    if(!a.ai_auto||!a.ai_tools)return false;
+    const hasAuto=a.ai_auto&&!inc(a.ai_auto,'なし')&&!inc(a.ai_auto,'None')&&a.ai_auto!=='none';
+    const hasTools=a.ai_tools&&!inc(a.ai_tools,'なし')&&!inc(a.ai_tools,'None')&&a.ai_tools!=='none';
+    return hasAuto&&!hasTools;
+   },
+   ja:'AI自律レベル設定済みですが、AIツール未選択です。Cursor/Claude Code等を選択してください',
+   en:'AI autonomous level set but no AI tools selected. Choose Cursor/Claude Code etc.'},
+  // ── Convex ↔ FE/ORM (2 WARN/INFO) ──
+  {id:'be-convex-noreact',p:['backend','frontend'],lv:'warn',
+   t:a=>inc(a.backend,'Convex')&&!inc(a.frontend,'React')&&!inc(a.frontend,'Next'),
+   ja:'ConvexはReact最適化されています。React/Next.js推奨',
+   en:'Convex is optimized for React. React/Next.js recommended'},
+  {id:'be-convex-orm',p:['backend','orm'],lv:'info',
+   t:a=>inc(a.backend,'Convex')&&a.orm&&!inc(a.orm,'なし')&&!inc(a.orm,'None')&&a.orm!=='none',
+   ja:'ConvexはTypeScript定義で完結します。ORMは通常不要',
+   en:'Convex uses TypeScript definitions. ORM typically not needed'},
+  // ── Misc (2 INFO) ──
+  {id:'ai-tools-multi',p:['ai_tools'],lv:'info',
+   t:a=>{
+    if(!a.ai_tools)return false;
+    const tools=(a.ai_tools||'').split(',').filter(x=>x.trim()).length;
+    return tools>=3;
+   },
+   ja:'複数AIツール(3+)選択時は、CLAUDE.md等のAIルールが統一管理されます',
+   en:'Multiple AI tools (3+) selected: AI rules are unified via CLAUDE.md'},
+  {id:'mobile-expo-rn',p:['mobile'],lv:'info',
+   t:a=>inc(a.mobile,'bare')||inc(a.mobile,'Bare'),
+   ja:'React Native bareは柔軟性が高いですが、Expoの方が開発速度が速いです',
+   en:'React Native bare offers flexibility, but Expo is faster for development'},
   // ── Semantic Consistency Rules (Phase A) ── 8 rules ──
   // A1: scope_out「ネイティブ」 vs mobile有効
   {id:'sem-scope-mobile',p:['scope_out','mobile'],lv:'error',
@@ -170,4 +242,59 @@ function checkCompat(answers){
       return r.t(answers);
     }catch(e){return false;}
   }).map(r=>({id:r.id,pair:r.p,level:r.lv,msg:S.lang==='ja'?r.ja:r.en,fix:r.fix||null}));
+}
+
+// ── Stack Synergy Score Data ──
+const SYNERGY_FE_BE={'Next.js|Supabase':95,'Next.js|Firebase':92,'Next.js|Vercel':98,'Next.js|Express':85,'Next.js|NestJS':88,'Next.js|Convex':93,'React|Express':80,'React|Firebase':88,'React|Supabase':90,'Vue|Nuxt|Express':82,'Vue|Nuxt|Firebase':85,'Svelte|SvelteKit|Supabase':90,'Astro|static':95,'Astro|Supabase':88,'Angular|NestJS':90,'Angular|Firebase':92};
+const SYNERGY_DEPLOY={'Next.js|Vercel':98,'Nuxt|Vercel':95,'Nuxt|Netlify':93,'SvelteKit|Vercel':94,'Astro|Vercel':96,'Astro|Netlify':95,'Astro|Cloudflare':93,'React|Vercel':90,'React|Netlify':88,'Firebase|Firebase':98,'Supabase|Vercel':95,'Express|Railway':92,'NestJS|Railway':94,'Django|Railway':93,'FastAPI|Railway':91,'Spring|Railway':88,'Convex|Vercel':96};
+const SYNERGY_DOMAIN={'fintech|Supabase':15,'fintech|PostgreSQL':12,'fintech|Stripe':18,'health|Supabase':14,'health|PostgreSQL':12,'legal|PostgreSQL':10,'ec|Stripe':20,'ec|Saleor':18,'ec|Supabase':12,'education|Firebase':10,'education|Supabase':12,'saas|Supabase':15,'saas|Stripe':18,'iot|Firebase':12,'iot|Supabase':10,'community|Firebase':14,'content|Supabase':12,'marketplace|Stripe':15};
+
+function calcSynergy(a){
+  if(!a||!a.frontend||!a.backend)return{overall:60,d1:60,d2:60,d3:60,d4:60,d5:60,domain:null};
+  const fe=a.frontend||'';const be=a.backend||'';const dep=a.deploy||'';const db=a.database||'';const pay=a.payment||'';
+  // D1: FE↔BE affinity
+  let d1=60;
+  const feKey=fe.split(' ')[0];const beKey=be.split(' ')[0]||be.split('+')[1]?.trim()||be;
+  const key1=feKey+'|'+beKey;const key2=fe.includes('Next')?'Next.js|'+beKey:null;
+  d1=SYNERGY_FE_BE[key1]||SYNERGY_FE_BE[key2]||60;
+  if(inc(fe,'React')&&inc(be,'Express'))d1=80;
+  if(inc(fe,'React')&&inc(be,'Supabase'))d1=90;
+  if(inc(fe,'Vue')&&inc(be,'Express'))d1=82;
+  if(inc(fe,'Svelte')&&inc(be,'Supabase'))d1=90;
+  // D2: Ecosystem unity
+  let d2=50;
+  const isBaaS=inc(be,'Firebase')||inc(be,'Supabase')||inc(be,'Convex');
+  if(isBaaS&&((inc(be,'Firebase')&&inc(db,'Firestore'))||(inc(be,'Supabase')&&inc(db,'Supabase'))||(inc(be,'Convex')&&!db)))d2+=20;
+  if(inc(fe,'Next')&&inc(dep,'Vercel'))d2+=15;
+  if(inc(fe,'Nuxt')&&(inc(dep,'Vercel')||inc(dep,'Netlify')))d2+=12;
+  if(inc(fe,'Astro')&&(inc(dep,'Vercel')||inc(dep,'Netlify')||inc(dep,'Cloudflare')))d2+=15;
+  d2=Math.min(100,d2);
+  // D3: Domain fit
+  let d3=60;
+  const dom=detectDomain(a.purpose||'');
+  if(dom){
+    const keys=[dom+'|'+beKey,dom+'|'+db.split(' ')[0],dom+'|'+pay.split(' ')[0]];
+    keys.forEach(k=>{if(SYNERGY_DOMAIN[k])d3+=SYNERGY_DOMAIN[k];});
+    d3=Math.min(100,d3);
+  }
+  // D4: Deploy alignment
+  let d4=60;
+  const depKey1=(fe.includes('Next')?'Next.js':feKey)+'|'+dep.split(' ')[0];
+  const depKey2=beKey+'|'+dep.split(' ')[0];
+  d4=SYNERGY_DEPLOY[depKey1]||SYNERGY_DEPLOY[depKey2]||60;
+  if(inc(be,'Firebase')&&inc(dep,'Firebase'))d4=98;
+  if(inc(be,'Supabase')&&inc(dep,'Vercel'))d4=95;
+  // D5: Complexity balance
+  let d5=70;
+  const skill=a.skill_level||'Intermediate';
+  const complexStack=(inc(be,'NestJS')||inc(be,'Spring')||inc(be,'Django'))?1:0;
+  const hasMobile=a.mobile&&!inc(a.mobile,'なし')&&!inc(a.mobile,'None')&&a.mobile!=='none'?1:0;
+  const hasPayment=pay&&!inc(pay,'なし')&&!inc(pay,'None')&&pay!=='none'?1:0;
+  const complexity=complexStack+hasMobile+hasPayment;
+  if(skill==='Beginner'&&complexity>=2)d5=40;
+  else if(skill==='Beginner'&&complexity===1)d5=60;
+  else if(skill==='Professional')d5=90;
+  else d5=70;
+  const overall=Math.round(d1*0.25+d2*0.25+d3*0.2+d4*0.2+d5*0.1);
+  return{overall,d1:Math.round(d1),d2:Math.round(d2),d3:Math.round(d3),d4:Math.round(d4),d5:Math.round(d5),domain:dom};
 }

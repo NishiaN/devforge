@@ -112,6 +112,30 @@ function showDashboard(){
   info.forEach(([k,v])=>{if(v&&v!==(_ja?'（未指定）':'(Unset)')&&v!=='(Unset)')h+=`<div class="exp-row"><span class="label">${k}</span><span class="val">${v}</span></div>`;});
   h+='</div>';
   
+  // Stack Synergy Score
+  const syn=calcSynergy(a);
+  const synColor=syn.overall>=75?'var(--success)':syn.overall>=50?'var(--warn)':'var(--danger)';
+  const synLabel=syn.overall>=75?(_ja?'High Synergy':'High Synergy'):syn.overall>=50?(_ja?'Medium Synergy':'Medium Synergy'):(_ja?'Low Synergy':'Low Synergy');
+  h+=`<h4 class="dash-h4-mt">⚡ ${_ja?'スタック相乗効果スコア':'Stack Synergy Score'}</h4>`;
+  h+=`<div class="synergy-card">`;
+  h+=`<div class="synergy-header"><div class="synergy-label">${synLabel}</div><div class="synergy-score" style="background:${synColor}20;color:${synColor};">${syn.overall}</div></div>`;
+  h+=`<div class="synergy-bar"><div class="synergy-bar-fill" style="width:${syn.overall}%;background:${synColor};"></div></div>`;
+  h+=`<div class="synergy-dims">`;
+  const dims=[
+    {l:_ja?'FE↔BE親和度':'FE↔BE Affinity',v:syn.d1},
+    {l:_ja?'エコ統一度':'Ecosystem Unity',v:syn.d2},
+    {l:_ja?'ドメイン適合':'Domain Fit',v:syn.d3},
+    {l:_ja?'デプロイ整合':'Deploy Alignment',v:syn.d4},
+    {l:_ja?'複雑度バランス':'Complexity Balance',v:syn.d5}
+  ];
+  dims.forEach(d=>{
+    const c=d.v>=75?'var(--success)':d.v>=50?'var(--warn)':'var(--danger)';
+    h+=`<div class="synergy-dim"><span class="synergy-dim-lbl">${d.l}</span><div class="synergy-dim-bar"><div class="synergy-dim-fill" style="width:${d.v}%;background:${c};"></div></div><span class="synergy-dim-val">${d.v}</span></div>`;
+  });
+  h+=`</div>`;
+  if(syn.domain)h+=`<div class="synergy-domain">${_ja?'検出ドメイン':'Detected Domain'}: <strong>${syn.domain}</strong></div>`;
+  h+=`</div>`;
+
   // Stack compatibility report
   const compat=checkCompat(a);
   const errs=compat.filter(c=>c.level==='error');
@@ -141,7 +165,55 @@ function showDashboard(){
   
   // Project health score
   h+=getHealthHTML(_ja,fileCount,answered);
-  
+
+  // File Dependency Tree
+  if(fileCount>0){
+    h+=`<h4 class="dash-h4-mt">🔗 ${_ja?'ファイル依存関係':'File Dependencies'}</h4>`;
+    const groups=[
+      {id:'spec',icon:'📋',title:_ja?'仕様理解フロー':'Spec Flow',files:[
+        {p:'.spec/constitution.md',l:_ja?'原則(最初に読む)':'Principles (read first)',d:0},
+        {p:'.spec/specification.md',l:_ja?'要件定義':'Requirements',d:1},
+        {p:'.spec/technical-plan.md',l:_ja?'技術計画':'Technical Plan',d:1},
+        {p:'.spec/tasks.md',l:_ja?'タスク分解':'Tasks',d:2},
+        {p:'.spec/verification.md',l:_ja?'完了基準':'Acceptance',d:2}
+      ]},
+      {id:'ai',icon:'🤖',title:_ja?'AI開発フロー':'AI Dev Flow',files:[
+        {p:'CLAUDE.md',l:_ja?'AI設定(自動読込)':'AI config (auto-loaded)',d:0},
+        {p:'AI_BRIEF.md',l:_ja?'要約(最初の投入)':'Brief (first input)',d:1},
+        {p:'AGENTS.md',l:_ja?'Agent役割定義':'Agent roles',d:1},
+        {p:'.cursor/rules',l:_ja?'Cursorルール':'Cursor rules',d:1},
+        {p:'skills/project.md',l:_ja?'スキル定義':'Skills',d:2}
+      ]},
+      {id:'qa',icon:'🧪',title:_ja?'品質・テストフロー':'QA & Test Flow',files:[
+        {p:'docs/28_qa_strategy.md',l:_ja?'QA戦略':'QA Strategy',d:0},
+        {p:'docs/32_qa_blueprint.md',l:_ja?'QA設計図':'QA Blueprint',d:1},
+        {p:'docs/33_test_matrix.md',l:_ja?'テストマトリクス':'Test Matrix',d:1},
+        {p:'docs/36_test_strategy.md',l:_ja?'テスト戦略':'Test Strategy',d:1},
+        {p:'docs/37_bug_prevention.md',l:_ja?'バグ防止':'Bug Prevention',d:2}
+      ]},
+      {id:'rev',icon:'🔄',title:_ja?'ゴール逆算フロー':'Reverse Flow',files:[
+        {p:'docs/29_reverse_engineering.md',l:_ja?'ゴール定義':'Goal Definition',d:0},
+        {p:'docs/30_goal_decomposition.md',l:_ja?'ゴール分解':'Goal Breakdown',d:1},
+        {p:'docs/39_implementation_playbook.md',l:_ja?'実装パターン':'Impl Patterns',d:2},
+        {p:'docs/40_ai_dev_runbook.md',l:_ja?'AI運用手順':'AI Runbook',d:2}
+      ]}
+    ];
+    groups.forEach(g=>{
+      const count=g.files.filter(f=>S.files[f.p]).length;
+      h+=`<div class="fdep-group"><div class="fdep-header" onclick="toggleFdep('${g.id}')"><span class="fdep-icon">▶</span><span class="fdep-title">${g.icon} ${g.title}</span><span class="fdep-count">${count}/${g.files.length}</span></div>`;
+      h+=`<div class="fdep-body" id="fdep-${g.id}">`;
+      g.files.forEach(f=>{
+        const exists=!!S.files[f.p];
+        const ind='fdep-ind-'+f.d;
+        h+=`<div class="fdep-item ${ind} ${exists?'fdep-exists':'fdep-missing'}">`;
+        if(exists)h+=`<a href="#" onclick="event.preventDefault();openPreview('${f.p}')">● ${f.l}</a>`;
+        else h+=`<span>○ ${f.l}</span>`;
+        h+=`</div>`;
+      });
+      h+=`</div></div>`;
+    });
+  }
+
   // File size distribution by Pillar
   if(Object.keys(S.files).length>0){
     const pillarMap={'.spec/':'P1 SDD','.devcontainer/':'P2 DevContainer','mcp-config':'P3 MCP','.cursor/':'P4 AI Rules','.clinerules':'P4','.windsurfrules':'P4','.gemini/':'P4','.github/':'P4','CLAUDE.md':'P4','AGENTS.md':'P4','codex-instructions':'P4','.kiro/':'P4','skills/':'P4','roadmap/':'P7 Roadmap','docs/':'Docs','README.md':'Common','.gitignore':'Common','LICENSE':'Common','package.json':'Common','.ai/':'Common','.mcp/':'P3 MCP'};
@@ -266,6 +338,16 @@ function filterTechDB(){
     r.style.display=show?'':'none';if(show)count++;
   });
   $('tfCount').textContent=count+(_ja?'件':' items');
+}
+
+function toggleFdep(id){
+  const body=$('fdep-'+id);
+  if(!body)return;
+  const header=body.previousElementSibling;
+  const icon=header.querySelector('.fdep-icon');
+  const isOpen=body.classList.contains('fdep-open');
+  body.classList.toggle('fdep-open');
+  if(icon)icon.textContent=isOpen?'▶':'▼';
 }
 
 /* ── Interactive Roadmap UI (Enhanced) ── */

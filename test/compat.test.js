@@ -1,6 +1,7 @@
-// Compat rules functional test
+// Compat rules functional test (43 rules: 31 original + 12 new)
 const S={lang:'ja',skill:'pro'};
 eval(require('fs').readFileSync('src/data/compat-rules.js','utf-8'));
+eval(require('fs').readFileSync('src/generators/common.js','utf-8')); // For detectDomain
 
 const tests=[
   {name:'Expo+Vue=ERROR',a:{frontend:'Vue 3 + Nuxt',mobile:'Expo (React Native)'},expect:'error'},

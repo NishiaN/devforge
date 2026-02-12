@@ -36,6 +36,34 @@ function shareURL(){
   });
 }
 
+// ── Context-Aware Guide Data ──
+const DOMAIN_FIRST_STEPS={
+  fintech:{ja:['security.md確認 (PCI DSS/KYC)','認証+MFA設定','決済フロー実装'],en:['Review security.md (PCI DSS/KYC)','Setup Auth+MFA','Implement payment flow']},
+  health:{ja:['security.md→HIPAA対応','Auth+RBAC設定','ERスキーマ検証'],en:['Review security.md→HIPAA','Auth+RBAC setup','Verify ER schema']},
+  education:{ja:['specification.mdで学習フロー確認','CLAUDE.md→AI投入','reverse_engineering.mdで逆算'],en:['Review specification.md learning flow','Feed CLAUDE.md→AI','Use reverse_engineering.md']},
+  ec:{ja:['security.md+決済フロー','ER.mdでProduct/Order確認','test_cases.mdで決済テスト'],en:['Review security.md+payment','Check ER.md Product/Order','Test payment via test_cases.md']},
+  saas:{ja:['security.md→テナント分離','specification.md→課金設計','CLAUDE.md→AI開発'],en:['Review security.md→multi-tenancy','Spec.md→billing design','CLAUDE.md→AI dev']},
+  _default:{ja:['CLAUDE.md→AI投入','specification.md要件確認','tasks.mdタスク計画'],en:['Feed CLAUDE.md→AI','Review specification.md','Plan with tasks.md']}
+};
+const AI_TOOL_RECIPES={
+  Cursor:{ja:['Step 1: .cursor/rules配置','Step 2: Ctrl+Shift+I Agent起動','Step 3: tasks.mdから指示'],en:['Step 1: Place .cursor/rules','Step 2: Ctrl+Shift+I Agent','Step 3: Instruct from tasks.md']},
+  'Claude Code':{ja:['Step 1: CLAUDE.md自動読込','Step 2: /init初期化','Step 3: AI_BRIEF.md→仕様順投入'],en:['Step 1: CLAUDE.md auto-loaded','Step 2: /init','Step 3: Feed AI_BRIEF.md→specs']},
+  Copilot:{ja:['Step 1: copilot-instructions.md配置','Step 2: Tab補完+Chat','Step 3: #fileでコンテキスト指定'],en:['Step 1: Place copilot-instructions.md','Step 2: Tab+Chat','Step 3: Use #file context']},
+  Windsurf:{ja:['Step 1: .windsurfrules自動読込','Step 2: Cascadeモード起動','Step 3: MCP設定で拡張'],en:['Step 1: .windsurfrules auto-loaded','Step 2: Launch Cascade','Step 3: Extend with MCP']},
+  _default:{ja:['Step 1: CLAUDE.md貼り付け','Step 2: Ctrl+Shift+C全コピー','Step 3: tasks.md順に指示'],en:['Step 1: Paste CLAUDE.md','Step 2: Ctrl+Shift+C copy all','Step 3: Instruct via tasks.md']}
+};
+function getADRs(a,_ja){
+  const adrs=[];
+  if(inc(a.backend,'Supabase'))adrs.push({icon:'🔐',t:_ja?'Auth: Supabase Auth (RLS)':'Auth: Supabase Auth (RLS)',d:_ja?'PostgreSQL行レベルセキュリティ':'PostgreSQL row-level security'});
+  if(inc(a.backend,'Firebase'))adrs.push({icon:'🔐',t:_ja?'Auth: Firebase Auth':'Auth: Firebase Auth',d:_ja?'Firestoreルールで制御':'Controlled via Firestore rules'});
+  if(inc(a.frontend,'Next'))adrs.push({icon:'🖥',t:_ja?'Rendering: SSR/ISR':'Rendering: SSR/ISR',d:_ja?'SEO→SSR, 動的→ISR, 管理→CSR':'SEO→SSR, dynamic→ISR, admin→CSR'});
+  if(inc(a.frontend,'Vite')||inc(a.frontend,'SPA'))adrs.push({icon:'🖥',t:_ja?'Rendering: SPA (CSR)':'Rendering: SPA (CSR)',d:_ja?'クライアントサイドレンダリング':'Client-side rendering'});
+  if(inc(a.deploy,'Railway'))adrs.push({icon:'☁',t:_ja?'Deploy: 分離型':'Deploy: Decoupled',d:_ja?'FE/BE独立スケーリング':'Independent FE/BE scaling'});
+  if(inc(a.database,'PostgreSQL'))adrs.push({icon:'🗃',t:_ja?'DB: PostgreSQL':'DB: PostgreSQL',d:_ja?'ACID準拠、JSON対応':'ACID compliant, JSON support'});
+  if(inc(a.payment,'Stripe'))adrs.push({icon:'💳',t:_ja?'Payment: Stripe':'Payment: Stripe',d:_ja?'Checkout→Webhook→非同期確定':'Checkout→Webhook→async confirm'});
+  return adrs;
+}
+
 function showManual(sec){
   const o=$('helpOverlay');o.classList.add('show');
   pushModal(o,()=>{o.classList.remove('show');releaseFocus(o);});
@@ -86,7 +114,7 @@ function showManual(sec){
       '<h3>⑦ ロードマップ (9ファイル+UI)</h3>'+
       '<p>LEARNING_PATH / TECH_STACK_GUIDE / MOBILE_GUIDE / TOOLS_SETUP / RESOURCES / MILESTONES / AI_WORKFLOW / AI_AUTONOMOUS / SAAS_COMMERCE_GUIDE — インタラクティブUIで進捗管理可能。</p>'+
       '<h3>⑧ AIプロンプトランチャー (UI)</h3>'+
-      '<p>生成した仕様書をAIツールに一括投入。6つのプロンプトテンプレート（レビュー・実装・テスト・リファクタ・セキュリティ・ドキュメント）。フォルダ別トークン推定・モデル適合度表示。</p>'+
+      '<p>生成した仕様書をAIツールに一括投入。15のプロンプトテンプレート（レビュー・実装・テスト・リファクタ・セキュリティ・ドキュメント・QA・デバッグ・アーキテクチャ・パフォーマンス・API統合・アクセシビリティ・マイグレーション・メトリクス・i18n）。フォルダ別トークン推定・モデル適合度表示。</p>'+
       '<h3>⑨ デザインシステム (2ファイル)</h3>'+
       '<p>design_system.md (デザイントークン・色・タイポ・コンポーネントカタログ) / sequence_diagrams.md (認証・CRUD・決済フローのMermaidシーケンス図) — フレームワーク別実装ガイド。</p>'+
       '<h3>⑩ リバースエンジニアリング (2ファイル)</h3>'+
@@ -109,7 +137,7 @@ function showManual(sec){
       '<h3>⑦ Roadmap (9 files + UI)</h3>'+
       '<p>LEARNING_PATH / TECH_STACK_GUIDE / MOBILE_GUIDE / TOOLS_SETUP / RESOURCES / MILESTONES / AI_WORKFLOW / AI_AUTONOMOUS / SAAS_COMMERCE_GUIDE — Interactive UI for progress tracking.</p>'+
       '<h3>⑧ AI Prompt Launcher (UI)</h3>'+
-      '<p>Bulk-feed generated specs to AI tools. 6 prompt templates (Review, Implement, Test, Refactor, Security, Docs). Per-folder token estimation and model fit display.</p>'+
+      '<p>Bulk-feed generated specs to AI tools. 15 prompt templates (Review, Implement, Test, Refactor, Security, Docs, QA, Debug, Architecture, Performance, API, Accessibility, Migration, Metrics, i18n). Per-folder token estimation and model fit display.</p>'+
       '<h3>⑨ Design System (2 files)</h3>'+
       '<p>design_system.md (design tokens, colors, typography, component catalog) / sequence_diagrams.md (auth, CRUD, payment Mermaid sequence diagrams) — Framework-specific guides.</p>'+
       '<h3>⑩ Reverse Engineering (2 files)</h3>'+
@@ -122,7 +150,8 @@ function showManual(sec){
       :
       '<h2>Export Methods</h2><p><strong>ZIP</strong>: Download all 86+ files as a ZIP with folder structure.<br><strong>PDF</strong>: Format Markdown files and print via browser PDF.<br><strong>URL Sharing</strong>: Base64-encode project settings and share via URL.<br><strong>Copy All Files</strong>: Combine all documents into one text and copy to clipboard (Ctrl+Shift+C). Ideal for bulk AI input.</p><h3>Template Save</h3><p>Save project settings to localStorage and load them on next launch.</p>'
     },
-    {id:'guide',title:_ja?'🚀 活用ガイド':'🚀 Usage Guide',body:_ja?
+    {id:'guide',title:_ja?'🚀 活用ガイド':'🚀 Usage Guide',body:function(){
+      const baseBody=_ja?
       '<h2>🚀 生成ファイル活用ガイド</h2>'+
       '<p>DevForge v9 は世界で唯一の<strong>仕様駆動AIプロジェクトジェネレーター</strong>です。他のツールが「コード」を生成するのに対し、DevForge は「開発の知性」── 設計・環境・ルール・学習計画を86+ファイルで生成します。</p>'+
       '<h3>🌱 Beginner — まず動かす</h3>'+
@@ -138,7 +167,7 @@ function showManual(sec){
       '<h3>⚡ Professional — 自動化を支配する</h3>'+
       '<p><strong>Agent Teams並列開発:</strong> AGENTS.mdでエージェント役割を定義 → Claude Code Subagents / Antigravity Manager View で並列実行。tasks.mdがタスクキューとして機能。</p>'+
       '<p><strong>CI/CDゲート化:</strong> .ai/hooks.yml → GitHub Actions変換。docs/09_release_checklist.mdをデプロイゲートに。verification.mdを品質基準に。</p>'+
-      '<p><strong>6工程自動パイプライン:</strong> 柱⑧の6テンプレートを順番実行 → 📋仕様レビュー → 🔨実装 → 🧪テスト → ♻️リファクタ → 🔒セキュリティ → 📝ドキュメント更新。仕様書が全工程の入力。</p>'+
+      '<p><strong>開発パイプライン:</strong> 柱⑧の15テンプレートを活用 → 📋仕様レビュー → 🔨実装 → 🧪テスト → ♻️リファクタ → 🔒セキュリティ → 📝ドキュメント更新。+ 🔧デバッグ・📐アーキテクチャ・⚡パフォーマンス等の専門テンプレートも利用可能。仕様書が全工程の入力。</p>'+
       '<h3>⚔️ 他ツールとの比較</h3>'+
       '<table><tr><th>機能</th><th>DevForge v9</th><th>create-next-app</th><th>AI直接依頼</th></tr>'+
       '<tr><td>SDD仕様書5点</td><td>✅ 自動</td><td>✗</td><td>△ 手動</td></tr>'+
@@ -163,8 +192,7 @@ function showManual(sec){
       '<tr><td><code>.mcp/ + config</code></td><td>後で</td><td>そのまま</td><td>カスタムMCP</td></tr>'+
       '<tr><td><code>AGENTS.md</code></td><td>不要</td><td>参照</td><td>並列Agent</td></tr>'+
       '<tr><td><code>.ai/hooks.yml</code></td><td>不要</td><td>参照</td><td>CI/CD統合</td></tr></table>'+
-      '<p class="guide-action-p"><button class="btn btn-p btn-sm" onclick="closeManual();showPostGenGuide(true)">🚀 レベル別ガイドを表示</button></p>'
-      :
+      '<p class="guide-action-p"><button class="btn btn-p btn-sm" onclick="closeManual();showPostGenGuide(true)">🚀 レベル別ガイドを表示</button></p>':
       '<h2>🚀 Generated Files Usage Guide</h2>'+
       '<p>DevForge v9 is the world\'s only <strong>spec-driven AI project generator</strong>. While other tools generate code, DevForge generates "development intelligence" — design, environment, rules, and learning plans through 86+ files.</p>'+
       '<h3>🌱 Beginner — Get Started</h3>'+
@@ -179,7 +207,7 @@ function showManual(sec){
       '<h3>⚡ Professional — Master Automation</h3>'+
       '<p><strong>Agent Teams:</strong> AGENTS.md defines agent roles → Run with Claude Code Subagents / Antigravity Manager View. tasks.md serves as task queue.</p>'+
       '<p><strong>CI/CD Gates:</strong> .ai/hooks.yml → GitHub Actions. docs/09_release_checklist.md as deploy gate. verification.md as quality baseline.</p>'+
-      '<p><strong>6-Stage Pipeline:</strong> Pillar ⑧ templates in sequence → 📋Review → 🔨Implement → 🧪Test → ♻️Refactor → 🔒Security → 📝Docs update.</p>'+
+      '<p><strong>Dev Pipeline:</strong> 15 templates in Pillar ⑧ → 📋Review → 🔨Implement → 🧪Test → ♻️Refactor → 🔒Security → 📝Docs. Plus 🔧Debug, 📐Architecture, ⚡Performance and more specialized templates.</p>'+
       '<h3>⚔️ Comparison with Other Tools</h3>'+
       '<table><tr><th>Feature</th><th>DevForge v9</th><th>create-next-app</th><th>AI Direct</th></tr>'+
       '<tr><td>SDD 5 Spec Docs</td><td>✅ Auto</td><td>✗</td><td>△ Manual</td></tr>'+
@@ -202,8 +230,35 @@ function showManual(sec){
       '<tr><td><code>.mcp/ + config</code></td><td>Later</td><td>As-is</td><td>Custom MCP</td></tr>'+
       '<tr><td><code>AGENTS.md</code></td><td>Skip</td><td>Reference</td><td>Multi-Agent</td></tr>'+
       '<tr><td><code>.ai/hooks.yml</code></td><td>Skip</td><td>Reference</td><td>CI/CD Integration</td></tr></table>'+
-      '<p class="guide-action-p"><button class="btn btn-p btn-sm" onclick="closeManual();showPostGenGuide(true)">🚀 Show Level Guide</button></p>'
-    },
+      '<p class="guide-action-p"><button class="btn btn-p btn-sm" onclick="closeManual();showPostGenGuide(true)">🚀 Show Level Guide</button></p>';
+      let h=baseBody;
+      // Add domain-specific first steps
+      const a=S.answers||{};
+      const dom=detectDomain(a.purpose||'')||'_default';
+      const steps=DOMAIN_FIRST_STEPS[dom]||DOMAIN_FIRST_STEPS._default;
+      h+=_ja?'<h3>🎯 ドメイン別 初手ステップ</h3>':'<h3>🎯 Domain-Specific First Steps</h3>';
+      h+='<div class="guide-domain-steps">';
+      ((_ja?steps.ja:steps.en)||[]).forEach((s,i)=>{h+=`<div class="guide-step-mini"><span class="guide-step-num-mini">${i+1}</span><span>${s}</span></div>`;});
+      h+='</div>';
+      // Add AI tool recipe
+      const tools=(a.ai_tools||'').split(',').map(t=>t.trim()).filter(t=>t);
+      const tool=tools.find(t=>AI_TOOL_RECIPES[t])||'_default';
+      const recipe=AI_TOOL_RECIPES[tool]||AI_TOOL_RECIPES._default;
+      h+=_ja?'<h3>🤖 AIツール別ワークフロー</h3>':'<h3>🤖 AI Tool Workflow</h3>';
+      h+=`<div class="guide-ai-recipe"><h4>${tool==='_default'?(_ja?'汎用ワークフロー':'Generic Workflow'):tool}</h4>`;
+      ((_ja?recipe.ja:recipe.en)||[]).forEach(s=>{h+=`<div class="guide-recipe-step">${s}</div>`;});
+      h+='</div>';
+      // Add ADRs
+      const adrs=getADRs(a,_ja);
+      if(adrs.length>0){
+        h+=_ja?'<h3>📐 Architecture Decision Records (ADR)</h3>':'<h3>📐 Architecture Decision Records (ADR)</h3>';
+        h+=_ja?'<p class="guide-adr-intro">ユーザーの選択から自動抽出された設計判断:</p>':'<p class="guide-adr-intro">Auto-extracted design decisions from your choices:</p>';
+        h+='<div class="guide-adrs">';
+        adrs.forEach(adr=>{h+=`<div class="guide-adr"><span class="guide-adr-icon">${adr.icon}</span><div><strong>${adr.t}</strong><p>${adr.d}</p></div></div>`;});
+        h+='</div>';
+      }
+      return h;
+    }},
     {id:'techdb',title:_ja?'技術DB':'Tech DB',body:_ja?
       '<h2>技術マスターテーブル</h2><p>'+_TECH_COUNT+'テクノロジーを16カテゴリに分類。Context Dashboardから閲覧可能。</p><h3>カテゴリ一覧</h3><p>言語 / フロントエンド / モバイル / バックエンド / BaaS / 決済・CMS・EC / DevOps / AIツール / AI自律 / 手法 / テスト / API / ビルド / データ / セキュリティ</p><h3>フィルタ機能</h3><p>カテゴリ / 必須度 / キーワード検索で絞り込み可能。</p>'
       :
@@ -257,11 +312,12 @@ function showManual(sec){
   window._manual=MANUAL;
   MANUAL.forEach(s=>{
     const a=document.createElement('a');a.textContent=s.title;a.href='#';a.dataset.id=s.id;
-    a.onclick=e=>{e.preventDefault();$('helpBody').innerHTML=s.body;document.querySelectorAll('.help-nav a').forEach(x=>x.classList.remove('on'));a.classList.add('on');};
+    a.onclick=e=>{e.preventDefault();$('helpBody').innerHTML=typeof s.body==='function'?s.body():s.body;document.querySelectorAll('.help-nav a').forEach(x=>x.classList.remove('on'));a.classList.add('on');};
     if(s.id===(sec||'overview'))a.classList.add('on');
     nav.appendChild(a);
   });
-  $('helpBody').innerHTML=MANUAL.find(s=>s.id===(sec||'overview')).body;
+  const initSec=MANUAL.find(s=>s.id===(sec||'overview'));
+  $('helpBody').innerHTML=typeof initSec.body==='function'?initSec.body():initSec.body;
   trapFocus(o);
 }
 function filterManual(q){
@@ -271,21 +327,23 @@ function filterManual(q){
   if(!term){
     links.forEach(a=>a.classList.remove('dim'));
     const active=document.querySelector('#helpNav a.on');
-    if(active){const s=window._manual.find(m=>m.id===active.dataset.id);if(s)$('helpBody').innerHTML=s.body;}
+    if(active){const s=window._manual.find(m=>m.id===active.dataset.id);if(s)$('helpBody').innerHTML=typeof s.body==='function'?s.body():s.body;}
     return;
   }
   let firstMatch=null;
   links.forEach(a=>{
     const s=window._manual.find(m=>m.id===a.dataset.id);
     if(!s)return;
-    const text=(s.title+' '+s.body.replace(/<[^>]*>/g,'')).toLowerCase();
+    const bodyText=typeof s.body==='function'?s.body():s.body;
+    const text=(s.title+' '+bodyText.replace(/<[^>]*>/g,'')).toLowerCase();
     const match=text.includes(term);
     a.classList.toggle('dim',!match);
     if(match&&!firstMatch)firstMatch=s;
   });
   if(firstMatch){
     const re=new RegExp('('+term.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','gi');
-    const highlighted=firstMatch.body.replace(/>([^<]+)</g,(m,txt)=>'>'+txt.replace(re,'<mark>$1</mark>')+'<');
+    const bodyText=typeof firstMatch.body==='function'?firstMatch.body():firstMatch.body;
+    const highlighted=bodyText.replace(/>([^<]+)</g,(m,txt)=>'>'+txt.replace(re,'<mark>$1</mark>')+'<');
     $('helpBody').innerHTML=highlighted;
     links.forEach(a=>{a.classList.remove('on');if(a.dataset.id===firstMatch.id)a.classList.add('on');});
   }

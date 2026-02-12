@@ -287,6 +287,50 @@ mark{background:var(--accent-soft);color:var(--accent);padding:0 2px;border-radi
 .compat-pair{font-weight:700;font-size:10px;background:var(--bg-3);padding:2px 6px;border-radius:3px;white-space:nowrap;}
 .compat-msg{flex:1;min-width:120px;line-height:1.5;}
 .compat-fix{flex-shrink:0;font-size:10px!important;padding:2px 8px!important;}
+/* Synergy Score */
+.synergy-card{background:var(--bg-3);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:12px;}
+.synergy-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.synergy-label{font-size:13px;font-weight:600;}
+.synergy-score{font-size:28px;font-weight:700;padding:6px 14px;border-radius:8px;}
+.synergy-bar{height:10px;background:var(--bg-4);border-radius:5px;overflow:hidden;margin-bottom:12px;}
+.synergy-bar-fill{height:100%;border-radius:5px;transition:width .6s;}
+.synergy-dims{display:flex;flex-direction:column;gap:6px;margin-bottom:8px;}
+.synergy-dim{display:grid;grid-template-columns:110px 1fr 32px;align-items:center;gap:8px;font-size:11px;}
+.synergy-dim-lbl{color:var(--text-2);text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.synergy-dim-bar{height:12px;background:var(--bg-4);border-radius:3px;overflow:hidden;}
+.synergy-dim-fill{height:100%;border-radius:3px;transition:width .4s;}
+.synergy-dim-val{font-weight:700;text-align:right;}
+.synergy-domain{font-size:11px;color:var(--text-3);padding-top:8px;border-top:1px solid var(--border);}
+.synergy-domain strong{color:var(--accent);}
+/* File Dependency Tree */
+.fdep-group{background:var(--bg-3);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:6px;overflow:hidden;}
+.fdep-header{padding:8px 12px;cursor:pointer;display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;user-select:none;transition:background .15s;}
+.fdep-header:hover{background:var(--bg-4);}
+.fdep-icon{font-size:10px;width:12px;transition:transform .2s;}
+.fdep-title{flex:1;}
+.fdep-count{font-size:10px;color:var(--text-3);background:var(--bg-4);padding:2px 8px;border-radius:10px;}
+.fdep-body{max-height:0;overflow:hidden;transition:max-height .3s ease;}
+.fdep-body.fdep-open{max-height:500px;padding:8px 12px;}
+.fdep-item{font-size:11px;padding:3px 0;display:flex;align-items:center;gap:4px;}
+.fdep-ind-1{padding-left:16px;}
+.fdep-ind-2{padding-left:32px;}
+.fdep-exists a{color:var(--success);text-decoration:none;}
+.fdep-exists a:hover{text-decoration:underline;}
+.fdep-missing span{color:var(--text-3);opacity:0.5;}
+/* Context-Aware Guide */
+.guide-domain-steps{display:flex;flex-direction:column;gap:8px;margin:12px 0;background:var(--bg-3);padding:12px;border-radius:8px;border:1px solid var(--border);}
+.guide-step-mini{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--text);}
+.guide-step-num-mini{width:24px;height:24px;min-width:24px;background:var(--accent);color:#fff;border-radius:6px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;}
+.guide-ai-recipe{background:var(--bg-3);padding:12px;border-radius:8px;border:1px solid var(--border);margin:12px 0;}
+.guide-ai-recipe h4{font-size:13px;margin-bottom:8px;color:var(--accent);}
+.guide-recipe-step{font-size:12px;padding:6px 0;color:var(--text-2);border-bottom:1px solid var(--border);}
+.guide-recipe-step:last-child{border-bottom:none;}
+.guide-adr-intro{font-size:12px;color:var(--text-3);margin-bottom:8px;}
+.guide-adrs{display:flex;flex-direction:column;gap:8px;margin:8px 0;}
+.guide-adr{display:flex;gap:12px;background:var(--bg-3);padding:10px 12px;border-radius:8px;border:1px solid var(--border);}
+.guide-adr-icon{font-size:20px;min-width:28px;}
+.guide-adr strong{font-size:12px;display:block;margin-bottom:2px;color:var(--text);}
+.guide-adr p{font-size:11px;color:var(--text-3);margin:0;}
 /* Backup banner */
 .dash-backup{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 12px;border-radius:var(--radius);font-size:11px;margin-bottom:8px;flex-wrap:wrap;}
 .dash-backup-red{background:color-mix(in srgb,var(--danger) 9%,transparent);border:1px solid color-mix(in srgb,var(--danger) 25%,transparent);color:var(--danger);}
