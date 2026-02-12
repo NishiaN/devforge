@@ -31,7 +31,7 @@ describe('Build System', () => {
     const html = fs.readFileSync(OUTPUT, 'utf-8');
     const expected = [
       'genPillar1_SDD', 'genPillar2_DevContainer', 'genPillar3_MCP',
-      'genPillar4_AIRules', 'genPillar5_QualityIntelligence', 'genPillar7_Roadmap', 'genPillar9_DesignSystem', 'genPillar10_ReverseEngineering', 'genDocs21', 'genCommonFiles',
+      'genPillar4_AIRules', 'genPillar5_QualityIntelligence', 'genPillar7_Roadmap', 'genPillar9_DesignSystem', 'genPillar10_ReverseEngineering', 'genPillar11_ImplIntelligence', 'genDocs21', 'genCommonFiles',
       'openEditor', 'saveEdited', 'revertFile', 'showDiff', 'lineDiff', 'snapshotFiles',
       'reqLabel', 'priceLabel', 'showExplorer', 'showDashboard',
       'trapFocus', 'releaseFocus', 'announce',
@@ -100,12 +100,12 @@ describe('Build System', () => {
     assert.deepStrictEqual(missingInJA, [], `Keys in EN but not JA: ${missingInJA.join(', ')}`);
   });
 
-  it('10 pillars consistency across all references', () => {
+  it('11 pillars consistency across all references', () => {
     const html = fs.readFileSync(OUTPUT, 'utf-8');
-    assert.ok(!html.includes('9 Pillars') || html.includes('10 Pillars') || html.includes('10 pillars'), 'Should contain "10 Pillars"');
-    assert.ok(html.includes('10の柱'), 'Should contain "10の柱"');
-    // pbadge arrays should have 10 items
-    assert.ok(html.includes('if(i<10)'), 'pbadge loop should check i<10');
+    assert.ok(html.includes('11 Pillars') || html.includes('11 pillars'), 'Should contain "11 Pillars"');
+    assert.ok(html.includes('11の柱'), 'Should contain "11の柱"');
+    // pbadge arrays should have 11 items
+    assert.ok(html.includes('if(i<11)'), 'pbadge loop should check i<11');
     // AI Launcher, Design System & Reverse Engineering references
     assert.ok(html.includes('⑧AIランチャー'), 'Should have ⑧AIランチャー badge');
     assert.ok(html.includes('⑧AI Launcher'), 'Should have ⑧AI Launcher badge');
@@ -113,6 +113,8 @@ describe('Build System', () => {
     assert.ok(html.includes('⑨Design System'), 'Should have ⑨Design System badge');
     assert.ok(html.includes('⑩リバースEng'), 'Should have ⑩リバースEng badge');
     assert.ok(html.includes('⑩Reverse Eng'), 'Should have ⑩Reverse Eng badge');
+    assert.ok(html.includes('⑪実装ガイド'), 'Should have ⑪実装ガイド badge');
+    assert.ok(html.includes('⑪Impl Guide'), 'Should have ⑪Impl Guide badge');
   });
 
   it('tour has correct number of steps', () => {

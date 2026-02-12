@@ -9,7 +9,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Architecture
 - **42 modules** in `src/` → `node build.js` → single `devforge-v9.html` (~770KB)
 - Vanilla JS, no frameworks. CSS custom properties. CDN: marked.js, mermaid.js, JSZip.
-- **AI Development OS**: Generates 83+ files including context intelligence, operations playbooks, and business models
+- **AI Development OS**: Generates 86+ files including context intelligence, operations playbooks, and business models
 
 ## Build & Test
 ```bash
@@ -90,7 +90,7 @@ npm run check              # Syntax check extracted JS
 |----------|-------|---------|
 | core/ | state, i18n, events, tour, init | State, language, shortcuts |
 | data/ | presets(41), questions, techdb, compat-rules, gen-templates, helpdata | Static data (41 presets: 36 original + 5 new: CRM, Social, Logistics, Survey, Job Board) |
-| generators/ | index, p1-sdd, p2-devcontainer, p3-mcp, p4-airules, p5-quality, p7-roadmap, p9-designsystem, p10-reverse, docs, common | 72-file generation engine (10 pillars) |
+| generators/ | index, p1-sdd, p2-devcontainer, p3-mcp, p4-airules, p5-quality, p7-roadmap, p9-designsystem, p10-reverse, docs, common | 72-file generation engine (11 pillars) |
 | ui/ | wizard, render, edit, help, confirm, complexity, toc, voice, project, presets, preview, editor, diff, export, explorer, dashboard, templates | UI components |
 | styles/ | all.css | Theme (dark/light), responsive |
 
@@ -236,7 +236,7 @@ if(data.state.answers) {
 
 **Fix:**
 - Always add both `ja` and `en` versions
-- Search for all instances when updating numbers (41 presets, 83+ files, 10 pillars)
+- Search for all instances when updating numbers (41 presets, 86+ files, 11 pillars)
 - Use static strings in data files, not `S.lang` conditionals
 
 ### Property Name Mismatches with Helper-Generated Objects
@@ -668,11 +668,11 @@ const ENTITY_COLUMNS = {
 
 ⚠️ **When adding entities:** Check if columns match existing constants (\_U, \_SA, \_SD, \_T, \_D, etc.) to maintain compression.
 
-## Generated Output (83+ files)
-When users complete the wizard, DevForge generates **83+ files** (base: 73 files, +4 when ai_auto=multi/full/orch for skills/ md Package, +1 when payment≠none for docs/38_business_model.md):
+## Generated Output (86+ files)
+When users complete the wizard, DevForge generates **86+ files** (base: 73 files, +4 when ai_auto=multi/full/orch for skills/ md Package, +1 when payment≠none for docs/38_business_model.md):
 - **.spec/** — constitution.md, specification.md, technical-plan.md, tasks.md, verification.md
 - **.devcontainer/** — devcontainer.json, Dockerfile, docker-compose.yml, post-create.sh
-- **docs/** — architecture.md, ER.md, API.md, screen.md, test-cases.md, security.md, release.md, WBS.md, prompt-playbook.md, tasks.md, **progress.md (24)**, **error_logs.md (25)**, **design_system.md (26)**, **sequence_diagrams.md (27)**, **qa_strategy.md (28)**, **reverse_engineering.md (29)**, **goal_decomposition.md (30)**, **industry_playbook.md (31)**, **qa_blueprint.md (32)**, **test_matrix.md (33)**, **incident_response.md (34)**, **sitemap.md (35)**, **test_strategy.md (36)**, **bug_prevention.md (37)**, **business_model.md (38)***
+- **docs/** — architecture.md, ER.md, API.md, screen.md, test-cases.md, security.md, release.md, WBS.md, prompt-playbook.md, tasks.md, **progress.md (24)**, **error_logs.md (25)**, **design_system.md (26)**, **sequence_diagrams.md (27)**, **qa_strategy.md (28)**, **reverse_engineering.md (29)**, **goal_decomposition.md (30)**, **industry_playbook.md (31)**, **qa_blueprint.md (32)**, **test_matrix.md (33)**, **incident_response.md (34)**, **sitemap.md (35)**, **test_strategy.md (36)**, **bug_prevention.md (37)**, **business_model.md (38)***, **implementation_playbook.md (39)**, **ai_dev_runbook.md (40)**
 - **AI rules** — CLAUDE.md (with File Selection Matrix & Context Compression Protocol), AI_BRIEF.md (with Context Loading Strategy, ~1200 tokens), .cursorrules, .clinerules, .windsurfrules, AGENTS.md (with Agent Specialization Matrix), .cursor/rules, **skills/** (project.md, factory.md, catalog.md*, pipelines.md*, README.md**, skill_map.md**, agents/coordinator.md**, agents/reviewer.md**)
 - **CI/CD** — .github/workflows/ci.yml
 
@@ -745,11 +745,38 @@ When users complete the wizard, DevForge generates **83+ files** (base: 73 files
   - **skills/ md Package** (conditional: ai_auto=multi/full/orch) — 4 new files: README.md (quick start + AI maturity model), skill_map.md (4-layer business model), agents/coordinator.md, agents/reviewer.md
 - **Enhanced AI_BRIEF.md**: Added Context Loading Strategy (phase-based file loading priorities), token budget allocation (40% task, 30% spec, 20% progress, 10% buffer), new files reference
 - **Enhanced AGENTS.md**: Added Agent Specialization Matrix (6 agent types with token budgets), Handoff Protocol (YAML format), Summary-Only Import principle
-- File count increased from 72+ to 83+ (+11 new files)
+- File count increased from 72+ to 86+ (+11 new files)
 - Size impact: 632KB → 827KB (+195KB total from v9.0 baseline)
   - AI Development OS expansion: +138KB (632KB → 770KB)
   - Minification safety fix: +57KB (770KB → 827KB, disabled comment removal)
 - Budget remaining: 173KB
+
+**Recent Enhancement (Pillar ⑪: Implementation Intelligence - Feb 2026):**
+- **Implementation Playbook** (`docs/39_implementation_playbook.md`) — Always generated:
+  - 24 domain-specific implementation patterns with pseudo-code templates
+  - Guard rails (典型バグ防止策) for each domain
+  - Stack-specific guidance (frontend/backend/database combinations)
+  - App type best practices (SPA/SSR/PWA/mobile/API-only/realtime)
+  - Entity-specific pseudo-code generation (CRUD operations)
+  - Cross-cutting concerns checklist (auth, error handling, cache, i18n, audit, upload, rate limiting, validation)
+- **AI Development Runbook** (`docs/40_ai_dev_runbook.md`) — Always generated:
+  - AI operation workflow (Write → Select → Compress → Isolate cycle)
+  - Task-specific file selection matrix (with token estimates)
+  - Domain-specific error recovery protocols
+  - Context management strategy (token budget allocation)
+  - Agent handoff protocol (YAML format, when ai_auto=multi/full/orch)
+- **Implementation Skills Catalog** (`skills/impl-patterns.md`) — Conditional (ai_auto≠none):
+  - Manus Skills format with domain-specific thinking axis
+  - 4-layer skill structure (Planning → Design → Production → Operations)
+  - Detailed skill definition with Input/Process/Output/Judgment/Next
+- **New Data Structures** (common.js):
+  - `DOMAIN_IMPL_PATTERN` — 24 domains with implementation patterns, pseudo-code, guard rails (~8KB)
+  - `APP_TYPE_MAP` — 6 app types (SPA/SSR/PWA/mobile/API-only/realtime) with patterns and anti-patterns (~2KB)
+  - `CROSS_CUTTING_IMPL` — 8 cross-cutting concerns (auth/error/cache/i18n/audit/upload/rate/validation) (~3KB)
+  - `detectAppType()` — Infers app architecture type from answers
+- File count increased from 86+ to 86+ (docs/39, docs/40 replace existing slots; +1 conditional skills/impl-patterns.md when ai_auto≠none)
+- Size impact: ~33KB added (20KB generator + 13KB data structures)
+- Budget estimate: 827KB → ~860KB / 1000KB (~140KB remaining)
 
 ## Test Architecture
 | File | Tests | Purpose |
@@ -846,7 +873,7 @@ When adding new features, follow the "Balanced Expansion" approach:
   - DATA: Added 6 missing entity definitions (Chart, Viewing, Client, Transfer, Card, Statement)
   - DATA: Removed invalid 'crm' domain from QA_CROSS_CUTTING
   - SECURITY: Added input sanitization to URL hash import (XSS prevention)
-  - UI: Updated file counts from "69+" to "83+" across all interfaces
+  - UI: Updated file counts from "69+" to "86+" across all interfaces
   - ACCESSIBILITY: Added aria-selected to pillar tabs, aria-checked to skill picker
   - TESTS: Added 8 domains to test coverage, added p5/p9 to gen-coherence test
   - Result: All 193 tests passing, 829KB build size

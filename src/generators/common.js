@@ -1545,3 +1545,290 @@ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopie
 \nTHE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.`;
 }
 
+// ═══ Pillar 11: Implementation Intelligence Data Structures ═══
+
+// ── App Type Detection ──
+function detectAppType(a){
+  const fe=a.frontend||'';
+  const be=a.backend||'';
+  const mob=a.mobile||'none';
+
+  // Realtime apps
+  if((a.mvp_features||'').match(/(リアルタイム|realtime|チャット|chat|通知|notification|ライブ|live)/i)) return 'realtime';
+
+  // Mobile-first
+  if(mob!=='none'&&mob!=='なし') return 'mobile';
+
+  // API-only (no frontend)
+  if(isNone(fe)||fe==='API only') return 'api_only';
+
+  // PWA
+  if(fe.includes('PWA')||(a.mvp_features||'').includes('PWA')) return 'pwa';
+
+  // SSR frameworks
+  if(fe.includes('Next')||fe.includes('Nuxt')||fe.includes('Remix')||fe.includes('SvelteKit')) return 'ssr';
+
+  // SPA default
+  return 'spa';
+}
+
+// ── Domain-Specific Implementation Pattern Helper ──
+function _dip(impl_ja,impl_en,pseudo,guard_ja,guard_en){
+  return {impl_ja:impl_ja,impl_en:impl_en,pseudo:pseudo,guard_ja:guard_ja,guard_en:guard_en};
+}
+
+// ── Domain Implementation Patterns (24 domains) ──
+const DOMAIN_IMPL_PATTERN={
+  education:_dip(
+    ['進捗トラッキングはイベントソーシングで実装','コース完了判定はサーバーサイドで検証','レッスン順序制御はFKと順序カラムで管理'],
+    ['Implement progress tracking with event sourcing','Validate course completion server-side','Control lesson order with FK and sequence column'],
+    'function trackProgress(userId,lessonId,courseId){\n  const event={type:"LESSON_COMPLETED",userId,lessonId,timestamp:Date.now()};\n  emit(event);\n  const progress=getLessonProgress(userId,courseId);\n  if(progress.completed===progress.total) emit({type:"COURSE_COMPLETED",userId,courseId});\n}',
+    ['未完了レッスンへのスキップを防止','進捗率の逆戻り禁止','修了証明書の改ざん防止'],
+    ['Prevent skipping to incomplete lessons','Disallow progress regression','Prevent certificate tampering']
+  ),
+  ec:_dip(
+    ['在庫ロックは楽観的ロック(version列)で実装','決済は冪等性キー必須','カート→注文確定は2フェーズコミット'],
+    ['Implement inventory locking with optimistic lock (version column)','Payment must use idempotency key','Cart to order confirmation uses 2-phase commit'],
+    'function reserveInventory(productId,qty){\n  const row=db.query("SELECT stock,version FROM products WHERE id=? FOR UPDATE",[productId]);\n  if(row.stock<qty) throw new Error("Out of stock");\n  db.execute("UPDATE products SET stock=stock-?, version=version+1 WHERE id=? AND version=?",[qty,productId,row.version]);\n}',
+    ['在庫数マイナス防止','同時購入による在庫過剰引当て','決済と在庫確保の不整合'],
+    ['Prevent negative stock','Prevent over-allocation from concurrent purchases','Prevent payment-inventory inconsistency']
+  ),
+  fintech:_dip(
+    ['残高更新はトランザクション必須','二重送金防止は送金テーブルにユニーク制約','監査ログはイミュータブルテーブル'],
+    ['Balance updates require transactions','Prevent double transfers with unique constraint on transfer table','Audit logs use immutable table'],
+    'function transfer(fromId,toId,amount,idempotencyKey){\n  db.transaction(()=>{\n    db.execute("INSERT INTO transfers (from_user,to_user,amount,idempotency_key) VALUES (?,?,?,?)",[fromId,toId,amount,idempotencyKey]);\n    db.execute("UPDATE accounts SET balance=balance-? WHERE user_id=?",[amount,fromId]);\n    db.execute("UPDATE accounts SET balance=balance+? WHERE user_id=?",[amount,toId]);\n    db.execute("INSERT INTO audit_logs (action,user_id,details) VALUES (?,?,?)",["TRANSFER",fromId,JSON.stringify({toId,amount})]);\n  });\n}',
+    ['残高マイナス防止','送金の二重実行','監査ログの削除・改ざん'],
+    ['Prevent negative balance','Prevent double execution of transfers','Prevent deletion/tampering of audit logs']
+  ),
+  health:_dip(
+    ['患者データは暗号化カラムで保存','アクセスログは全操作記録','同意管理は専用テーブルで管理'],
+    ['Store patient data in encrypted columns','Record all operations in access logs','Manage consent with dedicated table'],
+    'function accessPatientRecord(doctorId,patientId,purpose){\n  if(!hasConsent(patientId,purpose)) throw new Error("No consent");\n  const record=db.query("SELECT decrypt(medical_data) FROM patients WHERE id=?",[patientId]);\n  db.execute("INSERT INTO access_logs (doctor_id,patient_id,purpose,timestamp) VALUES (?,?,?,?)",[doctorId,patientId,purpose,Date.now()]);\n  return record;\n}',
+    ['同意なしアクセス防止','暗号化キー漏洩','アクセスログ削除'],
+    ['Prevent access without consent','Prevent encryption key leakage','Prevent access log deletion']
+  ),
+  marketplace:_dip(
+    ['取引エスクローはステートマシンで管理','評価の相互投稿は取引完了後のみ許可','手数料計算はサーバーサイド'],
+    ['Manage escrow transactions with state machine','Allow mutual reviews only after transaction completion','Calculate fees server-side'],
+    'function completeTransaction(txId){\n  const tx=db.query("SELECT * FROM transactions WHERE id=? FOR UPDATE",[txId]);\n  if(tx.status!=="escrow") throw new Error("Invalid state");\n  const fee=tx.amount*0.05;\n  db.transaction(()=>{\n    db.execute("UPDATE accounts SET balance=balance+? WHERE user_id=?",[tx.amount-fee,tx.seller_id]);\n    db.execute("UPDATE accounts SET balance=balance+? WHERE user_id=?",[fee,"platform"]);\n    db.execute("UPDATE transactions SET status=\'completed\' WHERE id=?",[txId]);\n  });\n}',
+    ['エスクロー状態の不正遷移','手数料計算の改ざん','評価の不正投稿'],
+    ['Prevent invalid escrow state transition','Prevent fee calculation tampering','Prevent fraudulent reviews']
+  ),
+  community:_dip(
+    ['投稿のモデレーションはキューで非同期処理','スパム検出はレート制限+コンテンツフィルタ','ユーザーブロックは双方向テーブル'],
+    ['Process post moderation asynchronously with queue','Detect spam with rate limiting + content filter','Manage user blocks with bidirectional table'],
+    'function createPost(userId,content){\n  if(isRateLimited(userId)) throw new Error("Rate limit exceeded");\n  const postId=db.insert("INSERT INTO posts (user_id,content,status) VALUES (?,?,\'pending\')",[userId,content]);\n  queue.push({task:"MODERATE_POST",postId:postId});\n  return postId;\n}',
+    ['スパム投稿の大量作成','モデレーション回避','ブロックユーザーの相互作用'],
+    ['Prevent mass spam posting','Prevent moderation bypass','Prevent blocked user interaction']
+  ),
+  content:_dip(
+    ['コンテンツ公開はスケジューラで予約投稿','バージョン管理はdraft/publishedテーブル分離','メディアアップロードは署名付きURL'],
+    ['Schedule content publishing with scheduler','Manage versions with separate draft/published tables','Use signed URLs for media uploads'],
+    'function schedulePublish(contentId,publishAt){\n  db.execute("UPDATE contents SET status=\'scheduled\',publish_at=? WHERE id=?",[publishAt,contentId]);\n  scheduler.add({task:"PUBLISH_CONTENT",contentId:contentId,runAt:publishAt});\n}',
+    ['未公開コンテンツの漏洩','公開日時の改ざん','メディアファイルの不正アクセス'],
+    ['Prevent unpublished content leakage','Prevent publish date tampering','Prevent unauthorized media access']
+  ),
+  analytics:_dip(
+    ['イベント収集はバッチ挿入で高速化','集計はマテリアライズドビュー','リアルタイム更新はWebSocket'],
+    ['Speed up event collection with batch insert','Use materialized views for aggregation','Use WebSocket for realtime updates'],
+    'function trackEvent(userId,eventType,properties){\n  eventBuffer.push({userId,eventType,properties,timestamp:Date.now()});\n  if(eventBuffer.length>=100){\n    db.batchInsert("INSERT INTO events (user_id,event_type,properties,timestamp) VALUES ?",eventBuffer);\n    eventBuffer=[];\n  }\n}',
+    ['イベント欠損','集計の遅延','ダッシュボードの過負荷'],
+    ['Prevent event loss','Prevent aggregation delays','Prevent dashboard overload']
+  ),
+  booking:_dip(
+    ['予約の排他制御は行ロック+タイムアウト','キャンセルポリシーはステータス遷移で管理','リマインダーはスケジューラで自動送信'],
+    ['Control booking exclusivity with row lock + timeout','Manage cancellation policy with status transition','Auto-send reminders with scheduler'],
+    'function createBooking(userId,slotId,startTime){\n  db.transaction(()=>{\n    const slot=db.query("SELECT * FROM slots WHERE id=? FOR UPDATE",[slotId]);\n    if(slot.status!=="available") throw new Error("Slot unavailable");\n    db.execute("INSERT INTO bookings (user_id,slot_id,start_time,status) VALUES (?,?,?,\'confirmed\')",[userId,slotId,startTime]);\n    db.execute("UPDATE slots SET status=\'booked\' WHERE id=?",[slotId]);\n    scheduler.add({task:"SEND_REMINDER",bookingId:bookingId,runAt:startTime-3600000});\n  });\n}',
+    ['ダブルブッキング','キャンセル不可期間の無視','リマインダー送信漏れ'],
+    ['Prevent double booking','Prevent ignoring non-cancellable period','Prevent missed reminder sending']
+  ),
+  saas:_dip(
+    ['プラン制限はミドルウェアでチェック','使用量メーターはカウンターテーブル','サブスク更新はWebhookで同期'],
+    ['Check plan limits in middleware','Track usage with counter table','Sync subscription updates with webhook'],
+    'function checkLimit(userId,feature){\n  const plan=db.query("SELECT plan FROM users WHERE id=?",[userId]);\n  const usage=db.query("SELECT count FROM usage WHERE user_id=? AND feature=?",[userId,feature]);\n  const limit=PLAN_LIMITS[plan.plan][feature];\n  if(usage.count>=limit) throw new Error("Limit exceeded");\n}',
+    ['プラン制限の回避','使用量カウントの不整合','サブスク状態のズレ'],
+    ['Prevent plan limit bypass','Prevent usage count inconsistency','Prevent subscription state drift']
+  ),
+  portfolio:_dip(
+    ['作品公開はステータスフラグ','タグ検索はインデックス必須','アクセス解析はログテーブル'],
+    ['Control work visibility with status flag','Tag search requires index','Track analytics with log table'],
+    'function publishWork(userId,workId){\n  db.execute("UPDATE works SET status=\'published\',published_at=? WHERE id=? AND user_id=?",[Date.now(),workId,userId]);\n  db.execute("INSERT INTO activity_logs (user_id,action,target_id) VALUES (?,\'PUBLISH\',?)",[userId,workId]);\n}',
+    ['非公開作品の漏洩','タグスパム','統計の不正操作'],
+    ['Prevent private work leakage','Prevent tag spam','Prevent stat manipulation']
+  ),
+  tool:_dip(
+    ['API呼び出しはレート制限必須','結果キャッシュはTTL付きRedis','エラーはリトライ+フォールバック'],
+    ['Apply rate limiting to API calls','Cache results with TTL in Redis','Implement retry + fallback for errors'],
+    'function callAPI(userId,endpoint,params){\n  const cacheKey=`api:${endpoint}:${JSON.stringify(params)}`;\n  const cached=redis.get(cacheKey);\n  if(cached) return cached;\n  const result=fetch(endpoint,params);\n  redis.set(cacheKey,result,{EX:300});\n  return result;\n}',
+    ['APIレート超過','キャッシュ汚染','エラー時のユーザー影響'],
+    ['Prevent API rate excess','Prevent cache pollution','Prevent user impact on errors']
+  ),
+  iot:_dip(
+    ['デバイスデータはタイムシリーズDB','異常検知はしきい値+アラート','ファームウェア更新はバージョン管理'],
+    ['Store device data in time-series DB','Detect anomalies with threshold + alert','Manage firmware updates with versioning'],
+    'function recordSensorData(deviceId,sensorType,value){\n  influxDB.write({measurement:sensorType,tags:{deviceId},fields:{value},timestamp:Date.now()});\n  if(value>THRESHOLD[sensorType]){\n    alert.send({type:"ANOMALY",deviceId,sensorType,value});\n  }\n}',
+    ['データ欠損','異常検知の遅延','不正ファームウェア配信'],
+    ['Prevent data loss','Prevent anomaly detection delay','Prevent malicious firmware distribution']
+  ),
+  realestate:_dip(
+    ['物件ステータスは排他制御','内見予約は重複チェック','契約書は電子署名'],
+    ['Control property status with exclusive lock','Check duplicates for viewing appointments','Use e-signature for contracts'],
+    'function reserveViewing(userId,propertyId,datetime){\n  db.transaction(()=>{\n    const existing=db.query("SELECT * FROM viewings WHERE property_id=? AND datetime=?",[propertyId,datetime]);\n    if(existing) throw new Error("Slot taken");\n    db.execute("INSERT INTO viewings (user_id,property_id,datetime,status) VALUES (?,?,?,\'confirmed\')",[userId,propertyId,datetime]);\n  });\n}',
+    ['物件ステータスの不整合','内見ダブルブッキング','契約書の改ざん'],
+    ['Prevent property status inconsistency','Prevent viewing double booking','Prevent contract tampering']
+  ),
+  legal:_dip(
+    ['契約文書はバージョン管理','アクセス権限は役割ベース','変更履歴はイミュータブル'],
+    ['Manage contracts with versioning','Control access with role-based permissions','Track change history immutably'],
+    'function updateContract(userId,contractId,newContent){\n  const current=db.query("SELECT version FROM contracts WHERE id=?",[contractId]);\n  db.transaction(()=>{\n    db.execute("INSERT INTO contract_versions (contract_id,version,content,updated_by) VALUES (?,?,?,?)",[contractId,current.version+1,newContent,userId]);\n    db.execute("UPDATE contracts SET version=version+1 WHERE id=?",[contractId]);\n  });\n}',
+    ['契約内容の不正変更','アクセス権限の逸脱','変更履歴の削除'],
+    ['Prevent unauthorized contract changes','Prevent access permission violation','Prevent change history deletion']
+  ),
+  hr:_dip(
+    ['応募者データは暗号化','選考ステータスはワークフロー','オファー承諾は電子署名'],
+    ['Encrypt applicant data','Manage selection status with workflow','Use e-signature for offer acceptance'],
+    'function updateApplicantStatus(applicantId,newStatus){\n  const current=db.query("SELECT status FROM applicants WHERE id=?",[applicantId]);\n  if(!isValidTransition(current.status,newStatus)) throw new Error("Invalid transition");\n  db.execute("UPDATE applicants SET status=?,updated_at=? WHERE id=?",[newStatus,Date.now(),applicantId]);\n  db.execute("INSERT INTO status_history (applicant_id,from_status,to_status) VALUES (?,?,?)",[applicantId,current.status,newStatus]);\n}',
+    ['個人情報漏洩','選考ステータスの不正遷移','オファー条件の改ざん'],
+    ['Prevent personal info leakage','Prevent invalid status transition','Prevent offer condition tampering']
+  ),
+  ai:_dip(
+    ['プロンプトはテンプレート管理','API呼び出しはキュー+リトライ','生成結果はバージョン保存'],
+    ['Manage prompts with templates','Use queue + retry for API calls','Save generation results with versioning'],
+    'function generateContent(userId,promptId,params){\n  const template=db.query("SELECT template FROM prompts WHERE id=?",[promptId]);\n  const prompt=renderTemplate(template,params);\n  const job={userId,prompt,status:"pending"};\n  queue.push(job);\n  return job.id;\n}',
+    ['プロンプトインジェクション','APIコスト暴走','生成結果の紛失'],
+    ['Prevent prompt injection','Prevent API cost runaway','Prevent loss of generation results']
+  ),
+  automation:_dip(
+    ['ワークフローはDAGで定義','実行履歴は全ステップ記録','失敗時は自動リトライ'],
+    ['Define workflows with DAG','Record all steps in execution history','Auto-retry on failure'],
+    'function executeWorkflow(workflowId,input){\n  const steps=db.query("SELECT * FROM workflow_steps WHERE workflow_id=? ORDER BY sequence",[workflowId]);\n  let context=input;\n  for(const step of steps){\n    try{\n      context=executeStep(step,context);\n      db.execute("INSERT INTO execution_logs (workflow_id,step_id,status,output) VALUES (?,?,\'success\',?)",[workflowId,step.id,context]);\n    }catch(e){\n      db.execute("INSERT INTO execution_logs (workflow_id,step_id,status,error) VALUES (?,?,\'failed\',?)",[workflowId,step.id,e.message]);\n      if(step.retry) retry(step,context);\n    }\n  }\n}',
+    ['循環依存の発生','ステップ実行順序の誤り','失敗時のデータ不整合'],
+    ['Prevent circular dependencies','Prevent step execution order errors','Prevent data inconsistency on failure']
+  ),
+  event:_dip(
+    ['参加登録は定員チェック','チケット発行はユニークコード','入場管理はQRスキャン'],
+    ['Check capacity for registration','Issue tickets with unique code','Manage entry with QR scan'],
+    'function registerEvent(userId,eventId){\n  db.transaction(()=>{\n    const event=db.query("SELECT capacity,(SELECT COUNT(*) FROM registrations WHERE event_id=?) as current FROM events WHERE id=? FOR UPDATE",[eventId,eventId]);\n    if(event.current>=event.capacity) throw new Error("Event full");\n    const ticketCode=generateUniqueCode();\n    db.execute("INSERT INTO registrations (user_id,event_id,ticket_code,status) VALUES (?,?,?,\'confirmed\')",[userId,eventId,ticketCode]);\n  });\n}',
+    ['定員超過登録','チケットコード重複','不正入場'],
+    ['Prevent over-capacity registration','Prevent ticket code duplication','Prevent unauthorized entry']
+  ),
+  gamify:_dip(
+    ['ポイント付与はトランザクション','ランキングは集計テーブル','実績解除はサーバー検証'],
+    ['Award points with transaction','Use aggregation table for ranking','Verify achievement unlock server-side'],
+    'function awardPoints(userId,points,reason){\n  db.transaction(()=>{\n    db.execute("UPDATE users SET points=points+? WHERE id=?",[points,userId]);\n    db.execute("INSERT INTO point_logs (user_id,points,reason,timestamp) VALUES (?,?,?,?)",[userId,points,reason,Date.now()]);\n    checkAchievements(userId);\n  });\n}',
+    ['ポイント不正取得','ランキング操作','実績の不正解除'],
+    ['Prevent point fraud','Prevent ranking manipulation','Prevent achievement unlock fraud']
+  ),
+  collab:_dip(
+    ['リアルタイム編集はOT/CRDT','競合解決は最終書込み優先','バージョン履歴は差分保存'],
+    ['Implement realtime editing with OT/CRDT','Resolve conflicts with last-write-wins','Save version history as diffs'],
+    'function applyEdit(docId,userId,operation){\n  const doc=getDocument(docId);\n  const transformed=transformOperation(operation,doc.pendingOps);\n  applyOperation(doc,transformed);\n  broadcast({docId,userId,operation:transformed});\n  saveVersion(docId,transformed);\n}',
+    ['編集競合によるデータ破損','バージョン履歴の肥大化','同時編集の遅延'],
+    ['Prevent data corruption from edit conflicts','Prevent version history bloat','Prevent concurrent edit latency']
+  ),
+  devtool:_dip(
+    ['コマンド実行はサンドボックス','ログ出力はストリーミング','ビルド成果物はキャッシュ'],
+    ['Execute commands in sandbox','Stream log output','Cache build artifacts'],
+    'function executeCommand(cmd,env){\n  const sandbox=createSandbox(env);\n  const process=sandbox.exec(cmd);\n  process.stdout.on("data",(chunk)=>{\n    stream.write(chunk);\n  });\n  process.on("exit",(code)=>{\n    if(code===0) cacheArtifacts(sandbox.output);\n  });\n}',
+    ['任意コード実行','ログの機密情報漏洩','キャッシュ汚染'],
+    ['Prevent arbitrary code execution','Prevent sensitive info leakage in logs','Prevent cache pollution']
+  ),
+  creator:_dip(
+    ['コンテンツ収益化はサブスク+投げ銭','収益分配は自動計算','著作権は電子透かし'],
+    ['Monetize content with subscription + tips','Auto-calculate revenue sharing','Protect copyright with watermark'],
+    'function tipCreator(userId,creatorId,amount){\n  db.transaction(()=>{\n    db.execute("UPDATE accounts SET balance=balance-? WHERE user_id=?",[amount,userId]);\n    const platformFee=amount*0.1;\n    db.execute("UPDATE accounts SET balance=balance+? WHERE user_id=?",[amount-platformFee,creatorId]);\n    db.execute("INSERT INTO transactions (from_user,to_user,amount,type) VALUES (?,?,?,\'tip\')",[userId,creatorId,amount]);\n  });\n}',
+    ['収益計算の誤り','手数料の不正操作','コンテンツの無断転載'],
+    ['Prevent revenue calculation errors','Prevent fee manipulation','Prevent unauthorized content reuse']
+  ),
+  newsletter:_dip(
+    ['配信リストは購読ステータス管理','メール送信はキュー+レート制限','開封率はピクセルトラッキング'],
+    ['Manage distribution list with subscription status','Send emails with queue + rate limiting','Track open rate with pixel tracking'],
+    'function sendNewsletter(newsletterId,subscriberIds){\n  subscriberIds.forEach(id=>{\n    const trackingPixel=generateTrackingPixel(newsletterId,id);\n    const email=renderEmail(newsletterId,{trackingPixel});\n    queue.push({task:"SEND_EMAIL",to:id,content:email});\n  });\n}',
+    ['購読解除の無視','配信レート超過','開封率の不正操作'],
+    ['Prevent ignoring unsubscription','Prevent sending rate excess','Prevent open rate manipulation']
+  ),
+  _default:_dip(
+    ['データ整合性はトランザクション','エラーハンドリングは必須','ログ記録は全操作'],
+    ['Ensure data integrity with transactions','Error handling is mandatory','Log all operations'],
+    'function performOperation(data){\n  try{\n    db.transaction(()=>{\n      validateInput(data);\n      const result=processData(data);\n      logOperation(result);\n      return result;\n    });\n  }catch(e){\n    logError(e);\n    throw e;\n  }\n}',
+    ['データ不整合','エラーの握りつぶし','操作履歴の欠落'],
+    ['Prevent data inconsistency','Prevent error suppression','Prevent operation history loss']
+  )
+};
+
+// ── App Type Implementation Patterns ──
+const APP_TYPE_MAP={
+  spa:{
+    patterns_ja:['状態管理はRedux/Zustand','ルーティングはReact Router','認証はトークンベース','API呼び出しはaxios/fetch'],
+    patterns_en:['State management with Redux/Zustand','Routing with React Router','Token-based auth','API calls with axios/fetch'],
+    antipatterns_ja:['SEOが必要なのにSPA','初回ロードが遅い','認証トークンをlocalStorageに平文保存'],
+    antipatterns_en:['Using SPA when SEO is required','Slow initial load','Storing auth tokens in localStorage plaintext']
+  },
+  ssr:{
+    patterns_ja:['データフェッチはgetServerSideProps','SEOメタタグは動的生成','認証はサーバーセッション','静的ページはISR'],
+    patterns_en:['Data fetching with getServerSideProps','Dynamically generate SEO meta tags','Server-side session auth','Static pages with ISR'],
+    antipatterns_ja:['全ページSSR(不要なページまで)','サーバー負荷考慮なし','クライアント状態とサーバー状態の不一致'],
+    antipatterns_en:['SSR all pages (even unnecessary ones)','No server load consideration','Client-server state mismatch']
+  },
+  pwa:{
+    patterns_ja:['Service Workerでオフライン対応','マニフェストファイル必須','プッシュ通知はVAPID','キャッシュ戦略はCache First'],
+    patterns_en:['Offline support with Service Worker','Manifest file required','Push notifications with VAPID','Cache strategy: Cache First'],
+    antipatterns_ja:['キャッシュクリア手段なし','オフライン時のUX考慮不足','バックグラウンド同期なし'],
+    antipatterns_en:['No cache clearing mechanism','Poor offline UX consideration','No background sync']
+  },
+  mobile:{
+    patterns_ja:['ネイティブ機能はExpo Modules','状態管理はRedux Toolkit','ナビゲーションはReact Navigation','プッシュ通知はExpo Notifications'],
+    patterns_en:['Native features with Expo Modules','State management with Redux Toolkit','Navigation with React Navigation','Push notifications with Expo Notifications'],
+    antipatterns_ja:['Webビューだけでネイティブ未活用','Android/iOS差分の考慮なし','バッテリー消費の最適化なし'],
+    antipatterns_en:['Only WebView without native features','No Android/iOS difference consideration','No battery consumption optimization']
+  },
+  api_only:{
+    patterns_ja:['RESTはOpenAPI仕様書','GraphQLはスキーマファースト','認証はJWT+リフレッシュトークン','レート制限は必須'],
+    patterns_en:['REST with OpenAPI spec','GraphQL with schema-first','Auth with JWT + refresh token','Rate limiting required'],
+    antipatterns_ja:['エラーレスポンス統一なし','バージョニング戦略なし','ドキュメント未整備'],
+    antipatterns_en:['No unified error response','No versioning strategy','Poor documentation']
+  },
+  realtime:{
+    patterns_ja:['WebSocketはSocket.io','状態同期はFirebase/Supabase Realtime','再接続ロジック必須','メッセージキューはRedis Pub/Sub'],
+    patterns_en:['WebSocket with Socket.io','State sync with Firebase/Supabase Realtime','Reconnection logic required','Message queue with Redis Pub/Sub'],
+    antipatterns_ja:['再接続時の状態復元なし','メッセージ順序保証なし','スケーラビリティ考慮不足'],
+    antipatterns_en:['No state restoration on reconnect','No message order guarantee','Poor scalability consideration']
+  }
+};
+
+// ── Cross-Cutting Implementation Concerns ──
+const CROSS_CUTTING_IMPL={
+  auth:{
+    ja:['パスワードはbcryptでハッシュ化(rounds=12)','セッショントークンはhttpOnly cookie','CSRF対策はトークン検証','MFAは2段階認証アプリ'],
+    en:['Hash passwords with bcrypt (rounds=12)','Session token in httpOnly cookie','CSRF protection with token verification','MFA with authenticator app']
+  },
+  error:{
+    ja:['エラーは集約ハンドラで統一処理','スタックトレースは本番環境で非表示','エラーログはSentry/Cloudwatch','ユーザーには安全なメッセージ表示'],
+    en:['Unified error handling with aggregated handler','Hide stack traces in production','Error logs with Sentry/Cloudwatch','Show safe messages to users']
+  },
+  cache:{
+    ja:['頻繁アクセスデータはRedisキャッシュ','キャッシュキーは名前空間付き','TTLは用途別に設定','キャッシュ削除はイベント駆動'],
+    en:['Cache frequently accessed data in Redis','Cache keys with namespace','Set TTL per use case','Cache invalidation event-driven']
+  },
+  i18n:{
+    ja:['翻訳ファイルはJSONで管理','言語切替はクッキー保存','日時フォーマットはIntl API','RTL言語対応はCSS論理プロパティ'],
+    en:['Manage translations with JSON files','Store language switch in cookie','Date format with Intl API','RTL support with CSS logical properties']
+  },
+  audit:{
+    ja:['重要操作は全て監査ログ記録','ログはイミュータブルテーブル','誰が・いつ・何を・なぜを記録','保存期間はコンプライアンス準拠'],
+    en:['Record all critical operations in audit log','Logs in immutable table','Record who/when/what/why','Retention period compliant with regulations']
+  },
+  upload:{
+    ja:['ファイルサイズ制限必須','MIMEタイプ検証(拡張子に頼らない)','アップロードは署名付きURL','マルウェアスキャンはClamAV'],
+    en:['File size limit required','MIME type validation (not relying on extension)','Upload with signed URL','Malware scan with ClamAV']
+  },
+  rate:{
+    ja:['APIはユーザー/IP別にレート制限','制限超過時は429ステータス','Retry-Afterヘッダー必須','管理者APIは別枠'],
+    en:['Rate limit API per user/IP','Return 429 on limit exceeded','Retry-After header required','Admin API separate limit']
+  },
+  validation:{
+    ja:['入力検証はクライアント+サーバー両方','サーバーサイド検証を信頼の境界','SQLインジェクション対策はORM/prepared statement','XSS対策はエスケープ+CSP'],
+    en:['Input validation on both client and server','Server-side validation as trust boundary','SQL injection prevention with ORM/prepared statement','XSS prevention with escaping + CSP']
+  }
+};
+

@@ -56,6 +56,7 @@ const jsFiles = [
   'generators/p7-roadmap.js',
   'generators/p9-designsystem.js',
   'generators/p10-reverse.js',
+  'generators/p11-implguide.js',
   'generators/docs.js',
   'generators/common.js',
 

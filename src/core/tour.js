@@ -6,7 +6,7 @@ function _getTourSteps(){
   {title:_ja?'📝 テンプレート':'📝 Templates',desc:_ja?'41種類のプリセットから選ぶと、回答が自動入力されます。':'Pick from 41 presets to auto-fill answers.'},
   {title:_ja?'💬 質問フロー':'💬 Q&A Flow',desc:_ja?'Phase 1-3 の質問に答えるだけ。スキップも後で回答も可能です。':'Just answer Phase 1-3 questions. Skip and answer later anytime.'},
   {title:_ja?'✎ 回答編集':'✎ Edit Answers',desc:_ja?'送信済みの回答に表示される ✎ ボタンで修正できます。':'Click the ✎ button on submitted answers to edit them.'},
-  {title:_ja?'📦 83+ファイル生成':'📦 83+ File Generation',desc:_ja?'全質問回答後、10の柱で83+ファイルが自動生成されます。':'After all questions, 83+ files auto-generate across 10 pillars.'},
+  {title:_ja?'📦 86+ファイル生成':'📦 86+ File Generation',desc:_ja?'全質問回答後、10の柱で86+ファイルが自動生成されます。':'After all questions, 86+ files auto-generate across 10 pillars.'},
   {title:_ja?'⚡ 並列探索':'⚡ Parallel Explorer',desc:_ja?'Pillar ⑤ で7スタックを比較。回答に基づくおすすめランキング付き。':'Compare 7 stacks in Pillar ⑤ with recommendation ranking based on your answers.'},
   {title:'📊 Dashboard',desc:_ja?'Pillar ⑥ でコンテキスト可視化＋'+_TECH_COUNT+'技術DBを閲覧。':'Visualize context + browse '+_TECH_COUNT+' tech DB in Pillar ⑥.'},
   {title:_ja?'🤖 AIランチャー':'🤖 AI Launcher',desc:_ja?'Pillar ⑧ で仕様書をAIツールにワンクリック投入。6テンプレート＋トークン推定。':'Feed specs to AI tools in one click from Pillar ⑧. 6 templates + token estimation.'},

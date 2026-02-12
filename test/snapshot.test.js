@@ -21,6 +21,7 @@ eval(fs.readFileSync('src/data/gen-templates.js','utf-8').replace('const GT','va
 eval(fs.readFileSync('src/generators/p7-roadmap.js','utf-8'));
 eval(fs.readFileSync('src/generators/p9-designsystem.js','utf-8'));
 eval(fs.readFileSync('src/generators/p10-reverse.js','utf-8').replace('const REVERSE_FLOW_MAP','var REVERSE_FLOW_MAP'));
+eval(fs.readFileSync('src/generators/p11-implguide.js','utf-8'));
 
 // ═══ Helper ═══
 function generate(answers, name, lang) {
@@ -36,6 +37,7 @@ function generate(answers, name, lang) {
   genPillar7_Roadmap(answers, name);
   genPillar9_DesignSystem(answers, name);
   genPillar10_ReverseEngineering(answers, name);
+  genPillar11_ImplIntelligence(answers, name);
   return { ...S.files };
 }
 
@@ -87,6 +89,11 @@ describe('Snapshot A: LMS/Supabase/Stripe', () => {
     assert.ok(files['docs/30_goal_decomposition.md'], 'docs/30_goal_decomposition.md missing');
   });
 
+  test('implementation intelligence files exist', () => {
+    assert.ok(files['docs/39_implementation_playbook.md'], 'docs/39_implementation_playbook.md missing');
+    assert.ok(files['docs/40_ai_dev_runbook.md'], 'docs/40_ai_dev_runbook.md missing');
+  });
+
   test('quality intelligence files exist', () => {
     assert.ok(files['docs/32_qa_blueprint.md'], 'docs/32_qa_blueprint.md missing');
     assert.ok(files['docs/33_test_matrix.md'], 'docs/33_test_matrix.md missing');
@@ -128,6 +135,22 @@ describe('Snapshot A: LMS/Supabase/Stripe', () => {
     assert.ok(goal.includes('優先度マトリクス') || goal.includes('Priority Matrix'), 'Missing priority matrix');
     assert.ok(goal.includes('依存関係') || goal.includes('Dependency'), 'Missing dependency chain');
     assert.ok(goal.includes('Impact') && goal.includes('Effort'), 'Missing Impact/Effort matrix');
+  });
+
+  test('implementation playbook has domain patterns', () => {
+    const impl = files['docs/39_implementation_playbook.md'];
+    assert.ok(impl.includes('実装パターン') || impl.includes('Implementation Patterns'), 'Missing implementation patterns');
+    assert.ok(impl.includes('擬似コード') || impl.includes('Pseudo-code'), 'Missing pseudo-code');
+    assert.ok(impl.includes('ガードレール') || impl.includes('Guard Rails'), 'Missing guard rails');
+    assert.ok(impl.includes('横断的関心事') || impl.includes('Cross-Cutting'), 'Missing cross-cutting concerns');
+  });
+
+  test('AI dev runbook has context management', () => {
+    const runbook = files['docs/40_ai_dev_runbook.md'];
+    assert.ok(runbook.includes('運用ワークフロー') || runbook.includes('Operation Workflow'), 'Missing workflow');
+    assert.ok(runbook.includes('コンテキスト') || runbook.includes('Context'), 'Missing context management');
+    assert.ok(runbook.includes('エラー復旧') || runbook.includes('Error Recovery'), 'Missing error recovery');
+    assert.ok(runbook.includes('ファイル選択') || runbook.includes('File Selection'), 'Missing file selection matrix');
   });
 
   test('CI/CD workflow exists', () => {
@@ -373,9 +396,9 @@ describe('Snapshot B: Blog/Vite/Netlify', () => {
     dev_methods: 'TDD', ai_tools: 'Cursor', orm: ''
   }, 'Blog');
 
-  test('file count in range 58-77', () => {
+  test('file count in range 58-80', () => {
     const count = Object.keys(files).length;
-    assert.ok(count >= 58 && count <= 77, `Expected 58-77 files, got ${count}`);
+    assert.ok(count >= 58 && count <= 80, `Expected 58-80 files, got ${count}`);
   });
 
   test('no Stripe content when payment absent', () => {

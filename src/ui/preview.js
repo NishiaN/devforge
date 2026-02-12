@@ -42,6 +42,7 @@ function initPillarTabs(){
       else if(i===7) showAILauncher();
       else if(i===8) showFileTree(); // Design System
       else if(i===9) showFileTree(); // Reverse Engineering
+      else if(i===10) showFileTree(); // Implementation Intelligence
       else showFileTree();
     };tabs.appendChild(b);
   });
@@ -136,6 +137,14 @@ function buildFileTree(){
     files.push({folder:true,name:'docs'});
     ['29_reverse_engineering','30_goal_decomposition'].forEach(f=>
       files.push({name:'  '+f+'.md',path:'docs/'+f+'.md'}));
+  } else if(pillar===10){ // Implementation Intelligence
+    files.push({folder:true,name:'docs'});
+    ['39_implementation_playbook','40_ai_dev_runbook'].forEach(f=>
+      files.push({name:'  '+f+'.md',path:'docs/'+f+'.md'}));
+    if(S.files['skills/impl-patterns.md']){
+      files.push({folder:true,name:'skills'});
+      files.push({name:'  impl-patterns.md',path:'skills/impl-patterns.md'});
+    }
   }
   // Common files
   files.push({name:'───────────',path:''});
