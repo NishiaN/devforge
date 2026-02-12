@@ -239,6 +239,66 @@ if(data.state.answers) {
 - Search for all instances when updating numbers (41 presets, 83+ files, 10 pillars)
 - Use static strings in data files, not `S.lang` conditionals
 
+### Property Name Mismatches with Helper-Generated Objects
+**Problem:** Accessing properties on objects created by helper functions without checking the actual property structure.
+
+**Example Bug (Feb 2026):** `p5-quality.js` tried to access `domainPlaybook.prevent` when the `_dpb()` helper actually creates `prevent_ja` and `prevent_en` properties.
+
+```javascript
+// ❌ Wrong: Assumes object structure
+const playbook = DOMAIN_PLAYBOOK[domain];
+if(playbook && playbook.prevent) {  // Property doesn't exist!
+  const list = G ? playbook.prevent.ja : playbook.prevent.en;
+}
+
+// ✅ Correct: Match the actual helper structure
+if(playbook && playbook.prevent_ja) {  // Match _dpb() output
+  const list = G ? playbook.prevent_ja : playbook.prevent_en;
+}
+```
+
+**Detection:** If domain-specific sections in generated docs are empty, check property names against the helper function that creates the object.
+
+**Prevention:** When using objects from helpers like `_dpb()`, `_tm()`, check the helper definition to see exact property names it generates.
+
+### Missing Entity Definitions
+**Problem:** `DOMAIN_ENTITIES` references entities that don't exist in `ENTITY_COLUMNS`.
+
+**Detection:** Tests allow up to 10 missing entities (`data-coverage.test.js`), but this indicates incomplete data.
+
+**Impact:** ER diagrams, API schemas, and DDL will have empty/incomplete schemas for these entities.
+
+**Solution:**
+1. Search ENTITY_COLUMNS for the entity name: `^\s*EntityName\s*:`
+2. If missing, add column definition following the pattern of similar entities
+3. Use compression constants (`_U`, `_SA`, `_T`, `_D`, etc.) where applicable
+4. Verify with `npm test` to ensure FK references are valid
+
+**Example (Feb 2026 fix):** Added Chart, Viewing, Client, Transfer, Card, Statement entities referenced by analytics/realestate/legal/fintech domains.
+
+### Invalid Domain References
+**Problem:** Using domain strings that `detectDomain()` never returns.
+
+**Example Bug (Feb 2026):** QA_CROSS_CUTTING used `'crm'` but detectDomain() only returns 24 valid domains (never 'crm').
+
+**Impact:** Cross-cutting QA patterns will never match, domain-specific logic skipped.
+
+**Solution:**
+1. Check `detectDomain()` in common.js for the complete list of valid domains
+2. Never hardcode domain strings without verifying they're in detectDomain()
+3. Use `'saas'` for CRM-like apps (SaaS covers CRM use cases)
+
+**Valid domains (as of Feb 2026):** education, ec, marketplace, community, content, analytics, booking, saas, portfolio, tool, iot, realestate, legal, hr, fintech, health, ai, automation, event, gamify, collab, devtool, creator, newsletter
+
+### Test Coverage Maintenance
+**Problem:** When adding new domains to production code, forgetting to update test coverage arrays.
+
+**Files to update when adding domains:**
+- `test/data-coverage.test.js` — Three domain arrays (DOMAIN_ENTITIES, DOMAIN_QA_MAP, DOMAIN_PLAYBOOK tests)
+- `test/gen-coherence.test.js` — Add generator eval() if testing new pillars
+
+**Pattern (Feb 2026 fix):** Added 8 domains (ai, automation, event, gamify, collab, devtool, creator, newsletter) to all three test domain arrays.
+
 ### Accessibility (a11y)
 Don't forget ARIA attributes:
 ```javascript
@@ -781,7 +841,16 @@ When adding new features, follow the "Balanced Expansion" approach:
   - CRITICAL: Disabled unsafe block/line comment removal in build.js
   - Context: Regex-based minification was removing CSS comments inside JS strings
   - Trade-off: +57KB build size to guarantee syntax correctness
-- **Remaining budget**: 173KB for future enhancements
+- **Comprehensive Bug Fix Package (Feb 12, 2026 PM)**: +2KB — Data integrity, security, accessibility
+  - CRITICAL: Fixed DOMAIN_PLAYBOOK property mismatch (`prevent` → `prevent_ja/prevent_en`) enabling domain-specific sections in docs/34
+  - DATA: Added 6 missing entity definitions (Chart, Viewing, Client, Transfer, Card, Statement)
+  - DATA: Removed invalid 'crm' domain from QA_CROSS_CUTTING
+  - SECURITY: Added input sanitization to URL hash import (XSS prevention)
+  - UI: Updated file counts from "69+" to "83+" across all interfaces
+  - ACCESSIBILITY: Added aria-selected to pillar tabs, aria-checked to skill picker
+  - TESTS: Added 8 domains to test coverage, added p5/p9 to gen-coherence test
+  - Result: All 193 tests passing, 829KB build size
+- **Remaining budget**: 171KB for future enhancements
 
 ### Size Optimization Tips
 - Reuse common patterns (see `_U`, `_SA`, `_SD`, `_T`, `_D`, `_CN`, `_M`, `_B`, etc. in common.js)
