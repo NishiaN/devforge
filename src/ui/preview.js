@@ -146,7 +146,7 @@ function buildFileTree(){
       files.push({name:'  '+f+'.md',path:'docs/'+f+'.md'}));
   } else if(pillar===9){ // Reverse Engineering
     files.push({folder:true,name:'docs'});
-    ['29_reverse_engineering','30_goal_decomposition'].forEach(f=>
+    ['29_reverse_engineering','30_goal_decomposition','41_growth_intelligence'].forEach(f=>
       files.push({name:'  '+f+'.md',path:'docs/'+f+'.md'}));
   } else if(pillar===10){ // Implementation Intelligence
     files.push({folder:true,name:'docs'});

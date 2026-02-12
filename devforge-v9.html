@@ -2300,7 +2300,7 @@ function buildFileTree(){
       files.push({name:'  '+f+'.md',path:'docs/'+f+'.md'}));
   } else if(pillar===9){ // Reverse Engineering
     files.push({folder:true,name:'docs'});
-    ['29_reverse_engineering','30_goal_decomposition'].forEach(f=>
+    ['29_reverse_engineering','30_goal_decomposition','41_growth_intelligence'].forEach(f=>
       files.push({name:'  '+f+'.md',path:'docs/'+f+'.md'}));
   } else if(pillar===10){ // Implementation Intelligence
     files.push({folder:true,name:'docs'});
@@ -5895,6 +5895,81 @@ function genPillar10_ReverseEngineering(a,pn){
     doc38+='- **docs/05_api.md** — '+(G?'決済API実装':'Payment API implementation')+'\n\n';
     S.files['docs/38_business_model.md']=doc38;
   }
+  // ═══ C2: Growth Intelligence (always generated) ═══
+  const gdomain=detectDomain(a.purpose)||'_default';
+  const gd=DOMAIN_GROWTH[gdomain]||DOMAIN_GROWTH._default;
+  let doc41='# '+pn+' — '+(G?'グロースインテリジェンス':'Growth Intelligence')+'\n\n';
+  // Section 1: Stack Compatibility Score
+  const syn=calcSynergy(a);
+  doc41+='## '+(G?'1. スタック相性スコア':'1. Tech Stack Compatibility Score')+'\n\n';
+  doc41+='| '+(G?'次元':'Dimension')+' | '+(G?'スコア':'Score')+' | '+(G?'説明':'Description')+' |\n|-----|-------|------|\n';
+  const dimNames=G?['FE↔BE親和性','エコシステム統一性','ドメイン適合度','デプロイ整合性','複雑度バランス']:['FE↔BE Affinity','Ecosystem Unity','Domain Fit','Deploy Alignment','Complexity Balance'];
+  [syn.d1,syn.d2,syn.d3,syn.d4,syn.d5].forEach((s,i)=>{
+    doc41+='| '+dimNames[i]+' | '+s+'/100 | '+(s>=80?(G?'✅ 良好':'✅ Good'):s>=60?(G?'⚠️ 改善余地':'⚠️ Room to improve'):(G?'❌ 要対策':'❌ Action needed'))+' |\n';
+  });
+  doc41+='\n'+(G?'**総合スタックスコア**: ':'**Overall Stack Score**: ')+syn.overall+'/100\n\n';
+  // Compat warnings
+  const cw=checkCompat(a);
+  if(cw.length>0){
+    doc41+='### '+(G?'互換性アラート':'Compatibility Alerts')+'\n\n';
+    cw.slice(0,8).forEach(r=>{
+      doc41+='- '+(r.severity==='error'?'❌':'⚠️')+' **'+r.id+'**: '+(G?r.msg_ja:r.msg_en)+'\n';
+    });
+    doc41+='\n';
+  }
+  // Section 2: Growth Funnel (Mermaid)
+  const stages=G?gd.fj:gd.fe;
+  doc41+='## '+(G?'2. ドメイン別グロースファネル':'2. Domain Growth Funnel')+'\n\n';
+  doc41+='```mermaid\ngraph LR\n';
+  stages.forEach((s,i)=>{
+    if(i<stages.length-1) doc41+='  S'+i+'["'+s+' ('+gd.cvr[i]+'%)"] --> S'+(i+1)+'["'+stages[i+1]+' ('+gd.cvr[i+1]+'%)"]\n';
+  });
+  doc41+='```\n\n';
+  doc41+='| '+(G?'ステージ':'Stage')+' | '+(G?'ベンチマーク':'Benchmark')+' | '+(G?'前段からのCVR':'Stage CVR')+' |\n|--------|-----------|----------|\n';
+  stages.forEach((s,i)=>{
+    const cvr=i===0?'-':((gd.cvr[i]/gd.cvr[i-1]*100).toFixed(1)+'%');
+    doc41+='| '+s+' | '+gd.cvr[i]+'% | '+cvr+' |\n';
+  });
+  doc41+='\n';
+  // Section 3: Growth Equation
+  doc41+='## '+(G?'3. グロース方程式':'3. Growth Equation')+'\n\n';
+  doc41+='```\n'+gd.eq+'\n```\n\n';
+  doc41+=(G?'**感度分析**: 各変数を10%改善すると、全体収益は約10%向上（複利効果で実際はそれ以上）。複数のレバーを同時に改善することで掛け算的成長が可能。\n\n':'**Sensitivity**: Improving each variable by 10% yields ~10% revenue lift (compounding makes it higher). Simultaneously improving multiple levers creates multiplicative growth.\n\n');
+  // Section 4: Growth Levers
+  const levers=G?gd.lj:gd.le;
+  doc41+='## '+(G?'4. グロースレバー（優先順）':'4. Growth Levers (Prioritized)')+'\n\n';
+  levers.forEach((l,i)=>{doc41+=(i+1)+'. '+l+'\n';});
+  doc41+='\n';
+  // Section 5: Pricing Strategy
+  doc41+='## '+(G?'5. 価格戦略（松竹梅モデル）':'5. Pricing Strategy (Three-Tier Model)')+'\n\n';
+  const prices=G?gd.pj:gd.pe;
+  const tierNames=G?['🥉 松（エントリー）','🥈 竹（メイン）★推奨','🥇 梅（プレミアム）']:['🥉 Good (Entry)','🥈 Better (Main) ★Recommended','🥇 Best (Premium)'];
+  doc41+='| '+(G?'ティア':'Tier')+' | '+(G?'価格帯':'Price Range')+' |\n|------|------|\n';
+  prices.forEach((p,i)=>{doc41+='| '+tierNames[i]+' | '+p+' |\n';});
+  doc41+='\n'+(G?'> **心理効果**: 3択を提示すると中間（竹）が選ばれやすい（妥協効果）。最上位は「アンカー」として竹の割安感を演出する。\n\n':'> **Psychology**: Presenting 3 options makes the middle tier most popular (compromise effect). The top tier serves as an anchor to make the middle tier feel like good value.\n\n');
+  // Section 6: Performance Budget
+  doc41+='## '+(G?'6. パフォーマンス予算':'6. Performance Budget')+'\n\n';
+  doc41+='| '+(G?'指標':'Metric')+' | '+(G?'目標':'Target')+' | '+(G?'ビジネスインパクト':'Business Impact')+' |\n|------|------|-------|\n';
+  doc41+='| LCP | < 2.5s | '+(G?'離脱率-25%':'Bounce rate -25%')+' |\n';
+  doc41+='| FID | < 100ms | '+(G?'UXスコア+20pt':'UX score +20pt')+' |\n';
+  doc41+='| CLS | < 0.1 | '+(G?'信頼性+15%':'Trust +15%')+' |\n';
+  doc41+='| '+(G?'初回バンドル':'Initial Bundle')+' | < 200KB (gzip) | '+(G?'FCP改善':'FCP improvement')+' |\n\n';
+  // Tech-specific tips
+  const fe=a.frontend||'';
+  if(fe.includes('Next')){
+    doc41+=(G?'**Next.js最適化**: ISR活用, next/image, Edge Middleware, Server Components優先\n\n':'**Next.js Optimization**: Use ISR, next/image, Edge Middleware, prefer Server Components\n\n');
+  }else if(fe.includes('Vue')||fe.includes('Nuxt')){
+    doc41+=(G?'**Vue/Nuxt最適化**: Lazy Hydration, コンポーネント分割, auto-imports\n\n':'**Vue/Nuxt Optimization**: Lazy Hydration, component splitting, auto-imports\n\n');
+  }else{
+    doc41+=(G?'**SPA最適化**: React.lazy + Suspense, ルート分割, Dynamic Import\n\n':'**SPA Optimization**: React.lazy + Suspense, route splitting, Dynamic Import\n\n');
+  }
+  // Section 7: Cross-references
+  doc41+='## '+(G?'7. 関連ドキュメント':'7. Related Documents')+'\n\n';
+  doc41+='- **docs/30_goal_decomposition.md** — '+(G?'目標分解とKPI':'Goal decomposition & KPIs')+'\n';
+  doc41+='- **docs/38_business_model.md** — '+(G?'ビジネスモデル詳細（決済設定時）':'Business model details (when payment configured)')+'\n';
+  doc41+='- **docs/24_progress.md** — '+(G?'進捗追跡':'Progress tracking')+'\n';
+  doc41+='- **docs/28_qa_strategy.md** — '+(G?'品質戦略':'QA strategy')+'\n\n';
+  S.files['docs/41_growth_intelligence.md']=doc41;
 }
 /* ═══ Pillar 11: Implementation Intelligence ═══ */
 
@@ -8024,6 +8099,90 @@ const DOMAIN_PLAYBOOK={
   devtool:_dpb(['登録→発行→使用→追跡','リクエスト→検証→実行→記録','エラー→通知→対応→改善'],['Register→Issue→Use→Track','Request→Verify→Execute→Log','Error→Notify→Respond→Improve'],[_CG+':データ処理同意','利用規約:レート制限、使用制限','セキュリティ:APIキー暗号化、IP制限'],[_CG+': data processing consent','ToS: rate limits, usage limits','Security: API key encryption, IP restriction'],['キー漏洩|平文保存|対策:暗号化、ハッシュ化、定期ローテーション','レート突破|制限なし|対策:Redis、sliding window'],['Key leakage|Plain text|Fix: encrypt, hash, regular rotation','Rate bypass|No limits|Fix: Redis, sliding window'],['認証→security.md, api_spec.md','使用→architecture.md(tracking), stakeholders.md'],['Auth→security.md, api_spec.md','Usage→architecture.md(tracking), stakeholders.md'],'API使用最適化|コスト削減|入力:リクエストログ、エラー率|判断:エラー>5%→要改善、重複>30%→キャッシュ候補|出力:最適化案、期待削減率','API Usage Optimization|Cost reduction|Input: request logs, error rate|Judgment: error>5%→improve, duplicate>30%→cache candidate|Output: optimization plan, expected reduction'),
   creator:_dpb(['作成→公開→収益化→分析','サブスク→課金→継続→解約','ファン→交流→支援→成長'],['Create→Publish→Monetize→Analyze','Subscribe→Charge→Continue→Cancel','Fan→Engage→Support→Grow'],[_CG+':データ処理同意','資金決済法:前払式、第三者型','利用規約:手数料、返金規定'],[_CG+': data processing consent','Payment Services Act: prepaid, third-party','ToS: fees, refund policy'],['解約後課金|サブスク解約漏れ|対策:Webhook検証、定期確認','投げ銭未着|決済失敗|対策:リトライ、通知'],['Charge after cancel|Subscription cancel miss|Fix: webhook verification, periodic check','Tip not received|Payment failure|Fix: retry, notification'],['課金→architecture.md(subscription), security.md','支援→architecture.md(tip), api_spec.md'],['Billing→architecture.md(subscription), security.md','Support→architecture.md(tip), api_spec.md'],'収益最適化|ファン増加|入力:収益データ、ファン行動|判断:離脱>30%→ティア見直し、成長<10%→施策追加|出力:改善案、期待収益','Revenue Optimization|Fan growth|Input: revenue data, fan behavior|Judgment: churn>30%→review tiers, growth<10%→add tactics|Output: improvement plan, expected revenue'),
   newsletter:_dpb(['作成→配信→開封→分析','購読→確認→受信→解除','セグメント→ターゲット→パーソナライズ'],['Create→Send→Open→Analyze','Subscribe→Confirm→Receive→Unsubscribe','Segment→Target→Personalize'],[_CG+':配信同意、オプトイン','特定電子メール法:配信者明記、解除リンク','個人情報保護法:購読者情報暗号化'],[_CG+': sending consent, opt-in','Anti-Spam Act: sender info, unsubscribe link','Privacy Act: subscriber info encryption'],['解除後配信|リスト更新漏れ|対策:即時反映、定期同期','スパム判定|SPF/DKIM未設定|対策:認証設定、レピュテーション管理'],['Send after unsubscribe|List update miss|Fix: immediate reflect, periodic sync','Spam flagged|No SPF/DKIM|Fix: auth setup, reputation management'],['配信→architecture.md(email), api_spec.md','分析→stakeholders.md, architecture.md(analytics)'],['Send→architecture.md(email), api_spec.md','Analytics→stakeholders.md, architecture.md(analytics)'],'配信最適化|開封率向上|入力:配信履歴、開封率、クリック率|判断:開封<20%→件名改善、クリック<5%→CTA最適化|出力:改善案、期待開封率','Delivery Optimization|Improve open rate|Input: send history, open rate, click rate|Judgment: open<20%→improve subject, click<5%→optimize CTA|Output: improvement plan, expected open rate')
+};
+// Growth Intelligence data
+const _dg=(fj,fe,cvr,eq,lj,le,pj,pe)=>({fj,fe,cvr,eq,lj,le,pj,pe});
+const DOMAIN_GROWTH={
+  ec:_dg(
+    ['訪問','商品閲覧','カート追加','決済完了','リピート'],
+    ['Visit','Browse','Add to Cart','Checkout','Repeat'],
+    [100,40,12,3,1.2],
+    'Revenue = Traffic × Browse_CVR × Cart_CVR × Checkout_CVR × AOV × Repeat',
+    ['SEO/広告流入増','レコメンド精度','カート放棄防止','決済UX簡素化','ポイント/会員制度'],
+    ['SEO/ad traffic','Recommendation accuracy','Cart abandon prevention','Checkout UX','Loyalty program'],
+    ['単品:¥3,000-5,000','おすすめ:¥5,000-8,000','プレミアム:¥10,000+'],
+    ['Basic:$30-50','Recommended:$50-80','Premium:$100+']
+  ),
+  saas:_dg(
+    ['LP訪問','サインアップ','Aha体験','有料転換','拡張/紹介'],
+    ['LP Visit','Signup','Aha Moment','Paid Convert','Expand/Refer'],
+    [100,30,18,5.4,2.7],
+    'MRR = Signups × Activation × Paid_CVR × ARPU - Churn',
+    ['LP CVR改善','オンボーディング最適化','フリーミアム導線','チャーン防止','紹介プログラム'],
+    ['Optimize LP CVR','Improve onboarding','Free-to-paid path','Churn prevention','Referral program'],
+    ['Free:¥0','Pro:¥980/月','Enterprise:¥9,800/月'],
+    ['Free:$0','Pro:$10/mo','Enterprise:$100/mo']
+  ),
+  education:_dg(
+    ['認知','無料体験','受講開始','修了','上位コース'],
+    ['Awareness','Free Trial','Enroll','Complete','Upsell'],
+    [100,25,10,6,2.4],
+    'Revenue = Students × Trial_CVR × Enroll_CVR × Price + Upsell',
+    ['コンテンツSEO','体験レッスン品質','松竹梅価格','修了率(ゲーミフィケーション)','上位コース提案'],
+    ['Content SEO','Trial quality','3-tier pricing','Completion rate (gamify)','Upsell suggestion'],
+    ['入門:¥3,000','標準:¥9,800','プレミアム:¥29,800'],
+    ['Intro:$30','Standard:$100','Premium:$300']
+  ),
+  fintech:_dg(
+    ['登録','KYC完了','初回取引','アクティブ利用','プレミアム転換'],
+    ['Register','KYC Complete','First Txn','Active Use','Premium'],
+    [100,60,30,20,5],
+    'Revenue = Users × KYC_Rate × Active × Txn_Vol × Fee + Premium_MRR',
+    ['広告/PR','KYC UX簡素化','初回ボーナス','定期利用促進','プレミアム訴求'],
+    ['Ads/PR','Simplify KYC','First-time bonus','Regular use incentive','Premium pitch'],
+    ['無料:基本取引','Pro:¥980/月','法人:¥29,800/月'],
+    ['Free:basic','Pro:$10/mo','Business:$300/mo']
+  ),
+  booking:_dg(
+    ['検索','空き確認','予約','来店/利用','リピート'],
+    ['Search','Availability','Book','Visit','Rebook'],
+    [100,60,20,17,7],
+    'Revenue = Searches × Book_CVR × Show_Rate × Price × Commission',
+    ['SEO/口コミ','リアルタイム在庫','予約UX','リマインダー','リピート割引'],
+    ['SEO/reviews','Real-time inventory','Booking UX','Reminders','Repeat discounts'],
+    ['通常:¥3,000-5,000/回','人気:¥8,000/回','プレミアム:¥15,000/回'],
+    ['Standard:$30-50','Popular:$80','Premium:$150']
+  ),
+  community:_dg(
+    ['訪問','登録','初投稿','アクティブ化','有料/寄付'],
+    ['Visit','Register','First Post','Active','Paid/Donate'],
+    [100,20,8,3,0.6],
+    'Revenue = MAU × Active_Rate × Paid_CVR × ARPU + Ad_Revenue',
+    ['口コミ/招待','ウェルカムガイド','投稿促進(バッジ)','文化醸成','プレミアム機能'],
+    ['Word of mouth','Welcome guide','Post incentive (badges)','Culture building','Premium features'],
+    ['無料:基本','Pro:¥500/月','サポーター:¥3,000/月'],
+    ['Free:basic','Pro:$5/mo','Supporter:$30/mo']
+  ),
+  marketplace:_dg(
+    ['訪問','検索/閲覧','問合せ/入札','成約','リピート/評価'],
+    ['Visit','Search','Inquiry/Bid','Deal','Repeat/Rate'],
+    [100,50,15,6,2.4],
+    'GMV = Listings × Bid_Rate × Close_Rate × Avg_Deal',
+    ['出品者獲得','検索精度','マッチング最適化','エスクロー信頼性','評価制度'],
+    ['Acquire sellers','Search accuracy','Matching optimization','Escrow trust','Rating system'],
+    ['出品無料→成約手数料8%','プレミアム掲載:¥2,000/月','Featured:¥5,000/回'],
+    ['Free list→8% commission','Premium:$20/mo','Featured:$50/time']
+  ),
+  _default:_dg(
+    ['認知','登録','利用開始','習慣化','課金/推薦'],
+    ['Awareness','Register','First Use','Habit','Pay/Refer'],
+    [100,25,12,5,2],
+    'Revenue = Users × Activation × Retention × ARPU',
+    ['認知拡大(SEO/SNS)','登録フロー簡素化','Aha体験短縮','通知/メール','価格最適化'],
+    ['Awareness (SEO/SNS)','Simplify registration','Shorten Aha moment','Push/email','Optimize pricing'],
+    ['Free:基本','Standard:¥980/月','Premium:¥4,980/月'],
+    ['Free:basic','Standard:$10/mo','Premium:$50/mo']
+  )
 };
 // Get domain-specific QA strategy
 function getDomainQA(domain,G){

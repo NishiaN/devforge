@@ -715,4 +715,89 @@ function genPillar10_ReverseEngineering(a,pn){
 
     S.files['docs/38_business_model.md']=doc38;
   }
+
+  // ═══ C2: Growth Intelligence (always generated) ═══
+  const gdomain=detectDomain(a.purpose)||'_default';
+  const gd=DOMAIN_GROWTH[gdomain]||DOMAIN_GROWTH._default;
+  let doc41='# '+pn+' — '+(G?'グロースインテリジェンス':'Growth Intelligence')+'\n\n';
+
+  // Section 1: Stack Compatibility Score
+  const syn=calcSynergy(a);
+  doc41+='## '+(G?'1. スタック相性スコア':'1. Tech Stack Compatibility Score')+'\n\n';
+  doc41+='| '+(G?'次元':'Dimension')+' | '+(G?'スコア':'Score')+' | '+(G?'説明':'Description')+' |\n|-----|-------|------|\n';
+  const dimNames=G?['FE↔BE親和性','エコシステム統一性','ドメイン適合度','デプロイ整合性','複雑度バランス']:['FE↔BE Affinity','Ecosystem Unity','Domain Fit','Deploy Alignment','Complexity Balance'];
+  [syn.d1,syn.d2,syn.d3,syn.d4,syn.d5].forEach((s,i)=>{
+    doc41+='| '+dimNames[i]+' | '+s+'/100 | '+(s>=80?(G?'✅ 良好':'✅ Good'):s>=60?(G?'⚠️ 改善余地':'⚠️ Room to improve'):(G?'❌ 要対策':'❌ Action needed'))+' |\n';
+  });
+  doc41+='\n'+(G?'**総合スタックスコア**: ':'**Overall Stack Score**: ')+syn.overall+'/100\n\n';
+
+  // Compat warnings
+  const cw=checkCompat(a);
+  if(cw.length>0){
+    doc41+='### '+(G?'互換性アラート':'Compatibility Alerts')+'\n\n';
+    cw.slice(0,8).forEach(r=>{
+      doc41+='- '+(r.severity==='error'?'❌':'⚠️')+' **'+r.id+'**: '+(G?r.msg_ja:r.msg_en)+'\n';
+    });
+    doc41+='\n';
+  }
+
+  // Section 2: Growth Funnel (Mermaid)
+  const stages=G?gd.fj:gd.fe;
+  doc41+='## '+(G?'2. ドメイン別グロースファネル':'2. Domain Growth Funnel')+'\n\n';
+  doc41+='```mermaid\ngraph LR\n';
+  stages.forEach((s,i)=>{
+    if(i<stages.length-1) doc41+='  S'+i+'["'+s+' ('+gd.cvr[i]+'%)"] --> S'+(i+1)+'["'+stages[i+1]+' ('+gd.cvr[i+1]+'%)"]\n';
+  });
+  doc41+='```\n\n';
+  doc41+='| '+(G?'ステージ':'Stage')+' | '+(G?'ベンチマーク':'Benchmark')+' | '+(G?'前段からのCVR':'Stage CVR')+' |\n|--------|-----------|----------|\n';
+  stages.forEach((s,i)=>{
+    const cvr=i===0?'-':((gd.cvr[i]/gd.cvr[i-1]*100).toFixed(1)+'%');
+    doc41+='| '+s+' | '+gd.cvr[i]+'% | '+cvr+' |\n';
+  });
+  doc41+='\n';
+
+  // Section 3: Growth Equation
+  doc41+='## '+(G?'3. グロース方程式':'3. Growth Equation')+'\n\n';
+  doc41+='```\n'+gd.eq+'\n```\n\n';
+  doc41+=(G?'**感度分析**: 各変数を10%改善すると、全体収益は約10%向上（複利効果で実際はそれ以上）。複数のレバーを同時に改善することで掛け算的成長が可能。\n\n':'**Sensitivity**: Improving each variable by 10% yields ~10% revenue lift (compounding makes it higher). Simultaneously improving multiple levers creates multiplicative growth.\n\n');
+
+  // Section 4: Growth Levers
+  const levers=G?gd.lj:gd.le;
+  doc41+='## '+(G?'4. グロースレバー（優先順）':'4. Growth Levers (Prioritized)')+'\n\n';
+  levers.forEach((l,i)=>{doc41+=(i+1)+'. '+l+'\n';});
+  doc41+='\n';
+
+  // Section 5: Pricing Strategy
+  doc41+='## '+(G?'5. 価格戦略（松竹梅モデル）':'5. Pricing Strategy (Three-Tier Model)')+'\n\n';
+  const prices=G?gd.pj:gd.pe;
+  const tierNames=G?['🥉 松（エントリー）','🥈 竹（メイン）★推奨','🥇 梅（プレミアム）']:['🥉 Good (Entry)','🥈 Better (Main) ★Recommended','🥇 Best (Premium)'];
+  doc41+='| '+(G?'ティア':'Tier')+' | '+(G?'価格帯':'Price Range')+' |\n|------|------|\n';
+  prices.forEach((p,i)=>{doc41+='| '+tierNames[i]+' | '+p+' |\n';});
+  doc41+='\n'+(G?'> **心理効果**: 3択を提示すると中間（竹）が選ばれやすい（妥協効果）。最上位は「アンカー」として竹の割安感を演出する。\n\n':'> **Psychology**: Presenting 3 options makes the middle tier most popular (compromise effect). The top tier serves as an anchor to make the middle tier feel like good value.\n\n');
+
+  // Section 6: Performance Budget
+  doc41+='## '+(G?'6. パフォーマンス予算':'6. Performance Budget')+'\n\n';
+  doc41+='| '+(G?'指標':'Metric')+' | '+(G?'目標':'Target')+' | '+(G?'ビジネスインパクト':'Business Impact')+' |\n|------|------|-------|\n';
+  doc41+='| LCP | < 2.5s | '+(G?'離脱率-25%':'Bounce rate -25%')+' |\n';
+  doc41+='| FID | < 100ms | '+(G?'UXスコア+20pt':'UX score +20pt')+' |\n';
+  doc41+='| CLS | < 0.1 | '+(G?'信頼性+15%':'Trust +15%')+' |\n';
+  doc41+='| '+(G?'初回バンドル':'Initial Bundle')+' | < 200KB (gzip) | '+(G?'FCP改善':'FCP improvement')+' |\n\n';
+  // Tech-specific tips
+  const fe=a.frontend||'';
+  if(fe.includes('Next')){
+    doc41+=(G?'**Next.js最適化**: ISR活用, next/image, Edge Middleware, Server Components優先\n\n':'**Next.js Optimization**: Use ISR, next/image, Edge Middleware, prefer Server Components\n\n');
+  }else if(fe.includes('Vue')||fe.includes('Nuxt')){
+    doc41+=(G?'**Vue/Nuxt最適化**: Lazy Hydration, コンポーネント分割, auto-imports\n\n':'**Vue/Nuxt Optimization**: Lazy Hydration, component splitting, auto-imports\n\n');
+  }else{
+    doc41+=(G?'**SPA最適化**: React.lazy + Suspense, ルート分割, Dynamic Import\n\n':'**SPA Optimization**: React.lazy + Suspense, route splitting, Dynamic Import\n\n');
+  }
+
+  // Section 7: Cross-references
+  doc41+='## '+(G?'7. 関連ドキュメント':'7. Related Documents')+'\n\n';
+  doc41+='- **docs/30_goal_decomposition.md** — '+(G?'目標分解とKPI':'Goal decomposition & KPIs')+'\n';
+  doc41+='- **docs/38_business_model.md** — '+(G?'ビジネスモデル詳細（決済設定時）':'Business model details (when payment configured)')+'\n';
+  doc41+='- **docs/24_progress.md** — '+(G?'進捗追跡':'Progress tracking')+'\n';
+  doc41+='- **docs/28_qa_strategy.md** — '+(G?'品質戦略':'QA strategy')+'\n\n';
+
+  S.files['docs/41_growth_intelligence.md']=doc41;
 }

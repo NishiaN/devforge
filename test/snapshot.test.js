@@ -56,9 +56,9 @@ describe('Snapshot A: LMS/Supabase/Stripe', () => {
     ai_auto: 'マルチAgent協調'
   }, 'LMS');
 
-  test('file count in range 66-90', () => {
+  test('file count in range 67-91', () => {
     const count = Object.keys(files).length;
-    assert.ok(count >= 66 && count <= 90, `Expected 66-90 files, got ${count}`);
+    assert.ok(count >= 67 && count <= 91, `Expected 67-91 files, got ${count}`);
   });
 
   test('total tokens in range 12000-31000', () => {
@@ -87,6 +87,23 @@ describe('Snapshot A: LMS/Supabase/Stripe', () => {
   test('reverse engineering and goal decomposition exist', () => {
     assert.ok(files['docs/29_reverse_engineering.md'], 'docs/29_reverse_engineering.md missing');
     assert.ok(files['docs/30_goal_decomposition.md'], 'docs/30_goal_decomposition.md missing');
+  });
+
+  test('growth intelligence doc exists', () => {
+    assert.ok(files['docs/41_growth_intelligence.md'], 'docs/41_growth_intelligence.md missing');
+  });
+
+  test('growth intelligence has all sections', () => {
+    const gi = files['docs/41_growth_intelligence.md'];
+    assert.ok(gi.includes('ファネル') || gi.includes('Funnel'), 'Missing funnel');
+    assert.ok(gi.includes('方程式') || gi.includes('Equation'), 'Missing equation');
+    assert.ok(gi.includes('価格') || gi.includes('Pricing'), 'Missing pricing');
+    assert.ok(gi.includes('パフォーマンス') || gi.includes('Performance'), 'Missing performance');
+  });
+
+  test('growth intelligence has Mermaid diagram', () => {
+    const gi = files['docs/41_growth_intelligence.md'];
+    assert.ok(gi.includes('```mermaid'), 'Missing Mermaid funnel diagram');
   });
 
   test('implementation intelligence files exist', () => {
@@ -437,9 +454,9 @@ describe('Snapshot B: Blog/Vite/Netlify', () => {
     dev_methods: 'TDD', ai_tools: 'Cursor', orm: ''
   }, 'Blog');
 
-  test('file count in range 58-80', () => {
+  test('file count in range 59-81', () => {
     const count = Object.keys(files).length;
-    assert.ok(count >= 58 && count <= 80, `Expected 58-80 files, got ${count}`);
+    assert.ok(count >= 59 && count <= 81, `Expected 59-81 files, got ${count}`);
   });
 
   test('no Stripe content when payment absent', () => {

@@ -1341,6 +1341,91 @@ const DOMAIN_PLAYBOOK={
   newsletter:_dpb(['作成→配信→開封→分析','購読→確認→受信→解除','セグメント→ターゲット→パーソナライズ'],['Create→Send→Open→Analyze','Subscribe→Confirm→Receive→Unsubscribe','Segment→Target→Personalize'],[_CG+':配信同意、オプトイン','特定電子メール法:配信者明記、解除リンク','個人情報保護法:購読者情報暗号化'],[_CG+': sending consent, opt-in','Anti-Spam Act: sender info, unsubscribe link','Privacy Act: subscriber info encryption'],['解除後配信|リスト更新漏れ|対策:即時反映、定期同期','スパム判定|SPF/DKIM未設定|対策:認証設定、レピュテーション管理'],['Send after unsubscribe|List update miss|Fix: immediate reflect, periodic sync','Spam flagged|No SPF/DKIM|Fix: auth setup, reputation management'],['配信→architecture.md(email), api_spec.md','分析→stakeholders.md, architecture.md(analytics)'],['Send→architecture.md(email), api_spec.md','Analytics→stakeholders.md, architecture.md(analytics)'],'配信最適化|開封率向上|入力:配信履歴、開封率、クリック率|判断:開封<20%→件名改善、クリック<5%→CTA最適化|出力:改善案、期待開封率','Delivery Optimization|Improve open rate|Input: send history, open rate, click rate|Judgment: open<20%→improve subject, click<5%→optimize CTA|Output: improvement plan, expected open rate')
 };
 
+// Growth Intelligence data
+const _dg=(fj,fe,cvr,eq,lj,le,pj,pe)=>({fj,fe,cvr,eq,lj,le,pj,pe});
+const DOMAIN_GROWTH={
+  ec:_dg(
+    ['訪問','商品閲覧','カート追加','決済完了','リピート'],
+    ['Visit','Browse','Add to Cart','Checkout','Repeat'],
+    [100,40,12,3,1.2],
+    'Revenue = Traffic × Browse_CVR × Cart_CVR × Checkout_CVR × AOV × Repeat',
+    ['SEO/広告流入増','レコメンド精度','カート放棄防止','決済UX簡素化','ポイント/会員制度'],
+    ['SEO/ad traffic','Recommendation accuracy','Cart abandon prevention','Checkout UX','Loyalty program'],
+    ['単品:¥3,000-5,000','おすすめ:¥5,000-8,000','プレミアム:¥10,000+'],
+    ['Basic:$30-50','Recommended:$50-80','Premium:$100+']
+  ),
+  saas:_dg(
+    ['LP訪問','サインアップ','Aha体験','有料転換','拡張/紹介'],
+    ['LP Visit','Signup','Aha Moment','Paid Convert','Expand/Refer'],
+    [100,30,18,5.4,2.7],
+    'MRR = Signups × Activation × Paid_CVR × ARPU - Churn',
+    ['LP CVR改善','オンボーディング最適化','フリーミアム導線','チャーン防止','紹介プログラム'],
+    ['Optimize LP CVR','Improve onboarding','Free-to-paid path','Churn prevention','Referral program'],
+    ['Free:¥0','Pro:¥980/月','Enterprise:¥9,800/月'],
+    ['Free:$0','Pro:$10/mo','Enterprise:$100/mo']
+  ),
+  education:_dg(
+    ['認知','無料体験','受講開始','修了','上位コース'],
+    ['Awareness','Free Trial','Enroll','Complete','Upsell'],
+    [100,25,10,6,2.4],
+    'Revenue = Students × Trial_CVR × Enroll_CVR × Price + Upsell',
+    ['コンテンツSEO','体験レッスン品質','松竹梅価格','修了率(ゲーミフィケーション)','上位コース提案'],
+    ['Content SEO','Trial quality','3-tier pricing','Completion rate (gamify)','Upsell suggestion'],
+    ['入門:¥3,000','標準:¥9,800','プレミアム:¥29,800'],
+    ['Intro:$30','Standard:$100','Premium:$300']
+  ),
+  fintech:_dg(
+    ['登録','KYC完了','初回取引','アクティブ利用','プレミアム転換'],
+    ['Register','KYC Complete','First Txn','Active Use','Premium'],
+    [100,60,30,20,5],
+    'Revenue = Users × KYC_Rate × Active × Txn_Vol × Fee + Premium_MRR',
+    ['広告/PR','KYC UX簡素化','初回ボーナス','定期利用促進','プレミアム訴求'],
+    ['Ads/PR','Simplify KYC','First-time bonus','Regular use incentive','Premium pitch'],
+    ['無料:基本取引','Pro:¥980/月','法人:¥29,800/月'],
+    ['Free:basic','Pro:$10/mo','Business:$300/mo']
+  ),
+  booking:_dg(
+    ['検索','空き確認','予約','来店/利用','リピート'],
+    ['Search','Availability','Book','Visit','Rebook'],
+    [100,60,20,17,7],
+    'Revenue = Searches × Book_CVR × Show_Rate × Price × Commission',
+    ['SEO/口コミ','リアルタイム在庫','予約UX','リマインダー','リピート割引'],
+    ['SEO/reviews','Real-time inventory','Booking UX','Reminders','Repeat discounts'],
+    ['通常:¥3,000-5,000/回','人気:¥8,000/回','プレミアム:¥15,000/回'],
+    ['Standard:$30-50','Popular:$80','Premium:$150']
+  ),
+  community:_dg(
+    ['訪問','登録','初投稿','アクティブ化','有料/寄付'],
+    ['Visit','Register','First Post','Active','Paid/Donate'],
+    [100,20,8,3,0.6],
+    'Revenue = MAU × Active_Rate × Paid_CVR × ARPU + Ad_Revenue',
+    ['口コミ/招待','ウェルカムガイド','投稿促進(バッジ)','文化醸成','プレミアム機能'],
+    ['Word of mouth','Welcome guide','Post incentive (badges)','Culture building','Premium features'],
+    ['無料:基本','Pro:¥500/月','サポーター:¥3,000/月'],
+    ['Free:basic','Pro:$5/mo','Supporter:$30/mo']
+  ),
+  marketplace:_dg(
+    ['訪問','検索/閲覧','問合せ/入札','成約','リピート/評価'],
+    ['Visit','Search','Inquiry/Bid','Deal','Repeat/Rate'],
+    [100,50,15,6,2.4],
+    'GMV = Listings × Bid_Rate × Close_Rate × Avg_Deal',
+    ['出品者獲得','検索精度','マッチング最適化','エスクロー信頼性','評価制度'],
+    ['Acquire sellers','Search accuracy','Matching optimization','Escrow trust','Rating system'],
+    ['出品無料→成約手数料8%','プレミアム掲載:¥2,000/月','Featured:¥5,000/回'],
+    ['Free list→8% commission','Premium:$20/mo','Featured:$50/time']
+  ),
+  _default:_dg(
+    ['認知','登録','利用開始','習慣化','課金/推薦'],
+    ['Awareness','Register','First Use','Habit','Pay/Refer'],
+    [100,25,12,5,2],
+    'Revenue = Users × Activation × Retention × ARPU',
+    ['認知拡大(SEO/SNS)','登録フロー簡素化','Aha体験短縮','通知/メール','価格最適化'],
+    ['Awareness (SEO/SNS)','Simplify registration','Shorten Aha moment','Push/email','Optimize pricing'],
+    ['Free:基本','Standard:¥980/月','Premium:¥4,980/月'],
+    ['Free:basic','Standard:$10/mo','Premium:$50/mo']
+  )
+};
+
 // Get domain-specific QA strategy
 function getDomainQA(domain,G){
   const qa=DOMAIN_QA_MAP[domain];
