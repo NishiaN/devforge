@@ -1,5 +1,5 @@
 /* ═══ PRESET & START ═══ */
-function pickSkill(lv){S.skill=lv;document.querySelectorAll('.skcard').forEach(c=>c.classList.toggle('on',c.dataset.lv===lv));save();}
+function pickSkill(lv){S.skill=lv;document.querySelectorAll('.skcard').forEach(c=>{c.classList.toggle('on',c.dataset.lv===lv);c.setAttribute('aria-checked',String(c.dataset.lv===lv));});save();}
 
 function initPresets(){
   const row=$('presetRow');row.innerHTML='';

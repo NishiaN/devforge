@@ -50,17 +50,17 @@
       <div class="hero-content">
         <div class="version-badge">v9.0 — 2026 Edition</div>
         <h1 id="heroTitle">DevForge v9</h1>
-        <p id="heroDesc">質問に答えるだけで、69+ファイルの開発ドキュメント・環境設定・AIルール・学習ロードマップを自動生成。10の柱でAI駆動開発をゼロから完全サポート。</p>
+        <p id="heroDesc">質問に答えるだけで、83+ファイルの開発ドキュメント・環境設定・AIルール・学習ロードマップを自動生成。10の柱でAI駆動開発をゼロから完全サポート。</p>
       </div>
     </div>
     <div class="stat-row">
-      <div class="stat-item"><div class="num" id="statFileNum">69+</div><div class="lbl" id="statFiles">生成ファイル</div></div>
+      <div class="stat-item"><div class="num" id="statFileNum">83+</div><div class="lbl" id="statFiles">生成ファイル</div></div>
       <div class="stat-item"><div class="num" id="statTechNum"></div><div class="lbl" id="statTech">技術エントリ</div></div>
       <div class="stat-item"><div class="num">10</div><div class="lbl" id="statPillars">柱 (Pillars)</div></div>
       <div class="stat-item"><div class="num">10</div><div class="lbl" id="statAI">AIツール対応</div></div>
     </div>
     <div class="info-grid">
-      <div class="icard"><h4>📝 69+ファイル生成</h4><p>SDD仕様書・Docker・MCP・AIルール10種・ロードマップ9種・仕様書31種</p></div>
+      <div class="icard"><h4>📝 83+ファイル生成</h4><p>SDD仕様書・Docker・MCP・AIルール10種・ロードマップ9種・仕様書31種</p></div>
       <div class="icard"><h4>🧪 10の柱</h4><p>SDD・DevContainer・MCP・AIルール・並列探索・Dashboard・ロードマップ・AIランチャー・デザインシステム・リバースEng</p></div>
       <div class="icard"><h4>📱 モバイル対応</h4><p>Expo / React Native 開発パス・EAS Build・OTA更新</p></div>
       <div class="icard"><h4>🤖 AI自律開発</h4><p>Vibe Coding・マルチAgent・Claude Code Subagents</p></div>
@@ -1923,7 +1923,7 @@ function showPM(){
 }
 function closePM(){$('pmOverlay').style.display='none';releaseFocus($('pmOverlay'));removeModal($('pmOverlay'));}
 /* ═══ PRESET & START ═══ */
-function pickSkill(lv){S.skill=lv;document.querySelectorAll('.skcard').forEach(c=>c.classList.toggle('on',c.dataset.lv===lv));save();}
+function pickSkill(lv){S.skill=lv;document.querySelectorAll('.skcard').forEach(c=>{c.classList.toggle('on',c.dataset.lv===lv);c.setAttribute('aria-checked',String(c.dataset.lv===lv));});save();}
 function initPresets(){
   const row=$('presetRow');row.innerHTML='';
   const _ja=S.lang==='ja';
@@ -2051,8 +2051,10 @@ function initPrevTabs(){
   const ja=_ja;
   [ja?'ツリー':'Tree',ja?'プレビュー':'Preview'].forEach((n,i)=>{
     const b=document.createElement('button');b.className='ptab'+(i===0?' on':'');
+    b.setAttribute('role','tab');b.setAttribute('aria-selected',String(i===0));
     b.textContent=n;b.onclick=()=>{
-      document.querySelectorAll('.ptab').forEach(t=>t.classList.remove('on'));b.classList.add('on');
+      document.querySelectorAll('.ptab').forEach(t=>{t.classList.remove('on');t.setAttribute('aria-selected','false');});
+      b.classList.add('on');b.setAttribute('aria-selected','true');
       if(i===0)showFileTree();else showFilePreview();
     };tabs.appendChild(b);
   });
@@ -2062,8 +2064,11 @@ function initPillarTabs(){
   const names=t('pillar');
   names.forEach((n,i)=>{
     const b=document.createElement('button');b.className='piltab'+(i===0?' on':'');
+    b.setAttribute('role','tab');b.setAttribute('aria-selected',String(i===0));
     b.textContent=n;b.onclick=()=>{
-      S.pillar=i;document.querySelectorAll('.piltab').forEach(t=>t.classList.remove('on'));b.classList.add('on');
+      S.pillar=i;
+      document.querySelectorAll('.piltab').forEach(t=>{t.classList.remove('on');t.setAttribute('aria-selected','false');});
+      b.classList.add('on');b.setAttribute('aria-selected','true');
       if(i===4) showExplorer();
       else if(i===5) showDashboard();
       else if(i===6&&Object.keys(S.files).length>0) showRoadmapUI();
@@ -4031,9 +4036,9 @@ function genPillar5_QualityIntelligence(a,pn){
 
   // Domain-Specific Runbooks
   const domainPlaybook=DOMAIN_PLAYBOOK[domain]||DOMAIN_PLAYBOOK._default;
-  if(domainPlaybook&&domainPlaybook.prevent){
+  if(domainPlaybook&&domainPlaybook.prevent_ja){
     doc34+=(G?'## ドメイン固有の注意事項 ('+domain+')':'## Domain-Specific Notes ('+domain+')')+'\n\n';
-    const preventList=G?domainPlaybook.prevent.ja:domainPlaybook.prevent.en;
+    const preventList=G?domainPlaybook.prevent_ja:domainPlaybook.prevent_en;
     preventList.forEach((p,i)=>{
       doc34+=(i+1)+'. '+p+'\n';
     });
@@ -6344,6 +6349,13 @@ const ENTITY_COLUMNS={
   PlanStep:['plan_id:UUID:FK(ReversePlan) NOT NULL:計画ID:Plan ID','step_order:INT:NOT NULL:ステップ順序:Step order','step_title:VARCHAR(255):NOT NULL:ステップタイトル:Step title',_D,'estimated_hours:DECIMAL(5,1)::推定時間:Estimated hours',_SA,'completed_at:TIMESTAMP::完了日時:Completed at'],
   ProgressTracking:['plan_id:UUID:FK(ReversePlan) NOT NULL:計画ID:Plan ID','tracked_at:TIMESTAMP:DEFAULT NOW:記録日時:Tracked at','progress_pct:DECIMAL(5,2)::進捗率:Progress pct','velocity:DECIMAL(5,2)::ベロシティ:Velocity','blockers:TEXT::障害:Blockers',_N],
   PlanAdjustment:['plan_id:UUID:FK(ReversePlan) NOT NULL:計画ID:Plan ID','adjusted_at:TIMESTAMP:DEFAULT NOW:調整日時:Adjusted at','reason:TEXT:NOT NULL:調整理由:Reason','old_value:TEXT::旧値:Old value','new_value:TEXT::新値:New value',_N],
+  // ── Missing domain entities (M1 fix) ──
+  Chart:[_U,'chart_type:VARCHAR(50):NOT NULL:チャート種別:Chart type','data_source:VARCHAR(100)::データソース:Data source',_CN,'query_config:JSONB::クエリ設定:Query config',_T],
+  Viewing:['property_id:UUID:FK(Property) NOT NULL:物件ID:Property ID',_U,'scheduled_at:TIMESTAMP:NOT NULL:見学予定日時:Scheduled at',_SP,'feedback:TEXT::感想:Feedback','attended:BOOLEAN:DEFAULT false:出席:Attended'],
+  Client:['client_name:VARCHAR(255):NOT NULL:依頼者名:Client name','company:VARCHAR(255)::企業名:Company','email:VARCHAR(255)::メール:Email','phone:VARCHAR(50)::電話番号:Phone',_SA,_N],
+  Transfer:['from_account:UUID:FK(Account) NOT NULL:送金元口座:From account','to_account:UUID:FK(Account) NOT NULL:送金先口座:To account','amount:DECIMAL(12,2):NOT NULL:金額:Amount','currency:VARCHAR(3):DEFAULT \'JPY\':通貨:Currency','reference:VARCHAR(255)::参照番号:Reference',_SP],
+  Card:['account_id:UUID:FK(Account) NOT NULL:口座ID:Account ID','card_number:VARCHAR(20):NOT NULL:カード番号:Card number','card_type:VARCHAR(20)::カード種別:Card type','expiry_date:VARCHAR(7)::有効期限:Expiry date',_SA,'credit_limit:DECIMAL(10,2)::限度額:Credit limit'],
+  Statement:['account_id:UUID:FK(Account) NOT NULL:口座ID:Account ID','period_start:DATE:NOT NULL:期間開始:Period start','period_end:DATE:NOT NULL:期間終了:Period end','opening_balance:DECIMAL(12,2):NOT NULL:期首残高:Opening balance','closing_balance:DECIMAL(12,2):NOT NULL:期末残高:Closing balance','statement_url:TEXT::明細書URL:Statement URL'],
 };
 // ═══ Entity REST method restrictions ═══
 // Entities not listed get full CRUD: GET, GET/:id, POST, PUT/:id, DELETE/:id
@@ -6957,7 +6969,7 @@ const QA_CROSS_CUTTING={
   a11y:{ja:'アクセシビリティ(WCAG)',en:'Accessibility (WCAG)',domains:['education','content','hr']},
   audit:{ja:'監査ログ完全性',en:'Audit log completeness',domains:['fintech','saas','hr','legal']},
   rate_limiting:{ja:'レート制限(APIキー/IP単位)',en:'Rate limiting (per API key/IP)',domains:['saas','devtool','fintech','ai']},
-  data_export:{ja:'データエクスポート(CSV/JSON/Excel)',en:'Data export (CSV/JSON/Excel)',domains:['saas','analytics','hr','crm']},
+  data_export:{ja:'データエクスポート(CSV/JSON/Excel)',en:'Data export (CSV/JSON/Excel)',domains:['saas','analytics','hr']},
   notification:{ja:'通知配信(Email/Push/SMS)',en:'Notification delivery (Email/Push/SMS)',domains:['saas','community','event','newsletter']},
   realtime:{ja:'リアルタイム更新(WebSocket/SSE)',en:'Realtime updates (WebSocket/SSE)',domains:['collab','community','analytics','iot']}
 };
@@ -8452,9 +8464,9 @@ function showManual(sec){
       '<p>reverse_engineering.md (goal definition → reverse flow, milestone Gantt, risk analysis) / goal_decomposition.md (goal tree, sub-goal breakdown, gap analysis, priority matrix, dependency chain) — 15 domain-specific reverse planning.</p>'
     },
     {id:'export',title:_ja?'エクスポート':'Export',body:_ja?
-      '<h2>エクスポート方法</h2><p><strong>ZIP</strong>: 全68+ファイルをフォルダ構造付きでZIP圧縮ダウンロード。<br><strong>PDF</strong>: Markdownファイルを整形してブラウザのPDF印刷で出力。<br><strong>URL共有</strong>: プロジェクト設定をBase64エンコードしてURL共有。<br><strong>全ファイルコピー</strong>: 全ドキュメントを1テキストに結合してクリップボードにコピー（Ctrl+Shift+C）。AIへの一括投入に最適。</p><h3>テンプレート保存</h3><p>プロジェクト設定をlocalStorageに保存し、次回起動時に読み込み可能。</p>'
+      '<h2>エクスポート方法</h2><p><strong>ZIP</strong>: 全83+ファイルをフォルダ構造付きでZIP圧縮ダウンロード。<br><strong>PDF</strong>: Markdownファイルを整形してブラウザのPDF印刷で出力。<br><strong>URL共有</strong>: プロジェクト設定をBase64エンコードしてURL共有。<br><strong>全ファイルコピー</strong>: 全ドキュメントを1テキストに結合してクリップボードにコピー（Ctrl+Shift+C）。AIへの一括投入に最適。</p><h3>テンプレート保存</h3><p>プロジェクト設定をlocalStorageに保存し、次回起動時に読み込み可能。</p>'
       :
-      '<h2>Export Methods</h2><p><strong>ZIP</strong>: Download all 68+ files as a ZIP with folder structure.<br><strong>PDF</strong>: Format Markdown files and print via browser PDF.<br><strong>URL Sharing</strong>: Base64-encode project settings and share via URL.<br><strong>Copy All Files</strong>: Combine all documents into one text and copy to clipboard (Ctrl+Shift+C). Ideal for bulk AI input.</p><h3>Template Save</h3><p>Save project settings to localStorage and load them on next launch.</p>'
+      '<h2>Export Methods</h2><p><strong>ZIP</strong>: Download all 83+ files as a ZIP with folder structure.<br><strong>PDF</strong>: Format Markdown files and print via browser PDF.<br><strong>URL Sharing</strong>: Base64-encode project settings and share via URL.<br><strong>Copy All Files</strong>: Combine all documents into one text and copy to clipboard (Ctrl+Shift+C). Ideal for bulk AI input.</p><h3>Template Save</h3><p>Save project settings to localStorage and load them on next launch.</p>'
     },
     {id:'guide',title:_ja?'🚀 活用ガイド':'🚀 Usage Guide',body:_ja?
       '<h2>🚀 生成ファイル活用ガイド</h2>'+
@@ -8581,7 +8593,7 @@ function showManual(sec){
       '<h3>🔵 Other</h3>'+
       '<p>・ZIP export requires JSZip via CDN (use "Copy All" Ctrl+Shift+C offline)<br>・Switch to light mode before PDF export<br>・URL sharing may truncate on SNS for complex projects</p>'
     },
-    {id:'about',title:'About',body:'<h2>DevForge v9.0</h2><p>'+(_ja?'AI駆動開発 統合プラットフォーム':'AI-Driven Dev Platform')+'</p><p>Version 9.0.0 — 2026 Edition (Modular Architecture)</p><p>'+(_ja?''+_TECH_COUNT+'テクノロジー ・ 66+ファイル ・ 9つの柱 ・ 36テンプレート ・ Mermaid図 ・ プロンプトプレイブック':''+_TECH_COUNT+' technologies ・ 66+ files ・ 9 pillars ・ 36 templates ・ Mermaid diagrams ・ Prompt playbook')+'</p><p>© 2026 エンジニアリングのタネ制作委員会<br>by にしあん</p>'},
+    {id:'about',title:'About',body:'<h2>DevForge v9.0</h2><p>'+(_ja?'AI駆動開発 統合プラットフォーム':'AI-Driven Dev Platform')+'</p><p>Version 9.0.0 — 2026 Edition (Modular Architecture)</p><p>'+(_ja?''+_TECH_COUNT+'テクノロジー ・ 83+ファイル ・ 10の柱 ・ 41テンプレート ・ Mermaid図 ・ プロンプトプレイブック':''+_TECH_COUNT+' technologies ・ 83+ files ・ 10 pillars ・ 41 templates ・ Mermaid diagrams ・ Prompt playbook')+'</p><p>© 2026 エンジニアリングのタネ制作委員会<br>by にしあん</p>'},
   ];
   const nav=$('helpNav');
   // Keep search input, clear nav links after it
@@ -8696,7 +8708,7 @@ function _getTourSteps(){
   {title:_ja?'📝 テンプレート':'📝 Templates',desc:_ja?'41種類のプリセットから選ぶと、回答が自動入力されます。':'Pick from 41 presets to auto-fill answers.'},
   {title:_ja?'💬 質問フロー':'💬 Q&A Flow',desc:_ja?'Phase 1-3 の質問に答えるだけ。スキップも後で回答も可能です。':'Just answer Phase 1-3 questions. Skip and answer later anytime.'},
   {title:_ja?'✎ 回答編集':'✎ Edit Answers',desc:_ja?'送信済みの回答に表示される ✎ ボタンで修正できます。':'Click the ✎ button on submitted answers to edit them.'},
-  {title:_ja?'📦 69+ファイル生成':'📦 69+ File Generation',desc:_ja?'全質問回答後、10の柱で69+ファイルが自動生成されます。':'After all questions, 69+ files auto-generate across 10 pillars.'},
+  {title:_ja?'📦 83+ファイル生成':'📦 83+ File Generation',desc:_ja?'全質問回答後、10の柱で83+ファイルが自動生成されます。':'After all questions, 83+ files auto-generate across 10 pillars.'},
   {title:_ja?'⚡ 並列探索':'⚡ Parallel Explorer',desc:_ja?'Pillar ⑤ で7スタックを比較。回答に基づくおすすめランキング付き。':'Compare 7 stacks in Pillar ⑤ with recommendation ranking based on your answers.'},
   {title:'📊 Dashboard',desc:_ja?'Pillar ⑥ でコンテキスト可視化＋'+_TECH_COUNT+'技術DBを閲覧。':'Visualize context + browse '+_TECH_COUNT+' tech DB in Pillar ⑥.'},
   {title:_ja?'🤖 AIランチャー':'🤖 AI Launcher',desc:_ja?'Pillar ⑧ で仕様書をAIツールにワンクリック投入。6テンプレート＋トークン推定。':'Feed specs to AI tools in one click from Pillar ⑧. 6 templates + token estimation.'},
@@ -8770,8 +8782,8 @@ function applyLang(){
   statLbls.forEach((el,i)=>{if(i<4)el.textContent=ja?slJa[i]:slEn[i];});
   // Info cards
   const icards=document.querySelectorAll('.icard');
-  const icJa=[['📝 69+ファイル生成','SDD仕様書・Docker・MCP・AIルール10種・ロードマップ9種・仕様書23種'],['🧪 10の柱','SDD・DevContainer・MCP・AIルール・並列探索・Dashboard・ロードマップ・AIランチャー・デザインシステム・リバースEng'],['📱 モバイル対応','Expo / React Native 開発パス・EAS Build・OTA更新'],['🤖 AI自律開発','Vibe Coding・マルチAgent・Claude Code Subagents'],['💳 決済・CMS・EC','Stripe・microCMS・Medusa・Shopify Hydrogen'],['📦 フルエクスポート','ZIP・PDF・全ファイル結合コピー・URLシェア']];
-  const icEn=[['📝 69+ File Generation','SDD specs, Docker, MCP, 10 AI rules, 9 roadmaps, 23 specs'],['🧪 10 Pillars','SDD, DevContainer, MCP, AI Rules, Explorer, Dashboard, Roadmap, AI Launcher, Design System, Reverse Eng'],['📱 Mobile Support','Expo / React Native dev path, EAS Build, OTA updates'],['🤖 AI Autonomous Dev','Vibe Coding, Multi-Agent, Claude Code Subagents'],['💳 Payment/CMS/EC','Stripe, microCMS, Medusa, Shopify Hydrogen'],['📦 Full Export','ZIP, PDF, Copy All Files, URL Share']];
+  const icJa=[['📝 83+ファイル生成','SDD仕様書・Docker・MCP・AIルール10種・ロードマップ9種・仕様書23種'],['🧪 10の柱','SDD・DevContainer・MCP・AIルール・並列探索・Dashboard・ロードマップ・AIランチャー・デザインシステム・リバースEng'],['📱 モバイル対応','Expo / React Native 開発パス・EAS Build・OTA更新'],['🤖 AI自律開発','Vibe Coding・マルチAgent・Claude Code Subagents'],['💳 決済・CMS・EC','Stripe・microCMS・Medusa・Shopify Hydrogen'],['📦 フルエクスポート','ZIP・PDF・全ファイル結合コピー・URLシェア']];
+  const icEn=[['📝 83+ File Generation','SDD specs, Docker, MCP, 10 AI rules, 9 roadmaps, 23 specs'],['🧪 10 Pillars','SDD, DevContainer, MCP, AI Rules, Explorer, Dashboard, Roadmap, AI Launcher, Design System, Reverse Eng'],['📱 Mobile Support','Expo / React Native dev path, EAS Build, OTA updates'],['🤖 AI Autonomous Dev','Vibe Coding, Multi-Agent, Claude Code Subagents'],['💳 Payment/CMS/EC','Stripe, microCMS, Medusa, Shopify Hydrogen'],['📦 Full Export','ZIP, PDF, Copy All Files, URL Share']];
   icards.forEach((el,i)=>{if(i<6){const d=ja?icJa[i]:icEn[i];const h4=el.querySelector('h4');const p=el.querySelector('p');if(h4)h4.textContent=d[0];if(p)p.textContent=d[1];}});
   // Pillar badges
   const pbadges=document.querySelectorAll('.pbadge');
@@ -8835,7 +8847,14 @@ applyLang();
     const data=JSON.parse(atob(h.slice(4)));
     if(data.projectName){
       S.projectName=sanitizeName(data.projectName);
-      if(data.answers)S.answers=data.answers;
+      if(data.answers){
+        Object.keys(data.answers).forEach(k=>{
+          if(typeof data.answers[k]==='string'){
+            data.answers[k]=sanitize(data.answers[k]);
+          }
+        });
+        S.answers=data.answers;
+      }
       if(data.preset)S.preset=data.preset;
       if(data.skill)S.skill=data.skill;
       if(data.lang)S.lang=data.lang;

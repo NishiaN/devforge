@@ -360,9 +360,9 @@ function genPillar5_QualityIntelligence(a,pn){
 
   // Domain-Specific Runbooks
   const domainPlaybook=DOMAIN_PLAYBOOK[domain]||DOMAIN_PLAYBOOK._default;
-  if(domainPlaybook&&domainPlaybook.prevent){
+  if(domainPlaybook&&domainPlaybook.prevent_ja){
     doc34+=(G?'## ドメイン固有の注意事項 ('+domain+')':'## Domain-Specific Notes ('+domain+')')+'\n\n';
-    const preventList=G?domainPlaybook.prevent.ja:domainPlaybook.prevent.en;
+    const preventList=G?domainPlaybook.prevent_ja:domainPlaybook.prevent_en;
     preventList.forEach((p,i)=>{
       doc34+=(i+1)+'. '+p+'\n';
     });

@@ -94,7 +94,8 @@ test('detectDomain: covers most presets with domain-specific logic', () => {
 test('DOMAIN_ENTITIES: all domains are defined', () => {
   const domains = ['education', 'ec', 'marketplace', 'community', 'content',
                    'analytics', 'booking', 'saas', 'portfolio', 'tool',
-                   'iot', 'realestate', 'legal', 'hr', 'fintech', 'health'];
+                   'iot', 'realestate', 'legal', 'hr', 'fintech', 'health',
+                   'ai', 'automation', 'event', 'gamify', 'collab', 'devtool', 'creator', 'newsletter'];
 
   domains.forEach(domain => {
     assert.ok(DOMAIN_ENTITIES[domain], `Missing DOMAIN_ENTITIES.${domain}`);
@@ -108,7 +109,8 @@ test('DOMAIN_ENTITIES: all domains are defined', () => {
 test('DOMAIN_QA_MAP: all domains have QA strategies', () => {
   const domains = ['education', 'ec', 'marketplace', 'community', 'content',
                    'analytics', 'booking', 'saas', 'portfolio', 'tool',
-                   'iot', 'realestate', 'legal', 'hr', 'fintech', 'health'];
+                   'iot', 'realestate', 'legal', 'hr', 'fintech', 'health',
+                   'ai', 'automation', 'event', 'gamify', 'collab', 'devtool', 'creator', 'newsletter'];
 
   domains.forEach(domain => {
     assert.ok(DOMAIN_QA_MAP[domain], `Missing DOMAIN_QA_MAP.${domain}`);
@@ -124,7 +126,8 @@ test('DOMAIN_QA_MAP: all domains have QA strategies', () => {
 test('DOMAIN_PLAYBOOK: all domains have complete playbooks', () => {
   const domains = ['education', 'ec', 'marketplace', 'community', 'content',
                    'analytics', 'booking', 'saas', 'iot', 'realestate',
-                   'legal', 'hr', 'fintech', 'health', 'portfolio', 'tool'];
+                   'legal', 'hr', 'fintech', 'health', 'portfolio', 'tool',
+                   'ai', 'automation', 'event', 'gamify', 'collab', 'devtool', 'creator', 'newsletter'];
 
   const incomplete = [];
   domains.forEach(domain => {

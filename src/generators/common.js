@@ -467,6 +467,13 @@ const ENTITY_COLUMNS={
   PlanStep:['plan_id:UUID:FK(ReversePlan) NOT NULL:計画ID:Plan ID','step_order:INT:NOT NULL:ステップ順序:Step order','step_title:VARCHAR(255):NOT NULL:ステップタイトル:Step title',_D,'estimated_hours:DECIMAL(5,1)::推定時間:Estimated hours',_SA,'completed_at:TIMESTAMP::完了日時:Completed at'],
   ProgressTracking:['plan_id:UUID:FK(ReversePlan) NOT NULL:計画ID:Plan ID','tracked_at:TIMESTAMP:DEFAULT NOW:記録日時:Tracked at','progress_pct:DECIMAL(5,2)::進捗率:Progress pct','velocity:DECIMAL(5,2)::ベロシティ:Velocity','blockers:TEXT::障害:Blockers',_N],
   PlanAdjustment:['plan_id:UUID:FK(ReversePlan) NOT NULL:計画ID:Plan ID','adjusted_at:TIMESTAMP:DEFAULT NOW:調整日時:Adjusted at','reason:TEXT:NOT NULL:調整理由:Reason','old_value:TEXT::旧値:Old value','new_value:TEXT::新値:New value',_N],
+  // ── Missing domain entities (M1 fix) ──
+  Chart:[_U,'chart_type:VARCHAR(50):NOT NULL:チャート種別:Chart type','data_source:VARCHAR(100)::データソース:Data source',_CN,'query_config:JSONB::クエリ設定:Query config',_T],
+  Viewing:['property_id:UUID:FK(Property) NOT NULL:物件ID:Property ID',_U,'scheduled_at:TIMESTAMP:NOT NULL:見学予定日時:Scheduled at',_SP,'feedback:TEXT::感想:Feedback','attended:BOOLEAN:DEFAULT false:出席:Attended'],
+  Client:['client_name:VARCHAR(255):NOT NULL:依頼者名:Client name','company:VARCHAR(255)::企業名:Company','email:VARCHAR(255)::メール:Email','phone:VARCHAR(50)::電話番号:Phone',_SA,_N],
+  Transfer:['from_account:UUID:FK(Account) NOT NULL:送金元口座:From account','to_account:UUID:FK(Account) NOT NULL:送金先口座:To account','amount:DECIMAL(12,2):NOT NULL:金額:Amount','currency:VARCHAR(3):DEFAULT \'JPY\':通貨:Currency','reference:VARCHAR(255)::参照番号:Reference',_SP],
+  Card:['account_id:UUID:FK(Account) NOT NULL:口座ID:Account ID','card_number:VARCHAR(20):NOT NULL:カード番号:Card number','card_type:VARCHAR(20)::カード種別:Card type','expiry_date:VARCHAR(7)::有効期限:Expiry date',_SA,'credit_limit:DECIMAL(10,2)::限度額:Credit limit'],
+  Statement:['account_id:UUID:FK(Account) NOT NULL:口座ID:Account ID','period_start:DATE:NOT NULL:期間開始:Period start','period_end:DATE:NOT NULL:期間終了:Period end','opening_balance:DECIMAL(12,2):NOT NULL:期首残高:Opening balance','closing_balance:DECIMAL(12,2):NOT NULL:期末残高:Closing balance','statement_url:TEXT::明細書URL:Statement URL'],
 };
 
 // ═══ Entity REST method restrictions ═══
@@ -1090,7 +1097,7 @@ const QA_CROSS_CUTTING={
   a11y:{ja:'アクセシビリティ(WCAG)',en:'Accessibility (WCAG)',domains:['education','content','hr']},
   audit:{ja:'監査ログ完全性',en:'Audit log completeness',domains:['fintech','saas','hr','legal']},
   rate_limiting:{ja:'レート制限(APIキー/IP単位)',en:'Rate limiting (per API key/IP)',domains:['saas','devtool','fintech','ai']},
-  data_export:{ja:'データエクスポート(CSV/JSON/Excel)',en:'Data export (CSV/JSON/Excel)',domains:['saas','analytics','hr','crm']},
+  data_export:{ja:'データエクスポート(CSV/JSON/Excel)',en:'Data export (CSV/JSON/Excel)',domains:['saas','analytics','hr']},
   notification:{ja:'通知配信(Email/Push/SMS)',en:'Notification delivery (Email/Push/SMS)',domains:['saas','community','event','newsletter']},
   realtime:{ja:'リアルタイム更新(WebSocket/SSE)',en:'Realtime updates (WebSocket/SSE)',domains:['collab','community','analytics','iot']}
 };

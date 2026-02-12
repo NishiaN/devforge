@@ -17,8 +17,10 @@ function initPrevTabs(){
   const ja=_ja;
   [ja?'ツリー':'Tree',ja?'プレビュー':'Preview'].forEach((n,i)=>{
     const b=document.createElement('button');b.className='ptab'+(i===0?' on':'');
+    b.setAttribute('role','tab');b.setAttribute('aria-selected',String(i===0));
     b.textContent=n;b.onclick=()=>{
-      document.querySelectorAll('.ptab').forEach(t=>t.classList.remove('on'));b.classList.add('on');
+      document.querySelectorAll('.ptab').forEach(t=>{t.classList.remove('on');t.setAttribute('aria-selected','false');});
+      b.classList.add('on');b.setAttribute('aria-selected','true');
       if(i===0)showFileTree();else showFilePreview();
     };tabs.appendChild(b);
   });
@@ -29,8 +31,11 @@ function initPillarTabs(){
   const names=t('pillar');
   names.forEach((n,i)=>{
     const b=document.createElement('button');b.className='piltab'+(i===0?' on':'');
+    b.setAttribute('role','tab');b.setAttribute('aria-selected',String(i===0));
     b.textContent=n;b.onclick=()=>{
-      S.pillar=i;document.querySelectorAll('.piltab').forEach(t=>t.classList.remove('on'));b.classList.add('on');
+      S.pillar=i;
+      document.querySelectorAll('.piltab').forEach(t=>{t.classList.remove('on');t.setAttribute('aria-selected','false');});
+      b.classList.add('on');b.setAttribute('aria-selected','true');
       if(i===4) showExplorer();
       else if(i===5) showDashboard();
       else if(i===6&&Object.keys(S.files).length>0) showRoadmapUI();

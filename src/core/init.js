@@ -45,8 +45,8 @@ function applyLang(){
   statLbls.forEach((el,i)=>{if(i<4)el.textContent=ja?slJa[i]:slEn[i];});
   // Info cards
   const icards=document.querySelectorAll('.icard');
-  const icJa=[['📝 69+ファイル生成','SDD仕様書・Docker・MCP・AIルール10種・ロードマップ9種・仕様書23種'],['🧪 10の柱','SDD・DevContainer・MCP・AIルール・並列探索・Dashboard・ロードマップ・AIランチャー・デザインシステム・リバースEng'],['📱 モバイル対応','Expo / React Native 開発パス・EAS Build・OTA更新'],['🤖 AI自律開発','Vibe Coding・マルチAgent・Claude Code Subagents'],['💳 決済・CMS・EC','Stripe・microCMS・Medusa・Shopify Hydrogen'],['📦 フルエクスポート','ZIP・PDF・全ファイル結合コピー・URLシェア']];
-  const icEn=[['📝 69+ File Generation','SDD specs, Docker, MCP, 10 AI rules, 9 roadmaps, 23 specs'],['🧪 10 Pillars','SDD, DevContainer, MCP, AI Rules, Explorer, Dashboard, Roadmap, AI Launcher, Design System, Reverse Eng'],['📱 Mobile Support','Expo / React Native dev path, EAS Build, OTA updates'],['🤖 AI Autonomous Dev','Vibe Coding, Multi-Agent, Claude Code Subagents'],['💳 Payment/CMS/EC','Stripe, microCMS, Medusa, Shopify Hydrogen'],['📦 Full Export','ZIP, PDF, Copy All Files, URL Share']];
+  const icJa=[['📝 83+ファイル生成','SDD仕様書・Docker・MCP・AIルール10種・ロードマップ9種・仕様書23種'],['🧪 10の柱','SDD・DevContainer・MCP・AIルール・並列探索・Dashboard・ロードマップ・AIランチャー・デザインシステム・リバースEng'],['📱 モバイル対応','Expo / React Native 開発パス・EAS Build・OTA更新'],['🤖 AI自律開発','Vibe Coding・マルチAgent・Claude Code Subagents'],['💳 決済・CMS・EC','Stripe・microCMS・Medusa・Shopify Hydrogen'],['📦 フルエクスポート','ZIP・PDF・全ファイル結合コピー・URLシェア']];
+  const icEn=[['📝 83+ File Generation','SDD specs, Docker, MCP, 10 AI rules, 9 roadmaps, 23 specs'],['🧪 10 Pillars','SDD, DevContainer, MCP, AI Rules, Explorer, Dashboard, Roadmap, AI Launcher, Design System, Reverse Eng'],['📱 Mobile Support','Expo / React Native dev path, EAS Build, OTA updates'],['🤖 AI Autonomous Dev','Vibe Coding, Multi-Agent, Claude Code Subagents'],['💳 Payment/CMS/EC','Stripe, microCMS, Medusa, Shopify Hydrogen'],['📦 Full Export','ZIP, PDF, Copy All Files, URL Share']];
   icards.forEach((el,i)=>{if(i<6){const d=ja?icJa[i]:icEn[i];const h4=el.querySelector('h4');const p=el.querySelector('p');if(h4)h4.textContent=d[0];if(p)p.textContent=d[1];}});
   // Pillar badges
   const pbadges=document.querySelectorAll('.pbadge');
@@ -111,7 +111,14 @@ applyLang();
     const data=JSON.parse(atob(h.slice(4)));
     if(data.projectName){
       S.projectName=sanitizeName(data.projectName);
-      if(data.answers)S.answers=data.answers;
+      if(data.answers){
+        Object.keys(data.answers).forEach(k=>{
+          if(typeof data.answers[k]==='string'){
+            data.answers[k]=sanitize(data.answers[k]);
+          }
+        });
+        S.answers=data.answers;
+      }
       if(data.preset)S.preset=data.preset;
       if(data.skill)S.skill=data.skill;
       if(data.lang)S.lang=data.lang;
