@@ -364,6 +364,141 @@ _(${G?'追記してください':'Add entries here'})_`],
     S.files[`docs/${file}.md`]=`# ${pn} — ${title}\n> ${date}\n\n${content}`;
   });
 
+  // ═══ B2: docs/35_sitemap.md (~8KB) ═══
+  let doc35='# '+pn+' — '+(G?'サイトマップ・情報設計':'Sitemap & Information Architecture')+'\n\n';
+  doc35+=G?'**重要**: このドキュメントはアプリケーション全体のURL構造とナビゲーションパターンを定義します。新規ページ追加時は必ずこのサイトマップを更新してください。\n\n':'**IMPORTANT**: This document defines the URL structure and navigation patterns for the entire application. MUST update this sitemap when adding new pages.\n\n';
+
+  // Generate routes (reuse existing genRoutes function)
+  const allRoutes=genRoutes(a);
+
+  // URL Tree (Mermaid graph)
+  doc35+=(G?'## URLツリー':'## URL Tree')+'\n\n';
+  doc35+=(G?'**ルーティング構造の可視化**':'**Routing structure visualization**')+'\n\n';
+  doc35+='```mermaid\ngraph TD\n';
+  doc35+='  Root[/]\n';
+
+  // Build tree nodes
+  const addedPaths=new Set(['Root']);
+  allRoutes.forEach((route,i)=>{
+    const path=route.path;
+    const parts=path.split('/').filter(Boolean);
+    let currentPath='Root';
+
+    parts.forEach((part,idx)=>{
+      const nodeName=part.replace(/[:\[\]]/g,'').replace(/-/g,'_')||'index';
+      const fullPath=currentPath+'_'+nodeName;
+
+      if(!addedPaths.has(fullPath)){
+        const label=part.includes(':')||part.includes('[')?'['+part+']':part;
+        const style=route.auth?' --> |🔒|':' --> ';
+        doc35+='  '+currentPath+style+fullPath+'['+label+']\n';
+        addedPaths.add(fullPath);
+      }
+      currentPath=fullPath;
+    });
+  });
+  doc35+='```\n\n';
+
+  // Route-Screen-Component Mapping Table
+  doc35+=(G?'## Route-Screen-Component マッピング':'## Route-Screen-Component Mapping')+'\n\n';
+  doc35+='| '+(G?'ルート':'Route')+' | '+(G?'画面名':'Screen')+' | '+(G?'主要コンポーネント':'Key Components')+' | '+(G?'認証':'Auth')+' |\n';
+  doc35+='|------|------|------|------|\n';
+
+  allRoutes.forEach(route=>{
+    const screenName=route.name||route.path.split('/').pop()||'Index';
+    const components=getScreenComponents(screenName,G);
+    const componentList=components?components.slice(0,3).join(', '):(G?'（未定義）':'(Undefined)');
+    const authIcon=route.auth?'🔒':'🌐';
+
+    doc35+='| `'+route.path+'` | '+screenName+' | '+componentList+' | '+authIcon+' |\n';
+  });
+  doc35+='\n';
+  doc35+=(G?'**凡例**: 🔒 認証必須 | 🌐 公開':'**Legend**: 🔒 Auth required | 🌐 Public')+'\n\n';
+
+  // Navigation Patterns
+  doc35+=(G?'## ナビゲーションパターン':'## Navigation Patterns')+'\n\n';
+
+  // Primary Navigation
+  doc35+='### 1. '+(G?'プライマリナビゲーション':'Primary Navigation')+'\n\n';
+  doc35+=(G?'**位置**: ヘッダー or サイドバー':'**Location**: Header or Sidebar')+'\n\n';
+
+  const primaryRoutes=allRoutes.filter(r=>
+    !r.path.includes('[')&&!r.path.includes(':')&&r.path.split('/').filter(Boolean).length<=2
+  );
+  doc35+=(G?'推奨リンク:':'Recommended links:')+'\n';
+  primaryRoutes.slice(0,8).forEach(r=>{
+    doc35+='- `'+r.path+'` — '+r.name+(r.auth?' 🔒':'')+'\n';
+  });
+  doc35+='\n';
+
+  // Secondary Navigation
+  doc35+='### 2. '+(G?'セカンダリナビゲーション':'Secondary Navigation')+'\n\n';
+  doc35+=(G?'**位置**: サブメニュー or タブ':'**Location**: Submenu or Tabs')+'\n\n';
+
+  const secondaryRoutes=allRoutes.filter(r=>
+    r.path.split('/').filter(Boolean).length>=3&&!r.path.includes('[')&&!r.path.includes(':')
+  );
+  if(secondaryRoutes.length>0){
+    doc35+=(G?'サブセクション:':'Sub-sections:')+'\n';
+    secondaryRoutes.slice(0,5).forEach(r=>{
+      doc35+='- `'+r.path+'` — '+r.name+(r.auth?' 🔒':'')+'\n';
+    });
+    doc35+='\n';
+  }else{
+    doc35+=G?'（該当なし）\n\n':'(None)\n\n';
+  }
+
+  // Breadcrumb Navigation
+  doc35+='### 3. '+(G?'パンくずナビゲーション':'Breadcrumb Navigation')+'\n\n';
+  doc35+=(G?'**推奨実装**: 3階層以上のページで表示':'**Recommended**: Display for pages with ≥3 levels')+'\n\n';
+
+  const deepRoutes=allRoutes.filter(r=>r.path.split('/').filter(Boolean).length>=3);
+  if(deepRoutes.length>0){
+    const exampleRoute=deepRoutes[0];
+    const parts=exampleRoute.path.split('/').filter(Boolean);
+    let breadcrumb='Home';
+    parts.forEach((part,i)=>{
+      if(i<parts.length-1){
+        breadcrumb+=' > '+part.replace(/[:\[\]]/g,'');
+      }
+    });
+    breadcrumb+=' > '+exampleRoute.name;
+    doc35+=(G?'例: ':'Example: ')+'`'+breadcrumb+'`\n\n';
+  }else{
+    doc35+=G?'（該当ルートなし）\n\n':'(No applicable routes)\n\n';
+  }
+
+  // SEO Metadata Map
+  doc35+=(G?'## SEOメタデータマップ':'## SEO Metadata Map')+'\n\n';
+  doc35+='| '+(G?'ルート':'Route')+' | Title | Description | OG Image |\n';
+  doc35+='|------|------|------|------|\n';
+
+  allRoutes.slice(0,10).forEach(route=>{
+    const routeName=route.name||'Page';
+    const title=pn+' | '+routeName;
+    const desc=(a.purpose||'').substring(0,80)+'...';
+    const ogImage='/og-image.png';
+
+    doc35+='| `'+route.path+'` | '+title+' | '+desc+' | '+ogImage+' |\n';
+  });
+  doc35+='\n';
+
+  // URL Best Practices
+  doc35+=(G?'## URLベストプラクティス':'## URL Best Practices')+'\n\n';
+  doc35+='1. **'+(G?'小文字+ハイフン':'Lowercase + hyphens')+'**: `/user-profile` '+(G?'ではなく':'not')+' `/userProfile`\n';
+  doc35+='2. **'+(G?'複数形の一貫性':'Plural consistency')+'**: `/users/:id` '+(G?'（コレクションは複数形）':'(collections are plural)')+'\n';
+  doc35+='3. **'+(G?'RESTful命名':'RESTful naming')+'**: `/api/posts/:id/comments` '+(G?'（ネストでリソース関係を表現）':'(nested to show resource relationship)')+'\n';
+  doc35+='4. **'+(G?'クエリパラメータ':'Query params')+'**: `/search?q=keyword&sort=date` '+(G?'（フィルタ・ソートはクエリで）':'(filters/sorting in query)')+'\n\n';
+
+  // Related Documents
+  doc35+=(G?'## 関連ドキュメント':'## Related Documents')+'\n\n';
+  doc35+='- **docs/05_api.md** — '+(G?'APIエンドポイント詳細':'API endpoints detail')+'\n';
+  doc35+='- **docs/06_screen.md** — '+(G?'画面設計書':'Screen design')+'\n';
+  doc35+='- **docs/26_design_system.md** — '+(G?'デザインシステム':'Design system')+'\n';
+  doc35+='- **.spec/technical-plan.md** — '+(G?'技術計画':'Technical plan')+'\n\n';
+
+  S.files['docs/35_sitemap.md']=doc35;
+
   // CI/CD Workflow YAML
   const buildCmd=fe.includes('Next')?'next build':fe.includes('Vite')||fe.includes('SPA')?'vite build':'npm run build';
   const buildPrefix=buildCmd.startsWith('npm')?'':'npx ';

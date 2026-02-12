@@ -105,8 +105,30 @@ ${coreRules}`;
     });
   }
 
-  S.files['CLAUDE.md']=`# CLAUDE.md — ${pn}\n${core}\n\n## Spec-Driven Development\nRead .spec/constitution.md first.\nAll changes must align with .spec/specification.md.\nUse .spec/tasks.md as the source of truth for work items.\n\n## Auth\n- Source of Truth: ${auth.sot}\n- Token: ${auth.tokenType}\n- Verification: ${auth.tokenVerify}\n${auth.social.length?'- Providers: '+auth.social.join(', '):''}\n\n## Code Style\n- TypeScript strict\n- ESLint + Prettier\n- Vitest for testing\n- ${orm} for ${db}\n\n## Forbidden\n${forbidden}\n\n## Workflow Cycle\n1. Read docs/ → Select needed context\n2. Plan → Outline approach before coding\n3. Implement → Code with tests\n4. Update docs/24_progress.md → Mark completed tasks\n5. Log errors to docs/25_error_logs.md → Prevent recurrence\n\n## Thinking Protocol\nBefore implementing any change:\n1. State the task in one sentence\n2. List files that will be modified\n3. Identify potential side effects\n4. Implement → Test → Verify\n\n## Context Management\n- Write: All specs live in docs/ — read before coding\n- Select: Only load files relevant to current task\n- Compress: If context is large, read AI_BRIEF.md (~3K tokens) instead\n- Isolate: Use subagents for research, keep main context clean${domainCtx}\n\n## Key Context Files\n| File | When to Read | Tokens |\n|------|-------------|--------|\n| AI_BRIEF.md | Always (start here) | ~3K |\n| .spec/constitution.md | Before any change | ~1K |\n| .spec/tasks.md | Before picking work | ~1K |\n| docs/24_progress.md | Before/after tasks | ~0.5K |\n| docs/25_error_logs.md | When debugging | ~0.5K |`;
-  S.files['AGENTS.md']=`# AGENTS.md — ${pn}\n\n## Agent Guidelines\n${core}\n\n## Task Assignment\n- Frontend agent: UI components, pages, styling\n- Backend agent: ${arch.isBaaS?a.backend+' functions, RLS policies':arch.pattern==='bff'?'Next.js API Routes, middleware':'API routes, database, auth'}\n- Test agent: Unit tests, E2E tests\n- DevOps agent: CI/CD, deployment\n\n## Coordination\n- All agents must read .spec/ before starting\n- Use tasks.md for work coordination\n- Commit with conventional commits`;
+  // ═══ A1: File Selection Matrix (Task-specific context loading) ═══
+  const fileSelectionMatrix=G?
+    '| タスク種別 | 推奨読込ファイル | 推定トークン |\n|---------|---------------|----------|\n| 🆕 新規機能 | AI_BRIEF.md + .spec/specification.md + docs/04_er_diagram.md | ~6K |\n| 🐛 バグ修正 | AI_BRIEF.md + docs/25_error_logs.md + 該当ソースファイル | ~4K |\n| 📝 設計レビュー | .spec/constitution.md + .spec/specification.md + docs/32_qa_blueprint.md | ~7K |\n| 🔒 セキュリティ | docs/08_security.md + docs/25_error_logs.md + .spec/verification.md | ~5K |\n| 🧪 テスト作成 | docs/07_test_cases.md + docs/33_test_matrix.md + 対象コード | ~6K |\n| 📚 ドキュメント | AI_BRIEF.md + 該当実装 + .spec/specification.md | ~5K |\n| 🚀 デプロイ | docs/09_release.md + .github/workflows/ci.yml + .devcontainer/ | ~3K |\n| 🔍 調査タスク | AI_BRIEF.md のみ（詳細はサブエージェントに委譲） | ~3K |':
+    '| Task Type | Recommended Files | Est. Tokens |\n|-----------|------------------|-------------|\n| 🆕 New Feature | AI_BRIEF.md + .spec/specification.md + docs/04_er_diagram.md | ~6K |\n| 🐛 Bug Fix | AI_BRIEF.md + docs/25_error_logs.md + relevant source | ~4K |\n| 📝 Design Review | .spec/constitution.md + .spec/specification.md + docs/32_qa_blueprint.md | ~7K |\n| 🔒 Security | docs/08_security.md + docs/25_error_logs.md + .spec/verification.md | ~5K |\n| 🧪 Test Writing | docs/07_test_cases.md + docs/33_test_matrix.md + target code | ~6K |\n| 📚 Documentation | AI_BRIEF.md + implementation + .spec/specification.md | ~5K |\n| 🚀 Deployment | docs/09_release.md + .github/workflows/ci.yml + .devcontainer/ | ~3K |\n| 🔍 Research | AI_BRIEF.md only (delegate details to sub-agents) | ~3K |';
+
+  const compressionProtocol=G?
+    '\n## Context Compression Protocol\n\n**トリガー**: コンテキスト使用率 ≥80% 時\n\n**圧縮手順**:\n1. **要約モードに切替**: 全ドキュメントを AI_BRIEF.md のみに置換\n2. **タスク特化**: 現在のタスクに直接関係するファイルのみ保持\n3. **サブエージェント委譲**: 調査タスクはサブエージェントに委譲し、結論(要約)のみ受取\n4. **履歴圧縮**: 過去の会話履歴を要約して保存\n\n**圧縮例**:\n- Before: AI_BRIEF.md (3K) + ER (2K) + API (2K) + Screen (2K) + Tasks (1K) = 10K\n- After: AI_BRIEF.md (3K) + 現在タスクの該当セクション (1K) = 4K\n':
+    '\n## Context Compression Protocol\n\n**Trigger**: Context usage ≥80%\n\n**Compression steps**:\n1. **Switch to summary mode**: Replace all docs with AI_BRIEF.md only\n2. **Task-specific**: Keep only files directly related to current task\n3. **Sub-agent delegation**: Delegate research tasks to sub-agents, receive summary only\n4. **History compression**: Summarize and save past conversation history\n\n**Compression example**:\n- Before: AI_BRIEF.md (3K) + ER (2K) + API (2K) + Screen (2K) + Tasks (1K) = 10K\n- After: AI_BRIEF.md (3K) + relevant section for current task (1K) = 4K\n';
+
+  const subAgentPattern=G?
+    '\n## Sub-agent Delegation Pattern\n\n**原則**: メインエージェントのコンテキストを調査結果で汚染しない\n\n**委譲すべきタスク**:\n- 📊 技術調査（ライブラリ比較、ベストプラクティス検索）\n- 🔍 コードベース探索（特定機能の実装箇所特定）\n- 📖 ドキュメント要約（長大なドキュメントの要点抽出）\n- 🧪 テストケース生成（網羅的なテストパターン列挙）\n\n**Summary-Only Import**:\n- ❌ サブエージェントの全出力をコンテキストに含めない\n- ✅ サブエージェントは結論・推奨事項・次のアクションのみ返す\n- 📏 要約サイズ目標: 元の10-20%（例: 5K → 500-1000トークン）\n\n**実行フォーマット**:\n```\nTask: [サブエージェントに委譲するタスク]\nContext: AI_BRIEF.md\nOutput format: 結論(3行) + 推奨事項(箇条書き3つ) + 次のアクション\n```\n':
+    '\n## Sub-agent Delegation Pattern\n\n**Principle**: Don\'t pollute main agent context with research results\n\n**Tasks to delegate**:\n- 📊 Technical research (library comparison, best practice search)\n- 🔍 Codebase exploration (locate implementation of specific features)\n- 📖 Document summarization (extract key points from long docs)\n- 🧪 Test case generation (enumerate comprehensive test patterns)\n\n**Summary-Only Import**:\n- ❌ Don\'t include full sub-agent output in context\n- ✅ Sub-agent returns conclusion, recommendations, next action only\n- 📏 Summary size target: 10-20% of original (e.g., 5K → 500-1000 tokens)\n\n**Execution format**:\n```\nTask: [Task to delegate to sub-agent]\nContext: AI_BRIEF.md\nOutput format: Conclusion (3 lines) + Recommendations (3 bullets) + Next action\n```\n';
+
+  S.files['CLAUDE.md']=`# CLAUDE.md — ${pn}\n${core}\n\n## Spec-Driven Development\nRead .spec/constitution.md first.\nAll changes must align with .spec/specification.md.\nUse .spec/tasks.md as the source of truth for work items.\n\n## Auth\n- Source of Truth: ${auth.sot}\n- Token: ${auth.tokenType}\n- Verification: ${auth.tokenVerify}\n${auth.social.length?'- Providers: '+auth.social.join(', '):''}\n\n## Code Style\n- TypeScript strict\n- ESLint + Prettier\n- Vitest for testing\n- ${orm} for ${db}\n\n## Forbidden\n${forbidden}\n\n## Workflow Cycle\n1. Read docs/ → Select needed context\n2. Plan → Outline approach before coding\n3. Implement → Code with tests\n4. Update docs/24_progress.md → Mark completed tasks\n5. Log errors to docs/25_error_logs.md → Prevent recurrence\n\n## Thinking Protocol\nBefore implementing any change:\n1. State the task in one sentence\n2. List files that will be modified\n3. Identify potential side effects\n4. Implement → Test → Verify\n\n## Context Management\n- Write: All specs live in docs/ — read before coding\n- Select: Only load files relevant to current task\n- Compress: If context is large, read AI_BRIEF.md (~3K tokens) instead\n- Isolate: Use subagents for research, keep main context clean${domainCtx}\n\n## File Selection Matrix\n${G?'**タスク種別別の推奨読込ファイル**':'**Task-specific recommended files**'}\n\n${fileSelectionMatrix}${compressionProtocol}${subAgentPattern}\n\n## Key Context Files\n| File | When to Read | Tokens |\n|------|-------------|--------|\n| AI_BRIEF.md | Always (start here) | ~3K |\n| .spec/constitution.md | Before any change | ~1K |\n| .spec/tasks.md | Before picking work | ~1K |\n| docs/24_progress.md | Before/after tasks | ~0.5K |\n| docs/25_error_logs.md | When debugging | ~0.5K |`;
+  // ═══ A3: AGENTS.md Sub-agent Coordination Enhancement ═══
+  const agentSpecMatrix=G?
+    '| エージェント | 専門領域 | 必要コンテキスト | トークン予算 |\n|----------|--------|-------------|----------|\n| Frontend | UI/UX実装 | AI_BRIEF.md + docs/06_screen.md + docs/26_design_system.md | ~5K |\n| Backend | API/DB実装 | AI_BRIEF.md + docs/04_er_diagram.md + docs/05_api.md | ~6K |\n| Test | テスト作成 | AI_BRIEF.md + docs/07_test_cases.md + docs/33_test_matrix.md | ~6K |\n| QA | 品質検証 | docs/32_qa_blueprint.md + docs/37_bug_prevention.md | ~4K |\n| DevOps | デプロイ | docs/09_release.md + .devcontainer/ + .github/workflows/ | ~3K |\n| Research | 調査専門 | AI_BRIEF.md のみ（結論返却） | ~3K |':
+    '| Agent | Specialization | Required Context | Token Budget |\n|-------|---------------|------------------|-------------|\n| Frontend | UI/UX impl | AI_BRIEF.md + docs/06_screen.md + docs/26_design_system.md | ~5K |\n| Backend | API/DB impl | AI_BRIEF.md + docs/04_er_diagram.md + docs/05_api.md | ~6K |\n| Test | Test creation | AI_BRIEF.md + docs/07_test_cases.md + docs/33_test_matrix.md | ~6K |\n| QA | Quality assurance | docs/32_qa_blueprint.md + docs/37_bug_prevention.md | ~4K |\n| DevOps | Deployment | docs/09_release.md + .devcontainer/ + .github/workflows/ | ~3K |\n| Research | Investigation | AI_BRIEF.md only (return conclusion) | ~3K |';
+
+  const handoffProtocol=G?
+    '\n## Handoff Protocol（引継ぎフォーマット）\n\n**引継ぎ時に必ず含める情報**:\n```yaml\nfrom: [引継ぎ元エージェント名]\nto: [引継ぎ先エージェント名]\ntask: [タスク概要 1文]\ncontext: [必要最小限のコンテキスト]\ndeliverables:\n  - [成果物1]\n  - [成果物2]\nnext_action: [次のアクション]\nblocking_issues: [ブロッカーがあれば]\n```\n\n**Summary-Only Import原則**:\n- 調査エージェントは全文返却禁止\n- 結論(3行) + 推奨事項(3つ) + 次のアクションのみ\n- メインエージェントは要約のみコンテキストに追加\n':
+    '\n## Handoff Protocol\n\n**Required information in handoff**:\n```yaml\nfrom: [Source agent name]\nto: [Target agent name]\ntask: [Task summary in 1 sentence]\ncontext: [Minimal necessary context]\ndeliverables:\n  - [Deliverable 1]\n  - [Deliverable 2]\nnext_action: [Next action]\nblocking_issues: [If any blockers]\n```\n\n**Summary-Only Import Principle**:\n- Research agents MUST NOT return full text\n- Conclusion (3 lines) + Recommendations (3 bullets) + Next action only\n- Main agent adds summary only to context\n';
+
+  S.files['AGENTS.md']=`# AGENTS.md — ${pn}\n\n## Agent Guidelines\n${core}\n\n## Task Assignment\n- Frontend agent: UI components, pages, styling\n- Backend agent: ${arch.isBaaS?a.backend+' functions, RLS policies':arch.pattern==='bff'?'Next.js API Routes, middleware':'API routes, database, auth'}\n- Test agent: Unit tests, E2E tests\n- DevOps agent: CI/CD, deployment\n\n## Agent Specialization Matrix\n${G?'**エージェント種別と責任範囲**':'**Agent types and responsibilities**'}\n\n${agentSpecMatrix}${handoffProtocol}\n\n## Coordination\n- All agents must read .spec/ before starting\n- Use tasks.md for work coordination\n- Commit with conventional commits`;
   S.files['codex-instructions.md']=`# Codex Instructions (OpenAI)\n${copilotRules}\n\n## Codex Agent Mode\n- Use agentic mode for multi-file refactoring\n- Verify changes with npm test before committing\n- Respect .spec/ constraints`;
   S.files['skills/project.md']=`# ${pn} ${G?'— AIスキル':'— AI Skills'}\n${G?'工場テンプレート形式。詳細はskills/catalog.md参照':'Factory Template format. See skills/catalog.md for details'}\n\n${G?'## スキル':'## Skills'}\n\n### 1. spec-review\n- **${G?'役割':'Role'}**: ${G?'設計':'Design'}\n- **${G?'目的':'Purpose'}**: ${G?'.spec/検証':'Verify .spec/'}\n- **${G?'入力':'Input'}**: .spec/constitution.md, specification.md\n- **${G?'判断':'Judgment'}**: ${G?'矛盾0件':' 0 contradictions'}\n- **${G?'次':'Next'}**: code-gen\n\n### 2. code-gen\n- **${G?'役割':'Role'}**: ${G?'制作':'Production'}\n- **${G?'目的':'Purpose'}**: ${G?'コード生成':'Generate code'}\n- **${G?'入力':'Input'}**: .spec/technical-plan.md\n- **${G?'判断':'Judgment'}**: ${G?'エラー0':'0 errors'}\n- **${G?'次':'Next'}**: test-gen\n\n### 3. test-gen\n- **${G?'役割':'Role'}**: ${G?'制作':'Production'}\n- **${G?'目的':'Purpose'}**: ${G?'テスト生成':'Generate tests'}\n- **${G?'入力':'Input'}**: ${G?'新規コード':'New code'}\n- **${G?'判断':'Judgment'}**: ${G?'カバレッジ80%+':'Coverage ≥80%'}\n- **${G?'次':'Next'}**: deploy-check\n\n### 4. doc-gen\n- **${G?'役割':'Role'}**: ${G?'運用':'Operations'}\n- **${G?'目的':'Purpose'}**: ${G?'ドキュメント生成':'Generate docs'}\n- **${G?'判断':'Judgment'}**: ${G?'未文書化0':'0 undocumented'}\n- **${G?'次':'Next'}**: refactor\n\n### 5. refactor\n- **${G?'役割':'Role'}**: ${G?'設計':'Design'}\n- **${G?'目的':'Purpose'}**: ${G?'リファクタリング提案':'Suggest refactoring'}\n- **${G?'判断':'Judgment'}**: ${G?'重複10%↓':'Duplication ≤10%'}\n- **${G?'次':'Next'}**: spec-review\n\n${G?'## テンプレート':'## Template'}\n\`\`\`markdown\n### [skill-id]\n- **${G?'役割':'Role'}**: [Planning/Design/Production/Operations]\n- **${G?'目的':'Purpose'}**: [${G?'何をするか':'What it does'}]\n- **${G?'判断':'Judgment'}**: [${G?'成功条件':'Success criteria'}]\n- **${G?'次':'Next'}**: [${G?'次のスキル':'Next skill'}]\n\`\`\`\n`;
   S.files['.gemini/settings.json']=`{\n  "project": "${pn}",\n  "model": "gemini-3-pro",\n  "context": {\n    "spec_dir": ".spec/",\n    "include": ["src/", "package.json", "tsconfig.json"],\n    "exclude": ["node_modules/", "dist/"]\n  },\n  "safety": "balanced",\n  "tools": ["code_execution", "grounding"]\n}`;
@@ -214,6 +236,29 @@ Pattern: ${archNote}
 5. After task: Update docs/24_progress.md
 6. On error: Log to docs/25_error_logs.md
 7. Context full: Keep AI_BRIEF.md + current task only
+
+## Context Loading Strategy
+**Phase-based file loading priority**:
+
+${G?'- **Phase 0 企画**: .spec/constitution.md → .spec/specification.md':'- **Phase 0 Planning**: .spec/constitution.md → .spec/specification.md'}
+${G?'- **Phase 1 設計**: + docs/04_er_diagram.md + docs/05_api.md + docs/32_qa_blueprint.md':'- **Phase 1 Design**: + docs/04_er_diagram.md + docs/05_api.md + docs/32_qa_blueprint.md'}
+${G?'- **Phase 2 実装**: + AI_BRIEF.md (主要) + docs/24_progress.md + 該当ソース':'- **Phase 2 Implementation**: + AI_BRIEF.md (primary) + docs/24_progress.md + relevant source'}
+${G?'- **Phase 3 テスト**: + docs/07_test_cases.md + docs/33_test_matrix.md + docs/36_test_strategy.md':'- **Phase 3 Testing**: + docs/07_test_cases.md + docs/33_test_matrix.md + docs/36_test_strategy.md'}
+${G?'- **Phase 4 運用**: + docs/34_incident_response.md + docs/09_release.md + docs/25_error_logs.md':'- **Phase 4 Operations**: + docs/34_incident_response.md + docs/09_release.md + docs/25_error_logs.md'}
+
+**Token budget allocation**:
+${G?'- 🎯 現在タスク: 40% (4K)':'- 🎯 Current task: 40% (4K)'}
+${G?'- 📋 Spec/設計: 30% (3K)':'- 📋 Spec/design: 30% (3K)'}
+${G?'- 📊 進捗/履歴: 20% (2K)':'- 📊 Progress/history: 20% (2K)'}
+${G?'- 🔄 予備バッファ: 10% (1K)':'- 🔄 Reserve buffer: 10% (1K)'}
+
+**New files reference** (${G?'最新生成ファイル':'latest generated files'}):
+- docs/34_incident_response.md ${G?'— 障害対応':'— Incident response'}
+- docs/35_sitemap.md ${G?'— 情報設計':'— Information architecture'}
+- docs/36_test_strategy.md ${G?'— フェーズ別テスト戦略':'— Phase-based testing'}
+- docs/37_bug_prevention.md ${G?'— バグ予防':'— Bug prevention'}
+- docs/38_business_model.md ${G?'— ビジネスモデル (payment≠none時)':'— Business model (if payment≠none)'}
+- skills/agents/*.md ${G?'— エージェント定義 (ai_auto=multi/full時)':'— Agent definitions (if ai_auto=multi/full)'}
 
 ## DB Schema
 \`\`\`
@@ -467,6 +512,179 @@ CLAUDE.md        → ${G?'Claude Code用ルール':'Claude Code rules'}
     factoryMd+='\n';
 
     S.files['skills/factory.md']=factoryMd;
+
+    // ═══ C2: md Package Distribution (~10KB, ai_auto=multi/full/orch only) ═══
+    const isMultiOrAbove=aiLevel==='multi'||aiLevel==='full'||aiLevel==='orch';
+
+    if(isMultiOrAbove){
+      // skills/README.md - Package overview
+      let skillsReadme='# '+pn+' Skills Package\n\n';
+      skillsReadme+=G?'**世界唯一のAI Development OS**: このパッケージは、AIエージェントが自律的に開発を進めるための完全なスキル体系です。\n\n':'**World\'s First AI Development OS**: This package is a complete skill system for AI agents to autonomously develop software.\n\n';
+
+      skillsReadme+=(G?'## クイックスタート':'## Quick Start')+'\n\n';
+      skillsReadme+='1. **'+(G?'全体像を把握':'Understand overview')+'**: `skills/skill_map.md` '+(G?'でスキル依存関係を確認':'for skill dependency map')+'\n';
+      skillsReadme+='2. **'+(G?'詳細を確認':'Check details')+'**: `skills/catalog.md` '+(G?'で全スキル詳細を確認':'for all skill details')+'\n';
+      skillsReadme+='3. **'+(G?'パイプライン実行':'Execute pipeline')+'**: `skills/pipelines.md` '+(G?'で自動化フロー確認':'for automation flows')+'\n';
+      skillsReadme+='4. **'+(G?'カスタムスキル作成':'Create custom skills')+'**: `skills/factory.md` '+(G?'のテンプレート使用':'using template')+'\n\n';
+
+      skillsReadme+=(G?'## ファイル構成':'## File Structure')+'\n\n';
+      skillsReadme+='```\n';
+      skillsReadme+='skills/\n';
+      skillsReadme+='├── README.md          # '+(G?'このファイル':'This file')+'\n';
+      skillsReadme+='├── skill_map.md       # '+(G?'依存関係マップ':'Dependency map')+'\n';
+      skillsReadme+='├── catalog.md         # '+(G?'全スキルカタログ':'Full catalog')+'\n';
+      skillsReadme+='├── pipelines.md       # '+(G?'自動化パイプライン':'Automation pipelines')+'\n';
+      skillsReadme+='├── factory.md         # '+(G?'スキル工場テンプレート':'Skill factory template')+'\n';
+      skillsReadme+='├── project.md         # '+( G?'プロジェクトスキル':'Project skills')+'\n';
+      skillsReadme+='└── agents/\n';
+      skillsReadme+='    ├── coordinator.md # '+(G?'オーケストレーター':'Coordinator agent')+'\n';
+      skillsReadme+='    └── reviewer.md    # '+(G?'レビューアー':'Reviewer agent')+'\n';
+      skillsReadme+='```\n\n';
+
+      skillsReadme+=(G?'## AI成熟度モデル':'## AI Maturity Model')+'\n\n';
+      skillsReadme+=(G?'**現在レベル**: '+aiLevel.toUpperCase():'**Current Level**: '+aiLevel.toUpperCase())+'\n\n';
+
+      const maturityLevels=[
+        {level:'Prompt',desc_ja:'個別プロンプト',desc_en:'Individual prompts',current:aiLevel==='vibe'},
+        {level:'Skill',desc_ja:'スキル単位（1スキル=1判断）',desc_en:'Skill-based (1 skill = 1 judgment)',current:aiLevel==='agentic'},
+        {level:'Agent',desc_ja:'エージェント単位（複数スキル統合）',desc_en:'Agent-based (multiple skills)',current:aiLevel==='multi'},
+        {level:'Package',desc_ja:'パッケージ単位（スキル群配布）',desc_en:'Package-based (skill sets)',current:aiLevel==='full'},
+        {level:'Series',desc_ja:'シリーズ単位（業種別パッケージ群）',desc_en:'Series-based (industry packages)',current:aiLevel==='orch'}
+      ];
+
+      maturityLevels.forEach((m,i)=>{
+        const arrow=m.current?'👉 ':'   ';
+        const label=G?m.desc_ja:m.desc_en;
+        skillsReadme+=arrow+(i+1)+'. **'+m.level+'** - '+label+(m.current?' ✅':'')+'\n';
+      });
+      skillsReadme+='\n';
+
+      skillsReadme+=(G?'## 使い方':'## Usage')+'\n\n';
+      skillsReadme+='### '+(G?'スキル実行':'Execute Skill')+'\n';
+      skillsReadme+='```javascript\n';
+      skillsReadme+='// 1. '+(G?'スキルを選択':'Select skill')+'\n';
+      skillsReadme+='const skill = getSkill(\'spec-review\');\n\n';
+      skillsReadme+='// 2. '+(G?'入力を準備':'Prepare input')+'\n';
+      skillsReadme+='const input = {\n';
+      skillsReadme+='  files: [\'/.spec/constitution.md\', \'.spec/specification.md\'],\n';
+      skillsReadme+='  context: AI_BRIEF\n';
+      skillsReadme+='};\n\n';
+      skillsReadme+='// 3. '+(G?'実行':'Execute')+'\n';
+      skillsReadme+='const result = await executeSkill(skill, input);\n\n';
+      skillsReadme+='// 4. '+(G?'判定':'Judge')+'\n';
+      skillsReadme+='if (result.judgment === \'PASS\') {\n';
+      skillsReadme+='  // '+(G?'次のスキルへ':'Proceed to next skill')+'\n';
+      skillsReadme+='} else {\n';
+      skillsReadme+='  // '+(G?'修正して再実行':'Fix and re-execute')+'\n';
+      skillsReadme+='}\n';
+      skillsReadme+='```\n\n';
+
+      S.files['skills/README.md']=skillsReadme;
+
+      // skills/skill_map.md - Dependency map with 4-layer business model
+      let skillMapMd='# '+pn+' Skill Map\n\n';
+      skillMapMd+=G?'**スキル依存関係マップ**: すべてのスキルの依存関係と4層ビジネスモデルを可視化します。\n\n':'**Skill Dependency Map**: Visualizes all skill dependencies and 4-layer business model.\n\n';
+
+      skillMapMd+=(G?'## 4層ビジネスモデル':'## 4-Layer Business Model')+'\n\n';
+      skillMapMd+='```mermaid\ngraph TB\n';
+      skillMapMd+='  subgraph P['+(G?'企画':'Planning')+']\n';
+      skillMapMd+='    P1['+( G?'要件レビュー':'Req Review')+']\n';
+      skillMapMd+='  end\n';
+      skillMapMd+='  subgraph D['+(G?'設計':'Design')+']\n';
+      skillMapMd+='    D1['+(G?'設計検証':'Arch Review')+']\n';
+      skillMapMd+='    D2['+(G?'API設計':'API Design')+']\n';
+      skillMapMd+='  end\n';
+      skillMapMd+='  subgraph C['+(G?'制作':'Production')+']\n';
+      skillMapMd+='    C1['+(G?'実装支援':'Code Support')+']\n';
+      skillMapMd+='    C2['+(G?'テスト生成':'Test Gen')+']\n';
+      skillMapMd+='  end\n';
+      skillMapMd+='  subgraph O['+(G?'運用':'Operations')+']\n';
+      skillMapMd+='    O1['+(G?'デプロイ検証':'Deploy Check')+']\n';
+      skillMapMd+='    O2['+(G?'ドキュメント生成':'Doc Gen')+']\n';
+      skillMapMd+='  end\n\n';
+      skillMapMd+='  P1 --> D1\n';
+      skillMapMd+='  D1 --> D2\n';
+      skillMapMd+='  D2 --> C1\n';
+      skillMapMd+='  C1 --> C2\n';
+      skillMapMd+='  C2 --> O1\n';
+      skillMapMd+='  O1 --> O2\n';
+      skillMapMd+='  O2 -.->|'+(G?'振り返り':'Retrospective')+'| P1\n';
+      skillMapMd+='```\n\n';
+
+      skillMapMd+=(G?'## スキル一覧':'## Skill List')+'\n\n';
+      skillMapMd+='| '+(G?'スキルID':'Skill ID')+' | '+(G?'役割':'Role')+' | '+(G?'依存':'Depends On')+' | '+(G?'次':'Next')+' |\n';
+      skillMapMd+='|----------|------|------|------|\n';
+      skillMapMd+='| spec-review | Planning | - | arch-review |\n';
+      skillMapMd+='| arch-review | Design | spec-review | api-design |\n';
+      skillMapMd+='| api-design | Design | arch-review | code-gen |\n';
+      skillMapMd+='| code-gen | Production | api-design | test-gen |\n';
+      skillMapMd+='| test-gen | Production | code-gen | deploy-check |\n';
+      skillMapMd+='| deploy-check | Operations | test-gen | doc-gen |\n';
+      skillMapMd+='| doc-gen | Operations | deploy-check | - |\n\n';
+
+      skillMapMd+=(G?'## 関連ドキュメント':'## Related Documents')+'\n\n';
+      skillMapMd+='- **skills/catalog.md** — '+(G?'全スキル詳細':'All skill details')+'\n';
+      skillMapMd+='- **skills/pipelines.md** — '+(G?'実行フロー':'Execution flows')+'\n';
+      skillMapMd+='- **skills/factory.md** — '+(G?'カスタムスキル作成':'Custom skill creation')+'\n\n';
+
+      S.files['skills/skill_map.md']=skillMapMd;
+
+      // skills/agents/coordinator.md - Orchestrator agent definition
+      let coordMd='# Coordinator Agent\n\n';
+      coordMd+=G?'**役割**: 複数エージェントの統括・タスク配分・進捗管理\n\n':'**Role**: Orchestrate multiple agents, task allocation, progress management\n\n';
+
+      coordMd+=(G?'## 責務':'## Responsibilities')+'\n\n';
+      coordMd+='1. **'+(G?'タスク分解':'Task Decomposition')+'**: '+(G?'大きなタスクを実行可能な単位に分割':'Break large tasks into executable units')+'\n';
+      coordMd+='2. **'+(G?'エージェント割当':'Agent Assignment')+'**: '+(G?'各タスクに最適なエージェントを割当':'Assign optimal agent to each task')+'\n';
+      coordMd+='3. **'+(G?'進捗監視':'Progress Monitoring')+'**: docs/24_progress.md '+(G?'を更新':'updates')+'\n';
+      coordMd+='4. **'+(G?'ブロッカー解消':'Blocker Resolution')+'**: '+(G?'依存関係の問題を検出・解決':'Detect and resolve dependency issues')+'\n\n';
+
+      coordMd+=(G?'## 入力':'## Input')+'\n\n';
+      coordMd+='- .spec/tasks.md '+(G?'— 全タスクリスト':'— All tasks list')+'\n';
+      coordMd+='- docs/24_progress.md '+(G?'— 現在の進捗':'— Current progress')+'\n';
+      coordMd+='- AI_BRIEF.md '+(G?'— プロジェクト全体像':'— Project overview')+'\n\n';
+
+      coordMd+=(G?'## 判断基準':'## Judgment Criteria')+'\n\n';
+      coordMd+='- [ ] '+(G?'全タスクが適切に割当済み':'All tasks properly assigned')+'\n';
+      coordMd+='- [ ] '+(G?'ブロッカー0件':'0 blockers')+'\n';
+      coordMd+='- [ ] '+(G?'進捗が予定通り':'Progress on track')+'\n\n';
+
+      coordMd+=(G?'## 出力':'## Output')+'\n\n';
+      coordMd+='- '+(G?'更新された.spec/tasks.md':'Updated .spec/tasks.md')+'\n';
+      coordMd+='- '+(G?'更新されたdocs/24_progress.md':'Updated docs/24_progress.md')+'\n';
+      coordMd+='- '+(G?'次のフェーズへの移行可否判定':'Go/No-go decision for next phase')+'\n\n';
+
+      S.files['skills/agents/coordinator.md']=coordMd;
+
+      // skills/agents/reviewer.md - Reviewer agent definition
+      let reviewerMd='# Reviewer Agent\n\n';
+      reviewerMd+=G?'**役割**: コード品質・設計整合性・セキュリティの自動レビュー\n\n':'**Role**: Automated review of code quality, design consistency, and security\n\n';
+
+      reviewerMd+=(G?'## 責務':'## Responsibilities')+'\n\n';
+      reviewerMd+='1. **'+(G?'コード品質':'Code Quality')+'**: '+(G?'TypeScript strict準拠、ESLintエラー0':'TypeScript strict, 0 ESLint errors')+'\n';
+      reviewerMd+='2. **'+(G?'設計整合性':'Design Consistency')+'**: .spec/specification.md '+(G?'との一致':'alignment')+'\n';
+      reviewerMd+='3. **'+(G?'セキュリティ':'Security')+'**: docs/08_security.md '+(G?'のチェックリスト確認':'checklist verification')+'\n';
+      reviewerMd+='4. **'+(G?'テストカバレッジ':'Test Coverage')+'**: ≥80%\n\n';
+
+      reviewerMd+=(G?'## 入力':'## Input')+'\n\n';
+      reviewerMd+='- '+(G?'変更されたコードファイル':'Modified code files')+'\n';
+      reviewerMd+='- .spec/specification.md\n';
+      reviewerMd+='- docs/32_qa_blueprint.md\n';
+      reviewerMd+='- docs/37_bug_prevention.md\n\n';
+
+      reviewerMd+=(G?'## 判断基準':'## Judgment Criteria')+'\n\n';
+      reviewerMd+='- [ ] '+(G?'全テスト PASS':'All tests PASS')+'\n';
+      reviewerMd+='- [ ] '+(G?'カバレッジ ≥80%':'Coverage ≥80%')+'\n';
+      reviewerMd+='- [ ] '+(G?'セキュリティ違反 0件':'0 security violations')+'\n';
+      reviewerMd+='- [ ] .spec/'+(G?'整合性確認済':'consistency verified')+'\n\n';
+
+      reviewerMd+=(G?'## 出力':'## Output')+'\n\n';
+      reviewerMd+='- PASS / FAIL\n';
+      reviewerMd+='- '+(G?'問題リスト（あれば）':'Issue list (if any)')+'\n';
+      reviewerMd+='- '+(G?'改善提案':'Improvement suggestions')+'\n\n';
+
+      S.files['skills/agents/reviewer.md']=reviewerMd;
+    }
 
     // ═══ Phase 4: AGENTS.md enhancement ═══
     S.files['AGENTS.md']+=`\n\n## Pipeline Coordination\n- Pipelines: skills/pipelines.md\n- Catalog: skills/catalog.md\n- Gates: ${aiLevel==='vibe'||aiLevel==='agentic'?'human':'auto'}\n- Error: docs/25 → retry → escalate\n- Context: AI_BRIEF.md only\n`;

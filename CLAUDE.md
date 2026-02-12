@@ -7,8 +7,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 # DevForge v9.0
 
 ## Architecture
-- **42 modules** in `src/` → `node build.js` → single `devforge-v9.html` (~632KB)
+- **42 modules** in `src/` → `node build.js` → single `devforge-v9.html` (~770KB)
 - Vanilla JS, no frameworks. CSS custom properties. CDN: marked.js, mermaid.js, JSZip.
+- **AI Development OS**: Generates 83+ files including context intelligence, operations playbooks, and business models
 
 ## Build & Test
 ```bash
@@ -43,7 +44,7 @@ npm run check              # Syntax check extracted JS
 5. **Write** to `devforge-v9.html`
 6. **Validate** size ≤1000KB (warn if exceeded)
 
-**Current Status:** 632KB / 1000KB limit (~368KB remaining budget for future expansions)
+**Current Status:** 770KB / 1000KB limit (~230KB remaining budget for future expansions)
 
 ### Module Load Order (Critical!)
 ```javascript
@@ -217,7 +218,7 @@ if(data.state.answers) {
 
 **Fix:**
 - Always add both `ja` and `en` versions
-- Search for all instances when updating numbers (41 presets, 72+ files, 10 pillars)
+- Search for all instances when updating numbers (41 presets, 83+ files, 10 pillars)
 - Use static strings in data files, not `S.lang` conditionals
 
 ### Accessibility (a11y)
@@ -589,15 +590,17 @@ const ENTITY_COLUMNS = {
 
 ⚠️ **When adding entities:** Check if columns match existing constants (\_U, \_SA, \_SD, \_T, \_D, etc.) to maintain compression.
 
-## Generated Output (72+ files)
-When users complete the wizard, DevForge generates **72+ files** (base: 70 files, +2 when ai_auto ≠ None for skills/catalog.md and skills/pipelines.md):
+## Generated Output (83+ files)
+When users complete the wizard, DevForge generates **83+ files** (base: 73 files, +4 when ai_auto=multi/full/orch for skills/ md Package, +1 when payment≠none for docs/38_business_model.md):
 - **.spec/** — constitution.md, specification.md, technical-plan.md, tasks.md, verification.md
 - **.devcontainer/** — devcontainer.json, Dockerfile, docker-compose.yml, post-create.sh
-- **docs/** — architecture.md, ER.md, API.md, screen.md, test-cases.md, security.md, release.md, WBS.md, prompt-playbook.md, tasks.md, **progress.md (24)**, **error_logs.md (25)**, **design_system.md (26)**, **sequence_diagrams.md (27)**, **qa_strategy.md (28)**, **reverse_engineering.md (29)**, **goal_decomposition.md (30)**, **industry_playbook.md (31)**, **qa_blueprint.md (32)**, **test_matrix.md (33)**
-- **AI rules** — CLAUDE.md (with Workflow Cycle & Context Management), AI_BRIEF.md (with Context Protocol, ~1200 tokens), .cursorrules, .clinerules, .windsurfrules, AGENTS.md, .cursor/rules, **skills/** (project.md, factory.md, catalog.md*, pipelines.md*)
+- **docs/** — architecture.md, ER.md, API.md, screen.md, test-cases.md, security.md, release.md, WBS.md, prompt-playbook.md, tasks.md, **progress.md (24)**, **error_logs.md (25)**, **design_system.md (26)**, **sequence_diagrams.md (27)**, **qa_strategy.md (28)**, **reverse_engineering.md (29)**, **goal_decomposition.md (30)**, **industry_playbook.md (31)**, **qa_blueprint.md (32)**, **test_matrix.md (33)**, **incident_response.md (34)**, **sitemap.md (35)**, **test_strategy.md (36)**, **bug_prevention.md (37)**, **business_model.md (38)***
+- **AI rules** — CLAUDE.md (with File Selection Matrix & Context Compression Protocol), AI_BRIEF.md (with Context Loading Strategy, ~1200 tokens), .cursorrules, .clinerules, .windsurfrules, AGENTS.md (with Agent Specialization Matrix), .cursor/rules, **skills/** (project.md, factory.md, catalog.md*, pipelines.md*, README.md**, skill_map.md**, agents/coordinator.md**, agents/reviewer.md**)
 - **CI/CD** — .github/workflows/ci.yml
 
-\* **skills/catalog.md** and **skills/pipelines.md** are generated only when ai_auto ≠ None
+\* Generated when ai_auto ≠ None
+\*\* Generated when ai_auto = multi/full/orch
+\*\*\* docs/38_business_model.md generated only when payment ≠ none
 
 ### Skills System (Manus Skills Integration)
 **skills/project.md** (always generated):
@@ -650,6 +653,22 @@ When users complete the wizard, DevForge generates **72+ files** (base: 70 files
 - Enhanced `detectDomain()` — Now supports 24 domains (bug fix: moved saas pattern before event to correctly detect helpdesk systems)
 - File count increased from 69+ to 72+ (+3 new files)
 - Size impact: Optimized from 640KB → 632KB (368KB budget remaining)
+
+**Recent Enhancement (AI Development OS - Feb 2026):**
+- **Context Intelligence Engine**: CLAUDE.md now includes File Selection Matrix (task-specific file recommendations + token estimates), Context Compression Protocol (auto-compress at 80% usage), and Sub-agent Delegation Pattern (summary-only import)
+- **Operations Intelligence**: Added 4 new docs:
+  - `docs/34_incident_response.md` — Severity classification, runbook templates, escalation matrix, post-mortem templates (domain-specific examples)
+  - `docs/35_sitemap.md` — URL tree (Mermaid graph), route-screen-component mapping, navigation patterns, SEO metadata map
+  - `docs/36_test_strategy.md` — Phase-based testing (Design Review → Integration → Pre-Release → Post-Release), concurrency scenarios, stack-specific tool configs
+  - `docs/37_bug_prevention.md` — Priority-ordered checklist (domain-optimized), 6-category bug classification, 7 common oversights (timezone, Unicode, file upload, etc.)
+- **Business & Architecture Intelligence**:
+  - `docs/38_business_model.md` (conditional: payment≠none) — Revenue model analysis, pricing strategy, conversion funnel (Mermaid), unit economics (CAC/LTV/Payback)
+  - `docs/30_goal_decomposition.md` — Added Goal Tracking Schema (5 tables: UserGoal, ReversePlan, PlanStep, ProgressTracking, PlanAdjustment) with SQL DDL and usage examples
+  - **skills/ md Package** (conditional: ai_auto=multi/full/orch) — 4 new files: README.md (quick start + AI maturity model), skill_map.md (4-layer business model), agents/coordinator.md, agents/reviewer.md
+- **Enhanced AI_BRIEF.md**: Added Context Loading Strategy (phase-based file loading priorities), token budget allocation (40% task, 30% spec, 20% progress, 10% buffer), new files reference
+- **Enhanced AGENTS.md**: Added Agent Specialization Matrix (6 agent types with token budgets), Handoff Protocol (YAML format), Summary-Only Import principle
+- File count increased from 72+ to 83+ (+11 new files)
+- Size impact: 632KB → 770KB (+138KB, 230KB budget remaining)
 
 ## Test Architecture
 | File | Tests | Purpose |

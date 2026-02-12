@@ -107,7 +107,10 @@ function buildFileTree(){
     files.push({name:'mcp-config.json',path:'mcp-config.json'});
   } else if(pillar===3){ // AI Rules
     ['.cursor/rules','.github/copilot-instructions.md','.windsurfrules','.clinerules',
-     '.kiro/spec.md','CLAUDE.md','AGENTS.md','codex-instructions.md','skills/project.md','skills/catalog.md','skills/pipelines.md','skills/factory.md','.ai/hooks.yml'
+     '.kiro/spec.md','CLAUDE.md','AI_BRIEF.md','AGENTS.md','codex-instructions.md',
+     'skills/project.md','skills/catalog.md','skills/pipelines.md','skills/factory.md',
+     'skills/README.md','skills/skill_map.md','skills/agents/coordinator.md','skills/agents/reviewer.md',
+     '.ai/hooks.yml','.gemini/settings.json'
     ].forEach(f=>files.push({name:f,path:f}));
   } else if(pillar===4){ // Explorer
     files.push({name:_ja?'(並列実装探索 — UIのみ)':'(Parallel Explorer — UI only)',path:'_explorer'});
@@ -138,7 +141,9 @@ function buildFileTree(){
    '14_risk','15_meeting','16_review','17_monitoring',
    '18_data_migration','19_performance','20_a11y','21_changelog',
    '22_prompt_playbook','23_tasks','24_progress','25_error_logs',
-   '26_design_system','27_sequence_diagrams','28_qa_strategy','31_industry_playbook','32_qa_blueprint','33_test_matrix'].forEach(f=>
+   '26_design_system','27_sequence_diagrams','28_qa_strategy','31_industry_playbook',
+   '32_qa_blueprint','33_test_matrix','34_incident_response','35_sitemap',
+   '36_test_strategy','37_bug_prevention','38_business_model'].forEach(f=>
     files.push({name:'  '+f+'.md',path:'docs/'+f+'.md'}));
   files.push({name:'───────────',path:''});
   ['README.md','.gitignore','package.json','LICENSE'].forEach(f=>files.push({name:f,path:f}));
