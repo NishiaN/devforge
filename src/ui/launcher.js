@@ -179,7 +179,7 @@ function showAILauncher(){
   };
 
   /* ── Header ── */
-  let h=`<div class="exp-header"><h3>🤖 ${_ja?'AI プロンプトランチャー':'AI Prompt Launcher'}</h3>
+  let h=`<div class="exp-header"><h3>🤖 ${_ja?'AI プロンプトランチャー':'AI Prompt Launcher'} <button class="btn btn-xs" onclick="showManual('launcher-guide')">📖 ${_ja?'使い方':'Manual'}</button></h3>
   <p>${_ja
     ?'生成した仕様書をAIツールに一括投入。テンプレートを選んでコピー'
     :'Feed generated specs to AI tools. Pick a template and copy'}</p></div>`;
