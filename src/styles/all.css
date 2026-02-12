@@ -11,6 +11,8 @@
   --radius:10px;--radius-lg:16px;
   --mono:'IBM Plex Mono',monospace;--sans:'IBM Plex Sans JP',-apple-system,sans-serif;
 }
+.compat-fixall{margin-left:auto;}
+.compat-fixlv{margin-left:4px;}
 [data-theme="light"]{
   --bg:#f5f7fa;--bg-1:#e8ecf0;--bg-2:#fff;--bg-3:#edf0f5;--bg-4:#e2e6ed;
   --bg-s:var(--bg-2);--bd:var(--border);--fg:var(--text);

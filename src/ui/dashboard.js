@@ -148,9 +148,15 @@ function showDashboard(){
     h+=`<div class="compat-ok">✅ ${_ja?`スタック相性・意味的整合ともに問題なし（${COMPAT_RULES.length}ルール検証済）`:`No issues found (${COMPAT_RULES.length} rules verified)`}</div>`;
   } else {
     h+=`<div class="compat-summary"><span class="compat-s-ok">✅ ${_ja?'問題なし':'OK'}: ${COMPAT_RULES.length-compat.length}</span>`;
+    const fixWarns=compat.filter(c=>c.fix&&c.level==='warn');
     if(warns.length)h+=`<span class="compat-s-warn">⚠️ ${_ja?'注意':'Warn'}: ${warns.length}</span>`;
+    if(fixWarns.length>1)h+=`<button class="btn btn-xs btn-s compat-fixlv" onclick="fixAllCompat('warn')">🔧 ${fixWarns.length}</button>`;
+    const fixErrs=compat.filter(c=>c.fix&&c.level==='error');
     if(errs.length)h+=`<span class="compat-s-err">❌ ${_ja?'要修正':'Fix'}: ${errs.length}</span>`;
+    if(fixErrs.length>1)h+=`<button class="btn btn-xs btn-s compat-fixlv" onclick="fixAllCompat('error')">🔧 ${fixErrs.length}</button>`;
     if(infos.length)h+=`<span class="compat-s-info">ℹ️ ${_ja?'参考':'Info'}: ${infos.length}</span>`;
+    const fixable=compat.filter(c=>c.fix);
+    if(fixable.length>1)h+=`<button class="btn btn-xs btn-p compat-fixall" onclick="fixAllCompat()">🔧 ${_ja?'一括修正 ('+fixable.length+'件)':'Fix All ('+fixable.length+')'}</button>`;
     h+='</div>';
     compat.forEach(c=>{
       const icon=c.level==='error'?'❌':c.level==='warn'?'⚠️':'ℹ️';
@@ -340,6 +346,17 @@ function filterTechDB(){
     r.style.display=show?'':'none';if(show)count++;
   });
   $('tfCount').textContent=count+(_ja?'件':' items');
+}
+
+function fixAllCompat(level){
+  const _ja=S.lang==='ja';
+  const compat=checkCompat(S.answers);
+  const fixable=compat.filter(c=>c.fix&&(!level||c.level===level));
+  if(fixable.length===0)return;
+  fixable.forEach(c=>{S.answers[c.fix.f]=c.fix.s;});
+  save();
+  toast(_ja?'🔧 '+fixable.length+'件の問題を修正しました':'🔧 Fixed '+fixable.length+' issue(s)');
+  showDashboard();
 }
 
 function toggleFdep(id){
