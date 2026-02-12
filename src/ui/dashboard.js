@@ -187,7 +187,7 @@ function getHealthHTML(_ja,fileCount,answered){
     {key:'.devcontainer/',label:_ja?'②DevContainer':'②DevContainer'},
     {key:'mcp',label:_ja?'③MCP':'③MCP'},
     {key:'CLAUDE.md',label:_ja?'④AIルール':'④AI Rules'},
-    {key:'docs/32_',label:_ja?'品質インテリジェンス':'Quality Intelligence'},
+    {key:'docs/32_',label:_ja?'⑤品質インテリジェンス':'⑤Quality Intelligence'},
     {key:'roadmap/',label:_ja?'⑦ロードマップ':'⑦Roadmap'},
     {key:'docs/26_',label:_ja?'⑨デザインシステム':'⑨Design System'},
     {key:'docs/29_',label:_ja?'⑩リバースEng':'⑩Reverse Eng'},

@@ -50,18 +50,18 @@
       <div class="hero-content">
         <div class="version-badge">v9.0 — 2026 Edition</div>
         <h1 id="heroTitle">DevForge v9</h1>
-        <p id="heroDesc">質問に答えるだけで、86+ファイルの開発ドキュメント・環境設定・AIルール・学習ロードマップを自動生成。10の柱でAI駆動開発をゼロから完全サポート。</p>
+        <p id="heroDesc">質問に答えるだけで、86+ファイルの開発ドキュメント・環境設定・AIルール・学習ロードマップを自動生成。11の柱でAI駆動開発をゼロから完全サポート。</p>
       </div>
     </div>
     <div class="stat-row">
       <div class="stat-item"><div class="num" id="statFileNum">86+</div><div class="lbl" id="statFiles">生成ファイル</div></div>
       <div class="stat-item"><div class="num" id="statTechNum"></div><div class="lbl" id="statTech">技術エントリ</div></div>
-      <div class="stat-item"><div class="num">10</div><div class="lbl" id="statPillars">柱 (Pillars)</div></div>
+      <div class="stat-item"><div class="num">11</div><div class="lbl" id="statPillars">柱 (Pillars)</div></div>
       <div class="stat-item"><div class="num">10</div><div class="lbl" id="statAI">AIツール対応</div></div>
     </div>
     <div class="info-grid">
       <div class="icard"><h4>📝 86+ファイル生成</h4><p>SDD仕様書・Docker・MCP・AIルール10種・ロードマップ9種・仕様書31種</p></div>
-      <div class="icard"><h4>🧪 10の柱</h4><p>SDD・DevContainer・MCP・AIルール・並列探索・Dashboard・ロードマップ・AIランチャー・デザインシステム・リバースEng</p></div>
+      <div class="icard"><h4>🧪 11の柱</h4><p>SDD・DevContainer・MCP・AIルール・並列探索・Dashboard・ロードマップ・AIランチャー・デザインシステム・リバースEng・実装ガイド</p></div>
       <div class="icard"><h4>📱 モバイル対応</h4><p>Expo / React Native 開発パス・EAS Build・OTA更新</p></div>
       <div class="icard"><h4>🤖 AI自律開発</h4><p>Vibe Coding・マルチAgent・Claude Code Subagents</p></div>
       <div class="icard"><h4>💳 決済・CMS・EC</h4><p>Stripe・microCMS・Medusa・Shopify Hydrogen</p></div>
@@ -69,7 +69,7 @@
     </div>
     <div class="pillars-badge">
       <span class="pbadge">①SDD統合</span><span class="pbadge">②DevContainer</span><span class="pbadge">③MCP設定</span>
-      <span class="pbadge">④AIエージェント×10</span><span class="pbadge">⑤並列探索</span><span class="pbadge">⑥Context Dashboard</span><span class="pbadge">⑦技術ロードマップ</span><span class="pbadge">⑧AIランチャー</span><span class="pbadge">⑨デザインシステム</span><span class="pbadge">⑩リバースEng</span>
+      <span class="pbadge">④AIルール</span><span class="pbadge">⑤並列探索</span><span class="pbadge">⑥Dashboard</span><span class="pbadge">⑦ロードマップ</span><span class="pbadge">⑧AIランチャー</span><span class="pbadge">⑨デザインシステム</span><span class="pbadge">⑩リバースEng</span><span class="pbadge">⑪実装ガイド</span>
     </div>
     <div class="start-zone">
       <div class="szl" id="skillAsk">Select your skill level</div>
@@ -5690,9 +5690,9 @@ function genPillar11_ImplIntelligence(a,pn){
     doc40+='  entities: [User, Session]\n';
     doc40+='  auth_method: Supabase Auth\n';
     doc40+='  files_to_read:\n';
-    doc40+'    - .spec/constitution.md\n';
-    doc40+'    - docs/02_ER.md\n';
-    doc40+'    - docs/39_implementation_playbook.md\n';
+    doc40+='    - .spec/constitution.md\n';
+    doc40+='    - docs/02_ER.md\n';
+    doc40+='    - docs/39_implementation_playbook.md\n';
     doc40+='status: pending\n';
     doc40+='```\n\n';
   }
@@ -6023,7 +6023,7 @@ ${(G?['Lighthouse 90+','LCP < 2.5s','画像最適化','バンドルサイズ確�
     ['18_data_migration',G?'データ移行計画書':'Data Migration Plan',`${G?'## 移行戦略':'## Migration Strategy'}\n- ${G?'段階的移行':'Phased migration'}\n- ${G?'ロールバック計画':'Rollback plan'}\n- ${G?'データ検証手順':'Data validation'}`],
     ['19_performance',G?'パフォーマンス設計書':'Performance Design',`${G?'## 目標値':'## Targets'}\n- LCP: < 2.5s\n- FID: < 100ms\n- CLS: < 0.1\n\n${G?'## 最適化施策':'## Optimizations'}\n- ${G?'画像最適化':'Image optimization'} (${fe.includes('Next')?'next/image':fe.includes('Vite')||fe.includes('SPA')?'vite-imagetools / sharp':'sharp / imagemin'})\n- Code Splitting${fe.includes('Vite')||fe.includes('SPA')?' (Vite dynamic import)':fe.includes('Next')?' (Next.js dynamic)':''}\n- ${deployTarget.includes('Vercel')||deployTarget.includes('Netlify')?'Edge Caching (CDN)':'CDN Caching'}`],
     ['20_a11y',G?'アクセシビリティ設計書':'Accessibility Design',`## WCAG 2.1 AA\n- ${G?'キーボードナビゲーション':'Keyboard navigation'}\n- ${G?'スクリーンリーダー対応':'Screen reader support'}\n- ${G?'カラーコントラスト比':'Color contrast ratio'} 4.5:1+\n- ${G?'フォーカス管理':'Focus management'}`],
-    ['21_changelog',G?'変更履歴':'Changelog',`## v1.0.0 (${date})\n- ${G?'初期リリース':'Initial release'}\n- ${features.slice(0,3).join(', ')} 実装\n\n## ${G?'DevForge v9による自動生成':'Auto-generated by DevForge v9'}\n- ${G?'60+ファイル生成':'60+ files generated'}\n- ${G?'9つの柱対応':'9 pillars support'}\n- ${G?'Mermaid図・プロンプトプレイブック・タスク分解対応':'Mermaid diagrams, Prompt Playbook, Task decomposition'}`],
+    ['21_changelog',G?'変更履歴':'Changelog',`## v1.0.0 (${date})\n- ${G?'初期リリース':'Initial release'}\n- ${features.slice(0,3).join(', ')} 実装\n\n## ${G?'DevForge v9による自動生成':'Auto-generated by DevForge v9'}\n- ${G?'86+ファイル生成':'86+ files generated'}\n- ${G?'11の柱対応':'11 pillars support'}\n- ${G?'Mermaid図・プロンプトプレイブック・タスク分解対応':'Mermaid diagrams, Prompt Playbook, Task decomposition'}`],
     ['24_progress',G?'進捗管理表':'Progress Tracker',
   `${G?'> AIエージェントはタスク完了後にこのファイルを更新してください。':
        '> AI agents should update this file after completing each task.'}
@@ -8695,7 +8695,7 @@ function getHealthHTML(_ja,fileCount,answered){
     {key:'.devcontainer/',label:_ja?'②DevContainer':'②DevContainer'},
     {key:'mcp',label:_ja?'③MCP':'③MCP'},
     {key:'CLAUDE.md',label:_ja?'④AIルール':'④AI Rules'},
-    {key:'docs/32_',label:_ja?'品質インテリジェンス':'Quality Intelligence'},
+    {key:'docs/32_',label:_ja?'⑤品質インテリジェンス':'⑤Quality Intelligence'},
     {key:'roadmap/',label:_ja?'⑦ロードマップ':'⑦Roadmap'},
     {key:'docs/26_',label:_ja?'⑨デザインシステム':'⑨Design System'},
     {key:'docs/29_',label:_ja?'⑩リバースEng':'⑩Reverse Eng'},
@@ -9132,7 +9132,7 @@ function showManual(sec){
       '<tr><td><code>.spec/</code></td><td>読むだけ</td><td>AIに1つずつ</td><td>タスクキュー化</td></tr>'+
       '<tr><td><code>.devcontainer/</code></td><td>そのまま</td><td>カスタマイズ</td><td>チーム標準化</td></tr>'+
       '<tr><td><code>roadmap/</code></td><td>学習ガイド</td><td>進捗管理</td><td>オンボーディング</td></tr>'+
-      '<tr><td><code>docs/</code> 30ファイル</td><td>後で参照</td><td>レビュー素材</td><td>CI/CDゲート</td></tr>'+
+      '<tr><td><code>docs/</code> 40ファイル</td><td>後で参照</td><td>レビュー素材</td><td>CI/CDゲート</td></tr>'+
       '<tr><td><code>docs/29_reverse_engineering</code></td><td>読むだけ</td><td>逆算計画</td><td>マイルストーン管理</td></tr>'+
       '<tr><td><code>docs/30_goal_decomposition</code></td><td>後で参照</td><td>優先順位付け</td><td>タスク依存分析</td></tr>'+
       '<tr><td>柱④ AIルール</td><td>触らない</td><td>ルール追加</td><td>全ツール統一</td></tr>'+
@@ -9173,7 +9173,7 @@ function showManual(sec){
       '<tr><td><code>.spec/</code></td><td>Read only</td><td>Feed AI one by one</td><td>Task queue</td></tr>'+
       '<tr><td><code>.devcontainer/</code></td><td>As-is</td><td>Customize</td><td>Team standard</td></tr>'+
       '<tr><td><code>roadmap/</code></td><td>Learning</td><td>Progress</td><td>Onboarding</td></tr>'+
-      '<tr><td><code>docs/</code> 28 files</td><td>Later</td><td>Review material</td><td>CI/CD gates</td></tr>'+
+      '<tr><td><code>docs/</code> 40 files</td><td>Later</td><td>Review material</td><td>CI/CD gates</td></tr>'+
       '<tr><td>Pillar ④ AI Rules</td><td>Don\'t touch</td><td>Add rules</td><td>Unified ops</td></tr>'+
       '<tr><td>Pillar ⑧ Launcher</td><td>Skip</td><td>Partial use</td><td>Full pipeline</td></tr>'+
       '<tr><td><code>.mcp/ + config</code></td><td>Later</td><td>As-is</td><td>Custom MCP</td></tr>'+
@@ -9224,7 +9224,7 @@ function showManual(sec){
       '<h3>🔵 Other</h3>'+
       '<p>・ZIP export requires JSZip via CDN (use "Copy All" Ctrl+Shift+C offline)<br>・Switch to light mode before PDF export<br>・URL sharing may truncate on SNS for complex projects</p>'
     },
-    {id:'about',title:'About',body:'<h2>DevForge v9.0</h2><p>'+(_ja?'AI駆動開発 統合プラットフォーム':'AI-Driven Dev Platform')+'</p><p>Version 9.0.0 — 2026 Edition (Modular Architecture)</p><p>'+(_ja?''+_TECH_COUNT+'テクノロジー ・ 86+ファイル ・ 11の柱 ・ 41テンプレート ・ Mermaid図 ・ プロンプトプレイブック':''+_TECH_COUNT+' technologies ・ 86+ files ・ 10 pillars ・ 41 templates ・ Mermaid diagrams ・ Prompt playbook')+'</p><p>© 2026 エンジニアリングのタネ制作委員会<br>by にしあん</p>'},
+    {id:'about',title:'About',body:'<h2>DevForge v9.0</h2><p>'+(_ja?'AI駆動開発 統合プラットフォーム':'AI-Driven Dev Platform')+'</p><p>Version 9.0.0 — 2026 Edition (Modular Architecture)</p><p>'+(_ja?''+_TECH_COUNT+'テクノロジー ・ 86+ファイル ・ 11の柱 ・ 41テンプレート ・ Mermaid図 ・ プロンプトプレイブック':''+_TECH_COUNT+' technologies ・ 86+ files ・ 11 pillars ・ 41 templates ・ Mermaid diagrams ・ Prompt playbook')+'</p><p>© 2026 エンジニアリングのタネ制作委員会<br>by にしあん</p>'},
   ];
   const nav=$('helpNav');
   // Keep search input, clear nav links after it
@@ -9339,7 +9339,7 @@ function _getTourSteps(){
   {title:_ja?'📝 テンプレート':'📝 Templates',desc:_ja?'41種類のプリセットから選ぶと、回答が自動入力されます。':'Pick from 41 presets to auto-fill answers.'},
   {title:_ja?'💬 質問フロー':'💬 Q&A Flow',desc:_ja?'Phase 1-3 の質問に答えるだけ。スキップも後で回答も可能です。':'Just answer Phase 1-3 questions. Skip and answer later anytime.'},
   {title:_ja?'✎ 回答編集':'✎ Edit Answers',desc:_ja?'送信済みの回答に表示される ✎ ボタンで修正できます。':'Click the ✎ button on submitted answers to edit them.'},
-  {title:_ja?'📦 86+ファイル生成':'📦 86+ File Generation',desc:_ja?'全質問回答後、10の柱で86+ファイルが自動生成されます。':'After all questions, 86+ files auto-generate across 10 pillars.'},
+  {title:_ja?'📦 86+ファイル生成':'📦 86+ File Generation',desc:_ja?'全質問回答後、11の柱で86+ファイルが自動生成されます。':'After all questions, 86+ files auto-generate across 11 pillars.'},
   {title:_ja?'⚡ 並列探索':'⚡ Parallel Explorer',desc:_ja?'Pillar ⑤ で7スタックを比較。回答に基づくおすすめランキング付き。':'Compare 7 stacks in Pillar ⑤ with recommendation ranking based on your answers.'},
   {title:'📊 Dashboard',desc:_ja?'Pillar ⑥ でコンテキスト可視化＋'+_TECH_COUNT+'技術DBを閲覧。':'Visualize context + browse '+_TECH_COUNT+' tech DB in Pillar ⑥.'},
   {title:_ja?'🤖 AIランチャー':'🤖 AI Launcher',desc:_ja?'Pillar ⑧ で仕様書をAIツールにワンクリック投入。6テンプレート＋トークン推定。':'Feed specs to AI tools in one click from Pillar ⑧. 6 templates + token estimation.'},
@@ -9413,8 +9413,8 @@ function applyLang(){
   statLbls.forEach((el,i)=>{if(i<4)el.textContent=ja?slJa[i]:slEn[i];});
   // Info cards
   const icards=document.querySelectorAll('.icard');
-  const icJa=[['📝 86+ファイル生成','SDD仕様書・Docker・MCP・AIルール10種・ロードマップ9種・仕様書23種'],['🧪 11の柱','SDD・DevContainer・MCP・AIルール・並列探索・Dashboard・ロードマップ・AIランチャー・デザインシステム・リバースEng・実装ガイド'],['📱 モバイル対応','Expo / React Native 開発パス・EAS Build・OTA更新'],['🤖 AI自律開発','Vibe Coding・マルチAgent・Claude Code Subagents'],['💳 決済・CMS・EC','Stripe・microCMS・Medusa・Shopify Hydrogen'],['📦 フルエクスポート','ZIP・PDF・全ファイル結合コピー・URLシェア']];
-  const icEn=[['📝 86+ File Generation','SDD specs, Docker, MCP, 10 AI rules, 9 roadmaps, 23 specs'],['🧪 11 Pillars','SDD, DevContainer, MCP, AI Rules, Explorer, Dashboard, Roadmap, AI Launcher, Design System, Reverse Eng, Impl Guide'],['📱 Mobile Support','Expo / React Native dev path, EAS Build, OTA updates'],['🤖 AI Autonomous Dev','Vibe Coding, Multi-Agent, Claude Code Subagents'],['💳 Payment/CMS/EC','Stripe, microCMS, Medusa, Shopify Hydrogen'],['📦 Full Export','ZIP, PDF, Copy All Files, URL Share']];
+  const icJa=[['📝 86+ファイル生成','SDD仕様書・Docker・MCP・AIルール10種・ロードマップ9種・仕様書40種'],['🧪 11の柱','SDD・DevContainer・MCP・AIルール・並列探索・Dashboard・ロードマップ・AIランチャー・デザインシステム・リバースEng・実装ガイド'],['📱 モバイル対応','Expo / React Native 開発パス・EAS Build・OTA更新'],['🤖 AI自律開発','Vibe Coding・マルチAgent・Claude Code Subagents'],['💳 決済・CMS・EC','Stripe・microCMS・Medusa・Shopify Hydrogen'],['📦 フルエクスポート','ZIP・PDF・全ファイル結合コピー・URLシェア']];
+  const icEn=[['📝 86+ File Generation','SDD specs, Docker, MCP, 10 AI rules, 9 roadmaps, 40 specs'],['🧪 11 Pillars','SDD, DevContainer, MCP, AI Rules, Explorer, Dashboard, Roadmap, AI Launcher, Design System, Reverse Eng, Impl Guide'],['📱 Mobile Support','Expo / React Native dev path, EAS Build, OTA updates'],['🤖 AI Autonomous Dev','Vibe Coding, Multi-Agent, Claude Code Subagents'],['💳 Payment/CMS/EC','Stripe, microCMS, Medusa, Shopify Hydrogen'],['📦 Full Export','ZIP, PDF, Copy All Files, URL Share']];
   icards.forEach((el,i)=>{if(i<6){const d=ja?icJa[i]:icEn[i];const h4=el.querySelector('h4');const p=el.querySelector('p');if(h4)h4.textContent=d[0];if(p)p.textContent=d[1];}});
   // Pillar badges
   const pbadges=document.querySelectorAll('.pbadge');

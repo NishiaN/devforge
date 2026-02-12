@@ -151,7 +151,7 @@ function showManual(sec){
       '<tr><td><code>.spec/</code></td><td>読むだけ</td><td>AIに1つずつ</td><td>タスクキュー化</td></tr>'+
       '<tr><td><code>.devcontainer/</code></td><td>そのまま</td><td>カスタマイズ</td><td>チーム標準化</td></tr>'+
       '<tr><td><code>roadmap/</code></td><td>学習ガイド</td><td>進捗管理</td><td>オンボーディング</td></tr>'+
-      '<tr><td><code>docs/</code> 30ファイル</td><td>後で参照</td><td>レビュー素材</td><td>CI/CDゲート</td></tr>'+
+      '<tr><td><code>docs/</code> 40ファイル</td><td>後で参照</td><td>レビュー素材</td><td>CI/CDゲート</td></tr>'+
       '<tr><td><code>docs/29_reverse_engineering</code></td><td>読むだけ</td><td>逆算計画</td><td>マイルストーン管理</td></tr>'+
       '<tr><td><code>docs/30_goal_decomposition</code></td><td>後で参照</td><td>優先順位付け</td><td>タスク依存分析</td></tr>'+
       '<tr><td>柱④ AIルール</td><td>触らない</td><td>ルール追加</td><td>全ツール統一</td></tr>'+
@@ -192,7 +192,7 @@ function showManual(sec){
       '<tr><td><code>.spec/</code></td><td>Read only</td><td>Feed AI one by one</td><td>Task queue</td></tr>'+
       '<tr><td><code>.devcontainer/</code></td><td>As-is</td><td>Customize</td><td>Team standard</td></tr>'+
       '<tr><td><code>roadmap/</code></td><td>Learning</td><td>Progress</td><td>Onboarding</td></tr>'+
-      '<tr><td><code>docs/</code> 28 files</td><td>Later</td><td>Review material</td><td>CI/CD gates</td></tr>'+
+      '<tr><td><code>docs/</code> 40 files</td><td>Later</td><td>Review material</td><td>CI/CD gates</td></tr>'+
       '<tr><td>Pillar ④ AI Rules</td><td>Don\'t touch</td><td>Add rules</td><td>Unified ops</td></tr>'+
       '<tr><td>Pillar ⑧ Launcher</td><td>Skip</td><td>Partial use</td><td>Full pipeline</td></tr>'+
       '<tr><td><code>.mcp/ + config</code></td><td>Later</td><td>As-is</td><td>Custom MCP</td></tr>'+
@@ -243,7 +243,7 @@ function showManual(sec){
       '<h3>🔵 Other</h3>'+
       '<p>・ZIP export requires JSZip via CDN (use "Copy All" Ctrl+Shift+C offline)<br>・Switch to light mode before PDF export<br>・URL sharing may truncate on SNS for complex projects</p>'
     },
-    {id:'about',title:'About',body:'<h2>DevForge v9.0</h2><p>'+(_ja?'AI駆動開発 統合プラットフォーム':'AI-Driven Dev Platform')+'</p><p>Version 9.0.0 — 2026 Edition (Modular Architecture)</p><p>'+(_ja?''+_TECH_COUNT+'テクノロジー ・ 86+ファイル ・ 11の柱 ・ 41テンプレート ・ Mermaid図 ・ プロンプトプレイブック':''+_TECH_COUNT+' technologies ・ 86+ files ・ 10 pillars ・ 41 templates ・ Mermaid diagrams ・ Prompt playbook')+'</p><p>© 2026 エンジニアリングのタネ制作委員会<br>by にしあん</p>'},
+    {id:'about',title:'About',body:'<h2>DevForge v9.0</h2><p>'+(_ja?'AI駆動開発 統合プラットフォーム':'AI-Driven Dev Platform')+'</p><p>Version 9.0.0 — 2026 Edition (Modular Architecture)</p><p>'+(_ja?''+_TECH_COUNT+'テクノロジー ・ 86+ファイル ・ 11の柱 ・ 41テンプレート ・ Mermaid図 ・ プロンプトプレイブック':''+_TECH_COUNT+' technologies ・ 86+ files ・ 11 pillars ・ 41 templates ・ Mermaid diagrams ・ Prompt playbook')+'</p><p>© 2026 エンジニアリングのタネ制作委員会<br>by にしあん</p>'},
   ];
   const nav=$('helpNav');
   // Keep search input, clear nav links after it

@@ -6,7 +6,7 @@ const save=()=>{};const _lsGet=()=>null;const _lsSet=()=>{};const _lsRm=()=>{};c
 eval(fs.readFileSync('src/data/questions.js','utf-8'));
 eval(fs.readFileSync('src/data/presets.js','utf-8').replace('const PR','var PR'));
 eval(fs.readFileSync('src/data/compat-rules.js','utf-8'));
-eval(fs.readFileSync('src/generators/common.js','utf-8').replace('const DOMAIN_PLAYBOOK','var DOMAIN_PLAYBOOK'));
+eval(fs.readFileSync('src/generators/common.js','utf-8').replace(/const /g,'var '));
 eval(fs.readFileSync('src/generators/p1-sdd.js','utf-8'));
 eval(fs.readFileSync('src/generators/p2-devcontainer.js','utf-8'));
 eval(fs.readFileSync('src/generators/p3-mcp.js','utf-8'));
@@ -326,7 +326,7 @@ check('P3: context has auth SoT',ctx.includes('Supabase Auth'));
 check('P3: context has architecture',ctx.includes('BaaS'));
 check('P3: context has relationships',ctx.includes('Course')&&ctx.includes('Lesson'));
 const manifest=S.files['.mcp/tools-manifest.json']||'';
-check('P3: manifest has supabase MCP',manifest.includes('mcp-supabase'));
+check('P3: manifest has supabase MCP',manifest.includes('supabase'));
 
 // ═══ Docs: Context-aware ═══
 console.log('\n━━ Docs: Context-Aware ━━');

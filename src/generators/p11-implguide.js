@@ -257,9 +257,9 @@ function genPillar11_ImplIntelligence(a,pn){
     doc40+='  entities: [User, Session]\n';
     doc40+='  auth_method: Supabase Auth\n';
     doc40+='  files_to_read:\n';
-    doc40+'    - .spec/constitution.md\n';
-    doc40+'    - docs/02_ER.md\n';
-    doc40+'    - docs/39_implementation_playbook.md\n';
+    doc40+='    - .spec/constitution.md\n';
+    doc40+='    - docs/02_ER.md\n';
+    doc40+='    - docs/39_implementation_playbook.md\n';
     doc40+='status: pending\n';
     doc40+='```\n\n';
   }
