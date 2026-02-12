@@ -53,7 +53,7 @@ function doGenerate(lang){
     {fn:()=>genPillar9_DesignSystem(a,pn),lbl:_j?'柱⑨ デザインシステム':'Pillar ⑨ Design System',err:'P9-DS'},
     {fn:()=>genPillar10_ReverseEngineering(a,pn),lbl:_j?'柱⑩ リバースEng':'Pillar ⑩ Reverse Eng',err:'P10-Rev'},
     {fn:()=>genPillar11_ImplIntelligence(a,pn),lbl:_j?'柱⑪ 実装インテリジェンス':'Pillar ⑪ Impl Intelligence',err:'P11-Impl'},
-    {fn:()=>genDocs21(a,pn),lbl:_j?'仕様書23種':'23 Spec Docs',err:'Docs'},
+    {fn:()=>genDocs21(a,pn),lbl:_j?'仕様書28種':'28 Spec Docs',err:'Docs'},
     {fn:()=>genCommonFiles(a,pn),lbl:_j?'共通ファイル':'Common Files',err:'Common'},
   ];
   let si=0;

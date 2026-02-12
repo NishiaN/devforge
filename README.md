@@ -1,21 +1,24 @@
 # DevForge v9.0
 
-> ウィザード形式でプロジェクト仕様書66-68ファイルを自動生成するWebアプリ
+> 86+ファイルの開発ドキュメント・AI設定を自動生成するAI駆動開発プラットフォーム
 
 ## 概要
 
-DevForgeは、対話形式の質問に答えるだけで、プロジェクト開発に必要な仕様書・設計書・AI設定ファイル・DevContainer環境・CI/CDパイプラインなど **66-68ファイル** を自動生成するツールです（ai_auto有効時は最大68ファイル）。
+DevForgeは、対話形式の質問に答えるだけで、プロジェクト開発に必要な仕様書・設計書・AI設定ファイル・DevContainer環境・CI/CDパイプラインなど **86+ファイル** を自動生成するAI駆動開発プラットフォームです。
 
 ### 特徴
-- 🏗️ **36プリセット** — LMS, EC, SaaS, ブログ, コミュニティ, 不動産管理, 契約管理, ヘルプデスク, 家庭教師, 動物病院, 飲食店等
+- 🏗️ **41プリセット** — LMS, EC, SaaS, ブログ, コミュニティ, 不動産管理, 契約管理, ヘルプデスク, 家庭教師, 動物病院, 飲食店, CRM, SNS, 物流, アンケート, 求人等
 - 🌐 **日英バイリンガル** — UI・生成物ともに日本語/英語対応
-- 🤖 **AI最適化出力** — CLAUDE.md, AI_BRIEF.md (~920トークン), .cursorrules
+- 🤖 **AI最適化出力** — CLAUDE.md, AI_BRIEF.md (~1200トークン), .cursorrules
 - 🚀 **AIプロンプトランチャー** — プロジェクトコンテキスト自動注入、6種のプロンプトテンプレート（仕様レビュー、MVP実装、テスト生成、リファクタ、セキュリティ監査、ドキュメント補完）
 - 🔧 **BaaS対応** — Supabase/Firebase/Convex のアーキテクチャ自動判定
 - 💳 **Stripe統合** — 料金プラン, Webhook, RLS自動生成
 - 🔒 **RBAC自動生成** — ロール別権限, RLSポリシー
-- ✅ **35互換性ルール** — 技術スタック間の矛盾を自動検出
-- 📊 **ドメイン推論** — 15ドメイン別KPI・スコープ外・受入条件（教育、EC、SaaS、コミュニティ、予約、健康、マーケットプレイス、コンテンツ、分析、ビジネス、IoT、不動産、法務、人事、金融）
+- ✅ **45互換性ルール** — 技術スタック間の矛盾を自動検出
+- 📊 **ドメイン推論** — 24ドメイン別KPI・スコープ外・受入条件（教育、EC、SaaS、コミュニティ、予約、健康、マーケットプレイス、コンテンツ、分析、ビジネス、IoT、不動産、法務、人事、金融、AI、自動化、イベント、ゲーミフィケーション、コラボ、開発ツール、クリエイター、ニュースレター）
+- 🧪 **品質インテリジェンス** — 業種別QA戦略、テストマトリクス、インシデント対応
+- 🏗️ **実装インテリジェンス** — 24ドメイン別実装パターン、AI運用手順書
+- 🧠 **AI開発OS** — コンテキスト管理、ファイル選択マトリクス、エージェント連携
 
 ## クイックスタート
 
@@ -29,13 +32,13 @@ npm install
 node build.js
 
 # テスト
-npm test  # 140テスト + 248アサーション
+npm test  # 196テスト（全通過）
 
 # 使う
 open devforge-v9.html  # ブラウザで開く
 ```
 
-## 生成ファイル (66-68ファイル)
+## 生成ファイル (86+ファイル)
 
 ### .spec/ — SDD仕様書
 | ファイル | 内容 |
@@ -49,18 +52,23 @@ open devforge-v9.html  # ブラウザで開く
 ### .devcontainer/ — 開発環境
 devcontainer.json, Dockerfile, docker-compose.yml, post-create.sh
 
-### docs/ — ドキュメント群
-アーキテクチャ, ER図, API設計, 画面設計, テストケース, セキュリティ, リリースチェックリスト, WBS, プロンプトプレイブック, タスク(GitHub Issues形式), 進捗管理, エラーログ, デザインシステム, シーケンス図
+### docs/ — ドキュメント群（40種）
+アーキテクチャ, ER図, API設計, 画面設計, テストケース, セキュリティ, リリースチェックリスト, WBS, プロンプトプレイブック, タスク(GitHub Issues形式), 進捗管理, エラーログ, デザインシステム, シーケンス図, QA戦略, リバースエンジニアリング, ゴール分解, 業種別プレイブック, QA設計図, テストマトリクス, インシデント対応, サイトマップ, テスト戦略, バグ防止, ビジネスモデル*, 実装プレイブック, AI開発手順書
 
-### AI設定ファイル
-CLAUDE.md, AI_BRIEF.md, .cursorrules, .clinerules, .windsurfrules, AGENTS.md, .cursor/rules, **skills/** (project.md, catalog.md*, pipelines.md*)
+\* payment≠none の場合のみ生成
 
-\* ai_auto有効時のみ生成
+### AI設定ファイル（12+種）
+CLAUDE.md, AI_BRIEF.md, .cursorrules, .clinerules, .windsurfrules, AGENTS.md, .cursor/rules, **skills/** (project.md, catalog.md*, pipelines.md*, factory.md, README.md**, skill_map.md**, agents/coordinator.md**, agents/reviewer.md**, impl-patterns.md*)
+
+\* ai_auto≠none の場合のみ生成
+\*\* ai_auto=multi/full/orch の場合のみ生成
 
 **スキルシステム（Manus Skills統合）:**
 - **project.md**: 5つのコアスキル（spec-review、code-gen、test-gen、doc-gen、refactor）+ 工場テンプレート
-- **catalog.md\***: 15ドメイン対応（教育、EC、SaaS、コミュニティ、予約、健康、マーケットプレイス、コンテンツ、分析、ビジネス、IoT、不動産、法務、人事、金融）、19つの詳細化スキル（14コアスキル + 5ドメイン固有スキル）
+- **catalog.md\***: 24ドメイン対応（教育、EC、SaaS、コミュニティ、予約、健康、マーケットプレイス、コンテンツ、分析、ビジネス、IoT、不動産、法務、人事、金融、AI、自動化、イベント、ゲーミフィケーション、コラボ、開発ツール、クリエイター、ニュースレター）、19つの詳細化スキル（14コアスキル + 5ドメイン固有スキル）
 - **pipelines.md\***: 自律パイプライン（1-5パイプライン、ai_autoレベルに応じて）+ Mermaidフローチャート
+- **factory.md**: Manus Skills工場テンプレート（24ドメイン対応の思考軸システム）
+- **impl-patterns.md\***: 実装スキルカタログ（Manus Skills形式）
 
 ### CI/CD
 .github/workflows/ci.yml
@@ -116,12 +124,12 @@ Entities: User, Course, Lesson, Progress
 ```
 src/
 ├── core/       # state, i18n, events, tour, init
-├── data/       # presets(36), questions, techdb, compat-rules
-├── generators/ # p1-sdd, p2-devcontainer, p3-mcp, p4-airules, p7-roadmap, p9-designsystem, docs, common
+├── data/       # presets(41), questions, techdb, compat-rules
+├── generators/ # p1-sdd, p2-devcontainer, p3-mcp, p4-airules, p5-quality, p7-roadmap, p9-designsystem, p10-reverse, p11-implguide, docs, common
 ├── ui/         # wizard, render, edit, preview, export, explorer, dashboard...
 └── styles/     # all.css (dark/light theme)
-test/           # 9 test files, 137 tests
-build.js        # Concatenates 40 modules → single HTML
+test/           # 196 tests
+build.js        # Concatenates 43 modules → single HTML
 ```
 
 ### ルール
@@ -135,14 +143,15 @@ build.js        # Concatenates 40 modules → single HTML
 | ファイル | テスト数 | 内容 |
 |---------|---------|------|
 | gen-coherence | 248 assertions | LMS全体生成+構造検証 |
-| snapshot | 38 | 4シナリオ回帰テスト (Pillar 9 + Skills含む) |
+| snapshot | 41 | 6シナリオ回帰テスト (LMS/Blog/EC/English/PropertyMgmt/Helpdesk) |
+| data-coverage | 28 | データ整合性（エンティティカバレッジ、FK検証、24ドメイン検出、プレイブック完全性） |
 | r27-regression | 17 | バグ修正検証 |
 | r28-regression | 19 | 品質改善検証 |
-| build | 1 | ビルドサイズ ≤550KB |
+| build | 1 | ビルドサイズ ≤1000KB |
 | compat | 45 | 互換性ルール |
 | その他 | ~21 | i18n, presets, state, techdb |
 
-**Total: 140 tests** (スキルカタログ・パイプライン・プロンプトランチャー検証含む)
+**Total: 196 tests** (品質インテリジェンス・実装インテリジェンス検証含む)
 
 ## AI Coding対応
 
