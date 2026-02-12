@@ -7,7 +7,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 # DevForge v9.0
 
 ## Architecture
-- **43 modules** in `src/` → `node build.js` → single `devforge-v9.html` (~903KB)
+- **43 modules** in `src/` → `node build.js` → single `devforge-v9.html` (~950KB)
 - Vanilla JS, no frameworks. CSS custom properties. CDN: marked.js, mermaid.js, JSZip.
 - **AI Development OS**: Generates 86+ files including context intelligence, operations playbooks, and business models
 
@@ -20,7 +20,7 @@ node build.js --report     # Show size report
 node build.js --check-css  # Validate CSS custom properties
 
 # Test
-npm test                   # Run all tests (197 tests, all passing)
+npm test                   # Run all tests (204 tests, all passing)
 npm run test:watch         # Watch mode for test development
 node --test test/gen-coherence.test.js  # Run single test file
 node --test test/data-coverage.test.js  # Run data integrity tests
@@ -44,7 +44,7 @@ npm run check              # Syntax check extracted JS
 5. **Write** to `devforge-v9.html`
 6. **Validate** size ≤1000KB (warn if exceeded)
 
-**Current Status:** 903KB / 1000KB limit (97KB remaining budget for future expansions)
+**Current Status:** 950KB / 1000KB limit (50KB remaining budget for future expansions)
 
 ### ⚠️ Critical: Minification Limitations
 
@@ -90,7 +90,7 @@ npm run check              # Syntax check extracted JS
 |----------|-------|---------|
 | core/ | state, i18n, events, tour, init | State, language, shortcuts |
 | data/ | presets(41), questions, techdb, compat-rules, gen-templates, helpdata | Static data (41 presets: 36 original + 5 new: CRM, Social, Logistics, Survey, Job Board) |
-| generators/ | index, p1-sdd, p2-devcontainer, p3-mcp, p4-airules, p5-quality, p7-roadmap, p9-designsystem, p10-reverse, p11-implguide, docs, common | 86-file generation engine (11 pillars) |
+| generators/ | index, p1-sdd, p2-devcontainer, p3-mcp, p4-airules, p5-quality, p7-roadmap, p9-designsystem (v2: Figma MCP, Anti-AI checklist), p10-reverse, p11-implguide, docs, common | 86-file generation engine (11 pillars) |
 | ui/ | wizard, render, edit, help, confirm, complexity, toc, voice, project, presets, preview, editor, diff, export, explorer, dashboard, templates | UI components |
 | styles/ | all.css | Theme (dark/light), responsive |
 
@@ -624,7 +624,7 @@ const ENTITY_COLUMNS = {
 When users complete the wizard, DevForge generates **86+ files** (base: 73 files, +4 when ai_auto=multi/full/orch for skills/ md Package, +1 when payment≠none for docs/38_business_model.md):
 - **.spec/** — constitution.md, specification.md, technical-plan.md, tasks.md, verification.md
 - **.devcontainer/** — devcontainer.json, Dockerfile, docker-compose.yml, post-create.sh
-- **docs/** — architecture.md, ER.md, API.md, screen.md, test-cases.md, security.md, release.md, WBS.md, prompt-playbook.md, tasks.md, **progress.md (24)**, **error_logs.md (25)**, **design_system.md (26)**, **sequence_diagrams.md (27)**, **qa_strategy.md (28)**, **reverse_engineering.md (29)**, **goal_decomposition.md (30)**, **industry_playbook.md (31)**, **qa_blueprint.md (32)**, **test_matrix.md (33)**, **incident_response.md (34)**, **sitemap.md (35)**, **test_strategy.md (36)**, **bug_prevention.md (37)**, **business_model.md (38)***, **implementation_playbook.md (39)**, **ai_dev_runbook.md (40)**
+- **docs/** — architecture.md, ER.md, API.md, screen.md, test-cases.md, security.md, release.md, WBS.md, prompt-playbook.md, tasks.md, **progress.md (24)**, **error_logs.md (25)**, **design_system.md (26, v2: Visual Enhancement Dictionary, Figma MCP, Anti-AI Checklist)**, **sequence_diagrams.md (27)**, **qa_strategy.md (28)**, **reverse_engineering.md (29)**, **goal_decomposition.md (30)**, **industry_playbook.md (31)**, **qa_blueprint.md (32)**, **test_matrix.md (33)**, **incident_response.md (34)**, **sitemap.md (35)**, **test_strategy.md (36)**, **bug_prevention.md (37)**, **business_model.md (38)***, **implementation_playbook.md (39)**, **ai_dev_runbook.md (40)**
 - **AI rules** — CLAUDE.md (with File Selection Matrix & Context Compression Protocol), AI_BRIEF.md (with Context Loading Strategy, ~1200 tokens), .cursorrules, .clinerules, .windsurfrules, AGENTS.md (with Agent Specialization Matrix), .cursor/rules, **skills/** (project.md, factory.md, catalog.md*, pipelines.md*, README.md**, skill_map.md**, agents/coordinator.md**, agents/reviewer.md**)
 - **CI/CD** — .github/workflows/ci.yml
 
@@ -665,7 +665,7 @@ See git history for detailed enhancement changelog.
 | presets.test.js | 4 tests | Preset count (41), bilingual names, tech fields, purpose |
 | Others | ~21 tests | i18n, state, techdb |
 
-**Total: 196 tests (all passing, 100% pass rate)**
+**Total: 204 tests (all passing, 100% pass rate)**
 
 ## Writing Tests
 
@@ -720,7 +720,7 @@ test('pluralize', () => {
 
 ## Size Budget Management
 
-DevForge has a strict **1000KB size limit** for the built HTML file. Current size: **903KB** (97KB under budget).
+DevForge has a strict **1000KB size limit** for the built HTML file. Current size: **950KB** (50KB under budget).
 
 ### Expansion Strategy
 When adding new features, follow the "Balanced Expansion" approach:
@@ -729,7 +729,7 @@ When adding new features, follow the "Balanced Expansion" approach:
 3. **Prioritize high-value additions** (core skills > niche features)
 4. **Test frequently** with `node build.js --report`
 
-- **Current size**: 903KB (97KB remaining budget)
+- **Current size**: 950KB (50KB remaining budget)
 
 ### Size Optimization Tips
 - Reuse common patterns (see `_U`, `_SA`, `_SD`, `_T`, `_D`, `_CN`, `_M`, `_B`, etc. in common.js)

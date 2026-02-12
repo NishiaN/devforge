@@ -61,9 +61,9 @@ describe('Snapshot A: LMS/Supabase/Stripe', () => {
     assert.ok(count >= 66 && count <= 90, `Expected 66-90 files, got ${count}`);
   });
 
-  test('total tokens in range 12000-30000', () => {
+  test('total tokens in range 12000-31000', () => {
     const total = Object.values(files).reduce((s, v) => s + tokens(v), 0);
-    assert.ok(total >= 12000 && total <= 30000, `Expected 12K-30K tokens, got ${total}`);
+    assert.ok(total >= 12000 && total <= 31000, `Expected 12K-31K tokens, got ${total}`);
   });
 
   // Core files existence
@@ -324,6 +324,47 @@ describe('Snapshot A: LMS/Supabase/Stripe', () => {
     assert.ok(ds.includes('カラーパレット') || ds.includes('Color Palette'), 'Missing Color Palette');
     assert.ok(ds.includes('Tailwind') || ds.includes('shadcn'), 'Missing framework-specific guidance');
     assert.ok(ds.includes('AI実装ガイドライン') || ds.includes('AI Implementation Guidelines'), 'Missing AI guidelines');
+  });
+
+  test('design system has AI Design Protocol', () => {
+    const ds = files['docs/26_design_system.md'];
+    assert.ok(ds.includes('AI Design Protocol') || ds.includes('AI感を排除'), 'Missing AI Design Protocol');
+    assert.ok(ds.includes('トークン参照') || ds.includes('Token Reference'), 'Missing token reference rule');
+    assert.ok(ds.includes('禁止アクション') || ds.includes('Prohibited Actions'), 'Missing prohibited actions');
+  });
+
+  test('design system has component mapping', () => {
+    const ds = files['docs/26_design_system.md'];
+    assert.ok(ds.includes('shadcn') || ds.includes('Vuetify') || ds.includes('mat-'), 'Missing component framework mapping');
+    assert.ok(ds.includes('v-btn') || ds.includes('mat-button') || ds.includes('<Button>'), 'Missing specific component examples');
+  });
+
+  test('design system has motion tokens', () => {
+    const ds = files['docs/26_design_system.md'];
+    assert.ok(ds.includes('duration-fast') || ds.includes('モーション'), 'Missing motion tokens');
+    assert.ok(ds.includes('easing-default') || ds.includes('cubic-bezier'), 'Missing easing functions');
+  });
+
+  test('design system has token export', () => {
+    const ds = files['docs/26_design_system.md'];
+    assert.ok(ds.includes('"primary"') || ds.includes('エクスポート'), 'Missing token export');
+    assert.ok(ds.includes('json') || ds.includes('JSON'), 'Missing JSON format');
+  });
+
+  test('design system has visual enhancement dictionary', () => {
+    const ds = files['docs/26_design_system.md'];
+    assert.ok(ds.includes('パララックス') || ds.includes('Parallax'), 'Missing parallax keyword');
+    assert.ok(ds.includes('ニューモーフィズム') || ds.includes('Neumorphism'), 'Missing neumorphism');
+  });
+
+  test('design system has fidelity protocol', () => {
+    const ds = files['docs/26_design_system.md'];
+    assert.ok(ds.includes('Figma MCP') || ds.includes('SSOT') || ds.includes('Single Source of Truth'), 'Missing fidelity protocol');
+  });
+
+  test('design system has anti-AI checklist', () => {
+    const ds = files['docs/26_design_system.md'];
+    assert.ok(ds.includes('Anti-AI') || ds.includes('チェックリスト') || ds.includes('Checklist'), 'Missing anti-AI checklist');
   });
 
   test('sequence diagrams has auth and CRUD flows', () => {
