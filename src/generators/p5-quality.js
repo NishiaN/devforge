@@ -226,7 +226,7 @@ function genPillar5_QualityIntelligence(a,pn){
       doc33+="  await page.goto('/"+critFuncs[0].toLowerCase().replace(/\s+/g,'-')+"');\n";
       doc33+="  await page.click('button[type=\"submit\"]');\n";
       doc33+="  await expect(page.locator('.success')).toBeVisible();\n";
-      doc33+"});\n";
+      doc33+="});\n";
     }else{
       doc33+="// "+name.trim()+(G?' 使用例':' usage example')+"\n";
       doc33+="// "+(G?'設定と実行手順はドキュメント参照':'Refer to documentation for setup and execution')+"\n";
@@ -246,4 +246,491 @@ function genPillar5_QualityIntelligence(a,pn){
   doc33+=G?'**注**: 重要機能（P0）は100%カバレッジを目指す\n\n':'**Note**: Critical functions (P0) should aim for 100% coverage\n\n';
 
   S.files['docs/33_test_matrix.md']=doc33;
+
+  // ═══ B1: docs/34_incident_response.md (~10KB) ═══
+  let doc34='# '+(G?'インシデント対応プレイブック':'Incident Response Playbook')+'\n\n';
+  doc34+=G?'**重要**: このプレイブックは本番障害発生時の対応手順を定義します。全メンバーは事前にこの手順を理解し、障害発生時は冷静に実行してください。\n\n':'**IMPORTANT**: This playbook defines incident response procedures for production outages. All team members MUST understand these procedures beforehand and execute calmly during incidents.\n\n';
+
+  // Severity Classification
+  doc34+=(G?'## Severity分類':'## Severity Classification')+'\n\n';
+  doc34+='| Severity | '+(G?'定義':'Definition')+' | '+(G?'対応時間':'Response Time')+' | '+(G?'具体例 ('+domain+')':'Examples ('+domain+')')+' |\n';
+  doc34+='|----------|------|------|------|\n';
+
+  // Domain-specific examples
+  const s1Ex={
+    ec:G?'決済処理停止':'Payment processing down',
+    fintech:G?'残高不整合・取引停止':'Balance inconsistency, trading halt',
+    health:G?'患者データ消失':'Patient data loss',
+    education:G?'試験データ消失':'Exam data loss',
+    saas:G?'全サービス停止':'Complete service outage',
+    community:G?'個人情報漏洩':'Personal data breach',
+    booking:G?'予約システム停止':'Booking system down',
+    marketplace:G?'取引決済停止':'Transaction payment down',
+    iot:G?'全デバイス接続断':'All devices disconnected',
+    realestate:G?'契約データ消失':'Contract data loss',
+    legal:G?'機密情報漏洩':'Confidential data breach',
+    hr:G?'給与データ漏洩':'Payroll data breach'
+  }[domain]||(G?'サービス全停止':'Complete service down');
+
+  const s2Ex={
+    ec:G?'カート機能障害':'Cart malfunction',
+    fintech:G?'一部取引遅延':'Partial transaction delays',
+    health:G?'予約機能障害':'Appointment feature down',
+    education:G?'動画再生不可':'Video playback failure',
+    saas:G?'主要機能停止':'Core feature down',
+    community:G?'投稿機能停止':'Post feature down',
+    booking:G?'通知送信失敗':'Notification delivery failure',
+    iot:G?'一部デバイス障害':'Partial device failures'
+  }[domain]||(G?'主要機能停止':'Core feature down');
+
+  const s3Ex={
+    ec:G?'検索精度低下':'Search accuracy degraded',
+    saas:G?'パフォーマンス低下':'Performance degradation',
+    education:G?'レスポンス遅延':'Response delays'
+  }[domain]||(G?'性能劣化':'Performance degradation');
+
+  const s4Ex=G?'軽微なUI不具合':'Minor UI glitch';
+
+  doc34+='| S1 🔴 | '+(G?'サービス停止・データ損失':'Service down, data loss')+' | '+( G?'15分以内':'≤15 min')+' | '+s1Ex+' |\n';
+  doc34+='| S2 🟠 | '+(G?'主要機能停止':'Core feature down')+' | '+(G?'1時間以内':'≤1 hour')+' | '+s2Ex+' |\n';
+  doc34+='| S3 🟡 | '+(G?'性能劣化':'Performance degraded')+' | '+(G?'24時間以内':'≤24 hours')+' | '+s3Ex+' |\n';
+  doc34+='| S4 🟢 | '+(G?'軽微な不具合':'Minor bug')+' | '+(G?'次回リリース':'Next release')+' | '+s4Ex+' |\n\n';
+
+  // Runbook Template
+  doc34+=(G?'## Runbookテンプレート':'## Runbook Template')+'\n\n';
+  doc34+=(G?'### 1. 検知 (Detection)':'### 1. Detection')+'\n\n';
+  doc34+='- **'+(G?'アラート':'Alert')+'**: '+(G?'監視ツール（CloudWatch/Datadog/Sentry）からアラート受信':'Receive alert from monitoring tool (CloudWatch/Datadog/Sentry)')+'\n';
+  doc34+='- **'+(G?'確認':'Verify')+'**: '+(G?'ダッシュボードでメトリクス確認':'Check metrics on dashboard')+'\n';
+  doc34+='- **'+(G?'影響範囲特定':'Scope')+'**: '+(G?'全ユーザー or 特定機能 or 特定リージョン':'All users / specific feature / specific region')+'\n\n';
+
+  doc34+=(G?'### 2. トリアージ (Triage)':'### 2. Triage')+'\n\n';
+  doc34+='- **Severity'+(G?'判定':'Classification')+'**: '+(G?'上記分類表に基づき判定':'Classify based on table above')+'\n';
+  doc34+='- **'+(G?'初動':'Initial Action')+'**: S1/S2'+(G?'は即座にインシデントチャネル開設':'→ Open incident channel immediately')+'\n';
+  doc34+='- **'+(G?'担当者招集':'Assemble Team')+'**: '+(G?'オンコール担当 + バックエンド + インフラ':'On-call + Backend + Infra')+'\n\n';
+
+  doc34+=(G?'### 3. 緩和 (Mitigation)':'### 3. Mitigation')+'\n\n';
+  doc34+='**'+(G?'優先順位':'Priority')+'**: '+(G?'復旧 > 原因究明':'Recovery > Root cause analysis')+'\n\n';
+  doc34+=(G?'緩和策の例:':'Mitigation examples:')+'\n';
+  doc34+='- '+(G?'ロールバック: 直近デプロイが原因の場合':'Rollback: If caused by recent deploy')+'\n';
+  doc34+='- '+(G?'スケールアップ: リソース不足の場合':'Scale up: If resource exhaustion')+'\n';
+  doc34+='- '+(G?'機能無効化: 特定機能が原因の場合':'Disable feature: If specific feature causes issue')+'\n';
+  doc34+='- '+(G?'キャッシュクリア: データ不整合の場合':'Clear cache: If data inconsistency')+'\n';
+  doc34+='- '+(G?'手動データ修正: DB不整合の場合':'Manual data fix: If DB inconsistency')+'\n\n';
+
+  doc34+=(G?'### 4. 根本原因分析 (Root Cause Analysis)':'### 4. Root Cause Analysis')+'\n\n';
+  doc34+=(G?'復旧後に実施:':'After recovery:')+'\n';
+  doc34+='- **'+(G?'ログ分析':'Log Analysis')+'**: docs/25_error_logs.md'+(G?'に記録':'に記録')+'\n';
+  doc34+='- **5 Whys**: '+(G?'根本原因まで深掘り':'Dig deep until root cause')+'\n';
+  doc34+='- **'+(G?'タイムライン作成':'Timeline')+'**: '+(G?'発生→検知→対応→復旧の時系列':'Occurrence → Detection → Response → Recovery')+'\n\n';
+
+  doc34+=(G?'### 5. 再発防止 (Prevention)':'### 5. Prevention')+'\n\n';
+  doc34+='- **'+(G?'修正チケット作成':'Fix Ticket')+'**: .spec/tasks.md'+(G?'に追加':'に追加')+'\n';
+  doc34+='- **'+(G?'監視追加':'Add Monitoring')+'**: '+(G?'同様の障害を早期検知できるアラート追加':'Add alerts to detect similar issues early')+'\n';
+  doc34+='- **'+(G?'テスト追加':'Add Tests')+'**: docs/33_test_matrix.md'+(G?'にリグレッションテスト追加':'に追加')+'\n';
+  doc34+='- **'+(G?'ドキュメント更新':'Update Docs')+'**: '+(G?'本プレイブックに新たな対処法追加':'Add new procedures to this playbook')+'\n\n';
+
+  // Escalation Matrix
+  doc34+=(G?'## エスカレーションマトリクス':'## Escalation Matrix')+'\n\n';
+  doc34+='| Severity | '+  (G?'初動（分）':'Initial (min)')+' | '+(G?'エスカレーション（分）':'Escalation (min)')+' | '+(G?'通知先':'Notify')+' |\n';
+  doc34+='|----------|------|------|------|\n';
+  doc34+='| S1 🔴 | 15 | 30 | '+(G?'CTO + 全エンジニア':'CTO + All engineers')+' |\n';
+  doc34+='| S2 🟠 | 60 | 120 | '+(G?'テックリード + 該当チーム':'Tech lead + Relevant team')+' |\n';
+  doc34+='| S3 🟡 | 1440 (24h) | - | '+(G?'担当者のみ':'Assignee only')+' |\n';
+  doc34+='| S4 🟢 | - | - | '+(G?'次回計画会議で':'Next planning meeting')+' |\n\n';
+
+  // Post-Mortem Template
+  doc34+=(G?'## ポストモーテムテンプレート':'## Post-Mortem Template')+'\n\n';
+  doc34+='```markdown\n';
+  doc34+='# '+(G?'ポストモーテム: [障害タイトル]':'Post-Mortem: [Incident Title]')+'\n\n';
+  doc34+='**'+(G?'発生日時':'Date')+'**: YYYY-MM-DD HH:MM\n';
+  doc34+='**Severity**: S1/S2/S3/S4\n';
+  doc34+='**'+(G?'影響':'Impact')+'**: '+(G?'影響を受けたユーザー数・機能':'Affected users, features')+'\n';
+  doc34+='**'+(G?'検知→復旧時間':'Detection to Recovery')+'**: XX'+(G?'分':'min')+'\n\n';
+  doc34+='## '+(G?'何が起きたか':'What Happened')+'\n'+(G?'障害の概要を1-2文で':'1-2 sentence summary')+'\n\n';
+  doc34+='## '+(G?'タイムライン':'Timeline')+'\n';
+  doc34+='- HH:MM - '+(G?'障害発生':'Incident occurred')+'\n';
+  doc34+='- HH:MM - '+(G?'アラート検知':'Alert detected')+'\n';
+  doc34+='- HH:MM - '+(G?'対応開始':'Response started')+'\n';
+  doc34+='- HH:MM - '+(G?'復旧完了':'Recovery completed')+'\n\n';
+  doc34+='## '+(G?'根本原因':'Root Cause')+'\n'+(G?'5 Whysの結果':'Result of 5 Whys')+'\n\n';
+  doc34+='## '+(G?'再発防止策':'Prevention Measures')+'\n';
+  doc34+='- [ ] '+(G?'アクションアイテム1':'Action item 1')+'\n';
+  doc34+='- [ ] '+(G?'アクションアイテム2':'Action item 2')+'\n';
+  doc34+='```\n\n';
+
+  // Domain-Specific Runbooks
+  const domainPlaybook=DOMAIN_PLAYBOOK[domain]||DOMAIN_PLAYBOOK._default;
+  if(domainPlaybook&&domainPlaybook.prevent){
+    doc34+=(G?'## ドメイン固有の注意事項 ('+domain+')':'## Domain-Specific Notes ('+domain+')')+'\n\n';
+    const preventList=G?domainPlaybook.prevent.ja:domainPlaybook.prevent.en;
+    preventList.forEach((p,i)=>{
+      doc34+=(i+1)+'. '+p+'\n';
+    });
+    doc34+='\n';
+  }
+
+  // Link to error logs
+  doc34+=(G?'## 関連ドキュメント':'## Related Documents')+'\n\n';
+  doc34+='- **docs/25_error_logs.md** — '+(G?'過去の障害記録':'Past incident records')+'\n';
+  doc34+='- **docs/37_bug_prevention.md** — '+(G?'バグ予防チェックリスト':'Bug prevention checklist')+'\n';
+  doc34+='- **.spec/verification.md** — '+(G?'リリース前検証手順':'Pre-release verification')+'\n\n';
+
+  S.files['docs/34_incident_response.md']=doc34;
+
+  // ═══ B3: docs/36_test_strategy.md (~12KB) ═══
+  let doc36='# '+(G?'フェーズ別テスト戦略':'Phase-Based Testing Strategy')+'\n\n';
+  doc36+=G?'**重要**: このドキュメントは開発フェーズごとのテスト戦略を定義します。各フェーズで必要なテストを実施し、品質を段階的に向上させてください。\n\n':'**IMPORTANT**: This document defines testing strategies for each development phase. Execute required tests at each phase to progressively improve quality.\n\n';
+
+  // Phase 1: Design Review
+  doc36+=(G?'## Phase 1: 設計レビュー':'## Phase 1: Design Review')+'\n\n';
+  doc36+=(G?'**目的**: 実装前に設計の整合性とセキュリティリスクを検証':'**Purpose**: Verify design consistency and security risks before implementation')+'\n\n';
+
+  doc36+='### 1.1 '+(G?'.spec/ 整合性チェック':'.spec/ Consistency Check')+'\n\n';
+  doc36+='**'+(G?'検証項目':'Checks')+'**:\n';
+  doc36+='- [ ] constitution.md ⇔ specification.md '+(G?'の機能一致':'feature alignment')+'\n';
+  doc36+='- [ ] specification.md ⇔ technical-plan.md '+(G?'のスタック一致':'stack alignment')+'\n';
+  doc36+='- [ ] tasks.md '+(G?'の全タスクがspecに対応':'all tasks map to spec')+'\n';
+  doc36+='- [ ] verification.md '+(G?'の検証項目が全機能をカバー':'verification covers all features')+'\n\n';
+
+  doc36+='### 1.2 ER'+(G?'図検証':'Diagram Verification')+'\n\n';
+  doc36+='**'+(G?'検証項目':'Checks')+'**:\n';
+  doc36+='- [ ] '+(G?'全エンティティがdata_entitiesに存在':'All entities exist in data_entities')+'\n';
+  doc36+='- [ ] FK'+(G?'参照先が全て定義済み':'references are all defined')+'\n';
+  doc36+='- [ ] '+(G?'循環参照がない':'No circular references')+'\n';
+  doc36+='- [ ] '+(G?'孤立エンティティがない':'No orphaned entities')+'\n\n';
+
+  doc36+='### 1.3 '+(G?'セキュリティ脅威モデル':'Security Threat Modeling')+'\n\n';
+  doc36+='**'+(G?'実施内容':'Activities')+'**:\n';
+  doc36+='- **STRIDE'+(G?'分析':'Analysis')+'**: '+(G?'なりすまし・改ざん・否認・情報漏洩・DoS・権限昇格':'Spoofing, Tampering, Repudiation, Info disclosure, DoS, Elevation')+'\n';
+  doc36+='- **OWASP Top 10**: docs/08_security.md '+(G?'と照合':'check against')+'\n';
+  doc36+='- **'+(G?'データフロー図':'Data Flow Diagram')+'**: '+(G?'機密データの経路確認':'Verify sensitive data paths')+'\n\n';
+
+  // Phase 2: Integration Testing
+  doc36+=(G?'## Phase 2: 統合テスト':'## Phase 2: Integration Testing')+'\n\n';
+  doc36+=(G?'**目的**: API・認証・データフローの統合動作を検証':'**Purpose**: Verify integrated behavior of API, auth, and data flows')+'\n\n';
+
+  doc36+='### 2.1 API'+(G?'コントラクトテスト':'Contract Testing')+'\n\n';
+  doc36+='**'+(G?'ツール':'Tool')+'**: '+( tools.find(t=>t.includes('Pact')||t.includes('契約'))||'Pact / Contract tests')+'\n\n';
+  doc36+='**'+(G?'検証項目':'Checks')+'**:\n';
+  doc36+='- [ ] '+(G?'全エンドポイントがdocs/05_api.mdに存在':'All endpoints exist in docs/05_api.md')+'\n';
+  doc36+='- [ ] '+(G?'リクエスト・レスポンススキーマ一致':'Request/response schema match')+'\n';
+  doc36+='- [ ] '+(G?'エラーコードが仕様通り':'Error codes match spec')+'\n\n';
+
+  const authBackend=a.backend||'';
+  const authFlow=authBackend.includes('Supabase')?'Supabase Auth':authBackend.includes('Firebase')?'Firebase Auth':'Auth.js';
+  doc36+='### 2.2 '+(G?'認証フローテスト ('+authFlow+')':'Auth Flow Testing ('+authFlow+')')+'\n\n';
+  doc36+='**'+(G?'テストケース':'Test Cases')+'**:\n';
+  doc36+='- [ ] '+(G?'サインアップ → メール確認 → ログイン':'Signup → Email verify → Login')+'\n';
+  doc36+='- [ ] '+(G?'パスワードリセット':'Password reset')+'\n';
+  doc36+='- [ ] '+(G?'トークン有効期限切れ → リフレッシュ':'Token expiry → Refresh')+'\n';
+  if(authBackend.includes('Supabase')){
+    doc36+='- [ ] RLS'+(G?'ポリシーが全テーブルで動作':'policies work on all tables')+'\n';
+  }
+  doc36+='- [ ] '+(G?'不正トークンでアクセス拒否':'Invalid token → Access denied')+'\n\n';
+
+  doc36+='### 2.3 '+(G?'データ整合性テスト':'Data Integrity Testing')+'\n\n';
+  doc36+='**'+(G?'検証項目':'Checks')+'**:\n';
+  doc36+='- [ ] FK'+(G?'違反時にエラー':'violation → Error')+'\n';
+  doc36+='- [ ] UNIQUE'+(G?'制約違反時にエラー':'constraint violation → Error')+'\n';
+  doc36+='- [ ] '+(G?'カスケード削除が正しく動作':'Cascade delete works correctly')+'\n';
+  doc36+='- [ ] '+(G?'トランザクション失敗時にロールバック':'Transaction failure → Rollback')+'\n\n';
+
+  // Phase 3: Pre-Release Testing
+  doc36+=(G?'## Phase 3: リリース前テスト':'## Phase 3: Pre-Release Testing')+'\n\n';
+  doc36+=(G?'**目的**: 本番環境で発生しうる問題を事前検出':'**Purpose**: Detect issues that could occur in production')+'\n\n';
+
+  doc36+='### 3.1 E2E'+(G?'シナリオテスト':'Scenario Testing')+'\n\n';
+  doc36+='**'+(G?'ツール':'Tool')+'**: '+(tools.find(t=>t.includes('Playwright')||t.includes('Cypress'))||'Playwright / Cypress')+'\n\n';
+  doc36+='**'+(G?'主要シナリオ':'Critical Scenarios')+'**:\n';
+  features.slice(0,5).forEach((f,i)=>{
+    doc36+=(i+1)+'. '+f+' '+(G?'の完全フロー':'complete flow')+'\n';
+  });
+  doc36+='\n';
+
+  doc36+='### 3.2 '+(G?'並行性テスト':'Concurrency Testing')+'\n\n';
+  doc36+='**'+(G?'シナリオ':'Scenarios')+'**:\n';
+  // Domain-specific concurrency scenarios
+  if(domain==='ec'||domain==='marketplace'){
+    doc36+='- [ ] '+(G?'最後の1個問題: 2人が同時に最後の在庫を購入':'Last item problem: 2 users buy last stock simultaneously')+'\n';
+  }
+  if(domain==='fintech'){
+    doc36+='- [ ] '+(G?'二重送金: 同一送金リクエストを2回送信':'Double payment: Send same payment request twice')+'\n';
+  }
+  if(domain==='booking'||domain==='realestate'){
+    doc36+='- [ ] '+(G?'ダブルブッキング: 同一時間帯に2件予約':'Double booking: 2 bookings for same time slot')+'\n';
+  }
+  doc36+='- [ ] '+(G?'楽観的ロック: バージョン競合時の処理':'Optimistic lock: Version conflict handling')+'\n';
+  doc36+='- [ ] '+(G?'デッドロック: 複数トランザクション衝突':'Deadlock: Multiple transaction collision')+'\n\n';
+
+  doc36+='### 3.3 '+(G?'パフォーマンスベンチマーク':'Performance Benchmarking')+'\n\n';
+  doc36+='**'+(G?'ツール':'Tool')+'**: k6 / Artillery / Locust\n\n';
+  doc36+='**'+(G?'ベンチマーク目標':'Benchmark Targets')+'**:\n';
+  doc36+='- **'+(G?'レスポンスタイム':'Response Time')+'**: P95 ≤ 500ms\n';
+  doc36+='- **'+(G?'スループット':'Throughput')+'**: ≥ 100 req/sec\n';
+  doc36+='- **'+(G?'同時接続':'Concurrent Users')+'**: 1000+ '+(G?'ユーザーで安定':'users stable')+'\n';
+  doc36+='- **'+(G?'エラー率':'Error Rate')+'**: ≤ 0.1%\n\n';
+
+  // Phase 4: Post-Release Monitoring
+  doc36+=(G?'## Phase 4: リリース後監視':'## Phase 4: Post-Release Monitoring')+'\n\n';
+  doc36+=(G?'**目的**: 本番環境での異常を早期検知':'**Purpose**: Early detection of anomalies in production')+'\n\n';
+
+  doc36+='### 4.1 '+(G?'インシデント検知閾値':'Incident Detection Thresholds')+'\n\n';
+  doc36+='| '+(G?'メトリクス':'Metric')+' | '+(G?'警告':'Warning')+' | '+(G?'重大':'Critical')+' |\n';
+  doc36+='|----------|----------|----------|\n';
+  doc36+='| '+(G?'エラー率':'Error Rate')+' | >1% | >5% |\n';
+  doc36+='| P95 '+(G?'レスポンス':'Response')+' | >1s | >3s |\n';
+  doc36+='| CPU'+(G?'使用率':'Usage')+' | >70% | >90% |\n';
+  doc36+='| '+(G?'メモリ':'Memory')+' | >80% | >95% |\n';
+  doc36+='| DB'+(G?'接続数':'Connections')+' | >80% | >95% |\n\n';
+
+  doc36+='### 4.2 '+(G?'回帰アラート':'Regression Alerts')+'\n\n';
+  doc36+='**'+(G?'監視項目':'Monitor')+'**:\n';
+  doc36+='- **'+(G?'エラースパイク':'Error Spike')+'**: '+(G?'直近1時間のエラー数が前週平均の3倍':'Errors in last hour >3x weekly average')+'\n';
+  doc36+='- **'+(G?'レイテンシ劣化':'Latency Degradation')+'**: P95 '+(G?'が前日比1.5倍':'is 1.5x vs yesterday')+'\n';
+  doc36+='- **'+(G?'コンバージョン低下':'Conversion Drop')+'**: '+(G?'主要KPIが前週比20%低下':'Key KPI down 20% vs last week')+'\n\n';
+
+  doc36+='### 4.3 '+(G?'ドメイン別監視 ('+domain+')':'Domain-Specific Monitoring ('+domain+')')+'\n\n';
+  // Domain-specific monitoring
+  if(domain==='ec'||domain==='marketplace'){
+    doc36+='- **'+(G?'決済成功率':'Payment Success Rate')+'**: ≥98%\n';
+    doc36+='- **'+(G?'カゴ落ち率':'Cart Abandonment')+'**: ≤30%\n';
+  }else if(domain==='fintech'){
+    doc36+='- **'+(G?'取引処理時間':'Transaction Processing Time')+'**: ≤2s\n';
+    doc36+='- **'+(G?'残高不整合':'Balance Inconsistency')+'**: 0 件/日\n';
+  }else if(domain==='booking'||domain==='realestate'){
+    doc36+='- **'+(G?'予約重複':'Booking Duplicates')+'**: 0 件/日\n';
+    doc36+='- **'+(G?'通知到達率':'Notification Delivery')+'**: ≥95%\n';
+  }else if(domain==='iot'){
+    doc36+='- **'+(G?'デバイス接続率':'Device Connection Rate')+'**: ≥99%\n';
+    doc36+='- **'+(G?'データ欠損':'Data Loss')+'**: ≤0.1%\n';
+  }else{
+    doc36+='- **'+(G?'主要機能可用性':'Core Feature Availability')+'**: ≥99.9%\n';
+    doc36+='- **'+(G?'ユーザーエラー報告':'User Error Reports')+'**: '+(G?'月次トレンド監視':'Monitor monthly trend')+'\n';
+  }
+  doc36+='\n';
+
+  // Stack-Specific Tool Configuration
+  doc36+=(G?'## スタック別ツール設定':'## Stack-Specific Tool Configuration')+'\n\n';
+  const testTool=tools.find(t=>t.includes('Vitest'))?'Vitest':tools.find(t=>t.includes('Jest'))?'Jest':'Vitest';
+  const e2eTool=tools.find(t=>t.includes('Playwright'))?'Playwright':tools.find(t=>t.includes('Cypress'))?'Cypress':'Playwright';
+
+  doc36+='### '+testTool+' '+(G?'設定':'Configuration')+'\n\n';
+  doc36+='```javascript\n';
+  doc36+='// vitest.config.js / jest.config.js\n';
+  doc36+='export default {\n';
+  doc36+='  coverage: {\n';
+  doc36+='    provider: \'v8\',\n';
+  doc36+='    reporter: [\'text\', \'json\', \'html\'],\n';
+  doc36+='    lines: 80,\n';
+  doc36+='    functions: 85,\n';
+  doc36+='    branches: 70,\n';
+  doc36+='    statements: 80,\n';
+  doc36+='  },\n';
+  doc36+='  testTimeout: 10000,\n';
+  doc36+='};\n```\n\n';
+
+  doc36+='### '+e2eTool+' '+(G?'設定':'Configuration')+'\n\n';
+  doc36+='```javascript\n';
+  if(e2eTool==='Playwright'){
+    doc36+='// playwright.config.js\n';
+    doc36+='export default {\n';
+    doc36+='  testDir: \'./e2e\',\n';
+    doc36+='  timeout: 30000,\n';
+    doc36+='  retries: process.env.CI ? 2 : 0,\n';
+    doc36+='  use: {\n';
+    doc36+='    baseURL: process.env.BASE_URL || \'http://localhost:3000\',\n';
+    doc36+='    trace: \'on-first-retry\',\n';
+    doc36+='  },\n';
+    doc36+='};\n';
+  }else{
+    doc36+='// cypress.config.js\n';
+    doc36+='export default {\n';
+    doc36+='  e2e: {\n';
+    doc36+='    baseUrl: \'http://localhost:3000\',\n';
+    doc36+='    video: false,\n';
+    doc36+='    screenshotOnRunFailure: true,\n';
+    doc36+='  },\n';
+    doc36+='};\n';
+  }
+  doc36+='```\n\n';
+
+  // Related Documents
+  doc36+=(G?'## 関連ドキュメント':'## Related Documents')+'\n\n';
+  doc36+='- **docs/07_test_cases.md** — '+(G?'テストケース詳細':'Detailed test cases')+'\n';
+  doc36+='- **docs/33_test_matrix.md** — '+(G?'具体的テスト例':'Concrete test examples')+'\n';
+  doc36+='- **docs/37_bug_prevention.md** — '+(G?'バグ予防チェックリスト':'Bug prevention checklist')+'\n';
+  doc36+='- **.spec/verification.md** — '+(G?'リリース前検証':'Pre-release verification')+'\n\n';
+
+  S.files['docs/36_test_strategy.md']=doc36;
+
+  // ═══ B4: docs/37_bug_prevention.md (~8KB) ═══
+  let doc37='# '+(G?'バグ予防チェックリスト':'Bug Prevention Checklist')+'\n\n';
+  doc37+=G?'**重要**: このチェックリストは、実装・レビュー・テスト時に必ず確認すべき項目をリスト化しています。見落としを防ぎ、品質を向上させるために活用してください。\n\n':'**IMPORTANT**: This checklist lists items that MUST be verified during implementation, review, and testing. Use this to prevent oversights and improve quality.\n\n';
+
+  // Priority-Ordered Checklist (based on INDUSTRY_TEST_MATRIX.priority)
+  doc37+=(G?'## 優先度順チェックリスト ('+domain+'に最適化)':'## Priority-Ordered Checklist (Optimized for '+domain+')')+'\n\n';
+  const priorityOrder=['Security','DataIntegrity','Performance','UX','Compliance'];
+  const domainPriority={};
+  tm.priority.split('|').forEach(p=>{
+    const[k,v]=p.split(':');
+    domainPriority[k]=v;
+  });
+  // Sort by priority (CRITICAL > HIGH > MED > LOW)
+  const sortedPriorities=priorityOrder.sort((a,b)=>{
+    const order={CRITICAL:0,HIGH:1,MED:2,LOW:3};
+    return order[domainPriority[a]||'MED']-order[domainPriority[b]||'MED'];
+  });
+
+  sortedPriorities.forEach((cat,idx)=>{
+    const priority=domainPriority[cat]||'MED';
+    const icon=priority==='CRITICAL'||priority==='HIGH'?'🔴':(priority==='MED'?'🟡':'🟢');
+    const label={
+      Security:G?'セキュリティ':'Security',
+      DataIntegrity:G?'データ整合性':'Data Integrity',
+      Performance:G?'パフォーマンス':'Performance',
+      UX:'UX',
+      Compliance:G?'コンプライアンス':'Compliance'
+    }[cat];
+
+    doc37+='### '+(idx+1)+'. '+icon+' '+label+' ('+priority+')\n\n';
+
+    if(cat==='Security'){
+      doc37+='- [ ] '+(G?'ユーザー入力は全てサニタイズ済み':'All user inputs sanitized')+'\n';
+      doc37+='- [ ] SQL'+(G?'インジェクション対策（ORMのパラメタライズドクエリ使用）':'injection prevention (use ORM parameterized queries)')+'\n';
+      doc37+='- [ ] XSS'+(G?'対策（出力時エスケープ）':'prevention (escape on output)')+'\n';
+      doc37+='- [ ] CSRF'+(G?'トークン実装':'token implemented')+'\n';
+      doc37+='- [ ] '+(G?'認証なしでアクセスできるエンドポイントがない':'No unauthenticated endpoint access')+'\n';
+      doc37+='- [ ] '+(G?'パスワードはハッシュ化（bcrypt/Argon2）':'Passwords hashed (bcrypt/Argon2)')+'\n';
+      doc37+='- [ ] '+(G?'環境変数に機密情報なし（.envから読込）':'No secrets in code (load from .env)')+'\n';
+    }else if(cat==='DataIntegrity'){
+      doc37+='- [ ] FK'+(G?'制約が全て定義済み':'constraints all defined')+'\n';
+      doc37+='- [ ] UNIQUE'+(G?'制約が適切に設定':'constraints properly set')+'\n';
+      doc37+='- [ ] NOT NULL'+(G?'制約が必須フィールドに設定':'constraints on required fields')+'\n';
+      doc37+='- [ ] '+(G?'トランザクション境界が明確':'Transaction boundaries clear')+'\n';
+      doc37+='- [ ] '+(G?'楽観的/悲観的ロックが必要箇所に実装':'Optimistic/pessimistic locks where needed')+'\n';
+      doc37+='- [ ] '+(G?'カスケード削除が意図通り':'Cascade deletes work as intended')+'\n';
+    }else if(cat==='Performance'){
+      doc37+='- [ ] N+1'+(G?'クエリ問題がない':'query problem eliminated')+'\n';
+      doc37+='- [ ] '+(G?'インデックスが検索フィールドに設定':'Indexes on search fields')+'\n';
+      doc37+='- [ ] '+(G?'ページネーション実装（大量データ対応）':'Pagination for large datasets')+'\n';
+      doc37+='- [ ] '+(G?'キャッシュ戦略が適切':'Caching strategy appropriate')+'\n';
+      doc37+='- [ ] '+(G?'画像・動画は最適化済み':'Images/videos optimized')+'\n';
+    }else if(cat==='UX'){
+      doc37+='- [ ] '+(G?'ローディング状態表示':'Loading state displayed')+'\n';
+      doc37+='- [ ] '+(G?'エラーメッセージがユーザーフレンドリー':'User-friendly error messages')+'\n';
+      doc37+='- [ ] '+(G?'バリデーションメッセージが具体的':'Specific validation messages')+'\n';
+      doc37+='- [ ] '+(G?'空状態メッセージ（データなし時）':'Empty state message (no data)')+'\n';
+      doc37+='- [ ] '+(G?'モバイルレスポンシブ':'Mobile responsive')+'\n';
+    }else if(cat==='Compliance'){
+      doc37+='- [ ] '+(G?'個人情報取扱い同意取得':'Personal data consent obtained')+'\n';
+      doc37+='- [ ] '+(G?'データ削除機能実装（GDPR対応）':'Data deletion feature (GDPR)')+'\n';
+      doc37+='- [ ] '+(G?'アクセスログ記録':'Access logging')+'\n';
+      doc37+='- [ ] '+(G?'監査証跡完全性':'Audit trail completeness')+'\n';
+    }
+    doc37+='\n';
+  });
+
+  // 6-Category Bug Classification
+  doc37+=(G?'## 6カテゴリバグ分類':'## 6-Category Bug Classification')+'\n\n';
+  const bugCategories=[
+    {ja:'機能バグ',en:'Functional',check_ja:'仕様通り動作するか',check_en:'Works as specified'},
+    {ja:'UI/UXバグ',en:'UI/UX',check_ja:'見た目・操作性に問題ないか',check_en:'Appearance and usability OK'},
+    {ja:'データバグ',en:'Data',check_ja:'データ不整合・消失がないか',check_en:'No data inconsistency or loss'},
+    {ja:'パフォーマンスバグ',en:'Performance',check_ja:'レスポンス時間が許容範囲か',check_en:'Response time acceptable'},
+    {ja:'セキュリティバグ',en:'Security',check_ja:'脆弱性がないか',check_en:'No vulnerabilities'},
+    {ja:'統合バグ',en:'Integration',check_ja:'外部サービス連携が正常か',check_en:'External service integration OK'}
+  ];
+  bugCategories.forEach((cat,i)=>{
+    const label=G?cat.ja:cat.en;
+    const check=G?cat.check_ja:cat.check_en;
+    doc37+='### '+(i+1)+'. '+label+'\n';
+    doc37+='**'+(G?'チェック':'Check')+'**: '+check+'\n';
+    doc37+='**'+(G?'検出方法':'Detection')+'**: ';
+    if(i<2){
+      doc37+=G?'単体テスト・E2Eテスト':'Unit tests, E2E tests';
+    }else if(i<4){
+      doc37+=G?'統合テスト・手動検証':'Integration tests, manual verification';
+    }else{
+      doc37+=G?'静的解析・ペネトレーションテスト':'Static analysis, penetration tests';
+    }
+    doc37+='\n';
+    doc37+='**'+(G?'予防策':'Prevention')+'**: ';
+    if(i<2){
+      doc37+=G?'仕様レビュー・プロトタイプ検証':'Spec review, prototype validation';
+    }else if(i<4){
+      doc37+=G?'コードレビュー・TDD実践':'Code review, TDD practice';
+    }else{
+      doc37+=G?'セキュリティガイドライン遵守':'Follow security guidelines';
+    }
+    doc37+='\n\n';
+  });
+
+  // Concurrency Scenarios (Domain-Specific)
+  doc37+=(G?'## 並行性シナリオ ('+domain+'特化)':'## Concurrency Scenarios ('+domain+'-Specific)')+'\n\n';
+  if(domain==='ec'||domain==='marketplace'){
+    doc37+='### 1. '+(G?'最後の1個問題':'Last Item Problem')+'\n';
+    doc37+='**'+(G?'シナリオ':'Scenario')+'**: '+(G?'在庫1個の商品に2人が同時に購入ボタンをクリック':'2 users click buy on item with stock=1 simultaneously')+'\n';
+    doc37+='**'+(G?'期待動作':'Expected')+'**: '+(G?'1人は成功、1人は在庫切れエラー':'1 succeeds, 1 gets out-of-stock error')+'\n';
+    doc37+='**'+(G?'実装方法':'Implementation')+'**: '+(G?'楽観的ロック or SELECT FOR UPDATE':'Optimistic lock or SELECT FOR UPDATE')+'\n\n';
+  }
+  if(domain==='fintech'){
+    doc37+='### 2. '+(G?'二重送金問題':'Double Payment Problem')+'\n';
+    doc37+='**'+(G?'シナリオ':'Scenario')+'**: '+(G?'同一送金リクエストを短時間に2回送信':'Send same payment request twice in short interval')+'\n';
+    doc37+='**'+(G?'期待動作':'Expected')+'**: '+(G?'1回のみ実行、2回目は重複エラー':'Execute once, 2nd returns duplicate error')+'\n';
+    doc37+='**'+(G?'実装方法':'Implementation')+'**: '+(G?'冪等性キー（idempotency key）':'Idempotency key')+'\n\n';
+  }
+  if(domain==='booking'||domain==='realestate'){
+    doc37+='### 3. '+(G?'ダブルブッキング問題':'Double Booking Problem')+'\n';
+    doc37+='**'+(G?'シナリオ':'Scenario')+'**: '+(G?'同一時間帯に2件の予約が同時に作成される':'2 bookings for same time slot created simultaneously')+'\n';
+    doc37+='**'+(G?'期待動作':'Expected')+'**: '+(G?'1件は成功、1件は時間帯重複エラー':'1 succeeds, 1 gets time slot conflict error')+'\n';
+    doc37+='**'+(G?'実装方法':'Implementation')+'**: '+(G?'UNIQUE制約 (service_id, time_slot) + トランザクション':'UNIQUE constraint (service_id, time_slot) + transaction')+'\n\n';
+  }else{
+    doc37+='### '+(G?'一般的な並行性問題':'General Concurrency Issues')+'\n';
+    doc37+='- **'+(G?'データ競合':'Race Condition')+'**: '+(G?'トランザクション分離レベル設定':'Set transaction isolation level')+'\n';
+    doc37+='- **'+(G?'デッドロック':'Deadlock')+'**: '+(G?'ロック順序を統一':'Unify lock order')+'\n';
+    doc37+='- **'+(G?'Lost Update':'Lost Update')+'**: '+(G?'楽観的ロックで防止':'Prevent with optimistic lock')+'\n\n';
+  }
+
+  // 7 Common Oversights
+  doc37+=(G?'## 7つの見落としやすい項目':'## 7 Common Oversights')+'\n\n';
+  doc37+='### 1. '+(G?'タイムゾーン':'Timezone')+'\n';
+  doc37+='- [ ] '+(G?'DBにUTC保存、表示時にユーザータイムゾーンで変換':'Store in DB as UTC, convert to user timezone on display')+'\n';
+  doc37+='- [ ] '+(G?'日時計算はライブラリ使用（date-fns/dayjs）':'Use library for date calculations (date-fns/dayjs)')+'\n\n';
+
+  doc37+='### 2. Unicode/Emoji\n';
+  doc37+='- [ ] VARCHAR'+(G?'サイズは文字数ではなくバイト数で考慮':'size in bytes, not characters')+'\n';
+  doc37+='- [ ] '+(G?'絵文字対応（utf8mb4）':'Emoji support (utf8mb4)')+'\n\n';
+
+  doc37+='### 3. '+(G?'並行変更':'Concurrent Modification')+'\n';
+  doc37+='- [ ] '+(G?'同一データを2人が同時編集→Last Write Wins問題':'2 users edit same data → Last Write Wins problem')+'\n';
+  doc37+='- [ ] '+(G?'バージョンカラムで楽観的ロック':'Optimistic lock with version column')+'\n\n';
+
+  doc37+='### 4. '+(G?'ファイルアップロード':'File Upload')+'\n';
+  doc37+='- [ ] '+(G?'ファイルサイズ制限':'File size limit')+'\n';
+  doc37+='- [ ] '+(G?'MIMEタイプ検証':'MIME type validation')+'\n';
+  doc37+='- [ ] '+(G?'ファイル名サニタイズ':'Filename sanitization')+'\n';
+  doc37+='- [ ] '+(G?'ウイルススキャン（本番推奨）':'Virus scan (recommended in prod)')+'\n\n';
+
+  doc37+='### 5. '+(G?'レート制限':'Rate Limiting')+'\n';
+  doc37+='- [ ] API'+(G?'エンドポイントにレート制限実装':'rate limiting on endpoints')+'\n';
+  doc37+='- [ ] '+(G?'ログイン試行回数制限（ブルートフォース対策）':'Login attempt limit (brute force prevention)')+'\n\n';
+
+  doc37+='### 6. '+(G?'メール配信':'Email Delivery')+'\n';
+  doc37+='- [ ] '+(G?'送信失敗時のリトライ':'Retry on delivery failure')+'\n';
+  doc37+='- [ ] '+(G?'送信履歴記録':'Record delivery history')+'\n';
+  doc37+='- [ ] '+(G?'スパム判定されない設定（SPF/DKIM）':'SPF/DKIM to avoid spam')+'\n\n';
+
+  doc37+='### 7. '+(G?'ブラウザストレージ':'Browser Storage')+'\n';
+  doc37+='- [ ] localStorage'+(G?'に機密情報保存しない':'no sensitive data')+'\n';
+  doc37+='- [ ] '+(G?'容量上限（5-10MB）を考慮':'Consider quota (5-10MB)')+'\n';
+  doc37+='- [ ] '+(G?'ユーザーが削除できる仕組み':'User can clear data')+'\n\n';
+
+  // Related Documents
+  doc37+=(G?'## 関連ドキュメント':'## Related Documents')+'\n\n';
+  doc37+='- **docs/32_qa_blueprint.md** — '+(G?'業種別QA戦略':'Industry-specific QA strategy')+'\n';
+  doc37+='- **docs/33_test_matrix.md** — '+(G?'具体的テストマトリクス':'Concrete test matrix')+'\n';
+  doc37+='- **docs/36_test_strategy.md** — '+(G?'フェーズ別テスト戦略':'Phase-based testing strategy')+'\n';
+  doc37+='- **docs/34_incident_response.md** — '+(G?'インシデント対応':'Incident response')+'\n\n';
+
+  S.files['docs/37_bug_prevention.md']=doc37;
 }

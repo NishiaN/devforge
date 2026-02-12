@@ -108,10 +108,13 @@ function minCSS(s) {
     .trim();
 }
 function minJS(s) {
+  // NOTE: We only remove module headers and collapse blank lines.
+  // We do NOT remove block comments (/*...*/) or line comments (//) because:
+  // 1. Generated docs contain CSS comments in strings (e.g., "/* Tailwind config */")
+  // 2. Regex-based removal doesn't understand string context and breaks syntax
+  // This results in a slightly larger build (~57KB more) but guarantees correctness.
   return s
-    .replace(/\/\* ===.*?=== \*\/\n?/g, '') // Remove module headers
-    .replace(/\/\*[\s\S]*?\*\//g, '')        // Remove block comments
-    .replace(/\n\s*\/\/.*/g, '')             // Remove line comments (start of line only)
+    .replace(/\/\* ===.*?=== \*\/\n?/g, '') // Remove module headers only
     .replace(/\n{2,}/g, '\n')               // Collapse blank lines
     .trim();
 }

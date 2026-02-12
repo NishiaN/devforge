@@ -54,14 +54,14 @@ describe('Snapshot A: LMS/Supabase/Stripe', () => {
     ai_auto: 'マルチAgent協調'
   }, 'LMS');
 
-  test('file count in range 66-82', () => {
+  test('file count in range 66-90', () => {
     const count = Object.keys(files).length;
-    assert.ok(count >= 66 && count <= 82, `Expected 66-82 files, got ${count}`);
+    assert.ok(count >= 66 && count <= 90, `Expected 66-90 files, got ${count}`);
   });
 
-  test('total tokens in range 12000-21500', () => {
+  test('total tokens in range 12000-30000', () => {
     const total = Object.values(files).reduce((s, v) => s + tokens(v), 0);
-    assert.ok(total >= 12000 && total <= 21500, `Expected 12K-21.5K tokens, got ${total}`);
+    assert.ok(total >= 12000 && total <= 30000, `Expected 12K-30K tokens, got ${total}`);
   });
 
   // Core files existence
