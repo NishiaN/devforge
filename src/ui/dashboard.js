@@ -22,7 +22,7 @@ function showDashboard(){
   
   // Usage guide card
   if(!_lsGet('devforge-guide-dismiss')){
-    h+=`<div class="dash-backup dash-guide"><span>🚀 ${_ja?'生成ファイルの活用ガイドを確認しましょう':'Check the generated files usage guide'}</span><button class="btn btn-xs btn-p" onclick="showPostGenGuide(true)">${_ja?'ガイドを見る':'View Guide'}</button><button class="btn btn-xs btn-g" onclick="this.closest('.dash-backup').remove();_lsSet('devforge-guide-dismiss','1')">✕</button></div>`;
+    h+=`<div class="dash-backup dash-guide"><span>🚀 ${_ja?'生成ファイルの活用ガイドを確認しましょう':'Check the generated files usage guide'}</span><button class="btn btn-xs btn-p" onclick="showPostGenGuide(true)">${_ja?'ガイドを見る':'View Guide'}</button><button class="btn btn-xs btn-s" onclick="showManual('workflow')">${_ja?'📘 手順':'📘 Workflow'}</button><button class="btn btn-xs btn-g" onclick="this.closest('.dash-backup').remove();_lsSet('devforge-guide-dismiss','1')">✕</button></div>`;
   }
   
   // Summary stats

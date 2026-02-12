@@ -86,7 +86,8 @@ function showManual(sec){
       '<h3>V8.3 新機能</h3>'+
       '<p>• 📊 Mermaid図ライブレンダリング (ER図・画面遷移・ガント)<br>• 📝 OpenAPI準拠API仕様書<br>• ✅ テストケースマトリクス (機能×正常/異常)<br>• 📋 リリースチェックリスト (デプロイ先別動的生成)<br>• 🔨 WBS 3階層+工数見積り<br>• 🎯 プロンプトプレイブック (フェーズ別AI投入プロンプト集)<br>• 📎 GitHub Issues風タスク分解<br>• 📋 全ファイル結合コピー (AI一括投入用)</p>'+
       '<h3>V9 新機能</h3>'+
-      '<p>• 🧪 品質インテリジェンスエンジン (業種別QA戦略・テストマトリクス・インシデント対応)<br>• 🎨 デザインシステム自動生成 (デザイントークン・シーケンス図)<br>• 🔄 リバースエンジニアリング (ゴール逆算型プランニング・24ドメイン対応)<br>• 🏗️ 実装インテリジェンス (業種別実装パターン・AI運用手順書・擬似コード)<br>• 🧠 AI開発OS (コンテキスト圧縮・ファイル選択マトリクス・サブエージェント分離)<br>• 🌐 24ドメイン対応 (AI, IoT, 不動産, 法務, 人事, 金融 等を追加)<br>• 📦 88+ファイル生成 (docs 40種, AIルール12+, スキル8+)<br>• 🎯 41プリセット (CRM, SNS, 物流, アンケート, 求人 追加)</p>'
+      '<p>• 🧪 品質インテリジェンスエンジン (業種別QA戦略・テストマトリクス・インシデント対応)<br>• 🎨 デザインシステム自動生成 (デザイントークン・シーケンス図)<br>• 🔄 リバースエンジニアリング (ゴール逆算型プランニング・24ドメイン対応)<br>• 🏗️ 実装インテリジェンス (業種別実装パターン・AI運用手順書・擬似コード)<br>• 🧠 AI開発OS (コンテキスト圧縮・ファイル選択マトリクス・サブエージェント分離)<br>• 🌐 24ドメイン対応 (AI, IoT, 不動産, 法務, 人事, 金融 等を追加)<br>• 📦 88+ファイル生成 (docs 40種, AIルール12+, スキル8+)<br>• 🎯 41プリセット (CRM, SNS, 物流, アンケート, 求人 追加)</p>'+
+      '<p class="workflow-ref">📘 <strong>生成後の手順は <a href="#" onclick="event.preventDefault();showManual(\'workflow\')">生成後ワークフローガイド</a> を参照</strong></p>'
       :
       '<h2>Getting Started</h2><p>1. Select your skill level (Beginner/Intermediate/Pro)<br>2. Enter project name<br>3. Choose a template (optional, 41 types)<br>4. Answer Phase 1-3 questions (skip & answer later OK)<br>5. Click Generate for 88+ files<br>6. Download ZIP or print PDF</p>'+
       '<h3>UX Features</h3>'+
@@ -96,7 +97,8 @@ function showManual(sec){
       '<h3>V8.3 Features</h3>'+
       '<p>• 📊 Mermaid diagram live rendering (ER/screen flow/Gantt)<br>• 📝 OpenAPI-compliant API specs<br>• ✅ Test case matrix (feature × normal/abnormal)<br>• 📋 Release checklist (per deploy target)<br>• 🔨 WBS 3-level + effort estimation<br>• 🎯 Prompt playbook (phase-specific AI prompts)<br>• 📎 GitHub Issues-style task breakdown<br>• 📋 Copy all files combined (for bulk AI input)</p>'+
       '<h3>V9 Features</h3>'+
-      '<p>• 🧪 Quality Intelligence Engine (industry-specific QA strategies, test matrix, incident response)<br>• 🎨 Design System generation (design tokens, sequence diagrams)<br>• 🔄 Reverse Engineering (goal-driven reverse planning, 24 domains)<br>• 🏗️ Implementation Intelligence (domain-specific impl patterns, AI runbook, pseudo-code)<br>• 🧠 AI Development OS (context compression, file selection matrix, sub-agent isolation)<br>• 🌐 24 domain support (AI, IoT, Real Estate, Legal, HR, FinTech added)<br>• 📦 88+ file generation (40 docs, 12+ AI rules, 8+ skills)<br>• 🎯 41 presets (CRM, Social, Logistics, Survey, Job Board added)</p>'
+      '<p>• 🧪 Quality Intelligence Engine (industry-specific QA strategies, test matrix, incident response)<br>• 🎨 Design System generation (design tokens, sequence diagrams)<br>• 🔄 Reverse Engineering (goal-driven reverse planning, 24 domains)<br>• 🏗️ Implementation Intelligence (domain-specific impl patterns, AI runbook, pseudo-code)<br>• 🧠 AI Development OS (context compression, file selection matrix, sub-agent isolation)<br>• 🌐 24 domain support (AI, IoT, Real Estate, Legal, HR, FinTech added)<br>• 📦 88+ file generation (40 docs, 12+ AI rules, 8+ skills)<br>• 🎯 41 presets (CRM, Social, Logistics, Survey, Job Board added)</p>'+
+      '<p class="workflow-ref">📘 <strong>For post-generation workflow, see <a href="#" onclick="event.preventDefault();showManual(\'workflow\')">Post-Gen Workflow Guide</a></strong></p>'
     },
     {id:'pillars',title:_ja?'11の柱':'11 Pillars',body:_ja?
       '<h2>11の柱の詳細</h2><h3>① SDD統合 (5ファイル)</h3>'+
@@ -146,9 +148,11 @@ function showManual(sec){
       '<p>implementation_playbook.md (domain-specific impl patterns, pseudo-code, stack guidance, cross-cutting concerns checklist) / ai_dev_runbook.md (AI operation workflow, context management, error recovery protocol) / skill_guide.md (skill-level usage guide, cautions, checklists) / impl-patterns.md (implementation skills in Manus Skills format, if ai_auto≠none) — 24 domain-specific implementation guide.</p>'
     },
     {id:'export',title:_ja?'エクスポート':'Export',body:_ja?
-      '<h2>エクスポート方法</h2><p><strong>ZIP</strong>: 全88+ファイルをフォルダ構造付きでZIP圧縮ダウンロード。<br><strong>PDF</strong>: Markdownファイルを整形してブラウザのPDF印刷で出力。<br><strong>URL共有</strong>: プロジェクト設定をBase64エンコードしてURL共有。<br><strong>全ファイルコピー</strong>: 全ドキュメントを1テキストに結合してクリップボードにコピー（Ctrl+Shift+C）。AIへの一括投入に最適。</p><h3>テンプレート保存</h3><p>プロジェクト設定をlocalStorageに保存し、次回起動時に読み込み可能。</p>'
+      '<h2>エクスポート方法</h2><p><strong>ZIP</strong>: 全88+ファイルをフォルダ構造付きでZIP圧縮ダウンロード。<br><strong>PDF</strong>: Markdownファイルを整形してブラウザのPDF印刷で出力。<br><strong>URL共有</strong>: プロジェクト設定をBase64エンコードしてURL共有。<br><strong>全ファイルコピー</strong>: 全ドキュメントを1テキストに結合してクリップボードにコピー（Ctrl+Shift+C）。AIへの一括投入に最適。</p><h3>テンプレート保存</h3><p>プロジェクト設定をlocalStorageに保存し、次回起動時に読み込み可能。</p>'+
+      '<p class="workflow-ref">📘 <strong>エクスポート後の開発手順は <a href="#" onclick="event.preventDefault();showManual(\'workflow\')">生成後ワークフローガイド</a> を参照</strong></p>'
       :
-      '<h2>Export Methods</h2><p><strong>ZIP</strong>: Download all 88+ files as a ZIP with folder structure.<br><strong>PDF</strong>: Format Markdown files and print via browser PDF.<br><strong>URL Sharing</strong>: Base64-encode project settings and share via URL.<br><strong>Copy All Files</strong>: Combine all documents into one text and copy to clipboard (Ctrl+Shift+C). Ideal for bulk AI input.</p><h3>Template Save</h3><p>Save project settings to localStorage and load them on next launch.</p>'
+      '<h2>Export Methods</h2><p><strong>ZIP</strong>: Download all 88+ files as a ZIP with folder structure.<br><strong>PDF</strong>: Format Markdown files and print via browser PDF.<br><strong>URL Sharing</strong>: Base64-encode project settings and share via URL.<br><strong>Copy All Files</strong>: Combine all documents into one text and copy to clipboard (Ctrl+Shift+C). Ideal for bulk AI input.</p><h3>Template Save</h3><p>Save project settings to localStorage and load them on next launch.</p>'+
+      '<p class="workflow-ref">📘 <strong>For development workflow after export, see <a href="#" onclick="event.preventDefault();showManual(\'workflow\')">Post-Gen Workflow Guide</a></strong></p>'
     },
     {id:'guide',title:_ja?'🚀 活用ガイド':'🚀 Usage Guide',body:function(){
       const baseBody=_ja?
@@ -192,7 +196,7 @@ function showManual(sec){
       '<tr><td><code>.mcp/ + config</code></td><td>後で</td><td>そのまま</td><td>カスタムMCP</td></tr>'+
       '<tr><td><code>AGENTS.md</code></td><td>不要</td><td>参照</td><td>並列Agent</td></tr>'+
       '<tr><td><code>.ai/hooks.yml</code></td><td>不要</td><td>参照</td><td>CI/CD統合</td></tr></table>'+
-      '<p class="guide-action-p"><button class="btn btn-p btn-sm" onclick="closeManual();showPostGenGuide(true)">🚀 レベル別ガイドを表示</button></p>':
+      '<p class="guide-action-p"><button class="btn btn-p btn-sm" onclick="closeManual();showPostGenGuide(true)">🚀 レベル別ガイドを表示</button> <button class="btn btn-s btn-sm" onclick="showManual(\'workflow\')">📘 生成後ワークフロー</button></p>':
       '<h2>🚀 Generated Files Usage Guide</h2>'+
       '<p>DevForge v9 is the world\'s only <strong>spec-driven AI project generator</strong>. While other tools generate code, DevForge generates "development intelligence" — design, environment, rules, and learning plans through 88+ files.</p>'+
       '<h3>🌱 Beginner — Get Started</h3>'+
@@ -230,7 +234,7 @@ function showManual(sec){
       '<tr><td><code>.mcp/ + config</code></td><td>Later</td><td>As-is</td><td>Custom MCP</td></tr>'+
       '<tr><td><code>AGENTS.md</code></td><td>Skip</td><td>Reference</td><td>Multi-Agent</td></tr>'+
       '<tr><td><code>.ai/hooks.yml</code></td><td>Skip</td><td>Reference</td><td>CI/CD Integration</td></tr></table>'+
-      '<p class="guide-action-p"><button class="btn btn-p btn-sm" onclick="closeManual();showPostGenGuide(true)">🚀 Show Level Guide</button></p>';
+      '<p class="guide-action-p"><button class="btn btn-p btn-sm" onclick="closeManual();showPostGenGuide(true)">🚀 Show Level Guide</button> <button class="btn btn-s btn-sm" onclick="showManual(\'workflow\')">📘 Post-Gen Workflow</button></p>';
       let h=baseBody;
       // Add domain-specific first steps
       const a=S.answers||{};
@@ -259,6 +263,181 @@ function showManual(sec){
       }
       return h;
     }},
+    {id:'workflow',title:_ja?'📘 生成後ワークフロー':'📘 Post-Gen Workflow',body:_ja?
+      '<h2>📘 生成後ワークフロー完全ガイド</h2>'+
+      '<p class="guide-workflow-intro">DevForge v9で88+ファイルを生成した後、<strong>実際に動くアプリを作るまでの一気通貫の手順</strong>を5フェーズで解説します。</p>'+
+      '<h3>① 基礎概念 — DevForgeの生成物を理解する</h3>'+
+      '<div class="workflow-concept"><p><strong>重要:</strong> DevForgeが生成するのは<strong class="workflow-highlight">設計ドキュメント</strong>であり、実行可能なアプリケーションコードではありません。</p>'+
+      '<p><strong>SDD（仕様駆動開発）の思想:</strong> <code>.spec/</code>がSSoT（信頼できる唯一の情報源）として機能します。</p>'+
+      '<div class="hg-flow"><span class="hg-n hg-b">DevForge<br>生成</span><span class="hg-a">→</span><span class="hg-n hg-c">AIツールに<br>投入</span><span class="hg-a">→</span><span class="hg-n hg-p">実コード<br>生成</span><span class="hg-a">→</span><span class="hg-n hg-g">動くアプリ<br>完成</span></div></div>'+
+      '<h4>88+ファイルの全体像</h4>'+
+      '<table class="workflow-files"><tr><th>カテゴリ</th><th>内容</th><th>ファイル数</th></tr>'+
+      '<tr><td>.spec/</td><td>仕様駆動開発の5点セット</td><td>5</td></tr>'+
+      '<tr><td>.devcontainer/</td><td>Docker開発環境</td><td>4</td></tr>'+
+      '<tr><td>.mcp/</td><td>Model Context Protocol設定</td><td>3</td></tr>'+
+      '<tr><td>AIルール</td><td>10+ツール対応（Cursor, Claude Code等）</td><td>12+</td></tr>'+
+      '<tr><td>docs/</td><td>40種類の仕様書・設計書</td><td>40</td></tr>'+
+      '<tr><td>roadmap/</td><td>学習パス</td><td>9</td></tr>'+
+      '<tr><td>共通</td><td>README, LICENSE等</td><td>4</td></tr></table>'+
+      '<h3>② 準備 — 生成直後にやること</h3>'+
+      '<ol class="workflow-steps">'+
+      '<li><strong>監査結果の確認</strong><br>生成後のチャットパネルに表示される<code>❌ エラー</code> / <code>⚠️ 警告</code>をチェック。互換性問題や設定ミスがないか確認します。</li>'+
+      '<li><strong>バックアップ（重要！）</strong><br><code>📦 ZIPダウンロード</code> + <code>📤 JSONエクスポート</code>の2段構え。<span class="workflow-warn">localStorageのみなのでデータ消失リスクあり</span>。</li>'+
+      '<li><strong>開発環境構築</strong><br>'+
+      '<strong>Option A（推奨）:</strong> ZIP解凍 → VS Code/Cursorで開く → DevContainerが自動構築<br>'+
+      '<strong>Option B:</strong> 既存プロジェクトにファイルをコピー</li>'+
+      '<li><strong>AIツール設定</strong><br>以下の表を参考に設定:</li></ol>'+
+      '<table class="workflow-ai-tools"><tr><th>AIツール</th><th>自動読込ファイル</th><th>追加設定</th></tr>'+
+      '<tr><td>Cursor</td><td>.cursor/rules</td><td>なし</td></tr>'+
+      '<tr><td>Claude Code</td><td>CLAUDE.md</td><td>なし</td></tr>'+
+      '<tr><td>Windsurf</td><td>.windsurfrules</td><td>なし</td></tr>'+
+      '<tr><td>Cline</td><td>.clinerules</td><td>なし</td></tr>'+
+      '<tr><td>Copilot</td><td>copilot-instructions.md</td><td>.github/に配置</td></tr>'+
+      '<tr><td>その他</td><td>AI_BRIEF.md</td><td>手動貼付</td></tr></table>'+
+      '<p class="workflow-note">💡 MCP設定: <code>mcp-config.json</code>をプロジェクトルートに配置</p>'+
+      '<h3>③ 手順 — 5フェーズ開発ワークフロー</h3>'+
+      '<div class="workflow-phases">'+
+      '<div class="workflow-phase"><h4>Phase A: プロジェクト理解（Day 1）</h4>'+
+      '<ul><li><strong>ファイル読み順:</strong> <code>constitution.md</code> → <code>specification.md</code> → <code>technical-plan.md</code></li>'+
+      '<li><strong>Dashboardチェック:</strong> シナジースコア / モデル適合 / ヘルススコアを確認</li>'+
+      '<li><strong>設計確認:</strong> ER図（docs/04）+ API設計（docs/05）を把握</li></ul></div>'+
+      '<div class="workflow-phase"><h4>Phase B: 環境構築（Day 1-2）</h4>'+
+      '<ul><li><strong>DevContainerパス:</strong> フォルダを開く → "Reopen in Container"</li>'+
+      '<li><strong>手動パス:</strong> package.json scripts + .env.exampleを参考に構築</li></ul></div>'+
+      '<div class="workflow-phase"><h4>Phase C: AIと一緒に開発（Day 2+）</h4>'+
+      '<p><strong>アプローチ1: シンプル</strong></p>'+
+      '<div class="hg-flow"><span class="hg-n hg-c">Ctrl+Shift+C<br>全コピー</span><span class="hg-a">→</span><span class="hg-n hg-p">AIに貼付</span><span class="hg-a">→</span><span class="hg-n hg-g">"Issue #1を<br>実装して"</span></div>'+
+      '<p><strong>アプローチ2: 構造化</strong></p>'+
+      '<ul><li>ランチャーの🔍レビュー → 🚀MVP実装テンプレートを活用</li>'+
+      '<li><code>tasks.md</code>のIssue番号順に進める</li>'+
+      '<li>タスクループ: <code>タスク読む → 実装 → テスト → 完了マーク</code></li>'+
+      '<li><code>verification.md</code>で受入基準チェック</li></ul>'+
+      '<h5>推奨テンプレート順序</h5>'+
+      '<ol class="workflow-template-order"><li>🔍 仕様レビュー</li><li>🚀 MVP実装</li><li>🧪 テスト生成</li><li>🔒 セキュリティ監査</li><li>📝 ドキュメント更新</li></ol></div>'+
+      '<div class="workflow-phase"><h4>Phase D: 品質保証</h4>'+
+      '<ul><li>ランチャーテンプレート: 🧪テスト → 🔒セキュリティ → ♿a11y</li>'+
+      '<li>参照先: docs/07, docs/28, docs/33</li>'+
+      '<li>エラーログ: docs/25_error_logs.mdに記録</li></ul></div>'+
+      '<div class="workflow-phase"><h4>Phase E: リリース</h4>'+
+      '<ul><li>docs/24_progress.mdで進捗更新</li>'+
+      '<li>docs/09_release_checklist.mdに従う</li>'+
+      '<li>CI/CD: .github/workflows/ci.ymlが事前設定済み</li></ul>'+
+      '<div class="hg-flow"><span class="hg-n hg-b">Build</span><span class="hg-a">→</span><span class="hg-n hg-c">Test</span><span class="hg-a">→</span><span class="hg-n hg-p">Fix</span><span class="hg-a">→</span><span class="hg-n hg-g">Release</span><span class="hg-a">→</span><span class="hg-n">Monitor</span></div></div></div>'+
+      '<h3>④ 応用 — 上級テクニック</h3>'+
+      '<ul class="workflow-advanced"><li><strong>テンプレートチェーン:</strong> ランチャーで複数テンプレートを順次実行（→ 📋プロンプトマニュアル参照）</li>'+
+      '<li><strong>マルチエージェント開発:</strong> AGENTS.md + Claude Code Subagents</li>'+
+      '<li><strong>再生成:</strong> スコープ変更後、再生成ボタン（回答は保持）</li>'+
+      '<li><strong>チームオンボーディング:</strong> ロードマップ（柱⑦）で新メンバー育成</li>'+
+      '<li><strong>グロース戦略:</strong> docs/41_growth_intelligence.md活用</li>'+
+      '<li><strong>ゴール再検証:</strong> docs/29-30でピボット時の方向性確認</li></ul>'+
+      '<h3>⑤ よくある失敗と回避策</h3>'+
+      '<table class="workflow-pitfalls"><tr><th>失敗</th><th>原因</th><th>対策</th></tr>'+
+      '<tr><td>ファイルを直接実行しようとする</td><td>DevForgeの出力を誤解</td><td>設計ドキュメントをAIに投入してコード生成</td></tr>'+
+      '<tr><td>バックアップしない</td><td>localStorageに依存</td><td>毎回ZIP+JSONエクスポート</td></tr>'+
+      '<tr><td>互換性警告を無視</td><td>ダッシュボード未確認</td><td>⚠️警告に対処してから開発開始</td></tr>'+
+      '<tr><td>全ファイルを一度にAIに投入</td><td>コンテキストウィンドウ超過</td><td>ランチャーのフォルダ選択でトークン管理</td></tr>'+
+      '<tr><td>tasks.mdを使わない</td><td>非構造的なAI指示</td><td>Issue番号順に実装</td></tr>'+
+      '<tr><td>verification.mdをスキップ</td><td>受入基準なし</td><td>機能ごとにverification.mdで確認</td></tr>'+
+      '<tr><td>途中でスキルレベル変更</td><td>質問選択肢の不整合</td><td>最初に正しく設定</td></tr>'+
+      '<tr><td>MCP未設定</td><td>AIツール連携が不完全</td><td>mcp-config.jsonを配置</td></tr></table>'+
+      '<h3>⑥ まとめ — クイックリファレンス</h3>'+
+      '<div class="workflow-summary"><h4>10項目チェックリスト</h4>'+
+      '<ol class="workflow-checklist"><li>✅ 監査結果確認（❌ / ⚠️ なし）</li><li>✅ ZIP + JSONバックアップ済み</li>'+
+      '<li>✅ DevContainer起動 or 手動環境構築完了</li><li>✅ AIツールにルールファイル認識済み</li>'+
+      '<li>✅ constitution.md → specification.md 読了</li><li>✅ tasks.mdを開いてタスク把握</li>'+
+      '<li>✅ Issue #1から順次実装開始</li><li>✅ verification.mdで受入基準確認</li>'+
+      '<li>✅ テスト・セキュリティ監査実施</li><li>✅ リリースチェックリストで最終確認</li></ol>'+
+      '<h4>全体フロー図</h4>'+
+      '<div class="hg-flow"><span class="hg-n hg-b">生成</span><span class="hg-a">→</span><span class="hg-n hg-c">バックアップ</span><span class="hg-a">→</span><span class="hg-n hg-p">環境構築</span><span class="hg-a">→</span><span class="hg-n">仕様理解</span><span class="hg-a">→</span><span class="hg-n">AI開発</span><span class="hg-a">→</span><span class="hg-n">QA</span><span class="hg-a">→</span><span class="hg-n hg-g">リリース</span></div>'+
+      '<p class="workflow-footer"><button class="btn btn-p btn-sm" onclick="closeManual();showPostGenGuide(true)">🚀 レベル別ガイドを表示</button></p></div>'
+      :
+      '<h2>📘 Complete Post-Generation Workflow Guide</h2>'+
+      '<p class="guide-workflow-intro">After generating 88+ files with DevForge v9, follow this <strong>end-to-end workflow</strong> in 5 phases to build a working app.</p>'+
+      '<h3>① Fundamentals — Understanding DevForge Output</h3>'+
+      '<div class="workflow-concept"><p><strong>Important:</strong> DevForge generates <strong class="workflow-highlight">design documents</strong>, not runnable application code.</p>'+
+      '<p><strong>SDD (Spec-Driven Development) Philosophy:</strong> <code>.spec/</code> serves as your SSoT (Single Source of Truth).</p>'+
+      '<div class="hg-flow"><span class="hg-n hg-b">DevForge<br>Generate</span><span class="hg-a">→</span><span class="hg-n hg-c">Feed to<br>AI Tool</span><span class="hg-a">→</span><span class="hg-n hg-p">Generate<br>Real Code</span><span class="hg-a">→</span><span class="hg-n hg-g">Working<br>App</span></div></div>'+
+      '<h4>88+ Files Overview</h4>'+
+      '<table class="workflow-files"><tr><th>Category</th><th>Content</th><th>Files</th></tr>'+
+      '<tr><td>.spec/</td><td>SDD 5-point set</td><td>5</td></tr>'+
+      '<tr><td>.devcontainer/</td><td>Docker dev environment</td><td>4</td></tr>'+
+      '<tr><td>.mcp/</td><td>Model Context Protocol config</td><td>3</td></tr>'+
+      '<tr><td>AI Rules</td><td>10+ tool support (Cursor, Claude Code, etc.)</td><td>12+</td></tr>'+
+      '<tr><td>docs/</td><td>40 spec/design documents</td><td>40</td></tr>'+
+      '<tr><td>roadmap/</td><td>Learning paths</td><td>9</td></tr>'+
+      '<tr><td>Common</td><td>README, LICENSE, etc.</td><td>4</td></tr></table>'+
+      '<h3>② Preparation — What to Do Right After Generation</h3>'+
+      '<ol class="workflow-steps">'+
+      '<li><strong>Check Audit Results</strong><br>Review <code>❌ Errors</code> / <code>⚠️ Warnings</code> in the chat panel after generation. Fix compatibility issues or config errors.</li>'+
+      '<li><strong>Backup (Critical!)</strong><br><code>📦 Download ZIP</code> + <code>📤 Export JSON</code> in tandem. <span class="workflow-warn">Data only exists in localStorage = loss risk</span>.</li>'+
+      '<li><strong>Set Up Dev Environment</strong><br>'+
+      '<strong>Option A (Recommended):</strong> Extract ZIP → Open in VS Code/Cursor → DevContainer auto-builds<br>'+
+      '<strong>Option B:</strong> Copy files to existing project</li>'+
+      '<li><strong>Configure AI Tools</strong><br>Refer to the table below:</li></ol>'+
+      '<table class="workflow-ai-tools"><tr><th>AI Tool</th><th>Auto-Loaded File</th><th>Additional Setup</th></tr>'+
+      '<tr><td>Cursor</td><td>.cursor/rules</td><td>None</td></tr>'+
+      '<tr><td>Claude Code</td><td>CLAUDE.md</td><td>None</td></tr>'+
+      '<tr><td>Windsurf</td><td>.windsurfrules</td><td>None</td></tr>'+
+      '<tr><td>Cline</td><td>.clinerules</td><td>None</td></tr>'+
+      '<tr><td>Copilot</td><td>copilot-instructions.md</td><td>Place in .github/</td></tr>'+
+      '<tr><td>Others</td><td>AI_BRIEF.md</td><td>Paste manually</td></tr></table>'+
+      '<p class="workflow-note">💡 MCP Setup: Place <code>mcp-config.json</code> in project root</p>'+
+      '<h3>③ Workflow — 5-Phase Development Process</h3>'+
+      '<div class="workflow-phases">'+
+      '<div class="workflow-phase"><h4>Phase A: Project Understanding (Day 1)</h4>'+
+      '<ul><li><strong>Reading Order:</strong> <code>constitution.md</code> → <code>specification.md</code> → <code>technical-plan.md</code></li>'+
+      '<li><strong>Dashboard Check:</strong> Synergy Score / Model Fit / Health Score</li>'+
+      '<li><strong>Design Review:</strong> ER diagram (docs/04) + API design (docs/05)</li></ul></div>'+
+      '<div class="workflow-phase"><h4>Phase B: Environment Setup (Day 1-2)</h4>'+
+      '<ul><li><strong>DevContainer Path:</strong> Open folder → "Reopen in Container"</li>'+
+      '<li><strong>Manual Path:</strong> Follow package.json scripts + .env.example</li></ul></div>'+
+      '<div class="workflow-phase"><h4>Phase C: AI-Assisted Development (Day 2+)</h4>'+
+      '<p><strong>Approach 1: Simple</strong></p>'+
+      '<div class="hg-flow"><span class="hg-n hg-c">Ctrl+Shift+C<br>Copy All</span><span class="hg-a">→</span><span class="hg-n hg-p">Paste to<br>AI</span><span class="hg-a">→</span><span class="hg-n hg-g">"Implement<br>Issue #1"</span></div>'+
+      '<p><strong>Approach 2: Structured</strong></p>'+
+      '<ul><li>Use Launcher\'s 🔍 Review → 🚀 MVP Build templates</li>'+
+      '<li>Work through <code>tasks.md</code> in Issue# order</li>'+
+      '<li>Task Loop: <code>Read Task → Implement → Test → Mark Complete</code></li>'+
+      '<li>Check acceptance criteria in <code>verification.md</code></li></ul>'+
+      '<h5>Recommended Template Order</h5>'+
+      '<ol class="workflow-template-order"><li>🔍 Spec Review</li><li>🚀 MVP Build</li><li>🧪 Test Generation</li><li>🔒 Security Audit</li><li>📝 Doc Update</li></ol></div>'+
+      '<div class="workflow-phase"><h4>Phase D: Quality Assurance</h4>'+
+      '<ul><li>Launcher templates: 🧪 Test → 🔒 Security → ♿ a11y</li>'+
+      '<li>Reference: docs/07, docs/28, docs/33</li>'+
+      '<li>Error Log: Record in docs/25_error_logs.md</li></ul></div>'+
+      '<div class="workflow-phase"><h4>Phase E: Release</h4>'+
+      '<ul><li>Update progress in docs/24_progress.md</li>'+
+      '<li>Follow docs/09_release_checklist.md</li>'+
+      '<li>CI/CD: Pre-configured in .github/workflows/ci.yml</li></ul>'+
+      '<div class="hg-flow"><span class="hg-n hg-b">Build</span><span class="hg-a">→</span><span class="hg-n hg-c">Test</span><span class="hg-a">→</span><span class="hg-n hg-p">Fix</span><span class="hg-a">→</span><span class="hg-n hg-g">Release</span><span class="hg-a">→</span><span class="hg-n">Monitor</span></div></div></div>'+
+      '<h3>④ Advanced — Expert Techniques</h3>'+
+      '<ul class="workflow-advanced"><li><strong>Template Chaining:</strong> Execute multiple templates sequentially in Launcher (→ See 📋 Prompt Manual)</li>'+
+      '<li><strong>Multi-Agent Development:</strong> AGENTS.md + Claude Code Subagents</li>'+
+      '<li><strong>Regeneration:</strong> After scope changes, regenerate (answers preserved)</li>'+
+      '<li><strong>Team Onboarding:</strong> Use Roadmap (Pillar ⑦) for new members</li>'+
+      '<li><strong>Growth Strategy:</strong> Leverage docs/41_growth_intelligence.md</li>'+
+      '<li><strong>Goal Re-validation:</strong> Use docs/29-30 for pivot direction</li></ul>'+
+      '<h3>⑤ Common Pitfalls & Solutions</h3>'+
+      '<table class="workflow-pitfalls"><tr><th>Pitfall</th><th>Cause</th><th>Solution</th></tr>'+
+      '<tr><td>Trying to run files directly</td><td>Misunderstanding DevForge output</td><td>Feed design docs to AI to generate code</td></tr>'+
+      '<tr><td>Not backing up</td><td>Relying only on localStorage</td><td>ZIP + JSON export every time</td></tr>'+
+      '<tr><td>Ignoring compatibility warnings</td><td>Skipping Dashboard check</td><td>Address ⚠️ warnings before dev</td></tr>'+
+      '<tr><td>Feeding all files to AI at once</td><td>Context window overflow</td><td>Use Launcher folder selection for token mgmt</td></tr>'+
+      '<tr><td>Not using tasks.md</td><td>Unstructured AI instructions</td><td>Implement in Issue# order</td></tr>'+
+      '<tr><td>Skipping verification.md</td><td>No acceptance criteria</td><td>Check verification.md per feature</td></tr>'+
+      '<tr><td>Changing skill level mid-project</td><td>Question option inconsistency</td><td>Set correctly at start</td></tr>'+
+      '<tr><td>MCP not configured</td><td>Incomplete AI tool integration</td><td>Place mcp-config.json</td></tr></table>'+
+      '<h3>⑥ Summary — Quick Reference</h3>'+
+      '<div class="workflow-summary"><h4>10-Item Checklist</h4>'+
+      '<ol class="workflow-checklist"><li>✅ Audit results reviewed (no ❌ / ⚠️)</li><li>✅ ZIP + JSON backup done</li>'+
+      '<li>✅ DevContainer running or manual env setup complete</li><li>✅ AI tool recognizes rule files</li>'+
+      '<li>✅ Read constitution.md → specification.md</li><li>✅ Opened tasks.md and identified tasks</li>'+
+      '<li>✅ Started implementing from Issue #1</li><li>✅ Checked acceptance criteria in verification.md</li>'+
+      '<li>✅ Ran tests & security audit</li><li>✅ Final check with release checklist</li></ol>'+
+      '<h4>Overall Flow Diagram</h4>'+
+      '<div class="hg-flow"><span class="hg-n hg-b">Generate</span><span class="hg-a">→</span><span class="hg-n hg-c">Backup</span><span class="hg-a">→</span><span class="hg-n hg-p">Setup Env</span><span class="hg-a">→</span><span class="hg-n">Understand<br>Specs</span><span class="hg-a">→</span><span class="hg-n">AI Dev</span><span class="hg-a">→</span><span class="hg-n">QA</span><span class="hg-a">→</span><span class="hg-n hg-g">Release</span></div>'+
+      '<p class="workflow-footer"><button class="btn btn-p btn-sm" onclick="closeManual();showPostGenGuide(true)">🚀 Show Level Guide</button></p></div>'
+    },
     {id:'launcher-guide',title:_ja?'📋 プロンプトマニュアル':'📋 Prompt Manual',body:_ja?
       '<h2>🤖 AIプロンプトランチャー 使い方マニュアル</h2>'+
       '<h3>🔧 仕組み (How It Works)</h3>'+
@@ -401,6 +580,7 @@ function showManual(sec){
       '<p>localStorageの上限は約5MBです。20〜30プロジェクトで上限に達する可能性があります。古いプロジェクトはエクスポート後に削除してください。</p>'+
       '<h3>🟡 生成ファイルについて</h3>'+
       '<p>生成される88+ファイルは<strong>設計ドキュメント</strong>（SDD仕様書・DevContainer設定・AIルール等）です。npm installで即座に動くアプリケーションコードではありません。Claude Code / Cursor等のAIツールに入力して実コードを生成する運用が前提です。</p>'+
+      '<p class="workflow-ref">📘 <strong>詳しい手順は <a href="#" onclick="event.preventDefault();showManual(\'workflow\')">生成後ワークフローガイド</a> を参照</strong></p>'+
       '<h3>🟡 スキルレベル</h3>'+
       '<p>スキルレベルにより表示される選択肢が変わります。途中変更すると既回答との不整合が起きうるため、<strong>最初に正しく設定</strong>してください。</p>'+
       '<h3>🟡 言語切り替え</h3>'+
@@ -417,6 +597,7 @@ function showManual(sec){
       '<p>localStorage limit is ~5MB. You may reach the limit with 20-30 projects. Export and delete old projects.</p>'+
       '<h3>🟡 Generated Files</h3>'+
       '<p>88+ generated files are <strong>design documents</strong> (SDD specs, DevContainer configs, AI rules). They are not runnable app code. Feed them to AI tools like Claude Code / Cursor to generate actual code.</p>'+
+      '<p class="workflow-ref">📘 <strong>For detailed workflow, see <a href="#" onclick="event.preventDefault();showManual(\'workflow\')">Post-Gen Workflow Guide</a></strong></p>'+
       '<h3>🟡 Skill Level</h3>'+
       '<p>Changing skill level mid-project may cause inconsistencies with existing answers. <strong>Set it correctly at the start.</strong></p>'+
       '<h3>🟡 Language Switch</h3>'+

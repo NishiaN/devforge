@@ -55,7 +55,8 @@ function showPostGenGuide(force){
     ${progBar}
     <div class="guide-steps">${stepsHtml}</div>
     <div class="guide-actions">
-      <button class="btn btn-s btn-sm" onclick="this.closest('.guide-overlay').remove();showManual('guide')">${_ja?'📖 詳細ガイドを読む':'📖 Full Guide'}</button>
+      <button class="btn btn-s btn-sm" onclick="this.closest('.guide-overlay').remove();showManual('guide')">${_ja?'📖 詳細ガイド':'📖 Full Guide'}</button>
+      <button class="btn btn-s btn-sm" onclick="this.closest('.guide-overlay').remove();showManual('workflow')">${_ja?'📘 ワークフロー':'📘 Workflow'}</button>
       <button class="btn btn-p btn-sm" onclick="this.closest('.guide-overlay').remove()">${_ja?'✨ 始める':'✨ Let\'s Go'}</button>
     </div>
   </div>`;
