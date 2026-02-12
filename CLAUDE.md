@@ -7,20 +7,20 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 # DevForge v9.0
 
 ## Architecture
-- **43 modules** in `src/` → `node build.js` → single `devforge-v9.html` (~883KB)
+- **43 modules** in `src/` → `node build.js` → single `devforge-v9.html` (~903KB)
 - Vanilla JS, no frameworks. CSS custom properties. CDN: marked.js, mermaid.js, JSZip.
 - **AI Development OS**: Generates 86+ files including context intelligence, operations playbooks, and business models
 
 ## Build & Test
 ```bash
 # Build
-node build.js              # Produces devforge-v9.html (~883KB)
+node build.js              # Produces devforge-v9.html (~903KB)
 node build.js --no-minify  # Skip minification (debug)
 node build.js --report     # Show size report
 node build.js --check-css  # Validate CSS custom properties
 
 # Test
-npm test                   # Run all tests (196 tests, all passing)
+npm test                   # Run all tests (197 tests, all passing)
 npm run test:watch         # Watch mode for test development
 node --test test/gen-coherence.test.js  # Run single test file
 node --test test/data-coverage.test.js  # Run data integrity tests
@@ -44,7 +44,7 @@ npm run check              # Syntax check extracted JS
 5. **Write** to `devforge-v9.html`
 6. **Validate** size ≤1000KB (warn if exceeded)
 
-**Current Status:** 883KB / 1000KB limit (117KB remaining budget for future expansions)
+**Current Status:** 903KB / 1000KB limit (97KB remaining budget for future expansions)
 
 ### ⚠️ Critical: Minification Limitations
 
@@ -847,7 +847,7 @@ test('pluralize', () => {
 
 ## Size Budget Management
 
-DevForge has a strict **1000KB size limit** for the built HTML file. Current size: **883KB** (117KB under budget).
+DevForge has a strict **1000KB size limit** for the built HTML file. Current size: **903KB** (97KB under budget).
 
 ### Expansion Strategy
 When adding new features, follow the "Balanced Expansion" approach:
@@ -857,7 +857,7 @@ When adding new features, follow the "Balanced Expansion" approach:
 4. **Test frequently** with `node build.js --report`
 
 ### Recent Expansion (Feb 2026)
-- **Current size**: 883KB total (including Pillar ⑪)
+- **Current size**: 903KB total (including Pillar ⑩ enhancements)
 - **Added**:
   - 5 new presets (CRM, Social, Logistics, Survey, Job Board)
   - 8 new domains (AI, Automation, Event, Gamify, Collab, DevTool, Creator, Newsletter)
@@ -878,7 +878,16 @@ When adding new features, follow the "Balanced Expansion" approach:
   - ACCESSIBILITY: Added aria-selected to pillar tabs, aria-checked to skill picker
   - TESTS: Added 8 domains to test coverage, added p5/p9 to gen-coherence test
   - Result: All 193 tests passing, 829KB build size
-- **Remaining budget**: 171KB for future enhancements
+- **Pillar ⑩ Enhancement (Feb 12, 2026)**: +5KB — AI visibility & intelligent planning
+  - AI VISIBILITY: Added docs/29 + docs/30 to File Selection Matrix, Context Loading Strategy, Agent Specialization Matrix
+  - DYNAMIC DATES: Gantt charts now calculate from current date (+7d to +70d phases)
+  - STACK-AWARE: Dependency chains adapt to architecture (BaaS/BFF/Traditional)
+  - DOMAIN RISKS: Risk mitigation strategies pulled from DOMAIN_PLAYBOOK prevent patterns
+  - KPI LOOP: P5 Phase 4 monitors P10 goal KPIs with feedback to docs/30 gap matrix
+  - SKILL: Added "Goal Reversal" core skill to catalog
+  - TESTS: Added REVERSE_FLOW_MAP coverage test for 24 domains
+  - Result: All 197 tests passing, 903KB build size
+- **Remaining budget**: 97KB for future enhancements
 
 ### Size Optimization Tips
 - Reuse common patterns (see `_U`, `_SA`, `_SD`, `_T`, `_D`, `_CN`, `_M`, `_B`, etc. in common.js)
