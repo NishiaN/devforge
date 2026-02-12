@@ -14,7 +14,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Build & Test
 ```bash
 # Build
-node build.js              # Produces devforge-v9.html (~632KB)
+node build.js              # Produces devforge-v9.html (~827KB)
 node build.js --no-minify  # Skip minification (debug)
 node build.js --report     # Show size report
 node build.js --check-css  # Validate CSS custom properties
@@ -44,7 +44,25 @@ npm run check              # Syntax check extracted JS
 5. **Write** to `devforge-v9.html`
 6. **Validate** size ≤1000KB (warn if exceeded)
 
-**Current Status:** 770KB / 1000KB limit (~230KB remaining budget for future expansions)
+**Current Status:** 827KB / 1000KB limit (173KB remaining budget for future expansions)
+
+### ⚠️ Critical: Minification Limitations
+
+**Block/line comment removal is DISABLED** (as of Feb 2026) due to syntax-breaking bugs:
+
+**Problem:** Regex-based comment removal doesn't understand JavaScript string context.
+- Generated docs contain CSS/markdown with `/* ... */` and `//` inside strings
+- Example: `"/* Tailwind config */"` or `"// vitest.config.js"`
+- Regex `/\/\*[\s\S]*?\*\//g` would match across string boundaries, breaking syntax
+
+**Solution:** Only remove module headers (`/* === file.js === */`) and collapse blank lines.
+- Trade-off: +57KB build size vs guaranteed correctness
+- **DO NOT re-enable block/line comment removal without context-aware parsing**
+
+**If you need aggressive minification:**
+1. Use a proper JS parser (e.g., Terser, esbuild)
+2. Test with `node --check` on extracted JS
+3. Verify all 193 tests pass
 
 ### Module Load Order (Critical!)
 ```javascript
@@ -668,7 +686,10 @@ When users complete the wizard, DevForge generates **83+ files** (base: 73 files
 - **Enhanced AI_BRIEF.md**: Added Context Loading Strategy (phase-based file loading priorities), token budget allocation (40% task, 30% spec, 20% progress, 10% buffer), new files reference
 - **Enhanced AGENTS.md**: Added Agent Specialization Matrix (6 agent types with token budgets), Handoff Protocol (YAML format), Summary-Only Import principle
 - File count increased from 72+ to 83+ (+11 new files)
-- Size impact: 632KB → 770KB (+138KB, 230KB budget remaining)
+- Size impact: 632KB → 827KB (+195KB total from v9.0 baseline)
+  - AI Development OS expansion: +138KB (632KB → 770KB)
+  - Minification safety fix: +57KB (770KB → 827KB, disabled comment removal)
+- Budget remaining: 173KB
 
 ## Test Architecture
 | File | Tests | Purpose |
@@ -738,7 +759,7 @@ test('pluralize', () => {
 
 ## Size Budget Management
 
-DevForge has a strict **1000KB size limit** for the built HTML file. Current size: **632KB** (~368KB under budget).
+DevForge has a strict **1000KB size limit** for the built HTML file. Current size: **827KB** (173KB under budget).
 
 ### Expansion Strategy
 When adding new features, follow the "Balanced Expansion" approach:
@@ -755,11 +776,12 @@ When adding new features, follow the "Balanced Expansion" approach:
   - MCP expansion (52→240 lines, backend-specific, domain recommendations)
   - 18 new entities, 26 ER relationships, 10 feature patterns
   - Accessibility improvements (announce() wiring)
-- **Bug Fix Package (Feb 12, 2026)**: +1KB — 16 critical/high/medium fixes
-  - CRITICAL: p10-reverse.js += operators (18 fixes), Contact entity collision
-  - HIGH: devtool targetEn, number updates, CSS variables, Health score, MCP domains
-  - MEDIUM: URL hash security, import sanitization, aria-selected, error handlers
-- **Remaining budget**: 368KB for future enhancements
+- **Bug Fix Package (Feb 12, 2026)**: +57KB — SyntaxError fix + minification safety
+  - CRITICAL: Missing `+=` operator in p5-quality.js (line 229)
+  - CRITICAL: Disabled unsafe block/line comment removal in build.js
+  - Context: Regex-based minification was removing CSS comments inside JS strings
+  - Trade-off: +57KB build size to guarantee syntax correctness
+- **Remaining budget**: 173KB for future enhancements
 
 ### Size Optimization Tips
 - Reuse common patterns (see `_U`, `_SA`, `_SD`, `_T`, `_D`, `_CN`, `_M`, `_B`, etc. in common.js)
