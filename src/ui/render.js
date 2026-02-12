@@ -23,12 +23,15 @@ function renderChips(zone,q,multi,onSubmit,withVoice){
   const gr=document.createElement('div');gr.className='cgrid';
   (q.chips||[]).forEach(ch=>{
     const c=document.createElement('div');c.className='chip';
+    c.setAttribute('tabindex','0');
+    c.setAttribute('role',multi?'checkbox':'option');
     if(multi){const ck=document.createElement('span');ck.className='ck';ck.textContent='✓';c.appendChild(ck);}
     c.appendChild(document.createTextNode(ch));
     c.onclick=()=>{
       if(multi){if(sel.has(ch)){sel.delete(ch);c.classList.remove('on')}else{sel.add(ch);c.classList.add('on')}}
       else{onSubmit(ch);}
     };
+    c.onkeydown=(e)=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();c.click();}};
     gr.appendChild(c);
   });
   cz.appendChild(gr);zone.appendChild(cz);
@@ -66,9 +69,12 @@ function renderOpts(zone,q,onSubmit){
   const cards=document.createElement('div');cards.className='ocards';
   (q.options||[]).forEach(o=>{
     const c=document.createElement('div');c.className='ocard';
+    c.setAttribute('tabindex','0');
+    c.setAttribute('role','option');
     const h=document.createElement('h5');h.textContent=typeof o==='string'?o:o.label;c.appendChild(h);
     if(o.desc){const p=document.createElement('p');p.textContent=o.desc;c.appendChild(p);}
     c.onclick=()=>onSubmit(typeof o==='string'?o:o.label);
+    c.onkeydown=(e)=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();c.click();}};
     cards.appendChild(c);
   });
   zone.appendChild(cards);

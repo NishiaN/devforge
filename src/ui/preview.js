@@ -117,9 +117,10 @@ function buildFileTree(){
     files.push({folder:true,name:'.devcontainer'});
     ['devcontainer.json','Dockerfile','docker-compose.yml','post-create.sh'].forEach(f=>
       files.push({name:'  '+f,path:'.devcontainer/'+f}));
+    files.push({name:'.env.example',path:'.env.example'});
   } else if(pillar===2){ // MCP
     files.push({folder:true,name:'.mcp'});
-    ['project-context.md','tools-manifest.json'].forEach(f=>
+    ['project-context.md','tools-manifest.json','README.md'].forEach(f=>
       files.push({name:'  '+f,path:'.mcp/'+f}));
     files.push({name:'mcp-config.json',path:'mcp-config.json'});
   } else if(pillar===3){ // AI Rules
@@ -158,6 +159,9 @@ function buildFileTree(){
     }
   }
   // Common files
+  files.push({name:'───────────',path:''});
+  files.push({folder:true,name:'.github/workflows'});
+  files.push({name:'  ci.yml',path:'.github/workflows/ci.yml'});
   files.push({name:'───────────',path:''});
   files.push({folder:true,name:'docs'});
   ['01_project_overview','02_requirements','03_architecture','04_er_diagram',

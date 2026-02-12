@@ -1,7 +1,7 @@
 # DevForge v9.0 — 43-module web app → builds to single HTML (~980KB / 1200KB limit)
 
 ## Build: `node build.js` (produces devforge-v9.html)
-## Test: `npm test` (197 tests, all passing)
+## Test: `npm test` (209 tests, all passing)
 ## Verify: `npm run check`
 
 ## Rules
@@ -27,6 +27,6 @@
 - src/generators/p11-implguide.js — Implementation playbook, AI dev runbook
 - src/data/presets.js — 41 project presets (LMS, EC, SaaS, CRM, etc.)
 - src/data/compat-rules.js — 45 compatibility validation rules
-- test/ — 197 tests (run `npm test` before committing)
+- test/ — 209 tests (run `npm test` before committing)
 
 ## For comprehensive guidance, see CLAUDE.md (1000+ lines, includes bug patterns, security best practices, size budget management)

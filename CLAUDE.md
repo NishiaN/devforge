@@ -14,7 +14,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Build & Test
 ```bash
 # Build
-node build.js              # Produces devforge-v9.html (~903KB)
+node build.js              # Produces devforge-v9.html (~980KB)
 node build.js --no-minify  # Skip minification (debug)
 node build.js --report     # Show size report
 node build.js --check-css  # Validate CSS custom properties

@@ -223,7 +223,7 @@ const DOMAIN_ENTITIES={
   portfolio:{core:['User','Project','Skill','Experience','ContactMessage'],warn:['Product','Order','Cart','Payment'],suggest:{}},
   tool:{core:['User','Workspace','Task','Setting','Log'],warn:['Product','Order','Cart'],suggest:{}},
   iot:{core:['User','Device','Sensor','SensorData','Alert','Dashboard'],warn:['Product','Order','Cart'],suggest:{}},
-  realestate:{core:['User','Property','Category','Viewing','Contract','Agent'],warn:['Product','Order','Cart'],suggest:{Product:'Property',Order:'Viewing'}},
+  realestate:{core:['User','Property','Category','Viewing','Contract','RealEstateAgent'],warn:['Product','Order','Cart'],suggest:{Product:'Property',Order:'Viewing'}},
   legal:{core:['User','Contract','Template','Review','Client','Document'],warn:['Product','Order','Cart'],suggest:{}},
   hr:{core:['User','JobPosting','Applicant','Interview','Evaluation','Department'],warn:['Product','Order','Cart'],suggest:{}},
   fintech:{core:['User','Account','Transaction','Transfer','Card','Statement'],warn:['Post','Comment','Course'],suggest:{}},
@@ -474,6 +474,12 @@ const ENTITY_COLUMNS={
   Transfer:['from_account:UUID:FK(Account) NOT NULL:送金元口座:From account','to_account:UUID:FK(Account) NOT NULL:送金先口座:To account','amount:DECIMAL(12,2):NOT NULL:金額:Amount','currency:VARCHAR(3):DEFAULT \'JPY\':通貨:Currency','reference:VARCHAR(255)::参照番号:Reference',_SP],
   Card:['account_id:UUID:FK(Account) NOT NULL:口座ID:Account ID','card_number:VARCHAR(20):NOT NULL:カード番号:Card number','card_type:VARCHAR(20)::カード種別:Card type','expiry_date:VARCHAR(7)::有効期限:Expiry date',_SA,'credit_limit:DECIMAL(10,2)::限度額:Credit limit'],
   Statement:['account_id:UUID:FK(Account) NOT NULL:口座ID:Account ID','period_start:DATE:NOT NULL:期間開始:Period start','period_end:DATE:NOT NULL:期間終了:Period end','opening_balance:DECIMAL(12,2):NOT NULL:期首残高:Opening balance','closing_balance:DECIMAL(12,2):NOT NULL:期末残高:Closing balance','statement_url:TEXT::明細書URL:Statement URL'],
+  // ── B-1 fix: Missing entities ──
+  Schedule:[_U,'technician_id:UUID:FK(User) NOT NULL:技術者ID:Technician ID','work_order_id:UUID:FK(WorkOrder) NOT NULL:作業指示ID:Work Order ID','scheduled_date:DATE:NOT NULL:予定日:Scheduled Date','start_time:TIME::開始時刻:Start Time','end_time:TIME::終了時刻:End Time',_SA],
+  Feedback:[_U,'article_id:UUID:FK(Article) NOT NULL:記事ID:Article ID','rating:INTEGER:CHECK(rating BETWEEN 1 AND 5):評価:Rating','comment:TEXT::コメント:Comment',_SA],
+  // ── B-2 fix: Entity name collision resolution ──
+  SupportTicket:[_U,'subject:VARCHAR(255):NOT NULL:件名:Subject',_D,'priority_id:UUID:FK(Priority) NOT NULL:優先度ID:Priority ID','category_id:UUID:FK(Category):カテゴリID:Category ID','assigned_agent_id:UUID:FK(User):担当者ID:Assigned Agent ID',_SP,'sla_id:UUID:FK(SLA):SLA ID:SLA ID'],
+  RealEstateAgent:[_U,'agent_name:VARCHAR(255):NOT NULL:エージェント名:Agent name','license_number:VARCHAR(100)::免許番号:License number','company:VARCHAR(255)::所属会社:Company','phone:VARCHAR(50)::電話:Phone',_SA,'rating:DECIMAL(3,2)::評価:Rating'],
 };
 
 // ═══ Entity REST method restrictions ═══

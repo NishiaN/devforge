@@ -4,7 +4,7 @@ window.onerror=(msg,src,line)=>{console.error('DevForge error:',{msg,src,line});
 window.onunhandledrejection=e=>{console.error('Unhandled:',e.reason);toast('⚠️ '+(e.reason?.message||e.reason));};
 let _mermaidReady=false;let _mermaidLoading=false;
 let theme=_lsGet('devforge-theme')||'dark';
-function _initMermaidTheme(){try{mermaid.initialize({startOnLoad:false,theme:theme==='light'?'default':'dark',securityLevel:'loose'});}catch(e){}}
+function _initMermaidTheme(){try{mermaid.initialize({startOnLoad:false,theme:theme==='light'?'default':'dark',securityLevel:'strict'});}catch(e){}}
 function loadMermaid(cb){
   if(_mermaidReady){cb();return;}
   if(_mermaidLoading){setTimeout(()=>loadMermaid(cb),200);return;}
@@ -45,8 +45,8 @@ function applyLang(){
   statLbls.forEach((el,i)=>{if(i<4)el.textContent=ja?slJa[i]:slEn[i];});
   // Info cards
   const icards=document.querySelectorAll('.icard');
-  const icJa=[['📝 86+ファイル生成','SDD仕様書・Docker・MCP・AIルール10種・ロードマップ9種・仕様書40種'],['🧪 11の柱','SDD・DevContainer・MCP・AIルール・並列探索・Dashboard・ロードマップ・AIランチャー・デザインシステム・リバースEng・実装ガイド'],['📱 モバイル対応','Expo / React Native 開発パス・EAS Build・OTA更新'],['🤖 AI自律開発','Vibe Coding・マルチAgent・Claude Code Subagents'],['💳 決済・CMS・EC','Stripe・microCMS・Medusa・Shopify Hydrogen'],['📦 フルエクスポート','ZIP・PDF・全ファイル結合コピー・URLシェア']];
-  const icEn=[['📝 86+ File Generation','SDD specs, Docker, MCP, 10 AI rules, 9 roadmaps, 40 specs'],['🧪 11 Pillars','SDD, DevContainer, MCP, AI Rules, Explorer, Dashboard, Roadmap, AI Launcher, Design System, Reverse Eng, Impl Guide'],['📱 Mobile Support','Expo / React Native dev path, EAS Build, OTA updates'],['🤖 AI Autonomous Dev','Vibe Coding, Multi-Agent, Claude Code Subagents'],['💳 Payment/CMS/EC','Stripe, microCMS, Medusa, Shopify Hydrogen'],['📦 Full Export','ZIP, PDF, Copy All Files, URL Share']];
+  const icJa=[['📝 88+ファイル生成','SDD仕様書・Docker・MCP・AIルール10種・ロードマップ9種・仕様書40種'],['🧪 11の柱','SDD・DevContainer・MCP・AIルール・並列探索・Dashboard・ロードマップ・AIランチャー・デザインシステム・リバースEng・実装ガイド'],['📱 モバイル対応','Expo / React Native 開発パス・EAS Build・OTA更新'],['🤖 AI自律開発','Vibe Coding・マルチAgent・Claude Code Subagents'],['💳 決済・CMS・EC','Stripe・microCMS・Medusa・Shopify Hydrogen'],['📦 フルエクスポート','ZIP・PDF・全ファイル結合コピー・URLシェア']];
+  const icEn=[['📝 88+ File Generation','SDD specs, Docker, MCP, 10 AI rules, 9 roadmaps, 40 specs'],['🧪 11 Pillars','SDD, DevContainer, MCP, AI Rules, Explorer, Dashboard, Roadmap, AI Launcher, Design System, Reverse Eng, Impl Guide'],['📱 Mobile Support','Expo / React Native dev path, EAS Build, OTA updates'],['🤖 AI Autonomous Dev','Vibe Coding, Multi-Agent, Claude Code Subagents'],['💳 Payment/CMS/EC','Stripe, microCMS, Medusa, Shopify Hydrogen'],['📦 Full Export','ZIP, PDF, Copy All Files, URL Share']];
   icards.forEach((el,i)=>{if(i<6){const d=ja?icJa[i]:icEn[i];const h4=el.querySelector('h4');const p=el.querySelector('p');if(h4)h4.textContent=d[0];if(p)p.textContent=d[1];}});
   // Pillar badges
   const pbadges=document.querySelectorAll('.pbadge');
@@ -104,6 +104,10 @@ applyTheme();
 initPresets();
 initVoice();
 applyLang();
+// D-2: Add keyboard support for skill cards
+document.querySelectorAll('.skcard').forEach(el=>{
+  el.onkeydown=(e)=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();el.click();}};
+});
 // Load from URL if shared
 (function loadFromURL(){
   try{
@@ -119,9 +123,9 @@ applyLang();
         });
         S.answers=data.answers;
       }
-      if(data.preset)S.preset=data.preset;
-      if(data.skill)S.skill=data.skill;
-      if(data.lang)S.lang=data.lang;
+      if(data.preset&&typeof data.preset==='string')S.preset=data.preset;
+      if(data.skill&&['beginner','intermediate','pro'].includes(data.skill))S.skill=data.skill;
+      if(data.lang&&['ja','en'].includes(data.lang))S.lang=data.lang;
       save();location.hash='';location.reload();
     }
   }catch(e){}
