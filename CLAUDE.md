@@ -42,9 +42,9 @@ npm run check              # Syntax check extracted JS
    - JS: basic minification (not obfuscation)
 4. **Inject** into `template.html` structure
 5. **Write** to `devforge-v9.html`
-6. **Validate** size ≤1000KB (warn if exceeded)
+6. **Validate** size ≤1200KB (warn if exceeded)
 
-**Current Status:** 980KB / 1000KB limit (20KB remaining budget for future expansions)
+**Current Status:** 980KB / 1200KB limit (220KB remaining budget for future expansions)
 
 ### ⚠️ Critical: Minification Limitations
 
@@ -567,14 +567,14 @@ function genPillarN_Name(a, pn) {
 
 ### 6. Size Budget Check
 - Estimate new generator size (~10-20KB typical)
-- Run `node build.js --report` to verify ≤1000KB
-- Current budget remaining: ~361KB (as of Industry Intelligence Engine)
+- Run `node build.js --report` to verify ≤1200KB
+- Current budget remaining: ~220KB
 
 **Reference Implementation:** See commits for Pillar ⑩ (Reverse Engineering) for complete example.
 
 ### Compression Patterns (Critical for Size Management)
 
-To stay under 1000KB limit, the codebase uses compression patterns:
+To stay under 1200KB limit, the codebase uses compression patterns:
 
 **1. Preset Defaults (`src/data/presets.js`)**
 ```javascript
@@ -672,7 +672,7 @@ See git history for detailed enhancement changelog.
 | data-coverage.test.js | 28 tests | Data integrity: entity coverage, FK validation, domain detection (24 domains), playbook completeness |
 | r27-regression.test.js | 17 tests | Bug fixes: prices, FK, KPI, ports |
 | r28-regression.test.js | 19 tests | Quality: REST methods, AC, scope_out, verification |
-| build.test.js | build | Build size ≤1000KB, pillar function existence |
+| build.test.js | build | Build size ≤1200KB, pillar function existence |
 | compat.test.js | 45 tests | Compatibility validation |
 | presets.test.js | 4 tests | Preset count (41), bilingual names, tech fields, purpose |
 | Others | ~21 tests | i18n, state, techdb |
@@ -732,7 +732,7 @@ test('pluralize', () => {
 
 ## Size Budget Management
 
-DevForge has a strict **1000KB size limit** for the built HTML file. Current size: **980KB** (20KB under budget).
+DevForge has a strict **1200KB size limit** for the built HTML file. Current size: **980KB** (220KB under budget).
 
 ### Expansion Strategy
 When adding new features, follow the "Balanced Expansion" approach:
@@ -741,7 +741,7 @@ When adding new features, follow the "Balanced Expansion" approach:
 3. **Prioritize high-value additions** (core skills > niche features)
 4. **Test frequently** with `node build.js --report`
 
-- **Current size**: 980KB (20KB remaining budget)
+- **Current size**: 980KB (220KB remaining budget)
 
 ### Size Optimization Tips
 - Reuse common patterns (see `_U`, `_SA`, `_SD`, `_T`, `_D`, `_CN`, `_M`, `_B`, etc. in common.js)

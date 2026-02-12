@@ -1,4 +1,4 @@
-# DevForge v9.0 — 43-module web app → builds to single HTML (~903KB / 1000KB limit)
+# DevForge v9.0 — 43-module web app → builds to single HTML (~980KB / 1200KB limit)
 
 ## Build: `node build.js` (produces devforge-v9.html)
 ## Test: `npm test` (197 tests, all passing)
