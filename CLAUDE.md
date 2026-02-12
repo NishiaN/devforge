@@ -323,44 +323,6 @@ voiceRec.onend = () => { resetUI(); };
 voiceRec.onerror = () => { resetUI(); };  // Prevents UI freeze
 ```
 
-## Coding Examples
-
-### ❌ Wrong: Template literal in single-quoted string
-```javascript
-const msg = 'Hello ${name}';  // Won't interpolate!
-```
-
-### ✅ Correct: Use concatenation
-```javascript
-const msg = 'Hello ' + name;
-```
-
-### ❌ Wrong: Missing G constant
-```javascript
-function genDoc(answers, name) {
-  return S.genLang === 'ja' ? '日本語' : 'English';
-}
-```
-
-### ✅ Correct: Define G at function top
-```javascript
-function genDoc(answers, name) {
-  const G = S.genLang === 'ja';
-  return G ? '日本語' : 'English';
-}
-```
-
-### ❌ Wrong: Missing 3rd arg to getEntityColumns
-```javascript
-const cols = getEntityColumns('User', G);  // May include undefined FK refs!
-```
-
-### ✅ Correct: Pass knownEntities
-```javascript
-const entities = ['User', 'Post', 'Comment'];
-const cols = getEntityColumns('User', G, entities);
-```
-
 ## Development Workflow
 1. Make changes in `src/` modules
 2. Run `npm test` to verify no regressions
@@ -460,16 +422,6 @@ git remote set-url origin git@github.com:user/repo.git
   - Pattern matching: regex-based on Japanese/English keywords in purpose text (specific patterns first, generic last)
 - **`resolveAuth(answers)`** — Determine auth architecture from answers
 - **`getScreenComponents(screenName, G)`** — Get UI components for screen type
-
-### src/core/state.js
-- **`save()`** — Persist state to localStorage
-- **`load()`** — Restore state from localStorage
-- **`sanitize(s, max=500)`** — Strip HTML, limit chars
-- **`sanitizeName(s)`** — Remove dangerous chars for names
-- **`fileSlug(s)`** — Convert to filename-safe slug
-- **`toast(msg)`** — Show 2.2s notification
-- **`hasDM(method)`** — Check if dev_methods includes method
-- **`esc(s)`** — HTML entity escape
 
 ### src/core/i18n.js
 - **`t(key)`** — Get translated string for current `S.lang`
@@ -698,86 +650,7 @@ When users complete the wizard, DevForge generates **86+ files** (base: 73 files
 - Mermaid flowcharts for each pipeline
 - Decision gates and error handling protocols
 
-**Recent Enhancement (Phase 1 Context Engineering):**
-- Added `docs/24_progress.md` — AI-updateable progress tracker with Sprint-based task management
-- Added `docs/25_error_logs.md` — Error recording system for preventing bug recurrence
-- Enhanced CLAUDE.md with Workflow Cycle (5 steps) and Context Management principles
-- Enhanced AI_BRIEF.md with 7-step Context Protocol
-
-**Recent Enhancement (Pillar 9: Design System):**
-- Added `docs/26_design_system.md` — Design tokens, color palettes, typography, spacing, component catalog (framework-aware for Tailwind/Vuetify/Material)
-- Added `docs/27_sequence_diagrams.md` — Mermaid sequence diagrams for auth flows (Supabase/Firebase/Auth.js), CRUD operations, payment flows (Stripe)
-
-**Recent Enhancement (AI Skills & Agent Pipelines - Balanced Expansion):**
-- Enhanced `skills/project.md` — Factory Template format with 5 core skills
-- Expanded `skills/catalog.md` — 15 domains supported (education, ec, saas, community, booking, health, marketplace, content, analytics, business, iot, realestate, legal, hr, fintech)
-- 19 detailed skills with Input/Process/Output specifications (14 core + 5 domain-specific: デバイス管理, 物件管理, 契約レビュー, 採用フロー, 取引検証)
-- 4 advanced skills with full details for Multi-Agent level (Parallel Review, Auto Code Review, Auto Doc Update, Compression)
-- Added `skills/pipelines.md` — Autonomous agent pipelines with Mermaid flowcharts (1-5 pipelines based on ai_auto level)
-- Enhanced `AGENTS.md` — Pipeline coordination section
-- Enhanced `detectDomain()` in common.js — Now supports 15 domains with IoT, real estate, legal, HR, and fintech detection patterns
-
-**Recent Enhancement (Quality Intelligence Engine & 24-Domain Expansion - Feb 2026):**
-- Added `docs/32_qa_blueprint.md` — Industry-adaptive QA blueprint with risk matrices for 15 industries (金融/医療/EC/SaaS/SNS/教育/ゲーム/IoT/旅行/物流/不動産/メディア/HR/マーケティング/政府)
-- Added `docs/33_test_matrix.md` — Concrete test matrix with bug patterns, detection methods, and tool recommendations per industry
-- Added `skills/factory.md` — Manus Skills factory template with thinking axis system for all 24 domains
-- Created **Pillar 5: Quality Intelligence Engine** (`p5-quality.js`) — Generates industry-specific QA strategies
-- Enhanced `domainSkillsMap` in p4-airules.js — Extended from 15 to 24 domains (added: ai, automation, event, gamify, collab, devtool, creator, newsletter)
-- Created `INDUSTRY_TEST_MATRIX` in common.js — 15-industry test strategy database with critical functions, test focus areas, typical bugs, recommended tools, and priority matrices
-- Enhanced `REVERSE_FLOW_MAP` in p10-reverse.js — Added 8 new domains with goal-driven planning flows (4 steps), KPIs (4 items), and risks (3 items) each
-- Added 5 new entities to ENTITY_COLUMNS: UserGoal, ReversePlan, PlanStep, ProgressTracking, PlanAdjustment
-- Added 5 new FEATURE_DETAILS: reverse_engineering, skill_automation, qa_intelligence, ticket_management, gamification
-- Added 4 new QA_CROSS_CUTTING: rate_limiting, data_export, notification, realtime
-- Enhanced `detectDomain()` — Now supports 24 domains (bug fix: moved saas pattern before event to correctly detect helpdesk systems)
-- File count increased from 69+ to 72+ (+3 new files)
-- Size impact: Optimized from 640KB → 632KB (368KB budget remaining)
-
-**Recent Enhancement (AI Development OS - Feb 2026):**
-- **Context Intelligence Engine**: CLAUDE.md now includes File Selection Matrix (task-specific file recommendations + token estimates), Context Compression Protocol (auto-compress at 80% usage), and Sub-agent Delegation Pattern (summary-only import)
-- **Operations Intelligence**: Added 4 new docs:
-  - `docs/34_incident_response.md` — Severity classification, runbook templates, escalation matrix, post-mortem templates (domain-specific examples)
-  - `docs/35_sitemap.md` — URL tree (Mermaid graph), route-screen-component mapping, navigation patterns, SEO metadata map
-  - `docs/36_test_strategy.md` — Phase-based testing (Design Review → Integration → Pre-Release → Post-Release), concurrency scenarios, stack-specific tool configs
-  - `docs/37_bug_prevention.md` — Priority-ordered checklist (domain-optimized), 6-category bug classification, 7 common oversights (timezone, Unicode, file upload, etc.)
-- **Business & Architecture Intelligence**:
-  - `docs/38_business_model.md` (conditional: payment≠none) — Revenue model analysis, pricing strategy, conversion funnel (Mermaid), unit economics (CAC/LTV/Payback)
-  - `docs/30_goal_decomposition.md` — Added Goal Tracking Schema (5 tables: UserGoal, ReversePlan, PlanStep, ProgressTracking, PlanAdjustment) with SQL DDL and usage examples
-  - **skills/ md Package** (conditional: ai_auto=multi/full/orch) — 4 new files: README.md (quick start + AI maturity model), skill_map.md (4-layer business model), agents/coordinator.md, agents/reviewer.md
-- **Enhanced AI_BRIEF.md**: Added Context Loading Strategy (phase-based file loading priorities), token budget allocation (40% task, 30% spec, 20% progress, 10% buffer), new files reference
-- **Enhanced AGENTS.md**: Added Agent Specialization Matrix (6 agent types with token budgets), Handoff Protocol (YAML format), Summary-Only Import principle
-- File count increased from 72+ to 86+ (+11 new files)
-- Size impact: 632KB → 883KB (+251KB total from v9.0 baseline)
-  - AI Development OS expansion: +138KB (632KB → 770KB)
-  - Minification safety fix: +57KB (770KB → 827KB, disabled comment removal)
-  - Pillar ⑪ Implementation Intelligence: +56KB (827KB → 883KB)
-- Budget remaining: 117KB
-
-**Recent Enhancement (Pillar ⑪: Implementation Intelligence - Feb 2026):**
-- **Implementation Playbook** (`docs/39_implementation_playbook.md`) — Always generated:
-  - 24 domain-specific implementation patterns with pseudo-code templates
-  - Guard rails (典型バグ防止策) for each domain
-  - Stack-specific guidance (frontend/backend/database combinations)
-  - App type best practices (SPA/SSR/PWA/mobile/API-only/realtime)
-  - Entity-specific pseudo-code generation (CRUD operations)
-  - Cross-cutting concerns checklist (auth, error handling, cache, i18n, audit, upload, rate limiting, validation)
-- **AI Development Runbook** (`docs/40_ai_dev_runbook.md`) — Always generated:
-  - AI operation workflow (Write → Select → Compress → Isolate cycle)
-  - Task-specific file selection matrix (with token estimates)
-  - Domain-specific error recovery protocols
-  - Context management strategy (token budget allocation)
-  - Agent handoff protocol (YAML format, when ai_auto=multi/full/orch)
-- **Implementation Skills Catalog** (`skills/impl-patterns.md`) — Conditional (ai_auto≠none):
-  - Manus Skills format with domain-specific thinking axis
-  - 4-layer skill structure (Planning → Design → Production → Operations)
-  - Detailed skill definition with Input/Process/Output/Judgment/Next
-- **New Data Structures** (common.js):
-  - `DOMAIN_IMPL_PATTERN` — 24 domains with implementation patterns, pseudo-code, guard rails (~8KB)
-  - `APP_TYPE_MAP` — 6 app types (SPA/SSR/PWA/mobile/API-only/realtime) with patterns and anti-patterns (~2KB)
-  - `CROSS_CUTTING_IMPL` — 8 cross-cutting concerns (auth/error/cache/i18n/audit/upload/rate/validation) (~3KB)
-  - `detectAppType()` — Infers app architecture type from answers
-- File count increased from 86+ to 86+ (docs/39, docs/40 replace existing slots; +1 conditional skills/impl-patterns.md when ai_auto≠none)
-- Size impact: ~33KB added (20KB generator + 13KB data structures)
-- Final size: 883KB / 1000KB (117KB remaining)
+See git history for detailed enhancement changelog.
 
 ## Test Architecture
 | File | Tests | Purpose |
@@ -856,38 +729,7 @@ When adding new features, follow the "Balanced Expansion" approach:
 3. **Prioritize high-value additions** (core skills > niche features)
 4. **Test frequently** with `node build.js --report`
 
-### Recent Expansion (Feb 2026)
-- **Current size**: 903KB total (including Pillar ⑩ enhancements)
-- **Added**:
-  - 5 new presets (CRM, Social, Logistics, Survey, Job Board)
-  - 8 new domains (AI, Automation, Event, Gamify, Collab, DevTool, Creator, Newsletter)
-  - MCP expansion (52→240 lines, backend-specific, domain recommendations)
-  - 18 new entities, 26 ER relationships, 10 feature patterns
-  - Accessibility improvements (announce() wiring)
-- **Bug Fix Package (Feb 12, 2026)**: +57KB — SyntaxError fix + minification safety
-  - CRITICAL: Missing `+=` operator in p5-quality.js (line 229)
-  - CRITICAL: Disabled unsafe block/line comment removal in build.js
-  - Context: Regex-based minification was removing CSS comments inside JS strings
-  - Trade-off: +57KB build size to guarantee syntax correctness
-- **Comprehensive Bug Fix Package (Feb 12, 2026 PM)**: +2KB — Data integrity, security, accessibility
-  - CRITICAL: Fixed DOMAIN_PLAYBOOK property mismatch (`prevent` → `prevent_ja/prevent_en`) enabling domain-specific sections in docs/34
-  - DATA: Added 6 missing entity definitions (Chart, Viewing, Client, Transfer, Card, Statement)
-  - DATA: Removed invalid 'crm' domain from QA_CROSS_CUTTING
-  - SECURITY: Added input sanitization to URL hash import (XSS prevention)
-  - UI: Updated file counts from "69+" to "86+" across all interfaces
-  - ACCESSIBILITY: Added aria-selected to pillar tabs, aria-checked to skill picker
-  - TESTS: Added 8 domains to test coverage, added p5/p9 to gen-coherence test
-  - Result: All 193 tests passing, 829KB build size
-- **Pillar ⑩ Enhancement (Feb 12, 2026)**: +5KB — AI visibility & intelligent planning
-  - AI VISIBILITY: Added docs/29 + docs/30 to File Selection Matrix, Context Loading Strategy, Agent Specialization Matrix
-  - DYNAMIC DATES: Gantt charts now calculate from current date (+7d to +70d phases)
-  - STACK-AWARE: Dependency chains adapt to architecture (BaaS/BFF/Traditional)
-  - DOMAIN RISKS: Risk mitigation strategies pulled from DOMAIN_PLAYBOOK prevent patterns
-  - KPI LOOP: P5 Phase 4 monitors P10 goal KPIs with feedback to docs/30 gap matrix
-  - SKILL: Added "Goal Reversal" core skill to catalog
-  - TESTS: Added REVERSE_FLOW_MAP coverage test for 24 domains
-  - Result: All 197 tests passing, 903KB build size
-- **Remaining budget**: 97KB for future enhancements
+- **Current size**: 903KB (97KB remaining budget)
 
 ### Size Optimization Tips
 - Reuse common patterns (see `_U`, `_SA`, `_SD`, `_T`, `_D`, `_CN`, `_M`, `_B`, etc. in common.js)
@@ -997,25 +839,3 @@ node build.js
 
 **Permanent fix:** Add to `~/.bashrc` (already done if nvm installed correctly)
 
-### Wizard progress shows wrong completion percentage
-**Symptom:** Progress bar shows questions as "unanswered" even though they're not applicable (e.g., `orm` question when using Supabase)
-
-**Cause:** Progress counting doesn't respect conditional questions
-
-**Fix:** Ensure all progress-related functions use `isQActive(q)`:
-```javascript
-// ✅ Correct: Only count active questions
-ph.questions.forEach(q => {
-  if(!isQActive(q)) return;  // Skip inactive
-  total++;
-  if(S.answers[q.id]) done++;
-});
-
-// ❌ Wrong: Counts all questions regardless of conditions
-total += ph.questions.length;
-```
-
-**Common locations to check:**
-- `updProgress()` — Progress bar calculation
-- `initPills()` — Sidebar question list initialization
-- `findNext()` — Next unanswered question search
