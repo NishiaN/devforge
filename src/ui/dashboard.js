@@ -154,7 +154,9 @@ function showDashboard(){
     const fixErrs=compat.filter(c=>c.fix&&c.level==='error');
     if(errs.length)h+=`<span class="compat-s-err">❌ ${_ja?'要修正':'Fix'}: ${errs.length}</span>`;
     if(fixErrs.length>1)h+=`<button class="btn btn-xs btn-s compat-fixlv" onclick="fixAllCompat('error')">🔧 ${fixErrs.length}</button>`;
+    const fixInfos=compat.filter(c=>c.fix&&c.level==='info');
     if(infos.length)h+=`<span class="compat-s-info">ℹ️ ${_ja?'参考':'Info'}: ${infos.length}</span>`;
+    if(fixInfos.length>1)h+=`<button class="btn btn-xs btn-s compat-fixlv" onclick="fixAllCompat('info')">🔧 ${fixInfos.length}</button>`;
     const fixable=compat.filter(c=>c.fix);
     if(fixable.length>1)h+=`<button class="btn btn-xs btn-p compat-fixall" onclick="fixAllCompat()">🔧 ${_ja?'一括修正 ('+fixable.length+'件)':'Fix All ('+fixable.length+')'}</button>`;
     h+='</div>';

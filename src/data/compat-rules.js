@@ -31,19 +31,23 @@ const COMPAT_RULES=[
   {id:'be-db-fb-notfs',p:['backend','database'],lv:'warn',
    t:a=>inc(a.backend,'Firebase')&&a.database&&!inc(a.database,'Firestore'),
    ja:'Firebase利用時はFirestoreが最適です',
-   en:'Firestore is the optimal DB for Firebase'},
+   en:'Firestore is the optimal DB for Firebase',
+   fix:{f:'database',s:'Firestore'}},
   {id:'be-db-supa-notpg',p:['backend','database'],lv:'warn',
    t:a=>inc(a.backend,'Supabase')&&a.database&&!inc(a.database,'Supabase')&&!inc(a.database,'PostgreSQL')&&!inc(a.database,'Neon'),
    ja:'Supabase利用時はSupabase (PostgreSQL)が統合されています',
-   en:'Supabase integrates best with Supabase (PostgreSQL)'},
+   en:'Supabase integrates best with Supabase (PostgreSQL)',
+   fix:{f:'database',s:'Supabase (PostgreSQL)'}},
   {id:'be-db-static-db',p:['backend','database'],lv:'warn',
    t:a=>isStaticBE(a)&&a.database&&!inc(a.database,'なし')&&a.database!=='None',
    ja:'静的サイトではDBは通常不要です',
-   en:'Static sites typically do not need a database'},
+   en:'Static sites typically do not need a database',
+   fix:{f:'database',s:'None'}},
   {id:'be-db-py-fs',p:['backend','database'],lv:'warn',
    t:a=>isPyBE(a)&&inc(a.database,'Firestore'),
    ja:'PythonとFirestoreの相性は中程度。PostgreSQLが推奨です',
-   en:'Python + Firestore compatibility is moderate. PostgreSQL recommended'},
+   en:'Python + Firestore compatibility is moderate. PostgreSQL recommended',
+   fix:{f:'database',s:'PostgreSQL'}},
   // ── BE ↔ Deploy (5 WARN) ──
   {id:'be-dep-java-vercel',p:['backend','deploy'],lv:'warn',
    t:a=>(inc(a.backend,'Java')||inc(a.backend,'Go'))&&inc(a.deploy,'Vercel'),
@@ -53,11 +57,13 @@ const COMPAT_RULES=[
   {id:'be-dep-fb-notfbh',p:['backend','deploy'],lv:'warn',
    t:a=>inc(a.backend,'Firebase')&&a.deploy&&!inc(a.deploy,'Firebase'),
    ja:'Firebase利用時はFirebase Hostingが最適です',
-   en:'Firebase Hosting is optimal when using Firebase backend'},
+   en:'Firebase Hosting is optimal when using Firebase backend',
+   fix:{f:'deploy',s:'Firebase Hosting'}},
   {id:'be-dep-supa-fbh',p:['backend','deploy'],lv:'warn',
    t:a=>inc(a.backend,'Supabase')&&inc(a.deploy,'Firebase'),
    ja:'SupabaseにはVercelまたはSupabase Hostingが推奨です',
-   en:'Use Vercel or Supabase Hosting with Supabase backend'},
+   en:'Use Vercel or Supabase Hosting with Supabase backend',
+   fix:{f:'deploy',s:'Vercel'}},
   {id:'be-dep-nest-vercel',p:['backend','deploy'],lv:'warn',
    t:a=>inc(a.backend,'NestJS')&&inc(a.deploy,'Vercel'),
    ja:'NestJSのサーバーレスデプロイは制限があります。Railwayが推奨',
@@ -72,11 +78,13 @@ const COMPAT_RULES=[
   {id:'fe-dep-angular-vercel',p:['frontend','deploy'],lv:'warn',
    t:a=>inc(a.frontend,'Angular')&&inc(a.deploy,'Vercel'),
    ja:'AngularのVercel対応は限定的。Firebase HostingまたはAWSが推奨',
-   en:'Angular on Vercel is limited. Use Firebase Hosting or AWS'},
+   en:'Angular on Vercel is limited. Use Firebase Hosting or AWS',
+   fix:{f:'deploy',s:'Firebase Hosting'}},
   {id:'fe-dep-nuxt-fbh',p:['frontend','deploy'],lv:'warn',
    t:a=>inc(a.frontend,'Nuxt')&&inc(a.deploy,'Firebase'),
    ja:'Nuxt 3はVercel/Netlifyが最適デプロイ先です',
-   en:'Nuxt 3 deploys best on Vercel or Netlify'},
+   en:'Nuxt 3 deploys best on Vercel or Netlify',
+   fix:{f:'deploy',s:'Vercel'}},
   // ── AI Auto ↔ Skill (3 WARN) ──
   {id:'ai-sk-auto-beg',p:['ai_auto','skill_level'],lv:'warn',
    t:a=>inc(a.ai_auto,'自律')||inc(a.ai_auto,'Autonomous'),
@@ -95,7 +103,8 @@ const COMPAT_RULES=[
   {id:'be-pay-static-stripe',p:['backend','payment'],lv:'warn',
    t:a=>isStaticBE(a)&&a.payment&&(inc(a.payment,'Stripe')),
    ja:'Stripe webhookにはサーバーが必要。Supabase Edge Functionsで対応可能',
-   en:'Stripe webhooks need a server. Supabase Edge Functions can help'},
+   en:'Stripe webhooks need a server. Supabase Edge Functions can help',
+   fix:{f:'backend',s:'Supabase'}},
   {id:'be-pay-saleor-notpy',p:['backend','payment'],lv:'warn',
    t:a=>a.payment&&inc(a.payment,'Saleor')&&!isPyBE(a),
    ja:'SaleorはPython/Django製です。Python系バックエンドが必要',
@@ -124,7 +133,8 @@ const COMPAT_RULES=[
   {id:'dep-db-vercel-pg',p:['deploy','database'],lv:'warn',
    t:a=>inc(a.deploy,'Vercel')&&inc(a.database,'PostgreSQL')&&!inc(a.database,'Neon')&&!inc(a.database,'Supabase'),
    ja:'Vercel+PostgreSQLは外部ホスティング必要。Neon/Supabase/Vercel Postgresを推奨',
-   en:'Vercel+PostgreSQL needs external hosting. Use Neon/Supabase/Vercel Postgres'},
+   en:'Vercel+PostgreSQL needs external hosting. Use Neon/Supabase/Vercel Postgres',
+   fix:{f:'database',s:'Neon (PostgreSQL)'}},
   {id:'dep-db-cf-pg',p:['deploy','database'],lv:'info',
    t:a=>inc(a.deploy,'Cloudflare')&&inc(a.database,'PostgreSQL'),
    ja:'Cloudflare Workers→外部DBはHyperdriveまたはD1への移行を推奨',
@@ -168,7 +178,8 @@ const COMPAT_RULES=[
   {id:'be-convex-orm',p:['backend','orm'],lv:'info',
    t:a=>inc(a.backend,'Convex')&&a.orm&&!inc(a.orm,'なし')&&!inc(a.orm,'None')&&a.orm!=='none',
    ja:'ConvexはTypeScript定義で完結します。ORMは通常不要',
-   en:'Convex uses TypeScript definitions. ORM typically not needed'},
+   en:'Convex uses TypeScript definitions. ORM typically not needed',
+   fix:{f:'orm',s:'None / Using BaaS'}},
   // ── Misc (2 INFO) ──
   {id:'ai-tools-multi',p:['ai_tools'],lv:'info',
    t:a=>{
@@ -181,7 +192,8 @@ const COMPAT_RULES=[
   {id:'mobile-expo-rn',p:['mobile'],lv:'info',
    t:a=>inc(a.mobile,'bare')||inc(a.mobile,'Bare'),
    ja:'React Native bareは柔軟性が高いですが、Expoの方が開発速度が速いです',
-   en:'React Native bare offers flexibility, but Expo is faster for development'},
+   en:'React Native bare offers flexibility, but Expo is faster for development',
+   fix:{f:'mobile',s:'Expo (Managed)'}},
   // ── Semantic Consistency Rules (Phase A) ── 8 rules ──
   // A1: scope_out「ネイティブ」 vs mobile有効
   {id:'sem-scope-mobile',p:['scope_out','mobile'],lv:'error',
@@ -220,7 +232,8 @@ const COMPAT_RULES=[
   {id:'sem-purpose-entities',p:['purpose','data_entities'],lv:'info',
    t:a=>(inc(a.purpose,'教育')||inc(a.purpose,'学習')||inc(a.purpose,'Education')||inc(a.purpose,'Learning')||inc(a.purpose,'LMS'))&&(inc(a.data_entities,'Product')||inc(a.data_entities,'Order')),
    ja:'教育・学習系のプロジェクトにProduct/Orderエンティティがあります。教材販売が目的でなければCourse/Lessonへの変更を検討してください',
-   en:'Education project has Product/Order entities. Consider Course/Lesson unless this is for course sales'},
+   en:'Education project has Product/Order entities. Consider Course/Lesson unless this is for course sales',
+   fixFn:a=>({f:'data_entities',s:(a.data_entities||'').replace(/Product/g,'Course').replace(/Order/g,'Enrollment')})},
   // A8: deploy=Vercel && backend含Express && frontend含Next.js（BFF曖昧）
   {id:'sem-deploy-bff',p:['deploy','backend','frontend'],lv:'info',
    t:a=>inc(a.deploy,'Vercel')&&inc(a.backend,'Express')&&inc(a.frontend,'Next.js'),
@@ -241,7 +254,7 @@ function checkCompat(answers){
       if(keys.some(k=>!answers[k]))return false;
       return r.t(answers);
     }catch(e){return false;}
-  }).map(r=>({id:r.id,pair:r.p,level:r.lv,msg:S.lang==='ja'?r.ja:r.en,fix:r.fix||null}));
+  }).map(r=>({id:r.id,pair:r.p,level:r.lv,msg:S.lang==='ja'?r.ja:r.en,fix:r.fix||(r.fixFn?r.fixFn(answers):null)}));
 }
 
 // ── Stack Synergy Score Data ──

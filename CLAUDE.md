@@ -7,14 +7,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 # DevForge v9.0
 
 ## Architecture
-- **43 modules** in `src/` → `node build.js` → single `devforge-v9.html` (~980KB)
+- **43 modules** in `src/` → `node build.js` → single `devforge-v9.html` (~879KB)
 - Vanilla JS, no frameworks. CSS custom properties. CDN: marked.js, mermaid.js, JSZip.
 - **AI Development OS**: Generates 88+ files including context intelligence, operations playbooks, business models, and growth strategies
 
 ## Build & Test
 ```bash
 # Build
-node build.js              # Produces devforge-v9.html (~980KB)
+node build.js              # Produces devforge-v9.html (~879KB)
 node build.js --no-minify  # Skip minification (debug)
 node build.js --report     # Show size report
 node build.js --check-css  # Validate CSS custom properties
@@ -44,7 +44,7 @@ npm run check              # Syntax check extracted JS
 5. **Write** to `devforge-v9.html`
 6. **Validate** size ≤1200KB (warn if exceeded)
 
-**Current Status:** 980KB / 1200KB limit (220KB remaining budget for future expansions)
+**Current Status:** 879KB / 1200KB limit (321KB remaining budget for future expansions)
 
 ### ⚠️ Critical: Minification Limitations
 
@@ -62,7 +62,7 @@ npm run check              # Syntax check extracted JS
 **If you need aggressive minification:**
 1. Use a proper JS parser (e.g., Terser, esbuild)
 2. Test with `node --check` on extracted JS
-3. Verify all 193 tests pass
+3. Verify all 209 tests pass
 
 ### Module Load Order (Critical!)
 ```javascript
@@ -322,6 +322,37 @@ voiceRec.onend = () => { resetUI(); };
 voiceRec.onend = () => { resetUI(); };
 voiceRec.onerror = () => { resetUI(); };  // Prevents UI freeze
 ```
+
+### Compatibility Rules System
+**Location:** `src/data/compat-rules.js`
+
+The compatibility checker validates tech stack combinations and semantic consistency with **43 rules** (8 error + 29 warn + 6 info).
+
+**Rule Structure:**
+```javascript
+{
+  id: 'rule-id',
+  p: ['field1', 'field2'],  // Pair of fields to check
+  lv: 'error'|'warn'|'info',
+  t: a => /* condition function */,
+  ja: '日本語メッセージ',
+  en: 'English message',
+  fix: {f: 'field', s: 'suggested_value'},  // Static fix
+  fixFn: a => ({f: 'field', s: /* dynamic value */})  // Dynamic fix
+}
+```
+
+**Adding Fixes to Rules:**
+- **Static fix**: `fix:{f:'deploy',s:'Vercel'}` — fixed suggestion
+- **Dynamic fix**: `fixFn:a=>({f:'data_entities',s:(a.data_entities||'').replace(/Product/g,'Course')})` — computed suggestion
+- `checkCompat()` evaluates `fixFn` at runtime to support dynamic fixes
+- Dashboard shows level-specific fix buttons when 2+ fixable issues exist
+
+**Guidelines:**
+- Add `fix` properties to warn/error rules where automatic correction is safe
+- Don't add fixes to skill-level warnings (user choice, not technical issue)
+- Don't add fixes to informational warnings about preview features
+- Test fixes with representative user answers to avoid unintended corrections
 
 ## Development Workflow
 1. Make changes in `src/` modules
@@ -741,7 +772,7 @@ When adding new features, follow the "Balanced Expansion" approach:
 3. **Prioritize high-value additions** (core skills > niche features)
 4. **Test frequently** with `node build.js --report`
 
-- **Current size**: 980KB (220KB remaining budget)
+- **Current size**: 879KB (321KB remaining budget)
 
 ### Size Optimization Tips
 - Reuse common patterns (see `_U`, `_SA`, `_SD`, `_T`, `_D`, `_CN`, `_M`, `_B`, etc. in common.js)
