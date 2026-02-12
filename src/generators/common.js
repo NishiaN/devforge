@@ -461,6 +461,12 @@ const ENTITY_COLUMNS={
   Answer:['form_id:UUID:FK(Form) NOT NULL:フォームID:Form ID','question_id:UUID:FK(Question) NOT NULL:質問ID:Question ID',_U,'answer_value:TEXT::回答値:Answer value','submitted_at:TIMESTAMP:DEFAULT NOW:回答日時:Submitted at'],
   Job:['job_title:VARCHAR(255):NOT NULL:職種:Job title','company:VARCHAR(255):NOT NULL:企業名:Company','location:VARCHAR(255)::勤務地:Location','salary_range:VARCHAR(100)::給与レンジ:Salary range','job_type:VARCHAR(50)::雇用形態:Job type',_D,'status:VARCHAR(20):DEFAULT \'open\':募集状態:Status','posted_at:TIMESTAMP:DEFAULT NOW:掲載日:Posted at'],
   SavedJob:[_U,'job_id:UUID:FK(Job) NOT NULL:求人ID:Job ID','saved_at:TIMESTAMP:DEFAULT NOW:保存日時:Saved at',_N],
+  // Reverse Engineering & Goal Management
+  UserGoal:[_U,'goal_title:VARCHAR(255):NOT NULL:目標タイトル:Goal title','target_value:VARCHAR(100)::目標値:Target value','current_value:VARCHAR(100)::現在値:Current value','deadline:DATE::期限:Deadline','priority:VARCHAR(20):DEFAULT \'medium\':優先度:Priority',_SA,'achieved_at:TIMESTAMP::達成日時:Achieved at'],
+  ReversePlan:[_U,'plan_title:VARCHAR(255):NOT NULL:計画タイトル:Plan title','goal_id:UUID:FK(UserGoal):目標ID:Goal ID','strategy:TEXT::戦略:Strategy','total_steps:INT:DEFAULT 0:総ステップ数:Total steps','completed_steps:INT:DEFAULT 0:完了ステップ数:Completed steps',_SA],
+  PlanStep:['plan_id:UUID:FK(ReversePlan) NOT NULL:計画ID:Plan ID','step_order:INT:NOT NULL:ステップ順序:Step order','step_title:VARCHAR(255):NOT NULL:ステップタイトル:Step title',_D,'estimated_hours:DECIMAL(5,1)::推定時間:Estimated hours',_SA,'completed_at:TIMESTAMP::完了日時:Completed at'],
+  ProgressTracking:['plan_id:UUID:FK(ReversePlan) NOT NULL:計画ID:Plan ID','tracked_at:TIMESTAMP:DEFAULT NOW:記録日時:Tracked at','progress_pct:DECIMAL(5,2)::進捗率:Progress pct','velocity:DECIMAL(5,2)::ベロシティ:Velocity','blockers:TEXT::障害:Blockers',_N],
+  PlanAdjustment:['plan_id:UUID:FK(ReversePlan) NOT NULL:計画ID:Plan ID','adjusted_at:TIMESTAMP:DEFAULT NOW:調整日時:Adjusted at','reason:TEXT:NOT NULL:調整理由:Reason','old_value:TEXT::旧値:Old value','new_value:TEXT::新値:New value',_N],
 };
 
 // ═══ Entity REST method restrictions ═══
@@ -531,7 +537,8 @@ function detectDomain(purpose){
     [/\bEC\b|eコマース|e-commerce|ショップ|\bshop\b|\bcommerce\b/i,'ec'],
     [/マーケットプレイス|marketplace/i,'marketplace'],
     [/ゲーミ|gamification|gamify|バッジ|ポイント|リーダーボード/i,'gamify'],
-    [/イベント|event|チケット|カンファレンス|セミナー/i,'event'],
+    [/saas|サブスク|subscription|helpdesk|ヘルプデスク|チケット管理/i,'saas'],
+    [/イベント|event.?management|カンファレンス|セミナー|チケット販売/i,'event'],
     [/ニュースレター|newsletter|メール配信|メルマガ|購読/i,'newsletter'],
     [/クリエイター|creator|ファン|コンテンツ販売|投げ銭/i,'creator'],
     [/コミュニティ|community|フォーラム|forum/i,'community'],
@@ -542,7 +549,6 @@ function detectDomain(purpose){
     [/自動化|automation|workflow|ワークフロー|RPA|ノーコード/i,'automation'],
     [/共同編集|collaboration|collab|リアルタイム編集/i,'collab'],
     [/開発者ツール|dev.?tool|API管理|APIキー/i,'devtool'],
-    [/saas|サブスク|subscription|helpdesk|ヘルプデスク/i,'saas'],
     [/IoT|デバイス|device|sensor|センサー|field.?service|フィールドサービス/i,'iot'],
     [/不動産|物件|real.?estate|property.?mgmt|property.?management/i,'realestate'],
     [/法務|契約|legal|contract.?mgmt|contract.?management|コンプライアンス/i,'legal'],
@@ -861,6 +867,36 @@ const FEATURE_DETAILS={
     tests_ja:[['正常系: テンプレート作成','201, テンプレート保存'],['正常系: 変数展開','200, プレースホルダー置換'],['正常系: 条件分岐実行','200, 条件マッチで分岐'],['異常系: 不正な変数名','422, バリデーション'],['正常系: スケジュール実行','200, 毎日9時に自動実行']],
     tests_en:[['Normal: Create template','201, template saved'],['Normal: Variable expansion','200, placeholders replaced'],['Normal: Conditional execution','200, branched on condition'],['Error: Invalid variable name','422, validation'],['Normal: Scheduled execution','200, auto-run daily at 9am']],
   },
+  'リバースエンジニアリング|逆算|Reverse|Goal|目標分解':{
+    criteria_ja:['目標設定(KPI+期限)','逆算プラン生成','ステップ分割(工数見積)','進捗トラッキング','計画調整履歴','ベロシティ測定'],
+    criteria_en:['Goal setting (KPI + deadline)','Reverse plan generation','Step breakdown (effort estimation)','Progress tracking','Plan adjustment history','Velocity measurement'],
+    tests_ja:[['正常系: 目標作成','201, UserGoal保存'],['正常系: 逆算プラン生成','201, ReversePlan+PlanStep'],['正常系: 進捗記録','200, ProgressTracking追加'],['正常系: 計画調整','200, PlanAdjustment記録'],['正常系: ベロシティ算出','200, {velocity: 1.2}']],
+    tests_en:[['Normal: Create goal','201, UserGoal saved'],['Normal: Generate reverse plan','201, ReversePlan+PlanStep'],['Normal: Record progress','200, ProgressTracking added'],['Normal: Adjust plan','200, PlanAdjustment recorded'],['Normal: Calculate velocity','200, {velocity: 1.2}']],
+  },
+  'スキル自動化|Skill|Manus|タスク分解':{
+    criteria_ja:['スキル定義(Input/Process/Output)','スキルカタログ','パイプライン設計','エージェント連携','実行履歴'],
+    criteria_en:['Skill definition (Input/Process/Output)','Skill catalog','Pipeline design','Agent coordination','Execution history'],
+    tests_ja:[['正常系: スキル登録','201, スキル保存'],['正常系: パイプライン実行','200, 全ステップ完了'],['異常系: 無限ループ検出','500, タイムアウト'],['正常系: 並列実行','200, 3スキル同時実行']],
+    tests_en:[['Normal: Register skill','201, skill saved'],['Normal: Execute pipeline','200, all steps completed'],['Error: Infinite loop detection','500, timeout'],['Normal: Parallel execution','200, 3 skills concurrent']],
+  },
+  '品質インテリジェンス|QA|Quality|テスト戦略':{
+    criteria_ja:['業種別テストマトリクス','リスク優先度評価','典型バグパターン','ツール推奨','カバレッジ可視化'],
+    criteria_en:['Industry test matrix','Risk priority assessment','Common bug patterns','Tool recommendations','Coverage visualization'],
+    tests_ja:[['正常系: テストマトリクス生成','200, 15業種対応'],['正常系: リスク評価','200, Security:HIGH検出'],['正常系: バグパターンマッチ','200, 既知パターン3件']],
+    tests_en:[['Normal: Generate test matrix','200, 15 industries supported'],['Normal: Risk assessment','200, Security:HIGH detected'],['Normal: Bug pattern match','200, 3 known patterns']],
+  },
+  'チケット管理|Issue|Bug|タスク':{
+    criteria_ja:['チケット作成(タイトル/説明/優先度)','ステータス管理(Open/InProgress/Done)','担当者割当','コメント/履歴','ラベル/タグ','検索/フィルタ'],
+    criteria_en:['Create ticket (title/desc/priority)','Status management (Open/InProgress/Done)','Assignee assignment','Comments/history','Labels/tags','Search/filter'],
+    tests_ja:[['正常系: チケット作成','201, チケット保存'],['正常系: ステータス変更','200, Open→InProgress'],['正常系: コメント追加','201, コメント保存'],['異常系: 未認証でアクセス','401'],['正常系: フィルタ検索','200, priority=high結果']],
+    tests_en:[['Normal: Create ticket','201, ticket saved'],['Normal: Change status','200, Open→InProgress'],['Normal: Add comment','201, comment saved'],['Error: Unauthorized access','401'],['Normal: Filter search','200, priority=high results']],
+  },
+  'ゲーミフィケーション|Gamification|ポイント|バッジ':{
+    criteria_ja:['ポイント付与ルール','バッジ獲得条件','リーダーボード','レベルシステム','実績解除','進捗可視化'],
+    criteria_en:['Point reward rules','Badge unlock conditions','Leaderboard','Level system','Achievement unlock','Progress visualization'],
+    tests_ja:[['正常系: ポイント付与','200, +10pt記録'],['正常系: バッジ獲得','201, Achievement追加'],['正常系: リーダーボード','200, Top10返却'],['異常系: 二重付与','422, 冪等性エラー'],['正常系: レベルアップ','200, Lv2達成']],
+    tests_en:[['Normal: Award points','200, +10pt recorded'],['Normal: Unlock badge','201, Achievement added'],['Normal: Leaderboard','200, Top10 returned'],['Error: Double award','422, idempotency error'],['Normal: Level up','200, Lv2 reached']],
+  },
 };
 
 // Match feature name to FEATURE_DETAILS entry
@@ -1052,7 +1088,31 @@ const QA_CROSS_CUTTING={
   tenant:{ja:'マルチテナント分離(RLS)',en:'Multi-tenant isolation (RLS)',domains:['saas','analytics']},
   api_resilience:{ja:'外部API耐障害性(タイムアウト/リトライ/フォールバック)',en:'External API resilience (timeout/retry/fallback)',domains:['booking','saas','ec','analytics']},
   a11y:{ja:'アクセシビリティ(WCAG)',en:'Accessibility (WCAG)',domains:['education','content','hr']},
-  audit:{ja:'監査ログ完全性',en:'Audit log completeness',domains:['fintech','saas','hr','legal']}
+  audit:{ja:'監査ログ完全性',en:'Audit log completeness',domains:['fintech','saas','hr','legal']},
+  rate_limiting:{ja:'レート制限(APIキー/IP単位)',en:'Rate limiting (per API key/IP)',domains:['saas','devtool','fintech','ai']},
+  data_export:{ja:'データエクスポート(CSV/JSON/Excel)',en:'Data export (CSV/JSON/Excel)',domains:['saas','analytics','hr','crm']},
+  notification:{ja:'通知配信(Email/Push/SMS)',en:'Notification delivery (Email/Push/SMS)',domains:['saas','community','event','newsletter']},
+  realtime:{ja:'リアルタイム更新(WebSocket/SSE)',en:'Realtime updates (WebSocket/SSE)',domains:['collab','community','analytics','iot']}
+};
+
+// ── Industry Test Matrix (15 Industries) ──
+const _tm=(cf_ja,cf_en,tf_ja,tf_en,tb_ja,tb_en,t_ja,t_en,p)=>({critical_functions_ja:cf_ja,critical_functions_en:cf_en,test_focus_ja:tf_ja,test_focus_en:tf_en,typical_bugs_ja:tb_ja,typical_bugs_en:tb_en,tools_ja:t_ja,tools_en:t_en,priority:p});
+const INDUSTRY_TEST_MATRIX={
+  fintech:_tm(['決済処理','残高更新','取引履歴','KYC検証'],['Payment processing','Balance updates','Transaction history','KYC verification'],['金額計算精度','同時取引競合','不正検知','監査ログ完全性'],['Amount calculation accuracy','Concurrent transaction conflicts','Fraud detection','Audit log completeness'],['浮動小数点誤差','二重決済','トランザクション分離不足','ログ欠損'],['Floating point errors','Double payments','Transaction isolation failures','Missing logs'],['Jest(単体)','Playwright(E2E)','k6(負荷)','SonarQube(静的解析)'],['Jest (unit)','Playwright (E2E)','k6 (load)','SonarQube (static)'],'Security:HIGH|Performance:HIGH|DataIntegrity:HIGH|UX:MED|Compliance:HIGH'),
+  health:_tm(['患者情報管理','診療記録','処方箋','予約管理'],['Patient information','Medical records','Prescriptions','Appointment scheduling'],['PHI保護(HIPAA)','データ暗号化','アクセス制御','監査証跡'],['PHI protection (HIPAA)','Data encryption','Access control','Audit trail'],['暗号化漏れ','権限チェック不足','ログ改ざん','データ漏洩'],['Encryption gaps','Insufficient permission checks','Log tampering','Data leaks'],['Jest','Cypress','OWASP ZAP(セキュリティ)','Trivy(脆弱性)'],['Jest','Cypress','OWASP ZAP (security)','Trivy (vulnerabilities)'],'Security:HIGH|Performance:MED|DataIntegrity:HIGH|UX:MED|Compliance:HIGH'),
+  ec:_tm(['商品検索','カート操作','決済','在庫管理'],['Product search','Cart operations','Checkout','Inventory management'],['在庫同期','決済フロー','クーポン適用','配送計算'],['Inventory sync','Payment flow','Coupon application','Shipping calculation'],['在庫不整合','カート競合','クーポン二重適用','決済タイムアウト'],['Inventory mismatch','Cart conflicts','Double coupon usage','Payment timeout'],['Vitest','Playwright','Lighthouse(UX)','k6'],['Vitest','Playwright','Lighthouse (UX)','k6'],'Security:HIGH|Performance:HIGH|DataIntegrity:HIGH|UX:HIGH|Compliance:MED'),
+  saas:_tm(['認証','ユーザー管理','課金','プラン変更'],['Authentication','User management','Billing','Plan changes'],['マルチテナント分離','API制限','Webhook配信','データ移行'],['Multi-tenant isolation','API rate limits','Webhook delivery','Data migration'],['テナント間漏洩','レート制限抜け','Webhook失敗','移行データ欠損'],['Cross-tenant leakage','Rate limit bypass','Webhook failures','Migration data loss'],['Jest','Playwright','Postman(API)','Grafana k6'],['Jest','Playwright','Postman (API)','Grafana k6'],'Security:HIGH|Performance:HIGH|DataIntegrity:HIGH|UX:MED|Compliance:MED'),
+  social:_tm(['投稿','コメント','いいね','通知'],['Posts','Comments','Likes','Notifications'],['リアルタイム更新','スパム検知','モデレーション','通知配信'],['Realtime updates','Spam detection','Moderation','Notification delivery'],['通知遅延','スパム漏れ','モデレーション誤判定','N+1クエリ'],['Notification delays','Spam leakage','False moderation','N+1 queries'],['Vitest','Playwright','WebSocket Tester','Apache JMeter'],['Vitest','Playwright','WebSocket Tester','Apache JMeter'],'Security:MED|Performance:HIGH|DataIntegrity:MED|UX:HIGH|Compliance:MED'),
+  education:_tm(['学習進捗','クイズ','成績管理','証明書発行'],['Learning progress','Quizzes','Grade management','Certificate issuance'],['進捗同期','クイズ採点','WCAG準拠','FERPA遵守'],['Progress sync','Quiz grading','WCAG compliance','FERPA compliance'],['進捗消失','採点ミス','アクセシビリティ欠陥','未成年データ保護不足'],['Progress loss','Grading errors','Accessibility defects','Minor data protection gaps'],['Jest','Cypress','axe DevTools(a11y)','Lighthouse'],['Jest','Cypress','axe DevTools (a11y)','Lighthouse'],'Security:MED|Performance:MED|DataIntegrity:HIGH|UX:HIGH|Compliance:HIGH'),
+  gaming:_tm(['ポイント付与','ランキング','実績解除','リーダーボード'],['Point rewards','Rankings','Achievement unlock','Leaderboard'],['ポイント整合性','ランキング更新','不正検知','同時アクセス'],['Point consistency','Ranking updates','Cheat detection','Concurrent access'],['ポイント二重付与','ランキング不整合','不正ポイント獲得','競合状態'],['Double point awards','Ranking inconsistency','Cheating','Race conditions'],['Vitest','Playwright','Redis (cache)','k6'],['Vitest','Playwright','Redis (cache)','k6'],'Security:MED|Performance:HIGH|DataIntegrity:HIGH|UX:HIGH|Compliance:LOW'),
+  iot:_tm(['センサーデータ収集','デバイス制御','アラート','ダッシュボード'],['Sensor data collection','Device control','Alerts','Dashboard'],['データ精度','通信安定性','バッテリー効率','オフライン動作'],['Data accuracy','Communication stability','Battery efficiency','Offline operation'],['センサー誤差','通信断','バッテリー消耗','データ欠損'],['Sensor errors','Communication failures','Battery drain','Data loss'],['Pytest','Selenium','MQTT Explorer','Postman'],['Pytest','Selenium','MQTT Explorer','Postman'],'Security:HIGH|Performance:MED|DataIntegrity:HIGH|UX:MED|Compliance:MED'),
+  travel:_tm(['予約','空室検索','決済','キャンセル'],['Booking','Availability search','Payment','Cancellation'],['在庫同期','ダブルブッキング防止','キャンセルポリシー','多言語対応'],['Inventory sync','Double booking prevention','Cancellation policy','Multi-language support'],['ダブルブッキング','在庫不整合','キャンセル料計算ミス','決済失敗'],['Double bookings','Inventory mismatch','Cancellation fee errors','Payment failures'],['Jest','Playwright','k6','i18next (i18n)'],['Jest','Playwright','k6','i18next (i18n)'],'Security:HIGH|Performance:HIGH|DataIntegrity:HIGH|UX:HIGH|Compliance:MED'),
+  logistics:_tm(['配送追跡','在庫管理','ルート最適化','倉庫管理'],['Shipment tracking','Inventory management','Route optimization','Warehouse management'],['追跡精度','在庫同期','配送時間予測','GPS精度'],['Tracking accuracy','Inventory sync','Delivery time prediction','GPS accuracy'],['追跡更新遅延','在庫不整合','ルート計算ミス','GPS誤差'],['Tracking update delays','Inventory mismatch','Route calculation errors','GPS inaccuracy'],['Vitest','Playwright','Google Maps API','k6'],['Vitest','Playwright','Google Maps API','k6'],'Security:MED|Performance:HIGH|DataIntegrity:HIGH|UX:MED|Compliance:MED'),
+  realestate:_tm(['物件検索','内見予約','契約管理','入居者管理'],['Property search','Viewing appointments','Contract management','Tenant management'],['検索精度','契約ステータス','家賃計算','期限管理'],['Search accuracy','Contract status','Rent calculation','Deadline management'],['検索漏れ','契約状態不整合','家賃計算ミス','期限通知漏れ'],['Missing search results','Contract state inconsistency','Rent calculation errors','Missing deadline notifications'],['Jest','Playwright','Mapbox (map)','Cron (schedule)'],['Jest','Playwright','Mapbox (map)','Cron (schedule)'],'Security:MED|Performance:MED|DataIntegrity:HIGH|UX:MED|Compliance:MED'),
+  media:_tm(['記事投稿','コメント','購読管理','アクセス分析'],['Article publishing','Comments','Subscription management','Analytics'],['SEO最適化','画像最適化','コメントモデレーション','アクセス解析'],['SEO optimization','Image optimization','Comment moderation','Access analytics'],['SEOメタ欠損','画像読込遅延','スパムコメント','アクセス集計ミス'],['Missing SEO meta','Slow image loading','Spam comments','Analytics errors'],['Vitest','Playwright','Lighthouse','Google Analytics'],['Vitest','Playwright','Lighthouse','Google Analytics'],'Security:MED|Performance:HIGH|DataIntegrity:MED|UX:HIGH|Compliance:MED'),
+  hr:_tm(['応募管理','面接スケジュール','評価記録','オファー発行'],['Application management','Interview scheduling','Evaluation records','Offer issuance'],['応募者データ保護','評価公平性','GDPR遵守','通知配信'],['Applicant data protection','Evaluation fairness','GDPR compliance','Notification delivery'],['データ漏洩','評価バイアス','GDPR違反','通知遅延'],['Data leaks','Evaluation bias','GDPR violations','Notification delays'],['Jest','Cypress','OWASP ZAP','Mailgun (email)'],['Jest','Cypress','OWASP ZAP','Mailgun (email)'],'Security:HIGH|Performance:MED|DataIntegrity:HIGH|UX:MED|Compliance:HIGH'),
+  marketing:_tm(['キャンペーン管理','A/Bテスト','コンバージョン計測','セグメント配信'],['Campaign management','A/B testing','Conversion tracking','Segment delivery'],['コンバージョン精度','セグメント正確性','配信タイミング','ROI計算'],['Conversion accuracy','Segment accuracy','Delivery timing','ROI calculation'],['コンバージョン重複計測','セグメント漏れ','配信遅延','ROI計算ミス'],['Duplicate conversion tracking','Segment gaps','Delivery delays','ROI calculation errors'],['Vitest','Playwright','Google Tag Manager','Mixpanel'],['Vitest','Playwright','Google Tag Manager','Mixpanel'],'Security:MED|Performance:MED|DataIntegrity:HIGH|UX:MED|Compliance:MED'),
+  government:_tm(['申請受付','審査','承認','証明書発行'],['Application intake','Review','Approval','Certificate issuance'],['アクセシビリティ','セキュリティ','監査証跡','長期保管'],['Accessibility','Security','Audit trail','Long-term storage'],['a11y欠陥','権限エラー','監査ログ欠損','データ消失'],['a11y defects','Permission errors','Missing audit logs','Data loss'],['Jest','Cypress','axe DevTools','OWASP ZAP'],['Jest','Cypress','axe DevTools','OWASP ZAP'],'Security:HIGH|Performance:MED|DataIntegrity:HIGH|UX:HIGH|Compliance:HIGH'),
 };
 
 // ── Domain Intelligence Playbook (Implementation/Compliance/Prevention/Context/Skills) ──

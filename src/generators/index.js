@@ -48,6 +48,7 @@ function doGenerate(lang){
     {fn:()=>genPillar2_DevContainer(a,pn),lbl:_j?'柱② DevContainer':'Pillar ② DevContainer',err:'P2-Dev'},
     {fn:()=>genPillar3_MCP(a,pn),lbl:_j?'柱③ MCP':'Pillar ③ MCP',err:'P3-MCP'},
     {fn:()=>genPillar4_AIRules(a,pn),lbl:_j?'柱④ AIルール':'Pillar ④ AI Rules',err:'P4-AI'},
+    {fn:()=>genPillar5_QualityIntelligence(a,pn),lbl:_j?'品質インテリジェンス':'Quality Intelligence',err:'P5-QA'},
     {fn:()=>genPillar7_Roadmap(a,pn),lbl:_j?'柱⑦ ロードマップ':'Pillar ⑦ Roadmap',err:'P7-Road'},
     {fn:()=>genPillar9_DesignSystem(a,pn),lbl:_j?'柱⑨ デザインシステム':'Pillar ⑨ Design System',err:'P9-DS'},
     {fn:()=>genPillar10_ReverseEngineering(a,pn),lbl:_j?'柱⑩ リバースEng':'Pillar ⑩ Reverse Eng',err:'P10-Rev'},

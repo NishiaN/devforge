@@ -177,7 +177,7 @@ const I18N={
 ja:{
 p1:'Phase 1',p2:'Phase 2',p3:'Phase 3',
 heroTitle:'DevForge v9',
-heroDesc:'質問に答えるだけで、69+ファイルの開発ドキュメント・環境設定・AIルール・学習ロードマップを自動生成。10の柱でAI駆動開発をゼロから完全サポート。',
+heroDesc:'質問に答えるだけで、72+ファイルの開発ドキュメント・環境設定・AIルール・学習ロードマップを自動生成。10の柱でAI駆動開発をゼロから完全サポート。',
 startBtn:'🚀 開始する',
 statFiles:'生成ファイル',statTech:'技術エントリ',statPillars:'柱 (Pillars)',statAI:'AIツール対応',
 skillAsk:'スキルレベルを選択',
@@ -194,8 +194,8 @@ answerConfirm:'回答を確認',edit:'修正',
 tourNext:'次へ',tourPrev:'前へ',tourDone:'完了',tourStart:'ツアー開始',
 phEnd1:'Phase 1 完了！技術選定に進みます。',
 phEnd2:'Phase 2 完了！機能・データ設計に進みます。',
-genBtn:'📦 69+ファイル生成',
-genDone:'✅ 69+ファイルが生成されました！プレビューパネルで確認してください。',
+genBtn:'📦 72+ファイル生成',
+genDone:'✅ 72+ファイルが生成されました！プレビューパネルで確認してください。',
 copyDone:'クリップボードにコピーしました',
 pmTitle:'📁 プロジェクト管理',pmNew:'新規プロジェクト',pmEmpty:'保存されたプロジェクトはありません',
 helpClose:'閉じる',
@@ -206,7 +206,7 @@ pillar:['①SDD統合','②DevContainer','③MCP設定','④AIルール','⑤並
 en:{
 p1:'Phase 1',p2:'Phase 2',p3:'Phase 3',
 heroTitle:'DevForge v9',
-heroDesc:'Answer questions to auto-generate 69+ development documents, environment configs, AI rules & learning roadmaps. 10 pillars for complete AI-driven development support.',
+heroDesc:'Answer questions to auto-generate 72+ development documents, environment configs, AI rules & learning roadmaps. 10 pillars for complete AI-driven development support.',
 startBtn:'🚀 Get Started',
 statFiles:'Generated Files',statTech:'Tech Entries',statPillars:'Pillars',statAI:'AI Tools',
 skillAsk:'Select your skill level',
@@ -223,8 +223,8 @@ answerConfirm:'Confirm answer',edit:'Edit',
 tourNext:'Next',tourPrev:'Back',tourDone:'Done',tourStart:'Start Tour',
 phEnd1:'Phase 1 complete! Moving to tech stack.',
 phEnd2:'Phase 2 complete! Moving to feature design.',
-genBtn:'📦 Generate 69+ Files',
-genDone:'✅ 69+ files generated! Check the preview panel.',
+genBtn:'📦 Generate 72+ Files',
+genDone:'✅ 72+ files generated! Check the preview panel.',
 copyDone:'Copied to clipboard',
 pmTitle:'📁 Project Manager',pmNew:'New Project',pmEmpty:'No saved projects',
 helpClose:'Close',
@@ -2052,7 +2052,7 @@ function buildFileTree(){
     files.push({name:'mcp-config.json',path:'mcp-config.json'});
   } else if(pillar===3){ // AI Rules
     ['.cursor/rules','.github/copilot-instructions.md','.windsurfrules','.clinerules',
-     '.kiro/spec.md','CLAUDE.md','AGENTS.md','codex-instructions.md','skills/project.md','skills/catalog.md','skills/pipelines.md','.ai/hooks.yml'
+     '.kiro/spec.md','CLAUDE.md','AGENTS.md','codex-instructions.md','skills/project.md','skills/catalog.md','skills/pipelines.md','skills/factory.md','.ai/hooks.yml'
     ].forEach(f=>files.push({name:f,path:f}));
   } else if(pillar===4){ // Explorer
     files.push({name:_ja?'(並列実装探索 — UIのみ)':'(Parallel Explorer — UI only)',path:'_explorer'});
@@ -2082,7 +2082,7 @@ function buildFileTree(){
    '14_risk','15_meeting','16_review','17_monitoring',
    '18_data_migration','19_performance','20_a11y','21_changelog',
    '22_prompt_playbook','23_tasks','24_progress','25_error_logs',
-   '26_design_system','27_sequence_diagrams','28_qa_strategy','31_industry_playbook'].forEach(f=>
+   '26_design_system','27_sequence_diagrams','28_qa_strategy','31_industry_playbook','32_qa_blueprint','33_test_matrix'].forEach(f=>
     files.push({name:'  '+f+'.md',path:'docs/'+f+'.md'}));
   files.push({name:'───────────',path:''});
   ['README.md','.gitignore','package.json','LICENSE'].forEach(f=>files.push({name:f,path:f}));
@@ -2208,6 +2208,7 @@ function doGenerate(lang){
     {fn:()=>genPillar2_DevContainer(a,pn),lbl:_j?'柱② DevContainer':'Pillar ② DevContainer',err:'P2-Dev'},
     {fn:()=>genPillar3_MCP(a,pn),lbl:_j?'柱③ MCP':'Pillar ③ MCP',err:'P3-MCP'},
     {fn:()=>genPillar4_AIRules(a,pn),lbl:_j?'柱④ AIルール':'Pillar ④ AI Rules',err:'P4-AI'},
+    {fn:()=>genPillar5_QualityIntelligence(a,pn),lbl:_j?'品質インテリジェンス':'Quality Intelligence',err:'P5-QA'},
     {fn:()=>genPillar7_Roadmap(a,pn),lbl:_j?'柱⑦ ロードマップ':'Pillar ⑦ Roadmap',err:'P7-Road'},
     {fn:()=>genPillar9_DesignSystem(a,pn),lbl:_j?'柱⑨ デザインシステム':'Pillar ⑨ Design System',err:'P9-DS'},
     {fn:()=>genPillar10_ReverseEngineering(a,pn),lbl:_j?'柱⑩ リバースEng':'Pillar ⑩ Reverse Eng',err:'P10-Rev'},
@@ -3162,7 +3163,15 @@ CLAUDE.md        → ${G?'Claude Code用ルール':'Claude Code rules'}
       realestate:['0:物件管理:Property Mgmt:物件データ管理:Manage property data:登録100%:100% listed','1:内見予約:Viewing:内見予約管理:Manage viewings:重複0:0 overlaps','2:契約検証:Contract:契約書検証:Verify contracts:必須項目100%:100% required'],
       legal:['0:契約レビュー:Contract Review:契約書レビュー:Review contracts:リスク条項0:0 risk clauses','1:コンプライアンス:Compliance:法令準拠チェック:Compliance check:違反0:0 violations','3:文書管理:Doc Mgmt:文書バージョン管理:Doc version control:最新版追跡:Latest tracked'],
       hr:['0:採用フロー:Hiring Flow:採用プロセス設計:Design hiring flow:漏れ0:0 gaps','1:評価設計:Eval Design:評価制度設計:Design evaluation:基準明確:Clear criteria','3:オンボーディング:Onboarding:入社手続き管理:Manage onboarding:完了率100%:100% completion'],
-      fintech:['1:取引検証:Tx Validation:取引データ検証:Validate transactions:不正0:0 fraud','1:リスク分析:Risk Analysis:リスク評価:Risk assessment:P0対応済:P0 addressed','3:レポート生成:Report Gen:財務レポート:Financial reports:正確性100%:100% accuracy']
+      fintech:['1:取引検証:Tx Validation:取引データ検証:Validate transactions:不正0:0 fraud','1:リスク分析:Risk Analysis:リスク評価:Risk assessment:P0対応済:P0 addressed','3:レポート生成:Report Gen:財務レポート:Financial reports:正確性100%:100% accuracy'],
+      ai:['0:プロンプト設計:Prompt Design:プロンプト最適化:Optimize prompts:精度90%+:≥90% accuracy','1:RAG構築:RAG Setup:コンテキスト管理:Manage context:関連性95%+:≥95% relevance','2:モデル評価:Model Eval:応答品質評価:Eval response quality:幻覚1%↓:≤1% hallucination'],
+      automation:['0:ワークフロー設計:Workflow Design:自動化フロー設計:Design automation flow:漏れ0:0 gaps','1:条件分岐:Branching:条件分岐ロジック:Branching logic:網羅100%:100% coverage','2:エラーハンドリング:Error Handling:リトライ・フォールバック:Retry & fallback:復旧率98%+:≥98% recovery'],
+      event:['0:チケット設計:Ticket Design:チケット販売設計:Design ticket sales:在庫管理100%:100% inventory','1:参加者管理:Attendee Mgmt:参加者管理:Manage attendees:重複0:0 duplicates','2:通知最適化:Notify Opt:イベント通知最適化:Optimize event notifications:到達95%+:≥95% delivery'],
+      gamify:['0:ポイント設計:Point Design:ポイントシステム設計:Design point system:整合性100%:100% consistency','1:バッジ条件:Badge Logic:バッジ獲得条件:Badge unlock logic:漏れ0:0 gaps','2:ランキング:Leaderboard:ランキング計算:Calc leaderboard:精度100%:100% accuracy'],
+      collab:['0:同期設計:Sync Design:リアルタイム同期設計:Design realtime sync:遅延200ms↓:≤200ms latency','1:競合解決:Conflict Resolve:競合解決アルゴリズム:Conflict resolution:損失0:0 data loss','2:バージョン管理:Versioning:変更履歴管理:Manage change history:追跡100%:100% tracked'],
+      devtool:['0:API設計:API Design:開発者API設計:Design developer API:DX評価4.5+:≥4.5 DX','1:SDK構築:SDK Build:SDK・サンプル構築:Build SDK & samples:カバレッジ80%+:≥80% coverage','2:ドキュメント:Docs:ドキュメント生成:Generate docs:網羅性95%+:≥95% completeness'],
+      creator:['0:収益化設計:Monetization:収益化戦略設計:Design monetization:収益源3+:≥3 revenue streams','1:ファン管理:Fan Mgmt:ファンコミュニティ管理:Manage fan community:エンゲージ8%+:≥8% engagement','2:分析:Analytics:クリエイター分析:Creator analytics:インサイト可視化:Insights vis'],
+      newsletter:['0:コンテンツ戦略:Content Strategy:配信コンテンツ戦略:Delivery content strategy:開封率25%+:≥25% open rate','1:セグメント設計:Segment Design:セグメント配信設計:Design segment delivery:精度95%+:≥95% accuracy','2:A/Bテスト:A/B Test:A/Bテスト設計:Design A/B test:統計的有意性:Statistical significance']
     };
     const domainSkills=domainSkillsMap[domain]||[];
     const allSkills=[...coreSkills,...domainSkills];
@@ -3248,8 +3257,287 @@ CLAUDE.md        → ${G?'Claude Code用ルール':'Claude Code rules'}
     });
     pipelineMd+=`${G?'## 実行方法':'## Execution'}\n1. ${G?'トリガー':'Trigger'}\n2. ${G?'スキル実行':'Run skills'}\n3. ${G?'PASS → 次':'PASS → next'}\n`;
     S.files['skills/pipelines.md']=pipelineMd;
+    const thinkingAxis={
+      education:G?'理解できるか?':'Understandable?',
+      ec:G?'コンバージョンするか?':'Converts?',
+      saas:G?'ユーザー価値があるか?':'User value?',
+      fintech:G?'安全か?':'Secure?',
+      health:G?'正確か?':'Accurate?',
+      marketplace:G?'信頼できるか?':'Trustworthy?',
+      community:G?'健全か?':'Healthy?',
+      content:G?'エンゲージメントするか?':'Engaging?',
+      analytics:G?'正確か?':'Accurate?',
+      booking:G?'重複しないか?':'No conflicts?',
+      business:G?'効率的か?':'Efficient?',
+      iot:G?'接続できるか?':'Connected?',
+      realestate:G?'成約するか?':'Converts?',
+      legal:G?'準拠しているか?':'Compliant?',
+      hr:G?'公平か?':'Fair?',
+      ai:G?'幻覚がないか?':'No hallucinations?',
+      automation:G?'自動化できるか?':'Automatable?',
+      event:G?'満足できるか?':'Satisfying?',
+      gamify:G?'継続できるか?':'Retaining?',
+      collab:G?'同期できるか?':'Synced?',
+      devtool:G?'使いやすいか?':'Developer-friendly?',
+      creator:G?'収益化できるか?':'Monetizable?',
+      newsletter:G?'開封されるか?':'Opened?'
+    };
+    const axis=thinkingAxis[domain]||(G?'目標達成できるか?':'Goal-achievable?');
+    let factoryMd='# '+(G?'Manus Skills式スキルファクトリー':'Manus Skills Factory Template')+'\n\n';
+    factoryMd+=G?'**重要**: このテンプレートは「1スキル=1判断」原則に基づき、カスタムスキルを設計するためのファクトリーです。AIエージェントは、新しいタスクに遭遇した際、このフォーマットでスキルを定義してください。\n\n':'**IMPORTANT**: This template follows "1 Skill = 1 Judgment" principle for designing custom skills. AI agents MUST use this format when defining new skills for encountered tasks.\n\n';
+    factoryMd+=(G?'## 原則: 1スキル=1判断':'## Principle: 1 Skill = 1 Judgment')+'\n\n';
+    factoryMd+=G?'- **スキルは判断単位**: 複数の判断を1スキルに詰め込まない\n- **判断基準は明確**: "PASS/FAIL"または"数値目標"で測定可能\n- **入力→処理→判断→出力**: この4ステップで完結する\n\n':'- **Skill is a judgment unit**: Don\'t pack multiple judgments into one skill\n- **Judgment criteria are clear**: Measurable as "PASS/FAIL" or "numerical targets"\n- **Input → Process → Judge → Output**: Complete in these 4 steps\n\n';
+    factoryMd+=(G?'## ドメイン別思考軸':'## Domain-Specific Thinking Axis')+'\n\n';
+    factoryMd+='**'+(G?'現在のドメイン':'Current Domain')+'**: '+domain+'\n';
+    factoryMd+='**'+(G?'中心的な問い':'Central Question')+'**: **'+axis+'**\n\n';
+    factoryMd+=G?'すべてのスキルは、この思考軸に沿った判断を行うべきです。\n\n':'All skills should make judgments aligned with this thinking axis.\n\n';
+    factoryMd+=(G?'## スキル定義フォーマット':'## Skill Definition Format')+'\n\n```\n';
+    factoryMd+=(G?'### スキル名: 【具体的な判断内容】':'### Skill Name: [Specific Judgment]')+'\n\n';
+    factoryMd+='**'+(G?'役割':'Role')+'** (Planning/Design/Production/Operations): '+(G?'該当フェーズを選択':'Select applicable phase')+'\n\n';
+    factoryMd+='**'+(G?'目的':'Purpose')+'**: '+(G?'このスキルが何を判断するか（1文で）':'What this skill judges (one sentence)')+'\n\n';
+    factoryMd+='**'+(G?'入力':'Input')+'**:\n- '+(G?'必要なファイル/データ':'Required files/data')+'\n- '+(G?'前提条件':'Prerequisites')+'\n\n';
+    factoryMd+='**'+(G?'処理':'Processing')+'**:\n1. '+(G?'ステップ1':'Step 1')+'\n2. '+(G?'ステップ2':'Step 2')+'\n3. '+(G?'ステップ3':'Step 3')+'\n\n';
+    factoryMd+='**'+(G?'判断基準':'Judgment Criteria')+'**: '+(G?'PASS条件（測定可能）':'PASS condition (measurable)')+'\n';
+    factoryMd+=(G?'- 例: エラー0件, カバレッジ80%+, 応答時間2秒以下':'- Example: 0 errors, coverage ≥80%, response time ≤2s')+'\n\n';
+    factoryMd+='**'+(G?'出力':'Output')+'**:\n- PASS/'+(G?'FAIL':'FAIL')+'\n- '+(G?'判断理由':'Reason')+'\n- '+(G?'次のアクション':'Next action')+'\n```\n\n';
+    factoryMd+=(G?'## カスタムスキル作成手順':'## Custom Skill Creation Steps')+'\n\n';
+    factoryMd+='1. **'+(G?'判断内容を特定':'Identify judgment')+'**\n   - '+(G?'何を判断するか明確にする':'Clarify what to judge')+'\n   - '+(G?'複数の判断がある場合は分割する':'Split if multiple judgments exist')+'\n\n';
+    factoryMd+='2. **'+(G?'入力を定義':'Define inputs')+'**\n   - '+(G?'必要なドキュメント/ファイルをリスト':'List required documents/files')+'\n   - '+(G?'前提条件を明記':'Specify prerequisites')+'\n\n';
+    factoryMd+='3. **'+(G?'処理ステップを分解':'Break down processing')+'**\n   - '+(G?'3-5ステップで記述':'Describe in 3-5 steps')+'\n   - '+(G?'各ステップは具体的に':'Each step should be concrete')+'\n\n';
+    factoryMd+='4. **'+(G?'判断基準を数値化':'Quantify criteria')+'**\n   - '+(G?'測定可能な基準にする':'Make measurable criteria')+'\n   - '+(G?'思考軸に沿っているか確認':'Check alignment with thinking axis')+'\n\n';
+    factoryMd+='5. **'+(G?'出力を設計':'Design output')+'**\n   - PASS/FAIL + '+(G?'理由':'reason')+'\n   - '+(G?'次のアクション（次のスキル名 or 完了）':'Next action (next skill name or complete)')+'\n\n';
+    factoryMd+=(G?'## サンプルスキル':'## Sample Skill')+'\n\n```\n';
+    factoryMd+=(G?'### スキル名: データベース設計検証':'### Skill Name: Database Design Validation')+'\n\n';
+    factoryMd+='**'+(G?'役割':'Role')+'**: Design\n\n';
+    factoryMd+='**'+(G?'目的':'Purpose')+'**: '+(G?'ER図とentitiesが一致し、FK参照が正しいか判断':'Judge if ER diagram matches entities and FK references are correct')+'\n\n';
+    factoryMd+='**'+(G?'入力':'Input')+'**:\n- docs/04_er_diagram.md\n- .spec/technical-plan.md (entities)\n\n';
+    factoryMd+='**'+(G?'処理':'Processing')+'**:\n1. '+(G?'ER図から全エンティティ抽出':'Extract all entities from ER diagram')+'\n2. '+(G?'technical-planのentitiesリストと照合':'Compare with entities list in technical-plan')+'\n3. '+(G?'FK参照先が全て存在するか確認':'Verify all FK references exist')+'\n\n';
+    factoryMd+='**'+(G?'判断基準':'Judgment Criteria')+'**: '+(G?'不一致0件 AND FK未定義0件':'0 mismatches AND 0 undefined FKs')+'\n\n';
+    factoryMd+='**'+(G?'出力':'Output')+'**:\n- PASS/'+(G?'FAIL':'FAIL')+'\n- '+(G?'不一致リスト（あれば）':'Mismatch list (if any)')+'\n- '+(G?'次: API設計検証':'Next: API Design Validation')+'\n```\n\n';
+    factoryMd+=(G?'## ドメイン別スキル例':'## Domain-Specific Skill Examples')+'\n\n';
+    if(domainSkills.length>0){
+      factoryMd+=(G?'現在のドメイン（':'Current domain (')+domain+(G?'）の登録済みスキル:':') registered skills:')+'\n';
+      domainSkills.forEach((sk,i)=>{
+        const[r,nJa,nEn,pJa,pEn,jJa,jEn]=sk.split(':');
+        factoryMd+=(i+1)+'. **'+(G?nJa:nEn)+'** - '+(G?jJa:jEn)+'\n';
+      });
+    }else{
+      factoryMd+=G?'（このドメインはまだスキルが登録されていません。上記フォーマットで作成してください）':'(No skills registered for this domain yet. Create using the format above)';
+    }
+    factoryMd+='\n';
+    S.files['skills/factory.md']=factoryMd;
     S.files['AGENTS.md']+=`\n\n## Pipeline Coordination\n- Pipelines: skills/pipelines.md\n- Catalog: skills/catalog.md\n- Gates: ${aiLevel==='vibe'||aiLevel==='agentic'?'human':'auto'}\n- Error: docs/25 → retry → escalate\n- Context: AI_BRIEF.md only\n`;
   }
+}
+
+function genPillar5_QualityIntelligence(a,pn){
+  const G=S.genLang==='ja';
+  const domain=detectDomain(a.purpose)||'_default';
+  const purpose=a.purpose||'';
+  const features=(a.mvp_features||'').split(/[,、\n]/).map(s=>s.trim()).filter(Boolean);
+  const entities=(a.data_entities||'').split(/[,、]\s*/).map(s=>s.trim()).filter(Boolean);
+  const industryMap={
+    fintech:'fintech',health:'health',ec:'ec',saas:'saas',community:'social',
+    education:'education',gamify:'gaming',iot:'iot',booking:'travel',
+    realestate:'realestate',content:'media',hr:'hr',analytics:'marketing',
+    marketplace:'ec',business:'saas',legal:'government',portfolio:'media',
+    tool:'saas',ai:'saas',automation:'saas',event:'travel',collab:'saas',
+    devtool:'saas',creator:'media',newsletter:'media'
+  };
+  const industry=industryMap[domain]||'saas';
+  const tm=INDUSTRY_TEST_MATRIX[industry]||INDUSTRY_TEST_MATRIX.saas;
+  let doc32='# '+(G?'業種適応型QAブループリント':'Industry-Adaptive QA Blueprint')+'\n\n';
+  doc32+=G?'**重要**: このドキュメントは、業種特有のQA戦略とリスク評価を提供します。AIエージェントは、テスト計画策定時に必ずこのブループリントを参照してください。\n\n':'**IMPORTANT**: This document provides industry-specific QA strategies and risk assessments. AI agents MUST reference this blueprint when creating test plans.\n\n';
+  doc32+=(G?'## 対象業種':'## Target Industry')+'\n\n';
+  doc32+='**'+(G?'業種':'Industry')+'**: '+industry+'\n';
+  doc32+='**'+(G?'ドメイン':'Domain')+'**: '+domain+'\n';
+  doc32+='**'+(G?'プロジェクト目的':'Project Purpose')+'**: '+purpose+'\n\n';
+  doc32+=(G?'## 重要機能（Critical Functions）':'## Critical Functions')+'\n\n';
+  doc32+=G?'この業種で最も重要視すべき機能:\n\n':'Most critical functions for this industry:\n\n';
+  const critFuncs=G?tm.critical_functions_ja:tm.critical_functions_en;
+  critFuncs.forEach((cf,i)=>{
+    doc32+=(i+1)+'. **'+cf+'**\n';
+  });
+  doc32+='\n';
+  doc32+=(G?'## テスト重点領域':'## Test Focus Areas')+'\n\n';
+  const testFocus=G?tm.test_focus_ja:tm.test_focus_en;
+  testFocus.forEach((tf,i)=>{
+    doc32+='### '+(i+1)+'. '+tf+'\n\n';
+    if(i===0){
+      doc32+=G?'- テストケース: 正常系・異常系・境界値\n- カバレッジ目標: 80%+\n- 自動化: 必須\n\n':'- Test cases: Normal, error, boundary\n- Coverage target: 80%+\n- Automation: Required\n\n';
+    }else if(i===1){
+      doc32+=G?'- 静的解析ツール使用\n- コードレビュー必須\n- OWASP Top 10準拠\n\n':'- Use static analysis tools\n- Code review required\n- OWASP Top 10 compliance\n\n';
+    }else if(i===2){
+      doc32+=G?'- 負荷テスト実施\n- レスポンスタイム測定\n- リソース監視\n\n':'- Conduct load testing\n- Measure response time\n- Monitor resources\n\n';
+    }else{
+      doc32+=G?'- 実機テスト推奨\n- ユーザビリティ評価\n- アクセシビリティチェック\n\n':'- Real device testing recommended\n- Usability evaluation\n- Accessibility check\n\n';
+    }
+  });
+  doc32+=(G?'## リスク優先度マトリクス':'## Risk Priority Matrix')+'\n\n';
+  const priObj={};
+  tm.priority.split('|').forEach(p=>{
+    const[k,v]=p.split(':');
+    priObj[k]=v;
+  });
+  doc32+='| '+(G?'カテゴリ':'Category')+' | '+(G?'優先度':'Priority')+' | '+(G?'対策':'Mitigation')+' |\n';
+  doc32+='|----------|----------|----------|\n';
+  const catMap={
+    Security:G?'セキュリティ':'Security',
+    Performance:G?'パフォーマンス':'Performance',
+    DataIntegrity:G?'データ整合性':'Data Integrity',
+    UX:'UX',
+    Compliance:G?'コンプライアンス':'Compliance'
+  };
+  Object.entries(catMap).forEach(([key,label])=>{
+    const priority=priObj[key]||'MED';
+    const mitigation=priority==='HIGH'||priority==='CRITICAL'?(G?'専門家レビュー・自動化テスト':'Expert review, automated tests'):(G?'定期チェック':'Regular checks');
+    doc32+='| '+label+' | '+priority+' | '+mitigation+' |\n';
+  });
+  doc32+='\n';
+  doc32+=(G?'## 典型的バグパターン':'## Typical Bug Patterns')+'\n\n';
+  const typicalBugs=G?tm.typical_bugs_ja:tm.typical_bugs_en;
+  typicalBugs.forEach((bug,i)=>{
+    doc32+='### '+(i+1)+'. '+bug+'\n\n';
+    doc32+='**'+(G?'検出方法':'Detection')+'**: ';
+    if(i===0){
+      doc32+=G?'単体テスト・統合テスト\n':'Unit tests, integration tests\n';
+    }else if(i===1){
+      doc32+=G?'E2Eテスト・手動テスト\n':'E2E tests, manual tests\n';
+    }else if(i===2){
+      doc32+=G?'コードレビュー・静的解析\n':'Code review, static analysis\n';
+    }else{
+      doc32+=G?'ログ監視・アラート\n':'Log monitoring, alerts\n';
+    }
+    doc32+='**'+(G?'予防策':'Prevention')+'**: ';
+    if(i===0){
+      doc32+=G?'設計段階でのレビュー、早期プロトタイプ検証\n':'Design review, early prototype validation\n';
+    }else if(i===1){
+      doc32+=G?'ペアプログラミング、TDD実践\n':'Pair programming, TDD practice\n';
+    }else{
+      doc32+=G?'チェックリスト使用、自動化\n':'Use checklists, automation\n';
+    }
+    doc32+='\n';
+  });
+  doc32+=(G?'## 推奨テストツール':'## Recommended Testing Tools')+'\n\n';
+  const tools=G?tm.tools_ja:tm.tools_en;
+  tools.forEach((tool,i)=>{
+    const[name,type]=tool.split(/[（(]/);
+    const cleanType=(type||'').replace(/[）)]/g,'');
+    doc32+=(i+1)+'. **'+name.trim()+'**';
+    if(cleanType){
+      doc32+=' - '+cleanType;
+    }
+    doc32+='\n';
+  });
+  doc32+='\n';
+  doc32+=(G?'## リスクヒートマップ':'## Risk Heatmap')+'\n\n';
+  doc32+='```\n';
+  doc32+=(G?'影響度 ＼ 発生確率  │  低    中    高':'Impact \\ Probability │  Low   Med   High')+'\n';
+  doc32+='─────────────────┼──────────────────\n';
+  const highRisk=priObj.Security==='HIGH'||priObj.Security==='CRITICAL'?'🔴':'🟡';
+  const medRisk=priObj.DataIntegrity==='HIGH'?'🟡':'🟢';
+  doc32+=(G?'      大          │  🟡    🟡    ':'      High         │  🟡    🟡    ')+highRisk+'\n';
+  doc32+=(G?'      中          │  🟢    🟡    🟡':'      Med          │  🟢    🟡    🟡')+'\n';
+  doc32+=(G?'      小          │  🟢    🟢    ':'      Low          │  🟢    🟢    ')+medRisk+'\n';
+  doc32+='```\n\n';
+  doc32+=G?'🔴 = 即対応必須 | 🟡 = 計画的対応 | 🟢 = 定期チェック\n\n':'🔴 = Immediate action | 🟡 = Planned action | 🟢 = Regular check\n\n';
+  if(priObj.Compliance==='HIGH'||priObj.Compliance==='CRITICAL'){
+    doc32+=(G?'## コンプライアンスチェックリスト':'## Compliance Checklist')+'\n\n';
+    const compStd={
+      fintech:'PCI DSS',health:'HIPAA',education:'FERPA',hr:'GDPR',
+      legal:'SOX',government:'WCAG 2.1 AA'
+    }[industry]||'GDPR';
+    doc32+='**'+(G?'準拠基準':'Standard')+'**: '+compStd+'\n\n';
+    doc32+='- [ ] '+(G?'データ暗号化（保存時・転送時）':'Data encryption (at rest & in transit)')+'\n';
+    doc32+='- [ ] '+(G?'アクセスログ記録':'Access log recording')+'\n';
+    doc32+='- [ ] '+(G?'データ保持期間管理':'Data retention management')+'\n';
+    doc32+='- [ ] '+(G?'監査証跡完全性':'Audit trail completeness')+'\n';
+    doc32+='- [ ] '+(G?'インシデント対応手順':'Incident response procedures')+'\n\n';
+  }
+
+  S.files['docs/32_qa_blueprint.md']=doc32;
+  let doc33='# '+(G?'具体的テストマトリクス':'Concrete Test Matrix')+'\n\n';
+  doc33+=G?'**重要**: このマトリクスは、実装すべきテストケースの具体例を提供します。AIエージェントは、テスト実装時にこのマトリクスをテンプレートとして使用してください。\n\n':'**IMPORTANT**: This matrix provides concrete test case examples. AI agents MUST use this matrix as a template when implementing tests.\n\n';
+  doc33+=(G?'## テストケーステンプレート':'## Test Case Template')+'\n\n';
+  doc33+='| '+(G?'機能':'Feature')+' | '+(G?'テストケース':'Test Case')+' | '+(G?'期待結果':'Expected Result')+' | '+(G?'優先度':'Priority')+' |\n';
+  doc33+='|------|------|------|------|\n';
+  critFuncs.slice(0,3).forEach((func,i)=>{
+    const pri=i===0?'P0':(i===1?'P1':'P2');
+    doc33+='| '+func+' | '+(G?'正常系: ':'Normal: ')+(G?'有効なデータで実行':'Execute with valid data')+' | '+(G?'成功':'Success')+' (200/201) | '+pri+' |\n';
+    doc33+='| '+func+' | '+(G?'異常系: ':'Error: ')+(G?'不正なデータ':'Invalid data')+' | '+(G?'エラー':'Error')+' (400/422) | '+pri+' |\n';
+    if(i===0){
+      doc33+='| '+func+' | '+(G?'境界値: ':'Boundary: ')+(G?'最大/最小値':'Max/min values')+' | '+(G?'適切に処理':'Handled properly')+' | '+pri+' |\n';
+    }
+  });
+  doc33+='\n';
+  doc33+=(G?'## バグパターン × 検出方法 × 予防策':'## Bug Pattern × Detection × Prevention')+'\n\n';
+  doc33+='| '+(G?'バグパターン':'Bug Pattern')+' | '+(G?'検出方法':'Detection Method')+' | '+(G?'予防策':'Prevention')+' |\n';
+  doc33+='|----------|----------|----------|\n';
+  typicalBugs.forEach((bug,i)=>{
+    const detection=i===0?(G?'単体テスト':'Unit tests'):(i===1?(G?'E2Eテスト':'E2E tests'):(i===2?(G?'静的解析':'Static analysis'):(G?'ログ監視':'Log monitoring')));
+    const prevention=i===0?(G?'設計レビュー':'Design review'):(i===1?'TDD':(i===2?(G?'チェックリスト':'Checklist'):(G?'自動化':'Automation')));
+    doc33+='| '+bug+' | '+detection+' | '+prevention+' |\n';
+  });
+  doc33+='\n';
+  doc33+=(G?'## 業界横断テストケース':'## Cross-Cutting Test Cases')+'\n\n';
+  const crossCutting=Object.values(QA_CROSS_CUTTING).filter(c=>c.domains.includes(domain)||c.domains.includes(industry));
+  if(crossCutting.length>0){
+    crossCutting.forEach((cc,i)=>{
+      const label=G?cc.ja:cc.en;
+      doc33+='### '+(i+1)+'. '+label+'\n\n';
+      if(label.includes('同時')||label.includes('Concurrent')){
+        doc33+='- '+(G?'100人同時アクセステスト':'100 concurrent users test')+'\n';
+        doc33+='- '+(G?'期待: データ競合0件':'Expected: 0 race conditions')+'\n\n';
+      }else if(label.includes('冪等')||label.includes('Idempot')){
+        doc33+='- '+(G?'同一リクエスト2回送信':'Send same request twice')+'\n';
+        doc33+='- '+(G?'期待: 結果同一、副作用1回のみ':'Expected: Same result, side effect once only')+'\n\n';
+      }else if(label.includes('スパイク')||label.includes('Spike')){
+        doc33+='- '+(G?'通常の100倍トラフィック':'100x normal traffic')+'\n';
+        doc33+='- '+(G?'期待: エラー率5%以下':'Expected: Error rate ≤5%')+'\n\n';
+      }else if(label.includes('レート')||label.includes('Rate')){
+        doc33+='- '+(G?'制限超過リクエスト':'Request beyond limit')+'\n';
+        doc33+='- '+(G?'期待: 429 Too Many Requests':'Expected: 429 Too Many Requests')+'\n\n';
+      }else{
+        doc33+='- '+(G?'機能テスト実施':'Functional test')+'\n';
+        doc33+='- '+(G?'期待: 仕様通り動作':'Expected: Works as specified')+'\n\n';
+      }
+    });
+  }else{
+    doc33+=G?'（該当する業界横断テストパターンなし）\n\n':'(No applicable cross-cutting patterns)\n\n';
+  }
+  doc33+=(G?'## ツール別テスト例':'## Tool-Specific Test Examples')+'\n\n';
+  tools.slice(0,3).forEach((tool,i)=>{
+    const[name]=tool.split(/[（(]/);
+    doc33+='### '+name.trim()+'\n\n```javascript\n';
+    if(name.includes('Jest')||name.includes('Vitest')){
+      doc33+="describe('"+critFuncs[0]+"', () => {\n";
+      doc33+="  test('should return success with valid data', async () => {\n";
+      doc33+="    const result = await "+critFuncs[0].toLowerCase().replace(/\s+/g,'')+"(validData);\n";
+      doc33+="    expect(result.status).toBe(200);\n";
+      doc33+="  });\n});\n";
+    }else if(name.includes('Playwright')||name.includes('Cypress')){
+      doc33+="test('"+critFuncs[0]+"', async ({ page }) => {\n";
+      doc33+="  await page.goto('/"+critFuncs[0].toLowerCase().replace(/\s+/g,'-')+"');\n";
+      doc33+="  await page.click('button[type=\"submit\"]');\n";
+      doc33+="  await expect(page.locator('.success')).toBeVisible();\n";
+      doc33+"});\n";
+    }else{
+      doc33+="// "+name.trim()+(G?' 使用例':' usage example')+"\n";
+      doc33+="// "+(G?'設定と実行手順はドキュメント参照':'Refer to documentation for setup and execution')+"\n";
+    }
+    doc33+='```\n\n';
+  });
+  doc33+=(G?'## カバレッジ目標':'## Coverage Goals')+'\n\n';
+  doc33+='| '+(G?'カテゴリ':'Category')+' | '+(G?'目標':'Target')+' |\n';
+  doc33+='|----------|----------|\n';
+  doc33+='| '+(G?'ライン':'Line')+' | ≥80% |\n';
+  doc33+='| '+(G?'ブランチ':'Branch')+' | ≥70% |\n';
+  doc33+='| '+(G?'関数':'Function')+' | ≥85% |\n';
+  doc33+='| '+(G?'ステートメント':'Statement')+' | ≥80% |\n';
+  doc33+='\n';
+  doc33+=G?'**注**: 重要機能（P0）は100%カバレッジを目指す\n\n':'**Note**: Critical functions (P0) should aim for 100% coverage\n\n';
+
+  S.files['docs/33_test_matrix.md']=doc33;
 }
 function genPillar7_Roadmap(a,pn){
   const T=k=>(GT[S.genLang]||GT.en)[k]||GT.en[k]||k;
@@ -3757,6 +4045,78 @@ const REVERSE_FLOW_MAP={
     risks_ja:['機能複雑化','使い方不明','競合ツール台頭'],
     risks_en:['Feature complexity','Unclear usage','Competitor tools']
   },
+  ai:{
+    goal_ja:'AI精度・応答速度・ユーザー満足度',goal_en:'AI Accuracy, Response Speed & User Satisfaction',
+    flow_ja:['AI精度・応答速度KPI設定','プロンプト最適化・モデル選定','コンテキスト管理・RAG構築','ユーザーフィードバック学習'],
+    flow_en:['Set AI accuracy & speed KPIs','Prompt optimization & model selection','Context management & RAG','User feedback learning'],
+    kpi_ja:['応答精度 ≥90%','平均応答時間 ≤2秒','ユーザー満足度 ≥4.5/5','フィードバック反映率 ≥80%'],
+    kpi_en:['Response accuracy ≥90%','Avg response time ≤2s','User satisfaction ≥4.5/5','Feedback incorporation ≥80%'],
+    risks_ja:['幻覚(ハルシネーション)','コンテキスト破綻','レート制限超過'],
+    risks_en:['Hallucinations','Context loss','Rate limit exceeded']
+  },
+  automation:{
+    goal_ja:'自動化率・エラー率・処理時間',goal_en:'Automation Rate, Error Rate & Processing Time',
+    flow_ja:['自動化率・エラー率KPI設定','ワークフロー設計・条件分岐','監視・リトライ機構','継続的改善ループ'],
+    flow_en:['Set automation & error KPIs','Workflow design & branching','Monitoring & retry mechanism','Continuous improvement loop'],
+    kpi_ja:['自動化率 ≥80%','エラー率 ≤3%','処理時間短縮 ≥50%','手動介入率 ≤10%'],
+    kpi_en:['Automation rate ≥80%','Error rate ≤3%','Processing time reduction ≥50%','Manual intervention ≤10%'],
+    risks_ja:['無限ループ','条件分岐ミス','監視漏れ'],
+    risks_en:['Infinite loops','Branching errors','Monitoring gaps']
+  },
+  event:{
+    goal_ja:'参加率・満足度・収益最大化',goal_en:'Participation, Satisfaction & Revenue Maximization',
+    flow_ja:['参加率・満足度KPI設定','チケット販売戦略','イベント管理システム','事後フォローアップ'],
+    flow_en:['Set participation & satisfaction KPIs','Ticket sales strategy','Event management system','Post-event follow-up'],
+    kpi_ja:['参加率 ≥85%','満足度 ≥4.5/5','チケット売上目標達成 ≥95%','リピート参加率 ≥40%'],
+    kpi_en:['Participation ≥85%','Satisfaction ≥4.5/5','Ticket sales goal ≥95%','Repeat participation ≥40%'],
+    risks_ja:['集客不足','当日キャンセル','運営トラブル'],
+    risks_en:['Low attendance','Last-minute cancellations','Operational issues']
+  },
+  gamify:{
+    goal_ja:'エンゲージメント・継続率向上',goal_en:'Engagement & Retention Improvement',
+    flow_ja:['エンゲージメントKPI設定','ポイント・バッジシステム設計','リーダーボード・チャレンジ','報酬最適化'],
+    flow_en:['Set engagement KPIs','Design points & badges system','Leaderboard & challenges','Reward optimization'],
+    kpi_ja:['DAU/MAU比率 ≥35%','平均セッション時間 ≥15分','ポイント獲得率 ≥70%','バッジ解除率 ≥50%'],
+    kpi_en:['DAU/MAU ratio ≥35%','Avg session ≥15min','Point earn rate ≥70%','Badge unlock rate ≥50%'],
+    risks_ja:['ポイントインフレ','不正獲得','モチベーション低下'],
+    risks_en:['Point inflation','Cheating','Motivation decline']
+  },
+  collab:{
+    goal_ja:'共同作業効率・同期精度',goal_en:'Collaboration Efficiency & Sync Accuracy',
+    flow_ja:['コラボレーションKPI設定','リアルタイム同期基盤','競合解決アルゴリズム','バージョン管理・履歴'],
+    flow_en:['Set collaboration KPIs','Real-time sync foundation','Conflict resolution algorithm','Version control & history'],
+    kpi_ja:['同期遅延 ≤200ms','競合発生率 ≤5%','データ損失 0件','同時編集ユーザー数 ≥10人'],
+    kpi_en:['Sync latency ≤200ms','Conflict rate ≤5%','Data loss: 0','Concurrent users ≥10'],
+    risks_ja:['データ競合','同期遅延','接続断'],
+    risks_en:['Data conflicts','Sync delays','Connection loss']
+  },
+  devtool:{
+    goal_ja:'開発者体験・API採用率',goal_en:'Developer Experience & API Adoption',
+    flow_ja:['DX・API採用率KPI設定','API設計・ドキュメント','SDK・サンプルコード','コミュニティ・サポート'],
+    flow_en:['Set DX & adoption KPIs','API design & docs','SDKs & sample code','Community & support'],
+    kpi_ja:['API採用率 ≥50社','ドキュメント満足度 ≥4.5/5','問い合わせ応答時間 ≤4h','SDK利用率 ≥70%'],
+    kpi_en:['API adoption ≥50 companies','Doc satisfaction ≥4.5/5','Support response ≤4h','SDK usage ≥70%'],
+    risks_ja:['API仕様変更','ドキュメント不足','サポート遅延'],
+    risks_en:['API breaking changes','Insufficient docs','Support delays']
+  },
+  creator:{
+    goal_ja:'クリエイター収益・ファンエンゲージメント',goal_en:'Creator Revenue & Fan Engagement',
+    flow_ja:['収益・ファンKPI設定','コンテンツ収益化戦略','ファンコミュニティ構築','分析・インサイト提供'],
+    flow_en:['Set revenue & fan KPIs','Content monetization strategy','Build fan community','Analytics & insights'],
+    kpi_ja:['月間収益 ≥100,000円','ファン数 ≥500人','エンゲージメント率 ≥8%','リピート課金率 ≥60%'],
+    kpi_en:['Monthly revenue ≥$1,000','Fans ≥500','Engagement rate ≥8%','Repeat payment ≥60%'],
+    risks_ja:['収益化遅延','ファン離脱','コンテンツ枯渇'],
+    risks_en:['Monetization delays','Fan churn','Content shortage']
+  },
+  newsletter:{
+    goal_ja:'開封率・クリック率・購読者増',goal_en:'Open Rate, Click Rate & Subscriber Growth',
+    flow_ja:['開封率・購読者KPI設定','コンテンツ戦略・配信頻度','セグメント配信・A/Bテスト','購読者獲得施策'],
+    flow_en:['Set open rate & subscriber KPIs','Content strategy & frequency','Segment delivery & A/B test','Subscriber acquisition'],
+    kpi_ja:['開封率 ≥25%','クリック率 ≥3%','購読者増加率 ≥10%/月','解除率 ≤2%'],
+    kpi_en:['Open rate ≥25%','Click rate ≥3%','Subscriber growth ≥10%/mo','Unsubscribe ≤2%'],
+    risks_ja:['スパム判定','コンテンツ質低下','配信遅延'],
+    risks_en:['Spam filtering','Content quality decline','Delivery delays']
+  },
   _default:{
     goal_ja:'プロダクト完成・ローンチ',goal_en:'Product Completion & Launch',
     flow_ja:['ゴール・成功指標定義','要件分解・優先順位付け','技術スタック選定','実装計画・スケジュール'],
@@ -4246,7 +4606,7 @@ _(${G?'追記してください':'Add entries here'})_`],
   const qa=domain?getDomainQA(domain,G):null;
   if(qa){
     const priObj={};qa.priority.split('|').forEach(p=>{const[k,v]=p.split(':');priObj[k]=v;});
-    return `${G?'## 対象ドメイン':'## Target Domain'}\n**${domain}**\n\n${G?'## QA重点領域':'## QA Focus Areas'}\n${qa.focus.map((f,i)=>`${i+1}. ${f}`).join('\n')}\n\n${G?'## よくあるバグパターン':'## Common Bug Patterns'}\n${qa.bugs.map((b,i)=>`- **${G?'パターン':'Pattern'} ${i+1}**: ${b}`).join('\n')}\n\n${G?'## 業界横断チェックリスト':'## Cross-Cutting Checklist'}\n${qa.crossCutting.length>0?qa.crossCutting.map((c,i)=>`${i+1}. ${c}`).join('\n'):(G?'該当なし':'None applicable')}\n\n${G?'## 優先度マトリクス':'## Priority Matrix'}\n| ${G?'カテゴリ':'Category'} | ${G?'優先度':'Priority'} |\n|----------|----------|\n| ${G?'セキュリティ':'Security'} | ${priObj.Security||'MED'} |\n| ${G?'パフォーマンス':'Performance'} | ${priObj.Performance||'MED'} |\n| ${G?'データ整合性':'Data Integrity'} | ${priObj.DataIntegrity||'MED'} |\n| UX | ${priObj.UX||'MED'} |\n| ${G?'コンプライアンス':'Compliance'} | ${priObj.Compliance||'LOW'} |\n\n${G?'## テスト実行順序':'## Test Execution Order'}\n${G?'優先度に基づいた推奨実行順序:':'Recommended execution order by priority:'}\n1. ${priObj.Security==='CRITICAL'||priObj.DataIntegrity==='CRITICAL'?(G?'セキュリティ・データ整合性テスト':'Security & Data Integrity tests'):priObj.UX==='CRITICAL'?(G?'UXテスト':'UX tests'):(G?'パフォーマンステスト':'Performance tests')}\n2. ${priObj.Performance==='HIGH'||priObj.Security==='HIGH'?(G?'パフォーマンス・セキュリティテスト':'Performance & Security tests'):(G?'機能テスト':'Functional tests')}\n3. ${G?'統合テスト':'Integration tests'}\n4. ${G?'回帰テスト':'Regression tests'}\n\n${G?'## 参考リソース':'## References'}\n- OWASP Top 10: https://owasp.org/www-project-top-ten/\n- ${domain==='education'?'FERPA Compliance':domain==='health'?'HIPAA Compliance':domain==='fintech'?'PCI DSS Compliance':domain==='hr'?'GDPR/CCPA Compliance':domain==='saas'?'SOC 2 Compliance':'Industry Best Practices'}`;
+    return `${G?'## 対象ドメイン':'## Target Domain'}\n**${domain}**\n\n${G?'💡 **詳細なQA戦略は `docs/32_qa_blueprint.md` と `docs/33_test_matrix.md` を参照**':'💡 **See `docs/32_qa_blueprint.md` and `docs/33_test_matrix.md` for detailed QA strategies**'}\n\n${G?'## QA重点領域':'## QA Focus Areas'}\n${qa.focus.map((f,i)=>`${i+1}. ${f}`).join('\n')}\n\n${G?'## よくあるバグパターン':'## Common Bug Patterns'}\n${qa.bugs.map((b,i)=>`- **${G?'パターン':'Pattern'} ${i+1}**: ${b}`).join('\n')}\n\n${G?'## 業界横断チェックリスト':'## Cross-Cutting Checklist'}\n${qa.crossCutting.length>0?qa.crossCutting.map((c,i)=>`${i+1}. ${c}`).join('\n'):(G?'該当なし':'None applicable')}\n\n${G?'## 優先度マトリクス':'## Priority Matrix'}\n| ${G?'カテゴリ':'Category'} | ${G?'優先度':'Priority'} |\n|----------|----------|\n| ${G?'セキュリティ':'Security'} | ${priObj.Security||'MED'} |\n| ${G?'パフォーマンス':'Performance'} | ${priObj.Performance||'MED'} |\n| ${G?'データ整合性':'Data Integrity'} | ${priObj.DataIntegrity||'MED'} |\n| UX | ${priObj.UX||'MED'} |\n| ${G?'コンプライアンス':'Compliance'} | ${priObj.Compliance||'LOW'} |\n\n${G?'## テスト実行順序':'## Test Execution Order'}\n${G?'優先度に基づいた推奨実行順序:':'Recommended execution order by priority:'}\n1. ${priObj.Security==='CRITICAL'||priObj.DataIntegrity==='CRITICAL'?(G?'セキュリティ・データ整合性テスト':'Security & Data Integrity tests'):priObj.UX==='CRITICAL'?(G?'UXテスト':'UX tests'):(G?'パフォーマンステスト':'Performance tests')}\n2. ${priObj.Performance==='HIGH'||priObj.Security==='HIGH'?(G?'パフォーマンス・セキュリティテスト':'Performance & Security tests'):(G?'機能テスト':'Functional tests')}\n3. ${G?'統合テスト':'Integration tests'}\n4. ${G?'回帰テスト':'Regression tests'}\n\n${G?'## 参考リソース':'## References'}\n- ${G?'詳細QAブループリント':'Detailed QA Blueprint'}: docs/32_qa_blueprint.md\n- ${G?'具体的テストマトリクス':'Concrete Test Matrix'}: docs/33_test_matrix.md\n- OWASP Top 10: https://owasp.org/www-project-top-ten/\n- ${domain==='education'?'FERPA Compliance':domain==='health'?'HIPAA Compliance':domain==='fintech'?'PCI DSS Compliance':domain==='hr'?'GDPR/CCPA Compliance':domain==='saas'?'SOC 2 Compliance':'Industry Best Practices'}`;
   }
   return `${G?'## 汎用QAチェックリスト':'## Generic QA Checklist'}\n\n${G?'ドメイン未検出のため、汎用的なQA項目を記載します。':'Domain not detected. Generic QA items listed below.'}\n\n### ${G?'機能テスト':'Functional Testing'}\n- [ ] ${G?'全機能の正常系動作確認':'Verify all features work (happy path)'}\n- [ ] ${G?'エラーハンドリング検証':'Error handling validation'}\n- [ ] ${G?'境界値テスト':'Boundary value testing'}\n\n### ${G?'セキュリティ':'Security'}\n- [ ] ${G?'認証・認可テスト':'Auth/authz testing'}\n- [ ] ${G?'入力バリデーション':'Input validation'}\n- [ ] XSS/CSRF ${G?'対策確認':'prevention check'}\n- [ ] ${G?'機密情報の漏洩チェック':'Sensitive data leakage check'}\n\n### ${G?'パフォーマンス':'Performance'}\n- [ ] ${G?'レスポンスタイム測定':'Response time measurement'}\n- [ ] ${G?'高負荷テスト':'Load testing'}\n- [ ] ${G?'メモリリーク検出':'Memory leak detection'}\n\n### ${G?'互換性':'Compatibility'}\n- [ ] ${G?'ブラウザ別動作確認':'Cross-browser testing'}\n- [ ] ${G?'モバイル対応確認':'Mobile responsiveness'}\n- [ ] ${G?'アクセシビリティ (WCAG)':'Accessibility (WCAG)'}\n\n### ${G?'データ整合性':'Data Integrity'}\n- [ ] ${G?'トランザクション完全性':'Transaction integrity'}\n- [ ] ${G?'データ同期確認':'Data sync validation'}\n- [ ] ${G?'バックアップ・リストア検証':'Backup/restore verification'}`;
 })()],
@@ -4690,6 +5050,11 @@ const ENTITY_COLUMNS={
   Answer:['form_id:UUID:FK(Form) NOT NULL:フォームID:Form ID','question_id:UUID:FK(Question) NOT NULL:質問ID:Question ID',_U,'answer_value:TEXT::回答値:Answer value','submitted_at:TIMESTAMP:DEFAULT NOW:回答日時:Submitted at'],
   Job:['job_title:VARCHAR(255):NOT NULL:職種:Job title','company:VARCHAR(255):NOT NULL:企業名:Company','location:VARCHAR(255)::勤務地:Location','salary_range:VARCHAR(100)::給与レンジ:Salary range','job_type:VARCHAR(50)::雇用形態:Job type',_D,'status:VARCHAR(20):DEFAULT \'open\':募集状態:Status','posted_at:TIMESTAMP:DEFAULT NOW:掲載日:Posted at'],
   SavedJob:[_U,'job_id:UUID:FK(Job) NOT NULL:求人ID:Job ID','saved_at:TIMESTAMP:DEFAULT NOW:保存日時:Saved at',_N],
+  UserGoal:[_U,'goal_title:VARCHAR(255):NOT NULL:目標タイトル:Goal title','target_value:VARCHAR(100)::目標値:Target value','current_value:VARCHAR(100)::現在値:Current value','deadline:DATE::期限:Deadline','priority:VARCHAR(20):DEFAULT \'medium\':優先度:Priority',_SA,'achieved_at:TIMESTAMP::達成日時:Achieved at'],
+  ReversePlan:[_U,'plan_title:VARCHAR(255):NOT NULL:計画タイトル:Plan title','goal_id:UUID:FK(UserGoal):目標ID:Goal ID','strategy:TEXT::戦略:Strategy','total_steps:INT:DEFAULT 0:総ステップ数:Total steps','completed_steps:INT:DEFAULT 0:完了ステップ数:Completed steps',_SA],
+  PlanStep:['plan_id:UUID:FK(ReversePlan) NOT NULL:計画ID:Plan ID','step_order:INT:NOT NULL:ステップ順序:Step order','step_title:VARCHAR(255):NOT NULL:ステップタイトル:Step title',_D,'estimated_hours:DECIMAL(5,1)::推定時間:Estimated hours',_SA,'completed_at:TIMESTAMP::完了日時:Completed at'],
+  ProgressTracking:['plan_id:UUID:FK(ReversePlan) NOT NULL:計画ID:Plan ID','tracked_at:TIMESTAMP:DEFAULT NOW:記録日時:Tracked at','progress_pct:DECIMAL(5,2)::進捗率:Progress pct','velocity:DECIMAL(5,2)::ベロシティ:Velocity','blockers:TEXT::障害:Blockers',_N],
+  PlanAdjustment:['plan_id:UUID:FK(ReversePlan) NOT NULL:計画ID:Plan ID','adjusted_at:TIMESTAMP:DEFAULT NOW:調整日時:Adjusted at','reason:TEXT:NOT NULL:調整理由:Reason','old_value:TEXT::旧値:Old value','new_value:TEXT::新値:New value',_N],
 };
 const ENTITY_METHODS={
   Payment:['GET','GET/:id','POST'],
@@ -4742,7 +5107,8 @@ function detectDomain(purpose){
     [/\bEC\b|eコマース|e-commerce|ショップ|\bshop\b|\bcommerce\b/i,'ec'],
     [/マーケットプレイス|marketplace/i,'marketplace'],
     [/ゲーミ|gamification|gamify|バッジ|ポイント|リーダーボード/i,'gamify'],
-    [/イベント|event|チケット|カンファレンス|セミナー/i,'event'],
+    [/saas|サブスク|subscription|helpdesk|ヘルプデスク|チケット管理/i,'saas'],
+    [/イベント|event.?management|カンファレンス|セミナー|チケット販売/i,'event'],
     [/ニュースレター|newsletter|メール配信|メルマガ|購読/i,'newsletter'],
     [/クリエイター|creator|ファン|コンテンツ販売|投げ銭/i,'creator'],
     [/コミュニティ|community|フォーラム|forum/i,'community'],
@@ -4753,7 +5119,6 @@ function detectDomain(purpose){
     [/自動化|automation|workflow|ワークフロー|RPA|ノーコード/i,'automation'],
     [/共同編集|collaboration|collab|リアルタイム編集/i,'collab'],
     [/開発者ツール|dev.?tool|API管理|APIキー/i,'devtool'],
-    [/saas|サブスク|subscription|helpdesk|ヘルプデスク/i,'saas'],
     [/IoT|デバイス|device|sensor|センサー|field.?service|フィールドサービス/i,'iot'],
     [/不動産|物件|real.?estate|property.?mgmt|property.?management/i,'realestate'],
     [/法務|契約|legal|contract.?mgmt|contract.?management|コンプライアンス/i,'legal'],
@@ -5045,6 +5410,36 @@ const FEATURE_DETAILS={
     tests_ja:[['正常系: テンプレート作成','201, テンプレート保存'],['正常系: 変数展開','200, プレースホルダー置換'],['正常系: 条件分岐実行','200, 条件マッチで分岐'],['異常系: 不正な変数名','422, バリデーション'],['正常系: スケジュール実行','200, 毎日9時に自動実行']],
     tests_en:[['Normal: Create template','201, template saved'],['Normal: Variable expansion','200, placeholders replaced'],['Normal: Conditional execution','200, branched on condition'],['Error: Invalid variable name','422, validation'],['Normal: Scheduled execution','200, auto-run daily at 9am']],
   },
+  'リバースエンジニアリング|逆算|Reverse|Goal|目標分解':{
+    criteria_ja:['目標設定(KPI+期限)','逆算プラン生成','ステップ分割(工数見積)','進捗トラッキング','計画調整履歴','ベロシティ測定'],
+    criteria_en:['Goal setting (KPI + deadline)','Reverse plan generation','Step breakdown (effort estimation)','Progress tracking','Plan adjustment history','Velocity measurement'],
+    tests_ja:[['正常系: 目標作成','201, UserGoal保存'],['正常系: 逆算プラン生成','201, ReversePlan+PlanStep'],['正常系: 進捗記録','200, ProgressTracking追加'],['正常系: 計画調整','200, PlanAdjustment記録'],['正常系: ベロシティ算出','200, {velocity: 1.2}']],
+    tests_en:[['Normal: Create goal','201, UserGoal saved'],['Normal: Generate reverse plan','201, ReversePlan+PlanStep'],['Normal: Record progress','200, ProgressTracking added'],['Normal: Adjust plan','200, PlanAdjustment recorded'],['Normal: Calculate velocity','200, {velocity: 1.2}']],
+  },
+  'スキル自動化|Skill|Manus|タスク分解':{
+    criteria_ja:['スキル定義(Input/Process/Output)','スキルカタログ','パイプライン設計','エージェント連携','実行履歴'],
+    criteria_en:['Skill definition (Input/Process/Output)','Skill catalog','Pipeline design','Agent coordination','Execution history'],
+    tests_ja:[['正常系: スキル登録','201, スキル保存'],['正常系: パイプライン実行','200, 全ステップ完了'],['異常系: 無限ループ検出','500, タイムアウト'],['正常系: 並列実行','200, 3スキル同時実行']],
+    tests_en:[['Normal: Register skill','201, skill saved'],['Normal: Execute pipeline','200, all steps completed'],['Error: Infinite loop detection','500, timeout'],['Normal: Parallel execution','200, 3 skills concurrent']],
+  },
+  '品質インテリジェンス|QA|Quality|テスト戦略':{
+    criteria_ja:['業種別テストマトリクス','リスク優先度評価','典型バグパターン','ツール推奨','カバレッジ可視化'],
+    criteria_en:['Industry test matrix','Risk priority assessment','Common bug patterns','Tool recommendations','Coverage visualization'],
+    tests_ja:[['正常系: テストマトリクス生成','200, 15業種対応'],['正常系: リスク評価','200, Security:HIGH検出'],['正常系: バグパターンマッチ','200, 既知パターン3件']],
+    tests_en:[['Normal: Generate test matrix','200, 15 industries supported'],['Normal: Risk assessment','200, Security:HIGH detected'],['Normal: Bug pattern match','200, 3 known patterns']],
+  },
+  'チケット管理|Issue|Bug|タスク':{
+    criteria_ja:['チケット作成(タイトル/説明/優先度)','ステータス管理(Open/InProgress/Done)','担当者割当','コメント/履歴','ラベル/タグ','検索/フィルタ'],
+    criteria_en:['Create ticket (title/desc/priority)','Status management (Open/InProgress/Done)','Assignee assignment','Comments/history','Labels/tags','Search/filter'],
+    tests_ja:[['正常系: チケット作成','201, チケット保存'],['正常系: ステータス変更','200, Open→InProgress'],['正常系: コメント追加','201, コメント保存'],['異常系: 未認証でアクセス','401'],['正常系: フィルタ検索','200, priority=high結果']],
+    tests_en:[['Normal: Create ticket','201, ticket saved'],['Normal: Change status','200, Open→InProgress'],['Normal: Add comment','201, comment saved'],['Error: Unauthorized access','401'],['Normal: Filter search','200, priority=high results']],
+  },
+  'ゲーミフィケーション|Gamification|ポイント|バッジ':{
+    criteria_ja:['ポイント付与ルール','バッジ獲得条件','リーダーボード','レベルシステム','実績解除','進捗可視化'],
+    criteria_en:['Point reward rules','Badge unlock conditions','Leaderboard','Level system','Achievement unlock','Progress visualization'],
+    tests_ja:[['正常系: ポイント付与','200, +10pt記録'],['正常系: バッジ獲得','201, Achievement追加'],['正常系: リーダーボード','200, Top10返却'],['異常系: 二重付与','422, 冪等性エラー'],['正常系: レベルアップ','200, Lv2達成']],
+    tests_en:[['Normal: Award points','200, +10pt recorded'],['Normal: Unlock badge','201, Achievement added'],['Normal: Leaderboard','200, Top10 returned'],['Error: Double award','422, idempotency error'],['Normal: Level up','200, Lv2 reached']],
+  },
 };
 function getFeatureDetail(featureName){
   for(const[pattern,detail]of Object.entries(FEATURE_DETAILS)){
@@ -5230,7 +5625,29 @@ const QA_CROSS_CUTTING={
   tenant:{ja:'マルチテナント分離(RLS)',en:'Multi-tenant isolation (RLS)',domains:['saas','analytics']},
   api_resilience:{ja:'外部API耐障害性(タイムアウト/リトライ/フォールバック)',en:'External API resilience (timeout/retry/fallback)',domains:['booking','saas','ec','analytics']},
   a11y:{ja:'アクセシビリティ(WCAG)',en:'Accessibility (WCAG)',domains:['education','content','hr']},
-  audit:{ja:'監査ログ完全性',en:'Audit log completeness',domains:['fintech','saas','hr','legal']}
+  audit:{ja:'監査ログ完全性',en:'Audit log completeness',domains:['fintech','saas','hr','legal']},
+  rate_limiting:{ja:'レート制限(APIキー/IP単位)',en:'Rate limiting (per API key/IP)',domains:['saas','devtool','fintech','ai']},
+  data_export:{ja:'データエクスポート(CSV/JSON/Excel)',en:'Data export (CSV/JSON/Excel)',domains:['saas','analytics','hr','crm']},
+  notification:{ja:'通知配信(Email/Push/SMS)',en:'Notification delivery (Email/Push/SMS)',domains:['saas','community','event','newsletter']},
+  realtime:{ja:'リアルタイム更新(WebSocket/SSE)',en:'Realtime updates (WebSocket/SSE)',domains:['collab','community','analytics','iot']}
+};
+const _tm=(cf_ja,cf_en,tf_ja,tf_en,tb_ja,tb_en,t_ja,t_en,p)=>({critical_functions_ja:cf_ja,critical_functions_en:cf_en,test_focus_ja:tf_ja,test_focus_en:tf_en,typical_bugs_ja:tb_ja,typical_bugs_en:tb_en,tools_ja:t_ja,tools_en:t_en,priority:p});
+const INDUSTRY_TEST_MATRIX={
+  fintech:_tm(['決済処理','残高更新','取引履歴','KYC検証'],['Payment processing','Balance updates','Transaction history','KYC verification'],['金額計算精度','同時取引競合','不正検知','監査ログ完全性'],['Amount calculation accuracy','Concurrent transaction conflicts','Fraud detection','Audit log completeness'],['浮動小数点誤差','二重決済','トランザクション分離不足','ログ欠損'],['Floating point errors','Double payments','Transaction isolation failures','Missing logs'],['Jest(単体)','Playwright(E2E)','k6(負荷)','SonarQube(静的解析)'],['Jest (unit)','Playwright (E2E)','k6 (load)','SonarQube (static)'],'Security:HIGH|Performance:HIGH|DataIntegrity:HIGH|UX:MED|Compliance:HIGH'),
+  health:_tm(['患者情報管理','診療記録','処方箋','予約管理'],['Patient information','Medical records','Prescriptions','Appointment scheduling'],['PHI保護(HIPAA)','データ暗号化','アクセス制御','監査証跡'],['PHI protection (HIPAA)','Data encryption','Access control','Audit trail'],['暗号化漏れ','権限チェック不足','ログ改ざん','データ漏洩'],['Encryption gaps','Insufficient permission checks','Log tampering','Data leaks'],['Jest','Cypress','OWASP ZAP(セキュリティ)','Trivy(脆弱性)'],['Jest','Cypress','OWASP ZAP (security)','Trivy (vulnerabilities)'],'Security:HIGH|Performance:MED|DataIntegrity:HIGH|UX:MED|Compliance:HIGH'),
+  ec:_tm(['商品検索','カート操作','決済','在庫管理'],['Product search','Cart operations','Checkout','Inventory management'],['在庫同期','決済フロー','クーポン適用','配送計算'],['Inventory sync','Payment flow','Coupon application','Shipping calculation'],['在庫不整合','カート競合','クーポン二重適用','決済タイムアウト'],['Inventory mismatch','Cart conflicts','Double coupon usage','Payment timeout'],['Vitest','Playwright','Lighthouse(UX)','k6'],['Vitest','Playwright','Lighthouse (UX)','k6'],'Security:HIGH|Performance:HIGH|DataIntegrity:HIGH|UX:HIGH|Compliance:MED'),
+  saas:_tm(['認証','ユーザー管理','課金','プラン変更'],['Authentication','User management','Billing','Plan changes'],['マルチテナント分離','API制限','Webhook配信','データ移行'],['Multi-tenant isolation','API rate limits','Webhook delivery','Data migration'],['テナント間漏洩','レート制限抜け','Webhook失敗','移行データ欠損'],['Cross-tenant leakage','Rate limit bypass','Webhook failures','Migration data loss'],['Jest','Playwright','Postman(API)','Grafana k6'],['Jest','Playwright','Postman (API)','Grafana k6'],'Security:HIGH|Performance:HIGH|DataIntegrity:HIGH|UX:MED|Compliance:MED'),
+  social:_tm(['投稿','コメント','いいね','通知'],['Posts','Comments','Likes','Notifications'],['リアルタイム更新','スパム検知','モデレーション','通知配信'],['Realtime updates','Spam detection','Moderation','Notification delivery'],['通知遅延','スパム漏れ','モデレーション誤判定','N+1クエリ'],['Notification delays','Spam leakage','False moderation','N+1 queries'],['Vitest','Playwright','WebSocket Tester','Apache JMeter'],['Vitest','Playwright','WebSocket Tester','Apache JMeter'],'Security:MED|Performance:HIGH|DataIntegrity:MED|UX:HIGH|Compliance:MED'),
+  education:_tm(['学習進捗','クイズ','成績管理','証明書発行'],['Learning progress','Quizzes','Grade management','Certificate issuance'],['進捗同期','クイズ採点','WCAG準拠','FERPA遵守'],['Progress sync','Quiz grading','WCAG compliance','FERPA compliance'],['進捗消失','採点ミス','アクセシビリティ欠陥','未成年データ保護不足'],['Progress loss','Grading errors','Accessibility defects','Minor data protection gaps'],['Jest','Cypress','axe DevTools(a11y)','Lighthouse'],['Jest','Cypress','axe DevTools (a11y)','Lighthouse'],'Security:MED|Performance:MED|DataIntegrity:HIGH|UX:HIGH|Compliance:HIGH'),
+  gaming:_tm(['ポイント付与','ランキング','実績解除','リーダーボード'],['Point rewards','Rankings','Achievement unlock','Leaderboard'],['ポイント整合性','ランキング更新','不正検知','同時アクセス'],['Point consistency','Ranking updates','Cheat detection','Concurrent access'],['ポイント二重付与','ランキング不整合','不正ポイント獲得','競合状態'],['Double point awards','Ranking inconsistency','Cheating','Race conditions'],['Vitest','Playwright','Redis (cache)','k6'],['Vitest','Playwright','Redis (cache)','k6'],'Security:MED|Performance:HIGH|DataIntegrity:HIGH|UX:HIGH|Compliance:LOW'),
+  iot:_tm(['センサーデータ収集','デバイス制御','アラート','ダッシュボード'],['Sensor data collection','Device control','Alerts','Dashboard'],['データ精度','通信安定性','バッテリー効率','オフライン動作'],['Data accuracy','Communication stability','Battery efficiency','Offline operation'],['センサー誤差','通信断','バッテリー消耗','データ欠損'],['Sensor errors','Communication failures','Battery drain','Data loss'],['Pytest','Selenium','MQTT Explorer','Postman'],['Pytest','Selenium','MQTT Explorer','Postman'],'Security:HIGH|Performance:MED|DataIntegrity:HIGH|UX:MED|Compliance:MED'),
+  travel:_tm(['予約','空室検索','決済','キャンセル'],['Booking','Availability search','Payment','Cancellation'],['在庫同期','ダブルブッキング防止','キャンセルポリシー','多言語対応'],['Inventory sync','Double booking prevention','Cancellation policy','Multi-language support'],['ダブルブッキング','在庫不整合','キャンセル料計算ミス','決済失敗'],['Double bookings','Inventory mismatch','Cancellation fee errors','Payment failures'],['Jest','Playwright','k6','i18next (i18n)'],['Jest','Playwright','k6','i18next (i18n)'],'Security:HIGH|Performance:HIGH|DataIntegrity:HIGH|UX:HIGH|Compliance:MED'),
+  logistics:_tm(['配送追跡','在庫管理','ルート最適化','倉庫管理'],['Shipment tracking','Inventory management','Route optimization','Warehouse management'],['追跡精度','在庫同期','配送時間予測','GPS精度'],['Tracking accuracy','Inventory sync','Delivery time prediction','GPS accuracy'],['追跡更新遅延','在庫不整合','ルート計算ミス','GPS誤差'],['Tracking update delays','Inventory mismatch','Route calculation errors','GPS inaccuracy'],['Vitest','Playwright','Google Maps API','k6'],['Vitest','Playwright','Google Maps API','k6'],'Security:MED|Performance:HIGH|DataIntegrity:HIGH|UX:MED|Compliance:MED'),
+  realestate:_tm(['物件検索','内見予約','契約管理','入居者管理'],['Property search','Viewing appointments','Contract management','Tenant management'],['検索精度','契約ステータス','家賃計算','期限管理'],['Search accuracy','Contract status','Rent calculation','Deadline management'],['検索漏れ','契約状態不整合','家賃計算ミス','期限通知漏れ'],['Missing search results','Contract state inconsistency','Rent calculation errors','Missing deadline notifications'],['Jest','Playwright','Mapbox (map)','Cron (schedule)'],['Jest','Playwright','Mapbox (map)','Cron (schedule)'],'Security:MED|Performance:MED|DataIntegrity:HIGH|UX:MED|Compliance:MED'),
+  media:_tm(['記事投稿','コメント','購読管理','アクセス分析'],['Article publishing','Comments','Subscription management','Analytics'],['SEO最適化','画像最適化','コメントモデレーション','アクセス解析'],['SEO optimization','Image optimization','Comment moderation','Access analytics'],['SEOメタ欠損','画像読込遅延','スパムコメント','アクセス集計ミス'],['Missing SEO meta','Slow image loading','Spam comments','Analytics errors'],['Vitest','Playwright','Lighthouse','Google Analytics'],['Vitest','Playwright','Lighthouse','Google Analytics'],'Security:MED|Performance:HIGH|DataIntegrity:MED|UX:HIGH|Compliance:MED'),
+  hr:_tm(['応募管理','面接スケジュール','評価記録','オファー発行'],['Application management','Interview scheduling','Evaluation records','Offer issuance'],['応募者データ保護','評価公平性','GDPR遵守','通知配信'],['Applicant data protection','Evaluation fairness','GDPR compliance','Notification delivery'],['データ漏洩','評価バイアス','GDPR違反','通知遅延'],['Data leaks','Evaluation bias','GDPR violations','Notification delays'],['Jest','Cypress','OWASP ZAP','Mailgun (email)'],['Jest','Cypress','OWASP ZAP','Mailgun (email)'],'Security:HIGH|Performance:MED|DataIntegrity:HIGH|UX:MED|Compliance:HIGH'),
+  marketing:_tm(['キャンペーン管理','A/Bテスト','コンバージョン計測','セグメント配信'],['Campaign management','A/B testing','Conversion tracking','Segment delivery'],['コンバージョン精度','セグメント正確性','配信タイミング','ROI計算'],['Conversion accuracy','Segment accuracy','Delivery timing','ROI calculation'],['コンバージョン重複計測','セグメント漏れ','配信遅延','ROI計算ミス'],['Duplicate conversion tracking','Segment gaps','Delivery delays','ROI calculation errors'],['Vitest','Playwright','Google Tag Manager','Mixpanel'],['Vitest','Playwright','Google Tag Manager','Mixpanel'],'Security:MED|Performance:MED|DataIntegrity:HIGH|UX:MED|Compliance:MED'),
+  government:_tm(['申請受付','審査','承認','証明書発行'],['Application intake','Review','Approval','Certificate issuance'],['アクセシビリティ','セキュリティ','監査証跡','長期保管'],['Accessibility','Security','Audit trail','Long-term storage'],['a11y欠陥','権限エラー','監査ログ欠損','データ消失'],['a11y defects','Permission errors','Missing audit logs','Data loss'],['Jest','Cypress','axe DevTools','OWASP ZAP'],['Jest','Cypress','axe DevTools','OWASP ZAP'],'Security:HIGH|Performance:MED|DataIntegrity:HIGH|UX:HIGH|Compliance:HIGH'),
 };
 const _CF='FERPA';const _CP='PCI DSS';const _CH='HIPAA';const _CG='GDPR';
 const _dpb=(i_ja,i_en,c_ja,c_en,p_ja,p_en,ctx_ja,ctx_en,sk_ja,sk_en)=>({impl_ja:i_ja,impl_en:i_en,compliance_ja:c_ja,compliance_en:c_en,prevent_ja:p_ja,prevent_en:p_en,ctx_ja:ctx_ja,ctx_en:ctx_en,skill_ja:sk_ja,skill_en:sk_en});
@@ -6217,7 +6634,7 @@ function showDashboard(){
     });
     const sorted=Object.entries(pillarSizes).sort((a,b)=>b[1]-a[1]);
     const max=sorted[0]?sorted[0][1]:1;
-    const pillarColors={'P1 SDD':'var(--accent)','P2 DevContainer':'var(--accent-2)','P3 MCP':'var(--success)','P4 AI Rules':'var(--warn)','P7 Roadmap':'var(--danger)','P9 Design System':'var(--accent)','P10 Reverse Eng':'var(--success)','Docs':'var(--layer-5)','Common':'var(--text-3)'};
+    const pillarColors={'P1 SDD':'var(--accent)','P2 DevContainer':'var(--accent-2)','P3 MCP':'var(--success)','P4 AI Rules':'var(--warn)','P5 Quality':'var(--danger)','P7 Roadmap':'var(--danger)','P9 Design System':'var(--accent)','P10 Reverse Eng':'var(--success)','Docs':'var(--layer-5)','Common':'var(--text-3)'};
     h+='<h4 class="dash-h4-mt">'+(_ja?'📦 ファイルサイズ分布':'📦 File Size Distribution')+'</h4>';
     h+='<div class="fsize-chart">';
     sorted.forEach(([pil,sz])=>{
@@ -6247,6 +6664,7 @@ function getHealthHTML(_ja,fileCount,answered){
     {key:'.devcontainer/',label:_ja?'②DevContainer':'②DevContainer'},
     {key:'mcp',label:_ja?'③MCP':'③MCP'},
     {key:'CLAUDE.md',label:_ja?'④AIルール':'④AI Rules'},
+    {key:'docs/32_',label:_ja?'品質インテリジェンス':'Quality Intelligence'},
     {key:'roadmap/',label:_ja?'⑦ロードマップ':'⑦Roadmap'},
     {key:'docs/26_',label:_ja?'⑨デザインシステム':'⑨Design System'},
     {key:'docs/29_',label:_ja?'⑩リバースEng':'⑩Reverse Eng'},
@@ -6565,16 +6983,16 @@ function showManual(sec){
   pushModal(o,()=>{o.classList.remove('show');releaseFocus(o);});
   const _ja=S.lang==='ja';
   const MANUAL=[
-    {id:'overview',title:_ja?'概要':'Overview',body:_ja?'<h2>DevForge v9.0 とは</h2><p>質問に答えるだけで、プロジェクトに必要な69+ファイルを自動生成するAI駆動開発プラットフォームです。'+_TECH_COUNT+'テクノロジー対応。</p>'+
+    {id:'overview',title:_ja?'概要':'Overview',body:_ja?'<h2>DevForge v9.0 とは</h2><p>質問に答えるだけで、プロジェクトに必要な72+ファイルを自動生成するAI駆動開発プラットフォームです。'+_TECH_COUNT+'テクノロジー対応。</p>'+
       '<h3>10の柱</h3><table><tr><th>柱</th><th>内容</th><th>ファイル数</th></tr><tr><td>①SDD統合</td><td>Spec Kit互換の仕様書</td><td>5</td></tr><tr><td>②DevContainer</td><td>Docker開発環境</td><td>4</td></tr><tr><td>③MCP設定</td><td>Model Context Protocol</td><td>3</td></tr><tr><td>④AIルール</td><td>10+ツール設定+スキル</td><td>10+</td></tr>'+
       '<tr><td>⑤並列探索</td><td>スタック比較+おすすめランキング</td><td>UI</td></tr><tr><td>⑥Dashboard</td><td>コンテキスト可視化+技術DB</td><td>UI</td></tr><tr><td>⑦ロードマップ</td><td>学習パス（インタラクティブ）</td><td>9+UI</td></tr><tr><td>⑧AIランチャー</td><td>プロンプトテンプレート+トークン推定</td><td>UI</td></tr><tr><td>⑨デザインシステム</td><td>デザイントークン+シーケンス図</td><td>2</td></tr><tr><td>⑩リバースEng</td><td>ゴール逆算型プランニング</td><td>2</td></tr></table>'+
-      '<p>+ docs（31仕様書）+ 共通ファイル（4）= <strong>69+ファイル</strong></p>':'<h2>What is DevForge v9.0?</h2><p>An AI-driven dev platform that auto-generates 69+ project files just by answering questions. Supports '+_TECH_COUNT+' technologies.</p>'+
+      '<p>+ docs（31仕様書）+ 共通ファイル（4）= <strong>72+ファイル</strong></p>':'<h2>What is DevForge v9.0?</h2><p>An AI-driven dev platform that auto-generates 72+ project files just by answering questions. Supports '+_TECH_COUNT+' technologies.</p>'+
       '<h3>10 Pillars</h3><table><tr><th>Pillar</th><th>Content</th><th>Files</th></tr><tr><td>①SDD</td><td>Spec Kit compatible specs</td><td>5</td></tr><tr><td>②DevContainer</td><td>Docker dev environment</td><td>4</td></tr><tr><td>③MCP</td><td>Model Context Protocol</td><td>3</td></tr><tr><td>④AI Rules</td><td>10+ tool configs + skills</td><td>10+</td></tr>'+
       ''+
       '<tr><td>⑤Explorer</td><td>Stack comparison + recommendation</td><td>UI</td></tr><tr><td>⑥Dashboard</td><td>Context visualization + Tech DB</td><td>UI</td></tr><tr><td>⑦Roadmap</td><td>Learning path (interactive)</td><td>9+UI</td></tr><tr><td>⑧AI Launcher</td><td>Prompt templates + token estimation</td><td>UI</td></tr><tr><td>⑨Design System</td><td>Design tokens + Sequence diagrams</td><td>2</td></tr><tr><td>⑩Reverse Eng</td><td>Goal-driven reverse planning</td><td>2</td></tr></table>'+
-      '<p>+ docs (31 specs) + common (4) = <strong>69+ files</strong></p>'},
+      '<p>+ docs (31 specs) + common (4) = <strong>72+ files</strong></p>'},
     {id:'start',title:_ja?'はじめ方':'Getting Started',body:_ja?
-      '<h2>はじめ方</h2><p>1. スキルレベルを選択（Beginner/Intermediate/Pro）<br>2. プロジェクト名を入力<br>3. テンプレート選択（任意・41種類）<br>4. Phase 1-3の質問に回答（スキップ＆後で回答可）<br>5. 生成ボタンで69+ファイル作成<br>6. ZIPダウンロードまたはPDF印刷</p>'+
+      '<h2>はじめ方</h2><p>1. スキルレベルを選択（Beginner/Intermediate/Pro）<br>2. プロジェクト名を入力<br>3. テンプレート選択（任意・41種類）<br>4. Phase 1-3の質問に回答（スキップ＆後で回答可）<br>5. 生成ボタンで72+ファイル作成<br>6. ZIPダウンロードまたはPDF印刷</p>'+
       '<h3>UX機能</h3>'+
       '<p>• 🌱⚡🔥 スキルレベルで質問の選択肢が動的変化<br>• 🎯 41プリセットテンプレート<br>• ✎ 回答の編集（✎ボタン）<br>• ⏭️ スキップ＆後で回答<br>• 📊 複雑度分析（0-100スコア）<br>• 📁 プロジェクト管理（Ctrl+M）<br>• 🎙️ 音声入力<br>• ? 質問ごとのヘルプアイコン<br>• 🔀 ドラッグ&ドロップ優先度ソート</p>'+
       '<h3>V8 新機能</h3>'+
@@ -6582,7 +7000,7 @@ function showManual(sec){
       '<h3>V8.3 新機能</h3>'+
       '<p>• 📊 Mermaid図ライブレンダリング (ER図・画面遷移・ガント)<br>• 📝 OpenAPI準拠API仕様書<br>• ✅ テストケースマトリクス (機能×正常/異常)<br>• 📋 リリースチェックリスト (デプロイ先別動的生成)<br>• 🔨 WBS 3階層+工数見積り<br>• 🎯 プロンプトプレイブック (フェーズ別AI投入プロンプト集)<br>• 📎 GitHub Issues風タスク分解<br>• 📋 全ファイル結合コピー (AI一括投入用)</p>'
       :
-      '<h2>Getting Started</h2><p>1. Select your skill level (Beginner/Intermediate/Pro)<br>2. Enter project name<br>3. Choose a template (optional, 41 types)<br>4. Answer Phase 1-3 questions (skip & answer later OK)<br>5. Click Generate for 69+ files<br>6. Download ZIP or print PDF</p>'+
+      '<h2>Getting Started</h2><p>1. Select your skill level (Beginner/Intermediate/Pro)<br>2. Enter project name<br>3. Choose a template (optional, 41 types)<br>4. Answer Phase 1-3 questions (skip & answer later OK)<br>5. Click Generate for 72+ files<br>6. Download ZIP or print PDF</p>'+
       '<h3>UX Features</h3>'+
       '<p>• 🌱⚡🔥 Dynamic options by skill level<br>• 🎯 41 preset templates<br>• ✎ Edit answers (✎ button)<br>• ⏭️ Skip & answer later<br>• 📊 Complexity analysis (0-100 score)<br>• 📁 Project manager (Ctrl+M)<br>• 🎙️ Voice input<br>• ? Help icon per question<br>• 🔀 Drag & drop priority sort</p>'+
       '<h3>V8 Features</h3>'+
@@ -6640,7 +7058,7 @@ function showManual(sec){
     },
     {id:'guide',title:_ja?'🚀 活用ガイド':'🚀 Usage Guide',body:_ja?
       '<h2>🚀 生成ファイル活用ガイド</h2>'+
-      '<p>DevForge v9 は世界で唯一の<strong>仕様駆動AIプロジェクトジェネレーター</strong>です。他のツールが「コード」を生成するのに対し、DevForge は「開発の知性」── 設計・環境・ルール・学習計画を69+ファイルで生成します。</p>'+
+      '<p>DevForge v9 は世界で唯一の<strong>仕様駆動AIプロジェクトジェネレーター</strong>です。他のツールが「コード」を生成するのに対し、DevForge は「開発の知性」── 設計・環境・ルール・学習計画を72+ファイルで生成します。</p>'+
       '<h3>🌱 Beginner — まず動かす</h3>'+
       '<p><strong>Step 1: ロードマップに従う</strong><br>ダッシュボード（柱⑦）のロードマップUIがそのまま学習計画。Layer 1から順にチェック。📖ボタンで公式ドキュメントに直接ジャンプ。</p>'+
       '<p><strong>Step 2: 3つだけ覚える</strong><br>• <code>README.md</code> — GitHubにそのまま公開OK<br>• <code>.devcontainer/</code> — VS Code/Cursorで開くだけで環境完成<br>• <code>CLAUDE.md</code> — AIに「これ読んで」で全仕様を理解</p>'+
@@ -6682,7 +7100,7 @@ function showManual(sec){
       '<p class="guide-action-p"><button class="btn btn-p btn-sm" onclick="closeManual();showPostGenGuide(true)">🚀 レベル別ガイドを表示</button></p>'
       :
       '<h2>🚀 Generated Files Usage Guide</h2>'+
-      '<p>DevForge v9 is the world\'s only <strong>spec-driven AI project generator</strong>. While other tools generate code, DevForge generates "development intelligence" — design, environment, rules, and learning plans through 69+ files.</p>'+
+      '<p>DevForge v9 is the world\'s only <strong>spec-driven AI project generator</strong>. While other tools generate code, DevForge generates "development intelligence" — design, environment, rules, and learning plans through 72+ files.</p>'+
       '<h3>🌱 Beginner — Get Started</h3>'+
       '<p><strong>Step 1: Follow the Roadmap</strong><br>The Dashboard (Pillar ⑦) roadmap UI is your learning plan. Check off from Layer 1. Hit 📖 to jump to official docs.</p>'+
       '<p><strong>Step 2: Remember Just 3 Files</strong><br>• <code>README.md</code> — Publish directly to GitHub<br>• <code>.devcontainer/</code> — Open in VS Code/Cursor and dev env is ready<br>• <code>CLAUDE.md</code> — Tell AI "read this" and it understands your entire project</p>'+
@@ -6739,7 +7157,7 @@ function showManual(sec){
       '<h3>🔴 ストレージ上限</h3>'+
       '<p>localStorageの上限は約5MBです。20〜30プロジェクトで上限に達する可能性があります。古いプロジェクトはエクスポート後に削除してください。</p>'+
       '<h3>🟡 生成ファイルについて</h3>'+
-      '<p>生成される69+ファイルは<strong>設計ドキュメント</strong>（SDD仕様書・DevContainer設定・AIルール等）です。npm installで即座に動くアプリケーションコードではありません。Claude Code / Cursor等のAIツールに入力して実コードを生成する運用が前提です。</p>'+
+      '<p>生成される72+ファイルは<strong>設計ドキュメント</strong>（SDD仕様書・DevContainer設定・AIルール等）です。npm installで即座に動くアプリケーションコードではありません。Claude Code / Cursor等のAIツールに入力して実コードを生成する運用が前提です。</p>'+
       '<h3>🟡 スキルレベル</h3>'+
       '<p>スキルレベルにより表示される選択肢が変わります。途中変更すると既回答との不整合が起きうるため、<strong>最初に正しく設定</strong>してください。</p>'+
       '<h3>🟡 言語切り替え</h3>'+
@@ -6755,7 +7173,7 @@ function showManual(sec){
       '<h3>🔴 Storage Limit</h3>'+
       '<p>localStorage limit is ~5MB. You may reach the limit with 20-30 projects. Export and delete old projects.</p>'+
       '<h3>🟡 Generated Files</h3>'+
-      '<p>69+ generated files are <strong>design documents</strong> (SDD specs, DevContainer configs, AI rules). They are not runnable app code. Feed them to AI tools like Claude Code / Cursor to generate actual code.</p>'+
+      '<p>72+ generated files are <strong>design documents</strong> (SDD specs, DevContainer configs, AI rules). They are not runnable app code. Feed them to AI tools like Claude Code / Cursor to generate actual code.</p>'+
       '<h3>🟡 Skill Level</h3>'+
       '<p>Changing skill level mid-project may cause inconsistencies with existing answers. <strong>Set it correctly at the start.</strong></p>'+
       '<h3>🟡 Language Switch</h3>'+

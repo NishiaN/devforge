@@ -277,7 +277,15 @@ CLAUDE.md        → ${G?'Claude Code用ルール':'Claude Code rules'}
       realestate:['0:物件管理:Property Mgmt:物件データ管理:Manage property data:登録100%:100% listed','1:内見予約:Viewing:内見予約管理:Manage viewings:重複0:0 overlaps','2:契約検証:Contract:契約書検証:Verify contracts:必須項目100%:100% required'],
       legal:['0:契約レビュー:Contract Review:契約書レビュー:Review contracts:リスク条項0:0 risk clauses','1:コンプライアンス:Compliance:法令準拠チェック:Compliance check:違反0:0 violations','3:文書管理:Doc Mgmt:文書バージョン管理:Doc version control:最新版追跡:Latest tracked'],
       hr:['0:採用フロー:Hiring Flow:採用プロセス設計:Design hiring flow:漏れ0:0 gaps','1:評価設計:Eval Design:評価制度設計:Design evaluation:基準明確:Clear criteria','3:オンボーディング:Onboarding:入社手続き管理:Manage onboarding:完了率100%:100% completion'],
-      fintech:['1:取引検証:Tx Validation:取引データ検証:Validate transactions:不正0:0 fraud','1:リスク分析:Risk Analysis:リスク評価:Risk assessment:P0対応済:P0 addressed','3:レポート生成:Report Gen:財務レポート:Financial reports:正確性100%:100% accuracy']
+      fintech:['1:取引検証:Tx Validation:取引データ検証:Validate transactions:不正0:0 fraud','1:リスク分析:Risk Analysis:リスク評価:Risk assessment:P0対応済:P0 addressed','3:レポート生成:Report Gen:財務レポート:Financial reports:正確性100%:100% accuracy'],
+      ai:['0:プロンプト設計:Prompt Design:プロンプト最適化:Optimize prompts:精度90%+:≥90% accuracy','1:RAG構築:RAG Setup:コンテキスト管理:Manage context:関連性95%+:≥95% relevance','2:モデル評価:Model Eval:応答品質評価:Eval response quality:幻覚1%↓:≤1% hallucination'],
+      automation:['0:ワークフロー設計:Workflow Design:自動化フロー設計:Design automation flow:漏れ0:0 gaps','1:条件分岐:Branching:条件分岐ロジック:Branching logic:網羅100%:100% coverage','2:エラーハンドリング:Error Handling:リトライ・フォールバック:Retry & fallback:復旧率98%+:≥98% recovery'],
+      event:['0:チケット設計:Ticket Design:チケット販売設計:Design ticket sales:在庫管理100%:100% inventory','1:参加者管理:Attendee Mgmt:参加者管理:Manage attendees:重複0:0 duplicates','2:通知最適化:Notify Opt:イベント通知最適化:Optimize event notifications:到達95%+:≥95% delivery'],
+      gamify:['0:ポイント設計:Point Design:ポイントシステム設計:Design point system:整合性100%:100% consistency','1:バッジ条件:Badge Logic:バッジ獲得条件:Badge unlock logic:漏れ0:0 gaps','2:ランキング:Leaderboard:ランキング計算:Calc leaderboard:精度100%:100% accuracy'],
+      collab:['0:同期設計:Sync Design:リアルタイム同期設計:Design realtime sync:遅延200ms↓:≤200ms latency','1:競合解決:Conflict Resolve:競合解決アルゴリズム:Conflict resolution:損失0:0 data loss','2:バージョン管理:Versioning:変更履歴管理:Manage change history:追跡100%:100% tracked'],
+      devtool:['0:API設計:API Design:開発者API設計:Design developer API:DX評価4.5+:≥4.5 DX','1:SDK構築:SDK Build:SDK・サンプル構築:Build SDK & samples:カバレッジ80%+:≥80% coverage','2:ドキュメント:Docs:ドキュメント生成:Generate docs:網羅性95%+:≥95% completeness'],
+      creator:['0:収益化設計:Monetization:収益化戦略設計:Design monetization:収益源3+:≥3 revenue streams','1:ファン管理:Fan Mgmt:ファンコミュニティ管理:Manage fan community:エンゲージ8%+:≥8% engagement','2:分析:Analytics:クリエイター分析:Creator analytics:インサイト可視化:Insights vis'],
+      newsletter:['0:コンテンツ戦略:Content Strategy:配信コンテンツ戦略:Delivery content strategy:開封率25%+:≥25% open rate','1:セグメント設計:Segment Design:セグメント配信設計:Design segment delivery:精度95%+:≥95% accuracy','2:A/Bテスト:A/B Test:A/Bテスト設計:Design A/B test:統計的有意性:Statistical significance']
     };
 
     const domainSkills=domainSkillsMap[domain]||[];
@@ -380,6 +388,85 @@ CLAUDE.md        → ${G?'Claude Code用ルール':'Claude Code rules'}
     pipelineMd+=`${G?'## 実行方法':'## Execution'}\n1. ${G?'トリガー':'Trigger'}\n2. ${G?'スキル実行':'Run skills'}\n3. ${G?'PASS → 次':'PASS → next'}\n`;
 
     S.files['skills/pipelines.md']=pipelineMd;
+
+    // ═══ skills/factory.md (Manus Skills Factory Template) ═══
+    const thinkingAxis={
+      education:G?'理解できるか?':'Understandable?',
+      ec:G?'コンバージョンするか?':'Converts?',
+      saas:G?'ユーザー価値があるか?':'User value?',
+      fintech:G?'安全か?':'Secure?',
+      health:G?'正確か?':'Accurate?',
+      marketplace:G?'信頼できるか?':'Trustworthy?',
+      community:G?'健全か?':'Healthy?',
+      content:G?'エンゲージメントするか?':'Engaging?',
+      analytics:G?'正確か?':'Accurate?',
+      booking:G?'重複しないか?':'No conflicts?',
+      business:G?'効率的か?':'Efficient?',
+      iot:G?'接続できるか?':'Connected?',
+      realestate:G?'成約するか?':'Converts?',
+      legal:G?'準拠しているか?':'Compliant?',
+      hr:G?'公平か?':'Fair?',
+      ai:G?'幻覚がないか?':'No hallucinations?',
+      automation:G?'自動化できるか?':'Automatable?',
+      event:G?'満足できるか?':'Satisfying?',
+      gamify:G?'継続できるか?':'Retaining?',
+      collab:G?'同期できるか?':'Synced?',
+      devtool:G?'使いやすいか?':'Developer-friendly?',
+      creator:G?'収益化できるか?':'Monetizable?',
+      newsletter:G?'開封されるか?':'Opened?'
+    };
+    const axis=thinkingAxis[domain]||(G?'目標達成できるか?':'Goal-achievable?');
+
+    let factoryMd='# '+(G?'Manus Skills式スキルファクトリー':'Manus Skills Factory Template')+'\n\n';
+    factoryMd+=G?'**重要**: このテンプレートは「1スキル=1判断」原則に基づき、カスタムスキルを設計するためのファクトリーです。AIエージェントは、新しいタスクに遭遇した際、このフォーマットでスキルを定義してください。\n\n':'**IMPORTANT**: This template follows "1 Skill = 1 Judgment" principle for designing custom skills. AI agents MUST use this format when defining new skills for encountered tasks.\n\n';
+
+    factoryMd+=(G?'## 原則: 1スキル=1判断':'## Principle: 1 Skill = 1 Judgment')+'\n\n';
+    factoryMd+=G?'- **スキルは判断単位**: 複数の判断を1スキルに詰め込まない\n- **判断基準は明確**: "PASS/FAIL"または"数値目標"で測定可能\n- **入力→処理→判断→出力**: この4ステップで完結する\n\n':'- **Skill is a judgment unit**: Don\'t pack multiple judgments into one skill\n- **Judgment criteria are clear**: Measurable as "PASS/FAIL" or "numerical targets"\n- **Input → Process → Judge → Output**: Complete in these 4 steps\n\n';
+
+    factoryMd+=(G?'## ドメイン別思考軸':'## Domain-Specific Thinking Axis')+'\n\n';
+    factoryMd+='**'+(G?'現在のドメイン':'Current Domain')+'**: '+domain+'\n';
+    factoryMd+='**'+(G?'中心的な問い':'Central Question')+'**: **'+axis+'**\n\n';
+    factoryMd+=G?'すべてのスキルは、この思考軸に沿った判断を行うべきです。\n\n':'All skills should make judgments aligned with this thinking axis.\n\n';
+
+    factoryMd+=(G?'## スキル定義フォーマット':'## Skill Definition Format')+'\n\n```\n';
+    factoryMd+=(G?'### スキル名: 【具体的な判断内容】':'### Skill Name: [Specific Judgment]')+'\n\n';
+    factoryMd+='**'+(G?'役割':'Role')+'** (Planning/Design/Production/Operations): '+(G?'該当フェーズを選択':'Select applicable phase')+'\n\n';
+    factoryMd+='**'+(G?'目的':'Purpose')+'**: '+(G?'このスキルが何を判断するか（1文で）':'What this skill judges (one sentence)')+'\n\n';
+    factoryMd+='**'+(G?'入力':'Input')+'**:\n- '+(G?'必要なファイル/データ':'Required files/data')+'\n- '+(G?'前提条件':'Prerequisites')+'\n\n';
+    factoryMd+='**'+(G?'処理':'Processing')+'**:\n1. '+(G?'ステップ1':'Step 1')+'\n2. '+(G?'ステップ2':'Step 2')+'\n3. '+(G?'ステップ3':'Step 3')+'\n\n';
+    factoryMd+='**'+(G?'判断基準':'Judgment Criteria')+'**: '+(G?'PASS条件（測定可能）':'PASS condition (measurable)')+'\n';
+    factoryMd+=(G?'- 例: エラー0件, カバレッジ80%+, 応答時間2秒以下':'- Example: 0 errors, coverage ≥80%, response time ≤2s')+'\n\n';
+    factoryMd+='**'+(G?'出力':'Output')+'**:\n- PASS/'+(G?'FAIL':'FAIL')+'\n- '+(G?'判断理由':'Reason')+'\n- '+(G?'次のアクション':'Next action')+'\n```\n\n';
+
+    factoryMd+=(G?'## カスタムスキル作成手順':'## Custom Skill Creation Steps')+'\n\n';
+    factoryMd+='1. **'+(G?'判断内容を特定':'Identify judgment')+'**\n   - '+(G?'何を判断するか明確にする':'Clarify what to judge')+'\n   - '+(G?'複数の判断がある場合は分割する':'Split if multiple judgments exist')+'\n\n';
+    factoryMd+='2. **'+(G?'入力を定義':'Define inputs')+'**\n   - '+(G?'必要なドキュメント/ファイルをリスト':'List required documents/files')+'\n   - '+(G?'前提条件を明記':'Specify prerequisites')+'\n\n';
+    factoryMd+='3. **'+(G?'処理ステップを分解':'Break down processing')+'**\n   - '+(G?'3-5ステップで記述':'Describe in 3-5 steps')+'\n   - '+(G?'各ステップは具体的に':'Each step should be concrete')+'\n\n';
+    factoryMd+='4. **'+(G?'判断基準を数値化':'Quantify criteria')+'**\n   - '+(G?'測定可能な基準にする':'Make measurable criteria')+'\n   - '+(G?'思考軸に沿っているか確認':'Check alignment with thinking axis')+'\n\n';
+    factoryMd+='5. **'+(G?'出力を設計':'Design output')+'**\n   - PASS/FAIL + '+(G?'理由':'reason')+'\n   - '+(G?'次のアクション（次のスキル名 or 完了）':'Next action (next skill name or complete)')+'\n\n';
+
+    factoryMd+=(G?'## サンプルスキル':'## Sample Skill')+'\n\n```\n';
+    factoryMd+=(G?'### スキル名: データベース設計検証':'### Skill Name: Database Design Validation')+'\n\n';
+    factoryMd+='**'+(G?'役割':'Role')+'**: Design\n\n';
+    factoryMd+='**'+(G?'目的':'Purpose')+'**: '+(G?'ER図とentitiesが一致し、FK参照が正しいか判断':'Judge if ER diagram matches entities and FK references are correct')+'\n\n';
+    factoryMd+='**'+(G?'入力':'Input')+'**:\n- docs/04_er_diagram.md\n- .spec/technical-plan.md (entities)\n\n';
+    factoryMd+='**'+(G?'処理':'Processing')+'**:\n1. '+(G?'ER図から全エンティティ抽出':'Extract all entities from ER diagram')+'\n2. '+(G?'technical-planのentitiesリストと照合':'Compare with entities list in technical-plan')+'\n3. '+(G?'FK参照先が全て存在するか確認':'Verify all FK references exist')+'\n\n';
+    factoryMd+='**'+(G?'判断基準':'Judgment Criteria')+'**: '+(G?'不一致0件 AND FK未定義0件':'0 mismatches AND 0 undefined FKs')+'\n\n';
+    factoryMd+='**'+(G?'出力':'Output')+'**:\n- PASS/'+(G?'FAIL':'FAIL')+'\n- '+(G?'不一致リスト（あれば）':'Mismatch list (if any)')+'\n- '+(G?'次: API設計検証':'Next: API Design Validation')+'\n```\n\n';
+
+    factoryMd+=(G?'## ドメイン別スキル例':'## Domain-Specific Skill Examples')+'\n\n';
+    if(domainSkills.length>0){
+      factoryMd+=(G?'現在のドメイン（':'Current domain (')+domain+(G?'）の登録済みスキル:':') registered skills:')+'\n';
+      domainSkills.forEach((sk,i)=>{
+        const[r,nJa,nEn,pJa,pEn,jJa,jEn]=sk.split(':');
+        factoryMd+=(i+1)+'. **'+(G?nJa:nEn)+'** - '+(G?jJa:jEn)+'\n';
+      });
+    }else{
+      factoryMd+=G?'（このドメインはまだスキルが登録されていません。上記フォーマットで作成してください）':'(No skills registered for this domain yet. Create using the format above)';
+    }
+    factoryMd+='\n';
+
+    S.files['skills/factory.md']=factoryMd;
 
     // ═══ Phase 4: AGENTS.md enhancement ═══
     S.files['AGENTS.md']+=`\n\n## Pipeline Coordination\n- Pipelines: skills/pipelines.md\n- Catalog: skills/catalog.md\n- Gates: ${aiLevel==='vibe'||aiLevel==='agentic'?'human':'auto'}\n- Error: docs/25 → retry → escalate\n- Context: AI_BRIEF.md only\n`;

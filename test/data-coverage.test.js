@@ -4,7 +4,7 @@ const fs = require('fs');
 
 // Load modules
 eval(fs.readFileSync('src/data/presets.js', 'utf-8').replace('const PR','var PR'));
-eval(fs.readFileSync('src/generators/common.js', 'utf-8').replace(/const (DOMAIN_PLAYBOOK|FEATURE_DETAILS|ENTITY_COLUMNS|DOMAIN_ENTITIES|DOMAIN_QA_MAP|ENTITY_METHODS)/g, 'var $1'));
+eval(fs.readFileSync('src/generators/common.js', 'utf-8').replace(/const /g, 'var '));
 
 // ═══ Data Coverage & Integrity Tests ═══
 
@@ -52,15 +52,16 @@ test('ENTITY_COLUMNS: FK references point to defined entities', () => {
 });
 
 test('ENTITY_COLUMNS: use compression constants where applicable', () => {
-  const constants = ['_U', '_SA', '_SD', '_SP', '_T', '_D', '_CN', '_M', '_B', '_BN', '_TS', '_SO', '_IA', '_PR', '_CAT', '_DUR', '_N'];
+  // Use constant VALUES instead of names
+  const constantValues = [_U, _SA, _SD, _SP, _T, _D, _CN, _M, _B, _BN, _TS, _SO, _IA, _PR, _CAT, _DUR, _N];
   let compressionScore = 0;
   let totalColumns = 0;
 
   Object.values(ENTITY_COLUMNS).forEach(cols => {
     cols.forEach(col => {
       totalColumns++;
-      // Check if column exactly equals a constant
-      if (constants.includes(col)) {
+      // Check if column exactly equals a constant value
+      if (constantValues.includes(col)) {
         compressionScore++;
       }
     });
@@ -318,8 +319,8 @@ test('detectDomain: new domain patterns are recognized', () => {
     { purpose: 'PWAオフラインツール', expected: 'tool' },
     { purpose: 'progressive web app', expected: 'tool' },
     { purpose: 'link in bio tool', expected: 'portfolio' },
-    { purpose: 'AIチャットボット', expected: 'saas' },
-    { purpose: 'AI agent platform', expected: 'saas' },
+    { purpose: 'AIチャットボット', expected: 'ai' },
+    { purpose: 'AI agent platform', expected: 'ai' },
     { purpose: 'ナレッジベース構築', expected: 'content' },
     { purpose: 'knowledge base builder', expected: 'content' },
   ];

@@ -7,7 +7,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 # DevForge v9.0
 
 ## Architecture
-- **41 modules** in `src/` → `node build.js` → single `devforge-v9.html` (~686KB)
+- **42 modules** in `src/` → `node build.js` → single `devforge-v9.html` (~686KB)
 - Vanilla JS, no frameworks. CSS custom properties. CDN: marked.js, mermaid.js, JSZip.
 
 ## Build & Test
@@ -32,7 +32,7 @@ npm run check              # Syntax check extracted JS
 
 ## Build Process Deep Dive
 
-`build.js` concatenates 41 modules into single HTML:
+`build.js` concatenates 42 modules into single HTML:
 
 1. **Read modules** in dependency order (defined in `jsFiles` array)
 2. **Read CSS** from `styles/all.css`
@@ -217,7 +217,7 @@ if(data.state.answers) {
 
 **Fix:**
 - Always add both `ja` and `en` versions
-- Search for all instances when updating numbers (41 presets, 69+ files, 10 pillars)
+- Search for all instances when updating numbers (41 presets, 72+ files, 10 pillars)
 - Use static strings in data files, not `S.lang` conditionals
 
 ### Accessibility (a11y)
@@ -589,12 +589,12 @@ const ENTITY_COLUMNS = {
 
 ⚠️ **When adding entities:** Check if columns match existing constants (\_U, \_SA, \_SD, \_T, \_D, etc.) to maintain compression.
 
-## Generated Output (69+ files)
-When users complete the wizard, DevForge generates **69+ files** (base: 67 files, +2 when ai_auto ≠ None for skills/catalog.md and skills/pipelines.md):
+## Generated Output (72+ files)
+When users complete the wizard, DevForge generates **72+ files** (base: 70 files, +2 when ai_auto ≠ None for skills/catalog.md and skills/pipelines.md):
 - **.spec/** — constitution.md, specification.md, technical-plan.md, tasks.md, verification.md
 - **.devcontainer/** — devcontainer.json, Dockerfile, docker-compose.yml, post-create.sh
-- **docs/** — architecture.md, ER.md, API.md, screen.md, test-cases.md, security.md, release.md, WBS.md, prompt-playbook.md, tasks.md, **progress.md (24)**, **error_logs.md (25)**, **design_system.md (26)**, **sequence_diagrams.md (27)**, **qa_strategy.md (28)**, **reverse_engineering.md (29)**, **goal_decomposition.md (30)**, **industry_playbook.md (31)**
-- **AI rules** — CLAUDE.md (with Workflow Cycle & Context Management), AI_BRIEF.md (with Context Protocol, ~1200 tokens), .cursorrules, .clinerules, .windsurfrules, AGENTS.md, .cursor/rules, **skills/** (project.md, catalog.md*, pipelines.md*)
+- **docs/** — architecture.md, ER.md, API.md, screen.md, test-cases.md, security.md, release.md, WBS.md, prompt-playbook.md, tasks.md, **progress.md (24)**, **error_logs.md (25)**, **design_system.md (26)**, **sequence_diagrams.md (27)**, **qa_strategy.md (28)**, **reverse_engineering.md (29)**, **goal_decomposition.md (30)**, **industry_playbook.md (31)**, **qa_blueprint.md (32)**, **test_matrix.md (33)**
+- **AI rules** — CLAUDE.md (with Workflow Cycle & Context Management), AI_BRIEF.md (with Context Protocol, ~1200 tokens), .cursorrules, .clinerules, .windsurfrules, AGENTS.md, .cursor/rules, **skills/** (project.md, factory.md, catalog.md*, pipelines.md*)
 - **CI/CD** — .github/workflows/ci.yml
 
 \* **skills/catalog.md** and **skills/pipelines.md** are generated only when ai_auto ≠ None
@@ -636,20 +636,35 @@ When users complete the wizard, DevForge generates **69+ files** (base: 67 files
 - Enhanced `AGENTS.md` — Pipeline coordination section
 - Enhanced `detectDomain()` in common.js — Now supports 15 domains with IoT, real estate, legal, HR, and fintech detection patterns
 
+**Recent Enhancement (Quality Intelligence Engine & 24-Domain Expansion - Feb 2026):**
+- Added `docs/32_qa_blueprint.md` — Industry-adaptive QA blueprint with risk matrices for 15 industries (金融/医療/EC/SaaS/SNS/教育/ゲーム/IoT/旅行/物流/不動産/メディア/HR/マーケティング/政府)
+- Added `docs/33_test_matrix.md` — Concrete test matrix with bug patterns, detection methods, and tool recommendations per industry
+- Added `skills/factory.md` — Manus Skills factory template with thinking axis system for all 24 domains
+- Created **Pillar 5: Quality Intelligence Engine** (`p5-quality.js`) — Generates industry-specific QA strategies
+- Enhanced `domainSkillsMap` in p4-airules.js — Extended from 15 to 24 domains (added: ai, automation, event, gamify, collab, devtool, creator, newsletter)
+- Created `INDUSTRY_TEST_MATRIX` in common.js — 15-industry test strategy database with critical functions, test focus areas, typical bugs, recommended tools, and priority matrices
+- Enhanced `REVERSE_FLOW_MAP` in p10-reverse.js — Added 8 new domains with goal-driven planning flows (4 steps), KPIs (4 items), and risks (3 items) each
+- Added 5 new entities to ENTITY_COLUMNS: UserGoal, ReversePlan, PlanStep, ProgressTracking, PlanAdjustment
+- Added 5 new FEATURE_DETAILS: reverse_engineering, skill_automation, qa_intelligence, ticket_management, gamification
+- Added 4 new QA_CROSS_CUTTING: rate_limiting, data_export, notification, realtime
+- Enhanced `detectDomain()` — Now supports 24 domains (bug fix: moved saas pattern before event to correctly detect helpdesk systems)
+- File count increased from 69+ to 72+ (+3 new files)
+- Size impact: +46KB (640KB → 686KB, 314KB budget remaining)
+
 ## Test Architecture
 | File | Tests | Purpose |
 |------|-------|---------|
 | gen-coherence.test.js | 248 assertions | Full LMS generation + structural validation |
-| snapshot.test.js | 38 tests | 6 scenario regression (LMS/Blog/EC/English/PropertyMgmt/Helpdesk) + context engineering + skills validation |
-| data-coverage.test.js | 28 tests | Data integrity: entity coverage, FK validation, domain detection, playbook completeness |
+| snapshot.test.js | 41 tests | 6 scenario regression (LMS/Blog/EC/English/PropertyMgmt/Helpdesk) + context engineering + skills validation + quality files |
+| data-coverage.test.js | 28 tests | Data integrity: entity coverage, FK validation, domain detection (24 domains), playbook completeness |
 | r27-regression.test.js | 17 tests | Bug fixes: prices, FK, KPI, ports |
 | r28-regression.test.js | 19 tests | Quality: REST methods, AC, scope_out, verification |
-| build.test.js | build | Build size ≤1000KB |
+| build.test.js | build | Build size ≤1000KB, pillar function existence |
 | compat.test.js | 45 tests | Compatibility validation |
 | presets.test.js | 4 tests | Preset count (41), bilingual names, tech fields, purpose |
 | Others | ~21 tests | i18n, state, techdb |
 
-**Total: 248 tests (247+ passing, 99.6% pass rate)**
+**Total: 251 tests (250+ passing, 99.6% pass rate)**
 
 ## Writing Tests
 

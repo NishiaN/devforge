@@ -52,6 +52,7 @@ const jsFiles = [
   'generators/p2-devcontainer.js',
   'generators/p3-mcp.js',
   'generators/p4-airules.js',
+  'generators/p5-quality.js',
   'generators/p7-roadmap.js',
   'generators/p9-designsystem.js',
   'generators/p10-reverse.js',

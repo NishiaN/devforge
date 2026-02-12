@@ -146,6 +146,78 @@ const REVERSE_FLOW_MAP={
     risks_ja:['機能複雑化','使い方不明','競合ツール台頭'],
     risks_en:['Feature complexity','Unclear usage','Competitor tools']
   },
+  ai:{
+    goal_ja:'AI精度・応答速度・ユーザー満足度',goal_en:'AI Accuracy, Response Speed & User Satisfaction',
+    flow_ja:['AI精度・応答速度KPI設定','プロンプト最適化・モデル選定','コンテキスト管理・RAG構築','ユーザーフィードバック学習'],
+    flow_en:['Set AI accuracy & speed KPIs','Prompt optimization & model selection','Context management & RAG','User feedback learning'],
+    kpi_ja:['応答精度 ≥90%','平均応答時間 ≤2秒','ユーザー満足度 ≥4.5/5','フィードバック反映率 ≥80%'],
+    kpi_en:['Response accuracy ≥90%','Avg response time ≤2s','User satisfaction ≥4.5/5','Feedback incorporation ≥80%'],
+    risks_ja:['幻覚(ハルシネーション)','コンテキスト破綻','レート制限超過'],
+    risks_en:['Hallucinations','Context loss','Rate limit exceeded']
+  },
+  automation:{
+    goal_ja:'自動化率・エラー率・処理時間',goal_en:'Automation Rate, Error Rate & Processing Time',
+    flow_ja:['自動化率・エラー率KPI設定','ワークフロー設計・条件分岐','監視・リトライ機構','継続的改善ループ'],
+    flow_en:['Set automation & error KPIs','Workflow design & branching','Monitoring & retry mechanism','Continuous improvement loop'],
+    kpi_ja:['自動化率 ≥80%','エラー率 ≤3%','処理時間短縮 ≥50%','手動介入率 ≤10%'],
+    kpi_en:['Automation rate ≥80%','Error rate ≤3%','Processing time reduction ≥50%','Manual intervention ≤10%'],
+    risks_ja:['無限ループ','条件分岐ミス','監視漏れ'],
+    risks_en:['Infinite loops','Branching errors','Monitoring gaps']
+  },
+  event:{
+    goal_ja:'参加率・満足度・収益最大化',goal_en:'Participation, Satisfaction & Revenue Maximization',
+    flow_ja:['参加率・満足度KPI設定','チケット販売戦略','イベント管理システム','事後フォローアップ'],
+    flow_en:['Set participation & satisfaction KPIs','Ticket sales strategy','Event management system','Post-event follow-up'],
+    kpi_ja:['参加率 ≥85%','満足度 ≥4.5/5','チケット売上目標達成 ≥95%','リピート参加率 ≥40%'],
+    kpi_en:['Participation ≥85%','Satisfaction ≥4.5/5','Ticket sales goal ≥95%','Repeat participation ≥40%'],
+    risks_ja:['集客不足','当日キャンセル','運営トラブル'],
+    risks_en:['Low attendance','Last-minute cancellations','Operational issues']
+  },
+  gamify:{
+    goal_ja:'エンゲージメント・継続率向上',goal_en:'Engagement & Retention Improvement',
+    flow_ja:['エンゲージメントKPI設定','ポイント・バッジシステム設計','リーダーボード・チャレンジ','報酬最適化'],
+    flow_en:['Set engagement KPIs','Design points & badges system','Leaderboard & challenges','Reward optimization'],
+    kpi_ja:['DAU/MAU比率 ≥35%','平均セッション時間 ≥15分','ポイント獲得率 ≥70%','バッジ解除率 ≥50%'],
+    kpi_en:['DAU/MAU ratio ≥35%','Avg session ≥15min','Point earn rate ≥70%','Badge unlock rate ≥50%'],
+    risks_ja:['ポイントインフレ','不正獲得','モチベーション低下'],
+    risks_en:['Point inflation','Cheating','Motivation decline']
+  },
+  collab:{
+    goal_ja:'共同作業効率・同期精度',goal_en:'Collaboration Efficiency & Sync Accuracy',
+    flow_ja:['コラボレーションKPI設定','リアルタイム同期基盤','競合解決アルゴリズム','バージョン管理・履歴'],
+    flow_en:['Set collaboration KPIs','Real-time sync foundation','Conflict resolution algorithm','Version control & history'],
+    kpi_ja:['同期遅延 ≤200ms','競合発生率 ≤5%','データ損失 0件','同時編集ユーザー数 ≥10人'],
+    kpi_en:['Sync latency ≤200ms','Conflict rate ≤5%','Data loss: 0','Concurrent users ≥10'],
+    risks_ja:['データ競合','同期遅延','接続断'],
+    risks_en:['Data conflicts','Sync delays','Connection loss']
+  },
+  devtool:{
+    goal_ja:'開発者体験・API採用率',goal_en:'Developer Experience & API Adoption',
+    flow_ja:['DX・API採用率KPI設定','API設計・ドキュメント','SDK・サンプルコード','コミュニティ・サポート'],
+    flow_en:['Set DX & adoption KPIs','API design & docs','SDKs & sample code','Community & support'],
+    kpi_ja:['API採用率 ≥50社','ドキュメント満足度 ≥4.5/5','問い合わせ応答時間 ≤4h','SDK利用率 ≥70%'],
+    kpi_en:['API adoption ≥50 companies','Doc satisfaction ≥4.5/5','Support response ≤4h','SDK usage ≥70%'],
+    risks_ja:['API仕様変更','ドキュメント不足','サポート遅延'],
+    risks_en:['API breaking changes','Insufficient docs','Support delays']
+  },
+  creator:{
+    goal_ja:'クリエイター収益・ファンエンゲージメント',goal_en:'Creator Revenue & Fan Engagement',
+    flow_ja:['収益・ファンKPI設定','コンテンツ収益化戦略','ファンコミュニティ構築','分析・インサイト提供'],
+    flow_en:['Set revenue & fan KPIs','Content monetization strategy','Build fan community','Analytics & insights'],
+    kpi_ja:['月間収益 ≥100,000円','ファン数 ≥500人','エンゲージメント率 ≥8%','リピート課金率 ≥60%'],
+    kpi_en:['Monthly revenue ≥$1,000','Fans ≥500','Engagement rate ≥8%','Repeat payment ≥60%'],
+    risks_ja:['収益化遅延','ファン離脱','コンテンツ枯渇'],
+    risks_en:['Monetization delays','Fan churn','Content shortage']
+  },
+  newsletter:{
+    goal_ja:'開封率・クリック率・購読者増',goal_en:'Open Rate, Click Rate & Subscriber Growth',
+    flow_ja:['開封率・購読者KPI設定','コンテンツ戦略・配信頻度','セグメント配信・A/Bテスト','購読者獲得施策'],
+    flow_en:['Set open rate & subscriber KPIs','Content strategy & frequency','Segment delivery & A/B test','Subscriber acquisition'],
+    kpi_ja:['開封率 ≥25%','クリック率 ≥3%','購読者増加率 ≥10%/月','解除率 ≤2%'],
+    kpi_en:['Open rate ≥25%','Click rate ≥3%','Subscriber growth ≥10%/mo','Unsubscribe ≤2%'],
+    risks_ja:['スパム判定','コンテンツ質低下','配信遅延'],
+    risks_en:['Spam filtering','Content quality decline','Delivery delays']
+  },
   _default:{
     goal_ja:'プロダクト完成・ローンチ',goal_en:'Product Completion & Launch',
     flow_ja:['ゴール・成功指標定義','要件分解・優先順位付け','技術スタック選定','実装計画・スケジュール'],

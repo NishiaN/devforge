@@ -10,12 +10,13 @@ const save=()=>{};const _lsGet=()=>null;const _lsSet=()=>{};const _lsRm=()=>{};c
 eval(fs.readFileSync('src/data/questions.js','utf-8'));
 eval(fs.readFileSync('src/data/presets.js','utf-8').replace('const PR','var PR'));
 eval(fs.readFileSync('src/data/compat-rules.js','utf-8'));
-eval(fs.readFileSync('src/generators/common.js','utf-8').replace('const DOMAIN_PLAYBOOK','var DOMAIN_PLAYBOOK'));
+eval(fs.readFileSync('src/generators/common.js','utf-8').replace(/const /g,'var '));
 eval(fs.readFileSync('src/generators/p1-sdd.js','utf-8'));
 eval(fs.readFileSync('src/generators/p2-devcontainer.js','utf-8'));
 eval(fs.readFileSync('src/generators/docs.js','utf-8'));
 eval(fs.readFileSync('src/generators/p3-mcp.js','utf-8'));
 eval(fs.readFileSync('src/generators/p4-airules.js','utf-8'));
+eval(fs.readFileSync('src/generators/p5-quality.js','utf-8'));
 eval(fs.readFileSync('src/data/gen-templates.js','utf-8').replace('const GT','var GT'));
 eval(fs.readFileSync('src/generators/p7-roadmap.js','utf-8'));
 eval(fs.readFileSync('src/generators/p9-designsystem.js','utf-8'));
@@ -31,6 +32,7 @@ function generate(answers, name, lang) {
   genDocs21(answers, name);
   genPillar3_MCP(answers, name);
   genPillar4_AIRules(answers, name);
+  genPillar5_QualityIntelligence(answers, name);
   genPillar7_Roadmap(answers, name);
   genPillar9_DesignSystem(answers, name);
   genPillar10_ReverseEngineering(answers, name);
@@ -52,14 +54,14 @@ describe('Snapshot A: LMS/Supabase/Stripe', () => {
     ai_auto: 'マルチAgent協調'
   }, 'LMS');
 
-  test('file count in range 63-79', () => {
+  test('file count in range 66-82', () => {
     const count = Object.keys(files).length;
-    assert.ok(count >= 63 && count <= 79, `Expected 63-79 files, got ${count}`);
+    assert.ok(count >= 66 && count <= 82, `Expected 66-82 files, got ${count}`);
   });
 
-  test('total tokens in range 12000-19500', () => {
+  test('total tokens in range 12000-21500', () => {
     const total = Object.values(files).reduce((s, v) => s + tokens(v), 0);
-    assert.ok(total >= 12000 && total <= 19500, `Expected 12K-19.5K tokens, got ${total}`);
+    assert.ok(total >= 12000 && total <= 21500, `Expected 12K-21.5K tokens, got ${total}`);
   });
 
   // Core files existence
@@ -83,6 +85,33 @@ describe('Snapshot A: LMS/Supabase/Stripe', () => {
   test('reverse engineering and goal decomposition exist', () => {
     assert.ok(files['docs/29_reverse_engineering.md'], 'docs/29_reverse_engineering.md missing');
     assert.ok(files['docs/30_goal_decomposition.md'], 'docs/30_goal_decomposition.md missing');
+  });
+
+  test('quality intelligence files exist', () => {
+    assert.ok(files['docs/32_qa_blueprint.md'], 'docs/32_qa_blueprint.md missing');
+    assert.ok(files['docs/33_test_matrix.md'], 'docs/33_test_matrix.md missing');
+    assert.ok(files['skills/factory.md'], 'skills/factory.md missing');
+  });
+
+  test('qa blueprint has industry-specific content', () => {
+    const qa = files['docs/32_qa_blueprint.md'];
+    assert.ok(qa.includes('業種') || qa.includes('Industry'), 'Missing industry section');
+    assert.ok(qa.includes('重要機能') || qa.includes('Critical Functions'), 'Missing critical functions');
+    assert.ok(qa.includes('リスク') || qa.includes('Risk'), 'Missing risk assessment');
+  });
+
+  test('test matrix has concrete examples', () => {
+    const tm = files['docs/33_test_matrix.md'];
+    assert.ok(tm.includes('テストケース') || tm.includes('Test Case'), 'Missing test case template');
+    assert.ok(tm.includes('バグパターン') || tm.includes('Bug Pattern'), 'Missing bug patterns');
+    assert.ok(tm.includes('カバレッジ') || tm.includes('Coverage'), 'Missing coverage goals');
+  });
+
+  test('skills factory has thinking axis', () => {
+    const factory = files['skills/factory.md'];
+    assert.ok(factory.includes('思考軸') || factory.includes('Thinking Axis'), 'Missing thinking axis');
+    assert.ok(factory.includes('判断') || factory.includes('Judgment'), 'Missing judgment principle');
+    assert.ok(factory.includes('フォーマット') || factory.includes('Format'), 'Missing skill format');
   });
 
   test('reverse engineering has domain-specific flow', () => {
