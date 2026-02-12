@@ -358,3 +358,57 @@ test('FEATURE_DETAILS: new feature patterns exist', () => {
     assert.ok(found, `Missing FEATURE_DETAILS pattern matching: ${pattern}`);
   });
 });
+
+test('REVERSE_FLOW_MAP: all 24 domains have complete flow definitions', () => {
+  // Load p10-reverse.js to get REVERSE_FLOW_MAP
+  eval(fs.readFileSync('src/generators/p10-reverse.js', 'utf-8').replace(/const /g, 'var '));
+
+  const domains = ['education', 'ec', 'saas', 'fintech', 'health', 'marketplace',
+                   'community', 'content', 'analytics', 'booking', 'iot', 'realestate',
+                   'legal', 'hr', 'portfolio', 'tool',
+                   'ai', 'automation', 'event', 'gamify', 'collab', 'devtool', 'creator', 'newsletter'];
+
+  const incomplete = [];
+  domains.forEach(domain => {
+    const flow = REVERSE_FLOW_MAP[domain];
+    if (!flow) {
+      incomplete.push(`${domain}: missing`);
+      return;
+    }
+
+    // Check goal_ja/en
+    if (!flow.goal_ja || flow.goal_ja.length === 0) {
+      incomplete.push(`${domain}: empty goal_ja`);
+    }
+    if (!flow.goal_en || flow.goal_en.length === 0) {
+      incomplete.push(`${domain}: empty goal_en`);
+    }
+
+    // Check flow_ja/en (should have at least 3 steps)
+    if (!flow.flow_ja || flow.flow_ja.length < 3) {
+      incomplete.push(`${domain}: flow_ja has ${flow.flow_ja?.length || 0} steps (need ≥3)`);
+    }
+    if (!flow.flow_en || flow.flow_en.length < 3) {
+      incomplete.push(`${domain}: flow_en has ${flow.flow_en?.length || 0} steps (need ≥3)`);
+    }
+
+    // Check kpi_ja/en (should have at least 3 KPIs)
+    if (!flow.kpi_ja || flow.kpi_ja.length < 3) {
+      incomplete.push(`${domain}: kpi_ja has ${flow.kpi_ja?.length || 0} KPIs (need ≥3)`);
+    }
+    if (!flow.kpi_en || flow.kpi_en.length < 3) {
+      incomplete.push(`${domain}: kpi_en has ${flow.kpi_en?.length || 0} KPIs (need ≥3)`);
+    }
+
+    // Check risks_ja/en (should have at least 2 risks)
+    if (!flow.risks_ja || flow.risks_ja.length < 2) {
+      incomplete.push(`${domain}: risks_ja has ${flow.risks_ja?.length || 0} risks (need ≥2)`);
+    }
+    if (!flow.risks_en || flow.risks_en.length < 2) {
+      incomplete.push(`${domain}: risks_en has ${flow.risks_en?.length || 0} risks (need ≥2)`);
+    }
+  });
+
+  assert.equal(incomplete.length, 0,
+    'Incomplete REVERSE_FLOW_MAP: ' + incomplete.join(', '));
+});

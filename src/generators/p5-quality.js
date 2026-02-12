@@ -509,6 +509,37 @@ function genPillar5_QualityIntelligence(a,pn){
   }
   doc36+='\n';
 
+  // ── KPI Regression Testing (P5-P10 Feedback Loop) ──
+  doc36+='### 4.4 '+(G?'KPIリグレッションテスト':'KPI Regression Testing')+'\n\n';
+  doc36+=(G?'**重要**: docs/29_reverse_engineering.md で定義されたゴールKPIを継続的に監視し、リリース後もゴール達成度を追跡してください。\n\n':'**IMPORTANT**: Continuously monitor goal KPIs defined in docs/29_reverse_engineering.md and track goal achievement post-release.\n\n');
+
+  // Access REVERSE_FLOW_MAP if available (loaded from p10-reverse.js)
+  if(typeof REVERSE_FLOW_MAP!=='undefined'){
+    const flowMap=REVERSE_FLOW_MAP[domain]||REVERSE_FLOW_MAP._default;
+    const kpis=G?flowMap.kpi_ja:flowMap.kpi_en;
+    doc36+='**'+(G?'監視対象KPI':'KPIs to Monitor')+'** ('+(G?'docs/29から':'from docs/29')+'):\n';
+    kpis.forEach((kpi,i)=>{
+      doc36+=(i+1)+'. '+kpi+'\n';
+    });
+    doc36+='\n';
+  }else{
+    // Fallback if REVERSE_FLOW_MAP not available
+    doc36+='**'+(G?'監視対象KPI':'KPIs to Monitor')+'**: '+(G?'docs/29_reverse_engineering.md 参照':'See docs/29_reverse_engineering.md')+'\n\n';
+  }
+
+  doc36+='**'+(G?'テスト頻度':'Test Frequency')+'**: '+(G?'週次':'Weekly')+'\n';
+  doc36+='**'+(G?'アラート条件':'Alert Condition')+'**: '+(G?'目標値から20%以上乖離':'Deviation >20% from target')+'\n';
+  doc36+='**'+(G?'対応フロー':'Response Flow')+'**:\n';
+  doc36+='1. '+(G?'KPI乖離検出 → docs/25_error_logs.md に記録':'KPI deviation detected → Log in docs/25_error_logs.md')+'\n';
+  doc36+='2. '+(G?'原因分析 (5 Whys) → 根本原因特定':'Root cause analysis (5 Whys)')+'\n';
+  doc36+='3. '+(G?'改善施策実施 → docs/30_goal_decomposition.md のギャップマトリクス更新':'Implement improvements → Update gap matrix in docs/30_goal_decomposition.md')+'\n';
+  doc36+='4. '+(G?'効果測定 → KPI回復確認':'Measure impact → Verify KPI recovery')+'\n\n';
+
+  doc36+='**'+(G?'相互参照':'Cross-References')+'**:\n';
+  doc36+='- **docs/29_reverse_engineering.md** — '+(G?'ゴールKPI定義':'Goal KPI definitions')+'\n';
+  doc36+='- **docs/30_goal_decomposition.md** — '+(G?'ギャップ分析マトリクス':'Gap analysis matrix')+'\n';
+  doc36+='- **docs/24_progress.md** — '+(G?'進捗トラッキング':'Progress tracking')+'\n\n';
+
   // Stack-Specific Tool Configuration
   doc36+=(G?'## スタック別ツール設定':'## Stack-Specific Tool Configuration')+'\n\n';
   const testTool=tools.find(t=>t.includes('Vitest'))?'Vitest':tools.find(t=>t.includes('Jest'))?'Jest':'Vitest';

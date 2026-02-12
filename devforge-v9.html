@@ -3180,19 +3180,19 @@ ${coreRules}`;
   }
   // ═══ A1: File Selection Matrix (Task-specific context loading) ═══
   const fileSelectionMatrix=G?
-    '| タスク種別 | 推奨読込ファイル | 推定トークン |\n|---------|---------------|----------|\n| 🆕 新規機能 | AI_BRIEF.md + .spec/specification.md + docs/04_er_diagram.md | ~6K |\n| 🐛 バグ修正 | AI_BRIEF.md + docs/25_error_logs.md + 該当ソースファイル | ~4K |\n| 📝 設計レビュー | .spec/constitution.md + .spec/specification.md + docs/32_qa_blueprint.md | ~7K |\n| 🔒 セキュリティ | docs/08_security.md + docs/25_error_logs.md + .spec/verification.md | ~5K |\n| 🧪 テスト作成 | docs/07_test_cases.md + docs/33_test_matrix.md + 対象コード | ~6K |\n| 📚 ドキュメント | AI_BRIEF.md + 該当実装 + .spec/specification.md | ~5K |\n| 🚀 デプロイ | docs/09_release.md + .github/workflows/ci.yml + .devcontainer/ | ~3K |\n| 🔍 調査タスク | AI_BRIEF.md のみ（詳細はサブエージェントに委譲） | ~3K |':
-    '| Task Type | Recommended Files | Est. Tokens |\n|-----------|------------------|-------------|\n| 🆕 New Feature | AI_BRIEF.md + .spec/specification.md + docs/04_er_diagram.md | ~6K |\n| 🐛 Bug Fix | AI_BRIEF.md + docs/25_error_logs.md + relevant source | ~4K |\n| 📝 Design Review | .spec/constitution.md + .spec/specification.md + docs/32_qa_blueprint.md | ~7K |\n| 🔒 Security | docs/08_security.md + docs/25_error_logs.md + .spec/verification.md | ~5K |\n| 🧪 Test Writing | docs/07_test_cases.md + docs/33_test_matrix.md + target code | ~6K |\n| 📚 Documentation | AI_BRIEF.md + implementation + .spec/specification.md | ~5K |\n| 🚀 Deployment | docs/09_release.md + .github/workflows/ci.yml + .devcontainer/ | ~3K |\n| 🔍 Research | AI_BRIEF.md only (delegate details to sub-agents) | ~3K |';
+    '| タスク種別 | 推奨読込ファイル | 推定トークン |\n|---------|---------------|----------|\n| 🆕 新規機能 | AI_BRIEF.md + .spec/specification.md + docs/04_er_diagram.md | ~6K |\n| 🐛 バグ修正 | AI_BRIEF.md + docs/25_error_logs.md + 該当ソースファイル | ~4K |\n| 📝 設計レビュー | .spec/constitution.md + .spec/specification.md + docs/32_qa_blueprint.md | ~7K |\n| 🔒 セキュリティ | docs/08_security.md + docs/25_error_logs.md + .spec/verification.md | ~5K |\n| 🧪 テスト作成 | docs/07_test_cases.md + docs/33_test_matrix.md + 対象コード | ~6K |\n| 📚 ドキュメント | AI_BRIEF.md + 該当実装 + .spec/specification.md | ~5K |\n| 🚀 デプロイ | docs/09_release.md + .github/workflows/ci.yml + .devcontainer/ | ~3K |\n| 🎯 計画・マイルストーン | docs/29_reverse_engineering.md + docs/30_goal_decomposition.md + .spec/tasks.md | ~5K |\n| 🔍 調査タスク | AI_BRIEF.md のみ（詳細はサブエージェントに委譲） | ~3K |':
+    '| Task Type | Recommended Files | Est. Tokens |\n|-----------|------------------|-------------|\n| 🆕 New Feature | AI_BRIEF.md + .spec/specification.md + docs/04_er_diagram.md | ~6K |\n| 🐛 Bug Fix | AI_BRIEF.md + docs/25_error_logs.md + relevant source | ~4K |\n| 📝 Design Review | .spec/constitution.md + .spec/specification.md + docs/32_qa_blueprint.md | ~7K |\n| 🔒 Security | docs/08_security.md + docs/25_error_logs.md + .spec/verification.md | ~5K |\n| 🧪 Test Writing | docs/07_test_cases.md + docs/33_test_matrix.md + target code | ~6K |\n| 📚 Documentation | AI_BRIEF.md + implementation + .spec/specification.md | ~5K |\n| 🚀 Deployment | docs/09_release.md + .github/workflows/ci.yml + .devcontainer/ | ~3K |\n| 🎯 Planning / Milestones | docs/29_reverse_engineering.md + docs/30_goal_decomposition.md + .spec/tasks.md | ~5K |\n| 🔍 Research | AI_BRIEF.md only (delegate details to sub-agents) | ~3K |';
   const compressionProtocol=G?
     '\n## Context Compression Protocol\n\n**トリガー**: コンテキスト使用率 ≥80% 時\n\n**圧縮手順**:\n1. **要約モードに切替**: 全ドキュメントを AI_BRIEF.md のみに置換\n2. **タスク特化**: 現在のタスクに直接関係するファイルのみ保持\n3. **サブエージェント委譲**: 調査タスクはサブエージェントに委譲し、結論(要約)のみ受取\n4. **履歴圧縮**: 過去の会話履歴を要約して保存\n\n**圧縮例**:\n- Before: AI_BRIEF.md (3K) + ER (2K) + API (2K) + Screen (2K) + Tasks (1K) = 10K\n- After: AI_BRIEF.md (3K) + 現在タスクの該当セクション (1K) = 4K\n':
     '\n## Context Compression Protocol\n\n**Trigger**: Context usage ≥80%\n\n**Compression steps**:\n1. **Switch to summary mode**: Replace all docs with AI_BRIEF.md only\n2. **Task-specific**: Keep only files directly related to current task\n3. **Sub-agent delegation**: Delegate research tasks to sub-agents, receive summary only\n4. **History compression**: Summarize and save past conversation history\n\n**Compression example**:\n- Before: AI_BRIEF.md (3K) + ER (2K) + API (2K) + Screen (2K) + Tasks (1K) = 10K\n- After: AI_BRIEF.md (3K) + relevant section for current task (1K) = 4K\n';
   const subAgentPattern=G?
     '\n## Sub-agent Delegation Pattern\n\n**原則**: メインエージェントのコンテキストを調査結果で汚染しない\n\n**委譲すべきタスク**:\n- 📊 技術調査（ライブラリ比較、ベストプラクティス検索）\n- 🔍 コードベース探索（特定機能の実装箇所特定）\n- 📖 ドキュメント要約（長大なドキュメントの要点抽出）\n- 🧪 テストケース生成（網羅的なテストパターン列挙）\n\n**Summary-Only Import**:\n- ❌ サブエージェントの全出力をコンテキストに含めない\n- ✅ サブエージェントは結論・推奨事項・次のアクションのみ返す\n- 📏 要約サイズ目標: 元の10-20%（例: 5K → 500-1000トークン）\n\n**実行フォーマット**:\n```\nTask: [サブエージェントに委譲するタスク]\nContext: AI_BRIEF.md\nOutput format: 結論(3行) + 推奨事項(箇条書き3つ) + 次のアクション\n```\n':
     '\n## Sub-agent Delegation Pattern\n\n**Principle**: Don\'t pollute main agent context with research results\n\n**Tasks to delegate**:\n- 📊 Technical research (library comparison, best practice search)\n- 🔍 Codebase exploration (locate implementation of specific features)\n- 📖 Document summarization (extract key points from long docs)\n- 🧪 Test case generation (enumerate comprehensive test patterns)\n\n**Summary-Only Import**:\n- ❌ Don\'t include full sub-agent output in context\n- ✅ Sub-agent returns conclusion, recommendations, next action only\n- 📏 Summary size target: 10-20% of original (e.g., 5K → 500-1000 tokens)\n\n**Execution format**:\n```\nTask: [Task to delegate to sub-agent]\nContext: AI_BRIEF.md\nOutput format: Conclusion (3 lines) + Recommendations (3 bullets) + Next action\n```\n';
-  S.files['CLAUDE.md']=`# CLAUDE.md — ${pn}\n${core}\n\n## Spec-Driven Development\nRead .spec/constitution.md first.\nAll changes must align with .spec/specification.md.\nUse .spec/tasks.md as the source of truth for work items.\n\n## Auth\n- Source of Truth: ${auth.sot}\n- Token: ${auth.tokenType}\n- Verification: ${auth.tokenVerify}\n${auth.social.length?'- Providers: '+auth.social.join(', '):''}\n\n## Code Style\n- TypeScript strict\n- ESLint + Prettier\n- Vitest for testing\n- ${orm} for ${db}\n\n## Forbidden\n${forbidden}\n\n## Workflow Cycle\n1. Read docs/ → Select needed context\n2. Plan → Outline approach before coding\n3. Implement → Code with tests\n4. Update docs/24_progress.md → Mark completed tasks\n5. Log errors to docs/25_error_logs.md → Prevent recurrence\n\n## Thinking Protocol\nBefore implementing any change:\n1. State the task in one sentence\n2. List files that will be modified\n3. Identify potential side effects\n4. Implement → Test → Verify\n\n## Context Management\n- Write: All specs live in docs/ — read before coding\n- Select: Only load files relevant to current task\n- Compress: If context is large, read AI_BRIEF.md (~3K tokens) instead\n- Isolate: Use subagents for research, keep main context clean${domainCtx}\n\n## File Selection Matrix\n${G?'**タスク種別別の推奨読込ファイル**':'**Task-specific recommended files**'}\n\n${fileSelectionMatrix}${compressionProtocol}${subAgentPattern}\n\n## Key Context Files\n| File | When to Read | Tokens |\n|------|-------------|--------|\n| AI_BRIEF.md | Always (start here) | ~3K |\n| .spec/constitution.md | Before any change | ~1K |\n| .spec/tasks.md | Before picking work | ~1K |\n| docs/24_progress.md | Before/after tasks | ~0.5K |\n| docs/25_error_logs.md | When debugging | ~0.5K |`;
+  S.files['CLAUDE.md']=`# CLAUDE.md — ${pn}\n${core}\n\n## Spec-Driven Development\nRead .spec/constitution.md first.\nAll changes must align with .spec/specification.md.\nUse .spec/tasks.md as the source of truth for work items.\n\n## Auth\n- Source of Truth: ${auth.sot}\n- Token: ${auth.tokenType}\n- Verification: ${auth.tokenVerify}\n${auth.social.length?'- Providers: '+auth.social.join(', '):''}\n\n## Code Style\n- TypeScript strict\n- ESLint + Prettier\n- Vitest for testing\n- ${orm} for ${db}\n\n## Forbidden\n${forbidden}\n\n## Workflow Cycle\n1. Read docs/ → Select needed context\n2. Plan → Outline approach before coding\n3. Implement → Code with tests\n4. Update docs/24_progress.md → Mark completed tasks\n5. Log errors to docs/25_error_logs.md → Prevent recurrence\n\n## Thinking Protocol\nBefore implementing any change:\n1. State the task in one sentence\n2. List files that will be modified\n3. Identify potential side effects\n4. Implement → Test → Verify\n\n## Context Management\n- Write: All specs live in docs/ — read before coding\n- Select: Only load files relevant to current task\n- Compress: If context is large, read AI_BRIEF.md (~3K tokens) instead\n- Isolate: Use subagents for research, keep main context clean${domainCtx}\n\n## File Selection Matrix\n${G?'**タスク種別別の推奨読込ファイル**':'**Task-specific recommended files**'}\n\n${fileSelectionMatrix}${compressionProtocol}${subAgentPattern}\n\n## Key Context Files\n| File | When to Read | Tokens |\n|------|-------------|--------|\n| AI_BRIEF.md | Always (start here) | ~3K |\n| .spec/constitution.md | Before any change | ~1K |\n| .spec/tasks.md | Before picking work | ~1K |\n| docs/29_reverse_engineering.md | Before sprint planning | ~2K |\n| docs/24_progress.md | Before/after tasks | ~0.5K |\n| docs/25_error_logs.md | When debugging | ~0.5K |`;
   // ═══ A3: AGENTS.md Sub-agent Coordination Enhancement ═══
   const agentSpecMatrix=G?
-    '| エージェント | 専門領域 | 必要コンテキスト | トークン予算 |\n|----------|--------|-------------|----------|\n| Frontend | UI/UX実装 | AI_BRIEF.md + docs/06_screen.md + docs/26_design_system.md | ~5K |\n| Backend | API/DB実装 | AI_BRIEF.md + docs/04_er_diagram.md + docs/05_api.md | ~6K |\n| Test | テスト作成 | AI_BRIEF.md + docs/07_test_cases.md + docs/33_test_matrix.md | ~6K |\n| QA | 品質検証 | docs/32_qa_blueprint.md + docs/37_bug_prevention.md | ~4K |\n| DevOps | デプロイ | docs/09_release.md + .devcontainer/ + .github/workflows/ | ~3K |\n| Research | 調査専門 | AI_BRIEF.md のみ（結論返却） | ~3K |':
-    '| Agent | Specialization | Required Context | Token Budget |\n|-------|---------------|------------------|-------------|\n| Frontend | UI/UX impl | AI_BRIEF.md + docs/06_screen.md + docs/26_design_system.md | ~5K |\n| Backend | API/DB impl | AI_BRIEF.md + docs/04_er_diagram.md + docs/05_api.md | ~6K |\n| Test | Test creation | AI_BRIEF.md + docs/07_test_cases.md + docs/33_test_matrix.md | ~6K |\n| QA | Quality assurance | docs/32_qa_blueprint.md + docs/37_bug_prevention.md | ~4K |\n| DevOps | Deployment | docs/09_release.md + .devcontainer/ + .github/workflows/ | ~3K |\n| Research | Investigation | AI_BRIEF.md only (return conclusion) | ~3K |';
+    '| エージェント | 専門領域 | 必要コンテキスト | トークン予算 |\n|----------|--------|-------------|----------|\n| Planner | 計画・マイルストーン | docs/29_reverse_engineering.md + docs/30_goal_decomposition.md + .spec/tasks.md | ~5K |\n| Frontend | UI/UX実装 | AI_BRIEF.md + docs/06_screen.md + docs/26_design_system.md | ~5K |\n| Backend | API/DB実装 | AI_BRIEF.md + docs/04_er_diagram.md + docs/05_api.md | ~6K |\n| Test | テスト作成 | AI_BRIEF.md + docs/07_test_cases.md + docs/33_test_matrix.md | ~6K |\n| QA | 品質検証 | docs/32_qa_blueprint.md + docs/37_bug_prevention.md | ~4K |\n| DevOps | デプロイ | docs/09_release.md + .devcontainer/ + .github/workflows/ | ~3K |\n| Research | 調査専門 | AI_BRIEF.md のみ（結論返却） | ~3K |':
+    '| Agent | Specialization | Required Context | Token Budget |\n|-------|---------------|------------------|-------------|\n| Planner | Planning & milestones | docs/29_reverse_engineering.md + docs/30_goal_decomposition.md + .spec/tasks.md | ~5K |\n| Frontend | UI/UX impl | AI_BRIEF.md + docs/06_screen.md + docs/26_design_system.md | ~5K |\n| Backend | API/DB impl | AI_BRIEF.md + docs/04_er_diagram.md + docs/05_api.md | ~6K |\n| Test | Test creation | AI_BRIEF.md + docs/07_test_cases.md + docs/33_test_matrix.md | ~6K |\n| QA | Quality assurance | docs/32_qa_blueprint.md + docs/37_bug_prevention.md | ~4K |\n| DevOps | Deployment | docs/09_release.md + .devcontainer/ + .github/workflows/ | ~3K |\n| Research | Investigation | AI_BRIEF.md only (return conclusion) | ~3K |';
   const handoffProtocol=G?
     '\n## Handoff Protocol（引継ぎフォーマット）\n\n**引継ぎ時に必ず含める情報**:\n```yaml\nfrom: [引継ぎ元エージェント名]\nto: [引継ぎ先エージェント名]\ntask: [タスク概要 1文]\ncontext: [必要最小限のコンテキスト]\ndeliverables:\n  - [成果物1]\n  - [成果物2]\nnext_action: [次のアクション]\nblocking_issues: [ブロッカーがあれば]\n```\n\n**Summary-Only Import原則**:\n- 調査エージェントは全文返却禁止\n- 結論(3行) + 推奨事項(3つ) + 次のアクションのみ\n- メインエージェントは要約のみコンテキストに追加\n':
     '\n## Handoff Protocol\n\n**Required information in handoff**:\n```yaml\nfrom: [Source agent name]\nto: [Target agent name]\ntask: [Task summary in 1 sentence]\ncontext: [Minimal necessary context]\ndeliverables:\n  - [Deliverable 1]\n  - [Deliverable 2]\nnext_action: [Next action]\nblocking_issues: [If any blockers]\n```\n\n**Summary-Only Import Principle**:\n- Research agents MUST NOT return full text\n- Conclusion (3 lines) + Recommendations (3 bullets) + Next action only\n- Main agent adds summary only to context\n';
@@ -3295,8 +3295,8 @@ Pattern: ${archNote}
 7. Context full: Keep AI_BRIEF.md + current task only
 ## Context Loading Strategy
 **Phase-based file loading priority**:
-${G?'- **Phase 0 企画**: .spec/constitution.md → .spec/specification.md':'- **Phase 0 Planning**: .spec/constitution.md → .spec/specification.md'}
-${G?'- **Phase 1 設計**: + docs/04_er_diagram.md + docs/05_api.md + docs/32_qa_blueprint.md':'- **Phase 1 Design**: + docs/04_er_diagram.md + docs/05_api.md + docs/32_qa_blueprint.md'}
+${G?'- **Phase 0 企画**: .spec/constitution.md → .spec/specification.md + docs/29_reverse_engineering.md':'- **Phase 0 Planning**: .spec/constitution.md → .spec/specification.md + docs/29_reverse_engineering.md'}
+${G?'- **Phase 1 設計**: + docs/04_er_diagram.md + docs/05_api.md + docs/30_goal_decomposition.md + docs/32_qa_blueprint.md':'- **Phase 1 Design**: + docs/04_er_diagram.md + docs/05_api.md + docs/30_goal_decomposition.md + docs/32_qa_blueprint.md'}
 ${G?'- **Phase 2 実装**: + AI_BRIEF.md (主要) + docs/24_progress.md + 該当ソース':'- **Phase 2 Implementation**: + AI_BRIEF.md (primary) + docs/24_progress.md + relevant source'}
 ${G?'- **Phase 3 テスト**: + docs/07_test_cases.md + docs/33_test_matrix.md + docs/36_test_strategy.md':'- **Phase 3 Testing**: + docs/07_test_cases.md + docs/33_test_matrix.md + docs/36_test_strategy.md'}
 ${G?'- **Phase 4 運用**: + docs/34_incident_response.md + docs/09_release.md + docs/25_error_logs.md':'- **Phase 4 Operations**: + docs/34_incident_response.md + docs/09_release.md + docs/25_error_logs.md'}
@@ -3306,6 +3306,8 @@ ${G?'- 📋 Spec/設計: 30% (3K)':'- 📋 Spec/design: 30% (3K)'}
 ${G?'- 📊 進捗/履歴: 20% (2K)':'- 📊 Progress/history: 20% (2K)'}
 ${G?'- 🔄 予備バッファ: 10% (1K)':'- 🔄 Reserve buffer: 10% (1K)'}
 **New files reference** (${G?'最新生成ファイル':'latest generated files'}):
+- docs/29_reverse_engineering.md ${G?'— ゴール逆算プランニング':'— Goal-driven planning'}
+- docs/30_goal_decomposition.md ${G?'— ゴール分解・ギャップ分析':'— Goal decomposition & gap analysis'}
 - docs/34_incident_response.md ${G?'— 障害対応':'— Incident response'}
 - docs/35_sitemap.md ${G?'— 情報設計':'— Information architecture'}
 - docs/36_test_strategy.md ${G?'— フェーズ別テスト戦略':'— Phase-based testing'}
@@ -3349,7 +3351,7 @@ CLAUDE.md        → ${G?'Claude Code用ルール':'Claude Code rules'}
     // Detect domain for domain-specific skills
     const domain=detectDomain(a.purpose);
     // Compressed: role:name_ja:name_en:purpose_ja:purpose_en:judgment_ja:judgment_en
-    const coreSkills=['0:要件レビュー:Req Review:要件検証:Verify reqs:欠落0:0 gaps','1:設計検証:Arch Review:技術評価:Eval tech:P0リスク0:0 P0 risks','2:実装支援:Code Support:実装支援:Impl support:エラー0:0 errors','3:デプロイ検証:Deploy Check:デプロイ前チェック:Pre-deploy check:全PASS:All PASS'];
+    const coreSkills=['0:ゴール逆算:Goal Reversal:KPI→機能→実装の逆算:KPI → Features → Impl:ギャップ0:0 gaps','0:要件レビュー:Req Review:要件検証:Verify reqs:欠落0:0 gaps','1:設計検証:Arch Review:技術評価:Eval tech:P0リスク0:0 P0 risks','2:実装支援:Code Support:実装支援:Impl support:エラー0:0 errors','3:デプロイ検証:Deploy Check:デプロイ前チェック:Pre-deploy check:全PASS:All PASS'];
     const domainSkillsMap={
       education:['1:教材設計:Curriculum:教材設計:Design curriculum:説明可能:Explainable','2:問題生成:Quiz Gen:問題生成:Gen quiz:各3問:3 each'],
       ec:['1:商品検証:Catalog:商品検証:Verify catalog:必須100%:Req 100%','1:決済検証:Checkout:決済検証:Verify checkout:OWASP準拠:OWASP OK'],
@@ -4194,6 +4196,37 @@ function genPillar5_QualityIntelligence(a,pn){
     doc36+='- **'+(G?'ユーザーエラー報告':'User Error Reports')+'**: '+(G?'月次トレンド監視':'Monitor monthly trend')+'\n';
   }
   doc36+='\n';
+
+  // ── KPI Regression Testing (P5-P10 Feedback Loop) ──
+  doc36+='### 4.4 '+(G?'KPIリグレッションテスト':'KPI Regression Testing')+'\n\n';
+  doc36+=(G?'**重要**: docs/29_reverse_engineering.md で定義されたゴールKPIを継続的に監視し、リリース後もゴール達成度を追跡してください。\n\n':'**IMPORTANT**: Continuously monitor goal KPIs defined in docs/29_reverse_engineering.md and track goal achievement post-release.\n\n');
+
+  // Access REVERSE_FLOW_MAP if available (loaded from p10-reverse.js)
+  if(typeof REVERSE_FLOW_MAP!=='undefined'){
+    const flowMap=REVERSE_FLOW_MAP[domain]||REVERSE_FLOW_MAP._default;
+    const kpis=G?flowMap.kpi_ja:flowMap.kpi_en;
+    doc36+='**'+(G?'監視対象KPI':'KPIs to Monitor')+'** ('+(G?'docs/29から':'from docs/29')+'):\n';
+    kpis.forEach((kpi,i)=>{
+      doc36+=(i+1)+'. '+kpi+'\n';
+    });
+    doc36+='\n';
+  }else{
+    // Fallback if REVERSE_FLOW_MAP not available
+    doc36+='**'+(G?'監視対象KPI':'KPIs to Monitor')+'**: '+(G?'docs/29_reverse_engineering.md 参照':'See docs/29_reverse_engineering.md')+'\n\n';
+  }
+
+  doc36+='**'+(G?'テスト頻度':'Test Frequency')+'**: '+(G?'週次':'Weekly')+'\n';
+  doc36+='**'+(G?'アラート条件':'Alert Condition')+'**: '+(G?'目標値から20%以上乖離':'Deviation >20% from target')+'\n';
+  doc36+='**'+(G?'対応フロー':'Response Flow')+'**:\n';
+  doc36+='1. '+(G?'KPI乖離検出 → docs/25_error_logs.md に記録':'KPI deviation detected → Log in docs/25_error_logs.md')+'\n';
+  doc36+='2. '+(G?'原因分析 (5 Whys) → 根本原因特定':'Root cause analysis (5 Whys)')+'\n';
+  doc36+='3. '+(G?'改善施策実施 → docs/30_goal_decomposition.md のギャップマトリクス更新':'Implement improvements → Update gap matrix in docs/30_goal_decomposition.md')+'\n';
+  doc36+='4. '+(G?'効果測定 → KPI回復確認':'Measure impact → Verify KPI recovery')+'\n\n';
+
+  doc36+='**'+(G?'相互参照':'Cross-References')+'**:\n';
+  doc36+='- **docs/29_reverse_engineering.md** — '+(G?'ゴールKPI定義':'Goal KPI definitions')+'\n';
+  doc36+='- **docs/30_goal_decomposition.md** — '+(G?'ギャップ分析マトリクス':'Gap analysis matrix')+'\n';
+  doc36+='- **docs/24_progress.md** — '+(G?'進捗トラッキング':'Progress tracking')+'\n\n';
 
   // Stack-Specific Tool Configuration
   doc36+=(G?'## スタック別ツール設定':'## Stack-Specific Tool Configuration')+'\n\n';
@@ -5073,38 +5106,60 @@ function genPillar10_ReverseEngineering(a,pn){
       doc29+=(i+1)+'. '+pattern+'\n\n';
     });
   }
-  // ── Milestone Schedule (Mermaid Gantt) ──
+  // ── Milestone Schedule (Mermaid Gantt) ── Dynamic dates from today
+  const today=new Date();
+  const formatDate=(d)=>{const y=d.getFullYear();const m=String(d.getMonth()+1).padStart(2,'0');const day=String(d.getDate()).padStart(2,'0');return y+'-'+m+'-'+day;};
+  const addDays=(d,days)=>{const r=new Date(d);r.setDate(r.getDate()+days);return r;};
+  const p1Start=addDays(today,7);
+  const p1Mid=addDays(today,14);
+  const p1End=addDays(today,21);
+  const p2Start=addDays(today,21);
+  const p2End=addDays(today,35);
+  const p3Start=addDays(today,35);
+  const p3End=addDays(today,56);
+  const p4Start=addDays(today,56);
+  const p4End=addDays(today,70);
   doc29+=(G?'## マイルストーン逆算スケジュール':'## Milestone Reverse Schedule')+'\n\n```mermaid\ngantt\n    title '+(G?'ゴール達成までのマイルストーン':'Milestones to Goal Achievement')+'\n    dateFormat YYYY-MM-DD\n    section '+(G?'Phase 1: 基盤構築':'Phase 1: Foundation')+'\n';
   flowSteps.slice(0,2).forEach((step,i)=>{
-    const start=i===0?'2026-03-01':'2026-03-15';
-    const end=i===0?'2026-03-14':'2026-03-31';
+    const start=i===0?formatDate(p1Start):formatDate(p1Mid);
+    const end=i===0?formatDate(addDays(p1Mid,-1)):formatDate(p1End);
     doc29+='    '+step.replace(/[:\-（）()]/g,' ')+' :'+start+', '+end+'\n';
   });
   doc29+='    section '+(G?'Phase 2: MVP実装':'Phase 2: MVP Implementation')+'\n';
   if(flowSteps.length>2){
     const step=flowSteps[2];
-    doc29+='    '+step.replace(/[:\-（）()]/g,' ')+' :2026-04-01, 2026-04-21\n';
+    doc29+='    '+step.replace(/[:\-（）()]/g,' ')+' :'+formatDate(p2Start)+', '+formatDate(p2End)+'\n';
   }
   doc29+='    section '+(G?'Phase 3: 最適化':'Phase 3: Optimization')+'\n';
   if(flowSteps.length>3){
     const step=flowSteps[3];
-    doc29+='    '+step.replace(/[:\-（）()]/g,' ')+' :2026-04-22, 2026-05-10\n';
+    doc29+='    '+step.replace(/[:\-（）()]/g,' ')+' :'+formatDate(p3Start)+', '+formatDate(p3End)+'\n';
   }
   doc29+='    section '+(G?'Phase 4: ローンチ':'Phase 4: Launch')+'\n';
-  doc29+='    '+(G?'最終テスト・デプロイ':'Final testing & deploy')+' :milestone, 2026-05-11, 0d\n';
+  doc29+='    '+(G?'最終テスト・デプロイ':'Final testing & deploy')+' :milestone, '+formatDate(p4End)+', 0d\n';
   doc29+='```\n\n';
-  // ── Risk & Blocker Analysis ──
+  // ── Risk & Blocker Analysis ── Use domain-specific prevent strategies
   doc29+=(G?'## リスク・ブロッカー分析':'## Risk & Blocker Analysis')+'\n\n';
   doc29+='| '+(G?'リスク項目':'Risk Item')+' | '+(G?'影響度':'Impact')+' | '+(G?'発生確率':'Probability')+' | '+(G?'対策':'Mitigation')+' |\n|------|------|------|------|\n';
   const risks=G?rf.risks_ja:rf.risks_en;
+  const playbook=DOMAIN_PLAYBOOK[domain]||DOMAIN_PLAYBOOK._default;
+  const preventList=playbook?(G?playbook.prevent_ja:playbook.prevent_en):[];
   risks.forEach((risk,i)=>{
     const impact=i===0?'High':(i===1?'Medium':'Low');
     const prob=i===0?'Medium':(i===1?'High':'Low');
-    const mitigation=G?(
-      i===0?'早期プロトタイプ検証':'定期レビュー会'
-    ):(
-      i===0?'Early prototype validation':'Regular review meetings'
-    );
+    let mitigation='';
+    if(preventList&&preventList.length>i){
+      const preventEntry=preventList[i];
+      const segments=preventEntry.split(/[:|]/);
+      if(segments.length>=3){
+        mitigation=segments[segments.length-1].trim();
+      }else{
+        mitigation=segments[segments.length-1].trim();
+      }
+    }
+    if(!mitigation||mitigation===''){
+      mitigation=G?(i===0?'早期プロトタイプ検証':'定期レビュー会'):(i===0?'Early prototype validation':'Regular review meetings');
+    }
     doc29+='| '+risk+' | '+impact+' | '+prob+' | '+mitigation+' |\n';
   });
   doc29+='\n';
@@ -5188,15 +5243,34 @@ function genPillar10_ReverseEngineering(a,pn){
   doc30+='- '+(G?'🟢 P1 (高Impact・低Effort): ':'🟢 P1 (High Impact, Low Effort): ')+(flowSteps[0]||'Core feature')+'\n';
   doc30+='- '+(G?'🟡 P2 (高Impact・高Effort または 中Impact): ':'🟡 P2 (High Impact & Effort or Med Impact): ')+(flowSteps[1]||'Secondary features')+'\n';
   doc30+='- '+(G?'⚪ P3 (低Impact): ':'⚪ P3 (Low Impact): ')+(G?'Nice-to-have機能':'Nice-to-have features')+'\n\n';
-  // ── Dependency Chain (Mermaid flowchart) ──
+  // ── Dependency Chain (Mermaid flowchart) ── Stack-aware based on resolveArch
+  const arch=resolveArch(a);
   doc30+=(G?'## 依存関係チェーン':'## Dependency Chain')+'\n\n```mermaid\nflowchart TD\n';
   const node1=G?'A[KPI定義]':'A[Define KPIs]';
   const node2=G?'B[機能設計]':'B[Design Features]';
-  const node3=G?'C[DB設計]':'C[Design DB]';
-  const node4=G?'D[API実装]':'D[Implement API]';
-  const node5=G?'E[UI実装]':'E[Implement UI]';
-  const node6=G?'F[テスト]':'F[Testing]';
-  const node7=G?'G[デプロイ]':'G[Deploy]';
+  let node3,node4,node5,node6,node7;
+  if(arch.isBaaS){
+    // BaaS: No traditional API layer, use schema + RLS/Rules
+    node3=G?'C[スキーマ設計]':'C[Design Schema]';
+    node4=G?'D[RLS/Rules実装]':'D[Implement RLS/Rules]';
+    node5=G?'E[UI実装]':'E[Implement UI]';
+    node6=G?'F[テスト]':'F[Testing]';
+    node7=G?'G[デプロイ]':'G[Deploy]';
+  }else if(arch.pattern==='bff'){
+    // BFF: API Routes within Next.js
+    node3=G?'C[DB設計]':'C[Design DB]';
+    node4=G?'D[API Routes実装]':'D[Implement API Routes]';
+    node5=G?'E[Pages実装]':'E[Implement Pages]';
+    node6=G?'F[テスト]':'F[Testing]';
+    node7=G?'G[デプロイ]':'G[Deploy]';
+  }else{
+    // Traditional: Separate FE/BE
+    node3=G?'C[DB設計]':'C[Design DB]';
+    node4=G?'D[API実装]':'D[Implement API]';
+    node5=G?'E[UI実装]':'E[Implement UI]';
+    node6=G?'F[テスト]':'F[Testing]';
+    node7=G?'G[デプロイ]':'G[Deploy]';
+  }
   doc30+='  '+node1+' --> '+node2+'\n';
   doc30+='  '+node2+' --> '+node3+'\n';
   doc30+='  '+node3+' --> '+node4+'\n';
@@ -8356,6 +8430,38 @@ function showAILauncher(){
       sys:'あなたはテクニカルライターです。開発ドキュメントの品質を高めます。',
       prompt:'以下の仕様書群を分析し、2パート構成で出力してください:\n\n**Part 1: ギャップ分析**\n既存ドキュメントと理想状態の差分を表形式で列挙\n\n**Part 2: 最重要ドキュメント生成**\nギャップ分析で最も優先度が高いドキュメント1つを全文生成してください。\n\n候補:\n- API仕様の詳細化(OpenAPI YAML)\n- シーケンス図(Mermaid)\n- デプロイ手順書(Step-by-step)\n- エラーハンドリング設計',
       fmt:'Part 1: Markdown表\nPart 2: 完全なドキュメント(Markdown)'},
+    debug:{icon:'🔧',label:'デバッグ支援',desc:'エラー原因分析と修正提案',
+      sys:'あなたは経験豊富なデバッグスペシャリストです。エラーログとスタックトレースから根本原因を特定します。',
+      prompt:'以下の手順でデバッグ分析を実行:\n1. docs/25_error_logs.mdの既存パターンと照合（再発or新規を判定）\n2. エラー/スタックトレースの根本原因を特定（5 Whys分析）\n3. docs/37_bug_prevention.mdのチェックリストから該当バグカテゴリを特定\n4. 修正コードと再発防止策を提案\n5. docs/25_error_logs.mdに追記するエントリをドラフト',
+      fmt:'## 診断結果\n| 項目 | 内容 |\n|------|------|\n| エラー種別 | ... |\n| 根本原因 | ... |\n| 影響範囲 | ... |\n\n## 修正コード\n```typescript:path/to/file.ts\n// fix\n```\n\n## error_logsエントリ\n- 症状/原因/解決策/防止策'},
+    arch:{icon:'📐',label:'アーキテクチャ整合性',desc:'設計と実装の乖離を検出',
+      sys:'あなたはソフトウェアアーキテクトです。仕様書のアーキテクチャと実装の整合性を検証します。',
+      prompt:'アーキテクチャ整合性チェック:\n1. docs/03_architecture.mdのレイヤー構造・パターン定義を確認\n2. .spec/technical-plan.mdの技術方針との一致を検証\n3. コードが定義済みレイヤー境界を違反していないか検査\n4. docs/26_design_system.mdのコンポーネント規約との整合性を確認\n5. 違反箇所に修正案とリファクタリング手順を提示',
+      fmt:'Markdown表:\n| # | 違反箇所 | 定義元 | 違反内容 | 深刻度 | 修正案 |\n|---|---------|--------|---------|--------|--------|\n\n## アーキテクチャ適合スコア: X/10'},
+    perf:{icon:'⚡',label:'パフォーマンス最適化',desc:'ボトルネック特定と改善提案',
+      sys:'あなたはパフォーマンスエンジニアです。非機能要件に基づきボトルネックを特定します。',
+      prompt:'パフォーマンス分析:\n1. .spec/constitution.mdの非機能要件（NFR）からパフォーマンス目標値を抽出\n2. Core Web Vitals目標（LCP<2.5s, FID<100ms, CLS<0.1）と比較\n3. N+1クエリ、不要な再レンダリング、バンドルサイズ問題を検出\n4. 各問題に改善前/改善後の推定値を付与\n5. 優先度順の改善ロードマップを作成',
+      fmt:'## ボトルネック一覧\n| # | 箇所 | 種別 | 現状推定 | 目標値 | 改善策 | 効果 |\n|---|------|------|---------|--------|--------|------|\n\n## 改善コード例\n```typescript:path/to/file.ts\n// optimized\n```'},
+    api:{icon:'🔌',label:'API統合コード生成',desc:'外部API連携コードの自動生成',
+      sys:'あなたはインテグレーションエンジニアです。型安全なAPI統合コードを生成します。',
+      prompt:'API統合コード生成:\n1. docs/05_api_design.mdのエンドポイント定義と認証方式を確認\n2. docs/04_er_diagram.mdのエンティティスキーマからリクエスト/レスポンス型を定義\n3. エラーハンドリング（リトライ・タイムアウト・レート制限）を含む統合コードを生成\n4. docs/08_security.mdのセキュリティ要件に準拠した実装にする\n5. 統合テストのスケルトンを作成',
+      fmt:'```typescript:lib/api/client.ts\n// API client with types\n```\n```typescript:lib/api/types.ts\n// Request/Response types\n```\n```typescript:tests/api/integration.test.ts\n// Integration tests\n```'},
+    a11y:{icon:'♿',label:'アクセシビリティ監査',desc:'WCAG 2.1準拠チェックと修正',
+      sys:'あなたはアクセシビリティ専門家です。WCAG 2.1 AA基準でUIを監査します。',
+      prompt:'アクセシビリティ監査:\n1. docs/26_design_system.mdのデザイントークン（色コントラスト・フォントサイズ）を確認\n2. docs/06_screen_design.mdの画面一覧から主要画面のUI要素を特定\n3. WCAG 2.1 AA 4原則（知覚可能・操作可能・理解可能・堅牢）で評価\n4. 各違反に具体的なHTML/ARIA修正コードを提示\n5. axe-coreによる自動テストコードを生成',
+      fmt:'## WCAG 2.1 AA 監査結果\n| # | 基準 | 画面 | 要素 | 状態 | 修正コード |\n|---|------|------|------|------|------------|\n\n## 自動テスト\n```typescript:tests/a11y.test.ts\n// axe-core tests\n```'},
+    migrate:{icon:'🔄',label:'マイグレーション支援',desc:'技術スタック移行計画の策定',
+      sys:'あなたはマイグレーションアーキテクトです。データ整合性を保ちながら段階的移行を計画します。',
+      prompt:'マイグレーション計画策定:\n1. .spec/technical-plan.mdから現行スタック構成を確認\n2. docs/04_er_diagram.mdからデータスキーマとリレーションを把握\n3. 移行先に合わせたスキーマ変換スクリプトとデータ検証クエリを生成\n4. ブルーグリーンまたはカナリアデプロイによるリスク最小化計画を作成\n5. ロールバック手順を各フェーズに明記',
+      fmt:'## マイグレーション計画\n| フェーズ | 作業内容 | 期間 | ロールバック | リスク |\n|---------|---------|------|------------|--------|\n\n## スキーマ変換\n```sql\n-- migration script\n```\n\n## データ検証\n```sql\n-- validation queries\n```'},
+    metrics:{icon:'📊',label:'コードメトリクス分析',desc:'複雑度・保守性の定量評価',
+      sys:'あなたはソフトウェアメトリクスアナリストです。コード品質を定量的に評価します。',
+      prompt:'コードメトリクス分析:\n1. 循環的複雑度（Cyclomatic Complexity）を関数単位で計測\n2. 認知的複雑度（Cognitive Complexity）で理解しにくい箇所を特定\n3. 結合度と凝集度を分析（依存関係の多いモジュールを検出）\n4. 重複コード率とDRY違反箇所を特定\n5. 改善ROI（効果/工数）の高い順に改善計画を提示',
+      fmt:'## メトリクスサマリー\n| メトリクス | 値 | 基準 | 判定 |\n|-----------|-----|------|------|\n| 平均循環的複雑度 | X | <10 | ✅/⚠️/❌ |\n\n## ホットスポット\n| ファイル | 関数 | 複雑度 | 改善案 | 工数 |\n|---------|------|--------|--------|------|'},
+    i18n:{icon:'🌍',label:'国際化実装',desc:'i18n対応コードの生成',
+      sys:'あなたは国際化エンジニアです。既存コードに最小限の変更でi18n対応を追加します。',
+      prompt:'国際化実装:\n1. コードからハードコードされた文字列を全て抽出\n2. 翻訳キーの命名規則を定義（scope.component.element形式）\n3. 翻訳ファイル（JSON）を日本語・英語で生成\n4. コードを翻訳関数（t()）呼び出しに置換\n5. 日付・数値・通貨のロケール対応フォーマッターを追加',
+      fmt:'## 抽出された文字列\n| キー | 日本語 | English |\n|------|--------|----------|\n\n```json:locales/ja.json\n{}\n```\n```json:locales/en.json\n{}\n```\n\n## 変換後コード\n```typescript:path/to/file.ts\n// i18n-ready code\n```'},
   }:{
     review:{icon:'🔍',label:'Spec Review',desc:'Find contradictions, gaps & improvements',
       sys:'You are an experienced tech lead and SDD architect.',
@@ -8381,6 +8487,38 @@ function showAILauncher(){
       sys:'You are a technical writer focused on development documentation quality.',
       prompt:'Analyze these specs and output in 2 parts:\n\n**Part 1: Gap Analysis**\nList gaps between existing docs and ideal state in table format\n\n**Part 2: Generate Critical Document**\nGenerate ONE highest-priority document from gap analysis in full.\n\nCandidates:\n- API spec details (OpenAPI YAML)\n- Sequence diagrams (Mermaid)\n- Deployment guide (step-by-step)\n- Error handling design',
       fmt:'Part 1: Markdown table\nPart 2: Complete document (Markdown)'},
+    debug:{icon:'🔧',label:'Debug Assistant',desc:'Root cause analysis & fix suggestions',
+      sys:'You are an experienced debugging specialist. You identify root causes from error logs and stack traces.',
+      prompt:'Debug analysis:\n1. Cross-reference docs/25_error_logs.md patterns (recurrence vs new issue)\n2. Identify root cause of the error/stack trace (5 Whys analysis)\n3. Match against bug categories in docs/37_bug_prevention.md checklist\n4. Propose fix code and prevention measures\n5. Draft an entry for docs/25_error_logs.md',
+      fmt:'## Diagnosis\n| Item | Detail |\n|------|--------|\n| Error Type | ... |\n| Root Cause | ... |\n| Impact Scope | ... |\n\n## Fix Code\n```typescript:path/to/file.ts\n// fix\n```\n\n## error_logs.md Entry\n- Symptom/Cause/Fix/Prevention'},
+    arch:{icon:'📐',label:'Architecture Compliance',desc:'Detect spec-implementation drift',
+      sys:'You are a software architect. You verify alignment between specs and implementation.',
+      prompt:'Architecture compliance check:\n1. Review layer structure and patterns in docs/03_architecture.md\n2. Verify alignment with .spec/technical-plan.md technical decisions\n3. Inspect code for layer boundary violations\n4. Check consistency with docs/26_design_system.md component conventions\n5. Propose fixes and refactoring steps for each violation',
+      fmt:'Markdown table:\n| # | Location | Source | Violation | Severity | Fix |\n|---|----------|--------|-----------|----------|-----|\n\n## Architecture Compliance Score: X/10'},
+    perf:{icon:'⚡',label:'Performance Optimization',desc:'Identify bottlenecks & suggest fixes',
+      sys:'You are a performance engineer. You identify bottlenecks against NFR targets and propose improvements.',
+      prompt:'Performance analysis:\n1. Extract performance targets from NFR section in .spec/constitution.md\n2. Compare against Core Web Vitals targets (LCP<2.5s, FID<100ms, CLS<0.1)\n3. Detect N+1 queries, unnecessary re-renders, bundle size issues\n4. Provide before/after estimates for each issue\n5. Create a prioritized improvement roadmap',
+      fmt:'## Bottleneck List\n| # | Location | Type | Current Est. | Target | Fix | Impact |\n|---|----------|------|-------------|--------|-----|--------|\n\n## Optimized Code\n```typescript:path/to/file.ts\n// optimized\n```'},
+    api:{icon:'🔌',label:'API Integration Generator',desc:'Generate type-safe API integration code',
+      sys:'You are an integration engineer. You generate type-safe API integration code.',
+      prompt:'Generate API integration code:\n1. Review endpoints and auth in docs/05_api_design.md\n2. Define request/response types from docs/04_er_diagram.md entity schemas\n3. Generate integration code with error handling (retry, timeout, rate limiting)\n4. Ensure compliance with docs/08_security.md security requirements\n5. Create integration test skeletons',
+      fmt:'```typescript:lib/api/client.ts\n// API client with types\n```\n```typescript:lib/api/types.ts\n// Request/Response types\n```\n```typescript:tests/api/integration.test.ts\n// Integration tests\n```'},
+    a11y:{icon:'♿',label:'Accessibility Audit',desc:'WCAG 2.1 compliance check & fixes',
+      sys:'You are an accessibility expert. You audit UI components against WCAG 2.1 AA.',
+      prompt:'Accessibility audit:\n1. Review design tokens (color contrast, font sizes) in docs/26_design_system.md\n2. Identify key UI elements from docs/06_screen_design.md screen list\n3. Evaluate against WCAG 2.1 AA 4 principles (Perceivable, Operable, Understandable, Robust)\n4. Provide specific HTML/ARIA fix code for each violation\n5. Generate axe-core automated tests',
+      fmt:'## WCAG 2.1 AA Audit Results\n| # | Criterion | Screen | Element | Status | Fix Code |\n|---|-----------|--------|---------|--------|----------|\n\n## Automated Tests\n```typescript:tests/a11y.test.ts\n// axe-core tests\n```'},
+    migrate:{icon:'🔄',label:'Migration Assistant',desc:'Tech stack migration planning',
+      sys:'You are a migration architect. You plan phased migrations while guaranteeing data integrity.',
+      prompt:'Create migration plan:\n1. Review current stack from .spec/technical-plan.md\n2. Understand data schemas and relationships from docs/04_er_diagram.md\n3. Generate schema conversion scripts and data validation queries\n4. Create risk-minimized deployment plan (blue-green or canary)\n5. Document rollback steps for each phase',
+      fmt:'## Migration Plan\n| Phase | Tasks | Duration | Rollback | Risk |\n|-------|-------|----------|----------|------|\n\n## Schema Conversion\n```sql\n-- migration script\n```\n\n## Data Validation\n```sql\n-- validation queries\n```'},
+    metrics:{icon:'📊',label:'Code Metrics Analysis',desc:'Quantitative quality evaluation',
+      sys:'You are a software metrics analyst. You quantitatively evaluate code quality.',
+      prompt:'Code metrics analysis:\n1. Measure Cyclomatic Complexity per function\n2. Evaluate Cognitive Complexity and identify hard-to-understand sections\n3. Analyze coupling and cohesion (detect high-dependency modules)\n4. Identify code duplication and DRY violations\n5. Present improvement plan ordered by ROI (impact/effort)',
+      fmt:'## Metrics Summary\n| Metric | Value | Threshold | Status |\n|--------|-------|-----------|--------|\n| Avg Cyclomatic Complexity | X | <10 | ✅/⚠️/❌ |\n\n## Hotspots (Priority Order)\n| File | Function | Complexity | Improvement | Effort |\n|------|----------|------------|-------------|--------|'},
+    i18n:{icon:'🌍',label:'i18n Generator',desc:'Add internationalization to existing code',
+      sys:'You are an internationalization engineer. You add i18n support with minimal changes.',
+      prompt:'Implement internationalization:\n1. Extract all hardcoded strings from the code\n2. Define translation key naming convention (scope.component.element)\n3. Generate translation files (JSON) for Japanese and English\n4. Replace strings with translation function (t()) calls\n5. Add locale-aware formatters for dates, numbers, currencies',
+      fmt:'## Extracted Strings\n| Key | Japanese | English |\n|-----|----------|----------|\n\n```json:locales/ja.json\n{}\n```\n```json:locales/en.json\n{}\n```\n\n## Converted Code\n```typescript:path/to/file.ts\n// i18n-ready code\n```'},
     qa:{icon:'🐛',label:_ja?'QA・バグ検出':'QA & Bug Detection',desc:_ja?'ドメイン別バグパターンとQA戦略を基にテスト計画を生成':'Generate test plan based on domain-specific bug patterns and QA strategy',
       sys:_ja?'あなたはQAエンジニアです。docs/28_qa_strategy.mdのドメイン別バグパターンを参照し、具体的なテストシナリオを設計してください。':'You are a QA engineer. Reference docs/28_qa_strategy.md domain-specific bug patterns to design concrete test scenarios.',
       prompt:_ja?'以下の手順で実行:\n1. docs/28_qa_strategy.mdの重点領域を確認\n2. 各重点領域に対し具体的テストケースを3つ以上作成\n3. よくあるバグパターンに対する回帰テストを設計\n4. 業界横断チェックリストの該当項目を検証\n5. 優先度マトリクスに基づきテスト実行順序を決定':'Follow these steps:\n1. Review focus areas from docs/28_qa_strategy.md\n2. Create 3+ concrete test cases per focus area\n3. Design regression tests for common bug patterns\n4. Verify applicable cross-cutting checklist items\n5. Determine test execution order based on priority matrix',
@@ -9067,7 +9205,7 @@ function showManual(sec){
       '<h3>⑦ ロードマップ (9ファイル+UI)</h3>'+
       '<p>LEARNING_PATH / TECH_STACK_GUIDE / MOBILE_GUIDE / TOOLS_SETUP / RESOURCES / MILESTONES / AI_WORKFLOW / AI_AUTONOMOUS / SAAS_COMMERCE_GUIDE — インタラクティブUIで進捗管理可能。</p>'+
       '<h3>⑧ AIプロンプトランチャー (UI)</h3>'+
-      '<p>生成した仕様書をAIツールに一括投入。6つのプロンプトテンプレート（レビュー・実装・テスト・リファクタ・セキュリティ・ドキュメント）。フォルダ別トークン推定・モデル適合度表示。</p>'+
+      '<p>生成した仕様書をAIツールに一括投入。15のプロンプトテンプレート（レビュー・実装・テスト・リファクタ・セキュリティ・ドキュメント・QA・デバッグ・アーキテクチャ・パフォーマンス・API統合・アクセシビリティ・マイグレーション・メトリクス・i18n）。フォルダ別トークン推定・モデル適合度表示。</p>'+
       '<h3>⑨ デザインシステム (2ファイル)</h3>'+
       '<p>design_system.md (デザイントークン・色・タイポ・コンポーネントカタログ) / sequence_diagrams.md (認証・CRUD・決済フローのMermaidシーケンス図) — フレームワーク別実装ガイド。</p>'+
       '<h3>⑩ リバースエンジニアリング (2ファイル)</h3>'+
@@ -9090,7 +9228,7 @@ function showManual(sec){
       '<h3>⑦ Roadmap (9 files + UI)</h3>'+
       '<p>LEARNING_PATH / TECH_STACK_GUIDE / MOBILE_GUIDE / TOOLS_SETUP / RESOURCES / MILESTONES / AI_WORKFLOW / AI_AUTONOMOUS / SAAS_COMMERCE_GUIDE — Interactive UI for progress tracking.</p>'+
       '<h3>⑧ AI Prompt Launcher (UI)</h3>'+
-      '<p>Bulk-feed generated specs to AI tools. 6 prompt templates (Review, Implement, Test, Refactor, Security, Docs). Per-folder token estimation and model fit display.</p>'+
+      '<p>Bulk-feed generated specs to AI tools. 15 prompt templates (Review, Implement, Test, Refactor, Security, Docs, QA, Debug, Architecture, Performance, API, Accessibility, Migration, Metrics, i18n). Per-folder token estimation and model fit display.</p>'+
       '<h3>⑨ Design System (2 files)</h3>'+
       '<p>design_system.md (design tokens, colors, typography, component catalog) / sequence_diagrams.md (auth, CRUD, payment Mermaid sequence diagrams) — Framework-specific guides.</p>'+
       '<h3>⑩ Reverse Engineering (2 files)</h3>'+
@@ -9119,7 +9257,7 @@ function showManual(sec){
       '<h3>⚡ Professional — 自動化を支配する</h3>'+
       '<p><strong>Agent Teams並列開発:</strong> AGENTS.mdでエージェント役割を定義 → Claude Code Subagents / Antigravity Manager View で並列実行。tasks.mdがタスクキューとして機能。</p>'+
       '<p><strong>CI/CDゲート化:</strong> .ai/hooks.yml → GitHub Actions変換。docs/09_release_checklist.mdをデプロイゲートに。verification.mdを品質基準に。</p>'+
-      '<p><strong>6工程自動パイプライン:</strong> 柱⑧の6テンプレートを順番実行 → 📋仕様レビュー → 🔨実装 → 🧪テスト → ♻️リファクタ → 🔒セキュリティ → 📝ドキュメント更新。仕様書が全工程の入力。</p>'+
+      '<p><strong>開発パイプライン:</strong> 柱⑧の15テンプレートを活用 → 📋仕様レビュー → 🔨実装 → 🧪テスト → ♻️リファクタ → 🔒セキュリティ → 📝ドキュメント更新。+ 🔧デバッグ・📐アーキテクチャ・⚡パフォーマンス等の専門テンプレートも利用可能。仕様書が全工程の入力。</p>'+
       '<h3>⚔️ 他ツールとの比較</h3>'+
       '<table><tr><th>機能</th><th>DevForge v9</th><th>create-next-app</th><th>AI直接依頼</th></tr>'+
       '<tr><td>SDD仕様書5点</td><td>✅ 自動</td><td>✗</td><td>△ 手動</td></tr>'+
@@ -9160,7 +9298,7 @@ function showManual(sec){
       '<h3>⚡ Professional — Master Automation</h3>'+
       '<p><strong>Agent Teams:</strong> AGENTS.md defines agent roles → Run with Claude Code Subagents / Antigravity Manager View. tasks.md serves as task queue.</p>'+
       '<p><strong>CI/CD Gates:</strong> .ai/hooks.yml → GitHub Actions. docs/09_release_checklist.md as deploy gate. verification.md as quality baseline.</p>'+
-      '<p><strong>6-Stage Pipeline:</strong> Pillar ⑧ templates in sequence → 📋Review → 🔨Implement → 🧪Test → ♻️Refactor → 🔒Security → 📝Docs update.</p>'+
+      '<p><strong>Dev Pipeline:</strong> 15 templates in Pillar ⑧ → 📋Review → 🔨Implement → 🧪Test → ♻️Refactor → 🔒Security → 📝Docs. Plus 🔧Debug, 📐Architecture, ⚡Performance and more specialized templates.</p>'+
       '<h3>⚔️ Comparison with Other Tools</h3>'+
       '<table><tr><th>Feature</th><th>DevForge v9</th><th>create-next-app</th><th>AI Direct</th></tr>'+
       '<tr><td>SDD 5 Spec Docs</td><td>✅ Auto</td><td>✗</td><td>△ Manual</td></tr>'+
@@ -9346,7 +9484,7 @@ function _getTourSteps(){
   {title:_ja?'📦 86+ファイル生成':'📦 86+ File Generation',desc:_ja?'全質問回答後、11の柱で86+ファイルが自動生成されます。':'After all questions, 86+ files auto-generate across 11 pillars.'},
   {title:_ja?'⚡ 並列探索':'⚡ Parallel Explorer',desc:_ja?'Pillar ⑤ で7スタックを比較。回答に基づくおすすめランキング付き。':'Compare 7 stacks in Pillar ⑤ with recommendation ranking based on your answers.'},
   {title:'📊 Dashboard',desc:_ja?'Pillar ⑥ でコンテキスト可視化＋'+_TECH_COUNT+'技術DBを閲覧。':'Visualize context + browse '+_TECH_COUNT+' tech DB in Pillar ⑥.'},
-  {title:_ja?'🤖 AIランチャー':'🤖 AI Launcher',desc:_ja?'Pillar ⑧ で仕様書をAIツールにワンクリック投入。6テンプレート＋トークン推定。':'Feed specs to AI tools in one click from Pillar ⑧. 6 templates + token estimation.'},
+  {title:_ja?'🤖 AIランチャー':'🤖 AI Launcher',desc:_ja?'Pillar ⑧ で仕様書をAIツールにワンクリック投入。15テンプレート＋トークン推定。':'Feed specs to AI tools in one click from Pillar ⑧. 15 templates + token estimation.'},
   {title:_ja?'💾 データ保存の注意':'💾 Save Your Work',desc:_ja?'全データはブラウザのlocalStorageに保存されます。閲覧履歴の消去やブラウザ変更でデータが消失します。作業後は必ず📤 JSONエクスポートと📦 ZIPダウンロードで保存してください。':'All data is stored in browser localStorage. Clearing browser data or switching browsers will erase everything. Always export JSON 📤 and download ZIP 📦 after work.'},
   {title:_ja?'⚠️ 注意事項を確認':'⚠️ Read Cautions',desc:_ja?'ヘルプ（F1）の「⚠️ 注意事項」タブにスキルレベル設定・言語切替・ストレージ上限などの重要な注意点をまとめています。':'Check the "⚠️ Cautions" tab in Help (F1) for important notes on skill level, language switching, storage limits, and more.'},
   ];

@@ -280,39 +280,63 @@ function genPillar10_ReverseEngineering(a,pn){
     });
   }
 
-  // ── Milestone Schedule (Mermaid Gantt) ──
+  // ── Milestone Schedule (Mermaid Gantt) ── Dynamic dates from today
+  const today=new Date();
+  const formatDate=(d)=>{const y=d.getFullYear();const m=String(d.getMonth()+1).padStart(2,'0');const day=String(d.getDate()).padStart(2,'0');return y+'-'+m+'-'+day;};
+  const addDays=(d,days)=>{const r=new Date(d);r.setDate(r.getDate()+days);return r;};
+
+  const p1Start=addDays(today,7);
+  const p1Mid=addDays(today,14);
+  const p1End=addDays(today,21);
+  const p2Start=addDays(today,21);
+  const p2End=addDays(today,35);
+  const p3Start=addDays(today,35);
+  const p3End=addDays(today,56);
+  const p4Start=addDays(today,56);
+  const p4End=addDays(today,70);
+
   doc29+=(G?'## マイルストーン逆算スケジュール':'## Milestone Reverse Schedule')+'\n\n```mermaid\ngantt\n    title '+(G?'ゴール達成までのマイルストーン':'Milestones to Goal Achievement')+'\n    dateFormat YYYY-MM-DD\n    section '+(G?'Phase 1: 基盤構築':'Phase 1: Foundation')+'\n';
   flowSteps.slice(0,2).forEach((step,i)=>{
-    const start=i===0?'2026-03-01':'2026-03-15';
-    const end=i===0?'2026-03-14':'2026-03-31';
+    const start=i===0?formatDate(p1Start):formatDate(p1Mid);
+    const end=i===0?formatDate(addDays(p1Mid,-1)):formatDate(p1End);
     doc29+='    '+step.replace(/[:\-（）()]/g,' ')+' :'+start+', '+end+'\n';
   });
   doc29+='    section '+(G?'Phase 2: MVP実装':'Phase 2: MVP Implementation')+'\n';
   if(flowSteps.length>2){
     const step=flowSteps[2];
-    doc29+='    '+step.replace(/[:\-（）()]/g,' ')+' :2026-04-01, 2026-04-21\n';
+    doc29+='    '+step.replace(/[:\-（）()]/g,' ')+' :'+formatDate(p2Start)+', '+formatDate(p2End)+'\n';
   }
   doc29+='    section '+(G?'Phase 3: 最適化':'Phase 3: Optimization')+'\n';
   if(flowSteps.length>3){
     const step=flowSteps[3];
-    doc29+='    '+step.replace(/[:\-（）()]/g,' ')+' :2026-04-22, 2026-05-10\n';
+    doc29+='    '+step.replace(/[:\-（）()]/g,' ')+' :'+formatDate(p3Start)+', '+formatDate(p3End)+'\n';
   }
   doc29+='    section '+(G?'Phase 4: ローンチ':'Phase 4: Launch')+'\n';
-  doc29+='    '+(G?'最終テスト・デプロイ':'Final testing & deploy')+' :milestone, 2026-05-11, 0d\n';
+  doc29+='    '+(G?'最終テスト・デプロイ':'Final testing & deploy')+' :milestone, '+formatDate(p4End)+', 0d\n';
   doc29+='```\n\n';
 
-  // ── Risk & Blocker Analysis ──
+  // ── Risk & Blocker Analysis ── Use domain-specific prevent strategies
   doc29+=(G?'## リスク・ブロッカー分析':'## Risk & Blocker Analysis')+'\n\n';
   doc29+='| '+(G?'リスク項目':'Risk Item')+' | '+(G?'影響度':'Impact')+' | '+(G?'発生確率':'Probability')+' | '+(G?'対策':'Mitigation')+' |\n|------|------|------|------|\n';
   const risks=G?rf.risks_ja:rf.risks_en;
+  const playbook=DOMAIN_PLAYBOOK[domain]||DOMAIN_PLAYBOOK._default;
+  const preventList=playbook?(G?playbook.prevent_ja:playbook.prevent_en):[];
   risks.forEach((risk,i)=>{
     const impact=i===0?'High':(i===1?'Medium':'Low');
     const prob=i===0?'Medium':(i===1?'High':'Low');
-    const mitigation=G?(
-      i===0?'早期プロトタイプ検証':'定期レビュー会'
-    ):(
-      i===0?'Early prototype validation':'Regular review meetings'
-    );
+    let mitigation='';
+    if(preventList&&preventList.length>i){
+      const preventEntry=preventList[i];
+      const segments=preventEntry.split(/[:|]/);
+      if(segments.length>=3){
+        mitigation=segments[segments.length-1].trim();
+      }else{
+        mitigation=segments[segments.length-1].trim();
+      }
+    }
+    if(!mitigation||mitigation===''){
+      mitigation=G?(i===0?'早期プロトタイプ検証':'定期レビュー会'):(i===0?'Early prototype validation':'Regular review meetings');
+    }
     doc29+='| '+risk+' | '+impact+' | '+prob+' | '+mitigation+' |\n';
   });
   doc29+='\n';
@@ -404,15 +428,34 @@ function genPillar10_ReverseEngineering(a,pn){
   doc30+='- '+(G?'🟡 P2 (高Impact・高Effort または 中Impact): ':'🟡 P2 (High Impact & Effort or Med Impact): ')+(flowSteps[1]||'Secondary features')+'\n';
   doc30+='- '+(G?'⚪ P3 (低Impact): ':'⚪ P3 (Low Impact): ')+(G?'Nice-to-have機能':'Nice-to-have features')+'\n\n';
 
-  // ── Dependency Chain (Mermaid flowchart) ──
+  // ── Dependency Chain (Mermaid flowchart) ── Stack-aware based on resolveArch
+  const arch=resolveArch(a);
   doc30+=(G?'## 依存関係チェーン':'## Dependency Chain')+'\n\n```mermaid\nflowchart TD\n';
   const node1=G?'A[KPI定義]':'A[Define KPIs]';
   const node2=G?'B[機能設計]':'B[Design Features]';
-  const node3=G?'C[DB設計]':'C[Design DB]';
-  const node4=G?'D[API実装]':'D[Implement API]';
-  const node5=G?'E[UI実装]':'E[Implement UI]';
-  const node6=G?'F[テスト]':'F[Testing]';
-  const node7=G?'G[デプロイ]':'G[Deploy]';
+  let node3,node4,node5,node6,node7;
+  if(arch.isBaaS){
+    // BaaS: No traditional API layer, use schema + RLS/Rules
+    node3=G?'C[スキーマ設計]':'C[Design Schema]';
+    node4=G?'D[RLS/Rules実装]':'D[Implement RLS/Rules]';
+    node5=G?'E[UI実装]':'E[Implement UI]';
+    node6=G?'F[テスト]':'F[Testing]';
+    node7=G?'G[デプロイ]':'G[Deploy]';
+  }else if(arch.pattern==='bff'){
+    // BFF: API Routes within Next.js
+    node3=G?'C[DB設計]':'C[Design DB]';
+    node4=G?'D[API Routes実装]':'D[Implement API Routes]';
+    node5=G?'E[Pages実装]':'E[Implement Pages]';
+    node6=G?'F[テスト]':'F[Testing]';
+    node7=G?'G[デプロイ]':'G[Deploy]';
+  }else{
+    // Traditional: Separate FE/BE
+    node3=G?'C[DB設計]':'C[Design DB]';
+    node4=G?'D[API実装]':'D[Implement API]';
+    node5=G?'E[UI実装]':'E[Implement UI]';
+    node6=G?'F[テスト]':'F[Testing]';
+    node7=G?'G[デプロイ]':'G[Deploy]';
+  }
   doc30+='  '+node1+' --> '+node2+'\n';
   doc30+='  '+node2+' --> '+node3+'\n';
   doc30+='  '+node3+' --> '+node4+'\n';
