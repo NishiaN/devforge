@@ -1,7 +1,7 @@
-# DevForge v9.0 — 39-module web app → builds to single HTML (~484KB)
+# DevForge v9.0 — 43-module web app → builds to single HTML (~903KB / 1000KB limit)
 
 ## Build: `node build.js` (produces devforge-v9.html)
-## Test: `npm test` (127 tests + 248 assertions)
+## Test: `npm test` (197 tests, all passing)
 ## Verify: `npm run check`
 
 ## Rules
@@ -17,10 +17,16 @@
 10. After edits: `npm test && node build.js`
 
 ## Key Files
-- src/generators/common.js — ENTITY_COLUMNS, ENTITY_METHODS, FEATURE_DETAILS, detectDomain()
+- src/generators/common.js — ENTITY_COLUMNS (145+), ENTITY_METHODS, FEATURE_DETAILS (31), detectDomain() (24 domains)
 - src/generators/p1-sdd.js — Specification/constitution/technical-plan/tasks/verification
-- src/generators/docs.js — API design, screen design, test cases, tasks (23), prompt playbook
-- src/generators/p4-airules.js — CLAUDE.md, AI_BRIEF.md, .cursorrules generation
-- src/data/presets.js — 26 project presets
-- src/data/compat-rules.js — 35 compatibility validation rules
-- test/ — 127 tests (run `npm test` before committing)
+- src/generators/p2-devcontainer.js — DevContainer, Dockerfile, docker-compose, post-create
+- src/generators/p3-mcp.js — MCP servers (backend/domain-specific)
+- src/generators/p4-airules.js — CLAUDE.md, AI_BRIEF.md, .cursorrules, AGENTS.md, skills/
+- src/generators/p5-quality.js — QA blueprint, test matrix, incident response
+- src/generators/p10-reverse.js — Reverse engineering, goal decomposition, REVERSE_FLOW_MAP
+- src/generators/p11-implguide.js — Implementation playbook, AI dev runbook
+- src/data/presets.js — 41 project presets (LMS, EC, SaaS, CRM, etc.)
+- src/data/compat-rules.js — 45 compatibility validation rules
+- test/ — 197 tests (run `npm test` before committing)
+
+## For comprehensive guidance, see CLAUDE.md (1000+ lines, includes bug patterns, security best practices, size budget management)
