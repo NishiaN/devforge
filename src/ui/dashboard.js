@@ -1,5 +1,6 @@
 /* ── Pillar ⑥ Context Dashboard (Enhanced) ── */
 function showDashboard(){
+  pushView({pillar:5,type:'dashboard',file:null});
   const body=$('prevBody');
   const _ja=S.lang==='ja';
   const a=S.answers;
@@ -206,7 +207,7 @@ function showDashboard(){
         const exists=!!S.files[f.p];
         const ind='fdep-ind-'+f.d;
         h+=`<div class="fdep-item ${ind} ${exists?'fdep-exists':'fdep-missing'}">`;
-        if(exists)h+=`<a href="#" onclick="event.preventDefault();openPreview('${f.p}')">● ${f.l}</a>`;
+        if(exists)h+=`<a href="#" onclick="event.preventDefault();previewFile('${f.p}')">● ${f.l}</a>`;
         else h+=`<span>○ ${f.l}</span>`;
         h+=`</div>`;
       });
@@ -309,6 +310,7 @@ function getHealthHTML(_ja,fileCount,answered){
 
 /* ── Tech Master Table ── */
 function renderTechDB(){
+  pushView({pillar:5,type:'techdb',file:null});
   const body=$('prevBody');
   const _ja=S.lang==='ja';const cats=_ja?{lang:'言語',front:'フロント',mobile:'モバイル',back:'バックエンド',baas:'BaaS',payment:'決済/CMS/EC',devops:'DevOps',ai:'AIツール',ai_auto:'AI自律',method:'手法',test:'テスト',api:'API',build:'ビルド',data:'データ',security:'セキュリティ'}:{lang:'Language',front:'Frontend',mobile:'Mobile',back:'Backend',baas:'BaaS',payment:'Payment/CMS/EC',devops:'DevOps',ai:'AI Tools',ai_auto:'AI Autonomous',method:'Methods',test:'Testing',api:'API',build:'Build',data:'Data',security:'Security'};
   
@@ -352,6 +354,7 @@ function toggleFdep(id){
 
 /* ── Interactive Roadmap UI (Enhanced) ── */
 function showRoadmapUI(){
+  pushView({pillar:6,type:'roadmap',file:null});
   const _ja=S.lang==='ja';
   const body=$('prevBody');
   if(!S.files['roadmap/LEARNING_PATH.md']){

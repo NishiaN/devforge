@@ -46,6 +46,8 @@ document.addEventListener('keydown',e=>{
   if(e.ctrlKey&&k==='l'){e.preventDefault();toggleLang();}
   if(e.ctrlKey&&k==='e'){e.preventDefault();exportZIP();}
   if(e.ctrlKey&&e.shiftKey&&k==='c'){e.preventDefault();copyAllFiles();}
+  if(e.altKey&&k==='arrowleft'){e.preventDefault();viewBack();}
+  if(e.altKey&&k==='arrowright'){e.preventDefault();viewForward();}
   if(e.ctrlKey&&k==='m'){e.preventDefault();showPM();}
   if(e.key==='Escape'){
     if(!popModal()){

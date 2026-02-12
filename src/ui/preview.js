@@ -1,4 +1,11 @@
 /* ═══ PREVIEW SYSTEM ═══ */
+let _prevHistory=[];
+let _prevHistIdx=-1;
+let _prevNavFlag=false;
+let _viewHistory=[];
+let _viewHistIdx=-1;
+let _viewNavFlag=false;
+
 function safeMD(raw){
   if(window._noMarked||typeof marked==='undefined')return '<pre>'+esc(raw)+'</pre>';
   return marked.parse(raw);
@@ -9,7 +16,10 @@ function diffBtn(path){
 function prevToolbar(path,showRaw){
   const _ja=S.lang==='ja';
   const rawBtn=showRaw?`<button class="btn btn-xs btn-s" onclick="toggleMdRaw('${path}')">📝 Raw</button>`:'';
-  return `<div class="prev-toolbar"><span class="prev-path">📄 ${path}</span><div class="prev-toolbar-r">${rawBtn}<button class="btn btn-xs btn-s" onclick="openEditor('${path}')">✏️ ${_ja?'編集':'Edit'}</button>${diffBtn(path)}<button class="btn btn-xs btn-s" onclick="copyFileContent('${path}')">📋 ${_ja?'コピー':'Copy'}</button></div></div>`;
+  const canBack=_prevHistIdx>0;
+  const canFwd=_prevHistIdx<_prevHistory.length-1;
+  const navBtns=`<button class="btn btn-xs btn-s prev-nav-btn${canBack?'':' disabled'}" onclick="prevBack()" title="${_ja?'戻る':'Back'}">◀</button><button class="btn btn-xs btn-s prev-nav-btn${canFwd?'':' disabled'}" onclick="prevForward()" title="${_ja?'進む':'Forward'}">▶</button>`;
+  return `<div class="prev-toolbar">${navBtns}<span class="prev-path">📄 ${path}</span><div class="prev-toolbar-r">${rawBtn}<button class="btn btn-xs btn-s" onclick="openEditor('${path}')">✏️ ${_ja?'編集':'Edit'}</button>${diffBtn(path)}<button class="btn btn-xs btn-s" onclick="copyFileContent('${path}')">📋 ${_ja?'コピー':'Copy'}</button><button class="btn btn-xs btn-s" onclick="printCurrentFile()">🖨️ ${_ja?'印刷':'Print'}</button></div></div>`;
 }
 function initPrevTabs(){
   const _ja=S.lang==='ja';
@@ -62,6 +72,7 @@ function showFileTree(){
   if(pillar===5){showDashboard();return;}
   if(pillar===6&&Object.keys(S.files).length>0){showRoadmapUI();return;}
   if(pillar===7){showAILauncher();return;}
+  pushView({pillar:pillar,type:'tree',file:null});
   // pillar===8: Design System - show file tree (no special UI)
 
   const tree=buildFileTree();
@@ -166,6 +177,15 @@ function buildFileTree(){
 function previewFile(path){
   const _ja=S.lang==='ja';
   if(!path||path==='')return;
+  if(!_prevNavFlag){
+    if(_prevHistIdx<_prevHistory.length-1){
+      _prevHistory=_prevHistory.slice(0,_prevHistIdx+1);
+    }
+    _prevHistory.push(path);
+    _prevHistIdx=_prevHistory.length-1;
+  }
+  _prevNavFlag=false;
+  pushView({pillar:S.pillar,type:'preview',file:path});
   S.previewFile=path;save();
   document.querySelectorAll('.file-tree li').forEach(li=>{
     li.classList.toggle('active',li.getAttribute('data-path')===path);
@@ -220,6 +240,39 @@ function copyFileContent(path){
 
 function _fallbackCopy(text){const ta=document.createElement('textarea');ta.value=text;ta.style.cssText='position:fixed;left:-9999px;';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');}catch(e){}ta.remove();}
 
+function prevBack(){
+  if(_prevHistIdx>0){
+    _prevHistIdx--;
+    _prevNavFlag=true;
+    previewFile(_prevHistory[_prevHistIdx]);
+  }
+}
+
+function prevForward(){
+  if(_prevHistIdx<_prevHistory.length-1){
+    _prevHistIdx++;
+    _prevNavFlag=true;
+    previewFile(_prevHistory[_prevHistIdx]);
+  }
+}
+
+function printCurrentFile(){
+  const path=S.previewFile;
+  if(!path||!S.files[path])return;
+  const raw=S.files[path];
+  const G=S.genLang==='ja';
+  const content=path.endsWith('.md')?safeMD(raw):'<pre>'+escHtml(raw)+'</pre>';
+  const css='body{font-family:-apple-system,sans-serif;padding:40px;max-width:800px;margin:0 auto;color:#1e222d;}'+'pre{background:#f5f5f5;padding:16px;border-radius:8px;overflow-x:auto;}'+'table{width:100%;border-collapse:collapse;}th,td{border:1px solid #ddd;padding:8px;text-align:left;}th{background:#f0f0f0;}';
+  const html='<!DOCTYPE html><html><head><title>'+path+'</title><style>'+css+'</style></head><body>'+'<h1 style="border-bottom:2px solid #3b82f6;padding-bottom:8px;">'+path+'</h1>'+content+'</body></html>';
+  const win=window.open('','_blank');
+  if(win){win.document.write(html);win.document.close();}
+  else{
+    const blob=new Blob([html],{type:'text/html'});
+    const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+    a.download=fileSlug(S.projectName)+'-'+path.replace(/\//g,'_');a.click();
+  }
+}
+
 function showFilePreview(){
   const _ja=S.lang==='ja';
   if(S.previewFile&&S.files[S.previewFile]){
@@ -230,6 +283,57 @@ function showFilePreview(){
 }
 
 function escHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+function _viewEq(a,b){return a&&b&&a.pillar===b.pillar&&a.type===b.type&&a.file===b.file;}
+
+function pushView(vs){
+  if(_viewNavFlag)return;
+  if(_viewHistIdx>=0&&_viewEq(_viewHistory[_viewHistIdx],vs))return;
+  if(_viewHistIdx<_viewHistory.length-1)_viewHistory=_viewHistory.slice(0,_viewHistIdx+1);
+  _viewHistory.push(vs);
+  if(_viewHistory.length>50){_viewHistory=_viewHistory.slice(-50);}
+  _viewHistIdx=_viewHistory.length-1;
+  updViewNav();
+}
+
+function _restoreView(vs){
+  _viewNavFlag=true;
+  S.pillar=vs.pillar;
+  document.querySelectorAll('.piltab').forEach((t,i)=>{
+    t.classList.toggle('on',i===vs.pillar);
+    t.setAttribute('aria-selected',String(i===vs.pillar));
+  });
+  switch(vs.type){
+    case 'tree':showFileTree();break;
+    case 'preview':if(vs.file){_prevNavFlag=true;previewFile(vs.file);}break;
+    case 'explorer':showExplorer();break;
+    case 'dashboard':showDashboard();break;
+    case 'techdb':renderTechDB();break;
+    case 'roadmap':showRoadmapUI();break;
+    case 'launcher':showAILauncher();break;
+    default:showFileTree();
+  }
+  _viewNavFlag=false;
+  updViewNav();
+}
+
+function viewBack(){
+  if(_viewHistIdx>0){_viewHistIdx--;_restoreView(_viewHistory[_viewHistIdx]);}
+}
+
+function viewForward(){
+  if(_viewHistIdx<_viewHistory.length-1){_viewHistIdx++;_restoreView(_viewHistory[_viewHistIdx]);}
+}
+
+function updViewNav(){
+  const bb=$('viewBackBtn'),fb=$('viewFwdBtn');
+  if(!bb||!fb)return;
+  const _ja=S.lang==='ja';
+  bb.classList.toggle('disabled',_viewHistIdx<=0);
+  fb.classList.toggle('disabled',_viewHistIdx>=_viewHistory.length-1);
+  bb.title=_ja?'前の画面':'Previous Screen';
+  fb.title=_ja?'次の画面':'Next Screen';
+}
 
 function filterFileTree(q){
   const list=$('ftList');if(!list)return;

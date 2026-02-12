@@ -1,5 +1,6 @@
 /* ── Pillar ⑤ Parallel Explorer (Enhanced with Recommendation) ── */
 function showExplorer(){
+  pushView({pillar:4,type:'explorer',file:null});
   const body=$('prevBody');const _ja=S.lang==='ja';
   const stacks={
     'Next.js + Supabase':{fe:'React + Next.js',be:'Supabase',db:'PostgreSQL',deploy:'Vercel',cost:'$0–$25',speed:5,scale:3,learn:4,eco:5,best:_ja?'MVP・SaaS':'MVP / SaaS',tags:['saas','mvp','stripe','auth']},
