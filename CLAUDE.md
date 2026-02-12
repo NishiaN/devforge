@@ -7,19 +7,19 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 # DevForge v9.0
 
 ## Architecture
-- **42 modules** in `src/` → `node build.js` → single `devforge-v9.html` (~686KB)
+- **42 modules** in `src/` → `node build.js` → single `devforge-v9.html` (~632KB)
 - Vanilla JS, no frameworks. CSS custom properties. CDN: marked.js, mermaid.js, JSZip.
 
 ## Build & Test
 ```bash
 # Build
-node build.js              # Produces devforge-v9.html (~639KB)
+node build.js              # Produces devforge-v9.html (~632KB)
 node build.js --no-minify  # Skip minification (debug)
 node build.js --report     # Show size report
 node build.js --check-css  # Validate CSS custom properties
 
 # Test
-npm test                   # Run all tests (178 tests, 49+ passing)
+npm test                   # Run all tests (193 tests, all passing)
 npm run test:watch         # Watch mode for test development
 node --test test/gen-coherence.test.js  # Run single test file
 node --test test/data-coverage.test.js  # Run data integrity tests
@@ -43,7 +43,7 @@ npm run check              # Syntax check extracted JS
 5. **Write** to `devforge-v9.html`
 6. **Validate** size ≤1000KB (warn if exceeded)
 
-**Current Status:** 686KB / 1000KB limit (~314KB remaining budget for future expansions)
+**Current Status:** 632KB / 1000KB limit (~368KB remaining budget for future expansions)
 
 ### Module Load Order (Critical!)
 ```javascript
@@ -71,7 +71,7 @@ npm run check              # Syntax check extracted JS
 |----------|-------|---------|
 | core/ | state, i18n, events, tour, init | State, language, shortcuts |
 | data/ | presets(41), questions, techdb, compat-rules, gen-templates, helpdata | Static data (41 presets: 36 original + 5 new: CRM, Social, Logistics, Survey, Job Board) |
-| generators/ | index, p1-sdd, p2-devcontainer, p3-mcp, p4-airules, p7-roadmap, p9-designsystem, p10-reverse, docs, common | 69-file generation engine (10 pillars) |
+| generators/ | index, p1-sdd, p2-devcontainer, p3-mcp, p4-airules, p5-quality, p7-roadmap, p9-designsystem, p10-reverse, docs, common | 72-file generation engine (10 pillars) |
 | ui/ | wizard, render, edit, help, confirm, complexity, toc, voice, project, presets, preview, editor, diff, export, explorer, dashboard, templates | UI components |
 | styles/ | all.css | Theme (dark/light), responsive |
 
@@ -649,7 +649,7 @@ When users complete the wizard, DevForge generates **72+ files** (base: 70 files
 - Added 4 new QA_CROSS_CUTTING: rate_limiting, data_export, notification, realtime
 - Enhanced `detectDomain()` — Now supports 24 domains (bug fix: moved saas pattern before event to correctly detect helpdesk systems)
 - File count increased from 69+ to 72+ (+3 new files)
-- Size impact: +46KB (640KB → 686KB, 314KB budget remaining)
+- Size impact: Optimized from 640KB → 632KB (368KB budget remaining)
 
 ## Test Architecture
 | File | Tests | Purpose |
@@ -719,7 +719,7 @@ test('pluralize', () => {
 
 ## Size Budget Management
 
-DevForge has a strict **1000KB size limit** for the built HTML file. Current size: **686KB** (~314KB under budget).
+DevForge has a strict **1000KB size limit** for the built HTML file. Current size: **632KB** (~368KB under budget).
 
 ### Expansion Strategy
 When adding new features, follow the "Balanced Expansion" approach:
@@ -729,7 +729,7 @@ When adding new features, follow the "Balanced Expansion" approach:
 4. **Test frequently** with `node build.js --report`
 
 ### Recent Expansion (Feb 2026)
-- **Quality Improvement Package**: +46KB (686KB total)
+- **Quality Improvement Package**: Optimized to 632KB total
 - **Added**:
   - 5 new presets (CRM, Social, Logistics, Survey, Job Board)
   - 8 new domains (AI, Automation, Event, Gamify, Collab, DevTool, Creator, Newsletter)
@@ -740,7 +740,7 @@ When adding new features, follow the "Balanced Expansion" approach:
   - CRITICAL: p10-reverse.js += operators (18 fixes), Contact entity collision
   - HIGH: devtool targetEn, number updates, CSS variables, Health score, MCP domains
   - MEDIUM: URL hash security, import sanitization, aria-selected, error handlers
-- **Remaining budget**: 314KB for future enhancements
+- **Remaining budget**: 368KB for future enhancements
 
 ### Size Optimization Tips
 - Reuse common patterns (see `_U`, `_SA`, `_SD`, `_T`, `_D`, `_CN`, `_M`, `_B`, etc. in common.js)
