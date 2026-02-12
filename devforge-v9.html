@@ -2304,7 +2304,7 @@ function buildFileTree(){
       files.push({name:'  '+f+'.md',path:'docs/'+f+'.md'}));
   } else if(pillar===10){ // Implementation Intelligence
     files.push({folder:true,name:'docs'});
-    ['39_implementation_playbook','40_ai_dev_runbook'].forEach(f=>
+    ['39_implementation_playbook','40_ai_dev_runbook','42_skill_guide'].forEach(f=>
       files.push({name:'  '+f+'.md',path:'docs/'+f+'.md'}));
     if(S.files['skills/impl-patterns.md']){
       files.push({folder:true,name:'skills'});
@@ -6311,6 +6311,303 @@ function genPillar11_ImplIntelligence(a,pn){
 
     S.files['skills/impl-patterns.md']=skillDoc;
   }
+
+  // ── docs/42_skill_guide.md ──
+  const skill=S.skill||'intermediate';
+  const skLabel={beginner:G?'初心者':'Beginner',intermediate:G?'中級者':'Intermediate',pro:G?'上級者':'Professional'};
+  const skIcon={beginner:'⭐',intermediate:'⭐⭐',pro:'⭐⭐⭐'};
+  const skMark=G?' **← あなたのレベル**':' **<-- YOUR LEVEL**';
+  const _lv=(lv,items)=>{
+    const active=lv===skill?skMark:'';
+    let s='### '+skIcon[lv]+' '+skLabel[lv]+active+'\n\n';
+    items.forEach(it=>{s+=it+'\n';});
+    s+='\n';
+    return s;
+  };
+
+  let doc42='# '+pn+' — '+(G?'スキルレベル別ガイド':'Skill-Level Guide')+'\n\n';
+  doc42+=(G?'**あなたのレベル**: ':'**Your Level**: ')+skIcon[skill]+' '+skLabel[skill]+'\n';
+  doc42+=(G?'**業種**: ':'**Domain**: ')+domain+'\n';
+  doc42+=(G?'**生成日**: ':'**Generated**: ')+new Date().toISOString().split('T')[0]+'\n\n';
+  doc42+='---\n\n';
+
+  // Sec 1: Getting Started
+  doc42+='## '+(G?'1. 最初にやること（生成直後の第一歩）':'1. Getting Started (First Steps After Generation)')+'\n\n';
+  doc42+=_lv('beginner',G?[
+    '1. `CLAUDE.md` をAIツール（Cursor/Claude Code）にコピペ → AIがプロジェクト全体を理解',
+    '2. `.spec/constitution.md` を読んでプロジェクトの目的・範囲を確認',
+    '3. `docs/24_progress.md` を開いてタスク進捗管理を開始',
+    '4. `.devcontainer/` フォルダがある場合、VS Code/Cursorで「Reopen in Container」で開発環境を即構築'
+  ]:[
+    '1. Copy `CLAUDE.md` into your AI tool (Cursor/Claude Code) — AI understands your entire project',
+    '2. Read `.spec/constitution.md` to understand project purpose and scope',
+    '3. Open `docs/24_progress.md` to start tracking progress',
+    '4. If `.devcontainer/` exists, use "Reopen in Container" in VS Code/Cursor for instant dev setup'
+  ]);
+  doc42+=_lv('intermediate',G?[
+    '1. `AI_BRIEF.md` をAIに投入（~1200トークンで全仕様を圧縮）',
+    '2. `docs/39_implementation_playbook.md` で業種別実装パターンを確認',
+    '3. `docs/40_ai_dev_runbook.md` のWSCI（Write/Select/Compress/Isolate）ワークフローに従う',
+    '4. `.cursorrules` / `.windsurfrules` をプロジェクトルートに配置してAIルールを自動適用'
+  ]:[
+    '1. Feed `AI_BRIEF.md` to AI (~1200 tokens, compressed full spec)',
+    '2. Review domain patterns in `docs/39_implementation_playbook.md`',
+    '3. Follow WSCI (Write/Select/Compress/Isolate) workflow in `docs/40_ai_dev_runbook.md`',
+    '4. Place `.cursorrules` / `.windsurfrules` in project root for auto AI rules'
+  ]);
+  doc42+=_lv('pro',G?[
+    '1. `.devcontainer/` でチーム全員の環境を統一（Docker Compose構成済み）',
+    '2. `AGENTS.md` の Agent Specialization Matrix でマルチエージェント役割定義',
+    '3. `mcp-config.json` を設定し、context7/filesystem/playwright等のMCPツールを有効化',
+    '4. `skills/pipelines.md` のCI/CDパイプラインを `.github/workflows/ci.yml` と統合'
+  ]:[
+    '1. Deploy `.devcontainer/` to standardize team environments (Docker Compose pre-configured)',
+    '2. Define multi-agent roles via Agent Specialization Matrix in `AGENTS.md`',
+    '3. Configure `mcp-config.json` to enable context7/filesystem/playwright MCP tools',
+    '4. Integrate `skills/pipelines.md` CI/CD pipelines with `.github/workflows/ci.yml`'
+  ]);
+
+  // Sec 2: File Usage Map
+  doc42+='## '+(G?'2. ファイル活用マップ':'2. File Usage Map')+'\n\n';
+  doc42+='| '+(G?'タスク':'Task')+' | '+(G?'最初に読む':'Read First')+' | '+(G?'次に参照':'Then Refer')+' |\n|------|------------|----------|\n';
+  const fmap=G?[
+    ['コーディング開始','CLAUDE.md','.spec/constitution.md'],
+    ['DB設計理解','docs/04_er_diagram.md','docs/05_api_design.md'],
+    ['テスト作成','docs/07_test_cases.md','docs/36_test_strategy.md'],
+    ['セキュリティ確認','docs/08_security.md','docs/34_incident_response.md'],
+    ['デプロイ準備','docs/09_release_checklist.md','.github/workflows/ci.yml'],
+    ['成長戦略確認','docs/41_growth_intelligence.md','docs/30_goal_decomposition.md'],
+    ['バグ予防','docs/37_bug_prevention.md','docs/25_error_logs.md']
+  ]:[
+    ['Start coding','CLAUDE.md','.spec/constitution.md'],
+    ['Understand DB','docs/04_er_diagram.md','docs/05_api_design.md'],
+    ['Write tests','docs/07_test_cases.md','docs/36_test_strategy.md'],
+    ['Security review','docs/08_security.md','docs/34_incident_response.md'],
+    ['Deploy prep','docs/09_release_checklist.md','.github/workflows/ci.yml'],
+    ['Growth strategy','docs/41_growth_intelligence.md','docs/30_goal_decomposition.md'],
+    ['Bug prevention','docs/37_bug_prevention.md','docs/25_error_logs.md']
+  ];
+  fmap.forEach(r=>{doc42+='| '+r[0]+' | `'+r[1]+'` | `'+r[2]+'` |\n';});
+  doc42+='\n';
+
+  // Sec 3: Mistakes & Cautions
+  doc42+='## '+(G?'3. 注意事項とよくある失敗':'3. Common Mistakes & Cautions')+'\n\n';
+  doc42+=_lv('beginner',G?[
+    '- ❌ `.spec/` を読まずにコーディング開始 → ✅ 必ず `constitution.md` を先に読む',
+    '- ❌ `docs/08_security.md` を無視 → ✅ 認証・RLS・CORS設定を確認してから実装',
+    '- ❌ 全ファイルを一度に使おうとする → ✅ まず `.spec/tasks.md` の1タスクに集中',
+    '- ❌ テストを後回し → ✅ `docs/07_test_cases.md` のケースを実装と同時に書く',
+    '- ❌ エラーログを記録しない → ✅ `docs/25_error_logs.md` のフォーマットで記録'
+  ]:[
+    '- ❌ Start coding without reading `.spec/` → ✅ Always read `constitution.md` first',
+    '- ❌ Ignoring `docs/08_security.md` → ✅ Review auth, RLS, CORS before implementation',
+    '- ❌ Trying to use all files at once → ✅ Focus on one task from `.spec/tasks.md`',
+    '- ❌ Postponing tests → ✅ Write tests alongside implementation using `docs/07_test_cases.md`',
+    '- ❌ Not logging errors → ✅ Use `docs/25_error_logs.md` format for tracking'
+  ]);
+  doc42+=_lv('intermediate',G?[
+    '- ❌ `docs/39_implementation_playbook.md` のドメインパターンを無視 → ✅ 業種固有のバグパターンを事前確認',
+    '- ❌ 品質ゲートを省略 → ✅ `docs/32_qa_blueprint.md` のチェックリストを実施',
+    '- ❌ AIへのモノリシックプロンプト → ✅ `docs/22_prompt_playbook.md` のフェーズ別テンプレート使用',
+    '- ❌ 生成物をそのまま使う → ✅ プロジェクト固有の要件に合わせてカスタマイズ'
+  ]:[
+    '- ❌ Ignoring domain patterns in `docs/39_implementation_playbook.md` → ✅ Review domain-specific bugs first',
+    '- ❌ Skipping quality gates → ✅ Run `docs/32_qa_blueprint.md` checklists',
+    '- ❌ Monolithic AI prompts → ✅ Use phase-specific templates from `docs/22_prompt_playbook.md`',
+    '- ❌ Using generated files as-is → ✅ Customize to project-specific requirements'
+  ]);
+  doc42+=_lv('pro',G?[
+    '- ❌ MVP段階での過剰設計 → ✅ `docs/30_goal_decomposition.md` の優先度マトリクスに従う',
+    '- ❌ Agent間のコンテキスト共有不足 → ✅ `AGENTS.md` のハンドオフプロトコル遵守',
+    '- ❌ パフォーマンス最適化の後回し → ✅ `docs/41_growth_intelligence.md` のCWV目標を初期から意識'
+  ]:[
+    '- ❌ Over-engineering at MVP stage → ✅ Follow priority matrix in `docs/30_goal_decomposition.md`',
+    '- ❌ Poor context sharing between agents → ✅ Follow handoff protocol in `AGENTS.md`',
+    '- ❌ Deferring performance optimization → ✅ Target CWV goals in `docs/41_growth_intelligence.md` from day 1'
+  ]);
+
+  // Sec 4: Workflow
+  doc42+='## '+(G?'4. 開発ワークフロー':'4. Development Workflow')+'\n\n';
+  doc42+=_lv('beginner',G?[
+    '```',
+    '.spec/tasks.md → 1タスク選択 → CLAUDE.mdをAIに渡す → コード実装 → テスト → docs/24_progress.md更新',
+    '```',
+    (G?'> **ポイント**: 1タスクずつ順番に。完了したら progress.md にチェック。':'> **Key**: One task at a time. Check off in progress.md when done.')
+  ]:[
+    '```',
+    '.spec/tasks.md → Pick 1 task → Feed CLAUDE.md to AI → Implement → Test → Update docs/24_progress.md',
+    '```',
+    '> **Key**: One task at a time. Check off in progress.md when done.'
+  ]);
+  doc42+=_lv('intermediate',G?[
+    '```',
+    'AI_BRIEF.md投入 → docs/39パターン確認 → 実装 → docs/32品質チェック → docs/22プロンプトでレビュー依頼',
+    '```',
+    '> **ポイント**: AI_BRIEF.md でコンテキスト圧縮、プレイブックでドメインパターン適用。'
+  ]:[
+    '```',
+    'Feed AI_BRIEF.md → Check docs/39 patterns → Implement → docs/32 quality check → Review via docs/22 prompts',
+    '```',
+    '> **Key**: Compress context with AI_BRIEF.md, apply domain patterns from playbook.'
+  ]);
+  doc42+=_lv('pro',G?[
+    '```',
+    'AGENTS.md役割定義 → skills/pipelines.md自動化 → 並列実装 → CI/CD統合 → docs/34インシデント対応準備',
+    '```',
+    '> **ポイント**: Agent Teams で並列開発。verification.md で品質判定を自動化。'
+  ]:[
+    '```',
+    'AGENTS.md role setup → skills/pipelines.md automation → Parallel impl → CI/CD → docs/34 incident prep',
+    '```',
+    '> **Key**: Parallel dev with Agent Teams. Automate quality judgment via verification.md.'
+  ]);
+
+  // Sec 5: AI Tool Usage
+  doc42+='## '+(G?'5. AIツール活用戦略':'5. AI Tool Usage Strategy')+'\n\n';
+  doc42+=_lv('beginner',G?[
+    '1. `CLAUDE.md` 全文をAIにコピペ（Ctrl+Shift+Cで全ファイル一括コピーも可）',
+    '2. 「`.spec/tasks.md` の○○を実装して」と具体的に指示',
+    '3. エラーが出たら `docs/25_error_logs.md` のフォーマットで記録してAIに渡す'
+  ]:[
+    '1. Copy entire `CLAUDE.md` into AI (or use Ctrl+Shift+C for bulk copy)',
+    '2. Give specific instructions: "Implement XX from `.spec/tasks.md`"',
+    '3. On errors, log in `docs/25_error_logs.md` format and share with AI'
+  ]);
+  doc42+=_lv('intermediate',G?[
+    '1. `AI_BRIEF.md` でコンテキスト圧縮投入（~1200トークン）',
+    '2. `.cursorrules` / `.windsurfrules` でツール固有ルールを自動適用',
+    '3. `docs/22_prompt_playbook.md` のフェーズ別プロンプトテンプレート活用',
+    '4. 複数AIツールを使い分け：設計=Claude Code、実装=Cursor、レビュー=Copilot'
+  ]:[
+    '1. Feed `AI_BRIEF.md` for compressed context (~1200 tokens)',
+    '2. Use `.cursorrules` / `.windsurfrules` for tool-specific auto rules',
+    '3. Use phase-specific prompt templates from `docs/22_prompt_playbook.md`',
+    '4. Multi-tool strategy: Design=Claude Code, Implement=Cursor, Review=Copilot'
+  ]);
+  doc42+=_lv('pro',G?[
+    '1. `AGENTS.md` の Agent Specialization Matrix で役割分担',
+    '2. `skills/pipelines.md` で自動パイプライン構築（Feature/BugFix/Release）',
+    '3. `mcp-config.json` でcontext7/filesystem/playwright等を統合',
+    '4. Claude Code Subagents / Antigravity Manager View で並列実行'
+  ]:[
+    '1. Define role assignments via Agent Specialization Matrix in `AGENTS.md`',
+    '2. Build auto pipelines with `skills/pipelines.md` (Feature/BugFix/Release)',
+    '3. Integrate context7/filesystem/playwright via `mcp-config.json`',
+    '4. Run parallel with Claude Code Subagents / Antigravity Manager View'
+  ]);
+
+  // Sec 6: Quality Checklist
+  doc42+='## '+(G?'6. 品質チェックリスト':'6. Quality Checklist')+'\n\n';
+  doc42+=_lv('beginner',G?[
+    '- [ ] テストが通る（`npm test`）',
+    '- [ ] `console.log` を本番コードから除去',
+    '- [ ] `docs/08_security.md` のセキュリティ項目を確認',
+    '- [ ] `docs/24_progress.md` を更新',
+    '- [ ] `docs/25_error_logs.md` に未解決エラーがない'
+  ]:[
+    '- [ ] Tests pass (`npm test`)',
+    '- [ ] Remove `console.log` from production code',
+    '- [ ] Review security items in `docs/08_security.md`',
+    '- [ ] Update `docs/24_progress.md`',
+    '- [ ] No unresolved errors in `docs/25_error_logs.md`'
+  ]);
+  doc42+=_lv('intermediate',G?[
+    '- [ ] テストカバレッジ 80%以上',
+    '- [ ] `docs/32_qa_blueprint.md` の業種別チェック完了',
+    '- [ ] `docs/37_bug_prevention.md` のパターン対応済み',
+    '- [ ] `docs/26_design_system.md` のトークン準拠',
+    '- [ ] `docs/28_qa_strategy.md` のクロスカッティング項目確認',
+    '- [ ] APIレスポンスが `docs/05_api_design.md` と一致',
+    '- [ ] `.spec/verification.md` の検証基準をクリア',
+    '- [ ] `docs/27_sequence_diagrams.md` のフロー通りに実装'
+  ]:[
+    '- [ ] Test coverage >= 80%',
+    '- [ ] Domain checks in `docs/32_qa_blueprint.md` complete',
+    '- [ ] Bug patterns in `docs/37_bug_prevention.md` addressed',
+    '- [ ] Design tokens conform to `docs/26_design_system.md`',
+    '- [ ] Cross-cutting items in `docs/28_qa_strategy.md` verified',
+    '- [ ] API responses match `docs/05_api_design.md`',
+    '- [ ] Pass `.spec/verification.md` criteria',
+    '- [ ] Implementation follows `docs/27_sequence_diagrams.md` flows'
+  ]);
+  doc42+=_lv('pro',G?[
+    '- [ ] 中級者チェック全項目 + 以下:',
+    '- [ ] `docs/41_growth_intelligence.md` のCore Web Vitals目標達成',
+    '- [ ] `docs/19_performance.md` のパフォーマンス基準クリア',
+    '- [ ] `docs/34_incident_response.md` のインシデント対応手順テスト済み',
+    '- [ ] `.spec/verification.md` の全検証項目を自動テストでカバー',
+    '- [ ] エッジケース: 同時アクセス、大量データ、ネットワーク障害',
+    '- [ ] `docs/20_a11y.md` のアクセシビリティ基準準拠'
+  ]:[
+    '- [ ] All intermediate checks PLUS:',
+    '- [ ] Core Web Vitals targets from `docs/41_growth_intelligence.md` met',
+    '- [ ] Performance criteria from `docs/19_performance.md` passed',
+    '- [ ] Incident response in `docs/34_incident_response.md` tested',
+    '- [ ] All `.spec/verification.md` criteria covered by automated tests',
+    '- [ ] Edge cases: concurrent access, large datasets, network failures',
+    '- [ ] Accessibility standards from `docs/20_a11y.md` met'
+  ]);
+
+  // Sec 7: Growth Path
+  doc42+='## '+(G?'7. レベルアップの道筋':'7. Growth Path')+'\n\n';
+  doc42+=_lv('beginner',G?[
+    '**⭐→⭐⭐ への道:**',
+    '1. `.spec/` の全ファイルを理解する（特に `specification.md` と `technical-plan.md`）',
+    '2. `docs/39_implementation_playbook.md` の業種パターンを1つ実装してみる',
+    '3. `AI_BRIEF.md` を使ったコンテキスト圧縮技法を習得',
+    '4. 2つ以上のAIツールを使い分けてみる'
+  ]:[
+    '**⭐→⭐⭐ Path:**',
+    '1. Understand all files in `.spec/` (especially `specification.md` and `technical-plan.md`)',
+    '2. Implement one domain pattern from `docs/39_implementation_playbook.md`',
+    '3. Learn context compression using `AI_BRIEF.md`',
+    '4. Try using 2+ AI tools for different tasks'
+  ]);
+  doc42+=_lv('intermediate',G?[
+    '**⭐⭐→⭐⭐⭐ への道:**',
+    '1. `AGENTS.md` を使ったマルチエージェント開発を試す',
+    '2. `skills/pipelines.md` のパイプラインをCI/CDと統合',
+    '3. `docs/41_growth_intelligence.md` のグロース方程式を実際のデータで検証',
+    '4. `mcp-config.json` でMCPツールチェーンを構築'
+  ]:[
+    '**⭐⭐→⭐⭐⭐ Path:**',
+    '1. Try multi-agent development with `AGENTS.md`',
+    '2. Integrate `skills/pipelines.md` pipelines with CI/CD',
+    '3. Validate growth equations from `docs/41_growth_intelligence.md` with real data',
+    '4. Build MCP tool chain via `mcp-config.json`'
+  ]);
+  doc42+=_lv('pro',G?[
+    '**⭐⭐⭐ マスターへの道:**',
+    '1. 独自のAIスキル定義（`skills/factory.md` のテンプレート活用）',
+    '2. チームメンバーへのDevForge導入とメンタリング',
+    '3. ドメイン固有のカスタムパイプライン構築',
+    '4. OSSコントリビューション・アーキテクチャレビューのリード'
+  ]:[
+    '**⭐⭐⭐ Path to Mastery:**',
+    '1. Define custom AI skills (using `skills/factory.md` templates)',
+    '2. Introduce DevForge to team and mentor adoption',
+    '3. Build domain-specific custom pipelines',
+    '4. Lead OSS contributions and architecture reviews'
+  ]);
+
+  // Sec 8: Domain Tips
+  const dtips={
+    education:G?['`docs/08_security.md` → FERPA/学生データ保護を必ず確認','進捗トラッキングはゲーミフィケーション要素と連携','コース完了率KPIを `docs/30_goal_decomposition.md` で設定']:['Review FERPA/student data protection in `docs/08_security.md`','Link progress tracking with gamification elements','Set course completion KPIs in `docs/30_goal_decomposition.md`'],
+    fintech:G?['`docs/08_security.md` → PCI DSS/KYC対応を最優先で確認','トランザクション整合性テストを `docs/07_test_cases.md` に追加','金融規制コンプライアンスを `docs/31_industry_playbook.md` で確認']:['Prioritize PCI DSS/KYC in `docs/08_security.md`','Add transaction integrity tests to `docs/07_test_cases.md`','Check financial compliance in `docs/31_industry_playbook.md`'],
+    health:G?['`docs/08_security.md` → HIPAA準拠を確認','患者データ暗号化を `.spec/technical-plan.md` で検証','監査ログを `docs/05_api_design.md` に追加']:['Verify HIPAA compliance in `docs/08_security.md`','Validate patient data encryption in `.spec/technical-plan.md`','Add audit logging to `docs/05_api_design.md`'],
+    ec:G?['決済テストは必ずStripeテストキーで実施','在庫管理の同時アクセス対策を `docs/37_bug_prevention.md` で確認','カート放棄防止策を `docs/41_growth_intelligence.md` で確認']:['Always test payments with Stripe test keys','Check concurrent access for inventory in `docs/37_bug_prevention.md`','Review cart abandonment prevention in `docs/41_growth_intelligence.md`'],
+    saas:G?['フリーミアム設計は `docs/41_growth_intelligence.md` のファネル参照','マルチテナント設計を `.spec/technical-plan.md` で確認','チャーン防止KPIを `docs/30_goal_decomposition.md` で設定']:['Reference funnel in `docs/41_growth_intelligence.md` for freemium design','Verify multi-tenant design in `.spec/technical-plan.md`','Set churn prevention KPIs in `docs/30_goal_decomposition.md`']
+  };
+  const tips=dtips[domain]||( G?['プロジェクト固有の制約を `.spec/constitution.md` で再確認','業種別プレイブックを `docs/31_industry_playbook.md` で確認','品質基準を `docs/32_qa_blueprint.md` で確認']:['Re-check project constraints in `.spec/constitution.md`','Review domain playbook in `docs/31_industry_playbook.md`','Verify quality criteria in `docs/32_qa_blueprint.md`']);
+  doc42+='## '+(G?'8. 業種別アドバイス（'+domain+'）':'8. Domain-Specific Tips ('+domain+')')+'\n\n';
+  tips.forEach((t,i)=>{doc42+=(i+1)+'. '+t+'\n';});
+  doc42+='\n';
+
+  // Footer
+  doc42+='---\n';
+  doc42+=(G?'*このガイドはDevForge v9が `S.skill='+skill+'` に基づいて自動生成しました。*\n':'*This guide was auto-generated by DevForge v9 based on `S.skill='+skill+'`.*\n');
+
+  S.files['docs/42_skill_guide.md']=doc42;
 }
 function genDocs21(a,pn){
   const G=S.genLang==='ja';
@@ -9870,8 +10167,8 @@ function showManual(sec){
       '<p>design_system.md (デザイントークン・色・タイポ・コンポーネントカタログ) / sequence_diagrams.md (認証・CRUD・決済フローのMermaidシーケンス図) — フレームワーク別実装ガイド。</p>'+
       '<h3>⑩ リバースエンジニアリング (2ファイル)</h3>'+
       '<p>reverse_engineering.md (ゴール定義→逆算フロー・マイルストーンGantt・リスク分析) / goal_decomposition.md (ゴールツリー・サブゴール分解・ギャップ分析・優先度マトリクス・依存関係チェーン) — 24ドメイン対応の逆算型プランニング。</p>'+
-      '<h3>⑪ 実装インテリジェンス (3ファイル)</h3>'+
-      '<p>implementation_playbook.md (業種別実装パターン・擬似コード・スタック固有ガイダンス・横断的関心事チェックリスト) / ai_dev_runbook.md (AI運用ワークフロー・コンテキスト管理・エラー復旧プロトコル) / impl-patterns.md (Manus Skills形式の実装スキルカタログ、ai_auto≠noneの場合) — 24ドメイン対応の実装ガイド。</p>'
+      '<h3>⑪ 実装インテリジェンス (4ファイル)</h3>'+
+      '<p>implementation_playbook.md (業種別実装パターン・擬似コード・スタック固有ガイダンス・横断的関心事チェックリスト) / ai_dev_runbook.md (AI運用ワークフロー・コンテキスト管理・エラー復旧プロトコル) / skill_guide.md (スキルレベル別使用ガイド・注意事項・チェックリスト) / impl-patterns.md (Manus Skills形式の実装スキルカタログ、ai_auto≠noneの場合) — 24ドメイン対応の実装ガイド。</p>'
       :
       '<h2>11 Pillars in Detail</h2><h3>① SDD Integration (5 files)</h3>'+
       '<p>constitution.md / specification.md / technical-plan.md / tasks.md / verification.md</p>'+
@@ -9893,8 +10190,8 @@ function showManual(sec){
       '<p>design_system.md (design tokens, colors, typography, component catalog) / sequence_diagrams.md (auth, CRUD, payment Mermaid sequence diagrams) — Framework-specific guides.</p>'+
       '<h3>⑩ Reverse Engineering (2 files)</h3>'+
       '<p>reverse_engineering.md (goal definition → reverse flow, milestone Gantt, risk analysis) / goal_decomposition.md (goal tree, sub-goal breakdown, gap analysis, priority matrix, dependency chain) — 24 domain-specific reverse planning.</p>'+
-      '<h3>⑪ Implementation Intelligence (3 files)</h3>'+
-      '<p>implementation_playbook.md (domain-specific impl patterns, pseudo-code, stack guidance, cross-cutting concerns checklist) / ai_dev_runbook.md (AI operation workflow, context management, error recovery protocol) / impl-patterns.md (implementation skills in Manus Skills format, if ai_auto≠none) — 24 domain-specific implementation guide.</p>'
+      '<h3>⑪ Implementation Intelligence (4 files)</h3>'+
+      '<p>implementation_playbook.md (domain-specific impl patterns, pseudo-code, stack guidance, cross-cutting concerns checklist) / ai_dev_runbook.md (AI operation workflow, context management, error recovery protocol) / skill_guide.md (skill-level usage guide, cautions, checklists) / impl-patterns.md (implementation skills in Manus Skills format, if ai_auto≠none) — 24 domain-specific implementation guide.</p>'
     },
     {id:'export',title:_ja?'エクスポート':'Export',body:_ja?
       '<h2>エクスポート方法</h2><p><strong>ZIP</strong>: 全86+ファイルをフォルダ構造付きでZIP圧縮ダウンロード。<br><strong>PDF</strong>: Markdownファイルを整形してブラウザのPDF印刷で出力。<br><strong>URL共有</strong>: プロジェクト設定をBase64エンコードしてURL共有。<br><strong>全ファイルコピー</strong>: 全ドキュメントを1テキストに結合してクリップボードにコピー（Ctrl+Shift+C）。AIへの一括投入に最適。</p><h3>テンプレート保存</h3><p>プロジェクト設定をlocalStorageに保存し、次回起動時に読み込み可能。</p>'

@@ -56,14 +56,14 @@ describe('Snapshot A: LMS/Supabase/Stripe', () => {
     ai_auto: 'マルチAgent協調'
   }, 'LMS');
 
-  test('file count in range 67-91', () => {
+  test('file count in range 68-92', () => {
     const count = Object.keys(files).length;
-    assert.ok(count >= 67 && count <= 91, `Expected 67-91 files, got ${count}`);
+    assert.ok(count >= 68 && count <= 92, `Expected 68-92 files, got ${count}`);
   });
 
-  test('total tokens in range 12000-31000', () => {
+  test('total tokens in range 12000-33000', () => {
     const total = Object.values(files).reduce((s, v) => s + tokens(v), 0);
-    assert.ok(total >= 12000 && total <= 31000, `Expected 12K-31K tokens, got ${total}`);
+    assert.ok(total >= 12000 && total <= 33000, `Expected 12K-33K tokens, got ${total}`);
   });
 
   // Core files existence
@@ -109,6 +109,18 @@ describe('Snapshot A: LMS/Supabase/Stripe', () => {
   test('implementation intelligence files exist', () => {
     assert.ok(files['docs/39_implementation_playbook.md'], 'docs/39_implementation_playbook.md missing');
     assert.ok(files['docs/40_ai_dev_runbook.md'], 'docs/40_ai_dev_runbook.md missing');
+  });
+
+  test('skill guide exists', () => {
+    assert.ok(files['docs/42_skill_guide.md'], 'docs/42_skill_guide.md missing');
+  });
+
+  test('skill guide has all 3 levels', () => {
+    const sg = files['docs/42_skill_guide.md'];
+    assert.ok(sg.includes('初心者') || sg.includes('Beginner'), 'Missing beginner');
+    assert.ok(sg.includes('中級者') || sg.includes('Intermediate'), 'Missing intermediate');
+    assert.ok(sg.includes('上級者') || sg.includes('Professional'), 'Missing pro');
+    assert.ok(sg.includes('あなたのレベル') || sg.includes('YOUR LEVEL'), 'Missing level marker');
   });
 
   test('quality intelligence files exist', () => {
@@ -454,9 +466,9 @@ describe('Snapshot B: Blog/Vite/Netlify', () => {
     dev_methods: 'TDD', ai_tools: 'Cursor', orm: ''
   }, 'Blog');
 
-  test('file count in range 59-81', () => {
+  test('file count in range 60-82', () => {
     const count = Object.keys(files).length;
-    assert.ok(count >= 59 && count <= 81, `Expected 59-81 files, got ${count}`);
+    assert.ok(count >= 60 && count <= 82, `Expected 60-82 files, got ${count}`);
   });
 
   test('no Stripe content when payment absent', () => {

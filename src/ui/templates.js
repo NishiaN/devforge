@@ -119,8 +119,8 @@ function showManual(sec){
       '<p>design_system.md (デザイントークン・色・タイポ・コンポーネントカタログ) / sequence_diagrams.md (認証・CRUD・決済フローのMermaidシーケンス図) — フレームワーク別実装ガイド。</p>'+
       '<h3>⑩ リバースエンジニアリング (2ファイル)</h3>'+
       '<p>reverse_engineering.md (ゴール定義→逆算フロー・マイルストーンGantt・リスク分析) / goal_decomposition.md (ゴールツリー・サブゴール分解・ギャップ分析・優先度マトリクス・依存関係チェーン) — 24ドメイン対応の逆算型プランニング。</p>'+
-      '<h3>⑪ 実装インテリジェンス (3ファイル)</h3>'+
-      '<p>implementation_playbook.md (業種別実装パターン・擬似コード・スタック固有ガイダンス・横断的関心事チェックリスト) / ai_dev_runbook.md (AI運用ワークフロー・コンテキスト管理・エラー復旧プロトコル) / impl-patterns.md (Manus Skills形式の実装スキルカタログ、ai_auto≠noneの場合) — 24ドメイン対応の実装ガイド。</p>'
+      '<h3>⑪ 実装インテリジェンス (4ファイル)</h3>'+
+      '<p>implementation_playbook.md (業種別実装パターン・擬似コード・スタック固有ガイダンス・横断的関心事チェックリスト) / ai_dev_runbook.md (AI運用ワークフロー・コンテキスト管理・エラー復旧プロトコル) / skill_guide.md (スキルレベル別使用ガイド・注意事項・チェックリスト) / impl-patterns.md (Manus Skills形式の実装スキルカタログ、ai_auto≠noneの場合) — 24ドメイン対応の実装ガイド。</p>'
       :
       '<h2>11 Pillars in Detail</h2><h3>① SDD Integration (5 files)</h3>'+
       '<p>constitution.md / specification.md / technical-plan.md / tasks.md / verification.md</p>'+
@@ -142,8 +142,8 @@ function showManual(sec){
       '<p>design_system.md (design tokens, colors, typography, component catalog) / sequence_diagrams.md (auth, CRUD, payment Mermaid sequence diagrams) — Framework-specific guides.</p>'+
       '<h3>⑩ Reverse Engineering (2 files)</h3>'+
       '<p>reverse_engineering.md (goal definition → reverse flow, milestone Gantt, risk analysis) / goal_decomposition.md (goal tree, sub-goal breakdown, gap analysis, priority matrix, dependency chain) — 24 domain-specific reverse planning.</p>'+
-      '<h3>⑪ Implementation Intelligence (3 files)</h3>'+
-      '<p>implementation_playbook.md (domain-specific impl patterns, pseudo-code, stack guidance, cross-cutting concerns checklist) / ai_dev_runbook.md (AI operation workflow, context management, error recovery protocol) / impl-patterns.md (implementation skills in Manus Skills format, if ai_auto≠none) — 24 domain-specific implementation guide.</p>'
+      '<h3>⑪ Implementation Intelligence (4 files)</h3>'+
+      '<p>implementation_playbook.md (domain-specific impl patterns, pseudo-code, stack guidance, cross-cutting concerns checklist) / ai_dev_runbook.md (AI operation workflow, context management, error recovery protocol) / skill_guide.md (skill-level usage guide, cautions, checklists) / impl-patterns.md (implementation skills in Manus Skills format, if ai_auto≠none) — 24 domain-specific implementation guide.</p>'
     },
     {id:'export',title:_ja?'エクスポート':'Export',body:_ja?
       '<h2>エクスポート方法</h2><p><strong>ZIP</strong>: 全86+ファイルをフォルダ構造付きでZIP圧縮ダウンロード。<br><strong>PDF</strong>: Markdownファイルを整形してブラウザのPDF印刷で出力。<br><strong>URL共有</strong>: プロジェクト設定をBase64エンコードしてURL共有。<br><strong>全ファイルコピー</strong>: 全ドキュメントを1テキストに結合してクリップボードにコピー（Ctrl+Shift+C）。AIへの一括投入に最適。</p><h3>テンプレート保存</h3><p>プロジェクト設定をlocalStorageに保存し、次回起動時に読み込み可能。</p>'
