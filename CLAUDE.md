@@ -7,20 +7,20 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 # DevForge v9.0
 
 ## Architecture
-- **42 modules** in `src/` → `node build.js` → single `devforge-v9.html` (~770KB)
+- **43 modules** in `src/` → `node build.js` → single `devforge-v9.html` (~883KB)
 - Vanilla JS, no frameworks. CSS custom properties. CDN: marked.js, mermaid.js, JSZip.
 - **AI Development OS**: Generates 86+ files including context intelligence, operations playbooks, and business models
 
 ## Build & Test
 ```bash
 # Build
-node build.js              # Produces devforge-v9.html (~827KB)
+node build.js              # Produces devforge-v9.html (~883KB)
 node build.js --no-minify  # Skip minification (debug)
 node build.js --report     # Show size report
 node build.js --check-css  # Validate CSS custom properties
 
 # Test
-npm test                   # Run all tests (193 tests, all passing)
+npm test                   # Run all tests (196 tests, all passing)
 npm run test:watch         # Watch mode for test development
 node --test test/gen-coherence.test.js  # Run single test file
 node --test test/data-coverage.test.js  # Run data integrity tests
@@ -33,7 +33,7 @@ npm run check              # Syntax check extracted JS
 
 ## Build Process Deep Dive
 
-`build.js` concatenates 42 modules into single HTML:
+`build.js` concatenates 43 modules into single HTML:
 
 1. **Read modules** in dependency order (defined in `jsFiles` array)
 2. **Read CSS** from `styles/all.css`
@@ -44,7 +44,7 @@ npm run check              # Syntax check extracted JS
 5. **Write** to `devforge-v9.html`
 6. **Validate** size ≤1000KB (warn if exceeded)
 
-**Current Status:** 827KB / 1000KB limit (173KB remaining budget for future expansions)
+**Current Status:** 883KB / 1000KB limit (117KB remaining budget for future expansions)
 
 ### ⚠️ Critical: Minification Limitations
 
@@ -90,7 +90,7 @@ npm run check              # Syntax check extracted JS
 |----------|-------|---------|
 | core/ | state, i18n, events, tour, init | State, language, shortcuts |
 | data/ | presets(41), questions, techdb, compat-rules, gen-templates, helpdata | Static data (41 presets: 36 original + 5 new: CRM, Social, Logistics, Survey, Job Board) |
-| generators/ | index, p1-sdd, p2-devcontainer, p3-mcp, p4-airules, p5-quality, p7-roadmap, p9-designsystem, p10-reverse, docs, common | 72-file generation engine (11 pillars) |
+| generators/ | index, p1-sdd, p2-devcontainer, p3-mcp, p4-airules, p5-quality, p7-roadmap, p9-designsystem, p10-reverse, p11-implguide, docs, common | 86-file generation engine (11 pillars) |
 | ui/ | wizard, render, edit, help, confirm, complexity, toc, voice, project, presets, preview, editor, diff, export, explorer, dashboard, templates | UI components |
 | styles/ | all.css | Theme (dark/light), responsive |
 
@@ -746,10 +746,11 @@ When users complete the wizard, DevForge generates **86+ files** (base: 73 files
 - **Enhanced AI_BRIEF.md**: Added Context Loading Strategy (phase-based file loading priorities), token budget allocation (40% task, 30% spec, 20% progress, 10% buffer), new files reference
 - **Enhanced AGENTS.md**: Added Agent Specialization Matrix (6 agent types with token budgets), Handoff Protocol (YAML format), Summary-Only Import principle
 - File count increased from 72+ to 86+ (+11 new files)
-- Size impact: 632KB → 827KB (+195KB total from v9.0 baseline)
+- Size impact: 632KB → 883KB (+251KB total from v9.0 baseline)
   - AI Development OS expansion: +138KB (632KB → 770KB)
   - Minification safety fix: +57KB (770KB → 827KB, disabled comment removal)
-- Budget remaining: 173KB
+  - Pillar ⑪ Implementation Intelligence: +56KB (827KB → 883KB)
+- Budget remaining: 117KB
 
 **Recent Enhancement (Pillar ⑪: Implementation Intelligence - Feb 2026):**
 - **Implementation Playbook** (`docs/39_implementation_playbook.md`) — Always generated:
@@ -776,7 +777,7 @@ When users complete the wizard, DevForge generates **86+ files** (base: 73 files
   - `detectAppType()` — Infers app architecture type from answers
 - File count increased from 86+ to 86+ (docs/39, docs/40 replace existing slots; +1 conditional skills/impl-patterns.md when ai_auto≠none)
 - Size impact: ~33KB added (20KB generator + 13KB data structures)
-- Budget estimate: 827KB → ~860KB / 1000KB (~140KB remaining)
+- Final size: 883KB / 1000KB (117KB remaining)
 
 ## Test Architecture
 | File | Tests | Purpose |
@@ -791,7 +792,7 @@ When users complete the wizard, DevForge generates **86+ files** (base: 73 files
 | presets.test.js | 4 tests | Preset count (41), bilingual names, tech fields, purpose |
 | Others | ~21 tests | i18n, state, techdb |
 
-**Total: 251 tests (250+ passing, 99.6% pass rate)**
+**Total: 196 tests (all passing, 100% pass rate)**
 
 ## Writing Tests
 
@@ -846,7 +847,7 @@ test('pluralize', () => {
 
 ## Size Budget Management
 
-DevForge has a strict **1000KB size limit** for the built HTML file. Current size: **827KB** (173KB under budget).
+DevForge has a strict **1000KB size limit** for the built HTML file. Current size: **883KB** (117KB under budget).
 
 ### Expansion Strategy
 When adding new features, follow the "Balanced Expansion" approach:
@@ -856,7 +857,7 @@ When adding new features, follow the "Balanced Expansion" approach:
 4. **Test frequently** with `node build.js --report`
 
 ### Recent Expansion (Feb 2026)
-- **Quality Improvement Package**: Optimized to 632KB total
+- **Current size**: 883KB total (including Pillar ⑪)
 - **Added**:
   - 5 new presets (CRM, Social, Logistics, Survey, Job Board)
   - 8 new domains (AI, Automation, Event, Gamify, Collab, DevTool, Creator, Newsletter)
