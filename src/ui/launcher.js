@@ -25,11 +25,11 @@ function showAILauncher(){
       fmt:'Markdown表:\n| # | ファイル | 指摘 | 優先度 | 推奨アクション |\n|---|---------|------|--------|----------------|\n| 1 | .spec/xxx.md | ... | P0 | ... |'},
     implement:{icon:'🚀',label:'MVP実装',desc:'仕様書からMVP開発開始',
       sys:'あなたはフルスタック開発者です。SDD仕様書に忠実に実装します。',
-      prompt:'docs/23_tasks.mdから最優先タスク(P0またはIssue #1)を1つ選んで実装してください。\n\n実装手順:\n1. 型定義を作成 (TypeScript interface/type)\n2. データアクセス層を実装 (ORM/SDK)\n3. ビジネスロジックを実装\n4. UIコンポーネントを実装\n5. Vitestユニットテストを作成\n\nconstitution.mdの設計原則に従い、technical-plan.mdのアーキテクチャに沿ってください。',
+      prompt:'docs/23_tasks.mdから最優先タスク(P0またはIssue #1)を1つ選んで実装してください。\n\n実装手順:\n1. 型定義を作成 (TypeScript interface/type)\n2. データアクセス層を実装 (ORM/SDK)\n3. ビジネスロジックを実装\n4. UIコンポーネントを実装\n5. Vitestユニットテストを作成\n\nconstitution.mdの設計原則に従い、technical-plan.mdのアーキテクチャに沿ってください。\n\ndocs/39_implementation_playbook.mdのドメイン別実装パターンを参照し、業種固有のベストプラクティスに従ってください。',
       fmt:'ファイルパス付きコードブロック:\n```typescript:path/to/file.ts\n// code\n```\n必ずテストを含めてください。'},
     test:{icon:'🧪',label:'テスト生成',desc:'テストケース自動作成',
       sys:'あなたはQAエンジニアです。仕様書からテストケースを網羅的に作成します。',
-      prompt:'docs/07_test_cases.mdを参照し、以下の順序でテストケースを生成してください:\n1. 正常系(Happy Path): 基本的なCRUD操作\n2. 異常系(Error Cases): バリデーションエラー、権限エラー\n3. 境界値(Boundary): 空文字列、最大長、NULL\n\n各テストケースには期待結果を明記してください。',
+      prompt:'docs/07_test_cases.mdを参照し、以下の順序でテストケースを生成してください:\n1. 正常系(Happy Path): 基本的なCRUD操作\n2. 異常系(Error Cases): バリデーションエラー、権限エラー\n3. 境界値(Boundary): 空文字列、最大長、NULL\n4. docs/33_test_matrix.mdのテスト優先度マトリクスで実行順序を決定\n5. docs/36_test_strategy.mdの戦略に沿って非機能テストも追加\n\n各テストケースには期待結果を明記してください。',
       fmt:'Vitestテストファイル:\n```typescript:tests/xxx.test.ts\nimport { describe, it, expect } from \'vitest\';\n// tests\n```'},
     refactor:{icon:'♻️',label:'リファクタ提案',desc:'構造改善と技術的負債の解消',
       sys:'あなたはコードレビュアーです。アーキテクチャの改善提案を行います。',
@@ -37,7 +37,7 @@ function showAILauncher(){
       fmt:'Markdown表:\n| 問題 | 違反している原則 | 改善案 | 工数 | 優先度 |\n|------|------------------|--------|------|--------|\n| ... | SRP | ... | M | P1 |'},
     security:{icon:'🔒',label:'セキュリティ監査',desc:'脆弱性とベストプラクティス',
       sys:'あなたはセキュリティエンジニアです。OWASP Top 10を基準に監査します。',
-      prompt:'以下の仕様書のセキュリティ面をOWASP Top 10の各項目別にチェックしてください:\n\n1. A01:2021 – Broken Access Control\n2. A02:2021 – Cryptographic Failures\n3. A03:2021 – Injection\n4. A04:2021 – Insecure Design\n5. A05:2021 – Security Misconfiguration\n6. A06:2021 – Vulnerable Components\n7. A07:2021 – Authentication Failures\n8. A08:2021 – Data Integrity Failures\n9. A09:2021 – Logging Failures\n10. A10:2021 – SSRF\n\n各項目の状態を✅(OK)/⚠️(注意)/❌(脆弱)で評価してください。',
+      prompt:'以下の仕様書のセキュリティ面をOWASP Top 10の各項目別にチェックしてください:\n\n1. A01:2021 – Broken Access Control\n2. A02:2021 – Cryptographic Failures\n3. A03:2021 – Injection\n4. A04:2021 – Insecure Design\n5. A05:2021 – Security Misconfiguration\n6. A06:2021 – Vulnerable Components\n7. A07:2021 – Authentication Failures\n8. A08:2021 – Data Integrity Failures\n9. A09:2021 – Logging Failures\n10. A10:2021 – SSRF\n\n事前にdocs/08_security.mdのプロジェクト固有セキュリティ設計を確認し、設計と実装の乖離もチェックしてください。\n\n各項目の状態を✅(OK)/⚠️(注意)/❌(脆弱)で評価してください。',
       fmt:'Markdown表:\n| OWASP# | 項目 | 状態 | 詳細 | 推奨対策 |\n|--------|------|------|------|----------|\n| A01 | Access Control | ⚠️ | ... | ... |'},
     docs:{icon:'📝',label:'ドキュメント補完',desc:'不足文書の特定と生成',
       sys:'あなたはテクニカルライターです。開発ドキュメントの品質を高めます。',
@@ -45,15 +45,15 @@ function showAILauncher(){
       fmt:'Part 1: Markdown表\nPart 2: 完全なドキュメント(Markdown)'},
     debug:{icon:'🔧',label:'デバッグ支援',desc:'エラー原因分析と修正提案',
       sys:'あなたは経験豊富なデバッグスペシャリストです。エラーログとスタックトレースから根本原因を特定します。',
-      prompt:'以下の手順でデバッグ分析を実行:\n1. docs/25_error_logs.mdの既存パターンと照合（再発or新規を判定）\n2. エラー/スタックトレースの根本原因を特定（5 Whys分析）\n3. docs/37_bug_prevention.mdのチェックリストから該当バグカテゴリを特定\n4. 修正コードと再発防止策を提案\n5. docs/25_error_logs.mdに追記するエントリをドラフト',
+      prompt:'以下の手順でデバッグ分析を実行:\n1. docs/25_error_logs.mdの既存パターンと照合（再発or新規を判定）\n2. エラー/スタックトレースの根本原因を特定（5 Whys分析）\n3. docs/37_bug_prevention.mdのチェックリストから該当バグカテゴリを特定\n4. 修正コードと再発防止策を提案\n5. docs/25_error_logs.mdに追記するエントリをドラフト\n6. 重大度が高い場合、docs/34_incident_response.mdのインシデント対応フローに従う',
       fmt:'## 診断結果\n| 項目 | 内容 |\n|------|------|\n| エラー種別 | ... |\n| 根本原因 | ... |\n| 影響範囲 | ... |\n\n## 修正コード\n```typescript:path/to/file.ts\n// fix\n```\n\n## error_logsエントリ\n- 症状/原因/解決策/防止策'},
     arch:{icon:'📐',label:'アーキテクチャ整合性',desc:'設計と実装の乖離を検出',
       sys:'あなたはソフトウェアアーキテクトです。仕様書のアーキテクチャと実装の整合性を検証します。',
-      prompt:'アーキテクチャ整合性チェック:\n1. docs/03_architecture.mdのレイヤー構造・パターン定義を確認\n2. .spec/technical-plan.mdの技術方針との一致を検証\n3. コードが定義済みレイヤー境界を違反していないか検査\n4. docs/26_design_system.mdのコンポーネント規約との整合性を確認\n5. 違反箇所に修正案とリファクタリング手順を提示',
+      prompt:'アーキテクチャ整合性チェック:\n1. docs/03_architecture.mdのレイヤー構造・パターン定義を確認\n2. .spec/technical-plan.mdの技術方針との一致を検証\n3. コードが定義済みレイヤー境界を違反していないか検査\n4. docs/27_sequence_diagrams.mdのシーケンスフローとの整合性を確認\n5. docs/26_design_system.mdのコンポーネント規約との整合性を確認\n6. 違反箇所に修正案とリファクタリング手順を提示',
       fmt:'Markdown表:\n| # | 違反箇所 | 定義元 | 違反内容 | 深刻度 | 修正案 |\n|---|---------|--------|---------|--------|--------|\n\n## アーキテクチャ適合スコア: X/10'},
     perf:{icon:'⚡',label:'パフォーマンス最適化',desc:'ボトルネック特定と改善提案',
       sys:'あなたはパフォーマンスエンジニアです。非機能要件に基づきボトルネックを特定します。',
-      prompt:'パフォーマンス分析:\n1. .spec/constitution.mdの非機能要件（NFR）からパフォーマンス目標値を抽出\n2. Core Web Vitals目標（LCP<2.5s, FID<100ms, CLS<0.1）と比較\n3. N+1クエリ、不要な再レンダリング、バンドルサイズ問題を検出\n4. 各問題に改善前/改善後の推定値を付与\n5. 優先度順の改善ロードマップを作成',
+      prompt:'パフォーマンス分析:\n1. .spec/constitution.mdの非機能要件（NFR）からパフォーマンス目標値を抽出\n2. docs/41_growth_intelligence.mdのパフォーマンスバジェットとCore Web Vitals目標値を確認\n3. N+1クエリ、不要な再レンダリング、バンドルサイズ問題を検出\n4. 各問題に改善前/改善後の推定値を付与\n5. 優先度順の改善ロードマップを作成',
       fmt:'## ボトルネック一覧\n| # | 箇所 | 種別 | 現状推定 | 目標値 | 改善策 | 効果 |\n|---|------|------|---------|--------|--------|------|\n\n## 改善コード例\n```typescript:path/to/file.ts\n// optimized\n```'},
     api:{icon:'🔌',label:'API統合コード生成',desc:'外部API連携コードの自動生成',
       sys:'あなたはインテグレーションエンジニアです。型安全なAPI統合コードを生成します。',
@@ -75,6 +75,26 @@ function showAILauncher(){
       sys:'あなたは国際化エンジニアです。既存コードに最小限の変更でi18n対応を追加します。',
       prompt:'国際化実装:\n1. コードからハードコードされた文字列を全て抽出\n2. 翻訳キーの命名規則を定義（scope.component.element形式）\n3. 翻訳ファイル（JSON）を日本語・英語で生成\n4. コードを翻訳関数（t()）呼び出しに置換\n5. 日付・数値・通貨のロケール対応フォーマッターを追加',
       fmt:'## 抽出された文字列\n| キー | 日本語 | English |\n|------|--------|----------|\n\n```json:locales/ja.json\n{}\n```\n```json:locales/en.json\n{}\n```\n\n## 変換後コード\n```typescript:path/to/file.ts\n// i18n-ready code\n```'},
+    growth:{icon:'📈',label:'グロース戦略',desc:'成長ファネル・KPI・価格戦略の最適化',
+      sys:'あなたはグロースエンジニアです。データドリブンな成長戦略を設計します。',
+      prompt:'グロース分析:\n1. docs/41_growth_intelligence.mdの成長ファネルとCVRベンチマークを確認\n2. 現在のスタック構成のシナジースコアを評価\n3. ドメイン別グロース方程式に基づきボトルネックを特定\n4. 5つの成長レバーを優先度順に提案\n5. 松竹梅の3段階価格戦略を設計（行動経済学: 妥協効果・アンカリング）',
+      fmt:'## ファネル分析\n| ステージ | 現状CVR | 目標CVR | 改善施策 |\n\n## 成長レバー\n| # | レバー | 期待効果 | 工数 | 優先度 |\n\n## 価格戦略\n| プラン | 価格 | 機能 | ターゲット |'},
+    reverse:{icon:'🎯',label:'ゴール逆算設計',desc:'目標からの逆算計画とギャップ分析',
+      sys:'あなたはプロジェクトストラテジストです。ゴールから逆算して計画を策定します。',
+      prompt:'ゴール逆算分析:\n1. docs/29_reverse_engineering.mdのゴール定義とリバースフローを確認\n2. docs/30_goal_decomposition.mdのゴールツリーとサブゴールを分析\n3. 現状と目標のギャップを定量的に評価\n4. 優先度マトリクスでマイルストーンを再編成\n5. 依存関係チェーンを検証し、クリティカルパスを特定',
+      fmt:'## ギャップ分析\n| 目標 | 現状 | ギャップ | 対策 | 期限 |\n\n## クリティカルパス\n```mermaid\ngantt\n```\n\n## マイルストーン\n| MS | 完了基準 | 依存 | リスク |'},
+    incident:{icon:'🚨',label:'インシデント対応',desc:'障害対応ランブック・ポストモーテム作成',
+      sys:'あなたはSREエンジニアです。インシデント対応と再発防止を専門とします。',
+      prompt:'インシデント対応:\n1. docs/34_incident_response.mdのインシデント対応フローを確認\n2. docs/25_error_logs.mdから関連する過去のエラーパターンを特定\n3. 影響範囲（ユーザー数・機能・データ）を評価\n4. 緊急対応手順（ロールバック・フェイルオーバー）を策定\n5. ポストモーテム（タイムライン・根本原因・改善アクション）をドラフト',
+      fmt:'## 影響評価\n| 項目 | 内容 |\n| 影響範囲 | ... |\n| 深刻度 | SEV1/2/3 |\n\n## 対応手順\n1. 検知 → 2. トリアージ → 3. 対応 → 4. 復旧 → 5. 振り返り\n\n## ポストモーテム\n| タイムライン | アクション | 担当 |'},
+    onboard:{icon:'🎓',label:'オンボーディング',desc:'新メンバー・AIエージェント向け引き継ぎ資料',
+      sys:'あなたはテクニカルオンボーディングスペシャリストです。新しい開発者が最速で戦力化する資料を作成します。',
+      prompt:'オンボーディング資料作成:\n1. CLAUDE.mdとAI_BRIEF.mdからプロジェクト概要を要約\n2. .spec/constitution.mdの設計原則とdocs/03_architecture.mdのアーキテクチャを図解\n3. docs/42_skill_guide.mdのスキルレベル別ワークフローを整理\n4. 最初の1週間のタスクリストを.spec/tasks.mdから抽出\n5. よくある落とし穴をdocs/37_bug_prevention.mdから抽出しFAQ化',
+      fmt:'## プロジェクト概要（5分で理解）\n\n## アーキテクチャ図\n```mermaid\n```\n\n## 最初の1週間\n| 日 | タスク | 参照ファイル |\n\n## FAQ\n| 質問 | 回答 |'},
+    cicd:{icon:'🔄',label:'CI/CD設計',desc:'デプロイパイプラインと品質ゲートの設計',
+      sys:'あなたはDevOpsエンジニアです。CI/CDパイプラインと品質ゲートを設計します。',
+      prompt:'CI/CD設計:\n1. .github/workflows/ci.ymlの現行パイプラインを分析\n2. docs/09_release_checklist.mdのリリースチェックリストを品質ゲートに変換\n3. docs/36_test_strategy.mdのテスト戦略をパイプラインステージに統合\n4. .spec/verification.mdの検証基準を自動化可能な形式に変換\n5. ブルーグリーン/カナリアデプロイ戦略を提案',
+      fmt:'## パイプライン設計\n```mermaid\nflowchart LR\n```\n\n## 品質ゲート\n| ステージ | チェック項目 | 閾値 | 失敗時 |\n\n## GitHub Actions\n```yaml\n# .github/workflows/ci.yml\n```'},
   }:{
     review:{icon:'🔍',label:'Spec Review',desc:'Find contradictions, gaps & improvements',
       sys:'You are an experienced tech lead and SDD architect.',
@@ -132,9 +152,29 @@ function showAILauncher(){
       sys:'You are an internationalization engineer. You add i18n support with minimal changes.',
       prompt:'Implement internationalization:\n1. Extract all hardcoded strings from the code\n2. Define translation key naming convention (scope.component.element)\n3. Generate translation files (JSON) for Japanese and English\n4. Replace strings with translation function (t()) calls\n5. Add locale-aware formatters for dates, numbers, currencies',
       fmt:'## Extracted Strings\n| Key | Japanese | English |\n|-----|----------|----------|\n\n```json:locales/ja.json\n{}\n```\n```json:locales/en.json\n{}\n```\n\n## Converted Code\n```typescript:path/to/file.ts\n// i18n-ready code\n```'},
+    growth:{icon:'📈',label:'Growth Strategy',desc:'Optimize growth funnels, KPIs & pricing',
+      sys:'You are a growth engineer. You design data-driven growth strategies.',
+      prompt:'Growth analysis:\n1. Review growth funnel and CVR benchmarks in docs/41_growth_intelligence.md\n2. Evaluate stack synergy score for current configuration\n3. Identify bottlenecks using domain-specific growth equation\n4. Propose 5 growth levers in priority order\n5. Design 3-tier pricing strategy (behavioral economics: compromise effect, anchoring)',
+      fmt:'## Funnel Analysis\n| Stage | Current CVR | Target CVR | Improvement |\n\n## Growth Levers\n| # | Lever | Expected Impact | Effort | Priority |\n\n## Pricing Strategy\n| Plan | Price | Features | Target |'},
+    reverse:{icon:'🎯',label:'Goal Reverse Design',desc:'Reverse-plan from goals with gap analysis',
+      sys:'You are a project strategist. You reverse-engineer plans from goals.',
+      prompt:'Goal reverse analysis:\n1. Review goal definition and reverse flow in docs/29_reverse_engineering.md\n2. Analyze goal tree and sub-goals in docs/30_goal_decomposition.md\n3. Quantitatively evaluate gap between current state and targets\n4. Reorganize milestones using priority matrix\n5. Verify dependency chain and identify critical path',
+      fmt:'## Gap Analysis\n| Goal | Current | Gap | Action | Deadline |\n\n## Critical Path\n```mermaid\ngantt\n```\n\n## Milestones\n| MS | Criteria | Dependencies | Risk |'},
+    incident:{icon:'🚨',label:'Incident Response',desc:'Create runbooks & post-mortems',
+      sys:'You are an SRE engineer specializing in incident response and prevention.',
+      prompt:'Incident response:\n1. Review incident response flow in docs/34_incident_response.md\n2. Identify related past error patterns from docs/25_error_logs.md\n3. Assess impact scope (users, features, data)\n4. Create emergency procedures (rollback, failover)\n5. Draft post-mortem (timeline, root cause, improvement actions)',
+      fmt:'## Impact Assessment\n| Item | Detail |\n| Scope | ... |\n| Severity | SEV1/2/3 |\n\n## Response Steps\n1. Detect → 2. Triage → 3. Respond → 4. Recover → 5. Review\n\n## Post-Mortem\n| Timeline | Action | Owner |'},
+    onboard:{icon:'🎓',label:'Onboarding',desc:'Handoff docs for new members & AI agents',
+      sys:'You are a technical onboarding specialist. You create materials for fastest developer ramp-up.',
+      prompt:'Create onboarding materials:\n1. Summarize project from CLAUDE.md and AI_BRIEF.md\n2. Diagram design principles from .spec/constitution.md and architecture from docs/03_architecture.md\n3. Organize skill-level workflows from docs/42_skill_guide.md\n4. Extract first-week task list from .spec/tasks.md\n5. Create FAQ from common pitfalls in docs/37_bug_prevention.md',
+      fmt:'## Project Overview (5-min read)\n\n## Architecture Diagram\n```mermaid\n```\n\n## First Week\n| Day | Task | Reference File |\n\n## FAQ\n| Question | Answer |'},
+    cicd:{icon:'🔄',label:'CI/CD Design',desc:'Design deploy pipelines & quality gates',
+      sys:'You are a DevOps engineer. You design CI/CD pipelines and quality gates.',
+      prompt:'CI/CD design:\n1. Analyze current pipeline in .github/workflows/ci.yml\n2. Convert docs/09_release_checklist.md checklist into quality gates\n3. Integrate docs/36_test_strategy.md test strategy into pipeline stages\n4. Convert .spec/verification.md criteria into automatable format\n5. Propose blue-green/canary deployment strategy',
+      fmt:'## Pipeline Design\n```mermaid\nflowchart LR\n```\n\n## Quality Gates\n| Stage | Check | Threshold | On Failure |\n\n## GitHub Actions\n```yaml\n# .github/workflows/ci.yml\n```'},
     qa:{icon:'🐛',label:_ja?'QA・バグ検出':'QA & Bug Detection',desc:_ja?'ドメイン別バグパターンとQA戦略を基にテスト計画を生成':'Generate test plan based on domain-specific bug patterns and QA strategy',
       sys:_ja?'あなたはQAエンジニアです。docs/28_qa_strategy.mdのドメイン別バグパターンを参照し、具体的なテストシナリオを設計してください。':'You are a QA engineer. Reference docs/28_qa_strategy.md domain-specific bug patterns to design concrete test scenarios.',
-      prompt:_ja?'以下の手順で実行:\n1. docs/28_qa_strategy.mdの重点領域を確認\n2. 各重点領域に対し具体的テストケースを3つ以上作成\n3. よくあるバグパターンに対する回帰テストを設計\n4. 業界横断チェックリストの該当項目を検証\n5. 優先度マトリクスに基づきテスト実行順序を決定':'Follow these steps:\n1. Review focus areas from docs/28_qa_strategy.md\n2. Create 3+ concrete test cases per focus area\n3. Design regression tests for common bug patterns\n4. Verify applicable cross-cutting checklist items\n5. Determine test execution order based on priority matrix',
+      prompt:_ja?'以下の手順で実行:\n1. docs/28_qa_strategy.mdの重点領域を確認\n2. 各重点領域に対し具体的テストケースを3つ以上作成\n3. docs/32_qa_blueprint.mdの品質ゲートチェックリストと照合\n4. docs/33_test_matrix.mdのマトリクスに基づきカバレッジを検証\n5. よくあるバグパターンに対する回帰テストを設計\n6. 業界横断チェックリストの該当項目を検証\n7. 優先度マトリクスに基づきテスト実行順序を決定':'Follow these steps:\n1. Review focus areas from docs/28_qa_strategy.md\n2. Create 3+ concrete test cases per focus area\n3. Cross-reference with docs/32_qa_blueprint.md quality gate checklist\n4. Verify coverage against docs/33_test_matrix.md matrix\n5. Design regression tests for common bug patterns\n6. Verify applicable cross-cutting checklist items\n7. Determine test execution order based on priority matrix',
       fmt:_ja?'Markdown表形式: テストID|カテゴリ|シナリオ|期待結果|優先度(CRITICAL/HIGH/MED/LOW)':'Markdown table: TestID|Category|Scenario|Expected Result|Priority(CRITICAL/HIGH/MED/LOW)'},
   };
 
@@ -185,9 +225,12 @@ function showAILauncher(){
     h+=`<div class="empty-preview-sm">${_ja?'⚠️ まず質問に回答してファイルを生成してください':'⚠️ Answer questions first to generate files'}</div>`;
   }
 
-  /* ── Prompt templates ── */
+  /* ── Prompt templates (ordered by dev lifecycle) ── */
+  const templateOrder=['review','arch','reverse','implement','api','i18n','test','qa','security','a11y','perf','metrics','refactor','debug','incident','docs','migrate','cicd','growth','onboard'];
   h+=`<div class="launch-templates"><h4>${_ja?'📋 プロンプトテンプレート':'📋 Prompt Templates'}</h4>`;
-  Object.entries(PT).forEach(([key,t])=>{
+  templateOrder.forEach(key=>{
+    const t=PT[key];
+    if(!t)return;
     h+=`<div class="launch-tpl" onclick="selectLaunchTemplate('${key}')">
       <div class="launch-tpl-icon">${t.icon}</div>
       <div class="launch-tpl-info"><strong>${t.label}</strong><span>${t.desc}</span></div>
