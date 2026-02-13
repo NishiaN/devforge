@@ -27,8 +27,97 @@ function _sanitizeHTML(html){
   Array.from(temp.children).forEach(c=>clean(c));
   return temp.innerHTML;
 }
+function _miniMD(raw){
+  if(!raw)return '';
+  const escH=(s)=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  const lines=raw.split('\n');
+  let html='',inCode=false,inList=false,listType='',inTable=false,tableHeaders=[],inQuote=false,para='';
+  const flushPara=()=>{if(para.trim()){html+='<p>'+_procInline(para.trim())+'</p>';para='';}};
+  const _procInline=(s)=>{
+    s=s.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>');
+    s=s.replace(/\*(.+?)\*/g,'<em>$1</em>');
+    s=s.replace(/`(.+?)`/g,'<code>$1</code>');
+    s=s.replace(/\[([^\]]+)\]\(([^)]+)\)/g,(m,txt,url)=>{
+      const u=url.trim().toLowerCase();
+      if(!u.startsWith('http://')&&!u.startsWith('https://')&&!u.startsWith('./')&&!u.startsWith('#'))return m;
+      return '<a href="'+escH(url)+'">'+txt+'</a>';
+    });
+    return s;
+  };
+  for(let i=0;i<lines.length;i++){
+    const line=lines[i],trim=line.trim();
+    if(inCode){
+      if(trim==='```'){html+='</code></pre>';inCode=false;}
+      else html+=escH(line)+'\n';
+      continue;
+    }
+    if(trim.startsWith('```')){
+      flushPara();inList&&(html+=listType==='ol'?'</ol>':'</ul>',inList=false);inQuote&&(html+='</blockquote>',inQuote=false);
+      const lang=trim.slice(3).trim();
+      html+='<pre><code'+(lang?' class="language-'+escH(lang)+'"':'')+'>';
+      inCode=true;continue;
+    }
+    if(trim.startsWith('####')){
+      flushPara();inList&&(html+=listType==='ol'?'</ol>':'</ul>',inList=false);inQuote&&(html+='</blockquote>',inQuote=false);
+      html+='<h4>'+_procInline(trim.slice(4).trim())+'</h4>';continue;
+    }
+    if(trim.startsWith('###')){
+      flushPara();inList&&(html+=listType==='ol'?'</ol>':'</ul>',inList=false);inQuote&&(html+='</blockquote>',inQuote=false);
+      html+='<h3>'+_procInline(trim.slice(3).trim())+'</h3>';continue;
+    }
+    if(trim.startsWith('##')){
+      flushPara();inList&&(html+=listType==='ol'?'</ol>':'</ul>',inList=false);inQuote&&(html+='</blockquote>',inQuote=false);
+      html+='<h2>'+_procInline(trim.slice(2).trim())+'</h2>';continue;
+    }
+    if(trim.startsWith('#')){
+      flushPara();inList&&(html+=listType==='ol'?'</ol>':'</ul>',inList=false);inQuote&&(html+='</blockquote>',inQuote=false);
+      html+='<h1>'+_procInline(trim.slice(1).trim())+'</h1>';continue;
+    }
+    if(/^(\-{3,}|\*{3,})$/.test(trim)){
+      flushPara();inList&&(html+=listType==='ol'?'</ol>':'</ul>',inList=false);inQuote&&(html+='</blockquote>',inQuote=false);
+      html+='<hr>';continue;
+    }
+    if(trim.startsWith('|')&&trim.endsWith('|')){
+      flushPara();inList&&(html+=listType==='ol'?'</ol>':'</ul>',inList=false);inQuote&&(html+='</blockquote>',inQuote=false);
+      const cells=trim.slice(1,-1).split('|').map(c=>c.trim());
+      if(!inTable){html+='<table><thead><tr>';cells.forEach(c=>html+='<th>'+_procInline(c)+'</th>');html+='</tr></thead><tbody>';tableHeaders=cells;inTable=true;}
+      else if(cells.every(c=>/^:?\-+:?$/.test(c))){}
+      else{html+='<tr>';cells.forEach(c=>html+='<td>'+_procInline(c)+'</td>');html+='</tr>';}
+      continue;
+    }
+    if(inTable&&!trim.startsWith('|')){html+='</tbody></table>';inTable=false;}
+    if(trim.startsWith('>')){
+      flushPara();inList&&(html+=listType==='ol'?'</ol>':'</ul>',inList=false);
+      if(!inQuote){html+='<blockquote>';inQuote=true;}
+      html+='<p>'+_procInline(trim.slice(1).trim())+'</p>';continue;
+    }
+    if(inQuote&&!trim.startsWith('>')){html+='</blockquote>';inQuote=false;}
+    const ulMatch=trim.match(/^[\-\*]\s+(\[[ x]\]\s+)?(.+)$/);
+    const olMatch=trim.match(/^\d+\.\s+(.+)$/);
+    if(ulMatch||olMatch){
+      flushPara();inQuote&&(html+='</blockquote>',inQuote=false);
+      const isCheck=ulMatch&&ulMatch[1];
+      const text=ulMatch?(ulMatch[2]||''):olMatch[1];
+      const newType=olMatch?'ol':'ul';
+      if(!inList){html+='<'+newType+'>';listType=newType;inList=true;}
+      else if(listType!==newType){html+='</'+listType+'><'+newType+'>';listType=newType;}
+      if(isCheck){const checked=ulMatch[1].includes('x');html+='<li><input type="checkbox"'+(checked?' checked':'')+' disabled> '+_procInline(text)+'</li>';}
+      else html+='<li>'+_procInline(text)+'</li>';
+      continue;
+    }
+    if(inList&&!ulMatch&&!olMatch){html+=listType==='ol'?'</ol>':'</ul>';inList=false;}
+    if(!trim){flushPara();continue;}
+    para+=(para?' ':'')+trim;
+  }
+  flushPara();
+  if(inCode)html+='</code></pre>';
+  if(inList)html+=listType==='ol'?'</ol>':'</ul>';
+  if(inQuote)html+='</blockquote>';
+  if(inTable)html+='</tbody></table>';
+  return html;
+}
 function safeMD(raw){
-  if(window._noMarked||typeof marked==='undefined')return '<pre>'+esc(raw)+'</pre>';
+  if(window._noMarked||typeof marked==='undefined')return _miniMD(raw);
   const html=marked.parse(raw);
   return _sanitizeHTML(html);
 }
@@ -76,6 +165,7 @@ function initPillarTabs(){
       else if(i===9) showFileTree(); // Reverse Engineering
       else if(i===10) showFileTree(); // Implementation Intelligence
       else if(i===11) showFileTree(); // Security Intelligence
+      else if(i===12) showFileTree(); // Strategic Intelligence
       else showFileTree();
     };tabs.appendChild(b);
   });
@@ -183,6 +273,10 @@ function buildFileTree(){
   } else if(pillar===11){ // Security Intelligence
     files.push({folder:true,name:'docs'});
     ['43_security_intelligence','44_threat_model','45_compliance_matrix','46_ai_security','47_security_testing'].forEach(f=>
+      files.push({name:'  '+f+'.md',path:'docs/'+f+'.md'}));
+  } else if(pillar===12){ // Strategic Intelligence
+    files.push({folder:true,name:'docs'});
+    ['48_industry_blueprint','49_tech_radar','50_stakeholder_strategy','51_operational_excellence','52_advanced_scenarios'].forEach(f=>
       files.push({name:'  '+f+'.md',path:'docs/'+f+'.md'}));
   }
   // Common files
