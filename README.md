@@ -32,7 +32,7 @@ npm install
 node build.js
 
 # テスト
-npm test  # 209テスト（全通過）
+npm test  # 234テスト（全通過）
 
 # 使う
 open devforge-v9.html  # ブラウザで開く
@@ -160,7 +160,47 @@ build.js        # Concatenates 43 modules → single HTML
 | compat | 45 | 互換性ルール |
 | その他 | ~21 | i18n, presets, state, techdb |
 
-**Total: 209 tests** (品質インテリジェンス・実装インテリジェンス検証含む)
+**Total: 234 tests** (品質インテリジェンス・実装インテリジェンス検証含む、全パス）
+
+## ドキュメント構造
+
+DevForge v9のドキュメントは、用途別に最適化された3つのファイルで構成されています：
+
+### 📘 CLAUDE.md (16KB)
+**コア開発ガイドライン** — 頻繁に参照する必須情報
+- アーキテクチャ & ビルドプロセス
+- Critical Rules（9つの開発ルール）
+- Common Bugs & Security Best Practices
+- Quick Reference（主要関数とデータ構造）
+
+### 📙 docs/CLAUDE-REFERENCE.md (18KB)
+**詳細リファレンス** — 深い実装時に参照
+- Key Data Structures & Helper Functions（完全版）
+- Generated Output（88+ファイルカタログ）
+- Adding New Pillars（6ステップガイド）
+- Compression Patterns（サイズ管理）
+- Writing Tests（パターン集）
+
+### 📕 docs/CLAUDE-TROUBLESHOOTING.md (5KB)
+**環境構築 & トラブルシューティング**
+- Environment（Node.js, Browser, CDN）
+- Git Workflow & Deployment（SSH/HTTPS設定）
+- GitHub Pages Deployment（設定手順）
+- Troubleshooting（よくある問題と解決策）
+
+### 📚 docs/guides/ja/
+**日本語ガイド集**（9ファイル、~540KB）
+- AIエージェントと共に開発するための完全なドキュメント体系
+- AI感のないWeb制作
+- DevForge-v9-Skills-Complete-Guide
+- FigmaAIで実現する脱AI感Web制作入門ガイド
+- Manus Skills 完全統合ガイド
+- アプリ駆動開発でプログラムのバグや機能不全箇所を洗い出す方法とは
+- アプリ駆動開発とAI拡張型エコシステムにおける包括的セキュリティ検証・強化フレームワーク
+- 全業種・全アプリタイプ対応 リバースエンジニアリング実装ガイド完全版
+- 多視点アプリ開発戦略ガイド 2026-2030
+
+**最適化成果:** CLAUDE.md を43.4KB→16.2KB（62.6%削減）、情報100%保持
 
 ## AI Coding対応
 
