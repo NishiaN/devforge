@@ -10,6 +10,16 @@ const NO_MINIFY = args.includes('--no-minify');
 const CHECK_CSS = args.includes('--check-css');
 const REPORT = args.includes('--report');
 
+// Try to load esbuild (fallback to legacy minifier if unavailable)
+let esbuild;
+let MINIFIER = 'legacy';
+try {
+  esbuild = require('esbuild');
+  MINIFIER = 'esbuild';
+} catch (e) {
+  console.warn('⚠️  esbuild not found, using legacy minifier');
+}
+
 const SRC = path.join(__dirname, 'src');
 
 // CSS files (order matters for cascading)
@@ -101,8 +111,8 @@ const js = jsFiles.map(f => {
   return `/* === ${f} === */\n${content}`;
 }).join('\n\n');
 
-// Lightweight minification (no dependencies)
-function minCSS(s) {
+// Legacy minification (fallback when esbuild unavailable)
+function legacyMinCSS(s) {
   return s
     .replace(/\/\*[\s\S]*?\*\//g, '')   // Remove comments
     .replace(/\s*([{}:;,>~+])\s*/g, '$1') // Remove spaces around selectors
@@ -110,7 +120,7 @@ function minCSS(s) {
     .replace(/\s+/g, ' ')               // Collapse whitespace
     .trim();
 }
-function minJS(s) {
+function legacyMinJS(s) {
   // NOTE: We do NOT remove block/line comments because:
   // Generated docs contain CSS/markdown with "/* ... */" and "//" inside strings
   // Regex-based removal doesn't understand string context and breaks syntax
@@ -124,6 +134,26 @@ function minJS(s) {
     .trim();
 }
 
+// esbuild-based minification (production quality)
+function minCSS(s) {
+  if (!esbuild) return legacyMinCSS(s);
+  try {
+    const result = esbuild.transformSync(s, {
+      loader: 'css',
+      minify: true,
+    });
+    return result.code;
+  } catch (e) {
+    console.warn('⚠️  esbuild CSS minification failed, using legacy fallback');
+    return legacyMinCSS(s);
+  }
+}
+function minJS(s) {
+  // esbuild transformSync adds extra overhead for concatenated modules
+  // Reverting to legacy minifier which is optimized for our use case
+  return legacyMinJS(s);
+}
+
 // Replace placeholders (with optional minification)
 html = html.replace('/* __CSS__ */', () => NO_MINIFY ? css : minCSS(css));
 html = html.replace('/* __JS__ */', () => NO_MINIFY ? js : minJS(js));
@@ -134,7 +164,8 @@ fs.writeFileSync(outPath, html);
 
 const sizeKB = (Buffer.byteLength(html) / 1024).toFixed(0);
 const moduleCount = jsFiles.length;
-console.log(`✅ Built devforge-v9.html (${sizeKB}KB, ${moduleCount} modules${NO_MINIFY ? ', unminified' : ''})`);
+const minifierInfo = NO_MINIFY ? ', unminified' : `, minified with ${MINIFIER}`;
+console.log(`✅ Built devforge-v9.html (${sizeKB}KB, ${moduleCount} modules${minifierInfo})`);
 
 // Verify: check for common issues
 const issues = [];

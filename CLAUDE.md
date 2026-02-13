@@ -7,7 +7,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 # DevForge v9.0
 
 ## Architecture
-- **45 modules** in `src/` → `node build.js` → single `devforge-v9.html` (~1156KB)
+- **45 modules** in `src/` → `node build.js` → single `devforge-v9.html` (~1166KB)
 - Vanilla JS, no frameworks. CSS custom properties. CDN: marked.js, mermaid.js, JSZip.
 - **AI Development OS**: Generates 93+ files including context intelligence, operations playbooks, business models, growth strategies, and industry-specific strategic intelligence
 - **Security-hardened**: Phase 1 (CSP, SRI, sanitization) + Phase 2 (16 XSS/injection fixes) + Pillar ⑫ (context-aware security audit prompts)
@@ -16,7 +16,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Build & Test
 ```bash
 # Build
-node build.js              # Produces devforge-v9.html (~1156KB)
+node build.js              # Produces devforge-v9.html (~1166KB)
 node build.js --no-minify  # Skip minification (debug)
 node build.js --report     # Show size report
 node build.js --check-css  # Validate CSS custom properties
@@ -47,14 +47,17 @@ npm run check              # Syntax check extracted JS
 5. **Write** to `devforge-v9.html`
 6. **Validate** size ≤1200KB (warn if exceeded)
 
-**Current Status:** 1156KB / 1200KB limit (44KB remaining budget)
+**Current Status:** 1166KB / 1200KB limit (34KB remaining budget)
 
-### ⚠️ Critical: Minification Limitations
+### ⚠️ Critical: Minification Strategy
 
-**Block/line comment removal is DISABLED** due to syntax-breaking bugs:
-- Generated docs contain CSS/markdown with `/* ... */` and `//` inside strings
-- Regex-based removal doesn't understand JavaScript string context
-- **DO NOT re-enable without context-aware parsing (e.g., Terser, esbuild)**
+**Hybrid approach using esbuild + legacy minifier:**
+- **CSS**: esbuild with `minify: true` (production quality)
+- **JavaScript**: Legacy regex-based minifier (safe for concatenated modules)
+  - esbuild's `transformSync()` adds overhead when processing large concatenated code
+  - Legacy minifier preserves comments in strings (no context-aware parsing)
+- **Comment removal is DISABLED**: Generated docs contain `/* ... */` and `//` inside strings
+- **Fallback**: If esbuild unavailable, uses legacy for both CSS and JS
 
 ### Module Load Order (Critical!)
 ```javascript

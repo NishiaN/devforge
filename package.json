@@ -14,5 +14,8 @@
   },
   "keywords": ["devforge", "sdd", "spec-driven-development", "code-generator", "ai-rules"],
   "author": "にしあん (Engineering no Tane Committee)",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "esbuild": "^0.24.0"
+  }
 }
