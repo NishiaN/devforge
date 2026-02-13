@@ -61,9 +61,9 @@ describe('Snapshot A: LMS/Supabase/Stripe', () => {
     assert.ok(count >= 68 && count <= 92, `Expected 68-92 files, got ${count}`);
   });
 
-  test('total tokens in range 12000-33000', () => {
+  test('total tokens in range 12000-34000', () => {
     const total = Object.values(files).reduce((s, v) => s + tokens(v), 0);
-    assert.ok(total >= 12000 && total <= 33000, `Expected 12K-33K tokens, got ${total}`);
+    assert.ok(total >= 12000 && total <= 34000, `Expected 12K-34K tokens, got ${total}`);
   });
 
   // Core files existence

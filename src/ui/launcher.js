@@ -36,8 +36,20 @@ function showAILauncher(){
       prompt:'以下の仕様書の技術設計を分析し、リファクタリング提案をしてください。各指摘に工数見積り(S=1-2h/M=3-8h/L=1-2日)を付与してください。\n\nチェック項目:\n- SOLID原則の違反\n- 責務の分離不足(Fat Controller等)\n- スケーラビリティの問題\n- パフォーマンスボトルネック\n- 技術的負債',
       fmt:'Markdown表:\n| 問題 | 違反している原則 | 改善案 | 工数 | 優先度 |\n|------|------------------|--------|------|--------|\n| ... | SRP | ... | M | P1 |'},
     security:{icon:'🔒',label:'セキュリティ監査',desc:'脆弱性とベストプラクティス',
-      sys:'あなたはセキュリティエンジニアです。OWASP Top 10を基準に監査します。',
-      prompt:'以下の仕様書のセキュリティ面をOWASP Top 10の各項目別にチェックしてください:\n\n1. A01:2021 – Broken Access Control\n2. A02:2021 – Cryptographic Failures\n3. A03:2021 – Injection\n4. A04:2021 – Insecure Design\n5. A05:2021 – Security Misconfiguration\n6. A06:2021 – Vulnerable Components\n7. A07:2021 – Authentication Failures\n8. A08:2021 – Data Integrity Failures\n9. A09:2021 – Logging Failures\n10. A10:2021 – SSRF\n\n事前にdocs/08_security.mdのプロジェクト固有セキュリティ設計を確認し、設計と実装の乖離もチェックしてください。\n\n各項目の状態を✅(OK)/⚠️(注意)/❌(脆弱)で評価してください。',
+      sys:'あなたはセキュリティエンジニアです。OWASP Top 10 2025を基準に監査します。',
+      prompt:'以下のセキュリティドキュメントを事前に確認してください:\n'+
+        '- docs/43_security_intelligence.md (スタック適応型チェックリスト)\n'+
+        '- docs/44_threat_model.md (STRIDE脅威分析)\n'+
+        '- docs/45_compliance_matrix.md (コンプライアンス要件)\n'+
+        '- docs/47_security_testing.md (テストテンプレート)\n\n'+
+        '仕様書のセキュリティ面をOWASP Top 10 2025の各項目別にチェックしてください:\n'+
+        '1. A01 – アクセス制御の不備\n2. A02 – セキュリティ設定ミス\n'+
+        '3. A03 – ソフトウェアサプライチェーン\n4. A04 – SSRF\n'+
+        '5. A05 – 安全でない設計\n6. A06 – 脆弱で古いコンポーネント\n'+
+        '7. A07 – 識別と認証の失敗\n8. A08 – ソフトウェアとデータの整合性の不備\n'+
+        '9. A09 – セキュリティログと監視の不備\n10. A10 – SSRF (DNS Rebinding)\n\n'+
+        'docs/08_security.mdの設計と実装の乖離もチェックしてください。\n'+
+        '各項目の状態を✅(OK)/⚠️(注意)/❌(脆弱)で評価してください。',
       fmt:'Markdown表:\n| OWASP# | 項目 | 状態 | 詳細 | 推奨対策 |\n|--------|------|------|------|----------|\n| A01 | Access Control | ⚠️ | ... | ... |'},
     docs:{icon:'📝',label:'ドキュメント補完',desc:'不足文書の特定と生成',
       sys:'あなたはテクニカルライターです。開発ドキュメントの品質を高めます。',
@@ -113,8 +125,20 @@ function showAILauncher(){
       prompt:'Analyze the technical design in these specs and propose refactoring. Assign effort estimates (S=1-2h/M=3-8h/L=1-2d) to each finding.\n\nCheck items:\n- SOLID principle violations\n- Separation of concerns issues (Fat Controllers, etc.)\n- Scalability problems\n- Performance bottlenecks\n- Technical debt',
       fmt:'Markdown table:\n| Issue | Violated Principle | Improvement | Effort | Priority |\n|-------|-------------------|-------------|--------|----------|\n| ... | SRP | ... | M | P1 |'},
     security:{icon:'🔒',label:'Security Audit',desc:'Vulnerabilities & best practices',
-      sys:'You are a security engineer. You audit against OWASP Top 10.',
-      prompt:'Check security aspects of these specs against each OWASP Top 10 item:\n\n1. A01:2021 – Broken Access Control\n2. A02:2021 – Cryptographic Failures\n3. A03:2021 – Injection\n4. A04:2021 – Insecure Design\n5. A05:2021 – Security Misconfiguration\n6. A06:2021 – Vulnerable Components\n7. A07:2021 – Authentication Failures\n8. A08:2021 – Data Integrity Failures\n9. A09:2021 – Logging Failures\n10. A10:2021 – SSRF\n\nEvaluate each item as ✅(OK)/⚠️(Warning)/❌(Vulnerable).',
+      sys:'You are a security engineer. You audit against OWASP Top 10 2025.',
+      prompt:'Reference these security documents first:\n'+
+        '- docs/43_security_intelligence.md (Stack-adaptive checklist)\n'+
+        '- docs/44_threat_model.md (STRIDE threat analysis)\n'+
+        '- docs/45_compliance_matrix.md (Compliance requirements)\n'+
+        '- docs/47_security_testing.md (Test templates)\n\n'+
+        'Check security aspects against OWASP Top 10 2025:\n'+
+        '1. A01 – Broken Access Control\n2. A02 – Security Misconfiguration\n'+
+        '3. A03 – Software Supply Chain\n4. A04 – SSRF\n'+
+        '5. A05 – Insecure Design\n6. A06 – Vulnerable and Outdated Components\n'+
+        '7. A07 – Identification and Authentication Failures\n8. A08 – Software and Data Integrity Failures\n'+
+        '9. A09 – Security Logging and Monitoring Failures\n10. A10 – SSRF (DNS Rebinding)\n\n'+
+        'Also check for drift between docs/08_security.md design and implementation.\n'+
+        'Evaluate each item as ✅(OK)/⚠️(Warning)/❌(Vulnerable).',
       fmt:'Markdown table:\n| OWASP# | Item | Status | Details | Recommended Fix |\n|--------|------|--------|---------|------------------|\n| A01 | Access Control | ⚠️ | ... | ... |'},
     docs:{icon:'📝',label:'Doc Completion',desc:'Identify missing docs & generate them',
       sys:'You are a technical writer focused on development documentation quality.',

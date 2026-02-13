@@ -110,7 +110,7 @@ function showDashboard(){
   // Project info
   h+=`<h4 class="dash-h4-mt">📋 ${_ja?'プロジェクト情報':'Project Info'}</h4><div class="dash-info">`;
   const info=_ja?[['プロジェクト名',S.projectName],['フロント',a.frontend],['バック',a.backend],['DB',a.database],['デプロイ',a.deploy],['モバイル',a.mobile],['AI自律',a.ai_auto],['決済/CMS',a.payment],['駆動開発',a.dev_methods],['スキル',a.skill_level]]:[['Project',S.projectName],['Frontend',a.frontend],['Backend',a.backend],['DB',a.database],['Deploy',a.deploy],['Mobile',a.mobile],['AI Auto',a.ai_auto],['Payment/CMS',a.payment],['Dev Methods',a.dev_methods],['Skill',a.skill_level]];
-  info.forEach(([k,v])=>{if(v&&v!==(_ja?'（未指定）':'(Unset)')&&v!=='(Unset)')h+=`<div class="exp-row"><span class="label">${k}</span><span class="val">${v}</span></div>`;});
+  info.forEach(([k,v])=>{if(v&&v!==(_ja?'（未指定）':'(Unset)')&&v!=='(Unset)')h+=`<div class="exp-row"><span class="label">${k}</span><span class="val">${esc(v)}</span></div>`;});
   h+='</div>';
   
   // Stack Synergy Score
@@ -164,8 +164,8 @@ function showDashboard(){
       const icon=c.level==='error'?'❌':c.level==='warn'?'⚠️':'ℹ️';
       const cls=c.level==='error'?'compat-error':c.level==='warn'?'compat-warn':'compat-info';
       const pair=c.pair.map(p=>{const n={frontend:'FE',backend:'BE',database:'DB',deploy:'Deploy',mobile:'Mobile',orm:'ORM',ai_auto:'AI',skill_level:'Skill',payment:'Pay',dev_methods:'DevMethod',auth:'Auth',scope_out:'Scope',data_entities:'Entity',purpose:'Purpose',mvp_features:'MVP'};return n[p]||p;}).join(' ↔ ');
-      h+=`<div class="${cls}"><span class="compat-pair">${pair}</span><span class="compat-msg">${c.msg}</span>`;
-      if(c.fix)h+=`<button class="btn btn-xs btn-s compat-fix" onclick="S.answers['${c.fix.f}']='${c.fix.s}';save();showDashboard();">→ ${c.fix.s}</button>`;
+      h+=`<div class="${cls}"><span class="compat-pair">${pair}</span><span class="compat-msg">${esc(c.msg)}</span>`;
+      if(c.fix)h+=`<button class="btn btn-xs btn-s compat-fix" onclick="S.answers['${escAttr(c.fix.f)}']='${escAttr(c.fix.s)}';save();showDashboard();">→ ${esc(c.fix.s)}</button>`;
       h+='</div>';
     });
   }
@@ -225,7 +225,7 @@ function showDashboard(){
 
   // File size distribution by Pillar
   if(Object.keys(S.files).length>0){
-    const pillarMap={'.spec/':'P1 SDD','.devcontainer/':'P2 DevContainer','mcp-config':'P3 MCP','.cursor/':'P4 AI Rules','.clinerules':'P4','.windsurfrules':'P4','.gemini/':'P4','.github/':'P4','CLAUDE.md':'P4','AGENTS.md':'P4','codex-instructions':'P4','.kiro/':'P4','skills/':'P4','roadmap/':'P7 Roadmap','docs/':'Docs','README.md':'Common','.gitignore':'Common','LICENSE':'Common','package.json':'Common','.ai/':'Common','.mcp/':'P3 MCP'};
+    const pillarMap={'.spec/':'P1 SDD','.devcontainer/':'P2 DevContainer','mcp-config':'P3 MCP','.cursor/':'P4 AI Rules','.clinerules':'P4','.windsurfrules':'P4','.gemini/':'P4','.github/':'P4','CLAUDE.md':'P4','AGENTS.md':'P4','codex-instructions':'P4','.kiro/':'P4','skills/':'P4','roadmap/':'P7 Roadmap','docs/43_security':'P12 Security','docs/44_threat':'P12 Security','docs/45_compliance':'P12 Security','docs/46_ai_security':'P12 Security','docs/47_security_testing':'P12 Security','docs/':'Docs','README.md':'Common','.gitignore':'Common','LICENSE':'Common','package.json':'Common','.ai/':'Common','.mcp/':'P3 MCP'};
     const pillarSizes={};
     Object.entries(S.files).forEach(([p,c])=>{
       let pil='Other';
@@ -234,7 +234,7 @@ function showDashboard(){
     });
     const sorted=Object.entries(pillarSizes).sort((a,b)=>b[1]-a[1]);
     const max=sorted[0]?sorted[0][1]:1;
-    const pillarColors={'P1 SDD':'var(--accent)','P2 DevContainer':'var(--accent-2)','P3 MCP':'var(--success)','P4 AI Rules':'var(--warn)','P5 Quality':'var(--danger)','P7 Roadmap':'var(--danger)','P9 Design System':'var(--accent)','P10 Reverse Eng':'var(--success)','P11 Impl Intelligence':'var(--accent-2)','Docs':'var(--layer-5)','Common':'var(--text-3)'};
+    const pillarColors={'P1 SDD':'var(--accent)','P2 DevContainer':'var(--accent-2)','P3 MCP':'var(--success)','P4 AI Rules':'var(--warn)','P5 Quality':'var(--danger)','P7 Roadmap':'var(--danger)','P9 Design System':'var(--accent)','P10 Reverse Eng':'var(--success)','P11 Impl Intelligence':'var(--accent-2)','P12 Security':'var(--danger)','Docs':'var(--layer-5)','Common':'var(--text-3)'};
     h+='<h4 class="dash-h4-mt">'+(_ja?'📦 ファイルサイズ分布':'📦 File Size Distribution')+'</h4>';
     h+='<div class="fsize-chart">';
     sorted.forEach(([pil,sz])=>{
@@ -273,6 +273,7 @@ function getHealthHTML(_ja,fileCount,answered){
     {key:'docs/26_',label:_ja?'⑨デザインシステム':'⑨Design System'},
     {key:'docs/29_',label:_ja?'⑩リバースEng':'⑩Reverse Eng'},
     {key:'docs/39_',label:_ja?'⑪実装ガイド':'⑪Impl Guide'},
+    {key:'docs/43_',label:_ja?'⑫セキュリティ':'⑫Security'},
   ];
   const fileKeys=Object.keys(S.files);
   let pillarOK=0;
@@ -442,8 +443,8 @@ function showRoadmapUI(){
   layers.forEach(l=>l.items.forEach(it=>{if(!it.wk)it.hrs=Math.round((it.hrs||8)*timeMul);}));
 
   /* ── Load saved progress ── */
-  const roadState=JSON.parse((_lsGet('devforge-road-'+S.projectName))||'{}');
-  const collapseState=JSON.parse((_lsGet('devforge-road-col-'+S.projectName))||'{}');
+  const roadState=_jp(_lsGet('devforge-road-'+S.projectName),{});
+  const collapseState=_jp(_lsGet('devforge-road-col-'+S.projectName),{});
   layers.forEach((l,li)=>l.items.forEach((item,ii)=>{item.done=!!roadState[li+'_'+ii];}));
 
   const totalItems=layers.reduce((s,l)=>s+l.items.length,0);
@@ -503,7 +504,7 @@ function showRoadmapUI(){
       const disabled=locked?' disabled':'';
       h+=`<div class="road-task ${item.done?'checked':''}${locked?' road-task-locked':''}" ${locked?'':'onclick="toggleRoadItem2(\''+id+'\',this)"'}>`;
       h+=`<input type="checkbox" ${item.done?'checked':''}${disabled} ${locked?'':'onclick="event.stopPropagation();toggleRoadItem2(\''+id+'\',this.parentElement)"'}>`;
-      h+=`<span>${item.text}</span>`;
+      h+=`<span>${esc(item.text)}</span>`;
       if(item.hrs)h+=`<span class="road-hrs-badge">${item.hrs}h</span>`;
       if(item.wk)h+=`<span class="road-week-badge">${item.wk}</span>`;
       if(item.res)h+=`<a class="road-res-btn" href="${item.res.u}" target="_blank" rel="noopener" onclick="event.stopPropagation()" title="${item.res.n}">📖</a>`;
@@ -526,7 +527,7 @@ function toggleRoadItem2(id,el){
   el.classList.toggle('checked');
   const cb=el.querySelector('input[type="checkbox"]');
   if(cb)cb.checked=el.classList.contains('checked');
-  const roadState=JSON.parse((_lsGet('devforge-road-'+S.projectName))||'{}');
+  const roadState=_jp(_lsGet('devforge-road-'+S.projectName),{});
   roadState[id]=el.classList.contains('checked');
   _lsSet('devforge-road-'+S.projectName,JSON.stringify(roadState));
   /* Update progress bar */
@@ -561,7 +562,7 @@ function toggleRoadItem2(id,el){
 }
 
 function toggleRoadCollapse(li){
-  const colState=JSON.parse((_lsGet('devforge-road-col-'+S.projectName))||'{}');
+  const colState=_jp(_lsGet('devforge-road-col-'+S.projectName),{});
   const items=$('roadItems'+li);
   if(!items)return;
   const isCollapsed=items.classList.contains('road-collapsed');

@@ -210,7 +210,7 @@ function genDocs21(a,pn){
 - DB: ${dbName}\n- Deploy: ${deployTarget}\n${G?'package.json, tsconfig.json, .env.example を生成してください。':'Generate package.json, tsconfig.json, .env.example.'}\n\`\`\`\n\n### 1-2. ${G?'データモデル定義':'Data Model'}\n\`\`\`\n${G?'以下のエンティティの'+orm+'スキーマを生成してください:':'Generate '+orm+' schema for these entities:'} ${entities.join(', ')}\n${entities.map(e=>{const cols=getEntityColumns(e,G,entities);if(!cols.length) return '';return e+': '+cols.map(c=>c.col+'('+c.type+')').join(', ');}).filter(Boolean).join('\n')}\n${G?'各エンティティにはid, created_at, updated_atを含め、リレーションも定義してください。':'Include id, created_at, updated_at for each entity with relations.'}\n
 \`\`\`\n\n## Phase 2: ${G?'コア機能開発':'Core Development'}\n\n${features.map((f,i)=>{const fd=getFeatureDetail(f);const criteriaLines=fd?(G?fd.criteria_ja:fd.criteria_en).map(c=>'  - '+c.replace(/\{auth\}/g,a.auth||'OAuth')).join('\n'):'';return `### 2-${i+1}. ${f}\n\`\`\`\n**${G?'Role':'Role'}**: ${G?'フルスタック開発者 (Frontend + Backend)':'Full-stack developer (Frontend + Backend)'}\n\n${G?f+'機能を実装してください。':'Implement '+f+'.'}\n- ${arch.isBaaS?(G?'データアクセス: '+orm+'でCRUDを実装':'Data access: Implement CRUD with '+orm):(G?'APIエンドポイント: /api/v1/ にCRUDを作成':'API endpoint: Create CRUD at /api/v1/')}\n- ${G?'UIコンポーネント: '+fe+'で画面を実装':'UI component: Build screen with '+fe}\n- ${G?'バリデーション: zodスキーマで入力検証':'Validation: zod schema for input'}\n- ${G?'テスト: Vitestでユニットテスト作成':'Test: Write unit tests with Vitest'}${criteriaLines?'\n\n'+(G?'受入条件:':'Acceptance Criteria:')+'\n'+criteriaLines:''}\n\n${G?'docs/39_implementation_playbook.mdのドメインパターンを参照してください。':'Reference domain patterns in docs/39_implementation_playbook.md.'}\n\n**${G?'出力形式':'Output Format'}**: ${G?'ファイルパス付きコードブロック。テストを含めること。':'Code blocks with file paths. Include tests.'}\n\`\`\``}).join('\n\n')}\n\n
 ## Phase 3: ${G?'テスト・デプロイ':'Test & Deploy'}\n\n### 3-1. ${G?'E2Eテスト':'E2E Tests'}\n\`\`\`\n${G?'Playwrightで以下の画面のE2Eテストを作成してください:':'Create Playwright E2E tests for these screens:'} ${screens.join(', ')}\n${G?'正常系・異常系の両方をカバーしてください。':'Cover both happy and error paths.'}\n\`\`\`\n\n### 3-2. ${G?'デプロイ設定':'Deploy Config'}\n\`\`\`\n${G?deployTarget+'へのデプロイ設定を行ってください。':'Configure deployment to '+deployTarget+'.'}\n- CI/CD: GitHub Actions\n
-- ${G?'環境変数: .env.exampleに基づいて設定':'Env vars: Based on .env.example'}\n- ${G?'プレビューデプロイの設定も含めてください。':'Include preview deploy config.'}\n\`\`\`\n\n## Phase 4: ${G?'イテレーション':'Iteration'}\n\n### 4-1. ${G?'バグ修正':'Bug Fix'}\n\`\`\`\n**${G?'Role':'Role'}**: ${G?'デバッガー兼フルスタック開発者':'Debugger & Full-stack developer'}\n\n${G?'以下のエラーを修正してください。':'Fix the following error.'}\n\n[${G?'エラー内容を貼り付け':'Paste error here'}]\n\n${G?'手順':'Steps'}:\n1. docs/25_error_logs.md ${G?'を参照し、既知の問題か確認':'to check if it is a known issue'}\n2. ${G?'根本原因を特定':'Identify root cause'}\n3. ${G?'修正とテストを実装':'Implement fix and tests'}\n4. docs/25_error_logs.md ${G?'にエラーを記録':'to log the error'}\n\n**${G?'出力形式':'Output Format'}**: ${G?'修正パッチ (diff形式) + テスト + ログエントリ':'Fix patch (diff) + tests + log entry'}\n\`\`\`\n\n### 4-2. ${G?'機能追加':'Feature Addition'}\n\`\`\`\n**${G?'Role':'Role'}**: ${G?'フルスタック開発者':'Full-stack developer'}\n\n${G?'以下の機能を追加してください。':'Add the following feature.'}\n\n[${G?'機能説明を記載':'Describe feature here'}]\n\n${G?'手順':'Steps'}:\n1. docs/23_tasks.md ${G?'を参照し、タスクを追加':'to add task'}\n2. .spec/constitution.md ${G?'の原則に準拠':'principles'}\n3. ${G?'コード + テストを実装':'Implement code + tests'}\n4. docs/24_progress.md ${G?'を更新':'to update progress'}\n\n**${G?'出力形式':'Output Format'}**: ${G?'ファイルパス付きコードブロック + タスクエントリ + 進捗更新':'Code blocks with file paths + task entry + progress update'}\n\`\`\`\n\n### 4-3. ${G?'品質チェック':'Quality Check'}\n\`\`\`\n**${G?'Role':'Role'}**: ${G?'QAエンジニア':'QA Engineer'}\n\n${G?'品質チェック:':'Quality check:'}\n- docs/32_qa_blueprint.md ${G?'の品質ゲートを実施':'quality gates'}\n- docs/28_qa_strategy.md ${G?'のドメイン別バグパターンを確認':'domain-specific bug patterns'}\n\`\`\`\n\n### 4-4. ${G?'パフォーマンス検証':'Performance Check'}\n\`\`\`\n**${G?'Role':'Role'}**: ${G?'パフォーマンスエンジニア':'Performance Engineer'}\n\n${G?'パフォーマンス検証:':'Performance check:'}\n- docs/41_growth_intelligence.md ${G?'のCWV目標値と照合':'CWV targets'}\n- docs/19_performance.md ${G?'の最適化施策を適用':'optimization strategies'}\n\`\`\``;
+- ${G?'環境変数: .env.exampleに基づいて設定':'Env vars: Based on .env.example'}\n- ${G?'プレビューデプロイの設定も含めてください。':'Include preview deploy config.'}\n\`\`\`\n\n### 3-3. ${G?'セキュリティ監査':'Security Audit'}\n\`\`\`\n**Role**: ${G?'セキュリティエンジニア':'Security Engineer'}\n\n${G?'以下のセキュリティドキュメントを参照し、プロジェクトのセキュリティ監査を実施してください:':'Reference these security documents and audit the project:'}\n- docs/43_security_intelligence.md (OWASP Top 10)\n- docs/44_threat_model.md (STRIDE)\n- docs/45_compliance_matrix.md\n- docs/46_ai_security.md (${G?'敵対的プロンプト使用':'Use adversarial prompts'})\n- docs/47_security_testing.md (${G?'テスト実行':'Execute tests'})\n\n${G?'重点チェック:':'Focus areas:'}\n1. ${G?'認可ロジック (RLS/ミドルウェア)':'Authorization logic (RLS/middleware)'}\n2. ${G?'入力バリデーション':'Input validation'}\n3. ${G?'シークレット管理':'Secrets management'}\n\`\`\`\n\n## Phase 4: ${G?'イテレーション':'Iteration'}\n\n### 4-1. ${G?'バグ修正':'Bug Fix'}\n\`\`\`\n**${G?'Role':'Role'}**: ${G?'デバッガー兼フルスタック開発者':'Debugger & Full-stack developer'}\n\n${G?'以下のエラーを修正してください。':'Fix the following error.'}\n\n[${G?'エラー内容を貼り付け':'Paste error here'}]\n\n${G?'手順':'Steps'}:\n1. docs/25_error_logs.md ${G?'を参照し、既知の問題か確認':'to check if it is a known issue'}\n2. ${G?'根本原因を特定':'Identify root cause'}\n3. ${G?'修正とテストを実装':'Implement fix and tests'}\n4. docs/25_error_logs.md ${G?'にエラーを記録':'to log the error'}\n\n**${G?'出力形式':'Output Format'}**: ${G?'修正パッチ (diff形式) + テスト + ログエントリ':'Fix patch (diff) + tests + log entry'}\n\`\`\`\n\n### 4-2. ${G?'機能追加':'Feature Addition'}\n\`\`\`\n**${G?'Role':'Role'}**: ${G?'フルスタック開発者':'Full-stack developer'}\n\n${G?'以下の機能を追加してください。':'Add the following feature.'}\n\n[${G?'機能説明を記載':'Describe feature here'}]\n\n${G?'手順':'Steps'}:\n1. docs/23_tasks.md ${G?'を参照し、タスクを追加':'to add task'}\n2. .spec/constitution.md ${G?'の原則に準拠':'principles'}\n3. ${G?'コード + テストを実装':'Implement code + tests'}\n4. docs/24_progress.md ${G?'を更新':'to update progress'}\n\n**${G?'出力形式':'Output Format'}**: ${G?'ファイルパス付きコードブロック + タスクエントリ + 進捗更新':'Code blocks with file paths + task entry + progress update'}\n\`\`\`\n\n### 4-3. ${G?'品質チェック':'Quality Check'}\n\`\`\`\n**${G?'Role':'Role'}**: ${G?'QAエンジニア':'QA Engineer'}\n\n${G?'品質チェック:':'Quality check:'}\n- docs/32_qa_blueprint.md ${G?'の品質ゲートを実施':'quality gates'}\n- docs/28_qa_strategy.md ${G?'のドメイン別バグパターンを確認':'domain-specific bug patterns'}\n\`\`\`\n\n### 4-4. ${G?'パフォーマンス検証':'Performance Check'}\n\`\`\`\n**${G?'Role':'Role'}**: ${G?'パフォーマンスエンジニア':'Performance Engineer'}\n\n${G?'パフォーマンス検証:':'Performance check:'}\n- docs/41_growth_intelligence.md ${G?'のCWV目標値と照合':'CWV targets'}\n- docs/19_performance.md ${G?'の最適化施策を適用':'optimization strategies'}\n\`\`\``;
 
   // Task decomposition (D1: GitHub Issues style)
   const taskList=[];
@@ -241,11 +241,88 @@ function genDocs21(a,pn){
   }).join('\n\n')}\n\n---\n
 **${G?'合計タスク数':'Total Tasks'}**: ${taskList.length} | **${G?'総見積り':'Total Est.'}**: ${taskList.reduce((s,t)=>s+t.hours,0)}h`;
 
+  const cspExamples=fe.includes('Next')?`**Next.js** (next.config.js):
+\`\`\`js
+module.exports = {
+  async headers() {
+    return [{
+      source: '/(.*)',
+      headers: [{
+        key: 'Content-Security-Policy',
+        value: "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; connect-src 'self' https://*.supabase.co; object-src 'none'; base-uri 'self';"
+      }]
+    }];
+  }
+};
+\`\`\``:`**Express.js** (helmet):
+\`\`\`js
+const helmet = require('helmet');
+app.use(helmet.contentSecurityPolicy({
+  directives: {
+    defaultSrc: ["'self'"],
+    scriptSrc: ["'self'"],
+    styleSrc: ["'self'", "'unsafe-inline'"],
+    imgSrc: ["'self'", "data:", "https:"],
+    connectSrc: ["'self'"],
+    objectSrc: ["'none'"],
+    baseUri: ["'self'"]
+  }
+}));
+\`\`\``;
+  const corsExamples=fe.includes('Next')?`**Next.js API Routes**:
+\`\`\`js
+export default function handler(req, res) {
+  res.setHeader('Access-Control-Allow-Origin', process.env.ALLOWED_ORIGINS || '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,PATCH,DELETE');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type,Authorization');
+  if (req.method === 'OPTIONS') return res.status(200).end();
+  // ... handler logic
+}
+\`\`\``:`**Express.js** (cors):
+\`\`\`js
+const cors = require('cors');
+const corsOptions = {
+  origin: process.env.ALLOWED_ORIGINS?.split(',') || '*',
+  credentials: true,
+  optionsSuccessStatus: 200
+};
+app.use(cors(corsOptions));
+\`\`\``;
+  const rateLimitExamples=fe.includes('Next')?`**Next.js** (upstash/ratelimit):
+\`\`\`js
+import { Ratelimit } from '@upstash/ratelimit';
+import { Redis } from '@upstash/redis';
+
+const ratelimit = new Ratelimit({
+  redis: Redis.fromEnv(),
+  limiter: Ratelimit.slidingWindow(10, '10 s')
+});
+
+export default async function handler(req, res) {
+  const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+  const { success } = await ratelimit.limit(ip);
+  if (!success) return res.status(429).json({ error: 'Too many requests' });
+  // ... handler logic
+}
+\`\`\``:`**Express.js** (express-rate-limit):
+\`\`\`js
+const rateLimit = require('express-rate-limit');
+
+const limiter = rateLimit({
+  windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS) || 60000,
+  max: parseInt(process.env.RATE_LIMIT_MAX) || 100,
+  message: 'Too many requests from this IP',
+  standardHeaders: true,
+  legacyHeaders: false
+});
+
+app.use('/api/', limiter);
+\`\`\``;
   const docTemplates=[
     ['05_api_design',G?(arch.isBaaS?'データアクセス設計書 (SDK)':'API設計書 (OpenAPI準拠)'):(arch.isBaaS?'Data Access Design (SDK)':'API Design (OpenAPI)'),`${G?'## 認証':'## Authentication'}\n- ${G?'方式':'Method'}: ${auth.tokenType}\n- ${arch.isBaaS?(G?'アクセス方式: '+orm+' SDK':'Access: '+orm+' SDK'):'ヘッダー: \\`Authorization: Bearer <token>\\`'}\n\n${arch.isBaaS?'':(G?'## 共通レスポンス':'## Common Responses')+'\\n| '+(G?'ステータス':'Status')+' | '+(G?'意味':'Meaning')+' |\\n|-----------|------|\\n| 200 | OK |\\n| 201 | Created |\\n| 400 | Bad Request |\\n| 401 | Unauthorized |\\n| 403 | Forbidden |\\n| 404 | Not Found |\\n| 422 | Validation Error |\\n| 500 | Internal Error |\\n\\n'}\n${G?(arch.isBaaS?'## データアクセスパターン':'## エンドポイント一覧'):(arch.isBaaS?'## Data Access Patterns':'## Endpoints')}\n${apiEndpoints}`],
     ['06_screen_design',G?'画面設計書 & 画面遷移図':'Screen Design & Flow',`${G?'## 画面遷移図':'## Screen Flow'}\n\n\`\`\`mermaid\nflowchart LR\n${sNodes}\n${sLinks.join('\n')}\n\`\`\`\n\n${G?'## 画面一覧':'## Screen List'}\n${screens.map((s,i)=>{const isPublic=s.match(/ログイン|Login|Register|登録|ランディング|Landing|LP|トップ|Top|ホーム|Home|About|概要|利用規約|Terms|料金|Pricing|お問い合わせ|Contact/i);const comps=getScreenComponents(s,G);const compList=comps?'\n- '+(G?'主要コンポーネント':'Key Components')+':\n'+comps.map(c=>'  - '+c).join('\n'):'\n- '+(G?'コンポーネント':'Components')+': Header, '+(isPublic?'':'Sidebar, ')+'Content, Footer';return `\n### ${i+1}. ${s}\n- URL: \`${(genRoutes(a).find(r=>r.name===s.replace(/\(P[0-2]\)/gi,'').trim())||{path:'/'+(s.toLowerCase().replace(/[^a-z0-9]/g,'-'))}).path}\`\n- ${G?'認証':'Auth'}: ${isPublic?(G?'不要':'Not required'):(G?'必要':'Required')}${compList}`;}).join('\n')}`],
     ['07_test_cases',G?'テストケース定義書':'Test Cases',`${G?'## テスト戦略':'## Test Strategy'}\n- ${G?'ユニット':'Unit'}: Vitest (80%+)\n- E2E: Playwright\n- ${G?'コンポーネント':'Component'}: Testing Library\n\n${G?'## テストケースマトリクス':'## Test Case Matrix'}\n${testMatrix}\n\n${G?'## 実行コマンド':'## Run Commands'}\n\`\`\`bash\nnpm run test\nnpm run test:e2e\nnpm run test:coverage\n\`\`\``],
-    ['08_security',G?'セキュリティ設計書':'Security Design',`${G?'## セキュリティ対策':'## Security Measures'}\n- ${G?'認証':'Auth'}: ${auth.sot}\n- HTTPS${G?'必須':' required'}\n- CSP (Content Security Policy)\n- Rate Limiting\n- Input Validation${hasAdmin?'\n\n'+(G?'## RBAC（ロールベースアクセス制御）':'## RBAC (Role-Based Access Control)')+'\n\n| '+(G?'ロール':'Role')+' | '+(G?'権限':'Permissions')+' |\n|--------|----------|\n| user | '+(G?'自分のデータの読取・更新':'Read/update own data')+' |\n'+(hasInstructor?'| instructor | '+(G?'コンテンツ作成・編集・自分の受講者管理':'Create/edit content, manage own students')+' |\n':'')+'| admin | '+(G?'全データの読取・更新・削除、ユーザー管理、システム設定':'Full CRUD, user management, system settings')+' |\n\n'+(G?'### RBACポリシー実装':'### RBAC Policy Implementation')+'\n- profiles.role '+(G?'カラムでロール管理':'column for role management')+'\n- '+(arch.isBaaS&&be.includes('Supabase')?'RLS: auth.uid() = user_id AND role check via profiles':'Middleware: role check before protected routes')+'\n- '+(G?'管理画面ルート':'Admin routes')+': /admin/ → role=admin '+(G?'チェック必須':'check required'):''}${hasPay&&(a.payment||'').includes('Stripe')?'\n\n'+(G?'## 決済セキュリティ':'## Payment Security')+'\n- Stripe Webhook '+(G?'署名検証':'signature verification')+' (STRIPE_WEBHOOK_SECRET)\n- '+(G?'冪等キーによる重複処理防止':'Idempotency key for duplicate prevention')+'\n- PCI DSS '+(G?'準拠':'compliance')+' (Stripe Elements '+(G?'使用で対応':'handles this')+')\n- '+(G?'サーバーサイドのみで':'Server-side only for')+' stripe.customers / stripe.subscriptions '+(G?'操作':'operations'):''}`],
+    ['08_security',G?'セキュリティ設計書':'Security Design',`${G?'## セキュリティ対策':'## Security Measures'}\n- ${G?'認証':'Auth'}: ${auth.sot}\n- HTTPS${G?'必須':' required'}\n- CSP (Content Security Policy)\n- CORS (Cross-Origin Resource Sharing)\n- Rate Limiting\n- Input Validation${hasAdmin?'\n\n'+(G?'## RBAC（ロールベースアクセス制御）':'## RBAC (Role-Based Access Control)')+'\n\n| '+(G?'ロール':'Role')+' | '+(G?'権限':'Permissions')+' |\n|--------|----------|\n| user | '+(G?'自分のデータの読取・更新':'Read/update own data')+' |\n'+(hasInstructor?'| instructor | '+(G?'コンテンツ作成・編集・自分の受講者管理':'Create/edit content, manage own students')+' |\n':'')+'| admin | '+(G?'全データの読取・更新・削除、ユーザー管理、システム設定':'Full CRUD, user management, system settings')+' |\n\n'+(G?'### RBACポリシー実装':'### RBAC Policy Implementation')+'\n- profiles.role '+(G?'カラムでロール管理':'column for role management')+'\n- '+(arch.isBaaS&&be.includes('Supabase')?'RLS: auth.uid() = user_id AND role check via profiles':'Middleware: role check before protected routes')+'\n- '+(G?'管理画面ルート':'Admin routes')+': /admin/ → role=admin '+(G?'チェック必須':'check required'):''}${hasPay&&(a.payment||'').includes('Stripe')?'\n\n'+(G?'## 決済セキュリティ':'## Payment Security')+'\n- Stripe Webhook '+(G?'署名検証':'signature verification')+' (STRIPE_WEBHOOK_SECRET)\n- '+(G?'冪等キーによる重複処理防止':'Idempotency key for duplicate prevention')+'\n- PCI DSS '+(G?'準拠':'compliance')+' (Stripe Elements '+(G?'使用で対応':'handles this')+')\n- '+(G?'サーバーサイドのみで':'Server-side only for')+' stripe.customers / stripe.subscriptions '+(G?'操作':'operations'):''}\n\n${G?'## CSPヘッダー設定例':'## CSP Header Examples'}\n\n${cspExamples}\n\n${G?'## CORS設定例':'## CORS Configuration Examples'}\n\n${corsExamples}\n\n${G?'## レート制限実装例':'## Rate Limiting Implementation'}\n\n${rateLimitExamples}`],
     ['09_release_checklist',G?'リリースチェックリスト':'Release Checklist',`## ${G?'デプロイ先':'Deploy Target'}: ${deployTarget}\n\n### 1. ${G?'コード品質':'Code Quality'}\n${(G?['TypeScript 型エラー 0件','ESLint エラー 0件','全テストパス','カバレッジ 80%+']:['TypeScript: 0 type errors','ESLint: 0 errors','All tests pass','Coverage 80%+']).map(c=>'- [ ] '+c).join('\n')}\n\n### 2. ${G?'セキュリティ':'Security'}\n
 ${(G?['環境変数にシークレット未ハードコード','CORS設定','CSP設定','認証・認可テスト完了']:['No hardcoded secrets in env vars','CORS config','CSP config','Auth/authz tests done']).map(c=>'- [ ] '+c).join('\n')}\n\n### 3. ${G?'インフラ':'Infrastructure'} (${deployTarget})\n${deployChecks.map(c=>'- [ ] '+c).join('\n')}\n\n### 4. ${G?'データベース':'Database'} (${dbName})\n${dbChecks.map(c=>'- [ ] '+c).join('\n')}\n\n### 5. ${G?'パフォーマンス':'Performance'}\n
 ${(G?['Lighthouse 90+','LCP < 2.5s','画像最適化','バンドルサイズ確認']:['Lighthouse 90+','LCP < 2.5s','Image optimization','Bundle size check']).map(c=>'- [ ] '+c).join('\n')}\n\n### 6. ${G?'モニタリング':'Monitoring'}\n${(G?['Sentry設定','アクセスログ','アラート閾値']:['Sentry setup','Access logs','Alert thresholds']).map(c=>'- [ ] '+c).join('\n')}`],
@@ -521,9 +598,28 @@ _(${G?'追記してください':'Add entries here'})_`],
     '          node-version: '+nodeV,
     '          cache: npm',
     '      - run: npm ci',
+    '      - run: npm audit --audit-level=high',
     '      - run: npm run lint',
     '      - run: npm run test',
     '      - run: '+buildPrefix+buildCmd,
+    '',
+    '  security:',
+    '    runs-on: ubuntu-latest',
+    '    steps:',
+    '      - uses: actions/checkout@v4',
+    '        with:',
+    '          fetch-depth: 0',
+    '      # Secret Scanning',
+    '      - uses: gitleaks/gitleaks-action@v2',
+    '        env:',
+    '          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}',
+    '      # Dependency Review',
+    '      - uses: actions/dependency-review-action@v4',
+    '        if: github.event_name == \'pull_request\'',
+    '      # SLSA Build Provenance',
+    '      - uses: actions/attest-build-provenance@v2',
+    '        with:',
+    '          subject-path: \'dist/**\'',
     ''
   ].join('\n');
 }

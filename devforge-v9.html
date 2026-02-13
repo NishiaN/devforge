@@ -3,9 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self' https://cdnjs.cloudflare.com; object-src 'none'; base-uri 'self'; form-action 'self';">
 <title>DevForge v9.0 — AI駆動開発 統合プラットフォーム</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js" onerror="window._noZip=true"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js" onerror="window._noMarked=true"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js" integrity="sha384-UBZ+2NGMKQvsHxr0fjQs4yHKvnD+Pkbf0Y7H2RpRvGkxzNPWoYEOEtfyhGcMWR5x" crossorigin="anonymous" onerror="window._noZip=true"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js" integrity="sha384-+XE27VkbQs3RFsRbfSTqGwTCJY5BnXIBp6qqRDOJPkzv7BK9e8GfHmLv2CJ6jvvP" crossorigin="anonymous" onerror="window._noMarked=true"></script>
 <style>
 :root{--bg:#0c0e13;--bg-1:#1e1e2e;--bg-2:#13161d;--bg-3:#1a1e28;--bg-4:#222733;--bg-s:var(--bg-2);--bd:var(--border);--fg:var(--text);--surface:#282e3c;--border:#2e3446;--border-light:#3a4158;--text:#e8ecf4;--text-2:#a4adc0;--text-3:#6b7590;--accent:#3b82f6;--accent-soft:rgba(59,130,246,0.12);--accent-2:#22d3ee;--success:#34d399;--warn:#fbbf24;--warn-soft:rgba(251,191,36,0.1);--warn-text:#fbbf24;--danger:#f87171;--layer-1:#3b82f6;--layer-2:#8b5cf6;--layer-3:#10b981;--layer-3h:#f59e0b;--layer-4:#ef4444;--layer-5:#06b6d4;--layer-6:#f97316;--layer-7:#a855f7;--chip-bg:#1e2230;--chip-border:#2e3446;--radius:10px;--radius-lg:16px;--mono:'IBM Plex Mono',monospace;--sans:'IBM Plex Sans JP',-apple-system,sans-serif}.compat-fixall{margin-left:auto}.compat-fixlv{margin-left:4px}[data-theme="light"]{--bg:#f5f7fa;--bg-1:#e8ecf0;--bg-2:#fff;--bg-3:#edf0f5;--bg-4:#e2e6ed;--bg-s:var(--bg-2);--bd:var(--border);--fg:var(--text);--surface:#d8dce5;--border:#cdd2dc;--border-light:#bfc5d2;--text:#1e222d;--text-2:#4a5168;--text-3:#8690a6;--accent:#2563eb;--accent-soft:rgba(37,99,235,0.08);--accent-2:#0891b2;--success:#059669;--warn:#d97706;--warn-soft:rgba(217,119,6,0.06);--warn-text:#b45309;--danger:#dc2626;--layer-1:#2563eb;--layer-2:#7c3aed;--layer-3:#059669;--layer-3h:#d97706;--layer-4:#dc2626;--layer-5:#0891b2;--layer-6:#ea580c;--layer-7:#9333ea;--chip-bg:#e8ecf4;--chip-border:#d0d5e0}*{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth}body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased}::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border-light);border-radius:3px}.app{max-width:1440px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column}.topbar{display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:50px;border-bottom:1px solid var(--border);background:var(--bg-2);position:sticky;top:0;z-index:100}.topbar-left{display:flex;align-items:center;gap:16px;min-width:0;flex:1}.topbar-brand{display:flex;align-items:center;gap:10px;flex-shrink:0}.topbar-brand svg{width:20px;height:20px}.topbar-brand span{font-weight:700;font-size:14px;letter-spacing:-0.03em}.topbar-brand small{font-size:11px;color:var(--text-3);font-weight:400;margin-left:2px}.topbar-right{display:flex;gap:6px;flex-shrink:0}.pstrip{height:3px;background:var(--bg-3);position:sticky;top:50px;z-index:99}.pstrip-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-2));transition:width .6s cubic-bezier(.4,0,.2,1);box-shadow:0 0 12px var(--accent)}.btn{padding:7px 16px;border:none;border-radius:7px;font-weight:600;font-size:12px;cursor:pointer;font-family:var(--sans);transition:all .15s;display:inline-flex;align-items:center;gap:5px;white-space:nowrap}.btn-p{background:var(--accent);color:#fff}.btn-p:hover{background:#2563eb;transform:translateY(-1px);box-shadow:0 4px 12px rgba(59,130,246,0.3)}.btn-s{background:var(--bg-3);color:var(--text-2);border:1px solid var(--border)}.btn-s:hover{background:var(--bg-4);color:var(--text)}.btn-d{background:var(--success);color:#fff}.btn-d:hover{background:#059669}.btn-g{background:transparent;color:var(--text-3)}.btn-g:hover{color:var(--text)}.btn-sm{padding:5px 12px;font-size:11px}.btn-xs{padding:3px 10px;font-size:10px}.theme-btn{background:none;border:none;font-size:16px;cursor:pointer;padding:4px 8px;border-radius:6px;transition:background .15s;color:var(--text)}.theme-btn:hover{background:var(--bg-3)}.onboard{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 24px;gap:24px;text-align:center}.onboard h1{font-size:28px;font-weight:700;letter-spacing:-0.03em;background:linear-gradient(135deg,var(--accent),var(--accent-2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}.onboard p{color:var(--text-2);font-size:14px;max-width:560px;line-height:1.7}.info-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;max-width:760px;width:100%}.icard{background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius);padding:16px;text-align:left}.icard h4{font-size:13px;margin-bottom:4px}.icard p{font-size:11px;color:var(--text-3);line-height:1.5}.pillars-badge{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;max-width:700px}.pbadge{padding:4px 12px;border-radius:20px;font-size:11px;font-weight:600;background:var(--bg-3);color:var(--text-2);border:1px solid var(--border)}.start-zone{display:flex;flex-direction:column;gap:12px;align-items:center;width:100%;max-width:560px}.nameIn{width:100%;padding:12px 16px;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg-3);color:var(--text);font-size:14px;font-family:var(--sans);outline:none;transition:border-color .2s}.nameIn:focus{border-color:var(--accent)}.preset-row{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}.prchip{padding:5px 14px;border-radius:20px;font-size:11px;font-weight:600;background:var(--chip-bg);color:var(--text-2);border:1px solid var(--chip-border);cursor:pointer;transition:all .15s}.prchip:hover{border-color:var(--accent);color:var(--accent)}.prchip.on{background:var(--accent-soft);color:var(--accent);border-color:var(--accent)}.prchip-cmp{background:color-mix(in srgb,var(--warn) 10%,transparent)!important;color:var(--warn)!important;border-color:color-mix(in srgb,var(--warn) 30%,transparent)!important}.cmp-selectors{display:flex;align-items:center;gap:8px;margin-bottom:16px}.cmp-selectors select{flex:1;padding:8px;border-radius:var(--radius);border:1px solid var(--border);background:var(--bg-1);color:var(--text);font-size:12px}.cmp-vs{font-weight:700;color:var(--warn);font-size:13px}.cmp-table{width:100%;font-size:11px;border-collapse:collapse}.cmp-table th{text-align:left;padding:6px 8px;background:var(--bg-3);font-size:11px}.cmp-table td{padding:5px 8px;border-bottom:1px solid var(--border)}.cmp-label{font-weight:600;color:var(--text-3);min-width:70px}.cmp-diff td:not(.cmp-label){background:color-mix(in srgb,var(--warn) 6%,transparent)}.ws{display:flex;flex:1;overflow:hidden}#ws{flex:1;flex-direction:column;overflow:hidden}.panel-c{flex:1;display:flex;flex-direction:column;border-right:1px solid var(--border);min-width:0;overflow:hidden}.panel-p{width:50%;display:flex;flex-direction:column;min-width:0;overflow:hidden}.badge{font-size:11px;padding:2px 10px;border-radius:10px;background:var(--accent-soft);color:var(--accent);font-weight:600}.cbody{flex:1;overflow-y:auto;padding:16px 20px;display:flex;flex-direction:column;gap:12px}.izone{border-top:1px solid var(--border);background:var(--bg-2);flex-shrink:0}.msg{display:flex;gap:10px;animation:fadeUp .3s ease}@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}.prev-head{display:flex;align-items:center;gap:8px;padding:12px 20px;border-bottom:1px solid var(--border);background:var(--bg-2)}.prev-head h3{font-size:14px;font-weight:600;flex:1}.prev-tabs{display:flex;gap:2px;background:var(--bg-3);border-radius:8px;padding:2px}.ptab{padding:4px 12px;border-radius:6px;font-size:11px;font-weight:600;color:var(--text-3);cursor:pointer;transition:all .15s;border:none;background:none;font-family:var(--sans)}.ptab.on{background:var(--bg-2);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,0.1)}.prev-body{flex:1;overflow-y:auto;padding:20px}.prev-body pre{background:var(--bg-3);border:1px solid var(--border);border-radius:var(--radius);padding:16px;font-family:var(--mono);font-size:12px;line-height:1.6;overflow-x:auto;white-space:pre-wrap;word-break:break-word}.file-tree{list-style:none;font-size:12px;font-family:var(--mono)}.ft-search{margin-bottom:8px}.ft-search input{width:100%;padding:6px 10px;font-size:11px;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg-2);color:var(--text);font-family:var(--sans);outline:none}.ft-search input:focus{border-color:var(--accent)}.file-tree li{padding:3px 0;color:var(--text-2);cursor:pointer}.file-tree li:hover{color:var(--accent)}.file-tree li.folder{color:var(--warn);font-weight:600}.file-tree li.active{color:var(--accent);font-weight:600}.md-rendered{overflow:auto;max-height:calc(100vh - 200px);font-size:12px;line-height:1.6;padding:8px}.md-rendered h1,.md-rendered h2,.md-rendered h3{color:var(--text);margin:16px 0 8px}.md-rendered h1{font-size:16px;border-bottom:1px solid var(--border);padding-bottom:6px}.md-rendered h2{font-size:14px}.md-rendered h3{font-size:13px}.md-rendered p,.md-rendered li{color:var(--text-2);font-size:12px}.md-rendered pre{background:var(--bg-2);padding:10px;border-radius:6px;overflow-x:auto;font-size:11px}.md-rendered code{font-family:var(--mono);font-size:11px;background:var(--bg-2);padding:1px 4px;border-radius:3px}.md-rendered pre code{background:none;padding:0}.md-rendered table{width:100%;border-collapse:collapse;font-size:11px;margin:8px 0}.md-rendered th,.md-rendered td{border:1px solid var(--border);padding:4px 8px;text-align:left}.md-rendered th{background:var(--bg-2);font-weight:600;color:var(--text)}.md-rendered .mermaid{background:var(--bg-2);padding:16px;border-radius:8px;margin:12px 0;text-align:center;overflow-x:auto}.md-rendered .mermaid svg{max-width:100%}.pillar-tabs{display:flex;gap:2px;flex-wrap:wrap;padding:8px 16px;background:var(--bg-2);border-bottom:1px solid var(--border)}.piltab{padding:4px 10px;border-radius:6px;font-size:10px;font-weight:600;color:var(--text-3);cursor:pointer;border:none;background:none;font-family:var(--sans);transition:all .15s}.piltab.on{background:var(--accent-soft);color:var(--accent)}.piltab:hover{color:var(--text)}.ctx-bar{height:6px;background:var(--bg-4);border-radius:3px;margin-top:8px;overflow:hidden}.ctx-bar-fill{height:100%;border-radius:3px;transition:width .6s}.road-week{font-size:10px;color:var(--text-3);font-weight:600;padding:2px 8px;background:var(--bg-4);border-radius:10px;flex-shrink:0}.mobtabs{display:none;border-bottom:1px solid var(--border);background:var(--bg-2)}.mobtab{flex:1;text-align:center;padding:10px;font-size:12px;font-weight:600;color:var(--text-3);cursor:pointer}.mobtab.on{color:var(--accent);border-bottom:2px solid var(--accent)}.export-summary{display:flex;gap:16px;padding:12px 20px;font-size:12px;font-weight:600;color:var(--text-2);border-bottom:1px solid var(--border);flex-wrap:wrap}.export-summary span{display:flex;align-items:center;gap:4px}.qbar{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);display:flex;gap:6px;padding:8px 12px;background:var(--bg-2);border:1px solid var(--border);border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,0.3);z-index:90;align-items:center}.qbar-btn{padding:6px 12px;border:none;border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;background:var(--bg-3);color:var(--text);transition:all .15s;white-space:nowrap}.qbar-btn:hover{background:var(--accent-soft);color:var(--accent)}.qbar-x{padding:4px 8px;border:none;background:none;color:var(--text-3);cursor:pointer;font-size:12px}.qbar-x:hover{color:var(--danger)}.export-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;padding:20px}.export-card{background:var(--bg-3);border:1px solid var(--border);border-radius:var(--radius);padding:20px;text-align:center;cursor:pointer;transition:all .15s}.export-card-danger{border-color:color-mix(in srgb,var(--danger) 25%,transparent);opacity:0.7}.export-card-danger:hover{border-color:var(--danger);background:color-mix(in srgb,var(--danger) 6%,transparent);opacity:1}.export-card-regen{border-color:var(--accent);border-style:dashed}.export-card:hover{border-color:var(--accent);transform:translateY(-2px)}.export-card .icon{font-size:32px;margin-bottom:8px}.export-card h4{font-size:13px;margin-bottom:4px}.export-card p{font-size:11px;color:var(--text-3)}.help-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:200;display:none;align-items:center;justify-content:center}.help-overlay.show{display:flex}.help-modal{background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius-lg);width:90vw;max-width:800px;height:80vh;display:flex;overflow:hidden}.help-nav{width:200px;background:var(--bg-3);border-right:1px solid var(--border);overflow-y:auto;padding:12px 0;flex-shrink:0}.help-nav a{display:block;padding:8px 16px;font-size:12px;color:var(--text-2);text-decoration:none;transition:all .15s}.help-nav a:hover{background:var(--bg-4);color:var(--text)}.help-nav a.on{background:var(--accent-soft);color:var(--accent);font-weight:600}.help-search{width:calc(100% - 16px);margin:8px;padding:6px 10px;font-size:11px;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg-1,var(--bg));color:var(--text);outline:none}.help-search:focus{border-color:var(--accent)}#helpPopup{position:fixed;z-index:300;background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius);padding:14px 18px;max-width:340px;box-shadow:0 8px 32px rgba(0,0,0,0.25);font-size:12px;color:var(--text)}#helpPopup h4{font-size:13px;margin-bottom:6px;color:var(--text)}#helpPopup p{font-size:12px;color:var(--text-2);line-height:1.6;margin-bottom:6px}.hp-close{position:absolute;top:6px;right:8px;background:none;border:none;color:var(--text-3);cursor:pointer;font-size:14px;padding:2px 6px;border-radius:4px}.hp-close:hover{background:var(--bg-3);color:var(--text)}.hp-ex{background:var(--bg-3);padding:8px 10px;border-radius:6px;font-size:11px;color:var(--accent);line-height:1.5}.hp-link{display:block;margin-top:8px;font-size:11px;color:var(--accent);text-decoration:none}.hp-link:hover{text-decoration:underline}.help-nav a.dim{opacity:0.3;pointer-events:none}mark{background:var(--accent-soft);color:var(--accent);padding:0 2px;border-radius:2px}.help-body{flex:1;overflow-y:auto;padding:24px}.help-body h2{font-size:18px;margin-bottom:12px}.help-body h3{font-size:14px;margin:16px 0 8px;color:var(--accent)}.help-body p{font-size:13px;line-height:1.7;margin-bottom:10px;color:var(--text-2)}.help-body code{font-family:var(--mono);background:var(--bg-3);padding:2px 6px;border-radius:4px;font-size:12px}.help-body table{width:100%;border-collapse:collapse;margin:10px 0;font-size:12px}.help-body th,.help-body td{padding:8px 12px;border:1px solid var(--border);text-align:left}.help-body th{background:var(--bg-3);font-weight:600}.hg-flow{display:flex;align-items:center;gap:6px;padding:10px;background:var(--bg-3);border-radius:8px;margin:8px 0;overflow-x:auto}.hg-n{padding:6px 8px;border-radius:6px;font-size:10px;text-align:center;font-weight:600;line-height:1.4;white-space:nowrap}.hg-a{color:var(--text-3);font-size:12px;flex-shrink:0}.hg-b{background:var(--accent-soft);color:var(--accent);border:1px solid color-mix(in srgb,var(--accent) 25%,transparent)}.hg-c{background:color-mix(in srgb,var(--accent-2) 10%,transparent);color:var(--accent-2);border:1px solid color-mix(in srgb,var(--accent-2) 25%,transparent)}.hg-p{background:color-mix(in srgb,#a855f7 10%,transparent);color:#a855f7;border:1px solid color-mix(in srgb,#a855f7 25%,transparent)}.hg-g{background:color-mix(in srgb,var(--success) 10%,transparent);color:var(--success);border:1px solid color-mix(in srgb,var(--success) 25%,transparent)}.app-footer{text-align:center;padding:16px;font-size:11px;color:var(--text-3);border-top:1px solid var(--border)}@media(max-width:1024px){.panel-p{width:45%}.panel-c{flex:1}.ctx-summary{grid-template-columns:repeat(2,1fr)}.model-grid{grid-template-columns:repeat(2,1fr)}.exp-compare{grid-template-columns:1fr}.onboard h1{font-size:24px}.info-grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:768px){.topbar{padding:0 12px}.mobtabs{display:flex}.ws{flex-direction:column}.panel-p{width:100%;display:none}.panel-p.show{display:flex}.panel-c.hide{display:none}.help-modal{flex-direction:column;width:95vw;height:90vh}.help-nav{width:100%;height:auto;max-height:120px;border-right:none;border-bottom:1px solid var(--border);display:flex;overflow-x:auto;padding:8px}.help-nav a{white-space:nowrap}.info-grid{grid-template-columns:1fr 1fr}.onboard h1{font-size:22px}.exp-select{flex-direction:column;gap:8px}.exp-select select{width:100%}.exp-ranking{gap:6px}.exp-rank-row{flex-wrap:wrap}.ctx-summary{grid-template-columns:1fr 1fr}.model-grid{grid-template-columns:1fr}.dash-fbar-name{width:70px;font-size:10px}.dg{padding:8px 10px;margin-bottom:4px}.dg-bar{grid-template-columns:55px 1fr 24px;gap:4px}.dg-lbl{font-size:10px}.dg-track{height:12px}.dg-cnt{font-size:10px}.launch-stats{grid-template-columns:1fr 1fr}.launch-folders{gap:4px}.launch-models{grid-template-columns:1fr 1fr}.launch-tpl{padding:8px}.tech-table th:nth-child(3),.tech-table td:nth-child(3){display:none}.tech-filter{flex-direction:column;gap:6px}.tech-filter select,.tech-filter input{width:100%}.diff-header{flex-direction:column;gap:4px}.diff-body{font-size:10px}.kb-modal{width:95vw;padding:16px}.road-layer h3{font-size:12px;padding:6px 10px}.road-task{font-size:11px;padding:6px 8px}.road-progress{padding:12px}.pill-drawer{display:none}}.spin{animation:spin 1s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}.tech-table{width:100%;border-collapse:collapse;font-size:11px}.tech-table th{position:sticky;top:0;background:var(--bg-2);padding:6px 8px;text-align:left;font-weight:600;border-bottom:2px solid var(--accent);font-size:10px;text-transform:uppercase;letter-spacing:0.05em}.tech-table td{padding:5px 8px;border-bottom:1px solid var(--border)}.tech-table tr:hover{background:var(--bg-3)}.tech-filter{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}.tech-filter select,.tech-filter input{padding:5px 10px;border:1px solid var(--border);border-radius:6px;background:var(--bg-3);color:var(--text);font-size:11px;font-family:var(--sans)}.req-badge{display:inline-block;padding:1px 6px;border-radius:8px;font-size:9px;font-weight:700}.ctx-summary{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}.ctx-stat{background:var(--bg-3);border:1px solid var(--border);border-radius:var(--radius);padding:12px;text-align:center}.ctx-stat .num{font-size:24px;font-weight:700;color:var(--accent)}.ctx-stat .lbl{font-size:10px;color:var(--text-3);margin-top:4px}.model-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}.model-card{background:var(--bg-3);border:1px solid var(--border);border-radius:var(--radius);padding:12px}.model-card h4{font-size:12px;margin-bottom:6px}.model-card .fit{font-size:20px;font-weight:700}.fit-high{color:var(--success)}.fit-mid{color:var(--warn)}.fit-low{color:var(--danger)}.dash-head{margin-bottom:12px}.dash-head h3{font-size:14px;margin-bottom:4px}.dash-head p{font-size:11px;color:var(--text-3)}.dash-h4{font-size:12px;margin-bottom:8px}.dash-h4-mt{font-size:12px;margin:16px 0 8px}.dash-model-ctx{font-size:11px;color:var(--text-3);margin-top:4px}.dash-model-pct{font-size:10px;color:var(--text-3);margin-top:2px}.dash-fbar-row{display:flex;align-items:center;gap:8px;margin-bottom:4px}.dash-fbar{flex:1;height:8px;background:var(--bg-4);border-radius:4px;overflow:hidden}.dash-fbar-fill{height:100%;background:var(--accent);border-radius:4px}.dash-fbar-size{font-size:10px;color:var(--text-3);width:60px;text-align:right}.dg{background:var(--bg-2);border-radius:8px;padding:10px 12px;margin-bottom:6px;border:1px solid var(--border)}.dg-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}.dg-nm{font-size:11px;font-weight:600}.dg-sub{font-size:16px;font-weight:700;color:var(--accent)}.dg-bar{display:grid;grid-template-columns:68px 1fr 28px;align-items:center;gap:6px;margin-bottom:3px}.dg-lbl{font-size:11px;color:var(--text-2);text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.dg-track{height:14px;background:var(--bg-4);border-radius:3px;overflow:hidden}.dg-fill{height:100%;border-radius:3px;transition:width 0.4s}.dg-cnt{font-size:11px;font-weight:700;text-align:right}.dg-core .dg-fill{background:linear-gradient(90deg,var(--layer-2),color-mix(in srgb,var(--layer-2) 60%,#fff))}.dg-ai .dg-fill{background:linear-gradient(90deg,var(--accent-2),color-mix(in srgb,var(--accent-2) 60%,#fff))}.dg-infra .dg-fill{background:linear-gradient(90deg,var(--layer-5),color-mix(in srgb,var(--layer-5) 60%,#fff))}.dg-qa .dg-fill{background:linear-gradient(90deg,var(--warn),#fbbf24)}.dg-total{display:flex;justify-content:space-between;align-items:center;margin-top:8px;padding-top:6px;border-top:1px solid var(--border);font-size:11px;color:var(--text-2)}.dg-total strong{font-size:16px;color:var(--text)}.dash-total{font-size:11px;color:var(--text-3);margin-top:6px}.compat-ok{background:var(--bg-2);border:1px solid var(--success);border-radius:var(--radius);padding:10px 12px;font-size:12px;color:var(--success)}.compat-summary{display:flex;gap:12px;margin-bottom:8px;font-size:12px;font-weight:600}.compat-s-ok{color:var(--success)}.compat-s-warn{color:var(--warn)}.compat-s-err{color:var(--danger)}.compat-s-info{color:var(--accent)}.compat-error,.compat-warn,.compat-info{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:var(--radius);font-size:11px;margin-bottom:4px;flex-wrap:wrap}.compat-error{background:color-mix(in srgb,var(--danger) 9%,transparent);border:1px solid color-mix(in srgb,var(--danger) 25%,transparent)}.compat-warn{background:color-mix(in srgb,var(--warn) 9%,transparent);border:1px solid color-mix(in srgb,var(--warn) 25%,transparent)}.compat-info{background:color-mix(in srgb,var(--accent) 9%,transparent);border:1px solid color-mix(in srgb,var(--accent) 25%,transparent)}.compat-icon{font-size:14px;flex-shrink:0}.compat-pair{font-weight:700;font-size:10px;background:var(--bg-3);padding:2px 6px;border-radius:3px;white-space:nowrap}.compat-msg{flex:1;min-width:120px;line-height:1.5}.compat-fix{flex-shrink:0;font-size:10px!important;padding:2px 8px!important}.synergy-card{background:var(--bg-3);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:12px}.synergy-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}.synergy-label{font-size:13px;font-weight:600}.synergy-score{font-size:28px;font-weight:700;padding:6px 14px;border-radius:8px}.synergy-bar{height:10px;background:var(--bg-4);border-radius:5px;overflow:hidden;margin-bottom:12px}.synergy-bar-fill{height:100%;border-radius:5px;transition:width .6s}.synergy-dims{display:flex;flex-direction:column;gap:6px;margin-bottom:8px}.synergy-dim{display:grid;grid-template-columns:110px 1fr 32px;align-items:center;gap:8px;font-size:11px}.synergy-dim-lbl{color:var(--text-2);text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.synergy-dim-bar{height:12px;background:var(--bg-4);border-radius:3px;overflow:hidden}.synergy-dim-fill{height:100%;border-radius:3px;transition:width .4s}.synergy-dim-val{font-weight:700;text-align:right}.synergy-domain{font-size:11px;color:var(--text-3);padding-top:8px;border-top:1px solid var(--border)}.synergy-domain strong{color:var(--accent)}.fdep-group{background:var(--bg-3);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:6px;overflow:hidden}.fdep-header{padding:8px 12px;cursor:pointer;display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;user-select:none;transition:background .15s}.fdep-header:hover{background:var(--bg-4)}.fdep-icon{font-size:10px;width:12px;transition:transform .2s}.fdep-title{flex:1}.fdep-count{font-size:10px;color:var(--text-3);background:var(--bg-4);padding:2px 8px;border-radius:10px}.fdep-body{max-height:0;overflow:hidden;transition:max-height .3s ease}.fdep-body.fdep-open{max-height:500px;padding:8px 12px}.fdep-item{font-size:11px;padding:3px 0;display:flex;align-items:center;gap:4px}.fdep-ind-1{padding-left:16px}.fdep-ind-2{padding-left:32px}.fdep-exists a{color:var(--success);text-decoration:none}.fdep-exists a:hover{text-decoration:underline}.fdep-missing span{color:var(--text-3);opacity:0.5}.guide-domain-steps{display:flex;flex-direction:column;gap:8px;margin:12px 0;background:var(--bg-3);padding:12px;border-radius:8px;border:1px solid var(--border)}.guide-step-mini{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--text)}.guide-step-num-mini{width:24px;height:24px;min-width:24px;background:var(--accent);color:#fff;border-radius:6px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px}.guide-ai-recipe{background:var(--bg-3);padding:12px;border-radius:8px;border:1px solid var(--border);margin:12px 0}.guide-ai-recipe h4{font-size:13px;margin-bottom:8px;color:var(--accent)}.guide-recipe-step{font-size:12px;padding:6px 0;color:var(--text-2);border-bottom:1px solid var(--border)}.guide-recipe-step:last-child{border-bottom:none}.guide-adr-intro{font-size:12px;color:var(--text-3);margin-bottom:8px}.guide-adrs{display:flex;flex-direction:column;gap:8px;margin:8px 0}.guide-adr{display:flex;gap:12px;background:var(--bg-3);padding:10px 12px;border-radius:8px;border:1px solid var(--border)}.guide-adr-icon{font-size:20px;min-width:28px}.guide-adr strong{font-size:12px;display:block;margin-bottom:2px;color:var(--text)}.guide-adr p{font-size:11px;color:var(--text-3);margin:0}.dash-backup{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 12px;border-radius:var(--radius);font-size:11px;margin-bottom:8px;flex-wrap:wrap}.dash-backup-red{background:color-mix(in srgb,var(--danger) 9%,transparent);border:1px solid color-mix(in srgb,var(--danger) 25%,transparent);color:var(--danger)}.dash-backup-yellow{background:color-mix(in srgb,var(--warn) 9%,transparent);border:1px solid color-mix(in srgb,var(--warn) 25%,transparent);color:var(--warn)}.dash-guide{background:var(--accent-soft);border:1px solid color-mix(in srgb,var(--accent) 25%,transparent);color:var(--accent)}.guide-action-p{margin-top:16px}.dash-info{font-size:12px}.dash-center{margin-top:16px;text-align:center}.dash-center .btn{font-size:11px}.fsize-chart{display:flex;flex-direction:column;gap:6px}.fsize-row{display:flex;align-items:center;gap:8px;font-size:11px}.fsize-lbl{min-width:90px;color:var(--text-3);white-space:nowrap;font-weight:600}.fsize-bar-wrap{flex:1;height:10px;background:var(--bg-3);border-radius:5px;overflow:hidden}.fsize-bar{height:100%;border-radius:5px;transition:width .4s}.fsize-val{min-width:50px;text-align:right;color:var(--text-3);font-size:10px}.dash-back{margin-top:8px;text-align:center}.dash-back .btn{font-size:11px}.dash-tfcount{font-size:11px;color:var(--text-3);align-self:center}.dash-tbl-wrap{max-height:60vh;overflow-y:auto}.dash-price{font-size:9px;color:var(--text-3)}.dash-empty{color:var(--text-3);text-align:center;margin-top:40px}.toast-msg{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--bg-3);color:var(--text);padding:8px 20px;border-radius:20px;font-size:12px;z-index:999;border:1px solid var(--border)}.prev-footer{padding:12px 0;text-align:center;font-size:11px;color:var(--text-3);border-top:1px solid var(--border);margin-top:12px}.dash-total-mt{margin-top:8px}.launch-output{display:none}.tour-title{font-size:14px;margin-bottom:6px}.tour-desc{font-size:12px;color:var(--text-2);line-height:1.6}.tour-acts{display:flex;gap:6px;justify-content:flex-end;margin-top:8px}.gen-spinner{padding:16px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:10px}.gen-spinner-icon{display:inline-block;font-size:24px}.gen-prog-wrap{width:200px}.gen-prog-bar{height:6px;background:var(--bg-3);border-radius:3px;overflow:hidden}.gen-prog-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--success));border-radius:3px;transition:width .3s;width:0%}.gen-prog-label{font-size:11px;color:var(--text-2);margin-top:6px;font-weight:600}.complexity-label{font-weight:600}.complexity-sub{font-size:13px;margin-top:2px}.btn-start{padding:12px 40px;font-size:14px}.prev-placeholder{color:var(--text-3);font-size:13px;text-align:center;margin-top:40px}.btn-diff{color:var(--warn)}.tree-item{cursor:pointer}.tree-indent{padding-left:16px}.tree-disabled{opacity:0.4}.tree-edited{float:right;font-size:9px;color:var(--warn);margin-right:4px}.tree-gen{float:right;font-size:10px;color:var(--success)}.launch-ok{color:var(--success)}.launch-warn{color:var(--warn)}.road-pct-sub{font-size:12px;font-weight:400;color:var(--text-3)}.road-layer-pct{font-size:10px;font-weight:400;opacity:0.7}.road-actions{margin-top:12px;display:flex;gap:8px;justify-content:center}.road-actions .btn{font-size:11px}.exp-compare{display:grid;grid-template-columns:1fr 1fr;gap:12px}.exp-col{background:var(--bg-3);border:1px solid var(--border);border-radius:var(--radius);padding:16px}.exp-col h3{font-size:14px;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border)}.exp-row{display:flex;justify-content:space-between;padding:4px 0;font-size:12px}.exp-row .label{color:var(--text-3)}.exp-row .val{font-weight:600}.exp-verdict{margin-top:12px;padding:12px;background:var(--accent-soft);border:1px solid rgba(59,130,246,0.2);border-radius:var(--radius)}.exp-verdict h4{font-size:12px;color:var(--accent);margin-bottom:4px}.exp-verdict p{font-size:11px;color:var(--text-2)}.exp-select{display:flex;gap:8px;margin-bottom:12px}.exp-select select{flex:1;padding:8px 12px;border:1px solid var(--border);border-radius:7px;background:var(--bg-3);color:var(--text);font-size:12px;font-family:var(--sans)}.road-progress{background:var(--bg-3);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:16px}.road-progress h4{font-size:12px;margin-bottom:8px}.road-progress-bar{height:12px;background:var(--bg-4);border-radius:6px;overflow:hidden}.road-progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--success));border-radius:6px;transition:width .6s}.road-pct{font-size:20px;font-weight:700;color:var(--accent);margin-top:4px}.road-layer{margin-bottom:20px}.road-layer h3{font-size:13px;color:var(--accent);margin-bottom:8px;padding:6px 10px;background:var(--accent-soft);border-radius:6px;display:inline-block}.road-task{display:flex;align-items:center;gap:8px;padding:6px 0;font-size:12px;cursor:pointer;transition:background .1s;border-radius:4px;padding:4px 8px}.road-task:hover{background:var(--bg-4)}.road-task input[type="checkbox"]{accent-color:var(--accent);width:16px;height:16px;cursor:pointer}.road-task.checked{color:var(--text-3);text-decoration:line-through}.road-week-badge{font-size:9px;padding:2px 6px;background:var(--bg-4);border-radius:8px;color:var(--text-3);margin-left:auto;flex-shrink:0}.road-hrs-badge{font-size:9px;padding:2px 6px;background:var(--accent-soft);border-radius:8px;color:var(--accent);flex-shrink:0}.road-time{font-size:11px;color:var(--text-3);margin-top:6px}.road-time strong{color:var(--text)}.road-milestone{margin-top:8px;padding:6px 12px;background:linear-gradient(90deg,var(--accent-soft),transparent);border-radius:6px;font-size:12px;font-weight:600;color:var(--accent);animation:roadFadeIn .5s}@keyframes roadFadeIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}.road-layer-head{cursor:pointer;user-select:none;display:flex!important;align-items:center;gap:4px;width:100%}.road-collapse-icon{font-size:10px;opacity:0.6;width:12px;text-align:center}.road-layer-hrs{margin-left:auto;font-size:9px;font-weight:400;opacity:0.6}.road-items{transition:max-height .3s ease,opacity .2s;overflow:hidden}.road-collapsed{max-height:0!important;opacity:0;margin:0;padding:0}.road-locked{opacity:0.6}.road-lock-msg{font-size:10px;color:var(--text-3);padding:4px 12px;margin-bottom:8px;font-style:italic}.road-task-locked{pointer-events:none;opacity:0.5}.road-task-locked input{pointer-events:none}.road-res-btn{font-size:12px;text-decoration:none;flex-shrink:0;opacity:0.5;transition:opacity .15s;padding:0 2px}.road-res-btn:hover{opacity:1}.road-badge-anim{animation:roadBadge .6s ease;display:inline-block;margin-left:4px}@keyframes roadBadge{0%{transform:scale(0);opacity:0}50%{transform:scale(1.4)}100%{transform:scale(1);opacity:1}}.hero-anim{position:relative;overflow:hidden;padding:20px;border-radius:var(--radius-lg)}.hero-anim::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:conic-gradient(from 0deg,transparent,var(--accent-soft),transparent);animation:spin 8s linear infinite;z-index:0}.hero-content{position:relative;z-index:1}.stat-row{display:flex;gap:24px;justify-content:center;flex-wrap:wrap}.stat-item{text-align:center}.stat-item .num{font-size:28px;font-weight:700;color:var(--accent)}.stat-item .lbl{font-size:11px;color:var(--text-3)}.version-badge{display:inline-block;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:600;background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff;margin-bottom:12px}.kb-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:250;display:none;align-items:center;justify-content:center}.kb-overlay.show{display:flex}.kb-modal{background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;max-width:400px;width:90%}.kb-modal h3{font-size:16px;margin-bottom:16px}.kb-row{display:flex;justify-content:space-between;padding:6px 0;font-size:12px;color:var(--text-2);border-bottom:1px solid var(--border)}.kb-key{font-family:var(--mono);padding:2px 8px;background:var(--bg-3);border:1px solid var(--border);border-radius:4px;font-size:11px}.skill-sel{display:flex;gap:10px;margin-bottom:28px;flex-wrap:wrap;justify-content:center}.skcard{width:185px;padding:18px 14px;border-radius:var(--radius-lg);border:2px solid var(--border);background:var(--bg-2);cursor:pointer;transition:all 0.2s;text-align:left}.skcard:hover{border-color:var(--border-light);background:var(--bg-3)}.skcard.on{border-color:var(--accent);background:var(--accent-soft)}.skcard .em{font-size:26px;margin-bottom:8px}.skcard h4{font-size:13px;font-weight:600;margin-bottom:3px}.skcard p{font-size:11px;color:var(--text-3);line-height:1.5}.szl{font-size:11px;color:var(--text-3);margin-bottom:8px;text-align:center;font-weight:600;text-transform:uppercase;letter-spacing:0.5px}.chip{padding:6px 12px;border-radius:18px;font-size:12px;border:1.5px solid var(--chip-border,var(--border));background:var(--chip-bg,var(--bg-3));cursor:pointer;transition:all 0.12s;color:var(--text-2);user-select:none;display:flex;align-items:center;gap:5px}.chip:hover{border-color:var(--accent);color:var(--text)}.chip.on{border-color:var(--accent);background:var(--accent-soft);color:var(--accent);font-weight:500}.chip .ck{width:13px;height:13px;border-radius:3px;border:1.5px solid var(--text-3);display:flex;align-items:center;justify-content:center;font-size:9px;transition:all 0.12s}.chip.on .ck{border-color:var(--accent);background:var(--accent);color:#fff}.czone{padding:10px 20px}.czlabel{font-size:11px;color:var(--text-3);margin-bottom:8px;font-weight:500}.cgrid{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}.cfoot{padding:6px 20px 12px;display:flex;gap:6px;align-items:center}.cfoot input.cadd{flex:1;padding:8px 14px;border-radius:20px;border:1.5px solid var(--border);background:var(--bg-3);color:var(--text);font-size:12px;outline:none}.cfoot input.cadd:focus{border-color:var(--accent)}.ocards{padding:10px 20px;display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px}.ocard{padding:14px;border-radius:var(--radius);border:1.5px solid var(--border);background:var(--bg-3);cursor:pointer;transition:all 0.15s}.ocard:hover{border-color:var(--accent);background:var(--accent-soft)}.ocard h5{font-size:13px;font-weight:600;margin-bottom:3px}.ocard p{font-size:11px;color:var(--text-3);line-height:1.4}.m-edit{position:absolute;top:4px;right:4px;background:none;border:none;color:var(--text-3);cursor:pointer;font-size:13px;padding:2px 5px;border-radius:4px;opacity:0;transition:0.15s}.msg:hover .m-edit{opacity:1}.m-edit:hover{color:var(--warn);background:var(--warn-soft)}.q-help{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;background:var(--accent-soft);color:var(--accent);font-size:10px;font-weight:700;cursor:pointer;margin-left:6px;transition:0.15s}.q-help:hover{background:var(--accent);color:#fff}.voice-btn{background:none;border:1px solid var(--border);border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px;color:var(--text-3);transition:0.15s;flex-shrink:0}.voice-btn:hover{border-color:var(--accent);color:var(--accent)}.voice-btn.recording{border-color:var(--danger);color:var(--danger);animation:pulse 1s infinite}@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}.skip-btn{background:none;border:none;color:var(--text-3);font-size:11px;cursor:pointer;padding:4px 10px;border-radius:12px;transition:0.15s}.skip-btn:hover{background:var(--bg-3);color:var(--text-2)}.dnd-list{list-style:none;padding:0;margin:0 0 8px}.dnd-item{display:flex;align-items:center;gap:8px;padding:8px 12px;margin:3px 0;border-radius:7px;border:1.5px solid var(--border);background:var(--bg-3);cursor:grab;transition:all 0.12s;user-select:none;font-size:12px;color:var(--text)}.dnd-item:active{cursor:grabbing;background:var(--bg-4);border-color:var(--accent);box-shadow:0 4px 12px rgba(0,0,0,0.3)}.dnd-grip{color:var(--text-3);font-size:14px;cursor:grab}.dnd-label{flex:1}.dnd-priority{font-size:10px;font-weight:600;padding:2px 8px;border-radius:10px}.dnd-priority.p0{background:rgba(239,68,68,0.15);color:var(--danger)}.dnd-priority.p1{background:rgba(234,179,8,0.15);color:var(--warn)}.dnd-priority.p2{background:rgba(100,116,139,0.15);color:var(--text-3)}.drag-over{border-color:var(--accent);background:var(--accent-soft)}.confirm-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:350;display:none;align-items:center;justify-content:center;animation:fadeIn 0.2s}.confirm-modal{background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;max-width:420px;width:90%}.confirm-modal h4{font-size:14px;font-weight:600;margin-bottom:12px}.confirm-modal .cm-val{background:var(--bg-4);padding:10px 14px;border-radius:var(--radius);font-size:12px;color:var(--text);margin-bottom:16px;max-height:120px;overflow-y:auto;line-height:1.6}.confirm-modal .cm-acts{display:flex;gap:8px;justify-content:flex-end}.complexity-card{margin:12px 0;padding:16px;border-radius:var(--radius-lg);background:var(--bg-3);border:1px solid var(--border);animation:fadeIn 0.3s}.complexity-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}.complexity-score{font-size:32px;font-weight:700}.complexity-score.low{color:var(--success)}.complexity-score.mid{color:var(--warn)}.complexity-score.high{color:var(--danger)}.complexity-bar{height:6px;border-radius:3px;background:var(--bg-4);margin-bottom:12px;overflow:hidden}.complexity-fill{height:100%;border-radius:3px;transition:width 0.6s ease}.complexity-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.complexity-item{display:flex;justify-content:space-between;font-size:12px;padding:4px 0;border-bottom:1px solid var(--border)}.pm-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:350;display:none;align-items:center;justify-content:center;animation:fadeIn 0.2s}.pm-modal{background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;max-width:500px;width:90%;max-height:80vh;overflow-y:auto}.pm-modal h3{font-size:16px;font-weight:700;margin-bottom:16px}.pm-item{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-radius:var(--radius);border:1px solid var(--border);margin-bottom:6px;cursor:pointer;transition:0.15s}.pm-item:hover{border-color:var(--accent);background:var(--accent-soft)}.pm-item.current{border-color:var(--accent);background:var(--accent-soft)}.pm-item-name{font-size:13px;font-weight:500}.pm-item-meta{font-size:10px;color:var(--text-3)}.pm-item-acts{display:flex;gap:4px}.pm-item-acts button{background:none;border:none;cursor:pointer;font-size:12px;padding:2px 4px}.pm-actions{margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}.toc-panel{display:none;padding:6px 8px;overflow-x:auto;white-space:nowrap;border-bottom:1px solid var(--border);background:var(--bg-2)}.toc-item{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:4px;cursor:pointer;font-size:10px;color:var(--text-3);transition:0.15s;margin-right:2px}.toc-item:hover{background:var(--accent-soft);color:var(--accent)}.toc-item.done{color:var(--success)}.toc-item.active{color:var(--accent);font-weight:600}.toc-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;background:var(--border-light)}.toc-item.done .toc-dot{background:var(--success)}.toc-item.active .toc-dot{background:var(--accent)}.edit-banner{padding:8px 20px;background:var(--warn-soft,rgba(234,179,8,0.1));color:var(--warn);font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:space-between}.skipped-banner{padding:8px 20px;background:var(--accent-soft);color:var(--accent);font-size:11px;font-weight:600}.tour-container{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:400;max-width:440px;width:92%}.tour-card{background:var(--bg-2);border:2px solid var(--accent);border-radius:var(--radius-lg);padding:20px;box-shadow:0 8px 30px rgba(0,0,0,0.4)}.tour-dots{display:flex;gap:6px;justify-content:center;margin:10px 0}.tour-dot{width:8px;height:8px;border-radius:50%;background:var(--border)}.tour-dot.on{background:var(--accent)}[data-theme="light"] .skcard{background:var(--bg-2);border-color:var(--border)}[data-theme="light"] .m-bot{background:var(--bg-3);border-color:var(--border)}[data-theme="light"] .m-usr{background:rgba(59,130,246,0.08);border-color:rgba(59,130,246,0.2)}[data-theme="light"] .m-tip{color:var(--text-3)}[data-theme="light"] .skcard:hover{background:var(--bg-3);border-color:var(--text-3)}[data-theme="light"] .skcard.on{background:rgba(59,130,246,0.06);border-color:var(--accent)}[data-theme="light"] .complexity-card{background:var(--bg-3);border-color:var(--border)}[data-theme="light"] .dnd-item{background:var(--bg-2);border-color:var(--border)}[data-theme="light"] .confirm-modal,[data-theme="light"] .pm-modal,[data-theme="light"] .tour-card{background:var(--bg-2);border-color:var(--border)}[data-theme="light"] .voice-btn{border-color:var(--border);color:var(--text-3)}[data-theme="light"] .pm-item{border-color:var(--border)}[data-theme="light"] .pm-item:hover{background:rgba(59,130,246,0.04)}@keyframes fadeIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}.msg{margin-bottom:12px;animation:fadeIn 0.25s ease}.m-bot{background:var(--bg-3);padding:12px 14px;border-radius:3px var(--radius) var(--radius) var(--radius);border-left:3px solid var(--accent)}.m-usr{background:var(--surface,var(--bg-4));padding:12px 14px;border-radius:var(--radius) 3px var(--radius) var(--radius);margin-left:32px;border-right:3px solid var(--accent-2,#8b5cf6);position:relative}.m-tip{background:var(--warn-soft,rgba(234,179,8,0.1));padding:8px 12px;border-radius:var(--radius);border-left:3px solid var(--warn);font-size:12px;color:var(--warn)}.m-lbl{font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:5px;color:var(--text-3);display:flex;align-items:center;gap:4px}.m-body{font-size:13px;line-height:1.7}.pill-drawer{position:fixed;left:0;top:50%;transform:translateY(-50%);z-index:900;display:flex;align-items:center}.pill-drawer-tab{width:16px;min-height:80px;background:var(--accent);border-radius:0 8px 8px 0;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0.6;transition:all 0.3s;writing-mode:vertical-rl;font-size:9px;color:#fff;font-weight:700;letter-spacing:1px;padding:8px 2px}.pill-drawer-tab:hover{opacity:1;width:20px}.pill-drawer-body{position:absolute;left:0;top:50%;transform:translateY(-50%);background:var(--bg-2);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:0 12px 12px 0;padding:12px 14px;min-width:220px;max-height:80vh;overflow-y:auto;box-shadow:0 4px 24px rgba(0,0,0,0.15);opacity:0;pointer-events:none;transition:all 0.25s ease}.pill-drawer:hover .pill-drawer-body{opacity:1;pointer-events:auto;left:16px}.pill-drawer:hover .pill-drawer-tab{opacity:0;pointer-events:none}.pd-title{font-size:10px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}.pd-phase{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:8px;margin-bottom:4px;cursor:pointer;transition:all 0.15s;font-size:12px;font-weight:600;color:var(--text-2)}.pd-phase:hover{background:var(--accent-soft)}.pd-phase.active{background:var(--accent-soft);color:var(--accent)}.pd-phase.done{color:var(--success)}.pd-dot{width:8px;height:8px;border-radius:50%;background:var(--border-light);flex-shrink:0;transition:0.2s}.pd-phase.active .pd-dot{background:var(--accent);box-shadow:0 0 6px var(--accent)}.pd-phase.done .pd-dot{background:var(--success)}.pd-progress{margin-top:8px;padding-top:8px;border-top:1px solid var(--border);font-size:10px;color:var(--text-3);display:flex;align-items:center;gap:6px}.pd-bar{flex:1;height:4px;background:var(--bg-3);border-radius:2px;overflow:hidden}.pd-bar-fill{height:100%;background:var(--accent);border-radius:2px;transition:width 0.3s}.pd-gen{margin-top:10px;width:100%;font-size:11px;padding:6px 0}.pd-qlist{margin:0;padding:0 0 0 16px;list-style:none}.pd-q{padding:3px 4px;font-size:10px;color:var(--text-3);cursor:pointer;border-radius:4px;transition:all .15s;display:flex;align-items:center;gap:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.pd-q:hover{background:var(--bg-3);color:var(--text)}.pd-q.current{color:var(--accent);font-weight:600}.pd-q .pd-qmark{width:6px;height:6px;border-radius:50%;flex-shrink:0}.pd-q.answered .pd-qmark{background:var(--success)}.pd-q:not(.answered) .pd-qmark{background:var(--border-light)}.pd-q.current .pd-qmark{background:var(--accent);box-shadow:0 0 4px var(--accent)}.pd-q.q-na{opacity:0.3;pointer-events:none;text-decoration:line-through}.gen-lang-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:1100;display:flex;align-items:center;justify-content:center;animation:fadeIn 0.2s}.gen-lang-modal{background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;max-width:360px;width:90%;text-align:center}.gen-lang-modal h3{margin-bottom:8px;font-size:16px}.gen-lang-modal p{font-size:12px;color:var(--text-3);margin-bottom:16px}.gen-lang-btns{display:flex;gap:10px;justify-content:center}.gen-lang-btn{flex:1;padding:14px 12px;border-radius:var(--radius);border:2px solid var(--border);background:var(--bg-3);cursor:pointer;transition:all .15s;font-size:13px;font-weight:600;color:var(--text)}.gen-lang-btn:hover{border-color:var(--accent);background:var(--accent-soft)}.gen-lang-btn .flag{font-size:24px;display:block;margin-bottom:6px}.flex-end{display:flex;gap:6px;justify-content:flex-end}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}.skip-link{position:absolute;top:-40px;left:0;background:var(--accent);color:#fff;padding:8px 16px;z-index:9999;font-size:14px;border-radius:0 0 var(--radius) 0;transition:top .2s}.skip-link:focus{top:0}*:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:2px}.skcard:focus-visible{outline:2px solid var(--accent);outline-offset:2px}[role="dialog"]:focus{outline:none}.prev-path{font-size:11px;color:var(--text-3)}.prev-toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}.prev-toolbar-r{display:flex;gap:4px}.prev-nav-btn{min-width:28px;padding:2px 6px}.prev-nav-btn.disabled{opacity:0.3;pointer-events:none}.view-nav{display:flex;gap:2px}.view-nav-btn{min-width:26px;padding:2px 5px;font-size:11px}.view-nav-btn.disabled{opacity:0.25;pointer-events:none}.empty-preview{color:var(--text-3);font-size:13px;text-align:center;margin-top:40px}.empty-preview-sm{color:var(--text-3);font-size:12px;text-align:center;margin-top:40px}.ft-separator{color:var(--border);font-size:10px;padding:6px 0}.road-summary{margin-top:12px;padding:12px;background:var(--bg-3);border-radius:var(--radius);font-size:12px;text-align:center}.exp-header{margin-bottom:12px}.exp-header h3{font-size:14px;margin-bottom:4px}.exp-header p{font-size:11px;color:var(--text-3)}.exp-ranking{margin:12px 0;padding:12px;background:var(--bg-3);border-radius:var(--radius);border:1px solid var(--border)}.exp-ranking h4{font-size:12px;margin-bottom:10px;color:var(--accent)}.exp-rank-row{display:flex;align-items:center;justify-content:space-between;padding:6px 8px;border-radius:4px;cursor:pointer;transition:background .15s}.exp-rank-row:hover{background:var(--bg-2)}.exp-rank-top{background:var(--bg-2);border:1px solid var(--accent);border-radius:6px}.exp-rank-left{display:flex;align-items:center;gap:8px;min-width:200px}.exp-rank-medal{font-size:14px;min-width:28px;text-align:center}.exp-rank-name{font-size:12px;font-weight:500}.exp-rank-right{display:flex;align-items:center;gap:8px;flex:1;max-width:200px}.exp-rank-bar{flex:1;height:6px;background:var(--bg-1);border-radius:3px;overflow:hidden}.exp-rank-bar-fill{height:100%;background:var(--accent);border-radius:3px;transition:width .3s}.exp-rank-score{font-size:11px;font-weight:600;color:var(--accent);min-width:36px;text-align:right}.exp-rank-reasons{display:flex;flex-wrap:wrap;gap:4px;margin:2px 0 6px 36px}.exp-rank-tag{font-size:10px;padding:1px 6px;background:var(--accent);color:#fff;border-radius:10px;opacity:0.8}.exp-metrics-sep{margin-top:10px;border-top:1px solid var(--border);padding-top:8px}.launch-stats{display:flex;gap:12px;margin:12px 0}.launch-stat{flex:1;text-align:center;padding:10px;background:var(--bg-3);border:1px solid var(--border);border-radius:var(--radius)}.launch-num{font-size:20px;font-weight:700;color:var(--accent);display:block}.launch-lbl{font-size:10px;color:var(--text-3)}.launch-folders{margin:12px 0;padding:12px;background:var(--bg-3);border-radius:var(--radius);border:1px solid var(--border)}.launch-folders h4{font-size:12px;margin-bottom:8px}.launch-folder-row{display:flex;align-items:center;gap:8px;padding:4px 0;font-size:11px}.launch-folder-row label{display:flex;align-items:center;gap:4px;min-width:120px}.launch-folder-row span{flex:1;text-align:right;color:var(--text-3);font-size:10px;min-width:140px}.launch-bar{flex:1;height:4px;background:var(--bg-1);border-radius:2px;max-width:80px}.launch-bar-fill{height:100%;background:var(--accent);border-radius:2px}.launch-models{margin:8px 0;padding:10px;background:var(--bg-3);border-radius:var(--radius);border:1px solid var(--border)}.launch-models h4{font-size:12px;margin-bottom:6px}.launch-model-row{font-size:11px;padding:3px 0;display:flex;justify-content:space-between}.launch-model-pct{font-weight:600;font-size:10px}.launch-templates{margin:12px 0}.launch-templates h4{font-size:12px;margin-bottom:8px}.launch-tpl{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--bg-3);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:6px;cursor:pointer;transition:border-color .15s,background .15s}.launch-tpl:hover{border-color:var(--accent);background:var(--bg-2)}.launch-tpl-icon{font-size:22px;min-width:30px;text-align:center}.launch-tpl-info{display:flex;flex-direction:column;gap:2px}.launch-tpl-info strong{font-size:12px}.launch-tpl-info span{font-size:10px;color:var(--text-3)}.launch-output{margin:12px 0;border:1px solid var(--accent);border-radius:var(--radius);overflow:hidden}.launch-output-head{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:var(--accent);color:#fff}.launch-output-head h4{margin:0;font-size:13px}.launch-output-meta{padding:6px 12px;font-size:10px;color:var(--text-3);background:var(--bg-3);border-bottom:1px solid var(--border)}.launch-output-pre{padding:12px;font-size:11px;max-height:300px;overflow:auto;white-space:pre-wrap;word-break:break-word;background:var(--bg-1);margin:0}.diff-header{padding:8px 12px;border-bottom:1px solid var(--border);background:var(--bg-3);display:flex;justify-content:space-between;align-items:center}.diff-title{font-size:12px;font-weight:600}.diff-stats{font-size:11px;color:var(--text-3)}.diff-stats .add{color:var(--success)}.diff-stats .del{color:var(--danger)}.diff-stats .btn{font-size:10px;margin-left:8px}.diff-body{font-family:monospace;font-size:11px;line-height:1.6;padding:8px;overflow-y:auto;max-height:calc(100vh - 200px)}.diff-same{padding:1px 8px;color:var(--text-3)}.diff-add{padding:1px 8px;background:color-mix(in srgb,var(--success) 9%,transparent);color:var(--success)}.diff-del{padding:1px 8px;background:color-mix(in srgb,var(--danger) 9%,transparent);color:var(--danger);text-decoration:line-through}.diff-ln{display:inline-block;width:35px;text-align:right;margin-right:8px}.diff-same .diff-ln{opacity:0.5}.editor-toolbar{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;border-bottom:1px solid var(--border);background:var(--bg-3)}.editor-toolbar .title{font-size:12px;font-weight:600}.editor-toolbar .actions{display:flex;gap:6px}.editor-toolbar .btn{font-size:11px}.editor-area{width:100%;height:calc(100% - 42px);border:none;outline:none;resize:none;background:var(--bg-1);color:var(--text);font-family:'Fira Code',monospace;font-size:12px;line-height:1.6;padding:12px;tab-size:2;box-sizing:border-box}.exp-dim{opacity:0.2}.exp-current{color:var(--accent)}.exp-select h4{margin:0}.exp-win{color:var(--success)}.exp-tie{color:var(--warn)}.guide-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.65);z-index:250;display:flex;align-items:center;justify-content:center;animation:fadeIn .3s}.guide-modal{background:var(--bg-2);border:1px solid var(--border);border-radius:16px;padding:28px;max-width:520px;width:92%;max-height:85vh;overflow-y:auto;box-shadow:0 24px 64px rgba(0,0,0,0.35)}.guide-header{display:flex;align-items:center;gap:14px;margin-bottom:16px;position:relative}.guide-em{font-size:36px}.guide-title{font-size:18px;font-weight:800;letter-spacing:-0.02em}.guide-sub{font-size:12px;font-weight:600}div.guide-sub.guide-lv-b{background:none;color:var(--success)}div.guide-sub.guide-lv-i{background:none;color:var(--warn)}div.guide-sub.guide-lv-p{background:none;color:var(--danger)}.guide-close{position:absolute;top:0;right:0;background:none;border:none;color:var(--text-3);font-size:18px;cursor:pointer;padding:4px 8px;border-radius:6px}.guide-close:hover{background:var(--bg-3);color:var(--text)}.guide-badge{font-size:11px;color:var(--accent);background:var(--accent-soft);padding:6px 14px;border-radius:20px;text-align:center;margin-bottom:20px;font-weight:600;letter-spacing:0.02em}.guide-steps{display:flex;flex-direction:column;gap:14px;margin-bottom:20px}.guide-step{display:flex;gap:14px;padding:14px;background:var(--bg-3);border:1px solid var(--border);border-radius:12px}.guide-step-num{width:32px;height:32px;min-width:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px}.guide-step-title{font-size:13px;font-weight:700;margin-bottom:4px}.guide-step-desc{font-size:12px;color:var(--text-2);line-height:1.7}.guide-step-desc code{font-family:var(--mono);font-size:11px;background:var(--bg);padding:1px 5px;border-radius:4px;color:var(--accent-2)}.guide-actions{display:flex;gap:10px;justify-content:flex-end}.guide-prog{display:flex;align-items:center;gap:8px;margin-bottom:14px}.guide-prog-bar{flex:1;height:6px;background:var(--bg-3);border-radius:3px;overflow:hidden}.guide-prog-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--success));border-radius:3px;transition:width .4s}.guide-prog-txt{font-size:11px;font-weight:700;color:var(--accent);min-width:28px;text-align:right}.guide-ck{display:flex;align-items:center;flex-shrink:0;cursor:pointer}.guide-ck input{display:none}.guide-ckbox{width:20px;height:20px;min-width:20px;border-radius:5px;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;transition:all .15s}.guide-step-done .guide-ckbox{background:var(--success);border-color:var(--success)}.guide-step-done .guide-step-title{text-decoration:line-through;opacity:0.6}.guide-step-done .guide-step-desc{opacity:0.5}.guide-lv-b{background:rgba(52,211,153,0.12);color:var(--success)}.guide-lv-i{background:rgba(251,191,36,0.12);color:var(--warn)}.guide-lv-p{background:rgba(251,113,133,0.12);color:var(--danger)}@media print{:root{--bg:#fff;--bg-2:#fff;--bg-3:#f5f5f5;--bg-4:#eee;--text:#111;--text-2:#333;--text-3:#666;--border:#ccc;--accent:#2563eb;--success:#059669;--warn:#d97706;--danger:#dc2626}body{background:#fff;color:#111;font-size:11pt}.topbar,.pstrip,.mobtabs,.pill-drawer,.tour-container,.guide-overlay,.help-overlay,.kb-overlay,.pm-overlay,.confirm-overlay,.toast-msg,.btn,.export-grid,.izone,.toc-panel,.edit-banner,.skipped-banner{display:none!important}.panel-c,.panel-p{width:100%;border:none;overflow:visible}.ws{flex-direction:column;overflow:visible}.prev-body pre{border:1px solid #ccc;background:#f9f9f9;page-break-inside:avoid}.md-rendered h1,.md-rendered h2,.md-rendered h3{page-break-after:avoid}.md-rendered table{page-break-inside:avoid}a{color:#2563eb;text-decoration:underline}.prev-head{background:#fff;border-bottom:2px solid #111}}.audit-results{background:var(--bg-s);border:1px solid var(--bd);border-radius:var(--radius);padding:12px;margin-top:8px}.audit-results h4{margin:0 0 8px;font-size:13px;color:var(--fg)}.audit-summary-err,.audit-summary-warn,.audit-summary-info{display:inline-block;font-size:11px;padding:2px 8px;border-radius:10px;margin-right:6px;margin-bottom:6px}.audit-summary-err{background:color-mix(in srgb,var(--danger) 12%,transparent);color:var(--danger)}.audit-summary-warn{background:color-mix(in srgb,var(--warn) 12%,transparent);color:var(--warn-text,#b45309)}.audit-summary-info{background:color-mix(in srgb,var(--accent) 12%,transparent);color:var(--accent)}
 </style>
@@ -146,6 +147,8 @@ const KEY='devforge-v9';
 const V=9;
 let S={phase:0,step:0,answers:{},projectName:'',skill:'intermediate',preset:'custom',lang:'ja',genLang:'ja',theme:'dark',pillar:0,previewFile:null,files:{},skipped:[],progress:{},editedFiles:{},prevFiles:{},_v:V};
 function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML;}
+function escAttr(s){return String(s).replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/"/g,'&quot;');}
+function _jp(s,d){try{return JSON.parse(s);}catch(e){return d;}}
 function sanitize(s,max=500){if(!s||typeof s!=='string')return '';return s.replace(/<[^>]*>/g,'').slice(0,max).trim();}
 function sanitizeName(s){if(!s||typeof s!=='string')return '';return s.replace(/[<>"'&\\\/]/g,'').slice(0,100).trim();}
 function fileSlug(s){if(!s)return 'devforge-project';const r=s.replace(/[^a-zA-Z0-9\s_-]/g,'').replace(/[\s_]+/g,'-').replace(/-{2,}/g,'-').replace(/^-|-$/g,'').slice(0,80);return r||'devforge-project';}
@@ -155,7 +158,7 @@ let _lsOK=true;try{localStorage.setItem('_t','1');localStorage.removeItem('_t');
 function _lsGet(k){if(!_lsOK)return null;try{return localStorage.getItem(k);}catch(e){return null;}}
 function _lsSet(k,v){if(!_lsOK)return;try{localStorage.setItem(k,v);}catch(e){}}
 function _lsRm(k){if(!_lsOK)return;try{localStorage.removeItem(k);}catch(e){}}
-function save(){_lsSet(KEY,JSON.stringify(S));}
+function save(){const d=JSON.stringify(S);if(d.length>4*1024*1024)console.warn('DevForge: state exceeds 4MB');_lsSet(KEY,d);}
 function load(){
   let d=_lsGet(KEY);
   if(!d){d=_lsGet('devforge-v8');if(d)_lsRm('devforge-v8');}
@@ -166,7 +169,23 @@ function load(){
   if(!d)return;
   try{
     const o=JSON.parse(d);
-    Object.assign(S,o);
+    if(typeof o.phase==='number')S.phase=o.phase;
+    if(typeof o.step==='number')S.step=o.step;
+    if(o.answers&&typeof o.answers==='object'&&!Array.isArray(o.answers))S.answers=o.answers;
+    if(typeof o.projectName==='string')S.projectName=o.projectName;
+    if(typeof o.skill==='string')S.skill=o.skill;
+    if(typeof o.preset==='string')S.preset=o.preset;
+    if(typeof o.lang==='string')S.lang=o.lang;
+    if(typeof o.genLang==='string')S.genLang=o.genLang;
+    if(typeof o.theme==='string')S.theme=o.theme;
+    if(typeof o.pillar==='number')S.pillar=o.pillar;
+    if(typeof o.previewFile==='string'||o.previewFile===null)S.previewFile=o.previewFile;
+    if(o.files&&typeof o.files==='object'&&!Array.isArray(o.files))S.files=o.files;
+    if(Array.isArray(o.skipped))S.skipped=o.skipped;
+    if(o.progress&&typeof o.progress==='object'&&!Array.isArray(o.progress))S.progress=o.progress;
+    if(o.editedFiles&&typeof o.editedFiles==='object'&&!Array.isArray(o.editedFiles))S.editedFiles=o.editedFiles;
+    if(o.prevFiles&&typeof o.prevFiles==='object'&&!Array.isArray(o.prevFiles))S.prevFiles=o.prevFiles;
+    if(typeof o._v==='number')S._v=o._v;
     if(!S._v||S._v<V){
       S.genLang=S.genLang||S.lang||'ja';
       S.editedFiles=S.editedFiles||{};
@@ -182,7 +201,7 @@ const I18N={
 ja:{
 p1:'Phase 1',p2:'Phase 2',p3:'Phase 3',
 heroTitle:'DevForge v9',
-heroDesc:'質問に答えるだけで、88+ファイルの開発ドキュメント・環境設定・AIルール・学習ロードマップを自動生成。11の柱でAI駆動開発をゼロから完全サポート。',
+heroDesc:'質問に答えるだけで、88+ファイルの開発ドキュメント・環境設定・AIルール・学習ロードマップを自動生成。12の柱でAI駆動開発をゼロから完全サポート。',
 startBtn:'🚀 開始する',
 statFiles:'生成ファイル',statTech:'技術エントリ',statPillars:'柱 (Pillars)',statAI:'AIツール対応',
 skillAsk:'スキルレベルを選択',
@@ -206,12 +225,12 @@ pmTitle:'📁 プロジェクト管理',pmNew:'新規プロジェクト',pmEmpty
 helpClose:'閉じる',
 kbTitle:'⌨️ ショートカット',
 kb:['ヘルプ・マニュアル','ショートカット一覧','テーマ切替','言語切替','エクスポート','全ファイルコピー','プロジェクト管理'],
-pillar:['①SDD統合','②DevContainer','③MCP設定','④AIルール','⑤並列探索','⑥Dashboard','⑦ロードマップ','⑧AIランチャー','⑨デザインシステム','⑩リバースEng','⑪実装ガイド']
+pillar:['①SDD統合','②DevContainer','③MCP設定','④AIルール','⑤並列探索','⑥Dashboard','⑦ロードマップ','⑧AIランチャー','⑨デザインシステム','⑩リバースEng','⑪実装ガイド','⑫セキュリティ']
 },
 en:{
 p1:'Phase 1',p2:'Phase 2',p3:'Phase 3',
 heroTitle:'DevForge v9',
-heroDesc:'Answer questions to auto-generate 88+ development documents, environment configs, AI rules & learning roadmaps. 11 pillars for complete AI-driven development support.',
+heroDesc:'Answer questions to auto-generate 88+ development documents, environment configs, AI rules & learning roadmaps. 12 pillars for complete AI-driven development support.',
 startBtn:'🚀 Get Started',
 statFiles:'Generated Files',statTech:'Tech Entries',statPillars:'Pillars',statAI:'AI Tools',
 skillAsk:'Select your skill level',
@@ -235,7 +254,7 @@ pmTitle:'📁 Project Manager',pmNew:'New Project',pmEmpty:'No saved projects',
 helpClose:'Close',
 kbTitle:'⌨️ Shortcuts',
 kb:['Help / Manual','Shortcuts','Toggle Theme','Toggle Language','Export','Copy All Files','Project Manager'],
-pillar:['①SDD','②DevContainer','③MCP','④AI Rules','⑤Explorer','⑥Dashboard','⑦Roadmap','⑧AI Launcher','⑨Design System','⑩Reverse Eng','⑪Impl Guide']
+pillar:['①SDD','②DevContainer','③MCP','④AI Rules','⑤Explorer','⑥Dashboard','⑦Roadmap','⑧AI Launcher','⑨Design System','⑩Reverse Eng','⑪Impl Guide','⑫Security']
 }
 };
 const t=k=>I18N[S.lang][k]||k;
@@ -842,7 +861,7 @@ const HELP_DATA={
     en:{title:'Learning Goal',desc:'Select the technical area you want to master through this project. The roadmap learning path optimizes based on your selection.',example:'Choosing "Full-Stack Dev" generates a comprehensive path from frontend to deployment'}
   },
 };
-/* ═══ STACK COMPATIBILITY & SEMANTIC CONSISTENCY RULES — 43 rules (ERROR×8 + WARN×29 + INFO×6) ═══ */
+/* ═══ STACK COMPATIBILITY & SEMANTIC CONSISTENCY RULES — 46 rules (ERROR×9 + WARN×31 + INFO×6) ═══ */
 const COMPAT_RULES=[
   // ── FE ↔ Mobile (2 ERROR) ──
   {id:'fe-mob-expo',p:['frontend','mobile'],lv:'error',
@@ -1083,6 +1102,39 @@ const COMPAT_RULES=[
    t:a=>inc(a.deploy,'Vercel')&&inc(a.backend,'Express')&&inc(a.frontend,'Next.js'),
    ja:'Next.js + Express + Vercelの構成です。ExpressをNext.js API Routesに統合するか、Expressを別ホスト（Railway等）にする設計判断が必要です。生成文書ではAPI Routes統合を前提とします',
    en:'Next.js + Express + Vercel stack detected. Decide whether to merge Express into Next.js API Routes or host Express separately. Generated docs will assume API Routes integration'},
+  // ── Security Rules (3 rules: 1 ERROR + 2 WARN) ──
+  // S1: 金融/医療/法務 + MFA未設定
+  {id:'dom-sec-nomfa',p:['purpose','mvp_features'],lv:'warn',
+   t:a=>{
+     const dom=detectDomain(a.purpose||'');
+     if(!dom)return false;
+     const isSensitiveDomain=['fintech','health','legal'].includes(dom);
+     const hasMFA=inc(a.mvp_features,'MFA')||inc(a.mvp_features,'二要素')||inc(a.mvp_features,'2FA')||inc(a.mvp_features,'多要素');
+     return isSensitiveDomain&&!hasMFA;
+   },
+   ja:'金融/医療/法務系のプロジェクトですが、MFA（多要素認証）が設定されていません。セキュリティ強化のためMFA導入を推奨します',
+   en:'Finance/health/legal project without MFA (multi-factor authentication). MFA is strongly recommended for security'},
+  // S2: 決済あり + 認証なし
+  {id:'dom-sec-pay-noauth',p:['payment','auth'],lv:'error',
+   t:a=>{
+     const hasPay=a.payment&&!inc(a.payment,'なし')&&!inc(a.payment,'None')&&a.payment!=='none';
+     const noAuth=!a.auth||inc(a.auth,'なし')||inc(a.auth,'None')||a.auth==='none';
+     return hasPay&&noAuth;
+   },
+   ja:'決済機能が有効ですが、認証が設定されていません。決済機能には必ず認証が必要です',
+   en:'Payment is enabled but authentication is not configured. Payment features require authentication',
+   fix:{f:'auth',s:'Supabase Auth'}},
+  // S3: 機密エンティティ + 認証なし
+  {id:'dom-sec-sensitive-noauth',p:['data_entities','auth'],lv:'warn',
+   t:a=>{
+     const sensitiveEntities=['Patient','Transaction','Payment','MedicalRecord','Claim','Contract','Invoice','BankAccount','CreditCard','Prescription','Diagnosis'];
+     const hasSensitive=sensitiveEntities.some(e=>inc(a.data_entities,e));
+     const noAuth=!a.auth||inc(a.auth,'なし')||inc(a.auth,'None')||a.auth==='none';
+     return hasSensitive&&noAuth;
+   },
+   ja:'Patient/Transaction等の機密情報を扱うエンティティがありますが、認証が設定されていません。個人情報保護のため認証の導入を推奨します',
+   en:'Sensitive entities (Patient/Transaction/etc.) detected without authentication. Authentication is recommended for privacy protection',
+   fix:{f:'auth',s:'Supabase Auth'}},
 ];
 // helpers
 function inc(v,k){return v&&typeof v==='string'&&v.indexOf(k)!==-1;}
@@ -1565,8 +1617,8 @@ function showCompatAlert(answers){
     const d=document.createElement('div');d.className='msg';
     const icon=iss.level==='error'?'❌':iss.level==='warn'?'⚠️':'ℹ️';
     const cls=iss.level==='error'?'compat-error':iss.level==='warn'?'compat-warn':'compat-info';
-    let h=`<div class="${cls}"><span class="compat-icon">${icon}</span><span class="compat-msg">${iss.msg}</span>`;
-    if(iss.fix)h+=`<button class="btn btn-xs btn-s compat-fix" onclick="S.answers['${iss.fix.f}']='${iss.fix.s}';save();this.parentNode.innerHTML='✅ ${_ja?'修正済':'Fixed'}: ${iss.fix.f} → ${iss.fix.s}'">${_ja?'修正':'Fix'}</button>`;
+    let h=`<div class="${cls}"><span class="compat-icon">${icon}</span><span class="compat-msg">${esc(iss.msg)}</span>`;
+    if(iss.fix)h+=`<button class="btn btn-xs btn-s compat-fix" onclick="S.answers['${escAttr(iss.fix.f)}']='${escAttr(iss.fix.s)}';save();this.parentNode.innerHTML='✅ ${_ja?'修正済':'Fixed'}: ${escHtml(iss.fix.f)} → ${escHtml(iss.fix.s)}'">${_ja?'修正':'Fix'}</button>`;
     h+='</div>';d.innerHTML=h;body.appendChild(d);
   });
   body.scrollTop=body.scrollHeight;
@@ -1808,7 +1860,8 @@ function showHelp(id,e){
   popup.style.display='block';
   popup.style.top=Math.min(e.clientY+10,window.innerHeight-250)+'px';
   popup.style.left=Math.max(0,Math.min(e.clientX-100,window.innerWidth-380))+'px';
-  popup.innerHTML='<button class="hp-close" onclick="closeHelpPopup()" aria-label="'+t('helpClose')+'">✕</button><h4>'+esc(data.title)+'</h4><p>'+esc(data.desc)+'</p>'+(data.example?'<div class="hp-ex">'+esc(data.example)+'</div>':'')+(data.link?'<a class="hp-link" href="'+esc(data.link)+'" target="_blank" rel="noopener">📎 '+(_ja?'参考リンク':'Reference')+'</a>':'');
+  const safeLink=data.link&&(data.link.startsWith('https://')||data.link.startsWith('http://'))?data.link:'';
+  popup.innerHTML='<button class="hp-close" onclick="closeHelpPopup()" aria-label="'+t('helpClose')+'">✕</button><h4>'+esc(data.title)+'</h4><p>'+esc(data.desc)+'</p>'+(data.example?'<div class="hp-ex">'+esc(data.example)+'</div>':'')+(safeLink?'<a class="hp-link" href="'+esc(safeLink)+'" target="_blank" rel="noopener">📎 '+(_ja?'参考リンク':'Reference')+'</a>':'');
   setTimeout(()=>{document.addEventListener('click',closeHelpOnClick,{once:true});},100);
 }
 function closeHelpPopup(){$('helpPopup').style.display='none';}
@@ -1986,7 +2039,7 @@ function toggleVoice(btn){
   else{voiceRec.lang=_ja?'ja-JP':'en-US';voiceRec.start();btn.classList.add('recording');btn.textContent='⏹️';}
 }
 /* ═══ V9 PROJECT MANAGER ═══ */
-function getProjects(){return JSON.parse(_lsGet('devforge-projects')||'{}');}
+function getProjects(){return _jp(_lsGet('devforge-projects'),{});}
 function saveProject(){
   if(!S.projectName)return;
   const ps=getProjects();
@@ -1995,7 +2048,11 @@ function saveProject(){
 }
 function switchProject(name){
   const ps=getProjects();const p=ps[name];
-  if(p&&p.state){Object.assign(S,p.state);save();location.reload();}
+  if(p&&p.state){
+    const _SAFE_KEYS=['phase','step','answers','projectName','skill','preset','lang','genLang','theme','pillar','previewFile','files','skipped','progress','editedFiles','prevFiles','_v'];
+    _SAFE_KEYS.forEach(k=>{if(Object.prototype.hasOwnProperty.call(p.state,k))S[k]=p.state[k];});
+    save();location.reload();
+  }
 }
 function deleteProject(name){
   const ps=getProjects();delete ps[name];
@@ -2027,15 +2084,26 @@ function importProject(){
         data.state.projectName=sanitizeName(data.state.projectName);
         if(data.state.answers){
           Object.keys(data.state.answers).forEach(k=>{
+            if(['__proto__','constructor','prototype'].includes(k)){delete data.state.answers[k];return;}
             if(typeof data.state.answers[k]==='string'){
               data.state.answers[k]=sanitize(data.state.answers[k]);
+            } else {
+              delete data.state.answers[k];
             }
+          });
+        }
+        if(data.state.files){
+          Object.keys(data.state.files).forEach(k=>{
+            if(['__proto__','constructor','prototype'].includes(k)){delete data.state.files[k];return;}
+            if(typeof data.state.files[k]!=='string'){delete data.state.files[k];}
           });
         }
         const ps=getProjects();
         ps[data.state.projectName]=data;
         _lsSet('devforge-projects',JSON.stringify(ps));
-        Object.assign(S,data.state);save();
+        const _SAFE_KEYS=['phase','step','answers','projectName','skill','preset','lang','genLang','theme','pillar','previewFile','files','skipped','progress','editedFiles','prevFiles','_v'];
+        _SAFE_KEYS.forEach(k=>{if(Object.prototype.hasOwnProperty.call(data.state,k))S[k]=data.state[k];});
+        save();
         toast(_ja?'✅ インポート完了':'✅ Import complete');
         location.reload();
       }catch(err){toast(_ja?'❌ 読み込みエラー':'❌ Read error');}
@@ -2186,20 +2254,42 @@ let _prevNavFlag=false;
 let _viewHistory=[];
 let _viewHistIdx=-1;
 let _viewNavFlag=false;
+function _sanitizeHTML(html){
+  const allowedTags=['h1','h2','h3','h4','h5','h6','p','br','hr','ul','ol','li','a','strong','em','code','pre','blockquote','table','thead','tbody','tr','th','td','img','div','span','b','i','u','s','del','ins','sup','sub','dl','dt','dd'];
+  const allowedAttrs={a:['href','title','class'],img:['src','alt','title','class'],code:['class'],pre:['class'],div:['class'],span:['class'],table:['class'],th:['colspan','rowspan'],td:['colspan','rowspan']};
+  const temp=document.createElement('div');temp.innerHTML=html;
+  function clean(el){
+    const tag=el.tagName.toLowerCase();
+    if(!allowedTags.includes(tag)){el.remove();return;}
+    const attrs=allowedAttrs[tag]||[];
+    Array.from(el.attributes).forEach(a=>{
+      if(!attrs.includes(a.name)){el.removeAttribute(a.name);}
+      else if(a.name==='href'||a.name==='src'){
+        const v=a.value.toLowerCase();
+        if(v.startsWith('javascript:')||v.startsWith('data:')||v.startsWith('vbscript:')||v.startsWith('about:')){el.removeAttribute(a.name);}
+        else if(!v.startsWith('http://')&&!v.startsWith('https://')&&!v.startsWith('mailto:')&&!v.startsWith('#')&&!v.startsWith('./')&&!v.startsWith('../')){el.removeAttribute(a.name);}
+      }
+    });
+    Array.from(el.children).forEach(c=>clean(c));
+  }
+  Array.from(temp.children).forEach(c=>clean(c));
+  return temp.innerHTML;
+}
 function safeMD(raw){
   if(window._noMarked||typeof marked==='undefined')return '<pre>'+esc(raw)+'</pre>';
-  return marked.parse(raw);
+  const html=marked.parse(raw);
+  return _sanitizeHTML(html);
 }
 function diffBtn(path){
-  return (S.prevFiles[path]||S.editedFiles[path])?'<button class="btn btn-xs btn-s btn-diff" onclick="showDiff(\''+path+'\')">🔀 Diff</button>':'';
+  return (S.prevFiles[path]||S.editedFiles[path])?'<button class="btn btn-xs btn-s btn-diff" onclick="showDiff(\''+escAttr(path)+'\')">🔀 Diff</button>':'';
 }
 function prevToolbar(path,showRaw){
   const _ja=S.lang==='ja';
-  const rawBtn=showRaw?`<button class="btn btn-xs btn-s" onclick="toggleMdRaw('${path}')">📝 Raw</button>`:'';
+  const rawBtn=showRaw?`<button class="btn btn-xs btn-s" onclick="toggleMdRaw('${escAttr(path)}')">📝 Raw</button>`:'';
   const canBack=_prevHistIdx>0;
   const canFwd=_prevHistIdx<_prevHistory.length-1;
   const navBtns=`<button class="btn btn-xs btn-s prev-nav-btn${canBack?'':' disabled'}" onclick="prevBack()" title="${_ja?'戻る':'Back'}">◀</button><button class="btn btn-xs btn-s prev-nav-btn${canFwd?'':' disabled'}" onclick="prevForward()" title="${_ja?'進む':'Forward'}">▶</button>`;
-  return `<div class="prev-toolbar">${navBtns}<span class="prev-path">📄 ${path}</span><div class="prev-toolbar-r">${rawBtn}<button class="btn btn-xs btn-s" onclick="openEditor('${path}')">✏️ ${_ja?'編集':'Edit'}</button>${diffBtn(path)}<button class="btn btn-xs btn-s" onclick="copyFileContent('${path}')">📋 ${_ja?'コピー':'Copy'}</button><button class="btn btn-xs btn-s" onclick="printCurrentFile()">🖨️ ${_ja?'印刷':'Print'}</button></div></div>`;
+  return `<div class="prev-toolbar">${navBtns}<span class="prev-path">📄 ${esc(path)}</span><div class="prev-toolbar-r">${rawBtn}<button class="btn btn-xs btn-s" onclick="openEditor('${escAttr(path)}')">✏️ ${_ja?'編集':'Edit'}</button>${diffBtn(path)}<button class="btn btn-xs btn-s" onclick="copyFileContent('${escAttr(path)}')">📋 ${_ja?'コピー':'Copy'}</button><button class="btn btn-xs btn-s" onclick="printCurrentFile()">🖨️ ${_ja?'印刷':'Print'}</button></div></div>`;
 }
 function initPrevTabs(){
   const _ja=S.lang==='ja';
@@ -2232,6 +2322,7 @@ function initPillarTabs(){
       else if(i===8) showFileTree(); // Design System
       else if(i===9) showFileTree(); // Reverse Engineering
       else if(i===10) showFileTree(); // Implementation Intelligence
+      else if(i===11) showFileTree(); // Security Intelligence
       else showFileTree();
     };tabs.appendChild(b);
   });
@@ -2263,8 +2354,8 @@ function showFileTree(){
       const isGen=hasFiles&&S.files[f.path];
       const isActive=S.previewFile===f.path;
       const isEdited=S.editedFiles&&S.editedFiles[f.path];
-      h+=`<li data-path="${f.path}" onclick="previewFile('${f.path}')" class="tree-item${isActive?' active':''}${f.name.startsWith('  ')?' tree-indent':''}${isGen?'':' tree-disabled'}">
-        ${isGen?'📄':'⬜'} ${f.name.trim()}${isEdited?'<span class="tree-edited" title="Edited">●</span>':''}${isGen?'<span class="tree-gen">✓</span>':''}
+      h+=`<li data-path="${esc(f.path)}" onclick="previewFile('${escAttr(f.path)}')" class="tree-item${isActive?' active':''}${f.name.startsWith('  ')?' tree-indent':''}${isGen?'':' tree-disabled'}">
+        ${isGen?'📄':'⬜'} ${esc(f.name.trim())}${isEdited?'<span class="tree-edited" title="Edited">●</span>':''}${isGen?'<span class="tree-gen">✓</span>':''}
       </li>`;
     }
   });
@@ -2332,6 +2423,10 @@ function buildFileTree(){
       files.push({folder:true,name:'skills'});
       files.push({name:'  impl-patterns.md',path:'skills/impl-patterns.md'});
     }
+  } else if(pillar===11){ // Security Intelligence
+    files.push({folder:true,name:'docs'});
+    ['43_security_intelligence','44_threat_model','45_compliance_matrix','46_ai_security','47_security_testing'].forEach(f=>
+      files.push({name:'  '+f+'.md',path:'docs/'+f+'.md'}));
   }
   // Common files
   files.push({name:'───────────',path:''});
@@ -2373,9 +2468,13 @@ function previewFile(path){
     const raw=S.files[path];
     if(path.endsWith('.md')&&raw.includes('```mermaid')){
       let html=safeMD(raw);
+      let _mmBlocks=[];
       html=html.replace(/<pre><code class="language-mermaid">([\s\S]*?)<\/code><\/pre>/g,
-        (m,code)=>'<div class="mermaid">'+code.replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>')+'</div>');
+        (m,code)=>{const id='_mm'+_mmBlocks.length;
+        _mmBlocks.push(code.replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>'));
+        return '<div class="mermaid" id="'+id+'"></div>';});
       $('prevBody').innerHTML=prevToolbar(path,true)+`<div id="mdRendered" class="md-rendered">${html}</div>`;
+      _mmBlocks.forEach((c,i)=>{const el=document.getElementById('_mm'+i);if(el)el.textContent=c;});
       loadMermaid(()=>{
         if(_mermaidReady){
           try{
@@ -2436,7 +2535,8 @@ function printCurrentFile(){
   const G=S.genLang==='ja';
   const content=path.endsWith('.md')?safeMD(raw):'<pre>'+escHtml(raw)+'</pre>';
   const css='body{font-family:-apple-system,sans-serif;padding:40px;max-width:800px;margin:0 auto;color:#1e222d;}'+'pre{background:#f5f5f5;padding:16px;border-radius:8px;overflow-x:auto;}'+'table{width:100%;border-collapse:collapse;}th,td{border:1px solid #ddd;padding:8px;text-align:left;}th{background:#f0f0f0;}';
-  const html='<!DOCTYPE html><html><head><title>'+path+'</title><style>'+css+'</style></head><body>'+'<h1 style="border-bottom:2px solid #3b82f6;padding-bottom:8px;">'+path+'</h1>'+content+'</body></html>';
+  const _CSP_META='<meta http-equiv="Content-Security-Policy" content="default-src \'none\'; style-src \'unsafe-inline\'; img-src data: blob:;">';
+  const html='<!DOCTYPE html><html><head>'+_CSP_META+'<title>'+escHtml(path)+'</title><style>'+css+'</style></head><body>'+'<h1 style="border-bottom:2px solid #3b82f6;padding-bottom:8px;">'+escHtml(path)+'</h1>'+content+'</body></html>';
   const win=window.open('','_blank');
   if(win){win.document.write(html);win.document.close();}
   else{
@@ -2511,7 +2611,7 @@ function filterFileTree(q){
     li.style.display=(!q||path.toLowerCase().includes(lq))?'':'none';
   });
 }
-/* ═══ FILE GENERATION ENGINE — 11 PILLARS ═══ */
+/* ═══ FILE GENERATION ENGINE — 12 PILLARS ═══ */
 function generateAll(){
   const _minKeys=['frontend','backend','database'];
   if(_minKeys.some(k=>!S.answers[k])){
@@ -2566,6 +2666,7 @@ function doGenerate(lang){
     {fn:()=>genPillar9_DesignSystem(a,pn),lbl:_j?'柱⑨ デザインシステム':'Pillar ⑨ Design System',err:'P9-DS'},
     {fn:()=>genPillar10_ReverseEngineering(a,pn),lbl:_j?'柱⑩ リバースEng':'Pillar ⑩ Reverse Eng',err:'P10-Rev'},
     {fn:()=>genPillar11_ImplIntelligence(a,pn),lbl:_j?'柱⑪ 実装インテリジェンス':'Pillar ⑪ Impl Intelligence',err:'P11-Impl'},
+    {fn:()=>genPillar12_SecurityIntelligence(a,pn),lbl:_j?'柱⑫ セキュリティ':'Pillar ⑫ Security',err:'P12-Sec'},
     {fn:()=>genDocs21(a,pn),lbl:_j?'仕様書28種':'28 Spec Docs',err:'Docs'},
     {fn:()=>genCommonFiles(a,pn),lbl:_j?'共通ファイル':'Common Files',err:'Common'},
   ];
@@ -2605,7 +2706,7 @@ function finishGen(_errs){
       _auditFindings.forEach(f=>{
         const cls=f.level==='error'?'compat-error':f.level==='warn'?'compat-warn':'compat-info';
         const icon=f.level==='error'?'❌':f.level==='warn'?'⚠️':'ℹ️';
-        auditHtml+=`<div class="${cls}"><span class="compat-icon">${icon}</span><span class="compat-msg">${f.msg}</span></div>`;
+        auditHtml+=`<div class="${cls}"><span class="compat-icon">${icon}</span><span class="compat-msg">${esc(f.msg)}</span></div>`;
       });
       auditHtml+='</div>';
       const ad=document.createElement('div');ad.className='msg';ad.innerHTML=auditHtml;_sb.appendChild(ad);
@@ -3115,6 +3216,7 @@ function genPillar2_DevContainer(a,pn){
   if(hasPay&&a.payment.includes('Stripe')){
     envLines.push('# Stripe','STRIPE_SECRET_KEY=sk_test_xxx','STRIPE_WEBHOOK_SECRET=whsec_xxx',envPrefix+'STRIPE_PUBLISHABLE_KEY=pk_test_xxx','');
   }
+  envLines.push('# Security','ALLOWED_ORIGINS=http://localhost:3000,https://yourdomain.com','RATE_LIMIT_MAX=100','RATE_LIMIT_WINDOW_MS=60000','');
   S.files['.env.example']=envLines.join('\n');
 }
 /* ── Pillar ③ MCP (Phase B: Context-Aware) ── */
@@ -6634,6 +6736,1267 @@ function genPillar11_ImplIntelligence(a,pn){
 
   S.files['docs/42_skill_guide.md']=doc42;
 }
+/* ═══ PILLAR ⑫: SECURITY INTELLIGENCE ═══ */
+
+// OWASP Top 10 2025 Check Database
+const OWASP_2025=[
+  {id:'A01',ja:'アクセス制御の不備',en:'Broken Access Control',
+   checks_ja:[
+     'RLS/Security Rules全テーブル有効化',
+     'Server Actions内認証チェック必須',
+     'IDOR防止(owner検証)',
+     '最小権限原則の適用',
+     'デフォルト拒否ポリシー'
+   ],
+   checks_en:[
+     'Enable RLS/Security Rules for all tables',
+     'Auth check required in all Server Actions',
+     'IDOR prevention (owner verification)',
+     'Apply principle of least privilege',
+     'Default deny policy'
+   ],
+   stack:{
+     supabase:['RLSポリシー全テーブル確認','service_roleキー隔離','anon keyのみクライアント公開'],
+     firebase:['Firestore Rules全コレクション確認','Admin SDK使用最小化','カスタムクレーム活用'],
+     express:['認可ミドルウェア全ルート適用','JWTスコープ検証','RBAC実装']
+   }},
+  {id:'A02',ja:'セキュリティ設定ミス',en:'Security Misconfiguration',
+   checks_ja:[
+     'BaaS管理画面でRLS有効化確認',
+     'API制限設定(リファラ/IPホワイトリスト)',
+     'Data API無効化推奨',
+     'CORS設定の厳格化',
+     'デフォルトクレデンシャル変更'
+   ],
+   checks_en:[
+     'Verify RLS enabled in BaaS console',
+     'API restrictions (referrer/IP whitelist)',
+     'Disable Data API (recommended)',
+     'Strict CORS configuration',
+     'Change default credentials'
+   ],
+   stack:{
+     supabase:['Database settings→RLS確認','API settings→制限設定','PostgREST API評価'],
+     firebase:['Firebase Console→Rules確認','App Check有効化','API key制限設定'],
+     vercel:['Environment Variables設定','Preview deployments保護','Edge Config活用']
+   }},
+  {id:'A03',ja:'ソフトウェアサプライチェーン',en:'Software Supply Chain',
+   checks_ja:[
+     'npm audit自動実行',
+     'Gitleaksでシークレットスキャン',
+     'SLSA Build Provenance生成',
+     'Scorecard評価',
+     'SBOMエクスポート'
+   ],
+   checks_en:[
+     'Automate npm audit',
+     'Gitleaks secret scanning',
+     'Generate SLSA Build Provenance',
+     'Scorecard evaluation',
+     'Export SBOM'
+   ],
+   stack:{
+     github:['Dependabot有効化','Secret scanning有効化','actions/attest-build-provenance使用'],
+     npm:['package-lock.json必須','npm audit fix定期実行','--ignore-scripts使用'],
+     docker:['ベースイメージ署名検証','Trivy脆弱性スキャン','multi-stage build']
+   }},
+  {id:'A04',ja:'サーバサイドリクエストフォージェリ',en:'Server-Side Request Forgery',
+   checks_ja:[
+     'Server Actions内URL検証',
+     'Edge Functions外部リクエスト制限',
+     'プライベートIP拒否',
+     'URLホワイトリスト',
+     'リダイレクト検証'
+   ],
+   checks_en:[
+     'URL validation in Server Actions',
+     'Restrict external requests in Edge Functions',
+     'Deny private IPs',
+     'URL whitelist',
+     'Redirect validation'
+   ],
+   stack:{
+     nextjs:['Server Actions入力検証','fetch制限実装','middleware活用'],
+     cloudflare:['Workers制限設定','env.ALLOWED_HOSTS定義'],
+     supabase:['Edge Functions制限','Deno.permissions確認']
+   }},
+  {id:'A05',ja:'安全でない設計',en:'Insecure Design',
+   checks_ja:[
+     '脅威モデリング実施',
+     'Security by Design原則',
+     'フェイルセーフ設計',
+     'Defense in Depth',
+     'セキュアデフォルト'
+   ],
+   checks_en:[
+     'Conduct threat modeling',
+     'Security by Design principles',
+     'Fail-safe design',
+     'Defense in Depth',
+     'Secure defaults'
+   ],
+   stack:{
+     design:['STRIDE分析実施','Trust Boundary定義','Attack Surface最小化'],
+     arch:['認証/認可分離','暗号化デフォルト','監査ログ設計']
+   }},
+  {id:'A06',ja:'脆弱で古いコンポーネント',en:'Vulnerable and Outdated Components',
+   checks_ja:[
+     '依存関係自動更新',
+     'EOLバージョン回避',
+     'セキュリティパッチ適用',
+     '未使用依存関係削除',
+     'ロックファイル必須'
+   ],
+   checks_en:[
+     'Automate dependency updates',
+     'Avoid EOL versions',
+     'Apply security patches',
+     'Remove unused dependencies',
+     'Require lockfile'
+   ],
+   stack:{
+     renovate:['自動PR作成','vulnerabilityAlerts有効'],
+     npm:['npm outdated定期確認','npx npm-check-updates'],
+     docker:['ベースイメージ更新','distroless推奨']
+   }},
+  {id:'A07',ja:'識別と認証の失敗',en:'Identification and Authentication Failures',
+   checks_ja:[
+     'MFA必須化',
+     'パスワード強度ポリシー',
+     'セッション管理強化',
+     'レートリミット実装',
+     'クレデンシャルスタッフィング防御'
+   ],
+   checks_en:[
+     'Enforce MFA',
+     'Password strength policy',
+     'Strengthen session management',
+     'Implement rate limiting',
+     'Defend against credential stuffing'
+   ],
+   stack:{
+     supabase:['Auth policies設定','MFA有効化','Email confirmations強制'],
+     firebase:['Firebase Auth MFA','reCAPTCHA統合','passwordPolicyOptions設定'],
+     nextauth:['session strategy設定','maxAge適切化','secret強化']
+   }},
+  {id:'A08',ja:'ソフトウェアとデータの整合性の不備',en:'Software and Data Integrity Failures',
+   checks_ja:[
+     'CDN SRI設定',
+     'コード署名検証',
+     'CI/CDパイプライン保護',
+     'auto-merge無効化',
+     'Webhook署名検証'
+   ],
+   checks_en:[
+     'Configure CDN SRI',
+     'Verify code signatures',
+     'Protect CI/CD pipeline',
+     'Disable auto-merge',
+     'Verify webhook signatures'
+   ],
+   stack:{
+     cdn:['SRI hashesすべてのCDN','integrity属性必須'],
+     github:['Branch protection有効','Signed commits推奨','CODEOWNERS設定'],
+     webhook:['HMAC署名検証','タイムスタンプ検証','replay attack防御']
+   }},
+  {id:'A09',ja:'セキュリティログと監視の不備',en:'Security Logging and Monitoring Failures',
+   checks_ja:[
+     '全認証イベント記録',
+     '異常検知アラート',
+     'ログ改ざん防止',
+     'インシデント対応手順',
+     'ログ保持ポリシー'
+   ],
+   checks_en:[
+     'Log all auth events',
+     'Anomaly detection alerts',
+     'Prevent log tampering',
+     'Incident response procedures',
+     'Log retention policy'
+   ],
+   stack:{
+     supabase:['pgAudit有効化','Log drains設定','Webhooks活用'],
+     datadog:['APM統合','Security Monitoring','Anomaly Detection'],
+     sentry:['Error tracking','Performance monitoring','Session Replay']
+   }},
+  {id:'A10',ja:'サーバサイドリクエストフォージェリ',en:'Server-Side Request Forgery',
+   checks_ja:[
+     'DNS Rebinding防御',
+     'メタデータAPI保護',
+     'ネットワーク分離',
+     'Egress制限',
+     'タイムアウト設定'
+   ],
+   checks_en:[
+     'Defend against DNS Rebinding',
+     'Protect metadata APIs',
+     'Network isolation',
+     'Egress restrictions',
+     'Timeout configuration'
+   ],
+   stack:{
+     cloud:['VPC設定','Security Groups','Private subnets'],
+     k8s:['Network Policies','Egress rules','Service mesh'],
+     serverless:['VPC integration','Outbound allowlist']
+   }}
+];
+
+// Compliance Requirements Database
+const COMPLIANCE_DB={
+  pci:{
+    name:'PCI DSS 4.0.1',
+    domains:['fintech','ec'],
+    reqs_ja:[
+      {id:'6.4.3',title:'決済ページスクリプトインベントリ',desc:'すべてのJavaScriptをリスト化し、正当性を検証',impl:'CSP report-uri + inventory管理'},
+      {id:'11.6.1',title:'改ざん検知メカニズム',desc:'HTTPヘッダー/ペイロードの改ざん検知',impl:'Subresource Integrity (SRI) + CSP'},
+      {id:'8.3.6',title:'パスワード複雑度',desc:'12文字以上、大小英数記号',impl:'Auth provider設定 + クライアント検証'},
+      {id:'3.5.1',title:'カード情報非保存',desc:'PAN/CVV2保存禁止',impl:'Stripe Tokenization必須'},
+      {id:'12.10.4',title:'インシデント対応計画',desc:'決済システム侵害時の手順',impl:'docs/34_incident_response.md参照'}
+    ],
+    reqs_en:[
+      {id:'6.4.3',title:'Payment Page Script Inventory',desc:'List all JavaScript and verify legitimacy',impl:'CSP report-uri + inventory management'},
+      {id:'11.6.1',title:'Tampering Detection Mechanism',desc:'Detect HTTP header/payload tampering',impl:'Subresource Integrity (SRI) + CSP'},
+      {id:'8.3.6',title:'Password Complexity',desc:'12+ chars, upper/lower/digit/symbol',impl:'Auth provider settings + client validation'},
+      {id:'3.5.1',title:'No Card Data Storage',desc:'Never store PAN/CVV2',impl:'Stripe Tokenization required'},
+      {id:'12.10.4',title:'Incident Response Plan',desc:'Procedures for payment system breach',impl:'See docs/34_incident_response.md'}
+    ]
+  },
+  hipaa:{
+    name:'HIPAA',
+    domains:['health'],
+    reqs_ja:[
+      {id:'§164.312(a)',title:'アクセス制御',desc:'PHI(Protected Health Information)へのアクセス制限',impl:'RLS + RBAC + MFA必須'},
+      {id:'§164.312(c)',title:'整合性管理',desc:'PHI改ざん防止・検知',impl:'pgAudit + トリガー監査'},
+      {id:'§164.312(e)',title:'暗号化',desc:'保管時・転送時暗号化',impl:'AES-256 + TLS 1.3'},
+      {id:'§164.308(a)(1)',title:'BAA締結',desc:'Business Associate Agreement',impl:'Supabase Enterprise必須'},
+      {id:'§164.528',title:'開示記録',desc:'PHIアクセスログ3年保管',impl:'CloudWatch Logs + S3 Glacier'}
+    ],
+    reqs_en:[
+      {id:'§164.312(a)',title:'Access Control',desc:'Restrict access to PHI (Protected Health Information)',impl:'RLS + RBAC + MFA required'},
+      {id:'§164.312(c)',title:'Integrity Controls',desc:'Prevent/detect PHI tampering',impl:'pgAudit + trigger audits'},
+      {id:'§164.312(e)',title:'Encryption',desc:'At-rest and in-transit encryption',impl:'AES-256 + TLS 1.3'},
+      {id:'§164.308(a)(1)',title:'BAA Execution',desc:'Business Associate Agreement',impl:'Supabase Enterprise required'},
+      {id:'§164.528',title:'Disclosure Records',desc:'PHI access logs for 3 years',impl:'CloudWatch Logs + S3 Glacier'}
+    ]
+  },
+  gdpr:{
+    name:'GDPR',
+    domains:['hr','community','content','saas','default'],
+    reqs_ja:[
+      {id:'Art.6',title:'処理の適法性',desc:'法的根拠(同意/契約/正当利益)の文書化',impl:'同意管理UI + Privacy Policy'},
+      {id:'Art.15',title:'アクセス権',desc:'データ主体が自分のデータをダウンロード可能',impl:'Export機能実装'},
+      {id:'Art.17',title:'忘れられる権利',desc:'削除リクエスト対応',impl:'Delete Account機能 + CASCADE設定'},
+      {id:'Art.32',title:'セキュリティ対策',desc:'技術的・組織的対策',impl:'暗号化 + アクセス制御 + 監査ログ'},
+      {id:'Art.33',title:'侵害通知',desc:'72時間以内に監督当局通知',impl:'Incident Response手順書'}
+    ],
+    reqs_en:[
+      {id:'Art.6',title:'Lawfulness of Processing',desc:'Document legal basis (consent/contract/legitimate interest)',impl:'Consent management UI + Privacy Policy'},
+      {id:'Art.15',title:'Right of Access',desc:'Data subjects can download their data',impl:'Implement Export feature'},
+      {id:'Art.17',title:'Right to be Forgotten',desc:'Respond to deletion requests',impl:'Delete Account feature + CASCADE settings'},
+      {id:'Art.32',title:'Security Measures',desc:'Technical and organizational measures',impl:'Encryption + Access control + Audit logs'},
+      {id:'Art.33',title:'Breach Notification',desc:'Notify supervisory authority within 72 hours',impl:'Incident Response procedures'}
+    ]
+  },
+  ismap:{
+    name:'ISMAP (政府情報システムのためのセキュリティ評価制度)',
+    domains:['government'],
+    reqs_ja:[
+      {id:'1441',title:'データローカリティ',desc:'日本国内データセンター必須',impl:'東京/大阪リージョン限定'},
+      {id:'1442',title:'暗号化強度',desc:'CRYPTREC推奨暗号リスト準拠',impl:'AES-256/SHA-256/RSA-2048'},
+      {id:'1443',title:'監査ログ保存',desc:'7年間保存',impl:'S3 Glacier Deep Archive'},
+      {id:'1444',title:'クラウド事業者認証',desc:'ISMAP登録サービス利用推奨',impl:'AWS/Azure/GCP ISMAPサービス'},
+      {id:'1445',title:'インシデント報告',desc:'重大事象は24時間以内報告',impl:'エスカレーション手順書'}
+    ],
+    reqs_en:[
+      {id:'1441',title:'Data Locality',desc:'Japan data center required',impl:'Tokyo/Osaka regions only'},
+      {id:'1442',title:'Encryption Strength',desc:'CRYPTREC recommended cipher list',impl:'AES-256/SHA-256/RSA-2048'},
+      {id:'1443',title:'Audit Log Retention',desc:'7 years retention',impl:'S3 Glacier Deep Archive'},
+      {id:'1444',title:'Cloud Provider Certification',desc:'Use ISMAP registered services',impl:'AWS/Azure/GCP ISMAP services'},
+      {id:'1445',title:'Incident Reporting',desc:'Report critical incidents within 24 hours',impl:'Escalation procedures'}
+    ]
+  },
+  soc2:{
+    name:'SOC 2 Type II',
+    domains:['saas'],
+    reqs_ja:[
+      {id:'CC6.1',title:'論理アクセス制御',desc:'ロールベースアクセス制御実装',impl:'RBAC + 最小権限原則'},
+      {id:'CC6.6',title:'暗号化',desc:'保管時・転送時暗号化',impl:'TLS 1.3 + AES-256'},
+      {id:'CC7.2',title:'変更管理',desc:'本番変更の承認プロセス',impl:'Pull Request + Approval workflow'},
+      {id:'CC7.3',title:'セキュリティ監視',desc:'異常検知・アラート',impl:'CloudWatch/Datadog監視'},
+      {id:'CC9.2',title:'ベンダー管理',desc:'サードパーティリスク評価',impl:'Vendor Security Assessment'}
+    ],
+    reqs_en:[
+      {id:'CC6.1',title:'Logical Access Control',desc:'Implement role-based access control',impl:'RBAC + least privilege'},
+      {id:'CC6.6',title:'Encryption',desc:'At-rest and in-transit encryption',impl:'TLS 1.3 + AES-256'},
+      {id:'CC7.2',title:'Change Management',desc:'Approval process for production changes',impl:'Pull Request + Approval workflow'},
+      {id:'CC7.3',title:'Security Monitoring',desc:'Anomaly detection and alerting',impl:'CloudWatch/Datadog monitoring'},
+      {id:'CC9.2',title:'Vendor Management',desc:'Third-party risk assessment',impl:'Vendor Security Assessment'}
+    ]
+  },
+  ferpa:{
+    name:'FERPA (Family Educational Rights and Privacy Act)',
+    domains:['education'],
+    reqs_ja:[
+      {id:'§99.31',title:'同意なし開示制限',desc:'教育記録の第三者提供制限',impl:'保護者同意フロー + 開示記録'},
+      {id:'§99.32',title:'開示記録保管',desc:'開示履歴の記録・保管',impl:'Audit log + 5年保管'},
+      {id:'§99.35',title:'アクセス権',desc:'学生・保護者が記録を閲覧可能',impl:'View Records機能'},
+      {id:'§99.7',title:'セキュリティ対策',desc:'不正アクセス防止',impl:'認証 + 暗号化 + アクセス制御'}
+    ],
+    reqs_en:[
+      {id:'§99.31',title:'Disclosure Restrictions',desc:'Limit third-party access to education records',impl:'Parental consent flow + disclosure records'},
+      {id:'§99.32',title:'Disclosure Record Retention',desc:'Maintain disclosure history',impl:'Audit log + 5-year retention'},
+      {id:'§99.35',title:'Right of Access',desc:'Students/parents can view records',impl:'View Records feature'},
+      {id:'§99.7',title:'Security Measures',desc:'Prevent unauthorized access',impl:'Auth + encryption + access control'}
+    ]
+  },
+  asvs:{
+    name:'OWASP ASVS Level 2',
+    domains:['default'],
+    reqs_ja:[
+      {id:'V1.4',title:'アクセス制御設計',desc:'デフォルト拒否原則',impl:'RLS/Security Rules + 認可チェック'},
+      {id:'V2.1',title:'パスワードセキュリティ',desc:'10文字以上、pwned passwords回避',impl:'Auth provider設定'},
+      {id:'V3.4',title:'セッション管理',desc:'セッション無効化・タイムアウト',impl:'JWT有効期限 + refresh token'},
+      {id:'V5.2',title:'入力検証',desc:'ホワイトリスト検証',impl:'Zodスキーマ + サーバー検証'},
+      {id:'V8.1',title:'データ保護',desc:'機密データ暗号化',impl:'列レベル暗号化 + TLS'}
+    ],
+    reqs_en:[
+      {id:'V1.4',title:'Access Control Design',desc:'Default deny principle',impl:'RLS/Security Rules + authz checks'},
+      {id:'V2.1',title:'Password Security',desc:'10+ chars, avoid pwned passwords',impl:'Auth provider settings'},
+      {id:'V3.4',title:'Session Management',desc:'Session invalidation and timeout',impl:'JWT expiration + refresh token'},
+      {id:'V5.2',title:'Input Validation',desc:'Whitelist validation',impl:'Zod schemas + server validation'},
+      {id:'V8.1',title:'Data Protection',desc:'Encrypt sensitive data',impl:'Column-level encryption + TLS'}
+    ]
+  }
+};
+
+// STRIDE Threat Patterns
+const STRIDE_PATTERNS={
+  hasUserId:{S:'HIGH',T:'MED',R:'MED',I:'HIGH',D:'LOW',E:'HIGH'},
+  isPayment:{S:'CRITICAL',T:'CRITICAL',R:'HIGH',I:'HIGH',D:'MED',E:'CRITICAL'},
+  isPublic:{S:'LOW',T:'LOW',R:'LOW',I:'MED',D:'MED',E:'LOW'},
+  hasFile:{S:'MED',T:'HIGH',I:'HIGH',D:'MED',E:'MED'},
+  default:{S:'MED',T:'MED',R:'LOW',I:'MED',D:'LOW',E:'MED'}
+};
+
+// Helper: Checkbox
+function _chk(ja,en){const G=S.genLang==='ja';return'- [ ] '+(G?ja:en)+'\n';}
+
+// Helper: Security level label
+function _lvl(lv){
+  const m={CRITICAL:'🔴 Critical',HIGH:'🟠 High',MED:'🟡 Medium',LOW:'🟢 Low'};
+  return m[lv]||lv;
+}
+
+// Helper: OWASP section
+function _owaspSection(item,backend){
+  const G=S.genLang==='ja';
+  let out='### '+item.id+': '+(G?item.ja:item.en)+'\n\n';
+  const checks=G?item.checks_ja:item.checks_en;
+  checks.forEach(c=>out+=_chk(c,c));
+  out+='\n';
+
+  // Stack-specific checks
+  if(item.stack){
+    out+=(G?'**技術スタック別チェック:**\n\n':'**Stack-Specific Checks:**\n\n');
+    const bk=backend||'express';
+    const key=bk.toLowerCase().includes('supabase')?'supabase':
+              bk.toLowerCase().includes('firebase')?'firebase':
+              bk.toLowerCase().includes('github')?'github':
+              bk.toLowerCase().includes('npm')?'npm':
+              bk.toLowerCase().includes('vercel')?'vercel':'express';
+    if(item.stack[key]){
+      item.stack[key].forEach(s=>out+='- '+s+'\n');
+    }
+  }
+  return out+'\n';
+}
+
+// Helper: Compliance section
+function _compSection(comp,G){
+  const reqs=G?comp.reqs_ja:comp.reqs_en;
+  let out='## '+comp.name+'\n\n';
+  out+=(G?'**適用対象ドメイン:** ':'**Applicable Domains:** ')+comp.domains.join(', ')+'\n\n';
+  out+=(G?'### 必須要件チェックリスト\n\n':'### Required Compliance Checklist\n\n');
+
+  reqs.forEach(r=>{
+    out+='#### '+r.id+': '+r.title+'\n';
+    out+='- **'+(G?'説明':'Description')+':** '+r.desc+'\n';
+    out+='- **'+(G?'実装':'Implementation')+':** '+r.impl+'\n';
+    out+=_chk(r.title,r.title);
+    out+='\n';
+  });
+  return out;
+}
+
+// Main Generator
+function genPillar12_SecurityIntelligence(a,pn){
+  const G=S.genLang==='ja';
+  const domain=detectDomain(a.purpose)||'default';
+  const backend=a.backend||'Supabase';
+  const frontend=a.frontend||'React + Next.js';
+  const database=a.database||'PostgreSQL';
+  const auth=resolveAuth(a);
+  const entities=(a.data_entities||'').split(/[,、]/).map(e=>e.trim()).filter(e=>e);
+  const features=(a.mvp_features||'').split(/[,、]/).map(f=>f.trim()).filter(f=>f);
+  const hasPayment=a.payment&&a.payment!=='none';
+  const hasAI=a.ai_auto&&a.ai_auto!=='none';
+
+  // ═══ DOC 43: Security Intelligence Report ═══
+  let doc43='';
+  doc43+='# '+(G?'セキュリティインテリジェンスレポート':'Security Intelligence Report')+'\n\n';
+  doc43+='> '+(G?'プロジェクト: ':'Project: ')+pn+'\n';
+  doc43+='> '+(G?'生成日: ':'Generated: ')+new Date().toISOString().split('T')[0]+'\n\n';
+
+  doc43+=(G?'## 📋 目次\n\n':'## 📋 Table of Contents\n\n');
+  doc43+='1. [OWASP Top 10 (2025) Adaptive Audit](#owasp-top-10-2025-adaptive-audit)\n';
+  doc43+='2. [Security Headers Configuration](#security-headers-configuration)\n';
+  doc43+='3. [Shared Responsibility Model](#shared-responsibility-model)\n';
+  doc43+='4. [Secrets Management](#secrets-management)\n';
+  doc43+='5. [Authentication & Session Security](#authentication--session-security)\n\n';
+  doc43+='---\n\n';
+
+  // OWASP Section
+  doc43+='## OWASP Top 10 (2025) Adaptive Audit\n\n';
+  doc43+=(G?'このセクションではOWASP Top 10 2025の各項目について、プロジェクトの技術スタックに適応したチェックリストを提供します。\n\n':'This section provides stack-adaptive checklists for each OWASP Top 10 2025 category.\n\n');
+
+  OWASP_2025.forEach(item=>{
+    doc43+=_owaspSection(item,backend);
+  });
+
+  // Security Headers
+  doc43+='---\n\n## Security Headers Configuration\n\n';
+  doc43+=(G?'### Content Security Policy (CSP)\n\n':'### Content Security Policy (CSP)\n\n');
+
+  if(frontend.includes('Next.js')){
+    doc43+=(G?'**Next.js middleware実装例:**\n\n':'**Next.js middleware implementation:**\n\n');
+    doc43+='```typescript\n';
+    doc43+='// middleware.ts\n';
+    doc43+='import { NextResponse } from \'next/server\';\n';
+    doc43+='export function middleware(request: Request) {\n';
+    doc43+='  const nonce = Buffer.from(crypto.randomUUID()).toString(\'base64\');\n';
+    doc43+='  const cspHeader = `\n';
+    doc43+='    default-src \'self\';\n';
+    doc43+='    script-src \'self\' \'nonce-${nonce}\' \'strict-dynamic\';\n';
+    doc43+='    style-src \'self\' \'nonce-${nonce}\';\n';
+    doc43+='    img-src \'self\' blob: data:;\n';
+    doc43+='    font-src \'self\';\n';
+    doc43+='    object-src \'none\';\n';
+    doc43+='    base-uri \'self\';\n';
+    doc43+='    form-action \'self\';\n';
+    doc43+='    frame-ancestors \'none\';\n';
+    doc43+='    upgrade-insecure-requests;\n';
+    doc43+='  `.replace(/\\s{2,}/g, \' \').trim();\n';
+    doc43+='  const response = NextResponse.next();\n';
+    doc43+='  response.headers.set(\'Content-Security-Policy\', cspHeader);\n';
+    doc43+='  response.headers.set(\'X-Nonce\', nonce);\n';
+    doc43+='  return response;\n';
+    doc43+='}\n';
+    doc43+='```\n\n';
+  }else{
+    doc43+=(G?'**Express helmet実装例:**\n\n':'**Express helmet implementation:**\n\n');
+    doc43+='```javascript\n';
+    doc43+='const helmet = require(\'helmet\');\n';
+    doc43+='app.use(helmet.contentSecurityPolicy({\n';
+    doc43+='  directives: {\n';
+    doc43+='    defaultSrc: ["\'self\'"],\n';
+    doc43+='    scriptSrc: ["\'self\'", "\'unsafe-inline\'"],\n';
+    doc43+='    styleSrc: ["\'self\'", "\'unsafe-inline\'"],\n';
+    doc43+='    imgSrc: ["\'self\'", "data:", "blob:"],\n';
+    doc43+='    connectSrc: ["\'self\'"],\n';
+    doc43+='    fontSrc: ["\'self\'"],\n';
+    doc43+='    objectSrc: ["\'none\'"],\n';
+    doc43+='    upgradeInsecureRequests: []\n';
+    doc43+='  }\n';
+    doc43+='}));\n';
+    doc43+='```\n\n';
+  }
+
+  doc43+=(G?'### その他の必須ヘッダー\n\n':'### Other Essential Headers\n\n');
+  doc43+='```http\n';
+  doc43+='Strict-Transport-Security: max-age=63072000; includeSubDomains; preload\n';
+  doc43+='X-Frame-Options: DENY\n';
+  doc43+='X-Content-Type-Options: nosniff\n';
+  doc43+='Referrer-Policy: strict-origin-when-cross-origin\n';
+  doc43+='Permissions-Policy: geolocation=(), microphone=(), camera=()\n';
+  doc43+='```\n\n';
+
+  // Shared Responsibility Model
+  doc43+='---\n\n## Shared Responsibility Model\n\n';
+
+  const isBaaS=backend.includes('Supabase')||backend.includes('Firebase')||backend.includes('Convex');
+
+  if(isBaaS){
+    doc43+=(G?'### BaaSプロバイダ vs アプリケーション責任分界\n\n':'### BaaS Provider vs Application Responsibility\n\n');
+    doc43+='| '+(G?'セキュリティ領域':'Security Domain')+' | '+(G?'プロバイダ担当':'Provider')+' | '+(G?'あなたが担当':'Your Responsibility')+' |\n';
+    doc43+='|---|---|---|\n';
+    doc43+='| '+(G?'物理インフラ':'Physical Infrastructure')+' | ✅ | |\n';
+    doc43+='| '+(G?'ネットワーク':'Network Security')+' | ✅ | |\n';
+    doc43+='| '+(G?'データベース暗号化':'Database Encryption')+' | ✅ | |\n';
+    doc43+='| '+(G?'パッチ適用':'Patching')+' | ✅ | |\n';
+    doc43+='| **'+(G?'RLS/Security Rules':'RLS/Security Rules')+'** | | ✅ |\n';
+    doc43+='| **'+(G?'認証設定':'Auth Configuration')+'** | | ✅ |\n';
+    doc43+='| **'+(G?'アプリケーションロジック':'Application Logic')+'** | | ✅ |\n';
+    doc43+='| **'+(G?'入力検証':'Input Validation')+'** | | ✅ |\n';
+    doc43+='| **'+(G?'APIキー管理':'API Key Management')+'** | | ✅ |\n';
+    doc43+='| **'+(G?'監査ログ設定':'Audit Log Configuration')+'** | | ✅ |\n';
+    doc43+='\n';
+    doc43+=(G?'⚠️ **重要:** プロバイダがインフラを保護しても、RLS/Rulesやアプリロジックの脆弱性はあなたの責任です。\n\n':'⚠️ **Important:** Even if the provider secures infrastructure, RLS/Rules and app logic vulnerabilities are your responsibility.\n\n');
+  }else{
+    doc43+=(G?'### 自前サーバー — 完全責任モデル\n\n':'### Self-Hosted — Full Responsibility Model\n\n');
+    doc43+=(G?'あなたがすべてのレイヤーを担当します:\n\n':'You are responsible for all layers:\n\n');
+    doc43+='- '+(G?'サーバーOS・パッチ管理':'Server OS & patching')+'\n';
+    doc43+='- '+(G?'ファイアウォール・ネットワーク設定':'Firewall & network configuration')+'\n';
+    doc43+='- '+(G?'データベース暗号化設定':'Database encryption settings')+'\n';
+    doc43+='- '+(G?'TLS証明書管理':'TLS certificate management')+'\n';
+    doc43+='- '+(G?'アプリケーションセキュリティ':'Application security')+'\n';
+    doc43+='- '+(G?'監視・ログ収集':'Monitoring & logging')+'\n\n';
+  }
+
+  // Secrets Management
+  doc43+='---\n\n## Secrets Management\n\n';
+  doc43+=(G?'### シークレット管理の3段階\n\n':'### 3-Tier Secrets Management\n\n');
+  doc43+='1. **'+(G?'開発環境':'Development')+' (`.env.local`):** '+(G?'ローカルのみ、Gitignore必須':'Local only, must be in .gitignore')+'\n';
+  doc43+='2. **'+(G?'CI/CD':'CI/CD')+' (GitHub Secrets):** '+(G?'OIDC推奨、パーソナルトークン非推奨':'Use OIDC, avoid PATs')+'\n';
+  doc43+='3. **'+(G?'本番環境':'Production')+' (Secrets Manager):** AWS Secrets Manager / GCP Secret Manager / Azure Key Vault\n\n';
+
+  doc43+=(G?'### クライアントバンドル漏洩チェック\n\n':'### Client Bundle Leakage Check\n\n');
+  doc43+='```bash\n';
+  doc43+='# Next.js build output inspection\n';
+  doc43+='npm run build\n';
+  doc43+='grep -r "sk_live" .next/static/  # Stripe secret key should NOT appear\n';
+  doc43+='grep -r "SERVICE_ROLE" .next/static/  # Supabase service_role should NOT appear\n';
+  doc43+='```\n\n';
+
+  doc43+=_chk('環境変数がクライアントバンドルに含まれていないことを確認','Verify env vars not in client bundle')+'\n';
+  doc43+=_chk('NEXT_PUBLIC_プレフィックスの使用を最小限に','Minimize NEXT_PUBLIC_ usage')+'\n';
+  doc43+=_chk('Secrets Managerでローテーション戦略を設定','Set up rotation strategy in Secrets Manager')+'\n\n';
+
+  // Authentication & Session Security
+  doc43+='---\n\n## Authentication & Session Security\n\n';
+  doc43+=(G?'### 認証方式: ':'### Auth Method: ')+auth.sot+'\n\n';
+
+  if(auth.sot.includes('Supabase')){
+    doc43+='#### Supabase Auth Configuration\n\n';
+    doc43+=_chk('MFA有効化 (Dashboard → Auth → MFA)','Enable MFA (Dashboard → Auth → MFA)')+'\n';
+    doc43+=_chk('Email confirmation強制','Enforce email confirmation')+'\n';
+    doc43+=_chk('JWT有効期限を適切に設定 (デフォルト1時間)','Set appropriate JWT expiry (default 1h)')+'\n';
+    doc43+=_chk('Refresh token rotation有効化','Enable refresh token rotation')+'\n';
+    doc43+=_chk('カスタムClaimsでRBAC実装','Implement RBAC with custom claims')+'\n\n';
+  }else if(auth.sot.includes('Firebase')){
+    doc43+='#### Firebase Auth Configuration\n\n';
+    doc43+=_chk('Firebase Auth MFA有効化','Enable Firebase Auth MFA')+'\n';
+    doc43+=_chk('Email enumeration protection有効','Enable email enumeration protection')+'\n';
+    doc43+=_chk('passwordPolicyOptions設定','Configure passwordPolicyOptions')+'\n';
+    doc43+=_chk('reCAPTCHA統合','Integrate reCAPTCHA')+'\n\n';
+  }else if(auth.sot.includes('NextAuth')||auth.sot.includes('Auth.js')){
+    doc43+='#### NextAuth Configuration\n\n';
+    doc43+=_chk('NEXTAUTH_SECRET強化 (32文字以上ランダム)','Strengthen NEXTAUTH_SECRET (32+ random chars)')+'\n';
+    doc43+=_chk('session.maxAge適切化 (デフォルト30日→短縮検討)','Optimize session.maxAge (default 30d → consider shortening)')+'\n';
+    doc43+=_chk('session.updateAge設定','Set session.updateAge')+'\n';
+    doc43+=_chk('CSRFトークン検証有効','Verify CSRF token validation enabled')+'\n\n';
+  }else{
+    doc43+='#### Custom JWT Implementation\n\n';
+    doc43+=_chk('JWT署名アルゴリズムRS256推奨 (HS256非推奨)','Use RS256 for JWT signing (avoid HS256)')+'\n';
+    doc43+=_chk('Access token有効期限15分以内','Access token expiry ≤15 min')+'\n';
+    doc43+=_chk('Refresh token rotation実装','Implement refresh token rotation')+'\n';
+    doc43+=_chk('Token blacklist実装 (Redis推奨)','Implement token blacklist (Redis recommended)')+'\n\n';
+  }
+
+  doc43+=(G?'### セッション管理ベストプラクティス\n\n':'### Session Management Best Practices\n\n');
+  doc43+=_chk('ログアウト時にサーバー側でセッション無効化','Invalidate session server-side on logout')+'\n';
+  doc43+=_chk('並行セッション制限検討','Consider concurrent session limits')+'\n';
+  doc43+=_chk('異常なセッション活動を監視','Monitor abnormal session activity')+'\n';
+  doc43+=_chk('パスワード変更時に全セッション無効化','Invalidate all sessions on password change')+'\n\n';
+
+  doc43+=(G?'## 📚 関連ドキュメント\n\n':'## 📚 Related Documents\n\n');
+  doc43+='- [Threat Model](./44_threat_model.md)\n';
+  doc43+='- [Compliance Matrix](./45_compliance_matrix.md)\n';
+  doc43+='- [AI Security Playbook](./46_ai_security.md)\n';
+  doc43+='- [Security Testing](./47_security_testing.md)\n';
+  doc43+='- [Incident Response](./34_incident_response.md)\n';
+  doc43+='- [Security (Overview)](./08_security.md)\n';
+
+  S.files['docs/43_security_intelligence.md']=doc43;
+
+  // ═══ DOC 44: STRIDE Threat Model ═══
+  let doc44='';
+  doc44+='# '+(G?'脅威モデル — STRIDE分析':'Threat Model — STRIDE Analysis')+'\n\n';
+  doc44+='> '+(G?'プロジェクト: ':'Project: ')+pn+'\n';
+  doc44+='> '+(G?'生成日: ':'Generated: ')+new Date().toISOString().split('T')[0]+'\n\n';
+
+  doc44+='## '+(G?'システム概要':'System Overview')+'\n\n';
+  doc44+='- **Frontend:** '+frontend+'\n';
+  doc44+='- **Backend:** '+backend+'\n';
+  doc44+='- **Database:** '+database+'\n';
+  doc44+='- **Auth:** '+auth.sot+'\n';
+  doc44+='- **Domain:** '+domain+'\n\n';
+
+  // Trust Boundaries
+  doc44+='## '+(G?'トラストバウンダリ':'Trust Boundaries')+'\n\n';
+  doc44+='```mermaid\n';
+  doc44+='flowchart LR\n';
+  doc44+='  Client["👤 Client\\n(Browser)"] -->|HTTPS| CDN["🌐 CDN\\n(Vercel/Cloudflare)"]\n';
+  doc44+='  CDN -->|TLS| API["⚙️ API\\n('+backend+')"]\n';
+  doc44+='  API -->|Encrypted| DB["🗄️ Database\\n('+database+')"]\n';
+  doc44+='  API -->|JWT| Auth["🔐 Auth\\n('+auth.provider+')"]\n';
+  if(hasPayment){
+    doc44+='  API -->|Tokenized| Payment["💳 Payment\\n(Stripe)"]\n';
+  }
+  doc44+='  \n';
+  doc44+='  style Client fill:#e1f5ff\n';
+  doc44+='  style CDN fill:#fff4e1\n';
+  doc44+='  style API fill:#ffe1e1\n';
+  doc44+='  style DB fill:#e1ffe1\n';
+  doc44+='  style Auth fill:#f0e1ff\n';
+  if(hasPayment){
+    doc44+='  style Payment fill:#ffe1f0\n';
+  }
+  doc44+='```\n\n';
+
+  doc44+=(G?'**境界:**\n\n':'**Boundaries:**\n\n');
+  doc44+='1. **'+(G?'パブリックインターネット ↔ CDN':'Public Internet ↔ CDN')+'**\n';
+  doc44+='2. **CDN ↔ API** '+(G?'(信頼境界)':'(Trust boundary)')+'\n';
+  doc44+='3. **API ↔ Database** '+(G?'(内部境界)':'(Internal boundary)')+'\n\n';
+
+  // STRIDE per Entity
+  doc44+='## '+(G?'エンティティ別STRIDE脅威分析':'STRIDE Threat Analysis per Entity')+'\n\n';
+
+  if(entities.length===0){
+    doc44+=(G?'> ⚠️ data_entitiesが未定義のため、一般的な脅威のみ記載します。\n\n':'> ⚠️ No entities defined. Showing generic threats only.\n\n');
+  }else{
+    doc44+='| Entity | S (Spoofing) | T (Tampering) | R (Repudiation) | I (Info Disclosure) | D (DoS) | E (Elevation) |\n';
+    doc44+='|--------|--------------|---------------|-----------------|---------------------|---------|---------------|\n';
+
+    entities.forEach(ent=>{
+      const cols=getEntityColumns(ent,G,entities)||[];
+      const hasUser=cols.some(c=>c.col==='user_id'||c.col.includes('user_id'));
+      const isPay=ent.toLowerCase().includes('payment')||ent.toLowerCase().includes('order')||ent.toLowerCase().includes('transaction');
+      const isPub=ent.toLowerCase().includes('post')||ent.toLowerCase().includes('article')||ent.toLowerCase().includes('blog');
+      const hasFileCol=cols.some(c=>c.col.includes('file')||c.col.includes('image')||c.col.includes('attachment'));
+
+      let pattern=STRIDE_PATTERNS.default;
+      if(isPay)pattern=STRIDE_PATTERNS.isPayment;
+      else if(hasUser)pattern=STRIDE_PATTERNS.hasUserId;
+      else if(isPub)pattern=STRIDE_PATTERNS.isPublic;
+      else if(hasFileCol)pattern=STRIDE_PATTERNS.hasFile;
+
+      doc44+='| '+ent+' | '+_lvl(pattern.S)+' | '+_lvl(pattern.T)+' | '+_lvl(pattern.R)+' | '+_lvl(pattern.I)+' | '+_lvl(pattern.D)+' | '+_lvl(pattern.E)+' |\n';
+    });
+    doc44+='\n';
+  }
+
+  // Attack Surface Analysis
+  doc44+='## '+(G?'攻撃対象領域分析':'Attack Surface Analysis')+'\n\n';
+  doc44+=(G?'### 外部入力ポイント\n\n':'### External Input Points\n\n');
+
+  const inputs=[];
+  if(features.some(f=>f.toLowerCase().includes('auth')||f.toLowerCase().includes('login')||f.toLowerCase().includes('signup'))){
+    inputs.push(G?'ログイン/サインアップフォーム':'Login/Signup forms');
+  }
+  if(features.some(f=>f.toLowerCase().includes('post')||f.toLowerCase().includes('comment')||f.toLowerCase().includes('review'))){
+    inputs.push(G?'コンテンツ投稿フォーム':'Content submission forms');
+  }
+  if(features.some(f=>f.toLowerCase().includes('search'))){
+    inputs.push(G?'検索クエリ':'Search queries');
+  }
+  if(features.some(f=>f.toLowerCase().includes('upload')||f.toLowerCase().includes('file')||f.toLowerCase().includes('image'))){
+    inputs.push(G?'ファイルアップロード':'File uploads');
+  }
+  if(features.some(f=>f.toLowerCase().includes('api'))){
+    inputs.push('REST/GraphQL API');
+  }
+  if(hasPayment){
+    inputs.push(G?'決済フォーム':'Payment forms');
+  }
+
+  if(inputs.length>0){
+    inputs.forEach(inp=>doc44+='- '+inp+'\n');
+    doc44+='\n';
+  }else{
+    doc44+=(G?'> 特定の入力ポイントは検出されませんでした。mvp_featuresを確認してください。\n\n':'> No specific input points detected. Review mvp_features.\n\n');
+  }
+
+  doc44+=(G?'### 高リスクフィーチャー\n\n':'### High-Risk Features\n\n');
+  const highRisk=[];
+  if(features.some(f=>f.toLowerCase().includes('auth')))highRisk.push(G?'認証機能 (CRITICAL)':'Authentication (CRITICAL)');
+  if(hasPayment)highRisk.push(G?'決済処理 (CRITICAL)':'Payment processing (CRITICAL)');
+  if(features.some(f=>f.toLowerCase().includes('upload')))highRisk.push(G?'ファイルアップロード (HIGH)':'File uploads (HIGH)');
+  if(hasAI)highRisk.push(G?'AI統合 (HIGH — プロンプトインジェクション)':'AI integration (HIGH — prompt injection)');
+  if(features.some(f=>f.toLowerCase().includes('admin')))highRisk.push(G?'管理機能 (HIGH)':'Admin features (HIGH)');
+
+  if(highRisk.length>0){
+    highRisk.forEach(hr=>doc44+='- '+hr+'\n');
+    doc44+='\n';
+  }
+
+  // Threat-Mitigation Matrix
+  doc44+='## '+(G?'脅威-対策マトリクス':'Threat-Mitigation Matrix')+'\n\n';
+  doc44+='| '+(G?'脅威':'Threat')+' | '+(G?'リスク':'Risk')+' | '+(G?'対策':'Mitigation')+' | '+(G?'実装':'Implementation')+' | Status |\n';
+  doc44+='|------|------|-----------|----------------|--------|\n';
+
+  // Generic threats
+  const threats=[
+    {threat_ja:'SQLインジェクション',threat_en:'SQL Injection',risk:'HIGH',mit_ja:'パラメータ化クエリ',mit_en:'Parameterized queries',impl:'ORM/Supabase RLS'},
+    {threat_ja:'XSS',threat_en:'XSS',risk:'HIGH',mit_ja:'入力サニタイズ + CSP',mit_en:'Input sanitization + CSP',impl:'DOMPurify + CSP headers'},
+    {threat_ja:'CSRF',threat_en:'CSRF',risk:'MED',mit_ja:'CSRFトークン',mit_en:'CSRF tokens',impl:'SameSite cookies + tokens'},
+    {threat_ja:'IDOR',threat_en:'IDOR',risk:'HIGH',mit_ja:'認可チェック',mit_en:'Authorization checks',impl:'RLS policies / owner checks'},
+    {threat_ja:'認証バイパス',threat_en:'Auth bypass',risk:'CRITICAL',mit_ja:'サーバー側検証',mit_en:'Server-side validation',impl:'Middleware / RLS'},
+  ];
+
+  if(hasPayment){
+    threats.push({threat_ja:'カード情報漏洩',threat_en:'Card data leakage',risk:'CRITICAL',mit_ja:'トークナイゼーション',mit_en:'Tokenization',impl:'Stripe Elements'});
+  }
+  if(hasAI){
+    threats.push({threat_ja:'プロンプトインジェクション',threat_en:'Prompt injection',risk:'HIGH',mit_ja:'入力検証 + コンテキスト分離',mit_en:'Input validation + context isolation',impl:'See docs/46_ai_security.md'});
+  }
+
+  threats.forEach(t=>{
+    const threat=G?t.threat_ja:t.threat_en;
+    const mit=G?t.mit_ja:t.mit_en;
+    doc44+='| '+threat+' | '+_lvl(t.risk)+' | '+mit+' | '+t.impl+' | ⬜ |\n';
+  });
+  doc44+='\n';
+
+  doc44+=(G?'## 📚 関連ドキュメント\n\n':'## 📚 Related Documents\n\n');
+  doc44+='- [Security Intelligence](./43_security_intelligence.md)\n';
+  doc44+='- [Security Testing](./47_security_testing.md)\n';
+  doc44+='- [Incident Response](./34_incident_response.md)\n';
+
+  S.files['docs/44_threat_model.md']=doc44;
+
+  // ═══ DOC 45: Compliance Matrix ═══
+  let doc45='';
+  doc45+='# '+(G?'コンプライアンスマトリクス':'Compliance Matrix')+'\n\n';
+  doc45+='> '+(G?'プロジェクト: ':'Project: ')+pn+'\n';
+  doc45+='> '+(G?'ドメイン: ':'Domain: ')+domain+'\n';
+  doc45+='> '+(G?'生成日: ':'Generated: ')+new Date().toISOString().split('T')[0]+'\n\n';
+
+  doc45+=(G?'このドキュメントは、プロジェクトのドメインに基づいて該当するコンプライアンスフレームワークのチェックリストを提供します。\n\n':'This document provides compliance framework checklists based on your project domain.\n\n');
+
+  // Determine applicable compliance frameworks
+  const applicableComp=[];
+  Object.keys(COMPLIANCE_DB).forEach(key=>{
+    const comp=COMPLIANCE_DB[key];
+    if(comp.domains.includes(domain)){
+      applicableComp.push(comp);
+    }
+  });
+
+  // Always include ASVS as baseline
+  if(!applicableComp.some(c=>c.name.includes('ASVS'))){
+    applicableComp.push(COMPLIANCE_DB.asvs);
+  }
+
+  if(applicableComp.length===0){
+    applicableComp.push(COMPLIANCE_DB.asvs);
+  }
+
+  doc45+='## '+(G?'適用フレームワーク':'Applicable Frameworks')+'\n\n';
+  applicableComp.forEach(c=>doc45+='- **'+c.name+'** ('+c.domains.join(', ')+')\n');
+  doc45+='\n---\n\n';
+
+  applicableComp.forEach(comp=>{
+    doc45+=_compSection(comp,G);
+    doc45+='---\n\n';
+  });
+
+  doc45+=(G?'## 📚 関連ドキュメント\n\n':'## 📚 Related Documents\n\n');
+  doc45+='- [Security Intelligence](./43_security_intelligence.md)\n';
+  doc45+='- [Incident Response](./34_incident_response.md)\n';
+  doc45+='- [QA Strategy](./28_qa_strategy.md)\n';
+
+  S.files['docs/45_compliance_matrix.md']=doc45;
+
+  // ═══ DOC 46: AI Security Playbook ═══
+  let doc46='';
+  doc46+='# '+(G?'AI時代のセキュリティプレイブック':'AI-Era Security Playbook')+'\n\n';
+  doc46+='> '+(G?'AI生成コード特有のリスクと対策を包括的にカバー':'Comprehensive coverage of AI-generated code risks and mitigations')+'\n\n';
+
+  doc46+='## '+(G?'1. Velocity Paradox — 速度のパラドックス':'1. Velocity Paradox')+'\n\n';
+  doc46+=(G?
+    'AI支援開発により開発速度は劇的に向上しますが、同時にセキュリティリスクも増大します。\n\n'+
+    '**統計:**\n'+
+    '- AI生成コードの45-62%に脆弱性が含まれる (Stanford研究)\n'+
+    '- 「正しさの幻想」(Illusion of Correctness): AIが生成したコードは人間より信頼されやすい\n'+
+    '- シャドーコード累積: レビューされないAI生成コードが積み重なるリスク\n\n'
+    :
+    'AI-assisted development dramatically increases velocity, but also security risks.\n\n'+
+    '**Statistics:**\n'+
+    '- 45-62% of AI-generated code contains vulnerabilities (Stanford study)\n'+
+    '- Illusion of Correctness: AI code is trusted more than human code\n'+
+    '- Shadow Code Accumulation: Unreviewed AI code accumulates\n\n'
+  );
+
+  doc46+='## '+(G?'2. Package Hallucination Detection — パッケージ幻覚検知':'2. Package Hallucination Detection')+'\n\n';
+  doc46+=(G?'AIは存在しないパッケージを「幻覚」として提案することがあります。\n\n':'AI can hallucinate non-existent packages.\n\n');
+
+  doc46+=(G?'### 検証ワークフロー\n\n':'### Verification Workflow\n\n');
+  doc46+='```bash\n';
+  doc46+='# Step 1: Verify package exists\n';
+  doc46+='npm view <package-name>\n\n';
+  doc46+='# Step 2: Check registry\n';
+  doc46+='curl https://registry.npmjs.org/<package-name>\n\n';
+  doc46+='# Step 3: Check downloads (low downloads = suspicious)\n';
+  doc46+='npm view <package-name> dist.tarball\n';
+  doc46+='```\n\n';
+
+  doc46+=(G?'### CI検証ステップ\n\n':'### CI Verification Step\n\n');
+  doc46+='```yaml\n';
+  doc46+='# .github/workflows/ci.yml\n';
+  doc46+='- name: Verify packages exist\n';
+  doc46+='  run: |\n';
+  doc46+='    for pkg in $(jq -r \'.dependencies | keys[]\' package.json); do\n';
+  doc46+='      npm view "$pkg" > /dev/null || (echo "Package $pkg not found" && exit 1)\n';
+  doc46+='    done\n';
+  doc46+='```\n\n';
+
+  doc46+=_chk('Lockfileを必ず使用 (package-lock.json / yarn.lock)','Always use lockfile (package-lock.json / yarn.lock)')+'\n';
+  doc46+=_chk('SCA (Software Composition Analysis) ツール導入 (Snyk/Dependabot)','Adopt SCA tools (Snyk/Dependabot)')+'\n\n';
+
+  doc46+='## '+(G?'3. AI生成コードレビューチェックリスト':'3. AI-Generated Code Review Checklist')+'\n\n';
+  doc46+=_chk('認可ロジック(Authorization)の存在確認 — IDORチェック','Verify authorization logic exists — check for IDOR')+'\n';
+  doc46+=_chk('シークレットのハードコード確認','Check for hardcoded secrets')+'\n';
+  doc46+=_chk('クライアントバンドルへのシークレット漏洩','Verify secrets not in client bundle')+'\n';
+  doc46+=_chk('入力バリデーションの網羅性','Verify comprehensive input validation')+'\n';
+  doc46+=_chk('エラーハンドリングの適切性 (情報漏洩回避)','Proper error handling (avoid info leakage)')+'\n';
+  doc46+=_chk('論理的欠陥の有無 (ビジネスロジック検証)','Check for logical flaws (business logic)')+'\n';
+  doc46+=_chk('レースコンディション脆弱性','Race condition vulnerabilities')+'\n';
+  doc46+=_chk('SQL/NoSQLインジェクション防止','SQL/NoSQL injection prevention')+'\n\n';
+
+  doc46+='## '+(G?'4. 敵対的AIレビュープロンプト':'4. Adversarial AI Review Prompts')+'\n\n';
+  doc46+=(G?'セキュリティ監査用プロンプトテンプレート:\n\n':'Security audit prompt templates:\n\n');
+
+  // Entity security classification (reuse pattern from doc44 STRIDE analysis)
+  const entClasses=entities.map(ent=>{
+    const cols=getEntityColumns(ent,G,entities)||[];
+    const hasU=cols.some(c=>c.col==='user_id'||c.col.includes('user_id'));
+    const isPay=ent.toLowerCase().match(/payment|order|transaction/);
+    const hasF=cols.some(c=>c.col.includes('file')||c.col.includes('image'));
+    return ent+'('+(isPay?'CRITICAL':hasU?'HIGH':hasF?'MED':'STD')+')';
+  }).join(', ');
+
+  const rlsCtx=backend.includes('Supabase')
+    ?(G?'Supabase RLSポリシーを全テーブルで検証':'Verify Supabase RLS policies on all tables')
+    :backend.includes('Firebase')
+    ?(G?'Firestore Security Rulesを全コレクションで検証':'Verify Firestore Security Rules on all collections')
+    :(G?'認可ミドルウェアを全ルートで検証':'Verify authorization middleware on all routes');
+
+  // Context-aware prompts with project-specific details
+  const prompts_ja=[
+    'あなたはセキュリティ監査員です。このコードの認可ロジックの不備を見つけてください。特にIDOR (Insecure Direct Object Reference) 脆弱性に注目してください。\n\n'+
+    '**プロジェクトコンテキスト:**\n'+
+    '- エンティティとセキュリティ分類: '+entClasses+'\n'+
+    '- 認証方式: '+auth.sot+'\n'+
+    '- 認可検証ポイント: '+rlsCtx+'\n\n'+
+    '各エンティティのowner検証が適切か、RLS/ミドルウェアがデフォルト拒否原則に従っているかを重点的にチェックしてください。',
+
+    'このコードにおけるすべての外部入力ポイントをリストアップし、各入力に対するバリデーション・サニタイゼーションが適切か評価してください。\n\n'+
+    '**対象エンティティと入力カラム:**\n'+
+    entities.slice(0,5).map(ent=>{
+      const cols=getEntityColumns(ent,G,entities)||[];
+      const inputCols=cols.filter(c=>!c.col.includes('_id')&&!c.col.includes('created')&&!c.col.includes('updated')).map(c=>c.col).join(', ');
+      return '- '+ent+': '+inputCols;
+    }).join('\n')+'\n\n'+
+    'Zodスキーマによるサーバーサイド検証が全入力に適用されているか確認してください。',
+
+    'このコードのエラーハンドリングを分析し、スタックトレースやデバッグ情報が本番環境で漏洩する可能性がないか確認してください。\n\n'+
+    '**技術スタック別の注意点:**\n'+
+    (backend.includes('Supabase')?'- Supabase: .error プロパティが詳細すぎないか確認\n':'')+
+    (backend.includes('Firebase')?'- Firebase: Cloud Functionsのエラーがクライアントに漏洩していないか確認\n':'')+
+    (frontend.includes('Next.js')?'- Next.js: Server Actionsのエラーが適切にキャッチされているか確認\n':'')+
+    '\n本番環境では一般的なエラーメッセージのみを返し、詳細はログに記録してください。',
+
+    'このコードにハードコードされたシークレット、APIキー、パスワードがないか探してください。環境変数が適切に使用されているか確認してください。\n\n'+
+    '**チェックすべき環境変数:**\n'+
+    (backend.includes('Supabase')?'- SUPABASE_SERVICE_ROLE_KEY (サーバーサイドのみ)\n- NEXT_PUBLIC_SUPABASE_ANON_KEY (クライアント公開OK)\n':'')+
+    (backend.includes('Firebase')?'- FIREBASE_SERVICE_ACCOUNT_KEY (サーバーサイドのみ)\n- NEXT_PUBLIC_FIREBASE_CONFIG (クライアント公開OK)\n':'')+
+    (hasPayment?'- STRIPE_SECRET_KEY (サーバーサイドのみ)\n- NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY (クライアント公開OK)\n':'')+
+    '\nクライアントバンドルに機密情報が含まれていないことを `npm run build` 後に検証してください。',
+
+    'このコードのセッション管理・トークン管理を分析し、セッション固定攻撃、トークン漏洩、不適切な有効期限設定がないか確認してください。\n\n'+
+    '**認証実装の詳細:**\n'+
+    '- Source of Truth: '+auth.sot+'\n'+
+    '- トークンタイプ: '+(auth.tokenType||'JWT')+'\n'+
+    '- 検証方式: '+(auth.tokenVerify||'署名検証')+'\n\n'+
+    (auth.sot.includes('Supabase')?'Supabase Auth: JWT有効期限、refresh token rotation、MFA設定を確認\n':'')+
+    (auth.sot.includes('Firebase')?'Firebase Auth: セッション有効期限、カスタムクレーム、reCAPTCHA統合を確認\n':'')+
+    (auth.sot.includes('NextAuth')?'NextAuth: NEXTAUTH_SECRET強度、session.maxAge、CSRF保護を確認\n':'')
+  ];
+
+  const prompts_en=[
+    'You are a security auditor. Find authorization logic flaws in this code. Focus on IDOR (Insecure Direct Object Reference) vulnerabilities.\n\n'+
+    '**Project Context:**\n'+
+    '- Entities and Security Classes: '+entClasses+'\n'+
+    '- Auth Method: '+auth.sot+'\n'+
+    '- Authorization Verification: '+rlsCtx+'\n\n'+
+    'Focus on verifying owner checks for each entity and ensuring RLS/middleware follows default-deny principle.',
+
+    'List all external input points in this code and evaluate whether validation/sanitization is appropriate for each input.\n\n'+
+    '**Target Entities and Input Columns:**\n'+
+    entities.slice(0,5).map(ent=>{
+      const cols=getEntityColumns(ent,G,entities)||[];
+      const inputCols=cols.filter(c=>!c.col.includes('_id')&&!c.col.includes('created')&&!c.col.includes('updated')).map(c=>c.col).join(', ');
+      return '- '+ent+': '+inputCols;
+    }).join('\n')+'\n\n'+
+    'Verify that Zod schema server-side validation is applied to all inputs.',
+
+    'Analyze error handling in this code and verify that stack traces or debug information cannot leak in production.\n\n'+
+    '**Stack-Specific Notes:**\n'+
+    (backend.includes('Supabase')?'- Supabase: Check if .error property is too detailed\n':'')+
+    (backend.includes('Firebase')?'- Firebase: Verify Cloud Functions errors do not leak to client\n':'')+
+    (frontend.includes('Next.js')?'- Next.js: Verify Server Actions errors are properly caught\n':'')+
+    '\nReturn generic error messages in production and log details server-side.',
+
+    'Search for hardcoded secrets, API keys, or passwords in this code. Verify environment variables are used appropriately.\n\n'+
+    '**Environment Variables to Check:**\n'+
+    (backend.includes('Supabase')?'- SUPABASE_SERVICE_ROLE_KEY (server-side only)\n- NEXT_PUBLIC_SUPABASE_ANON_KEY (client OK)\n':'')+
+    (backend.includes('Firebase')?'- FIREBASE_SERVICE_ACCOUNT_KEY (server-side only)\n- NEXT_PUBLIC_FIREBASE_CONFIG (client OK)\n':'')+
+    (hasPayment?'- STRIPE_SECRET_KEY (server-side only)\n- NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY (client OK)\n':'')+
+    '\nVerify no secrets in client bundle after `npm run build`.',
+
+    'Analyze session/token management in this code and check for session fixation, token leakage, or improper expiration settings.\n\n'+
+    '**Auth Implementation Details:**\n'+
+    '- Source of Truth: '+auth.sot+'\n'+
+    '- Token Type: '+(auth.tokenType||'JWT')+'\n'+
+    '- Verification: '+(auth.tokenVerify||'Signature verification')+'\n\n'+
+    (auth.sot.includes('Supabase')?'Supabase Auth: Check JWT expiry, refresh token rotation, MFA settings\n':'')+
+    (auth.sot.includes('Firebase')?'Firebase Auth: Check session expiry, custom claims, reCAPTCHA integration\n':'')+
+    (auth.sot.includes('NextAuth')?'NextAuth: Check NEXTAUTH_SECRET strength, session.maxAge, CSRF protection\n':'')
+  ];
+
+  const prompts=G?prompts_ja:prompts_en;
+
+  // Add stack-specific prompts (conditional)
+  if(backend.includes('Supabase')){
+    prompts.push(G?
+      'Supabase RLSポリシーの網羅性を監査してください。\n\n'+
+      '**監査対象テーブル:**\n'+
+      entities.map(ent=>'- '+pluralize(ent).toLowerCase()).join('\n')+'\n\n'+
+      '**チェックポイント:**\n'+
+      '1. 全テーブルでRLS有効化 (`ALTER TABLE ... ENABLE ROW LEVEL SECURITY`)\n'+
+      '2. SELECT/INSERT/UPDATE/DELETE 各操作にポリシー定義\n'+
+      '3. `auth.uid() = user_id` パターンの一貫適用\n'+
+      '4. `service_role` キーがサーバーサイドのみで使用\n'+
+      '5. `anon` キーの権限が最小限\n\n'+
+      'Database settings → Row Level Security でポリシーの有無を確認し、不足があれば具体的なCREATE POLICYステートメントを提案してください。'
+      :
+      'Audit Supabase RLS policy coverage.\n\n'+
+      '**Target Tables:**\n'+
+      entities.map(ent=>'- '+pluralize(ent).toLowerCase()).join('\n')+'\n\n'+
+      '**Checkpoints:**\n'+
+      '1. RLS enabled on all tables (`ALTER TABLE ... ENABLE ROW LEVEL SECURITY`)\n'+
+      '2. Policies defined for SELECT/INSERT/UPDATE/DELETE\n'+
+      '3. Consistent `auth.uid() = user_id` pattern\n'+
+      '4. `service_role` key used server-side only\n'+
+      '5. `anon` key permissions minimized\n\n'+
+      'Check Database settings → Row Level Security and propose specific CREATE POLICY statements for any gaps.'
+    );
+  }
+
+  if(backend.includes('Firebase')){
+    prompts.push(G?
+      'Firestore Security Rulesの網羅性を監査してください。\n\n'+
+      '**監査対象コレクション:**\n'+
+      entities.map(ent=>'- '+pluralize(ent).toLowerCase()).join('\n')+'\n\n'+
+      '**チェックポイント:**\n'+
+      '1. 全コレクションでルール定義 (デフォルト拒否)\n'+
+      '2. `request.auth.uid == resource.data.userId` パターンの一貫適用\n'+
+      '3. カスタムクレームによるロールベースアクセス制御\n'+
+      '4. サブコレクションへのルール継承\n'+
+      '5. Admin SDKの使用が最小限\n\n'+
+      'firestore.rules ファイルを生成し、不足があれば具体的なルール定義を提案してください。'
+      :
+      'Audit Firestore Security Rules coverage.\n\n'+
+      '**Target Collections:**\n'+
+      entities.map(ent=>'- '+pluralize(ent).toLowerCase()).join('\n')+'\n\n'+
+      '**Checkpoints:**\n'+
+      '1. Rules defined for all collections (default deny)\n'+
+      '2. Consistent `request.auth.uid == resource.data.userId` pattern\n'+
+      '3. Role-based access control with custom claims\n'+
+      '4. Rule inheritance for subcollections\n'+
+      '5. Admin SDK usage minimized\n\n'+
+      'Generate firestore.rules file and propose specific rule definitions for any gaps.'
+    );
+  }
+
+  // Add compliance-specific prompts (conditional)
+  const compFrameworks=[];
+  Object.keys(COMPLIANCE_DB).forEach(key=>{
+    if(COMPLIANCE_DB[key].domains.includes(domain)) compFrameworks.push(COMPLIANCE_DB[key]);
+  });
+  if(compFrameworks.length>0){
+    const fwNames=compFrameworks.map(c=>c.name).join(', ');
+    prompts.push(G?
+      'コンプライアンス監査: '+fwNames+'\n\n'+
+      'このプロジェクトのドメイン ('+domain+') では以下のコンプライアンスフレームワークが該当します。\n\n'+
+      'docs/45_compliance_matrix.md を参照し、各フレームワークの必須要件がコードに実装されているか検証してください。\n\n'+
+      '**検証方法:**\n'+
+      '1. docs/45_compliance_matrix.md の要件チェックリストを確認\n'+
+      '2. 各要件IDに対応する実装箇所をコードから特定\n'+
+      '3. 未実装または不十分な要件をリストアップ\n'+
+      '4. 各要件の実装コード例を提示\n\n'+
+      '出力形式: Markdown表 (要件ID | 要件名 | 実装状況 | 不足事項 | 対策コード)'
+      :
+      'Compliance Audit: '+fwNames+'\n\n'+
+      'The following compliance frameworks apply to this project\'s domain ('+domain+').\n\n'+
+      'Reference docs/45_compliance_matrix.md and verify that each framework\'s mandatory requirements are implemented in the code.\n\n'+
+      '**Verification Method:**\n'+
+      '1. Review requirement checklist in docs/45_compliance_matrix.md\n'+
+      '2. Identify implementation locations in code for each requirement ID\n'+
+      '3. List unimplemented or insufficient requirements\n'+
+      '4. Provide implementation code examples for each requirement\n\n'+
+      'Output format: Markdown table (Req ID | Requirement | Status | Gaps | Fix Code)'
+    );
+  }
+
+  prompts.forEach((p,i)=>{
+    doc46+='### '+(G?'プロンプト':'Prompt')+' '+(i+1)+'\n\n';
+    doc46+='```\n'+p+'\n```\n\n';
+  });
+
+  doc46+='## '+(G?'5. Agent Security (when ai_auto ≠ None)':'5. Agent Security (when ai_auto ≠ None)')+'\n\n';
+
+  if(hasAI){
+    doc46+=(G?'### Human-in-the-Loop (HITL) ゲートパターン\n\n':'### Human-in-the-Loop (HITL) Gate Pattern\n\n');
+    doc46+=(G?'**不可逆操作の一覧:**\n\n':'**Irreversible Operations:**\n\n');
+    doc46+='- '+(G?'本番デプロイ':'Production deployment')+'\n';
+    doc46+='- '+(G?'データベース削除・マイグレーション':'Database deletion/migration')+'\n';
+    doc46+='- '+(G?'外部API課金操作':'External API billing operations')+'\n';
+    doc46+='- '+(G?'本番シークレット変更':'Production secret changes')+'\n';
+    doc46+='- Git force push / branch削除\n\n';
+
+    doc46+='```mermaid\n';
+    doc46+='flowchart TD\n';
+    doc46+='  A[Agent Action Request] --> B{Reversible?}\n';
+    doc46+='  B -->|Yes| C[Execute]\n';
+    doc46+='  B -->|No| D[HITL Gate]\n';
+    doc46+='  D --> E{Human Approval?}\n';
+    doc46+='  E -->|Yes| C\n';
+    doc46+='  E -->|No| F[Abort]\n';
+    doc46+='```\n\n';
+
+    doc46+=(G?'### サンドボックス設定\n\n':'### Sandbox Configuration\n\n');
+    doc46+=_chk('Docker/gVisor隔離環境でAgent実行','Run agents in Docker/gVisor isolation')+'\n';
+    doc46+=_chk('ネットワークホワイトリスト設定','Configure network whitelist')+'\n';
+    doc46+=_chk('最小権限APIキー使用','Use least-privilege API keys')+'\n';
+    doc46+=_chk('ファイルシステムアクセス制限','Restrict filesystem access')+'\n\n';
+
+    doc46+=(G?'### 間接プロンプトインジェクション防御\n\n':'### Indirect Prompt Injection Defense\n\n');
+    doc46+=(G?
+      '外部コンテンツ(Web、PDF、ユーザー投稿)をAIに処理させる際、悪意のある指示が埋め込まれている可能性があります。\n\n'+
+      '**対策:**\n\n'
+      :
+      'When processing external content (Web, PDF, user submissions), malicious instructions may be embedded.\n\n'+
+      '**Mitigations:**\n\n'
+    );
+    doc46+=_chk('外部コンテンツとシステムプロンプトを明確に分離','Clearly separate external content from system prompts')+'\n';
+    doc46+=_chk('コンテンツ取得時にメタデータ検証','Validate metadata when fetching content')+'\n';
+    doc46+=_chk('出力の検証・サニタイゼーション','Validate and sanitize outputs')+'\n';
+    doc46+=_chk('ユーザー入力にプレフィックス付与 (例: "User input: ...")','Prefix user input (e.g., "User input: ...")')+'\n\n';
+  }else{
+    doc46+=(G?'> ai_auto=noneのため、このセクションはスキップされます。\n\n':'> ai_auto=none, this section is skipped.\n\n');
+  }
+
+  doc46+='## '+(G?'6. Privacy Mode & Data Protection':'6. Privacy Mode & Data Protection')+'\n\n';
+  doc46+=(G?'### AI開発ツールのプライバシーモード設定\n\n':'### AI Development Tool Privacy Mode\n\n');
+  doc46+='- **GitHub Copilot:** Settings → Suggestions matching public code: Block\n';
+  doc46+='- **Cursor:** Settings → Privacy Mode: Enabled\n';
+  doc46+='- **Cline:** Privacy settings確認\n\n';
+
+  doc46+=_chk('コード学習データ除外設定を有効化','Enable code training data exclusion')+'\n';
+  doc46+=_chk('機密リポジトリでAI機能を無効化検討','Consider disabling AI features for sensitive repos')+'\n';
+  doc46+=_chk('.aiignoreファイルで機密ファイル除外','Exclude sensitive files with .aiignore')+'\n\n';
+
+  doc46+=(G?'## 📚 関連ドキュメント\n\n':'## 📚 Related Documents\n\n');
+  doc46+='- [Security Intelligence](./43_security_intelligence.md)\n';
+  doc46+='- [Security Testing](./47_security_testing.md)\n';
+  doc46+='- [AI Dev Runbook](./40_ai_dev_runbook.md)\n';
+  if(hasAI){
+    doc46+='- [Skills Catalog](../skills/catalog.md)\n';
+  }
+
+  S.files['docs/46_ai_security.md']=doc46;
+
+  // ═══ DOC 47: Security Testing Templates ═══
+  let doc47='';
+  doc47+='# '+(G?'セキュリティテストテンプレート集':'Security Test Templates')+'\n\n';
+  doc47+='> '+(G?'実行可能なセキュリティテストコード':'Executable security test code')+'\n\n';
+
+  // RLS Tests (Supabase only)
+  if(backend.includes('Supabase')&&entities.length>0){
+    doc47+='## '+(G?'1. RLS Policy Tests (pgTAP)':'1. RLS Policy Tests (pgTAP)')+'\n\n';
+    doc47+=(G?'Supabaseのpostgresデータベースで直接実行するテストです。\n\n':'Tests to run directly on Supabase postgres database.\n\n');
+
+    entities.slice(0,3).forEach(ent=>{
+      const cols=getEntityColumns(ent,G,entities)||[];
+      const hasUser=cols.some(c=>c.col==='user_id'||c.col.includes('user_id'));
+      if(!hasUser)return;
+
+      const tbl=pluralize(ent).toLowerCase();
+      doc47+='### '+ent+' RLS Test\n\n';
+      doc47+='```sql\n';
+      doc47+='BEGIN;\n';
+      doc47+='SELECT plan(3);\n\n';
+      doc47+='-- Setup: Insert test data as user-123\n';
+      doc47+='SET LOCAL ROLE authenticated;\n';
+      doc47+='SET LOCAL "request.jwt.claim.sub" TO \'user-123\';\n';
+      doc47+='INSERT INTO '+tbl+' (user_id, ...) VALUES (\'user-123\', ...);\n\n';
+      doc47+='-- Test 1: User sees own '+ent+'\n';
+      doc47+='SELECT results_eq(\n';
+      doc47+='  \'SELECT count(*)::int FROM '+tbl+' WHERE user_id = \'\'user-123\'\'\',\n';
+      doc47+='  ARRAY[1],\n';
+      doc47+='  \'User sees own '+ent+'\'\n';
+      doc47+=');\n\n';
+      doc47+='-- Test 2: User cannot see other user\'s '+ent+'\n';
+      doc47+='SELECT is_empty(\n';
+      doc47+='  \'SELECT * FROM '+tbl+' WHERE user_id = \'\'user-456\'\'\',\n';
+      doc47+='  \'User cannot see other user\\\'s '+ent+'\'\n';
+      doc47+=');\n\n';
+      doc47+='-- Test 3: Anon cannot insert\n';
+      doc47+='SET LOCAL ROLE anon;\n';
+      doc47+='SELECT throws_ok(\n';
+      doc47+='  \'INSERT INTO '+tbl+' (user_id, ...) VALUES (\'\'user-123\'\', ...)\',\n';
+      doc47+='  \'Anon cannot insert '+ent+'\'\n';
+      doc47+=');\n\n';
+      doc47+='ROLLBACK;\n';
+      doc47+='```\n\n';
+    });
+  }
+
+  // Input Validation Schemas (Next.js/Zod)
+  if(frontend.includes('Next.js')&&entities.length>0){
+    doc47+='## '+(G?'2. Input Validation Schemas (Zod)':'2. Input Validation Schemas (Zod)')+'\n\n';
+
+    entities.slice(0,3).forEach(ent=>{
+      const cols=getEntityColumns(ent,G,entities)||[];
+      doc47+='### '+ent+' Schema\n\n';
+      doc47+='```typescript\n';
+      doc47+='import { z } from \'zod\';\n\n';
+      doc47+='export const '+ent.toLowerCase()+'Schema = z.object({\n';
+
+      cols.slice(0,5).forEach(c=>{
+        const name=c.col;
+        const type=c.type||'VARCHAR';
+        const constraints=c.constraint||'';
+
+        if(name.includes('_id'))return; // Skip IDs
+
+        let zodType='z.string()';
+        if(type.includes('INT'))zodType='z.number().int()';
+        else if(type.includes('BOOL'))zodType='z.boolean()';
+        else if(type.includes('TEXT'))zodType='z.string()';
+        else if(type.includes('VARCHAR')){
+          const maxMatch=type.match(/VARCHAR\((\d+)\)/);
+          if(maxMatch)zodType='z.string().max('+maxMatch[1]+')';
+        }
+
+        if(constraints.includes('NOT NULL'))zodType+='.min(1)';
+
+        doc47+='  '+name+': '+zodType+',\n';
+      });
+
+      doc47+='});\n\n';
+      doc47+='export type '+ent+' = z.infer<typeof '+ent.toLowerCase()+'Schema>;\n';
+      doc47+='```\n\n';
+    });
+  }
+
+  // API Security Tests
+  doc47+='## '+(G?'3. API セキュリティテスト':'3. API Security Tests')+'\n\n';
+  doc47+=(G?'### 認証バイパステスト\n\n':'### Auth Bypass Test\n\n');
+  doc47+='```javascript\n';
+  doc47+='// Using Jest + Supertest\n';
+  doc47+='test(\'should reject unauthenticated requests\', async () => {\n';
+  doc47+='  const res = await request(app)\n';
+  doc47+='    .get(\'/api/protected\')\n';
+  doc47+='    .expect(401);\n';
+  doc47+='  expect(res.body.error).toMatch(/unauthorized/i);\n';
+  doc47+='});\n';
+  doc47+='```\n\n';
+
+  doc47+=(G?'### IDORテスト\n\n':'### IDOR Test\n\n');
+  doc47+='```javascript\n';
+  doc47+='test(\'should prevent IDOR attacks\', async () => {\n';
+  doc47+='  const user1Token = await getTokenForUser(\'user-1\');\n';
+  doc47+='  const user2Token = await getTokenForUser(\'user-2\');\n\n';
+  doc47+='  // User 2 tries to access User 1\'s resource\n';
+  doc47+='  const res = await request(app)\n';
+  doc47+='    .get(\'/api/posts/user-1-post-id\')\n';
+  doc47+='    .set(\'Authorization\', `Bearer ${user2Token}`)\n';
+  doc47+='    .expect(403);\n';
+  doc47+='});\n';
+  doc47+='```\n\n';
+
+  doc47+=(G?'### Rate Limitingテスト\n\n':'### Rate Limiting Test\n\n');
+  doc47+='```javascript\n';
+  doc47+='test(\'should enforce rate limits\', async () => {\n';
+  doc47+='  const requests = Array(101).fill(null).map(() =>\n';
+  doc47+='    request(app).get(\'/api/public\')\n';
+  doc47+='  );\n';
+  doc47+='  const results = await Promise.all(requests);\n';
+  doc47+='  const rateLimited = results.filter(r => r.status === 429);\n';
+  doc47+='  expect(rateLimited.length).toBeGreaterThan(0);\n';
+  doc47+='});\n';
+  doc47+='```\n\n';
+
+  // OWASP ZAP
+  doc47+='## '+(G?'4. OWASP ZAP Configuration':'4. OWASP ZAP Configuration')+'\n\n';
+  doc47+='```yaml\n';
+  doc47+='# .github/workflows/zap-scan.yml\n';
+  doc47+='name: OWASP ZAP Scan\n';
+  doc47+='on: [pull_request]\n\n';
+  doc47+='jobs:\n';
+  doc47+='  zap_scan:\n';
+  doc47+='    runs-on: ubuntu-latest\n';
+  doc47+='    steps:\n';
+  doc47+='      - uses: actions/checkout@v4\n';
+  doc47+='      - name: ZAP Scan\n';
+  doc47+='        uses: zaproxy/action-baseline@v0.7.0\n';
+  doc47+='        with:\n';
+  doc47+='          target: \'https://your-preview-url.vercel.app\'\n';
+  doc47+='          rules_file_name: \'.zap/rules.tsv\'\n';
+  doc47+='          cmd_options: \'-a\'\n';
+  doc47+='```\n\n';
+
+  // Penetration Testing Checklist
+  doc47+='## '+(G?'5. ペネトレーションテストチェックリスト':'5. Penetration Testing Checklist')+'\n\n';
+  doc47+=(G?'### 事前準備\n\n':'### Pre-Test Preparation\n\n');
+  doc47+=_chk('テスト環境準備 (本番データ使用禁止)','Prepare test environment (no production data)')+'\n';
+  doc47+=_chk('テストスコープ定義','Define test scope')+'\n';
+  doc47+=_chk('関係者への通知','Notify stakeholders')+'\n\n';
+
+  doc47+=(G?'### テスト実施項目\n\n':'### Test Execution Items\n\n');
+  doc47+='#### Authentication & Session\n';
+  doc47+=_chk('Brute force攻撃耐性','Brute force resistance')+'\n';
+  doc47+=_chk('パスワードリセット脆弱性','Password reset vulnerabilities')+'\n';
+  doc47+=_chk('セッション固定攻撃','Session fixation')+'\n';
+  doc47+=_chk('Remember me機能の安全性','Remember me security')+'\n\n';
+
+  doc47+='#### Input Validation\n';
+  doc47+=_chk('SQLインジェクション','SQL injection')+'\n';
+  doc47+=_chk('XSS (Reflected/Stored/DOM-based)','XSS (Reflected/Stored/DOM-based)')+'\n';
+  doc47+=_chk('コマンドインジェクション','Command injection')+'\n';
+  doc47+=_chk('パストラバーサル','Path traversal')+'\n\n';
+
+  doc47+='#### API Security\n';
+  doc47+=_chk('認証・認可バイパス','Auth/authz bypass')+'\n';
+  doc47+=_chk('IDOR (Insecure Direct Object Reference)','IDOR')+'\n';
+  doc47+=_chk('Mass Assignment','Mass Assignment')+'\n';
+  doc47+=_chk('Rate Limiting','Rate Limiting')+'\n\n';
+
+  doc47+='#### File Upload\n';
+  doc47+=_chk('悪意のあるファイルアップロード','Malicious file upload')+'\n';
+  doc47+=_chk('ファイル拡張子検証','File extension validation')+'\n';
+  doc47+=_chk('ファイルサイズ制限','File size limits')+'\n\n';
+
+  doc47+=(G?'## 📚 関連ドキュメント\n\n':'## 📚 Related Documents\n\n');
+  doc47+='- [Security Intelligence](./43_security_intelligence.md)\n';
+  doc47+='- [Threat Model](./44_threat_model.md)\n';
+  doc47+='- [Test Strategy](./36_test_strategy.md)\n';
+  doc47+='- [QA Strategy](./28_qa_strategy.md)\n';
+
+  S.files['docs/47_security_testing.md']=doc47;
+}
 function genDocs21(a,pn){
   const G=S.genLang==='ja';
   const date=new Date().toISOString().split('T')[0];
@@ -6834,7 +8197,7 @@ function genDocs21(a,pn){
 - DB: ${dbName}\n- Deploy: ${deployTarget}\n${G?'package.json, tsconfig.json, .env.example を生成してください。':'Generate package.json, tsconfig.json, .env.example.'}\n\`\`\`\n\n### 1-2. ${G?'データモデル定義':'Data Model'}\n\`\`\`\n${G?'以下のエンティティの'+orm+'スキーマを生成してください:':'Generate '+orm+' schema for these entities:'} ${entities.join(', ')}\n${entities.map(e=>{const cols=getEntityColumns(e,G,entities);if(!cols.length) return '';return e+': '+cols.map(c=>c.col+'('+c.type+')').join(', ');}).filter(Boolean).join('\n')}\n${G?'各エンティティにはid, created_at, updated_atを含め、リレーションも定義してください。':'Include id, created_at, updated_at for each entity with relations.'}\n
 \`\`\`\n\n## Phase 2: ${G?'コア機能開発':'Core Development'}\n\n${features.map((f,i)=>{const fd=getFeatureDetail(f);const criteriaLines=fd?(G?fd.criteria_ja:fd.criteria_en).map(c=>'  - '+c.replace(/\{auth\}/g,a.auth||'OAuth')).join('\n'):'';return `### 2-${i+1}. ${f}\n\`\`\`\n**${G?'Role':'Role'}**: ${G?'フルスタック開発者 (Frontend + Backend)':'Full-stack developer (Frontend + Backend)'}\n\n${G?f+'機能を実装してください。':'Implement '+f+'.'}\n- ${arch.isBaaS?(G?'データアクセス: '+orm+'でCRUDを実装':'Data access: Implement CRUD with '+orm):(G?'APIエンドポイント: /api/v1/ にCRUDを作成':'API endpoint: Create CRUD at /api/v1/')}\n- ${G?'UIコンポーネント: '+fe+'で画面を実装':'UI component: Build screen with '+fe}\n- ${G?'バリデーション: zodスキーマで入力検証':'Validation: zod schema for input'}\n- ${G?'テスト: Vitestでユニットテスト作成':'Test: Write unit tests with Vitest'}${criteriaLines?'\n\n'+(G?'受入条件:':'Acceptance Criteria:')+'\n'+criteriaLines:''}\n\n${G?'docs/39_implementation_playbook.mdのドメインパターンを参照してください。':'Reference domain patterns in docs/39_implementation_playbook.md.'}\n\n**${G?'出力形式':'Output Format'}**: ${G?'ファイルパス付きコードブロック。テストを含めること。':'Code blocks with file paths. Include tests.'}\n\`\`\``}).join('\n\n')}\n\n
 ## Phase 3: ${G?'テスト・デプロイ':'Test & Deploy'}\n\n### 3-1. ${G?'E2Eテスト':'E2E Tests'}\n\`\`\`\n${G?'Playwrightで以下の画面のE2Eテストを作成してください:':'Create Playwright E2E tests for these screens:'} ${screens.join(', ')}\n${G?'正常系・異常系の両方をカバーしてください。':'Cover both happy and error paths.'}\n\`\`\`\n\n### 3-2. ${G?'デプロイ設定':'Deploy Config'}\n\`\`\`\n${G?deployTarget+'へのデプロイ設定を行ってください。':'Configure deployment to '+deployTarget+'.'}\n- CI/CD: GitHub Actions\n
-- ${G?'環境変数: .env.exampleに基づいて設定':'Env vars: Based on .env.example'}\n- ${G?'プレビューデプロイの設定も含めてください。':'Include preview deploy config.'}\n\`\`\`\n\n## Phase 4: ${G?'イテレーション':'Iteration'}\n\n### 4-1. ${G?'バグ修正':'Bug Fix'}\n\`\`\`\n**${G?'Role':'Role'}**: ${G?'デバッガー兼フルスタック開発者':'Debugger & Full-stack developer'}\n\n${G?'以下のエラーを修正してください。':'Fix the following error.'}\n\n[${G?'エラー内容を貼り付け':'Paste error here'}]\n\n${G?'手順':'Steps'}:\n1. docs/25_error_logs.md ${G?'を参照し、既知の問題か確認':'to check if it is a known issue'}\n2. ${G?'根本原因を特定':'Identify root cause'}\n3. ${G?'修正とテストを実装':'Implement fix and tests'}\n4. docs/25_error_logs.md ${G?'にエラーを記録':'to log the error'}\n\n**${G?'出力形式':'Output Format'}**: ${G?'修正パッチ (diff形式) + テスト + ログエントリ':'Fix patch (diff) + tests + log entry'}\n\`\`\`\n\n### 4-2. ${G?'機能追加':'Feature Addition'}\n\`\`\`\n**${G?'Role':'Role'}**: ${G?'フルスタック開発者':'Full-stack developer'}\n\n${G?'以下の機能を追加してください。':'Add the following feature.'}\n\n[${G?'機能説明を記載':'Describe feature here'}]\n\n${G?'手順':'Steps'}:\n1. docs/23_tasks.md ${G?'を参照し、タスクを追加':'to add task'}\n2. .spec/constitution.md ${G?'の原則に準拠':'principles'}\n3. ${G?'コード + テストを実装':'Implement code + tests'}\n4. docs/24_progress.md ${G?'を更新':'to update progress'}\n\n**${G?'出力形式':'Output Format'}**: ${G?'ファイルパス付きコードブロック + タスクエントリ + 進捗更新':'Code blocks with file paths + task entry + progress update'}\n\`\`\`\n\n### 4-3. ${G?'品質チェック':'Quality Check'}\n\`\`\`\n**${G?'Role':'Role'}**: ${G?'QAエンジニア':'QA Engineer'}\n\n${G?'品質チェック:':'Quality check:'}\n- docs/32_qa_blueprint.md ${G?'の品質ゲートを実施':'quality gates'}\n- docs/28_qa_strategy.md ${G?'のドメイン別バグパターンを確認':'domain-specific bug patterns'}\n\`\`\`\n\n### 4-4. ${G?'パフォーマンス検証':'Performance Check'}\n\`\`\`\n**${G?'Role':'Role'}**: ${G?'パフォーマンスエンジニア':'Performance Engineer'}\n\n${G?'パフォーマンス検証:':'Performance check:'}\n- docs/41_growth_intelligence.md ${G?'のCWV目標値と照合':'CWV targets'}\n- docs/19_performance.md ${G?'の最適化施策を適用':'optimization strategies'}\n\`\`\``;
+- ${G?'環境変数: .env.exampleに基づいて設定':'Env vars: Based on .env.example'}\n- ${G?'プレビューデプロイの設定も含めてください。':'Include preview deploy config.'}\n\`\`\`\n\n### 3-3. ${G?'セキュリティ監査':'Security Audit'}\n\`\`\`\n**Role**: ${G?'セキュリティエンジニア':'Security Engineer'}\n\n${G?'以下のセキュリティドキュメントを参照し、プロジェクトのセキュリティ監査を実施してください:':'Reference these security documents and audit the project:'}\n- docs/43_security_intelligence.md (OWASP Top 10)\n- docs/44_threat_model.md (STRIDE)\n- docs/45_compliance_matrix.md\n- docs/46_ai_security.md (${G?'敵対的プロンプト使用':'Use adversarial prompts'})\n- docs/47_security_testing.md (${G?'テスト実行':'Execute tests'})\n\n${G?'重点チェック:':'Focus areas:'}\n1. ${G?'認可ロジック (RLS/ミドルウェア)':'Authorization logic (RLS/middleware)'}\n2. ${G?'入力バリデーション':'Input validation'}\n3. ${G?'シークレット管理':'Secrets management'}\n\`\`\`\n\n## Phase 4: ${G?'イテレーション':'Iteration'}\n\n### 4-1. ${G?'バグ修正':'Bug Fix'}\n\`\`\`\n**${G?'Role':'Role'}**: ${G?'デバッガー兼フルスタック開発者':'Debugger & Full-stack developer'}\n\n${G?'以下のエラーを修正してください。':'Fix the following error.'}\n\n[${G?'エラー内容を貼り付け':'Paste error here'}]\n\n${G?'手順':'Steps'}:\n1. docs/25_error_logs.md ${G?'を参照し、既知の問題か確認':'to check if it is a known issue'}\n2. ${G?'根本原因を特定':'Identify root cause'}\n3. ${G?'修正とテストを実装':'Implement fix and tests'}\n4. docs/25_error_logs.md ${G?'にエラーを記録':'to log the error'}\n\n**${G?'出力形式':'Output Format'}**: ${G?'修正パッチ (diff形式) + テスト + ログエントリ':'Fix patch (diff) + tests + log entry'}\n\`\`\`\n\n### 4-2. ${G?'機能追加':'Feature Addition'}\n\`\`\`\n**${G?'Role':'Role'}**: ${G?'フルスタック開発者':'Full-stack developer'}\n\n${G?'以下の機能を追加してください。':'Add the following feature.'}\n\n[${G?'機能説明を記載':'Describe feature here'}]\n\n${G?'手順':'Steps'}:\n1. docs/23_tasks.md ${G?'を参照し、タスクを追加':'to add task'}\n2. .spec/constitution.md ${G?'の原則に準拠':'principles'}\n3. ${G?'コード + テストを実装':'Implement code + tests'}\n4. docs/24_progress.md ${G?'を更新':'to update progress'}\n\n**${G?'出力形式':'Output Format'}**: ${G?'ファイルパス付きコードブロック + タスクエントリ + 進捗更新':'Code blocks with file paths + task entry + progress update'}\n\`\`\`\n\n### 4-3. ${G?'品質チェック':'Quality Check'}\n\`\`\`\n**${G?'Role':'Role'}**: ${G?'QAエンジニア':'QA Engineer'}\n\n${G?'品質チェック:':'Quality check:'}\n- docs/32_qa_blueprint.md ${G?'の品質ゲートを実施':'quality gates'}\n- docs/28_qa_strategy.md ${G?'のドメイン別バグパターンを確認':'domain-specific bug patterns'}\n\`\`\`\n\n### 4-4. ${G?'パフォーマンス検証':'Performance Check'}\n\`\`\`\n**${G?'Role':'Role'}**: ${G?'パフォーマンスエンジニア':'Performance Engineer'}\n\n${G?'パフォーマンス検証:':'Performance check:'}\n- docs/41_growth_intelligence.md ${G?'のCWV目標値と照合':'CWV targets'}\n- docs/19_performance.md ${G?'の最適化施策を適用':'optimization strategies'}\n\`\`\``;
   // Task decomposition (D1: GitHub Issues style)
   const taskList=[];
   taskList.push({title:G?'環境構築':'Environment Setup',label:'setup',hours:3,desc:G?`${fe} + ${be} + ${dbName} のプロジェクト初期セットアップ`:`${fe} + ${be} + ${dbName} initial project setup`});
@@ -6863,11 +8226,84 @@ function genDocs21(a,pn){
     return `## Issue #${i+1}: ${t.title}\n- **${G?'ラベル':'Label'}**: \`${t.label}\`\n- **${G?'見積り':'Estimate'}**: ${t.hours}h\n- **${G?'説明':'Description'}**: ${t.desc}\n- **Acceptance Criteria**:\n${acLines}`;
   }).join('\n\n')}\n\n---\n
 **${G?'合計タスク数':'Total Tasks'}**: ${taskList.length} | **${G?'総見積り':'Total Est.'}**: ${taskList.reduce((s,t)=>s+t.hours,0)}h`;
+  const cspExamples=fe.includes('Next')?`**Next.js** (next.config.js):
+\`\`\`js
+module.exports = {
+  async headers() {
+    return [{
+      source: '/(.*)',
+      headers: [{
+        key: 'Content-Security-Policy',
+        value: "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; connect-src 'self' https://*.supabase.co; object-src 'none'; base-uri 'self';"
+      }]
+    }];
+  }
+};
+\`\`\``:`**Express.js** (helmet):
+\`\`\`js
+const helmet = require('helmet');
+app.use(helmet.contentSecurityPolicy({
+  directives: {
+    defaultSrc: ["'self'"],
+    scriptSrc: ["'self'"],
+    styleSrc: ["'self'", "'unsafe-inline'"],
+    imgSrc: ["'self'", "data:", "https:"],
+    connectSrc: ["'self'"],
+    objectSrc: ["'none'"],
+    baseUri: ["'self'"]
+  }
+}));
+\`\`\``;
+  const corsExamples=fe.includes('Next')?`**Next.js API Routes**:
+\`\`\`js
+export default function handler(req, res) {
+  res.setHeader('Access-Control-Allow-Origin', process.env.ALLOWED_ORIGINS || '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,PATCH,DELETE');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type,Authorization');
+  if (req.method === 'OPTIONS') return res.status(200).end();
+  // ... handler logic
+}
+\`\`\``:`**Express.js** (cors):
+\`\`\`js
+const cors = require('cors');
+const corsOptions = {
+  origin: process.env.ALLOWED_ORIGINS?.split(',') || '*',
+  credentials: true,
+  optionsSuccessStatus: 200
+};
+app.use(cors(corsOptions));
+\`\`\``;
+  const rateLimitExamples=fe.includes('Next')?`**Next.js** (upstash/ratelimit):
+\`\`\`js
+import { Ratelimit } from '@upstash/ratelimit';
+import { Redis } from '@upstash/redis';
+const ratelimit = new Ratelimit({
+  redis: Redis.fromEnv(),
+  limiter: Ratelimit.slidingWindow(10, '10 s')
+});
+export default async function handler(req, res) {
+  const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+  const { success } = await ratelimit.limit(ip);
+  if (!success) return res.status(429).json({ error: 'Too many requests' });
+  // ... handler logic
+}
+\`\`\``:`**Express.js** (express-rate-limit):
+\`\`\`js
+const rateLimit = require('express-rate-limit');
+const limiter = rateLimit({
+  windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS) || 60000,
+  max: parseInt(process.env.RATE_LIMIT_MAX) || 100,
+  message: 'Too many requests from this IP',
+  standardHeaders: true,
+  legacyHeaders: false
+});
+app.use('/api/', limiter);
+\`\`\``;
   const docTemplates=[
     ['05_api_design',G?(arch.isBaaS?'データアクセス設計書 (SDK)':'API設計書 (OpenAPI準拠)'):(arch.isBaaS?'Data Access Design (SDK)':'API Design (OpenAPI)'),`${G?'## 認証':'## Authentication'}\n- ${G?'方式':'Method'}: ${auth.tokenType}\n- ${arch.isBaaS?(G?'アクセス方式: '+orm+' SDK':'Access: '+orm+' SDK'):'ヘッダー: \\`Authorization: Bearer <token>\\`'}\n\n${arch.isBaaS?'':(G?'## 共通レスポンス':'## Common Responses')+'\\n| '+(G?'ステータス':'Status')+' | '+(G?'意味':'Meaning')+' |\\n|-----------|------|\\n| 200 | OK |\\n| 201 | Created |\\n| 400 | Bad Request |\\n| 401 | Unauthorized |\\n| 403 | Forbidden |\\n| 404 | Not Found |\\n| 422 | Validation Error |\\n| 500 | Internal Error |\\n\\n'}\n${G?(arch.isBaaS?'## データアクセスパターン':'## エンドポイント一覧'):(arch.isBaaS?'## Data Access Patterns':'## Endpoints')}\n${apiEndpoints}`],
     ['06_screen_design',G?'画面設計書 & 画面遷移図':'Screen Design & Flow',`${G?'## 画面遷移図':'## Screen Flow'}\n\n\`\`\`mermaid\nflowchart LR\n${sNodes}\n${sLinks.join('\n')}\n\`\`\`\n\n${G?'## 画面一覧':'## Screen List'}\n${screens.map((s,i)=>{const isPublic=s.match(/ログイン|Login|Register|登録|ランディング|Landing|LP|トップ|Top|ホーム|Home|About|概要|利用規約|Terms|料金|Pricing|お問い合わせ|Contact/i);const comps=getScreenComponents(s,G);const compList=comps?'\n- '+(G?'主要コンポーネント':'Key Components')+':\n'+comps.map(c=>'  - '+c).join('\n'):'\n- '+(G?'コンポーネント':'Components')+': Header, '+(isPublic?'':'Sidebar, ')+'Content, Footer';return `\n### ${i+1}. ${s}\n- URL: \`${(genRoutes(a).find(r=>r.name===s.replace(/\(P[0-2]\)/gi,'').trim())||{path:'/'+(s.toLowerCase().replace(/[^a-z0-9]/g,'-'))}).path}\`\n- ${G?'認証':'Auth'}: ${isPublic?(G?'不要':'Not required'):(G?'必要':'Required')}${compList}`;}).join('\n')}`],
     ['07_test_cases',G?'テストケース定義書':'Test Cases',`${G?'## テスト戦略':'## Test Strategy'}\n- ${G?'ユニット':'Unit'}: Vitest (80%+)\n- E2E: Playwright\n- ${G?'コンポーネント':'Component'}: Testing Library\n\n${G?'## テストケースマトリクス':'## Test Case Matrix'}\n${testMatrix}\n\n${G?'## 実行コマンド':'## Run Commands'}\n\`\`\`bash\nnpm run test\nnpm run test:e2e\nnpm run test:coverage\n\`\`\``],
-    ['08_security',G?'セキュリティ設計書':'Security Design',`${G?'## セキュリティ対策':'## Security Measures'}\n- ${G?'認証':'Auth'}: ${auth.sot}\n- HTTPS${G?'必須':' required'}\n- CSP (Content Security Policy)\n- Rate Limiting\n- Input Validation${hasAdmin?'\n\n'+(G?'## RBAC（ロールベースアクセス制御）':'## RBAC (Role-Based Access Control)')+'\n\n| '+(G?'ロール':'Role')+' | '+(G?'権限':'Permissions')+' |\n|--------|----------|\n| user | '+(G?'自分のデータの読取・更新':'Read/update own data')+' |\n'+(hasInstructor?'| instructor | '+(G?'コンテンツ作成・編集・自分の受講者管理':'Create/edit content, manage own students')+' |\n':'')+'| admin | '+(G?'全データの読取・更新・削除、ユーザー管理、システム設定':'Full CRUD, user management, system settings')+' |\n\n'+(G?'### RBACポリシー実装':'### RBAC Policy Implementation')+'\n- profiles.role '+(G?'カラムでロール管理':'column for role management')+'\n- '+(arch.isBaaS&&be.includes('Supabase')?'RLS: auth.uid() = user_id AND role check via profiles':'Middleware: role check before protected routes')+'\n- '+(G?'管理画面ルート':'Admin routes')+': /admin/ → role=admin '+(G?'チェック必須':'check required'):''}${hasPay&&(a.payment||'').includes('Stripe')?'\n\n'+(G?'## 決済セキュリティ':'## Payment Security')+'\n- Stripe Webhook '+(G?'署名検証':'signature verification')+' (STRIPE_WEBHOOK_SECRET)\n- '+(G?'冪等キーによる重複処理防止':'Idempotency key for duplicate prevention')+'\n- PCI DSS '+(G?'準拠':'compliance')+' (Stripe Elements '+(G?'使用で対応':'handles this')+')\n- '+(G?'サーバーサイドのみで':'Server-side only for')+' stripe.customers / stripe.subscriptions '+(G?'操作':'operations'):''}`],
+    ['08_security',G?'セキュリティ設計書':'Security Design',`${G?'## セキュリティ対策':'## Security Measures'}\n- ${G?'認証':'Auth'}: ${auth.sot}\n- HTTPS${G?'必須':' required'}\n- CSP (Content Security Policy)\n- CORS (Cross-Origin Resource Sharing)\n- Rate Limiting\n- Input Validation${hasAdmin?'\n\n'+(G?'## RBAC（ロールベースアクセス制御）':'## RBAC (Role-Based Access Control)')+'\n\n| '+(G?'ロール':'Role')+' | '+(G?'権限':'Permissions')+' |\n|--------|----------|\n| user | '+(G?'自分のデータの読取・更新':'Read/update own data')+' |\n'+(hasInstructor?'| instructor | '+(G?'コンテンツ作成・編集・自分の受講者管理':'Create/edit content, manage own students')+' |\n':'')+'| admin | '+(G?'全データの読取・更新・削除、ユーザー管理、システム設定':'Full CRUD, user management, system settings')+' |\n\n'+(G?'### RBACポリシー実装':'### RBAC Policy Implementation')+'\n- profiles.role '+(G?'カラムでロール管理':'column for role management')+'\n- '+(arch.isBaaS&&be.includes('Supabase')?'RLS: auth.uid() = user_id AND role check via profiles':'Middleware: role check before protected routes')+'\n- '+(G?'管理画面ルート':'Admin routes')+': /admin/ → role=admin '+(G?'チェック必須':'check required'):''}${hasPay&&(a.payment||'').includes('Stripe')?'\n\n'+(G?'## 決済セキュリティ':'## Payment Security')+'\n- Stripe Webhook '+(G?'署名検証':'signature verification')+' (STRIPE_WEBHOOK_SECRET)\n- '+(G?'冪等キーによる重複処理防止':'Idempotency key for duplicate prevention')+'\n- PCI DSS '+(G?'準拠':'compliance')+' (Stripe Elements '+(G?'使用で対応':'handles this')+')\n- '+(G?'サーバーサイドのみで':'Server-side only for')+' stripe.customers / stripe.subscriptions '+(G?'操作':'operations'):''}\n\n${G?'## CSPヘッダー設定例':'## CSP Header Examples'}\n\n${cspExamples}\n\n${G?'## CORS設定例':'## CORS Configuration Examples'}\n\n${corsExamples}\n\n${G?'## レート制限実装例':'## Rate Limiting Implementation'}\n\n${rateLimitExamples}`],
     ['09_release_checklist',G?'リリースチェックリスト':'Release Checklist',`## ${G?'デプロイ先':'Deploy Target'}: ${deployTarget}\n\n### 1. ${G?'コード品質':'Code Quality'}\n${(G?['TypeScript 型エラー 0件','ESLint エラー 0件','全テストパス','カバレッジ 80%+']:['TypeScript: 0 type errors','ESLint: 0 errors','All tests pass','Coverage 80%+']).map(c=>'- [ ] '+c).join('\n')}\n\n### 2. ${G?'セキュリティ':'Security'}\n
 ${(G?['環境変数にシークレット未ハードコード','CORS設定','CSP設定','認証・認可テスト完了']:['No hardcoded secrets in env vars','CORS config','CSP config','Auth/authz tests done']).map(c=>'- [ ] '+c).join('\n')}\n\n### 3. ${G?'インフラ':'Infrastructure'} (${deployTarget})\n${deployChecks.map(c=>'- [ ] '+c).join('\n')}\n\n### 4. ${G?'データベース':'Database'} (${dbName})\n${dbChecks.map(c=>'- [ ] '+c).join('\n')}\n\n### 5. ${G?'パフォーマンス':'Performance'}\n
 ${(G?['Lighthouse 90+','LCP < 2.5s','画像最適化','バンドルサイズ確認']:['Lighthouse 90+','LCP < 2.5s','Image optimization','Bundle size check']).map(c=>'- [ ] '+c).join('\n')}\n\n### 6. ${G?'モニタリング':'Monitoring'}\n${(G?['Sentry設定','アクセスログ','アラート閾値']:['Sentry setup','Access logs','Alert thresholds']).map(c=>'- [ ] '+c).join('\n')}`],
@@ -7106,9 +8542,28 @@ _(${G?'追記してください':'Add entries here'})_`],
     '          node-version: '+nodeV,
     '          cache: npm',
     '      - run: npm ci',
+    '      - run: npm audit --audit-level=high',
     '      - run: npm run lint',
     '      - run: npm run test',
     '      - run: '+buildPrefix+buildCmd,
+    '',
+    '  security:',
+    '    runs-on: ubuntu-latest',
+    '    steps:',
+    '      - uses: actions/checkout@v4',
+    '        with:',
+    '          fetch-depth: 0',
+    '      # Secret Scanning',
+    '      - uses: gitleaks/gitleaks-action@v2',
+    '        env:',
+    '          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}',
+    '      # Dependency Review',
+    '      - uses: actions/dependency-review-action@v4',
+    '        if: github.event_name == \'pull_request\'',
+    '      # SLSA Build Provenance',
+    '      - uses: actions/attest-build-provenance@v2',
+    '        with:',
+    '          subject-path: \'dist/**\'',
     ''
   ].join('\n');
 }
@@ -9089,7 +10544,7 @@ function exportPDF(){
   let content='';
   Object.entries(S.files).forEach(([path,text])=>{
     if(path.endsWith('.md')){
-      content+=`<h1 style="page-break-before:always;border-bottom:2px solid #3b82f6;padding-bottom:8px;margin-top:40px;">${path}</h1>`;
+      content+=`<h1 style="page-break-before:always;border-bottom:2px solid #3b82f6;padding-bottom:8px;margin-top:40px;">${escHtml(path)}</h1>`;
       content+=safeMD(text);
     }
   });
@@ -9098,8 +10553,9 @@ function exportPDF(){
     +'h1{margin-top:40px;}h1:first-child{page-break-before:avoid;}'
     +'table{width:100%;border-collapse:collapse;}th,td{border:1px solid #ddd;padding:8px;text-align:left;}th{background:#f0f0f0;}'
     +'@media print{body{padding:20px;}h1{page-break-before:always;}h1:first-child{page-break-before:avoid;}}';
-  const html=`<!DOCTYPE html><html><head><title>${S.projectName} - DevForge v9</title><style>${pdfCss}
-</style></head><body><div style="text-align:center;margin-bottom:40px;"><h1 style="page-break-before:avoid;border:none;font-size:24px;">${S.projectName}</h1><p style="color:#666;">Generated by DevForge v9 — ${new Date().toLocaleDateString(G?'ja-JP':'en-US')}</p><p style="color:#999;font-size:12px;">${G?'© 2026 エンジニアリングのタネ制作委員会 ｜ 作成者：にしあん':'© 2026 Engineering no Tane Committee | by にしあん'}</p></div>${content}</body></html>`;
+  const _CSP_META='<meta http-equiv="Content-Security-Policy" content="default-src \'none\'; style-src \'unsafe-inline\'; img-src data: blob:;">';
+  const html=`<!DOCTYPE html><html><head>${_CSP_META}<title>${escHtml(S.projectName)} - DevForge v9</title><style>${pdfCss}
+</style></head><body><div style="text-align:center;margin-bottom:40px;"><h1 style="page-break-before:avoid;border:none;font-size:24px;">${escHtml(S.projectName)}</h1><p style="color:#666;">Generated by DevForge v9 — ${new Date().toLocaleDateString(G?'ja-JP':'en-US')}</p><p style="color:#999;font-size:12px;">${G?'© 2026 エンジニアリングのタネ制作委員会 ｜ 作成者：にしあん':'© 2026 Engineering no Tane Committee | by にしあん'}</p></div>${content}</body></html>`;
   const win=window.open('','_blank');
   if(win){
     win.document.write(html);
@@ -9202,7 +10658,7 @@ function showExplorer(){
   const hasAnswers=Object.keys(a).length>2;
   /* ════ RENDER ════ */
   let h=`<div class="exp-header"><h3>⚡ ${_ja?'並列実装探索 — スタック比較':'Parallel Explorer — Stack Comparison'}</h3>
-  <p>${_ja?'現在の選択':'Current'}: <strong class="exp-current">${a.frontend||'React + Next.js'} + ${a.backend||'Express'}</strong> — ${_ja?'2つのスタックを比較':'Compare 2 stacks'}</p></div>`;
+  <p>${_ja?'現在の選択':'Current'}: <strong class="exp-current">${esc(a.frontend||'React + Next.js')} + ${esc(a.backend||'Express')}</strong> — ${_ja?'2つのスタックを比較':'Compare 2 stacks'}</p></div>`;
   /* ── Recommendation Ranking (NEW) ── */
   if(hasAnswers){
     h+=`<div class="exp-ranking"><h4>📊 ${_ja?'あなたへのおすすめ（回答に基づくスコア）':'Recommended for You (Score based on your answers)'}</h4>`;
@@ -9303,8 +10759,20 @@ function showAILauncher(){
       prompt:'以下の仕様書の技術設計を分析し、リファクタリング提案をしてください。各指摘に工数見積り(S=1-2h/M=3-8h/L=1-2日)を付与してください。\n\nチェック項目:\n- SOLID原則の違反\n- 責務の分離不足(Fat Controller等)\n- スケーラビリティの問題\n- パフォーマンスボトルネック\n- 技術的負債',
       fmt:'Markdown表:\n| 問題 | 違反している原則 | 改善案 | 工数 | 優先度 |\n|------|------------------|--------|------|--------|\n| ... | SRP | ... | M | P1 |'},
     security:{icon:'🔒',label:'セキュリティ監査',desc:'脆弱性とベストプラクティス',
-      sys:'あなたはセキュリティエンジニアです。OWASP Top 10を基準に監査します。',
-      prompt:'以下の仕様書のセキュリティ面をOWASP Top 10の各項目別にチェックしてください:\n\n1. A01:2021 – Broken Access Control\n2. A02:2021 – Cryptographic Failures\n3. A03:2021 – Injection\n4. A04:2021 – Insecure Design\n5. A05:2021 – Security Misconfiguration\n6. A06:2021 – Vulnerable Components\n7. A07:2021 – Authentication Failures\n8. A08:2021 – Data Integrity Failures\n9. A09:2021 – Logging Failures\n10. A10:2021 – SSRF\n\n事前にdocs/08_security.mdのプロジェクト固有セキュリティ設計を確認し、設計と実装の乖離もチェックしてください。\n\n各項目の状態を✅(OK)/⚠️(注意)/❌(脆弱)で評価してください。',
+      sys:'あなたはセキュリティエンジニアです。OWASP Top 10 2025を基準に監査します。',
+      prompt:'以下のセキュリティドキュメントを事前に確認してください:\n'+
+        '- docs/43_security_intelligence.md (スタック適応型チェックリスト)\n'+
+        '- docs/44_threat_model.md (STRIDE脅威分析)\n'+
+        '- docs/45_compliance_matrix.md (コンプライアンス要件)\n'+
+        '- docs/47_security_testing.md (テストテンプレート)\n\n'+
+        '仕様書のセキュリティ面をOWASP Top 10 2025の各項目別にチェックしてください:\n'+
+        '1. A01 – アクセス制御の不備\n2. A02 – セキュリティ設定ミス\n'+
+        '3. A03 – ソフトウェアサプライチェーン\n4. A04 – SSRF\n'+
+        '5. A05 – 安全でない設計\n6. A06 – 脆弱で古いコンポーネント\n'+
+        '7. A07 – 識別と認証の失敗\n8. A08 – ソフトウェアとデータの整合性の不備\n'+
+        '9. A09 – セキュリティログと監視の不備\n10. A10 – SSRF (DNS Rebinding)\n\n'+
+        'docs/08_security.mdの設計と実装の乖離もチェックしてください。\n'+
+        '各項目の状態を✅(OK)/⚠️(注意)/❌(脆弱)で評価してください。',
       fmt:'Markdown表:\n| OWASP# | 項目 | 状態 | 詳細 | 推奨対策 |\n|--------|------|------|------|----------|\n| A01 | Access Control | ⚠️ | ... | ... |'},
     docs:{icon:'📝',label:'ドキュメント補完',desc:'不足文書の特定と生成',
       sys:'あなたはテクニカルライターです。開発ドキュメントの品質を高めます。',
@@ -9380,8 +10848,20 @@ function showAILauncher(){
       prompt:'Analyze the technical design in these specs and propose refactoring. Assign effort estimates (S=1-2h/M=3-8h/L=1-2d) to each finding.\n\nCheck items:\n- SOLID principle violations\n- Separation of concerns issues (Fat Controllers, etc.)\n- Scalability problems\n- Performance bottlenecks\n- Technical debt',
       fmt:'Markdown table:\n| Issue | Violated Principle | Improvement | Effort | Priority |\n|-------|-------------------|-------------|--------|----------|\n| ... | SRP | ... | M | P1 |'},
     security:{icon:'🔒',label:'Security Audit',desc:'Vulnerabilities & best practices',
-      sys:'You are a security engineer. You audit against OWASP Top 10.',
-      prompt:'Check security aspects of these specs against each OWASP Top 10 item:\n\n1. A01:2021 – Broken Access Control\n2. A02:2021 – Cryptographic Failures\n3. A03:2021 – Injection\n4. A04:2021 – Insecure Design\n5. A05:2021 – Security Misconfiguration\n6. A06:2021 – Vulnerable Components\n7. A07:2021 – Authentication Failures\n8. A08:2021 – Data Integrity Failures\n9. A09:2021 – Logging Failures\n10. A10:2021 – SSRF\n\nEvaluate each item as ✅(OK)/⚠️(Warning)/❌(Vulnerable).',
+      sys:'You are a security engineer. You audit against OWASP Top 10 2025.',
+      prompt:'Reference these security documents first:\n'+
+        '- docs/43_security_intelligence.md (Stack-adaptive checklist)\n'+
+        '- docs/44_threat_model.md (STRIDE threat analysis)\n'+
+        '- docs/45_compliance_matrix.md (Compliance requirements)\n'+
+        '- docs/47_security_testing.md (Test templates)\n\n'+
+        'Check security aspects against OWASP Top 10 2025:\n'+
+        '1. A01 – Broken Access Control\n2. A02 – Security Misconfiguration\n'+
+        '3. A03 – Software Supply Chain\n4. A04 – SSRF\n'+
+        '5. A05 – Insecure Design\n6. A06 – Vulnerable and Outdated Components\n'+
+        '7. A07 – Identification and Authentication Failures\n8. A08 – Software and Data Integrity Failures\n'+
+        '9. A09 – Security Logging and Monitoring Failures\n10. A10 – SSRF (DNS Rebinding)\n\n'+
+        'Also check for drift between docs/08_security.md design and implementation.\n'+
+        'Evaluate each item as ✅(OK)/⚠️(Warning)/❌(Vulnerable).',
       fmt:'Markdown table:\n| OWASP# | Item | Status | Details | Recommended Fix |\n|--------|------|--------|---------|------------------|\n| A01 | Access Control | ⚠️ | ... | ... |'},
     docs:{icon:'📝',label:'Doc Completion',desc:'Identify missing docs & generate them',
       sys:'You are a technical writer focused on development documentation quality.',
@@ -9680,7 +11160,7 @@ function showDashboard(){
   // Project info
   h+=`<h4 class="dash-h4-mt">📋 ${_ja?'プロジェクト情報':'Project Info'}</h4><div class="dash-info">`;
   const info=_ja?[['プロジェクト名',S.projectName],['フロント',a.frontend],['バック',a.backend],['DB',a.database],['デプロイ',a.deploy],['モバイル',a.mobile],['AI自律',a.ai_auto],['決済/CMS',a.payment],['駆動開発',a.dev_methods],['スキル',a.skill_level]]:[['Project',S.projectName],['Frontend',a.frontend],['Backend',a.backend],['DB',a.database],['Deploy',a.deploy],['Mobile',a.mobile],['AI Auto',a.ai_auto],['Payment/CMS',a.payment],['Dev Methods',a.dev_methods],['Skill',a.skill_level]];
-  info.forEach(([k,v])=>{if(v&&v!==(_ja?'（未指定）':'(Unset)')&&v!=='(Unset)')h+=`<div class="exp-row"><span class="label">${k}</span><span class="val">${v}</span></div>`;});
+  info.forEach(([k,v])=>{if(v&&v!==(_ja?'（未指定）':'(Unset)')&&v!=='(Unset)')h+=`<div class="exp-row"><span class="label">${k}</span><span class="val">${esc(v)}</span></div>`;});
   h+='</div>';
   
   // Stack Synergy Score
@@ -9733,8 +11213,8 @@ function showDashboard(){
       const icon=c.level==='error'?'❌':c.level==='warn'?'⚠️':'ℹ️';
       const cls=c.level==='error'?'compat-error':c.level==='warn'?'compat-warn':'compat-info';
       const pair=c.pair.map(p=>{const n={frontend:'FE',backend:'BE',database:'DB',deploy:'Deploy',mobile:'Mobile',orm:'ORM',ai_auto:'AI',skill_level:'Skill',payment:'Pay',dev_methods:'DevMethod',auth:'Auth',scope_out:'Scope',data_entities:'Entity',purpose:'Purpose',mvp_features:'MVP'};return n[p]||p;}).join(' ↔ ');
-      h+=`<div class="${cls}"><span class="compat-pair">${pair}</span><span class="compat-msg">${c.msg}</span>`;
-      if(c.fix)h+=`<button class="btn btn-xs btn-s compat-fix" onclick="S.answers['${c.fix.f}']='${c.fix.s}';save();showDashboard();">→ ${c.fix.s}</button>`;
+      h+=`<div class="${cls}"><span class="compat-pair">${pair}</span><span class="compat-msg">${esc(c.msg)}</span>`;
+      if(c.fix)h+=`<button class="btn btn-xs btn-s compat-fix" onclick="S.answers['${escAttr(c.fix.f)}']='${escAttr(c.fix.s)}';save();showDashboard();">→ ${esc(c.fix.s)}</button>`;
       h+='</div>';
     });
   }
@@ -9792,7 +11272,7 @@ function showDashboard(){
   }
   // File size distribution by Pillar
   if(Object.keys(S.files).length>0){
-    const pillarMap={'.spec/':'P1 SDD','.devcontainer/':'P2 DevContainer','mcp-config':'P3 MCP','.cursor/':'P4 AI Rules','.clinerules':'P4','.windsurfrules':'P4','.gemini/':'P4','.github/':'P4','CLAUDE.md':'P4','AGENTS.md':'P4','codex-instructions':'P4','.kiro/':'P4','skills/':'P4','roadmap/':'P7 Roadmap','docs/':'Docs','README.md':'Common','.gitignore':'Common','LICENSE':'Common','package.json':'Common','.ai/':'Common','.mcp/':'P3 MCP'};
+    const pillarMap={'.spec/':'P1 SDD','.devcontainer/':'P2 DevContainer','mcp-config':'P3 MCP','.cursor/':'P4 AI Rules','.clinerules':'P4','.windsurfrules':'P4','.gemini/':'P4','.github/':'P4','CLAUDE.md':'P4','AGENTS.md':'P4','codex-instructions':'P4','.kiro/':'P4','skills/':'P4','roadmap/':'P7 Roadmap','docs/43_security':'P12 Security','docs/44_threat':'P12 Security','docs/45_compliance':'P12 Security','docs/46_ai_security':'P12 Security','docs/47_security_testing':'P12 Security','docs/':'Docs','README.md':'Common','.gitignore':'Common','LICENSE':'Common','package.json':'Common','.ai/':'Common','.mcp/':'P3 MCP'};
     const pillarSizes={};
     Object.entries(S.files).forEach(([p,c])=>{
       let pil='Other';
@@ -9801,7 +11281,7 @@ function showDashboard(){
     });
     const sorted=Object.entries(pillarSizes).sort((a,b)=>b[1]-a[1]);
     const max=sorted[0]?sorted[0][1]:1;
-    const pillarColors={'P1 SDD':'var(--accent)','P2 DevContainer':'var(--accent-2)','P3 MCP':'var(--success)','P4 AI Rules':'var(--warn)','P5 Quality':'var(--danger)','P7 Roadmap':'var(--danger)','P9 Design System':'var(--accent)','P10 Reverse Eng':'var(--success)','P11 Impl Intelligence':'var(--accent-2)','Docs':'var(--layer-5)','Common':'var(--text-3)'};
+    const pillarColors={'P1 SDD':'var(--accent)','P2 DevContainer':'var(--accent-2)','P3 MCP':'var(--success)','P4 AI Rules':'var(--warn)','P5 Quality':'var(--danger)','P7 Roadmap':'var(--danger)','P9 Design System':'var(--accent)','P10 Reverse Eng':'var(--success)','P11 Impl Intelligence':'var(--accent-2)','P12 Security':'var(--danger)','Docs':'var(--layer-5)','Common':'var(--text-3)'};
     h+='<h4 class="dash-h4-mt">'+(_ja?'📦 ファイルサイズ分布':'📦 File Size Distribution')+'</h4>';
     h+='<div class="fsize-chart">';
     sorted.forEach(([pil,sz])=>{
@@ -9839,6 +11319,7 @@ function getHealthHTML(_ja,fileCount,answered){
     {key:'docs/26_',label:_ja?'⑨デザインシステム':'⑨Design System'},
     {key:'docs/29_',label:_ja?'⑩リバースEng':'⑩Reverse Eng'},
     {key:'docs/39_',label:_ja?'⑪実装ガイド':'⑪Impl Guide'},
+    {key:'docs/43_',label:_ja?'⑫セキュリティ':'⑫Security'},
   ];
   const fileKeys=Object.keys(S.files);
   let pillarOK=0;
@@ -9999,8 +11480,8 @@ function showRoadmapUI(){
   /* Apply time multiplier */
   layers.forEach(l=>l.items.forEach(it=>{if(!it.wk)it.hrs=Math.round((it.hrs||8)*timeMul);}));
   /* ── Load saved progress ── */
-  const roadState=JSON.parse((_lsGet('devforge-road-'+S.projectName))||'{}');
-  const collapseState=JSON.parse((_lsGet('devforge-road-col-'+S.projectName))||'{}');
+  const roadState=_jp(_lsGet('devforge-road-'+S.projectName),{});
+  const collapseState=_jp(_lsGet('devforge-road-col-'+S.projectName),{});
   layers.forEach((l,li)=>l.items.forEach((item,ii)=>{item.done=!!roadState[li+'_'+ii];}));
   const totalItems=layers.reduce((s,l)=>s+l.items.length,0);
   const doneItems=layers.reduce((s,l)=>s+l.items.filter(i=>i.done).length,0);
@@ -10052,7 +11533,7 @@ function showRoadmapUI(){
       const disabled=locked?' disabled':'';
       h+=`<div class="road-task ${item.done?'checked':''}${locked?' road-task-locked':''}" ${locked?'':'onclick="toggleRoadItem2(\''+id+'\',this)"'}>`;
       h+=`<input type="checkbox" ${item.done?'checked':''}${disabled} ${locked?'':'onclick="event.stopPropagation();toggleRoadItem2(\''+id+'\',this.parentElement)"'}>`;
-      h+=`<span>${item.text}</span>`;
+      h+=`<span>${esc(item.text)}</span>`;
       if(item.hrs)h+=`<span class="road-hrs-badge">${item.hrs}h</span>`;
       if(item.wk)h+=`<span class="road-week-badge">${item.wk}</span>`;
       if(item.res)h+=`<a class="road-res-btn" href="${item.res.u}" target="_blank" rel="noopener" onclick="event.stopPropagation()" title="${item.res.n}">📖</a>`;
@@ -10073,7 +11554,7 @@ function toggleRoadItem2(id,el){
   el.classList.toggle('checked');
   const cb=el.querySelector('input[type="checkbox"]');
   if(cb)cb.checked=el.classList.contains('checked');
-  const roadState=JSON.parse((_lsGet('devforge-road-'+S.projectName))||'{}');
+  const roadState=_jp(_lsGet('devforge-road-'+S.projectName),{});
   roadState[id]=el.classList.contains('checked');
   _lsSet('devforge-road-'+S.projectName,JSON.stringify(roadState));
   /* Update progress bar */
@@ -10107,7 +11588,7 @@ function toggleRoadItem2(id,el){
   window._roadDebounce=setTimeout(()=>showRoadmapUI(),300);
 }
 function toggleRoadCollapse(li){
-  const colState=JSON.parse((_lsGet('devforge-road-col-'+S.projectName))||'{}');
+  const colState=_jp(_lsGet('devforge-road-col-'+S.projectName),{});
   const items=$('roadItems'+li);
   if(!items)return;
   const isCollapsed=items.classList.contains('road-collapsed');
@@ -10210,12 +11691,12 @@ function showManual(sec){
   const _ja=S.lang==='ja';
   const MANUAL=[
     {id:'overview',title:_ja?'概要':'Overview',body:_ja?'<h2>DevForge v9.0 とは</h2><p>質問に答えるだけで、プロジェクトに必要な88+ファイルを自動生成するAI駆動開発プラットフォームです。'+_TECH_COUNT+'テクノロジー対応。</p>'+
-      '<h3>11の柱</h3><table><tr><th>柱</th><th>内容</th><th>ファイル数</th></tr><tr><td>①SDD統合</td><td>Spec Kit互換の仕様書</td><td>5</td></tr><tr><td>②DevContainer</td><td>Docker開発環境</td><td>4</td></tr><tr><td>③MCP設定</td><td>Model Context Protocol</td><td>3</td></tr><tr><td>④AIルール</td><td>10+ツール設定+スキル</td><td>10+</td></tr>'+
-      '<tr><td>⑤並列探索</td><td>スタック比較+おすすめランキング</td><td>UI</td></tr><tr><td>⑥Dashboard</td><td>コンテキスト可視化+技術DB</td><td>UI</td></tr><tr><td>⑦ロードマップ</td><td>学習パス（インタラクティブ）</td><td>9+UI</td></tr><tr><td>⑧AIランチャー</td><td>プロンプトテンプレート+トークン推定</td><td>UI</td></tr><tr><td>⑨デザインシステム</td><td>デザイントークン+シーケンス図</td><td>2</td></tr><tr><td>⑩リバースEng</td><td>ゴール逆算型プランニング</td><td>2</td></tr><tr><td>⑪実装ガイド</td><td>業種別実装パターン+AI運用手順</td><td>3</td></tr></table>'+
+      '<h3>12の柱</h3><table><tr><th>柱</th><th>内容</th><th>ファイル数</th></tr><tr><td>①SDD統合</td><td>Spec Kit互換の仕様書</td><td>5</td></tr><tr><td>②DevContainer</td><td>Docker開発環境</td><td>4</td></tr><tr><td>③MCP設定</td><td>Model Context Protocol</td><td>3</td></tr><tr><td>④AIルール</td><td>10+ツール設定+スキル</td><td>10+</td></tr>'+
+      '<tr><td>⑤並列探索</td><td>スタック比較+おすすめランキング</td><td>UI</td></tr><tr><td>⑥Dashboard</td><td>コンテキスト可視化+技術DB</td><td>UI</td></tr><tr><td>⑦ロードマップ</td><td>学習パス（インタラクティブ）</td><td>9+UI</td></tr><tr><td>⑧AIランチャー</td><td>プロンプトテンプレート+トークン推定</td><td>UI</td></tr><tr><td>⑨デザインシステム</td><td>デザイントークン+シーケンス図</td><td>2</td></tr><tr><td>⑩リバースEng</td><td>ゴール逆算型プランニング</td><td>2</td></tr><tr><td>⑪実装ガイド</td><td>業種別実装パターン+AI運用手順</td><td>3</td></tr><tr><td>⑫セキュリティ</td><td>OWASP・STRIDE・コンプライアンス</td><td>5</td></tr></table>'+
       '<p>+ docs（40仕様書）+ 共通ファイル（4）= <strong>88+ファイル</strong></p>':'<h2>What is DevForge v9.0?</h2><p>An AI-driven dev platform that auto-generates 88+ project files just by answering questions. Supports '+_TECH_COUNT+' technologies.</p>'+
-      '<h3>11 Pillars</h3><table><tr><th>Pillar</th><th>Content</th><th>Files</th></tr><tr><td>①SDD</td><td>Spec Kit compatible specs</td><td>5</td></tr><tr><td>②DevContainer</td><td>Docker dev environment</td><td>4</td></tr><tr><td>③MCP</td><td>Model Context Protocol</td><td>3</td></tr><tr><td>④AI Rules</td><td>10+ tool configs + skills</td><td>10+</td></tr>'+
+      '<h3>12 Pillars</h3><table><tr><th>Pillar</th><th>Content</th><th>Files</th></tr><tr><td>①SDD</td><td>Spec Kit compatible specs</td><td>5</td></tr><tr><td>②DevContainer</td><td>Docker dev environment</td><td>4</td></tr><tr><td>③MCP</td><td>Model Context Protocol</td><td>3</td></tr><tr><td>④AI Rules</td><td>10+ tool configs + skills</td><td>10+</td></tr>'+
       ''+
-      '<tr><td>⑤Explorer</td><td>Stack comparison + recommendation</td><td>UI</td></tr><tr><td>⑥Dashboard</td><td>Context visualization + Tech DB</td><td>UI</td></tr><tr><td>⑦Roadmap</td><td>Learning path (interactive)</td><td>9+UI</td></tr><tr><td>⑧AI Launcher</td><td>Prompt templates + token estimation</td><td>UI</td></tr><tr><td>⑨Design System</td><td>Design tokens + Sequence diagrams</td><td>2</td></tr><tr><td>⑩Reverse Eng</td><td>Goal-driven reverse planning</td><td>2</td></tr><tr><td>⑪Impl Guide</td><td>Domain-specific impl patterns + AI runbook</td><td>3</td></tr></table>'+
+      '<tr><td>⑤Explorer</td><td>Stack comparison + recommendation</td><td>UI</td></tr><tr><td>⑥Dashboard</td><td>Context visualization + Tech DB</td><td>UI</td></tr><tr><td>⑦Roadmap</td><td>Learning path (interactive)</td><td>9+UI</td></tr><tr><td>⑧AI Launcher</td><td>Prompt templates + token estimation</td><td>UI</td></tr><tr><td>⑨Design System</td><td>Design tokens + Sequence diagrams</td><td>2</td></tr><tr><td>⑩Reverse Eng</td><td>Goal-driven reverse planning</td><td>2</td></tr><tr><td>⑪Impl Guide</td><td>Domain-specific impl patterns + AI runbook</td><td>3</td></tr><tr><td>⑫Security</td><td>OWASP, STRIDE, Compliance</td><td>5</td></tr></table>'+
       '<p>+ docs (40 specs) + common (4) = <strong>88+ files</strong></p>'},
     {id:'start',title:_ja?'はじめ方':'Getting Started',body:_ja?
       '<h2>はじめ方</h2><p>1. スキルレベルを選択（Beginner/Intermediate/Pro）<br>2. プロジェクト名を入力<br>3. テンプレート選択（任意・41種類）<br>4. Phase 1-3の質問に回答（スキップ＆後で回答可）<br>5. 生成ボタンで88+ファイル作成<br>6. ZIPダウンロードまたはPDF印刷</p>'+
@@ -10240,8 +11721,8 @@ function showManual(sec){
       '<p>• 🧪 Quality Intelligence Engine (industry-specific QA strategies, test matrix, incident response)<br>• 🎨 Design System generation (design tokens, sequence diagrams)<br>• 🔄 Reverse Engineering (goal-driven reverse planning, 24 domains)<br>• 🏗️ Implementation Intelligence (domain-specific impl patterns, AI runbook, pseudo-code)<br>• 🧠 AI Development OS (context compression, file selection matrix, sub-agent isolation)<br>• 🌐 24 domain support (AI, IoT, Real Estate, Legal, HR, FinTech added)<br>• 📦 88+ file generation (40 docs, 12+ AI rules, 8+ skills)<br>• 🎯 41 presets (CRM, Social, Logistics, Survey, Job Board added)</p>'+
       '<p class="workflow-ref">📘 <strong>For post-generation workflow, see <a href="#" onclick="event.preventDefault();showManual(\'workflow\')">Post-Gen Workflow Guide</a></strong></p>'
     },
-    {id:'pillars',title:_ja?'11の柱':'11 Pillars',body:_ja?
-      '<h2>11の柱の詳細</h2><h3>① SDD統合 (5ファイル)</h3>'+
+    {id:'pillars',title:_ja?'12の柱':'12 Pillars',body:_ja?
+      '<h2>12の柱の詳細</h2><h3>① SDD統合 (5ファイル)</h3>'+
       '<p>constitution.md / specification.md / technical-plan.md / tasks.md / verification.md</p>'+
       '<h3>② DevContainer (4ファイル)</h3>'+
       '<p>devcontainer.json / Dockerfile / docker-compose.yml / post-create.sh — VSCode/Cursorで開くだけ。</p>'+
@@ -10262,9 +11743,11 @@ function showManual(sec){
       '<h3>⑩ リバースエンジニアリング (2ファイル)</h3>'+
       '<p>reverse_engineering.md (ゴール定義→逆算フロー・マイルストーンGantt・リスク分析) / goal_decomposition.md (ゴールツリー・サブゴール分解・ギャップ分析・優先度マトリクス・依存関係チェーン) — 24ドメイン対応の逆算型プランニング。</p>'+
       '<h3>⑪ 実装インテリジェンス (4ファイル)</h3>'+
-      '<p>implementation_playbook.md (業種別実装パターン・擬似コード・スタック固有ガイダンス・横断的関心事チェックリスト) / ai_dev_runbook.md (AI運用ワークフロー・コンテキスト管理・エラー復旧プロトコル) / skill_guide.md (スキルレベル別使用ガイド・注意事項・チェックリスト) / impl-patterns.md (Manus Skills形式の実装スキルカタログ、ai_auto≠noneの場合) — 24ドメイン対応の実装ガイド。</p>'
+      '<p>implementation_playbook.md (業種別実装パターン・擬似コード・スタック固有ガイダンス・横断的関心事チェックリスト) / ai_dev_runbook.md (AI運用ワークフロー・コンテキスト管理・エラー復旧プロトコル) / skill_guide.md (スキルレベル別使用ガイド・注意事項・チェックリスト) / impl-patterns.md (Manus Skills形式の実装スキルカタログ、ai_auto≠noneの場合) — 24ドメイン対応の実装ガイド。</p>'+
+      '<h3>⑫ セキュリティインテリジェンス (5ファイル)</h3>'+
+      '<p>security_intelligence.md (OWASP Top 10 2025監査・セキュリティヘッダー・責任分界・シークレット管理・認証セキュリティ) / threat_model.md (STRIDEエンティティ別脅威分析・攻撃対象領域・対策マトリクス) / compliance_matrix.md (PCI DSS・HIPAA・GDPR・ISMAP・SOC 2・FERPAドメイン別チェックリスト) / ai_security.md (AI生成コードレビュー・パッケージ幻覚検知・敵対的AIプロンプト・Agent Security) / security_testing.md (RLSテスト・Zodスキーマ・IDORテスト・OWASP ZAP設定・ペネトレーションテストチェックリスト) — スタック適応型セキュリティ自動生成エンジン。</p>'
       :
-      '<h2>11 Pillars in Detail</h2><h3>① SDD Integration (5 files)</h3>'+
+      '<h2>12 Pillars in Detail</h2><h3>① SDD Integration (5 files)</h3>'+
       '<p>constitution.md / specification.md / technical-plan.md / tasks.md / verification.md</p>'+
       '<h3>② DevContainer (4 files)</h3>'+
       '<p>devcontainer.json / Dockerfile / docker-compose.yml / post-create.sh — Just open in VS Code/Cursor.</p>'+
@@ -10285,7 +11768,9 @@ function showManual(sec){
       '<h3>⑩ Reverse Engineering (2 files)</h3>'+
       '<p>reverse_engineering.md (goal definition → reverse flow, milestone Gantt, risk analysis) / goal_decomposition.md (goal tree, sub-goal breakdown, gap analysis, priority matrix, dependency chain) — 24 domain-specific reverse planning.</p>'+
       '<h3>⑪ Implementation Intelligence (4 files)</h3>'+
-      '<p>implementation_playbook.md (domain-specific impl patterns, pseudo-code, stack guidance, cross-cutting concerns checklist) / ai_dev_runbook.md (AI operation workflow, context management, error recovery protocol) / skill_guide.md (skill-level usage guide, cautions, checklists) / impl-patterns.md (implementation skills in Manus Skills format, if ai_auto≠none) — 24 domain-specific implementation guide.</p>'
+      '<p>implementation_playbook.md (domain-specific impl patterns, pseudo-code, stack guidance, cross-cutting concerns checklist) / ai_dev_runbook.md (AI operation workflow, context management, error recovery protocol) / skill_guide.md (skill-level usage guide, cautions, checklists) / impl-patterns.md (implementation skills in Manus Skills format, if ai_auto≠none) — 24 domain-specific implementation guide.</p>'+
+      '<h3>⑫ Security Intelligence (5 files)</h3>'+
+      '<p>security_intelligence.md (OWASP Top 10 2025 audit, security headers, shared responsibility model, secrets management, auth security) / threat_model.md (STRIDE entity threat analysis, attack surface, mitigation matrix) / compliance_matrix.md (PCI DSS, HIPAA, GDPR, ISMAP, SOC 2, FERPA domain-specific checklists) / ai_security.md (AI-generated code review, package hallucination detection, adversarial AI prompts, agent security) / security_testing.md (RLS tests, Zod schemas, IDOR tests, OWASP ZAP config, penetration testing checklist) — Stack-adaptive security auto-generation engine.</p>'
     },
     {id:'export',title:_ja?'エクスポート':'Export',body:_ja?
       '<h2>エクスポート方法</h2><p><strong>ZIP</strong>: 全88+ファイルをフォルダ構造付きでZIP圧縮ダウンロード。<br><strong>PDF</strong>: Markdownファイルを整形してブラウザのPDF印刷で出力。<br><strong>URL共有</strong>: プロジェクト設定をBase64エンコードしてURL共有。<br><strong>全ファイルコピー</strong>: 全ドキュメントを1テキストに結合してクリップボードにコピー（Ctrl+Shift+C）。AIへの一括投入に最適。</p><h3>テンプレート保存</h3><p>プロジェクト設定をlocalStorageに保存し、次回起動時に読み込み可能。</p>'+
@@ -10905,6 +12390,8 @@ function loadMermaid(cb){
   _mermaidLoading=true;
   const s=document.createElement('script');
   s.src='https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.9.1/mermaid.min.js';
+  s.integrity='sha384-LqzKWc5TFcZHs6HCNY36LVwAH7nCTLKVjnWKqHhFPPdTQqd5wZKrLcQJn5TJDG9m';
+  s.crossOrigin='anonymous';
   s.onload=()=>{
     _initMermaidTheme();
     _mermaidReady=true;_mermaidLoading=false;cb();
@@ -10939,14 +12426,14 @@ function applyLang(){
   statLbls.forEach((el,i)=>{if(i<4)el.textContent=ja?slJa[i]:slEn[i];});
   // Info cards
   const icards=document.querySelectorAll('.icard');
-  const icJa=[['📝 88+ファイル生成','SDD仕様書・Docker・MCP・AIルール10種・ロードマップ9種・仕様書40種'],['🧪 11の柱','SDD・DevContainer・MCP・AIルール・並列探索・Dashboard・ロードマップ・AIランチャー・デザインシステム・リバースEng・実装ガイド'],['📱 モバイル対応','Expo / React Native 開発パス・EAS Build・OTA更新'],['🤖 AI自律開発','Vibe Coding・マルチAgent・Claude Code Subagents'],['💳 決済・CMS・EC','Stripe・microCMS・Medusa・Shopify Hydrogen'],['📦 フルエクスポート','ZIP・PDF・全ファイル結合コピー・URLシェア']];
-  const icEn=[['📝 88+ File Generation','SDD specs, Docker, MCP, 10 AI rules, 9 roadmaps, 40 specs'],['🧪 11 Pillars','SDD, DevContainer, MCP, AI Rules, Explorer, Dashboard, Roadmap, AI Launcher, Design System, Reverse Eng, Impl Guide'],['📱 Mobile Support','Expo / React Native dev path, EAS Build, OTA updates'],['🤖 AI Autonomous Dev','Vibe Coding, Multi-Agent, Claude Code Subagents'],['💳 Payment/CMS/EC','Stripe, microCMS, Medusa, Shopify Hydrogen'],['📦 Full Export','ZIP, PDF, Copy All Files, URL Share']];
+  const icJa=[['📝 88+ファイル生成','SDD仕様書・Docker・MCP・AIルール10種・ロードマップ9種・仕様書40種'],['🧪 12の柱','SDD・DevContainer・MCP・AIルール・並列探索・Dashboard・ロードマップ・AIランチャー・デザインシステム・リバースEng・実装ガイド・セキュリティ'],['📱 モバイル対応','Expo / React Native 開発パス・EAS Build・OTA更新'],['🤖 AI自律開発','Vibe Coding・マルチAgent・Claude Code Subagents'],['💳 決済・CMS・EC','Stripe・microCMS・Medusa・Shopify Hydrogen'],['📦 フルエクスポート','ZIP・PDF・全ファイル結合コピー・URLシェア']];
+  const icEn=[['📝 88+ File Generation','SDD specs, Docker, MCP, 10 AI rules, 9 roadmaps, 40 specs'],['🧪 12 Pillars','SDD, DevContainer, MCP, AI Rules, Explorer, Dashboard, Roadmap, AI Launcher, Design System, Reverse Eng, Impl Guide, Security'],['📱 Mobile Support','Expo / React Native dev path, EAS Build, OTA updates'],['🤖 AI Autonomous Dev','Vibe Coding, Multi-Agent, Claude Code Subagents'],['💳 Payment/CMS/EC','Stripe, microCMS, Medusa, Shopify Hydrogen'],['📦 Full Export','ZIP, PDF, Copy All Files, URL Share']];
   icards.forEach((el,i)=>{if(i<6){const d=ja?icJa[i]:icEn[i];const h4=el.querySelector('h4');const p=el.querySelector('p');if(h4)h4.textContent=d[0];if(p)p.textContent=d[1];}});
   // Pillar badges
   const pbadges=document.querySelectorAll('.pbadge');
-  const pbJa=['①SDD統合','②DevContainer','③MCP設定','④AIルール','⑤並列探索','⑥Dashboard','⑦ロードマップ','⑧AIランチャー','⑨デザインシステム','⑩リバースEng','⑪実装ガイド'];
-  const pbEn=['①SDD','②DevContainer','③MCP','④AI Rules','⑤Explorer','⑥Dashboard','⑦Roadmap','⑧AI Launcher','⑨Design System','⑩Reverse Eng','⑪Impl Guide'];
-  pbadges.forEach((el,i)=>{if(i<11)el.textContent=ja?pbJa[i]:pbEn[i];});
+  const pbJa=['①SDD統合','②DevContainer','③MCP設定','④AIルール','⑤並列探索','⑥Dashboard','⑦ロードマップ','⑧AIランチャー','⑨デザインシステム','⑩リバースEng','⑪実装ガイド','⑫セキュリティ'];
+  const pbEn=['①SDD','②DevContainer','③MCP','④AI Rules','⑤Explorer','⑥Dashboard','⑦Roadmap','⑧AI Launcher','⑨Design System','⑩Reverse Eng','⑪Impl Guide','⑫Security'];
+  pbadges.forEach((el,i)=>{if(i<12)el.textContent=ja?pbJa[i]:pbEn[i];});
   // Keyboard shortcuts overlay
   const kbT=$('kbTitle');if(kbT)kbT.textContent=t('kbTitle');
   const kbLabels=document.querySelectorAll('.kblbl');
@@ -11009,12 +12496,14 @@ document.querySelectorAll('.skcard').forEach(el=>{
     if(data.projectName){
       S.projectName=sanitizeName(data.projectName);
       if(data.answers){
+        const safeAnswers={};
         Object.keys(data.answers).forEach(k=>{
+          if(['__proto__','constructor','prototype'].includes(k))return;
           if(typeof data.answers[k]==='string'){
-            data.answers[k]=sanitize(data.answers[k]);
+            safeAnswers[k]=sanitize(data.answers[k]);
           }
         });
-        S.answers=data.answers;
+        S.answers=safeAnswers;
       }
       if(data.preset&&typeof data.preset==='string')S.preset=data.preset;
       if(data.skill&&['beginner','intermediate','pro'].includes(data.skill))S.skill=data.skill;

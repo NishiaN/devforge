@@ -6,20 +6,42 @@ let _viewHistory=[];
 let _viewHistIdx=-1;
 let _viewNavFlag=false;
 
+function _sanitizeHTML(html){
+  const allowedTags=['h1','h2','h3','h4','h5','h6','p','br','hr','ul','ol','li','a','strong','em','code','pre','blockquote','table','thead','tbody','tr','th','td','img','div','span','b','i','u','s','del','ins','sup','sub','dl','dt','dd'];
+  const allowedAttrs={a:['href','title','class'],img:['src','alt','title','class'],code:['class'],pre:['class'],div:['class'],span:['class'],table:['class'],th:['colspan','rowspan'],td:['colspan','rowspan']};
+  const temp=document.createElement('div');temp.innerHTML=html;
+  function clean(el){
+    const tag=el.tagName.toLowerCase();
+    if(!allowedTags.includes(tag)){el.remove();return;}
+    const attrs=allowedAttrs[tag]||[];
+    Array.from(el.attributes).forEach(a=>{
+      if(!attrs.includes(a.name)){el.removeAttribute(a.name);}
+      else if(a.name==='href'||a.name==='src'){
+        const v=a.value.toLowerCase();
+        if(v.startsWith('javascript:')||v.startsWith('data:')||v.startsWith('vbscript:')||v.startsWith('about:')){el.removeAttribute(a.name);}
+        else if(!v.startsWith('http://')&&!v.startsWith('https://')&&!v.startsWith('mailto:')&&!v.startsWith('#')&&!v.startsWith('./')&&!v.startsWith('../')){el.removeAttribute(a.name);}
+      }
+    });
+    Array.from(el.children).forEach(c=>clean(c));
+  }
+  Array.from(temp.children).forEach(c=>clean(c));
+  return temp.innerHTML;
+}
 function safeMD(raw){
   if(window._noMarked||typeof marked==='undefined')return '<pre>'+esc(raw)+'</pre>';
-  return marked.parse(raw);
+  const html=marked.parse(raw);
+  return _sanitizeHTML(html);
 }
 function diffBtn(path){
-  return (S.prevFiles[path]||S.editedFiles[path])?'<button class="btn btn-xs btn-s btn-diff" onclick="showDiff(\''+path+'\')">🔀 Diff</button>':'';
+  return (S.prevFiles[path]||S.editedFiles[path])?'<button class="btn btn-xs btn-s btn-diff" onclick="showDiff(\''+escAttr(path)+'\')">🔀 Diff</button>':'';
 }
 function prevToolbar(path,showRaw){
   const _ja=S.lang==='ja';
-  const rawBtn=showRaw?`<button class="btn btn-xs btn-s" onclick="toggleMdRaw('${path}')">📝 Raw</button>`:'';
+  const rawBtn=showRaw?`<button class="btn btn-xs btn-s" onclick="toggleMdRaw('${escAttr(path)}')">📝 Raw</button>`:'';
   const canBack=_prevHistIdx>0;
   const canFwd=_prevHistIdx<_prevHistory.length-1;
   const navBtns=`<button class="btn btn-xs btn-s prev-nav-btn${canBack?'':' disabled'}" onclick="prevBack()" title="${_ja?'戻る':'Back'}">◀</button><button class="btn btn-xs btn-s prev-nav-btn${canFwd?'':' disabled'}" onclick="prevForward()" title="${_ja?'進む':'Forward'}">▶</button>`;
-  return `<div class="prev-toolbar">${navBtns}<span class="prev-path">📄 ${path}</span><div class="prev-toolbar-r">${rawBtn}<button class="btn btn-xs btn-s" onclick="openEditor('${path}')">✏️ ${_ja?'編集':'Edit'}</button>${diffBtn(path)}<button class="btn btn-xs btn-s" onclick="copyFileContent('${path}')">📋 ${_ja?'コピー':'Copy'}</button><button class="btn btn-xs btn-s" onclick="printCurrentFile()">🖨️ ${_ja?'印刷':'Print'}</button></div></div>`;
+  return `<div class="prev-toolbar">${navBtns}<span class="prev-path">📄 ${esc(path)}</span><div class="prev-toolbar-r">${rawBtn}<button class="btn btn-xs btn-s" onclick="openEditor('${escAttr(path)}')">✏️ ${_ja?'編集':'Edit'}</button>${diffBtn(path)}<button class="btn btn-xs btn-s" onclick="copyFileContent('${escAttr(path)}')">📋 ${_ja?'コピー':'Copy'}</button><button class="btn btn-xs btn-s" onclick="printCurrentFile()">🖨️ ${_ja?'印刷':'Print'}</button></div></div>`;
 }
 function initPrevTabs(){
   const _ja=S.lang==='ja';
@@ -53,6 +75,7 @@ function initPillarTabs(){
       else if(i===8) showFileTree(); // Design System
       else if(i===9) showFileTree(); // Reverse Engineering
       else if(i===10) showFileTree(); // Implementation Intelligence
+      else if(i===11) showFileTree(); // Security Intelligence
       else showFileTree();
     };tabs.appendChild(b);
   });
@@ -87,8 +110,8 @@ function showFileTree(){
       const isGen=hasFiles&&S.files[f.path];
       const isActive=S.previewFile===f.path;
       const isEdited=S.editedFiles&&S.editedFiles[f.path];
-      h+=`<li data-path="${f.path}" onclick="previewFile('${f.path}')" class="tree-item${isActive?' active':''}${f.name.startsWith('  ')?' tree-indent':''}${isGen?'':' tree-disabled'}">
-        ${isGen?'📄':'⬜'} ${f.name.trim()}${isEdited?'<span class="tree-edited" title="Edited">●</span>':''}${isGen?'<span class="tree-gen">✓</span>':''}
+      h+=`<li data-path="${esc(f.path)}" onclick="previewFile('${escAttr(f.path)}')" class="tree-item${isActive?' active':''}${f.name.startsWith('  ')?' tree-indent':''}${isGen?'':' tree-disabled'}">
+        ${isGen?'📄':'⬜'} ${esc(f.name.trim())}${isEdited?'<span class="tree-edited" title="Edited">●</span>':''}${isGen?'<span class="tree-gen">✓</span>':''}
       </li>`;
     }
   });
@@ -157,6 +180,10 @@ function buildFileTree(){
       files.push({folder:true,name:'skills'});
       files.push({name:'  impl-patterns.md',path:'skills/impl-patterns.md'});
     }
+  } else if(pillar===11){ // Security Intelligence
+    files.push({folder:true,name:'docs'});
+    ['43_security_intelligence','44_threat_model','45_compliance_matrix','46_ai_security','47_security_testing'].forEach(f=>
+      files.push({name:'  '+f+'.md',path:'docs/'+f+'.md'}));
   }
   // Common files
   files.push({name:'───────────',path:''});
@@ -198,9 +225,13 @@ function previewFile(path){
     const raw=S.files[path];
     if(path.endsWith('.md')&&raw.includes('```mermaid')){
       let html=safeMD(raw);
+      let _mmBlocks=[];
       html=html.replace(/<pre><code class="language-mermaid">([\s\S]*?)<\/code><\/pre>/g,
-        (m,code)=>'<div class="mermaid">'+code.replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>')+'</div>');
+        (m,code)=>{const id='_mm'+_mmBlocks.length;
+        _mmBlocks.push(code.replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>'));
+        return '<div class="mermaid" id="'+id+'"></div>';});
       $('prevBody').innerHTML=prevToolbar(path,true)+`<div id="mdRendered" class="md-rendered">${html}</div>`;
+      _mmBlocks.forEach((c,i)=>{const el=document.getElementById('_mm'+i);if(el)el.textContent=c;});
       loadMermaid(()=>{
         if(_mermaidReady){
           try{
@@ -267,7 +298,8 @@ function printCurrentFile(){
   const G=S.genLang==='ja';
   const content=path.endsWith('.md')?safeMD(raw):'<pre>'+escHtml(raw)+'</pre>';
   const css='body{font-family:-apple-system,sans-serif;padding:40px;max-width:800px;margin:0 auto;color:#1e222d;}'+'pre{background:#f5f5f5;padding:16px;border-radius:8px;overflow-x:auto;}'+'table{width:100%;border-collapse:collapse;}th,td{border:1px solid #ddd;padding:8px;text-align:left;}th{background:#f0f0f0;}';
-  const html='<!DOCTYPE html><html><head><title>'+path+'</title><style>'+css+'</style></head><body>'+'<h1 style="border-bottom:2px solid #3b82f6;padding-bottom:8px;">'+path+'</h1>'+content+'</body></html>';
+  const _CSP_META='<meta http-equiv="Content-Security-Policy" content="default-src \'none\'; style-src \'unsafe-inline\'; img-src data: blob:;">';
+  const html='<!DOCTYPE html><html><head>'+_CSP_META+'<title>'+escHtml(path)+'</title><style>'+css+'</style></head><body>'+'<h1 style="border-bottom:2px solid #3b82f6;padding-bottom:8px;">'+escHtml(path)+'</h1>'+content+'</body></html>';
   const win=window.open('','_blank');
   if(win){win.document.write(html);win.document.close();}
   else{

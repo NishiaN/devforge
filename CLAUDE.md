@@ -7,23 +7,25 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 # DevForge v9.0
 
 ## Architecture
-- **43 modules** in `src/` → `node build.js` → single `devforge-v9.html` (~879KB)
+- **44 modules** in `src/` → `node build.js` → single `devforge-v9.html` (~1110KB)
 - Vanilla JS, no frameworks. CSS custom properties. CDN: marked.js, mermaid.js, JSZip.
 - **AI Development OS**: Generates 88+ files including context intelligence, operations playbooks, business models, and growth strategies
+- **Security-hardened**: Phase 1 (CSP, SRI, sanitization) + Phase 2 (16 XSS/injection fixes) + Pillar ⑫ (context-aware security audit prompts)
 
 ## Build & Test
 ```bash
 # Build
-node build.js              # Produces devforge-v9.html (~879KB)
+node build.js              # Produces devforge-v9.html (~1037KB)
 node build.js --no-minify  # Skip minification (debug)
 node build.js --report     # Show size report
 node build.js --check-css  # Validate CSS custom properties
 
 # Test
-npm test                   # Run all tests (209 tests, all passing)
+npm test                   # Run all tests (234 tests, all passing)
 npm run test:watch         # Watch mode for test development
 node --test test/gen-coherence.test.js  # Run single test file
 node --test test/data-coverage.test.js  # Run data integrity tests
+node --test test/security.test.js       # Run security tests (24 tests)
 
 # Development
 npm run dev                # Build + live-server on port 3000
@@ -44,7 +46,7 @@ npm run check              # Syntax check extracted JS
 5. **Write** to `devforge-v9.html`
 6. **Validate** size ≤1200KB (warn if exceeded)
 
-**Current Status:** 879KB / 1200KB limit (321KB remaining budget for future expansions)
+**Current Status:** 1110KB / 1200KB limit (90KB remaining budget for future expansions)
 
 ### ⚠️ Critical: Minification Limitations
 
@@ -62,7 +64,7 @@ npm run check              # Syntax check extracted JS
 **If you need aggressive minification:**
 1. Use a proper JS parser (e.g., Terser, esbuild)
 2. Test with `node --check` on extracted JS
-3. Verify all 209 tests pass
+3. Verify all 234 tests pass
 
 ### Module Load Order (Critical!)
 ```javascript
@@ -90,7 +92,7 @@ npm run check              # Syntax check extracted JS
 |----------|-------|---------|
 | core/ | state, i18n, events, tour, init | State, language, shortcuts |
 | data/ | presets(41), questions, techdb, compat-rules, gen-templates, helpdata | Static data (41 presets: 36 original + 5 new: CRM, Social, Logistics, Survey, Job Board) |
-| generators/ | index, p1-sdd, p2-devcontainer, p3-mcp, p4-airules, p5-quality, p7-roadmap, p9-designsystem (v2: Figma MCP, Anti-AI checklist), p10-reverse, p11-implguide (skill_guide.md), docs, common | 87-file generation engine (11 pillars) |
+| generators/ | index, p1-sdd, p2-devcontainer, p3-mcp, p4-airules, p5-quality, p7-roadmap, p9-designsystem (v2: Figma MCP, Anti-AI checklist), p10-reverse, p11-implguide (skill_guide.md), p12-security (context-aware audit prompts), docs, common | 88-file generation engine (12 pillars) |
 | ui/ | wizard, render, edit, help, confirm, complexity, toc, voice, project, presets, preview, editor, diff, export, explorer, dashboard, templates | UI components |
 | styles/ | all.css | Theme (dark/light), responsive |
 
@@ -119,14 +121,16 @@ Located in `src/core/state.js`. Call `save()` after mutations to persist to loca
 - `previewFile` — Currently previewed file path
 
 **Helper Functions (state.js):**
-- `save()` — Persist to localStorage
-- `load()` — Restore from localStorage (with v8→v9 migration)
+- `save()` — Persist to localStorage (with 4MB size warning)
+- `load()` — Restore from localStorage (with v8→v9 migration + type validation)
+- `esc(s)` — HTML entity escape (for display text)
+- `escAttr(s)` — Attribute escape (for onclick/href values)
+- `_jp(s, default)` — Safe JSON.parse with fallback
 - `sanitize(s, max)` — Strip HTML, limit length
 - `sanitizeName(s)` — Remove dangerous chars
 - `fileSlug(s)` — Convert to filename-safe slug
 - `toast(msg)` — Show 2.2s toast notification
 - `hasDM(method)` — Check if dev_methods includes method
-- `esc(s)` — HTML entity escape
 
 ## Critical Rules
 1. **Edit `src/` only** — never edit `devforge-v9.html` directly
@@ -218,14 +222,83 @@ if(data.projectName) {
   // Never: Object.assign(S, data) — allows injection!
 }
 
-// ✅ JSON import sanitization
+// ✅ JSON import sanitization + proto pollution protection
 if(data.state.answers) {
   Object.keys(data.state.answers).forEach(k => {
+    if(['__proto__','constructor','prototype'].includes(k)) {
+      delete data.state.answers[k]; return;
+    }
     if(typeof data.state.answers[k] === 'string') {
       data.state.answers[k] = sanitize(data.state.answers[k]);
+    } else {
+      delete data.state.answers[k];  // Remove non-string values
     }
   });
 }
+```
+
+### Security: XSS Prevention Patterns
+
+**Critical Rules** (from Phase 2 security audit):
+
+1. **Use `esc()` for display text**, `escAttr()` for HTML attributes:
+```javascript
+// ✅ Display text
+h += `<span>${esc(userInput)}</span>`;
+
+// ✅ Onclick attributes
+h += `<button onclick="doSomething('${escAttr(userInput)}')">Click</button>`;
+
+// ❌ NEVER put user input directly in innerHTML/onclick
+h += `<span>${userInput}</span>`;  // XSS vulnerability!
+```
+
+2. **Mermaid diagrams: Use textContent, NOT innerHTML**:
+```javascript
+// ✅ Safe: Use placeholder + textContent
+let _mmBlocks = [];
+html = html.replace(/<pre><code class="language-mermaid">([\s\S]*?)<\/code><\/pre>/g,
+  (m, code) => {
+    const id = '_mm' + _mmBlocks.length;
+    _mmBlocks.push(code.replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>'));
+    return '<div class="mermaid" id="' + id + '"></div>';
+  });
+// After innerHTML:
+_mmBlocks.forEach((c, i) => {
+  const el = document.getElementById('_mm' + i);
+  if(el) el.textContent = c;  // Safe!
+});
+
+// ❌ NEVER use innerHTML for unescaped content
+html = html.replace(/code/, (m, code) =>
+  '<div class="mermaid">' + code.replace(/&lt;/g,'<') + '</div>');  // XSS!
+```
+
+3. **window.open: Always add CSP meta**:
+```javascript
+const _CSP_META = '<meta http-equiv="Content-Security-Policy" content="default-src \'none\'; style-src \'unsafe-inline\'; img-src data: blob:;">';
+const html = '<!DOCTYPE html><html><head>' + _CSP_META + '<title>...</title></head>...';
+const win = window.open('', '_blank');
+if(win) { win.document.write(html); win.document.close(); }
+```
+
+4. **Use `_jp()` instead of `JSON.parse()` for localStorage**:
+```javascript
+// ✅ Safe: Handles invalid JSON gracefully
+const data = _jp(_lsGet('key'), {});
+
+// ❌ Crashes on invalid JSON
+const data = JSON.parse(_lsGet('key') || '{}');
+```
+
+5. **Validate href protocols**:
+```javascript
+// ✅ Safe: Only allow http/https
+const safeLink = data.link && (data.link.startsWith('https://') || data.link.startsWith('http://'))
+  ? data.link : '';
+
+// ❌ Allows javascript: URLs
+href="${data.link}"  // Dangerous!
 ```
 
 ### Bilingual Consistency
@@ -444,6 +517,53 @@ git remote set-url origin git@github.com:user/repo.git
   - Each domain has: goal (ja/en), flow steps (ja/en), KPIs (ja/en), risks (ja/en)
   - Used by `genPillar10_ReverseEngineering()` with `detectDomain()` to select template
 
+### src/generators/p12-security.js
+**Pillar ⑫: Security Intelligence** — Context-aware security audit prompts and OWASP 2025 compliance.
+
+**Data Structures:**
+- **OWASP_2025**: 10-item security checklist database (A01-A10)
+  - Each item has: id, ja/en labels, checks (ja/en), stack-specific checks
+  - Stack adapters: supabase, firebase, express, github, npm, vercel, docker
+- **COMPLIANCE_DB**: 7 compliance frameworks (PCI DSS, HIPAA, GDPR, ISMAP, SOC 2, FERPA, ASVS)
+  - Each framework: name, applicable domains, requirements (ja/en), implementation guidance
+- **STRIDE_PATTERNS**: Threat scoring patterns (hasUserId, isPayment, isPublic, hasFile, default)
+
+**Generated Documents (docs/43-47):**
+- **43_security_intelligence.md**: Stack-adaptive OWASP 2025 audit, security headers, shared responsibility model
+- **44_threat_model.md**: STRIDE analysis per entity, trust boundaries (Mermaid), attack surface, threat-mitigation matrix
+- **45_compliance_matrix.md**: Domain-specific compliance requirements with checklists
+- **46_ai_security.md**: Context-aware adversarial prompts (5 base + conditional stack/compliance prompts)
+- **47_security_testing.md**: RLS/Security Rules tests, Zod schemas, API security tests, OWASP ZAP config
+
+**Context-Aware Prompt Pattern:**
+The adversarial prompts in doc46 adapt to project context:
+1. **Entity Security Classification**: Analyzes columns to classify as CRITICAL/HIGH/MED/STD
+   - Payment/Order/Transaction entities → CRITICAL
+   - Entities with user_id → HIGH
+   - Entities with file columns → MED
+   - Others → STD
+2. **Backend-Specific Context**:
+   - Supabase: RLS policy audit prompt with table list
+   - Firebase: Security Rules audit prompt with collection list
+   - Express: Middleware audit prompt
+3. **Compliance-Specific Context**:
+   - Detects applicable frameworks via domain (education→FERPA, fintech→PCI DSS)
+   - Adds compliance audit prompt referencing docs/45
+4. **Stack-Specific Details**:
+   - Environment variables (SUPABASE_SERVICE_ROLE_KEY, STRIPE_SECRET_KEY, etc.)
+   - Auth implementation details (auth.sot, tokenType, tokenVerify)
+   - Entity columns for input validation
+
+**Integration:**
+- **AI Prompt Launcher** (launcher.js): Security Audit template uses OWASP 2025 + refs docs/43-47
+- **Prompt Playbook** (docs.js): Phase 3-3 Security Audit section added
+
+**Helper Functions:**
+- **`_chk(ja, en)`** — Generate checkbox markdown
+- **`_lvl(lv)`** — Security level label (CRITICAL → 🔴 Critical)
+- **`_owaspSection(item, backend)`** — Generate OWASP section with stack checks
+- **`_compSection(comp, G)`** — Generate compliance framework section
+
 **Helper Functions:**
 - **`pluralize(name)`** — Smart table name pluralization
 - **`getEntityColumns(name, G, knownEntities)`** — Get columns for entity (ALWAYS pass 3 args)
@@ -599,9 +719,11 @@ function genPillarN_Name(a, pn) {
 ### 6. Size Budget Check
 - Estimate new generator size (~10-20KB typical)
 - Run `node build.js --report` to verify ≤1200KB
-- Current budget remaining: ~220KB
+- Current budget remaining: ~90KB
 
-**Reference Implementation:** See commits for Pillar ⑩ (Reverse Engineering) for complete example.
+**Reference Implementations:**
+- Pillar ⑩ (Reverse Engineering): Domain-specific goal decomposition with REVERSE_FLOW_MAP
+- Pillar ⑫ (Security Intelligence): Context-aware prompts with conditional stack/compliance sections
 
 ### Compression Patterns (Critical for Size Management)
 
@@ -656,7 +778,7 @@ const ENTITY_COLUMNS = {
 When users complete the wizard, DevForge generates **88+ files** (base: 75 files, +4 when ai_auto=multi/full/orch for skills/ md Package, +1 when payment≠none for docs/38_business_model.md):
 - **.spec/** — constitution.md, specification.md, technical-plan.md, tasks.md, verification.md
 - **.devcontainer/** — devcontainer.json, Dockerfile, docker-compose.yml, post-create.sh
-- **docs/** — architecture.md, ER.md, API.md, screen.md, test-cases.md, security.md, release.md, WBS.md, prompt-playbook.md, tasks.md, **progress.md (24)**, **error_logs.md (25)**, **design_system.md (26, v2: Visual Enhancement Dictionary, Figma MCP, Anti-AI Checklist)**, **sequence_diagrams.md (27)**, **qa_strategy.md (28)**, **reverse_engineering.md (29)**, **goal_decomposition.md (30)**, **industry_playbook.md (31)**, **qa_blueprint.md (32)**, **test_matrix.md (33)**, **incident_response.md (34)**, **sitemap.md (35)**, **test_strategy.md (36)**, **bug_prevention.md (37)**, **business_model.md (38)***, **implementation_playbook.md (39)**, **ai_dev_runbook.md (40)**, **growth_intelligence.md (41)**, **skill_guide.md (42)**
+- **docs/** — architecture.md, ER.md, API.md, screen.md, test-cases.md, security.md, release.md, WBS.md, prompt-playbook.md, tasks.md, **progress.md (24)**, **error_logs.md (25)**, **design_system.md (26, v2: Visual Enhancement Dictionary, Figma MCP, Anti-AI Checklist)**, **sequence_diagrams.md (27)**, **qa_strategy.md (28)**, **reverse_engineering.md (29)**, **goal_decomposition.md (30)**, **industry_playbook.md (31)**, **qa_blueprint.md (32)**, **test_matrix.md (33)**, **incident_response.md (34)**, **sitemap.md (35)**, **test_strategy.md (36)**, **bug_prevention.md (37)**, **business_model.md (38)***, **implementation_playbook.md (39)**, **ai_dev_runbook.md (40)**, **growth_intelligence.md (41)**, **skill_guide.md (42)**, **security_intelligence.md (43, OWASP 2025 adaptive audit)**, **threat_model.md (44, STRIDE analysis)**, **compliance_matrix.md (45, domain-specific compliance)**, **ai_security.md (46, context-aware adversarial prompts)**, **security_testing.md (47, RLS/Rules tests, Zod schemas)**
 - **AI rules** — CLAUDE.md (with File Selection Matrix & Context Compression Protocol), AI_BRIEF.md (with Context Loading Strategy, ~1200 tokens), .cursorrules, .clinerules, .windsurfrules, AGENTS.md (with Agent Specialization Matrix), .cursor/rules, **skills/** (project.md, factory.md, catalog.md*, pipelines.md*, README.md**, skill_map.md**, agents/coordinator.md**, agents/reviewer.md**)
 - **CI/CD** — .github/workflows/ci.yml
 
@@ -693,6 +815,41 @@ When users complete the wizard, DevForge generates **88+ files** (base: 75 files
 - Mermaid flowcharts for each pipeline
 - Decision gates and error handling protocols
 
+### Security Intelligence System (Pillar ⑫)
+**docs/43_security_intelligence.md** (always generated):
+- OWASP Top 10 2025 adaptive audit checklist (stack-specific checks for Supabase/Firebase/Express)
+- Security Headers configuration (CSP with nonce, HSTS, X-Frame-Options)
+- Shared Responsibility Model (BaaS vs self-hosted)
+- Secrets Management (3-tier: dev/.env.local, CI/CD/GitHub Secrets, prod/Secrets Manager)
+- Authentication & Session Security (auth.sot-specific: Supabase Auth, Firebase Auth, NextAuth, custom JWT)
+
+**docs/44_threat_model.md** (always generated):
+- System overview with trust boundaries (Mermaid flowchart)
+- STRIDE threat analysis per entity (Spoofing, Tampering, Repudiation, Info Disclosure, DoS, Elevation)
+- Entity security classification (CRITICAL/HIGH/MED/STD based on columns)
+- Attack surface analysis (external input points, high-risk features)
+- Threat-Mitigation matrix with implementation status
+
+**docs/45_compliance_matrix.md** (always generated):
+- Domain-specific compliance frameworks (PCI DSS for fintech/ec, HIPAA for health, FERPA for education, GDPR for all, etc.)
+- Requirement checklists with implementation guidance
+- Always includes OWASP ASVS Level 2 as baseline
+
+**docs/46_ai_security.md** (always generated):
+- 5 base context-aware adversarial prompts (authorization, input validation, error handling, secrets, session)
+- Conditional stack-specific prompts (Supabase RLS audit, Firebase Security Rules audit)
+- Conditional compliance-specific prompts (references docs/45)
+- AI development risks (Velocity Paradox, Package Hallucination, Shadow Code)
+- Agent security patterns (HITL gates, sandboxing, indirect prompt injection defense)
+- Privacy mode settings for AI development tools
+
+**docs/47_security_testing.md** (always generated):
+- RLS Policy Tests (pgTAP for Supabase)
+- Input Validation Schemas (Zod with entity-specific constraints)
+- API Security Tests (auth bypass, IDOR, rate limiting)
+- OWASP ZAP CI/CD integration
+- Penetration testing checklist
+
 See git history for detailed enhancement changelog.
 
 ## Test Architecture
@@ -705,10 +862,11 @@ See git history for detailed enhancement changelog.
 | r28-regression.test.js | 19 tests | Quality: REST methods, AC, scope_out, verification |
 | build.test.js | build | Build size ≤1200KB, pillar function existence |
 | compat.test.js | 45 tests | Compatibility validation |
+| security.test.js | 24 tests | Security: CSP, SRI, sanitization, XSS prevention, proto pollution |
 | presets.test.js | 4 tests | Preset count (41), bilingual names, tech fields, purpose |
 | Others | ~21 tests | i18n, state, techdb |
 
-**Total: 209 tests (all passing, 100% pass rate)**
+**Total: 234 tests (all passing, 100% pass rate)**
 
 ## Writing Tests
 
