@@ -1,4 +1,4 @@
-/* ═══ STACK COMPATIBILITY & SEMANTIC CONSISTENCY RULES — 46 rules (ERROR×9 + WARN×31 + INFO×6) ═══ */
+/* ═══ STACK COMPATIBILITY & SEMANTIC CONSISTENCY RULES — 48 rules (ERROR×10 + WARN×30 + INFO×8) ═══ */
 const COMPAT_RULES=[
   // ── FE ↔ Mobile (2 ERROR) ──
   {id:'fe-mob-expo',p:['frontend','mobile'],lv:'error',
@@ -11,7 +11,12 @@ const COMPAT_RULES=[
    ja:'AstroはSSG専用でExpoと併用できません。React + Next.jsを推奨',
    en:'Astro is SSG-only and incompatible with Expo. Use React + Next.js',
    fix:{f:'frontend',s:'React + Next.js'}},
-  // ── BE ↔ ORM (3 ERROR) ──
+  {id:'be-mobile-static',p:['backend','mobile'],lv:'info',
+   t:a=>isStaticBE(a)&&a.mobile&&!inc(a.mobile,'なし')&&!inc(a.mobile,'None')&&a.mobile!=='none'&&!inc(a.mobile,'PWA'),
+   ja:'モバイルアプリにはAPI用バックエンドが必要です。Supabase/Firebase等のBaaSを検討してください',
+   en:'Mobile apps need an API backend. Consider BaaS like Supabase/Firebase',
+   fix:{f:'backend',s:'Supabase'}},
+  // ── BE ↔ ORM (3 ERROR, 1 WARN) ──
   {id:'be-orm-py-prisma',p:['backend','orm'],lv:'error',
    t:a=>isPyBE(a)&&inc(a.orm,'Prisma')||isPyBE(a)&&inc(a.orm,'Drizzle')||isPyBE(a)&&inc(a.orm,'TypeORM'),
    ja:'Prisma/Drizzle/TypeORMはNode.js専用です。SQLAlchemyを選択してください',
@@ -27,6 +32,11 @@ const COMPAT_RULES=[
    ja:'SQLAlchemyはPython専用です。Prisma/Drizzleを選択してください',
    en:'SQLAlchemy is Python-only. Choose Prisma or Drizzle',
    fix:{f:'orm',s:'Prisma'}},
+  {id:'be-orm-static',p:['backend','orm'],lv:'warn',
+   t:a=>isStaticBE(a)&&a.orm&&!inc(a.orm,'なし')&&!inc(a.orm,'None')&&a.orm!=='none',
+   ja:'静的サイトではORMは不要です',
+   en:'ORM is unnecessary for static sites',
+   fix:{f:'orm',s:'None / Using BaaS'}},
   // ── BE ↔ DB (4 WARN) ──
   {id:'be-db-fb-notfs',p:['backend','database'],lv:'warn',
    t:a=>inc(a.backend,'Firebase')&&a.database&&!inc(a.database,'Firestore'),
@@ -129,6 +139,11 @@ const COMPAT_RULES=[
    ja:'DrizzleはSQL専用です。Firestore非対応',
    en:'Drizzle is SQL-only, not compatible with Firestore',
    fix:{f:'orm',s:'None / Using BaaS'}},
+  {id:'orm-drizzle-mongo',p:['orm','database'],lv:'error',
+   t:a=>inc(a.orm,'Drizzle')&&inc(a.database,'MongoDB'),
+   ja:'DrizzleはSQL専用です。MongoDB非対応',
+   en:'Drizzle is SQL-only, not compatible with MongoDB',
+   fix:{f:'orm',s:'Prisma'}},
   // ── Deploy ↔ DB (2 WARN/INFO) ──
   {id:'dep-db-vercel-pg',p:['deploy','database'],lv:'warn',
    t:a=>inc(a.deploy,'Vercel')&&inc(a.database,'PostgreSQL')&&!inc(a.database,'Neon')&&!inc(a.database,'Supabase'),

@@ -7,7 +7,7 @@ const ja={
   l1:'Web基盤',l2:'フロントエンド',l3:'バックエンド',l3m:'モバイル',
   l4:'DevOps',l5:'AI駆動開発',l6:'収益化',l7:'駆動開発手法',l7span:'全期間',
   html5b:'HTML5 基礎（2-4週）',css3b:'CSS3 基礎（3-6週）',jsb:'JavaScript ES6+（4-12週）',
-  tsAdv:'TypeScript deep dive',cssAdv:'最新CSS (Container Queries, :has())',
+  tsAdv:'TypeScript ディープダイブ',cssAdv:'最新CSS (Container Queries, :has())',
   setup:'セットアップ・基礎',stMgmt:'状態管理',dataFetch:'データフェッチ',
   testing:'テスト',dbDesign:'データベース設計',auth:'認証・認可',
   mobEnv:'環境構築',mobNav:'ナビゲーション・画面設計',

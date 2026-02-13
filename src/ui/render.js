@@ -1,4 +1,21 @@
 /* ═══ V9 RENDER FUNCTIONS ═══ */
+const _TECHDB_MAP={
+  frontend:'front',backend:'back',css_fw:'front',
+  database:'back',orm:'back',mobile:'mobile',
+  ai_auto:'ai_auto',payment:'payment',ai_tools:'ai',
+  deploy:'devops',dev_methods:'method'
+};
+const _CAT_LABELS={
+  ja:{lang:'言語',front:'フロントエンド',mobile:'モバイル',back:'バックエンド',
+      baas:'BaaS',payment:'決済/CMS/EC',devops:'DevOps',ai:'AIツール',
+      ai_auto:'AI自律',method:'手法',test:'テスト',api:'API',
+      build:'ビルド',data:'データ',security:'セキュリティ'},
+  en:{lang:'Language',front:'Frontend',mobile:'Mobile',back:'Backend',
+      baas:'BaaS',payment:'Payment/CMS/EC',devops:'DevOps',ai:'AI Tools',
+      ai_auto:'AI Autonomous',method:'Methods',test:'Testing',api:'API',
+      build:'Build',data:'Data',security:'Security'}
+};
+
 function renderInputFor(q,onSubmit,allowSkip){
   const zone=$('izone');
   const existingBanner=zone.querySelector('.edit-banner')||zone.querySelector('.skipped-banner');
@@ -6,6 +23,28 @@ function renderInputFor(q,onSubmit,allowSkip){
   if(q.type==='chip-text')renderChips(zone,q,false,onSubmit,true);
   else if(q.type==='chip-multi')renderChips(zone,q,true,onSubmit,true);
   else if(q.type==='options')renderOpts(zone,q,onSubmit);
+  // Add TECH_DB browser button
+  if(_TECHDB_MAP[q.id]&&typeof TECH_DB!=='undefined'){
+    const _ja=S.lang==='ja';
+    const tb=document.createElement('button');
+    tb.className='btn btn-xs btn-tech-browse';
+    tb.textContent=_ja?'🔍 技術マスターから選択...':'🔍 Browse Tech Master...';
+    tb.onclick=()=>showTechBrowser(q.id,val=>{
+      // options型: 直接サブミット、chip-multi型: チップ追加
+      if(q.type==='options'){onSubmit(val);}
+      else{
+        // chip-multiの場合、カスタムチップとして追加
+        const gr=zone.querySelector('.cgrid');
+        if(gr){
+          const ch=document.createElement('div');ch.className='chip active';
+          ch.textContent='✓ '+val;ch.dataset.val=val;
+          ch.onclick=()=>ch.classList.toggle('active');
+          gr.appendChild(ch);
+        }
+      }
+    });
+    zone.appendChild(tb);
+  }
   if(allowSkip!==false){
     const sk=document.createElement('div');sk.style.cssText='padding:4px 20px 10px;text-align:right;';
     const btn=document.createElement('button');btn.className='skip-btn';btn.textContent=t('skip');
@@ -78,6 +117,66 @@ function renderOpts(zone,q,onSubmit){
     cards.appendChild(c);
   });
   zone.appendChild(cards);
+}
+
+function showTechBrowser(qId, onSelect){
+  const _ja=S.lang==='ja';
+  const cats=_TECHDB_MAP[qId];
+  if(!cats)return;
+  // 対象カテゴリのエントリをフィルタ
+  const primaryCat=cats;
+  const allCats=[...new Set(TECH_DB.filter(t=>t.cat===primaryCat).map(t=>t.cat))];
+  // モーダル構築
+  const ov=document.createElement('div');ov.className='techdb-overlay';
+  ov.onclick=e=>{if(e.target===ov)ov.remove();};
+  const modal=document.createElement('div');modal.className='techdb-modal';
+  // ヘッダー + 検索
+  const hd=document.createElement('div');hd.className='techdb-hd';
+  hd.innerHTML='<h3>'+(_ja?'技術マスターから選択':'Browse Tech Master')+'</h3>';
+  const search=document.createElement('input');search.className='techdb-search';
+  search.placeholder=_ja?'検索...':'Search...';
+  hd.appendChild(search);modal.appendChild(hd);
+  // カテゴリタブ + アイテムグリッド
+  const body=document.createElement('div');body.className='techdb-body';
+  const catList=document.createElement('div');catList.className='techdb-cats';
+  const itemGrid=document.createElement('div');itemGrid.className='techdb-items';
+  // 全カテゴリ表示（primaryCatをデフォルト選択）
+  const labels=_CAT_LABELS[_ja?'ja':'en'];
+  Object.keys(labels).forEach(cat=>{
+    const items=TECH_DB.filter(t=>t.cat===cat);
+    if(!items.length)return;
+    const btn=document.createElement('div');btn.className='techdb-cat';
+    btn.textContent=labels[cat]+' ('+items.length+')';
+    btn.dataset.cat=cat;
+    if(cat===primaryCat)btn.classList.add('sel');
+    btn.onclick=()=>{
+      catList.querySelectorAll('.techdb-cat').forEach(c=>c.classList.remove('sel'));
+      btn.classList.add('sel');
+      renderItems(cat);
+    };
+    catList.appendChild(btn);
+  });
+  function renderItems(cat){
+    itemGrid.innerHTML='';
+    const items=TECH_DB.filter(t=>t.cat===cat);
+    const q=search.value.toLowerCase();
+    items.filter(t=>!q||t.name.toLowerCase().includes(q)).forEach(t=>{
+      const card=document.createElement('div');card.className='techdb-item';
+      card.innerHTML='<b>'+esc(t.name)+'</b><span class="techdb-req">'+
+        (typeof reqLabel==='function'?reqLabel(t.req):t.req)+'</span>'+
+        (t.price?'<span class="techdb-price">'+(typeof priceLabel==='function'?priceLabel(t.price):t.price)+'</span>':'');
+      card.onclick=()=>{onSelect(t.name);ov.remove();};
+      itemGrid.appendChild(card);
+    });
+  }
+  search.oninput=()=>{
+    const sel=catList.querySelector('.techdb-cat.sel');
+    renderItems(sel?sel.dataset.cat:primaryCat);
+  };
+  body.appendChild(catList);body.appendChild(itemGrid);
+  modal.appendChild(body);ov.appendChild(modal);
+  document.body.appendChild(ov);
+  renderItems(primaryCat);
 }
 
 function renderDnD(zone,items,onSubmit){

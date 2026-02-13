@@ -41,13 +41,14 @@ function showAILauncher(){
         '- docs/43_security_intelligence.md (スタック適応型チェックリスト)\n'+
         '- docs/44_threat_model.md (STRIDE脅威分析)\n'+
         '- docs/45_compliance_matrix.md (コンプライアンス要件)\n'+
+        '- docs/46_ai_security.md (AI/LLMセキュリティ)\n'+
         '- docs/47_security_testing.md (テストテンプレート)\n\n'+
         '仕様書のセキュリティ面をOWASP Top 10 2025の各項目別にチェックしてください:\n'+
         '1. A01 – アクセス制御の不備\n2. A02 – セキュリティ設定ミス\n'+
-        '3. A03 – ソフトウェアサプライチェーン\n4. A04 – SSRF\n'+
+        '3. A03 – ソフトウェアサプライチェーン\n4. A04 – SSRF（入力検証・URL制限）\n'+
         '5. A05 – 安全でない設計\n6. A06 – 脆弱で古いコンポーネント\n'+
         '7. A07 – 識別と認証の失敗\n8. A08 – ソフトウェアとデータの整合性の不備\n'+
-        '9. A09 – セキュリティログと監視の不備\n10. A10 – SSRF (DNS Rebinding)\n\n'+
+        '9. A09 – セキュリティログと監視の不備\n10. A10 – インフラ保護（DNS Rebinding・Egress制限）\n\n'+
         'docs/08_security.mdの設計と実装の乖離もチェックしてください。\n'+
         '各項目の状態を✅(OK)/⚠️(注意)/❌(脆弱)で評価してください。',
       fmt:'Markdown表:\n| OWASP# | 項目 | 状態 | 詳細 | 推奨対策 |\n|--------|------|------|------|----------|\n| A01 | Access Control | ⚠️ | ... | ... |'},
@@ -103,7 +104,7 @@ function showAILauncher(){
       sys:'あなたはテクニカルオンボーディングスペシャリストです。新しい開発者が最速で戦力化する資料を作成します。',
       prompt:'オンボーディング資料作成:\n1. CLAUDE.mdとAI_BRIEF.mdからプロジェクト概要を要約\n2. .spec/constitution.mdの設計原則とdocs/03_architecture.mdのアーキテクチャを図解\n3. docs/42_skill_guide.mdのスキルレベル別ワークフローを整理\n4. 最初の1週間のタスクリストを.spec/tasks.mdから抽出\n5. よくある落とし穴をdocs/37_bug_prevention.mdから抽出しFAQ化',
       fmt:'## プロジェクト概要（5分で理解）\n\n## アーキテクチャ図\n```mermaid\n```\n\n## 最初の1週間\n| 日 | タスク | 参照ファイル |\n\n## FAQ\n| 質問 | 回答 |'},
-    cicd:{icon:'🔄',label:'CI/CD設計',desc:'デプロイパイプラインと品質ゲートの設計',
+    cicd:{icon:'⚙️',label:'CI/CD設計',desc:'デプロイパイプラインと品質ゲートの設計',
       sys:'あなたはDevOpsエンジニアです。CI/CDパイプラインと品質ゲートを設計します。',
       prompt:'CI/CD設計:\n1. .github/workflows/ci.ymlの現行パイプラインを分析\n2. docs/09_release_checklist.mdのリリースチェックリストを品質ゲートに変換\n3. docs/36_test_strategy.mdのテスト戦略をパイプラインステージに統合\n4. .spec/verification.mdの検証基準を自動化可能な形式に変換\n5. ブルーグリーン/カナリアデプロイ戦略を提案',
       fmt:'## パイプライン設計\n```mermaid\nflowchart LR\n```\n\n## 品質ゲート\n| ステージ | チェック項目 | 閾値 | 失敗時 |\n\n## GitHub Actions\n```yaml\n# .github/workflows/ci.yml\n```'},
@@ -114,11 +115,11 @@ function showAILauncher(){
       fmt:'Markdown table:\n| # | File | Finding | Priority | Recommended Action |\n|---|------|---------|----------|--------------------|\n| 1 | .spec/xxx.md | ... | P0 | ... |'},
     implement:{icon:'🚀',label:'MVP Build',desc:'Start implementation from specs',
       sys:'You are a full-stack developer. You implement faithfully according to SDD specs.',
-      prompt:'Select the highest priority task (P0 or Issue #1) from docs/23_tasks.md and implement it.\n\nImplementation steps:\n1. Create type definitions (TypeScript interface/type)\n2. Implement data access layer (ORM/SDK)\n3. Implement business logic\n4. Implement UI components\n5. Create Vitest unit tests\n\nFollow design principles in constitution.md and architecture in technical-plan.md.',
+      prompt:'Select the highest priority task (P0 or Issue #1) from docs/23_tasks.md and implement it.\n\nImplementation steps:\n1. Create type definitions (TypeScript interface/type)\n2. Implement data access layer (ORM/SDK)\n3. Implement business logic\n4. Implement UI components\n5. Create Vitest unit tests\n\nFollow design principles in constitution.md and architecture in technical-plan.md.\n\nReference docs/39_implementation_playbook.md for domain-specific implementation patterns and industry best practices.',
       fmt:'Code blocks with file paths:\n```typescript:path/to/file.ts\n// code\n```\nMust include tests.'},
     test:{icon:'🧪',label:'Test Generation',desc:'Auto-generate test cases',
       sys:'You are a QA engineer. You create comprehensive test cases from specifications.',
-      prompt:'Reference docs/07_test_cases.md and generate test cases in this order:\n1. Happy Path: Basic CRUD operations\n2. Error Cases: Validation errors, permission errors\n3. Boundary: Empty strings, max length, NULL\n\nSpecify expected results for each test case.',
+      prompt:'Reference docs/07_test_cases.md and generate test cases in this order:\n1. Happy Path: Basic CRUD operations\n2. Error Cases: Validation errors, permission errors\n3. Boundary: Empty strings, max length, NULL\n4. Use docs/33_test_matrix.md priority matrix to determine execution order\n5. Add non-functional tests following docs/36_test_strategy.md strategy\n\nSpecify expected results for each test case.',
       fmt:'Vitest test file:\n```typescript:tests/xxx.test.ts\nimport { describe, it, expect } from \'vitest\';\n// tests\n```'},
     refactor:{icon:'♻️',label:'Refactor Proposal',desc:'Architecture improvements & tech debt',
       sys:'You are a code reviewer focused on architecture improvements.',
@@ -130,13 +131,14 @@ function showAILauncher(){
         '- docs/43_security_intelligence.md (Stack-adaptive checklist)\n'+
         '- docs/44_threat_model.md (STRIDE threat analysis)\n'+
         '- docs/45_compliance_matrix.md (Compliance requirements)\n'+
+        '- docs/46_ai_security.md (AI/LLM security)\n'+
         '- docs/47_security_testing.md (Test templates)\n\n'+
         'Check security aspects against OWASP Top 10 2025:\n'+
         '1. A01 – Broken Access Control\n2. A02 – Security Misconfiguration\n'+
-        '3. A03 – Software Supply Chain\n4. A04 – SSRF\n'+
+        '3. A03 – Software Supply Chain\n4. A04 – SSRF (Input Validation & URL Restrictions)\n'+
         '5. A05 – Insecure Design\n6. A06 – Vulnerable and Outdated Components\n'+
         '7. A07 – Identification and Authentication Failures\n8. A08 – Software and Data Integrity Failures\n'+
-        '9. A09 – Security Logging and Monitoring Failures\n10. A10 – SSRF (DNS Rebinding)\n\n'+
+        '9. A09 – Security Logging and Monitoring Failures\n10. A10 – Infrastructure Protection (DNS Rebinding & Egress)\n\n'+
         'Also check for drift between docs/08_security.md design and implementation.\n'+
         'Evaluate each item as ✅(OK)/⚠️(Warning)/❌(Vulnerable).',
       fmt:'Markdown table:\n| OWASP# | Item | Status | Details | Recommended Fix |\n|--------|------|--------|---------|------------------|\n| A01 | Access Control | ⚠️ | ... | ... |'},
@@ -150,11 +152,11 @@ function showAILauncher(){
       fmt:'## Diagnosis\n| Item | Detail |\n|------|--------|\n| Error Type | ... |\n| Root Cause | ... |\n| Impact Scope | ... |\n\n## Fix Code\n```typescript:path/to/file.ts\n// fix\n```\n\n## error_logs.md Entry\n- Symptom/Cause/Fix/Prevention'},
     arch:{icon:'📐',label:'Architecture Compliance',desc:'Detect spec-implementation drift',
       sys:'You are a software architect. You verify alignment between specs and implementation.',
-      prompt:'Architecture compliance check:\n1. Review layer structure and patterns in docs/03_architecture.md\n2. Verify alignment with .spec/technical-plan.md technical decisions\n3. Inspect code for layer boundary violations\n4. Check consistency with docs/26_design_system.md component conventions\n5. Propose fixes and refactoring steps for each violation',
+      prompt:'Architecture compliance check:\n1. Review layer structure and patterns in docs/03_architecture.md\n2. Verify alignment with .spec/technical-plan.md technical decisions\n3. Inspect code for layer boundary violations\n4. Check consistency with docs/27_sequence_diagrams.md sequence flows\n5. Check consistency with docs/26_design_system.md component conventions\n6. Propose fixes and refactoring steps for each violation',
       fmt:'Markdown table:\n| # | Location | Source | Violation | Severity | Fix |\n|---|----------|--------|-----------|----------|-----|\n\n## Architecture Compliance Score: X/10'},
     perf:{icon:'⚡',label:'Performance Optimization',desc:'Identify bottlenecks & suggest fixes',
       sys:'You are a performance engineer. You identify bottlenecks against NFR targets and propose improvements.',
-      prompt:'Performance analysis:\n1. Extract performance targets from NFR section in .spec/constitution.md\n2. Compare against Core Web Vitals targets (LCP<2.5s, FID<100ms, CLS<0.1)\n3. Detect N+1 queries, unnecessary re-renders, bundle size issues\n4. Provide before/after estimates for each issue\n5. Create a prioritized improvement roadmap',
+      prompt:'Performance analysis:\n1. Extract performance targets from NFR section in .spec/constitution.md\n2. Review docs/41_growth_intelligence.md performance budgets and Core Web Vitals targets (LCP<2.5s, FID<100ms, CLS<0.1)\n3. Detect N+1 queries, unnecessary re-renders, bundle size issues\n4. Provide before/after estimates for each issue\n5. Create a prioritized improvement roadmap',
       fmt:'## Bottleneck List\n| # | Location | Type | Current Est. | Target | Fix | Impact |\n|---|----------|------|-------------|--------|-----|--------|\n\n## Optimized Code\n```typescript:path/to/file.ts\n// optimized\n```'},
     api:{icon:'🔌',label:'API Integration Generator',desc:'Generate type-safe API integration code',
       sys:'You are an integration engineer. You generate type-safe API integration code.',
@@ -192,7 +194,7 @@ function showAILauncher(){
       sys:'You are a technical onboarding specialist. You create materials for fastest developer ramp-up.',
       prompt:'Create onboarding materials:\n1. Summarize project from CLAUDE.md and AI_BRIEF.md\n2. Diagram design principles from .spec/constitution.md and architecture from docs/03_architecture.md\n3. Organize skill-level workflows from docs/42_skill_guide.md\n4. Extract first-week task list from .spec/tasks.md\n5. Create FAQ from common pitfalls in docs/37_bug_prevention.md',
       fmt:'## Project Overview (5-min read)\n\n## Architecture Diagram\n```mermaid\n```\n\n## First Week\n| Day | Task | Reference File |\n\n## FAQ\n| Question | Answer |'},
-    cicd:{icon:'🔄',label:'CI/CD Design',desc:'Design deploy pipelines & quality gates',
+    cicd:{icon:'⚙️',label:'CI/CD Design',desc:'Design deploy pipelines & quality gates',
       sys:'You are a DevOps engineer. You design CI/CD pipelines and quality gates.',
       prompt:'CI/CD design:\n1. Analyze current pipeline in .github/workflows/ci.yml\n2. Convert docs/09_release_checklist.md checklist into quality gates\n3. Integrate docs/36_test_strategy.md test strategy into pipeline stages\n4. Convert .spec/verification.md criteria into automatable format\n5. Propose blue-green/canary deployment strategy',
       fmt:'## Pipeline Design\n```mermaid\nflowchart LR\n```\n\n## Quality Gates\n| Stage | Check | Threshold | On Failure |\n\n## GitHub Actions\n```yaml\n# .github/workflows/ci.yml\n```'},
@@ -293,7 +295,7 @@ function selectLaunchTemplate(key){
   const selTokens=Math.round(content.length/4);
 
   const a=S.answers;const pn=S.projectName||'Project';
-  const ctx='Project: '+pn+'\nStack: '+(a.frontend||'React')+' + '+(a.backend||'Node.js')+' + '+(a.database||'PostgreSQL')+'\nAuth: '+(a.auth||'N/A')+'\nEntities: '+(a.data_entities||'N/A');
+  const ctx='Project: '+pn+'\nStack: '+(a.frontend||'N/A')+' + '+(a.backend||'N/A')+' + '+(a.database||'N/A')+'\nAuth: '+(a.auth||'N/A')+'\nEntities: '+(a.data_entities||'N/A');
   const full='# System\n'+t.sys+'\n\n# Context\n'+ctx+'\n\n# Task\n'+t.prompt+'\n\n# Output Format\n'+t.fmt+'\n\n---\n\n'+content;
 
   const out=$('launchOutput');out.style.display='block';

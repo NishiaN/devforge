@@ -1,6 +1,7 @@
-/* ═══ FILE GENERATION ENGINE — 12 PILLARS ═══ */
+/* ═══ FILE GENERATION ENGINE — 13 PILLARS ═══ */
 function generateAll(){
-  const _minKeys=['frontend','backend','database'];
+  const _be=S.answers.backend||'';
+  const _minKeys=(/なし|None|static/i.test(_be))?['frontend','backend']:['frontend','backend','database'];
   if(_minKeys.some(k=>!S.answers[k])){
     toast(S.lang==='ja'?'⚠️ 基本項目（FE/BE/DB）を先に回答してください':'⚠️ Answer basic items (FE/BE/DB) first');
     return;
@@ -22,7 +23,8 @@ function showGenLangChooser(){
 }
 function doGenerate(lang){
   // Minimum answer safeguard
-  const _minKeys=['frontend','backend','database'];
+  const _be2=S.answers.backend||'';
+  const _minKeys=(/なし|None|static/i.test(_be2))?['frontend','backend']:['frontend','backend','database'];
   const _missing=_minKeys.filter(k=>!S.answers[k]);
   if(_missing.length>0){
     toast(S.lang==='ja'?'⚠️ 必須項目が未回答です: '+_missing.join(', '):'⚠️ Required fields unanswered: '+_missing.join(', '));

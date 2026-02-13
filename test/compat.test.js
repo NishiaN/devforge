@@ -1,4 +1,4 @@
-// Compat rules functional test (46 rules: 8 ERROR + 31 WARN + 6 INFO + 1 INFO BFF + 3 SEC)
+// Compat rules functional test (48 rules: 10 ERROR + 30 WARN + 8 INFO)
 const S={lang:'ja',skill:'pro'};
 eval(require('fs').readFileSync('src/data/compat-rules.js','utf-8'));
 eval(require('fs').readFileSync('src/generators/common.js','utf-8')); // For detectDomain
@@ -6,13 +6,16 @@ eval(require('fs').readFileSync('src/generators/common.js','utf-8')); // For det
 const tests=[
   {name:'Expo+Vue=ERROR',a:{frontend:'Vue 3 + Nuxt',mobile:'Expo (React Native)'},expect:'error'},
   {name:'Astro+Expo=ERROR',a:{frontend:'Astro',mobile:'Expo (React Native)'},expect:'error'},
+  {name:'Static+Mobile=INFO',a:{backend:'なし（静的サイト）',mobile:'Expo (React Native)'},expect:'info',id:'be-mobile-static'},
   {name:'Python+Prisma=ERROR',a:{backend:'Python + FastAPI',orm:'Prisma'},expect:'error'},
   {name:'Java+Prisma=ERROR',a:{backend:'Java + Spring Boot',orm:'Prisma'},expect:'error'},
   {name:'Node+SQLAlchemy=ERROR',a:{backend:'Node.js + Express',orm:'SQLAlchemy (Python)'},expect:'error'},
+  {name:'Static+ORM=WARN',a:{backend:'なし（静的サイト）',orm:'Prisma'},expect:'warn',id:'be-orm-static'},
   {name:'Firebase+MongoDB=WARN',a:{backend:'Firebase',database:'MongoDB'},expect:'warn'},
   {name:'Supabase+Firestore=WARN',a:{backend:'Supabase',database:'Firebase Firestore'},expect:'warn'},
   {name:'Static+DB=WARN',a:{backend:'なし（静的サイト）',database:'PostgreSQL'},expect:'warn'},
   {name:'Python+Firestore=WARN',a:{backend:'Python + FastAPI',database:'Firebase Firestore'},expect:'warn'},
+  {name:'Drizzle+MongoDB=ERROR',a:{orm:'Drizzle ORM',database:'MongoDB'},expect:'error',id:'orm-drizzle-mongo'},
   {name:'Java+Vercel=WARN',a:{backend:'Java + Spring Boot',deploy:'Vercel'},expect:'warn'},
   {name:'Firebase+Vercel=WARN',a:{backend:'Firebase',deploy:'Vercel'},expect:'warn'},
   {name:'Supabase+FirebaseH=WARN',a:{backend:'Supabase',deploy:'Firebase Hosting'},expect:'warn'},
@@ -67,7 +70,7 @@ const tests=[
   {name:'Payment+NoAuth=ERROR',a:{payment:'Stripe決済',auth:'なし'},expect:'error',id:'dom-sec-pay-noauth'},
   {name:'Payment+Auth=OK',a:{payment:'Stripe決済',auth:'Supabase Auth'},expect:'none'},
   {name:'Sensitive+NoAuth=WARN',a:{data_entities:'Patient, MedicalRecord',auth:'なし'},expect:'warn',id:'dom-sec-sensitive-noauth'},
-  {name:'Transaction+NoAuth=WARN',a:{data_entities:'User, Transaction, Payment'},expect:'warn',id:'dom-sec-sensitive-noauth'},
+  {name:'Transaction+NoAuth=WARN',a:{data_entities:'User, Transaction, Payment',auth:'なし'},expect:'warn',id:'dom-sec-sensitive-noauth'},
   {name:'Sensitive+Auth=OK',a:{data_entities:'Patient, MedicalRecord',auth:'Supabase Auth'},expect:'none'},
 ];
 

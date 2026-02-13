@@ -735,3 +735,23 @@ div.guide-sub.guide-lv-p{background:none;color:var(--danger);}
 .audit-summary-err{background:color-mix(in srgb,var(--danger) 12%,transparent);color:var(--danger);}
 .audit-summary-warn{background:color-mix(in srgb,var(--warn) 12%,transparent);color:var(--warn-text,#b45309);}
 .audit-summary-info{background:color-mix(in srgb,var(--accent) 12%,transparent);color:var(--accent);}
+/* Custom Preset Chip */
+.prchip-custom{border-style:dashed;opacity:.8;}
+.prchip-custom.sel{opacity:1;border-color:var(--accent);background:var(--bg-2);}
+/* TECH_DB Browser Modal */
+.techdb-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9999;display:flex;align-items:center;justify-content:center;}
+.techdb-modal{background:var(--bg-1);border-radius:12px;width:min(90vw,700px);max-height:80vh;display:flex;flex-direction:column;box-shadow:0 8px 32px rgba(0,0,0,.3);}
+.techdb-hd{padding:16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;}
+.techdb-hd h3{margin:0;flex:1;}
+.techdb-search{padding:6px 10px;border-radius:6px;border:1px solid var(--border);background:var(--bg-2);color:var(--text);width:180px;}
+.techdb-body{display:flex;flex:1;overflow:hidden;min-height:300px;}
+.techdb-cats{width:160px;overflow-y:auto;border-right:1px solid var(--border);padding:8px;}
+.techdb-cat{padding:6px 10px;border-radius:6px;cursor:pointer;font-size:.85em;margin-bottom:2px;}
+.techdb-cat:hover,.techdb-cat.sel{background:var(--accent);color:#fff;}
+.techdb-items{flex:1;overflow-y:auto;padding:12px;display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px;align-content:start;}
+.techdb-item{padding:8px 12px;border:1px solid var(--border);border-radius:8px;cursor:pointer;transition:all .15s;}
+.techdb-item:hover{border-color:var(--accent);background:var(--bg-2);}
+.techdb-item b{display:block;margin-bottom:4px;}
+.techdb-req,.techdb-price{font-size:.75em;opacity:.7;margin-right:8px;}
+.btn-tech-browse{margin-top:8px;opacity:.7;}
+.btn-tech-browse:hover{opacity:1;}

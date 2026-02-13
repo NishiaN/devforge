@@ -24,6 +24,16 @@ function initPresets(){
   cb.textContent=_ja?'⚔️ 比較':'⚔️ Compare';
   cb.onclick=()=>showPresetCompare();
   row.appendChild(cb);
+  // "Start from scratch" custom mode chip
+  const cs=document.createElement('span');cs.className='prchip prchip-custom';
+  cs.textContent=_ja?'📝 白紙から始める':'📝 Start from scratch';
+  cs.onclick=()=>{
+    S.preset='custom';
+    document.querySelectorAll('.prchip').forEach(c=>c.classList.remove('sel'));
+    cs.classList.add('sel');
+    toast(_ja?'カスタムモード — 全質問に回答します':'Custom mode — answer all questions');
+  };
+  row.appendChild(cs);
 }
 
 function showPresetCompare(){
