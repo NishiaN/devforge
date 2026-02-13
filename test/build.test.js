@@ -31,7 +31,7 @@ describe('Build System', () => {
     const html = fs.readFileSync(OUTPUT, 'utf-8');
     const expected = [
       'genPillar1_SDD', 'genPillar2_DevContainer', 'genPillar3_MCP',
-      'genPillar4_AIRules', 'genPillar5_QualityIntelligence', 'genPillar7_Roadmap', 'genPillar9_DesignSystem', 'genPillar10_ReverseEngineering', 'genPillar11_ImplIntelligence', 'genDocs21', 'genCommonFiles',
+      'genPillar4_AIRules', 'genPillar5_QualityIntelligence', 'genPillar7_Roadmap', 'genPillar9_DesignSystem', 'genPillar10_ReverseEngineering', 'genPillar11_ImplIntelligence', 'genPillar12_SecurityIntelligence', 'genPillar13_StrategicIntelligence', 'genDocs21', 'genCommonFiles',
       'openEditor', 'saveEdited', 'revertFile', 'showDiff', 'lineDiff', 'snapshotFiles',
       'reqLabel', 'priceLabel', 'showExplorer', 'showDashboard',
       'trapFocus', 'releaseFocus', 'announce',

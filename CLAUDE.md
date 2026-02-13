@@ -347,18 +347,18 @@ DevForge generates **93+ files** (base: 79 files, +4 for skills/ when ai_auto=mu
 ## Test Architecture
 | File | Tests | Purpose |
 |------|-------|---------|
-| gen-coherence.test.js | 248 assertions | Full LMS generation + structural validation |
-| snapshot.test.js | 41 tests | 6 scenario regression (LMS/Blog/EC/English/PropertyMgmt/Helpdesk) + context engineering + skills validation + quality files |
+| gen-coherence.test.js | 253 assertions | Full LMS generation + structural validation + post-generation audit (C2-C10) |
+| snapshot.test.js | 47 tests | 6 scenario regression (LMS/Blog/EC/English/PropertyMgmt/Helpdesk) + context engineering + skills validation + quality files + P12 security intelligence |
 | data-coverage.test.js | 28 tests | Data integrity: entity coverage, FK validation, domain detection (24 domains), playbook completeness |
 | r27-regression.test.js | 17 tests | Bug fixes: prices, FK, KPI, ports |
 | r28-regression.test.js | 19 tests | Quality: REST methods, AC, scope_out, verification |
-| build.test.js | build | Build size ≤1200KB, pillar function existence |
-| compat.test.js | 45 tests | Compatibility validation |
+| build.test.js | build | Build size ≤1200KB, pillar function existence (P1-P13) |
+| compat.test.js | 45 tests + 7 synergy | Compatibility validation + calcSynergy unit tests |
 | security.test.js | 24 tests | Security: CSP, SRI, sanitization, XSS prevention, proto pollution |
 | presets.test.js | 4 tests | Preset count (41), bilingual names, tech fields, purpose |
 | Others | ~21 tests | i18n, state, techdb |
 
-**Total: 251 tests (all passing, 100% pass rate)**
+**Total: 257 tests (all passing, 100% pass rate) + 7 synergy unit tests**
 
 ## Writing Tests
 

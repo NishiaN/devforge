@@ -127,6 +127,40 @@ describe('Snapshot A: LMS/Supabase/Stripe', () => {
     assert.ok(sg.includes('あなたのレベル') || sg.includes('YOUR LEVEL'), 'Missing level marker');
   });
 
+  test('security intelligence files exist (Pillar 12)', () => {
+    assert.ok(files['docs/43_security_intelligence.md'], 'docs/43_security_intelligence.md missing');
+    assert.ok(files['docs/44_threat_model.md'], 'docs/44_threat_model.md missing');
+    assert.ok(files['docs/45_compliance_matrix.md'], 'docs/45_compliance_matrix.md missing');
+    assert.ok(files['docs/46_ai_security.md'], 'docs/46_ai_security.md missing');
+    assert.ok(files['docs/47_security_testing.md'], 'docs/47_security_testing.md missing');
+  });
+
+  test('security intelligence has OWASP 2025', () => {
+    const si = files['docs/43_security_intelligence.md'];
+    assert.ok(si.includes('OWASP') || si.includes('Top 10'), 'Missing OWASP reference');
+    assert.ok(si.includes('2025') || si.includes('LLM'), 'Missing 2025/LLM content');
+  });
+
+  test('threat model has STRIDE or attack vectors', () => {
+    const tm = files['docs/44_threat_model.md'];
+    assert.ok(tm.includes('STRIDE') || tm.includes('脅威') || tm.includes('Threat') || tm.includes('攻撃'), 'Missing threat methodology');
+  });
+
+  test('compliance matrix has regulations', () => {
+    const cm = files['docs/45_compliance_matrix.md'];
+    assert.ok(cm.includes('GDPR') || cm.includes('個人情報') || cm.includes('規制') || cm.includes('Compliance') || cm.includes('コンプライアンス') || cm.includes('適用') || cm.includes('法令'), 'Missing compliance regulations');
+  });
+
+  test('ai security has prompt injection or LLM risks', () => {
+    const ais = files['docs/46_ai_security.md'];
+    assert.ok(ais.includes('Prompt') || ais.includes('プロンプト') || ais.includes('LLM'), 'Missing AI-specific security content');
+  });
+
+  test('security testing has test cases or methodology', () => {
+    const st = files['docs/47_security_testing.md'];
+    assert.ok(st.includes('test') || st.includes('テスト') || st.includes('検証') || st.includes('penetration'), 'Missing security testing methodology');
+  });
+
   test('strategic intelligence files exist (Pillar 13)', () => {
     assert.ok(files['docs/48_industry_blueprint.md'], 'docs/48_industry_blueprint.md missing');
     assert.ok(files['docs/49_tech_radar.md'], 'docs/49_tech_radar.md missing');

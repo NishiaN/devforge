@@ -93,3 +93,116 @@ tests.forEach(t=>{
 });
 console.log('---');
 console.log(pass+'/'+tests.length+' passed, '+fail+' failed');
+
+// ── calcSynergy Unit Tests ──
+console.log('\n━━ calcSynergy Tests ━━');
+const synergyTests = [
+  {
+    name: 'Null/undefined input returns default',
+    input: null,
+    expect: { overall: 60, d1: 60, d2: 60, d3: 60, d4: 60, d5: 60 }
+  },
+  {
+    name: 'High synergy: Next.js + Supabase + Vercel + education',
+    input: {
+      frontend: 'React + Next.js',
+      backend: 'Supabase',
+      database: 'Supabase (PostgreSQL)',
+      deploy: 'Vercel',
+      purpose: '教育・学習支援プラットフォーム',
+      skill_level: 'Professional'
+    },
+    expectMin: { overall: 85, d1: 85, d2: 85, d3: 80, d4: 85 }
+  },
+  {
+    name: 'Low synergy: Angular + Express + Firebase Hosting',
+    input: {
+      frontend: 'Angular',
+      backend: 'Node.js + Express',
+      deploy: 'Firebase Hosting',
+      skill_level: 'Professional'
+    },
+    expectMax: { overall: 75, d1: 75 }
+  },
+  {
+    name: 'Domain bonus: fintech + PostgreSQL + Stripe',
+    input: {
+      purpose: '金融取引プラットフォーム',
+      database: 'PostgreSQL',
+      payment: 'Stripe決済',
+      skill_level: 'Professional'
+    },
+    expectMin: { overall: 70, d3: 80 }
+  },
+  {
+    name: 'BaaS ecosystem unity: Supabase full stack',
+    input: {
+      backend: 'Supabase',
+      database: 'Supabase (PostgreSQL)',
+      auth: 'Supabase Auth',
+      skill_level: 'Professional'
+    },
+    expectMin: { overall: 75, d1: 80, d2: 85 }
+  },
+  {
+    name: 'Beginner + complex stack lowers d5',
+    input: {
+      frontend: 'React + Next.js',
+      backend: 'Node.js + Express',
+      database: 'PostgreSQL',
+      orm: 'Prisma',
+      skill_level: 'Beginner'
+    },
+    expectMax: { d5: 70 }
+  },
+  {
+    name: 'Pro always gets d5=90',
+    input: {
+      frontend: 'Vue 3 + Nuxt',
+      backend: 'Python + Django',
+      skill_level: 'Professional'
+    },
+    expectMin: { d5: 90 },
+    expectMax: { d5: 90 }
+  }
+];
+
+let synergyPass = 0, synergyFail = 0;
+synergyTests.forEach(t => {
+  const result = calcSynergy(t.input);
+  let ok = true;
+  let reason = '';
+
+  if (t.expect) {
+    // Exact match test
+    Object.keys(t.expect).forEach(k => {
+      if (result[k] !== t.expect[k]) {
+        ok = false;
+        reason = `${k}: got ${result[k]}, expected ${t.expect[k]}`;
+      }
+    });
+  } else {
+    // Min/max range test
+    if (t.expectMin) {
+      Object.keys(t.expectMin).forEach(k => {
+        if (result[k] < t.expectMin[k]) {
+          ok = false;
+          reason = `${k}: got ${result[k]}, expected >= ${t.expectMin[k]}`;
+        }
+      });
+    }
+    if (t.expectMax) {
+      Object.keys(t.expectMax).forEach(k => {
+        if (result[k] > t.expectMax[k]) {
+          ok = false;
+          reason = `${k}: got ${result[k]}, expected <= ${t.expectMax[k]}`;
+        }
+      });
+    }
+  }
+
+  console.log((ok ? '✅' : '❌') + ' ' + t.name + (ok ? '' : ` (${reason})`));
+  ok ? synergyPass++ : synergyFail++;
+});
+console.log('---');
+console.log(synergyPass + '/' + synergyTests.length + ' calcSynergy tests passed');

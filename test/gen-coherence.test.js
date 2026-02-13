@@ -289,6 +289,35 @@ S.files['package.json']=JSON.stringify({dependencies:{},devDependencies:{}});
 const audit3=postGenerationAudit(S.files,S.answers);
 check('C: missing supabase-js = warn',audit3.some(f=>f.level==='warn'&&f.msg.includes('supabase-js')));
 
+// C2: BaaS + API Gateway
+S.files={};S.answers.backend='Supabase';S.answers.frontend='React + Next.js';
+S.files['docs/14_api.md']='# API Design\n\n## Gateway\n\nAPI Gatewayを使用します。';
+const audit4=postGenerationAudit(S.files,S.answers);
+check('C2: BaaS + API Gateway = warn',audit4.some(f=>f.level==='warn'&&f.msg.includes('API Gateway')));
+
+// C3: scope_out vs native feature conflict
+S.files={};S.answers={scope_out:'ネイティブアプリ',mobile:'Expo (React Native)',frontend:'React + Next.js',backend:'Supabase'};
+const audit5=postGenerationAudit(S.files,S.answers);
+check('C3: scope_out native + mobile = warn',audit5.some(f=>f.level==='warn'&&(f.msg.includes('scope_out')||f.msg.includes('ネイティブ'))));
+
+// C8: .env prefix mismatch (VITE_ in Next.js project)
+S.files={};S.answers={frontend:'React + Next.js',backend:'Node.js + Express'};
+S.files['.env.example']='VITE_API_URL=http://localhost:3000\nVITE_APP_NAME=Test';
+const audit6=postGenerationAudit(S.files,S.answers);
+check('C8: VITE_ prefix in Next.js = warn',audit6.some(f=>f.level==='warn'&&f.msg.includes('VITE_')));
+
+// C9: Non-Vercel deploy + Vercel Analytics
+S.files={};S.answers={deploy:'Netlify',frontend:'React + Next.js'};
+S.files['docs/28_monitoring.md']='# Monitoring\n\nVercel Analytics を使用します。';
+const audit7=postGenerationAudit(S.files,S.answers);
+check('C9: Netlify + Vercel Analytics = warn',audit7.some(f=>f.level==='warn'&&f.msg.includes('Vercel Analytics')));
+
+// C10: BaaS + Prisma dependency
+S.files={};S.answers={backend:'Supabase',database:'Supabase (PostgreSQL)'};
+S.files['package.json']=JSON.stringify({dependencies:{'@prisma/client':'5.0.0'},devDependencies:{prisma:'5.0.0'}});
+const audit8=postGenerationAudit(S.files,S.answers);
+check('C10: BaaS + Prisma dep = warn',audit8.some(f=>f.level==='warn'&&f.msg.includes('Prisma')));
+
 // ═══ P4-AIRules: Context-aware ═══
 console.log('\n━━ P4: AI Rules Context-Aware ━━');
 S.genLang='ja';S.files={};S.skill='pro';
