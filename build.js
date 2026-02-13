@@ -110,14 +110,16 @@ function minCSS(s) {
     .trim();
 }
 function minJS(s) {
-  // NOTE: We only remove module headers and collapse blank lines.
-  // We do NOT remove block comments (/*...*/) or line comments (//) because:
-  // 1. Generated docs contain CSS comments in strings (e.g., "/* Tailwind config */")
-  // 2. Regex-based removal doesn't understand string context and breaks syntax
-  // This results in a slightly larger build (~57KB more) but guarantees correctness.
+  // NOTE: We do NOT remove block/line comments because:
+  // Generated docs contain CSS/markdown with "/* ... */" and "//" inside strings
+  // Regex-based removal doesn't understand string context and breaks syntax
+  // Safe whitespace optimization: remove indentation + collapse blank lines
   return s
     .replace(/\/\* ===.*?=== \*\/\n?/g, '') // Remove module headers only
     .replace(/\n{2,}/g, '\n')               // Collapse blank lines
+    .replace(/^[ \t]+/gm, '')               // Remove line-leading whitespace (indentation)
+    .replace(/ {2,}/g, ' ')                 // Collapse 2+ spaces to single (preserves single spaces)
+    .replace(/;\s*\n/g, ';\n')              // Remove trailing spaces after semicolons
     .trim();
 }
 

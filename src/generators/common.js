@@ -258,6 +258,13 @@ const _PR='price:DECIMAL(10,2):NOT NULL:価格:Price';
 const _CAT='category:VARCHAR(100)::カテゴリ:Category';
 const _DUR='duration_min:INT::所要時間(分):Duration(min)';
 const _N='notes:TEXT::メモ:Notes';
+const _C='content:TEXT::コンテンツ:Content';
+const _ADDR='address:TEXT::住所:Address';
+const _SUBJ='subject:VARCHAR(255)::件名:Subject';
+const _URL='url:TEXT::URL:URL';
+const _REASON='reason:TEXT::理由:Reason';
+const _MSG='message:TEXT::メッセージ:Message';
+const _COMPANY='company:VARCHAR(255)::会社名:Company';
 const ENTITY_COLUMNS={
   User:['email:VARCHAR(255):UNIQUE NOT NULL:メールアドレス:Email','avatar_url:TEXT::アバターURL:Avatar URL','role:VARCHAR(20):DEFAULT \'user\':ユーザー権限:User role'],
   Course:['description:TEXT::コース説明:Course description','price:DECIMAL(10,2):DEFAULT 0:価格:Price','status:VARCHAR(20):DEFAULT \'draft\':公開状態:Publish status','thumbnail_url:TEXT::サムネイル:Thumbnail','instructor_id:UUID:FK(User):講師ID:Instructor ID'],
