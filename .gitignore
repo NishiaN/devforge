@@ -7,3 +7,12 @@ Thumbs.db
 coverage/
 # Built output is now tracked for GitHub Pages deployment
 # devforge-v9.html
+
+# Temporary test/debug files
+.test-*.js
+.tmp-*.js
+*.tmp.js
+
+# Error screenshots
+err.png
+error-*.png
