@@ -8,7 +8,7 @@ let _viewNavFlag=false;
 
 function _sanitizeHTML(html){
   const allowedTags=['h1','h2','h3','h4','h5','h6','p','br','hr','ul','ol','li','a','strong','em','code','pre','blockquote','table','thead','tbody','tr','th','td','img','div','span','b','i','u','s','del','ins','sup','sub','dl','dt','dd'];
-  const allowedAttrs={a:['href','title','class'],img:['src','alt','title','class'],code:['class'],pre:['class'],div:['class'],span:['class'],table:['class'],th:['colspan','rowspan'],td:['colspan','rowspan']};
+  const allowedAttrs={a:['href','title','class','target','rel'],img:['src','alt','title','class'],code:['class'],pre:['class'],div:['class'],span:['class'],table:['class'],th:['colspan','rowspan'],td:['colspan','rowspan']};
   const temp=document.createElement('div');temp.innerHTML=html;
   function clean(el){
     const tag=el.tagName.toLowerCase();
@@ -39,7 +39,7 @@ function _miniMD(raw){
     s=s.replace(/`(.+?)`/g,'<code>$1</code>');
     s=s.replace(/\[([^\]]+)\]\(([^)]+)\)/g,(m,txt,url)=>{
       const u=url.trim().toLowerCase();
-      if(!u.startsWith('http://')&&!u.startsWith('https://')&&!u.startsWith('./')&&!u.startsWith('#'))return m;
+      if(!u.startsWith('http://')&&!u.startsWith('https://')&&!u.startsWith('./')&&!u.startsWith('../')&&!u.startsWith('#'))return m;
       return '<a href="'+escH(url)+'">'+txt+'</a>';
     });
     return s;
@@ -116,10 +116,13 @@ function _miniMD(raw){
   if(inTable)html+='</tbody></table>';
   return html;
 }
+function _patchLinks(html){
+  return html.replace(/<a href="(https?:\/\/[^"]+)"/g,'<a href="$1" target="_blank" rel="noopener"');
+}
 function safeMD(raw){
   if(window._noMarked||typeof marked==='undefined')return _miniMD(raw);
   const html=marked.parse(raw);
-  return _sanitizeHTML(html);
+  return _patchLinks(_sanitizeHTML(html));
 }
 function diffBtn(path){
   return (S.prevFiles[path]||S.editedFiles[path])?'<button class="btn btn-xs btn-s btn-diff" onclick="showDiff(\''+escAttr(path)+'\')">🔀 Diff</button>':'';
@@ -159,7 +162,7 @@ function initPillarTabs(){
       b.classList.add('on');b.setAttribute('aria-selected','true');
       if(i===4) showExplorer();
       else if(i===5) showDashboard();
-      else if(i===6&&Object.keys(S.files).length>0) showRoadmapUI();
+      else if(i===6) showRoadmapUI();
       else if(i===7) showAILauncher();
       else if(i===8) showFileTree(); // Design System
       else if(i===9) showFileTree(); // Reverse Engineering
@@ -183,7 +186,7 @@ function showFileTree(){
   // Special UI pillars
   if(pillar===4){showExplorer();return;}
   if(pillar===5){showDashboard();return;}
-  if(pillar===6&&Object.keys(S.files).length>0){showRoadmapUI();return;}
+  if(pillar===6){showRoadmapUI();return;}
   if(pillar===7){showAILauncher();return;}
   pushView({pillar:pillar,type:'tree',file:null});
   // pillar===8: Design System - show file tree (no special UI)
@@ -326,6 +329,7 @@ function previewFile(path){
         return '<div class="mermaid" id="'+id+'"></div>';});
       $('prevBody').innerHTML=prevToolbar(path,true)+`<div id="mdRendered" class="md-rendered">${html}</div>`;
       _mmBlocks.forEach((c,i)=>{const el=document.getElementById('_mm'+i);if(el)el.textContent=c;});
+      _markBrokenLinks();
       loadMermaid(()=>{
         if(_mermaidReady){
           try{
@@ -340,6 +344,7 @@ function previewFile(path){
     } else if(path.endsWith('.md')){
       const html=safeMD(raw);
       $('prevBody').innerHTML=prevToolbar(path,true)+`<div id="mdRendered" class="md-rendered">${html}</div>`;
+      _markBrokenLinks();
     } else {
       $('prevBody').innerHTML=prevToolbar(path,false)+`<pre>${escHtml(raw)}</pre>`;
     }
@@ -476,5 +481,73 @@ function filterFileTree(q){
     const path=li.dataset.path||li.textContent;
     li.style.display=(!q||path.toLowerCase().includes(lq))?'':'none';
   });
+}
+
+function _resolveFileRef(href,currentFile){
+  if(!href)return null;
+  const h=href.trim();
+  if(h.startsWith('http://')||h.startsWith('https://')||h.startsWith('#'))return null;
+  let resolved=null;
+  if(h.startsWith('./')){
+    const dir=currentFile.includes('/')?currentFile.substring(0,currentFile.lastIndexOf('/')+1):'';
+    resolved=dir+h.slice(2);
+  }else if(h.startsWith('../')){
+    const parts=currentFile.split('/');parts.pop();
+    const upParts=h.split('/');
+    for(let i=0;i<upParts.length;i++){
+      if(upParts[i]==='..'){parts.pop();}
+      else if(upParts[i]!=='.'&&upParts[i]!==''){resolved=parts.join('/')+(parts.length?'/':'')+upParts.slice(i).join('/');break;}
+    }
+  }else{
+    resolved=h;
+  }
+  if(resolved&&S.files[resolved])return resolved;
+  const basename=resolved?resolved.split('/').pop().replace(/^\d+_/,''):'';
+  if(basename){
+    for(const key in S.files){
+      const keyBase=key.split('/').pop().replace(/^\d+_/,'');
+      if(keyBase===basename||key.endsWith('/'+basename))return key;
+    }
+  }
+  return null;
+}
+
+function _markBrokenLinks(){
+  const links=document.querySelectorAll('.md-rendered a[href]');
+  links.forEach(a=>{
+    const href=a.getAttribute('href');
+    if(!href||href.startsWith('http://')||href.startsWith('https://')||href.startsWith('#'))return;
+    const resolved=_resolveFileRef(href,S.previewFile||'');
+    if(!resolved)a.classList.add('link-broken');
+  });
+}
+
+function _initLinkInterceptor(){
+  document.addEventListener('click',e=>{
+    const a=e.target.closest('.md-rendered a[href]');
+    if(!a)return;
+    const href=a.getAttribute('href');
+    if(!href)return;
+    if(href.startsWith('http://')||href.startsWith('https://')){
+      e.preventDefault();
+      window.open(href,'_blank','noopener');
+      return;
+    }
+    if(href.startsWith('#')){
+      e.preventDefault();
+      const id=href.slice(1);
+      const el=document.getElementById(id);
+      if(el)el.scrollIntoView({behavior:'smooth'});
+      return;
+    }
+    e.preventDefault();
+    const resolved=_resolveFileRef(href,S.previewFile||'');
+    if(resolved){
+      previewFile(resolved);
+    }else{
+      const _ja=S.lang==='ja';
+      toast((_ja?'ファイルが見つかりません: ':'File not found: ')+href);
+    }
+  },true);
 }
 

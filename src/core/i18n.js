@@ -3,7 +3,7 @@ const I18N={
 ja:{
 p1:'Phase 1',p2:'Phase 2',p3:'Phase 3',
 heroTitle:'DevForge v9',
-heroDesc:'質問に答えるだけで、88+ファイルの開発ドキュメント・環境設定・AIルール・学習ロードマップを自動生成。12の柱でAI駆動開発をゼロから完全サポート。',
+heroDesc:'質問に答えるだけで、93+ファイルの開発ドキュメント・環境設定・AIルール・学習ロードマップを自動生成。13の柱でAI駆動開発をゼロから完全サポート。',
 startBtn:'🚀 開始する',
 statFiles:'生成ファイル',statTech:'技術エントリ',statPillars:'柱 (Pillars)',statAI:'AIツール対応',
 skillAsk:'スキルレベルを選択',
@@ -20,19 +20,19 @@ answerConfirm:'回答を確認',edit:'修正',
 tourNext:'次へ',tourPrev:'前へ',tourDone:'完了',tourStart:'ツアー開始',
 phEnd1:'Phase 1 完了！技術選定に進みます。',
 phEnd2:'Phase 2 完了！機能・データ設計に進みます。',
-genBtn:'📦 88+ファイル生成',
-genDone:'✅ 88+ファイルが生成されました！プレビューパネルで確認してください。',
+genBtn:'📦 93+ファイル生成',
+genDone:'✅ 93+ファイルが生成されました！プレビューパネルで確認してください。',
 copyDone:'クリップボードにコピーしました',
 pmTitle:'📁 プロジェクト管理',pmNew:'新規プロジェクト',pmEmpty:'保存されたプロジェクトはありません',
 helpClose:'閉じる',
 kbTitle:'⌨️ ショートカット',
 kb:['ヘルプ・マニュアル','ショートカット一覧','テーマ切替','言語切替','エクスポート','全ファイルコピー','プロジェクト管理'],
-pillar:['①SDD統合','②DevContainer','③MCP設定','④AIルール','⑤並列探索','⑥Dashboard','⑦ロードマップ','⑧AIランチャー','⑨デザインシステム','⑩リバースEng','⑪実装ガイド','⑫セキュリティ']
+pillar:['①SDD統合','②DevContainer','③MCP設定','④AIルール','⑤並列探索','⑥Dashboard','⑦ロードマップ','⑧AIランチャー','⑨デザインシステム','⑩リバースEng','⑪実装ガイド','⑫セキュリティ','⑬戦略インテリジェンス']
 },
 en:{
 p1:'Phase 1',p2:'Phase 2',p3:'Phase 3',
 heroTitle:'DevForge v9',
-heroDesc:'Answer questions to auto-generate 88+ development documents, environment configs, AI rules & learning roadmaps. 12 pillars for complete AI-driven development support.',
+heroDesc:'Answer questions to auto-generate 93+ development documents, environment configs, AI rules & learning roadmaps. 13 pillars for complete AI-driven development support.',
 startBtn:'🚀 Get Started',
 statFiles:'Generated Files',statTech:'Tech Entries',statPillars:'Pillars',statAI:'AI Tools',
 skillAsk:'Select your skill level',
@@ -49,14 +49,14 @@ answerConfirm:'Confirm answer',edit:'Edit',
 tourNext:'Next',tourPrev:'Back',tourDone:'Done',tourStart:'Start Tour',
 phEnd1:'Phase 1 complete! Moving to tech stack.',
 phEnd2:'Phase 2 complete! Moving to feature design.',
-genBtn:'📦 Generate 88+ Files',
-genDone:'✅ 88+ files generated! Check the preview panel.',
+genBtn:'📦 Generate 93+ Files',
+genDone:'✅ 93+ files generated! Check the preview panel.',
 copyDone:'Copied to clipboard',
 pmTitle:'📁 Project Manager',pmNew:'New Project',pmEmpty:'No saved projects',
 helpClose:'Close',
 kbTitle:'⌨️ Shortcuts',
 kb:['Help / Manual','Shortcuts','Toggle Theme','Toggle Language','Export','Copy All Files','Project Manager'],
-pillar:['①SDD','②DevContainer','③MCP','④AI Rules','⑤Explorer','⑥Dashboard','⑦Roadmap','⑧AI Launcher','⑨Design System','⑩Reverse Eng','⑪Impl Guide','⑫Security']
+pillar:['①SDD','②DevContainer','③MCP','④AI Rules','⑤Explorer','⑥Dashboard','⑦Roadmap','⑧AI Launcher','⑨Design System','⑩Reverse Eng','⑪Impl Guide','⑫Security','⑬Strategic Intelligence']
 }
 };
 const t=k=>I18N[S.lang][k]||k;

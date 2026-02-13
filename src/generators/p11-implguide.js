@@ -200,12 +200,12 @@ function genPillar11_ImplIntelligence(a,pn){
   doc40+='## '+(G?'2. タスク別ファイル選択マトリクス':'2. Task-Specific File Selection Matrix')+'\n\n';
   doc40+='| '+(G?'タスクタイプ':'Task Type')+' | '+(G?'必読ファイル':'Must-Read Files')+' | '+(G?'推奨ファイル':'Recommended Files')+' |\n';
   doc40+='|---|---|---|\n';
-  doc40+='| '+(G?'新機能実装':'New Feature')+' | `.spec/constitution.md`, `docs/02_ER.md`, `docs/39_implementation_playbook.md` | `docs/26_design_system.md`, `docs/04_screen.md` |\n';
-  doc40+='| '+(G?'バグ修正':'Bug Fix')+' | `docs/25_error_logs.md`, `docs/37_bug_prevention.md`, `docs/05_test_cases.md` | `docs/34_incident_response.md`, `docs/33_test_matrix.md` |\n';
-  doc40+='| '+(G?'テスト追加':'Add Tests')+' | `docs/05_test_cases.md`, `docs/36_test_strategy.md`, `docs/33_test_matrix.md` | `.spec/verification.md`, `docs/28_qa_strategy.md` |\n';
-  doc40+='| '+(G?'リファクタリング':'Refactoring')+' | `docs/01_architecture.md`, `docs/39_implementation_playbook.md` | `docs/26_design_system.md`, `CLAUDE.md` |\n';
+  doc40+='| '+(G?'新機能実装':'New Feature')+' | `.spec/constitution.md`, `docs/04_er_diagram.md`, `docs/39_implementation_playbook.md` | `docs/26_design_system.md`, `docs/06_screen_design.md` |\n';
+  doc40+='| '+(G?'バグ修正':'Bug Fix')+' | `docs/25_error_logs.md`, `docs/37_bug_prevention.md`, `docs/07_test_cases.md` | `docs/34_incident_response.md`, `docs/33_test_matrix.md` |\n';
+  doc40+='| '+(G?'テスト追加':'Add Tests')+' | `docs/07_test_cases.md`, `docs/36_test_strategy.md`, `docs/33_test_matrix.md` | `.spec/verification.md`, `docs/28_qa_strategy.md` |\n';
+  doc40+='| '+(G?'リファクタリング':'Refactoring')+' | `docs/03_architecture.md`, `docs/39_implementation_playbook.md` | `docs/26_design_system.md`, `CLAUDE.md` |\n';
   doc40+='| '+(G?'ドキュメント更新':'Doc Update')+' | `.spec/specification.md`, `docs/24_progress.md` | `docs/31_industry_playbook.md`, `AI_BRIEF.md` |\n';
-  doc40+='| '+(G?'API実装':'API Impl')+' | `docs/03_API.md`, `docs/02_ER.md`, `docs/06_security.md` | `docs/39_implementation_playbook.md`, `docs/28_qa_strategy.md` |\n';
+  doc40+='| '+(G?'API実装':'API Impl')+' | `docs/05_api_design.md`, `docs/04_er_diagram.md`, `docs/08_security.md` | `docs/39_implementation_playbook.md`, `docs/28_qa_strategy.md` |\n';
   doc40+='\n';
 
   // 3. Error Recovery Protocol
@@ -258,7 +258,7 @@ function genPillar11_ImplIntelligence(a,pn){
     doc40+='  auth_method: Supabase Auth\n';
     doc40+='  files_to_read:\n';
     doc40+='    - .spec/constitution.md\n';
-    doc40+='    - docs/02_ER.md\n';
+    doc40+='    - docs/04_er_diagram.md\n';
     doc40+='    - docs/39_implementation_playbook.md\n';
     doc40+='status: pending\n';
     doc40+='```\n\n';
@@ -314,7 +314,7 @@ function genPillar11_ImplIntelligence(a,pn){
     skillDoc+='### '+(G?'スキル名':'Skill Name')+'\n';
     skillDoc+='**'+domain+' Implementation Pattern**\n\n';
     skillDoc+='### Input\n';
-    skillDoc+='- '+(G?'エンティティ定義 (`docs/02_ER.md`)':'Entity definitions (`docs/02_ER.md`)')+'\n';
+    skillDoc+='- '+(G?'エンティティ定義 (`docs/04_er_diagram.md`)':'Entity definitions (`docs/04_er_diagram.md`)')+'\n';
     skillDoc+='- '+(G?'機能要件 (`.spec/constitution.md`)':'Feature requirements (`.spec/constitution.md`)')+'\n';
     skillDoc+='- '+(G?'実装プレイブック (`docs/39_implementation_playbook.md`)':'Implementation playbook (`docs/39_implementation_playbook.md`)')+'\n';
     skillDoc+='\n### Process\n';

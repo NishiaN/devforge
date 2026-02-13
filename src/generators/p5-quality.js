@@ -412,7 +412,7 @@ function genPillar5_QualityIntelligence(a,pn){
   doc36+='### 2.1 API'+(G?'コントラクトテスト':'Contract Testing')+'\n\n';
   doc36+='**'+(G?'ツール':'Tool')+'**: '+( tools.find(t=>t.includes('Pact')||t.includes('契約'))||'Pact / Contract tests')+'\n\n';
   doc36+='**'+(G?'検証項目':'Checks')+'**:\n';
-  doc36+='- [ ] '+(G?'全エンドポイントがdocs/05_api.mdに存在':'All endpoints exist in docs/05_api.md')+'\n';
+  doc36+='- [ ] '+(G?'全エンドポイントがdocs/05_api_design.mdに存在':'All endpoints exist in docs/05_api_design.md')+'\n';
   doc36+='- [ ] '+(G?'リクエスト・レスポンススキーマ一致':'Request/response schema match')+'\n';
   doc36+='- [ ] '+(G?'エラーコードが仕様通り':'Error codes match spec')+'\n\n';
 

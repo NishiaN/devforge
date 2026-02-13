@@ -60,6 +60,63 @@ This document contains detailed reference information for DevForge v9 developmen
 - **`_owaspSection(item, backend)`** — Generate OWASP section with stack checks
 - **`_compSection(comp, G)`** — Generate compliance framework section
 
+### src/generators/p13-strategy.js
+**Pillar ⑬: Strategic Intelligence** — Industry-specific strategic intelligence for 32 industries.
+
+**Data Structures:**
+- **INDUSTRY_INTEL**: 33 entries (32 industries + \_default)
+  - **24 original domains:** education, ec, marketplace, community, content, analytics, booking, saas, portfolio, tool, iot, realestate, legal, hr, fintech, health, ai, automation, event, gamify, collab, devtool, creator, newsletter
+  - **8 new industries:** manufacturing, logistics, agriculture, energy, media, government, travel, insurance
+  - Each entry has: reg (regulations, ja/en), arch (architecture patterns, ja/en), fail (failure factors, ja/en), trend (2026-2030 trends, ja/en), bm (business models, ja/en)
+  - Covers compliance requirements, recommended architectures, common pitfalls, technology trends, and revenue models
+- **STAKEHOLDER_STRATEGY**: 4 stakeholder types (startup, enterprise, developer, team)
+  - Each type has: phases (ja/en), debt_mgmt (technical debt management, ja/en), team (team composition, ja/en), budget (allocation guidance, ja/en)
+- **OPERATIONAL_FRAMEWORKS**: 4 operational excellence dimensions (original)
+  - tech_debt: Classification and SQALE approach (ja/en)
+  - dr_bcp: RTO/RPO targets and 3-2-1 backup (ja/en)
+  - green_it: Framework-specific energy efficiency (ja/en)
+  - team_design: Conway's Law and Two-Pizza Team (ja/en)
+- **OPERATIONAL_FRAMEWORKS_EXT**: 4 extended operational frameworks (new)
+  - ai_ethics: Fairlearn/AIF360, SHAP/LIME, HITL, EU AI Act compliance (ja/en)
+  - zero_trust: BeyondCorp 7 principles, IAM+FIDO2, micro-segmentation, EDR/XDR (ja/en)
+  - data_governance: DataHub/Amundsen, Great Expectations, dynamic masking, data mesh (ja/en)
+  - globalization: i18n/l10n, Unicode/RTL, Locize/Phrase, data residency (ja/en)
+- **EXTREME_SCENARIOS**: 6 advanced implementation patterns
+  - break_glass: Emergency access (OPA/Rego, ABAC) for health/government
+  - k_anonymity: De-identification pipeline for health/hr/fintech
+  - geo_partition: Data residency (CockroachDB/YugabyteDB) for fintech/ec/saas/health/government
+  - carbon_aware: Carbon-aware scaling (KEDA) for manufacturing/energy/ec/analytics
+  - post_quantum: ML-KEM (Kyber) + DID for fintech/government/legal
+  - strangler_fig: Legacy migration (Nginx traffic split) for all domains
+- **PRAGMATIC_SCENARIOS**: 5 high-impact implementation patterns
+  - disposable_arch: Pre-PMF speed (Supabase RLS) for startups
+  - ai_hitl: Human-in-the-loop (LangChain) for teams
+  - small_data_stack: Mid-size enterprise DX (Fivetran→Snowflake→dbt) for enterprises
+  - silver_tech: Elderly-friendly (FIDO2, LINE, VUI) for teams
+  - dora_platform: DORA metrics + Backstage for enterprises
+- **TECH_RADAR_BASE**: Technology classification matrix
+  - frontend/backend/infrastructure/ai: Adopt/Trial/Assess/Hold classification
+  - domain-specific: Technology recommendations per industry
+
+**Helper Functions:**
+- **`_si(reg_ja,reg_en, arch_ja,arch_en, fail_ja,fail_en, trend_ja,trend_en, bm_ja,bm_en)`** — Compression helper for INDUSTRY_INTEL entries
+- **`detectIndustry(purpose)`** — Extended industry detection (32 industries: uses `detectDomain()` first, then checks 8 new industries via regex patterns)
+- **`detectStakeholder(target)`** — Infer stakeholder type from target answer (startup, enterprise, developer, team)
+- **`genPillar13_StrategicIntelligence(a, pn)`** — Generates 5 strategic documents:
+  - docs/48_industry_blueprint.md — Industry-specific regulations, architectures, failure factors, business models
+  - docs/49_tech_radar.md — 2026-2030 technology trends with Adopt/Trial/Assess/Hold classification
+  - docs/50_stakeholder_strategy.md — Phase-based development strategies for stakeholder type
+  - docs/51_operational_excellence.md — Technical debt management, DR/BCP, Green IT, team design (4 original frameworks)
+  - docs/52_advanced_scenarios.md — Extended frameworks (AI ethics, zero trust, data governance, globalization), extreme scenarios (filtered by domain), pragmatic scenarios (filtered by stakeholder)
+
+**Integration:**
+- Uses `detectIndustry()` (extends `detectDomain()` with 8 new industries) to select industry-specific intelligence from INDUSTRY_INTEL
+- Uses `detectStakeholder()` to customize development strategy based on target audience
+- Cross-references with Pillar ⑫ Security Intelligence (docs/45 compliance matrix)
+- Integrates with tech stack selection for architecture recommendations
+- Filters extreme scenarios by detected domain/industry
+- Filters pragmatic scenarios by detected stakeholder type
+
 ### src/core/i18n.js
 - **`t(key)`** — Get translated string for current `S.lang`
 - **`I18N`** — Translation dictionary (ja/en)
@@ -90,9 +147,9 @@ Questions can have a `condition` field that determines if they should be shown:
 
 ---
 
-## Generated Output (88+ files)
+## Generated Output (92+ files)
 
-When users complete the wizard, DevForge generates **88+ files** (base: 75 files, +4 when ai_auto=multi/full/orch for skills/ md Package, +1 when payment≠none for docs/38_business_model.md):
+When users complete the wizard, DevForge generates **92+ files** (base: 79 files, +4 when ai_auto=multi/full/orch for skills/ md Package, +1 when payment≠none for docs/38_business_model.md):
 
 ### Core Specifications
 - **.spec/** — constitution.md, specification.md, technical-plan.md, tasks.md, verification.md
@@ -100,7 +157,7 @@ When users complete the wizard, DevForge generates **88+ files** (base: 75 files
 ### Development Environment
 - **.devcontainer/** — devcontainer.json, Dockerfile, docker-compose.yml, post-create.sh
 
-### Documentation (47 files)
+### Documentation (51 files)
 - **docs/** — architecture.md, ER.md, API.md, screen.md, test-cases.md, security.md, release.md, WBS.md, prompt-playbook.md, tasks.md
 - **progress.md (24)** — Project tracking
 - **error_logs.md (25)** — Error management
@@ -126,6 +183,10 @@ When users complete the wizard, DevForge generates **88+ files** (base: 75 files
 - **compliance_matrix.md (45)** — Domain-specific compliance
 - **ai_security.md (46)** — Context-aware adversarial prompts
 - **security_testing.md (47)** — RLS/Rules tests, Zod schemas
+- **industry_blueprint.md (48)** — Industry-specific regulations, architectures, failure factors, business models
+- **tech_radar.md (49)** — 2026-2030 technology trends (Adopt/Trial/Assess/Hold classification)
+- **stakeholder_strategy.md (50)** — Phase-based development strategies for stakeholder type
+- **operational_excellence.md (51)** — Technical debt management, DR/BCP, Green IT, team design
 
 ### AI Rules & Skills
 - **AI rules** — CLAUDE.md (with File Selection Matrix & Context Compression Protocol), AI_BRIEF.md (with Context Loading Strategy, ~1200 tokens), .cursorrules, .clinerules, .windsurfrules, AGENTS.md (with Agent Specialization Matrix), .cursor/rules

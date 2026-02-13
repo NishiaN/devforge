@@ -37,6 +37,7 @@ describe('Build System', () => {
       'trapFocus', 'releaseFocus', 'announce',
       'showAILauncher', 'selectLaunchTemplate', 'copyLaunchPrompt',
       'autoSelectStack', 'scoreStack',
+      '_initLinkInterceptor', '_resolveFileRef', '_markBrokenLinks',
     ];
     for (const fn of expected) {
       assert.ok(html.includes(fn), `Missing function: ${fn}`);

@@ -711,7 +711,7 @@ function genPillar10_ReverseEngineering(a,pn){
     doc38+='- **docs/30_goal_decomposition.md** — '+(G?'目標分解とKPI':'Goal decomposition & KPIs')+'\n';
     doc38+='- **.spec/constitution.md** — '+(G?'プロジェクトビジョン':'Project vision')+'\n';
     doc38+='- **docs/24_progress.md** — '+(G?'進捗追跡':'Progress tracking')+'\n';
-    doc38+='- **docs/05_api.md** — '+(G?'決済API実装':'Payment API implementation')+'\n\n';
+    doc38+='- **docs/05_api_design.md** — '+(G?'決済API実装':'Payment API implementation')+'\n\n';
 
     S.files['docs/38_business_model.md']=doc38;
   }

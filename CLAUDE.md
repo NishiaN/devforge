@@ -7,9 +7,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 # DevForge v9.0
 
 ## Architecture
-- **44 modules** in `src/` → `node build.js` → single `devforge-v9.html` (~1110KB)
+- **45 modules** in `src/` → `node build.js` → single `devforge-v9.html` (~1126KB)
 - Vanilla JS, no frameworks. CSS custom properties. CDN: marked.js, mermaid.js, JSZip.
-- **AI Development OS**: Generates 88+ files including context intelligence, operations playbooks, business models, and growth strategies
+- **AI Development OS**: Generates 93+ files including context intelligence, operations playbooks, business models, growth strategies, and industry-specific strategic intelligence
 - **Security-hardened**: Phase 1 (CSP, SRI, sanitization) + Phase 2 (16 XSS/injection fixes) + Pillar ⑫ (context-aware security audit prompts)
 
 ## Build & Test
@@ -21,7 +21,7 @@ node build.js --report     # Show size report
 node build.js --check-css  # Validate CSS custom properties
 
 # Test
-npm test                   # Run all tests (234 tests, all passing)
+npm test                   # Run all tests (239 tests, all passing)
 npm run test:watch         # Watch mode for test development
 node --test test/gen-coherence.test.js  # Run single test file
 node --test test/data-coverage.test.js  # Run data integrity tests
@@ -46,7 +46,7 @@ npm run check              # Syntax check extracted JS
 5. **Write** to `devforge-v9.html`
 6. **Validate** size ≤1200KB (warn if exceeded)
 
-**Current Status:** 1110KB / 1200KB limit (90KB remaining budget)
+**Current Status:** 1126KB / 1200KB limit (74KB remaining budget)
 
 ### ⚠️ Critical: Minification Limitations
 
@@ -76,7 +76,7 @@ npm run check              # Syntax check extracted JS
 |----------|-------|---------|
 | core/ | state, i18n, events, tour, init | State, language, shortcuts |
 | data/ | presets(41), questions, techdb, compat-rules, gen-templates, helpdata | Static data (41 presets: 36 original + 5 new: CRM, Social, Logistics, Survey, Job Board) |
-| generators/ | index, p1-sdd, p2-devcontainer, p3-mcp, p4-airules, p5-quality, p7-roadmap, p9-designsystem (v2: Figma MCP, Anti-AI checklist), p10-reverse, p11-implguide (skill_guide.md), p12-security (context-aware audit prompts), docs, common | 88-file generation engine (12 pillars) |
+| generators/ | index, p1-sdd, p2-devcontainer, p3-mcp, p4-airules, p5-quality, p7-roadmap, p9-designsystem (v2: Figma MCP, Anti-AI checklist), p10-reverse, p11-implguide (skill_guide.md), p12-security (context-aware audit prompts), p13-strategy (industry intelligence), docs, common | 92-file generation engine (13 pillars) |
 | ui/ | wizard, render, edit, help, confirm, complexity, toc, voice, project, presets, preview, editor, diff, export, explorer, dashboard, templates | UI components |
 | styles/ | all.css | Theme (dark/light), responsive |
 
@@ -208,7 +208,7 @@ See Phase 2 security audit for detailed examples.
 
 **Fix:**
 - Always add both `ja` and `en` versions
-- Search for all instances when updating numbers (41 presets, 88+ files, 12 pillars)
+- Search for all instances when updating numbers (41 presets, 93+ files, 13 pillars)
 - Use static strings in data files, not `S.lang` conditionals
 
 ### Property Name Mismatches with Helper-Generated Objects
@@ -327,14 +327,14 @@ const PR = {
 
 ## Generated Output
 
-DevForge generates **88+ files** (base: 75 files, +4 for skills/ when ai_auto=multi/full/orch, +1 for business_model.md when payment≠none).
+DevForge generates **93+ files** (base: 79 files, +4 for skills/ when ai_auto=multi/full/orch, +1 for business_model.md when payment≠none).
 
 → See `docs/CLAUDE-REFERENCE.md` for complete file catalog.
 
 **Key pillars:**
 - **.spec/** — constitution, specification, technical-plan, tasks, verification
 - **.devcontainer/** — devcontainer.json, Dockerfile, docker-compose.yml, post-create.sh
-- **docs/** — 47 documents including architecture, ER, API, screen, test-cases, security, release, WBS, prompt-playbook, design_system, qa_strategy, reverse_engineering, growth_intelligence, skill_guide, security_intelligence (OWASP 2025), threat_model, compliance_matrix, ai_security, security_testing
+- **docs/** — 51 documents including architecture, ER, API, screen, test-cases, security, release, WBS, prompt-playbook, design_system, qa_strategy, reverse_engineering, growth_intelligence, skill_guide, security_intelligence (OWASP 2025), threat_model, compliance_matrix, ai_security, security_testing, industry_blueprint, tech_radar, stakeholder_strategy, operational_excellence
 - **AI rules** — CLAUDE.md, AI_BRIEF.md, .cursorrules, .clinerules, .windsurfrules, AGENTS.md, skills/ (project.md, factory.md, catalog.md, pipelines.md, skill_map.md, agents/)
 - **CI/CD** — .github/workflows/ci.yml
 
@@ -352,7 +352,7 @@ DevForge generates **88+ files** (base: 75 files, +4 for skills/ when ai_auto=mu
 | presets.test.js | 4 tests | Preset count (41), bilingual names, tech fields, purpose |
 | Others | ~21 tests | i18n, state, techdb |
 
-**Total: 234 tests (all passing, 100% pass rate)**
+**Total: 239 tests (all passing, 100% pass rate)**
 
 ## Writing Tests
 

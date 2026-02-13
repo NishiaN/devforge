@@ -22,6 +22,8 @@ eval(fs.readFileSync('src/generators/p7-roadmap.js','utf-8'));
 eval(fs.readFileSync('src/generators/p9-designsystem.js','utf-8'));
 eval(fs.readFileSync('src/generators/p10-reverse.js','utf-8').replace('const REVERSE_FLOW_MAP','var REVERSE_FLOW_MAP'));
 eval(fs.readFileSync('src/generators/p11-implguide.js','utf-8'));
+eval(fs.readFileSync('src/generators/p12-security.js','utf-8'));
+eval(fs.readFileSync('src/generators/p13-strategy.js','utf-8').replace(/const (INDUSTRY_INTEL|STAKEHOLDER_STRATEGY|OPERATIONAL_FRAMEWORKS|OPERATIONAL_FRAMEWORKS_EXT|EXTREME_SCENARIOS|PRAGMATIC_SCENARIOS|TECH_RADAR_BASE)/g,'var $1'));
 
 // ═══ Helper ═══
 function generate(answers, name, lang) {
@@ -38,6 +40,8 @@ function generate(answers, name, lang) {
   genPillar9_DesignSystem(answers, name);
   genPillar10_ReverseEngineering(answers, name);
   genPillar11_ImplIntelligence(answers, name);
+  genPillar12_SecurityIntelligence(answers, name);
+  genPillar13_StrategicIntelligence(answers, name);
   return { ...S.files };
 }
 
@@ -56,14 +60,14 @@ describe('Snapshot A: LMS/Supabase/Stripe', () => {
     ai_auto: 'マルチAgent協調'
   }, 'LMS');
 
-  test('file count in range 68-92', () => {
+  test('file count in range 78-102', () => {
     const count = Object.keys(files).length;
-    assert.ok(count >= 68 && count <= 92, `Expected 68-92 files, got ${count}`);
+    assert.ok(count >= 78 && count <= 102, `Expected 78-102 files, got ${count}`);
   });
 
-  test('total tokens in range 12000-34000', () => {
+  test('total tokens in range 12000-43000', () => {
     const total = Object.values(files).reduce((s, v) => s + tokens(v), 0);
-    assert.ok(total >= 12000 && total <= 34000, `Expected 12K-34K tokens, got ${total}`);
+    assert.ok(total >= 12000 && total <= 43000, `Expected 12K-43K tokens, got ${total}`);
   });
 
   // Core files existence
@@ -121,6 +125,66 @@ describe('Snapshot A: LMS/Supabase/Stripe', () => {
     assert.ok(sg.includes('中級者') || sg.includes('Intermediate'), 'Missing intermediate');
     assert.ok(sg.includes('上級者') || sg.includes('Professional'), 'Missing pro');
     assert.ok(sg.includes('あなたのレベル') || sg.includes('YOUR LEVEL'), 'Missing level marker');
+  });
+
+  test('strategic intelligence files exist (Pillar 13)', () => {
+    assert.ok(files['docs/48_industry_blueprint.md'], 'docs/48_industry_blueprint.md missing');
+    assert.ok(files['docs/49_tech_radar.md'], 'docs/49_tech_radar.md missing');
+    assert.ok(files['docs/50_stakeholder_strategy.md'], 'docs/50_stakeholder_strategy.md missing');
+    assert.ok(files['docs/51_operational_excellence.md'], 'docs/51_operational_excellence.md missing');
+    assert.ok(files['docs/52_advanced_scenarios.md'], 'docs/52_advanced_scenarios.md missing');
+  });
+
+  test('industry blueprint has domain-specific content', () => {
+    const ib = files['docs/48_industry_blueprint.md'];
+    assert.ok(ib.includes('規制') || ib.includes('Regulatory'), 'Missing regulatory section');
+    assert.ok(ib.includes('アーキテクチャ') || ib.includes('Architecture'), 'Missing architecture patterns');
+    assert.ok(ib.includes('失敗') || ib.includes('Failure'), 'Missing failure factors');
+    assert.ok(ib.includes('ビジネスモデル') || ib.includes('Business Model'), 'Missing business model');
+  });
+
+  test('tech radar has 2026-2030 trends', () => {
+    const tr = files['docs/49_tech_radar.md'];
+    assert.ok(tr.includes('2026') || tr.includes('2030'), 'Missing year range');
+    assert.ok(tr.includes('Adopt') || tr.includes('採用'), 'Missing Adopt category');
+    assert.ok(tr.includes('Trial') || tr.includes('試験'), 'Missing Trial category');
+  });
+
+  test('stakeholder strategy exists with types', () => {
+    const ss = files['docs/50_stakeholder_strategy.md'];
+    assert.ok(ss.includes('開発フェーズ') || ss.includes('Development Phase'), 'Missing dev phase');
+    assert.ok(ss.includes('技術的負債') || ss.includes('Technical Debt'), 'Missing tech debt');
+    assert.ok(ss.includes('チーム') || ss.includes('Team'), 'Missing team composition');
+  });
+
+  test('operational excellence has frameworks', () => {
+    const oe = files['docs/51_operational_excellence.md'];
+    assert.ok(oe.includes('技術的負債') || oe.includes('Technical Debt'), 'Missing tech debt framework');
+    assert.ok(oe.includes('DR') || oe.includes('BCP') || oe.includes('災害'), 'Missing DR/BCP');
+    assert.ok(oe.includes('Green IT') || oe.includes('カーボン'), 'Missing Green IT');
+  });
+
+  test('advanced scenarios has extended frameworks', () => {
+    const as = files['docs/52_advanced_scenarios.md'];
+    assert.ok(as.includes('AI倫理') || as.includes('AI Ethics'), 'Missing AI ethics framework');
+    assert.ok(as.includes('ゼロトラスト') || as.includes('Zero Trust'), 'Missing zero trust framework');
+    assert.ok(as.includes('データガバナンス') || as.includes('Data Governance'), 'Missing data governance');
+    assert.ok(as.includes('グローバル') || as.includes('Globalization'), 'Missing globalization');
+  });
+
+  test('advanced scenarios has extreme patterns', () => {
+    const as = files['docs/52_advanced_scenarios.md'];
+    assert.ok(as.includes('極限実装') || as.includes('Extreme'), 'Missing extreme scenarios section');
+    // Should have at least Strangler Fig (applies to all domains)
+    assert.ok(as.includes('Strangler') || as.includes('strangler'), 'Missing Strangler Fig (applies to all domains)');
+  });
+
+  test('advanced scenarios has pragmatic patterns', () => {
+    const as = files['docs/52_advanced_scenarios.md'];
+    assert.ok(as.includes('実利') || as.includes('Pragmatic'), 'Missing pragmatic scenarios section');
+    // Should have at least some pragmatic scenarios
+    assert.ok(as.includes('使い捨て') || as.includes('Disposable') || as.includes('AI協働') ||
+              as.includes('HITL') || as.includes('Human-in-the-loop'), 'Missing pragmatic scenario examples');
   });
 
   test('quality intelligence files exist', () => {
@@ -466,9 +530,9 @@ describe('Snapshot B: Blog/Vite/Netlify', () => {
     dev_methods: 'TDD', ai_tools: 'Cursor', orm: ''
   }, 'Blog');
 
-  test('file count in range 60-82', () => {
+  test('file count in range 69-91', () => {
     const count = Object.keys(files).length;
-    assert.ok(count >= 60 && count <= 82, `Expected 60-82 files, got ${count}`);
+    assert.ok(count >= 69 && count <= 91, `Expected 69-91 files, got ${count}`);
   });
 
   test('no Stripe content when payment absent', () => {
@@ -711,5 +775,118 @@ describe('Snapshot F: Helpdesk', () => {
     const playbook = files['docs/31_industry_playbook.md'];
     // Check for skill description format
     assert.ok(playbook.includes('チャーン予測') || playbook.includes('Churn Prediction') || playbook.includes('入力:') || playbook.includes('Input:'), 'Missing saas AI skill');
+  });
+});
+
+// ═══ Extended Industry Detection Tests (8 new industries) ═══
+describe('P13 Extended Industry Detection', () => {
+  test('detectIndustry: manufacturing', () => {
+    const files = generate({
+      purpose: 'スマートファクトリー管理システム', target: '製造業管理者',
+      frontend: 'React + Next.js', backend: 'Node.js + Express', database: 'PostgreSQL',
+      deploy: 'Railway', mvp_features: '生産管理, 品質管理, 予知保全',
+      data_entities: 'Product, Machine, QualityCheck'
+    }, 'Manufacturing');
+
+    const ib = files['docs/48_industry_blueprint.md'];
+    assert.ok(ib, 'industry_blueprint.md missing');
+    assert.ok(ib.includes('ISO 9001') || ib.includes('IEC 62443') || ib.includes('製造物責任法'), 'Missing manufacturing regulations');
+  });
+
+  test('detectIndustry: logistics', () => {
+    const files = generate({
+      purpose: '配送ルート最適化システム', target: '物流企業',
+      frontend: 'Vue', backend: 'Node.js', database: 'PostgreSQL',
+      deploy: 'Vercel', mvp_features: 'ルート最適化, GPS追跡, 在庫管理',
+      data_entities: 'Delivery, Route, Warehouse'
+    }, 'Logistics');
+
+    const ib = files['docs/48_industry_blueprint.md'];
+    assert.ok(ib.includes('貨物運送') || ib.includes('2024年問題') || ib.includes('倉庫業法') || ib.includes('Freight'), 'Missing logistics regulations');
+  });
+
+  test('detectIndustry: agriculture', () => {
+    const files = generate({
+      purpose: 'スマート農業管理プラットフォーム', target: '農家',
+      frontend: 'React', backend: 'Supabase', database: 'Supabase',
+      deploy: 'Vercel', mvp_features: 'センサー管理, 病害虫診断, 収穫予測',
+      data_entities: 'Farm, Sensor, Harvest'
+    }, 'Agriculture');
+
+    const ib = files['docs/48_industry_blueprint.md'];
+    assert.ok(ib.includes('農薬取締法') || ib.includes('GAP') || ib.includes('Agricultural chemicals'), 'Missing agriculture regulations');
+  });
+
+  test('detectIndustry: energy', () => {
+    const files = generate({
+      purpose: 'エネルギー管理システム', target: '発電事業者',
+      frontend: 'React', backend: 'Node.js', database: 'PostgreSQL',
+      deploy: 'Railway', mvp_features: '発電量管理, 需給予測, カーボンクレジット',
+      data_entities: 'PowerPlant, Generation, Emission'
+    }, 'Energy');
+
+    const ib = files['docs/48_industry_blueprint.md'];
+    assert.ok(ib.includes('電気事業法') || ib.includes('再エネ') || ib.includes('GHG') || ib.includes('Electricity business'), 'Missing energy regulations');
+  });
+
+  test('detectIndustry: media', () => {
+    const files = generate({
+      purpose: 'ストリーミング配信プラットフォーム', target: '視聴者',
+      frontend: 'React + Next.js', backend: 'Node.js', database: 'PostgreSQL',
+      deploy: 'Vercel', mvp_features: '動画配信, DRM, 広告配信',
+      data_entities: 'Video, User, Subscription'
+    }, 'Media');
+
+    const ib = files['docs/48_industry_blueprint.md'];
+    assert.ok(ib.includes('著作権法') || ib.includes('DRM') || ib.includes('Copyright'), 'Missing media regulations');
+  });
+
+  test('detectIndustry: government', () => {
+    const files = generate({
+      purpose: '行政手続きオンライン申請システム', target: '市民',
+      frontend: 'React', backend: 'Node.js', database: 'PostgreSQL',
+      deploy: 'Gov Cloud', mvp_features: 'オンライン申請, マイナンバー連携, 電子署名',
+      data_entities: 'Application, Citizen, Document'
+    }, 'Government');
+
+    const ib = files['docs/48_industry_blueprint.md'];
+    assert.ok(ib.includes('JPKI') || ib.includes('ISMAP') || ib.includes('マイナンバー') || ib.includes('Government'), 'Missing government regulations');
+  });
+
+  test('detectIndustry: travel', () => {
+    const files = generate({
+      purpose: '旅行予約管理システム', target: '旅行者',
+      frontend: 'React', backend: 'Supabase', database: 'Supabase',
+      deploy: 'Vercel', mvp_features: '宿泊予約, 決済, レビュー管理',
+      data_entities: 'Hotel, Reservation, Review'
+    }, 'Travel');
+
+    const ib = files['docs/48_industry_blueprint.md'];
+    assert.ok(ib.includes('旅行業法') || ib.includes('旅館業法') || ib.includes('Travel agency') || ib.includes('PMS'), 'Missing travel regulations');
+  });
+
+  test('detectIndustry: insurance', () => {
+    const files = generate({
+      purpose: '保険商品管理システム', target: '保険会社',
+      frontend: 'React', backend: 'Node.js', database: 'PostgreSQL',
+      deploy: 'Railway', mvp_features: '商品管理, 引受審査, 請求処理',
+      data_entities: 'Policy, Claim, Underwriting'
+    }, 'Insurance');
+
+    const ib = files['docs/48_industry_blueprint.md'];
+    assert.ok(ib.includes('保険業法') || ib.includes('IFRS 17') || ib.includes('Insurance business') || ib.includes('Telematics'), 'Missing insurance regulations');
+  });
+
+  test('32 industries coverage (24 original + 8 new)', () => {
+    // Verify INDUSTRY_INTEL has all industries
+    assert.ok(typeof INDUSTRY_INTEL === 'object', 'INDUSTRY_INTEL not defined');
+    const industries = Object.keys(INDUSTRY_INTEL);
+    assert.ok(industries.length >= 25, `Expected at least 25 industries (24 domains + 8 new + default), got ${industries.length}`);
+
+    // Check new 8 industries exist
+    const newIndustries = ['manufacturing', 'logistics', 'agriculture', 'energy', 'media', 'government', 'travel', 'insurance'];
+    newIndustries.forEach(ind => {
+      assert.ok(INDUSTRY_INTEL[ind], `Missing ${ind} in INDUSTRY_INTEL`);
+    });
   });
 });

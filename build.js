@@ -58,6 +58,7 @@ const jsFiles = [
   'generators/p10-reverse.js',
   'generators/p11-implguide.js',
   'generators/p12-security.js',
+  'generators/p13-strategy.js',
   'generators/docs.js',
   'generators/common.js',
 

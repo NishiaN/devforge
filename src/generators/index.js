@@ -54,6 +54,7 @@ function doGenerate(lang){
     {fn:()=>genPillar10_ReverseEngineering(a,pn),lbl:_j?'柱⑩ リバースEng':'Pillar ⑩ Reverse Eng',err:'P10-Rev'},
     {fn:()=>genPillar11_ImplIntelligence(a,pn),lbl:_j?'柱⑪ 実装インテリジェンス':'Pillar ⑪ Impl Intelligence',err:'P11-Impl'},
     {fn:()=>genPillar12_SecurityIntelligence(a,pn),lbl:_j?'柱⑫ セキュリティ':'Pillar ⑫ Security',err:'P12-Sec'},
+    {fn:()=>genPillar13_StrategicIntelligence(a,pn),lbl:_j?'柱⑬ 戦略インテリジェンス':'Pillar ⑬ Strategic Intelligence',err:'P13-Strategy'},
     {fn:()=>genDocs21(a,pn),lbl:_j?'仕様書28種':'28 Spec Docs',err:'Docs'},
     {fn:()=>genCommonFiles(a,pn),lbl:_j?'共通ファイル':'Common Files',err:'Common'},
   ];
@@ -110,7 +111,7 @@ function finishGen(_errs){
     // Quick action bar
     if(!$('qbar')){
       const qb=document.createElement('div');qb.id='qbar';qb.className='qbar';
-      qb.innerHTML=`<button class="qbar-btn" onclick="exportZIP()">📦 ZIP</button><button class="qbar-btn" onclick="copyAllFiles()">📋 ${_ja?'全コピー':'Copy All'}</button><button class="qbar-btn" onclick="S.pillar=5;showFileTree()">📊 Dashboard</button><button class="qbar-btn" onclick="S.pillar=6;showFileTree()">🗺️ Roadmap</button><button class="qbar-x" onclick="this.parentNode.remove()">✕</button>`;
+      qb.innerHTML=`<button class="qbar-btn" onclick="exportZIP()">📦 ZIP</button><button class="qbar-btn" onclick="copyAllFiles()">📋 ${_ja?'全コピー':'Copy All'}</button><button class="qbar-btn" onclick="S.pillar=5;showFileTree()">📊 Dashboard</button><button class="qbar-btn" onclick="S.pillar=6;showRoadmapUI()">🗺️ Roadmap</button><button class="qbar-x" onclick="this.parentNode.remove()">✕</button>`;
       const ws=$('ws');if(ws)ws.appendChild(qb);
     }
     setTimeout(showPostGenGuide,400);

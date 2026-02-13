@@ -569,8 +569,8 @@ _(${G?'追記してください':'Add entries here'})_`],
 
   // Related Documents
   doc35+=(G?'## 関連ドキュメント':'## Related Documents')+'\n\n';
-  doc35+='- **docs/05_api.md** — '+(G?'APIエンドポイント詳細':'API endpoints detail')+'\n';
-  doc35+='- **docs/06_screen.md** — '+(G?'画面設計書':'Screen design')+'\n';
+  doc35+='- **docs/05_api_design.md** — '+(G?'APIエンドポイント詳細':'API endpoints detail')+'\n';
+  doc35+='- **docs/06_screen_design.md** — '+(G?'画面設計書':'Screen design')+'\n';
   doc35+='- **docs/26_design_system.md** — '+(G?'デザインシステム':'Design system')+'\n';
   doc35+='- **.spec/technical-plan.md** — '+(G?'技術計画':'Technical plan')+'\n\n';
 

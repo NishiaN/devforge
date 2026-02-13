@@ -106,6 +106,7 @@ applyTheme();
 initPresets();
 initVoice();
 applyLang();
+_initLinkInterceptor();
 // D-2: Add keyboard support for skill cards
 document.querySelectorAll('.skcard').forEach(el=>{
   el.onkeydown=(e)=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();el.click();}};
