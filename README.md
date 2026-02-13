@@ -1,5 +1,7 @@
 # DevForge v9.0
 
+[![CI](https://github.com/NishiaN/devforge/actions/workflows/ci.yml/badge.svg)](https://github.com/NishiaN/devforge/actions/workflows/ci.yml)
+
 > 88+ファイルの開発ドキュメント・AI設定を自動生成するAI駆動開発プラットフォーム
 
 ## 概要
