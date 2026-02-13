@@ -1,5 +1,5 @@
 /* ═══ V9 PROJECT MANAGER ═══ */
-function getProjects(){return JSON.parse(_lsGet('devforge-projects')||'{}');}
+function getProjects(){return _jp(_lsGet('devforge-projects'),{});}
 function saveProject(){
   if(!S.projectName)return;
   const ps=getProjects();
@@ -8,7 +8,11 @@ function saveProject(){
 }
 function switchProject(name){
   const ps=getProjects();const p=ps[name];
-  if(p&&p.state){Object.assign(S,p.state);save();location.reload();}
+  if(p&&p.state){
+    const _SAFE_KEYS=['phase','step','answers','projectName','skill','preset','lang','genLang','theme','pillar','previewFile','files','skipped','progress','editedFiles','prevFiles','_v'];
+    _SAFE_KEYS.forEach(k=>{if(Object.prototype.hasOwnProperty.call(p.state,k))S[k]=p.state[k];});
+    save();location.reload();
+  }
 }
 function deleteProject(name){
   const ps=getProjects();delete ps[name];
@@ -40,15 +44,26 @@ function importProject(){
         data.state.projectName=sanitizeName(data.state.projectName);
         if(data.state.answers){
           Object.keys(data.state.answers).forEach(k=>{
+            if(['__proto__','constructor','prototype'].includes(k)){delete data.state.answers[k];return;}
             if(typeof data.state.answers[k]==='string'){
               data.state.answers[k]=sanitize(data.state.answers[k]);
+            } else {
+              delete data.state.answers[k];
             }
+          });
+        }
+        if(data.state.files){
+          Object.keys(data.state.files).forEach(k=>{
+            if(['__proto__','constructor','prototype'].includes(k)){delete data.state.files[k];return;}
+            if(typeof data.state.files[k]!=='string'){delete data.state.files[k];}
           });
         }
         const ps=getProjects();
         ps[data.state.projectName]=data;
         _lsSet('devforge-projects',JSON.stringify(ps));
-        Object.assign(S,data.state);save();
+        const _SAFE_KEYS=['phase','step','answers','projectName','skill','preset','lang','genLang','theme','pillar','previewFile','files','skipped','progress','editedFiles','prevFiles','_v'];
+        _SAFE_KEYS.forEach(k=>{if(Object.prototype.hasOwnProperty.call(data.state,k))S[k]=data.state[k];});
+        save();
         toast(_ja?'✅ インポート完了':'✅ Import complete');
         location.reload();
       }catch(err){toast(_ja?'❌ 読み込みエラー':'❌ Read error');}

@@ -1,4 +1,4 @@
-/* ═══ STACK COMPATIBILITY & SEMANTIC CONSISTENCY RULES — 43 rules (ERROR×8 + WARN×29 + INFO×6) ═══ */
+/* ═══ STACK COMPATIBILITY & SEMANTIC CONSISTENCY RULES — 46 rules (ERROR×9 + WARN×31 + INFO×6) ═══ */
 const COMPAT_RULES=[
   // ── FE ↔ Mobile (2 ERROR) ──
   {id:'fe-mob-expo',p:['frontend','mobile'],lv:'error',
@@ -239,6 +239,39 @@ const COMPAT_RULES=[
    t:a=>inc(a.deploy,'Vercel')&&inc(a.backend,'Express')&&inc(a.frontend,'Next.js'),
    ja:'Next.js + Express + Vercelの構成です。ExpressをNext.js API Routesに統合するか、Expressを別ホスト（Railway等）にする設計判断が必要です。生成文書ではAPI Routes統合を前提とします',
    en:'Next.js + Express + Vercel stack detected. Decide whether to merge Express into Next.js API Routes or host Express separately. Generated docs will assume API Routes integration'},
+  // ── Security Rules (3 rules: 1 ERROR + 2 WARN) ──
+  // S1: 金融/医療/法務 + MFA未設定
+  {id:'dom-sec-nomfa',p:['purpose','mvp_features'],lv:'warn',
+   t:a=>{
+     const dom=detectDomain(a.purpose||'');
+     if(!dom)return false;
+     const isSensitiveDomain=['fintech','health','legal'].includes(dom);
+     const hasMFA=inc(a.mvp_features,'MFA')||inc(a.mvp_features,'二要素')||inc(a.mvp_features,'2FA')||inc(a.mvp_features,'多要素');
+     return isSensitiveDomain&&!hasMFA;
+   },
+   ja:'金融/医療/法務系のプロジェクトですが、MFA（多要素認証）が設定されていません。セキュリティ強化のためMFA導入を推奨します',
+   en:'Finance/health/legal project without MFA (multi-factor authentication). MFA is strongly recommended for security'},
+  // S2: 決済あり + 認証なし
+  {id:'dom-sec-pay-noauth',p:['payment','auth'],lv:'error',
+   t:a=>{
+     const hasPay=a.payment&&!inc(a.payment,'なし')&&!inc(a.payment,'None')&&a.payment!=='none';
+     const noAuth=!a.auth||inc(a.auth,'なし')||inc(a.auth,'None')||a.auth==='none';
+     return hasPay&&noAuth;
+   },
+   ja:'決済機能が有効ですが、認証が設定されていません。決済機能には必ず認証が必要です',
+   en:'Payment is enabled but authentication is not configured. Payment features require authentication',
+   fix:{f:'auth',s:'Supabase Auth'}},
+  // S3: 機密エンティティ + 認証なし
+  {id:'dom-sec-sensitive-noauth',p:['data_entities','auth'],lv:'warn',
+   t:a=>{
+     const sensitiveEntities=['Patient','Transaction','Payment','MedicalRecord','Claim','Contract','Invoice','BankAccount','CreditCard','Prescription','Diagnosis'];
+     const hasSensitive=sensitiveEntities.some(e=>inc(a.data_entities,e));
+     const noAuth=!a.auth||inc(a.auth,'なし')||inc(a.auth,'None')||a.auth==='none';
+     return hasSensitive&&noAuth;
+   },
+   ja:'Patient/Transaction等の機密情報を扱うエンティティがありますが、認証が設定されていません。個人情報保護のため認証の導入を推奨します',
+   en:'Sensitive entities (Patient/Transaction/etc.) detected without authentication. Authentication is recommended for privacy protection',
+   fix:{f:'auth',s:'Supabase Auth'}},
 ];
 // helpers
 function inc(v,k){return v&&typeof v==='string'&&v.indexOf(k)!==-1;}

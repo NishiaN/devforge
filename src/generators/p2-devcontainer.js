@@ -100,6 +100,7 @@ function genPillar2_DevContainer(a,pn){
   if(hasPay&&a.payment.includes('Stripe')){
     envLines.push('# Stripe','STRIPE_SECRET_KEY=sk_test_xxx','STRIPE_WEBHOOK_SECRET=whsec_xxx',envPrefix+'STRIPE_PUBLISHABLE_KEY=pk_test_xxx','');
   }
+  envLines.push('# Security','ALLOWED_ORIGINS=http://localhost:3000,https://yourdomain.com','RATE_LIMIT_MAX=100','RATE_LIMIT_WINDOW_MS=60000','');
   S.files['.env.example']=envLines.join('\n');
 }
 

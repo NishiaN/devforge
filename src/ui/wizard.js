@@ -120,8 +120,8 @@ function showCompatAlert(answers){
     const d=document.createElement('div');d.className='msg';
     const icon=iss.level==='error'?'❌':iss.level==='warn'?'⚠️':'ℹ️';
     const cls=iss.level==='error'?'compat-error':iss.level==='warn'?'compat-warn':'compat-info';
-    let h=`<div class="${cls}"><span class="compat-icon">${icon}</span><span class="compat-msg">${iss.msg}</span>`;
-    if(iss.fix)h+=`<button class="btn btn-xs btn-s compat-fix" onclick="S.answers['${iss.fix.f}']='${iss.fix.s}';save();this.parentNode.innerHTML='✅ ${_ja?'修正済':'Fixed'}: ${iss.fix.f} → ${iss.fix.s}'">${_ja?'修正':'Fix'}</button>`;
+    let h=`<div class="${cls}"><span class="compat-icon">${icon}</span><span class="compat-msg">${esc(iss.msg)}</span>`;
+    if(iss.fix)h+=`<button class="btn btn-xs btn-s compat-fix" onclick="S.answers['${escAttr(iss.fix.f)}']='${escAttr(iss.fix.s)}';save();this.parentNode.innerHTML='✅ ${_ja?'修正済':'Fixed'}: ${escHtml(iss.fix.f)} → ${escHtml(iss.fix.s)}'">${_ja?'修正':'Fix'}</button>`;
     h+='</div>';d.innerHTML=h;body.appendChild(d);
   });
   body.scrollTop=body.scrollHeight;

@@ -66,7 +66,7 @@ function showExplorer(){
 
   /* ════ RENDER ════ */
   let h=`<div class="exp-header"><h3>⚡ ${_ja?'並列実装探索 — スタック比較':'Parallel Explorer — Stack Comparison'}</h3>
-  <p>${_ja?'現在の選択':'Current'}: <strong class="exp-current">${a.frontend||'React + Next.js'} + ${a.backend||'Express'}</strong> — ${_ja?'2つのスタックを比較':'Compare 2 stacks'}</p></div>`;
+  <p>${_ja?'現在の選択':'Current'}: <strong class="exp-current">${esc(a.frontend||'React + Next.js')} + ${esc(a.backend||'Express')}</strong> — ${_ja?'2つのスタックを比較':'Compare 2 stacks'}</p></div>`;
 
   /* ── Recommendation Ranking (NEW) ── */
   if(hasAnswers){

@@ -1,4 +1,4 @@
-// Compat rules functional test (43 rules: 31 original + 12 new)
+// Compat rules functional test (46 rules: 8 ERROR + 31 WARN + 6 INFO + 1 INFO BFF + 3 SEC)
 const S={lang:'ja',skill:'pro'};
 eval(require('fs').readFileSync('src/data/compat-rules.js','utf-8'));
 eval(require('fs').readFileSync('src/generators/common.js','utf-8')); // For detectDomain
@@ -59,6 +59,16 @@ const tests=[
   {name:'Education+Course=OK',a:{purpose:'教育・学習支援プラットフォーム',data_entities:'User, Course, Lesson, Progress'},expect:'none'},
   // A8: Next+Express+Vercel (BFF info)
   {name:'Next+Express+Vercel=INFO',a:{deploy:'Vercel',backend:'Node.js + Express',frontend:'React + Next.js'},expect:'info',id:'sem-deploy-bff'},
+  // Security Rules
+  {name:'Fintech+NoMFA=WARN',a:{purpose:'金融取引プラットフォーム',mvp_features:'認証, 取引履歴'},expect:'warn',id:'dom-sec-nomfa'},
+  {name:'Health+NoMFA=WARN',a:{purpose:'医療記録管理システム',mvp_features:'認証, カルテ管理'},expect:'warn',id:'dom-sec-nomfa'},
+  {name:'Legal+NoMFA=WARN',a:{purpose:'法務文書管理',mvp_features:'認証, 契約管理'},expect:'warn',id:'dom-sec-nomfa'},
+  {name:'Fintech+MFA=OK',a:{purpose:'金融取引プラットフォーム',mvp_features:'認証, MFA, 取引履歴'},expect:'none'},
+  {name:'Payment+NoAuth=ERROR',a:{payment:'Stripe決済',auth:'なし'},expect:'error',id:'dom-sec-pay-noauth'},
+  {name:'Payment+Auth=OK',a:{payment:'Stripe決済',auth:'Supabase Auth'},expect:'none'},
+  {name:'Sensitive+NoAuth=WARN',a:{data_entities:'Patient, MedicalRecord',auth:'なし'},expect:'warn',id:'dom-sec-sensitive-noauth'},
+  {name:'Transaction+NoAuth=WARN',a:{data_entities:'User, Transaction, Payment'},expect:'warn',id:'dom-sec-sensitive-noauth'},
+  {name:'Sensitive+Auth=OK',a:{data_entities:'Patient, MedicalRecord',auth:'Supabase Auth'},expect:'none'},
 ];
 
 let pass=0,fail=0;

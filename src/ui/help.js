@@ -6,7 +6,8 @@ function showHelp(id,e){
   popup.style.display='block';
   popup.style.top=Math.min(e.clientY+10,window.innerHeight-250)+'px';
   popup.style.left=Math.max(0,Math.min(e.clientX-100,window.innerWidth-380))+'px';
-  popup.innerHTML='<button class="hp-close" onclick="closeHelpPopup()" aria-label="'+t('helpClose')+'">✕</button><h4>'+esc(data.title)+'</h4><p>'+esc(data.desc)+'</p>'+(data.example?'<div class="hp-ex">'+esc(data.example)+'</div>':'')+(data.link?'<a class="hp-link" href="'+esc(data.link)+'" target="_blank" rel="noopener">📎 '+(_ja?'参考リンク':'Reference')+'</a>':'');
+  const safeLink=data.link&&(data.link.startsWith('https://')||data.link.startsWith('http://'))?data.link:'';
+  popup.innerHTML='<button class="hp-close" onclick="closeHelpPopup()" aria-label="'+t('helpClose')+'">✕</button><h4>'+esc(data.title)+'</h4><p>'+esc(data.desc)+'</p>'+(data.example?'<div class="hp-ex">'+esc(data.example)+'</div>':'')+(safeLink?'<a class="hp-link" href="'+esc(safeLink)+'" target="_blank" rel="noopener">📎 '+(_ja?'参考リンク':'Reference')+'</a>':'');
   setTimeout(()=>{document.addEventListener('click',closeHelpOnClick,{once:true});},100);
 }
 function closeHelpPopup(){$('helpPopup').style.display='none';}
