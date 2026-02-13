@@ -4,29 +4,29 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ---
 
-# DevForge v9.0
+# DevForge v9.3.0
 
 ## Architecture
-- **45 modules** in `src/` → `node build.js` → single `devforge-v9.html` (~1166KB)
+- **46 modules** in `src/` → `node build.js` → single `devforge-v9.html` (~2000KB)
 - Vanilla JS, no frameworks. CSS custom properties. CDN: marked.js, mermaid.js, JSZip.
-- **AI Development OS**: Generates 93+ files including context intelligence, operations playbooks, business models, growth strategies, and industry-specific strategic intelligence
+- **AI Development OS**: Generates 107+ files including context intelligence, operations playbooks, business models, growth strategies, industry-specific strategic intelligence, ops intelligence, and path-specific AI rules
 - **Security-hardened**: Phase 1 (CSP, SRI, sanitization) + Phase 2 (16 XSS/injection fixes) + Pillar ⑫ (context-aware security audit prompts)
-- **Latest**: v9.1.0 — Pillar ⑬ Strategic Intelligence (24 domains), CDN SRI hash fixes, _jp() null safety
+- **Latest**: v9.3.0 — CLAUDE.md 3-layer split (.claude/rules/ path-specific rules + .claude/settings.json), reduces token consumption from ~3K to ~1.5K + targeted loading
 
 ## Build & Test
 ```bash
 # Build
-node build.js              # Produces devforge-v9.html (~1166KB)
+node build.js              # Produces devforge-v9.html (~2000KB)
 node build.js --no-minify  # Skip minification (debug)
 node build.js --report     # Show size report
 node build.js --check-css  # Validate CSS custom properties
 
 # Test
-npm test                   # Run all tests (251 tests, all passing)
+npm test                   # Run all tests (283+ tests, all passing)
 npm run test:watch         # Watch mode for test development
 node --test test/gen-coherence.test.js  # Run single test file
 node --test test/data-coverage.test.js  # Run data integrity tests
-node --test test/security.test.js       # Run security tests (24 tests)
+node --test test/security.test.js       # Run security tests (26 tests)
 
 # Development
 npm run dev                # Build + live-server on port 3000
@@ -38,16 +38,16 @@ npm run check              # Syntax check extracted JS
 
 ## Build Process Deep Dive
 
-`build.js` concatenates 44 modules into single HTML:
+`build.js` concatenates 45 modules into single HTML:
 
 1. **Read modules** in dependency order (defined in `jsFiles` array)
 2. **Read CSS** from `styles/all.css`
 3. **Minify** (unless `--no-minify` flag) — CSS/JS basic minification
 4. **Inject** into `template.html` structure
 5. **Write** to `devforge-v9.html`
-6. **Validate** size ≤1200KB (warn if exceeded)
+6. **Validate** size ≤2000KB (warn if exceeded)
 
-**Current Status:** 1166KB / 1200KB limit (34KB remaining budget)
+**Current Status:** 1283KB / 2000KB limit (64.15% utilized, Phase 4 complete, room for expansion)
 
 ### ⚠️ Critical: Minification Strategy
 
@@ -80,7 +80,7 @@ npm run check              # Syntax check extracted JS
 |----------|-------|---------|
 | core/ | state, i18n, events, tour, init | State, language, shortcuts |
 | data/ | presets(41), questions, techdb, compat-rules, gen-templates, helpdata | Static data (41 presets: 36 original + 5 new: CRM, Social, Logistics, Survey, Job Board) |
-| generators/ | index, p1-sdd, p2-devcontainer, p3-mcp, p4-airules, p5-quality, p7-roadmap, p9-designsystem (v2: Figma MCP, Anti-AI checklist), p10-reverse, p11-implguide (skill_guide.md), p12-security (context-aware audit prompts), p13-strategy (industry intelligence), docs, common | 92-file generation engine (13 pillars) |
+| generators/ | index, p1-sdd, p2-devcontainer, p3-mcp, p4-airules, p5-quality, p7-roadmap, p9-designsystem (v2: Figma MCP, Anti-AI checklist), p10-reverse, p11-implguide (skill_guide.md), p12-security (context-aware audit prompts), p13-strategy (industry intelligence), p14-ops (ops intelligence), docs, common | 95-file generation engine (14 pillars) |
 | ui/ | wizard, render, edit, help, confirm, complexity, toc, voice, project, presets, preview, editor, diff, export, explorer, dashboard, templates | UI components |
 | styles/ | all.css | Theme (dark/light), responsive |
 
@@ -214,7 +214,7 @@ See Phase 2 security audit for detailed examples.
 
 **Fix:**
 - Always add both `ja` and `en` versions
-- Search for all instances when updating numbers (41 presets, 93+ files, 13 pillars)
+- Search for all instances when updating numbers (41 presets, 100+ files, 14 pillars)
 - Use static strings in data files, not `S.lang` conditionals
 
 ### Property Name Mismatches with Helper-Generated Objects
@@ -242,8 +242,9 @@ See Phase 2 security audit for detailed examples.
 
 ### Test Coverage Maintenance
 **Files to update when adding domains:**
-- `test/data-coverage.test.js` — Three domain arrays (DOMAIN_ENTITIES, DOMAIN_QA_MAP, DOMAIN_PLAYBOOK tests)
+- `test/data-coverage.test.js` — Four domain arrays (DOMAIN_ENTITIES, DOMAIN_QA_MAP, DOMAIN_PLAYBOOK, DOMAIN_OPS tests)
 - `test/gen-coherence.test.js` — Add generator eval() if testing new pillars
+- `test/ops.test.js` — Add P14 ops intelligence tests for new domains
 
 ### Accessibility (a11y)
 Don't forget ARIA attributes:
@@ -288,6 +289,16 @@ The compatibility checker validates tech stack combinations with **54 rules** (1
 **Essential functions from `src/ui/wizard.js`:**
 - **`isQActive(q)`** — Check if question's condition is met (centralizes conditional question evaluation)
 
+**New in v9.2.0 — DOMAIN_OPS (Ops Intelligence):**
+- **`DOMAIN_OPS`** — 24-domain operational requirements (SLO, Feature Flags, Jobs, Backup, Hardening)
+- **Structure:** `{slo, flags_ja, flags_en, jobs_ja, jobs_en, backup_ja, backup_en, hardening_ja, hardening_en}`
+- **Usage in P14:** `const ops = DOMAIN_OPS[domain] || DOMAIN_OPS._default;`
+- **SLO examples:** fintech/health: 99.99%, education/ec/saas: 99.9%, portfolio/tool: 99%
+- **Feature Flags:** Domain-specific kill switches (e.g., fintech: "取引停止キルスイッチ", ec: "決済機能停止")
+- **Jobs:** Background job patterns (e.g., BaaS: Vercel Cron/pg_cron, Traditional: BullMQ)
+- **Backup:** RPO/RTO requirements by domain criticality
+- **Hardening:** Domain-specific security/ops best practices (e.g., fintech: 冪等性キー必須, health: PHI暗号化)
+
 ## Adding Translations
 
 1. **Add keys to `src/core/i18n.js`:** `I18N = {ja: {key: '日本語'}, en: {key: 'English'}}`
@@ -329,36 +340,52 @@ const PR = {
 
 → See `docs/CLAUDE-REFERENCE.md` for detailed 6-step process.
 
-**Summary:** Create generator → Register in build system → Update UI & i18n → Update docs → Add tests → Check size budget (≤1200KB)
+**Summary:** Create generator → Register in build system → Update UI & i18n → Update docs → Add tests → Check size budget (≤2000KB)
 
 ## Generated Output
 
-DevForge generates **93+ files** (base: 79 files, +4 for skills/ when ai_auto=multi/full/orch, +1 for business_model.md when payment≠none).
+DevForge generates **107+ files** (base: 87 files, +4 for skills/ when ai_auto=multi/full/orch, +1 for business_model.md when payment≠none, +3 for P14 ops docs, +6 for .claude/ structure).
 
 → See `docs/CLAUDE-REFERENCE.md` for complete file catalog.
+
+**New in v9.3.0 (Phase 4: CLAUDE.md 3-layer split):**
+- `CLAUDE.md` — Thin root (~1.5K tokens, compressed from ~3K)
+- `.claude/rules/spec.md` — Spec-driven development rules (auto-loads for .spec/**)
+- `.claude/rules/frontend.md` — Framework-specific FE rules (auto-loads for src/components/**, app/**)
+- `.claude/rules/backend.md` — Architecture-aware BE rules (auto-loads for src/api/**, src/lib/**)
+- `.claude/rules/test.md` — Testing methodology rules (auto-loads for **.test.*, **.spec.*)
+- `.claude/rules/ops.md` — Operations & deployment rules (auto-loads for .github/**, docs/34_*, docs/53_*, docs/54_*)
+- `.claude/settings.json` — Permissions, context config, dangerous command warnings
+
+**New in v9.2.0 (Pillar ⑭):**
+- `docs/53_ops_runbook.md` — Ops Plane design (Feature Flags, SLO/SLI, Observability, Jobs, Backup, Rate Limiting)
+- `docs/54_ops_checklist.md` — Day-1 ops readiness checklist (12 Ops Capabilities Matrix)
+- `docs/55_ops_plane_design.md` — Ops Plane Architecture (12 Ops Capabilities impl patterns, Circuit Breaker, Evidence-Based Ops, Dev×Ops AI separation, Admin Console security)
 
 **Key pillars:**
 - **.spec/** — constitution, specification, technical-plan, tasks, verification
 - **.devcontainer/** — devcontainer.json, Dockerfile, docker-compose.yml, post-create.sh
-- **docs/** — 51 documents including architecture, ER, API, screen, test-cases, security, release, WBS, prompt-playbook, design_system, qa_strategy, reverse_engineering, growth_intelligence, skill_guide, security_intelligence (OWASP 2025), threat_model, compliance_matrix, ai_security, security_testing, industry_blueprint, tech_radar, stakeholder_strategy, operational_excellence
-- **AI rules** — CLAUDE.md, AI_BRIEF.md, .cursorrules, .clinerules, .windsurfrules, AGENTS.md, skills/ (project.md, factory.md, catalog.md, pipelines.md, skill_map.md, agents/)
+- **.claude/** — 3-layer AI rules (thin root + path-specific rules + settings)
+- **docs/** — 53 documents including architecture, ER, API, screen, test-cases, security, release, WBS, prompt-playbook, design_system, qa_strategy, reverse_engineering, growth_intelligence, skill_guide, security_intelligence (OWASP 2025), threat_model, compliance_matrix, ai_security, security_testing, industry_blueprint, tech_radar, stakeholder_strategy, operational_excellence, ops_runbook, ops_checklist
+- **AI rules** — CLAUDE.md (thin), .claude/rules/ (5 files), .claude/settings.json, AI_BRIEF.md, .cursorrules, .clinerules, .windsurfrules, AGENTS.md, skills/ (project.md, factory.md, catalog.md, pipelines.md, skill_map.md, agents/)
 - **CI/CD** — .github/workflows/ci.yml
 
 ## Test Architecture
 | File | Tests | Purpose |
 |------|-------|---------|
 | gen-coherence.test.js | 253 assertions | Full LMS generation + structural validation + post-generation audit (C2-C10) |
-| snapshot.test.js | 47 tests | 6 scenario regression (LMS/Blog/EC/English/PropertyMgmt/Helpdesk) + context engineering + skills validation + quality files + P12 security intelligence |
-| data-coverage.test.js | 28 tests | Data integrity: entity coverage, FK validation, domain detection (24 domains), playbook completeness |
+| snapshot.test.js | 53 tests | 6 scenario regression (LMS/Blog/EC/English/PropertyMgmt/Helpdesk) + context engineering + skills validation + quality files + P12 security intelligence + P13 industry detection + P14 ops + P4 .claude/ structure (6 new tests) |
+| data-coverage.test.js | 31 tests | Data integrity: entity coverage, FK validation, domain detection (24 domains), playbook completeness, DOMAIN_OPS coverage |
 | r27-regression.test.js | 17 tests | Bug fixes: prices, FK, KPI, ports |
 | r28-regression.test.js | 19 tests | Quality: REST methods, AC, scope_out, verification |
-| build.test.js | build | Build size ≤1200KB, pillar function existence (P1-P13) |
+| build.test.js | build | Build size ≤2000KB, pillar function existence (P1-P14) |
 | compat.test.js | 66 tests + 7 synergy | Compatibility validation (54 rules: 11 ERROR, 34 WARN, 9 INFO) + calcSynergy unit tests |
-| security.test.js | 24 tests | Security: CSP, SRI, sanitization, XSS prevention, proto pollution |
+| security.test.js | 26 tests | Security: CSP, SRI, sanitization, XSS prevention, proto pollution, .claude/settings.json safety (2 new tests) |
+| ops.test.js | 16 tests | Ops Intelligence (P14): runbook generation, checklist, ops plane design, SLO adaptation, domain-specific flags, observability stack, circuit breaker, audit schema |
 | presets.test.js | 4 tests | Preset count (41), bilingual names, tech fields, purpose |
 | Others | ~21 tests | i18n, state, techdb |
 
-**Total: 257 tests (all passing, 100% pass rate) + 7 synergy unit tests**
+**Total: 283+ tests (all passing, 100% pass rate) + 7 synergy unit tests**
 
 ## Writing Tests
 

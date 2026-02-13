@@ -24,6 +24,7 @@ eval(fs.readFileSync('src/generators/p10-reverse.js','utf-8').replace('const REV
 eval(fs.readFileSync('src/generators/p11-implguide.js','utf-8'));
 eval(fs.readFileSync('src/generators/p12-security.js','utf-8'));
 eval(fs.readFileSync('src/generators/p13-strategy.js','utf-8').replace(/const (INDUSTRY_INTEL|STAKEHOLDER_STRATEGY|OPERATIONAL_FRAMEWORKS|OPERATIONAL_FRAMEWORKS_EXT|EXTREME_SCENARIOS|PRAGMATIC_SCENARIOS|TECH_RADAR_BASE)/g,'var $1'));
+eval(fs.readFileSync('src/generators/p14-ops.js','utf-8'));
 
 // ═══ Helper ═══
 function generate(answers, name, lang) {
@@ -42,6 +43,7 @@ function generate(answers, name, lang) {
   genPillar11_ImplIntelligence(answers, name);
   genPillar12_SecurityIntelligence(answers, name);
   genPillar13_StrategicIntelligence(answers, name);
+  genPillar14_OpsIntelligence(answers, name);
   return { ...S.files };
 }
 
@@ -60,14 +62,14 @@ describe('Snapshot A: LMS/Supabase/Stripe', () => {
     ai_auto: 'マルチAgent協調'
   }, 'LMS');
 
-  test('file count in range 78-102', () => {
+  test('file count in range 85-110 (P4 adds +6, P14 adds +1)', () => {
     const count = Object.keys(files).length;
-    assert.ok(count >= 78 && count <= 102, `Expected 78-102 files, got ${count}`);
+    assert.ok(count >= 85 && count <= 110, `Expected 85-110 files (P4 adds +6, P14 adds +1), got ${count}`);
   });
 
-  test('total tokens in range 12000-43000', () => {
+  test('total tokens in range 12000-46000', () => {
     const total = Object.values(files).reduce((s, v) => s + tokens(v), 0);
-    assert.ok(total >= 12000 && total <= 43000, `Expected 12K-43K tokens, got ${total}`);
+    assert.ok(total >= 12000 && total <= 46000, `Expected 12K-46K tokens, got ${total}`);
   });
 
   // Core files existence
@@ -356,21 +358,39 @@ describe('Snapshot A: LMS/Supabase/Stripe', () => {
     assert.ok(brief.includes('Supabase Auth'), 'Missing auth info');
   });
 
-  test('CLAUDE.md has workflow cycle and context management', () => {
+  test('CLAUDE.md is thin and references .claude/rules/', () => {
     const claude = files['CLAUDE.md'];
-    assert.ok(claude.includes('Workflow Cycle'), 'Missing Workflow Cycle section');
-    assert.ok(claude.includes('Context Management'), 'Missing Context Management section');
-    assert.ok(claude.includes('docs/24_progress.md'), 'Missing progress.md reference');
-    assert.ok(claude.includes('docs/25_error_logs.md'), 'Missing error_logs.md reference');
+    assert.ok(claude.includes('.claude/rules/'), 'Should reference rule files');
+    assert.ok(claude.length < 3000, 'Should be thin (~1.5K tokens)');
+    assert.ok(claude.includes('Workflow') || claude.includes('ワークフロー'), 'Should have workflow section');
+    // Domain risks section is optional (only for domains with industry intel)
+    if(claude.includes('Compliance') || claude.includes('コンプライアンス')) {
+      assert.ok(claude.includes('Regulatory') || claude.includes('規制要件'), 'Should have regulatory requirements if compliance section exists');
+    }
   });
 
-  test('CLAUDE.md has Thinking Protocol section', () => {
-    const claude = files['CLAUDE.md'];
-    assert.ok(claude.includes('Thinking Protocol'), 'Missing Thinking Protocol section');
-    assert.ok(claude.includes('State the task in one sentence'), 'Missing Thinking Protocol step 1');
-    assert.ok(claude.includes('List files that will be modified'), 'Missing Thinking Protocol step 2');
-    assert.ok(claude.includes('Identify potential side effects'), 'Missing Thinking Protocol step 3');
-    assert.ok(claude.includes('Implement → Test → Verify'), 'Missing Thinking Protocol step 4');
+  test('.claude/rules/ files exist and have content', () => {
+    assert.ok(files['.claude/rules/spec.md'], 'Missing spec.md');
+    assert.ok(files['.claude/rules/frontend.md'], 'Missing frontend.md');
+    assert.ok(files['.claude/rules/backend.md'], 'Missing backend.md');
+    assert.ok(files['.claude/rules/test.md'], 'Missing test.md');
+    assert.ok(files['.claude/rules/ops.md'], 'Missing ops.md');
+
+    // Check spec.md includes file selection matrix and domain context
+    const specRules = files['.claude/rules/spec.md'];
+    assert.ok(specRules.includes('Task Type') || specRules.includes('タスク種別'), 'spec.md should have task type section');
+    assert.ok(specRules.includes('Recommended Files') || specRules.includes('推奨読込ファイル'), 'spec.md should have file selection matrix');
+    assert.ok(specRules.includes('New Feature') || specRules.includes('新規機能'), 'spec.md should have task examples');
+    // Domain context rotation is optional (only for domains with ctx data)
+    if(specRules.includes('Domain Context') || specRules.includes('ドメインコンテキスト')) {
+      assert.ok(specRules.includes('Reference Docs') || specRules.includes('参照ドキュメント'), 'spec.md domain context should have columns');
+    }
+
+    // Check ops.md references the right docs
+    const opsRules = files['.claude/rules/ops.md'];
+    assert.ok(opsRules.includes('docs/53_ops_runbook.md'), 'ops.md should reference ops runbook');
+    assert.ok(opsRules.includes('docs/54_ops_checklist.md'), 'ops.md should reference ops checklist');
+    assert.ok(opsRules.includes('docs/55_ops_plane_design.md'), 'ops.md should reference ops plane design');
   });
 
   test('docs/31_industry_playbook.md exists and has domain intelligence', () => {
@@ -389,14 +409,13 @@ describe('Snapshot A: LMS/Supabase/Stripe', () => {
       'Expected education-specific content (FERPA or learning-related)');
   });
 
-  test('CLAUDE.md has Domain Context Rotation table', () => {
-    const claude = files['CLAUDE.md'];
-    // Should have domain context rotation table for education domain
-    const hasDomainTable = claude.includes('Domain Context Rotation') ||
-                          claude.includes('ドメインコンテキスト') ||
-                          claude.includes('Task Type') ||
-                          claude.includes('タスク種別');
-    assert.ok(hasDomainTable, 'Missing Domain Context Rotation table in CLAUDE.md');
+  test('.claude/settings.json has correct structure', () => {
+    const settings = JSON.parse(files['.claude/settings.json']);
+    assert.ok(settings.permissions, 'Missing permissions in settings');
+    assert.ok(settings.context, 'Missing context in settings');
+    assert.ok(settings.rules, 'Missing rules in settings');
+    assert.ok(settings.permissions.allowedTools.includes('Read'), 'Should allow Read tool');
+    assert.ok(settings.permissions.dangerousCommands, 'Should have dangerous commands warnings');
   });
 
   test('skills/catalog.md has domain-specific skill', () => {
@@ -564,9 +583,9 @@ describe('Snapshot B: Blog/Vite/Netlify', () => {
     dev_methods: 'TDD', ai_tools: 'Cursor', orm: ''
   }, 'Blog');
 
-  test('file count in range 69-91', () => {
+  test('file count in range 76-101 (P14 adds +3, P4 adds +6)', () => {
     const count = Object.keys(files).length;
-    assert.ok(count >= 69 && count <= 91, `Expected 69-91 files, got ${count}`);
+    assert.ok(count >= 76 && count <= 101, `Expected 76-101 files (P14 adds +3, P4 adds +6), got ${count}`);
   });
 
   test('no Stripe content when payment absent', () => {
@@ -921,6 +940,150 @@ describe('P13 Extended Industry Detection', () => {
     const newIndustries = ['manufacturing', 'logistics', 'agriculture', 'energy', 'media', 'government', 'travel', 'insurance'];
     newIndustries.forEach(ind => {
       assert.ok(INDUSTRY_INTEL[ind], `Missing ${ind} in INDUSTRY_INTEL`);
+    });
+  });
+
+  // ═══ Phase 4: CLAUDE.md 3-Layer Split Tests ═══
+  test('generates .claude/ structure', () => {
+    const files = generate({
+      purpose: 'Build a web app',
+      frontend: 'React',
+      backend: 'Express',
+      database: 'PostgreSQL',
+      deploy: 'Vercel'
+    }, 'TestApp', 'en');
+
+    // Layer A - Thin root CLAUDE.md
+    assert.ok(files['CLAUDE.md'], 'Should have root CLAUDE.md');
+    assert.ok(files['CLAUDE.md'].length < 3000, 'Root CLAUDE.md should be thin (~1.5K tokens)');
+    assert.ok(files['CLAUDE.md'].includes('.claude/rules/'), 'Should reference rule files');
+
+    // Layer B - Rule files
+    assert.ok(files['.claude/rules/spec.md'], 'Should have spec rules');
+    assert.ok(files['.claude/rules/frontend.md'], 'Should have frontend rules');
+    assert.ok(files['.claude/rules/backend.md'], 'Should have backend rules');
+    assert.ok(files['.claude/rules/test.md'], 'Should have test rules');
+    assert.ok(files['.claude/rules/ops.md'], 'Should have ops rules');
+
+    // Layer C - Settings
+    assert.ok(files['.claude/settings.json'], 'Should have settings.json');
+    const settings = JSON.parse(files['.claude/settings.json']);
+    assert.ok(settings.permissions, 'Settings should have permissions');
+    assert.ok(settings.context, 'Settings should have context');
+    assert.ok(settings.rules, 'Settings should have rules');
+  });
+
+  test('.claude/rules files have YAML frontmatter', () => {
+    const files = generate({
+      purpose: 'Test app',
+      frontend: 'React',
+      backend: 'Express',
+      database: 'PostgreSQL',
+      deploy: 'Vercel'
+    }, 'Test', 'en');
+
+    const ruleFiles = [
+      '.claude/rules/spec.md',
+      '.claude/rules/frontend.md',
+      '.claude/rules/backend.md',
+      '.claude/rules/test.md',
+      '.claude/rules/ops.md'
+    ];
+
+    ruleFiles.forEach(path => {
+      const content = files[path];
+      assert.ok(content.startsWith('---\n'), `${path} should start with YAML frontmatter`);
+      assert.ok(content.includes('paths:'), `${path} should have paths field`);
+      assert.ok(content.includes('alwaysApply:'), `${path} should have alwaysApply field`);
+    });
+  });
+
+  test('.claude/rules/frontend.md adapts to framework', () => {
+    // Test React (use English for easier assertions)
+    const filesReact = generate({
+      purpose: 'Test', frontend: 'React', backend: 'Express', database: 'PostgreSQL'
+    }, 'React', 'en');
+    assert.ok(filesReact['.claude/rules/frontend.md'].includes('hooks'), 'React rules should mention hooks');
+
+    // Test Vue
+    const filesVue = generate({
+      purpose: 'Test', frontend: 'Vue', backend: 'Express', database: 'PostgreSQL'
+    }, 'Vue', 'en');
+    assert.ok(filesVue['.claude/rules/frontend.md'].includes('Composition API'), 'Vue rules should mention Composition API');
+
+    // Test Svelte
+    const filesSvelte = generate({
+      purpose: 'Test', frontend: 'Svelte', backend: 'Express', database: 'PostgreSQL'
+    }, 'Svelte', 'en');
+    assert.ok(filesSvelte['.claude/rules/frontend.md'].includes('Reactive'), 'Svelte rules should mention reactive declarations');
+  });
+
+  test('.claude/rules/backend.md adapts to architecture', () => {
+    // Test BaaS (use English for easier assertions)
+    const filesBaaS = generate({
+      purpose: 'Test', frontend: 'Next.js', backend: 'Supabase', database: 'Supabase'
+    }, 'BaaS', 'en');
+    const backendBaaS = filesBaaS['.claude/rules/backend.md'];
+    assert.ok(backendBaaS.includes('RLS'), 'BaaS rules should mention RLS');
+    assert.ok(backendBaaS.includes('supabase/migrations'), 'BaaS rules should mention migrations path');
+
+    // Test BFF
+    const filesBFF = generate({
+      purpose: 'Test', frontend: 'Next.js', backend: 'Next.js (API Routes)', database: 'PostgreSQL'
+    }, 'BFF', 'en');
+    const backendBFF = filesBFF['.claude/rules/backend.md'];
+    assert.ok(backendBFF.includes('BFF'), 'BFF rules should mention BFF pattern');
+
+    // Test Traditional
+    const filesTrad = generate({
+      purpose: 'Test', frontend: 'React', backend: 'Express', database: 'PostgreSQL'
+    }, 'Traditional', 'en');
+    const backendTrad = filesTrad['.claude/rules/backend.md'];
+    assert.ok(backendTrad.includes('Client-Server') || backendTrad.includes('Traditional'), 'Traditional rules should mention pattern');
+  });
+
+  test('.claude/settings.json has correct structure', () => {
+    const files = generate({
+      purpose: 'Test', frontend: 'React', backend: 'Express', database: 'PostgreSQL'
+    }, 'Test', 'en');
+
+    const settings = JSON.parse(files['.claude/settings.json']);
+
+    // Permissions
+    assert.ok(Array.isArray(settings.permissions.allowedTools), 'Should have allowedTools array');
+    assert.ok(settings.permissions.allowedTools.includes('Read'), 'Should allow Read');
+    assert.ok(settings.permissions.allowedTools.includes('Write'), 'Should allow Write');
+
+    // Dangerous commands
+    assert.ok(Array.isArray(settings.permissions.dangerousCommands.requireConfirmation), 'Should have requireConfirmation array');
+    assert.ok(settings.permissions.dangerousCommands.requireConfirmation.includes('rm -rf'), 'Should require confirmation for rm -rf');
+
+    // Context
+    assert.strictEqual(settings.context.specDir, '.spec/', 'Should have correct specDir');
+    assert.strictEqual(settings.context.docsDir, 'docs/', 'Should have correct docsDir');
+
+    // Rules
+    assert.strictEqual(settings.rules.autoLoadByPath, true, 'Should enable autoLoadByPath');
+  });
+
+  test('file count includes .claude/ structure (+6 files)', () => {
+    const files = generate({
+      purpose: 'LMS', frontend: 'Next.js', backend: 'Supabase',
+      database: 'Supabase', deploy: 'Vercel'
+    }, 'LMS', 'en');
+
+    const claudeFiles = [
+      'CLAUDE.md',
+      '.claude/rules/spec.md',
+      '.claude/rules/frontend.md',
+      '.claude/rules/backend.md',
+      '.claude/rules/test.md',
+      '.claude/rules/ops.md',
+      '.claude/settings.json'
+    ];
+
+    claudeFiles.forEach(path => {
+      assert.ok(files[path], `Should have ${path}`);
     });
   });
 });
