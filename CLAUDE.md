@@ -15,7 +15,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Build & Test
 ```bash
 # Build
-node build.js              # Produces devforge-v9.html (~1037KB)
+node build.js              # Produces devforge-v9.html (~1110KB)
 node build.js --no-minify  # Skip minification (debug)
 node build.js --report     # Show size report
 node build.js --check-css  # Validate CSS custom properties
@@ -31,56 +31,40 @@ node --test test/security.test.js       # Run security tests (24 tests)
 npm run dev                # Build + live-server on port 3000
 npm run open               # Build + open in browser
 npm run check              # Syntax check extracted JS
+
+# Workflow: Edit src/ → npm test → node build.js → npm run open → commit
 ```
 
 ## Build Process Deep Dive
 
-`build.js` concatenates 43 modules into single HTML:
+`build.js` concatenates 44 modules into single HTML:
 
 1. **Read modules** in dependency order (defined in `jsFiles` array)
 2. **Read CSS** from `styles/all.css`
-3. **Minify** (unless `--no-minify` flag)
-   - CSS: remove comments, collapse whitespace
-   - JS: basic minification (not obfuscation)
+3. **Minify** (unless `--no-minify` flag) — CSS/JS basic minification
 4. **Inject** into `template.html` structure
 5. **Write** to `devforge-v9.html`
 6. **Validate** size ≤1200KB (warn if exceeded)
 
-**Current Status:** 1110KB / 1200KB limit (90KB remaining budget for future expansions)
+**Current Status:** 1110KB / 1200KB limit (90KB remaining budget)
 
 ### ⚠️ Critical: Minification Limitations
 
-**Block/line comment removal is DISABLED** (as of Feb 2026) due to syntax-breaking bugs:
-
-**Problem:** Regex-based comment removal doesn't understand JavaScript string context.
+**Block/line comment removal is DISABLED** due to syntax-breaking bugs:
 - Generated docs contain CSS/markdown with `/* ... */` and `//` inside strings
-- Example: `"/* Tailwind config */"` or `"// vitest.config.js"`
-- Regex `/\/\*[\s\S]*?\*\//g` would match across string boundaries, breaking syntax
-
-**Solution:** Only remove module headers (`/* === file.js === */`) and collapse blank lines.
-- Trade-off: +57KB build size vs guaranteed correctness
-- **DO NOT re-enable block/line comment removal without context-aware parsing**
-
-**If you need aggressive minification:**
-1. Use a proper JS parser (e.g., Terser, esbuild)
-2. Test with `node --check` on extracted JS
-3. Verify all 234 tests pass
+- Regex-based removal doesn't understand JavaScript string context
+- **DO NOT re-enable without context-aware parsing (e.g., Terser, esbuild)**
 
 ### Module Load Order (Critical!)
 ```javascript
 // Core state MUST load first
-'core/state.js',
-'core/i18n.js',
+'core/state.js', 'core/i18n.js',
 // Data before generators
-'data/presets.js',
-'data/questions.js',
-'data/techdb.js',
+'data/presets.js', 'data/questions.js', 'data/techdb.js',
 // Generators depend on data
-'generators/common.js',
-'generators/p1-sdd.js',
+'generators/common.js', 'generators/p1-sdd.js',
 // UI last
-'ui/wizard.js',
-'ui/render.js',
+'ui/wizard.js', 'ui/render.js',
 // Init triggers after all modules loaded
 'core/init.js'
 ```
@@ -163,10 +147,6 @@ doc += 'Content here\n';
 ### Entity Name Collisions
 **Problem:** Different presets may define entities with the same name but different schemas.
 
-**Example:** `Contact` used for both:
-- Portfolio contact form messages (email, subject, body)
-- CRM contact records (contact_name, company_id, phone)
-
 **Solution:**
 1. Use descriptive names: `ContactMessage` vs `Contact` (CRM)
 2. Check `ENTITY_COLUMNS` for existing keys before adding new entities
@@ -176,130 +156,49 @@ doc += 'Content here\n';
 ### CSS Custom Property Undefined
 **Symptom:** UI elements have no background/border/color
 
-**Cause:** Using `var(--bg-1)` when `--bg-1` is not defined in `:root` or `[data-theme="light"]`
-
-**Fix:**
-```css
-:root {
-  --bg-1: #1e1e2e;  /* Add missing variable */
-  --bg-s: var(--bg-2);  /* Can alias existing ones */
-}
-[data-theme="light"] {
-  --bg-1: #e8ecf0;  /* Don't forget light theme! */
-}
-```
+**Fix:** Add missing variable to `:root` and `[data-theme="light"]` in `styles/all.css`
 
 ### Conditional Question Progress Bugs
 **Problem:** Progress bar counts questions that aren't applicable (e.g., ORM question when using Supabase)
 
-**Solution:** Always use `isQActive(q)` before counting/displaying questions:
-```javascript
-// ✅ Correct
-ph.questions.forEach(q => {
-  if(!isQActive(q)) return;  // Skip inactive questions
-  total++;
-});
-
-// ❌ Wrong: Counts all questions
-total += ph.questions.length;
-```
-
-**Affected Functions:** `updProgress()`, `initPills()`, `findNext()`, `getHealthHTML()`, TOC rendering
+**Solution:** Always use `isQActive(q)` before counting/displaying questions (see `src/ui/wizard.js`)
 
 ### Security: Input Sanitization
 
-**Always sanitize user input** before:
-1. Storing in state
-2. Displaying in UI
-3. Using in file paths
+**Always sanitize user input** before storing, displaying, or using in file paths:
 
 ```javascript
 // ✅ URL hash import (allowlist approach)
 if(data.projectName) {
   S.projectName = sanitizeName(data.projectName);
   if(data.answers) S.answers = data.answers;  // Only allowed fields
-  if(data.preset) S.preset = data.preset;
   // Never: Object.assign(S, data) — allows injection!
 }
 
 // ✅ JSON import sanitization + proto pollution protection
-if(data.state.answers) {
-  Object.keys(data.state.answers).forEach(k => {
-    if(['__proto__','constructor','prototype'].includes(k)) {
-      delete data.state.answers[k]; return;
-    }
-    if(typeof data.state.answers[k] === 'string') {
-      data.state.answers[k] = sanitize(data.state.answers[k]);
-    } else {
-      delete data.state.answers[k];  // Remove non-string values
-    }
-  });
-}
+Object.keys(data.state.answers).forEach(k => {
+  if(['__proto__','constructor','prototype'].includes(k)) {
+    delete data.state.answers[k]; return;
+  }
+  if(typeof data.state.answers[k] === 'string') {
+    data.state.answers[k] = sanitize(data.state.answers[k]);
+  } else {
+    delete data.state.answers[k];
+  }
+});
 ```
 
 ### Security: XSS Prevention Patterns
 
-**Critical Rules** (from Phase 2 security audit):
+**Critical Rules:**
 
-1. **Use `esc()` for display text**, `escAttr()` for HTML attributes:
-```javascript
-// ✅ Display text
-h += `<span>${esc(userInput)}</span>`;
+1. **Use `esc()` for display text**, `escAttr()` for HTML attributes
+2. **Mermaid diagrams: Use textContent, NOT innerHTML** (prevents XSS from unescaped content)
+3. **window.open: Always add CSP meta** (restrict capabilities in new windows)
+4. **Use `_jp()` instead of `JSON.parse()` for localStorage** (handles invalid JSON gracefully)
+5. **Validate href protocols** (only allow http/https)
 
-// ✅ Onclick attributes
-h += `<button onclick="doSomething('${escAttr(userInput)}')">Click</button>`;
-
-// ❌ NEVER put user input directly in innerHTML/onclick
-h += `<span>${userInput}</span>`;  // XSS vulnerability!
-```
-
-2. **Mermaid diagrams: Use textContent, NOT innerHTML**:
-```javascript
-// ✅ Safe: Use placeholder + textContent
-let _mmBlocks = [];
-html = html.replace(/<pre><code class="language-mermaid">([\s\S]*?)<\/code><\/pre>/g,
-  (m, code) => {
-    const id = '_mm' + _mmBlocks.length;
-    _mmBlocks.push(code.replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>'));
-    return '<div class="mermaid" id="' + id + '"></div>';
-  });
-// After innerHTML:
-_mmBlocks.forEach((c, i) => {
-  const el = document.getElementById('_mm' + i);
-  if(el) el.textContent = c;  // Safe!
-});
-
-// ❌ NEVER use innerHTML for unescaped content
-html = html.replace(/code/, (m, code) =>
-  '<div class="mermaid">' + code.replace(/&lt;/g,'<') + '</div>');  // XSS!
-```
-
-3. **window.open: Always add CSP meta**:
-```javascript
-const _CSP_META = '<meta http-equiv="Content-Security-Policy" content="default-src \'none\'; style-src \'unsafe-inline\'; img-src data: blob:;">';
-const html = '<!DOCTYPE html><html><head>' + _CSP_META + '<title>...</title></head>...';
-const win = window.open('', '_blank');
-if(win) { win.document.write(html); win.document.close(); }
-```
-
-4. **Use `_jp()` instead of `JSON.parse()` for localStorage**:
-```javascript
-// ✅ Safe: Handles invalid JSON gracefully
-const data = _jp(_lsGet('key'), {});
-
-// ❌ Crashes on invalid JSON
-const data = JSON.parse(_lsGet('key') || '{}');
-```
-
-5. **Validate href protocols**:
-```javascript
-// ✅ Safe: Only allow http/https
-const safeLink = data.link && (data.link.startsWith('https://') || data.link.startsWith('http://'))
-  ? data.link : '';
-
-// ❌ Allows javascript: URLs
-href="${data.link}"  // Dangerous!
-```
+See Phase 2 security audit for detailed examples.
 
 ### Bilingual Consistency
 **Common Mistakes:**
@@ -309,26 +208,11 @@ href="${data.link}"  // Dangerous!
 
 **Fix:**
 - Always add both `ja` and `en` versions
-- Search for all instances when updating numbers (41 presets, 87+ files, 11 pillars)
+- Search for all instances when updating numbers (41 presets, 88+ files, 12 pillars)
 - Use static strings in data files, not `S.lang` conditionals
 
 ### Property Name Mismatches with Helper-Generated Objects
 **Problem:** Accessing properties on objects created by helper functions without checking the actual property structure.
-
-**Example Bug (Feb 2026):** `p5-quality.js` tried to access `domainPlaybook.prevent` when the `_dpb()` helper actually creates `prevent_ja` and `prevent_en` properties.
-
-```javascript
-// ❌ Wrong: Assumes object structure
-const playbook = DOMAIN_PLAYBOOK[domain];
-if(playbook && playbook.prevent) {  // Property doesn't exist!
-  const list = G ? playbook.prevent.ja : playbook.prevent.en;
-}
-
-// ✅ Correct: Match the actual helper structure
-if(playbook && playbook.prevent_ja) {  // Match _dpb() output
-  const list = G ? playbook.prevent_ja : playbook.prevent_en;
-}
-```
 
 **Detection:** If domain-specific sections in generated docs are empty, check property names against the helper function that creates the object.
 
@@ -337,47 +221,27 @@ if(playbook && playbook.prevent_ja) {  // Match _dpb() output
 ### Missing Entity Definitions
 **Problem:** `DOMAIN_ENTITIES` references entities that don't exist in `ENTITY_COLUMNS`.
 
-**Detection:** Tests allow up to 10 missing entities (`data-coverage.test.js`), but this indicates incomplete data.
-
-**Impact:** ER diagrams, API schemas, and DDL will have empty/incomplete schemas for these entities.
-
 **Solution:**
-1. Search ENTITY_COLUMNS for the entity name: `^\s*EntityName\s*:`
+1. Search ENTITY_COLUMNS for the entity name
 2. If missing, add column definition following the pattern of similar entities
 3. Use compression constants (`_U`, `_SA`, `_T`, `_D`, etc.) where applicable
 4. Verify with `npm test` to ensure FK references are valid
 
-**Example (Feb 2026 fix):** Added Chart, Viewing, Client, Transfer, Card, Statement entities referenced by analytics/realestate/legal/fintech domains.
-
 ### Invalid Domain References
 **Problem:** Using domain strings that `detectDomain()` never returns.
 
-**Example Bug (Feb 2026):** QA_CROSS_CUTTING used `'crm'` but detectDomain() only returns 24 valid domains (never 'crm').
-
-**Impact:** Cross-cutting QA patterns will never match, domain-specific logic skipped.
-
 **Solution:**
-1. Check `detectDomain()` in common.js for the complete list of valid domains
+1. Check `detectDomain()` in common.js for the complete list of 24 valid domains
 2. Never hardcode domain strings without verifying they're in detectDomain()
-3. Use `'saas'` for CRM-like apps (SaaS covers CRM use cases)
-
-**Valid domains (as of Feb 2026):** education, ec, marketplace, community, content, analytics, booking, saas, portfolio, tool, iot, realestate, legal, hr, fintech, health, ai, automation, event, gamify, collab, devtool, creator, newsletter
 
 ### Test Coverage Maintenance
-**Problem:** When adding new domains to production code, forgetting to update test coverage arrays.
-
 **Files to update when adding domains:**
 - `test/data-coverage.test.js` — Three domain arrays (DOMAIN_ENTITIES, DOMAIN_QA_MAP, DOMAIN_PLAYBOOK tests)
 - `test/gen-coherence.test.js` — Add generator eval() if testing new pillars
 
-**Pattern (Feb 2026 fix):** Added 8 domains (ai, automation, event, gamify, collab, devtool, creator, newsletter) to all three test domain arrays.
-
 ### Accessibility (a11y)
 Don't forget ARIA attributes:
 ```javascript
-// ❌ Missing accessibility
-tabs.forEach(t => t.classList.add('active'));
-
 // ✅ Include aria-selected
 tabs.forEach(t => {
   t.classList.add('active');
@@ -388,10 +252,6 @@ tabs.forEach(t => {
 ### Error Handling
 Always add error handlers for async operations:
 ```javascript
-// ❌ Missing error handler
-voiceRec.onend = () => { resetUI(); };
-
-// ✅ Add onerror
 voiceRec.onend = () => { resetUI(); };
 voiceRec.onerror = () => { resetUI(); };  // Prevents UI freeze
 ```
@@ -399,244 +259,38 @@ voiceRec.onerror = () => { resetUI(); };  // Prevents UI freeze
 ### Compatibility Rules System
 **Location:** `src/data/compat-rules.js`
 
-The compatibility checker validates tech stack combinations and semantic consistency with **43 rules** (8 error + 29 warn + 6 info).
+The compatibility checker validates tech stack combinations with **43 rules** (8 error + 29 warn + 6 info).
 
-**Rule Structure:**
-```javascript
-{
-  id: 'rule-id',
-  p: ['field1', 'field2'],  // Pair of fields to check
-  lv: 'error'|'warn'|'info',
-  t: a => /* condition function */,
-  ja: '日本語メッセージ',
-  en: 'English message',
-  fix: {f: 'field', s: 'suggested_value'},  // Static fix
-  fixFn: a => ({f: 'field', s: /* dynamic value */})  // Dynamic fix
-}
-```
-
-**Adding Fixes to Rules:**
-- **Static fix**: `fix:{f:'deploy',s:'Vercel'}` — fixed suggestion
-- **Dynamic fix**: `fixFn:a=>({f:'data_entities',s:(a.data_entities||'').replace(/Product/g,'Course')})` — computed suggestion
-- `checkCompat()` evaluates `fixFn` at runtime to support dynamic fixes
-- Dashboard shows level-specific fix buttons when 2+ fixable issues exist
+**Rule Structure:** `{id, p:['field1','field2'], lv:'error'|'warn'|'info', t:conditionFn, ja, en, fix, fixFn}`
 
 **Guidelines:**
 - Add `fix` properties to warn/error rules where automatic correction is safe
 - Don't add fixes to skill-level warnings (user choice, not technical issue)
 - Don't add fixes to informational warnings about preview features
-- Test fixes with representative user answers to avoid unintended corrections
-
-## Development Workflow
-1. Make changes in `src/` modules
-2. Run `npm test` to verify no regressions
-3. Run `node build.js` to generate updated HTML
-4. Test in browser with `npm run open`
-5. Before commit: ensure all tests pass + build succeeds
-
-## Git Workflow & Deployment
-
-### First-Time Setup
-```bash
-# Configure Git identity (if not set)
-git config user.name "Your Name"
-git config user.email "your-email@example.com"
-
-# Or use GitHub noreply email
-git config user.email "[username]@users.noreply.github.com"
-```
-
-### Standard Commit Flow
-```bash
-# 1. Make changes in src/
-# 2. Test
-npm test
-
-# 3. Build
-node build.js
-
-# 4. Review changes
-git status
-git diff
-
-# 5. Stage files (prefer specific files over git add .)
-git add src/core/state.js devforge-v9.html
-
-# 6. Commit with Co-Authored-By
-git commit -m "feat: Add new feature
-
-Description of changes here.
-
-Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>"
-
-# 7. Push
-git push
-```
-
-### SSH vs HTTPS
-- **SSH** (recommended): Requires SSH key setup, no password prompts
-- **HTTPS**: Requires Personal Access Token (PAT), passwords deprecated
-
-**Set up SSH:**
-```bash
-ssh-keygen -t ed25519 -C "your-email@example.com"
-cat ~/.ssh/id_ed25519.pub  # Copy and add to GitHub Settings → SSH Keys
-git remote set-url origin git@github.com:user/repo.git
-```
-
-### Built HTML Tracking
-- By default, `devforge-v9.html` is gitignored (build artifact)
-- For GitHub Pages: **must commit** the built HTML
-- Trade-off: Larger diffs, but enables static hosting
 
 ## Key Data Structures & Helper Functions
 
-### src/generators/common.js
-**Data Structures:**
-- **ENTITY_COLUMNS**: 145+ entity schemas with FK/constraints (includes 4 補完: Examination, Claim, Milestone, Inventory + 14 new preset entities)
-- **ENTITY_METHODS**: REST API method restrictions per entity (added 5: AuditLog, PointLog, Achievement, ClickLog, SensorData)
-- **FEATURE_DETAILS**: 31 feature patterns with acceptance criteria & test cases (added 10: Social, Settings, MFA, Webhook, Onboarding, API Key, Audit, Map, Import, Template)
-- **SCREEN_COMPONENTS**: UI component dictionary by screen type
-- **DOMAIN_ENTITIES**: Core entities per domain with warnings & suggestions (24 domains: 16 original + 8 new)
-- **DOMAIN_QA_MAP**: 24 domain-specific QA strategies (added 8: AI, Automation, Event, Gamify, Collab, DevTool, Creator, Newsletter)
-- **DOMAIN_PLAYBOOK**: 24 complete domain playbooks with implementation flows, compliance rules, bug prevention, context mapping, and AI skills
-- **DOMAIN_GROWTH**: Growth intelligence data for 8 domains + default (funnel stages, CVR benchmarks, growth equations, levers, pricing strategies)
+→ See `docs/CLAUDE-REFERENCE.md` for detailed reference documentation.
 
-### src/generators/p3-mcp.js
-**Enhanced MCP Generation (240 lines):**
-- **Backend-specific MCP servers**: Supabase, Firebase, PostgreSQL, MongoDB, Docker
-- **Domain-specific tool recommendations**: Uses `detectDomain()` to suggest relevant MCP tools
-- **Enhanced project-context.md**: Auth details, domain context, dev methods, generated file structure
-- **tools-manifest.json**: Server list, recommendations (core/backend/domain), categories (dev/test/deploy)
-- **mcp-config.json**: Environment variable placeholders for selected backends
-- **.mcp/README.md**: Installation guide, usage examples, troubleshooting
-
-### src/generators/p10-reverse.js
-**Data Structures:**
-- **REVERSE_FLOW_MAP**: 15 domain-specific reverse engineering templates + \_default
-  - Each domain has: goal (ja/en), flow steps (ja/en), KPIs (ja/en), risks (ja/en)
-  - Used by `genPillar10_ReverseEngineering()` with `detectDomain()` to select template
-
-### src/generators/p12-security.js
-**Pillar ⑫: Security Intelligence** — Context-aware security audit prompts and OWASP 2025 compliance.
-
-**Data Structures:**
-- **OWASP_2025**: 10-item security checklist database (A01-A10)
-  - Each item has: id, ja/en labels, checks (ja/en), stack-specific checks
-  - Stack adapters: supabase, firebase, express, github, npm, vercel, docker
-- **COMPLIANCE_DB**: 7 compliance frameworks (PCI DSS, HIPAA, GDPR, ISMAP, SOC 2, FERPA, ASVS)
-  - Each framework: name, applicable domains, requirements (ja/en), implementation guidance
-- **STRIDE_PATTERNS**: Threat scoring patterns (hasUserId, isPayment, isPublic, hasFile, default)
-
-**Generated Documents (docs/43-47):**
-- **43_security_intelligence.md**: Stack-adaptive OWASP 2025 audit, security headers, shared responsibility model
-- **44_threat_model.md**: STRIDE analysis per entity, trust boundaries (Mermaid), attack surface, threat-mitigation matrix
-- **45_compliance_matrix.md**: Domain-specific compliance requirements with checklists
-- **46_ai_security.md**: Context-aware adversarial prompts (5 base + conditional stack/compliance prompts)
-- **47_security_testing.md**: RLS/Security Rules tests, Zod schemas, API security tests, OWASP ZAP config
-
-**Context-Aware Prompt Pattern:**
-The adversarial prompts in doc46 adapt to project context:
-1. **Entity Security Classification**: Analyzes columns to classify as CRITICAL/HIGH/MED/STD
-   - Payment/Order/Transaction entities → CRITICAL
-   - Entities with user_id → HIGH
-   - Entities with file columns → MED
-   - Others → STD
-2. **Backend-Specific Context**:
-   - Supabase: RLS policy audit prompt with table list
-   - Firebase: Security Rules audit prompt with collection list
-   - Express: Middleware audit prompt
-3. **Compliance-Specific Context**:
-   - Detects applicable frameworks via domain (education→FERPA, fintech→PCI DSS)
-   - Adds compliance audit prompt referencing docs/45
-4. **Stack-Specific Details**:
-   - Environment variables (SUPABASE_SERVICE_ROLE_KEY, STRIPE_SECRET_KEY, etc.)
-   - Auth implementation details (auth.sot, tokenType, tokenVerify)
-   - Entity columns for input validation
-
-**Integration:**
-- **AI Prompt Launcher** (launcher.js): Security Audit template uses OWASP 2025 + refs docs/43-47
-- **Prompt Playbook** (docs.js): Phase 3-3 Security Audit section added
-
-**Helper Functions:**
-- **`_chk(ja, en)`** — Generate checkbox markdown
-- **`_lvl(lv)`** — Security level label (CRITICAL → 🔴 Critical)
-- **`_owaspSection(item, backend)`** — Generate OWASP section with stack checks
-- **`_compSection(comp, G)`** — Generate compliance framework section
-
-**Helper Functions:**
-- **`pluralize(name)`** — Smart table name pluralization
+**Essential functions from `src/generators/common.js`:**
+- **`detectDomain(purpose)`** — Infer domain from purpose text (24 domains: education, ec, marketplace, community, content, analytics, booking, saas, iot, realestate, legal, hr, fintech, portfolio, tool, ai, automation, event, gamify, collab, devtool, creator, newsletter)
 - **`getEntityColumns(name, G, knownEntities)`** — Get columns for entity (ALWAYS pass 3 args)
 - **`getEntityMethods(name)`** — Get allowed REST methods for entity
-- **`detectDomain(purpose)`** — Infer domain from purpose text (24 domains supported)
-  - Returns: 'education', 'ec', 'marketplace', 'community', 'content', 'analytics', 'booking', 'saas', 'iot', 'realestate', 'legal', 'hr', 'fintech', 'portfolio', 'tool', 'ai', 'automation', 'event', 'gamify', 'collab', 'devtool', 'creator', 'newsletter', or null
-  - Used by: AI skills catalog generation, domain-specific KPI/acceptance criteria, MCP tool recommendations
-  - Pattern matching: regex-based on Japanese/English keywords in purpose text (specific patterns first, generic last)
 - **`resolveAuth(answers)`** — Determine auth architecture from answers
-- **`getScreenComponents(screenName, G)`** — Get UI components for screen type
+- **`pluralize(name)`** — Smart table name pluralization
 
-### src/core/i18n.js
-- **`t(key)`** — Get translated string for current `S.lang`
-- **`I18N`** — Translation dictionary (ja/en)
-
-### src/ui/wizard.js
+**Essential functions from `src/ui/wizard.js`:**
 - **`isQActive(q)`** — Check if question's condition is met (centralizes conditional question evaluation)
-- **`updProgress()`** — Update progress bar and sidebar (only counts active questions)
-- **`showQ()`** — Display current question (skips inactive conditional questions)
-- **`findNext()`** — Find next unanswered question (respects conditions)
-
-**Conditional Questions:**
-Questions can have a `condition` field that determines if they should be shown:
-```javascript
-{
-  id: 'orm',
-  condition: {
-    backend: (v) => !['Firebase', 'Supabase', 'Convex', 'static', 'None'].includes(v)
-  }
-  // Only shown when backend is NOT a BaaS or static
-}
-```
-
-**Critical:** When working with wizard questions:
-- Use `isQActive(q)` to check if question should be shown/counted
-- Progress counting must exclude inactive questions (`if(!isQActive(q))return;`)
-- UI styling: inactive questions get `.q-na` class (opacity:0.3, line-through)
-- Affected questions: `database`, `orm`, `data_entities`, `auth`, `ai_tools`
 
 ## Adding Translations
 
-1. **Add keys to `src/core/i18n.js`:**
-```javascript
-const I18N = {
-  ja: {
-    myNewKey: '日本語テキスト',
-    // ...
-  },
-  en: {
-    myNewKey: 'English text',
-    // ...
-  }
-};
-```
-
-2. **Use in UI code:**
-```javascript
-const t = (k) => I18N[S.lang][k] || k;
-// UI text
-const label = t('myNewKey');
-// Or inline ternary for short text
-const text = S.lang === 'ja' ? '日本語' : 'English';
-```
-
-3. **For generated content**, use `G` constant:
-```javascript
-const G = S.genLang === 'ja';
-const content = G ? '生成された日本語' : 'Generated English';
-```
+1. **Add keys to `src/core/i18n.js`:** `I18N = {ja: {key: '日本語'}, en: {key: 'English'}}`
+2. **Use in UI code:** `t('key')` or inline ternary `S.lang === 'ja' ? '日本語' : 'English'`
+3. **For generated content:** `const G = S.genLang === 'ja'; content = G ? '日本語' : 'English';`
 
 ## Adding New Presets
 
-Edit `src/data/presets.js` and add to `PR` object:
+Edit `src/data/presets.js` and add to `PR` object using `_mp()` helper:
 
 ```javascript
 const PR = {
@@ -648,18 +302,12 @@ const PR = {
     purposeEn: 'English purpose description',
     target: ['ターゲット1', 'ターゲット2'],
     targetEn: ['Target1', 'Target2'],
-    // Only specify fields that differ from _PD defaults:
-    // frontend: 'React + Next.js' (default)
-    // backend: 'Supabase' (default)
-    // mobile: 'none' (default)
-    // ai_auto: 'none' (default)
-    // payment: 'none' (default)
+    // Only specify fields that differ from _PD defaults
     features: ['機能1', '機能2', '機能3'],
     featuresEn: ['Feature1', 'Feature2', 'Feature3'],
     entities: 'Entity1, Entity2, Entity3',
     payment: 'stripe'  // Override default
-  }),
-  // ... rest of PR
+  })
 };
 ```
 
@@ -668,189 +316,27 @@ const PR = {
 2. Add required entities to `src/generators/common.js` ENTITY_COLUMNS
 3. Add ER relationships to `inferER()` if needed
 4. Update preset count in `test/presets.test.js` (line 10-11)
-5. Update README.md preset count if applicable
 
 **Current count:** 41 presets (including custom)
 
 ## Adding New Pillars
 
-Adding a new pillar (like Pillar ⑩ Reverse Engineering) requires coordinated changes across 10+ files:
+→ See `docs/CLAUDE-REFERENCE.md` for detailed 6-step process.
 
-### 1. Create Generator (`src/generators/pN-name.js`)
-```javascript
-function genPillarN_Name(a, pn) {
-  const G = S.genLang === 'ja';
-  // Use detectDomain() if domain-specific
-  const domain = detectDomain(a.purpose) || '_default';
+**Summary:** Create generator → Register in build system → Update UI & i18n → Update docs → Add tests → Check size budget (≤1200KB)
 
-  // Generate files
-  S.files['docs/XX_filename.md'] = content;
-}
-```
+## Generated Output
 
-### 2. Register in Build System
-- **`build.js`**: Add to `jsFiles` array (order matters!)
-- **`src/generators/index.js`**: Add step to `steps` array
-- Update header comment: `/* ═══ FILE GENERATION ENGINE — N PILLARS ═══ */`
+DevForge generates **88+ files** (base: 75 files, +4 for skills/ when ai_auto=multi/full/orch, +1 for business_model.md when payment≠none).
 
-### 3. Update UI & i18n
-- **`src/core/i18n.js`**: Add pillar name to `pillar` arrays (ja/en), update `heroDesc` counts
-- **`src/core/init.js`**: Add to `pbJa`/`pbEn` arrays, update `if(i<N)` guard, update `icJa`/`icEn` text
-- **`src/ui/preview.js`**:
-  - Add `else if(i===N)` in `initPillarTabs()`
-  - Add `else if(pillar===N)` in `buildFileTree()`
-- **`src/ui/dashboard.js`**: Add to `pillarChecks` array, add color to `pillarColors`
-- **`src/ui/templates.js`**: Update help modal (overview, pillars section, guide section), update all file counts
+→ See `docs/CLAUDE-REFERENCE.md` for complete file catalog.
 
-### 4. Update Documentation
-- **`devforge-v9-usage-guide.html`**: Update stats and file counts
-- **`CLAUDE.md`**: Update module count, generator list, file count, generated output section
-- **`README.md`** (if exists): Update pillar count
-
-### 5. Add Tests
-- **`test/snapshot.test.js`**:
-  - `eval()` the new generator file
-  - Call `genPillarN_Name()` in `generate()` function
-  - Add file existence tests
-  - Add content validation tests
-  - Update file count range
-- **`test/build.test.js`**: Update pillar consistency test
-
-### 6. Size Budget Check
-- Estimate new generator size (~10-20KB typical)
-- Run `node build.js --report` to verify ≤1200KB
-- Current budget remaining: ~90KB
-
-**Reference Implementations:**
-- Pillar ⑩ (Reverse Engineering): Domain-specific goal decomposition with REVERSE_FLOW_MAP
-- Pillar ⑫ (Security Intelligence): Context-aware prompts with conditional stack/compliance sections
-
-### Compression Patterns (Critical for Size Management)
-
-To stay under 1200KB limit, the codebase uses compression patterns:
-
-**1. Preset Defaults (`src/data/presets.js`)**
-```javascript
-// Default values shared by most presets
-const _PD = {
-  frontend: 'React + Next.js',
-  backend: 'Supabase',
-  mobile: 'none',
-  ai_auto: 'none',
-  payment: 'none'
-};
-
-// Helper merges defaults with preset-specific values
-function _mp(p) { return Object.assign({}, _PD, p); }
-
-// Usage: Only specify values that differ from defaults
-const PR = {
-  saas: _mp({
-    name: 'SaaSアプリ',
-    features: [...],
-    payment: 'stripe'  // Override default
-    // frontend, backend, mobile, ai_auto inherit from _PD
-  })
-};
-```
-
-⚠️ **When adding presets:** Use `_mp()` and only specify non-default fields to save ~200 bytes per preset.
-
-**2. Common Entity Columns (`src/generators/common.js`)**
-```javascript
-// Reusable column definitions (used 50+ times across entities)
-const _U = 'user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID';
-const _SA = "status:VARCHAR(20):DEFAULT 'active':ステータス:Status";
-const _SD = "status:VARCHAR(20):DEFAULT 'draft':ステータス:Status";
-const _T = 'title:VARCHAR(255):NOT NULL:タイトル:Title';
-const _D = 'description:TEXT::説明:Description';
-
-// Usage in ENTITY_COLUMNS
-const ENTITY_COLUMNS = {
-  Post: [_U, _T, _D, _SA],  // Reuses common columns
-  Comment: [_U, 'post_id:UUID:FK(Post) NOT NULL:...', _D, _SA]
-};
-```
-
-⚠️ **When adding entities:** Check if columns match existing constants (\_U, \_SA, \_SD, \_T, \_D, etc.) to maintain compression.
-
-## Generated Output (88+ files)
-When users complete the wizard, DevForge generates **88+ files** (base: 75 files, +4 when ai_auto=multi/full/orch for skills/ md Package, +1 when payment≠none for docs/38_business_model.md):
-- **.spec/** — constitution.md, specification.md, technical-plan.md, tasks.md, verification.md
+**Key pillars:**
+- **.spec/** — constitution, specification, technical-plan, tasks, verification
 - **.devcontainer/** — devcontainer.json, Dockerfile, docker-compose.yml, post-create.sh
-- **docs/** — architecture.md, ER.md, API.md, screen.md, test-cases.md, security.md, release.md, WBS.md, prompt-playbook.md, tasks.md, **progress.md (24)**, **error_logs.md (25)**, **design_system.md (26, v2: Visual Enhancement Dictionary, Figma MCP, Anti-AI Checklist)**, **sequence_diagrams.md (27)**, **qa_strategy.md (28)**, **reverse_engineering.md (29)**, **goal_decomposition.md (30)**, **industry_playbook.md (31)**, **qa_blueprint.md (32)**, **test_matrix.md (33)**, **incident_response.md (34)**, **sitemap.md (35)**, **test_strategy.md (36)**, **bug_prevention.md (37)**, **business_model.md (38)***, **implementation_playbook.md (39)**, **ai_dev_runbook.md (40)**, **growth_intelligence.md (41)**, **skill_guide.md (42)**, **security_intelligence.md (43, OWASP 2025 adaptive audit)**, **threat_model.md (44, STRIDE analysis)**, **compliance_matrix.md (45, domain-specific compliance)**, **ai_security.md (46, context-aware adversarial prompts)**, **security_testing.md (47, RLS/Rules tests, Zod schemas)**
-- **AI rules** — CLAUDE.md (with File Selection Matrix & Context Compression Protocol), AI_BRIEF.md (with Context Loading Strategy, ~1200 tokens), .cursorrules, .clinerules, .windsurfrules, AGENTS.md (with Agent Specialization Matrix), .cursor/rules, **skills/** (project.md, factory.md, catalog.md*, pipelines.md*, README.md**, skill_map.md**, agents/coordinator.md**, agents/reviewer.md**)
+- **docs/** — 47 documents including architecture, ER, API, screen, test-cases, security, release, WBS, prompt-playbook, design_system, qa_strategy, reverse_engineering, growth_intelligence, skill_guide, security_intelligence (OWASP 2025), threat_model, compliance_matrix, ai_security, security_testing
+- **AI rules** — CLAUDE.md, AI_BRIEF.md, .cursorrules, .clinerules, .windsurfrules, AGENTS.md, skills/ (project.md, factory.md, catalog.md, pipelines.md, skill_map.md, agents/)
 - **CI/CD** — .github/workflows/ci.yml
-
-\* Generated when ai_auto ≠ None
-\*\* Generated when ai_auto = multi/full/orch
-\*\*\* docs/38_business_model.md generated only when payment ≠ none
-
-**docs/41_growth_intelligence.md** (always generated):
-- 7 sections: Stack Compatibility Score, Domain Growth Funnel, Growth Equation, Growth Levers, Pricing Strategy (松竹梅), Performance Budget, Related Documents
-- Integrates calcSynergy() for 5-dimension tech stack analysis
-- Domain-specific funnels with CVR benchmarks (8 domains: ec, saas, education, fintech, booking, community, marketplace + default)
-- Mermaid funnel diagrams with stage-by-stage conversion rates
-- Growth equations tailored to business domain (e.g., MRR = Signups × Activation × Paid_CVR × ARPU - Churn)
-- 5 prioritized growth levers per domain
-- 3-tier pricing strategy with behavioral economics (compromise effect, anchoring)
-- Core Web Vitals targets with business impact metrics
-- Framework-specific performance optimization tips (Next.js, Vue/Nuxt, SPA)
-
-### Skills System (Manus Skills Integration)
-**skills/project.md** (always generated):
-- 5 core skills: spec-review, code-gen, test-gen, doc-gen, refactor
-- Factory Template for creating custom skills
-- Each skill has: Role, Purpose, Input, Judgment, Output, Next
-
-**skills/catalog.md** (when ai_auto ≠ None):
-- 4 core development skills (Planning, Design, Production, Operations)
-- 2-4 domain-specific skills per domain (15 domains: education, ec, saas, community, booking, health, marketplace, content, analytics, business, iot, realestate, legal, hr, fintech)
-- 19 detailed skills with Input/Process/Output (14 core skills + 5 domain-specific skills)
-- Advanced skills for Multi-Agent/Full Autonomous levels (including Auto Code Review and Auto Doc Update)
-
-**skills/pipelines.md** (when ai_auto ≠ None):
-- 1-5 autonomous pipelines based on ai_auto level (vibe/agentic/multi/full/orch)
-- Feature Development, Bug Fix, Release, CI/CD Integration pipelines
-- Mermaid flowcharts for each pipeline
-- Decision gates and error handling protocols
-
-### Security Intelligence System (Pillar ⑫)
-**docs/43_security_intelligence.md** (always generated):
-- OWASP Top 10 2025 adaptive audit checklist (stack-specific checks for Supabase/Firebase/Express)
-- Security Headers configuration (CSP with nonce, HSTS, X-Frame-Options)
-- Shared Responsibility Model (BaaS vs self-hosted)
-- Secrets Management (3-tier: dev/.env.local, CI/CD/GitHub Secrets, prod/Secrets Manager)
-- Authentication & Session Security (auth.sot-specific: Supabase Auth, Firebase Auth, NextAuth, custom JWT)
-
-**docs/44_threat_model.md** (always generated):
-- System overview with trust boundaries (Mermaid flowchart)
-- STRIDE threat analysis per entity (Spoofing, Tampering, Repudiation, Info Disclosure, DoS, Elevation)
-- Entity security classification (CRITICAL/HIGH/MED/STD based on columns)
-- Attack surface analysis (external input points, high-risk features)
-- Threat-Mitigation matrix with implementation status
-
-**docs/45_compliance_matrix.md** (always generated):
-- Domain-specific compliance frameworks (PCI DSS for fintech/ec, HIPAA for health, FERPA for education, GDPR for all, etc.)
-- Requirement checklists with implementation guidance
-- Always includes OWASP ASVS Level 2 as baseline
-
-**docs/46_ai_security.md** (always generated):
-- 5 base context-aware adversarial prompts (authorization, input validation, error handling, secrets, session)
-- Conditional stack-specific prompts (Supabase RLS audit, Firebase Security Rules audit)
-- Conditional compliance-specific prompts (references docs/45)
-- AI development risks (Velocity Paradox, Package Hallucination, Shadow Code)
-- Agent security patterns (HITL gates, sandboxing, indirect prompt injection defense)
-- Privacy mode settings for AI development tools
-
-**docs/47_security_testing.md** (always generated):
-- RLS Policy Tests (pgTAP for Supabase)
-- Input Validation Schemas (Zod with entity-specific constraints)
-- API Security Tests (auth bypass, IDOR, rate limiting)
-- OWASP ZAP CI/CD integration
-- Penetration testing checklist
-
-See git history for detailed enhancement changelog.
 
 ## Test Architecture
 | File | Tests | Purpose |
@@ -870,102 +356,16 @@ See git history for detailed enhancement changelog.
 
 ## Writing Tests
 
-### Snapshot/Regression Test Pattern
-See `test/r28-regression.test.js` for reference:
+→ See `docs/CLAUDE-REFERENCE.md` for test patterns (snapshot/regression, unit tests).
 
-```javascript
-const { test } = require('node:test');
-const assert = require('node:assert/strict');
-const fs = require('fs');
+## Git Workflow & Deployment
 
-// Load all required modules
-const S = {answers:{}, skill:'intermediate', lang:'ja', genLang:'ja', /* ... */};
-const save=()=>{}; const _lsGet=()=>null; const _lsSet=()=>{}; const _lsRm=()=>{};
-eval(fs.readFileSync('src/data/questions.js', 'utf-8'));
-eval(fs.readFileSync('src/generators/common.js', 'utf-8'));
-// ... load other dependencies
-
-function gen(answers, name, lang) {
-  S.files = {}; S.genLang = lang || 'ja';
-  S.answers = answers;
-  genPillar1_SDD(answers, name);
-  genPillar2_DevContainer(answers, name);
-  // ... call all generators
-  return { ...S.files };
-}
-
-test('should generate correct structure', () => {
-  const files = gen({
-    purpose: 'Test App',
-    frontend: 'React + Next.js',
-    backend: 'Supabase',
-    data_entities: 'User, Post',
-    mvp_features: 'User auth, Posts',
-    // ... full answers
-  }, 'TestProject');
-
-  assert.ok(files['.spec/constitution.md']);
-  assert.match(files['.spec/constitution.md'], /Test App/);
-});
-```
-
-### Unit Test Pattern
-For isolated functions:
-```javascript
-const { pluralize } = require('../src/generators/common.js');
-test('pluralize', () => {
-  assert.equal(pluralize('User'), 'users');
-  assert.equal(pluralize('Category'), 'categories');
-});
-```
-
-## Size Budget Management
-
-DevForge has a strict **1200KB size limit** for the built HTML file. Current size: **980KB** (220KB under budget).
-
-### Expansion Strategy
-When adding new features, follow the "Balanced Expansion" approach:
-1. **Estimate size impact** before implementing
-2. **Use compression patterns** (see Compression Patterns section)
-3. **Prioritize high-value additions** (core skills > niche features)
-4. **Test frequently** with `node build.js --report`
-
-- **Current size**: 879KB (321KB remaining budget)
-
-### Size Optimization Tips
-- Reuse common patterns (see `_U`, `_SA`, `_SD`, `_T`, `_D`, `_CN`, `_M`, `_B`, etc. in common.js)
-- Use abbreviations in compressed strings (e.g., `G` for `S.genLang==='ja'`)
-- Use `_dpb()` helper for domain playbooks to reduce duplication
-- Avoid duplicate text across presets/domains
-- Test with `node build.js --report` to see module breakdown
-- Current compression rate: ~10% of entity columns use shared constants
-
-## Environment
-- **Node.js**: Required for build/test. If using WSL with nvm, ensure nvm is loaded in shell
-- **Browser**: Generated HTML runs in any modern browser (Chrome, Firefox, Safari, Edge)
-- **CDN Dependencies**: marked.js, mermaid.js, JSZip (loaded at runtime)
-
-## GitHub Pages Deployment
-
-### Initial Setup
-1. Repository must be **Public** (Pages unavailable for Private repos on Free plan)
-2. Settings → Pages → Source: `Deploy from a branch`
-3. Branch: `main`, Folder: `/ (root)`
-
-### Important: Built HTML Must Be Committed
-- `devforge-v9.html` is in `.gitignore` by default (build artifact)
-- For GitHub Pages, **comment out** the line in `.gitignore`:
-  ```gitignore
-  # devforge-v9.html  ← Comment this for Pages deployment
-  ```
-- Commit the built HTML: `git add -f devforge-v9.html`
-- Push to trigger deployment
-
-### Troubleshooting Pages
-- **"Not Found" on Pages settings**: Repository must be Public
-- **404 on site**: Ensure `index.html` and `devforge-v9.html` are committed
-- **Changes not reflected**: Hard refresh (`Ctrl+Shift+R`) or wait 1-2 minutes for cache
-- **Deployment history**: Check https://github.com/[user]/[repo]/deployments
+→ See `docs/CLAUDE-TROUBLESHOOTING.md` for:
+- First-time setup (git config)
+- Standard commit flow
+- SSH vs HTTPS
+- Built HTML tracking
+- GitHub Pages deployment
 
 ## Forbidden
 - No raw SQL in application code (OK: DDL/RLS in migrations)
@@ -975,68 +375,12 @@ When adding new features, follow the "Balanced Expansion" approach:
 
 ## Troubleshooting
 
-### Build fails with "SyntaxError"
-- Check for `${}` inside single-quoted strings — use concatenation
-- Verify all functions close their braces
-- Run `npm run check` to validate syntax
-
-### Tests fail after adding new generator
-- Ensure new generator is loaded in test files with `eval(fs.readFileSync(...))`
-- Verify generator doesn't mutate global state unexpectedly
-- Check that `const G = S.genLang === 'ja';` is defined at function top
-
-### Generated files missing entities
-- Verify entity names are passed to `getEntityColumns(name, G, knownEntities)`
-- Check `data_entities` answer is parsed correctly in generator
-- Ensure entity name matches ENTITY_COLUMNS keys in `common.js`
-
-### LocalStorage quota exceeded
-- DevForge stores ~500KB per project in localStorage
-- Clear old projects via Project Manager (⌘/Ctrl+P)
-- Browser limit: ~5-10MB depending on browser
-
-### i18n key not found
-- Ensure key exists in both `I18N.ja` and `I18N.en`
-- Use `t('key')` function, not direct `I18N[key]` access
-- Check for typos in key names
-
-### Module dependency errors
-- Verify module load order in `build.js` → `jsFiles` array
-- Core modules must load before UI modules
-- Data modules must load before generators
-
-### HTML Entity Escaping Issues
-**Symptom:** Literal `</div>` or `<div>` text appears on page
-
-**Cause:** Using HTML entities (`&lt;`, `&gt;`) instead of actual tags in `innerHTML`
-
-**Example:**
-```javascript
-// ❌ Wrong: Creates literal text "</div>"
-el.innerHTML = '<div>&lt;/div>';
-
-// ✅ Correct: Creates proper closing tag
-el.innerHTML = '<div></div>';
-```
-
-**Common locations:**
-- Dynamic content generation (tour.js, render.js)
-- Template strings building HTML
-- Copy-paste from HTML-encoded sources
-
-**Fix:** Search for `&lt;` and `&gt;` in source files, replace with `<` and `>`
-
-### Node.js Not Found (WSL/nvm)
-**Symptom:** `bash: node: command not found`
-
-**Cause:** nvm not loaded in current shell session
-
-**Fix:**
-```bash
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-node build.js
-```
-
-**Permanent fix:** Add to `~/.bashrc` (already done if nvm installed correctly)
-
+→ See `docs/CLAUDE-TROUBLESHOOTING.md` for:
+- Build fails with "SyntaxError"
+- Tests fail after adding new generator
+- Generated files missing entities
+- LocalStorage quota exceeded
+- i18n key not found
+- Module dependency errors
+- HTML Entity Escaping Issues
+- Node.js Not Found (WSL/nvm)
