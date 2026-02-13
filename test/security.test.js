@@ -170,7 +170,7 @@ test('Security Enhancements', async (t) => {
 
   await t.test('_jp safe JSON.parse helper exists', () => {
     assert.ok(html.includes('function _jp'), '_jp helper function should exist');
-    assert.ok(html.match(/function _jp\([^)]+\)\{try\{return JSON\.parse/), '_jp should wrap JSON.parse in try-catch');
+    assert.ok(html.match(/function _jp\([^)]+\)\{if\(s==null\)return d;try\{return JSON\.parse/), '_jp should have null guard and wrap JSON.parse in try-catch');
   });
 
   await t.test('importProject has proto pollution filter', () => {
