@@ -7,21 +7,22 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 # DevForge v9.0
 
 ## Architecture
-- **45 modules** in `src/` → `node build.js` → single `devforge-v9.html` (~1126KB)
+- **45 modules** in `src/` → `node build.js` → single `devforge-v9.html` (~1156KB)
 - Vanilla JS, no frameworks. CSS custom properties. CDN: marked.js, mermaid.js, JSZip.
 - **AI Development OS**: Generates 93+ files including context intelligence, operations playbooks, business models, growth strategies, and industry-specific strategic intelligence
 - **Security-hardened**: Phase 1 (CSP, SRI, sanitization) + Phase 2 (16 XSS/injection fixes) + Pillar ⑫ (context-aware security audit prompts)
+- **Latest**: v9.1.0 — Pillar ⑬ Strategic Intelligence (24 domains), CDN SRI hash fixes, _jp() null safety
 
 ## Build & Test
 ```bash
 # Build
-node build.js              # Produces devforge-v9.html (~1110KB)
+node build.js              # Produces devforge-v9.html (~1156KB)
 node build.js --no-minify  # Skip minification (debug)
 node build.js --report     # Show size report
 node build.js --check-css  # Validate CSS custom properties
 
 # Test
-npm test                   # Run all tests (239 tests, all passing)
+npm test                   # Run all tests (251 tests, all passing)
 npm run test:watch         # Watch mode for test development
 node --test test/gen-coherence.test.js  # Run single test file
 node --test test/data-coverage.test.js  # Run data integrity tests
@@ -46,7 +47,7 @@ npm run check              # Syntax check extracted JS
 5. **Write** to `devforge-v9.html`
 6. **Validate** size ≤1200KB (warn if exceeded)
 
-**Current Status:** 1126KB / 1200KB limit (74KB remaining budget)
+**Current Status:** 1156KB / 1200KB limit (44KB remaining budget)
 
 ### ⚠️ Critical: Minification Limitations
 
@@ -195,7 +196,9 @@ Object.keys(data.state.answers).forEach(k => {
 1. **Use `esc()` for display text**, `escAttr()` for HTML attributes
 2. **Mermaid diagrams: Use textContent, NOT innerHTML** (prevents XSS from unescaped content)
 3. **window.open: Always add CSP meta** (restrict capabilities in new windows)
-4. **Use `_jp()` instead of `JSON.parse()` for localStorage** (handles invalid JSON gracefully)
+4. **Use `_jp()` instead of `JSON.parse()` for localStorage** (handles invalid JSON gracefully + null/undefined safety)
+   - `JSON.parse(null)` returns `null` (not an error), bypassing default values
+   - `_jp()` includes explicit null guard: `if(s==null)return d;`
 5. **Validate href protocols** (only allow http/https)
 
 See Phase 2 security audit for detailed examples.
@@ -352,7 +355,7 @@ DevForge generates **93+ files** (base: 79 files, +4 for skills/ when ai_auto=mu
 | presets.test.js | 4 tests | Preset count (41), bilingual names, tech fields, purpose |
 | Others | ~21 tests | i18n, state, techdb |
 
-**Total: 239 tests (all passing, 100% pass rate)**
+**Total: 251 tests (all passing, 100% pass rate)**
 
 ## Writing Tests
 
