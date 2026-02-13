@@ -1,4 +1,4 @@
-/* ═══ STACK COMPATIBILITY & SEMANTIC CONSISTENCY RULES — 48 rules (ERROR×10 + WARN×30 + INFO×8) ═══ */
+/* ═══ STACK COMPATIBILITY & SEMANTIC CONSISTENCY RULES — 54 rules (ERROR×11 + WARN×34 + INFO×9) ═══ */
 const COMPAT_RULES=[
   // ── FE ↔ Mobile (2 ERROR) ──
   {id:'fe-mob-expo',p:['frontend','mobile'],lv:'error',
@@ -16,6 +16,22 @@ const COMPAT_RULES=[
    ja:'モバイルアプリにはAPI用バックエンドが必要です。Supabase/Firebase等のBaaSを検討してください',
    en:'Mobile apps need an API backend. Consider BaaS like Supabase/Firebase',
    fix:{f:'backend',s:'Supabase'}},
+  // ── Mobile ↔ Auth (2 WARN) ──
+  {id:'mob-noauth',p:['mobile','auth'],lv:'warn',
+   t:a=>{
+    if(!a.mobile||!a.auth)return false;
+    const hasMobile=a.mobile&&!inc(a.mobile,'なし')&&!inc(a.mobile,'None')&&a.mobile!=='none'&&!inc(a.mobile,'PWA');
+    const hasAuth=a.auth&&!inc(a.auth,'なし')&&!inc(a.auth,'None')&&a.auth!=='none';
+    return hasMobile&&!hasAuth;
+   },
+   ja:'モバイルアプリでは認証がほぼ必須です。Supabase Auth/Firebase Auth推奨',
+   en:'Mobile apps almost always need authentication. Use Supabase Auth/Firebase Auth',
+   fix:{f:'auth',s:'Supabase Auth'}},
+  {id:'mob-auth-nextauth',p:['mobile','auth'],lv:'warn',
+   t:a=>a.mobile&&inc(a.mobile,'Expo')&&inc(a.auth,'NextAuth'),
+   ja:'NextAuthはWeb専用。React Nativeには@react-native-google-signin等のアダプター必要',
+   en:'NextAuth is web-only. React Native needs adapters like @react-native-google-signin',
+   fix:{f:'auth',s:'Supabase Auth'}},
   // ── BE ↔ ORM (3 ERROR, 1 WARN) ──
   {id:'be-orm-py-prisma',p:['backend','orm'],lv:'error',
    t:a=>isPyBE(a)&&inc(a.orm,'Prisma')||isPyBE(a)&&inc(a.orm,'Drizzle')||isPyBE(a)&&inc(a.orm,'TypeORM'),
@@ -154,6 +170,26 @@ const COMPAT_RULES=[
    t:a=>inc(a.deploy,'Cloudflare')&&inc(a.database,'PostgreSQL'),
    ja:'Cloudflare Workers→外部DBはHyperdriveまたはD1への移行を推奨',
    en:'Cloudflare Workers → external DB: use Hyperdrive or consider D1'},
+  {id:'dep-db-cf-fs',p:['deploy','database'],lv:'warn',
+   t:a=>inc(a.deploy,'Cloudflare')&&inc(a.database,'Firestore'),
+   ja:'Cloudflare Workers + Firestoreはレイテンシー高。D1/KV/Durableを推奨',
+   en:'Cloudflare + Firestore has high latency. Consider D1/KV/Durable Objects',
+   fix:{f:'deploy',s:'Firebase Hosting'}},
+  // ── Deploy ↔ Backend (Cloudflare Workers compatibility) (1 ERROR, 1 WARN, 1 INFO) ──
+  {id:'be-dep-heavy-cf',p:['backend','deploy'],lv:'error',
+   t:a=>inc(a.deploy,'Cloudflare')&&(inc(a.backend,'Django')||inc(a.backend,'Spring')||inc(a.backend,'Laravel')),
+   ja:'Django/Spring/LaravelはCloudflare Workers非対応（V8制限）。Hono/Express推奨',
+   en:'Django/Spring/Laravel incompatible with Cloudflare Workers (V8 limits). Use Hono/Express',
+   fix:{f:'backend',s:'Node.js + Hono'}},
+  {id:'be-dep-node-cf',p:['backend','deploy'],lv:'warn',
+   t:a=>inc(a.deploy,'Cloudflare')&&(inc(a.backend,'Express')||inc(a.backend,'NestJS'))&&!inc(a.backend,'Hono'),
+   ja:'Express/NestJSは一部Node API非対応。Cloudflare Workers最適化にはHono推奨',
+   en:'Express/NestJS have Node API limitations on Cloudflare. Hono is optimized for Workers',
+   fix:{f:'backend',s:'Node.js + Hono'}},
+  {id:'be-dep-hono-cf',p:['backend','deploy'],lv:'info',
+   t:a=>inc(a.deploy,'Cloudflare')&&inc(a.backend,'Hono'),
+   ja:'✨ Hono + Cloudflare Workersは最適な組み合わせです（超高速Edge実行）',
+   en:'✨ Hono + Cloudflare Workers is optimal (ultra-fast edge execution)'},
   // ── Domain ↔ Auth/Payment (2 ERROR/WARN) ──
   {id:'dom-sec-noauth',p:['purpose','auth'],lv:'error',
    t:a=>{

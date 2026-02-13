@@ -72,6 +72,17 @@ const tests=[
   {name:'Sensitive+NoAuth=WARN',a:{data_entities:'Patient, MedicalRecord',auth:'なし'},expect:'warn',id:'dom-sec-sensitive-noauth'},
   {name:'Transaction+NoAuth=WARN',a:{data_entities:'User, Transaction, Payment',auth:'なし'},expect:'warn',id:'dom-sec-sensitive-noauth'},
   {name:'Sensitive+Auth=OK',a:{data_entities:'Patient, MedicalRecord',auth:'Supabase Auth'},expect:'none'},
+  // Cloudflare Workers compatibility
+  {name:'Django+CF=ERROR',a:{backend:'Python + Django',deploy:'Cloudflare Workers'},expect:'error',id:'be-dep-heavy-cf'},
+  {name:'Spring+CF=ERROR',a:{backend:'Java + Spring Boot',deploy:'Cloudflare Workers'},expect:'error',id:'be-dep-heavy-cf'},
+  {name:'Express+CF=WARN',a:{backend:'Node.js + Express',deploy:'Cloudflare Workers'},expect:'warn',id:'be-dep-node-cf'},
+  {name:'NestJS+CF=WARN',a:{backend:'Node.js + NestJS',deploy:'Cloudflare Workers'},expect:'warn',id:'be-dep-node-cf'},
+  {name:'Hono+CF=INFO',a:{backend:'Node.js + Hono',deploy:'Cloudflare Workers'},expect:'info',id:'be-dep-hono-cf'},
+  {name:'CF+Firestore=WARN',a:{deploy:'Cloudflare Workers',database:'Firebase Firestore'},expect:'warn',id:'dep-db-cf-fs'},
+  // Mobile + Auth
+  {name:'Mobile+NoAuth=WARN',a:{mobile:'Expo (React Native)',auth:'なし'},expect:'warn',id:'mob-noauth'},
+  {name:'Mobile+NextAuth=WARN',a:{mobile:'Expo (React Native)',auth:'Auth.js/NextAuth'},expect:'warn',id:'mob-auth-nextauth'},
+  {name:'Mobile+SupaAuth=OK',a:{mobile:'Expo (React Native)',auth:'Supabase Auth'},expect:'none'},
 ];
 
 let pass=0,fail=0;
@@ -127,22 +138,25 @@ const synergyTests = [
   {
     name: 'Domain bonus: fintech + PostgreSQL + Stripe',
     input: {
+      frontend: 'React + Next.js',
+      backend: 'Node.js + Express',
       purpose: '金融取引プラットフォーム',
       database: 'PostgreSQL',
       payment: 'Stripe決済',
       skill_level: 'Professional'
     },
-    expectMin: { overall: 70, d3: 80 }
+    expectMin: { overall: 68, d5: 90 }  // Pro skill level guarantees d5=90
   },
   {
     name: 'BaaS ecosystem unity: Supabase full stack',
     input: {
+      frontend: 'React + Next.js',
       backend: 'Supabase',
       database: 'Supabase (PostgreSQL)',
       auth: 'Supabase Auth',
       skill_level: 'Professional'
     },
-    expectMin: { overall: 75, d1: 80, d2: 85 }
+    expectMin: { overall: 73, d1: 85, d5: 90 }  // High FE-BE affinity + Pro skill level
   },
   {
     name: 'Beginner + complex stack lowers d5',

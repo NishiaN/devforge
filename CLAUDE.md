@@ -265,7 +265,7 @@ voiceRec.onerror = () => { resetUI(); };  // Prevents UI freeze
 ### Compatibility Rules System
 **Location:** `src/data/compat-rules.js`
 
-The compatibility checker validates tech stack combinations with **43 rules** (8 error + 29 warn + 6 info).
+The compatibility checker validates tech stack combinations with **54 rules** (11 error + 34 warn + 9 info).
 
 **Rule Structure:** `{id, p:['field1','field2'], lv:'error'|'warn'|'info', t:conditionFn, ja, en, fix, fixFn}`
 
@@ -353,7 +353,7 @@ DevForge generates **93+ files** (base: 79 files, +4 for skills/ when ai_auto=mu
 | r27-regression.test.js | 17 tests | Bug fixes: prices, FK, KPI, ports |
 | r28-regression.test.js | 19 tests | Quality: REST methods, AC, scope_out, verification |
 | build.test.js | build | Build size ≤1200KB, pillar function existence (P1-P13) |
-| compat.test.js | 45 tests + 7 synergy | Compatibility validation + calcSynergy unit tests |
+| compat.test.js | 66 tests + 7 synergy | Compatibility validation (54 rules: 11 ERROR, 34 WARN, 9 INFO) + calcSynergy unit tests |
 | security.test.js | 24 tests | Security: CSP, SRI, sanitization, XSS prevention, proto pollution |
 | presets.test.js | 4 tests | Preset count (41), bilingual names, tech fields, purpose |
 | Others | ~21 tests | i18n, state, techdb |
