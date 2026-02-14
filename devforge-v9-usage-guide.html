@@ -391,6 +391,25 @@ section { padding: 80px 0; }
   text-decoration: none;
 }
 .cta-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(59,130,246,0.3); }
+.cta-btn-s {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 28px;
+  background: transparent;
+  color: var(--accent);
+  font-weight: 600;
+  font-size: 13px;
+  border: 1px solid var(--accent);
+  border-radius: 10px;
+  text-decoration: none;
+  transition: all 0.3s;
+  margin-top: 12px;
+}
+.cta-btn-s:hover {
+  background: rgba(59,130,246,0.1);
+  transform: translateY(-2px);
+}
 
 /* ═══ FOOTER ═══ */
 .footer {
@@ -399,6 +418,21 @@ section { padding: 80px 0; }
   border-top: 1px solid var(--border);
   font-size: 12px;
   color: var(--text3);
+}
+.footer-nav {
+  margin-bottom: 16px;
+  font-size: 13px;
+}
+.footer-nav a {
+  color: var(--accent);
+  text-decoration: none;
+}
+.footer-nav a:hover {
+  text-decoration: underline;
+}
+.footer-sep {
+  color: var(--text3);
+  margin: 0 12px;
 }
 
 /* ═══ RESPONSIVE ═══ */
@@ -810,12 +844,18 @@ section { padding: 80px 0; }
       DevForge v9 は「コードを書く前の設計」を自動化する、世界で唯一のツールです。<br>
       レベルに関係なく、今日から使えます。
     </p>
-    <a href="#" class="cta-btn" onclick="history.back();return false;">← DevForge v9 に戻る</a>
+    <a href="devforge-v9.html" class="cta-btn">← DevForge v9 に戻る</a>
+    <a href="tech-selection-guide.html" class="cta-btn-s">📊 技術選定ガイド →</a>
   </div>
 </section>
 
 <footer class="footer">
   <div class="container">
+    <div class="footer-nav">
+      <a href="devforge-v9.html">DevForge v9</a>
+      <span class="footer-sep">|</span>
+      <a href="tech-selection-guide.html">技術選定ガイド</a>
+    </div>
     © 2026 エンジニアリングのタネ制作委員会 — DevForge v9.0 Usage Guide<br>
     Built with 🧠 by にしあん
   </div>

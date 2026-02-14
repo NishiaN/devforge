@@ -23,7 +23,7 @@ global.detectDomain = (purpose) => {
 // Eval generator code (convert const to var to make them global)
 eval(p15Code.replace(/const (DOMAIN_MARKET|PERSONA_ARCHETYPES|GTM_STRATEGY|REGULATORY_HORIZON)/g, 'var $1'));
 
-test('[P15] DOMAIN_MARKET: has 24 domains + _default', () => {
+test('[P15] DOMAIN_MARKET: has 32 domains + _default', () => {
   const domains = Object.keys(DOMAIN_MARKET);
   assert.ok(domains.includes('education'), 'includes education');
   assert.ok(domains.includes('ec'), 'includes ec');
@@ -50,7 +50,7 @@ test('[P15] DOMAIN_MARKET: has 24 domains + _default', () => {
   assert.ok(domains.includes('creator'), 'includes creator');
   assert.ok(domains.includes('newsletter'), 'includes newsletter');
   assert.ok(domains.includes('_default'), 'includes _default');
-  assert.strictEqual(domains.length, 25, 'exactly 25 entries (24 domains + _default)');
+  assert.strictEqual(domains.length, 33, 'exactly 33 entries (32 domains + _default)');
 });
 
 test('[P15] DOMAIN_MARKET: each domain has bilingual 6 properties', () => {
@@ -64,9 +64,9 @@ test('[P15] DOMAIN_MARKET: each domain has bilingual 6 properties', () => {
   });
 });
 
-test('[P15] PERSONA_ARCHETYPES: has 24 domains + _default', () => {
+test('[P15] PERSONA_ARCHETYPES: has 32 domains + _default', () => {
   const domains = Object.keys(PERSONA_ARCHETYPES);
-  assert.strictEqual(domains.length, 25, 'exactly 25 entries (24 domains + _default)');
+  assert.strictEqual(domains.length, 33, 'exactly 33 entries (32 domains + _default)');
   assert.ok(domains.includes('education'), 'includes education');
   assert.ok(domains.includes('fintech'), 'includes fintech');
   assert.ok(domains.includes('_default'), 'includes _default');

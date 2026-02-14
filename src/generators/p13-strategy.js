@@ -9,7 +9,7 @@ const _si = (reg_ja,reg_en, arch_ja,arch_en, fail_ja,fail_en, trend_ja,trend_en,
   bm_ja, bm_en         // ビジネスモデル (string[], 2-3 items, format: "model|revenue|target")
 });
 
-// Industry Intelligence Database (24 domains + default)
+// Industry Intelligence Database (32 domains + default)
 const INDUSTRY_INTEL = {
   education: _si(
     ['FERPA準拠(学生記録保護)','COPPA準拠(13歳未満ユーザー)','アクセシビリティ(WCAG 2.1 AA以上)'],
@@ -657,42 +657,33 @@ const TECH_RADAR_BASE = {
   },
   backend: {
     adopt: ['Node.js 22 LTS','Hono','Fastify','PostgreSQL','Redis'],
-    trial: ['Bun','Deno 2','Cloudflare Workers','Edge Runtime'],
-    assess: ['Rust (Actix/Axum)','Go (Gin/Echo)','Zig'],
+    trial: ['Bun','Deno 2','Cloudflare Workers','Edge Runtime','gRPC'],
+    assess: ['Rust (Actix/Axum)','Go (Gin/Echo)','Zig','WebAssembly (WASI)'],
     hold: ['PHP 7.x','Python 2.x','MongoDB (as primary DB)']
   },
   infrastructure: {
     adopt: ['Docker','Vercel','Railway','Supabase','Stripe'],
-    trial: ['SST (Serverless Stack)','Terraform','Pulumi','Cloudflare Pages'],
+    trial: ['SST (Serverless Stack)','Terraform','Pulumi','Cloudflare Pages','Backstage'],
     assess: ['Kubernetes (for scale)','Fly.io','Render'],
     hold: ['Heroku','AWS Elastic Beanstalk','Self-hosted without automation']
   },
   ai: {
-    adopt: ['Claude 3.5/4','GPT-4o','Vercel AI SDK','OpenAI SDK'],
+    adopt: ['Claude 4.5/4.6','GPT-4o','Vercel AI SDK','OpenAI SDK'],
     trial: ['Claude Code','Cursor','Anthropic MCP','AI Agents'],
     assess: ['Local LLMs (Ollama)','Fine-tuning','Vector DBs (Pinecone/Weaviate)'],
     hold: ['GPT-3.5 (outdated)','Non-streaming responses','Prompt without streaming']
+  },
+  mobile: {
+    adopt: ['React Native (Expo)','Flutter'],
+    trial: ['Kotlin Multiplatform (KMP)','Compose Multiplatform','SwiftUI','Jetpack Compose'],
+    assess: ['Tauri v2','visionOS / RealityKit'],
+    hold: ['Cordova','Ionic 4','Xamarin']
   }
 };
 
-/// Helper: Extended industry detection (32 industries)
+/// Helper: Industry detection (wraps detectDomain - 32 domains)
 function detectIndustry(purpose) {
-  if (!purpose) return '_default';
-  const p = purpose.toLowerCase();
-  // Check extended industries first (8 new ones) - more specific patterns to avoid conflicts
-  const ext = [
-    [/(製造|工場|factory|manufacturing|industry.?4|smart.*factory|ファクトリー|生産管理)/i, 'manufacturing'],
-    [/(物流|配送|logistics|supply.?chain|倉庫|warehouse|ルート最適)/i, 'logistics'],
-    [/(農業|agri|farming|農場|crop|livestock|スマート農業)/i, 'agriculture'],
-    [/(エネルギー|energy|発電|電力|solar|grid|スマートメーター)/i, 'energy'],
-    [/(メディア|放送|streaming|ストリーミング|gaming|ゲーム|DRM|entertainment|配信.*platform)/i, 'media'],
-    [/(行政|government|gov.?tech|自治体|LGWAN|マイナンバー|公共|手続き.*online)/i, 'government'],
-    [/(旅行|観光|travel|hospitality|PMS|hotel.*予約|宿泊|民泊)/i, 'travel'],
-    [/(保険|insurance|insur.?tech|引受|telematics|パラメトリック)/i, 'insurance'],
-  ];
-  for (const [rx, key] of ext) { if (rx.test(p)) return key; }
-
-  // Fall back to original detectDomain for 24 original domains
+  // Simplified wrapper - detectDomain() now handles all 32 domains
   const d = detectDomain(purpose);
   return d || '_default';
 }

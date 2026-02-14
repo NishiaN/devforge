@@ -35,7 +35,7 @@ function showDiff(path){
       <span class="add">+${adds}</span>
       <span class="del">-${dels}</span>
       <span>~${same}</span>
-      <button class="btn btn-s" onclick="previewFile('${esc(path)}')">✕ ${_ja?'閉じる':'Close'}</button>
+      <button class="btn btn-s" onclick="previewFile('${escAttr(path)}')">✕ ${_ja?'閉じる':'Close'}</button>
     </div>
   </div>`;
   h+='<div class="diff-body">';

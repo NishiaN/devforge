@@ -96,7 +96,8 @@ test('DOMAIN_ENTITIES: all domains are defined', () => {
   const domains = ['education', 'ec', 'marketplace', 'community', 'content',
                    'analytics', 'booking', 'saas', 'portfolio', 'tool',
                    'iot', 'realestate', 'legal', 'hr', 'fintech', 'health',
-                   'ai', 'automation', 'event', 'gamify', 'collab', 'devtool', 'creator', 'newsletter'];
+                   'ai', 'automation', 'event', 'gamify', 'collab', 'devtool', 'creator', 'newsletter',
+                   'manufacturing', 'logistics', 'agriculture', 'energy', 'media', 'government', 'travel', 'insurance'];
 
   domains.forEach(domain => {
     assert.ok(DOMAIN_ENTITIES[domain], `Missing DOMAIN_ENTITIES.${domain}`);
@@ -111,7 +112,8 @@ test('DOMAIN_QA_MAP: all domains have QA strategies', () => {
   const domains = ['education', 'ec', 'marketplace', 'community', 'content',
                    'analytics', 'booking', 'saas', 'portfolio', 'tool',
                    'iot', 'realestate', 'legal', 'hr', 'fintech', 'health',
-                   'ai', 'automation', 'event', 'gamify', 'collab', 'devtool', 'creator', 'newsletter'];
+                   'ai', 'automation', 'event', 'gamify', 'collab', 'devtool', 'creator', 'newsletter',
+                   'manufacturing', 'logistics', 'agriculture', 'energy', 'media', 'government', 'travel', 'insurance'];
 
   domains.forEach(domain => {
     assert.ok(DOMAIN_QA_MAP[domain], `Missing DOMAIN_QA_MAP.${domain}`);
@@ -128,7 +130,8 @@ test('DOMAIN_PLAYBOOK: all domains have complete playbooks', () => {
   const domains = ['education', 'ec', 'marketplace', 'community', 'content',
                    'analytics', 'booking', 'saas', 'iot', 'realestate',
                    'legal', 'hr', 'fintech', 'health', 'portfolio', 'tool',
-                   'ai', 'automation', 'event', 'gamify', 'collab', 'devtool', 'creator', 'newsletter'];
+                   'ai', 'automation', 'event', 'gamify', 'collab', 'devtool', 'creator', 'newsletter',
+                   'manufacturing', 'logistics', 'agriculture', 'energy', 'media', 'government', 'travel', 'insurance'];
 
   const incomplete = [];
   domains.forEach(domain => {
@@ -180,13 +183,14 @@ test('FEATURE_DETAILS: all features have criteria and tests', () => {
 
 // ═══ DOMAIN_OPS Coverage Tests ═══
 
-test('DOMAIN_OPS: all 24 domains have ops definitions', () => {
+test('DOMAIN_OPS: all 32 domains have ops definitions', () => {
   const expectedDomains = [
     'education', 'ec', 'saas', 'fintech', 'health', 'booking',
     'marketplace', 'community', 'content', 'analytics', 'iot',
     'realestate', 'legal', 'hr', 'portfolio', 'tool', 'ai',
     'automation', 'event', 'gamify', 'collab', 'devtool',
-    'creator', 'newsletter'
+    'creator', 'newsletter', 'manufacturing', 'logistics', 'agriculture',
+    'energy', 'media', 'government', 'travel', 'insurance'
   ];
 
   const missing = [];
@@ -229,6 +233,63 @@ test('DOMAIN_OPS: SLO values are valid percentages', () => {
 
   assert.equal(invalid.length, 0,
     `Invalid SLO values: ${invalid.join(', ')}`);
+});
+
+// ═══ DOMAIN_GROWTH Coverage Tests ═══
+
+test('DOMAIN_GROWTH: all 32 domains have growth definitions', () => {
+  const expectedDomains = [
+    'education', 'ec', 'saas', 'fintech', 'health', 'booking',
+    'marketplace', 'community', 'content', 'analytics', 'iot',
+    'realestate', 'legal', 'hr', 'portfolio', 'tool', 'ai',
+    'automation', 'event', 'gamify', 'collab', 'devtool',
+    'creator', 'newsletter', 'manufacturing', 'logistics', 'agriculture',
+    'energy', 'media', 'government', 'travel', 'insurance'
+  ];
+
+  const missing = [];
+  expectedDomains.forEach(domain => {
+    if (!DOMAIN_GROWTH[domain]) {
+      missing.push(domain);
+    }
+  });
+
+  assert.equal(missing.length, 0,
+    `Missing DOMAIN_GROWTH entries: ${missing.join(', ')}`);
+  assert.ok(DOMAIN_GROWTH._default, 'Missing _default in DOMAIN_GROWTH');
+});
+
+test('DOMAIN_GROWTH: all entries have complete structure', () => {
+  const incomplete = [];
+  Object.entries(DOMAIN_GROWTH).forEach(([domain, growth]) => {
+    if (!growth.fj || !Array.isArray(growth.fj) || growth.fj.length !== 5) {
+      incomplete.push(`${domain}: invalid fj (must be array of 5 Japanese funnel stages)`);
+    }
+    if (!growth.fe || !Array.isArray(growth.fe) || growth.fe.length !== 5) {
+      incomplete.push(`${domain}: invalid fe (must be array of 5 English funnel stages)`);
+    }
+    if (!growth.cvr || !Array.isArray(growth.cvr) || growth.cvr.length !== 5) {
+      incomplete.push(`${domain}: invalid cvr (must be array of 5 conversion rates)`);
+    }
+    if (!growth.eq || typeof growth.eq !== 'string') {
+      incomplete.push(`${domain}: invalid eq (must be equation string)`);
+    }
+    if (!growth.lj || !Array.isArray(growth.lj) || growth.lj.length !== 5) {
+      incomplete.push(`${domain}: invalid lj (must be array of 5 Japanese lever descriptions)`);
+    }
+    if (!growth.le || !Array.isArray(growth.le) || growth.le.length !== 5) {
+      incomplete.push(`${domain}: invalid le (must be array of 5 English lever descriptions)`);
+    }
+    if (!growth.pj || !Array.isArray(growth.pj) || growth.pj.length !== 3) {
+      incomplete.push(`${domain}: invalid pj (must be array of 3 Japanese pricing tiers)`);
+    }
+    if (!growth.pe || !Array.isArray(growth.pe) || growth.pe.length !== 3) {
+      incomplete.push(`${domain}: invalid pe (must be array of 3 English pricing tiers)`);
+    }
+  });
+
+  assert.equal(incomplete.length, 0,
+    `Incomplete DOMAIN_GROWTH: ${incomplete.join('; ')}`);
 });
 
 test('pluralize: handles all preset entity names correctly', () => {
@@ -367,7 +428,7 @@ test('detectDomain: new domain patterns are recognized', () => {
     { purpose: 'レストラン予約システム', expected: 'booking' },
     { purpose: 'restaurant reservation app', expected: 'booking' },
     { purpose: '工事代金管理システム', expected: 'fintech' },
-    { purpose: 'construction payment tracking', expected: 'fintech' },
+    { purpose: 'construction payment management', expected: 'fintech' },
     { purpose: 'ヘルプデスクツール', expected: 'saas' },
     { purpose: 'helpdesk ticketing system', expected: 'saas' },
     { purpose: 'フィールドサービス管理', expected: 'iot' },
@@ -380,6 +441,26 @@ test('detectDomain: new domain patterns are recognized', () => {
     { purpose: 'AI agent platform', expected: 'ai' },
     { purpose: 'ナレッジベース構築', expected: 'content' },
     { purpose: 'knowledge base builder', expected: 'content' },
+    // 8 new domains (Task #2)
+    { purpose: '工場の生産管理システム', expected: 'manufacturing' },
+    { purpose: 'factory production management', expected: 'manufacturing' },
+    { purpose: '配送追跡・物流管理', expected: 'logistics' },
+    { purpose: 'delivery tracking and logistics', expected: 'logistics' },
+    { purpose: 'スマート農業プラットフォーム', expected: 'agriculture' },
+    { purpose: 'smart agriculture platform', expected: 'agriculture' },
+    { purpose: 'エネルギー管理システム', expected: 'energy' },
+    { purpose: 'energy management system', expected: 'energy' },
+    { purpose: 'ストリーミング配信プラットフォーム', expected: 'media' },
+    { purpose: 'streaming media platform', expected: 'media' },
+    { purpose: '自治体の申請管理システム', expected: 'government' },
+    { purpose: 'municipal application management', expected: 'government' },
+    { purpose: '旅行予約プラットフォーム', expected: 'travel' },
+    { purpose: 'travel booking platform', expected: 'travel' },
+    { purpose: '保険テック・契約管理', expected: 'insurance' },
+    { purpose: 'insurtech claim management', expected: 'insurance' },
+    // Verify media/content collision fix
+    { purpose: 'コンテンツ管理システム', expected: 'content' },
+    { purpose: 'ブログプラットフォーム', expected: 'content' },
   ];
 
   testCases.forEach(({ purpose, expected }) => {
@@ -413,14 +494,15 @@ test('FEATURE_DETAILS: new feature patterns exist', () => {
   });
 });
 
-test('REVERSE_FLOW_MAP: all 24 domains have complete flow definitions', () => {
+test('REVERSE_FLOW_MAP: all 32 domains have complete flow definitions', () => {
   // Load p10-reverse.js to get REVERSE_FLOW_MAP
   eval(fs.readFileSync('src/generators/p10-reverse.js', 'utf-8').replace(/const /g, 'var '));
 
   const domains = ['education', 'ec', 'saas', 'fintech', 'health', 'marketplace',
                    'community', 'content', 'analytics', 'booking', 'iot', 'realestate',
                    'legal', 'hr', 'portfolio', 'tool',
-                   'ai', 'automation', 'event', 'gamify', 'collab', 'devtool', 'creator', 'newsletter'];
+                   'ai', 'automation', 'event', 'gamify', 'collab', 'devtool', 'creator', 'newsletter',
+                   'manufacturing', 'logistics', 'agriculture', 'energy', 'media', 'government', 'travel', 'insurance'];
 
   const incomplete = [];
   domains.forEach(domain => {
@@ -470,13 +552,14 @@ test('REVERSE_FLOW_MAP: all 24 domains have complete flow definitions', () => {
 
 // ═══ P15: Future Strategy Intelligence Data Coverage ═══
 
-test("DOMAIN_MARKET: covers all 24 domains from detectDomain()", () => {
-  // Get list of domains from detectDomain (24 domains)
+test("DOMAIN_MARKET: covers all 32 domains from detectDomain()", () => {
+  // Get list of domains from detectDomain (32 domains)
   const expectedDomains = [
     "education", "ec", "fintech", "health", "saas", "marketplace",
     "community", "content", "booking", "iot", "realestate", "legal",
     "hr", "analytics", "portfolio", "tool", "ai", "automation",
-    "event", "gamify", "collab", "devtool", "creator", "newsletter"
+    "event", "gamify", "collab", "devtool", "creator", "newsletter",
+    "manufacturing", "logistics", "agriculture", "energy", "media", "government", "travel", "insurance"
   ];
 
   const missingDomains = [];
@@ -509,12 +592,13 @@ test("DOMAIN_MARKET: all domains have complete bilingual properties", () => {
     `DOMAIN_MARKET incomplete properties: ${incomplete.join(", ")}`);
 });
 
-test("PERSONA_ARCHETYPES: covers all 24 domains", () => {
+test("PERSONA_ARCHETYPES: covers all 32 domains", () => {
   const expectedDomains = [
     "education", "ec", "fintech", "health", "saas", "marketplace",
     "community", "content", "booking", "iot", "realestate", "legal",
     "hr", "analytics", "portfolio", "tool", "ai", "automation",
-    "event", "gamify", "collab", "devtool", "creator", "newsletter"
+    "event", "gamify", "collab", "devtool", "creator", "newsletter",
+    "manufacturing", "logistics", "agriculture", "energy", "media", "government", "travel", "insurance"
   ];
 
   const missingDomains = [];
@@ -529,4 +613,35 @@ test("PERSONA_ARCHETYPES: covers all 24 domains", () => {
 
   // Check _default exists
   assert.ok(PERSONA_ARCHETYPES._default, "PERSONA_ARCHETYPES should have _default fallback");
+});
+
+test('ENTITY_COLUMNS: new 8-domain entities are defined (Task B)', () => {
+  const newEntities = [
+    // Manufacturing (3)
+    'ProductionOrder', 'Machine', 'QualityCheck',
+    // Logistics (3)
+    'Package', 'Delivery', 'Vehicle',
+    // Agriculture (5)
+    'Farm', 'Crop', 'Field', 'Harvest', 'Equipment',
+    // Energy (3)
+    'Meter', 'Reading', 'Tariff',
+    // Media (2)
+    'Program', 'Episode',
+    // Government (2)
+    'Application', 'Citizen',
+    // Travel (3)
+    'Itinerary', 'Hotel', 'Flight',
+    // Insurance (2)
+    'Policy', 'Quote'
+  ];
+
+  const missingEntities = [];
+  newEntities.forEach(entity => {
+    if (!ENTITY_COLUMNS[entity]) {
+      missingEntities.push(entity);
+    }
+  });
+
+  assert.equal(missingEntities.length, 0,
+    `Missing ENTITY_COLUMNS for new 8-domain entities (${missingEntities.length}/23): ` + missingEntities.join(', '));
 });

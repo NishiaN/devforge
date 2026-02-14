@@ -41,10 +41,14 @@ function showPresetCompare(){
   const keys=Object.keys(PR).filter(k=>k!=='custom'&&PR[k].name);
   const opts=keys.map(k=>{const p=PR[k];return `<option value="${k}">${p.icon||''} ${_en&&p.nameEn?p.nameEn:p.name}</option>`;}).join('');
   const ov=document.createElement('div');ov.className='guide-overlay';ov.id='cmpOv';
+  ov.setAttribute('role','dialog');
+  ov.setAttribute('aria-modal','true');
+  ov.setAttribute('aria-label',_ja?'テンプレート比較':'Template Comparison');
   ov.onclick=e=>{if(e.target===ov)ov.remove();};
+  ov.addEventListener('keydown',e=>{if(e.key==='Escape')ov.remove();});
   ov.innerHTML=`<div class="guide-modal" style="max-width:680px;width:95%;">
-    <div class="guide-header"><span class="guide-em">⚔️</span><div><div class="guide-title">${_ja?'テンプレート比較':'Template Comparison'}</div><div class="guide-sub">${_ja?'2つのプリセットを並べて比較':'Compare two presets side by side'}</div></div><button class="guide-close" onclick="$('cmpOv').remove()">✕</button></div>
-    <div class="cmp-selectors"><select id="cmpA" onchange="renderCompare()">${opts}</select><span class="cmp-vs">VS</span><select id="cmpB" onchange="renderCompare()">${opts.replace('value="'+keys[0]+'"','value="'+keys[1]+'"')}</select></div>
+    <div class="guide-header"><span class="guide-em">⚔️</span><div><div class="guide-title">${_ja?'テンプレート比較':'Template Comparison'}</div><div class="guide-sub">${_ja?'2つのプリセットを並べて比較':'Compare two presets side by side'}</div></div><button class="guide-close" aria-label="${_ja?'閉じる':'Close'}" onclick="$('cmpOv').remove()">✕</button></div>
+    <div class="cmp-selectors"><select id="cmpA" aria-label="${_ja?'比較対象A':'Comparison subject A'}" onchange="renderCompare()">${opts}</select><span class="cmp-vs">VS</span><select id="cmpB" aria-label="${_ja?'比較対象B':'Comparison subject B'}" onchange="renderCompare()">${opts.replace('value="'+keys[0]+'"','value="'+keys[1]+'"')}</select></div>
     <div id="cmpBody"></div>
   </div>`;
   document.body.appendChild(ov);

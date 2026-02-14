@@ -236,6 +236,14 @@ const DOMAIN_ENTITIES={
   devtool:{core:['User','ApiKey','Project','RequestLog','Webhook','Documentation'],warn:['Product','Order','Cart'],suggest:{}},
   creator:{core:['User','Content','Subscription','Payment','Tier','Comment','Tip'],warn:['Order','Cart'],suggest:{}},
   newsletter:{core:['User','Post','Subscriber','Campaign','Analytics','Plan'],warn:['Product','Order','Cart'],suggest:{Product:'Plan',Order:'Subscription'}},
+  manufacturing:{core:['User','Product','ProductionOrder','Inventory','WorkOrder','Machine','QualityCheck'],warn:['Post','Comment','Course'],suggest:{Product:'Component'}},
+  logistics:{core:['User','Shipment','Package','Warehouse','Route','Delivery','Vehicle'],warn:['Post','Comment','Course'],suggest:{}},
+  agriculture:{core:['User','Farm','Crop','Field','Sensor','Harvest','Equipment'],warn:['Product','Order','Cart'],suggest:{}},
+  energy:{core:['User','Device','Meter','Reading','Alert','Tariff','Report'],warn:['Post','Comment','Product'],suggest:{}},
+  media:{core:['User','Content','Program','Episode','Subscriber','Comment','Like'],warn:['Product','Order','Cart'],suggest:{Product:'Subscription',Order:'View'}},
+  government:{core:['User','Application','Document','Department','Approval','Citizen','Service'],warn:['Product','Order','Cart'],suggest:{}},
+  travel:{core:['User','Booking','Itinerary','Hotel','Flight','Review','Payment'],warn:['Post','Comment','Course'],suggest:{}},
+  insurance:{core:['User','Policy','Claim','Customer','Quote','Document','Payment'],warn:['Product','Order','Cart'],suggest:{}},
 };
 
 // ── Entity Column Dictionary ──
@@ -406,7 +414,7 @@ const ENTITY_COLUMNS={
   Prescription:['medical_record_id:UUID:FK(MedicalRecord) NOT NULL:診療記録ID:Medical record ID','medication_name:VARCHAR(255):NOT NULL:薬剤名:Medication name','dosage:VARCHAR(100):NOT NULL:用量:Dosage','frequency:VARCHAR(100)::頻度:Frequency','duration_days:INT::処方日数:Duration(days)',_N],
   Appointment:['patient_id:UUID:FK(Patient) NOT NULL:患者ID:Patient ID','doctor_id:UUID:FK(Doctor) NOT NULL:医師ID:Doctor ID','scheduled_at:TIMESTAMP:NOT NULL:予約日時:Scheduled at',_DUR,'reason:TEXT::受診理由:Reason',_SP,_N],
   Pet:['owner_id:UUID:FK(User) NOT NULL:飼い主ID:Owner ID','pet_name:VARCHAR(255):NOT NULL:ペット名:Pet name','species:VARCHAR(50):NOT NULL:種別:Species','breed:VARCHAR(100)::品種:Breed','date_of_birth:DATE::生年月日:Date of birth','weight_kg:DECIMAL(5,2)::体重(kg):Weight(kg)','medical_notes:TEXT::医療メモ:Medical notes'],
-  Vaccination:['pet_id:UUID:FK(Pet) NOT NULL:ペットID:Pet ID','vaccine_name:VARCHAR(255):NOT NULL:ワクチン名:Vaccine name','administered_at:TIMESTAMP:NOT NULL:接種日:Administered at','next_due:DATE::次回予定:Next due','veterinarian_id:UUID:FK(Doctor):獣医ID:Veterinarian ID',_N],
+  Vaccination:['pet_id:UUID:FK(Pet) NOT NULL:ペットID:Pet ID','vaccine_name:VARCHAR(255):NOT NULL:ワクチン名:Vaccine name','administered_at:TIMESTAMP:NOT NULL:接種日:Administered at','next_due:DATE::次回予定:Next due','veterinarian_id:UUID:FK(Veterinarian):獣医ID:Veterinarian ID',_N],
   Veterinarian:[_U,'vet_name:VARCHAR(255):NOT NULL:獣医名:Vet name','specialty:VARCHAR(100)::専門分野:Specialty','license_number:VARCHAR(100)::免許番号:License number','is_available:BOOLEAN:DEFAULT true:対応可能:Available'],
   // ── Property Management ──
   Property:['owner_id:UUID:FK(User) NOT NULL:オーナーID:Owner ID','property_name:VARCHAR(255):NOT NULL:物件名:Property name','address:TEXT:NOT NULL:住所:Address','property_type:VARCHAR(50)::物件種別:Property type','units:INT:DEFAULT 1:ユニット数:Units',_SA],
@@ -423,7 +431,7 @@ const ENTITY_COLUMNS={
   Clause:['contract_id:UUID:FK(Contract) NOT NULL:契約ID:Contract ID','clause_number:VARCHAR(20)::条項番号:Clause number',_T,'content:TEXT:NOT NULL:内容:Content',_SO],
   // ── Helpdesk ──
   KnowledgeArticle:[_T,'slug:VARCHAR(255):UNIQUE:スラグ:Slug','content:TEXT:NOT NULL:内容:Content',_CAT,_SA,'view_count:INT:DEFAULT 0:閲覧数:View count','helpful_count:INT:DEFAULT 0:役立った数:Helpful count'],
-  Response:['ticket_id:UUID:FK(Task) NOT NULL:チケットID:Ticket ID','responder_id:UUID:FK(User) NOT NULL:回答者ID:Responder ID','content:TEXT:NOT NULL:内容:Content','is_public:BOOLEAN:DEFAULT true:公開:Public'],
+  Response:['ticket_id:UUID:FK(SupportTicket) NOT NULL:チケットID:Ticket ID','responder_id:UUID:FK(User) NOT NULL:回答者ID:Responder ID','content:TEXT:NOT NULL:内容:Content','is_public:BOOLEAN:DEFAULT true:公開:Public'],
   SLA:['name:VARCHAR(100):NOT NULL:SLA名:SLA name','priority:VARCHAR(20):NOT NULL:優先度:Priority','response_time_hours:INT:NOT NULL:応答時間(時):Response time(hours)','resolution_time_hours:INT:NOT NULL:解決時間(時):Resolution time(hours)',_IA],
   Priority:[_U,'priority_level:VARCHAR(20):NOT NULL:優先度:Priority level','color:VARCHAR(7)::色:Color',_SO],
   // ── Tutoring ──
@@ -486,7 +494,40 @@ const ENTITY_COLUMNS={
   Feedback:[_U,'article_id:UUID:FK(Article) NOT NULL:記事ID:Article ID','rating:INTEGER:CHECK(rating BETWEEN 1 AND 5):評価:Rating','comment:TEXT::コメント:Comment',_SA],
   // ── B-2 fix: Entity name collision resolution ──
   SupportTicket:[_U,'subject:VARCHAR(255):NOT NULL:件名:Subject',_D,'priority_id:UUID:FK(Priority) NOT NULL:優先度ID:Priority ID','category_id:UUID:FK(Category):カテゴリID:Category ID','assigned_agent_id:UUID:FK(User):担当者ID:Assigned Agent ID',_SP,'sla_id:UUID:FK(SLA):SLA ID:SLA ID'],
+  SupportAgent:[_U,'agent_name:VARCHAR(255):NOT NULL:サポート担当者名:Support agent name','email:VARCHAR(255)::メール:Email','department:VARCHAR(100)::部署:Department','specialization:VARCHAR(100)::専門分野:Specialization','is_available:BOOLEAN:DEFAULT true:対応可能:Available',_SA],
   RealEstateAgent:[_U,'agent_name:VARCHAR(255):NOT NULL:エージェント名:Agent name','license_number:VARCHAR(100)::免許番号:License number','company:VARCHAR(255)::所属会社:Company','phone:VARCHAR(50)::電話:Phone',_SA,'rating:DECIMAL(3,2)::評価:Rating'],
+  // ── Task B: New 8-domain entities (32-domain expansion) ──
+  // Manufacturing (3)
+  ProductionOrder:[_U,'product_id:UUID:FK(Product) NOT NULL:製品ID:Product ID','quantity:INTEGER:NOT NULL:数量:Quantity','scheduled_date:DATE:NOT NULL:予定日:Scheduled Date','completion_date:DATE::完了日:Completion Date',_SP],
+  Machine:[_U,'machine_name:VARCHAR(255):NOT NULL:機械名:Machine name','machine_type:VARCHAR(100)::種別:Type','location:VARCHAR(255)::設置場所:Location',_SA,'last_maintenance:DATE::最終保守日:Last maintenance'],
+  QualityCheck:[_U,'production_order_id:UUID:FK(ProductionOrder) NOT NULL:製造指示ID:Production Order ID','inspector_id:UUID:FK(User):検査者ID:Inspector ID','result:VARCHAR(50):NOT NULL:結果:Result','defects:INTEGER:DEFAULT 0:不良数:Defect count',_N],
+  // Logistics (3)
+  Package:[_U,'shipment_id:UUID:FK(Shipment) NOT NULL:出荷ID:Shipment ID','weight:DECIMAL(10,2)::重量kg:Weight kg','dimensions:VARCHAR(100)::寸法:Dimensions','tracking_number:VARCHAR(100)::追跡番号:Tracking number',_SA],
+  Delivery:[_U,'shipment_id:UUID:FK(Shipment) NOT NULL:出荷ID:Shipment ID','driver_id:UUID:FK(User):ドライバーID:Driver ID','delivered_at:TIMESTAMP::配達日時:Delivered at','recipient_name:VARCHAR(255)::受取人:Recipient',_SA],
+  Vehicle:[_U,'plate_number:VARCHAR(50):NOT NULL:ナンバー:Plate number','vehicle_type:VARCHAR(100)::車種:Vehicle type','capacity:DECIMAL(10,2)::積載量:Capacity',_SA],
+  // Agriculture (5)
+  Farm:[_U,'farm_name:VARCHAR(255):NOT NULL:農場名:Farm name','location:VARCHAR(255)::所在地:Location','area_hectares:DECIMAL(10,2)::面積ha:Area hectares','owner_id:UUID:FK(User):オーナーID:Owner ID'],
+  Crop:[_U,'crop_name:VARCHAR(255):NOT NULL:作物名:Crop name','variety:VARCHAR(255)::品種:Variety','planting_date:DATE::播種日:Planting date','expected_harvest:DATE::収穫予定:Expected harvest',_SA],
+  Field:[_U,'farm_id:UUID:FK(Farm) NOT NULL:農場ID:Farm ID','field_name:VARCHAR(255):NOT NULL:圃場名:Field name','area_hectares:DECIMAL(10,2)::面積ha:Area hectares','soil_type:VARCHAR(100)::土壌:Soil type','crop_id:UUID:FK(Crop):作物ID:Crop ID'],
+  Harvest:[_U,'field_id:UUID:FK(Field) NOT NULL:圃場ID:Field ID','crop_id:UUID:FK(Crop) NOT NULL:作物ID:Crop ID','harvest_date:DATE:NOT NULL:収穫日:Harvest date','quantity_kg:DECIMAL(10,2):NOT NULL:収穫量kg:Quantity kg','grade:VARCHAR(50)::等級:Grade'],
+  Equipment:[_U,'equipment_name:VARCHAR(255):NOT NULL:機材名:Equipment name','equipment_type:VARCHAR(100)::種別:Type',_SA,'last_maintenance:DATE::最終保守日:Last maintenance'],
+  // Energy (3)
+  Meter:[_U,'device_id:UUID:FK(Device):デバイスID:Device ID','meter_number:VARCHAR(100):NOT NULL:メーター番号:Meter number','meter_type:VARCHAR(50)::種別:Type','location:VARCHAR(255)::設置場所:Location',_SA],
+  Reading:[_U,'meter_id:UUID:FK(Meter) NOT NULL:メーターID:Meter ID','value:DECIMAL(12,4):NOT NULL:計測値:Value','unit:VARCHAR(20):DEFAULT \'kWh\':単位:Unit','recorded_at:TIMESTAMP:NOT NULL:記録日時:Recorded at','quality:VARCHAR(20)::品質:Quality'],
+  Tariff:[_U,'tariff_name:VARCHAR(255):NOT NULL:料金プラン名:Tariff name','rate:DECIMAL(10,4):NOT NULL:単価:Rate','unit:VARCHAR(20):DEFAULT \'kWh\':単位:Unit','valid_from:DATE:NOT NULL:開始日:Valid from','valid_to:DATE::終了日:Valid to'],
+  // Media (2)
+  Program:[_U,'program_name:VARCHAR(255):NOT NULL:番組名:Program name','genre:VARCHAR(100)::ジャンル:Genre',_D,_SA,'thumbnail_url:TEXT::サムネイル:Thumbnail URL'],
+  Episode:[_U,'program_id:UUID:FK(Program) NOT NULL:番組ID:Program ID','episode_number:INTEGER:NOT NULL:話数:Episode number',_T,'duration_min:INTEGER::時間(分):Duration min','video_url:TEXT::動画URL:Video URL','published_at:TIMESTAMP::公開日:Published at'],
+  // Government (2)
+  Application:[_U,'citizen_id:UUID:FK(User) NOT NULL:市民ID:Citizen ID','application_type:VARCHAR(100):NOT NULL:申請種別:Application type',_D,_SP,'submitted_at:TIMESTAMP::提出日:Submitted at','reviewed_by:UUID:FK(User):審査者ID:Reviewed by'],
+  Citizen:[_U,'citizen_name:VARCHAR(255):NOT NULL:氏名:Citizen name','address:TEXT::住所:Address','phone:VARCHAR(50)::電話:Phone','national_id:VARCHAR(100)::マイナンバー:National ID',_SA],
+  // Travel (3)
+  Itinerary:[_U,'user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID','itinerary_name:VARCHAR(255):NOT NULL:旅程名:Itinerary name','start_date:DATE:NOT NULL:開始日:Start date','end_date:DATE:NOT NULL:終了日:End date',_SA],
+  Hotel:[_U,'hotel_name:VARCHAR(255):NOT NULL:ホテル名:Hotel name','location:VARCHAR(255)::所在地:Location','star_rating:INTEGER::星評価:Star rating','price_per_night:DECIMAL(10,2)::1泊料金:Price per night',_SA],
+  Flight:[_U,'airline:VARCHAR(255):NOT NULL:航空会社:Airline','flight_number:VARCHAR(20):NOT NULL:便名:Flight number','departure:VARCHAR(255):NOT NULL:出発地:Departure','arrival:VARCHAR(255):NOT NULL:到着地:Arrival','departure_time:TIMESTAMP:NOT NULL:出発時刻:Departure time','arrival_time:TIMESTAMP:NOT NULL:到着時刻:Arrival time','price:DECIMAL(10,2)::料金:Price'],
+  // Insurance (2)
+  Policy:[_U,'customer_id:UUID:FK(Customer) NOT NULL:顧客ID:Customer ID','policy_type:VARCHAR(100):NOT NULL:保険種別:Policy type','premium:DECIMAL(10,2):NOT NULL:保険料:Premium','coverage:DECIMAL(12,2)::補償額:Coverage','start_date:DATE:NOT NULL:開始日:Start date','end_date:DATE:NOT NULL:終了日:End date',_SA],
+  Quote:[_U,'customer_id:UUID:FK(Customer) NOT NULL:顧客ID:Customer ID','policy_type:VARCHAR(100):NOT NULL:保険種別:Policy type','premium:DECIMAL(10,2):NOT NULL:見積保険料:Estimated premium','coverage:DECIMAL(12,2)::補償額:Coverage',_SP,'valid_until:DATE::有効期限:Valid until'],
 };
 
 // ═══ Entity REST method restrictions ═══
@@ -562,7 +603,17 @@ function detectDomain(purpose){
     [/ニュースレター|newsletter|メール配信|メルマガ|購読/i,'newsletter'],
     [/クリエイター|creator|ファン|コンテンツ販売|投げ銭/i,'creator'],
     [/コミュニティ|community|フォーラム|forum/i,'community'],
-    [/コンテンツ|content|メディア|media|ブログ|blog|knowledge.?base|ナレッジベース/i,'content'],
+    // ── 8 new domains (before content to avoid collision) ──
+    [/製造|工場|生産管理|ファクトリー|manufacturing|factory|production.?management|smart.*factory/i,'manufacturing'],
+    [/物流|配送|倉庫|logistics|delivery|warehouse|tracking/i,'logistics'],
+    [/農業|スマート農業|agriculture|farming|crop.?management/i,'agriculture'],
+    [/エネルギー|電力|energy|power.?management|再生可能/i,'energy'],
+    [/メディア|放送|配信|ストリーミング|media|streaming|broadcasting/i,'media'],
+    [/自治体|行政|申請管理|government|municipal|civic|public.?service/i,'government'],
+    [/旅行|ツアー|travel|tour|宿泊予約|hotel.?booking/i,'travel'],
+    [/保険|insurance|保険テック|insurtech|契約管理|claim.?management/i,'insurance'],
+    // ── content pattern (media/メディア removed to prevent collision) ──
+    [/コンテンツ|content|ブログ|blog|knowledge.?base|ナレッジベース/i,'content'],
     [/分析|analytics|可視化|ダッシュボード/i,'analytics'],
     [/予約|booking|スケジュール|restaurant|レストラン|飲食店/i,'booking'],
     [/AIエージェント|ai.?agent|chatbot|チャットボット|対話型|FAQ/i,'ai'],
@@ -700,6 +751,39 @@ function inferER(a){
   if(has('Doctor')&&has('Examination')) rels.push('Doctor 1 ──N Examination');
   if(has('Patient')&&has('Claim')) rels.push('Patient 1 ──N Claim');
   if(has('Invoice')&&has('Claim')) rels.push('Invoice 1 ──1 Claim');
+  // Helpdesk
+  if(has('SupportAgent')&&has('SupportTicket')) rels.push('SupportAgent 1 ──N SupportTicket');
+  if(has('SupportAgent')&&has('Response')) rels.push('SupportAgent 1 ──N Response');
+  // ── Task B: New 8-domain relationships ──
+  // Manufacturing
+  if(has('Product')&&has('ProductionOrder')) rels.push('Product 1 ──N ProductionOrder');
+  if(has('Machine')&&has('ProductionOrder')) rels.push('Machine 1 ──N ProductionOrder');
+  if(has('ProductionOrder')&&has('QualityCheck')) rels.push('ProductionOrder 1 ──N QualityCheck');
+  // Logistics
+  if(has('Shipment')&&has('Package')) rels.push('Shipment 1 ──N Package');
+  if(has('Shipment')&&has('Delivery')) rels.push('Shipment 1 ──1 Delivery');
+  if(has('Vehicle')&&has('Shipment')) rels.push('Vehicle 1 ──N Shipment');
+  // Agriculture
+  if(has('Farm')&&has('Field')) rels.push('Farm 1 ──N Field');
+  if(has('Field')&&has('Harvest')) rels.push('Field 1 ──N Harvest');
+  if(has('Crop')&&has('Harvest')) rels.push('Crop 1 ──N Harvest');
+  if(has('Field')&&has('Crop')) rels.push('Field N ──1 Crop');
+  // Energy
+  if(has('Device')&&has('Meter')) rels.push('Device 1 ──N Meter');
+  if(has('Meter')&&has('Reading')) rels.push('Meter 1 ──N Reading');
+  // Media
+  if(has('Program')&&has('Episode')) rels.push('Program 1 ──N Episode');
+  // Government
+  if(has('User')&&has('Application')) rels.push('User 1 ──N Application');
+  if(has('Department')&&has('Service')) rels.push('Department 1 ──N Service');
+  // Travel
+  if(has('User')&&has('Itinerary')) rels.push('User 1 ──N Itinerary');
+  if(has('Itinerary')&&has('Booking')) rels.push('Itinerary 1 ──N Booking');
+  if(has('Hotel')&&has('Booking')) rels.push('Hotel 1 ──N Booking');
+  // Insurance
+  if(has('Customer')&&has('Policy')) rels.push('Customer 1 ──N Policy');
+  if(has('Customer')&&has('Quote')) rels.push('Customer 1 ──N Quote');
+  if(has('Policy')&&has('Claim')) rels.push('Policy 1 ──N Claim');
 
   return {domain,warnings,suggestions,relationships:rels};
 }
@@ -1096,6 +1180,62 @@ const DOMAIN_QA_MAP={
     bugs_ja:['メール未到達','購読解除後も配信','スパム判定','開封トラッキング失敗'],
     bugs_en:['Email not delivered','Sending after unsubscribe','Spam flagged','Open tracking failures'],
     priority:'Security:MED|Performance:MED|DataIntegrity:MED|UX:HIGH|Compliance:HIGH'
+  },
+  manufacturing:{
+    focus_ja:['生産計画精度','在庫管理','品質管理','設備保全'],
+    focus_en:['Production planning accuracy','Inventory management','Quality control','Equipment maintenance'],
+    bugs_ja:['在庫数不一致','不良品見逃し','設備故障未検知'],
+    bugs_en:['Inventory count mismatch','Defect missed','Equipment failure undetected'],
+    priority:'Security:MED|Performance:HIGH|DataIntegrity:CRITICAL|UX:MED|Compliance:HIGH'
+  },
+  logistics:{
+    focus_ja:['配送追跡精度','倉庫在庫同期','ルート最適化','配達時刻予測'],
+    focus_en:['Delivery tracking accuracy','Warehouse inventory sync','Route optimization','Delivery time prediction'],
+    bugs_ja:['追跡情報更新遅延','在庫引当ミス','配送遅延通知漏れ'],
+    bugs_en:['Tracking update delays','Inventory allocation errors','Delayed delivery notification miss'],
+    priority:'Security:MED|Performance:HIGH|DataIntegrity:HIGH|UX:CRITICAL|Compliance:MED'
+  },
+  agriculture:{
+    focus_ja:['センサーデータ精度','灌漑自動制御','収穫予測','病害検知'],
+    focus_en:['Sensor data accuracy','Irrigation automation','Harvest prediction','Pest detection'],
+    bugs_ja:['センサー異常値','灌漑制御失敗','収穫量誤差','病害見逃し'],
+    bugs_en:['Sensor anomalies','Irrigation control failure','Harvest estimate errors','Pest detection miss'],
+    priority:'Security:LOW|Performance:MED|DataIntegrity:HIGH|UX:MED|Compliance:MED'
+  },
+  energy:{
+    focus_ja:['メーター計測精度','需給予測','アラート閾値','請求計算'],
+    focus_en:['Meter reading accuracy','Demand forecasting','Alert thresholds','Billing calculation'],
+    bugs_ja:['計測値異常','需給予測外れ','アラート未送信','請求額誤差'],
+    bugs_en:['Reading anomalies','Forecast errors','Alert not sent','Billing amount errors'],
+    priority:'Security:HIGH|Performance:MED|DataIntegrity:CRITICAL|UX:MED|Compliance:CRITICAL'
+  },
+  media:{
+    focus_ja:['コンテンツ配信品質','DRM保護','視聴履歴追跡','レコメンド精度'],
+    focus_en:['Content delivery quality','DRM protection','Viewing history tracking','Recommendation accuracy'],
+    bugs_ja:['ストリーミング途切れ','DRM回避','視聴履歴漏れ','レコメンド不適切'],
+    bugs_en:['Streaming interruptions','DRM bypass','Missing view history','Inappropriate recommendations'],
+    priority:'Security:HIGH|Performance:CRITICAL|DataIntegrity:MED|UX:CRITICAL|Compliance:HIGH'
+  },
+  government:{
+    focus_ja:['個人情報保護','申請処理追跡','電子署名検証','アクセシビリティ'],
+    focus_en:['Personal data protection','Application tracking','Digital signature verification','Accessibility'],
+    bugs_ja:['個人情報漏洩','申請状態不整合','署名検証失敗','アクセシビリティ不備'],
+    bugs_en:['Personal data leakage','Application status inconsistency','Signature verification failure','Accessibility gaps'],
+    priority:'Security:CRITICAL|Performance:MED|DataIntegrity:CRITICAL|UX:HIGH|Compliance:CRITICAL'
+  },
+  travel:{
+    focus_ja:['予約確定性','在庫同期','決済完全性','キャンセル処理'],
+    focus_en:['Booking confirmation','Inventory sync','Payment integrity','Cancellation handling'],
+    bugs_ja:['ダブルブッキング','在庫更新遅延','決済失敗未通知','キャンセル料誤算'],
+    bugs_en:['Double booking','Inventory update delays','Payment failure not notified','Cancellation fee errors'],
+    priority:'Security:HIGH|Performance:HIGH|DataIntegrity:CRITICAL|UX:CRITICAL|Compliance:MED'
+  },
+  insurance:{
+    focus_ja:['見積精度','契約管理','保険金請求処理','コンプライアンス'],
+    focus_en:['Quote accuracy','Policy management','Claim processing','Compliance'],
+    bugs_ja:['見積計算誤差','契約更新漏れ','請求処理遅延','監査証跡不足'],
+    bugs_en:['Quote calculation errors','Policy renewal miss','Claim processing delays','Insufficient audit trails'],
+    priority:'Security:CRITICAL|Performance:MED|DataIntegrity:CRITICAL|UX:HIGH|Compliance:CRITICAL'
   }
 };
 
@@ -1353,7 +1493,15 @@ const DOMAIN_PLAYBOOK={
   collab:_dpb(['作成→編集→同期→保存','競合→解決→マージ→履歴','権限→承認→共有→通知'],['Create→Edit→Sync→Save','Conflict→Resolve→Merge→History','Permission→Approve→Share→Notify'],[_CG+':データ処理同意','利用規約:編集権限、削除30日','セキュリティ:暗号化通信、アクセスログ'],[_CG+': data processing consent','ToS: edit permission, delete 30d','Security: encrypted communication, access log'],['編集消失|競合解決失敗'+_PVJ+'OT/CRDT、定期保存','権限漏れ|チェック不足'+_PVJ+'RLS、middleware検証'],['Edit loss|Conflict resolution failure'+_PVE+'OT/CRDT, periodic save','Permission bypass|Insufficient check'+_PVE+'RLS, middleware validation'],['同期→architecture.md(realtime), api_spec.md','権限→security.md, test_cases/'],['Sync→architecture.md(realtime), api_spec.md','Permission→security.md, test_cases/'],'競合解決最適化|編集消失防止|入力:編集履歴、競合頻度|判断:競合>5/h→通知強化、消失>1%→保存頻度増|出力:最適化案','Conflict Resolution Optimization|Prevent edit loss|Input: edit history, conflict rate|Judgment: conflicts>5/h→enhance notification, loss>1%→increase save frequency|Output: optimization plan'),
   devtool:_dpb(['登録→発行→使用→追跡','リクエスト→検証→実行→記録','エラー→通知→対応→改善'],['Register→Issue→Use→Track','Request→Verify→Execute→Log','Error→Notify→Respond→Improve'],[_CG+':データ処理同意','利用規約:レート制限、使用制限','セキュリティ:APIキー暗号化、IP制限'],[_CG+': data processing consent','ToS: rate limits, usage limits','Security: API key encryption, IP restriction'],['キー漏洩|平文保存'+_PVJ+'暗号化、ハッシュ化、定期ローテーション','レート突破|制限なし'+_PVJ+'Redis、sliding window'],['Key leakage|Plain text'+_PVE+'encrypt, hash, regular rotation','Rate bypass|No limits'+_PVE+'Redis, sliding window'],['認証→security.md, api_spec.md','使用→architecture.md(tracking), stakeholders.md'],['Auth→security.md, api_spec.md','Usage→architecture.md(tracking), stakeholders.md'],'API使用最適化|コスト削減|入力:リクエストログ、エラー率|判断:エラー>5%→要改善、重複>30%→キャッシュ候補|出力:最適化案、期待削減率','API Usage Optimization|Cost reduction|Input: request logs, error rate|Judgment: error>5%→improve, duplicate>30%→cache candidate|Output: optimization plan, expected reduction'),
   creator:_dpb(['作成→公開→収益化→分析','サブスク→課金→継続→解約','ファン→交流→支援→成長'],['Create→Publish→Monetize→Analyze','Subscribe→Charge→Continue→Cancel','Fan→Engage→Support→Grow'],[_CG+':データ処理同意','資金決済法:前払式、第三者型','利用規約:手数料、返金規定'],[_CG+': data processing consent','Payment Services Act: prepaid, third-party','ToS: fees, refund policy'],['解約後課金|サブスク解約漏れ'+_PVJ+'Webhook検証、定期確認','投げ銭未着|決済失敗'+_PVJ+'リトライ、通知'],['Charge after cancel|Subscription cancel miss'+_PVE+'webhook verification, periodic check','Tip not received|Payment failure'+_PVE+'retry, notification'],['課金→architecture.md(subscription), security.md','支援→architecture.md(tip), api_spec.md'],['Billing→architecture.md(subscription), security.md','Support→architecture.md(tip), api_spec.md'],'収益最適化|ファン増加|入力:収益データ、ファン行動|判断:離脱>30%→ティア見直し、成長<10%→施策追加|出力:改善案、期待収益','Revenue Optimization|Fan growth|Input: revenue data, fan behavior|Judgment: churn>30%→review tiers, growth<10%→add tactics|Output: improvement plan, expected revenue'),
-  newsletter:_dpb(['作成→配信→開封→分析','購読→確認→受信→解除','セグメント→ターゲット→パーソナライズ'],['Create→Send→Open→Analyze','Subscribe→Confirm→Receive→Unsubscribe','Segment→Target→Personalize'],[_CG+':配信同意、オプトイン','特定電子メール法:配信者明記、解除リンク','個人情報保護法:購読者情報暗号化'],[_CG+': sending consent, opt-in','Anti-Spam Act: sender info, unsubscribe link','Privacy Act: subscriber info encryption'],['解除後配信|リスト更新漏れ'+_PVJ+'即時反映、定期同期','スパム判定|SPF/DKIM未設定'+_PVJ+'認証設定、レピュテーション管理'],['Send after unsubscribe|List update miss'+_PVE+'immediate reflect, periodic sync','Spam flagged|No SPF/DKIM'+_PVE+'auth setup, reputation management'],['配信→architecture.md(email), api_spec.md','分析→stakeholders.md, architecture.md(analytics)'],['Send→architecture.md(email), api_spec.md','Analytics→stakeholders.md, architecture.md(analytics)'],'配信最適化|開封率向上|入力:配信履歴、開封率、クリック率|判断:開封<20%→件名改善、クリック<5%→CTA最適化|出力:改善案、期待開封率','Delivery Optimization|Improve open rate|Input: send history, open rate, click rate|Judgment: open<20%→improve subject, click<5%→optimize CTA|Output: improvement plan, expected open rate')
+  newsletter:_dpb(['作成→配信→開封→分析','購読→確認→受信→解除','セグメント→ターゲット→パーソナライズ'],['Create→Send→Open→Analyze','Subscribe→Confirm→Receive→Unsubscribe','Segment→Target→Personalize'],[_CG+':配信同意、オプトイン','特定電子メール法:配信者明記、解除リンク','個人情報保護法:購読者情報暗号化'],[_CG+': sending consent, opt-in','Anti-Spam Act: sender info, unsubscribe link','Privacy Act: subscriber info encryption'],['解除後配信|リスト更新漏れ'+_PVJ+'即時反映、定期同期','スパム判定|SPF/DKIM未設定'+_PVJ+'認証設定、レピュテーション管理'],['Send after unsubscribe|List update miss'+_PVE+'immediate reflect, periodic sync','Spam flagged|No SPF/DKIM'+_PVE+'auth setup, reputation management'],['配信→architecture.md(email), api_spec.md','分析→stakeholders.md, architecture.md(analytics)'],['Send→architecture.md(email), api_spec.md','Analytics→stakeholders.md, architecture.md(analytics)'],'配信最適化|開封率向上|入力:配信履歴、開封率、クリック率|判断:開封<20%→件名改善、クリック<5%→CTA最適化|出力:改善案、期待開封率','Delivery Optimization|Improve open rate|Input: send history, open rate, click rate|Judgment: open<20%→improve subject, click<5%→optimize CTA|Output: improvement plan, expected open rate'),
+  manufacturing:_dpb(['需要予測→生産計画→製造→出荷','材料→加工→検査→在庫','設備→保守→稼働→記録'],['Forecast→Plan→Manufacture→Ship','Material→Process→Inspect→Stock','Equipment→Maintain→Operate→Log'],[_CG+':製造データ保護','製造物責任法:品質記録5年保持','ISO 9001:品質マネジメント'],[_CG+': manufacturing data protection','Product Liability Act: quality records 5yr','ISO 9001: quality management'],['在庫差異|カウント誤差'+_PVJ+'バーコード、定期棚卸','不良品流出|検査漏れ'+_PVJ+'全数検査、統計的手法'],['Inventory mismatch|Count errors'+_PVE+'barcode, periodic inventory','Defect escape|Inspection miss'+_PVE+'100% inspection, statistical methods'],['生産→architecture.md(production), api_spec.md','品質→test_cases/, error_logs.md'],['Production→architecture.md(production), api_spec.md','Quality→test_cases/, error_logs.md'],'生産効率化|稼働率向上|入力:生産ログ、稼働時間|判断:稼働率<70%→改善候補、不良率>5%→工程見直し|出力:改善案、期待効率','Production Efficiency|Improve utilization|Input: production logs, uptime|Judgment: utilization<70%→improve, defect>5%→review process|Output: improvement plan, expected efficiency'),
+  logistics:_dpb(['受注→引当→出荷→配送','倉庫→ピッキング→梱包→発送','ルート→配送→追跡→完了'],['Order→Allocate→Ship→Deliver','Warehouse→Pick→Pack→Send','Route→Deliver→Track→Complete'],[_CG+':配送先情報暗号化','運送約款:配送条件明記','個人情報保護法:不在票記録7日削除'],[_CG+': delivery address encryption','Shipping terms: conditions','Privacy Act: absence slip 7d deletion'],['ダブル引当|在庫競合'+_PVJ+'SELECT FOR UPDATE、ロック','配送遅延|ルート非最適'+_PVJ+'AI最適化、リアルタイム調整'],['Double allocation|Inventory race'+_PVE+'SELECT FOR UPDATE, lock','Delivery delay|Non-optimal route'+_PVE+'AI optimization, real-time adjustment'],['配送→architecture.md(delivery), api_spec.md','追跡→stakeholders.md, architecture.md(tracking)'],['Delivery→architecture.md(delivery), api_spec.md','Tracking→stakeholders.md, architecture.md(tracking)'],'配送最適化|コスト削減|入力:配送履歴、燃料費、時間|判断:迂回>15%→ルート見直し、不在>30%→通知強化|出力:最適化案、期待削減','Delivery Optimization|Cost reduction|Input: delivery history, fuel, time|Judgment: detour>15%→review route, absence>30%→enhance notification|Output: optimization plan, expected reduction'),
+  agriculture:_dpb(['計画→播種→育成→収穫','センサー→監視→制御→記録','作物→収穫→選別→出荷'],['Plan→Sow→Grow→Harvest','Sensor→Monitor→Control→Log','Crop→Harvest→Sort→Ship'],[_CG+':農地データ保護','GAP:適正農業規範','食品衛生法:トレーサビリティ'],[_CG+': farm data protection','GAP: good agricultural practice','Food Sanitation Act: traceability'],['病害見逃し|検知遅延'+_PVJ+'画像AI、早期アラート','灌漑失敗|センサー故障'+_PVJ+'冗長化、定期校正'],['Pest miss|Detection delay'+_PVE+'image AI, early alert','Irrigation failure|Sensor fault'+_PVE+'redundancy, periodic calibration'],['収穫→architecture.md(harvest), api_spec.md','センサー→architecture.md(IoT), error_logs.md'],['Harvest→architecture.md(harvest), api_spec.md','Sensor→architecture.md(IoT), error_logs.md'],'収穫量予測|計画最適化|入力:気象データ、生育記録|判断:予測誤差>20%→モデル再訓練、病害リスク>30%→予防散布|出力:予測量、対策案','Harvest Prediction|Optimize planning|Input: weather data, growth records|Judgment: forecast error>20%→retrain model, pest risk>30%→preventive spray|Output: predicted yield, countermeasures'),
+  energy:_dpb(['計測→集計→分析→請求','需要予測→供給調整→配電→記録','アラート→通知→対応→改善'],['Measure→Aggregate→Analyze→Bill','Forecast→Adjust→Distribute→Log','Alert→Notify→Respond→Improve'],['電気事業法:計量精度±2%','個人情報保護法:使用量データ暗号化',_CG+':データ処理同意'],[' Electricity Act: metering ±2%','Privacy Act: usage data encryption',_CG+': data processing consent'],['計測誤差|検針ミス'+_PVJ+'スマートメーター、定期校正','需給予測外れ|気象変動'+_PVJ+'AI予測、リアルタイム調整'],['Metering error|Reading miss'+_PVE+'smart meter, periodic calibration','Forecast miss|Weather change'+_PVE+'AI forecast, real-time adjustment'],['計測→architecture.md(metering), api_spec.md','需給→stakeholders.md, architecture.md(forecast)'],['Metering→architecture.md(metering), api_spec.md','Supply→stakeholders.md, architecture.md(forecast)'],'需給最適化|コスト削減|入力:計測データ、気象予測|判断:ピーク需要>90%容量→調整、予測誤差>10%→改善|出力:最適化案、期待削減','Supply-Demand Optimization|Cost reduction|Input: metering data, weather forecast|Judgment: peak demand>90% capacity→adjust, forecast error>10%→improve|Output: optimization plan, expected reduction'),
+  media:_dpb(['企画→制作→配信→視聴','コンテンツ→エンコード→CDN→再生','視聴者→エンゲージ→サブスク→継続'],['Plan→Produce→Distribute→View','Content→Encode→CDN→Play','Viewer→Engage→Subscribe→Retain'],['著作権法:コンテンツ保護、DRM',_CG+':視聴履歴暗号化','放送法:適正配信、記録保持'],[' Copyright Act: content protection, DRM',_CG+': viewing history encryption','Broadcasting Act: proper distribution, record retention'],['DRM回避|保護不足'+_PVJ+'Widevine L1、定期更新','ストリーム途切れ|CDN障害'+_PVJ+'Multi-CDN、フェイルオーバー'],['DRM bypass|Insufficient protection'+_PVE+'Widevine L1, regular updates','Stream interruption|CDN failure'+_PVE+'Multi-CDN, failover'],['配信→architecture.md(streaming), security.md','視聴→stakeholders.md, architecture.md(analytics)'],['Distribution→architecture.md(streaming), security.md','Viewing→stakeholders.md, architecture.md(analytics)'],'視聴最適化|継続率向上|入力:視聴履歴、離脱率|判断:離脱>60%→コンテンツ改善、バッファ>5%→CDN最適化|出力:改善案、期待継続率','Viewing Optimization|Improve retention|Input: viewing history, churn rate|Judgment: churn>60%→improve content, buffering>5%→optimize CDN|Output: improvement plan, expected retention'),
+  government:_dpb(['申請→受付→審査→承認','市民→本人確認→申請→交付','データ→集計→分析→公開'],['Apply→Receive→Review→Approve','Citizen→Verify→Apply→Issue','Data→Aggregate→Analyze→Publish'],['個人情報保護法:厳格保護、監査','行政手続法:透明性、標準処理期間','公文書管理法:記録保持、開示'],[' Privacy Act: strict protection, audit','Administrative Procedure Act: transparency, standard processing time','Public Records Act: record retention, disclosure'],['個人情報漏洩|アクセス制御不足'+_PVJ+'RLS、監査ログ、定期監査','処理遅延|手動処理'+_PVJ+'ワークフロー自動化、進捗可視化'],['Personal data leakage|Insufficient access control'+_PVE+'RLS, audit log, periodic audit','Processing delay|Manual processing'+_PVE+'workflow automation, progress visibility'],['申請→architecture.md(application), security.md','承認→stakeholders.md, test_cases/'],['Application→architecture.md(application), security.md','Approval→stakeholders.md, test_cases/'],'処理効率化|待ち時間短縮|入力:処理履歴、待機時間|判断:待機>30日→優先処理、差戻し>30%→要件明確化|出力:改善案、期待処理時間','Processing Efficiency|Reduce waiting time|Input: processing history, wait time|Judgment: wait>30d→prioritize, rejection>30%→clarify requirements|Output: improvement plan, expected processing time'),
+  travel:_dpb(['検索→比較→予約→決済','旅程→ホテル→航空券→完了','レビュー→評価→次回→リピート'],['Search→Compare→Book→Pay','Itinerary→Hotel→Flight→Complete','Review→Rate→Next→Repeat'],['旅行業法:取引条件説明、記録保持',_CG+':予約情報暗号化','個人情報保護法:パスポート情報厳格保護'],[' Travel Business Act: terms explanation, record retention',_CG+': booking info encryption','Privacy Act: strict passport info protection'],['ダブルブッキング|在庫競合'+_PVJ+'SELECT FOR UPDATE、リアルタイム同期','キャンセル料誤算|計算ロジックミス'+_PVJ+'テストケース充実、手数料テーブル'],['Double booking|Inventory race'+_PVE+'SELECT FOR UPDATE, real-time sync','Cancellation fee error|Calculation logic miss'+_PVE+'rich test cases, fee table'],['予約→architecture.md(booking), security.md','決済→architecture.md(payment), api_spec.md'],['Booking→architecture.md(booking), security.md','Payment→architecture.md(payment), api_spec.md'],'予約最適化|稼働率向上|入力:予約履歴、空室率|判断:空室>40%→価格調整、キャンセル>20%→ペナルティ見直し|出力:最適化案、期待稼働率','Booking Optimization|Improve occupancy|Input: booking history, vacancy rate|Judgment: vacancy>40%→adjust pricing, cancel>20%→review penalty|Output: optimization plan, expected occupancy'),
+  insurance:_dpb(['見積→契約→請求→支払','査定→審査→承認→振込','更新→通知→継続→解約'],['Quote→Contract→Claim→Pay','Assessment→Review→Approve→Transfer','Renew→Notify→Continue→Cancel'],[_CG+':契約情報暗号化','保険業法:適正審査、記録保持','金融商品取引法:説明義務、書面交付'],[_CG+': contract info encryption','Insurance Act: proper review, record retention','Financial Instruments Act: disclosure obligation, document issuance'],['見積誤差|計算ミス'+_PVJ+'テストケース充実、監査','請求処理遅延|手動審査'+_PVJ+'AI審査、自動承認閾値'],['Quote error|Calculation miss'+_PVE+'rich test cases, audit','Claim delay|Manual review'+_PVE+'AI review, auto-approve threshold'],['見積→architecture.md(quote), api_spec.md','請求→stakeholders.md, architecture.md(claim)'],['Quote→architecture.md(quote), api_spec.md','Claim→stakeholders.md, architecture.md(claim)'],'請求最適化|処理時間短縮|入力:請求履歴、審査時間|判断:審査>14日→優先、不正疑い>5%→AI審査強化|出力:改善案、期待処理時間','Claim Optimization|Reduce processing time|Input: claim history, review time|Judgment: review>14d→prioritize, fraud suspect>5%→enhance AI review|Output: improvement plan, expected processing time')
 };
 
 // Growth Intelligence data
@@ -1428,6 +1576,256 @@ const DOMAIN_GROWTH={
     ['Acquire sellers','Search accuracy','Matching optimization','Escrow trust','Rating system'],
     ['出品無料→成約手数料8%','プレミアム掲載:¥2,000/月','Featured:¥5,000/回'],
     ['Free list→8% commission','Premium:$20/mo','Featured:$50/time']
+  ),
+  content:_dg(
+    ['訪問','記事閲覧','購読登録','エンゲージ','課金'],
+    ['Visit','Browse','Subscribe','Engage','Pay'],
+    [100,35,8,4,1.2],
+    'Revenue = PV × Subscribe_CVR × Engage_Rate × Paid_CVR × ARPU + Ad',
+    ['SEO/SNS拡散','コンテンツ品質','メルマガ育成','コメント/共有促進','有料コンテンツ訴求'],
+    ['SEO/SNS spread','Content quality','Newsletter nurture','Comment/share incentive','Paid content pitch'],
+    ['無料:基本閲覧','購読:¥500/月','プレミアム:¥1,500/月'],
+    ['Free:basic','Subscribe:$5/mo','Premium:$15/mo']
+  ),
+  analytics:_dg(
+    ['トライアル','データ接続','ダッシュボード利用','レポート共有','エンタープライズ'],
+    ['Trial','Data Connect','Dashboard Use','Report Share','Enterprise'],
+    [100,60,35,15,4],
+    'ARR = Trials × Connect_CVR × Active × Share × Enterprise_Rate × ACV',
+    ['無料枠拡大','データソース連携強化','テンプレート充実','チーム機能','カスタマイズ支援'],
+    ['Expand free tier','Enhance data source connectors','Rich templates','Team features','Customization support'],
+    ['Free:3ダッシュボード','Pro:¥9,800/月','Enterprise:¥98,000/月'],
+    ['Free:3 dashboards','Pro:$100/mo','Enterprise:$1,000/mo']
+  ),
+  iot:_dg(
+    ['デバイス登録','データストリーム','アラート運用','分析利用','スケール'],
+    ['Device Register','Data Stream','Alert Ops','Analytics','Scale'],
+    [100,70,50,30,8],
+    'Revenue = Devices × Stream_Rate × Alert_Engage × Analytics_Use × Scale_Rate × ARPU',
+    ['デバイス配布促進','接続安定性','閾値調整UX','BIツール連携','大規模プラン'],
+    ['Device distribution','Connection stability','Threshold tuning UX','BI integration','Enterprise plan'],
+    ['無料:5デバイス','Standard:¥2,000/月(50台)','Enterprise:¥50,000/月(1000台+)'],
+    ['Free:5 devices','Standard:$20/mo(50)','Enterprise:$500/mo(1000+)']
+  ),
+  realestate:_dg(
+    ['物件検索','詳細閲覧','問合せ','内見予約','契約'],
+    ['Search','Detail View','Inquiry','Viewing','Contract'],
+    [100,25,8,3,1.2],
+    'Revenue = Listings × View_CVR × Inquiry_CVR × Viewing_CVR × Contract × Commission',
+    ['SEO/ポータル連携','写真/VR品質','チャット対応','スケジュール調整','電子契約導入'],
+    ['SEO/portal integration','Photo/VR quality','Chat support','Schedule coordination','E-contract'],
+    ['掲載無料→成約手数料3%','プレミアム:¥5,000/月','VR撮影:¥30,000/回'],
+    ['Free list→3% commission','Premium:$50/mo','VR photo:$300/time']
+  ),
+  legal:_dg(
+    ['問合せ','相談予約','案件契約','進行管理','継続/更新'],
+    ['Inquiry','Consult','Contract','Case Mgmt','Renew'],
+    [100,40,20,18,8],
+    'Revenue = Inquiries × Consult_CVR × Contract_CVR × Avg_Fee + Retainer',
+    ['SEO/専門性訴求','初回相談無料','料金透明性','進捗可視化','顧問契約提案'],
+    ['SEO/expertise','Free first consult','Transparent pricing','Progress visibility','Retainer proposal'],
+    ['相談:¥10,000/回','案件:¥300,000-500,000','顧問:¥100,000/月'],
+    ['Consult:$100','Case:$3,000-5,000','Retainer:$1,000/mo']
+  ),
+  hr:_dg(
+    ['求人掲載','応募受付','書類選考','面接実施','採用決定'],
+    ['Job Post','Application','Screening','Interview','Hire'],
+    [100,30,15,8,3],
+    'Hires = Postings × Apply_Rate × Screen_Pass × Interview_CVR × Offer_Accept',
+    ['求人SEO','ATS連携','自動スクリーニング','面接スケジューラ','オファー管理'],
+    ['Job SEO','ATS integration','Auto screening','Interview scheduler','Offer management'],
+    ['無料:3求人/月','Standard:¥50,000/月','Enterprise:¥200,000/月'],
+    ['Free:3 posts/mo','Standard:$500/mo','Enterprise:$2,000/mo']
+  ),
+  health:_dg(
+    ['登録','初回記録','習慣化(7日)','アクティブ継続','プレミアム'],
+    ['Register','First Log','Habit(7d)','Active','Premium'],
+    [100,55,30,18,5],
+    'Revenue = Users × First_Log × Habit × Active × Premium_CVR × ARPU',
+    ['広告/医療機関提携','入力簡素化','リマインダー/報酬','データ可視化','AI分析/コーチング'],
+    ['Ads/clinic partnership','Simplify input','Reminder/reward','Data visualization','AI analysis/coaching'],
+    ['Free:基本記録','Pro:¥980/月','家族:¥2,480/月'],
+    ['Free:basic log','Pro:$10/mo','Family:$25/mo']
+  ),
+  portfolio:_dg(
+    ['サイト訪問','作品閲覧','問合せフォーム','ミーティング','契約'],
+    ['Visit','Work View','Inquiry','Meeting','Contract'],
+    [100,50,8,4,1.6],
+    'Revenue = Visitors × View_Engage × Inquiry_CVR × Meeting × Contract_CVR × Project_Fee',
+    ['SEO/SNS発信','作品質/量','CTA最適化','オンライン面談','見積自動化'],
+    ['SEO/SNS','Portfolio quality/quantity','Optimize CTA','Online meeting','Auto quote'],
+    ['無料:基本サイト','Pro:¥980/月(独自ドメイン)','ビジネス:¥2,980/月(分析)'],
+    ['Free:basic','Pro:$10/mo(custom domain)','Business:$30/mo(analytics)']
+  ),
+  tool:_dg(
+    ['発見','インストール/登録','初回利用','日常利用','有料化'],
+    ['Discovery','Install/Register','First Use','Daily Use','Monetize'],
+    [100,40,25,12,3],
+    'Revenue = Installs × First_Use × Daily_Use × Paid_CVR × ARPU',
+    ['App Store最適化','オンボーディング','リマインダー','習慣形成','プレミアム訴求'],
+    ['App Store optimization','Onboarding','Reminders','Habit formation','Premium pitch'],
+    ['Free:基本機能','Pro:¥500/月','ライフタイム:¥4,980'],
+    ['Free:basic','Pro:$5/mo','Lifetime:$50']
+  ),
+  ai:_dg(
+    ['サインアップ','初回プロンプト','アクティブ利用','習慣化','Pro升級'],
+    ['Signup','First Prompt','Active Use','Habit','Pro Upgrade'],
+    [100,70,45,25,8],
+    'Revenue = Signups × First_Prompt × Active × Habit × Pro_CVR × ARPU',
+    ['無料枠拡大','プロンプトテンプレート','品質向上','使い放題訴求','API提供'],
+    ['Expand free tier','Prompt templates','Quality improvement','Unlimited pitch','API access'],
+    ['Free:20回/月','Pro:¥2,000/月(無制限)','Enterprise:¥20,000/月(API)'],
+    ['Free:20/mo','Pro:$20/mo(unlimited)','Enterprise:$200/mo(API)']
+  ),
+  automation:_dg(
+    ['トライアル','初ワークフロー作成','自動化運用','複数フロー拡大','エンタープライズ'],
+    ['Trial','First Workflow','Automation Ops','Multi-Flow','Enterprise'],
+    [100,50,30,15,5],
+    'ARR = Trials × First_Flow × Ops × Multi × Enterprise_CVR × ACV',
+    ['テンプレート充実','ノーコードUI','インテグレーション拡大','エラーハンドリング','SLA保証'],
+    ['Rich templates','No-code UI','Expand integrations','Error handling','SLA guarantee'],
+    ['Free:3フロー','Pro:¥5,000/月(無制限)','Enterprise:¥50,000/月(専用サポート)'],
+    ['Free:3 flows','Pro:$50/mo(unlimited)','Enterprise:$500/mo(dedicated support)']
+  ),
+  event:_dg(
+    ['イベント発見','詳細閲覧','チケット購入','イベント参加','リピート参加'],
+    ['Discover','View Details','Buy Ticket','Attend','Repeat'],
+    [100,40,12,10,4],
+    'Revenue = Events × View × Purchase × Attend × Repeat × Ticket_Price × Commission',
+    ['SEO/SNS拡散','イベント詳細充実','決済UX簡素化','リマインダー','フォローアップ'],
+    ['SEO/SNS spread','Rich event details','Simple checkout','Reminders','Follow-up'],
+    ['掲載無料→チケット手数料10%','有料掲載:¥5,000/月','スポンサー枠:¥50,000'],
+    ['Free list→10% ticket fee','Paid list:$50/mo','Sponsor:$500']
+  ),
+  gamify:_dg(
+    ['ユーザー登録','初アチーブメント','デイリーアクティブ','ランキング参加','課金'],
+    ['Register','First Achievement','Daily Active','Ranking','Pay'],
+    [100,70,40,20,5],
+    'Revenue = Users × First_Achieve × DAU × Ranking × Pay_CVR × ARPPU',
+    ['チュートリアル充実','早期報酬','デイリーミッション','競争要素','限定アイテム'],
+    ['Rich tutorial','Early reward','Daily mission','Competition','Limited items'],
+    ['無料:基本プレイ','月額:¥980','アイテム:¥120-¥10,000'],
+    ['Free:basic','Monthly:$10','Items:$1-$100']
+  ),
+  collab:_dg(
+    ['招待/登録','初回編集','日常コラボ','チーム拡大','エンタープライズ'],
+    ['Invite/Register','First Edit','Daily Collab','Team Expand','Enterprise'],
+    [100,60,40,20,6],
+    'ARR = Invites × First_Edit × Daily × Team_Expand × Enterprise_CVR × ACV',
+    ['招待インセンティブ','リアルタイム同期品質','通知最適化','ロール/権限管理','SSO/監査ログ'],
+    ['Invite incentive','Real-time sync quality','Optimize notifications','Role/permission','SSO/audit log'],
+    ['Free:3人','Team:¥1,500/月(10人)','Enterprise:¥15,000/月(無制限)'],
+    ['Free:3users','Team:$15/mo(10)','Enterprise:$150/mo(unlimited)']
+  ),
+  devtool:_dg(
+    ['発見','APIキー発行','初回コール','統合完了','有料化'],
+    ['Discovery','API Key','First Call','Integration','Monetize'],
+    [100,50,35,20,6],
+    'Revenue = Signups × Key_Issue × First_Call × Integration × Paid_CVR × ARPU',
+    ['ドキュメント充実','Playground提供','SDK/ライブラリ','Rate limit最適化','エンタープライズサポート'],
+    ['Rich docs','Playground','SDK/library','Optimize rate limit','Enterprise support'],
+    ['Free:1,000リクエスト/月','Pro:¥5,000/月(10万)','Enterprise:¥50,000/月(無制限)'],
+    ['Free:1,000/mo','Pro:$50/mo(100k)','Enterprise:$500/mo(unlimited)']
+  ),
+  creator:_dg(
+    ['フォロー','無料コンテンツ閲覧','購読登録','投げ銭/購入','スーパーファン'],
+    ['Follow','Free Content','Subscribe','Tip/Buy','Super Fan'],
+    [100,60,15,6,1.5],
+    'Revenue = Followers × Free_View × Subscribe_CVR × Tip_Rate × Super_Fan × ARPPU',
+    ['SNS連携','無料コンテンツ品質','購読特典充実','投げ銭導線','限定コンテンツ'],
+    ['SNS integration','Free content quality','Rich subscriber perks','Tip flow','Exclusive content'],
+    ['無料:基本閲覧','購読:¥500-2,000/月','投げ銭:¥100-10,000'],
+    ['Free:basic','Subscribe:$5-20/mo','Tip:$1-100']
+  ),
+  newsletter:_dg(
+    ['ランディング','購読登録','メール開封','リンククリック','有料転換/紹介'],
+    ['Landing','Subscribe','Email Open','Click','Paid/Refer'],
+    [100,25,15,6,1.5],
+    'Revenue = Visits × Subscribe × Open × Click × Paid_CVR × ARPU',
+    ['LP最適化','ダブルオプトイン','件名A/Bテスト','CTAクリア化','有料版訴求'],
+    ['Optimize LP','Double opt-in','Subject A/B test','Clear CTA','Paid pitch'],
+    ['無料:月4通','Pro:¥980/月(週刊)','スポンサー枠:¥50,000'],
+    ['Free:4/mo','Pro:$10/mo(weekly)','Sponsor slot:$500']
+  ),
+  manufacturing:_dg(
+    ['需要予測','生産開始','品質検査','出荷完了','リピート発注'],
+    ['Forecast','Start Production','Quality Check','Ship','Reorder'],
+    [100,85,75,70,35],
+    'Revenue = Orders × Production × Quality_Pass × Ship × Reorder × Unit_Price',
+    ['需要予測AI','生産効率化','全数検査','納期厳守','品質実績'],
+    ['Forecast AI','Production efficiency','100% inspection','On-time delivery','Quality track record'],
+    ['標準:¥500/個','量産:¥300/個','カスタム:¥1,000/個'],
+    ['Standard:$5/unit','Mass:$3/unit','Custom:$10/unit']
+  ),
+  logistics:_dg(
+    ['発注','引当','出荷','配送','完了'],
+    ['Order','Allocate','Ship','Deliver','Complete'],
+    [100,90,85,80,75],
+    'Revenue = Orders × Allocation × Ship × Delivery × Complete × Delivery_Fee',
+    ['リアルタイム在庫','AI配送最適化','追跡通知','不在対策','再配達削減'],
+    ['Real-time inventory','AI route optimization','Tracking alerts','Absence handling','Redelivery reduction'],
+    ['通常:¥500/個','速達:¥800/個','当日:¥1,500/個'],
+    ['Standard:$5','Express:$8','Same-day:$15']
+  ),
+  agriculture:_dg(
+    ['播種','育成','モニタリング','収穫','出荷'],
+    ['Sow','Grow','Monitor','Harvest','Ship'],
+    [100,90,85,75,60],
+    'Revenue = Plots × Grow × Monitor × Harvest × Ship × Price_per_kg',
+    ['適期播種','IoTモニタリング','病害早期検知','収穫タイミング最適化','品質選別'],
+    ['Optimal sowing','IoT monitoring','Early pest detection','Harvest timing optimization','Quality sorting'],
+    ['A級:¥300/kg','B級:¥150/kg','加工用:¥50/kg'],
+    ['Grade-A:$3/kg','Grade-B:$1.5/kg','Processing:$0.5/kg']
+  ),
+  energy:_dg(
+    ['契約','メーター設置','定期計測','請求','継続'],
+    ['Contract','Meter Install','Measure','Bill','Renew'],
+    [100,95,90,88,80],
+    'Revenue = Contracts × Install × Measure × Bill × Renew × Unit_Price',
+    ['プラン提案','スマートメーター','AI需給予測','自動請求','省エネ提案'],
+    ['Plan proposals','Smart meters','AI forecast','Auto-billing','Energy-saving tips'],
+    ['基本:¥20/kWh','ピーク:¥30/kWh','夜間:¥10/kWh'],
+    ['Basic:$0.20/kWh','Peak:$0.30/kWh','Night:$0.10/kWh']
+  ),
+  media:_dg(
+    ['発見','視聴開始','習慣視聴','サブスク登録','継続'],
+    ['Discover','Start Watching','Habit','Subscribe','Retain'],
+    [100,60,35,10,7],
+    'Revenue = Visitors × Start × Habit × Subscribe × Retain × ARPU + Ad_Revenue',
+    ['SEO/SNS拡散','レコメンド精度','オリジナルコンテンツ','プレミアム訴求','継続特典'],
+    ['SEO/SNS spread','Recommendation accuracy','Original content','Premium pitch','Retention perks'],
+    ['無料:広告付き','ベーシック:¥980/月','プレミアム:¥1,980/月'],
+    ['Free:with ads','Basic:$10/mo','Premium:$20/mo']
+  ),
+  government:_dg(
+    ['認知','アカウント登録','初回申請','定期利用','推奨'],
+    ['Awareness','Register','First Application','Regular Use','Recommend'],
+    [100,45,30,15,8],
+    'Usage = Citizens × Register × First_App × Regular × Satisfaction',
+    ['広報強化','オンライン化促進','UI簡素化','窓口サポート','利便性向上'],
+    ['PR enhancement','Online promotion','UI simplification','Counter support','Convenience improvement'],
+    ['基本:無料','証明書発行:¥300','速達:¥500'],
+    ['Basic:free','Certificate:$3','Express:$5']
+  ),
+  travel:_dg(
+    ['検索','比較','予約','旅行完了','リピート'],
+    ['Search','Compare','Book','Travel','Repeat'],
+    [100,50,15,12,4],
+    'Revenue = Searches × Compare × Book × Travel × Repeat × Avg_Booking × Commission',
+    ['比較機能充実','価格保証','レビュー表示','サポート24h','リピート特典'],
+    ['Rich comparison','Price guarantee','Review display','24h support','Repeat perks'],
+    ['手数料:8%','プレミアム会員:¥5,000/年','保険:¥2,000/旅行'],
+    ['Commission:8%','Premium membership:$50/yr','Insurance:$20/trip']
+  ),
+  insurance:_dg(
+    ['見積取得','比較検討','契約','請求利用','継続'],
+    ['Get Quote','Compare','Contract','Claim','Renew'],
+    [100,60,25,15,12],
+    'Revenue = Quotes × Compare × Contract × Premium × Renew',
+    ['見積簡素化','プラン比較ツール','オンライン契約','請求サポート','継続割引'],
+    ['Simplified quotes','Plan comparison tool','Online contract','Claims support','Renewal discount'],
+    ['基本:¥3,000/月','充実:¥5,000/月','プレミアム:¥10,000/月'],
+    ['Basic:$30/mo','Enhanced:$50/mo','Premium:$100/mo']
   ),
   _default:_dg(
     ['認知','登録','利用開始','習慣化','課金/推薦'],
@@ -1661,6 +2059,78 @@ const DOMAIN_OPS={
     ['Weekly backup (RPO:1week,RTO:12h)','Subscriber data 3yr retention'],
     ['SPF/DKIM設定','解除即時反映','定期同期','レピュテーション管理'],
     ['SPF/DKIM setup','Immediate unsubscribe reflect','Periodic sync','Reputation management']),
+  manufacturing:_dop('99.9%',
+    ['生産ライン停止','品質検査強化モード','出荷制限'],
+    ['Production line stop','Enhanced quality inspection mode','Shipping limit'],
+    ['生産計画最適化バッチ','在庫差異調整ジョブ','設備保全スケジューラ'],
+    ['Production plan optimization batch','Inventory variance adjustment job','Equipment maintenance scheduler'],
+    ['日次バックアップ+WAL (RPO:1h,RTO:4h)','生産データ5年保持(製造物責任法)'],
+    ['Daily backup+WAL (RPO:1h,RTO:4h)','Production data 5yr retention (Product Liability Act)'],
+    ['全数検査記録','トレーサビリティ確保','冪等性キー(在庫操作)','ロット番号必須'],
+    ['100% inspection record','Ensure traceability','Idempotency key (inventory ops)','Lot number required']),
+  logistics:_dop('99.9%',
+    ['配送受付停止','緊急配送優先モード','ルート変更制限'],
+    ['Delivery acceptance stop','Emergency delivery priority mode','Route change limit'],
+    ['配送ルート最適化バッチ','追跡情報同期ジョブ','配送完了通知キュー'],
+    ['Delivery route optimization batch','Tracking info sync job','Delivery completion notification queue'],
+    ['日次バックアップ (RPO:4h,RTO:8h)','配送履歴3年保持'],
+    ['Daily backup (RPO:4h,RTO:8h)','Delivery history 3yr retention'],
+    ['GPS精度検証','在庫ロック必須','配送状態追跡','温度ログ(冷蔵品)'],
+    ['GPS accuracy verification','Inventory lock required','Delivery status tracking','Temperature log (refrigerated)']),
+  agriculture:_dop('99%',
+    ['灌漑システム停止','収穫作業制限','センサー校正モード'],
+    ['Irrigation system stop','Harvest operation limit','Sensor calibration mode'],
+    ['気象データ同期','収穫予測バッチ','病害検知ジョブ'],
+    ['Weather data sync','Harvest prediction batch','Pest detection job'],
+    ['週次バックアップ (RPO:1day,RTO:24h)','生育データ3年保持'],
+    ['Weekly backup (RPO:1day,RTO:24h)','Growth data 3yr retention'],
+    ['センサー冗長化','異常値アラート','定期校正','トレーサビリティ記録'],
+    ['Sensor redundancy','Anomaly alert','Periodic calibration','Traceability record']),
+  energy:_dop('99.99%',
+    ['計測停止(緊急時)','料金計算制限','需給調整モード'],
+    ['Metering stop (emergency)','Billing calculation limit','Supply-demand adjustment mode'],
+    ['メーター読取バッチ','需給予測ジョブ','請求計算バッチ'],
+    ['Meter reading batch','Supply-demand forecast job','Billing calculation batch'],
+    ['リアルタイムレプリケーション (RPO:1min,RTO:15min)','計測データ10年保持(電気事業法)'],
+    ['Real-time replication (RPO:1min,RTO:15min)','Metering data 10yr retention (Electricity Act)'],
+    ['計測精度±2%以内','冪等性キー必須','監査ログ全件','スマートメーター暗号化'],
+    ['Metering accuracy ±2%','Idempotency key required','All audit logs','Smart meter encryption']),
+  media:_dop('99.95%',
+    ['ストリーミング配信停止','コンテンツアップロード制限','DRM強化モード'],
+    ['Streaming distribution stop','Content upload limit','Enhanced DRM mode'],
+    ['エンコーディングキュー','視聴履歴集計','レコメンド更新バッチ'],
+    ['Encoding queue','Viewing history aggregation','Recommendation update batch'],
+    ['日次バックアップ+CDN (RPO:12h,RTO:4h)','視聴履歴3年保持'],
+    ['Daily backup+CDN (RPO:12h,RTO:4h)','Viewing history 3yr retention'],
+    ['DRM保護必須','Multi-CDN構成','バッファリング<3%','著作権透かし埋込'],
+    ['DRM protection required','Multi-CDN config','Buffering<3%','Copyright watermark embedding']),
+  government:_dop('99.95%',
+    ['申請受付停止','緊急メンテナンス','審査プロセス制限'],
+    ['Application acceptance stop','Emergency maintenance','Review process limit'],
+    ['申請データ集計','承認通知キュー','統計データ生成'],
+    ['Application data aggregation','Approval notification queue','Statistical data generation'],
+    ['日次バックアップ+監査ログ (RPO:1h,RTO:2h)','申請データ永久保持(公文書管理法)'],
+    ['Daily backup+audit log (RPO:1h,RTO:2h)','Application data permanent retention (Public Records Act)'],
+    ['個人情報暗号化必須','全操作監査ログ','RLS厳格適用','WCAG 2.1 AA準拠'],
+    ['Personal info encryption required','All operations audit logged','Strict RLS application','WCAG 2.1 AA compliance']),
+  travel:_dop('99.9%',
+    ['予約受付停止','キャンセル処理制限','決済機能停止'],
+    ['Booking acceptance stop','Cancellation processing limit','Payment feature stop'],
+    ['在庫同期バッチ','予約確認通知','キャンセル料計算ジョブ'],
+    ['Inventory sync batch','Booking confirmation notification','Cancellation fee calculation job'],
+    ['日次バックアップ (RPO:4h,RTO:8h)','予約履歴5年保持(旅行業法)'],
+    ['Daily backup (RPO:4h,RTO:8h)','Booking history 5yr retention (Travel Business Act)'],
+    ['冪等性キー必須','在庫ロック','ダブルブッキング検証','キャンセルポリシー明記'],
+    ['Idempotency key required','Inventory lock','Double booking verification','Clear cancellation policy']),
+  insurance:_dop('99.99%',
+    ['見積発行停止','請求受付制限','支払処理制限'],
+    ['Quote issuance stop','Claim acceptance limit','Payment processing limit'],
+    ['保険料計算バッチ','請求審査ジョブ','契約更新通知'],
+    ['Premium calculation batch','Claim review job','Contract renewal notification'],
+    ['リアルタイムレプリケーション (RPO:1min,RTO:15min)','契約データ永久保持(保険業法)'],
+    ['Real-time replication (RPO:1min,RTO:15min)','Contract data permanent retention (Insurance Act)'],
+    ['全取引監査ログ','見積計算検証','請求データ暗号化','不正検知AI'],
+    ['All transaction audit logs','Quote calculation verification','Claim data encryption','Fraud detection AI']),
   _default:_dop('99%',
     ['メンテナンスモード','機能制限','新規登録停止'],
     ['Maintenance mode','Feature limit','Signup pause'],
@@ -1908,7 +2378,7 @@ function _dip(impl_ja,impl_en,pseudo,guard_ja,guard_en){
   return {impl_ja:impl_ja,impl_en:impl_en,pseudo:pseudo,guard_ja:guard_ja,guard_en:guard_en};
 }
 
-// ── Domain Implementation Patterns (24 domains) ──
+// ── Domain Implementation Patterns (32 domains) ──
 const DOMAIN_IMPL_PATTERN={
   education:_dip(
     ['進捗トラッキングはイベントソーシングで実装','コース完了判定はサーバーサイドで検証','レッスン順序制御はFKと順序カラムで管理'],

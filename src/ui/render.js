@@ -76,6 +76,7 @@ function renderChips(zone,q,multi,onSubmit,withVoice){
   cz.appendChild(gr);zone.appendChild(cz);
   const ft=document.createElement('div');ft.className='cfoot';
   const inp=document.createElement('input');inp.className='cadd';inp.placeholder=q.placeholder||(_ja?'自由入力…':'Type here…');
+  inp.setAttribute('aria-label', _ja?'自由入力':'Free text input');
   if(multi){
     inp.addEventListener('keypress',e=>{
       if(e.key==='Enter'&&inp.value.trim()){
@@ -128,13 +129,20 @@ function showTechBrowser(qId, onSelect){
   const allCats=[...new Set(TECH_DB.filter(t=>t.cat===primaryCat).map(t=>t.cat))];
   // モーダル構築
   const ov=document.createElement('div');ov.className='techdb-overlay';
+  ov.setAttribute('role','dialog');
+  ov.setAttribute('aria-modal','true');
+  ov.setAttribute('aria-label',_ja?'技術マスター':'Tech Master');
   ov.onclick=e=>{if(e.target===ov)ov.remove();};
+  ov.addEventListener('keydown',e=>{
+    if(e.key==='Escape')ov.remove();
+  });
   const modal=document.createElement('div');modal.className='techdb-modal';
   // ヘッダー + 検索
   const hd=document.createElement('div');hd.className='techdb-hd';
   hd.innerHTML='<h3>'+(_ja?'技術マスターから選択':'Browse Tech Master')+'</h3>';
   const search=document.createElement('input');search.className='techdb-search';
   search.placeholder=_ja?'検索...':'Search...';
+  search.setAttribute('aria-label', _ja?'技術マスター検索':'Tech Master search');
   hd.appendChild(search);modal.appendChild(hd);
   // カテゴリタブ + アイテムグリッド
   const body=document.createElement('div');body.className='techdb-body';
@@ -177,6 +185,8 @@ function showTechBrowser(qId, onSelect){
   modal.appendChild(body);ov.appendChild(modal);
   document.body.appendChild(ov);
   renderItems(primaryCat);
+  // Initial focus on search
+  setTimeout(()=>search.focus(),50);
 }
 
 function renderDnD(zone,items,onSubmit){

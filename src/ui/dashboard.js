@@ -328,9 +328,9 @@ function renderTechDB(){
   
   let h=`<div class="dash-head"><h3>📊 ${_ja?'技術マスターテーブル':'Tech Master Table'}</h3><p>${TECH_DB.length}${_ja?'エントリ — フィルタで絞り込み':'entries — use filters to narrow down'}</p></div>`;
   h+=`<div class="tech-filter">
-    <select id="tfCat" onchange="filterTechDB()"><option value="">${_ja?'全カテゴリ':'All Categories'}</option>${Object.entries(cats).map(([k,v])=>`<option value="${k}">${v}</option>`).join('')}</select>
-    <select id="tfReq" onchange="filterTechDB()"><option value="">${_ja?'全必須度':'All Levels'}</option><option value="required">${_ja?'必須':'Required'}</option><option value="recommended">${_ja?'推奨':'Recommended'}</option><option value="optional">${_ja?'選択':'Optional'}</option></select>
-    <input id="tfSearch" placeholder="${_ja?'検索...':'Search...'}" oninput="filterTechDB()">
+    <select id="tfCat" aria-label="${_ja?'カテゴリフィルタ':'Category filter'}" onchange="filterTechDB()"><option value="">${_ja?'全カテゴリ':'All Categories'}</option>${Object.entries(cats).map(([k,v])=>`<option value="${k}">${v}</option>`).join('')}</select>
+    <select id="tfReq" aria-label="${_ja?'必須度フィルタ':'Required level filter'}" onchange="filterTechDB()"><option value="">${_ja?'全必須度':'All Levels'}</option><option value="required">${_ja?'必須':'Required'}</option><option value="recommended">${_ja?'推奨':'Recommended'}</option><option value="optional">${_ja?'選択':'Optional'}</option></select>
+    <input id="tfSearch" aria-label="${_ja?'技術名検索':'Search tech name'}" placeholder="${_ja?'検索...':'Search...'}" oninput="filterTechDB()">
     <span id="tfCount" class="dash-tfcount">${TECH_DB.length}${_ja?'件':' items'}</span>
   </div>`;
   h+=`<div class="dash-tbl-wrap"><table class="tech-table"><thead><tr><th>${_ja?'技術名':'Tech'}</th><th>${_ja?'カテゴリ':'Category'}</th><th>${_ja?'種別':'Type'}</th><th>${_ja?'必須度':'Required'}</th><th>${_ja?'レベル':'Level'}</th></tr></thead><tbody id="techTbody">`;

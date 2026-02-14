@@ -62,7 +62,11 @@ function addMsg(type,text,tip,qid,helpId){
   lbl.textContent=type==='bot'?(_ja?'AI アシスタント':'AI Assistant'):(_ja?'あなた':'You');
   if(type==='bot'&&helpId&&HELP_DATA[helpId]){
     const hb=document.createElement('span');hb.className='q-help';hb.textContent='?';hb.title=_ja?'ヘルプ':'Help';
+    hb.setAttribute('role','button');
+    hb.setAttribute('aria-label',_ja?'ヘルプ':'Help');
+    hb.tabIndex=0;
     hb.onclick=(e)=>showHelp(helpId,e);
+    hb.onkeydown=(e)=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();showHelp(helpId,e);}};
     lbl.appendChild(hb);
   }
   const bd=document.createElement('div');bd.className='m-body';

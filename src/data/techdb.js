@@ -20,6 +20,9 @@ const TECH_DB=[
 {name:'Java',cat:'lang',sub:'language',req:'optional',level:'ent',weeks:'8-16'},
 {name:'Go',cat:'lang',sub:'language',req:'optional',level:'perf',weeks:'4-8'},
 {name:'Rust',cat:'lang',sub:'language',req:'optional',level:'sys',weeks:'8-16'},
+{name:'Kotlin',cat:'lang',sub:'language',req:'optional',level:'android',weeks:'4-8'},
+{name:'Swift',cat:'lang',sub:'language',req:'optional',level:'ios',weeks:'4-8'},
+{name:'Dart',cat:'lang',sub:'language',req:'optional',level:'flutter',weeks:'4-8'},
 {name:'GraphQL SDL',cat:'lang',sub:'query',req:'optional',level:'pro',weeks:'1-2'},
 // Frontend (28)
 {name:'React',cat:'front',sub:'fw',req:'top1',level:'int'},
@@ -56,6 +59,12 @@ const TECH_DB=[
 {name:'FlashList',cat:'mobile',sub:'list',req:'recommended',level:'perf'},
 {name:'Maestro',cat:'mobile',sub:'e2e',req:'recommended',level:'pro'},
 {name:'Flutter',cat:'mobile',sub:'alt-fw',req:'optional',level:'dart'},
+{name:'Kotlin Multiplatform (KMP)',cat:'mobile',sub:'cross-platform',req:'optional',level:'ent'},
+{name:'Compose Multiplatform',cat:'mobile',sub:'cross-platform-ui',req:'optional',level:'ent'},
+{name:'Tauri v2',cat:'mobile',sub:'hybrid',req:'optional',level:'pro'},
+{name:'SwiftUI',cat:'mobile',sub:'native-fw',req:'optional',level:'ios'},
+{name:'Jetpack Compose',cat:'mobile',sub:'native-fw',req:'optional',level:'android'},
+{name:'visionOS / RealityKit',cat:'mobile',sub:'spatial',req:'optional',level:'pro'},
 // Backend (30)
 {name:'Node.js',cat:'back',sub:'runtime',req:'top1',level:'int'},
 {name:'Express',cat:'back',sub:'fw',req:'recommended',level:'int'},
@@ -114,6 +123,7 @@ const TECH_DB=[
 {name:'Terraform',cat:'devops',sub:'iac',req:'optional',level:'pro'},
 {name:'Nginx',cat:'devops',sub:'web',req:'optional',level:'pro'},
 {name:'Linux Basics',cat:'devops',sub:'os',req:'recommended',level:'int'},
+{name:'Backstage (Spotify)',cat:'devops',sub:'idp',req:'optional',level:'pro',price:'free-oss'},
 // AI Tools (22)
 {name:'Cursor',cat:'ai',sub:'ide',req:'top1',level:'int',price:'$20'},
 {name:'Claude Code',cat:'ai',sub:'cli',req:'recommended',level:'int',price:'$20〜$200'},
@@ -138,6 +148,9 @@ const TECH_DB=[
 {name:'Bolt.new',cat:'ai_auto',sub:'generator',req:'optional',level:'beg',price:'free-oss'},
 {name:'v0 (Vercel)',cat:'ai_auto',sub:'ui-gen',req:'optional',level:'int',price:'$20'},
 {name:'Codex App (OpenAI)',cat:'ai_auto',sub:'agentic',req:'optional',level:'pro',price:'$20'},
+{name:'FlutterFlow',cat:'ai_auto',sub:'no-code',req:'optional',level:'beg',price:'free-tier'},
+{name:'Adalo',cat:'ai_auto',sub:'no-code',req:'optional',level:'beg',price:'free-tier'},
+{name:'Architect',cat:'ai_auto',sub:'text-to-app',req:'optional',level:'int',price:'paid'},
 // ── Additional Languages (6) ──
 {name:'C#',cat:'lang',sub:'language',req:'optional',level:'dotnet',weeks:'6-12'},
 {name:'PHP',cat:'lang',sub:'language',req:'optional',level:'wp',weeks:'4-8'},
@@ -251,18 +264,19 @@ const TECH_DB=[
 {name:'Codecov',cat:'test',sub:'coverage',req:'optional',level:'int'},
 // ── API & Communication (6) ──
 {name:'tRPC',cat:'api',sub:'typesafe',req:'optional',level:'int'},
-{name:'Hono',cat:'api',sub:'edge-fw',req:'optional',level:'edge'},
+{name:'gRPC',cat:'api',sub:'rpc',req:'optional',level:'pro'},
 {name:'Zod',cat:'api',sub:'validation',req:'recommended',level:'int'},
 {name:'Axios',cat:'api',sub:'http',req:'optional',level:'int'},
 {name:'WebSocket',cat:'api',sub:'realtime',req:'optional',level:'int'},
 {name:'Server-Sent Events',cat:'api',sub:'realtime',req:'optional',level:'int'},
-// ── Build & Toolchain (6) ──
+// ── Build & Toolchain (7) ──
 {name:'Turbopack',cat:'build',sub:'bundler',req:'optional',level:'next'},
 {name:'esbuild',cat:'build',sub:'bundler',req:'optional',level:'pro'},
 {name:'SWC',cat:'build',sub:'compiler',req:'recommended',level:'int'},
 {name:'pnpm',cat:'build',sub:'pkgmgr',req:'recommended',level:'int'},
 {name:'Turborepo',cat:'build',sub:'monorepo',req:'optional',level:'pro'},
 {name:'Changesets',cat:'build',sub:'versioning',req:'optional',level:'pro'},
+{name:'WebAssembly (WASI)',cat:'build',sub:'runtime',req:'optional',level:'pro'},
 // ── Data & Analytics (6) ──
 {name:'Drizzle Studio',cat:'data',sub:'gui',req:'optional',level:'int'},
 {name:'Prisma Studio',cat:'data',sub:'gui',req:'recommended',level:'int'},

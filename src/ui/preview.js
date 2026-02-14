@@ -194,7 +194,7 @@ function showFileTree(){
   const tree=buildFileTree();
   const hasFiles=Object.keys(S.files).length>0;
   
-  let h='<div class="ft-search"><input type="text" id="ftSearch" placeholder="'+(_ja?'🔍 ファイル検索…':'🔍 Search files…')+'" oninput="filterFileTree(this.value)"></div>';
+  let h='<div class="ft-search"><input type="text" id="ftSearch" placeholder="'+(_ja?'🔍 ファイル検索…':'🔍 Search files…')+'" aria-label="'+(_ja?'ファイル検索':'Search files')+'" oninput="filterFileTree(this.value)"></div>';
   h+='<ul class="file-tree" id="ftList">';
   tree.forEach(f=>{
     if(!f.name||f.name==='───────────'){h+='<li class="ft-separator">────────────────</li>';return;}

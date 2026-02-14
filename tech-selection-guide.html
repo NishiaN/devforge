@@ -582,6 +582,25 @@ section { padding: 80px 0; }
   transform: translateY(-2px);
   box-shadow: 0 12px 40px rgba(59,130,246,0.3);
 }
+.cta-btn-s {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 28px;
+  background: transparent;
+  color: var(--accent);
+  font-weight: 600;
+  font-size: 13px;
+  border: 1px solid var(--accent);
+  border-radius: 10px;
+  text-decoration: none;
+  transition: all 0.3s;
+  margin-top: 12px;
+}
+.cta-btn-s:hover {
+  background: rgba(59,130,246,0.1);
+  transform: translateY(-2px);
+}
 
 /* ═══ FOOTER ═══ */
 footer {
@@ -590,6 +609,21 @@ footer {
   text-align: center;
   font-size: 12px;
   color: var(--text3);
+}
+.footer-nav {
+  margin-bottom: 16px;
+  font-size: 13px;
+}
+.footer-nav a {
+  color: var(--accent);
+  text-decoration: none;
+}
+.footer-nav a:hover {
+  text-decoration: underline;
+}
+.footer-sep {
+  color: var(--text3);
+  margin: 0 12px;
 }
 
 /* ═══ RESPONSIVE ═══ */
@@ -1499,12 +1533,18 @@ footer {
       <a href="devforge-v9.html" class="cta-btn">
         DevForge v9 で技術選定を自動化 →
       </a>
+      <a href="devforge-v9-usage-guide.html" class="cta-btn-s">📖 生成ファイル活用ガイド →</a>
     </div>
   </div>
 </section>
 
 <footer>
   <div class="container">
+    <div class="footer-nav">
+      <a href="devforge-v9.html">DevForge v9</a>
+      <span class="footer-sep">|</span>
+      <a href="devforge-v9-usage-guide.html">生成ファイル活用ガイド</a>
+    </div>
     <p>
       <strong>出典:</strong> 「アプリケーション開発技術の包括的進化論 (2010–2030)」<br>
       © 2026 DevForge v9 — AI-Driven Development OS

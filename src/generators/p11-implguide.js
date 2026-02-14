@@ -415,7 +415,8 @@ function genPillar11_ImplIntelligence(a,pn){
     ['コンプライアンス','docs/45_compliance_matrix.md','docs/47_security_testing.md'],
     ['業種別戦略','docs/48_industry_blueprint.md','docs/49_tech_radar.md'],
     ['運用設計','docs/53_ops_runbook.md','docs/54_ops_checklist.md'],
-    ['AIルール確認','.claude/rules/','.claude/settings.json']
+    ['AIルール確認','.claude/rules/','.claude/settings.json'],
+    ['未来戦略確認','docs/56_market_positioning.md','docs/59_regulatory_foresight.md']
   ]:[
     ['Start coding','CLAUDE.md','.spec/constitution.md'],
     ['Understand DB','docs/04_er_diagram.md','docs/05_api_design.md'],
@@ -428,7 +429,8 @@ function genPillar11_ImplIntelligence(a,pn){
     ['Compliance','docs/45_compliance_matrix.md','docs/47_security_testing.md'],
     ['Industry strategy','docs/48_industry_blueprint.md','docs/49_tech_radar.md'],
     ['Ops design','docs/53_ops_runbook.md','docs/54_ops_checklist.md'],
-    ['AI rules check','.claude/rules/','.claude/settings.json']
+    ['AI rules check','.claude/rules/','.claude/settings.json'],
+    ['Future strategy','docs/56_market_positioning.md','docs/59_regulatory_foresight.md']
   ];
   fmap.forEach(r=>{doc42+='| '+r[0]+' | `'+r[1]+'` | `'+r[2]+'` |\n';});
   doc42+='\n';
@@ -574,7 +576,8 @@ function genPillar11_ImplIntelligence(a,pn){
     '- [ ] `.spec/verification.md` の検証基準をクリア',
     '- [ ] `docs/27_sequence_diagrams.md` のフロー通りに実装',
     '- [ ] `docs/43_security_intelligence.md` のOWASP Top 10チェック完了',
-    '- [ ] `docs/53_ops_runbook.md` のSLO目標を確認'
+    '- [ ] `docs/53_ops_runbook.md` のSLO目標を確認',
+    '- [ ] `docs/57_user_experience_strategy.md` のUX戦略・アクセシビリティ確認'
   ]:[
     '- [ ] Test coverage >= 80%',
     '- [ ] Domain checks in `docs/32_qa_blueprint.md` complete',
@@ -585,7 +588,8 @@ function genPillar11_ImplIntelligence(a,pn){
     '- [ ] Pass `.spec/verification.md` criteria',
     '- [ ] Implementation follows `docs/27_sequence_diagrams.md` flows',
     '- [ ] OWASP Top 10 check in `docs/43_security_intelligence.md` complete',
-    '- [ ] SLO targets in `docs/53_ops_runbook.md` confirmed'
+    '- [ ] SLO targets in `docs/53_ops_runbook.md` confirmed',
+    '- [ ] UX strategy and accessibility review in `docs/57_user_experience_strategy.md`'
   ]);
   doc42+=_lv('pro',G?[
     '- [ ] 中級者チェック全項目 + 以下:',
@@ -598,6 +602,8 @@ function genPillar11_ImplIntelligence(a,pn){
     '- [ ] `docs/44_threat_model.md` のSTRIDE脅威分析完了',
     '- [ ] `docs/54_ops_checklist.md` の12 Ops Capabilities実装',
     '- [ ] `docs/55_ops_plane_design.md` のCircuit Breaker設計確認',
+    '- [ ] `docs/56_market_positioning.md` のMOAT・GTM戦略レビュー',
+    '- [ ] `docs/59_regulatory_foresight.md` の規制フォーサイト確認',
     '- [ ] `.claude/rules/` をプロジェクト固有ルールにカスタマイズ済み'
   ]:[
     '- [ ] All intermediate checks PLUS:',
@@ -610,6 +616,8 @@ function genPillar11_ImplIntelligence(a,pn){
     '- [ ] STRIDE threat analysis in `docs/44_threat_model.md` complete',
     '- [ ] 12 Ops Capabilities from `docs/54_ops_checklist.md` implemented',
     '- [ ] Circuit Breaker design in `docs/55_ops_plane_design.md` verified',
+    '- [ ] MOAT & GTM review in `docs/56_market_positioning.md`',
+    '- [ ] Regulatory foresight check in `docs/59_regulatory_foresight.md`',
     '- [ ] `.claude/rules/` customized to project-specific rules'
   ]);
 
@@ -637,7 +645,8 @@ function genPillar11_ImplIntelligence(a,pn){
     '3. `docs/41_growth_intelligence.md` のグロース方程式を実際のデータで検証',
     '4. `mcp-config.json` でMCPツールチェーンを構築',
     '5. `docs/43-47` セキュリティインテリジェンスでOWASP/STRIDE監査を実践',
-    '6. `docs/53-55` Ops設計書で12 Ops Capabilities を学習'
+    '6. `docs/53-55` Ops設計書で12 Ops Capabilities を学習',
+    '7. `docs/56-59` 未来戦略で市場・UX・エコシステム・規制を把握'
   ]:[
     '**⭐⭐→⭐⭐⭐ Path:**',
     '1. Try multi-agent development with `AGENTS.md`',
@@ -645,7 +654,8 @@ function genPillar11_ImplIntelligence(a,pn){
     '3. Validate growth equations from `docs/41_growth_intelligence.md` with real data',
     '4. Build MCP tool chain via `mcp-config.json`',
     '5. Practice OWASP/STRIDE audits with `docs/43-47` Security Intelligence',
-    '6. Learn 12 Ops Capabilities from `docs/53-55` Ops docs'
+    '6. Learn 12 Ops Capabilities from `docs/53-55` Ops docs',
+    '7. Understand market, UX, ecosystem, and regulations with `docs/56-59` Future Strategy'
   ]);
   doc42+=_lv('pro',G?[
     '**⭐⭐⭐ マスターへの道:**',
@@ -653,25 +663,27 @@ function genPillar11_ImplIntelligence(a,pn){
     '2. チームメンバーへのDevForge導入とメンタリング',
     '3. ドメイン固有のカスタムパイプライン構築',
     '4. OSSコントリビューション・アーキテクチャレビューのリード',
-    '5. `docs/55_ops_plane_design.md` のCircuit Breaker・Evidence-Based Opsを完全実装'
+    '5. `docs/55_ops_plane_design.md` のCircuit Breaker・Evidence-Based Opsを完全実装',
+    '6. `docs/59_regulatory_foresight.md` のEU AI Act・ESGメトリクスを製品戦略に統合'
   ]:[
     '**⭐⭐⭐ Path to Mastery:**',
     '1. Define custom AI skills (using `skills/factory.md` templates)',
     '2. Introduce DevForge to team and mentor adoption',
     '3. Build domain-specific custom pipelines',
     '4. Lead OSS contributions and architecture reviews',
-    '5. Fully implement Circuit Breaker and Evidence-Based Ops from `docs/55_ops_plane_design.md`'
+    '5. Fully implement Circuit Breaker and Evidence-Based Ops from `docs/55_ops_plane_design.md`',
+    '6. Integrate EU AI Act and ESG metrics into product strategy via `docs/59_regulatory_foresight.md`'
   ]);
 
   // Sec 8: Domain Tips
   const dtips={
-    education:G?['`docs/08_security.md` → FERPA/学生データ保護を必ず確認','進捗トラッキングはゲーミフィケーション要素と連携','コース完了率KPIを `docs/30_goal_decomposition.md` で設定','`docs/45_compliance_matrix.md` → FERPA準拠確認']:['Review FERPA/student data protection in `docs/08_security.md`','Link progress tracking with gamification elements','Set course completion KPIs in `docs/30_goal_decomposition.md`','Verify FERPA compliance in `docs/45_compliance_matrix.md`'],
-    fintech:G?['`docs/08_security.md` → PCI DSS/KYC対応を最優先で確認','トランザクション整合性テストを `docs/07_test_cases.md` に追加','金融規制コンプライアンスを `docs/31_industry_playbook.md` で確認','`docs/43_security_intelligence.md` → PCI DSS自動監査プロンプト活用','`docs/53_ops_runbook.md` → SLO 99.99%目標を設定']:['Prioritize PCI DSS/KYC in `docs/08_security.md`','Add transaction integrity tests to `docs/07_test_cases.md`','Check financial compliance in `docs/31_industry_playbook.md`','Use PCI DSS auto-audit prompts in `docs/43_security_intelligence.md`','Set SLO 99.99% target in `docs/53_ops_runbook.md`'],
+    education:G?['`docs/08_security.md` → FERPA/学生データ保護を必ず確認','進捗トラッキングはゲーミフィケーション要素と連携','コース完了率KPIを `docs/30_goal_decomposition.md` で設定','`docs/45_compliance_matrix.md` → FERPA準拠確認','`docs/57_user_experience_strategy.md` → 学習UX戦略・アクセシビリティ']:['Review FERPA/student data protection in `docs/08_security.md`','Link progress tracking with gamification elements','Set course completion KPIs in `docs/30_goal_decomposition.md`','Verify FERPA compliance in `docs/45_compliance_matrix.md`','`docs/57_user_experience_strategy.md` → Learning UX + accessibility'],
+    fintech:G?['`docs/08_security.md` → PCI DSS/KYC対応を最優先で確認','トランザクション整合性テストを `docs/07_test_cases.md` に追加','金融規制コンプライアンスを `docs/31_industry_playbook.md` で確認','`docs/43_security_intelligence.md` → PCI DSS自動監査プロンプト活用','`docs/53_ops_runbook.md` → SLO 99.99%目標を設定','`docs/59_regulatory_foresight.md` → 金融規制2026-2030展望']:['Prioritize PCI DSS/KYC in `docs/08_security.md`','Add transaction integrity tests to `docs/07_test_cases.md`','Check financial compliance in `docs/31_industry_playbook.md`','Use PCI DSS auto-audit prompts in `docs/43_security_intelligence.md`','Set SLO 99.99% target in `docs/53_ops_runbook.md`','`docs/59_regulatory_foresight.md` → Financial regulatory outlook 2026-2030'],
     health:G?['`docs/08_security.md` → HIPAA準拠を確認','患者データ暗号化を `.spec/technical-plan.md` で検証','監査ログを `docs/05_api_design.md` に追加','`docs/45_compliance_matrix.md` → HIPAA準拠チェックリスト活用']:['Verify HIPAA compliance in `docs/08_security.md`','Validate patient data encryption in `.spec/technical-plan.md`','Add audit logging to `docs/05_api_design.md`','Use HIPAA compliance checklist in `docs/45_compliance_matrix.md`'],
-    ec:G?['決済テストは必ずStripeテストキーで実施','在庫管理の同時アクセス対策を `docs/37_bug_prevention.md` で確認','カート放棄防止策を `docs/41_growth_intelligence.md` で確認','`docs/48_industry_blueprint.md` → EC業界設計パターン確認']:['Always test payments with Stripe test keys','Check concurrent access for inventory in `docs/37_bug_prevention.md`','Review cart abandonment prevention in `docs/41_growth_intelligence.md`','Review EC industry patterns in `docs/48_industry_blueprint.md`'],
-    saas:G?['フリーミアム設計は `docs/41_growth_intelligence.md` のファネル参照','マルチテナント設計を `.spec/technical-plan.md` で確認','チャーン防止KPIを `docs/30_goal_decomposition.md` で設定','`docs/53_ops_runbook.md` → SLO 99.9%、Feature Flags設計確認']:['Reference funnel in `docs/41_growth_intelligence.md` for freemium design','Verify multi-tenant design in `.spec/technical-plan.md`','Set churn prevention KPIs in `docs/30_goal_decomposition.md`','Review SLO 99.9% and Feature Flags in `docs/53_ops_runbook.md`']
+    ec:G?['決済テストは必ずStripeテストキーで実施','在庫管理の同時アクセス対策を `docs/37_bug_prevention.md` で確認','カート放棄防止策を `docs/41_growth_intelligence.md` で確認','`docs/48_industry_blueprint.md` → EC業界設計パターン確認','`docs/56_market_positioning.md` → EC市場ポジショニング・MOAT']:['Always test payments with Stripe test keys','Check concurrent access for inventory in `docs/37_bug_prevention.md`','Review cart abandonment prevention in `docs/41_growth_intelligence.md`','Review EC industry patterns in `docs/48_industry_blueprint.md`','`docs/56_market_positioning.md` → EC market positioning + MOAT'],
+    saas:G?['フリーミアム設計は `docs/41_growth_intelligence.md` のファネル参照','マルチテナント設計を `.spec/technical-plan.md` で確認','チャーン防止KPIを `docs/30_goal_decomposition.md` で設定','`docs/53_ops_runbook.md` → SLO 99.9%、Feature Flags設計確認','`docs/58_ecosystem_strategy.md` → API-as-Product・エコシステム']:['Reference funnel in `docs/41_growth_intelligence.md` for freemium design','Verify multi-tenant design in `.spec/technical-plan.md`','Set churn prevention KPIs in `docs/30_goal_decomposition.md`','Review SLO 99.9% and Feature Flags in `docs/53_ops_runbook.md`','`docs/58_ecosystem_strategy.md` → API-as-Product + ecosystem']
   };
-  const tips=dtips[domain]||( G?['プロジェクト固有の制約を `.spec/constitution.md` で再確認','業種別プレイブックを `docs/31_industry_playbook.md` で確認','品質基準を `docs/32_qa_blueprint.md` で確認','`docs/53_ops_runbook.md` → 運用準備をOps Checklistで確認']:['Re-check project constraints in `.spec/constitution.md`','Review domain playbook in `docs/31_industry_playbook.md`','Verify quality criteria in `docs/32_qa_blueprint.md`','Verify ops readiness with `docs/53_ops_runbook.md` Ops Checklist']);
+  const tips=dtips[domain]||( G?['プロジェクト固有の制約を `.spec/constitution.md` で再確認','業種別プレイブックを `docs/31_industry_playbook.md` で確認','品質基準を `docs/32_qa_blueprint.md` で確認','`docs/53_ops_runbook.md` → 運用準備をOps Checklistで確認','`docs/56_market_positioning.md` → 市場ポジショニング・競合分析']:['Re-check project constraints in `.spec/constitution.md`','Review domain playbook in `docs/31_industry_playbook.md`','Verify quality criteria in `docs/32_qa_blueprint.md`','Verify ops readiness with `docs/53_ops_runbook.md` Ops Checklist','`docs/56_market_positioning.md` → Market positioning + competitive analysis']);
   doc42+='## '+(G?'8. 業種別アドバイス（'+domain+'）':'8. Domain-Specific Tips ('+domain+')')+'\n\n';
   tips.forEach((t,i)=>{doc42+=(i+1)+'. '+t+'\n';});
   doc42+='\n';

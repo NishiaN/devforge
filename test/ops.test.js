@@ -180,13 +180,14 @@ describe('Pillar ⑭ Ops Intelligence', () => {
     assert.ok(runbook.includes('暗号化') || runbook.includes('encrypt'), 'Health domain should mention encryption');
   });
 
-  test('supports all 24 domains', () => {
+  test('supports all 32 domains', () => {
     const domains = [
       'education', 'ec', 'saas', 'fintech', 'health', 'booking',
       'marketplace', 'community', 'content', 'analytics', 'iot',
       'realestate', 'legal', 'hr', 'portfolio', 'tool', 'ai',
       'automation', 'event', 'gamify', 'collab', 'devtool',
-      'creator', 'newsletter'
+      'creator', 'newsletter', 'manufacturing', 'logistics', 'agriculture',
+      'energy', 'media', 'government', 'travel', 'insurance'
     ];
 
     domains.forEach(domain => {

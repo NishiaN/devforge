@@ -9,12 +9,12 @@ function openEditor(path){
     <div class="editor-toolbar">
       <div class="title">📝 ${esc(path)}</div>
       <div class="actions">
-        <button class="btn btn-s" onclick="saveEdited('${esc(path)}')">💾 ${_ja?'保存':'Save'}</button>
-        <button class="btn btn-s" onclick="revertFile('${esc(path)}')"${isEdited?'':'disabled'}>↩️ ${_ja?'元に戻す':'Revert'}</button>
-        <button class="btn btn-s" onclick="previewFile('${esc(path)}')">👁 ${_ja?'プレビュー':'Preview'}</button>
+        <button class="btn btn-s" onclick="saveEdited('${escAttr(path)}')">💾 ${_ja?'保存':'Save'}</button>
+        <button class="btn btn-s" onclick="revertFile('${escAttr(path)}')"${isEdited?'':'disabled'}>↩️ ${_ja?'元に戻す':'Revert'}</button>
+        <button class="btn btn-s" onclick="previewFile('${escAttr(path)}')">👁 ${_ja?'プレビュー':'Preview'}</button>
       </div>
     </div>
-    <textarea id="editorArea" spellcheck="false" class="editor-area">${esc(content)}</textarea>`;
+    <textarea id="editorArea" spellcheck="false" class="editor-area" aria-label="${_ja?'ファイルエディタ':'File Editor'}">${esc(content)}</textarea>`;
   // Auto-resize
   const ta=$('editorArea');
   if(ta){

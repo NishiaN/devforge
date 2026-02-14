@@ -5,7 +5,7 @@
 // DATA CONSTANTS
 // ============================================================================
 
-// DOMAIN_MARKET: Market positioning & strategy data (24 domains + default)
+// DOMAIN_MARKET: Market positioning & strategy data (32 domains + default)
 const DOMAIN_MARKET = {
   education: {
     moat_ja: 'ネットワーク効果（学習コミュニティ）、データモート（学習分析）',
@@ -343,6 +343,118 @@ const DOMAIN_MARKET = {
     esg_ja: 'スパム対策、アクセシビリティ（HTML Email）、購読管理透明性',
     esg_en: 'Anti-spam, accessibility (HTML email), subscription transparency'
   },
+  manufacturing: {
+    moat_ja: '技術モート（生産ノウハウ）、規模の経済、品質実績',
+    moat_en: 'Technical moat (production know-how), Economies of scale, Quality track record',
+    gtm_ja: 'エンタープライズSLG、品質認証先行、業界特化',
+    gtm_en: 'Enterprise SLG, quality certification first, industry-specific',
+    ux_ja: 'リアルタイム稼働監視、予知保全、品質ダッシュボード',
+    ux_en: 'Real-time operation monitoring, predictive maintenance, quality dashboard',
+    eco_ja: 'ERP統合、IoTプラットフォーム、PLM連携、SCM統合',
+    eco_en: 'ERP integration, IoT platforms, PLM collaboration, SCM integration',
+    reg_ja: 'ISO 9001、製造物責任法、環境規制（RoHS、REACH）',
+    reg_en: 'ISO 9001, Product Liability Act, Environmental regs (RoHS, REACH)',
+    esg_ja: 'カーボンニュートラル製造、循環経済、労働安全',
+    esg_en: 'Carbon-neutral manufacturing, circular economy, worker safety'
+  },
+  logistics: {
+    moat_ja: 'ネットワーク効果（配送網）、規模の経済、データモート（ルート最適化）',
+    moat_en: 'Network effects (delivery network), Economies of scale, Data moat (route optimization)',
+    gtm_ja: 'PLG（トラッキング無料）+ エンタープライズSLG',
+    gtm_en: 'PLG (free tracking) + Enterprise SLG',
+    ux_ja: 'リアルタイム追跡、配送時間予測、不在対策、置き配',
+    ux_en: 'Real-time tracking, delivery time prediction, absence handling, contactless delivery',
+    eco_ja: 'EC連携、WMS統合、ラストワンマイルAPI、配送業者統合',
+    eco_en: 'E-commerce integration, WMS integration, last-mile APIs, carrier integration',
+    reg_ja: '運送約款、個人情報保護法、EU AI Act（ルート最適化）',
+    reg_en: 'Shipping terms, privacy laws, EU AI Act (route optimization)',
+    esg_ja: 'EV配送、カーボンオフセット、梱包材削減、再配達削減',
+    esg_en: 'EV delivery, carbon offset, packaging reduction, redelivery reduction'
+  },
+  agriculture: {
+    moat_ja: 'データモート（農地分析）、技術モート（AI病害検知）',
+    moat_en: 'Data moat (farmland analysis), Technical moat (AI pest detection)',
+    gtm_ja: 'PLG（基本無料）+ 農協・JA向けSLG',
+    gtm_en: 'PLG (basic free) + SLG for agricultural cooperatives',
+    ux_ja: 'シンプルセンサー設置、視覚化ダッシュボード、アラート',
+    ux_en: 'Simple sensor setup, visualization dashboard, alerts',
+    eco_ja: 'IoTセンサー、気象API、ドローン連携、スマート農機統合',
+    eco_en: 'IoT sensors, weather APIs, drone integration, smart machinery integration',
+    reg_ja: 'GAP認証、食品衛生法、農薬取締法、トレーサビリティ',
+    reg_en: 'GAP certification, food safety laws, pesticide regulations, traceability',
+    esg_ja: '節水灌漑、有機農業支援、生物多様性保全',
+    esg_en: 'Water-saving irrigation, organic farming support, biodiversity conservation'
+  },
+  energy: {
+    moat_ja: '規制参入障壁、インフラロックイン、データモート（需給予測）',
+    moat_en: 'Regulatory barriers, Infrastructure lock-in, Data moat (demand forecasting)',
+    gtm_ja: 'エンタープライズSLG、規制準拠先行、公益事業向け',
+    gtm_en: 'Enterprise SLG, compliance-first, utility-focused',
+    ux_ja: 'リアルタイムダッシュボード、使用量可視化、省エネ提案',
+    ux_en: 'Real-time dashboard, usage visualization, energy-saving suggestions',
+    eco_ja: 'スマートメーター連携、HEMS/BEMS統合、グリッドAPI',
+    eco_en: 'Smart meter integration, HEMS/BEMS integration, grid APIs',
+    reg_ja: '電気事業法、省エネ法、再エネ特措法、EU AI Act',
+    reg_en: 'Electricity Act, Energy Conservation Act, renewable energy laws, EU AI Act',
+    esg_ja: '再生可能エネルギー促進、カーボンニュートラル、エネルギー公平性',
+    esg_en: 'Renewable energy promotion, carbon neutrality, energy equity'
+  },
+  media: {
+    moat_ja: 'ネットワーク効果（視聴者）、コンテンツライブラリ、ブランド信頼',
+    moat_en: 'Network effects (viewers), Content library, Brand trust',
+    gtm_ja: 'PLG（フリーミアム）+ コンテンツSEO',
+    gtm_en: 'PLG (freemium) + Content SEO',
+    ux_ja: 'パーソナライズドレコメンド、オフライン視聴、字幕・吹替',
+    ux_en: 'Personalized recommendations, offline viewing, subtitles/dubs',
+    eco_ja: 'CDN、DRM、広告ネットワーク、コンテンツAPI',
+    eco_en: 'CDN, DRM, ad networks, content APIs',
+    reg_ja: '著作権法、放送法、EU DSA/DMA、GDPR',
+    reg_en: 'Copyright law, broadcasting regulations, EU DSA/DMA, GDPR',
+    esg_ja: 'コンテンツ多様性、アクセシビリティ、デジタル格差解消',
+    esg_en: 'Content diversity, accessibility, digital divide reduction'
+  },
+  government: {
+    moat_ja: '規制独占、データモート（市民データ）、信頼性',
+    moat_en: 'Regulatory monopoly, Data moat (citizen data), Trust',
+    gtm_ja: '公共調達、RFP対応、先行自治体実績',
+    gtm_en: 'Public procurement, RFP response, early municipality track record',
+    ux_ja: 'WCAG 2.1 AA準拠、マイナンバー連携、多言語対応',
+    ux_en: 'WCAG 2.1 AA compliance, national ID integration, multilingual',
+    eco_ja: '電子署名、本人確認API、行政システム連携',
+    eco_en: 'Digital signature, identity verification APIs, government system integration',
+    reg_ja: '個人情報保護法、公文書管理法、行政手続法、EU AI Act高リスク',
+    reg_en: 'Privacy laws, public records laws, administrative procedure laws, EU AI Act high-risk',
+    esg_ja: 'デジタル格差解消、透明性、市民参加、オープンデータ',
+    esg_en: 'Digital divide reduction, transparency, citizen participation, open data'
+  },
+  travel: {
+    moat_ja: 'ネットワーク効果（在庫）、ブランド信頼、データモート（価格最適化）',
+    moat_en: 'Network effects (inventory), Brand trust, Data moat (price optimization)',
+    gtm_ja: 'PLG（比較検索）+ OTA連携',
+    gtm_en: 'PLG (price comparison) + OTA partnerships',
+    ux_ja: 'ワンストップ予約、リアルタイム価格比較、旅程管理',
+    ux_en: 'One-stop booking, real-time price comparison, itinerary management',
+    eco_ja: 'GDS統合、ホテルAPI、航空会社API、決済統合',
+    eco_en: 'GDS integration, hotel APIs, airline APIs, payment integration',
+    reg_ja: '旅行業法、個人情報保護法、EU Package Travel Directive',
+    reg_en: 'Travel business laws, privacy laws, EU Package Travel Directive',
+    esg_ja: 'サステナブルツーリズム、カーボンオフセット、地域経済支援',
+    esg_en: 'Sustainable tourism, carbon offset, local economy support'
+  },
+  insurance: {
+    moat_ja: 'ブランド信頼（保険金支払実績）、規制参入障壁、データモート（リスク分析）',
+    moat_en: 'Brand trust (claims payout record), Regulatory barriers, Data moat (risk analysis)',
+    gtm_ja: 'エンタープライズSLG、規制準拠先行、提携代理店',
+    gtm_en: 'Enterprise SLG, compliance-first, partner agents',
+    ux_ja: '簡易見積、オンライン契約、迅速な保険金請求処理',
+    ux_en: 'Simple quotes, online contracts, fast claims processing',
+    eco_ja: '代理店システム統合、医療機関API、修理業者ネットワーク',
+    eco_en: 'Agent system integration, healthcare APIs, repair shop networks',
+    reg_ja: '保険業法、金融商品取引法、EU Solvency II、AI Act高リスク',
+    reg_en: 'Insurance laws, financial regulations, EU Solvency II, AI Act high-risk',
+    esg_ja: '金融包摂、責任ある保険、ESGリスク評価',
+    esg_en: 'Financial inclusion, responsible insurance, ESG risk assessment'
+  },
   _default: {
     moat_ja: 'ネットワーク効果、データモート、スイッチングコスト、ブランド信頼、技術モート',
     moat_en: 'Network effects, Data moat, Switching costs, Brand trust, Technology moat',
@@ -359,7 +471,7 @@ const DOMAIN_MARKET = {
   }
 };
 
-// PERSONA_ARCHETYPES: 24 domains × 3 personas (primary/secondary/edge)
+// PERSONA_ARCHETYPES: 32 domains × 3 personas (primary/secondary/edge)
 const PERSONA_ARCHETYPES = {
   education: {
     primary_ja: '大学生（18-24歳、スキル習得、キャリア準備）',
@@ -552,6 +664,70 @@ const PERSONA_ARCHETYPES = {
     secondary_en: 'Subscriber (personalization, readability, subscription mgmt)',
     edge_ja: '編集者（複数ライター、承認ワークフロー、分析）',
     edge_en: 'Editor (multiple writers, approval workflows, analytics)'
+  },
+  manufacturing: {
+    primary_ja: '生産管理者（稼働率、品質、納期）',
+    primary_en: 'Production manager (utilization, quality, delivery)',
+    secondary_ja: '現場作業者（操作性、エラー検知、保守）',
+    secondary_en: 'Floor worker (usability, error detection, maintenance)',
+    edge_ja: '経営層（KPI、最適化、規制対応）',
+    edge_en: 'Executive (KPIs, optimization, compliance)'
+  },
+  logistics: {
+    primary_ja: '配送ドライバー（ルート、時間、荷物）',
+    primary_en: 'Delivery driver (route, time, packages)',
+    secondary_ja: '倉庫管理者（在庫、ピッキング、出荷）',
+    secondary_en: 'Warehouse manager (inventory, picking, shipping)',
+    edge_ja: 'オペレーション責任者（最適化、コスト、SLA）',
+    edge_en: 'Operations lead (optimization, cost, SLA)'
+  },
+  agriculture: {
+    primary_ja: '農家（灌漑、収穫、病害対策）',
+    primary_en: 'Farmer (irrigation, harvest, pest control)',
+    secondary_ja: '農業技術者（センサー、分析、改善提案）',
+    secondary_en: 'Agricultural technician (sensors, analysis, improvement suggestions)',
+    edge_ja: '農協・JA職員（統計、支援、トレーサビリティ）',
+    edge_en: 'Cooperative staff (statistics, support, traceability)'
+  },
+  energy: {
+    primary_ja: 'エネルギー管理者（需給、最適化、コスト）',
+    primary_en: 'Energy manager (supply-demand, optimization, cost)',
+    secondary_ja: 'エンドユーザー（使用量、省エネ、請求）',
+    secondary_en: 'End user (usage, energy saving, billing)',
+    edge_ja: '規制担当者（コンプライアンス、報告、監査）',
+    edge_en: 'Compliance officer (regulations, reporting, audit)'
+  },
+  media: {
+    primary_ja: '視聴者（発見、視聴、エンゲージ）',
+    primary_en: 'Viewer (discovery, watching, engagement)',
+    secondary_ja: 'コンテンツクリエイター（アップロード、分析、収益化）',
+    secondary_en: 'Content creator (upload, analytics, monetization)',
+    edge_ja: 'プラットフォーム運営者（DRM、CDN、レコメンド）',
+    edge_en: 'Platform operator (DRM, CDN, recommendations)'
+  },
+  government: {
+    primary_ja: '市民（申請、照会、交付）',
+    primary_en: 'Citizen (application, inquiry, issuance)',
+    secondary_ja: '窓口職員（受付、審査、承認）',
+    secondary_en: 'Clerk (reception, review, approval)',
+    edge_ja: 'システム管理者（セキュリティ、監査、統計）',
+    edge_en: 'System admin (security, audit, statistics)'
+  },
+  travel: {
+    primary_ja: '旅行者（検索、比較、予約）',
+    primary_en: 'Traveler (search, compare, book)',
+    secondary_ja: '旅行代理店（顧客管理、旅程作成、サポート）',
+    secondary_en: 'Travel agent (customer mgmt, itinerary creation, support)',
+    edge_ja: 'サプライヤー（在庫管理、価格設定、連携）',
+    edge_en: 'Supplier (inventory mgmt, pricing, integration)'
+  },
+  insurance: {
+    primary_ja: '契約者（見積、契約、請求）',
+    primary_en: 'Policyholder (quote, contract, claim)',
+    secondary_ja: '代理店（販売、サポート、更新管理）',
+    secondary_en: 'Agent (sales, support, renewal mgmt)',
+    edge_ja: '査定担当者（審査、承認、不正検知）',
+    edge_en: 'Claims adjuster (review, approval, fraud detection)'
   },
   _default: {
     primary_ja: 'エンドユーザー（日常利用、使いやすさ、価値実現）',

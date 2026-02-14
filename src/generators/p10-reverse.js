@@ -218,6 +218,78 @@ const REVERSE_FLOW_MAP={
     risks_ja:['スパム判定','コンテンツ質低下','配信遅延'],
     risks_en:['Spam filtering','Content quality decline','Delivery delays']
   },
+  manufacturing:{
+    goal_ja:'生産効率・品質・納期遵守',goal_en:'Production Efficiency, Quality & On-Time Delivery',
+    flow_ja:['生産目標・品質KPI設定','生産計画最適化','品質管理体制構築','設備保全スケジュール'],
+    flow_en:['Set production & quality KPIs','Optimize production plan','Build quality mgmt system','Equipment maintenance schedule'],
+    kpi_ja:['稼働率 ≥75%','不良率 ≤3%','納期遵守率 ≥95%','在庫回転率 ≥6回/年'],
+    kpi_en:['Utilization ≥75%','Defect rate ≤3%','On-time delivery ≥95%','Inventory turnover ≥6/yr'],
+    risks_ja:['設備故障','材料供給遅延','品質問題'],
+    risks_en:['Equipment failure','Material supply delays','Quality issues']
+  },
+  logistics:{
+    goal_ja:'配送速度・コスト・正確性',goal_en:'Delivery Speed, Cost & Accuracy',
+    flow_ja:['配送時間・コストKPI設定','ルート最適化','倉庫オペレーション効率化','追跡システム構築'],
+    flow_en:['Set delivery time & cost KPIs','Route optimization','Warehouse operations efficiency','Build tracking system'],
+    kpi_ja:['配送時間 ≤48h','配送精度 ≥99%','コスト/配送 ≤500円','不在率 ≤30%'],
+    kpi_en:['Delivery time ≤48h','Delivery accuracy ≥99%','Cost/delivery ≤$5','Absence rate ≤30%'],
+    risks_ja:['交通渋滞','不在配達','破損・紛失'],
+    risks_en:['Traffic congestion','Absence delivery','Damage/loss']
+  },
+  agriculture:{
+    goal_ja:'収穫量・品質・コスト削減',goal_en:'Harvest Yield, Quality & Cost Reduction',
+    flow_ja:['収穫目標・品質KPI設定','栽培計画策定','IoTセンサー配置','病害検知システム'],
+    flow_en:['Set harvest & quality KPIs','Cultivation plan','Deploy IoT sensors','Build pest detection system'],
+    kpi_ja:['収穫量 前年比+10%','A級品率 ≥70%','水使用量 -20%','病害損失 ≤5%'],
+    kpi_en:['Yield +10% YoY','Grade-A rate ≥70%','Water usage -20%','Pest loss ≤5%'],
+    risks_ja:['気象変動','病害発生','センサー故障'],
+    risks_en:['Weather changes','Pest outbreaks','Sensor failures']
+  },
+  energy:{
+    goal_ja:'安定供給・コスト削減・ピーク最適化',goal_en:'Stable Supply, Cost Reduction & Peak Optimization',
+    flow_ja:['需給予測・ピークKPI設定','スマートメーター導入','需給調整システム','請求自動化'],
+    flow_en:['Set demand forecast & peak KPIs','Deploy smart meters','Build supply-demand adjustment system','Automate billing'],
+    kpi_ja:['供給安定性 ≥99.9%','ピーク削減 -15%','請求誤差 ≤1%','顧客満足度 ≥4.0/5'],
+    kpi_en:['Supply stability ≥99.9%','Peak reduction -15%','Billing error ≤1%','Customer satisfaction ≥4.0/5'],
+    risks_ja:['需給予測外れ','設備故障','規制変更'],
+    risks_en:['Forecast miss','Equipment failure','Regulatory changes']
+  },
+  media:{
+    goal_ja:'視聴時間・継続率・収益化',goal_en:'Watch Time, Retention & Monetization',
+    flow_ja:['視聴時間・継続率KPI設定','コンテンツライブラリ拡充','レコメンド精度向上','広告・サブスク最適化'],
+    flow_en:['Set watch time & retention KPIs','Expand content library','Improve recommendation accuracy','Optimize ads/subscriptions'],
+    kpi_ja:['平均視聴時間 ≥45分/日','継続率 ≥70%','バッファリング率 ≤3%','ARPU ≥800円/月'],
+    kpi_en:['Avg watch time ≥45min/day','Retention ≥70%','Buffering rate ≤3%','ARPU ≥$8/mo'],
+    risks_ja:['コンテンツ不足','ストリーミング障害','DRM回避'],
+    risks_en:['Content shortage','Streaming failures','DRM bypass']
+  },
+  government:{
+    goal_ja:'処理効率・透明性・市民満足度',goal_en:'Processing Efficiency, Transparency & Citizen Satisfaction',
+    flow_ja:['処理時間・満足度KPI設定','申請システム構築','承認ワークフロー自動化','市民向けダッシュボード'],
+    flow_en:['Set processing time & satisfaction KPIs','Build application system','Automate approval workflow','Citizen dashboard'],
+    kpi_ja:['平均処理時間 ≤14日','市民満足度 ≥4.0/5','オンライン申請率 ≥60%','処理誤差 ≤1%'],
+    kpi_en:['Avg processing time ≤14d','Citizen satisfaction ≥4.0/5','Online application rate ≥60%','Processing error ≤1%'],
+    risks_ja:['個人情報漏洩','システム障害','規制変更'],
+    risks_en:['Data breach','System failures','Regulatory changes']
+  },
+  travel:{
+    goal_ja:'予約率・稼働率・顧客満足度',goal_en:'Booking Rate, Occupancy & Customer Satisfaction',
+    flow_ja:['予約目標・稼働率KPI設定','在庫管理・価格最適化','予約システム構築','レビュー管理'],
+    flow_en:['Set booking & occupancy KPIs','Inventory mgmt & price optimization','Build booking system','Review management'],
+    kpi_ja:['予約率 ≥65%','稼働率 ≥80%','キャンセル率 ≤15%','顧客満足度 ≥4.5/5'],
+    kpi_en:['Booking rate ≥65%','Occupancy ≥80%','Cancel rate ≤15%','Customer satisfaction ≥4.5/5'],
+    risks_ja:['ダブルブッキング','キャンセル多発','在庫管理ミス'],
+    risks_en:['Double booking','High cancellations','Inventory mgmt errors']
+  },
+  insurance:{
+    goal_ja:'契約率・請求処理速度・満足度',goal_en:'Contract Rate, Claims Speed & Satisfaction',
+    flow_ja:['契約・請求処理KPI設定','見積システム構築','AI審査導入','顧客サポート体制'],
+    flow_en:['Set contract & claims KPIs','Build quote system','Deploy AI review','Customer support system'],
+    kpi_ja:['見積精度 ≥95%','請求処理時間 ≤7日','契約率 ≥40%','顧客満足度 ≥4.3/5'],
+    kpi_en:['Quote accuracy ≥95%','Claims processing ≤7d','Contract rate ≥40%','Customer satisfaction ≥4.3/5'],
+    risks_ja:['不正請求','審査遅延','規制変更'],
+    risks_en:['Fraudulent claims','Review delays','Regulatory changes']
+  },
   _default:{
     goal_ja:'プロダクト完成・ローンチ',goal_en:'Product Completion & Launch',
     flow_ja:['ゴール・成功指標定義','要件分解・優先順位付け','技術スタック選定','実装計画・スケジュール'],
