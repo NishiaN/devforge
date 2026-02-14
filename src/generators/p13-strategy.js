@@ -774,11 +774,12 @@ function genPillar13_StrategicIntelligence(a, pn) {
   doc48 += '\n';
 
   doc48 += (G ? '## 📚 関連ドキュメント\n\n' : '## 📚 Related Documents\n\n');
-  doc48 += '- [Tech Radar](./49_tech_radar.md)\n';
-  doc48 += '- [Stakeholder Strategy](./50_stakeholder_strategy.md)\n';
-  doc48 += '- [Operational Excellence](./51_operational_excellence.md)\n';
-  doc48 += '- [Architecture](./03_architecture.md)\n';
-  doc48 += '- [Business Model](./38_business_model.md)\n';
+  doc48 += (G ? '**戦略:** ' : '**Strategy:** ');
+  doc48 += '[Tech Radar](./49_tech_radar.md), [Stakeholder Strategy](./50_stakeholder_strategy.md), [Market Positioning](./56_market_positioning.md)\n\n';
+  doc48 += (G ? '**運用:** ' : '**Operations:** ');
+  doc48 += '[Operational Excellence](./51_operational_excellence.md)\n\n';
+  doc48 += (G ? '**基盤:** ' : '**Foundation:** ');
+  doc48 += '[Architecture](./03_architecture.md), [Business Model](./38_business_model.md)\n';
 
   S.files['docs/48_industry_blueprint.md'] = doc48;
 
@@ -815,16 +816,23 @@ function genPillar13_StrategicIntelligence(a, pn) {
   doc49 += '```mermaid\n';
   doc49 += 'timeline\n';
   doc49 += '  title ' + (G ? 'スタック進化ロードマップ' : 'Stack Evolution Roadmap') + '\n';
-  doc49 += '  ' + (G ? '現在(2026 Q1)' : 'Current (2026 Q1)') + ' : ' + frontend + ' : ' + backend + ' : ' + database + '\n';
+  // Sanitize tech names for timeline (remove colons that break syntax)
+  const safeFE = frontend.replace(/:/g, ' -');
+  const safeBE = backend.replace(/:/g, ' -');
+  const safeDB = database.replace(/:/g, ' -');
+  doc49 += '  ' + (G ? '現在(2026 Q1)' : 'Current (2026 Q1)') + ' : ' + safeFE + ' : ' + safeBE + ' : ' + safeDB + '\n';
   doc49 += '  ' + (G ? '6ヶ月後(2026 Q3)' : '6 Months (2026 Q3)') + ' : ' + (G ? 'パフォーマンス最適化' : 'Performance optimization') + ' : ' + (G ? 'AI機能統合' : 'AI feature integration') + '\n';
   doc49 += '  ' + (G ? '1年後(2027 Q1)' : '1 Year (2027 Q1)') + ' : ' + (G ? 'スケーラビリティ強化' : 'Scalability enhancement') + ' : ' + (G ? 'リアルタイム機能拡充' : 'Real-time features expansion') + '\n';
   doc49 += '  ' + (G ? '3年後(2029 Q1)' : '3 Years (2029 Q1)') + ' : ' + (G ? '次世代アーキテクチャ移行' : 'Next-gen architecture migration') + ' : ' + (G ? '完全AI統合' : 'Full AI integration') + '\n';
   doc49 += '```\n\n';
 
   doc49 += (G ? '## 📚 関連ドキュメント\n\n' : '## 📚 Related Documents\n\n');
-  doc49 += '- [Industry Blueprint](./48_industry_blueprint.md)\n';
-  doc49 += '- [Roadmap](./10_gantt.md)\n';
-  doc49 += '- [Architecture](./03_architecture.md)\n';
+  doc49 += (G ? '**戦略基盤:** ' : '**Strategy Foundation:** ');
+  doc49 += '[Industry Blueprint](./48_industry_blueprint.md), [Architecture](./03_architecture.md)\n\n';
+  doc49 += (G ? '**実装:** ' : '**Implementation:** ');
+  doc49 += '[Implementation Playbook](./39_implementation_playbook.md), [Roadmap](./10_gantt.md)\n\n';
+  doc49 += (G ? '**運用:** ' : '**Operations:** ');
+  doc49 += '[Operational Excellence](./51_operational_excellence.md)\n';
 
   S.files['docs/49_tech_radar.md'] = doc49;
 
@@ -876,9 +884,12 @@ function genPillar13_StrategicIntelligence(a, pn) {
   doc50 += (G ? stakeholder.budget_ja : stakeholder.budget_en) + '\n\n';
 
   doc50 += (G ? '## 📚 関連ドキュメント\n\n' : '## 📚 Related Documents\n\n');
-  doc50 += '- [Operational Excellence](./51_operational_excellence.md)\n';
-  doc50 += '- [WBS](./11_wbs.md)\n';
-  doc50 += '- [Roadmap](./10_gantt.md)\n';
+  doc50 += (G ? '**戦略:** ' : '**Strategy:** ');
+  doc50 += '[Industry Blueprint](./48_industry_blueprint.md), [Operational Excellence](./51_operational_excellence.md)\n\n';
+  doc50 += (G ? '**計画:** ' : '**Planning:** ');
+  doc50 += '[Goal Decomposition](./30_goal_decomposition.md), [WBS](./11_wbs.md), [Roadmap](./10_gantt.md)\n\n';
+  doc50 += (G ? '**成長:** ' : '**Growth:** ');
+  doc50 += '[Growth Intelligence](./41_growth_intelligence.md)\n';
 
   S.files['docs/50_stakeholder_strategy.md'] = doc50;
 
@@ -924,10 +935,12 @@ function genPillar13_StrategicIntelligence(a, pn) {
   doc51 += '**DORA Metrics:** ' + (G ? team.dora_ja : team.dora_en) + '\n\n';
 
   doc51 += (G ? '## 📚 関連ドキュメント\n\n' : '## 📚 Related Documents\n\n');
-  doc51 += '- [Stakeholder Strategy](./50_stakeholder_strategy.md)\n';
-  doc51 += '- [Incident Response](./34_incident_response.md)\n';
-  doc51 += '- [QA Strategy](./28_qa_strategy.md)\n';
-  doc51 += '- [Test Strategy](./36_test_strategy.md)\n';
+  doc51 += (G ? '**戦略:** ' : '**Strategy:** ');
+  doc51 += '[Stakeholder Strategy](./50_stakeholder_strategy.md), [Industry Blueprint](./48_industry_blueprint.md)\n\n';
+  doc51 += (G ? '**運用実装:** ' : '**Ops Implementation:** ');
+  doc51 += '[Ops Runbook](./53_ops_runbook.md), [Ops Checklist](./54_ops_checklist.md)\n\n';
+  doc51 += (G ? '**品質:** ' : '**Quality:** ');
+  doc51 += '[QA Strategy](./28_qa_strategy.md), [Test Strategy](./36_test_strategy.md), [Incident Response](./34_incident_response.md)\n';
 
   S.files['docs/51_operational_excellence.md'] = doc51;
 

@@ -260,6 +260,14 @@ function genPillar14_OpsIntelligence(a, pn) {
     runbook += '```\n\n';
   }
 
+  runbook += G ? '## 📚 関連ドキュメント\n\n' : '## 📚 Related Documents\n\n';
+  runbook += G ? '**運用設計:** ' : '**Ops Design:** ';
+  runbook += '[Ops Checklist](./54_ops_checklist.md), [Ops Plane Design](./55_ops_plane_design.md)\n\n';
+  runbook += G ? '**戦略:** ' : '**Strategy:** ';
+  runbook += '[Operational Excellence](./51_operational_excellence.md), [Industry Blueprint](./48_industry_blueprint.md)\n\n';
+  runbook += G ? '**対応:** ' : '**Response:** ';
+  runbook += '[Incident Response](./34_incident_response.md)\n\n';
+
   S.files['docs/53_ops_runbook.md'] = runbook;
 
   // ═══ File 54: Ops Checklist (Day-1 Operations) ═══
@@ -422,6 +430,14 @@ function genPillar14_OpsIntelligence(a, pn) {
     checklist += `| ${t.metric} | ${t.warn} | ${t.crit} | ${t.action} |\n`;
   });
   checklist += '\n';
+
+  checklist += G ? '## 📚 関連ドキュメント\n\n' : '## 📚 Related Documents\n\n';
+  checklist += G ? '**運用設計:** ' : '**Ops Design:** ';
+  checklist += '[Ops Runbook](./53_ops_runbook.md), [Ops Plane Design](./55_ops_plane_design.md)\n\n';
+  checklist += G ? '**戦略:** ' : '**Strategy:** ';
+  checklist += '[Operational Excellence](./51_operational_excellence.md), [Industry Blueprint](./48_industry_blueprint.md)\n\n';
+  checklist += G ? '**品質:** ' : '**Quality:** ';
+  checklist += '[QA Blueprint](./32_qa_blueprint.md), [Incident Response](./34_incident_response.md)\n\n';
 
   checklist += G
     ? `## 次のステップ\n\n1. 上記チェックリストを全項目確認\n2. 不足項目は \`docs/34_incident_response.md\` および \`docs/53_ops_runbook.md\` を参照して実装\n3. ステージング環境で障害シミュレーション実施\n4. 本番リリース後、最初の1週間は密に監視\n`
@@ -661,6 +677,15 @@ function genPillar14_OpsIntelligence(a, pn) {
   opsPlane += G
     ? `### セキュリティ強化チェックリスト\n\n- [ ] **MFA 必須** (Admin 以上)\n- [ ] **IP 制限** (オフィス IP のみ許可)\n- [ ] **セッションタイムアウト**: 15分\n- [ ] **確認ダイアログ**: 破壊的操作は「DELETE」と入力必須\n- [ ] **監査ログ**: 全操作を \`audit_events\` に記録\n- [ ] **RLS (Row Level Security)**: Supabase 利用時は role 別にポリシー設定\n- [ ] **Rate Limiting**: Admin API も保護 (100 req/min)\n\n`
     : `### Security Hardening Checklist\n\n- [ ] **MFA required** (Admin and above)\n- [ ] **IP restriction** (office IP only)\n- [ ] **Session timeout**: 15 minutes\n- [ ] **Confirmation dialog**: Type \"DELETE\" for destructive ops\n- [ ] **Audit log**: Record all ops in \`audit_events\`\n- [ ] **RLS (Row Level Security)**: Set role-based policies in Supabase\n- [ ] **Rate Limiting**: Protect Admin API too (100 req/min)\n\n`;
+
+  // Related documents
+  opsPlane += `---\n\n## ${G ? '📚 関連ドキュメント' : '📚 Related Documents'}\n\n`;
+  opsPlane += G ? '**運用設計:** ' : '**Ops Design:** ';
+  opsPlane += '[Ops Runbook](./53_ops_runbook.md), [Ops Checklist](./54_ops_checklist.md)\n\n';
+  opsPlane += G ? '**戦略:** ' : '**Strategy:** ';
+  opsPlane += '[Operational Excellence](./51_operational_excellence.md), [Market Positioning](./56_market_positioning.md)\n\n';
+  opsPlane += G ? '**UX:** ' : '**UX:** ';
+  opsPlane += '[User Experience Strategy](./57_user_experience_strategy.md)\n\n';
 
   // Final notes
   opsPlane += `---\n\n## ${G ? '次のステップ' : 'Next Steps'}\n\n`;

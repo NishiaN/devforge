@@ -9313,11 +9313,12 @@ doc48 += '| ' + parts[0] + ' | ' + parts[1] + ' | ' + parts[2] + ' |\n';
 });
 doc48 += '\n';
 doc48 += (G ? '## 📚 関連ドキュメント\n\n' : '## 📚 Related Documents\n\n');
-doc48 += '- [Tech Radar](./49_tech_radar.md)\n';
-doc48 += '- [Stakeholder Strategy](./50_stakeholder_strategy.md)\n';
-doc48 += '- [Operational Excellence](./51_operational_excellence.md)\n';
-doc48 += '- [Architecture](./03_architecture.md)\n';
-doc48 += '- [Business Model](./38_business_model.md)\n';
+doc48 += (G ? '**戦略:** ' : '**Strategy:** ');
+doc48 += '[Tech Radar](./49_tech_radar.md), [Stakeholder Strategy](./50_stakeholder_strategy.md), [Market Positioning](./56_market_positioning.md)\n\n';
+doc48 += (G ? '**運用:** ' : '**Operations:** ');
+doc48 += '[Operational Excellence](./51_operational_excellence.md)\n\n';
+doc48 += (G ? '**基盤:** ' : '**Foundation:** ');
+doc48 += '[Architecture](./03_architecture.md), [Business Model](./38_business_model.md)\n';
 S.files['docs/48_industry_blueprint.md'] = doc48;
 // ═══ DOC 49: Tech Radar ═══
 let doc49 = '';
@@ -9348,15 +9349,22 @@ doc49 += '## ' + (G ? '3. スタック進化ロードマップ' : '3. Stack Evol
 doc49 += '```mermaid\n';
 doc49 += 'timeline\n';
 doc49 += ' title ' + (G ? 'スタック進化ロードマップ' : 'Stack Evolution Roadmap') + '\n';
-doc49 += ' ' + (G ? '現在(2026 Q1)' : 'Current (2026 Q1)') + ' : ' + frontend + ' : ' + backend + ' : ' + database + '\n';
+// Sanitize tech names for timeline (remove colons that break syntax)
+const safeFE = frontend.replace(/:/g, ' -');
+const safeBE = backend.replace(/:/g, ' -');
+const safeDB = database.replace(/:/g, ' -');
+doc49 += ' ' + (G ? '現在(2026 Q1)' : 'Current (2026 Q1)') + ' : ' + safeFE + ' : ' + safeBE + ' : ' + safeDB + '\n';
 doc49 += ' ' + (G ? '6ヶ月後(2026 Q3)' : '6 Months (2026 Q3)') + ' : ' + (G ? 'パフォーマンス最適化' : 'Performance optimization') + ' : ' + (G ? 'AI機能統合' : 'AI feature integration') + '\n';
 doc49 += ' ' + (G ? '1年後(2027 Q1)' : '1 Year (2027 Q1)') + ' : ' + (G ? 'スケーラビリティ強化' : 'Scalability enhancement') + ' : ' + (G ? 'リアルタイム機能拡充' : 'Real-time features expansion') + '\n';
 doc49 += ' ' + (G ? '3年後(2029 Q1)' : '3 Years (2029 Q1)') + ' : ' + (G ? '次世代アーキテクチャ移行' : 'Next-gen architecture migration') + ' : ' + (G ? '完全AI統合' : 'Full AI integration') + '\n';
 doc49 += '```\n\n';
 doc49 += (G ? '## 📚 関連ドキュメント\n\n' : '## 📚 Related Documents\n\n');
-doc49 += '- [Industry Blueprint](./48_industry_blueprint.md)\n';
-doc49 += '- [Roadmap](./10_gantt.md)\n';
-doc49 += '- [Architecture](./03_architecture.md)\n';
+doc49 += (G ? '**戦略基盤:** ' : '**Strategy Foundation:** ');
+doc49 += '[Industry Blueprint](./48_industry_blueprint.md), [Architecture](./03_architecture.md)\n\n';
+doc49 += (G ? '**実装:** ' : '**Implementation:** ');
+doc49 += '[Implementation Playbook](./39_implementation_playbook.md), [Roadmap](./10_gantt.md)\n\n';
+doc49 += (G ? '**運用:** ' : '**Operations:** ');
+doc49 += '[Operational Excellence](./51_operational_excellence.md)\n';
 S.files['docs/49_tech_radar.md'] = doc49;
 // ═══ DOC 50: Stakeholder Strategy ═══
 let doc50 = '';
@@ -9401,9 +9409,12 @@ doc50 += '## ' + (G ? '4. 予算配分ガイド' : '4. Budget Allocation Guide')
 doc50 += '**' + (G ? '推奨配分:' : 'Recommended allocation:') + '**\n\n';
 doc50 += (G ? stakeholder.budget_ja : stakeholder.budget_en) + '\n\n';
 doc50 += (G ? '## 📚 関連ドキュメント\n\n' : '## 📚 Related Documents\n\n');
-doc50 += '- [Operational Excellence](./51_operational_excellence.md)\n';
-doc50 += '- [WBS](./11_wbs.md)\n';
-doc50 += '- [Roadmap](./10_gantt.md)\n';
+doc50 += (G ? '**戦略:** ' : '**Strategy:** ');
+doc50 += '[Industry Blueprint](./48_industry_blueprint.md), [Operational Excellence](./51_operational_excellence.md)\n\n';
+doc50 += (G ? '**計画:** ' : '**Planning:** ');
+doc50 += '[Goal Decomposition](./30_goal_decomposition.md), [WBS](./11_wbs.md), [Roadmap](./10_gantt.md)\n\n';
+doc50 += (G ? '**成長:** ' : '**Growth:** ');
+doc50 += '[Growth Intelligence](./41_growth_intelligence.md)\n';
 S.files['docs/50_stakeholder_strategy.md'] = doc50;
 // ═══ DOC 51: Operational Excellence ═══
 let doc51 = '';
@@ -9442,10 +9453,12 @@ doc51 += '**' + (G ? 'Conway\'s Law:' : 'Conway\'s Law:') + '** ' + (G ? team.co
 doc51 += '**' + (G ? team.two_pizza_ja : team.two_pizza_en) + '**\n\n';
 doc51 += '**DORA Metrics:** ' + (G ? team.dora_ja : team.dora_en) + '\n\n';
 doc51 += (G ? '## 📚 関連ドキュメント\n\n' : '## 📚 Related Documents\n\n');
-doc51 += '- [Stakeholder Strategy](./50_stakeholder_strategy.md)\n';
-doc51 += '- [Incident Response](./34_incident_response.md)\n';
-doc51 += '- [QA Strategy](./28_qa_strategy.md)\n';
-doc51 += '- [Test Strategy](./36_test_strategy.md)\n';
+doc51 += (G ? '**戦略:** ' : '**Strategy:** ');
+doc51 += '[Stakeholder Strategy](./50_stakeholder_strategy.md), [Industry Blueprint](./48_industry_blueprint.md)\n\n';
+doc51 += (G ? '**運用実装:** ' : '**Ops Implementation:** ');
+doc51 += '[Ops Runbook](./53_ops_runbook.md), [Ops Checklist](./54_ops_checklist.md)\n\n';
+doc51 += (G ? '**品質:** ' : '**Quality:** ');
+doc51 += '[QA Strategy](./28_qa_strategy.md), [Test Strategy](./36_test_strategy.md), [Incident Response](./34_incident_response.md)\n';
 S.files['docs/51_operational_excellence.md'] = doc51;
 // ═══ DOC 52: Advanced Scenarios ═══
 let doc52 = '';
@@ -9760,6 +9773,13 @@ runbook += 'app.use(\'/api\', limiter);\n';
 runbook += '```\n\n';
 }
 
+runbook += G ? '## 📚 関連ドキュメント\n\n' : '## 📚 Related Documents\n\n';
+runbook += G ? '**運用設計:** ' : '**Ops Design:** ';
+runbook += '[Ops Checklist](./54_ops_checklist.md), [Ops Plane Design](./55_ops_plane_design.md)\n\n';
+runbook += G ? '**戦略:** ' : '**Strategy:** ';
+runbook += '[Operational Excellence](./51_operational_excellence.md), [Industry Blueprint](./48_industry_blueprint.md)\n\n';
+runbook += G ? '**対応:** ' : '**Response:** ';
+runbook += '[Incident Response](./34_incident_response.md)\n\n';
 S.files['docs/53_ops_runbook.md'] = runbook;
 // ═══ File 54: Ops Checklist (Day-1 Operations) ═══
 let checklist = `# ${pn} ${G ? '— 運用準備チェックリスト (Day-1)' : '— Ops Readiness Checklist (Day-1)'}\n\n`;
@@ -9912,6 +9932,13 @@ thresholdsTable.forEach(t => {
 checklist += `| ${t.metric} | ${t.warn} | ${t.crit} | ${t.action} |\n`;
 });
 checklist += '\n';
+checklist += G ? '## 📚 関連ドキュメント\n\n' : '## 📚 Related Documents\n\n';
+checklist += G ? '**運用設計:** ' : '**Ops Design:** ';
+checklist += '[Ops Runbook](./53_ops_runbook.md), [Ops Plane Design](./55_ops_plane_design.md)\n\n';
+checklist += G ? '**戦略:** ' : '**Strategy:** ';
+checklist += '[Operational Excellence](./51_operational_excellence.md), [Industry Blueprint](./48_industry_blueprint.md)\n\n';
+checklist += G ? '**品質:** ' : '**Quality:** ';
+checklist += '[QA Blueprint](./32_qa_blueprint.md), [Incident Response](./34_incident_response.md)\n\n';
 checklist += G
 ? `## 次のステップ\n\n1. 上記チェックリストを全項目確認\n2. 不足項目は \`docs/34_incident_response.md\` および \`docs/53_ops_runbook.md\` を参照して実装\n3. ステージング環境で障害シミュレーション実施\n4. 本番リリース後、最初の1週間は密に監視\n`
 : `## Next Steps\n\n1. Verify all checklist items above\n2. Implement missing items referencing \`docs/34_incident_response.md\` and \`docs/53_ops_runbook.md\`\n3. Run failure simulations in staging environment\n4. Monitor closely for the first week after production release\n`;
@@ -10107,6 +10134,14 @@ opsPlane += G
 opsPlane += G
 ? `### セキュリティ強化チェックリスト\n\n- [ ] **MFA 必須** (Admin 以上)\n- [ ] **IP 制限** (オフィス IP のみ許可)\n- [ ] **セッションタイムアウト**: 15分\n- [ ] **確認ダイアログ**: 破壊的操作は「DELETE」と入力必須\n- [ ] **監査ログ**: 全操作を \`audit_events\` に記録\n- [ ] **RLS (Row Level Security)**: Supabase 利用時は role 別にポリシー設定\n- [ ] **Rate Limiting**: Admin API も保護 (100 req/min)\n\n`
 : `### Security Hardening Checklist\n\n- [ ] **MFA required** (Admin and above)\n- [ ] **IP restriction** (office IP only)\n- [ ] **Session timeout**: 15 minutes\n- [ ] **Confirmation dialog**: Type \"DELETE\" for destructive ops\n- [ ] **Audit log**: Record all ops in \`audit_events\`\n- [ ] **RLS (Row Level Security)**: Set role-based policies in Supabase\n- [ ] **Rate Limiting**: Protect Admin API too (100 req/min)\n\n`;
+// Related documents
+opsPlane += `---\n\n## ${G ? '📚 関連ドキュメント' : '📚 Related Documents'}\n\n`;
+opsPlane += G ? '**運用設計:** ' : '**Ops Design:** ';
+opsPlane += '[Ops Runbook](./53_ops_runbook.md), [Ops Checklist](./54_ops_checklist.md)\n\n';
+opsPlane += G ? '**戦略:** ' : '**Strategy:** ';
+opsPlane += '[Operational Excellence](./51_operational_excellence.md), [Market Positioning](./56_market_positioning.md)\n\n';
+opsPlane += G ? '**UX:** ' : '**UX:** ';
+opsPlane += '[User Experience Strategy](./57_user_experience_strategy.md)\n\n';
 // Final notes
 opsPlane += `---\n\n## ${G ? '次のステップ' : 'Next Steps'}\n\n`;
 opsPlane += G
@@ -10716,16 +10751,16 @@ cac_ltv_en: 'CAC: $200-2000, LTV: $2000-20000, Payback: 9-18 months'
 // REGULATORY_HORIZON: Global regulations timeline 2026-2030
 const REGULATORY_HORIZON = {
 timeline_ja: [
-'2026年: EU AI Act全面施行 — 高リスクAI規制',
-'2027年: ePrivacy規則施行 — Cookie規制強化',
-'2028年: DMA完全適用 — プラットフォーム規制',
+'2026年: EU AI Act全面施行 - 高リスクAI規制',
+'2027年: ePrivacy規則施行 - Cookie規制強化',
+'2028年: DMA完全適用 - プラットフォーム規制',
 '2029年: 米国連邦プライバシー法成立見込み',
 '2030年: EU Cyber Resilience Act完全施行'
 ],
 timeline_en: [
-'2026: EU AI Act full enforcement — high-risk AI regulations',
-'2027: ePrivacy Regulation enforcement — stricter cookie rules',
-'2028: DMA full applicability — platform regulations',
+'2026: EU AI Act full enforcement - high-risk AI regulations',
+'2027: ePrivacy Regulation enforcement - stricter cookie rules',
+'2028: DMA full applicability - platform regulations',
 '2029: US federal privacy law expected',
 '2030: EU Cyber Resilience Act full enforcement'
 ],
@@ -10804,7 +10839,7 @@ doc += '| **Threats** | ' + (G ? '競合、規制リスク、技術陳腐化' : 
 // 3. MOAT Analysis
 doc += G ? '## 3. MOAT分析（5類型）\n\n' : '## 3. MOAT Analysis (5 Types)\n\n';
 doc += G ? '**ドメイン別MOAT:** ' + mkt.moat_ja + '\n\n' : '**Domain-specific MOAT:** ' + mkt.moat_en + '\n\n';
-doc += '```mermaid\nmindmap\n root((' + (G ? 'MOAT' : 'MOAT') + '))\n';
+doc += '```mermaid\nmindmap\n root ' + (G ? 'MOAT' : 'MOAT') + '\n';
 doc += ' ' + (G ? 'ネットワーク効果' : 'Network Effects') + '\n';
 doc += ' ' + (G ? 'ユーザー増→価値増' : 'More users → More value') + '\n';
 doc += ' ' + (G ? 'データモート' : 'Data Moat') + '\n';
@@ -10835,6 +10870,13 @@ doc += '```\n\n';
 doc += G
 ? '**ドメイン別ペイバック期間ベンチマーク:**\n- fintech/health: 18-24ヶ月（規制・信頼構築コスト）\n- education/SaaS: 6-12ヶ月（標準的PLG）\n- marketplace: 3-6ヶ月（ネットワーク効果加速）\n\n'
 : '**Domain-specific Payback Benchmarks:**\n- fintech/health: 18-24 months (regulatory/trust costs)\n- education/SaaS: 6-12 months (standard PLG)\n- marketplace: 3-6 months (network effects acceleration)\n\n';
+doc += G ? '## 📚 関連ドキュメント\n\n' : '## 📚 Related Documents\n\n';
+doc += G ? '**戦略基盤:** ' : '**Strategy Foundation:** ';
+doc += '[Industry Blueprint](./48_industry_blueprint.md), [Stakeholder Strategy](./50_stakeholder_strategy.md)\n\n';
+doc += G ? '**成長:** ' : '**Growth:** ';
+doc += '[Growth Intelligence](./41_growth_intelligence.md), [User Experience Strategy](./57_user_experience_strategy.md)\n\n';
+doc += G ? '**エコシステム:** ' : '**Ecosystem:** ';
+doc += '[Ecosystem Strategy](./58_ecosystem_strategy.md)\n\n';
 doc += G ? '---\n\n**次のステップ:** doc 57（UX戦略）、doc 58（エコシステム戦略）で市場ポジショニングを実行戦術に落とし込む。\n' : '---\n\n**Next Steps:** Translate market positioning into execution tactics in doc 57 (UX Strategy), doc 58 (Ecosystem Strategy).\n';
 return doc;
 }
@@ -10917,6 +10959,13 @@ doc += G
 doc += G
 ? '**倫理的デザイン指標:**\n- ユーザー自律性（設定コントロール）\n- 透明性（アルゴリズム説明）\n- データ最小化（必要最小限収集）\n\n'
 : '**Ethical Design Metrics:**\n- User autonomy (control settings)\n- Transparency (algorithm explanations)\n- Data minimization (collect only essentials)\n\n';
+doc += G ? '## 📚 関連ドキュメント\n\n' : '## 📚 Related Documents\n\n';
+doc += G ? '**デザイン:** ' : '**Design:** ';
+doc += '[Design System](./38_design_system.md)\n\n';
+doc += G ? '**戦略:** ' : '**Strategy:** ';
+doc += '[Market Positioning](./56_market_positioning.md), [Ecosystem Strategy](./58_ecosystem_strategy.md)\n\n';
+doc += G ? '**運用:** ' : '**Operations:** ';
+doc += '[Ops Plane Design](./55_ops_plane_design.md)\n\n';
 doc += G ? '---\n\n**次のステップ:** doc 58（エコシステム戦略）でパートナーシップを通じたUX向上を検討。\n' : '---\n\n**Next Steps:** Explore UX enhancement through partnerships in doc 58 (Ecosystem Strategy).\n';
 return doc;
 }
@@ -10993,6 +11042,13 @@ doc += ossStrategy + '\n\n';
 doc += G
 ? '**ドメイン別コミュニティパターン:**\n- **developer/devtool:** GitHub Discussions、Discord、技術ブログ\n- **education:** 教育者コミュニティ、コース共有\n- **community/content:** UGCプラットフォーム、モデレーター育成\n\n'
 : '**Domain-specific Community Patterns:**\n- **developer/devtool:** GitHub Discussions, Discord, technical blogs\n- **education:** Educator community, course sharing\n- **community/content:** UGC platform, moderator training\n\n';
+doc += G ? '## 📚 関連ドキュメント\n\n' : '## 📚 Related Documents\n\n';
+doc += G ? '**技術基盤:** ' : '**Tech Foundation:** ';
+doc += '[Tech Radar](./49_tech_radar.md), [Architecture](./03_architecture.md)\n\n';
+doc += G ? '**実装:** ' : '**Implementation:** ';
+doc += '[Implementation Playbook](./39_implementation_playbook.md)\n\n';
+doc += G ? '**戦略:** ' : '**Strategy:** ';
+doc += '[Market Positioning](./56_market_positioning.md), [User Experience Strategy](./57_user_experience_strategy.md)\n\n';
 doc += G ? '---\n\n**次のステップ:** doc 59（規制フォーサイト）でエコシステム拡大時の規制リスクを評価。\n' : '---\n\n**Next Steps:** Assess regulatory risks during ecosystem expansion in doc 59 (Regulatory Foresight).\n';
 return doc;
 }
@@ -11035,7 +11091,7 @@ doc += G ? '**AI未使用** — EU AI Act直接適用なし（ただし将来の
 }
 // 3. ESG & Sustainability
 doc += G ? '## 3. ESG & サステナビリティ指標\n\n' : '## 3. ESG & Sustainability Metrics\n\n';
-doc += '```mermaid\nmindmap\n root((ESG))\n ' + (G ? '環境' : 'Environmental') + '\n ' + (G ? 'カーボンフットプリント' : 'Carbon Footprint') + '\n ' + (G ? 'グリーンホスティング' : 'Green Hosting') + '\n ' + (G ? '社会' : 'Social') + '\n ' + (G ? 'アクセシビリティ' : 'Accessibility') + '\n ' + (G ? 'DEI指標' : 'DEI Metrics') + '\n ' + (G ? 'ガバナンス' : 'Governance') + '\n ' + (G ? 'データ倫理' : 'Data Ethics') + '\n ' + (G ? '透明性' : 'Transparency') + '\n```\n\n';
+doc += '```mermaid\nmindmap\n root ' + (G ? 'ESG' : 'ESG') + '\n ' + (G ? '環境' : 'Environmental') + '\n ' + (G ? 'カーボンフットプリント' : 'Carbon Footprint') + '\n ' + (G ? 'グリーンホスティング' : 'Green Hosting') + '\n ' + (G ? '社会' : 'Social') + '\n ' + (G ? 'アクセシビリティ' : 'Accessibility') + '\n ' + (G ? 'DEI指標' : 'DEI Metrics') + '\n ' + (G ? 'ガバナンス' : 'Governance') + '\n ' + (G ? 'データ倫理' : 'Data Ethics') + '\n ' + (G ? '透明性' : 'Transparency') + '\n```\n\n';
 const carbonDeploy = deploy === 'cloudflare'
 ? (G ? 'Cloudflare（100%再生可能エネルギー）' : 'Cloudflare (100% renewable energy)')
 : deploy === 'vercel'
@@ -11074,6 +11130,13 @@ doc += G
 doc += G
 ? '**アンチフラジャイル原則:**\n- 障害から学習（ポストモーテム）\n- 小さな障害を歓迎（大障害を防ぐ）\n- オプショナリティ（技術選択の柔軟性維持）\n\n'
 : '**Antifragile Principles:**\n- Learn from failures (postmortems)\n- Welcome small failures (prevent large ones)\n- Optionality (maintain tech choice flexibility)\n\n';
+doc += G ? '## 📚 関連ドキュメント\n\n' : '## 📚 Related Documents\n\n';
+doc += G ? '**セキュリティ:** ' : '**Security:** ';
+doc += '[Security Intelligence](./43_security_intelligence.md), [Compliance Matrix](./45_compliance_matrix.md), [AI Security](./46_ai_security.md)\n\n';
+doc += G ? '**戦略:** ' : '**Strategy:** ';
+doc += '[Industry Blueprint](./48_industry_blueprint.md), [Ecosystem Strategy](./58_ecosystem_strategy.md)\n\n';
+doc += G ? '**計画:** ' : '**Planning:** ';
+doc += '[Roadmap](./20_roadmap.md)\n\n';
 doc += G ? '---\n\n**次のステップ:** 規制タイムラインをプロダクトロードマップ（docs/20_roadmap.md）に反映。四半期ごとにこのドキュメントを更新し、新規制を監視。\n' : '---\n\n**Next Steps:** Reflect regulatory timeline into product roadmap (docs/20_roadmap.md). Update this document quarterly to monitor new regulations.\n';
 return doc;
 }

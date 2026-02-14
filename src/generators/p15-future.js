@@ -602,16 +602,16 @@ const GTM_STRATEGY = {
 // REGULATORY_HORIZON: Global regulations timeline 2026-2030
 const REGULATORY_HORIZON = {
   timeline_ja: [
-    '2026年: EU AI Act全面施行 — 高リスクAI規制',
-    '2027年: ePrivacy規則施行 — Cookie規制強化',
-    '2028年: DMA完全適用 — プラットフォーム規制',
+    '2026年: EU AI Act全面施行 - 高リスクAI規制',
+    '2027年: ePrivacy規則施行 - Cookie規制強化',
+    '2028年: DMA完全適用 - プラットフォーム規制',
     '2029年: 米国連邦プライバシー法成立見込み',
     '2030年: EU Cyber Resilience Act完全施行'
   ],
   timeline_en: [
-    '2026: EU AI Act full enforcement — high-risk AI regulations',
-    '2027: ePrivacy Regulation enforcement — stricter cookie rules',
-    '2028: DMA full applicability — platform regulations',
+    '2026: EU AI Act full enforcement - high-risk AI regulations',
+    '2027: ePrivacy Regulation enforcement - stricter cookie rules',
+    '2028: DMA full applicability - platform regulations',
     '2029: US federal privacy law expected',
     '2030: EU Cyber Resilience Act full enforcement'
   ],
@@ -700,7 +700,7 @@ function gen56Market(G, domain, mkt, gtm, stakeholder) {
   doc += G ? '## 3. MOAT分析（5類型）\n\n' : '## 3. MOAT Analysis (5 Types)\n\n';
   doc += G ? '**ドメイン別MOAT:** ' + mkt.moat_ja + '\n\n' : '**Domain-specific MOAT:** ' + mkt.moat_en + '\n\n';
 
-  doc += '```mermaid\nmindmap\n  root((' + (G ? 'MOAT' : 'MOAT') + '))\n';
+  doc += '```mermaid\nmindmap\n  root ' + (G ? 'MOAT' : 'MOAT') + '\n';
   doc += '    ' + (G ? 'ネットワーク効果' : 'Network Effects') + '\n';
   doc += '      ' + (G ? 'ユーザー増→価値増' : 'More users → More value') + '\n';
   doc += '    ' + (G ? 'データモート' : 'Data Moat') + '\n';
@@ -735,6 +735,14 @@ function gen56Market(G, domain, mkt, gtm, stakeholder) {
   doc += G
     ? '**ドメイン別ペイバック期間ベンチマーク:**\n- fintech/health: 18-24ヶ月（規制・信頼構築コスト）\n- education/SaaS: 6-12ヶ月（標準的PLG）\n- marketplace: 3-6ヶ月（ネットワーク効果加速）\n\n'
     : '**Domain-specific Payback Benchmarks:**\n- fintech/health: 18-24 months (regulatory/trust costs)\n- education/SaaS: 6-12 months (standard PLG)\n- marketplace: 3-6 months (network effects acceleration)\n\n';
+
+  doc += G ? '## 📚 関連ドキュメント\n\n' : '## 📚 Related Documents\n\n';
+  doc += G ? '**戦略基盤:** ' : '**Strategy Foundation:** ';
+  doc += '[Industry Blueprint](./48_industry_blueprint.md), [Stakeholder Strategy](./50_stakeholder_strategy.md)\n\n';
+  doc += G ? '**成長:** ' : '**Growth:** ';
+  doc += '[Growth Intelligence](./41_growth_intelligence.md), [User Experience Strategy](./57_user_experience_strategy.md)\n\n';
+  doc += G ? '**エコシステム:** ' : '**Ecosystem:** ';
+  doc += '[Ecosystem Strategy](./58_ecosystem_strategy.md)\n\n';
 
   doc += G ? '---\n\n**次のステップ:** doc 57（UX戦略）、doc 58（エコシステム戦略）で市場ポジショニングを実行戦術に落とし込む。\n' : '---\n\n**Next Steps:** Translate market positioning into execution tactics in doc 57 (UX Strategy), doc 58 (Ecosystem Strategy).\n';
 
@@ -834,6 +842,14 @@ function gen57UX(G, domain, personas, mkt) {
     ? '**倫理的デザイン指標:**\n- ユーザー自律性（設定コントロール）\n- 透明性（アルゴリズム説明）\n- データ最小化（必要最小限収集）\n\n'
     : '**Ethical Design Metrics:**\n- User autonomy (control settings)\n- Transparency (algorithm explanations)\n- Data minimization (collect only essentials)\n\n';
 
+  doc += G ? '## 📚 関連ドキュメント\n\n' : '## 📚 Related Documents\n\n';
+  doc += G ? '**デザイン:** ' : '**Design:** ';
+  doc += '[Design System](./38_design_system.md)\n\n';
+  doc += G ? '**戦略:** ' : '**Strategy:** ';
+  doc += '[Market Positioning](./56_market_positioning.md), [Ecosystem Strategy](./58_ecosystem_strategy.md)\n\n';
+  doc += G ? '**運用:** ' : '**Operations:** ';
+  doc += '[Ops Plane Design](./55_ops_plane_design.md)\n\n';
+
   doc += G ? '---\n\n**次のステップ:** doc 58（エコシステム戦略）でパートナーシップを通じたUX向上を検討。\n' : '---\n\n**Next Steps:** Explore UX enhancement through partnerships in doc 58 (Ecosystem Strategy).\n';
 
   return doc;
@@ -925,6 +941,14 @@ function gen58Ecosystem(G, domain, mkt, arch, deploy, answers) {
     ? '**ドメイン別コミュニティパターン:**\n- **developer/devtool:** GitHub Discussions、Discord、技術ブログ\n- **education:** 教育者コミュニティ、コース共有\n- **community/content:** UGCプラットフォーム、モデレーター育成\n\n'
     : '**Domain-specific Community Patterns:**\n- **developer/devtool:** GitHub Discussions, Discord, technical blogs\n- **education:** Educator community, course sharing\n- **community/content:** UGC platform, moderator training\n\n';
 
+  doc += G ? '## 📚 関連ドキュメント\n\n' : '## 📚 Related Documents\n\n';
+  doc += G ? '**技術基盤:** ' : '**Tech Foundation:** ';
+  doc += '[Tech Radar](./49_tech_radar.md), [Architecture](./03_architecture.md)\n\n';
+  doc += G ? '**実装:** ' : '**Implementation:** ';
+  doc += '[Implementation Playbook](./39_implementation_playbook.md)\n\n';
+  doc += G ? '**戦略:** ' : '**Strategy:** ';
+  doc += '[Market Positioning](./56_market_positioning.md), [User Experience Strategy](./57_user_experience_strategy.md)\n\n';
+
   doc += G ? '---\n\n**次のステップ:** doc 59（規制フォーサイト）でエコシステム拡大時の規制リスクを評価。\n' : '---\n\n**Next Steps:** Assess regulatory risks during ecosystem expansion in doc 59 (Regulatory Foresight).\n';
 
   return doc;
@@ -974,7 +998,7 @@ function gen59Regulatory(G, domain, mkt, answers) {
 
   // 3. ESG & Sustainability
   doc += G ? '## 3. ESG & サステナビリティ指標\n\n' : '## 3. ESG & Sustainability Metrics\n\n';
-  doc += '```mermaid\nmindmap\n  root((ESG))\n    ' + (G ? '環境' : 'Environmental') + '\n      ' + (G ? 'カーボンフットプリント' : 'Carbon Footprint') + '\n      ' + (G ? 'グリーンホスティング' : 'Green Hosting') + '\n    ' + (G ? '社会' : 'Social') + '\n      ' + (G ? 'アクセシビリティ' : 'Accessibility') + '\n      ' + (G ? 'DEI指標' : 'DEI Metrics') + '\n    ' + (G ? 'ガバナンス' : 'Governance') + '\n      ' + (G ? 'データ倫理' : 'Data Ethics') + '\n      ' + (G ? '透明性' : 'Transparency') + '\n```\n\n';
+  doc += '```mermaid\nmindmap\n  root ' + (G ? 'ESG' : 'ESG') + '\n    ' + (G ? '環境' : 'Environmental') + '\n      ' + (G ? 'カーボンフットプリント' : 'Carbon Footprint') + '\n      ' + (G ? 'グリーンホスティング' : 'Green Hosting') + '\n    ' + (G ? '社会' : 'Social') + '\n      ' + (G ? 'アクセシビリティ' : 'Accessibility') + '\n      ' + (G ? 'DEI指標' : 'DEI Metrics') + '\n    ' + (G ? 'ガバナンス' : 'Governance') + '\n      ' + (G ? 'データ倫理' : 'Data Ethics') + '\n      ' + (G ? '透明性' : 'Transparency') + '\n```\n\n';
 
   const carbonDeploy = deploy === 'cloudflare'
     ? (G ? 'Cloudflare（100%再生可能エネルギー）' : 'Cloudflare (100% renewable energy)')
@@ -1022,6 +1046,14 @@ function gen59Regulatory(G, domain, mkt, answers) {
   doc += G
     ? '**アンチフラジャイル原則:**\n- 障害から学習（ポストモーテム）\n- 小さな障害を歓迎（大障害を防ぐ）\n- オプショナリティ（技術選択の柔軟性維持）\n\n'
     : '**Antifragile Principles:**\n- Learn from failures (postmortems)\n- Welcome small failures (prevent large ones)\n- Optionality (maintain tech choice flexibility)\n\n';
+
+  doc += G ? '## 📚 関連ドキュメント\n\n' : '## 📚 Related Documents\n\n';
+  doc += G ? '**セキュリティ:** ' : '**Security:** ';
+  doc += '[Security Intelligence](./43_security_intelligence.md), [Compliance Matrix](./45_compliance_matrix.md), [AI Security](./46_ai_security.md)\n\n';
+  doc += G ? '**戦略:** ' : '**Strategy:** ';
+  doc += '[Industry Blueprint](./48_industry_blueprint.md), [Ecosystem Strategy](./58_ecosystem_strategy.md)\n\n';
+  doc += G ? '**計画:** ' : '**Planning:** ';
+  doc += '[Roadmap](./20_roadmap.md)\n\n';
 
   doc += G ? '---\n\n**次のステップ:** 規制タイムラインをプロダクトロードマップ（docs/20_roadmap.md）に反映。四半期ごとにこのドキュメントを更新し、新規制を監視。\n' : '---\n\n**Next Steps:** Reflect regulatory timeline into product roadmap (docs/20_roadmap.md). Update this document quarterly to monitor new regulations.\n';
 
