@@ -238,7 +238,7 @@ function genPillar10_ReverseEngineering(a,pn){
   const entities=(a.data_entities||'').split(/[,、]\s*/).map(s=>s.trim()).filter(Boolean);
   const features=mvp.split(/[,、\n]/).map(s=>s.trim()).filter(Boolean);
   const skill=S.skill||'intermediate';
-  const _mmSafe=s=>(s||'').replace(/&/g,' and ').replace(/[（）()]/g,'');
+  const _mmSafe=s=>(s||'').replace(/&/g,' and ').replace(/[（）()\[\]{}<>"]/g,'');
 
   // ═══ docs/29_reverse_engineering.md ═══
   let doc29='# '+(G?'リバースエンジニアリング（ゴール逆算型プランニング）':'Reverse Engineering (Goal-Driven Planning)')+'\n\n';
@@ -364,14 +364,14 @@ function genPillar10_ReverseEngineering(a,pn){
     doc30+='    '+_mmSafe(step)+'\n';
     // Level 2: Features (sample 2 per step)
     if(i===0&&kpis.length>0){
-      doc30+='      '+kpis[0].split(' ')[0]+'\n';
-      if(kpis.length>1)doc30+='      '+kpis[1].split(' ')[0]+'\n';
+      doc30+='      '+_mmSafe(kpis[0].split(' ')[0])+'\n';
+      if(kpis.length>1)doc30+='      '+_mmSafe(kpis[1].split(' ')[0])+'\n';
     }else if(i===1&&features.length>0){
-      doc30+='      '+features[0]+'\n';
-      if(features.length>1)doc30+='      '+features[1]+'\n';
+      doc30+='      '+_mmSafe(features[0])+'\n';
+      if(features.length>1)doc30+='      '+_mmSafe(features[1])+'\n';
     }else if(i===2&&entities.length>0){
-      doc30+='      '+entities[0]+(G?' 実装':' implementation')+'\n';
-      if(entities.length>1)doc30+='      '+entities[1]+(G?' 実装':' implementation')+'\n';
+      doc30+='      '+_mmSafe(entities[0])+(G?' 実装':' implementation')+'\n';
+      if(entities.length>1)doc30+='      '+_mmSafe(entities[1])+(G?' 実装':' implementation')+'\n';
     }
   });
   doc30+='```\n\n';
