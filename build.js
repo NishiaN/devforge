@@ -70,6 +70,7 @@ const jsFiles = [
   'generators/p12-security.js',
   'generators/p13-strategy.js',
   'generators/p14-ops.js',
+  'generators/p15-future.js',
   'generators/docs.js',
   'generators/common.js',
 

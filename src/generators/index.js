@@ -1,4 +1,4 @@
-/* ═══ FILE GENERATION ENGINE — 14 PILLARS ═══ */
+/* ═══ FILE GENERATION ENGINE — 15 PILLARS ═══ */
 function generateAll(){
   const _be=S.answers.backend||'';
   const _minKeys=(/なし|None|static/i.test(_be))?['frontend','backend']:['frontend','backend','database'];
@@ -58,6 +58,7 @@ function doGenerate(lang){
     {fn:()=>genPillar12_SecurityIntelligence(a,pn),lbl:_j?'柱⑫ セキュリティ':'Pillar ⑫ Security',err:'P12-Sec'},
     {fn:()=>genPillar13_StrategicIntelligence(a,pn),lbl:_j?'柱⑬ 戦略インテリジェンス':'Pillar ⑬ Strategic Intelligence',err:'P13-Strategy'},
     {fn:()=>genPillar14_OpsIntelligence(a,pn),lbl:_j?'柱⑭ 運用インテリジェンス':'Pillar ⑭ Ops Intelligence',err:'P14-Ops'},
+    {fn:()=>genPillar15(a),lbl:_j?'柱⑮ 未来戦略インテリジェンス':'Pillar ⑮ Future Strategy Intelligence',err:'P15-Future'},
     {fn:()=>genDocs21(a,pn),lbl:_j?'仕様書28種':'28 Spec Docs',err:'Docs'},
     {fn:()=>genCommonFiles(a,pn),lbl:_j?'共通ファイル':'Common Files',err:'Common'},
   ];

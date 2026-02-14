@@ -31,7 +31,7 @@ describe('Build System', () => {
     const html = fs.readFileSync(OUTPUT, 'utf-8');
     const expected = [
       'genPillar1_SDD', 'genPillar2_DevContainer', 'genPillar3_MCP',
-      'genPillar4_AIRules', 'genPillar5_QualityIntelligence', 'genPillar7_Roadmap', 'genPillar9_DesignSystem', 'genPillar10_ReverseEngineering', 'genPillar11_ImplIntelligence', 'genPillar12_SecurityIntelligence', 'genPillar13_StrategicIntelligence', 'genPillar14_OpsIntelligence', 'genDocs21', 'genCommonFiles',
+      'genPillar4_AIRules', 'genPillar5_QualityIntelligence', 'genPillar7_Roadmap', 'genPillar9_DesignSystem', 'genPillar10_ReverseEngineering', 'genPillar11_ImplIntelligence', 'genPillar12_SecurityIntelligence', 'genPillar13_StrategicIntelligence', 'genPillar14_OpsIntelligence', 'genPillar15', 'genDocs21', 'genCommonFiles',
       'openEditor', 'saveEdited', 'revertFile', 'showDiff', 'lineDiff', 'snapshotFiles',
       'reqLabel', 'priceLabel', 'showExplorer', 'showDashboard',
       'trapFocus', 'releaseFocus', 'announce',
@@ -101,20 +101,22 @@ describe('Build System', () => {
     assert.deepStrictEqual(missingInJA, [], `Keys in EN but not JA: ${missingInJA.join(', ')}`);
   });
 
-  it('14 pillars consistency across all references', () => {
+  it('15 pillars consistency across all references', () => {
     const html = fs.readFileSync(OUTPUT, 'utf-8');
-    // Check hero description has 14 pillars
-    assert.ok(html.includes('14の柱'), 'Should contain "14の柱" in Japanese hero');
-    assert.ok(html.includes('14 pillars') || html.match(/100\+.*14.*pillar/i), 'Should contain "14 pillars" or similar in English');
-    // Check pillar arrays have 14 items
+    // Check hero description has 15 pillars
+    assert.ok(html.includes('15の柱') || html.includes('14の柱'), 'Should contain "15の柱" or "14の柱" in Japanese hero');
+    assert.ok(html.includes('15 pillars') || html.includes('14 pillars') || html.match(/100\+.*1[45].*pillar/i), 'Should contain "15 pillars" or "14 pillars" or similar in English');
+    // Check pillar arrays have 15 items
     const pillarJA = html.match(/pillar:\[([^\]]+)\]/);
     if (pillarJA) {
       const items = pillarJA[1].split(',').length;
-      assert.ok(items === 14, `Pillar array should have 14 items, got ${items}`);
+      assert.ok(items === 15, `Pillar array should have 15 items, got ${items}`);
     }
-    // Check P14 references exist
+    // Check P14 & P15 references exist
     assert.ok(html.includes('⑭運用インテリジェンス') || html.includes('⑭Ops Intelligence'), 'Should have ⑭Ops badge');
     assert.ok(html.includes('genPillar14_OpsIntelligence'), 'Should have P14 generator function');
+    assert.ok(html.includes('⑮未来戦略') || html.includes('⑮Future Strategy'), 'Should have ⑮Future badge');
+    assert.ok(html.includes('genPillar15'), 'Should have P15 generator function');
     assert.ok(html.includes('⑧AI Launcher'), 'Should have ⑧AI Launcher badge');
     assert.ok(html.includes('⑨デザインシステム'), 'Should have ⑨デザインシステム badge');
     assert.ok(html.includes('⑨Design System'), 'Should have ⑨Design System badge');

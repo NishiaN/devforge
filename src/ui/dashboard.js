@@ -225,7 +225,7 @@ function showDashboard(){
 
   // File size distribution by Pillar
   if(Object.keys(S.files).length>0){
-    const pillarMap={'.spec/':'P1 SDD','.devcontainer/':'P2 DevContainer','mcp-config':'P3 MCP','.cursor/':'P4 AI Rules','.clinerules':'P4','.windsurfrules':'P4','.gemini/':'P4','.github/':'P4','CLAUDE.md':'P4','AGENTS.md':'P4','codex-instructions':'P4','.kiro/':'P4','skills/':'P4','roadmap/':'P7 Roadmap','docs/43_security':'P12 Security','docs/44_threat':'P12 Security','docs/45_compliance':'P12 Security','docs/46_ai_security':'P12 Security','docs/47_security_testing':'P12 Security','docs/48_industry':'P13 Strategy','docs/49_tech_radar':'P13 Strategy','docs/50_stakeholder':'P13 Strategy','docs/51_operational':'P13 Strategy','docs/52_advanced':'P13 Strategy','docs/53_ops':'P14 Ops','docs/54_ops':'P14 Ops','docs/55_ops':'P14 Ops','docs/':'Docs','README.md':'Common','.gitignore':'Common','LICENSE':'Common','package.json':'Common','.ai/':'Common','.mcp/':'P3 MCP'};
+    const pillarMap={'.spec/':'P1 SDD','.devcontainer/':'P2 DevContainer','mcp-config':'P3 MCP','.cursor/':'P4 AI Rules','.clinerules':'P4','.windsurfrules':'P4','.gemini/':'P4','.github/':'P4','CLAUDE.md':'P4','AGENTS.md':'P4','codex-instructions':'P4','.kiro/':'P4','skills/':'P4','roadmap/':'P7 Roadmap','docs/43_security':'P12 Security','docs/44_threat':'P12 Security','docs/45_compliance':'P12 Security','docs/46_ai_security':'P12 Security','docs/47_security_testing':'P12 Security','docs/48_industry':'P13 Strategy','docs/49_tech_radar':'P13 Strategy','docs/50_stakeholder':'P13 Strategy','docs/51_operational':'P13 Strategy','docs/52_advanced':'P13 Strategy','docs/53_ops':'P14 Ops','docs/54_ops':'P14 Ops','docs/55_ops':'P14 Ops','docs/56_market':'P15 Future','docs/57_user':'P15 Future','docs/58_ecosystem':'P15 Future','docs/59_regulatory':'P15 Future','docs/':'Docs','README.md':'Common','.gitignore':'Common','LICENSE':'Common','package.json':'Common','.ai/':'Common','.mcp/':'P3 MCP'};
     const pillarSizes={};
     Object.entries(S.files).forEach(([p,c])=>{
       let pil='Other';
@@ -234,7 +234,7 @@ function showDashboard(){
     });
     const sorted=Object.entries(pillarSizes).sort((a,b)=>b[1]-a[1]);
     const max=sorted[0]?sorted[0][1]:1;
-    const pillarColors={'P1 SDD':'var(--accent)','P2 DevContainer':'var(--accent-2)','P3 MCP':'var(--success)','P4 AI Rules':'var(--warn)','P5 Quality':'var(--danger)','P7 Roadmap':'var(--danger)','P9 Design System':'var(--accent)','P10 Reverse Eng':'var(--success)','P11 Impl Intelligence':'var(--accent-2)','P12 Security':'var(--danger)','P13 Strategy':'var(--warn)','P14 Ops':'var(--success)','Docs':'var(--layer-5)','Common':'var(--text-3)'};
+    const pillarColors={'P1 SDD':'var(--accent)','P2 DevContainer':'var(--accent-2)','P3 MCP':'var(--success)','P4 AI Rules':'var(--warn)','P5 Quality':'var(--danger)','P7 Roadmap':'var(--danger)','P9 Design System':'var(--accent)','P10 Reverse Eng':'var(--success)','P11 Impl Intelligence':'var(--accent-2)','P12 Security':'var(--danger)','P13 Strategy':'var(--warn)','P14 Ops':'var(--success)','P15 Future':'var(--accent)','Docs':'var(--layer-5)','Common':'var(--text-3)'};
     h+='<h4 class="dash-h4-mt">'+(_ja?'📦 ファイルサイズ分布':'📦 File Size Distribution')+'</h4>';
     h+='<div class="fsize-chart">';
     sorted.forEach(([pil,sz])=>{
@@ -276,6 +276,7 @@ function getHealthHTML(_ja,fileCount,answered){
     {key:'docs/43_',label:_ja?'⑫セキュリティ':'⑫Security'},
     {key:'docs/48_',label:_ja?'⑬戦略インテリジェンス':'⑬Strategic Intelligence'},
     {key:'docs/53_',label:_ja?'⑭運用インテリジェンス':'⑭Ops Intelligence'},
+    {key:'docs/56_',label:_ja?'⑮未来戦略':'⑮Future Strategy'},
   ];
   const fileKeys=Object.keys(S.files);
   let pillarOK=0;

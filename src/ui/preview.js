@@ -287,6 +287,10 @@ function buildFileTree(){
     files.push({folder:true,name:'docs'});
     ['53_ops_runbook','54_ops_checklist','55_ops_plane_design'].forEach(f=>
       files.push({name:'  '+f+'.md',path:'docs/'+f+'.md'}));
+  } else if(pillar===14){ // Future Strategy Intelligence
+    files.push({folder:true,name:'docs'});
+    ['56_market_positioning','57_user_experience_strategy','58_ecosystem_strategy','59_regulatory_foresight'].forEach(f=>
+      files.push({name:'  '+f+'.md',path:'docs/'+f+'.md'}));
   }
   // Common files
   files.push({name:'───────────',path:''});

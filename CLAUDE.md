@@ -7,9 +7,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 # DevForge v9.3.0
 
 ## Architecture
-- **46 modules** in `src/` → `node build.js` → single `devforge-v9.html` (~2000KB)
+- **47 modules** in `src/` → `node build.js` → single `devforge-v9.html` (~2000KB)
 - Vanilla JS, no frameworks. CSS custom properties. CDN: marked.js, mermaid.js, JSZip.
-- **AI Development OS**: Generates 107+ files including context intelligence, operations playbooks, business models, growth strategies, industry-specific strategic intelligence, ops intelligence, and path-specific AI rules
+- **AI Development OS**: Generates 111+ files including context intelligence, operations playbooks, business models, growth strategies, industry-specific strategic intelligence, ops intelligence, future strategy intelligence, and path-specific AI rules
 - **Security-hardened**: Phase 1 (CSP, SRI, sanitization) + Phase 2 (16 XSS/injection fixes) + Pillar ⑫ (context-aware security audit prompts)
 - **Latest**: v9.3.0 — CLAUDE.md 3-layer split (.claude/rules/ path-specific rules + .claude/settings.json), reduces token consumption from ~3K to ~1.5K + targeted loading
 
@@ -22,7 +22,7 @@ node build.js --report     # Show size report
 node build.js --check-css  # Validate CSS custom properties
 
 # Test
-npm test                   # Run all tests (283+ tests, all passing)
+npm test                   # Run all tests (302+ tests, all passing)
 npm run test:watch         # Watch mode for test development
 node --test test/gen-coherence.test.js  # Run single test file
 node --test test/data-coverage.test.js  # Run data integrity tests
@@ -47,7 +47,7 @@ npm run check              # Syntax check extracted JS
 5. **Write** to `devforge-v9.html`
 6. **Validate** size ≤2000KB (warn if exceeded)
 
-**Current Status:** 1283KB / 2000KB limit (64.15% utilized, Phase 4 complete, room for expansion)
+**Current Status:** 1354KB / 2000KB limit (67.7% utilized, P15 complete, room for expansion)
 
 ### ⚠️ Critical: Minification Strategy
 
@@ -80,7 +80,7 @@ npm run check              # Syntax check extracted JS
 |----------|-------|---------|
 | core/ | state, i18n, events, tour, init | State, language, shortcuts |
 | data/ | presets(41), questions, techdb, compat-rules, gen-templates, helpdata | Static data (41 presets: 36 original + 5 new: CRM, Social, Logistics, Survey, Job Board) |
-| generators/ | index, p1-sdd, p2-devcontainer, p3-mcp, p4-airules, p5-quality, p7-roadmap, p9-designsystem (v2: Figma MCP, Anti-AI checklist), p10-reverse, p11-implguide (skill_guide.md), p12-security (context-aware audit prompts), p13-strategy (industry intelligence), p14-ops (ops intelligence), docs, common | 107+ file generation engine (14 pillars) |
+| generators/ | index, p1-sdd, p2-devcontainer, p3-mcp, p4-airules, p5-quality, p7-roadmap, p9-designsystem (v2: Figma MCP, Anti-AI checklist), p10-reverse, p11-implguide (skill_guide.md), p12-security (context-aware audit prompts), p13-strategy (industry intelligence), p14-ops (ops intelligence), p15-future (market/UX/ecosystem/regulatory strategy), docs, common | 111+ file generation engine (15 pillars) |
 | ui/ | wizard, render, edit, help, confirm, complexity, toc, voice, project, presets, preview, editor, diff, export, explorer, dashboard, templates | UI components |
 | styles/ | all.css | Theme (dark/light), responsive |
 
@@ -214,7 +214,7 @@ See Phase 2 security audit for detailed examples.
 
 **Fix:**
 - Always add both `ja` and `en` versions
-- Search for all instances when updating numbers (41 presets, 100+ files, 14 pillars)
+- Search for all instances when updating numbers (41 presets, 111+ files, 15 pillars)
 - Use static strings in data files, not `S.lang` conditionals
 
 ### Property Name Mismatches with Helper-Generated Objects
@@ -344,7 +344,7 @@ const PR = {
 
 ## Generated Output
 
-DevForge generates **107+ files** (base: 87 files, +4 for skills/ when ai_auto=multi/full/orch, +1 for business_model.md when payment≠none, +3 for P14 ops docs, +6 for .claude/ structure).
+DevForge generates **111+ files** (base: 87 files, +4 for skills/ when ai_auto=multi/full/orch, +1 for business_model.md when payment≠none, +3 for P14 ops docs, +4 for P15 future strategy docs, +6 for .claude/ structure).
 
 → See `docs/CLAUDE-REFERENCE.md` for complete file catalog.
 
@@ -361,6 +361,10 @@ DevForge generates **107+ files** (base: 87 files, +4 for skills/ when ai_auto=m
 - `docs/53_ops_runbook.md` — Ops Plane design (Feature Flags, SLO/SLI, Observability, Jobs, Backup, Rate Limiting)
 - `docs/54_ops_checklist.md` — Day-1 ops readiness checklist (12 Ops Capabilities Matrix)
 - `docs/55_ops_plane_design.md` — Ops Plane Architecture (12 Ops Capabilities impl patterns, Circuit Breaker, Evidence-Based Ops, Dev×Ops AI separation, Admin Console security)
+- `docs/56_market_positioning.md` — Market positioning & competitive intelligence (MOAT analysis, GTM strategy, unit economics)
+- `docs/57_user_experience_strategy.md` — User experience & retention strategy (personas, user journeys, accessibility, digital wellbeing)
+- `docs/58_ecosystem_strategy.md` — Ecosystem & platform strategy (API-as-product, DX, FinOps, community strategy)
+- `docs/59_regulatory_foresight.md` — Regulatory foresight & sustainability (2026-2030 horizon, EU AI Act, ESG metrics)
 
 **Key pillars:**
 - **.spec/** — constitution, specification, technical-plan, tasks, verification
@@ -375,17 +379,18 @@ DevForge generates **107+ files** (base: 87 files, +4 for skills/ when ai_auto=m
 |------|-------|---------|
 | gen-coherence.test.js | 253 assertions | Full LMS generation + structural validation + post-generation audit (C2-C10) |
 | snapshot.test.js | 53 tests | 6 scenario regression (LMS/Blog/EC/English/PropertyMgmt/Helpdesk) + context engineering + skills validation + quality files + P12 security intelligence + P13 industry detection + P14 ops + P4 .claude/ structure (6 new tests) |
-| data-coverage.test.js | 31 tests | Data integrity: entity coverage, FK validation, domain detection (24 domains), playbook completeness, DOMAIN_OPS coverage |
+| data-coverage.test.js | 34 tests | Data integrity: entity coverage, FK validation, domain detection (24 domains), playbook completeness, DOMAIN_OPS coverage, DOMAIN_MARKET coverage (3 new P15 tests) |
 | r27-regression.test.js | 17 tests | Bug fixes: prices, FK, KPI, ports |
 | r28-regression.test.js | 19 tests | Quality: REST methods, AC, scope_out, verification |
-| build.test.js | build | Build size ≤2000KB, pillar function existence (P1-P14) |
+| build.test.js | build | Build size ≤2000KB, pillar function existence (P1-P15) |
 | compat.test.js | 66 tests + 7 synergy | Compatibility validation (54 rules: 11 ERROR, 34 WARN, 9 INFO) + calcSynergy unit tests |
 | security.test.js | 26 tests | Security: CSP, SRI, sanitization, XSS prevention, proto pollution, .claude/settings.json safety (2 new tests) |
 | ops.test.js | 16 tests | Ops Intelligence (P14): runbook generation, checklist, ops plane design, SLO adaptation, domain-specific flags, observability stack, circuit breaker, audit schema |
+| future.test.js | 16 tests | Future Strategy Intelligence (P15): DOMAIN_MARKET coverage, PERSONA_ARCHETYPES coverage, GTM_STRATEGY, REGULATORY_HORIZON, doc generation (56-59), mermaid diagrams, bilingual content |
 | presets.test.js | 4 tests | Preset count (41), bilingual names, tech fields, purpose |
 | Others | ~21 tests | i18n, state, techdb |
 
-**Total: 283+ tests (all passing, 100% pass rate) + 7 synergy unit tests**
+**Total: 302+ tests (all passing, 100% pass rate) + 7 synergy unit tests**
 
 ## Writing Tests
 

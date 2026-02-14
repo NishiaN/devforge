@@ -5,6 +5,7 @@ const fs = require('fs');
 // Load modules
 eval(fs.readFileSync('src/data/presets.js', 'utf-8').replace('const PR','var PR'));
 eval(fs.readFileSync('src/generators/common.js', 'utf-8').replace(/const /g, 'var '));
+eval(fs.readFileSync('src/generators/p15-future.js', 'utf-8').replace(/const (DOMAIN_MARKET|PERSONA_ARCHETYPES|GTM_STRATEGY|REGULATORY_HORIZON)/g, 'var $1'));
 
 // ═══ Data Coverage & Integrity Tests ═══
 
@@ -464,4 +465,68 @@ test('REVERSE_FLOW_MAP: all 24 domains have complete flow definitions', () => {
 
   assert.equal(incomplete.length, 0,
     'Incomplete REVERSE_FLOW_MAP: ' + incomplete.join(', '));
+});
+
+
+// ═══ P15: Future Strategy Intelligence Data Coverage ═══
+
+test("DOMAIN_MARKET: covers all 24 domains from detectDomain()", () => {
+  // Get list of domains from detectDomain (24 domains)
+  const expectedDomains = [
+    "education", "ec", "fintech", "health", "saas", "marketplace",
+    "community", "content", "booking", "iot", "realestate", "legal",
+    "hr", "analytics", "portfolio", "tool", "ai", "automation",
+    "event", "gamify", "collab", "devtool", "creator", "newsletter"
+  ];
+
+  const missingDomains = [];
+  expectedDomains.forEach(domain => {
+    if (!DOMAIN_MARKET[domain]) {
+      missingDomains.push(domain);
+    }
+  });
+
+  assert.equal(missingDomains.length, 0,
+    `DOMAIN_MARKET missing domains: ${missingDomains.join(", ")}`);
+
+  // Check _default exists
+  assert.ok(DOMAIN_MARKET._default, "DOMAIN_MARKET should have _default fallback");
+});
+
+test("DOMAIN_MARKET: all domains have complete bilingual properties", () => {
+  const requiredProps = ["moat_ja", "moat_en", "gtm_ja", "gtm_en", "ux_ja", "ux_en", "eco_ja", "eco_en", "reg_ja", "reg_en", "esg_ja", "esg_en"];
+  const incomplete = [];
+
+  Object.entries(DOMAIN_MARKET).forEach(([domain, data]) => {
+    requiredProps.forEach(prop => {
+      if (!data[prop] || data[prop].trim().length === 0) {
+        incomplete.push(`${domain}.${prop}`);
+      }
+    });
+  });
+
+  assert.equal(incomplete.length, 0,
+    `DOMAIN_MARKET incomplete properties: ${incomplete.join(", ")}`);
+});
+
+test("PERSONA_ARCHETYPES: covers all 24 domains", () => {
+  const expectedDomains = [
+    "education", "ec", "fintech", "health", "saas", "marketplace",
+    "community", "content", "booking", "iot", "realestate", "legal",
+    "hr", "analytics", "portfolio", "tool", "ai", "automation",
+    "event", "gamify", "collab", "devtool", "creator", "newsletter"
+  ];
+
+  const missingDomains = [];
+  expectedDomains.forEach(domain => {
+    if (!PERSONA_ARCHETYPES[domain]) {
+      missingDomains.push(domain);
+    }
+  });
+
+  assert.equal(missingDomains.length, 0,
+    `PERSONA_ARCHETYPES missing domains: ${missingDomains.join(", ")}`);
+
+  // Check _default exists
+  assert.ok(PERSONA_ARCHETYPES._default, "PERSONA_ARCHETYPES should have _default fallback");
 });
