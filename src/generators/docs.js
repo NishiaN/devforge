@@ -452,7 +452,7 @@ _(${G?'追記してください':'Add entries here'})_`],
   doc35+=(G?'## URLツリー':'## URL Tree')+'\n\n';
   doc35+=(G?'**ルーティング構造の可視化**':'**Routing structure visualization**')+'\n\n';
   doc35+='```mermaid\ngraph TD\n';
-  doc35+='  Root[/]\n';
+  doc35+='  Root["/"]\n';
 
   // Build tree nodes
   const addedPaths=new Set(['Root']);

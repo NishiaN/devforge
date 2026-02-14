@@ -238,6 +238,7 @@ function genPillar10_ReverseEngineering(a,pn){
   const entities=(a.data_entities||'').split(/[,、]\s*/).map(s=>s.trim()).filter(Boolean);
   const features=mvp.split(/[,、\n]/).map(s=>s.trim()).filter(Boolean);
   const skill=S.skill||'intermediate';
+  const _mmSafe=s=>(s||'').replace(/&/g,' and ').replace(/[（）()]/g,'');
 
   // ═══ docs/29_reverse_engineering.md ═══
   let doc29='# '+(G?'リバースエンジニアリング（ゴール逆算型プランニング）':'Reverse Engineering (Goal-Driven Planning)')+'\n\n';
@@ -299,7 +300,7 @@ function genPillar10_ReverseEngineering(a,pn){
   flowSteps.slice(0,2).forEach((step,i)=>{
     const start=i===0?formatDate(p1Start):formatDate(p1Mid);
     const end=i===0?formatDate(addDays(p1Mid,-1)):formatDate(p1End);
-    doc29+='    '+step.replace(/[:\-（）()]/g,' ')+' :'+start+', '+end+'\n';
+    doc29+='    '+step.replace(/[:\-（）()&]/g,' ')+' :'+start+', '+end+'\n';
   });
   doc29+='    section '+(G?'Phase 2: MVP実装':'Phase 2: MVP Implementation')+'\n';
   if(flowSteps.length>2){
@@ -357,10 +358,10 @@ function genPillar10_ReverseEngineering(a,pn){
   doc30+=G?'**重要**: このドキュメントは、中心ゴールをサブゴール階層に分解し、現状とのギャップ・優先度を明確化します。AIエージェントは、実装順序を決定する際にこのマトリクスを参照してください。\n\n':'**IMPORTANT**: This document decomposes the central goal into sub-goal hierarchies and clarifies gaps & priorities. AI agents MUST reference this matrix when determining implementation order.\n\n';
 
   // ── Goal Tree (Mermaid mindmap) ──
-  doc30+=(G?'## ゴールツリー':'## Goal Tree')+'\n\n```mermaid\nmindmap\n  root(('+(G?rf.goal_ja:rf.goal_en)+'))\n';
+  doc30+=(G?'## ゴールツリー':'## Goal Tree')+'\n\n```mermaid\nmindmap\n  root(("'+_mmSafe(G?rf.goal_ja:rf.goal_en)+'"))\n';
   // Level 1: Flow steps
   flowSteps.slice(0,3).forEach((step,i)=>{
-    doc30+='    '+step.replace(/[（）()]/g,'')+'\n';
+    doc30+='    '+_mmSafe(step)+'\n';
     // Level 2: Features (sample 2 per step)
     if(i===0&&kpis.length>0){
       doc30+='      '+kpis[0].split(' ')[0]+'\n';

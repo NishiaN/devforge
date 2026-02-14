@@ -6213,6 +6213,7 @@ const mvp=a.mvp_features||'';
 const entities=(a.data_entities||'').split(/[,、]\s*/).map(s=>s.trim()).filter(Boolean);
 const features=mvp.split(/[,、\n]/).map(s=>s.trim()).filter(Boolean);
 const skill=S.skill||'intermediate';
+const _mmSafe=s=>(s||'').replace(/&/g,' and ').replace(/[（）()]/g,'');
 // ═══ docs/29_reverse_engineering.md ═══
 let doc29='# '+(G?'リバースエンジニアリング（ゴール逆算型プランニング）':'Reverse Engineering (Goal-Driven Planning)')+'\n\n';
 doc29+=G?'**重要**: このドキュメントは「ゴールから逆算して実装ステップを導出する」リバースエンジニアリング手法を提示します。AIエージェントは、実装前にこのフローを参照し、目標達成に向けた最適な順序でタスクを進めてください。\n\n':'**IMPORTANT**: This document presents reverse engineering methodology to derive implementation steps from goals. AI agents MUST reference this flow before implementation to proceed in optimal order for goal achievement.\n\n';
@@ -6267,7 +6268,7 @@ doc29+=(G?'## マイルストーン逆算スケジュール':'## Milestone Rever
 flowSteps.slice(0,2).forEach((step,i)=>{
 const start=i===0?formatDate(p1Start):formatDate(p1Mid);
 const end=i===0?formatDate(addDays(p1Mid,-1)):formatDate(p1End);
-doc29+='    '+step.replace(/[:\-（）()]/g,' ')+' :'+start+', '+end+'\n';
+doc29+='    '+step.replace(/[:\-（）()&]/g,' ')+' :'+start+', '+end+'\n';
 });
 doc29+='    section '+(G?'Phase 2: MVP実装':'Phase 2: MVP Implementation')+'\n';
 if(flowSteps.length>2){
@@ -6320,10 +6321,10 @@ S.files['docs/29_reverse_engineering.md']=doc29;
 let doc30='# '+(G?'ゴール分解・ギャップ分析':'Goal Decomposition & Gap Analysis')+'\n\n';
 doc30+=G?'**重要**: このドキュメントは、中心ゴールをサブゴール階層に分解し、現状とのギャップ・優先度を明確化します。AIエージェントは、実装順序を決定する際にこのマトリクスを参照してください。\n\n':'**IMPORTANT**: This document decomposes the central goal into sub-goal hierarchies and clarifies gaps & priorities. AI agents MUST reference this matrix when determining implementation order.\n\n';
 // ── Goal Tree (Mermaid mindmap) ──
-doc30+=(G?'## ゴールツリー':'## Goal Tree')+'\n\n```mermaid\nmindmap\n  root(('+(G?rf.goal_ja:rf.goal_en)+'))\n';
+doc30+=(G?'## ゴールツリー':'## Goal Tree')+'\n\n```mermaid\nmindmap\n  root(("'+_mmSafe(G?rf.goal_ja:rf.goal_en)+'"))\n';
 // Level 1: Flow steps
 flowSteps.slice(0,3).forEach((step,i)=>{
-doc30+='    '+step.replace(/[（）()]/g,'')+'\n';
+doc30+='    '+_mmSafe(step)+'\n';
 // Level 2: Features (sample 2 per step)
 if(i===0&&kpis.length>0){
 doc30+='      '+kpis[0].split(' ')[0]+'\n';
@@ -11565,7 +11566,7 @@ const allRoutes=genRoutes(a);
 doc35+=(G?'## URLツリー':'## URL Tree')+'\n\n';
 doc35+=(G?'**ルーティング構造の可視化**':'**Routing structure visualization**')+'\n\n';
 doc35+='```mermaid\ngraph TD\n';
-doc35+='  Root[/]\n';
+doc35+='  Root["/"]\n';
 // Build tree nodes
 const addedPaths=new Set(['Root']);
 allRoutes.forEach((route,i)=>{
