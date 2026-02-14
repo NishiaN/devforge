@@ -229,55 +229,49 @@ const REVERSE_FLOW_MAP={
   }
 };
 
-function genPillar10_ReverseEngineering(a,pn){
-  const G=S.genLang==='ja';
-  const domain=detectDomain(a.purpose)||'_default';
-  const rf=REVERSE_FLOW_MAP[domain]||REVERSE_FLOW_MAP._default;
-  const purpose=a.purpose||'';
-  const mvp=a.mvp_features||'';
-  const entities=(a.data_entities||'').split(/[,、]\s*/).map(s=>s.trim()).filter(Boolean);
-  const features=mvp.split(/[,、\n]/).map(s=>s.trim()).filter(Boolean);
-  const skill=S.skill||'intermediate';
-  const _mmSafe=s=>(s||'').replace(/&/g,' and ').replace(/[（）()\[\]{}<>"]/g,'');
+// ── Mermaid-safe string sanitizer (shared by all doc generators) ──
+const _mmSafe=s=>(s||'').replace(/&/g,' and ').replace(/[（）()\[\]{}<>"]/g,'');
 
-  // ═══ docs/29_reverse_engineering.md ═══
-  let doc29='# '+(G?'リバースエンジニアリング（ゴール逆算型プランニング）':'Reverse Engineering (Goal-Driven Planning)')+'\n\n';
-  doc29+=G?'**重要**: このドキュメントは「ゴールから逆算して実装ステップを導出する」リバースエンジニアリング手法を提示します。AIエージェントは、実装前にこのフローを参照し、目標達成に向けた最適な順序でタスクを進めてください。\n\n':'**IMPORTANT**: This document presents reverse engineering methodology to derive implementation steps from goals. AI agents MUST reference this flow before implementation to proceed in optimal order for goal achievement.\n\n';
+// ── Sub-generators (P15 pattern: each returns a string) ──
+
+function _genDoc29(G, rf, domain, flowSteps, kpis, risks, a) {
+  const purpose=a.purpose||'';
+
+  let doc='# '+(G?'リバースエンジニアリング（ゴール逆算型プランニング）':'Reverse Engineering (Goal-Driven Planning)')+'\n\n';
+  doc+=G?'**重要**: このドキュメントは「ゴールから逆算して実装ステップを導出する」リバースエンジニアリング手法を提示します。AIエージェントは、実装前にこのフローを参照し、目標達成に向けた最適な順序でタスクを進めてください。\n\n':'**IMPORTANT**: This document presents reverse engineering methodology to derive implementation steps from goals. AI agents MUST reference this flow before implementation to proceed in optimal order for goal achievement.\n\n';
 
   // ── Goal Definition ──
-  doc29+=(G?'## ゴール定義':'## Goal Definition')+'\n\n';
-  doc29+='**'+(G?'プロダクトの目的':'Product Purpose')+'**: '+purpose+'\n\n';
-  doc29+='**'+(G?'中心ゴール':'Central Goal')+'**: '+(G?rf.goal_ja:rf.goal_en)+'\n\n';
-  doc29+='**'+(G?'成功指標（KPI）':'Success Metrics (KPIs)')+'**:\n';
-  const kpis=G?rf.kpi_ja:rf.kpi_en;
-  kpis.forEach(k=>doc29+='- '+k+'\n');
-  doc29+='\n';
+  doc+=(G?'## ゴール定義':'## Goal Definition')+'\n\n';
+  doc+='**'+(G?'プロダクトの目的':'Product Purpose')+'**: '+purpose+'\n\n';
+  doc+='**'+(G?'中心ゴール':'Central Goal')+'**: '+(G?rf.goal_ja:rf.goal_en)+'\n\n';
+  doc+='**'+(G?'成功指標（KPI）':'Success Metrics (KPIs)')+'**:\n';
+  kpis.forEach(k=>doc+='- '+k+'\n');
+  doc+='\n';
 
   // ── Reverse Flow (Domain-Specific) ──
-  doc29+=(G?'## 逆算フロー（'+domain+'ドメイン特化）':'## Reverse Flow ('+domain+' Domain-Specific)')+'\n\n';
-  doc29+=G?'ゴールから逆算して、以下の順序で実装を進めます：\n\n':'Working backward from the goal, implement in this order:\n\n';
-  const flowSteps=G?rf.flow_ja:rf.flow_en;
+  doc+=(G?'## 逆算フロー（'+domain+'ドメイン特化）':'## Reverse Flow ('+domain+' Domain-Specific)')+'\n\n';
+  doc+=G?'ゴールから逆算して、以下の順序で実装を進めます：\n\n':'Working backward from the goal, implement in this order:\n\n';
   flowSteps.forEach((step,i)=>{
-    doc29+=(i+1)+'. **'+step+'**\n';
+    doc+=(i+1)+'. **'+step+'**\n';
     if(i===0){
-      doc29+=(G?'   - 測定可能なKPIを定義（定量的目標）\n   - 目標達成の判断基準を明確化\n':'   - Define measurable KPIs (quantitative targets)\n   - Clarify success criteria\n')+'\n';
+      doc+=(G?'   - 測定可能なKPIを定義（定量的目標）\n   - 目標達成の判断基準を明確化\n':'   - Define measurable KPIs (quantitative targets)\n   - Clarify success criteria\n')+'\n';
     }else if(i===1){
-      doc29+=(G?'   - KPI達成に直結する機能・コンテンツを設計\n   - 優先順位付け（Impact × Effort マトリクス）\n':'   - Design features/content directly contributing to KPIs\n   - Prioritize (Impact × Effort matrix)\n')+'\n';
+      doc+=(G?'   - KPI達成に直結する機能・コンテンツを設計\n   - 優先順位付け（Impact × Effort マトリクス）\n':'   - Design features/content directly contributing to KPIs\n   - Prioritize (Impact × Effort matrix)\n')+'\n';
     }else if(i===2){
-      doc29+=(G?'   - 実装スケジュール・タスク分解\n   - 依存関係チェーン整理\n':'   - Implementation schedule & task decomposition\n   - Dependency chain organization\n')+'\n';
+      doc+=(G?'   - 実装スケジュール・タスク分解\n   - 依存関係チェーン整理\n':'   - Implementation schedule & task decomposition\n   - Dependency chain organization\n')+'\n';
     }else{
-      doc29+=(G?'   - 自動化・効率化施策\n   - 継続的改善サイクル構築\n':'   - Automation & efficiency measures\n   - Continuous improvement cycle\n')+'\n';
+      doc+=(G?'   - 自動化・効率化施策\n   - 継続的改善サイクル構築\n':'   - Automation & efficiency measures\n   - Continuous improvement cycle\n')+'\n';
     }
   });
 
   // ── Implementation-Level Reverse Flow (Industry Playbook) ──
   const pb=DOMAIN_PLAYBOOK[domain]||DOMAIN_PLAYBOOK._default;
   if(pb&&pb.impl_ja&&pb.impl_ja.length>0&&pb.impl_ja[0]!==''){
-    doc29+=(G?'## 実装レベル・リバースフロー（業種特化パターン）':'## Implementation-Level Reverse Flow (Industry-Specific Patterns)')+'\n\n';
-    doc29+=G?'具体的なデータフロー・ビジネスロジックの実装パターン:\n\n':'Concrete data flow & business logic implementation patterns:\n\n';
+    doc+=(G?'## 実装レベル・リバースフロー（業種特化パターン）':'## Implementation-Level Reverse Flow (Industry-Specific Patterns)')+'\n\n';
+    doc+=G?'具体的なデータフロー・ビジネスロジックの実装パターン:\n\n':'Concrete data flow & business logic implementation patterns:\n\n';
     const implPatterns=G?pb.impl_ja:pb.impl_en;
     implPatterns.forEach((pattern,i)=>{
-      doc29+=(i+1)+'. '+pattern+'\n\n';
+      doc+=(i+1)+'. '+pattern+'\n\n';
     });
   }
 
@@ -296,30 +290,29 @@ function genPillar10_ReverseEngineering(a,pn){
   const p4Start=addDays(today,56);
   const p4End=addDays(today,70);
 
-  doc29+=(G?'## マイルストーン逆算スケジュール':'## Milestone Reverse Schedule')+'\n\n```mermaid\ngantt\n    title '+(G?'ゴール達成までのマイルストーン':'Milestones to Goal Achievement')+'\n    dateFormat YYYY-MM-DD\n    section '+(G?'Phase 1: 基盤構築':'Phase 1: Foundation')+'\n';
+  doc+=(G?'## マイルストーン逆算スケジュール':'## Milestone Reverse Schedule')+'\n\n```mermaid\ngantt\n    title '+(G?'ゴール達成までのマイルストーン':'Milestones to Goal Achievement')+'\n    dateFormat YYYY-MM-DD\n    section '+(G?'Phase 1: 基盤構築':'Phase 1: Foundation')+'\n';
   flowSteps.slice(0,2).forEach((step,i)=>{
     const start=i===0?formatDate(p1Start):formatDate(p1Mid);
     const end=i===0?formatDate(addDays(p1Mid,-1)):formatDate(p1End);
-    doc29+='    '+step.replace(/[:\-（）()&]/g,' ')+' :'+start+', '+end+'\n';
+    doc+='    '+step.replace(/[:\-（）()&]/g,' ')+' :'+start+', '+end+'\n';
   });
-  doc29+='    section '+(G?'Phase 2: MVP実装':'Phase 2: MVP Implementation')+'\n';
+  doc+='    section '+(G?'Phase 2: MVP実装':'Phase 2: MVP Implementation')+'\n';
   if(flowSteps.length>2){
     const step=flowSteps[2];
-    doc29+='    '+step.replace(/[:\-（）()]/g,' ')+' :'+formatDate(p2Start)+', '+formatDate(p2End)+'\n';
+    doc+='    '+step.replace(/[:\-（）()]/g,' ')+' :'+formatDate(p2Start)+', '+formatDate(p2End)+'\n';
   }
-  doc29+='    section '+(G?'Phase 3: 最適化':'Phase 3: Optimization')+'\n';
+  doc+='    section '+(G?'Phase 3: 最適化':'Phase 3: Optimization')+'\n';
   if(flowSteps.length>3){
     const step=flowSteps[3];
-    doc29+='    '+step.replace(/[:\-（）()]/g,' ')+' :'+formatDate(p3Start)+', '+formatDate(p3End)+'\n';
+    doc+='    '+step.replace(/[:\-（）()]/g,' ')+' :'+formatDate(p3Start)+', '+formatDate(p3End)+'\n';
   }
-  doc29+='    section '+(G?'Phase 4: ローンチ':'Phase 4: Launch')+'\n';
-  doc29+='    '+(G?'最終テスト・デプロイ':'Final testing & deploy')+' :milestone, '+formatDate(p4End)+', 0d\n';
-  doc29+='```\n\n';
+  doc+='    section '+(G?'Phase 4: ローンチ':'Phase 4: Launch')+'\n';
+  doc+='    '+(G?'最終テスト・デプロイ':'Final testing & deploy')+' :milestone, '+formatDate(p4End)+', 0d\n';
+  doc+='```\n\n';
 
   // ── Risk & Blocker Analysis ── Use domain-specific prevent strategies
-  doc29+=(G?'## リスク・ブロッカー分析':'## Risk & Blocker Analysis')+'\n\n';
-  doc29+='| '+(G?'リスク項目':'Risk Item')+' | '+(G?'影響度':'Impact')+' | '+(G?'発生確率':'Probability')+' | '+(G?'対策':'Mitigation')+' |\n|------|------|------|------|\n';
-  const risks=G?rf.risks_ja:rf.risks_en;
+  doc+=(G?'## リスク・ブロッカー分析':'## Risk & Blocker Analysis')+'\n\n';
+  doc+='| '+(G?'リスク項目':'Risk Item')+' | '+(G?'影響度':'Impact')+' | '+(G?'発生確率':'Probability')+' | '+(G?'対策':'Mitigation')+' |\n|------|------|------|------|\n';
   const playbook=DOMAIN_PLAYBOOK[domain]||DOMAIN_PLAYBOOK._default;
   const preventList=playbook?(G?playbook.prevent_ja:playbook.prevent_en):[];
   risks.forEach((risk,i)=>{
@@ -338,100 +331,102 @@ function genPillar10_ReverseEngineering(a,pn){
     if(!mitigation||mitigation===''){
       mitigation=G?(i===0?'早期プロトタイプ検証':'定期レビュー会'):(i===0?'Early prototype validation':'Regular review meetings');
     }
-    doc29+='| '+risk+' | '+impact+' | '+prob+' | '+mitigation+' |\n';
+    doc+='| '+risk+' | '+impact+' | '+prob+' | '+mitigation+' |\n';
   });
-  doc29+='\n';
+  doc+='\n';
 
   // ── Progress Tracking ──
-  doc29+=(G?'## 進捗トラッキング':'## Progress Tracking')+'\n\n';
-  doc29+=G?'**重要**: `docs/24_progress.md` を使用して実装進捗を記録してください。各マイルストーン完了時にステータスを更新し、ブロッカーがあれば即座に記録してください。\n\n':'**IMPORTANT**: Use `docs/24_progress.md` to track implementation progress. Update status upon milestone completion and log blockers immediately.\n\n';
-  doc29+=(G?'**推奨ワークフロー**:':'**Recommended Workflow**:')+'\n';
-  doc29+='1. '+(G?'各Phase開始時: 24_progress.md にスプリント目標を記載':'Phase start: Log sprint goal in 24_progress.md')+'\n';
-  doc29+='2. '+(G?'実装中: タスク完了ごとにステータス更新':'During implementation: Update status per task completion')+'\n';
-  doc29+='3. '+(G?'ブロッカー発生時: 25_error_logs.md に原因・対策を記録':'On blocker: Log cause & mitigation in 25_error_logs.md')+'\n';
-  doc29+='4. '+(G?'Phase完了時: KPI達成度を確認・記録':'Phase complete: Verify & log KPI achievement')+'\n\n';
+  doc+=(G?'## 進捗トラッキング':'## Progress Tracking')+'\n\n';
+  doc+=G?'**重要**: `docs/24_progress.md` を使用して実装進捗を記録してください。各マイルストーン完了時にステータスを更新し、ブロッカーがあれば即座に記録してください。\n\n':'**IMPORTANT**: Use `docs/24_progress.md` to track implementation progress. Update status upon milestone completion and log blockers immediately.\n\n';
+  doc+=(G?'**推奨ワークフロー**:':'**Recommended Workflow**:')+'\n';
+  doc+='1. '+(G?'各Phase開始時: 24_progress.md にスプリント目標を記載':'Phase start: Log sprint goal in 24_progress.md')+'\n';
+  doc+='2. '+(G?'実装中: タスク完了ごとにステータス更新':'During implementation: Update status per task completion')+'\n';
+  doc+='3. '+(G?'ブロッカー発生時: 25_error_logs.md に原因・対策を記録':'On blocker: Log cause & mitigation in 25_error_logs.md')+'\n';
+  doc+='4. '+(G?'Phase完了時: KPI達成度を確認・記録':'Phase complete: Verify & log KPI achievement')+'\n\n';
 
-  S.files['docs/29_reverse_engineering.md']=doc29;
+  return doc;
+}
 
-  // ═══ docs/30_goal_decomposition.md ═══
-  let doc30='# '+(G?'ゴール分解・ギャップ分析':'Goal Decomposition & Gap Analysis')+'\n\n';
-  doc30+=G?'**重要**: このドキュメントは、中心ゴールをサブゴール階層に分解し、現状とのギャップ・優先度を明確化します。AIエージェントは、実装順序を決定する際にこのマトリクスを参照してください。\n\n':'**IMPORTANT**: This document decomposes the central goal into sub-goal hierarchies and clarifies gaps & priorities. AI agents MUST reference this matrix when determining implementation order.\n\n';
+function _genDoc30(G, rf, flowSteps, kpis, features, entities, a) {
+
+  let doc='# '+(G?'ゴール分解・ギャップ分析':'Goal Decomposition & Gap Analysis')+'\n\n';
+  doc+=G?'**重要**: このドキュメントは、中心ゴールをサブゴール階層に分解し、現状とのギャップ・優先度を明確化します。AIエージェントは、実装順序を決定する際にこのマトリクスを参照してください。\n\n':'**IMPORTANT**: This document decomposes the central goal into sub-goal hierarchies and clarifies gaps & priorities. AI agents MUST reference this matrix when determining implementation order.\n\n';
 
   // ── Goal Tree (Mermaid mindmap) ──
-  doc30+=(G?'## ゴールツリー':'## Goal Tree')+'\n\n```mermaid\nmindmap\n  root(("'+_mmSafe(G?rf.goal_ja:rf.goal_en)+'"))\n';
+  doc+=(G?'## ゴールツリー':'## Goal Tree')+'\n\n```mermaid\nmindmap\n  root(("'+_mmSafe(G?rf.goal_ja:rf.goal_en)+'"))\n';
   // Level 1: Flow steps
   flowSteps.slice(0,3).forEach((step,i)=>{
-    doc30+='    '+_mmSafe(step)+'\n';
+    doc+='    '+_mmSafe(step)+'\n';
     // Level 2: Features (sample 2 per step)
     if(i===0&&kpis.length>0){
-      doc30+='      '+_mmSafe(kpis[0].split(' ')[0])+'\n';
-      if(kpis.length>1)doc30+='      '+_mmSafe(kpis[1].split(' ')[0])+'\n';
+      doc+='      '+_mmSafe(kpis[0].split(' ')[0])+'\n';
+      if(kpis.length>1)doc+='      '+_mmSafe(kpis[1].split(' ')[0])+'\n';
     }else if(i===1&&features.length>0){
-      doc30+='      '+_mmSafe(features[0])+'\n';
-      if(features.length>1)doc30+='      '+_mmSafe(features[1])+'\n';
+      doc+='      '+_mmSafe(features[0])+'\n';
+      if(features.length>1)doc+='      '+_mmSafe(features[1])+'\n';
     }else if(i===2&&entities.length>0){
-      doc30+='      '+_mmSafe(entities[0])+(G?' 実装':' implementation')+'\n';
-      if(entities.length>1)doc30+='      '+_mmSafe(entities[1])+(G?' 実装':' implementation')+'\n';
+      doc+='      '+_mmSafe(entities[0])+(G?' 実装':' implementation')+'\n';
+      if(entities.length>1)doc+='      '+_mmSafe(entities[1])+(G?' 実装':' implementation')+'\n';
     }
   });
-  doc30+='```\n\n';
+  doc+='```\n\n';
 
   // ── Sub-Goal Decomposition (3-5 levels) ──
-  doc30+=(G?'## サブゴール分解（3-5階層）':'## Sub-Goal Decomposition (3-5 Levels)')+'\n\n';
-  doc30+='### '+(G?'レベル1: 戦略目標':'Level 1: Strategic Goals')+'\n';
+  doc+=(G?'## サブゴール分解（3-5階層）':'## Sub-Goal Decomposition (3-5 Levels)')+'\n\n';
+  doc+='### '+(G?'レベル1: 戦略目標':'Level 1: Strategic Goals')+'\n';
   flowSteps.slice(0,2).forEach((step,i)=>{
-    doc30+=(i+1)+'. **'+step+'**\n';
+    doc+=(i+1)+'. **'+step+'**\n';
   });
-  doc30+='\n### '+(G?'レベル2: 戦術目標':'Level 2: Tactical Goals')+'\n';
+  doc+='\n### '+(G?'レベル2: 戦術目標':'Level 2: Tactical Goals')+'\n';
   if(features.length>0){
     features.slice(0,4).forEach((f,i)=>{
-      doc30+=(i+1)+'. '+f+'\n';
+      doc+=(i+1)+'. '+f+'\n';
     });
   }else{
-    doc30+='1. '+(G?'MVP機能実装':'MVP feature implementation')+'\n';
-    doc30+='2. '+(G?'UI/UX最適化':'UI/UX optimization')+'\n';
+    doc+='1. '+(G?'MVP機能実装':'MVP feature implementation')+'\n';
+    doc+='2. '+(G?'UI/UX最適化':'UI/UX optimization')+'\n';
   }
-  doc30+='\n### '+(G?'レベル3: 実装タスク':'Level 3: Implementation Tasks')+'\n';
+  doc+='\n### '+(G?'レベル3: 実装タスク':'Level 3: Implementation Tasks')+'\n';
   if(entities.length>0){
     entities.slice(0,3).forEach((ent,i)=>{
-      doc30+=(i+1)+'. '+ent+(G?' CRUD実装':' CRUD implementation')+'\n';
+      doc+=(i+1)+'. '+ent+(G?' CRUD実装':' CRUD implementation')+'\n';
     });
   }else{
-    doc30+='1. '+(G?'データベース設計':'Database design')+'\n';
-    doc30+='2. '+(G?'API実装':'API implementation')+'\n';
+    doc+='1. '+(G?'データベース設計':'Database design')+'\n';
+    doc+='2. '+(G?'API実装':'API implementation')+'\n';
   }
-  doc30+='\n';
+  doc+='\n';
 
   // ── Gap Analysis Matrix ──
-  doc30+=(G?'## ギャップ分析マトリクス':'## Gap Analysis Matrix')+'\n\n';
-  doc30+='| '+(G?'サブゴール':'Sub-Goal')+' | '+(G?'現状':'Current State')+' | '+(G?'目標':'Target')+' | '+(G?'ギャップ':'Gap')+' | '+(G?'対策':'Action')+' |\n|------|------|------|------|------|\n';
+  doc+=(G?'## ギャップ分析マトリクス':'## Gap Analysis Matrix')+'\n\n';
+  doc+='| '+(G?'サブゴール':'Sub-Goal')+' | '+(G?'現状':'Current State')+' | '+(G?'目標':'Target')+' | '+(G?'ギャップ':'Gap')+' | '+(G?'対策':'Action')+' |\n|------|------|------|------|------|\n';
   flowSteps.slice(0,3).forEach((step,i)=>{
     const current=G?(i===0?'未定義':'未実装'):(i===0?'Undefined':'Not implemented');
     const target=G?(i===0?'KPI定義完了':'MVP実装完了'):(i===0?'KPI defined':'MVP implemented');
     const gap=G?(i===0?'測定可能な指標が不明':'機能未開発'):(i===0?'Measurable metrics unclear':'Features not developed');
     const action=G?(i===0?'24_progress.mdに記載':'開発開始'):(i===0?'Log in 24_progress.md':'Start development');
-    doc30+='| '+step+' | '+current+' | '+target+' | '+gap+' | '+action+' |\n';
+    doc+='| '+step+' | '+current+' | '+target+' | '+gap+' | '+action+' |\n';
   });
-  doc30+='\n';
+  doc+='\n';
 
   // ── Priority Matrix (Impact × Effort) ──
-  doc30+=(G?'## 優先度マトリクス（Impact × Effort）':'## Priority Matrix (Impact × Effort)')+'\n\n';
-  doc30+='```\n';
-  doc30+='          '+(G?'大':'High')+'      |\n';
-  doc30+='  Impact  '+(G?'中':'Med')+'  '+(G?'🟢P1':'🟢P1')+'  | '+(G?'🟡P2':'🟡P2')+'\n';
-  doc30+='          '+(G?'小':'Low')+'  '+(G?'🟡P2':'🟡P2')+'  | '+(G?'⚪P3':'⚪P3')+'\n';
-  doc30+='          ─────┼─────\n';
-  doc30+='          '+(G?'低':'Low')+'  '+(G?'高':'High')+'\n';
-  doc30+='             Effort\n';
-  doc30+='```\n\n';
-  doc30+='**'+(G?'優先順位':'Priority')+'**:\n';
-  doc30+='- '+(G?'🟢 P1 (高Impact・低Effort): ':'🟢 P1 (High Impact, Low Effort): ')+(flowSteps[0]||'Core feature')+'\n';
-  doc30+='- '+(G?'🟡 P2 (高Impact・高Effort または 中Impact): ':'🟡 P2 (High Impact & Effort or Med Impact): ')+(flowSteps[1]||'Secondary features')+'\n';
-  doc30+='- '+(G?'⚪ P3 (低Impact): ':'⚪ P3 (Low Impact): ')+(G?'Nice-to-have機能':'Nice-to-have features')+'\n\n';
+  doc+=(G?'## 優先度マトリクス（Impact × Effort）':'## Priority Matrix (Impact × Effort)')+'\n\n';
+  doc+='```\n';
+  doc+='          '+(G?'大':'High')+'      |\n';
+  doc+='  Impact  '+(G?'中':'Med')+'  '+(G?'🟢P1':'🟢P1')+'  | '+(G?'🟡P2':'🟡P2')+'\n';
+  doc+='          '+(G?'小':'Low')+'  '+(G?'🟡P2':'🟡P2')+'  | '+(G?'⚪P3':'⚪P3')+'\n';
+  doc+='          ─────┼─────\n';
+  doc+='          '+(G?'低':'Low')+'  '+(G?'高':'High')+'\n';
+  doc+='             Effort\n';
+  doc+='```\n\n';
+  doc+='**'+(G?'優先順位':'Priority')+'**:\n';
+  doc+='- '+(G?'🟢 P1 (高Impact・低Effort): ':'🟢 P1 (High Impact, Low Effort): ')+(flowSteps[0]||'Core feature')+'\n';
+  doc+='- '+(G?'🟡 P2 (高Impact・高Effort または 中Impact): ':'🟡 P2 (High Impact & Effort or Med Impact): ')+(flowSteps[1]||'Secondary features')+'\n';
+  doc+='- '+(G?'⚪ P3 (低Impact): ':'⚪ P3 (Low Impact): ')+(G?'Nice-to-have機能':'Nice-to-have features')+'\n\n';
 
   // ── Dependency Chain (Mermaid flowchart) ── Stack-aware based on resolveArch
   const arch=resolveArch(a);
-  doc30+=(G?'## 依存関係チェーン':'## Dependency Chain')+'\n\n```mermaid\nflowchart TD\n';
+  doc+=(G?'## 依存関係チェーン':'## Dependency Chain')+'\n\n```mermaid\nflowchart TD\n';
   const node1=G?'A[KPI定義]':'A[Define KPIs]';
   const node2=G?'B[機能設計]':'B[Design Features]';
   let node3,node4,node5,node6,node7;
@@ -457,348 +452,366 @@ function genPillar10_ReverseEngineering(a,pn){
     node6=G?'F[テスト]':'F[Testing]';
     node7=G?'G[デプロイ]':'G[Deploy]';
   }
-  doc30+='  '+node1+' --> '+node2+'\n';
-  doc30+='  '+node2+' --> '+node3+'\n';
-  doc30+='  '+node3+' --> '+node4+'\n';
-  doc30+='  '+node4+' --> '+node5+'\n';
-  doc30+='  '+node5+' --> '+node6+'\n';
-  doc30+='  '+node6+' --> '+node7+'\n';
-  doc30+='  style A fill:#4ade80\n';
-  doc30+='  style B fill:#4ade80\n';
-  doc30+='  style C fill:#fbbf24\n';
-  doc30+='  style D fill:#fbbf24\n';
-  doc30+='  style E fill:#fbbf24\n';
-  doc30+='  style F fill:#f87171\n';
-  doc30+='  style G fill:#f87171\n';
-  doc30+='```\n\n';
-  doc30+=G?'**凡例**: 🟢 完了 | 🟡 進行中 | 🔴 未着手\n\n':'**Legend**: 🟢 Complete | 🟡 In Progress | 🔴 Not Started\n\n';
+  doc+='  '+node1+' --> '+node2+'\n';
+  doc+='  '+node2+' --> '+node3+'\n';
+  doc+='  '+node3+' --> '+node4+'\n';
+  doc+='  '+node4+' --> '+node5+'\n';
+  doc+='  '+node5+' --> '+node6+'\n';
+  doc+='  '+node6+' --> '+node7+'\n';
+  doc+='  style A fill:#4ade80\n';
+  doc+='  style B fill:#4ade80\n';
+  doc+='  style C fill:#fbbf24\n';
+  doc+='  style D fill:#fbbf24\n';
+  doc+='  style E fill:#fbbf24\n';
+  doc+='  style F fill:#f87171\n';
+  doc+='  style G fill:#f87171\n';
+  doc+='```\n\n';
+  doc+=G?'**凡例**: 🟢 完了 | 🟡 進行中 | 🔴 未着手\n\n':'**Legend**: 🟢 Complete | 🟡 In Progress | 🔴 Not Started\n\n';
 
   // ── Implementation Checklist ──
-  doc30+=(G?'## 実装チェックリスト':'## Implementation Checklist')+'\n\n';
+  doc+=(G?'## 実装チェックリスト':'## Implementation Checklist')+'\n\n';
   flowSteps.forEach((step,i)=>{
-    doc30+='- [ ] **'+step+'**\n';
+    doc+='- [ ] **'+step+'**\n';
     if(i===0){
-      doc30+='  - [ ] '+(G?'KPI指標を24_progress.mdに記載':'Log KPI metrics in 24_progress.md')+'\n';
-      doc30+='  - [ ] '+(G?'測定方法確定（Analytics等）':'Define measurement method (Analytics, etc.)')+'\n';
+      doc+='  - [ ] '+(G?'KPI指標を24_progress.mdに記載':'Log KPI metrics in 24_progress.md')+'\n';
+      doc+='  - [ ] '+(G?'測定方法確定（Analytics等）':'Define measurement method (Analytics, etc.)')+'\n';
     }else if(i===1){
-      doc30+='  - [ ] '+(G?'機能要件定義':'Define feature requirements')+'\n';
-      doc30+='  - [ ] '+(G?'優先度決定':'Determine priority')+'\n';
+      doc+='  - [ ] '+(G?'機能要件定義':'Define feature requirements')+'\n';
+      doc+='  - [ ] '+(G?'優先度決定':'Determine priority')+'\n';
     }else if(i===2){
-      doc30+='  - [ ] '+(G?'DB/API実装':'Implement DB/API')+'\n';
-      doc30+='  - [ ] '+(G?'テストケース作成':'Create test cases')+'\n';
+      doc+='  - [ ] '+(G?'DB/API実装':'Implement DB/API')+'\n';
+      doc+='  - [ ] '+(G?'テストケース作成':'Create test cases')+'\n';
     }else{
-      doc30+='  - [ ] '+(G?'自動化スクリプト作成':'Create automation scripts')+'\n';
-      doc30+='  - [ ] '+(G?'継続的改善ループ構築':'Build continuous improvement loop')+'\n';
+      doc+='  - [ ] '+(G?'自動化スクリプト作成':'Create automation scripts')+'\n';
+      doc+='  - [ ] '+(G?'継続的改善ループ構築':'Build continuous improvement loop')+'\n';
     }
   });
-  doc30+='\n';
+  doc+='\n';
 
   // ═══ C3: Goal Tracking Schema (~4KB) ═══
-  doc30+=(G?'## Goal Tracking スキーマ':'## Goal Tracking Schema')+'\n\n';
-  doc30+=G?'**重要**: 目標達成の進捗を追跡するための5テーブル構成。データベースに実装することで、KPIの可視化と継続的改善が可能になります。\n\n':'**IMPORTANT**: 5-table schema for tracking goal progress. Implement in database to enable KPI visualization and continuous improvement.\n\n';
+  doc+=(G?'## Goal Tracking スキーマ':'## Goal Tracking Schema')+'\n\n';
+  doc+=G?'**重要**: 目標達成の進捗を追跡するための5テーブル構成。データベースに実装することで、KPIの可視化と継続的改善が可能になります。\n\n':'**IMPORTANT**: 5-table schema for tracking goal progress. Implement in database to enable KPI visualization and continuous improvement.\n\n';
 
-  doc30+='### 1. UserGoal\n';
-  doc30+=(G?'**目的**: ユーザー別・プロジェクト別の目標管理':'**Purpose**: Goal management per user/project')+'\n\n';
-  doc30+='```sql\n';
-  doc30+='CREATE TABLE user_goals (\n';
-  doc30+='  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),\n';
-  doc30+='  user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,\n';
-  doc30+='  project_id UUID REFERENCES projects(id) ON DELETE CASCADE,\n';
-  doc30+='  goal_type VARCHAR(50) NOT NULL, -- '+(G?'\'revenue\', \'cvr\', \'mrr\', \'churn\', \'engagement\' 等':'\'revenue\', \'cvr\', \'mrr\', \'churn\', \'engagement\', etc.')+'\n';
-  doc30+='  target_value DECIMAL(10,2) NOT NULL, -- '+(G?'目標値':'Target value')+'\n';
-  doc30+='  current_value DECIMAL(10,2) DEFAULT 0, -- '+(G?'現在値':'Current value')+'\n';
-  doc30+='  deadline DATE,\n';
-  doc30+='  status VARCHAR(20) DEFAULT \'active\', -- \'active\', \'completed\', \'failed\'\n';
-  doc30+='  created_at TIMESTAMP DEFAULT NOW(),\n';
-  doc30+='  updated_at TIMESTAMP DEFAULT NOW()\n';
-  doc30+=');\n```\n\n';
+  doc+='### 1. UserGoal\n';
+  doc+=(G?'**目的**: ユーザー別・プロジェクト別の目標管理':'**Purpose**: Goal management per user/project')+'\n\n';
+  doc+='```sql\n';
+  doc+='CREATE TABLE user_goals (\n';
+  doc+='  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),\n';
+  doc+='  user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,\n';
+  doc+='  project_id UUID REFERENCES projects(id) ON DELETE CASCADE,\n';
+  doc+='  goal_type VARCHAR(50) NOT NULL, -- '+(G?'\'revenue\', \'cvr\', \'mrr\', \'churn\', \'engagement\' 等':'\'revenue\', \'cvr\', \'mrr\', \'churn\', \'engagement\', etc.')+'\n';
+  doc+='  target_value DECIMAL(10,2) NOT NULL, -- '+(G?'目標値':'Target value')+'\n';
+  doc+='  current_value DECIMAL(10,2) DEFAULT 0, -- '+(G?'現在値':'Current value')+'\n';
+  doc+='  deadline DATE,\n';
+  doc+='  status VARCHAR(20) DEFAULT \'active\', -- \'active\', \'completed\', \'failed\'\n';
+  doc+='  created_at TIMESTAMP DEFAULT NOW(),\n';
+  doc+='  updated_at TIMESTAMP DEFAULT NOW()\n';
+  doc+=');\n```\n\n';
 
-  doc30+='### 2. ReversePlan\n';
-  doc30+=(G?'**目的**: 目標達成のためのリバースプランニング':'**Purpose**: Reverse planning for goal achievement')+'\n\n';
-  doc30+='```sql\n';
-  doc30+='CREATE TABLE reverse_plans (\n';
-  doc30+='  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),\n';
-  doc30+='  goal_id UUID NOT NULL REFERENCES user_goals(id) ON DELETE CASCADE,\n';
-  doc30+='  title VARCHAR(255) NOT NULL,\n';
-  doc30+='  description TEXT,\n';
-  doc30+='  total_steps INT DEFAULT 4, -- '+(G?'標準4ステップ':'Standard 4 steps')+'\n';
-  doc30+='  completed_steps INT DEFAULT 0,\n';
-  doc30+='  status VARCHAR(20) DEFAULT \'draft\', -- \'draft\', \'active\', \'completed\'\n';
-  doc30+='  created_at TIMESTAMP DEFAULT NOW(),\n';
-  doc30+='  updated_at TIMESTAMP DEFAULT NOW()\n';
-  doc30+=');\n```\n\n';
+  doc+='### 2. ReversePlan\n';
+  doc+=(G?'**目的**: 目標達成のためのリバースプランニング':'**Purpose**: Reverse planning for goal achievement')+'\n\n';
+  doc+='```sql\n';
+  doc+='CREATE TABLE reverse_plans (\n';
+  doc+='  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),\n';
+  doc+='  goal_id UUID NOT NULL REFERENCES user_goals(id) ON DELETE CASCADE,\n';
+  doc+='  title VARCHAR(255) NOT NULL,\n';
+  doc+='  description TEXT,\n';
+  doc+='  total_steps INT DEFAULT 4, -- '+(G?'標準4ステップ':'Standard 4 steps')+'\n';
+  doc+='  completed_steps INT DEFAULT 0,\n';
+  doc+='  status VARCHAR(20) DEFAULT \'draft\', -- \'draft\', \'active\', \'completed\'\n';
+  doc+='  created_at TIMESTAMP DEFAULT NOW(),\n';
+  doc+='  updated_at TIMESTAMP DEFAULT NOW()\n';
+  doc+=');\n```\n\n';
 
-  doc30+='### 3. PlanStep\n';
-  doc30+=(G?'**目的**: プランの各ステップ詳細':'**Purpose**: Details of each plan step')+'\n\n';
-  doc30+='```sql\n';
-  doc30+='CREATE TABLE plan_steps (\n';
-  doc30+='  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),\n';
-  doc30+='  plan_id UUID NOT NULL REFERENCES reverse_plans(id) ON DELETE CASCADE,\n';
-  doc30+='  step_order INT NOT NULL, -- 1, 2, 3, 4\n';
-  doc30+='  title VARCHAR(255) NOT NULL,\n';
-  doc30+='  description TEXT,\n';
-  doc30+='  status VARCHAR(20) DEFAULT \'pending\', -- \'pending\', \'in_progress\', \'completed\'\n';
-  doc30+='  started_at TIMESTAMP,\n';
-  doc30+='  completed_at TIMESTAMP,\n';
-  doc30+='  created_at TIMESTAMP DEFAULT NOW(),\n';
-  doc30+='  updated_at TIMESTAMP DEFAULT NOW(),\n';
-  doc30+='  UNIQUE(plan_id, step_order)\n';
-  doc30+=');\n```\n\n';
+  doc+='### 3. PlanStep\n';
+  doc+=(G?'**目的**: プランの各ステップ詳細':'**Purpose**: Details of each plan step')+'\n\n';
+  doc+='```sql\n';
+  doc+='CREATE TABLE plan_steps (\n';
+  doc+='  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),\n';
+  doc+='  plan_id UUID NOT NULL REFERENCES reverse_plans(id) ON DELETE CASCADE,\n';
+  doc+='  step_order INT NOT NULL, -- 1, 2, 3, 4\n';
+  doc+='  title VARCHAR(255) NOT NULL,\n';
+  doc+='  description TEXT,\n';
+  doc+='  status VARCHAR(20) DEFAULT \'pending\', -- \'pending\', \'in_progress\', \'completed\'\n';
+  doc+='  started_at TIMESTAMP,\n';
+  doc+='  completed_at TIMESTAMP,\n';
+  doc+='  created_at TIMESTAMP DEFAULT NOW(),\n';
+  doc+='  updated_at TIMESTAMP DEFAULT NOW(),\n';
+  doc+='  UNIQUE(plan_id, step_order)\n';
+  doc+=');\n```\n\n';
 
-  doc30+='### 4. ProgressTracking\n';
-  doc30+=(G?'**目的**: KPI進捗の時系列データ':'**Purpose**: Time-series KPI progress data')+'\n\n';
-  doc30+='```sql\n';
-  doc30+='CREATE TABLE progress_tracking (\n';
-  doc30+='  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),\n';
-  doc30+='  goal_id UUID NOT NULL REFERENCES user_goals(id) ON DELETE CASCADE,\n';
-  doc30+='  measured_value DECIMAL(10,2) NOT NULL,\n';
-  doc30+='  measured_at TIMESTAMP DEFAULT NOW(),\n';
-  doc30+='  notes TEXT,\n';
-  doc30+='  created_at TIMESTAMP DEFAULT NOW()\n';
-  doc30+=');\n\n';
-  doc30+='CREATE INDEX idx_progress_goal_time ON progress_tracking(goal_id, measured_at DESC);\n';
-  doc30+='```\n\n';
+  doc+='### 4. ProgressTracking\n';
+  doc+=(G?'**目的**: KPI進捗の時系列データ':'**Purpose**: Time-series KPI progress data')+'\n\n';
+  doc+='```sql\n';
+  doc+='CREATE TABLE progress_tracking (\n';
+  doc+='  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),\n';
+  doc+='  goal_id UUID NOT NULL REFERENCES user_goals(id) ON DELETE CASCADE,\n';
+  doc+='  measured_value DECIMAL(10,2) NOT NULL,\n';
+  doc+='  measured_at TIMESTAMP DEFAULT NOW(),\n';
+  doc+='  notes TEXT,\n';
+  doc+='  created_at TIMESTAMP DEFAULT NOW()\n';
+  doc+=');\n\n';
+  doc+='CREATE INDEX idx_progress_goal_time ON progress_tracking(goal_id, measured_at DESC);\n';
+  doc+='```\n\n';
 
-  doc30+='### 5. PlanAdjustment\n';
-  doc30+=(G?'**目的**: プラン修正履歴（継続的改善）':'**Purpose**: Plan adjustment history (continuous improvement)')+'\n\n';
-  doc30+='```sql\n';
-  doc30+='CREATE TABLE plan_adjustments (\n';
-  doc30+='  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),\n';
-  doc30+='  plan_id UUID NOT NULL REFERENCES reverse_plans(id) ON DELETE CASCADE,\n';
-  doc30+='  reason TEXT NOT NULL, -- '+(G?'調整理由':'Reason for adjustment')+'\n';
-  doc30+='  before_value TEXT, -- JSON: '+(G?'調整前の値':'Before values')+'\n';
-  doc30+='  after_value TEXT, -- JSON: '+(G?'調整後の値':'After values')+'\n';
-  doc30+='  adjusted_by UUID REFERENCES users(id),\n';
-  doc30+='  adjusted_at TIMESTAMP DEFAULT NOW()\n';
-  doc30+=');\n```\n\n';
+  doc+='### 5. PlanAdjustment\n';
+  doc+=(G?'**目的**: プラン修正履歴（継続的改善）':'**Purpose**: Plan adjustment history (continuous improvement)')+'\n\n';
+  doc+='```sql\n';
+  doc+='CREATE TABLE plan_adjustments (\n';
+  doc+='  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),\n';
+  doc+='  plan_id UUID NOT NULL REFERENCES reverse_plans(id) ON DELETE CASCADE,\n';
+  doc+='  reason TEXT NOT NULL, -- '+(G?'調整理由':'Reason for adjustment')+'\n';
+  doc+='  before_value TEXT, -- JSON: '+(G?'調整前の値':'Before values')+'\n';
+  doc+='  after_value TEXT, -- JSON: '+(G?'調整後の値':'After values')+'\n';
+  doc+='  adjusted_by UUID REFERENCES users(id),\n';
+  doc+='  adjusted_at TIMESTAMP DEFAULT NOW()\n';
+  doc+=');\n```\n\n';
 
-  doc30+=(G?'## スキーマ使用例':'## Schema Usage Example')+'\n\n';
-  doc30+='```javascript\n';
-  doc30+='// 1. '+(G?'目標作成':'Create goal')+'\n';
-  doc30+='const goal = await supabase.from(\'user_goals\').insert({\n';
-  doc30+='  user_id: userId,\n';
-  doc30+='  goal_type: \'mrr\',\n';
-  doc30+='  target_value: 100000, // '+(G?'目標MRR: 10万円/月':'Target MRR: $1000/mo')+'\n';
-  doc30+='  deadline: \'2026-06-30\',\n';
-  doc30+='}).select().single();\n\n';
-  doc30+='// 2. '+(G?'リバースプラン作成':'Create reverse plan')+'\n';
-  doc30+='const plan = await supabase.from(\'reverse_plans\').insert({\n';
-  doc30+='  goal_id: goal.id,\n';
-  doc30+='  title: \'MRR '+flowSteps[0]+'\',\n';
-  doc30+='  total_steps: 4\n';
-  doc30+='}).select().single();\n\n';
-  doc30+='// 3. '+(G?'進捗記録':'Record progress')+'\n';
-  doc30+='await supabase.from(\'progress_tracking\').insert({\n';
-  doc30+='  goal_id: goal.id,\n';
-  doc30+='  measured_value: 45000, // '+(G?'現在のMRR':'Current MRR')+'\n';
-  doc30+='  notes: \'Month 2 progress\'\n';
-  doc30+='});\n\n';
-  doc30+='// 4. '+(G?'目標達成率計算':'Calculate achievement rate')+'\n';
-  doc30+='const achievementRate = (goal.current_value / goal.target_value) * 100;\n';
-  doc30+='```\n\n';
+  doc+=(G?'## スキーマ使用例':'## Schema Usage Example')+'\n\n';
+  doc+='```javascript\n';
+  doc+='// 1. '+(G?'目標作成':'Create goal')+'\n';
+  doc+='const goal = await supabase.from(\'user_goals\').insert({\n';
+  doc+='  user_id: userId,\n';
+  doc+='  goal_type: \'mrr\',\n';
+  doc+='  target_value: 100000, // '+(G?'目標MRR: 10万円/月':'Target MRR: $1000/mo')+'\n';
+  doc+='  deadline: \'2026-06-30\',\n';
+  doc+='}).select().single();\n\n';
+  doc+='// 2. '+(G?'リバースプラン作成':'Create reverse plan')+'\n';
+  doc+='const plan = await supabase.from(\'reverse_plans\').insert({\n';
+  doc+='  goal_id: goal.id,\n';
+  doc+='  title: \'MRR '+flowSteps[0]+'\',\n';
+  doc+='  total_steps: 4\n';
+  doc+='}).select().single();\n\n';
+  doc+='// 3. '+(G?'進捗記録':'Record progress')+'\n';
+  doc+='await supabase.from(\'progress_tracking\').insert({\n';
+  doc+='  goal_id: goal.id,\n';
+  doc+='  measured_value: 45000, // '+(G?'現在のMRR':'Current MRR')+'\n';
+  doc+='  notes: \'Month 2 progress\'\n';
+  doc+='}); \n\n';
+  doc+='// 4. '+(G?'目標達成率計算':'Calculate achievement rate')+'\n';
+  doc+='const achievementRate = (goal.current_value / goal.target_value) * 100;\n';
+  doc+='```\n\n';
 
-  S.files['docs/30_goal_decomposition.md']=doc30;
+  return doc;
+}
 
-  // ═══ C1: Business Model & Monetization (~8KB, conditional) ═══
-  const hasPay=a.payment&&!isNone(a.payment);
-  if(hasPay){
-    const domain=detectDomain(a.purpose)||'_default';
-    let doc38='# '+pn+' — '+(G?'ビジネスモデル・収益化戦略':'Business Model & Monetization Strategy')+'\n\n';
-    doc38+=G?'**重要**: このドキュメントはビジネス視点からの収益モデル・価格戦略・コンバージョンファネルを定義します。エンジニアリングとビジネス戦略を接続する重要なドキュメントです。\n\n':'**IMPORTANT**: This document defines revenue model, pricing strategy, and conversion funnel from business perspective. Critical bridge between engineering and business strategy.\n\n';
+function _genDoc38(G, domain, rf, a, pn) {
 
-    // Revenue Model Analysis
-    doc38+=(G?'## 収益モデル分析':'## Revenue Model Analysis')+'\n\n';
+  let doc='# '+pn+' — '+(G?'ビジネスモデル・収益化戦略':'Business Model & Monetization Strategy')+'\n\n';
+  doc+=G?'**重要**: このドキュメントはビジネス視点からの収益モデル・価格戦略・コンバージョンファネルを定義します。エンジニアリングとビジネス戦略を接続する重要なドキュメントです。\n\n':'**IMPORTANT**: This document defines revenue model, pricing strategy, and conversion funnel from business perspective. Critical bridge between engineering and business strategy.\n\n';
 
-    const revenueModels={
-      saas:{model:G?'サブスクリプション':'Subscription',tiers:G?'Free / Pro (¥980/月) / Enterprise (¥9,800/月)':'Free / Pro ($10/mo) / Enterprise ($100/mo)',primary:G?'月次定期課金':'Monthly recurring revenue'},
-      ec:{model:G?'手数料 + 決済手数料':'Commission + Payment fees',tiers:G?'出品者手数料5% + 決済手数料3.6%':'Seller fee 5% + Payment fee 3.6%',primary:G?'取引総額(GMV)の一定割合':'% of GMV'},
-      marketplace:{model:G?'取引手数料':'Transaction fees',tiers:G?'出品者5% + 購入者3% or 一律8%':'Seller 5% + Buyer 3% or Flat 8%',primary:G?'成約時手数料':'Commission on completion'},
-      education:{model:G?'フリーミアム':'Freemium',tiers:G?'無料コンテンツ → プレミアムコース購入':'Free content → Premium course purchase',primary:G?'コース販売 + サブスク':'Course sales + Subscription'},
-      fintech:{model:G?'取引手数料 + サブスク':'Transaction fees + Subscription',tiers:G?'無料取引(上限あり) / Pro (¥980/月 無制限)':'Free trades (limited) / Pro ($10/mo unlimited)',primary:G?'取引量 + 有料会員':'Transaction volume + Paid members'},
-      booking:{model:G?'予約手数料':'Booking fees',tiers:G?'予約1件あたり10% or 月額サブスク':'10% per booking or Monthly subscription',primary:G?'予約成立時の手数料':'Commission on booking'},
-      content:{model:G?'広告 + サブスク':'Ads + Subscription',tiers:G?'無料(広告表示) / プレミアム(¥480/月 広告なし)':'Free (with ads) / Premium ($5/mo ad-free)',primary:G?'広告収益 + 有料会員':'Ad revenue + Paid members'},
-      community:{model:G?'フリーミアム':'Freemium',tiers:G?'基本無料 / プレミアム機能(¥500/月)':'Free basic / Premium features ($5/mo)',primary:G?'有料会員 + 広告':'Paid members + Ads'}
-    };
-    const revModel=revenueModels[domain]||{model:G?'サブスクリプション':'Subscription',tiers:G?'Free / Pro / Enterprise':'Free / Pro / Enterprise',primary:G?'月次定期課金':'Monthly recurring revenue'};
+  // Revenue Model Analysis
+  doc+=(G?'## 収益モデル分析':'## Revenue Model Analysis')+'\n\n';
 
-    doc38+='**'+(G?'推奨モデル':'Recommended Model')+'** ('+domain+'): '+revModel.model+'\n\n';
-    doc38+='**'+(G?'料金体系':'Pricing Tiers')+'**:\n'+revModel.tiers+'\n\n';
-    doc38+='**'+(G?'主要収益源':'Primary Revenue')+'**: '+revModel.primary+'\n\n';
+  const revenueModels={
+    saas:{model:G?'サブスクリプション':'Subscription',tiers:G?'Free / Pro (¥980/月) / Enterprise (¥9,800/月)':'Free / Pro ($10/mo) / Enterprise ($100/mo)',primary:G?'月次定期課金':'Monthly recurring revenue'},
+    ec:{model:G?'手数料 + 決済手数料':'Commission + Payment fees',tiers:G?'出品者手数料5% + 決済手数料3.6%':'Seller fee 5% + Payment fee 3.6%',primary:G?'取引総額(GMV)の一定割合':'% of GMV'},
+    marketplace:{model:G?'取引手数料':'Transaction fees',tiers:G?'出品者5% + 購入者3% or 一律8%':'Seller 5% + Buyer 3% or Flat 8%',primary:G?'成約時手数料':'Commission on completion'},
+    education:{model:G?'フリーミアム':'Freemium',tiers:G?'無料コンテンツ → プレミアムコース購入':'Free content → Premium course purchase',primary:G?'コース販売 + サブスク':'Course sales + Subscription'},
+    fintech:{model:G?'取引手数料 + サブスク':'Transaction fees + Subscription',tiers:G?'無料取引(上限あり) / Pro (¥980/月 無制限)':'Free trades (limited) / Pro ($10/mo unlimited)',primary:G?'取引量 + 有料会員':'Transaction volume + Paid members'},
+    booking:{model:G?'予約手数料':'Booking fees',tiers:G?'予約1件あたり10% or 月額サブスク':'10% per booking or Monthly subscription',primary:G?'予約成立時の手数料':'Commission on booking'},
+    content:{model:G?'広告 + サブスク':'Ads + Subscription',tiers:G?'無料(広告表示) / プレミアム(¥480/月 広告なし)':'Free (with ads) / Premium ($5/mo ad-free)',primary:G?'広告収益 + 有料会員':'Ad revenue + Paid members'},
+    community:{model:G?'フリーミアム':'Freemium',tiers:G?'基本無料 / プレミアム機能(¥500/月)':'Free basic / Premium features ($5/mo)',primary:G?'有料会員 + 広告':'Paid members + Ads'}
+  };
+  const revModel=revenueModels[domain]||{model:G?'サブスクリプション':'Subscription',tiers:G?'Free / Pro / Enterprise':'Free / Pro / Enterprise',primary:G?'月次定期課金':'Monthly recurring revenue'};
 
-    // Pricing Strategy
-    doc38+=(G?'## 価格戦略':'## Pricing Strategy')+'\n\n';
-    doc38+='### Tier'+(G?'設計':'Design')+'\n\n';
-    doc38+='| Tier | '+(G?'価格':'Price')+' | '+(G?'主要機能':'Key Features')+' | '+(G?'ターゲット':'Target')+' |\n';
-    doc38+='|------|------|------|------|\n';
-    doc38+='| Free | ¥0 | '+(G?'基本機能・制限あり':'Basic features, limited')+' | '+(G?'個人・お試し':'Personal, trial')+' |\n';
-    doc38+='| Pro | ¥980/'+( G?'月':'mo')+' | '+(G?'全機能・制限緩和':'All features, relaxed limits')+' | '+(G?'小規模チーム':'Small teams')+' |\n';
-    doc38+='| Enterprise | ¥9,800/'+( G?'月':'mo')+' | '+(G?'無制限・専用サポート':'Unlimited, dedicated support')+' | '+(G?'大企業':'Enterprise')+' |\n\n';
+  doc+='**'+(G?'推奨モデル':'Recommended Model')+'** ('+domain+'): '+revModel.model+'\n\n';
+  doc+='**'+(G?'料金体系':'Pricing Tiers')+'**:\n'+revModel.tiers+'\n\n';
+  doc+='**'+(G?'主要収益源':'Primary Revenue')+'**: '+revModel.primary+'\n\n';
 
-    // Conversion Funnel (Mermaid)
-    doc38+=(G?'## コンバージョンファネル':'## Conversion Funnel')+'\n\n';
-    doc38+='```mermaid\ngraph TD\n';
-    doc38+='  A["'+(G?'訪問':'Visit')+' 🌐"] -->|30%| B["'+(G?'サインアップ':'Signup')+' ✍️"]\n';
-    doc38+='  B -->|60%| C["'+(G?'アクティベーション':'Activate')+' ⚡"]\n';
-    doc38+='  C -->|20%| D["'+(G?'有料転換':'Convert')+' 💳"]\n';
-    doc38+='  D -->|70%| E["'+(G?'継続利用':'Retain')+' 🔁"]\n\n';
-    doc38+='  style A fill:#e1f5ff\n';
-    doc38+='  style B fill:#fff4e6\n';
-    doc38+='  style C fill:#e8f5e9\n';
-    doc38+='  style D fill:#f3e5f5\n';
-    doc38+='  style E fill:#fce4ec\n';
-    doc38+='```\n\n';
+  // Pricing Strategy
+  doc+=(G?'## 価格戦略':'## Pricing Strategy')+'\n\n';
+  doc+='### Tier'+(G?'設計':'Design')+'\n\n';
+  doc+='| Tier | '+(G?'価格':'Price')+' | '+(G?'主要機能':'Key Features')+' | '+(G?'ターゲット':'Target')+' |\n';
+  doc+='|------|------|------|------|\n';
+  doc+='| Free | ¥0 | '+(G?'基本機能・制限あり':'Basic features, limited')+' | '+(G?'個人・お試し':'Personal, trial')+' |\n';
+  doc+='| Pro | ¥980/'+( G?'月':'mo')+' | '+(G?'全機能・制限緩和':'All features, relaxed limits')+' | '+(G?'小規模チーム':'Small teams')+' |\n';
+  doc+='| Enterprise | ¥9,800/'+( G?'月':'mo')+' | '+(G?'無制限・専用サポート':'Unlimited, dedicated support')+' | '+(G?'大企業':'Enterprise')+' |\n\n';
 
-    // KPI per stage
-    doc38+='### '+(G?'ステージ別KPI':'KPIs per Stage')+'\n\n';
-    doc38+='| '+(G?'ステージ':'Stage')+' | KPI | '+(G?'目標':'Target')+' | '+(G?'改善施策':'Improvement Actions')+' |\n';
-    doc38+='|------|------|------|------|\n';
-    doc38+='| '+(G?'訪問→サインアップ':'Visit→Signup')+' | '+( G?'サインアップ率':'Signup rate')+' | ≥30% | '+(G?'LP最適化・信頼性向上':'Optimize LP, build trust')+' |\n';
-    doc38+='| '+(G?'サインアップ→アクティベーション':'Signup→Activation')+' | '+(G?'アクティベーション率':'Activation rate')+' | ≥60% | '+(G?'オンボーディング改善':'Improve onboarding')+' |\n';
-    doc38+='| '+(G?'アクティベーション→有料転換':'Activation→Conversion')+' | '+(G?'有料転換率':'Conversion rate')+' | ≥20% | '+(G?'価値提示・限定オファー':'Show value, limited offer')+' |\n';
-    doc38+='| '+(G?'有料転換→継続':'Conversion→Retention')+' | '+(G?'継続率':'Retention rate')+' | ≥70% | '+(G?'定期エンゲージメント':'Regular engagement')+' |\n\n';
+  // Conversion Funnel (Mermaid)
+  doc+=(G?'## コンバージョンファネル':'## Conversion Funnel')+'\n\n';
+  doc+='```mermaid\ngraph TD\n';
+  doc+='  A["'+(G?'訪問':'Visit')+' 🌐"] -->|30%| B["'+(G?'サインアップ':'Signup')+' ✍️"]\n';
+  doc+='  B -->|60%| C["'+(G?'アクティベーション':'Activate')+' ⚡"]\n';
+  doc+='  C -->|20%| D["'+(G?'有料転換':'Convert')+' 💳"]\n';
+  doc+='  D -->|70%| E["'+(G?'継続利用':'Retain')+' 🔁"]\n\n';
+  doc+='  style A fill:#e1f5ff\n';
+  doc+='  style B fill:#fff4e6\n';
+  doc+='  style C fill:#e8f5e9\n';
+  doc+='  style D fill:#f3e5f5\n';
+  doc+='  style E fill:#fce4ec\n';
+  doc+='```\n\n';
 
-    // Unit Economics
-    doc38+=(G?'## ユニットエコノミクス':'## Unit Economics')+'\n\n';
-    doc38+='### '+(G?'概算テンプレート':'Estimation Template')+'\n\n';
-    doc38+='**CAC** ('+(G?'顧客獲得コスト':'Customer Acquisition Cost')+')\n';
-    doc38+='- '+(G?'広告費':'Ad spend')+': ¥100,000/'+( G?'月':'mo')+'\n';
-    doc38+='- '+(G?'新規顧客':'New customers')+': 100/'+( G?'月':'mo')+'\n';
-    doc38+='- **CAC = ¥1,000/'+( G?'顧客':'customer')+'**\n\n';
+  // KPI per stage
+  doc+='### '+(G?'ステージ別KPI':'KPIs per Stage')+'\n\n';
+  doc+='| '+(G?'ステージ':'Stage')+' | KPI | '+(G?'目標':'Target')+' | '+(G?'改善施策':'Improvement Actions')+' |\n';
+  doc+='|------|------|------|------|\n';
+  doc+='| '+(G?'訪問→サインアップ':'Visit→Signup')+' | '+( G?'サインアップ率':'Signup rate')+' | ≥30% | '+(G?'LP最適化・信頼性向上':'Optimize LP, build trust')+' |\n';
+  doc+='| '+(G?'サインアップ→アクティベーション':'Signup→Activation')+' | '+(G?'アクティベーション率':'Activation rate')+' | ≥60% | '+(G?'オンボーディング改善':'Improve onboarding')+' |\n';
+  doc+='| '+(G?'アクティベーション→有料転換':'Activation→Conversion')+' | '+(G?'有料転換率':'Conversion rate')+' | ≥20% | '+(G?'価値提示・限定オファー':'Show value, limited offer')+' |\n';
+  doc+='| '+(G?'有料転換→継続':'Conversion→Retention')+' | '+(G?'継続率':'Retention rate')+' | ≥70% | '+(G?'定期エンゲージメント':'Regular engagement')+' |\n\n';
 
-    doc38+='**LTV** ('+(G?'顧客生涯価値':'Lifetime Value')+')\n';
-    doc38+='- ARPU ('+(G?'ユーザー単価':'Avg Revenue per User')+'): ¥980/'+( G?'月':'mo')+'\n';
-    doc38+='- '+(G?'平均利用期間':'Avg lifetime')+': 12'+( G?'ヶ月':'months')+'\n';
-    doc38+='- **LTV = ¥11,760**\n\n';
+  // Unit Economics
+  doc+=(G?'## ユニットエコノミクス':'## Unit Economics')+'\n\n';
+  doc+='### '+(G?'概算テンプレート':'Estimation Template')+'\n\n';
+  doc+='**CAC** ('+(G?'顧客獲得コスト':'Customer Acquisition Cost')+')\n';
+  doc+='- '+(G?'広告費':'Ad spend')+': ¥100,000/'+( G?'月':'mo')+'\n';
+  doc+='- '+(G?'新規顧客':'New customers')+': 100/'+( G?'月':'mo')+'\n';
+  doc+='- **CAC = ¥1,000/'+( G?'顧客':'customer')+'**\n\n';
 
-    doc38+='**LTV/CAC '+(G?'比率':'Ratio')+'**\n';
-    doc38+='- LTV/CAC = ¥11,760 / ¥1,000 = **11.76**\n';
-    doc38+='- '+(G?'目標':'Target')+': **≥3** ('+(G?'健全':'healthy')+')\n';
-    doc38+='- '+(G?'評価':'Assessment')+': ✅ '+(G?'優秀':'Excellent')+'\n\n';
+  doc+='**LTV** ('+(G?'顧客生涯価値':'Lifetime Value')+')\n';
+  doc+='- ARPU ('+(G?'ユーザー単価':'Avg Revenue per User')+'): ¥980/'+( G?'月':'mo')+'\n';
+  doc+='- '+(G?'平均利用期間':'Avg lifetime')+': 12'+( G?'ヶ月':'months')+'\n';
+  doc+='- **LTV = ¥11,760**\n\n';
 
-    doc38+='**Payback '+(G?'期間':'Period')+'**\n';
-    doc38+='- CAC / ARPU = ¥1,000 / ¥980 = **1.02'+( G?'ヶ月':'months')+'**\n';
-    doc38+='- '+(G?'目標':'Target')+': **≤12'+( G?'ヶ月':'months')+'**\n';
-    doc38+='- '+(G?'評価':'Assessment')+': ✅ '+(G?'優秀':'Excellent')+'\n\n';
+  doc+='**LTV/CAC '+(G?'比率':'Ratio')+'**\n';
+  doc+='- LTV/CAC = ¥11,760 / ¥1,000 = **11.76**\n';
+  doc+='- '+(G?'目標':'Target')+': **≥3** ('+(G?'健全':'healthy')+')\n';
+  doc+='- '+(G?'評価':'Assessment')+': ✅ '+(G?'優秀':'Excellent')+'\n\n';
 
-    // Monetization Tactics
-    doc38+=(G?'## 収益化戦術':'## Monetization Tactics')+'\n\n';
+  doc+='**Payback '+(G?'期間':'Period')+'**\n';
+  doc+='- CAC / ARPU = ¥1,000 / ¥980 = **1.02'+( G?'ヶ月':'months')+'**\n';
+  doc+='- '+(G?'目標':'Target')+': **≤12'+( G?'ヶ月':'months')+'**\n';
+  doc+='- '+(G?'評価':'Assessment')+': ✅ '+(G?'優秀':'Excellent')+'\n\n';
 
-    const domainTactics={
-      saas:G?['無料トライアル14日','使用量制限で有料誘導','年払い割引(2ヶ月分)']:['14-day free trial','Usage limits to drive upgrades','Annual discount (2mo free)'],
-      ec:G?['初回注文クーポン','まとめ買い割引','会員ランク制度']:['First order coupon','Bulk purchase discount','Member rank system'],
-      education:G?['最初の3レッスン無料','修了証発行は有料','コミュニティアクセス(有料)']:['First 3 lessons free','Paid certificate issuance','Premium community access'],
-      marketplace:G?['初回取引手数料無料','大口出品者割引','プレミアム掲載']:['First transaction fee-free','Volume seller discount','Premium listings'],
-      fintech:G?['少額取引無料','即時送金は有料','投資アドバイス(有料)']:['Small transaction free','Instant transfer paid','Investment advice (paid)']
-    };
-    const tactics=domainTactics[domain]||(G?['無料トライアル','使用量制限','年払い割引']:['Free trial','Usage limits','Annual discount']);
+  // Monetization Tactics
+  doc+=(G?'## 収益化戦術':'## Monetization Tactics')+'\n\n';
 
-    tactics.forEach((tactic,i)=>{
-      doc38+=(i+1)+'. **'+tactic+'**\n';
-    });
-    doc38+='\n';
+  const domainTactics={
+    saas:G?['無料トライアル14日','使用量制限で有料誘導','年払い割引(2ヶ月分)']:['14-day free trial','Usage limits to drive upgrades','Annual discount (2mo free)'],
+    ec:G?['初回注文クーポン','まとめ買い割引','会員ランク制度']:['First order coupon','Bulk purchase discount','Member rank system'],
+    education:G?['最初の3レッスン無料','修了証発行は有料','コミュニティアクセス(有料)']:['First 3 lessons free','Paid certificate issuance','Premium community access'],
+    marketplace:G?['初回取引手数料無料','大口出品者割引','プレミアム掲載']:['First transaction fee-free','Volume seller discount','Premium listings'],
+    fintech:G?['少額取引無料','即時送金は有料','投資アドバイス(有料)']:['Small transaction free','Instant transfer paid','Investment advice (paid)']
+  };
+  const tactics=domainTactics[domain]||(G?['無料トライアル','使用量制限','年払い割引']:['Free trial','Usage limits','Annual discount']);
 
-    // Growth Levers
-    const rfMap=REVERSE_FLOW_MAP[domain]||REVERSE_FLOW_MAP._default;
-    doc38+=(G?'## 成長レバー':'## Growth Levers')+'\n\n';
-    doc38+=G?'このドメインの主要なKPI（目標値は docs/30_goal_decomposition.md 参照）:\n\n':'Key KPIs for this domain (targets in docs/30_goal_decomposition.md):\n\n';
-    const kpis=G?rfMap.kpi_ja:rfMap.kpi_en;
-    kpis.forEach((kpi,i)=>{
-      doc38+=(i+1)+'. '+kpi+'\n';
-    });
-    doc38+='\n';
+  tactics.forEach((tactic,i)=>{
+    doc+=(i+1)+'. **'+tactic+'**\n';
+  });
+  doc+='\n';
 
-    // Related Documents
-    doc38+=(G?'## 関連ドキュメント':'## Related Documents')+'\n\n';
-    doc38+='- **docs/30_goal_decomposition.md** — '+(G?'目標分解とKPI':'Goal decomposition & KPIs')+'\n';
-    doc38+='- **.spec/constitution.md** — '+(G?'プロジェクトビジョン':'Project vision')+'\n';
-    doc38+='- **docs/24_progress.md** — '+(G?'進捗追跡':'Progress tracking')+'\n';
-    doc38+='- **docs/05_api_design.md** — '+(G?'決済API実装':'Payment API implementation')+'\n\n';
+  // Growth Levers - use rfKpis to avoid variable shadowing
+  doc+=(G?'## 成長レバー':'## Growth Levers')+'\n\n';
+  doc+=G?'このドメインの主要なKPI（目標値は docs/30_goal_decomposition.md 参照）:\n\n':'Key KPIs for this domain (targets in docs/30_goal_decomposition.md):\n\n';
+  const rfKpis=G?rf.kpi_ja:rf.kpi_en;
+  rfKpis.forEach((kpi,i)=>{
+    doc+=(i+1)+'. '+kpi+'\n';
+  });
+  doc+='\n';
 
-    S.files['docs/38_business_model.md']=doc38;
-  }
+  // Related Documents
+  doc+=(G?'## 関連ドキュメント':'## Related Documents')+'\n\n';
+  doc+='- **docs/30_goal_decomposition.md** — '+(G?'目標分解とKPI':'Goal decomposition & KPIs')+'\n';
+  doc+='- **.spec/constitution.md** — '+(G?'プロジェクトビジョン':'Project vision')+'\n';
+  doc+='- **docs/24_progress.md** — '+(G?'進捗追跡':'Progress tracking')+'\n';
+  doc+='- **docs/05_api_design.md** — '+(G?'決済API実装':'Payment API implementation')+'\n\n';
 
-  // ═══ C2: Growth Intelligence (always generated) ═══
-  const gdomain=detectDomain(a.purpose)||'_default';
-  const gd=DOMAIN_GROWTH[gdomain]||DOMAIN_GROWTH._default;
-  let doc41='# '+pn+' — '+(G?'グロースインテリジェンス':'Growth Intelligence')+'\n\n';
+  return doc;
+}
+
+function _genDoc41(G, domain, a, pn) {
+
+  const gd=DOMAIN_GROWTH[domain]||DOMAIN_GROWTH._default;
+  let doc='# '+pn+' — '+(G?'グロースインテリジェンス':'Growth Intelligence')+'\n\n';
 
   // Section 1: Stack Compatibility Score
   const syn=calcSynergy(a);
-  doc41+='## '+(G?'1. スタック相性スコア':'1. Tech Stack Compatibility Score')+'\n\n';
-  doc41+='| '+(G?'次元':'Dimension')+' | '+(G?'スコア':'Score')+' | '+(G?'説明':'Description')+' |\n|-----|-------|------|\n';
+  doc+='## '+(G?'1. スタック相性スコア':'1. Tech Stack Compatibility Score')+'\n\n';
+  doc+='| '+(G?'次元':'Dimension')+' | '+(G?'スコア':'Score')+' | '+(G?'説明':'Description')+' |\n|-----|-------|------|\n';
   const dimNames=G?['FE↔BE親和性','エコシステム統一性','ドメイン適合度','デプロイ整合性','複雑度バランス']:['FE↔BE Affinity','Ecosystem Unity','Domain Fit','Deploy Alignment','Complexity Balance'];
   [syn.d1,syn.d2,syn.d3,syn.d4,syn.d5].forEach((s,i)=>{
-    doc41+='| '+dimNames[i]+' | '+s+'/100 | '+(s>=80?(G?'✅ 良好':'✅ Good'):s>=60?(G?'⚠️ 改善余地':'⚠️ Room to improve'):(G?'❌ 要対策':'❌ Action needed'))+' |\n';
+    doc+='| '+dimNames[i]+' | '+s+'/100 | '+(s>=80?(G?'✅ 良好':'✅ Good'):s>=60?(G?'⚠️ 改善余地':'⚠️ Room to improve'):(G?'❌ 要対策':'❌ Action needed'))+' |\n';
   });
-  doc41+='\n'+(G?'**総合スタックスコア**: ':'**Overall Stack Score**: ')+syn.overall+'/100\n\n';
+  doc+='\n'+(G?'**総合スタックスコア**: ':'**Overall Stack Score**: ')+syn.overall+'/100\n\n';
 
   // Compat warnings
   const cw=checkCompat(a);
   if(cw.length>0){
-    doc41+='### '+(G?'互換性アラート':'Compatibility Alerts')+'\n\n';
+    doc+='### '+(G?'互換性アラート':'Compatibility Alerts')+'\n\n';
     cw.slice(0,8).forEach(r=>{
-      doc41+='- '+(r.severity==='error'?'❌':'⚠️')+' **'+r.id+'**: '+(G?r.msg_ja:r.msg_en)+'\n';
+      doc+='- '+(r.severity==='error'?'❌':'⚠️')+' **'+r.id+'**: '+(G?r.msg_ja:r.msg_en)+'\n';
     });
-    doc41+='\n';
+    doc+='\n';
   }
 
   // Section 2: Growth Funnel (Mermaid)
   const stages=G?gd.fj:gd.fe;
-  doc41+='## '+(G?'2. ドメイン別グロースファネル':'2. Domain Growth Funnel')+'\n\n';
-  doc41+='```mermaid\ngraph LR\n';
+  doc+='## '+(G?'2. ドメイン別グロースファネル':'2. Domain Growth Funnel')+'\n\n';
+  doc+='```mermaid\ngraph LR\n';
   stages.forEach((s,i)=>{
-    if(i<stages.length-1) doc41+='  S'+i+'["'+s+' ('+gd.cvr[i]+'%)"] --> S'+(i+1)+'["'+stages[i+1]+' ('+gd.cvr[i+1]+'%)"]\n';
+    if(i<stages.length-1) doc+='  S'+i+'["'+s+' ('+gd.cvr[i]+'%)"] --> S'+(i+1)+'["'+stages[i+1]+' ('+gd.cvr[i+1]+'%)"]\n';
   });
-  doc41+='```\n\n';
-  doc41+='| '+(G?'ステージ':'Stage')+' | '+(G?'ベンチマーク':'Benchmark')+' | '+(G?'前段からのCVR':'Stage CVR')+' |\n|--------|-----------|----------|\n';
+  doc+='```\n\n';
+  doc+='| '+(G?'ステージ':'Stage')+' | '+(G?'ベンチマーク':'Benchmark')+' | '+(G?'前段からのCVR':'Stage CVR')+' |\n|--------|-----------|----------|\n';
   stages.forEach((s,i)=>{
     const cvr=i===0?'-':((gd.cvr[i]/gd.cvr[i-1]*100).toFixed(1)+'%');
-    doc41+='| '+s+' | '+gd.cvr[i]+'% | '+cvr+' |\n';
+    doc+='| '+s+' | '+gd.cvr[i]+'% | '+cvr+' |\n';
   });
-  doc41+='\n';
+  doc+='\n';
 
   // Section 3: Growth Equation
-  doc41+='## '+(G?'3. グロース方程式':'3. Growth Equation')+'\n\n';
-  doc41+='```\n'+gd.eq+'\n```\n\n';
-  doc41+=(G?'**感度分析**: 各変数を10%改善すると、全体収益は約10%向上（複利効果で実際はそれ以上）。複数のレバーを同時に改善することで掛け算的成長が可能。\n\n':'**Sensitivity**: Improving each variable by 10% yields ~10% revenue lift (compounding makes it higher). Simultaneously improving multiple levers creates multiplicative growth.\n\n');
+  doc+='## '+(G?'3. グロース方程式':'3. Growth Equation')+'\n\n';
+  doc+='```\n'+gd.eq+'\n```\n\n';
+  doc+=(G?'**感度分析**: 各変数を10%改善すると、全体収益は約10%向上（複利効果で実際はそれ以上）。複数のレバーを同時に改善することで掛け算的成長が可能。\n\n':'**Sensitivity**: Improving each variable by 10% yields ~10% revenue lift (compounding makes it higher). Simultaneously improving multiple levers creates multiplicative growth.\n\n');
 
   // Section 4: Growth Levers
   const levers=G?gd.lj:gd.le;
-  doc41+='## '+(G?'4. グロースレバー（優先順）':'4. Growth Levers (Prioritized)')+'\n\n';
-  levers.forEach((l,i)=>{doc41+=(i+1)+'. '+l+'\n';});
-  doc41+='\n';
+  doc+='## '+(G?'4. グロースレバー（優先順）':'4. Growth Levers (Prioritized)')+'\n\n';
+  levers.forEach((l,i)=>{doc+=(i+1)+'. '+l+'\n';});
+  doc+='\n';
 
   // Section 5: Pricing Strategy
-  doc41+='## '+(G?'5. 価格戦略（松竹梅モデル）':'5. Pricing Strategy (Three-Tier Model)')+'\n\n';
+  doc+='## '+(G?'5. 価格戦略（松竹梅モデル）':'5. Pricing Strategy (Three-Tier Model)')+'\n\n';
   const prices=G?gd.pj:gd.pe;
   const tierNames=G?['🥉 松（エントリー）','🥈 竹（メイン）★推奨','🥇 梅（プレミアム）']:['🥉 Good (Entry)','🥈 Better (Main) ★Recommended','🥇 Best (Premium)'];
-  doc41+='| '+(G?'ティア':'Tier')+' | '+(G?'価格帯':'Price Range')+' |\n|------|------|\n';
-  prices.forEach((p,i)=>{doc41+='| '+tierNames[i]+' | '+p+' |\n';});
-  doc41+='\n'+(G?'> **心理効果**: 3択を提示すると中間（竹）が選ばれやすい（妥協効果）。最上位は「アンカー」として竹の割安感を演出する。\n\n':'> **Psychology**: Presenting 3 options makes the middle tier most popular (compromise effect). The top tier serves as an anchor to make the middle tier feel like good value.\n\n');
+  doc+='| '+(G?'ティア':'Tier')+' | '+(G?'価格帯':'Price Range')+' |\n|------|------|\n';
+  prices.forEach((p,i)=>{doc+='| '+tierNames[i]+' | '+p+' |\n';});
+  doc+='\n'+(G?'> **心理効果**: 3択を提示すると中間（竹）が選ばれやすい（妥協効果）。最上位は「アンカー」として竹の割安感を演出する。\n\n':'> **Psychology**: Presenting 3 options makes the middle tier most popular (compromise effect). The top tier serves as an anchor to make the middle tier feel like good value.\n\n');
 
   // Section 6: Performance Budget
-  doc41+='## '+(G?'6. パフォーマンス予算':'6. Performance Budget')+'\n\n';
-  doc41+='| '+(G?'指標':'Metric')+' | '+(G?'目標':'Target')+' | '+(G?'ビジネスインパクト':'Business Impact')+' |\n|------|------|-------|\n';
-  doc41+='| LCP | < 2.5s | '+(G?'離脱率-25%':'Bounce rate -25%')+' |\n';
-  doc41+='| FID | < 100ms | '+(G?'UXスコア+20pt':'UX score +20pt')+' |\n';
-  doc41+='| CLS | < 0.1 | '+(G?'信頼性+15%':'Trust +15%')+' |\n';
-  doc41+='| '+(G?'初回バンドル':'Initial Bundle')+' | < 200KB (gzip) | '+(G?'FCP改善':'FCP improvement')+' |\n\n';
+  doc+='## '+(G?'6. パフォーマンス予算':'6. Performance Budget')+'\n\n';
+  doc+='| '+(G?'指標':'Metric')+' | '+(G?'目標':'Target')+' | '+(G?'ビジネスインパクト':'Business Impact')+' |\n|------|------|-------|\n';
+  doc+='| LCP | < 2.5s | '+(G?'離脱率-25%':'Bounce rate -25%')+' |\n';
+  doc+='| FID | < 100ms | '+(G?'UXスコア+20pt':'UX score +20pt')+' |\n';
+  doc+='| CLS | < 0.1 | '+(G?'信頼性+15%':'Trust +15%')+' |\n';
+  doc+='| '+(G?'初回バンドル':'Initial Bundle')+' | < 200KB (gzip) | '+(G?'FCP改善':'FCP improvement')+' |\n\n';
   // Tech-specific tips
   const fe=a.frontend||'';
   if(fe.includes('Next')){
-    doc41+=(G?'**Next.js最適化**: ISR活用, next/image, Edge Middleware, Server Components優先\n\n':'**Next.js Optimization**: Use ISR, next/image, Edge Middleware, prefer Server Components\n\n');
+    doc+=(G?'**Next.js最適化**: ISR活用, next/image, Edge Middleware, Server Components優先\n\n':'**Next.js Optimization**: Use ISR, next/image, Edge Middleware, prefer Server Components\n\n');
   }else if(fe.includes('Vue')||fe.includes('Nuxt')){
-    doc41+=(G?'**Vue/Nuxt最適化**: Lazy Hydration, コンポーネント分割, auto-imports\n\n':'**Vue/Nuxt Optimization**: Lazy Hydration, component splitting, auto-imports\n\n');
+    doc+=(G?'**Vue/Nuxt最適化**: Lazy Hydration, コンポーネント分割, auto-imports\n\n':'**Vue/Nuxt Optimization**: Lazy Hydration, component splitting, auto-imports\n\n');
   }else{
-    doc41+=(G?'**SPA最適化**: React.lazy + Suspense, ルート分割, Dynamic Import\n\n':'**SPA Optimization**: React.lazy + Suspense, route splitting, Dynamic Import\n\n');
+    doc+=(G?'**SPA最適化**: React.lazy + Suspense, ルート分割, Dynamic Import\n\n':'**SPA Optimization**: React.lazy + Suspense, route splitting, Dynamic Import\n\n');
   }
 
   // Section 7: Cross-references
-  doc41+='## '+(G?'7. 関連ドキュメント':'7. Related Documents')+'\n\n';
-  doc41+='- **docs/30_goal_decomposition.md** — '+(G?'目標分解とKPI':'Goal decomposition & KPIs')+'\n';
-  doc41+='- **docs/38_business_model.md** — '+(G?'ビジネスモデル詳細（決済設定時）':'Business model details (when payment configured)')+'\n';
-  doc41+='- **docs/24_progress.md** — '+(G?'進捗追跡':'Progress tracking')+'\n';
-  doc41+='- **docs/28_qa_strategy.md** — '+(G?'品質戦略':'QA strategy')+'\n\n';
+  doc+='## '+(G?'7. 関連ドキュメント':'7. Related Documents')+'\n\n';
+  doc+='- **docs/30_goal_decomposition.md** — '+(G?'目標分解とKPI':'Goal decomposition & KPIs')+'\n';
+  doc+='- **docs/38_business_model.md** — '+(G?'ビジネスモデル詳細（決済設定時）':'Business model details (when payment configured)')+'\n';
+  doc+='- **docs/24_progress.md** — '+(G?'進捗追跡':'Progress tracking')+'\n';
+  doc+='- **docs/28_qa_strategy.md** — '+(G?'品質戦略':'QA strategy')+'\n\n';
 
-  S.files['docs/41_growth_intelligence.md']=doc41;
+  return doc;
+}
+
+// ── Orchestrator (P15 pattern: short, delegates to sub-generators) ──
+
+function genPillar10_ReverseEngineering(a,pn){
+  const G=S.genLang==='ja';
+  const domain=detectDomain(a.purpose)||'_default';
+  const rf=REVERSE_FLOW_MAP[domain]||REVERSE_FLOW_MAP._default;
+  const flowSteps=G?rf.flow_ja:rf.flow_en;
+  const kpis=G?rf.kpi_ja:rf.kpi_en;
+  const risks=G?rf.risks_ja:rf.risks_en;
+  const entities=(a.data_entities||'').split(/[,、]\s*/).map(s=>s.trim()).filter(Boolean);
+  const features=(a.mvp_features||'').split(/[,、\n]/).map(s=>s.trim()).filter(Boolean);
+
+  S.files['docs/29_reverse_engineering.md']=_genDoc29(G,rf,domain,flowSteps,kpis,risks,a);
+  S.files['docs/30_goal_decomposition.md']=_genDoc30(G,rf,flowSteps,kpis,features,entities,a);
+  if(a.payment&&!isNone(a.payment)){
+    S.files['docs/38_business_model.md']=_genDoc38(G,domain,rf,a,pn);
+  }
+  S.files['docs/41_growth_intelligence.md']=_genDoc41(G,domain,a,pn);
 }
