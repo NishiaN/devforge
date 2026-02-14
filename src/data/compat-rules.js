@@ -1,4 +1,4 @@
-/* ═══ STACK COMPATIBILITY & SEMANTIC CONSISTENCY RULES — 54 rules (ERROR×11 + WARN×34 + INFO×9) ═══ */
+/* ═══ STACK COMPATIBILITY & SEMANTIC CONSISTENCY RULES — 58 rules (ERROR×11 + WARN×37 + INFO×10) ═══ */
 const COMPAT_RULES=[
   // ── FE ↔ Mobile (2 ERROR) ──
   {id:'fe-mob-expo',p:['frontend','mobile'],lv:'error',
@@ -16,7 +16,7 @@ const COMPAT_RULES=[
    ja:'モバイルアプリにはAPI用バックエンドが必要です。Supabase/Firebase等のBaaSを検討してください',
    en:'Mobile apps need an API backend. Consider BaaS like Supabase/Firebase',
    fix:{f:'backend',s:'Supabase'}},
-  // ── Mobile ↔ Auth (2 WARN) ──
+  // ── Mobile ↔ Auth (3 WARN) ──
   {id:'mob-noauth',p:['mobile','auth'],lv:'warn',
    t:a=>{
     if(!a.mobile||!a.auth)return false;
@@ -31,6 +31,11 @@ const COMPAT_RULES=[
    t:a=>a.mobile&&inc(a.mobile,'Expo')&&inc(a.auth,'NextAuth'),
    ja:'NextAuthはWeb専用。React Nativeには@react-native-google-signin等のアダプター必要',
    en:'NextAuth is web-only. React Native needs adapters like @react-native-google-signin',
+   fix:{f:'auth',s:'Supabase Auth'}},
+  {id:'mob-auth-flutter-nextauth',p:['mobile','auth'],lv:'warn',
+   t:a=>a.mobile&&inc(a.mobile,'Flutter')&&(inc(a.auth,'NextAuth')||inc(a.auth,'Auth.js')),
+   ja:'FlutterではNextAuth/Auth.jsは直接利用できません。Firebase Auth/Supabase Auth推奨',
+   en:'NextAuth/Auth.js is web-only. Flutter needs Firebase Auth/Supabase Auth',
    fix:{f:'auth',s:'Supabase Auth'}},
   // ── BE ↔ ORM (3 ERROR, 1 WARN) ──
   {id:'be-orm-py-prisma',p:['backend','orm'],lv:'error',
@@ -74,7 +79,7 @@ const COMPAT_RULES=[
    ja:'PythonとFirestoreの相性は中程度。PostgreSQLが推奨です',
    en:'Python + Firestore compatibility is moderate. PostgreSQL recommended',
    fix:{f:'database',s:'PostgreSQL'}},
-  // ── BE ↔ Deploy (5 WARN) ──
+  // ── BE ↔ Deploy (7 WARN) ──
   {id:'be-dep-java-vercel',p:['backend','deploy'],lv:'warn',
    t:a=>(inc(a.backend,'Java')||inc(a.backend,'Go'))&&inc(a.deploy,'Vercel'),
    ja:'VercelはNode.js/Python前提です。Railway/AWS/Dockerが必要',
@@ -99,6 +104,16 @@ const COMPAT_RULES=[
    t:a=>inc(a.backend,'Django')&&inc(a.deploy,'Vercel'),
    ja:'DjangoのVercelデプロイは制限あり。Railway/Fly.ioが推奨',
    en:'Django on Vercel has limitations. Railway/Fly.io recommended',
+   fix:{f:'deploy',s:'Railway'}},
+  {id:'be-dep-heavy-netlify',p:['backend','deploy'],lv:'warn',
+   t:a=>inc(a.deploy,'Netlify')&&(inc(a.backend,'Django')||inc(a.backend,'Spring')||inc(a.backend,'Laravel')),
+   ja:'Django/Spring/LaravelのNetlifyデプロイは大幅な制限があります。Railway推奨',
+   en:'Django/Spring/Laravel have severe limitations on Netlify. Railway recommended',
+   fix:{f:'deploy',s:'Railway'}},
+  {id:'be-dep-nest-netlify',p:['backend','deploy'],lv:'warn',
+   t:a=>inc(a.backend,'NestJS')&&inc(a.deploy,'Netlify'),
+   ja:'NestJSのNetlifyデプロイは制限があります。Railway推奨',
+   en:'NestJS on Netlify has limitations. Railway recommended',
    fix:{f:'deploy',s:'Railway'}},
   // ── FE ↔ Deploy (2 WARN) ──
   {id:'fe-dep-angular-vercel',p:['frontend','deploy'],lv:'warn',
@@ -231,7 +246,7 @@ const COMPAT_RULES=[
    ja:'ConvexはTypeScript定義で完結します。ORMは通常不要',
    en:'Convex uses TypeScript definitions. ORM typically not needed',
    fix:{f:'orm',s:'None / Using BaaS'}},
-  // ── Misc (2 INFO) ──
+  // ── Misc (3 INFO) ──
   {id:'ai-tools-multi',p:['ai_tools'],lv:'info',
    t:a=>{
     if(!a.ai_tools)return false;
@@ -245,6 +260,10 @@ const COMPAT_RULES=[
    ja:'React Native bareは柔軟性が高いですが、Expoの方が開発速度が速いです',
    en:'React Native bare offers flexibility, but Expo is faster for development',
    fix:{f:'mobile',s:'Expo (Managed)'}},
+  {id:'mob-flutter-firebase',p:['mobile','backend'],lv:'info',
+   t:a=>inc(a.mobile,'Flutter')&&inc(a.backend,'Firebase'),
+   ja:'✨ Flutter + Firebaseは最適な組み合わせです（FlutterFire統合）',
+   en:'✨ Flutter + Firebase is an excellent combination (FlutterFire integration)'},
   // ── Semantic Consistency Rules (Phase A) ── 8 rules ──
   // A1: scope_out「ネイティブ」 vs mobile有効
   {id:'sem-scope-mobile',p:['scope_out','mobile'],lv:'error',

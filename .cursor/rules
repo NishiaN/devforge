@@ -1,7 +1,7 @@
-# DevForge v9.0 — 43-module web app → builds to single HTML (~980KB / 1200KB limit)
+# DevForge v9.0 — 47-module web app → builds to single HTML (~1381KB / 2000KB limit)
 
 ## Build: `node build.js` (produces devforge-v9.html)
-## Test: `npm test` (209 tests, all passing)
+## Test: `npm test` (305+ tests, all passing)
 ## Verify: `npm run check`
 
 ## Rules
@@ -17,7 +17,7 @@
 10. After edits: `npm test && node build.js`
 
 ## Key Files
-- src/generators/common.js — ENTITY_COLUMNS (145+), ENTITY_METHODS, FEATURE_DETAILS (31), detectDomain() (24 domains)
+- src/generators/common.js — ENTITY_COLUMNS (145+), ENTITY_METHODS, FEATURE_DETAILS (31), detectDomain() (32 domains)
 - src/generators/p1-sdd.js — Specification/constitution/technical-plan/tasks/verification
 - src/generators/p2-devcontainer.js — DevContainer, Dockerfile, docker-compose, post-create
 - src/generators/p3-mcp.js — MCP servers (backend/domain-specific)
@@ -26,7 +26,7 @@
 - src/generators/p10-reverse.js — Reverse engineering, goal decomposition, REVERSE_FLOW_MAP
 - src/generators/p11-implguide.js — Implementation playbook, AI dev runbook
 - src/data/presets.js — 41 project presets (LMS, EC, SaaS, CRM, etc.)
-- src/data/compat-rules.js — 45 compatibility validation rules
-- test/ — 209 tests (run `npm test` before committing)
+- src/data/compat-rules.js — 58 compatibility validation rules
+- test/ — 305+ tests (run `npm test` before committing)
 
 ## For comprehensive guidance, see CLAUDE.md (1000+ lines, includes bug patterns, security best practices, size budget management)

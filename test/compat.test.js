@@ -1,4 +1,4 @@
-// Compat rules functional test (48 rules: 10 ERROR + 30 WARN + 8 INFO)
+// Compat rules functional test (58 rules: 11 ERROR + 37 WARN + 10 INFO)
 const S={lang:'ja',skill:'pro'};
 eval(require('fs').readFileSync('src/data/compat-rules.js','utf-8'));
 eval(require('fs').readFileSync('src/generators/common.js','utf-8')); // For detectDomain
@@ -83,6 +83,18 @@ const tests=[
   {name:'Mobile+NoAuth=WARN',a:{mobile:'Expo (React Native)',auth:'なし'},expect:'warn',id:'mob-noauth'},
   {name:'Mobile+NextAuth=WARN',a:{mobile:'Expo (React Native)',auth:'Auth.js/NextAuth'},expect:'warn',id:'mob-auth-nextauth'},
   {name:'Mobile+SupaAuth=OK',a:{mobile:'Expo (React Native)',auth:'Supabase Auth'},expect:'none'},
+  // Flutter + Auth
+  {name:'Flutter+NextAuth=WARN',a:{mobile:'Flutter',auth:'Auth.js/NextAuth'},expect:'warn',id:'mob-auth-flutter-nextauth'},
+  {name:'Flutter+SupaAuth=OK',a:{mobile:'Flutter',auth:'Supabase Auth'},expect:'none'},
+  // Netlify deploy limitations
+  {name:'Django+Netlify=WARN',a:{backend:'Python + Django',deploy:'Netlify'},expect:'warn',id:'be-dep-heavy-netlify'},
+  {name:'Spring+Netlify=WARN',a:{backend:'Java + Spring Boot',deploy:'Netlify'},expect:'warn',id:'be-dep-heavy-netlify'},
+  {name:'NestJS+Netlify=WARN',a:{backend:'Node.js + NestJS',deploy:'Netlify'},expect:'warn',id:'be-dep-nest-netlify'},
+  {name:'Express+Netlify=OK',a:{backend:'Node.js + Express',deploy:'Netlify'},expect:'none'},
+  // Flutter + Firebase synergy
+  {name:'Flutter+Firebase=INFO',a:{mobile:'Flutter',backend:'Firebase'},expect:'info',id:'mob-flutter-firebase'},
+  {name:'Flutter+Supabase=noFirebaseINFO',a:{mobile:'Flutter',backend:'Supabase'},expect:'none'},
+  {name:'Expo+Firebase=noFlutterINFO',a:{mobile:'Expo (React Native)',backend:'Firebase'},expect:'none'},
 ];
 
 let pass=0,fail=0;

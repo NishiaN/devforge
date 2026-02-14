@@ -6,6 +6,17 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 # DevForge v9.3.0
 
+## Documentation Structure
+
+DevForge v9's documentation is optimized into role-specific files:
+
+- **CLAUDE.md** (this file) — Core development guidelines, critical rules, common bugs, quick reference
+- **docs/CLAUDE-REFERENCE.md** — Detailed reference: complete data structures, generated output catalog, pillar addition guide, compression patterns, test patterns
+- **docs/CLAUDE-TROUBLESHOOTING.md** — Environment setup, git workflow, deployment, troubleshooting
+- **docs/AI_CODING_PROMPTS.md** — 23 AI prompt templates (spec review, MVP implementation, test generation, refactoring, security audit, etc.)
+- **docs/guides/ja/** — 9 comprehensive Japanese guides (~540KB): AI-driven development, security framework, reverse engineering, multi-perspective strategy guide
+- **未来志向アプリ開発戦略フレームワーク（2026-2035）.md** — 28 strategic frameworks for future app development (2026-2035 horizon)
+
 ## Architecture
 - **47 modules** in `src/` → `node build.js` → single `devforge-v9.html` (~2000KB)
 - Vanilla JS, no frameworks. CSS custom properties. CDN: marked.js, mermaid.js, JSZip.
@@ -22,7 +33,7 @@ node build.js --report     # Show size report
 node build.js --check-css  # Validate CSS custom properties
 
 # Test
-npm test                   # Run all tests (302+ tests, all passing)
+npm test                   # Run all tests (305+ tests, all passing)
 npm run test:watch         # Watch mode for test development
 node --test test/gen-coherence.test.js  # Run single test file
 node --test test/data-coverage.test.js  # Run data integrity tests
@@ -38,7 +49,7 @@ npm run check              # Syntax check extracted JS
 
 ## Build Process Deep Dive
 
-`build.js` concatenates 45 modules into single HTML:
+`build.js` concatenates 47 modules into single HTML:
 
 1. **Read modules** in dependency order (defined in `jsFiles` array)
 2. **Read CSS** from `styles/all.css`
@@ -47,7 +58,7 @@ npm run check              # Syntax check extracted JS
 5. **Write** to `devforge-v9.html`
 6. **Validate** size ≤2000KB (warn if exceeded)
 
-**Current Status:** 1354KB / 2000KB limit (67.7% utilized, P15 complete, room for expansion)
+**Current Status:** 1447KB / 2000KB limit (72.4% utilized, P15 complete, room for expansion)
 
 ### ⚠️ Critical: Minification Strategy
 
@@ -217,6 +228,29 @@ See Phase 2 security audit for detailed examples.
 - Search for all instances when updating numbers (41 presets, 111+ files, 15 pillars)
 - Use static strings in data files, not `S.lang` conditionals
 
+### Cross-Reference Number Updates
+**Critical Pattern:** When updating quantitative values (rule counts, file counts, test counts), verify consistency across:
+
+1. **Source files**: `src/data/compat-rules.js`, `src/core/tour.js`, `src/index.html`
+2. **Test files**: `test/compat.test.js` (header comment)
+3. **Documentation**: `CLAUDE.md`, `README.md`, `.cursor/rules`
+4. **Usage guide**: `devforge-v9-usage-guide.html` (multiple locations)
+5. **Build output**: Run `npm test` to verify actual test count
+
+**Workflow:**
+```bash
+# After changing counts in source
+npm test                    # Get actual test count
+grep -r "OLD_NUMBER" .      # Find all references
+node build.js               # Rebuild HTML
+npm run open                # Visual verification
+```
+
+**Recent Updates (2026-02-15):**
+- Compatibility rules: 54→58 (added Flutter auth, Netlify deploy rules)
+- Tests: 296→305 (added 9 compat test cases)
+- Verified docs count: 38 numbered files in docs/
+
 ### Property Name Mismatches with Helper-Generated Objects
 **Problem:** Accessing properties on objects created by helper functions without checking the actual property structure.
 
@@ -237,7 +271,7 @@ See Phase 2 security audit for detailed examples.
 **Problem:** Using domain strings that `detectDomain()` never returns.
 
 **Solution:**
-1. Check `detectDomain()` in common.js for the complete list of 24 valid domains
+1. Check `detectDomain()` in common.js for the complete list of 32 valid domains
 2. Never hardcode domain strings without verifying they're in detectDomain()
 
 ### Test Coverage Maintenance
@@ -266,7 +300,7 @@ voiceRec.onerror = () => { resetUI(); };  // Prevents UI freeze
 ### Compatibility Rules System
 **Location:** `src/data/compat-rules.js`
 
-The compatibility checker validates tech stack combinations with **54 rules** (11 error + 34 warn + 9 info).
+The compatibility checker validates tech stack combinations with **58 rules** (11 error + 37 warn + 10 info).
 
 **Rule Structure:** `{id, p:['field1','field2'], lv:'error'|'warn'|'info', t:conditionFn, ja, en, fix, fixFn}`
 
@@ -275,12 +309,27 @@ The compatibility checker validates tech stack combinations with **54 rules** (1
 - Don't add fixes to skill-level warnings (user choice, not technical issue)
 - Don't add fixes to informational warnings about preview features
 
+**Recent Expansion (v9.3.1):**
+- **Rule 55**: Flutter + NextAuth/Auth.js incompatibility (WARN)
+- **Rule 56**: Django/Spring/Laravel + Netlify limitations (WARN)
+- **Rule 57**: NestJS + Netlify limitations (WARN)
+- **Rule 58**: Flutter + Firebase synergy (INFO)
+
+**Adding New Rules Checklist:**
+1. Add rule to `src/data/compat-rules.js` with unique ID
+2. Update header comment with new totals (ERROR/WARN/INFO)
+3. Update section comment (e.g., "Mobile ↔ Auth (3 WARN)")
+4. Add test cases to `test/compat.test.js` (both positive and negative)
+5. Update test header comment
+6. Update all documentation references (see Cross-Reference section above)
+7. Run `npm test` to verify all 305+ tests pass
+
 ## Key Data Structures & Helper Functions
 
 → See `docs/CLAUDE-REFERENCE.md` for detailed reference documentation.
 
 **Essential functions from `src/generators/common.js`:**
-- **`detectDomain(purpose)`** — Infer domain from purpose text (24 domains: education, ec, marketplace, community, content, analytics, booking, saas, iot, realestate, legal, hr, fintech, portfolio, tool, ai, automation, event, gamify, collab, devtool, creator, newsletter)
+- **`detectDomain(purpose)`** — Infer domain from purpose text (32 domains: education, ec, marketplace, community, content, analytics, booking, saas, iot, realestate, legal, hr, fintech, portfolio, tool, ai, automation, event, gamify, collab, devtool, creator, newsletter, manufacturing, logistics, agriculture, energy, media, government, travel, insurance)
 - **`getEntityColumns(name, G, knownEntities)`** — Get columns for entity (ALWAYS pass 3 args)
 - **`getEntityMethods(name)`** — Get allowed REST methods for entity
 - **`resolveAuth(answers)`** — Determine auth architecture from answers
@@ -290,7 +339,7 @@ The compatibility checker validates tech stack combinations with **54 rules** (1
 - **`isQActive(q)`** — Check if question's condition is met (centralizes conditional question evaluation)
 
 **New in v9.2.0 — DOMAIN_OPS (Ops Intelligence):**
-- **`DOMAIN_OPS`** — 24-domain operational requirements (SLO, Feature Flags, Jobs, Backup, Hardening)
+- **`DOMAIN_OPS`** — 32-domain operational requirements (SLO, Feature Flags, Jobs, Backup, Hardening)
 - **Structure:** `{slo, flags_ja, flags_en, jobs_ja, jobs_en, backup_ja, backup_en, hardening_ja, hardening_en}`
 - **Usage in P14:** `const ops = DOMAIN_OPS[domain] || DOMAIN_OPS._default;`
 - **SLO examples:** fintech/health: 99.99%, education/ec/saas: 99.9%, portfolio/tool: 99%
@@ -374,23 +423,46 @@ DevForge generates **111+ files** (base: 87 files, +4 for skills/ when ai_auto=m
 - **AI rules** — CLAUDE.md (thin), .claude/rules/ (5 files), .claude/settings.json, AI_BRIEF.md, .cursorrules, .clinerules, .windsurfrules, AGENTS.md, skills/ (project.md, factory.md, catalog.md, pipelines.md, skill_map.md, agents/)
 - **CI/CD** — .github/workflows/ci.yml
 
+## AI Prompt Launcher (Pillar ⑧)
+
+DevForge includes a **Prompt Launcher** that generates structured prompts by auto-injecting project context (name, stack, auth, entities) into 23 specialized templates:
+
+**Key Templates:**
+- 🔍 **Spec Review** — 4-step structured review (mission → requirements → architecture → consistency)
+- 🚀 **MVP Implementation** — Select priority task from tasks.md, implement with types → data → logic → UI → tests
+- 🧪 **Test Generation** — Reference docs/07, create normal → error → boundary tests (Vitest format)
+- ♻️ **Refactoring** — Detect SOLID violations, estimate effort (S/M/L), prioritize
+- 🔒 **Security Audit** — OWASP Top 10 checklist with status (✅/⚠️/❌)
+- 📝 **Doc Completion** — Gap analysis + generate most critical missing doc
+- 🐛 **QA/Bug Detection** — Domain-specific bug patterns, test plan, priority matrix
+- 🔧 **Debug Support** — Cross-reference error_logs.md, 5 Whys analysis, fix code
+- 📐 **Architecture Consistency** — Detect layer violations, verify tech policy alignment
+- ⚡ **Performance Optimization** — NFR comparison, bottleneck identification, improvement roadmap
+- 🔌 **API Integration** — Type-safe client code with error handling + test skeleton
+- ♿ **Accessibility Audit** — WCAG 2.1 AA 4-principle check + axe-core tests
+- 🔄 **Migration Support** — Schema conversion scripts, validation queries, deploy plan
+- 📊 **Code Metrics** — Cyclomatic/cognitive complexity, coupling, DRY violations, ROI prioritization
+- 🌍 **i18n Implementation** — Extract strings, define translation keys, generate JSON, replace with t()
+
+→ See `docs/AI_CODING_PROMPTS.md` for full template details and usage examples.
+
 ## Test Architecture
 | File | Tests | Purpose |
 |------|-------|---------|
 | gen-coherence.test.js | 253 assertions | Full LMS generation + structural validation + post-generation audit (C2-C10) |
 | snapshot.test.js | 53 tests | 6 scenario regression (LMS/Blog/EC/English/PropertyMgmt/Helpdesk) + context engineering + skills validation + quality files + P12 security intelligence + P13 industry detection + P14 ops + P4 .claude/ structure (6 new tests) |
-| data-coverage.test.js | 34 tests | Data integrity: entity coverage, FK validation, domain detection (24 domains), playbook completeness, DOMAIN_OPS coverage, DOMAIN_MARKET coverage (3 new P15 tests) |
+| data-coverage.test.js | 34 tests | Data integrity: entity coverage, FK validation, domain detection (32 domains), playbook completeness, DOMAIN_OPS coverage, DOMAIN_MARKET coverage (3 new P15 tests) |
 | r27-regression.test.js | 17 tests | Bug fixes: prices, FK, KPI, ports |
 | r28-regression.test.js | 19 tests | Quality: REST methods, AC, scope_out, verification |
 | build.test.js | build | Build size ≤2000KB, pillar function existence (P1-P15) |
-| compat.test.js | 66 tests + 7 synergy | Compatibility validation (54 rules: 11 ERROR, 34 WARN, 9 INFO) + calcSynergy unit tests |
+| compat.test.js | 75 tests + 7 synergy | Compatibility validation (58 rules: 11 ERROR, 37 WARN, 10 INFO) + calcSynergy unit tests |
 | security.test.js | 26 tests | Security: CSP, SRI, sanitization, XSS prevention, proto pollution, .claude/settings.json safety (2 new tests) |
 | ops.test.js | 16 tests | Ops Intelligence (P14): runbook generation, checklist, ops plane design, SLO adaptation, domain-specific flags, observability stack, circuit breaker, audit schema |
 | future.test.js | 16 tests | Future Strategy Intelligence (P15): DOMAIN_MARKET coverage, PERSONA_ARCHETYPES coverage, GTM_STRATEGY, REGULATORY_HORIZON, doc generation (56-59), mermaid diagrams, bilingual content |
 | presets.test.js | 4 tests | Preset count (41), bilingual names, tech fields, purpose |
 | Others | ~21 tests | i18n, state, techdb |
 
-**Total: 302+ tests (all passing, 100% pass rate) + 7 synergy unit tests**
+**Total: 305+ tests (all passing, 100% pass rate) + 7 synergy unit tests**
 
 ## Writing Tests
 
@@ -410,6 +482,19 @@ DevForge generates **111+ files** (base: 87 files, +4 for skills/ when ai_auto=m
 - No `any` types
 - No console.log in production
 - No hardcoded secrets
+
+## Strategic Context
+
+For long-term strategic planning and future-proofing your application architecture, refer to:
+
+**未来志向アプリ開発戦略フレームワーク（2026-2035）.md** — Comprehensive 28-strategy framework covering:
+- **Tier 1 (Critical)**: Agentic AI, LLM Orchestration, Zero Trust Security, SBOM/Supply Chain Security, Spatial Computing
+- **Tier 2 (High Priority)**: Sovereign AI, Cyber Resilience, Composable Architecture (MACH), Real-time Collaboration (CRDT/Local-First)
+- **Tier 3 (Important)**: Content Authenticity (C2PA), FinOps, Decentralized Identity (DID/SSI)
+- **Integrated Priority Matrix**: 28-strategy evaluation with business impact, technical feasibility, ROI, competitive advantage, risk, future adaptability
+- **Roadmap (2026-2035)**: Phased implementation from foundation (Year 1) to ecosystem leadership (Year 5-10)
+
+This framework integrates with DevForge's generated output to guide architectural decisions, technology selection, and future-proofing strategies.
 
 ## Troubleshooting
 
