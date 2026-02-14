@@ -1,4 +1,4 @@
-# DevForge v9.0
+# DevForge v9.3.0
 
 [![CI](https://github.com/NishiaN/devforge/actions/workflows/ci.yml/badge.svg)](https://github.com/NishiaN/devforge/actions/workflows/ci.yml)
 
@@ -34,7 +34,7 @@ npm install
 node build.js
 
 # テスト
-npm test  # 304+テスト（全通過）
+npm test  # 305+テスト（全通過）
 
 # 使う
 open devforge-v9.html  # ブラウザで開く
@@ -162,7 +162,7 @@ build.js        # Concatenates 47 modules → single HTML
 | compat | 75+7 | 互換性ルール (58 rules + 7 synergy tests) |
 | その他 | ~21 | i18n, presets, state, techdb |
 
-**Total: 304+ tests** (品質インテリジェンス・実装インテリジェンス・戦略インテリジェンス・運用インテリジェンス・未来戦略検証含む、全パス）
+**Total: 305+ tests** (品質インテリジェンス・実装インテリジェンス・戦略インテリジェンス・運用インテリジェンス・未来戦略検証含む、全パス）
 
 ## ドキュメント構造
 
