@@ -10716,16 +10716,16 @@ cac_ltv_en: 'CAC: $200-2000, LTV: $2000-20000, Payback: 9-18 months'
 // REGULATORY_HORIZON: Global regulations timeline 2026-2030
 const REGULATORY_HORIZON = {
 timeline_ja: [
-'2026年: EU AI Act全面施行（高リスクAI規制）',
-'2027年: ePrivacy規則施行（Cookie規制強化）',
-'2028年: DMA完全適用（プラットフォーム規制）',
+'2026年: EU AI Act全面施行 — 高リスクAI規制',
+'2027年: ePrivacy規則施行 — Cookie規制強化',
+'2028年: DMA完全適用 — プラットフォーム規制',
 '2029年: 米国連邦プライバシー法成立見込み',
 '2030年: EU Cyber Resilience Act完全施行'
 ],
 timeline_en: [
-'2026: EU AI Act full enforcement (high-risk AI regulations)',
-'2027: ePrivacy Regulation enforcement (stricter cookie rules)',
-'2028: DMA full applicability (platform regulations)',
+'2026: EU AI Act full enforcement — high-risk AI regulations',
+'2027: ePrivacy Regulation enforcement — stricter cookie rules',
+'2028: DMA full applicability — platform regulations',
 '2029: US federal privacy law expected',
 '2030: EU Cyber Resilience Act full enforcement'
 ],
@@ -11035,7 +11035,7 @@ doc += G ? '**AI未使用** — EU AI Act直接適用なし（ただし将来の
 }
 // 3. ESG & Sustainability
 doc += G ? '## 3. ESG & サステナビリティ指標\n\n' : '## 3. ESG & Sustainability Metrics\n\n';
-doc += '```mermaid\nmindmap\n root((ESG))\n E[' + (G ? '環境' : 'Environmental') + ']\n ' + (G ? 'カーボンフットプリント' : 'Carbon Footprint') + '\n ' + (G ? 'グリーンホスティング' : 'Green Hosting') + '\n S[' + (G ? '社会' : 'Social') + ']\n ' + (G ? 'アクセシビリティ' : 'Accessibility') + '\n ' + (G ? 'DEI指標' : 'DEI Metrics') + '\n G[' + (G ? 'ガバナンス' : 'Governance') + ']\n ' + (G ? 'データ倫理' : 'Data Ethics') + '\n ' + (G ? '透明性' : 'Transparency') + '\n```\n\n';
+doc += '```mermaid\nmindmap\n root((ESG))\n ' + (G ? '環境' : 'Environmental') + '\n ' + (G ? 'カーボンフットプリント' : 'Carbon Footprint') + '\n ' + (G ? 'グリーンホスティング' : 'Green Hosting') + '\n ' + (G ? '社会' : 'Social') + '\n ' + (G ? 'アクセシビリティ' : 'Accessibility') + '\n ' + (G ? 'DEI指標' : 'DEI Metrics') + '\n ' + (G ? 'ガバナンス' : 'Governance') + '\n ' + (G ? 'データ倫理' : 'Data Ethics') + '\n ' + (G ? '透明性' : 'Transparency') + '\n```\n\n';
 const carbonDeploy = deploy === 'cloudflare'
 ? (G ? 'Cloudflare（100%再生可能エネルギー）' : 'Cloudflare (100% renewable energy)')
 : deploy === 'vercel'
