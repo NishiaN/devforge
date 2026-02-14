@@ -14,7 +14,6 @@ DevForge v9's documentation is optimized into role-specific files:
 - **docs/CLAUDE-REFERENCE.md** — Detailed reference: complete data structures, generated output catalog, pillar addition guide, compression patterns, test patterns
 - **docs/CLAUDE-TROUBLESHOOTING.md** — Environment setup, git workflow, deployment, troubleshooting
 - **docs/AI_CODING_PROMPTS.md** — 23 AI prompt templates (spec review, MVP implementation, test generation, refactoring, security audit, etc.)
-- **docs/guides/ja/** — 9 comprehensive Japanese guides (~540KB): AI-driven development, security framework, reverse engineering, multi-perspective strategy guide
 - **未来志向アプリ開発戦略フレームワーク（2026-2035）.md** — 28 strategic frameworks for future app development (2026-2035 horizon)
 
 ## Architecture
