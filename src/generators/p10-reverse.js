@@ -636,10 +636,10 @@ function genPillar10_ReverseEngineering(a,pn){
     // Conversion Funnel (Mermaid)
     doc38+=(G?'## コンバージョンファネル':'## Conversion Funnel')+'\n\n';
     doc38+='```mermaid\ngraph TD\n';
-    doc38+='  A['+(G?'訪問':'Visit')+' 🌐] -->|30%| B['+(G?'サインアップ':'Signup')+' ✍️]\n';
-    doc38+='  B -->|60%| C['+(G?'アクティベーション':'Activate')+' ⚡]\n';
-    doc38+='  C -->|20%| D['+(G?'有料転換':'Convert')+' 💳]\n';
-    doc38+='  D -->|70%| E['+(G?'継続利用':'Retain')+' 🔁]\n\n';
+    doc38+='  A["'+(G?'訪問':'Visit')+' 🌐"] -->|30%| B["'+(G?'サインアップ':'Signup')+' ✍️"]\n';
+    doc38+='  B -->|60%| C["'+(G?'アクティベーション':'Activate')+' ⚡"]\n';
+    doc38+='  C -->|20%| D["'+(G?'有料転換':'Convert')+' 💳"]\n';
+    doc38+='  D -->|70%| E["'+(G?'継続利用':'Retain')+' 🔁"]\n\n';
     doc38+='  style A fill:#e1f5ff\n';
     doc38+='  style B fill:#fff4e6\n';
     doc38+='  style C fill:#e8f5e9\n';

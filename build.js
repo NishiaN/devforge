@@ -131,7 +131,6 @@ function legacyMinJS(s) {
     .replace(/\/\* ===.*?=== \*\/\n?/g, '') // Remove module headers only
     .replace(/\n{2,}/g, '\n')               // Collapse blank lines
     .replace(/^[ \t]+/gm, '')               // Remove line-leading whitespace (indentation)
-    .replace(/ {2,}/g, ' ')                 // Collapse 2+ spaces to single (preserves single spaces)
     .replace(/;\s*\n/g, ';\n')              // Remove trailing spaces after semicolons
     .trim();
 }

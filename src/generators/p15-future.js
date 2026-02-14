@@ -700,7 +700,7 @@ function gen56Market(G, domain, mkt, gtm, stakeholder) {
   doc += G ? '## 3. MOAT分析（5類型）\n\n' : '## 3. MOAT Analysis (5 Types)\n\n';
   doc += G ? '**ドメイン別MOAT:** ' + mkt.moat_ja + '\n\n' : '**Domain-specific MOAT:** ' + mkt.moat_en + '\n\n';
 
-  doc += '```mermaid\nmindmap\n  root ' + (G ? 'MOAT' : 'MOAT') + '\n';
+  doc += '```mermaid\nmindmap\n  root((MOAT))\n';
   doc += '    ' + (G ? 'ネットワーク効果' : 'Network Effects') + '\n';
   doc += '      ' + (G ? 'ユーザー増→価値増' : 'More users → More value') + '\n';
   doc += '    ' + (G ? 'データモート' : 'Data Moat') + '\n';
@@ -844,7 +844,7 @@ function gen57UX(G, domain, personas, mkt) {
 
   doc += G ? '## 📚 関連ドキュメント\n\n' : '## 📚 Related Documents\n\n';
   doc += G ? '**デザイン:** ' : '**Design:** ';
-  doc += '[Design System](./38_design_system.md)\n\n';
+  doc += '[Design System](./26_design_system.md)\n\n';
   doc += G ? '**戦略:** ' : '**Strategy:** ';
   doc += '[Market Positioning](./56_market_positioning.md), [Ecosystem Strategy](./58_ecosystem_strategy.md)\n\n';
   doc += G ? '**運用:** ' : '**Operations:** ';
@@ -998,7 +998,7 @@ function gen59Regulatory(G, domain, mkt, answers) {
 
   // 3. ESG & Sustainability
   doc += G ? '## 3. ESG & サステナビリティ指標\n\n' : '## 3. ESG & Sustainability Metrics\n\n';
-  doc += '```mermaid\nmindmap\n  root ' + (G ? 'ESG' : 'ESG') + '\n    ' + (G ? '環境' : 'Environmental') + '\n      ' + (G ? 'カーボンフットプリント' : 'Carbon Footprint') + '\n      ' + (G ? 'グリーンホスティング' : 'Green Hosting') + '\n    ' + (G ? '社会' : 'Social') + '\n      ' + (G ? 'アクセシビリティ' : 'Accessibility') + '\n      ' + (G ? 'DEI指標' : 'DEI Metrics') + '\n    ' + (G ? 'ガバナンス' : 'Governance') + '\n      ' + (G ? 'データ倫理' : 'Data Ethics') + '\n      ' + (G ? '透明性' : 'Transparency') + '\n```\n\n';
+  doc += '```mermaid\nmindmap\n  root((ESG))\n    ' + (G ? '環境' : 'Environmental') + '\n      ' + (G ? 'カーボンフットプリント' : 'Carbon Footprint') + '\n      ' + (G ? 'グリーンホスティング' : 'Green Hosting') + '\n    ' + (G ? '社会' : 'Social') + '\n      ' + (G ? 'アクセシビリティ' : 'Accessibility') + '\n      ' + (G ? 'DEI指標' : 'DEI Metrics') + '\n    ' + (G ? 'ガバナンス' : 'Governance') + '\n      ' + (G ? 'データ倫理' : 'Data Ethics') + '\n      ' + (G ? '透明性' : 'Transparency') + '\n```\n\n';
 
   const carbonDeploy = deploy === 'cloudflare'
     ? (G ? 'Cloudflare（100%再生可能エネルギー）' : 'Cloudflare (100% renewable energy)')
@@ -1053,9 +1053,9 @@ function gen59Regulatory(G, domain, mkt, answers) {
   doc += G ? '**戦略:** ' : '**Strategy:** ';
   doc += '[Industry Blueprint](./48_industry_blueprint.md), [Ecosystem Strategy](./58_ecosystem_strategy.md)\n\n';
   doc += G ? '**計画:** ' : '**Planning:** ';
-  doc += '[Roadmap](./20_roadmap.md)\n\n';
+  doc += '[Roadmap](./10_gantt.md)\n\n';
 
-  doc += G ? '---\n\n**次のステップ:** 規制タイムラインをプロダクトロードマップ（docs/20_roadmap.md）に反映。四半期ごとにこのドキュメントを更新し、新規制を監視。\n' : '---\n\n**Next Steps:** Reflect regulatory timeline into product roadmap (docs/20_roadmap.md). Update this document quarterly to monitor new regulations.\n';
+  doc += G ? '---\n\n**次のステップ:** 規制タイムラインをプロダクトロードマップ（docs/10_gantt.md）に反映。四半期ごとにこのドキュメントを更新し、新規制を監視。\n' : '---\n\n**Next Steps:** Reflect regulatory timeline into product roadmap (docs/10_gantt.md). Update this document quarterly to monitor new regulations.\n';
 
   return doc;
 }
