@@ -225,4 +225,60 @@ test('Security Enhancements', async (t) => {
       assert.ok(funcBody.includes('esc(iss.msg)'), 'showCompatAlert should escape issue messages');
     }
   });
+
+  // ═══ Phase 4: .claude/settings.json Security Tests ═══
+  await t.test('.claude/settings.json does not expose sensitive data', () => {
+    // Initialize test environment
+    const S = {answers:{},skill:'intermediate',lang:'ja',preset:'custom',projectName:'T',phase:1,step:0,skipped:[],files:{},editedFiles:{},prevFiles:{},genLang:'en',previewFile:null,pillar:0};
+    eval(fs.readFileSync('src/data/presets.js','utf-8').replace('const PR','var PR'));
+    eval(fs.readFileSync('src/generators/common.js','utf-8').replace(/const /g,'var '));
+    eval(fs.readFileSync('src/generators/p4-airules.js','utf-8'));
+
+    genPillar4_AIRules({
+      purpose: 'Test app',
+      frontend: 'React',
+      backend: 'Express',
+      database: 'PostgreSQL',
+      deploy: 'Vercel'
+    }, 'TestApp');
+
+    const settings = JSON.parse(S.files['.claude/settings.json']);
+
+    // Should not contain any actual secrets
+    const str = JSON.stringify(settings);
+    assert.ok(!str.includes('sk-'), 'Should not contain API keys');
+    assert.ok(!str.includes('password'), 'Should not contain passwords');
+    assert.ok(!str.match(/secret[^s]/i), 'Should not contain secret values (except "secrets" as word)');
+    assert.ok(!str.includes('token'), 'Should not contain token values');
+
+    // Should only contain configuration
+    assert.ok(settings.permissions, 'Should have permissions config');
+    assert.ok(settings.context, 'Should have context config');
+    assert.ok(settings.rules, 'Should have rules config');
+  });
+
+  await t.test('.claude/settings.json dangerous commands are comprehensive', () => {
+    // Initialize test environment
+    const S = {answers:{},skill:'intermediate',lang:'ja',preset:'custom',projectName:'T',phase:1,step:0,skipped:[],files:{},editedFiles:{},prevFiles:{},genLang:'en',previewFile:null,pillar:0};
+    eval(fs.readFileSync('src/data/presets.js','utf-8').replace('const PR','var PR'));
+    eval(fs.readFileSync('src/generators/common.js','utf-8').replace(/const /g,'var '));
+    eval(fs.readFileSync('src/generators/p4-airules.js','utf-8'));
+
+    genPillar4_AIRules({
+      purpose: 'Test',
+      frontend: 'React',
+      backend: 'Express',
+      database: 'PostgreSQL'
+    }, 'Test');
+
+    const settings = JSON.parse(S.files['.claude/settings.json']);
+    const dangerousCmds = settings.permissions.dangerousCommands.requireConfirmation;
+
+    // Should require confirmation for destructive operations
+    assert.ok(dangerousCmds.includes('rm -rf'), 'Should protect against rm -rf');
+    assert.ok(dangerousCmds.includes('git push --force'), 'Should protect against force push');
+    assert.ok(dangerousCmds.includes('git reset --hard'), 'Should protect against hard reset');
+    assert.ok(dangerousCmds.includes('DROP TABLE'), 'Should protect against DROP TABLE');
+    assert.ok(dangerousCmds.includes('DELETE FROM'), 'Should protect against DELETE FROM');
+  });
 });

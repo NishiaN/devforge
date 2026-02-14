@@ -69,6 +69,7 @@ const jsFiles = [
   'generators/p11-implguide.js',
   'generators/p12-security.js',
   'generators/p13-strategy.js',
+  'generators/p14-ops.js',
   'generators/docs.js',
   'generators/common.js',
 

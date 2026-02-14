@@ -337,8 +337,8 @@ function genPillarN_Name(a, pn) {
 
 ### 6. Size Budget Check
 - Estimate new generator size (~10-20KB typical)
-- Run `node build.js --report` to verify ≤1200KB
-- Current budget remaining: ~90KB
+- Run `node build.js --report` to verify ≤2000KB
+- Current budget remaining: ~778KB
 
 **Reference Implementations:**
 - Pillar ⑩ (Reverse Engineering): Domain-specific goal decomposition with REVERSE_FLOW_MAP

@@ -241,7 +241,9 @@ function buildFileTree(){
     files.push({name:'mcp-config.json',path:'mcp-config.json'});
   } else if(pillar===3){ // AI Rules
     ['.cursor/rules','.github/copilot-instructions.md','.windsurfrules','.clinerules',
-     '.kiro/spec.md','CLAUDE.md','AI_BRIEF.md','AGENTS.md','codex-instructions.md',
+     '.kiro/spec.md','CLAUDE.md','.claude/rules/spec.md','.claude/rules/frontend.md',
+     '.claude/rules/backend.md','.claude/rules/test.md','.claude/rules/ops.md',
+     '.claude/settings.json','AI_BRIEF.md','AGENTS.md','codex-instructions.md',
      'skills/project.md','skills/catalog.md','skills/pipelines.md','skills/factory.md',
      'skills/README.md','skills/skill_map.md','skills/agents/coordinator.md','skills/agents/reviewer.md',
      '.ai/hooks.yml','.gemini/settings.json'
@@ -280,6 +282,10 @@ function buildFileTree(){
   } else if(pillar===12){ // Strategic Intelligence
     files.push({folder:true,name:'docs'});
     ['48_industry_blueprint','49_tech_radar','50_stakeholder_strategy','51_operational_excellence','52_advanced_scenarios'].forEach(f=>
+      files.push({name:'  '+f+'.md',path:'docs/'+f+'.md'}));
+  } else if(pillar===13){ // Ops Intelligence
+    files.push({folder:true,name:'docs'});
+    ['53_ops_runbook','54_ops_checklist','55_ops_plane_design'].forEach(f=>
       files.push({name:'  '+f+'.md',path:'docs/'+f+'.md'}));
   }
   // Common files

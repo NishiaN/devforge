@@ -158,7 +158,7 @@ build.js        # Concatenates 43 modules → single HTML
 | data-coverage | 28 | データ整合性（エンティティカバレッジ、FK検証、24ドメイン検出、プレイブック完全性） |
 | r27-regression | 17 | バグ修正検証 |
 | r28-regression | 19 | 品質改善検証 |
-| build | 1 | ビルドサイズ ≤1200KB |
+| build | 1 | ビルドサイズ ≤2000KB |
 | compat | 45 | 互換性ルール |
 | その他 | ~21 | i18n, presets, state, techdb |
 

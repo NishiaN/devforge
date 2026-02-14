@@ -177,6 +177,59 @@ test('FEATURE_DETAILS: all features have criteria and tests', () => {
     'Incomplete feature details: ' + incomplete.join(', '));
 });
 
+// ═══ DOMAIN_OPS Coverage Tests ═══
+
+test('DOMAIN_OPS: all 24 domains have ops definitions', () => {
+  const expectedDomains = [
+    'education', 'ec', 'saas', 'fintech', 'health', 'booking',
+    'marketplace', 'community', 'content', 'analytics', 'iot',
+    'realestate', 'legal', 'hr', 'portfolio', 'tool', 'ai',
+    'automation', 'event', 'gamify', 'collab', 'devtool',
+    'creator', 'newsletter'
+  ];
+
+  const missing = [];
+  expectedDomains.forEach(domain => {
+    if (!DOMAIN_OPS[domain]) {
+      missing.push(domain);
+    }
+  });
+
+  assert.equal(missing.length, 0,
+    `Missing DOMAIN_OPS entries: ${missing.join(', ')}`);
+  assert.ok(DOMAIN_OPS._default, 'Missing _default in DOMAIN_OPS');
+});
+
+test('DOMAIN_OPS: all entries have required fields', () => {
+  const incomplete = [];
+  Object.entries(DOMAIN_OPS).forEach(([domain, ops]) => {
+    if (!ops.slo) incomplete.push(`${domain}: missing slo`);
+    if (!ops.flags_ja || ops.flags_ja.length === 0) incomplete.push(`${domain}: empty flags_ja`);
+    if (!ops.flags_en || ops.flags_en.length === 0) incomplete.push(`${domain}: empty flags_en`);
+    if (!ops.jobs_ja || ops.jobs_ja.length === 0) incomplete.push(`${domain}: empty jobs_ja`);
+    if (!ops.jobs_en || ops.jobs_en.length === 0) incomplete.push(`${domain}: empty jobs_en`);
+    if (!ops.backup_ja || ops.backup_ja.length === 0) incomplete.push(`${domain}: empty backup_ja`);
+    if (!ops.backup_en || ops.backup_en.length === 0) incomplete.push(`${domain}: empty backup_en`);
+    if (!ops.hardening_ja || ops.hardening_ja.length === 0) incomplete.push(`${domain}: empty hardening_ja`);
+    if (!ops.hardening_en || ops.hardening_en.length === 0) incomplete.push(`${domain}: empty hardening_en`);
+  });
+
+  assert.equal(incomplete.length, 0,
+    `Incomplete DOMAIN_OPS: ${incomplete.join(', ')}`);
+});
+
+test('DOMAIN_OPS: SLO values are valid percentages', () => {
+  const invalid = [];
+  Object.entries(DOMAIN_OPS).forEach(([domain, ops]) => {
+    if (!ops.slo.match(/^9[0-9](\.\d+)?%$/)) {
+      invalid.push(`${domain}: invalid SLO "${ops.slo}"`);
+    }
+  });
+
+  assert.equal(invalid.length, 0,
+    `Invalid SLO values: ${invalid.join(', ')}`);
+});
+
 test('pluralize: handles all preset entity names correctly', () => {
   const allEntities = new Set();
   Object.values(PR).forEach(preset => {

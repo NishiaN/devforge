@@ -25,7 +25,7 @@ function showAILauncher(){
       fmt:'Markdown表:\n| # | ファイル | 指摘 | 優先度 | 推奨アクション |\n|---|---------|------|--------|----------------|\n| 1 | .spec/xxx.md | ... | P0 | ... |'},
     implement:{icon:'🚀',label:'MVP実装',desc:'仕様書からMVP開発開始',
       sys:'あなたはフルスタック開発者です。SDD仕様書に忠実に実装します。',
-      prompt:'docs/23_tasks.mdから最優先タスク(P0またはIssue #1)を1つ選んで実装してください。\n\n実装手順:\n1. 型定義を作成 (TypeScript interface/type)\n2. データアクセス層を実装 (ORM/SDK)\n3. ビジネスロジックを実装\n4. UIコンポーネントを実装\n5. Vitestユニットテストを作成\n\nconstitution.mdの設計原則に従い、technical-plan.mdのアーキテクチャに沿ってください。\n\ndocs/39_implementation_playbook.mdのドメイン別実装パターンを参照し、業種固有のベストプラクティスに従ってください。',
+      prompt:'docs/23_tasks.mdから最優先タスク(P0またはIssue #1)を1つ選んで実装してください。\n\n実装手順:\n1. 型定義を作成 (TypeScript interface/type)\n2. データアクセス層を実装 (ORM/SDK)\n3. ビジネスロジックを実装\n4. UIコンポーネントを実装\n5. Vitestユニットテストを作成\n\nconstitution.mdの設計原則に従い、technical-plan.mdのアーキテクチャに沿ってください。\n\ndocs/39_implementation_playbook.mdのドメイン別実装パターンを参照し、業種固有のベストプラクティスに従ってください。\ndocs/40_ai_dev_runbook.mdのWSCI（Write→Self-Critique→Improve）ワークフローで品質検証を実施してください。\ndocs/31_industry_playbook.mdのドメイン固有チェックリストも確認してください。',
       fmt:'ファイルパス付きコードブロック:\n```typescript:path/to/file.ts\n// code\n```\n必ずテストを含めてください。'},
     test:{icon:'🧪',label:'テスト生成',desc:'テストケース自動作成',
       sys:'あなたはQAエンジニアです。仕様書からテストケースを網羅的に作成します。',
@@ -50,6 +50,7 @@ function showAILauncher(){
         '7. A07 – 識別と認証の失敗\n8. A08 – ソフトウェアとデータの整合性の不備\n'+
         '9. A09 – セキュリティログと監視の不備\n10. A10 – インフラ保護（DNS Rebinding・Egress制限）\n\n'+
         'docs/08_security.mdの設計と実装の乖離もチェックしてください。\n'+
+        'docs/53_ops_runbook.mdのA09項目（セキュリティログ・監視）との整合性も確認してください。\n'+
         '各項目の状態を✅(OK)/⚠️(注意)/❌(脆弱)で評価してください。',
       fmt:'Markdown表:\n| OWASP# | 項目 | 状態 | 詳細 | 推奨対策 |\n|--------|------|------|------|----------|\n| A01 | Access Control | ⚠️ | ... | ... |'},
     docs:{icon:'📝',label:'ドキュメント補完',desc:'不足文書の特定と生成',
@@ -66,7 +67,7 @@ function showAILauncher(){
       fmt:'Markdown表:\n| # | 違反箇所 | 定義元 | 違反内容 | 深刻度 | 修正案 |\n|---|---------|--------|---------|--------|--------|\n\n## アーキテクチャ適合スコア: X/10'},
     perf:{icon:'⚡',label:'パフォーマンス最適化',desc:'ボトルネック特定と改善提案',
       sys:'あなたはパフォーマンスエンジニアです。非機能要件に基づきボトルネックを特定します。',
-      prompt:'パフォーマンス分析:\n1. .spec/constitution.mdの非機能要件（NFR）からパフォーマンス目標値を抽出\n2. docs/41_growth_intelligence.mdのパフォーマンスバジェットとCore Web Vitals目標値を確認\n3. N+1クエリ、不要な再レンダリング、バンドルサイズ問題を検出\n4. 各問題に改善前/改善後の推定値を付与\n5. 優先度順の改善ロードマップを作成',
+      prompt:'パフォーマンス分析:\n1. .spec/constitution.mdの非機能要件（NFR）からパフォーマンス目標値を抽出\n2. docs/41_growth_intelligence.mdのパフォーマンスバジェットとCore Web Vitals目標値を確認\n3. N+1クエリ、不要な再レンダリング、バンドルサイズ問題を検出\n4. 各問題に改善前/改善後の推定値を付与\n5. 優先度順の改善ロードマップを作成\n6. docs/19_performance.mdのパフォーマンス設計パターンと照合\n7. docs/17_monitoring.mdの監視メトリクス（レイテンシ・スループット）との整合性を確認',
       fmt:'## ボトルネック一覧\n| # | 箇所 | 種別 | 現状推定 | 目標値 | 改善策 | 効果 |\n|---|------|------|---------|--------|--------|------|\n\n## 改善コード例\n```typescript:path/to/file.ts\n// optimized\n```'},
     api:{icon:'🔌',label:'API統合コード生成',desc:'外部API連携コードの自動生成',
       sys:'あなたはインテグレーションエンジニアです。型安全なAPI統合コードを生成します。',
@@ -90,7 +91,7 @@ function showAILauncher(){
       fmt:'## 抽出された文字列\n| キー | 日本語 | English |\n|------|--------|----------|\n\n```json:locales/ja.json\n{}\n```\n```json:locales/en.json\n{}\n```\n\n## 変換後コード\n```typescript:path/to/file.ts\n// i18n-ready code\n```'},
     growth:{icon:'📈',label:'グロース戦略',desc:'成長ファネル・KPI・価格戦略の最適化',
       sys:'あなたはグロースエンジニアです。データドリブンな成長戦略を設計します。',
-      prompt:'グロース分析:\n1. docs/41_growth_intelligence.mdの成長ファネルとCVRベンチマークを確認\n2. 現在のスタック構成のシナジースコアを評価\n3. ドメイン別グロース方程式に基づきボトルネックを特定\n4. 5つの成長レバーを優先度順に提案\n5. 松竹梅の3段階価格戦略を設計（行動経済学: 妥協効果・アンカリング）',
+      prompt:'グロース分析:\n1. docs/41_growth_intelligence.mdの成長ファネルとCVRベンチマークを確認\n2. 現在のスタック構成のシナジースコアを評価\n3. ドメイン別グロース方程式に基づきボトルネックを特定\n4. 5つの成長レバーを優先度順に提案\n5. 松竹梅の3段階価格戦略を設計（行動経済学: 妥協効果・アンカリング）\n6. docs/48_industry_blueprint.mdの業界成長パターン（TAM/SAM/SOM戦略）と照合\n7. docs/50_stakeholder_strategy.mdのターゲット戦略との整合性を検証',
       fmt:'## ファネル分析\n| ステージ | 現状CVR | 目標CVR | 改善施策 |\n\n## 成長レバー\n| # | レバー | 期待効果 | 工数 | 優先度 |\n\n## 価格戦略\n| プラン | 価格 | 機能 | ターゲット |'},
     reverse:{icon:'🎯',label:'ゴール逆算設計',desc:'目標からの逆算計画とギャップ分析',
       sys:'あなたはプロジェクトストラテジストです。ゴールから逆算して計画を策定します。',
@@ -98,16 +99,28 @@ function showAILauncher(){
       fmt:'## ギャップ分析\n| 目標 | 現状 | ギャップ | 対策 | 期限 |\n\n## クリティカルパス\n```mermaid\ngantt\n```\n\n## マイルストーン\n| MS | 完了基準 | 依存 | リスク |'},
     incident:{icon:'🚨',label:'インシデント対応',desc:'障害対応ランブック・ポストモーテム作成',
       sys:'あなたはSREエンジニアです。インシデント対応と再発防止を専門とします。',
-      prompt:'インシデント対応:\n1. docs/34_incident_response.mdのインシデント対応フローを確認\n2. docs/25_error_logs.mdから関連する過去のエラーパターンを特定\n3. 影響範囲（ユーザー数・機能・データ）を評価\n4. 緊急対応手順（ロールバック・フェイルオーバー）を策定\n5. ポストモーテム（タイムライン・根本原因・改善アクション）をドラフト',
+      prompt:'インシデント対応:\n1. docs/34_incident_response.mdのインシデント対応フローを確認\n2. docs/25_error_logs.mdから関連する過去のエラーパターンを特定\n3. 影響範囲（ユーザー数・機能・データ）を評価\n4. 緊急対応手順（ロールバック・フェイルオーバー）を策定\n5. ポストモーテム（タイムライン・根本原因・改善アクション）をドラフト\n6. docs/53_ops_runbook.mdのSLO/SLI基準と照合し、SLO違反の有無を判定\n7. docs/55_ops_plane_design.mdのサーキットブレーカー設定を確認し、自動遮断の妥当性を評価',
       fmt:'## 影響評価\n| 項目 | 内容 |\n| 影響範囲 | ... |\n| 深刻度 | SEV1/2/3 |\n\n## 対応手順\n1. 検知 → 2. トリアージ → 3. 対応 → 4. 復旧 → 5. 振り返り\n\n## ポストモーテム\n| タイムライン | アクション | 担当 |'},
     onboard:{icon:'🎓',label:'オンボーディング',desc:'新メンバー・AIエージェント向け引き継ぎ資料',
       sys:'あなたはテクニカルオンボーディングスペシャリストです。新しい開発者が最速で戦力化する資料を作成します。',
-      prompt:'オンボーディング資料作成:\n1. CLAUDE.mdとAI_BRIEF.mdからプロジェクト概要を要約\n2. .spec/constitution.mdの設計原則とdocs/03_architecture.mdのアーキテクチャを図解\n3. docs/42_skill_guide.mdのスキルレベル別ワークフローを整理\n4. 最初の1週間のタスクリストを.spec/tasks.mdから抽出\n5. よくある落とし穴をdocs/37_bug_prevention.mdから抽出しFAQ化',
+      prompt:'オンボーディング資料作成:\n1. CLAUDE.mdとAI_BRIEF.mdからプロジェクト概要を要約\n2. .spec/constitution.mdの設計原則とdocs/03_architecture.mdのアーキテクチャを図解\n3. docs/42_skill_guide.mdのスキルレベル別ワークフローを整理\n4. 最初の1週間のタスクリストを.spec/tasks.mdから抽出\n5. よくある落とし穴をdocs/37_bug_prevention.mdから抽出しFAQ化\n6. .claude/rules/の5ファイル構造（spec.md, frontend.md, backend.md, test.md, ops.md）を説明\n7. docs/55_ops_plane_design.mdのDev×Ops責任マトリクスで役割分担を明記',
       fmt:'## プロジェクト概要（5分で理解）\n\n## アーキテクチャ図\n```mermaid\n```\n\n## 最初の1週間\n| 日 | タスク | 参照ファイル |\n\n## FAQ\n| 質問 | 回答 |'},
     cicd:{icon:'⚙️',label:'CI/CD設計',desc:'デプロイパイプラインと品質ゲートの設計',
       sys:'あなたはDevOpsエンジニアです。CI/CDパイプラインと品質ゲートを設計します。',
-      prompt:'CI/CD設計:\n1. .github/workflows/ci.ymlの現行パイプラインを分析\n2. docs/09_release_checklist.mdのリリースチェックリストを品質ゲートに変換\n3. docs/36_test_strategy.mdのテスト戦略をパイプラインステージに統合\n4. .spec/verification.mdの検証基準を自動化可能な形式に変換\n5. ブルーグリーン/カナリアデプロイ戦略を提案',
+      prompt:'CI/CD設計:\n1. .github/workflows/ci.ymlの現行パイプラインを分析\n2. docs/09_release_checklist.mdのリリースチェックリストを品質ゲートに変換\n3. docs/36_test_strategy.mdのテスト戦略をパイプラインステージに統合\n4. .spec/verification.mdの検証基準を自動化可能な形式に変換\n5. ブルーグリーン/カナリアデプロイ戦略を提案\n6. docs/53_ops_runbook.mdのSLO品質ゲート（エラー率・レイテンシ閾値）を追加\n7. docs/54_ops_checklist.mdの運用準備チェックリストをリリースゲートに統合',
       fmt:'## パイプライン設計\n```mermaid\nflowchart LR\n```\n\n## 品質ゲート\n| ステージ | チェック項目 | 閾値 | 失敗時 |\n\n## GitHub Actions\n```yaml\n# .github/workflows/ci.yml\n```'},
+    ops:{icon:'🛡️',label:'Ops準備レビュー',desc:'SLO検証・Feature Flag・サーキットブレーカー設定監査',
+      sys:'あなたはSRE/Platform Engineerです。運用準備の妥当性を検証します。',
+      prompt:'Ops準備レビュー:\n1. docs/53_ops_runbook.mdのSLO/SLI定義がドメイン要件に適合しているか検証\n2. Feature Flagの網羅性チェック（課金・通知・外部API等の重要機能に対するキルスイッチ）\n3. docs/55_ops_plane_design.mdのサーキットブレーカー閾値（エラー率・タイムアウト）の妥当性を評価\n4. docs/54_ops_checklist.mdの12 Ops Capabilities（Observability, Jobs, Backup等）の実装状況を検証\n5. RPO/RTOが業界基準（Fintech: RPO<5分/RTO<15分等）に適合しているか照合\n6. docs/17_monitoring.mdの監視体制とObservability整合性をチェック\n7. Ops Readiness スコア（12項目）を算出し、不足項目を抽出',
+      fmt:'## Ops Readiness スコア\n| Capability | 状態 | 妥当性 | 改善アクション |\n|------------|------|--------|----------------|\n| SLO定義 | ✅/⚠️/❌ | 99.9%(要件: 99.99%) | ... |\n\n## SLO妥当性評価\n| SLI | 現在設定 | ドメイン推奨 | 判定 |\n\n## 改善ロードマップ\n| 優先度 | 項目 | 期限 | 担当 |'},
+    strategy:{icon:'🏢',label:'戦略インテリジェンス',desc:'業界ブループリント・テックレーダー・ステークホルダー戦略',
+      sys:'あなたはProduct Strategist/Business Analystです。事業戦略の整合性を検証します。',
+      prompt:'戦略インテリジェンス分析:\n1. docs/48_industry_blueprint.mdの業界ブループリントとの適合度を検証（TAM/SAM/SOM戦略、規制遵守）\n2. docs/49_tech_radar.mdのテックレーダー評価（Adopt/Trial/Assess/Hold）と技術選定の整合性をチェック\n3. docs/50_stakeholder_strategy.mdのステークホルダー戦略（ターゲット・KPI・成長指標）との乖離を検出\n4. docs/51_operational_excellence.mdの運用成熟度ギャップ分析（現状Lv1→目標Lv3等）\n5. docs/52_strategic_roadmap.mdのロードマップから短期アクション（3ヶ月以内）を抽出\n6. docs/41_growth_intelligence.mdの成長方程式とビジネスモデルの整合性を評価\n7. 戦略スコアカード（5軸評価）を作成し、優先改善領域を提示',
+      fmt:'## 戦略スコアカード\n| 軸 | スコア(1-5) | 評価 | ギャップ |\n|-----|------------|------|----------|\n| 業界適合 | X/5 | ... | ... |\n| 技術選定 | X/5 | ... | ... |\n\n## テックレーダー評価\n| 技術 | 現状採用判断 | Radar推奨 | 乖離理由 |\n\n## 短期アクションプラン（3ヶ月）\n| # | アクション | KPI | 担当 | 期限 |'},
+    risk:{icon:'⚖️',label:'リスク・コンプライアンス',desc:'4軸リスク再評価・STRIDE残存リスク・コンプライアンス充足',
+      sys:'あなたはRisk Analyst/Compliance Officerです。リスクとコンプライアンスを統合評価します。',
+      prompt:'リスク・コンプライアンス分析:\n1. docs/14_risks.mdの4軸リスク（技術・組織・法務・運用）を再評価し、現在の緩和策の有効性を検証\n2. docs/45_compliance_matrix.mdのコンプライアンス充足度（GDPR, PCI-DSS等）をチェック\n3. docs/44_threat_model.mdのSTRIDE脅威分析から残存リスクTOP5を抽出\n4. docs/53_ops_runbook.mdのSLO運用リスク（SLO未達ペナルティ・エスカレーション体制）を評価\n5. リスクヒートマップ（発生確率×影響度）を作成し、P0リスクを特定\n6. コンプライアンス自動監査（Terraform Sentinel/OPA等）の導入状況を確認\n7. リスク緩和策TOP5を優先度順に提示（技術的対策・プロセス改善・保険等）',
+      fmt:'## リスクヒートマップ\n| リスク | 確率 | 影響度 | スコア | 緩和策 | 状態 |\n|--------|------|--------|--------|--------|------|\n| ... | H/M/L | H/M/L | X | ... | ✅/⚠️/❌ |\n\n## コンプライアンス充足度\n| 規制 | 要求項目数 | 充足数 | 充足率 | 未対応項目 |\n\n## 残存リスクTOP5\n| # | リスク | STRIDE分類 | 現状緩和策 | 推奨追加対策 | 工数 |'},
   }:{
     review:{icon:'🔍',label:'Spec Review',desc:'Find contradictions, gaps & improvements',
       sys:'You are an experienced tech lead and SDD architect.',
@@ -115,7 +128,7 @@ function showAILauncher(){
       fmt:'Markdown table:\n| # | File | Finding | Priority | Recommended Action |\n|---|------|---------|----------|--------------------|\n| 1 | .spec/xxx.md | ... | P0 | ... |'},
     implement:{icon:'🚀',label:'MVP Build',desc:'Start implementation from specs',
       sys:'You are a full-stack developer. You implement faithfully according to SDD specs.',
-      prompt:'Select the highest priority task (P0 or Issue #1) from docs/23_tasks.md and implement it.\n\nImplementation steps:\n1. Create type definitions (TypeScript interface/type)\n2. Implement data access layer (ORM/SDK)\n3. Implement business logic\n4. Implement UI components\n5. Create Vitest unit tests\n\nFollow design principles in constitution.md and architecture in technical-plan.md.\n\nReference docs/39_implementation_playbook.md for domain-specific implementation patterns and industry best practices.',
+      prompt:'Select the highest priority task (P0 or Issue #1) from docs/23_tasks.md and implement it.\n\nImplementation steps:\n1. Create type definitions (TypeScript interface/type)\n2. Implement data access layer (ORM/SDK)\n3. Implement business logic\n4. Implement UI components\n5. Create Vitest unit tests\n\nFollow design principles in constitution.md and architecture in technical-plan.md.\n\nReference docs/39_implementation_playbook.md for domain-specific implementation patterns and industry best practices.\nApply docs/40_ai_dev_runbook.md WSCI (Write→Self-Critique→Improve) workflow for quality validation.\nCheck docs/31_industry_playbook.md domain-specific checklists.',
       fmt:'Code blocks with file paths:\n```typescript:path/to/file.ts\n// code\n```\nMust include tests.'},
     test:{icon:'🧪',label:'Test Generation',desc:'Auto-generate test cases',
       sys:'You are a QA engineer. You create comprehensive test cases from specifications.',
@@ -140,6 +153,7 @@ function showAILauncher(){
         '7. A07 – Identification and Authentication Failures\n8. A08 – Software and Data Integrity Failures\n'+
         '9. A09 – Security Logging and Monitoring Failures\n10. A10 – Infrastructure Protection (DNS Rebinding & Egress)\n\n'+
         'Also check for drift between docs/08_security.md design and implementation.\n'+
+        'Verify alignment between docs/53_ops_runbook.md A09 item (security logging/monitoring) and current setup.\n'+
         'Evaluate each item as ✅(OK)/⚠️(Warning)/❌(Vulnerable).',
       fmt:'Markdown table:\n| OWASP# | Item | Status | Details | Recommended Fix |\n|--------|------|--------|---------|------------------|\n| A01 | Access Control | ⚠️ | ... | ... |'},
     docs:{icon:'📝',label:'Doc Completion',desc:'Identify missing docs & generate them',
@@ -156,7 +170,7 @@ function showAILauncher(){
       fmt:'Markdown table:\n| # | Location | Source | Violation | Severity | Fix |\n|---|----------|--------|-----------|----------|-----|\n\n## Architecture Compliance Score: X/10'},
     perf:{icon:'⚡',label:'Performance Optimization',desc:'Identify bottlenecks & suggest fixes',
       sys:'You are a performance engineer. You identify bottlenecks against NFR targets and propose improvements.',
-      prompt:'Performance analysis:\n1. Extract performance targets from NFR section in .spec/constitution.md\n2. Review docs/41_growth_intelligence.md performance budgets and Core Web Vitals targets (LCP<2.5s, FID<100ms, CLS<0.1)\n3. Detect N+1 queries, unnecessary re-renders, bundle size issues\n4. Provide before/after estimates for each issue\n5. Create a prioritized improvement roadmap',
+      prompt:'Performance analysis:\n1. Extract performance targets from NFR section in .spec/constitution.md\n2. Review docs/41_growth_intelligence.md performance budgets and Core Web Vitals targets (LCP<2.5s, FID<100ms, CLS<0.1)\n3. Detect N+1 queries, unnecessary re-renders, bundle size issues\n4. Provide before/after estimates for each issue\n5. Create a prioritized improvement roadmap\n6. Cross-reference docs/19_performance.md performance design patterns\n7. Verify alignment with docs/17_monitoring.md metrics (latency/throughput)',
       fmt:'## Bottleneck List\n| # | Location | Type | Current Est. | Target | Fix | Impact |\n|---|----------|------|-------------|--------|-----|--------|\n\n## Optimized Code\n```typescript:path/to/file.ts\n// optimized\n```'},
     api:{icon:'🔌',label:'API Integration Generator',desc:'Generate type-safe API integration code',
       sys:'You are an integration engineer. You generate type-safe API integration code.',
@@ -180,7 +194,7 @@ function showAILauncher(){
       fmt:'## Extracted Strings\n| Key | Japanese | English |\n|-----|----------|----------|\n\n```json:locales/ja.json\n{}\n```\n```json:locales/en.json\n{}\n```\n\n## Converted Code\n```typescript:path/to/file.ts\n// i18n-ready code\n```'},
     growth:{icon:'📈',label:'Growth Strategy',desc:'Optimize growth funnels, KPIs & pricing',
       sys:'You are a growth engineer. You design data-driven growth strategies.',
-      prompt:'Growth analysis:\n1. Review growth funnel and CVR benchmarks in docs/41_growth_intelligence.md\n2. Evaluate stack synergy score for current configuration\n3. Identify bottlenecks using domain-specific growth equation\n4. Propose 5 growth levers in priority order\n5. Design 3-tier pricing strategy (behavioral economics: compromise effect, anchoring)',
+      prompt:'Growth analysis:\n1. Review growth funnel and CVR benchmarks in docs/41_growth_intelligence.md\n2. Evaluate stack synergy score for current configuration\n3. Identify bottlenecks using domain-specific growth equation\n4. Propose 5 growth levers in priority order\n5. Design 3-tier pricing strategy (behavioral economics: compromise effect, anchoring)\n6. Cross-reference docs/48_industry_blueprint.md industry growth patterns (TAM/SAM/SOM strategy)\n7. Validate alignment with docs/50_stakeholder_strategy.md target strategy',
       fmt:'## Funnel Analysis\n| Stage | Current CVR | Target CVR | Improvement |\n\n## Growth Levers\n| # | Lever | Expected Impact | Effort | Priority |\n\n## Pricing Strategy\n| Plan | Price | Features | Target |'},
     reverse:{icon:'🎯',label:'Goal Reverse Design',desc:'Reverse-plan from goals with gap analysis',
       sys:'You are a project strategist. You reverse-engineer plans from goals.',
@@ -188,16 +202,28 @@ function showAILauncher(){
       fmt:'## Gap Analysis\n| Goal | Current | Gap | Action | Deadline |\n\n## Critical Path\n```mermaid\ngantt\n```\n\n## Milestones\n| MS | Criteria | Dependencies | Risk |'},
     incident:{icon:'🚨',label:'Incident Response',desc:'Create runbooks & post-mortems',
       sys:'You are an SRE engineer specializing in incident response and prevention.',
-      prompt:'Incident response:\n1. Review incident response flow in docs/34_incident_response.md\n2. Identify related past error patterns from docs/25_error_logs.md\n3. Assess impact scope (users, features, data)\n4. Create emergency procedures (rollback, failover)\n5. Draft post-mortem (timeline, root cause, improvement actions)',
+      prompt:'Incident response:\n1. Review incident response flow in docs/34_incident_response.md\n2. Identify related past error patterns from docs/25_error_logs.md\n3. Assess impact scope (users, features, data)\n4. Create emergency procedures (rollback, failover)\n5. Draft post-mortem (timeline, root cause, improvement actions)\n6. Cross-reference docs/53_ops_runbook.md SLO/SLI baseline to determine SLO violations\n7. Review docs/55_ops_plane_design.md circuit breaker settings to assess auto-cutoff validity',
       fmt:'## Impact Assessment\n| Item | Detail |\n| Scope | ... |\n| Severity | SEV1/2/3 |\n\n## Response Steps\n1. Detect → 2. Triage → 3. Respond → 4. Recover → 5. Review\n\n## Post-Mortem\n| Timeline | Action | Owner |'},
     onboard:{icon:'🎓',label:'Onboarding',desc:'Handoff docs for new members & AI agents',
       sys:'You are a technical onboarding specialist. You create materials for fastest developer ramp-up.',
-      prompt:'Create onboarding materials:\n1. Summarize project from CLAUDE.md and AI_BRIEF.md\n2. Diagram design principles from .spec/constitution.md and architecture from docs/03_architecture.md\n3. Organize skill-level workflows from docs/42_skill_guide.md\n4. Extract first-week task list from .spec/tasks.md\n5. Create FAQ from common pitfalls in docs/37_bug_prevention.md',
+      prompt:'Create onboarding materials:\n1. Summarize project from CLAUDE.md and AI_BRIEF.md\n2. Diagram design principles from .spec/constitution.md and architecture from docs/03_architecture.md\n3. Organize skill-level workflows from docs/42_skill_guide.md\n4. Extract first-week task list from .spec/tasks.md\n5. Create FAQ from common pitfalls in docs/37_bug_prevention.md\n6. Explain .claude/rules/ 5-file structure (spec.md, frontend.md, backend.md, test.md, ops.md)\n7. Clarify Dev×Ops responsibility matrix from docs/55_ops_plane_design.md',
       fmt:'## Project Overview (5-min read)\n\n## Architecture Diagram\n```mermaid\n```\n\n## First Week\n| Day | Task | Reference File |\n\n## FAQ\n| Question | Answer |'},
     cicd:{icon:'⚙️',label:'CI/CD Design',desc:'Design deploy pipelines & quality gates',
       sys:'You are a DevOps engineer. You design CI/CD pipelines and quality gates.',
-      prompt:'CI/CD design:\n1. Analyze current pipeline in .github/workflows/ci.yml\n2. Convert docs/09_release_checklist.md checklist into quality gates\n3. Integrate docs/36_test_strategy.md test strategy into pipeline stages\n4. Convert .spec/verification.md criteria into automatable format\n5. Propose blue-green/canary deployment strategy',
+      prompt:'CI/CD design:\n1. Analyze current pipeline in .github/workflows/ci.yml\n2. Convert docs/09_release_checklist.md checklist into quality gates\n3. Integrate docs/36_test_strategy.md test strategy into pipeline stages\n4. Convert .spec/verification.md criteria into automatable format\n5. Propose blue-green/canary deployment strategy\n6. Add docs/53_ops_runbook.md SLO quality gates (error rate/latency thresholds)\n7. Integrate docs/54_ops_checklist.md ops readiness checklist as release gates',
       fmt:'## Pipeline Design\n```mermaid\nflowchart LR\n```\n\n## Quality Gates\n| Stage | Check | Threshold | On Failure |\n\n## GitHub Actions\n```yaml\n# .github/workflows/ci.yml\n```'},
+    ops:{icon:'🛡️',label:'Ops Readiness Review',desc:'Validate SLO, Feature Flags, Circuit Breaker settings',
+      sys:'You are an SRE/Platform Engineer. You validate operational readiness.',
+      prompt:'Ops Readiness Review:\n1. Verify docs/53_ops_runbook.md SLO/SLI definitions match domain requirements\n2. Check Feature Flag coverage (kill switches for payments, notifications, external APIs, etc.)\n3. Assess docs/55_ops_plane_design.md circuit breaker thresholds (error rate/timeout) validity\n4. Validate docs/54_ops_checklist.md 12 Ops Capabilities implementation (Observability, Jobs, Backup, etc.)\n5. Verify RPO/RTO meets industry standards (e.g., Fintech: RPO<5min/RTO<15min)\n6. Check docs/17_monitoring.md monitoring alignment with Observability requirements\n7. Calculate Ops Readiness Score (12 items) and identify gaps',
+      fmt:'## Ops Readiness Score\n| Capability | Status | Validity | Improvement Action |\n|------------|--------|----------|--------------------|\n| SLO Definition | ✅/⚠️/❌ | 99.9% (req: 99.99%) | ... |\n\n## SLO Validity Assessment\n| SLI | Current Setting | Domain Recommended | Verdict |\n\n## Improvement Roadmap\n| Priority | Item | Deadline | Owner |'},
+    strategy:{icon:'🏢',label:'Strategic Intelligence',desc:'Industry blueprint, tech radar, stakeholder strategy',
+      sys:'You are a Product Strategist/Business Analyst. You validate business strategy alignment.',
+      prompt:'Strategic Intelligence Analysis:\n1. Verify docs/48_industry_blueprint.md industry blueprint alignment (TAM/SAM/SOM, regulatory compliance)\n2. Check docs/49_tech_radar.md tech radar ratings (Adopt/Trial/Assess/Hold) vs current tech choices\n3. Detect gaps in docs/50_stakeholder_strategy.md stakeholder strategy (targets, KPIs, growth metrics)\n4. Analyze docs/51_operational_excellence.md operational maturity gap (current Lv1→target Lv3)\n5. Extract short-term actions (within 3 months) from docs/52_strategic_roadmap.md\n6. Evaluate business model alignment with docs/41_growth_intelligence.md growth equation\n7. Create strategic scorecard (5-axis assessment) and prioritize improvement areas',
+      fmt:'## Strategic Scorecard\n| Axis | Score(1-5) | Assessment | Gap |\n|------|------------|------------|-----|\n| Industry Fit | X/5 | ... | ... |\n| Tech Choice | X/5 | ... | ... |\n\n## Tech Radar Assessment\n| Technology | Current Adoption | Radar Recommendation | Gap Reason |\n\n## Short-Term Action Plan (3 months)\n| # | Action | KPI | Owner | Deadline |'},
+    risk:{icon:'⚖️',label:'Risk & Compliance',desc:'4-axis risk re-assessment, STRIDE residual risks, compliance',
+      sys:'You are a Risk Analyst/Compliance Officer. You perform integrated risk and compliance assessment.',
+      prompt:'Risk & Compliance Analysis:\n1. Re-assess docs/14_risks.md 4-axis risks (technical, organizational, legal, operational) and validate mitigation effectiveness\n2. Check docs/45_compliance_matrix.md compliance coverage (GDPR, PCI-DSS, etc.)\n3. Extract TOP5 residual risks from docs/44_threat_model.md STRIDE threat analysis\n4. Evaluate docs/53_ops_runbook.md SLO operational risks (SLO breach penalties, escalation)\n5. Create risk heatmap (probability × impact) and identify P0 risks\n6. Verify compliance automation (Terraform Sentinel/OPA) implementation status\n7. Present TOP5 risk mitigation measures in priority order (technical controls, process improvements, insurance, etc.)',
+      fmt:'## Risk Heatmap\n| Risk | Probability | Impact | Score | Mitigation | Status |\n|------|-------------|--------|-------|------------|--------|\n| ... | H/M/L | H/M/L | X | ... | ✅/⚠️/❌ |\n\n## Compliance Coverage\n| Regulation | Required Items | Met Items | Coverage % | Unmet Items |\n\n## TOP5 Residual Risks\n| # | Risk | STRIDE Category | Current Mitigation | Recommended Additional Controls | Effort |'},
     qa:{icon:'🐛',label:_ja?'QA・バグ検出':'QA & Bug Detection',desc:_ja?'ドメイン別バグパターンとQA戦略を基にテスト計画を生成':'Generate test plan based on domain-specific bug patterns and QA strategy',
       sys:_ja?'あなたはQAエンジニアです。docs/28_qa_strategy.mdのドメイン別バグパターンを参照し、具体的なテストシナリオを設計してください。':'You are a QA engineer. Reference docs/28_qa_strategy.md domain-specific bug patterns to design concrete test scenarios.',
       prompt:_ja?'以下の手順で実行:\n1. docs/28_qa_strategy.mdの重点領域を確認\n2. 各重点領域に対し具体的テストケースを3つ以上作成\n3. docs/32_qa_blueprint.mdの品質ゲートチェックリストと照合\n4. docs/33_test_matrix.mdのマトリクスに基づきカバレッジを検証\n5. よくあるバグパターンに対する回帰テストを設計\n6. 業界横断チェックリストの該当項目を検証\n7. 優先度マトリクスに基づきテスト実行順序を決定':'Follow these steps:\n1. Review focus areas from docs/28_qa_strategy.md\n2. Create 3+ concrete test cases per focus area\n3. Cross-reference with docs/32_qa_blueprint.md quality gate checklist\n4. Verify coverage against docs/33_test_matrix.md matrix\n5. Design regression tests for common bug patterns\n6. Verify applicable cross-cutting checklist items\n7. Determine test execution order based on priority matrix',
@@ -252,7 +278,7 @@ function showAILauncher(){
   }
 
   /* ── Prompt templates (ordered by dev lifecycle) ── */
-  const templateOrder=['review','arch','reverse','implement','api','i18n','test','qa','security','a11y','perf','metrics','refactor','debug','incident','docs','migrate','cicd','growth','onboard'];
+  const templateOrder=['review','arch','reverse','implement','api','i18n','test','qa','security','a11y','perf','metrics','refactor','debug','incident','ops','docs','migrate','cicd','growth','strategy','risk','onboard'];
   h+=`<div class="launch-templates"><h4>${_ja?'📋 プロンプトテンプレート':'📋 Prompt Templates'}</h4>`;
   templateOrder.forEach(key=>{
     const t=PT[key];

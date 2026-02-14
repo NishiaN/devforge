@@ -13,26 +13,38 @@ function showPostGenGuide(force){
     ['ロードマップに従う','ダッシュボード柱⑦のロードマップUIがそのまま学習計画。Layer 1から順にチェック。📖で公式ドキュメントにジャンプ。'],
     ['3ファイルだけ覚える','<code>README.md</code>(GitHub公開用) / <code>.devcontainer/</code>(開発環境一発) / <code>CLAUDE.md</code>(AIに全仕様を理解させる)'],
     ['AIに丸ごと渡す','「全ファイルコピー」(Ctrl+Shift+C)でAIに貼り付け → 仕様を把握した状態で開発スタート。'],
+    ['バックアップ必須','ZIP+JSONで2重保存。localStorageのみに依存しない。📦ZIPダウンロード + 📤JSONエクスポートを必ず実行。'],
+    ['生成物は設計書','107+ファイルは設計ドキュメント。AIツールに投入して実コードを生成。npm installで動くコードではない。'],
   ]:[
     ['Follow the Roadmap','Dashboard Pillar ⑦ is your learning plan. Check off from Layer 1. Hit 📖 for official docs.'],
     ['Remember 3 Files','<code>README.md</code>(GitHub ready) / <code>.devcontainer/</code>(instant dev env) / <code>CLAUDE.md</code>(AI understands your project)'],
     ['Feed Everything to AI','"Copy All" (Ctrl+Shift+C) → Paste into AI → Start coding with full context.'],
+    ['Always Backup','ZIP+JSON dual backup. Don\'t rely only on localStorage. 📦ZIP Download + 📤JSON Export are mandatory.'],
+    ['Files are Design Docs','107+ files are design documents. Feed to AI tools to generate real code. Not npm-installable code.'],
   ]):isP?(_ja?[
     ['Agent Teams並列開発','AGENTS.mdでエージェント役割定義 → Claude Code Subagents / Antigravity Manager Viewで並列実行。'],
     ['SDD仕様駆動','<code>.spec/</code>がSSoT。tasks.mdをタスクキューとしてAIに投入。verification.mdで品質判定。'],
-    ['6工程パイプライン','柱⑧のランチャーで📋レビュー→🔨実装→🧪テスト→♻️リファクタ→🔒セキュリティ→📝ドキュメント。'],
+    ['23テンプレートパイプライン','柱⑧で📋レビュー→🔨実装→🧪テスト→♻️リファクタ→🔒セキュリティ→📝ドキュメント→🛡️Ops準備。全工程自動化。'],
+    ['3-layer CLAUDE.md','ルートCLAUDE.md(薄い ~1.5Kトークン) + .claude/rules/(パス別5ファイル) + .claude/settings.json でトークン最小化。'],
+    ['Ops Plane統合','docs/53-55でSLO/SLI設計・Feature Flags・Circuit Breaker・12 Ops Capabilities。運用自動化。'],
   ]:[
     ['Agent Teams Parallel Dev','AGENTS.md defines roles → Run with Claude Code Subagents / Antigravity Manager View.'],
     ['SDD Spec-Driven','<code>.spec/</code> is your SSoT. Feed tasks.md as task queue. Verify with verification.md.'],
-    ['6-Stage Pipeline','Pillar ⑧ launcher: 📋Review → 🔨Implement → 🧪Test → ♻️Refactor → 🔒Security → 📝Docs.'],
+    ['23-Template Pipeline','Pillar ⑧: 📋Review → 🔨Implement → 🧪Test → ♻️Refactor → 🔒Security → 📝Docs → 🛡️Ops. Full automation.'],
+    ['3-layer CLAUDE.md','Root CLAUDE.md (thin ~1.5K tokens) + .claude/rules/ (path-specific 5 files) + .claude/settings.json minimizes tokens.'],
+    ['Ops Plane Integration','docs/53-55 for SLO/SLI design, Feature Flags, Circuit Breaker, 12 Ops Capabilities. Ops automation.'],
   ]):(_ja?[
     ['SDD仕様駆動開発','<code>.spec/</code>がSSoT。AIへの指示は「tasks.mdの○○を実装して、specification.mdに従って」で完結。'],
-    ['マルチAIツール統一','柱④の10ファイルでCursor/Claude Code/Copilot/Windsurf/Cline/Gemini全対応。フォルダに置くだけ。'],
+    ['マルチAIツール統一','柱④の10+ファイルでCursor/Claude Code/Copilot/Windsurf/Cline/Gemini全対応。フォルダに置くだけ。'],
     ['MCP拡張','mcp-config.jsonをプロジェクトルートに配置 → AIがcontext7/filesystem/playwright等を即利用。'],
+    ['セキュリティ＆Ops参照','docs/43-47セキュリティインテリジェンス（OWASP・STRIDE・コンプライアンス）、docs/53-55 Ops設計書（SLO/SLI・12 Capabilities）を参照。'],
+    ['.claude/rules/カスタマイズ','5つのパス別ルール(spec.md/frontend.md/backend.md/test.md/ops.md)をプロジェクトに合わせて編集。パス別自動ロード。'],
   ]:[
     ['SDD Spec-Driven Dev','<code>.spec/</code> is your SSoT. Tell AI: "implement X from tasks.md following specification.md".'],
-    ['Multi-AI Tool Unity','Pillar ④ generates 10 files covering Cursor/Claude Code/Copilot/Windsurf/Cline/Gemini. Just drop in.'],
+    ['Multi-AI Tool Unity','Pillar ④ generates 10+ files covering Cursor/Claude Code/Copilot/Windsurf/Cline/Gemini. Just drop in.'],
     ['MCP Extension','Place mcp-config.json in root → AI instantly uses context7, filesystem, playwright MCPs.'],
+    ['Security & Ops Reference','docs/43-47 Security Intelligence (OWASP, STRIDE, Compliance), docs/53-55 Ops docs (SLO/SLI, 12 Capabilities).'],
+    ['.claude/rules/ Customization','Edit 5 path-specific rules (spec.md/frontend.md/backend.md/test.md/ops.md) for your project. Auto-loaded by path.'],
   ]);
   const lvKey=isB?'b':isP?'p':'i';
   const prog=JSON.parse(_lsGet('devforge-guide-prog')||'{}');

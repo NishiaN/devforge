@@ -1,35 +1,36 @@
-# DevForge v9.0
+# DevForge v9.3.0
 
-You are working on DevForge v9.0, a wizard-based project spec generator.
-41 JS modules in src/ build into a single devforge-v9.html (~575KB).
+You are working on DevForge v9.3.0, an AI-driven development platform and spec generator.
+46 JS modules in src/ build into a single devforge-v9.html (~1283KB / 1400KB limit).
 
 ## Essential Commands
-- Build: `node build.js`
-- Test: `npm test` (150 tests + 248 assertions)
+- Build: `node build.js` (produces devforge-v9.html)
+- Test: `npm test` (283+ tests, all passing)
+- Dev: `npm run dev` (build + live-server on port 3000)
 - Always run tests before committing
 
 ## Architecture
 - Vanilla JS, no frameworks
-- Global state object `S` — call `save()` after mutations
+- Global state object `S` in `src/core/state.js` — call `save()` after mutations
 - Generator functions must start with `const G = S.genLang==='ja';`
 - Never use template literals (`${}`) inside single-quoted strings
 - CSS: custom properties only (--accent, --bg-2, --text)
 
-## Key Data Structures (src/generators/common.js)
-- ENTITY_COLUMNS: 30+ entity schemas with FK/constraints
-- ENTITY_METHODS: REST API method restrictions per entity
-- FEATURE_DETAILS: domain-specific acceptance criteria
-- getEntityColumns(name, G, knownEntities) — ALWAYS pass 3rd arg
-- getEntityMethods(name) — returns allowed HTTP methods
-- detectDomain(purpose) — returns domain key for 15 domains
+## Key Rules
+1. Edit `src/` only — never edit `devforge-v9.html` directly
+2. Always pass 3rd arg to `getEntityColumns(name, G, knownEntities)`
+3. Use `+=` operator when building strings (not just `+`)
+4. Use `esc()` for display text, `escAttr()` for HTML attributes
+5. Call `save()` after S mutations
 
 ## Output
-Generates 66-68 files including:
-- .spec/ (constitution, specification, technical-plan, tasks, verification)
-- .devcontainer/ (devcontainer.json, Dockerfile, compose, post-create)
-- docs/ (architecture, ER, API, screen, test, security, release, WBS, prompt, tasks, progress, error_logs, design_system, sequence_diagrams, qa_strategy, reverse_engineering, goal_decomposition)
-- AI rules (CLAUDE.md, AI_BRIEF.md, .cursorrules, .clinerules, .windsurfrules, AGENTS.md, .cursor/rules, skills/)
+Generates **107+ files** across 14 pillars:
+- .spec/ (5 files: constitution, specification, technical-plan, tasks, verification)
+- .devcontainer/ (4 files)
+- .claude/ (6 files: thin CLAUDE.md + 5 path-specific rules + settings.json)
+- docs/ (53 documents including security, ops, strategy, quality intelligence)
+- AI rules (CLAUDE.md, AI_BRIEF.md, .cursorrules, .clinerules, .windsurfrules, AGENTS.md, skills/)
 - CI/CD (.github/workflows/ci.yml)
 
 ## Critical
-See CLAUDE.md for full documentation. This file may be outdated - CLAUDE.md is the source of truth.
+**See CLAUDE.md for complete documentation** — comprehensive development guidelines, security best practices, common bugs, troubleshooting, and detailed architecture. CLAUDE.md is the authoritative source of truth.

@@ -110,14 +110,6 @@ ${coreRules}`;
     '| タスク種別 | 推奨読込ファイル | 推定トークン |\n|---------|---------------|----------|\n| 🆕 新規機能 | AI_BRIEF.md + .spec/specification.md + docs/04_er_diagram.md | ~6K |\n| 🐛 バグ修正 | AI_BRIEF.md + docs/25_error_logs.md + 該当ソースファイル | ~4K |\n| 📝 設計レビュー | .spec/constitution.md + .spec/specification.md + docs/32_qa_blueprint.md | ~7K |\n| 🔒 セキュリティ | docs/08_security.md + docs/25_error_logs.md + .spec/verification.md | ~5K |\n| 🧪 テスト作成 | docs/07_test_cases.md + docs/33_test_matrix.md + 対象コード | ~6K |\n| 📚 ドキュメント | AI_BRIEF.md + 該当実装 + .spec/specification.md | ~5K |\n| 🚀 デプロイ | docs/09_release.md + .github/workflows/ci.yml + .devcontainer/ | ~3K |\n| 🎯 計画・マイルストーン | docs/29_reverse_engineering.md + docs/30_goal_decomposition.md + .spec/tasks.md | ~5K |\n| 🔍 調査タスク | AI_BRIEF.md のみ（詳細はサブエージェントに委譲） | ~3K |\n| 📋 戦略・コンプライアンス | docs/48_industry_blueprint.md + docs/50_stakeholder_strategy.md | ~5K |':
     '| Task Type | Recommended Files | Est. Tokens |\n|-----------|------------------|-------------|\n| 🆕 New Feature | AI_BRIEF.md + .spec/specification.md + docs/04_er_diagram.md | ~6K |\n| 🐛 Bug Fix | AI_BRIEF.md + docs/25_error_logs.md + relevant source | ~4K |\n| 📝 Design Review | .spec/constitution.md + .spec/specification.md + docs/32_qa_blueprint.md | ~7K |\n| 🔒 Security | docs/08_security.md + docs/25_error_logs.md + .spec/verification.md | ~5K |\n| 🧪 Test Writing | docs/07_test_cases.md + docs/33_test_matrix.md + target code | ~6K |\n| 📚 Documentation | AI_BRIEF.md + implementation + .spec/specification.md | ~5K |\n| 🚀 Deployment | docs/09_release.md + .github/workflows/ci.yml + .devcontainer/ | ~3K |\n| 🎯 Planning / Milestones | docs/29_reverse_engineering.md + docs/30_goal_decomposition.md + .spec/tasks.md | ~5K |\n| 🔍 Research | AI_BRIEF.md only (delegate details to sub-agents) | ~3K |\n| 📋 Strategic / Compliance | docs/48_industry_blueprint.md + docs/50_stakeholder_strategy.md | ~5K |';
 
-  const compressionProtocol=G?
-    '\n## Context Compression Protocol\n\n**トリガー**: コンテキスト使用率 ≥80% 時\n\n**圧縮手順**:\n1. **要約モードに切替**: 全ドキュメントを AI_BRIEF.md のみに置換\n2. **タスク特化**: 現在のタスクに直接関係するファイルのみ保持\n3. **サブエージェント委譲**: 調査タスクはサブエージェントに委譲し、結論(要約)のみ受取\n4. **履歴圧縮**: 過去の会話履歴を要約して保存\n\n**圧縮例**:\n- Before: AI_BRIEF.md (3K) + ER (2K) + API (2K) + Screen (2K) + Tasks (1K) = 10K\n- After: AI_BRIEF.md (3K) + 現在タスクの該当セクション (1K) = 4K\n':
-    '\n## Context Compression Protocol\n\n**Trigger**: Context usage ≥80%\n\n**Compression steps**:\n1. **Switch to summary mode**: Replace all docs with AI_BRIEF.md only\n2. **Task-specific**: Keep only files directly related to current task\n3. **Sub-agent delegation**: Delegate research tasks to sub-agents, receive summary only\n4. **History compression**: Summarize and save past conversation history\n\n**Compression example**:\n- Before: AI_BRIEF.md (3K) + ER (2K) + API (2K) + Screen (2K) + Tasks (1K) = 10K\n- After: AI_BRIEF.md (3K) + relevant section for current task (1K) = 4K\n';
-
-  const subAgentPattern=G?
-    '\n## Sub-agent Delegation Pattern\n\n**原則**: メインエージェントのコンテキストを調査結果で汚染しない\n\n**委譲すべきタスク**:\n- 📊 技術調査（ライブラリ比較、ベストプラクティス検索）\n- 🔍 コードベース探索（特定機能の実装箇所特定）\n- 📖 ドキュメント要約（長大なドキュメントの要点抽出）\n- 🧪 テストケース生成（網羅的なテストパターン列挙）\n\n**Summary-Only Import**:\n- ❌ サブエージェントの全出力をコンテキストに含めない\n- ✅ サブエージェントは結論・推奨事項・次のアクションのみ返す\n- 📏 要約サイズ目標: 元の10-20%（例: 5K → 500-1000トークン）\n\n**実行フォーマット**:\n```\nTask: [サブエージェントに委譲するタスク]\nContext: AI_BRIEF.md\nOutput format: 結論(3行) + 推奨事項(箇条書き3つ) + 次のアクション\n```\n':
-    '\n## Sub-agent Delegation Pattern\n\n**Principle**: Don\'t pollute main agent context with research results\n\n**Tasks to delegate**:\n- 📊 Technical research (library comparison, best practice search)\n- 🔍 Codebase exploration (locate implementation of specific features)\n- 📖 Document summarization (extract key points from long docs)\n- 🧪 Test case generation (enumerate comprehensive test patterns)\n\n**Summary-Only Import**:\n- ❌ Don\'t include full sub-agent output in context\n- ✅ Sub-agent returns conclusion, recommendations, next action only\n- 📏 Summary size target: 10-20% of original (e.g., 5K → 500-1000 tokens)\n\n**Execution format**:\n```\nTask: [Task to delegate to sub-agent]\nContext: AI_BRIEF.md\nOutput format: Conclusion (3 lines) + Recommendations (3 bullets) + Next action\n```\n';
-
   // detectIndustry() は p13 で function宣言（ホイスティングで利用可能）
   // INDUSTRY_INTEL は p13 の const（ランタイム時にはアクセス可能）
   const _ind=typeof detectIndustry==='function'?detectIndustry(a.purpose):null;
@@ -127,7 +119,36 @@ ${coreRules}`;
     '\n## Compliance & Domain Risks\n\n### Regulatory Requirements\n'+_ii.reg_en.map(r=>'- '+r).join('\n')+'\n\n### Key Failure Factors\n'+_ii.fail_en.map(f=>'- ⚠️ '+f).join('\n')+'\n'
   ):'';
 
-  S.files['CLAUDE.md']=`# CLAUDE.md — ${pn}\n${core}\n\n## Spec-Driven Development\nRead .spec/constitution.md first.\nAll changes must align with .spec/specification.md.\nUse .spec/tasks.md as the source of truth for work items.\n\n## Auth\n- Source of Truth: ${auth.sot}\n- Token: ${auth.tokenType}\n- Verification: ${auth.tokenVerify}\n${auth.social.length?'- Providers: '+auth.social.join(', '):''}\n\n## Code Style\n- TypeScript strict\n- ESLint + Prettier\n- Vitest for testing\n- ${orm} for ${db}\n\n## Forbidden\n${forbidden}${domainRisksMd}\n\n## Design System Reference\nMUST reference \`docs/26_design_system.md\` before implementing any UI.\n- Colors, spacing, typography: Use only predefined tokens\n- Components: Follow framework mapping table\n- AI Design Protocol: Do not violate prohibited actions\n\n## Workflow Cycle\n1. Read docs/ → Select needed context\n2. Plan → Outline approach before coding\n3. Implement → Code with tests\n4. Update docs/24_progress.md → Mark completed tasks\n5. Log errors to docs/25_error_logs.md → Prevent recurrence\n\n## Thinking Protocol\nBefore implementing any change:\n1. State the task in one sentence\n2. List files that will be modified\n3. Identify potential side effects\n4. Implement → Test → Verify\n\n## Context Management\n- Write: All specs live in docs/ — read before coding\n- Select: Only load files relevant to current task\n- Compress: If context is large, read AI_BRIEF.md (~3K tokens) instead\n- Isolate: Use subagents for research, keep main context clean${domainCtx}\n\n## File Selection Matrix\n${G?'**タスク種別別の推奨読込ファイル**':'**Task-specific recommended files**'}\n\n${fileSelectionMatrix}${compressionProtocol}${subAgentPattern}\n\n## Key Context Files\n| File | When to Read | Tokens |\n|------|-------------|--------|\n| AI_BRIEF.md | Always (start here) | ~3K |\n| .spec/constitution.md | Before any change | ~1K |\n| .spec/tasks.md | Before picking work | ~1K |\n| docs/29_reverse_engineering.md | Before sprint planning | ~2K |\n| docs/24_progress.md | Before/after tasks | ~0.5K |\n| docs/25_error_logs.md | When debugging | ~0.5K |`;
+  // ═══ Phase 4: CLAUDE.md 3-Layer Split ═══
+  // Layer A: Thin root CLAUDE.md (~1.5K tokens, compressed from ~3K)
+  S.files['CLAUDE.md']=genThinCLAUDE(a,pn,auth,forbidden,G,arch,domainRisksMd);
+
+  // Layer B: Path-specific rule files
+  S.files['.claude/rules/spec.md']=genSpecRules(G,fileSelectionMatrix,domainCtx);
+  S.files['.claude/rules/frontend.md']=genFrontendRules(a.frontend||'React',G);
+  S.files['.claude/rules/backend.md']=genBackendRules(arch,be,a.backend||'Node.js + Express',G);
+  S.files['.claude/rules/test.md']=genTestRules(a.dev_methods||'TDD',G);
+  S.files['.claude/rules/ops.md']=genOpsRules(G);
+
+  // Layer C: Settings
+  S.files['.claude/settings.json']=JSON.stringify({
+    permissions:{
+      allowedTools:['Read','Write','Edit','Bash','Glob','Grep','WebFetch'],
+      dangerousCommands:{
+        requireConfirmation:['rm -rf','git push --force','git reset --hard','DROP TABLE','DELETE FROM']
+      }
+    },
+    context:{
+      specDir:'.spec/',
+      docsDir:'docs/',
+      testCommand:'npm test',
+      buildCommand:'npm run build'
+    },
+    rules:{
+      autoLoadByPath:true,
+      strictMode:false
+    }
+  },null,2);
   // ═══ A3: AGENTS.md Sub-agent Coordination Enhancement ═══
   const agentSpecMatrix=G?
     '| エージェント | 専門領域 | 必要コンテキスト | トークン予算 |\n|----------|--------|-------------|----------|\n| Planner | 計画・マイルストーン | docs/29_reverse_engineering.md + docs/30_goal_decomposition.md + .spec/tasks.md | ~5K |\n| Frontend | UI/UX実装 | AI_BRIEF.md + docs/06_screen_design.md + docs/26_design_system.md | ~5K |\n| Backend | API/DB実装 | AI_BRIEF.md + docs/04_er_diagram.md + docs/05_api_design.md | ~6K |\n| Test | テスト作成 | AI_BRIEF.md + docs/07_test_cases.md + docs/33_test_matrix.md | ~6K |\n| QA | 品質検証 | docs/32_qa_blueprint.md + docs/37_bug_prevention.md | ~4K |\n| DevOps | デプロイ | docs/09_release_checklist.md + .devcontainer/ + .github/workflows/ | ~3K |\n| Research | 調査専門 | AI_BRIEF.md のみ（結論返却） | ~3K |':
@@ -364,27 +385,30 @@ CLAUDE.md        → ${G?'Claude Code用ルール':'Claude Code rules'}
 
     const roleNames=G?['企画 (Planning)','設計 (Design)','制作 (Production)','運用 (Operations)']:['Planning','Design','Production','Operations'];
 
-    // Enhanced skill details (19 skills: 14 core + 5 domain-specific)
+    // Template helpers for compression
+    const _fld=(fj,fe,val)=>`- **${G?fj:fe}**: ${val}\n`;
+    // Compressed skill details helper (19 skills)
+    const _sd=(i,pj,pe,oj,oe)=>({input:i,process:G?pj:pe,output:G?oj:oe});
     const skillDetails={
-      '教材設計':{input:'docs/03,04',process:G?'ER図→学習フロー抽出→難易度分類→構成生成':'ER→flow→difficulty→curriculum',output:G?'構成マップ(md)':'Curriculum (md)'},
-      '機能仕様':{input:'.spec/constitution',process:G?'使命→ストーリー抽出→受入条件3つ→優先度付与':'Mission→stories→3 AC→priority',output:G?'仕様書(md)':'Spec (md)'},
-      'API設計':{input:'docs/04,05',process:G?'ER→エンドポイント生成→REST命名チェック→標準化':'ER→endpoints→REST check→standardize',output:G?'API仕様(OpenAPI)':'API spec (OpenAPI)'},
-      '決済検証':{input:'docs/08',process:G?'OWASP照合→Webhook検証→RLSチェック':'OWASP→webhook→RLS',output:G?'チェックリスト':'Checklist'},
-      '要件レビュー':{input:'.spec/constitution,specification',process:G?'使命→KPI照合→機能網羅チェック→欠落列挙':'Mission→KPI check→feature coverage→list gaps',output:G?'矛盾リスト+修正案':'Gap list + fix proposal'},
-      '設計検証':{input:'.spec/technical-plan',process:G?'スタック評価→依存関係チェック→リスク分析→代替案':'Stack eval→deps check→risk→alternatives',output:G?'リスク評価表':'Risk assessment'},
-      '実装支援':{input:'.spec/specification,technical-plan',process:G?'仕様読込→型定義→CRUD実装→テスト生成':'Read spec→types→CRUD impl→gen tests',output:G?'実装コード+テスト':'Code + tests'},
-      'デプロイ検証':{input:'docs/09,ci.yml',process:G?'環境変数チェック→ビルド検証→ヘルスチェック→ロールバック確認':'Env check→build verify→health→rollback',output:G?'デプロイレポート':'Deploy report'},
-      '問題生成':{input:'docs/03,Lesson',process:G?'学習目標抽出→難易度設定→正常系3問+異常系3問→解説生成':'Goals→difficulty→3 normal+3 edge→explanations',output:G?'問題セット(JSON)':'Quiz set (JSON)'},
-      '商品検証':{input:'Product,Category',process:G?'必須フィールド検査→SKU重複チェック→価格妥当性→画像存在確認':'Required fields→SKU dup→price valid→image check',output:G?'検証レポート':'Validation report'},
-      'モデレーション':{input:'Post,Comment',process:G?'禁止語チェック→スパム判定→報告集計→対応優先度付与':'Banned words→spam detect→report aggregate→priority',output:G?'モデレーションキュー':'Moderation queue'},
-      '予約設計':{input:'Service,TimeSlot',process:G?'空き枠計算→重複検出→バッファ設定→通知設計':'Availability calc→dup detect→buffer→notify design',output:G?'予約ロジック仕様':'Booking logic spec'},
-      '記録検証':{input:'HealthLog,Goal',process:G?'入力値範囲チェック→異常値検出→トレンド分析→アラート条件設定':'Range check→anomaly detect→trend→alert config',output:G?'健康レポート':'Health report'},
-      'CRM設計':{input:'User,Contact',process:G?'リード定義→ファネル設計→スコアリング→自動化ルール':'Lead def→funnel→scoring→automation rules',output:G?'CRM設計書':'CRM design doc'},
-      'デバイス管理':{input:'Device,Sensor',process:G?'デバイス登録→接続状態監視→ファーム更新管理→ログ収集':'Register→monitor→firmware→logs',output:G?'デバイス管理画面':'Device dashboard'},
-      '物件管理':{input:'Property,Category',process:G?'物件登録→写真管理→間取り設定→公開管理':'Register→photos→floor plan→publish',output:G?'物件データベース':'Property DB'},
-      '契約レビュー':{input:'Contract,Template',process:G?'テンプレート照合→リスク条項検出→期限チェック→承認フロー':'Template match→risk detect→deadline→approval',output:G?'レビュー結果':'Review result'},
-      '採用フロー':{input:'JobPosting,Applicant',process:G?'求人作成→応募管理→面接調整→評価集約→内定':'Post→apply→interview→eval→offer',output:G?'採用パイプライン':'Hiring pipeline'},
-      '取引検証':{input:'Transaction,Account',process:G?'残高確認→二重支払チェック→限度額検証→監査ログ':'Balance→dup check→limit→audit log',output:G?'検証レポート':'Validation report'}
+      '教材設計':_sd('docs/03,04','ER図→学習フロー抽出→難易度分類→構成生成','ER→flow→difficulty→curriculum','構成マップ(md)','Curriculum (md)'),
+      '機能仕様':_sd('.spec/constitution','使命→ストーリー抽出→受入条件3つ→優先度付与','Mission→stories→3 AC→priority','仕様書(md)','Spec (md)'),
+      'API設計':_sd('docs/04,05','ER→エンドポイント生成→REST命名チェック→標準化','ER→endpoints→REST check→standardize','API仕様(OpenAPI)','API spec (OpenAPI)'),
+      '決済検証':_sd('docs/08','OWASP照合→Webhook検証→RLSチェック','OWASP→webhook→RLS','チェックリスト','Checklist'),
+      '要件レビュー':_sd('.spec/constitution,specification','使命→KPI照合→機能網羅チェック→欠落列挙','Mission→KPI check→feature coverage→list gaps','矛盾リスト+修正案','Gap list + fix proposal'),
+      '設計検証':_sd('.spec/technical-plan','スタック評価→依存関係チェック→リスク分析→代替案','Stack eval→deps check→risk→alternatives','リスク評価表','Risk assessment'),
+      '実装支援':_sd('.spec/specification,technical-plan','仕様読込→型定義→CRUD実装→テスト生成','Read spec→types→CRUD impl→gen tests','実装コード+テスト','Code + tests'),
+      'デプロイ検証':_sd('docs/09,ci.yml','環境変数チェック→ビルド検証→ヘルスチェック→ロールバック確認','Env check→build verify→health→rollback','デプロイレポート','Deploy report'),
+      '問題生成':_sd('docs/03,Lesson','学習目標抽出→難易度設定→正常系3問+異常系3問→解説生成','Goals→difficulty→3 normal+3 edge→explanations','問題セット(JSON)','Quiz set (JSON)'),
+      '商品検証':_sd('Product,Category','必須フィールド検査→SKU重複チェック→価格妥当性→画像存在確認','Required fields→SKU dup→price valid→image check','検証レポート','Validation report'),
+      'モデレーション':_sd('Post,Comment','禁止語チェック→スパム判定→報告集計→対応優先度付与','Banned words→spam detect→report aggregate→priority','モデレーションキュー','Moderation queue'),
+      '予約設計':_sd('Service,TimeSlot','空き枠計算→重複検出→バッファ設定→通知設計','Availability calc→dup detect→buffer→notify design','予約ロジック仕様','Booking logic spec'),
+      '記録検証':_sd('HealthLog,Goal','入力値範囲チェック→異常値検出→トレンド分析→アラート条件設定','Range check→anomaly detect→trend→alert config','健康レポート','Health report'),
+      'CRM設計':_sd('User,Contact','リード定義→ファネル設計→スコアリング→自動化ルール','Lead def→funnel→scoring→automation rules','CRM設計書','CRM design doc'),
+      'デバイス管理':_sd('Device,Sensor','デバイス登録→接続状態監視→ファーム更新管理→ログ収集','Register→monitor→firmware→logs','デバイス管理画面','Device dashboard'),
+      '物件管理':_sd('Property,Category','物件登録→写真管理→間取り設定→公開管理','Register→photos→floor plan→publish','物件データベース','Property DB'),
+      '契約レビュー':_sd('Contract,Template','テンプレート照合→リスク条項検出→期限チェック→承認フロー','Template match→risk detect→deadline→approval','レビュー結果','Review result'),
+      '採用フロー':_sd('JobPosting,Applicant','求人作成→応募管理→面接調整→評価集約→内定','Post→apply→interview→eval→offer','採用パイプライン','Hiring pipeline'),
+      '取引検証':_sd('Transaction,Account','残高確認→二重支払チェック→限度額検証→監査ログ','Balance→dup check→limit→audit log','検証レポート','Validation report')
     };
 
     let catalogMd=`# ${pn} ${G?'— AIスキルカタログ':'— AI Skills Catalog'}\n${G?'ドメイン特化スキル + コア開発スキル':'Domain-specific skills + core development skills'}\n\n`;
@@ -399,11 +423,11 @@ CLAUDE.md        → ${G?'Claude Code用ルール':'Claude Code rules'}
         const purpose=G?purposeJa:purposeEn;
         const judgment=G?judgmentJa:judgmentEn;
         const detail=skillDetails[nameJa]||skillDetails[nameEn];
-        catalogMd+=`### ${name}\n- **${G?'目的':'Purpose'}**: ${purpose}\n- **${G?'判断基準':'Judgment'}**: ${judgment}\n`;
+        catalogMd+=`### ${name}\n`+_fld('目的','Purpose',purpose)+_fld('判断基準','Judgment',judgment);
         if(detail){
-          catalogMd+=`- **${G?'入力':'Input'}**: ${detail.input}\n- **${G?'処理':'Process'}**: ${detail.process}\n- **${G?'出力':'Output'}**: ${detail.output}\n`;
+          catalogMd+=_fld('入力','Input',detail.input)+_fld('処理','Process',detail.process)+_fld('出力','Output',detail.output);
         }else{
-          catalogMd+=`- **${G?'入力':'Input'}**: ${G?'関連ドキュメント':'Relevant documents'}\n- **${G?'出力':'Output'}**: ${G?'検証レポート/生成物':'Validation report / deliverables'}\n`;
+          catalogMd+=_fld('入力','Input',G?'関連ドキュメント':'Relevant documents')+_fld('出力','Output',G?'検証レポート/生成物':'Validation report / deliverables');
         }
         catalogMd+='\n';
       });
@@ -715,5 +739,376 @@ CLAUDE.md        → ${G?'Claude Code用ルール':'Claude Code rules'}
     // ═══ Phase 4: AGENTS.md enhancement ═══
     S.files['AGENTS.md']+=`\n\n## Pipeline Coordination\n- Pipelines: skills/pipelines.md\n- Catalog: skills/catalog.md\n- Gates: ${aiLevel==='vibe'||aiLevel==='agentic'?'human':'auto'}\n- Error: docs/25 → retry → escalate\n- Context: AI_BRIEF.md only\n`;
   }
+}
+
+// ═══ Phase 4: Helper Functions for CLAUDE.md 3-Layer Split ═══
+
+function genThinCLAUDE(a,pn,auth,forbidden,G,arch,domainRisksMd){
+  const fe=a.frontend||'React';
+  const be=a.backend||'Node.js + Express';
+  const db=a.database||'PostgreSQL';
+  const archNote=G?{
+    baas:'BaaS統合パターン',
+    bff:'BFF パターン',
+    split:'フロント/バック分離',
+    traditional:'従来型'
+  }[arch.pattern]:{
+    baas:'BaaS Integration',
+    bff:'BFF Pattern',
+    split:'FE/BE Split',
+    traditional:'Traditional'
+  }[arch.pattern];
+  const devMethods=a.dev_methods||'TDD';
+
+  return `# ${pn} ${G?'— 開発ルール':'— Development Rules'}
+
+## ${G?'概要':'Overview'}
+- **${G?'スタック':'Stack'}**: ${fe} + ${be} + ${db}
+- **${G?'アーキテクチャ':'Architecture'}**: ${archNote}
+- **${G?'認証':'Auth'} SoT**: ${auth.sot}
+- **${G?'開発手法':'Methods'}**: ${devMethods}
+
+## ${G?'必須ルール':'Critical Rules'}
+
+### ${G?'禁止事項':'Forbidden'}
+${forbidden}
+${domainRisksMd}
+
+### ${G?'認証の唯一の情報源':'Auth Source of Truth'}
+${G?`すべての認証状態は ${auth.sot} から取得すること。認証ロジックを重複させない。`:`All auth state MUST come from ${auth.sot}. Never duplicate auth logic.`}
+
+## ${G?'ルールファイル':'Rule Files'}
+${G?'パス別の詳細ルールは以下を参照:':'For path-specific detailed rules, see:'}
+
+- \`.claude/rules/spec.md\` ${G?'— 仕様駆動開発ルール':'— Spec-driven development'}
+- \`.claude/rules/frontend.md\` ${G?'— フロントエンド開発ルール':'— Frontend development'}
+- \`.claude/rules/backend.md\` ${G?'— バックエンド開発ルール':'— Backend development'}
+- \`.claude/rules/test.md\` ${G?'— テスト手法ルール':'— Testing methodology'}
+- \`.claude/rules/ops.md\` ${G?'— 運用・デプロイルール':'— Operations & deployment'}
+
+${G?'**特定のパスで作業する際**、Claudeは関連するルールファイルを自動読み込みします。':'**When working on specific paths**, Claude will automatically load the relevant rule file.'}
+
+## ${G?'ワークフロー':'Workflow'}
+1. **${G?'機能':'Feature'}** → \`.spec/\` ${G?'確認':'check'} → ${G?'実装':'implement'} → ${G?'テスト':'test'} → ${G?'コミット':'commit'}
+2. **${G?'バグ':'Bug'}** → ${G?'再現':'reproduce'} → ${G?'修正':'fix'} → ${G?'テスト':'test'} → ${G?'コミット':'commit'}
+3. **${G?'常に':'Always'}** → ${G?'コミット前にテスト実行':'Run tests before commit'}
+
+## ${G?'クイックリファレンス':'Quick Reference'}
+- ${G?'仕様ディレクトリ':'Spec Dir'}: \`.spec/\`
+- ${G?'ドキュメント':'Docs Dir'}: \`docs/\`
+- ${G?'テストコマンド':'Test Command'}: \`npm test\`
+- ${G?'ビルドコマンド':'Build Command'}: \`npm run build\`
+`;
+}
+
+function genSpecRules(G,fileSelectionMatrix,domainCtx){
+  return `---
+paths:
+  - ".spec/**"
+alwaysApply: false
+---
+
+# ${G?'仕様駆動開発ルール':'Spec-Driven Development Rules'}
+
+## ${G?'ファイル選択マトリクス':'File Selection Matrix'}
+| ${G?'タスク種別':'Task Type'} | ${G?'読むファイル':'Read Files'} | ${G?'書くファイル':'Write Files'} |
+|-----------|------------|-------------|
+| ${G?'機能企画':'Feature Planning'} | constitution, specification | specification, technical-plan |
+| ${G?'アーキテクチャ設計':'Architecture Design'} | specification, technical-plan | technical-plan, tasks |
+| ${G?'タスク分解':'Task Breakdown'} | specification, technical-plan, tasks | tasks, verification |
+| ${G?'実装':'Implementation'} | ${G?'すべての.specファイル':'All .spec files'} | ${G?'(コードファイル、.specは書かない)':'(Code files, not .spec)'} |
+| ${G?'検証':'Verification'} | verification | ${G?'verification (ステータス更新)':'verification (update status)'} |
+
+## ${G?'仕様整合性ルール':'Spec Integrity Rules'}
+1. **constitution ${G?'は不変':'is immutable'}** — ${G?'初回作成後は編集しない':'Never edit after initial creation'}
+2. **specification ${G?'が真実の源':'is source of truth'}** — ${G?'すべての機能をここで最初に定義':'All features defined here first'}
+3. **technical-plan ${G?'は specification と一致':'must match specification'}** — ${G?'仕様なしに実装しない':'No implementation without spec'}
+4. **tasks ${G?'は specification を参照':'must reference specification'}** — ${G?'すべてのタスクは要件にリンク':'Every task links to requirements'}
+5. **verification ${G?'は specification を検証':'validates specification'}** — ${G?'受入基準に対してテスト':'Test against acceptance criteria'}
+
+## ${G?'ワークフロー':'Workflow'}
+\`\`\`mermaid
+graph LR
+  A[${G?'機能要求':'Feature Request'}] --> B[${G?'specification更新':'Update specification'}]
+  B --> C[${G?'technical-plan更新':'Update technical-plan'}]
+  C --> D[${G?'tasks生成':'Generate tasks'}]
+  D --> E[${G?'実装':'Implement'}]
+  E --> F[${G?'verification更新':'Update verification'}]
+\`\`\`
+
+## ${G?'タスク別推奨ファイル':'Task-Specific Recommended Files'}
+${fileSelectionMatrix}
+${domainCtx}
+`;
+}
+
+function genFrontendRules(fe,G){
+  const frameworkKey=fe.includes('React')?'react':fe.includes('Vue')?'vue':fe.includes('Svelte')?'svelte':'react';
+  const rules={
+    react:{
+      conventions_ja:['関数コンポーネント + Hooks','Props分割代入','コンポーネントはdefault exportを避ける'],
+      conventions_en:['Functional components + hooks','Props destructuring','Avoid default exports for components'],
+      state_ja:'グローバル状態はContext API、ローカルはuseState/useReducer',
+      state_en:'Context API for global state, useState/useReducer for local',
+      styling_ja:'CSS ModulesまたはTailwind、インラインスタイル避ける',
+      styling_en:'CSS Modules or Tailwind, avoid inline styles',
+      patterns_ja:['再利用ロジックはカスタムフック','エラーハンドリングはError Boundary','遅延ロードはSuspense'],
+      patterns_en:['Custom hooks for reusable logic','Error boundaries for error handling','Suspense for lazy loading']
+    },
+    vue:{
+      conventions_ja:['Composition API (Vue 3)','script setupシンタックス','単一ファイルコンポーネント'],
+      conventions_en:['Composition API (Vue 3)','Script setup syntax','Single-file components'],
+      state_ja:'グローバル状態はPinia、ローカルはreactive()',
+      state_en:'Pinia for global state, reactive() for local',
+      styling_ja:'SFC内でscoped styles',
+      styling_en:'Scoped styles in SFC',
+      patterns_ja:['再利用ロジックはComposables','深いpropsはprovide/inject','モーダルはTeleport'],
+      patterns_en:['Composables for reusable logic','Provide/inject for deep prop passing','Teleport for modals']
+    },
+    svelte:{
+      conventions_ja:['リアクティブ宣言','プロップスの型定義','ストアでグローバル状態'],
+      conventions_en:['Reactive declarations','Type props','Stores for global state'],
+      state_ja:'グローバル状態はストア、ローカルはlet',
+      state_en:'Stores for global state, let for local',
+      styling_ja:'コンポーネント内でscoped styles',
+      styling_en:'Scoped styles in component',
+      patterns_ja:['再利用ロジックはアクション','スロットで構成','トランジションAPI'],
+      patterns_en:['Actions for reusable logic','Slots for composition','Transition API']
+    }
+  };
+  const r=rules[frameworkKey];
+
+  return `---
+paths:
+  - "src/components/**"
+  - "app/**"
+  - "pages/**"
+alwaysApply: false
+---
+
+# ${G?'フロントエンド開発ルール':'Frontend Development Rules'} (${fe})
+
+## ${G?'規約':'Conventions'}
+${(G?r.conventions_ja:r.conventions_en).map(c=>'- '+c).join('\n')}
+
+## ${G?'状態管理':'State Management'}
+${G?r.state_ja:r.state_en}
+
+## ${G?'スタイリング':'Styling'}
+${G?r.styling_ja:r.styling_en}
+
+## ${G?'パターン':'Patterns'}
+${(G?r.patterns_ja:r.patterns_en).map(p=>'- '+p).join('\n')}
+
+## ${G?'テスト':'Testing'}
+- ${G?'ユーティリティのユニットテスト: Vitest':'Unit tests for utilities: Vitest'}
+- ${G?'コンポーネントテスト: Testing Library':'Component tests: Testing Library'}
+- ${G?'E2Eテスト: Playwright':'E2E tests: Playwright'}
+`;
+}
+
+function genBackendRules(arch,be,beRaw,G){
+  // Detect BFF from backend string if arch didn't catch it
+  const isBFF=arch.pattern==='bff'||beRaw.includes('API Routes')||beRaw.includes('API routes');
+
+  if(arch.isBaaS){
+    return `---
+paths:
+  - "src/lib/**"
+  - "supabase/**"
+  - "app/**/actions.ts"
+alwaysApply: false
+---
+
+# ${G?'バックエンドルール':'Backend Rules'} (BaaS: ${be})
+
+## ${G?'アーキテクチャパターン':'Architecture Pattern'}
+- **BaaS ${G?'統合':'Integration'}**: ${G?'別のExpressサーバーなし':'No separate Express server'}
+- **Server Actions**: ${G?'Next.js Server Actionsをミューテーションに使用':'Use Next.js Server Actions for mutations'}
+- **RLS**: ${G?'すべてのテーブルに行レベルセキュリティポリシー':'Row-Level Security policies for ALL tables'}
+- **${G?'認証':'Auth'}**: ${be} ${G?'が認証を処理':'handles authentication'}
+
+## ${G?'データベースルール':'Database Rules'}
+1. **${G?'アプリケーションコードに生SQLなし':'No raw SQL in application code'}** — ${be} ${G?'のクライアントメソッド使用':'client methods'}
+2. **${G?'OK: マイグレーションのDDL/RLS':'OK: DDL/RLS in migrations'}** — \`supabase/migrations/*.sql\`
+3. **${G?'すべてのテーブルにRLS必須':'All tables MUST have RLS'}** — ${G?'有効化してポリシー定義':'Enable and define policies'}
+4. **${G?'外部キー必須':'Foreign keys required'}** — ${G?'参照整合性を維持':'Maintain referential integrity'}
+
+## ${G?'セキュリティ':'Security'}
+- ${G?'Service roleキーはサーバーサイドのみ':'Service role key ONLY in server-side code'}
+- ${G?'Anonキーはクライアントサイド可':'Anon key OK for client-side'}
+- ${G?'Service roleをクライアントに公開しない':'Never expose service role to client'}
+- ${G?'Server Actionsですべての入力を検証':'Validate all inputs in Server Actions'}
+`;
+  }else if(isBFF){
+    return `---
+paths:
+  - "app/api/**"
+  - "src/lib/**"
+alwaysApply: false
+---
+
+# ${G?'バックエンドルール':'Backend Rules'} (BFF: ${beRaw})
+
+## ${G?'アーキテクチャパターン':'Architecture Pattern'}
+- **BFF (Backend For Frontend)**: ${G?'Next.js API Routesを統合':'Next.js API Routes integration'}
+- **${G?'別サーバーなし':'No separate server'}**: ${G?'すべてAPI Routesで処理':'Handle all via API Routes'}
+- **${G?'ミドルウェア':'Middleware'}**: ${G?'認証・CORS・レート制限':'Auth, CORS, rate limiting'}
+
+## ${G?'データベースルール':'Database Rules'}
+1. **ORM ${G?'使用':'use'}**: Prisma ${G?'または':'or'} Drizzle
+2. **${G?'型安全':'Type safety'}**: ${G?'DB→TypeScript自動生成':'DB → TypeScript auto-generation'}
+3. **${G?'マイグレーション':'Migrations'}**: ${G?'バージョン管理、ロールバック可能':'Versioned, rollbackable'}
+
+## ${G?'セキュリティ':'Security'}
+- ${G?'すべてのAPI Routesで入力検証':'Validate inputs in all API Routes'}
+- ${G?'環境変数でシークレット管理':'Secrets in environment variables'}
+- ${G?'CSRFトークン使用':'Use CSRF tokens'}
+- ${G?'レート制限実装':'Implement rate limiting'}
+`;
+  }else{
+    return `---
+paths:
+  - "src/api/**"
+  - "src/routes/**"
+  - "src/controllers/**"
+alwaysApply: false
+---
+
+# ${G?'バックエンドルール':'Backend Rules'} (${G?'従来型':'Traditional'}: ${beRaw})
+
+## ${G?'アーキテクチャパターン':'Architecture Pattern'}
+- **${G?'クライアント-サーバー分離':'Client-Server separation'}**: ${G?'フロントとバックは別ホスト':'FE and BE on separate hosts'}
+- **API ${G?'駆動':'driven'}**: RESTful ${G?'または':'or'} GraphQL
+- **${G?'認証':'Auth'}**: JWT ${G?'または':'or'} session-based
+
+## ${G?'データベースルール':'Database Rules'}
+1. **ORM ${G?'使用':'use'}**: Prisma, Drizzle, ${G?'または':'or'} TypeORM
+2. **${G?'生SQLなし':'No raw SQL'}** (${G?'マイグレーションは除く':'except migrations'})
+3. **${G?'トランザクション':'Transactions'}**: ${G?'複数テーブル更新時は必須':'Required for multi-table updates'}
+4. **${G?'接続プーリング':'Connection pooling'}**: ${G?'本番環境で必須':'Required in production'}
+
+## ${G?'セキュリティ':'Security'}
+- CORS ${G?'適切に設定':'properly configured'}
+- ${G?'入力検証':'Input validation'} (Zod, Joi)
+- ${G?'出力サニタイズ':'Output sanitization'}
+- ${G?'レート制限':'Rate limiting'} (express-rate-limit)
+- ${G?'ヘルメット使用':'Use Helmet'} (security headers)
+`;
+  }
+}
+
+function genTestRules(devMethods,G){
+  const hasTDD=devMethods.includes('TDD');
+  const hasBDD=devMethods.includes('BDD');
+  const hasDDD=devMethods.includes('DDD');
+
+  let rules=`---
+paths:
+  - "**/*.test.*"
+  - "**/*.spec.*"
+  - "tests/**"
+alwaysApply: false
+---
+
+# ${G?'テスト手法ルール':'Testing Methodology Rules'}
+
+`;
+
+  if(hasTDD){
+    rules+=`## ${G?'テスト駆動開発 (TDD)':'Test-Driven Development (TDD)'}
+1. **Red** → ${G?'失敗するテストを先に書く':'Write failing test first'}
+2. **Green** → ${G?'テストを通す最小限のコード':'Write minimal code to pass'}
+3. **Refactor** → ${G?'テストをグリーンに保ちながらコード改善':'Improve code while keeping tests green'}
+
+`;
+  }
+
+  rules+=`## ${G?'テスト構造 (AAAパターン)':'Test Structure (AAA Pattern)'}
+\`\`\`typescript
+describe('Feature', () => {
+  it('should do something', () => {
+    // Arrange - ${G?'セットアップ':'Setup'}
+    const input = 'test';
+
+    // Act - ${G?'実行':'Execute'}
+    const result = doSomething(input);
+
+    // Assert - ${G?'検証':'Verify'}
+    expect(result).toBe('expected');
+  });
+});
+\`\`\`
+
+## ${G?'カバレッジ要件':'Coverage Requirements'}
+- ${G?'ユニットテスト: ≥80% カバレッジ':'Unit tests: ≥80% coverage'}
+- ${G?'統合テスト: 重要パス':'Integration tests: Critical paths'}
+- ${G?'E2Eテスト: ユーザージャーニー':'E2E tests: User journeys'}
+
+## ${G?'テスト命名':'Test Naming'}
+- ${G?'説明的':'Descriptive'}: \`should [${G?'期待動作':'expected behavior'}] when [${G?'条件':'condition'}]\`
+- ${G?'良い例':'Good'}: \`should return 401 when user is not authenticated\`
+- ${G?'悪い例':'Bad'}: \`test1\`, \`testAuth\`
+`;
+
+  return rules;
+}
+
+function genOpsRules(G){
+  return `---
+paths:
+  - ".github/**"
+  - "docs/34_*"
+  - "docs/53_*"
+  - "docs/54_*"
+  - "docs/55_*"
+alwaysApply: false
+---
+
+# ${G?'運用・デプロイルール':'Operations & Deployment Rules'}
+
+## ${G?'参照ドキュメント':'Reference Documents'}
+- **${G?'Ops Runbook':'Ops Runbook'}**: \`docs/53_ops_runbook.md\` — SLO/SLI, Feature Flags, Observability
+- **${G?'Ops Checklist':'Ops Checklist'}**: \`docs/54_ops_checklist.md\` — 12 Ops Capabilities
+- **${G?'Ops Plane Design':'Ops Plane Design'}**: \`docs/55_ops_plane_design.md\` — Ops Plane Architecture, Circuit Breaker, Evidence-Based Ops, Dev×Ops Separation
+- **${G?'インシデント対応':'Incident Response'}**: \`docs/34_incident_response.md\` — ${G?'オンコール手順':'On-call procedures'}
+
+## ${G?'デプロイ安全性':'Deployment Safety'}
+1. **${G?'フックをスキップしない':'Never skip hooks'}** — \`--no-verify\` ${G?'は明示的承認時のみ':'only with explicit approval'}
+2. **main ${G?'への強制プッシュ禁止':'force push prohibited'}** — ${G?'本番ブランチ保護':'Protect production branch'}
+3. **${G?'ステージングで先にテスト':'Test in staging first'}** — ${G?'ステージング検証後に本番デプロイ':'Production after staging validation'}
+4. **${G?'ロールバック計画必須':'Rollback plan required'}** — ${G?'デプロイ前に戻し方を把握':'Know how to revert before deploying'}
+
+## ${G?'Feature Flags':'Feature Flags'} (${G?'docs/53参照':'see docs/53'})
+- ${G?'段階的ロールアウトに使用':'Use for gradual rollouts'}
+- ${G?'重要機能のキルスイッチ':'Kill switches for critical features'}
+- ${G?'CI/CDでフラグ状態をテスト':'Test flag states in CI/CD'}
+
+## ${G?'モニタリング':'Monitoring'} (${G?'docs/53参照':'see docs/53'})
+- ${G?'SLO違反でアラート発火':'SLO violations trigger alerts'}
+- ${G?'ドメイン別エラー率閾値':'Error rate thresholds by domain'}
+- ${G?'デプロイターゲット別Observabilityスタック':'Observability stack per deployment target'}
+
+## ${G?'バックアップ・リカバリ':'Backup & Recovery'} (${G?'docs/53参照':'see docs/53'})
+- ${G?'ドメイン別RPO/RTO要件':'RPO/RTO requirements by domain'}
+- ${G?'リストア手順を定期的にテスト':'Test restore procedures regularly'}
+- ${G?'リカバリRunbookを文書化':'Document recovery runbooks'}
+
+## ${G?'Dev × Ops 責任分離':'Dev × Ops Responsibility Separation'} (${G?'docs/55参照':'see docs/55'})
+**Dev Agent ${G?'(このエージェント)':'(This Agent)'}**:
+- ${G?'機能実装・テスト・コードレビュー・バグ修正':'Feature implementation, testing, code review, bug fixes'}
+- ${G?'編集範囲':'Edit scope'}: \`src/\` ${G?'配下のみ':'only'}
+
+**Ops Agent ${G?'(人間またはOps AI)':'(Human or Ops AI)'}**:
+- ${G?'モニタリング・Feature Flag操作・インシデント対応・バックアップ検証':'Monitoring, Feature Flag operations, incident response, backup validation'}
+- ${G?'編集範囲':'Edit scope'}: ${G?'全体 (本番環境操作含む)':'All (including production ops)'}
+
+**${G?'共有契約':'Shared Contract'}**:
+- \`.spec/constitution.md\` + \`CLAUDE.md\` + \`docs/53-55\` ${G?'を双方が参照':'referenced by both parties'}
+
+**${G?'破壊的操作 (4-eyes 必須)':'Destructive Operations (4-eyes required)'}**:
+- \`git reset --hard\`, \`git clean -f\`, \`DROP TABLE\`, \`DELETE\` ${G?'等は承認後のみ実行':'etc. Execute only after approval'}
+- ${G?'参照':'Reference'}: \`.claude/settings.json\` \`requireConfirmation\` ${G?'リスト':'list'}
+`;
 }
 
