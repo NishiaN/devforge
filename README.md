@@ -2,11 +2,11 @@
 
 [![CI](https://github.com/NishiaN/devforge/actions/workflows/ci.yml/badge.svg)](https://github.com/NishiaN/devforge/actions/workflows/ci.yml)
 
-> 111+ファイルの開発ドキュメント・AI設定を自動生成するAI駆動開発プラットフォーム
+> 114+ファイルの開発ドキュメント・AI設定を自動生成するAI駆動開発プラットフォーム
 
 ## 概要
 
-DevForgeは、対話形式の質問に答えるだけで、プロジェクト開発に必要な仕様書・設計書・AI設定ファイル・DevContainer環境・CI/CDパイプラインなど **111+ファイル** を自動生成するAI駆動開発プラットフォームです。
+DevForgeは、対話形式の質問に答えるだけで、プロジェクト開発に必要な仕様書・設計書・AI設定ファイル・DevContainer環境・CI/CDパイプラインなど **114+ファイル** を自動生成するAI駆動開発プラットフォームです。
 
 ### 特徴
 - 🏗️ **41プリセット** — LMS, EC, SaaS, ブログ, コミュニティ, 不動産管理, 契約管理, ヘルプデスク, 家庭教師, 動物病院, 飲食店, CRM, SNS, 物流, アンケート, 求人等
@@ -40,7 +40,7 @@ npm test  # 305+テスト（全通過）
 open devforge-v9.html  # ブラウザで開く
 ```
 
-## 生成ファイル (111+ファイル)
+## 生成ファイル (114+ファイル)
 
 ### .spec/ — SDD仕様書
 | ファイル | 内容 |

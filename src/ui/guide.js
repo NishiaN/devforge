@@ -14,13 +14,13 @@ function showPostGenGuide(force){
     ['3ファイルだけ覚える','<code>README.md</code>(GitHub公開用) / <code>.devcontainer/</code>(開発環境一発) / <code>CLAUDE.md</code>(AIに全仕様を理解させる)'],
     ['AIに丸ごと渡す','「全ファイルコピー」(Ctrl+Shift+C)でAIに貼り付け → 仕様を把握した状態で開発スタート。'],
     ['バックアップ必須','ZIP+JSONで2重保存。localStorageのみに依存しない。📦ZIPダウンロード + 📤JSONエクスポートを必ず実行。'],
-    ['生成物は設計書','111+ファイルは設計ドキュメント。AIツールに投入して実コードを生成。npm installで動くコードではない。'],
+    ['生成物は設計書','114+ファイルは設計ドキュメント。AIツールに投入して実コードを生成。npm installで動くコードではない。'],
   ]:[
     ['Follow the Roadmap','Dashboard Pillar ⑦ is your learning plan. Check off from Layer 1. Hit 📖 for official docs.'],
     ['Remember 3 Files','<code>README.md</code>(GitHub ready) / <code>.devcontainer/</code>(instant dev env) / <code>CLAUDE.md</code>(AI understands your project)'],
     ['Feed Everything to AI','"Copy All" (Ctrl+Shift+C) → Paste into AI → Start coding with full context.'],
     ['Always Backup','ZIP+JSON dual backup. Don\'t rely only on localStorage. 📦ZIP Download + 📤JSON Export are mandatory.'],
-    ['Files are Design Docs','111+ files are design documents. Feed to AI tools to generate real code. Not npm-installable code.'],
+    ['Files are Design Docs','114+ files are design documents. Feed to AI tools to generate real code. Not npm-installable code.'],
   ]):isP?(_ja?[
     ['Agent Teams並列開発','AGENTS.mdでエージェント役割定義 → Claude Code Subagents / Antigravity Manager Viewで並列実行。'],
     ['SDD仕様駆動','<code>.spec/</code>がSSoT。tasks.mdをタスクキューとしてAIに投入。verification.mdで品質判定。'],

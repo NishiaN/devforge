@@ -147,17 +147,19 @@ Questions can have a `condition` field that determines if they should be shown:
 
 ---
 
-## Generated Output (115+ files)
+## Generated Output (118+ files)
 
-When users complete the wizard, DevForge generates **115+ files** (base: 87 files, +4 when ai_auto=multi/full/orch for skills/ Package, +1 when payment≠none for docs/38_business_model.md, +3 for P14 ops docs, +4 for P15 future strategy docs, +4 for P16 dev IQ docs, +6 for .claude/ structure):
+When users complete the wizard, DevForge generates **118+ files** (base: 90 files, +4 when ai_auto=multi/full/orch for skills/ Package, +1 when payment≠none for docs/38_business_model.md, +3 for P14 ops docs, +4 for P15 future strategy docs, +4 for P16 dev IQ docs, +6 for .claude/ structure):
 
 ### Core Specifications
 - **.spec/** — constitution.md, specification.md, technical-plan.md, tasks.md, verification.md
 
 ### Development Environment
 - **.devcontainer/** — devcontainer.json, Dockerfile, docker-compose.yml, post-create.sh
+- **.gitattributes** — Line ending normalization (enforces LF, prevents Windows CRLF issues)
+- **.editorconfig** — Editor settings standardization (indent, line endings, charset)
 
-### Documentation (51 files)
+### Documentation (52 files)
 - **docs/** — architecture.md, ER.md, API.md, screen.md, test-cases.md, security.md, release.md, WBS.md, prompt-playbook.md, tasks.md
 - **progress.md (24)** — Project tracking
 - **error_logs.md (25)** — Error management
@@ -199,6 +201,7 @@ When users complete the wizard, DevForge generates **115+ files** (base: 87 file
 - **ai_brainstorm_playbook.md (61)** — AI brainstorming prompts (6 phases × project-specific templates, Polymorphic Engine framework)
 - **industry_deep_dive.md (62)** — Industry-specific deep dive (15 industries: regulations, tech stacks, pitfalls, architecture patterns)
 - **next_gen_ux_strategy.md (63)** — Next-generation UX strategy (Polymorphic Engine: Agentic Workflow, Generative UI, Spatial Computing, Calm Technology)
+- **cross_platform_guide.md (64)** — Cross-platform development guide (line ending normalization, .editorconfig, DevContainer, BaaS dev environment modes)
 
 ### AI Rules & Skills
 - **AI rules** — CLAUDE.md (with File Selection Matrix & Context Compression Protocol), AI_BRIEF.md (with Context Loading Strategy, ~1200 tokens), .cursorrules, .clinerules, .windsurfrules, AGENTS.md (with Agent Specialization Matrix), .cursor/rules

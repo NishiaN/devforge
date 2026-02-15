@@ -122,6 +122,15 @@ function getQ(){
 {label:'MySQL',desc:ja?'実績豊富 — WordPress/Laravel':'Proven track record — WordPress/Laravel'}]:[]),...(lv==='pro'?[{label:'SQLite',desc:ja?'組込み/Edge — Turso互換':'Embedded/Edge — Turso compatible'},{label:'Redis',desc:ja?'キャッシュ/セッション/Pub-Sub':'Cache/Session/Pub-Sub'},{label:'Neon',desc:ja?'サーバーレスPostgreSQL':'Serverless PostgreSQL'}]:[])],tip:ja?'迷ったらPostgreSQL':'When in doubt, PostgreSQL'},
     {id:'orm',q:ja?'ORM':'ORM',type:'options',help:'orm',condition:{backend:v=>!/Firebase|Supabase|Convex|なし|None|static/i.test(v)},options:[{label:'Prisma',desc:ja?'2026年Node.js ORM 1位 — 型安全・Studio付き':'#1 Node.js ORM 2026 — type-safe + Studio'},{label:'Drizzle',desc:ja?'軽量・SQLライク — TypeScript完全対応':'Lightweight SQL-like — full TypeScript'},...(lv!=='beginner'?[{label:'TypeORM',desc:ja?'デコレータベース — NestJS親和':'Decorator-based — NestJS compatible'}]:[]),...(lv==='pro'?[{label:'SQLAlchemy (Python)',desc:ja?'Python標準ORM':'Python standard ORM'},
 {label:'Kysely',desc:ja?'SQL型安全ビルダー':'Type-safe SQL builder'}]:[]),{label:ja?'なし / BaaS使用':'None / Using BaaS',desc:ja?'Firebase/Supabase利用時':'When using Firebase/Supabase'}],tip:ja?'PrismaのStudioはDB管理に便利':'Prisma Studio is great for DB management'},
+    {id:'dev_env_type',q:ja?'開発環境タイプ':'Dev Environment Type',type:'options',
+      condition:{backend:v=>/Supabase|Firebase|Convex/i.test(v)},
+      options:[
+        {label:ja?'ローカル開発':'Local Development',desc:ja?'ローカルエミュレーターを自動起動':'Auto-start local emulators'},
+        {label:ja?'クラウド接続':'Cloud Direct',desc:ja?'リモートBaaSに直接接続（エミュレーターなし）':'Connect to remote BaaS (no emulators)'},
+        {label:ja?'ハイブリッド':'Hybrid',desc:ja?'両方の設定を生成、手動切替':'Generate both, switch manually'}
+      ],
+      tip:ja?'ローカル開発はオフラインでも動作可能':'Local development works offline too',
+      help:'dev_env_type'},
     {id:'mobile',q:ja?'モバイル対応 ★v8':'Mobile Support ★v8',type:'options',help:'mobile',options:[{label:'Expo (React Native)',desc:ja?'推奨 — SDK55・EAS Build/Submit・OTA・React共有80%+':'Recommended — SDK55, EAS Build/Submit, OTA, 80%+ React reuse'},...(lv!=='beginner'?[{label:'Flutter',desc:ja?'Dart製・ピクセルパーフェクトUI・マルチプラットフォーム':'Dart, pixel-perfect UI, multi-platform'},
 {label:'React Native (bare)',desc:ja?'ネイティブモジュール完全制御':'Full native module control'}]:[]),...(lv==='pro'?[{label:ja?'Swift/Kotlin (ネイティブ)':'Swift/Kotlin (Native)',desc:ja?'最高パフォーマンス・プラットフォーム固有':'Best performance, platform-specific'}]:[]),{label:'PWA',desc:ja?'Service Worker — インストール可能Web':'Service Worker — installable web'},{label:ja?'なし':'None',desc:ja?'Web専用':'Web only'}],tip:ja?'ExpoならReact知識をそのままモバイルへ':'Expo lets you reuse React skills for mobile'},
     {id:'ai_auto',q:ja?'AI自律開発レベル ★v8':'AI Dev Level ★v8',type:'options',help:'ai_auto',options:[{label:ja?'Vibe Coding入門':'Vibe Coding Intro',desc:ja?'Level 1 — AIペアプログラミング・Tab補完':'Level 1 — AI pair programming, Tab completion'},...(lv!=='beginner'?[{label:ja?'エージェント型開発':'Agentic Dev',desc:ja?'Level 2 — Cursor Agent/Cline/Antigravity マルチファイル編集':'Level 2 — Cursor Agent/Cline/Antigravity multi-file editing'},

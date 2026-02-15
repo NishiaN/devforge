@@ -66,9 +66,9 @@ describe('Snapshot A: LMS/Supabase/Stripe', () => {
     ai_auto: 'マルチAgent協調'
   }, 'LMS');
 
-  test('file count in range 93-122 (P4 adds +6, P14 adds +3, P15 adds +4, P16 adds +4)', () => {
+  test('file count in range 96-125 (P4 adds +6, P14 adds +3, P15 adds +4, P16 adds +4, cross-platform adds +3)', () => {
     const count = Object.keys(files).length;
-    assert.ok(count >= 93 && count <= 122, `Expected 93-122 files (P4 adds +6, P14 adds +3, P15 adds +4, P16 adds +4), got ${count}`);
+    assert.ok(count >= 96 && count <= 125, `Expected 96-125 files (P4 adds +6, P14 adds +3, P15 adds +4, P16 adds +4, cross-platform adds +3), got ${count}`);
   });
 
   test('total tokens in range 12000-54000 (P16 adds ~4-8K tokens)', () => {
@@ -422,6 +422,31 @@ describe('Snapshot A: LMS/Supabase/Stripe', () => {
     assert.ok(settings.permissions.dangerousCommands, 'Should have dangerous commands warnings');
   });
 
+  test('.gitattributes exists and enforces LF', () => {
+    assert.ok(files['.gitattributes'], '.gitattributes missing');
+    assert.ok(files['.gitattributes'].includes('text=auto'), 'Missing text=auto');
+    assert.ok(files['.gitattributes'].includes('eol=lf'), 'Missing eol=lf');
+    assert.ok(files['.gitattributes'].includes('binary'), 'Missing binary rules');
+  });
+
+  test('.editorconfig exists with standard settings', () => {
+    assert.ok(files['.editorconfig'], '.editorconfig missing');
+    assert.ok(files['.editorconfig'].includes('root = true'), 'Missing root=true');
+    assert.ok(files['.editorconfig'].includes('end_of_line = lf'), 'Missing end_of_line');
+  });
+
+  test('docs/64_cross_platform_guide.md exists', () => {
+    assert.ok(files['docs/64_cross_platform_guide.md'], 'docs/64 missing');
+    const cp = files['docs/64_cross_platform_guide.md'];
+    assert.ok(cp.includes('gitattributes') || cp.includes('改行'), 'Missing line ending section');
+    assert.ok(cp.includes('DevContainer'), 'Missing DevContainer section');
+  });
+
+  test('post-create.sh defaults to local for BaaS (no dev_env_type)', () => {
+    const pc = files['.devcontainer/post-create.sh'];
+    assert.ok(pc.includes('supabase start') || pc.includes('supabase init'), 'Default should auto-start Supabase');
+  });
+
   test('skills/catalog.md has domain-specific skill', () => {
     const catalog = files['skills/catalog.md'];
     // Should have domain-specific skill section
@@ -575,6 +600,41 @@ describe('Snapshot A: LMS/Supabase/Stripe', () => {
   });
 });
 
+// ═══ Dev Environment Type Tests ═══
+describe('Dev Environment Type Tests', () => {
+  test('cloud mode: no auto-start, cloud instructions shown', () => {
+    const f = generate({
+      purpose: 'テスト', target: 'テスト',
+      frontend: 'React + Next.js', backend: 'Supabase', database: 'Supabase (PostgreSQL)',
+      deploy: 'Vercel', auth: 'Supabase Auth', dev_env_type: 'クラウド接続',
+      mvp_features: '認証', screens: 'ダッシュボード',
+      data_entities: 'User', dev_methods: 'TDD', ai_tools: 'Cursor'
+    }, 'CloudTest');
+    const pc = f['.devcontainer/post-create.sh'];
+    assert.ok(!pc.includes('supabase start'), 'Cloud should NOT auto-start');
+    const env = f['.env.example'];
+    assert.ok(env.includes('YOUR_PROJECT') || env.includes('Cloud') || env.includes('クラウド'), 'Should have cloud placeholders');
+  });
+
+  test('hybrid mode: install but no auto-start, DEV_MODE shown', () => {
+    const f = generate({
+      purpose: 'テスト', target: 'テスト',
+      frontend: 'React + Next.js', backend: 'Supabase', database: 'Supabase (PostgreSQL)',
+      deploy: 'Vercel', auth: 'Supabase Auth', dev_env_type: 'ハイブリッド',
+      mvp_features: '認証', screens: 'ダッシュボード',
+      data_entities: 'User', dev_methods: 'TDD', ai_tools: 'Cursor'
+    }, 'HybridTest');
+    const pc = f['.devcontainer/post-create.sh'];
+    assert.ok(pc.includes('supabase init'), 'Hybrid should install');
+    // Check that "npx supabase start" is not executed as a command (not on its own line)
+    const lines = pc.split('\n');
+    const hasAutoStart = lines.some(line => /^npx supabase start\s*$/.test(line.trim()));
+    assert.ok(!hasAutoStart, 'Hybrid should NOT auto-start supabase');
+    const env = f['.env.example'];
+    assert.ok(env.includes('DEV_MODE'), 'Should have DEV_MODE switch');
+  });
+});
+
 // ═══ Scenario B: Blog (Vite + Netlify, no Stripe, no Admin) ═══
 describe('Snapshot B: Blog/Vite/Netlify', () => {
   const files = generate({
@@ -587,9 +647,9 @@ describe('Snapshot B: Blog/Vite/Netlify', () => {
     dev_methods: 'TDD', ai_tools: 'Cursor', orm: ''
   }, 'Blog');
 
-  test('file count in range 84-113 (P14 adds +3, P4 adds +6, P15 adds +4, P16 adds +4)', () => {
+  test('file count in range 87-116 (P14 adds +3, P4 adds +6, P15 adds +4, P16 adds +4, cross-platform adds +3)', () => {
     const count = Object.keys(files).length;
-    assert.ok(count >= 84 && count <= 113, `Expected 84-113 files (P14 adds +3, P4 adds +6, P15 adds +4, P16 adds +4), got ${count}`);
+    assert.ok(count >= 87 && count <= 116, `Expected 87-116 files (P14 adds +3, P4 adds +6, P15 adds +4, P16 adds +4, cross-platform adds +3), got ${count}`);
   });
 
   test('no Stripe content when payment absent', () => {
