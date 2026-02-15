@@ -19,7 +19,7 @@ DevForge v9's documentation is optimized into role-specific files:
 ## Architecture
 - **47 modules** in `src/` → `node build.js` → single `devforge-v9.html` (~2000KB)
 - Vanilla JS, no frameworks. CSS custom properties. CDN: marked.js, mermaid.js, JSZip.
-- **AI Development OS**: Generates 111+ files including context intelligence, operations playbooks, business models, growth strategies, industry-specific strategic intelligence, ops intelligence, future strategy intelligence, and path-specific AI rules
+- **AI Development OS**: Generates 115+ files including context intelligence, operations playbooks, business models, growth strategies, industry-specific strategic intelligence, ops intelligence, future strategy intelligence, polymorphic development intelligence, and path-specific AI rules
 - **Security-hardened**: Phase 1 (CSP, SRI, sanitization) + Phase 2 (16 XSS/injection fixes) + Pillar ⑫ (context-aware security audit prompts)
 - **Latest**: v9.3.0 — CLAUDE.md 3-layer split (.claude/rules/ path-specific rules + .claude/settings.json), reduces token consumption from ~3K to ~1.5K + targeted loading
 
@@ -32,7 +32,7 @@ node build.js --report     # Show size report
 node build.js --check-css  # Validate CSS custom properties
 
 # Test
-npm test                   # Run all tests (305+ tests, all passing)
+npm test                   # Run all tests (325+ tests, all passing)
 npm run test:watch         # Watch mode for test development
 node --test test/gen-coherence.test.js  # Run single test file
 node --test test/data-coverage.test.js  # Run data integrity tests
@@ -90,7 +90,7 @@ npm run check              # Syntax check extracted JS
 |----------|-------|---------|
 | core/ | state, i18n, events, tour, init | State, language, shortcuts |
 | data/ | presets(41), questions, techdb, compat-rules, gen-templates, helpdata | Static data (41 presets: 36 original + 5 new: CRM, Social, Logistics, Survey, Job Board) |
-| generators/ | index, p1-sdd, p2-devcontainer, p3-mcp, p4-airules, p5-quality, p7-roadmap, p9-designsystem (v2: Figma MCP, Anti-AI checklist), p10-reverse, p11-implguide (skill_guide.md), p12-security (context-aware audit prompts), p13-strategy (industry intelligence), p14-ops (ops intelligence), p15-future (market/UX/ecosystem/regulatory strategy), docs, common | 111+ file generation engine (15 pillars) |
+| generators/ | index, p1-sdd, p2-devcontainer, p3-mcp, p4-airules, p5-quality, p7-roadmap, p9-designsystem (v2: Figma MCP, Anti-AI checklist), p10-reverse, p11-implguide (skill_guide.md), p12-security (context-aware audit prompts), p13-strategy (industry intelligence), p14-ops (ops intelligence), p15-future (market/UX/ecosystem/regulatory strategy), p16-deviq (polymorphic development intelligence), docs, common | 115+ file generation engine (16 pillars) |
 | ui/ | wizard, render, edit, help, confirm, complexity, toc, voice, project, presets, preview, editor, diff, export, explorer, dashboard, templates, qbar, cmdpalette | UI components |
 | styles/ | all.css | Theme (dark/light), responsive |
 
@@ -227,7 +227,7 @@ See Phase 2 security audit for detailed examples.
 
 **Fix:**
 - Always add both `ja` and `en` versions
-- Search for all instances when updating numbers (41 presets, 111+ files, 15 pillars)
+- Search for all instances when updating numbers (41 presets, 115+ files, 16 pillars)
 - Use static strings in data files, not `S.lang` conditionals
 
 ### Cross-Reference Number Updates
@@ -324,7 +324,7 @@ The compatibility checker validates tech stack combinations with **58 rules** (1
 4. Add test cases to `test/compat.test.js` (both positive and negative)
 5. Update test header comment
 6. Update all documentation references (see Cross-Reference section above)
-7. Run `npm test` to verify all 305+ tests pass
+7. Run `npm test` to verify all 325+ tests pass
 
 ## Key Data Structures & Helper Functions
 
@@ -395,7 +395,7 @@ const PR = {
 
 ## Generated Output
 
-DevForge generates **111+ files** (base: 87 files, +4 for skills/ when ai_auto=multi/full/orch, +1 for business_model.md when payment≠none, +3 for P14 ops docs, +4 for P15 future strategy docs, +6 for .claude/ structure).
+DevForge generates **115+ files** (base: 87 files, +4 for skills/ when ai_auto=multi/full/orch, +1 for business_model.md when payment≠none, +3 for P14 ops docs, +4 for P15 future strategy docs, +4 for P16 dev IQ docs, +6 for .claude/ structure).
 
 → See `docs/CLAUDE-REFERENCE.md` for complete file catalog.
 
@@ -461,10 +461,11 @@ DevForge includes a **Prompt Launcher** that generates structured prompts by aut
 | security.test.js | 26 tests | Security: CSP, SRI, sanitization, XSS prevention, proto pollution, .claude/settings.json safety (2 new tests) |
 | ops.test.js | 16 tests | Ops Intelligence (P14): runbook generation, checklist, ops plane design, SLO adaptation, domain-specific flags, observability stack, circuit breaker, audit schema |
 | future.test.js | 16 tests | Future Strategy Intelligence (P15): DOMAIN_MARKET coverage, PERSONA_ARCHETYPES coverage, GTM_STRATEGY, REGULATORY_HORIZON, doc generation (56-59), mermaid diagrams, bilingual content |
+| deviq.test.js | 20 tests | Polymorphic Development Intelligence (P16): DEV_METHODOLOGY_MAP (32 domains), PHASE_PROMPTS (6 phases), INDUSTRY_STRATEGY (15 industries), NEXT_GEN_UX (4 keywords), doc generation (60-63), Mermaid diagrams, bilingual content |
 | presets.test.js | 4 tests | Preset count (41), bilingual names, tech fields, purpose |
 | Others | ~21 tests | i18n, state, techdb |
 
-**Total: 305+ tests (all passing, 100% pass rate) + 7 synergy unit tests**
+**Total: 325+ tests (all passing, 100% pass rate) + 7 synergy unit tests**
 
 ## Writing Tests
 

@@ -26,6 +26,7 @@ eval(fs.readFileSync('src/generators/p12-security.js','utf-8'));
 eval(fs.readFileSync('src/generators/p13-strategy.js','utf-8').replace(/const (INDUSTRY_INTEL|STAKEHOLDER_STRATEGY|OPERATIONAL_FRAMEWORKS|OPERATIONAL_FRAMEWORKS_EXT|EXTREME_SCENARIOS|PRAGMATIC_SCENARIOS|TECH_RADAR_BASE)/g,'var $1'));
 eval(fs.readFileSync('src/generators/p14-ops.js','utf-8'));
 eval(fs.readFileSync('src/generators/p15-future.js','utf-8').replace(/const (DOMAIN_MARKET|PERSONA_ARCHETYPES|GTM_STRATEGY|REGULATORY_HORIZON)/g,'var $1'));
+eval(fs.readFileSync('src/generators/p16-deviq.js','utf-8').replace(/const (DEV_METHODOLOGY_MAP|PHASE_PROMPTS|INDUSTRY_STRATEGY|NEXT_GEN_UX|mapDomainToIndustry|gen60|gen61|gen62|gen63|genPillar16_DevIQ)/g,'var $1'));
 
 // ═══ Helper ═══
 function generate(answers, name, lang) {
@@ -45,6 +46,8 @@ function generate(answers, name, lang) {
   genPillar12_SecurityIntelligence(answers, name);
   genPillar13_StrategicIntelligence(answers, name);
   genPillar14_OpsIntelligence(answers, name);
+  genPillar15(answers);
+  genPillar16_DevIQ(answers, name);
   return { ...S.files };
 }
 
@@ -63,14 +66,14 @@ describe('Snapshot A: LMS/Supabase/Stripe', () => {
     ai_auto: 'マルチAgent協調'
   }, 'LMS');
 
-  test('file count in range 89-114 (P4 adds +6, P14 adds +3, P15 adds +4)', () => {
+  test('file count in range 93-122 (P4 adds +6, P14 adds +3, P15 adds +4, P16 adds +4)', () => {
     const count = Object.keys(files).length;
-    assert.ok(count >= 89 && count <= 114, `Expected 89-114 files (P4 adds +6, P14 adds +3, P15 adds +4), got ${count}`);
+    assert.ok(count >= 93 && count <= 122, `Expected 93-122 files (P4 adds +6, P14 adds +3, P15 adds +4, P16 adds +4), got ${count}`);
   });
 
-  test('total tokens in range 12000-46000', () => {
+  test('total tokens in range 12000-54000 (P16 adds ~4-8K tokens)', () => {
     const total = Object.values(files).reduce((s, v) => s + tokens(v), 0);
-    assert.ok(total >= 12000 && total <= 46000, `Expected 12K-46K tokens, got ${total}`);
+    assert.ok(total >= 12000 && total <= 54000, `Expected 12K-54K tokens (P16 adds ~4-8K), got ${total}`);
   });
 
   // Core files existence
@@ -584,9 +587,9 @@ describe('Snapshot B: Blog/Vite/Netlify', () => {
     dev_methods: 'TDD', ai_tools: 'Cursor', orm: ''
   }, 'Blog');
 
-  test('file count in range 80-105 (P14 adds +3, P4 adds +6, P15 adds +4)', () => {
+  test('file count in range 84-113 (P14 adds +3, P4 adds +6, P15 adds +4, P16 adds +4)', () => {
     const count = Object.keys(files).length;
-    assert.ok(count >= 80 && count <= 105, `Expected 80-105 files (P14 adds +3, P4 adds +6, P15 adds +4), got ${count}`);
+    assert.ok(count >= 84 && count <= 113, `Expected 84-113 files (P14 adds +3, P4 adds +6, P15 adds +4, P16 adds +4), got ${count}`);
   });
 
   test('no Stripe content when payment absent', () => {

@@ -147,9 +147,9 @@ Questions can have a `condition` field that determines if they should be shown:
 
 ---
 
-## Generated Output (92+ files)
+## Generated Output (115+ files)
 
-When users complete the wizard, DevForge generates **92+ files** (base: 79 files, +4 when ai_auto=multi/full/orch for skills/ md Package, +1 when payment≠none for docs/38_business_model.md):
+When users complete the wizard, DevForge generates **115+ files** (base: 87 files, +4 when ai_auto=multi/full/orch for skills/ Package, +1 when payment≠none for docs/38_business_model.md, +3 for P14 ops docs, +4 for P15 future strategy docs, +4 for P16 dev IQ docs, +6 for .claude/ structure):
 
 ### Core Specifications
 - **.spec/** — constitution.md, specification.md, technical-plan.md, tasks.md, verification.md
@@ -187,6 +187,18 @@ When users complete the wizard, DevForge generates **92+ files** (base: 79 files
 - **tech_radar.md (49)** — 2026-2030 technology trends (Adopt/Trial/Assess/Hold classification)
 - **stakeholder_strategy.md (50)** — Phase-based development strategies for stakeholder type
 - **operational_excellence.md (51)** — Technical debt management, DR/BCP, Green IT, team design
+- **advanced_scenarios.md (52)** — Extreme & pragmatic scenarios for edge case planning
+- **ops_runbook.md (53)** — Ops Plane design (Feature Flags, SLO/SLI, Observability, Jobs, Backup, Rate Limiting)
+- **ops_checklist.md (54)** — Day-1 ops readiness checklist (12 Ops Capabilities Matrix)
+- **ops_plane_design.md (55)** — Ops Plane Architecture (12 Ops Capabilities impl patterns, Circuit Breaker, Evidence-Based Ops)
+- **market_positioning.md (56)** — Market positioning & competitive intelligence (MOAT analysis, GTM strategy, unit economics)
+- **user_experience_strategy.md (57)** — User experience & retention strategy (personas, user journeys, accessibility, digital wellbeing)
+- **ecosystem_strategy.md (58)** — Ecosystem & platform strategy (API-as-product, DX, FinOps, community strategy)
+- **regulatory_foresight.md (59)** — Regulatory foresight & sustainability (2026-2030 horizon, EU AI Act, ESG metrics)
+- **methodology_intelligence.md (60)** — Optimal development methodology selection (12 design approaches, domain-specific fit evaluation)
+- **ai_brainstorm_playbook.md (61)** — AI brainstorming prompts (6 phases × project-specific templates, Polymorphic Engine framework)
+- **industry_deep_dive.md (62)** — Industry-specific deep dive (15 industries: regulations, tech stacks, pitfalls, architecture patterns)
+- **next_gen_ux_strategy.md (63)** — Next-generation UX strategy (Polymorphic Engine: Agentic Workflow, Generative UI, Spatial Computing, Calm Technology)
 
 ### AI Rules & Skills
 - **AI rules** — CLAUDE.md (with File Selection Matrix & Context Compression Protocol), AI_BRIEF.md (with Context Loading Strategy, ~1200 tokens), .cursorrules, .clinerules, .windsurfrules, AGENTS.md (with Agent Specialization Matrix), .cursor/rules

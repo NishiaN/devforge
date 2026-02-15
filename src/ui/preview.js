@@ -410,6 +410,10 @@ function buildFileTree(){
     files.push({folder:true,name:'docs'});
     ['56_market_positioning','57_user_experience_strategy','58_ecosystem_strategy','59_regulatory_foresight'].forEach(f=>
       files.push({name:'  '+f+'.md',path:'docs/'+f+'.md'}));
+  } else if(pillar===15){ // Dev IQ (P16)
+    files.push({folder:true,name:'docs'});
+    ['60_methodology_intelligence','61_ai_brainstorm_playbook','62_industry_deep_dive','63_next_gen_ux_strategy'].forEach(f=>
+      files.push({name:'  '+f+'.md',path:'docs/'+f+'.md'}));
   }
   // Common files
   files.push({name:'───────────',path:''});
