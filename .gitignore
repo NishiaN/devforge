@@ -22,3 +22,11 @@ error-*.png
 
 # Japanese guide collection (docs only, not tracked)
 docs/guides/ja/
+
+# Japanese reference documents (local only)
+未来志向アプリ開発戦略フレームワーク（2026-2035）.md
+DevForge紹介スクリプト.md
+アプリケーション開発技術の包括的進化論 (2010–2030).md
+アプリケーションに運用のための仕組みを内蔵させる.md
+OpenClawとはセルフホスト型パーソナルAIアシスタントエージェント.md
+人間中心設計の観点とは（定義）.md
