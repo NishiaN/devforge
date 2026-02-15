@@ -119,8 +119,18 @@ function start(){
   const presetName=p&&p.name?(_en&&p.nameEn?p.nameEn:p.name):'';
   const preFilledCount=Object.keys(S.answers).length;
   save();saveProject();
-  $('onboard').style.display='none';
-  $('ws').style.display='flex';
+
+  // View transition animation (HCD: ⑤感情体験)
+  const onb=$('onboard');
+  const ws=$('ws');
+  onb.classList.add('phase-exit');
+  setTimeout(()=>{
+    onb.style.display='none';
+    ws.style.display='flex';
+    ws.classList.add('phase-enter');
+    setTimeout(()=>ws.classList.remove('phase-enter'),300);
+  },200);
+
   initPills();updProgress();showQ();
   if(presetName&&preFilledCount>0){
     toast(_ja?`✅ "${presetName}" を適用 — ${preFilledCount}件の回答を自動入力`:`✅ Applied "${presetName}" — ${preFilledCount} answers pre-filled`);

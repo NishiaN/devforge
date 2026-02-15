@@ -33,18 +33,39 @@ function doGenerate(lang){
   snapshotFiles();
   S.genLang=lang;save();
   const ov=$('genLangOv');if(ov)ov.remove();
+  const _j=S.lang==='ja';
   // Pre-generation compatibility gate
   const _cErrs=checkCompat(S.answers).filter(c=>c.level==='error');
   if(_cErrs.length>0){
-    const _j=S.lang==='ja';
     const msg=_cErrs.map(e=>'❌ '+e.msg).join('\n');
     if(!confirm((_j?'⚠️ スタック相性エラーが検出されました:\n\n':'⚠️ Stack compatibility errors detected:\n\n')+msg+'\n\n'+(_j?'このまま生成しますか？':'Continue generating?')))return;
   }
   addMsg('bot',S.lang==='ja'?'🔨 ファイルを生成中...':'🔨 Generating files...');
-  $('izone').innerHTML='<div class="gen-spinner"><div class="gen-prog-wrap"><div class="gen-prog-bar"><div class="gen-prog-fill" id="genProgFill"></div></div><div class="gen-prog-label" id="genProgLabel"></div></div><div class="spin gen-spinner-icon">⚙️</div></div>';
-  
+
+  // Smart loading UI (HCD: ⑤感情体験 ③認知負荷)
+  const pillarIcons=['📋','🐳','🔌','🤖','✅','🗺️','🎨','🔍','💡','🔒','📊','⚙️','🔮','📄','📦'];
+  const pillarNames=_j?['SDD','DevContainer','MCP','AIルール','品質','ロードマップ','デザイン','リバース','実装','セキュリティ','戦略','運用','未来','仕様書','共通']:['SDD','DevContainer','MCP','AI Rules','Quality','Roadmap','Design','Reverse','Impl','Security','Strategy','Ops','Future','Docs','Common'];
+  let pillarGrid='<div class="gen-pillar-grid">';
+  for(let i=0;i<15;i++){
+    pillarGrid+=`<div class="gen-pillar-card" id="genPillar${i}" data-status="pending">
+      <div class="gen-pillar-icon">${pillarIcons[i]}</div>
+      <div class="gen-pillar-name">${pillarNames[i]}</div>
+      <div class="gen-pillar-check">✓</div>
+    </div>`;
+  }
+  pillarGrid+='</div>';
+
+  $('izone').innerHTML=`<div class="gen-spinner">
+    <div class="gen-prog-wrap">
+      <div class="gen-prog-bar"><div class="gen-prog-fill" id="genProgFill"></div></div>
+      <div class="gen-prog-label" id="genProgLabel"></div>
+    </div>
+    ${pillarGrid}
+    <div class="spin gen-spinner-icon">⚙️</div>
+  </div>`;
+
   const a=S.answers;const pn=S.projectName;
-  S.files={};const _errs=[];const _j=S.lang==='ja';
+  S.files={};const _errs=[];
   const steps=[
     {fn:()=>genPillar1_SDD(a,pn),lbl:_j?'柱① SDD仕様書':'Pillar ① SDD',err:'P1-SDD'},
     {fn:()=>genPillar2_DevContainer(a,pn),lbl:_j?'柱② DevContainer':'Pillar ② DevContainer',err:'P2-Dev'},
@@ -68,9 +89,20 @@ function doGenerate(lang){
     const s=steps[si];const pct=Math.round((si/steps.length)*100);
     const fill=$('genProgFill');if(fill)fill.style.width=pct+'%';
     const lbl=$('genProgLabel');if(lbl)lbl.textContent=s.lbl;
-    if(typeof announce==='function')announce(s.lbl);
+
+    // Update pillar card status (HCD: ⑤感情体験 ③認知負荷)
+    const card=$('genPillar'+si);
+    if(card){
+      card.setAttribute('data-status','processing');
+      if(typeof announce==='function')announce(s.lbl);
+    }
+
     setTimeout(()=>{
       try{s.fn();}catch(e){_errs.push(s.err);console.error('❌ '+s.err+' error:',e);}
+
+      // Mark as completed
+      if(card)card.setAttribute('data-status','completed');
+
       si++;runStep();
     },60);
   }
@@ -112,12 +144,7 @@ function finishGen(_errs){
     showExportGrid();
     showFileTree();
     initPrevTabs();initPillarTabs();updProgress();save();
-    // Quick action bar
-    if(!$('qbar')){
-      const qb=document.createElement('div');qb.id='qbar';qb.className='qbar';
-      qb.innerHTML=`<button class="qbar-btn" onclick="exportZIP()">📦 ZIP</button><button class="qbar-btn" onclick="copyAllFiles()">📋 ${_ja?'全コピー':'Copy All'}</button><button class="qbar-btn" onclick="S.pillar=5;showFileTree()">📊 Dashboard</button><button class="qbar-btn" onclick="S.pillar=6;showRoadmapUI()">🗺️ Roadmap</button><button class="qbar-x" onclick="this.parentNode.remove()">✕</button>`;
-      const ws=$('ws');if(ws)ws.appendChild(qb);
-    }
+    createQbar();
     setTimeout(showPostGenGuide,400);
 }
 function showExportGrid(){
@@ -130,25 +157,86 @@ function showExportGrid(){
     <span>📏 ~${sizeKB.toLocaleString()}KB</span>
     <span>🔤 ~${tokens.toLocaleString()} ${_ja?'トークン':'tokens'}</span>
   </div>`;
-  $('izone').innerHTML=summary+`<div class="export-grid">
-    <div class="export-card" onclick="exportZIP()"><div class="icon">📦</div><h4>${_ja?'ZIP ダウンロード':'ZIP Download'}</h4><p>${_ja?'全'+fc+'ファイルをZIPで保存':'Save all '+fc+' files as ZIP'}</p></div>
-    <div class="export-card" onclick="exportPDF()"><div class="icon">📄</div><h4>${_ja?'PDF 印刷':'PDF Print'}</h4><p>${_ja?'仕様書をPDF化':'Export specs as PDF'}</p></div>
-    <div class="export-card" onclick="copyAllFiles()"><div class="icon">📋</div><h4>${_ja?'全ファイルコピー':'Copy All Files'}</h4><p>${_ja?'全結合テキストをコピー':'Copy all combined text'}</p></div>
-    <div class="export-card" onclick="copyForAI()"><div class="icon">🤖</div><h4>${_ja?'AI向けMarkdown':'AI Markdown'}</h4><p>${_ja?'TOC付きMD形式でコピー':'Copy as MD with TOC for AI'}</p></div>
-    <div class="export-card" onclick="saveTemplate()"><div class="icon">💾</div><h4>${_ja?'テンプレート保存':'Save Template'}</h4><p>${_ja?'設定を保存して再利用':'Save settings for reuse'}</p></div>
-    <div class="export-card" onclick="shareURL()"><div class="icon">🔗</div><h4>${_ja?'URL共有':'Share URL'}</h4><p>${_ja?'設定をURLで共有':'Share settings via URL'}</p></div>
-    <div class="export-card export-card-regen" onclick="generateAll()"><div class="icon">🔄</div><h4>${_ja?'再生成':'Regenerate'}</h4><p>${_ja?'回答から全ファイル再作成':'Rebuild all files from answers'}</p></div>
-    <div class="export-card export-card-danger" onclick="clearFiles()"><div class="icon">🗑️</div><h4>${_ja?'生成ファイルをクリア':'Clear Generated Files'}</h4><p>${_ja?fc+'ファイルを削除（回答は保持）':'Delete '+fc+' files (answers kept)'}</p></div>
-  </div>`;
+
+  // Hero card for ZIP (HCD: ③認知負荷 ①目的達成)
+  const heroCard=`
+    <div class="export-hero" onclick="exportZIP()">
+      <div class="export-hero-badge">${_ja?'推奨':'Recommended'}</div>
+      <div class="export-hero-icon">📦</div>
+      <div class="export-hero-content">
+        <h3>${_ja?'ZIP ダウンロード':'ZIP Download'}</h3>
+        <p>${_ja?'全'+fc+'ファイルを一括保存。最も確実で便利な方法です。':'Save all '+fc+' files at once. Most reliable and convenient.'}</p>
+      </div>
+    </div>
+  `;
+
+  // Export group
+  const exportGroup=`
+    <div class="export-group-label">📤 ${_ja?'エクスポート':'Export'}</div>
+    <div class="export-grid export-grid-compact">
+      <div class="export-card" onclick="exportPDF()"><div class="icon">📄</div><h4>${_ja?'PDF 印刷':'PDF Print'}</h4><p>${_ja?'仕様書をPDF化':'Export specs as PDF'}</p></div>
+      <div class="export-card" onclick="copyAllFiles()"><div class="icon">📋</div><h4>${_ja?'全ファイルコピー':'Copy All'}</h4><p>${_ja?'テキスト結合コピー':'Copy combined text'}</p></div>
+      <div class="export-card" onclick="copyForAI()"><div class="icon">🤖</div><h4>${_ja?'AI向けMD':'AI Markdown'}</h4><p>${_ja?'TOC付きMD形式':'MD with TOC for AI'}</p></div>
+    </div>
+  `;
+
+  // Management group
+  const mgmtGroup=`
+    <div class="export-group-label">⚙️ ${_ja?'管理':'Management'}</div>
+    <div class="export-grid export-grid-compact">
+      <div class="export-card" onclick="saveTemplate()"><div class="icon">💾</div><h4>${_ja?'テンプレート保存':'Save Template'}</h4><p>${_ja?'設定を保存':'Save settings'}</p></div>
+      <div class="export-card" onclick="shareURL()"><div class="icon">🔗</div><h4>${_ja?'URL共有':'Share URL'}</h4><p>${_ja?'設定をURLで共有':'Share via URL'}</p></div>
+      <div class="export-card export-card-regen" onclick="generateAll()"><div class="icon">🔄</div><h4>${_ja?'再生成':'Regenerate'}</h4><p>${_ja?'全ファイル再作成':'Rebuild all files'}</p></div>
+    </div>
+  `;
+
+  // Danger zone
+  const dangerZone=`
+    <div class="export-danger-zone">
+      <div class="export-danger-label">⚠️ ${_ja?'注意が必要な操作':'Caution Required'}</div>
+      <div class="export-card export-card-danger" onclick="clearFiles()">
+        <div class="icon">🗑️</div>
+        <h4>${_ja?'生成ファイルをクリア':'Clear Generated Files'}</h4>
+        <p>${_ja?fc+'ファイルを削除（5秒間Undo可能）':'Delete '+fc+' files (Undo within 5s)'}</p>
+      </div>
+    </div>
+  `;
+
+  $('izone').innerHTML=summary+heroCard+exportGroup+mgmtGroup+dangerZone;
 }
 
 function clearFiles(){
   const _ja=S.lang==='ja';const fc=Object.keys(S.files).length;
   if(!fc){toast(_ja?'クリアするファイルがありません':'No files to clear');return;}
-  const msg=_ja?fc+'ファイルの生成結果をクリアします。\n回答データは保持されます。続行しますか？':'Clear '+fc+' generated files?\nYour answers will be kept.';
-  if(!confirm(msg))return;
+
+  // Backup for undo
+  const backup={
+    files:JSON.parse(JSON.stringify(S.files)),
+    editedFiles:JSON.parse(JSON.stringify(S.editedFiles)),
+    prevFiles:JSON.parse(JSON.stringify(S.prevFiles)),
+    genLang:S.genLang,
+    previewFile:S.previewFile
+  };
+
+  // Clear
   S.files={};S.editedFiles={};S.prevFiles={};S.genLang=null;S.previewFile=null;
   save();showFileTree();showExportGrid();
-  toast(_ja?'✅ 生成ファイルをクリアしました':'✅ Generated files cleared');
+  if($('qbar'))$('qbar').remove();
+
+  // Show undo toast
+  toast(_ja?fc+' ファイルをクリアしました':'Cleared '+fc+' files',{
+    type:'success',
+    duration:5000,
+    actionLabel:_ja?'元に戻す':'Undo',
+    undoFn:()=>{
+      S.files=backup.files;
+      S.editedFiles=backup.editedFiles;
+      S.prevFiles=backup.prevFiles;
+      S.genLang=backup.genLang;
+      S.previewFile=backup.previewFile;
+      save();showFileTree();showExportGrid();createQbar();
+      toast(_ja?'✅ 復元しました':'✅ Restored',{type:'success'});
+    }
+  });
 }
 

@@ -82,6 +82,8 @@ const jsFiles = [
   'ui/launcher.js',
   'ui/dashboard.js',
   'ui/templates.js',
+  'ui/qbar.js',
+  'ui/cmdpalette.js',
 
   // Core (events, tour, init — must be last)
   'core/events.js',

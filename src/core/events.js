@@ -42,6 +42,7 @@ document.addEventListener('keydown',e=>{
   const k=e.key.toLowerCase();
   if(k==='f1'||(e.ctrlKey&&k==='h')){e.preventDefault();showManual();}
   if(e.ctrlKey&&k==='k'){e.preventDefault();showKB();}
+  if(e.ctrlKey&&k==='p'){e.preventDefault();if(typeof showCommandPalette==='function')showCommandPalette();}
   if(e.ctrlKey&&k==='t'){e.preventDefault();toggleTheme();}
   if(e.ctrlKey&&k==='l'){e.preventDefault();toggleLang();}
   if(e.ctrlKey&&k==='e'){e.preventDefault();exportZIP();}
@@ -49,6 +50,10 @@ document.addEventListener('keydown',e=>{
   if(e.altKey&&k==='arrowleft'){e.preventDefault();viewBack();}
   if(e.altKey&&k==='arrowright'){e.preventDefault();viewForward();}
   if(e.ctrlKey&&k==='m'){e.preventDefault();showPM();}
+  if(e.ctrlKey&&k==='4'){e.preventDefault();if(typeof showExplorer==='function')showExplorer();}
+  if(e.ctrlKey&&k==='5'){e.preventDefault();S.pillar=5;if(typeof showFileTree==='function')showFileTree();}
+  if(e.ctrlKey&&k==='6'){e.preventDefault();S.pillar=6;if(typeof showRoadmapUI==='function')showRoadmapUI();}
+  if(e.ctrlKey&&k==='7'){e.preventDefault();if(typeof showAILauncher==='function')showAILauncher();}
   if(e.key==='Escape'){
     if(!popModal()){
       // Fallback: close any visible modal
@@ -59,4 +64,30 @@ document.addEventListener('keydown',e=>{
     }
   }
 });
+
+// Mobile swipe gestures (HCD: ④身体負荷 ②使いやすさ)
+if(window.innerWidth<=768){
+  let _swipeStartX=0;
+  let _swipeStartY=0;
+  document.addEventListener('touchstart',e=>{
+    _swipeStartX=e.touches[0].clientX;
+    _swipeStartY=e.touches[0].clientY;
+  },{passive:true});
+
+  document.addEventListener('touchend',e=>{
+    const diffX=e.changedTouches[0].clientX-_swipeStartX;
+    const diffY=e.changedTouches[0].clientY-_swipeStartY;
+    if(Math.abs(diffX)<50||Math.abs(diffY)>50)return; // Minimum swipe distance + vertical scroll tolerance
+
+    if(diffX>0){
+      // Swipe right → show chat
+      const tabs=document.querySelectorAll('.mobtab');
+      if(tabs.length>0&&tabs[0])tabs[0].click();
+    }else{
+      // Swipe left → show preview
+      const tabs=document.querySelectorAll('.mobtab');
+      if(tabs.length>1&&tabs[1])tabs[1].click();
+    }
+  },{passive:true});
+}
 

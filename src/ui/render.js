@@ -195,10 +195,22 @@ function renderDnD(zone,items,onSubmit){
   const wrap=document.createElement('div');wrap.style.cssText='padding:10px 20px;';
   const lbl=document.createElement('div');lbl.className='czlabel';lbl.textContent=t('sortLabel');
   wrap.appendChild(lbl);
-  const list=document.createElement('ul');list.className='dnd-list';
+
+  // Keyboard hint (HCD: A アクセシビリティ ④身体負荷)
+  const hint=document.createElement('div');hint.className='dnd-hint';
+  hint.textContent=_ja?'ドラッグまたは↑↓キーで並び替え':'Drag or use ↑↓ keys to reorder';
+  wrap.appendChild(hint);
+
+  const list=document.createElement('ul');list.className='dnd-list';list.setAttribute('role','listbox');
   let dragItem=null;
   items.forEach((item,i)=>{
-    const li=document.createElement('li');li.className='dnd-item';li.draggable=true;li.dataset.idx=i;
+    const li=document.createElement('li');
+    li.className='dnd-item';
+    li.draggable=true;
+    li.dataset.idx=i;
+    li.setAttribute('tabindex','0');
+    li.setAttribute('role','option');
+    li.setAttribute('aria-label',(_ja?'項目 ':'Item ')+(i+1)+': '+item);
     const grip=document.createElement('span');grip.className='dnd-grip';grip.textContent='⠿';
     const label=document.createElement('span');label.className='dnd-label';label.textContent=item;
     const pri=document.createElement('span');pri.className='dnd-priority';
@@ -208,6 +220,30 @@ function renderDnD(zone,items,onSubmit){
     li.addEventListener('dragover',e=>{e.preventDefault();e.dataTransfer.dropEffect='move';li.classList.add('drag-over');});
     li.addEventListener('dragleave',()=>li.classList.remove('drag-over'));
     li.addEventListener('drop',e=>{e.preventDefault();li.classList.remove('drag-over');if(dragItem&&dragItem!==li){const rect=li.getBoundingClientRect();const mid=rect.top+rect.height/2;if(e.clientY<mid)list.insertBefore(dragItem,li);else list.insertBefore(dragItem,li.nextSibling);}});
+
+    // Keyboard navigation (HCD: A アクセシビリティ ④身体負荷)
+    li.addEventListener('keydown',e=>{
+      if(e.key==='ArrowUp'){
+        e.preventDefault();
+        const prev=li.previousElementSibling;
+        if(prev&&prev.classList.contains('dnd-item')){
+          list.insertBefore(li,prev);
+          li.focus();
+          updPri();
+          if(typeof announce==='function')announce(_ja?'上に移動しました':'Moved up');
+        }
+      }else if(e.key==='ArrowDown'){
+        e.preventDefault();
+        const next=li.nextElementSibling;
+        if(next&&next.classList.contains('dnd-item')){
+          list.insertBefore(next,li);
+          li.focus();
+          updPri();
+          if(typeof announce==='function')announce(_ja?'下に移動しました':'Moved down');
+        }
+      }
+    });
+
     list.appendChild(li);
   });
   wrap.appendChild(list);
