@@ -3,7 +3,26 @@
 window.onerror=(msg,src,line)=>{console.error('DevForge error:',{msg,src,line});toast('⚠️ '+msg);};
 window.onunhandledrejection=e=>{console.error('Unhandled:',e.reason);toast('⚠️ '+(e.reason?.message||e.reason));};
 let _mermaidReady=false;let _mermaidLoading=false;
-let theme=_lsGet('devforge-theme')||'dark';
+// OS theme auto-detection (HCD: ⑥文脈適合)
+let theme=_lsGet('devforge-theme');
+const themeManual=_lsGet('devforge-theme-manual')==='true';
+if(!theme&&!themeManual){
+  // First visit: detect OS preference
+  const prefersLight=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;
+  theme=prefersLight?'light':'dark';
+}else if(!theme){
+  theme='dark'; // Default fallback
+}
+// Real-time OS theme tracking (unless manually overridden)
+if(!themeManual&&window.matchMedia){
+  const mq=window.matchMedia('(prefers-color-scheme: light)');
+  mq.addEventListener('change',e=>{
+    if(_lsGet('devforge-theme-manual')!=='true'){
+      theme=e.matches?'light':'dark';
+      applyTheme();
+    }
+  });
+}
 function _initMermaidTheme(){try{mermaid.initialize({startOnLoad:false,theme:theme==='light'?'default':'dark',securityLevel:'strict'});}catch(e){}}
 function loadMermaid(cb){
   if(_mermaidReady){cb();return;}
@@ -20,8 +39,12 @@ function loadMermaid(cb){
   s.onerror=()=>{_mermaidLoading=false;console.warn('Mermaid CDN load failed');cb();};
   document.head.appendChild(s);
 }
+async function _ensureMermaid(){
+  if(_mermaidReady)return true;
+  return new Promise(r=>{loadMermaid(()=>r(_mermaidReady));});
+}
 function applyTheme(){document.documentElement.setAttribute('data-theme',theme);const btn=$('themeBtn');if(btn)btn.textContent=theme==='light'?'☀️':'🌙';if(_mermaidReady)_initMermaidTheme();}
-function toggleTheme(){theme=theme==='light'?'dark':'light';_lsSet('devforge-theme',theme);applyTheme();}
+function toggleTheme(){theme=theme==='light'?'dark':'light';_lsSet('devforge-theme',theme);_lsSet('devforge-theme-manual','true');applyTheme();}
 function toggleLang(){S.lang=S.lang==='ja'?'en':'ja';save();applyLang();if(voiceRec)voiceRec.lang=S.lang==='ja'?'ja-JP':'en-US';}
 function applyLang(){
   const l=S.lang;
@@ -77,9 +100,9 @@ function applyLang(){
   }
   // Keyboard shortcuts overlay
   const kbRows=document.querySelectorAll('.kb-row span:first-child');
-  const kbJa=['ヘルプ・マニュアル','ショートカット一覧','テーマ切替','言語切替','エクスポート','全ファイルコピー','プロジェクト管理'];
-  const kbEn=['Help / Manual','Shortcut List','Toggle Theme','Toggle Language','Export','Copy All Files','Project Manager'];
-  kbRows.forEach((el,i)=>{if(i<7)el.textContent=ja?kbJa[i]:kbEn[i];});
+  const kbJa=['ヘルプ・マニュアル','ショートカット一覧','コマンドパレット','テーマ切替','言語切替','エクスポート','全ファイルコピー','プロジェクト管理','エクスプローラー','ダッシュボード','ロードマップ','AI起動'];
+  const kbEn=['Help / Manual','Shortcut List','Command Palette','Toggle Theme','Toggle Language','Export','Copy All Files','Project Manager','Explorer','Dashboard','Roadmap','AI Launcher'];
+  kbRows.forEach((el,i)=>{if(i<12)el.textContent=ja?kbJa[i]:kbEn[i];});
   // Mobile tabs
   const mobtabs=document.querySelectorAll('.mobtab');
   if(mobtabs.length>=2){mobtabs[0].textContent=ja?'💬 チャット':'💬 Chat';mobtabs[1].textContent=ja?'📄 プレビュー':'📄 Preview';}
@@ -98,6 +121,8 @@ function applyLang(){
   document.title=ja?'DevForge v9.0 — AI駆動開発 統合プラットフォーム':'DevForge v9.0 — AI-Driven Development Platform';
   // Compare button translation (D4)
   const cl=$('compareLbl');if(cl)cl.textContent=ja?'テンプレート比較':'Compare Templates';
+  // Update QBar labels when language changes
+  if(typeof updateQbar==='function')updateQbar();
 }
 
 // Initialize
@@ -140,8 +165,31 @@ if(S.projectName&&S.phase>0){
   $('onboard').style.display='none';
   $('ws').style.display='flex';
   initPills();updProgress();
-  if(Object.keys(S.files).length>0){initPrevTabs();initPillarTabs();showFileTree();}
+  if(Object.keys(S.files).length>0){initPrevTabs();initPillarTabs();showFileTree();createQbar();}
   findNext();
 }
+
+// What's New indicator (HCD: C継続利用)
+const CURRENT_VERSION='9.3.0';
+const lastSeenVersion=_lsGet('devforge-last-version');
+if(lastSeenVersion!==CURRENT_VERSION){
+  const helpBtn=$('helpBtn')||document.querySelector('[onclick*="showManual"]');
+  if(helpBtn){
+    const dot=document.createElement('span');
+    dot.className='whats-new-dot';
+    dot.title=S.lang==='ja'?'新機能あり':'New features';
+    helpBtn.style.position='relative';
+    helpBtn.appendChild(dot);
+
+    // Clear dot when help is opened
+    const _origShowManual=window.showManual;
+    window.showManual=function(){
+      _lsSet('devforge-last-version',CURRENT_VERSION);
+      if(dot)dot.remove();
+      if(_origShowManual)_origShowManual();
+    };
+  }
+}
+
 // Tour
 if(!_lsGet('devforge-tour-done')){setTimeout(()=>startTour(),1000);}

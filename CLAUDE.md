@@ -91,7 +91,7 @@ npm run check              # Syntax check extracted JS
 | core/ | state, i18n, events, tour, init | State, language, shortcuts |
 | data/ | presets(41), questions, techdb, compat-rules, gen-templates, helpdata | Static data (41 presets: 36 original + 5 new: CRM, Social, Logistics, Survey, Job Board) |
 | generators/ | index, p1-sdd, p2-devcontainer, p3-mcp, p4-airules, p5-quality, p7-roadmap, p9-designsystem (v2: Figma MCP, Anti-AI checklist), p10-reverse, p11-implguide (skill_guide.md), p12-security (context-aware audit prompts), p13-strategy (industry intelligence), p14-ops (ops intelligence), p15-future (market/UX/ecosystem/regulatory strategy), docs, common | 111+ file generation engine (15 pillars) |
-| ui/ | wizard, render, edit, help, confirm, complexity, toc, voice, project, presets, preview, editor, diff, export, explorer, dashboard, templates | UI components |
+| ui/ | wizard, render, edit, help, confirm, complexity, toc, voice, project, presets, preview, editor, diff, export, explorer, dashboard, templates, qbar, cmdpalette | UI components |
 | styles/ | all.css | Theme (dark/light), responsive |
 
 ## Key State: `S` (Global State Object)
@@ -117,6 +117,9 @@ Located in `src/core/state.js`. Call `save()` after mutations to persist to loca
 - `progress` — Phase completion tracking
 - `pillar` — Current pillar view (0-8)
 - `previewFile` — Currently previewed file path
+- `qbarDismissed` — QBar minimized to FAB state (boolean)
+- `pinnedFiles` — User-pinned files for quick access (Array)
+- `recentFiles` — Recently viewed files, max 10, MRU order (Array)
 
 **Helper Functions (state.js):**
 - `save()` — Persist to localStorage (with 4MB size warning)

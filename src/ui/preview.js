@@ -127,13 +127,57 @@ function safeMD(raw){
 function diffBtn(path){
   return (S.prevFiles[path]||S.editedFiles[path])?'<button class="btn btn-xs btn-s btn-diff" onclick="showDiff(\''+escAttr(path)+'\')">🔀 Diff</button>':'';
 }
+
+// Breadcrumb navigation (HCD: ③認知負荷 ②使いやすさ)
+function getBreadcrumb(path){
+  const _ja=S.lang==='ja';
+  const pillarNames=t('pillar');
+  const pillarName=pillarNames[S.pillar]||'Files';
+
+  let crumbs=[{label:_ja?'ファイル':'Files',action:'showFileTree()'}];
+
+  // Add pillar if not the default
+  if(S.pillar>0){
+    crumbs.push({label:pillarName,action:'showFileTree()'});
+  }
+
+  // Parse path
+  const parts=path.split('/');
+  let accumulated='';
+
+  parts.forEach((part,i)=>{
+    accumulated+=part;
+    if(i<parts.length-1){
+      // Directory
+      accumulated+='/';
+      crumbs.push({label:part,action:'showFileTree()'}); // Could filter to show only this dir
+    }else{
+      // File (current, not clickable)
+      crumbs.push({label:part,action:null,current:true});
+    }
+  });
+
+  // Build HTML
+  let html='<div class="breadcrumb">';
+  crumbs.forEach((c,i)=>{
+    if(i>0)html+='<span class="breadcrumb-sep">›</span>';
+    if(c.current){
+      html+=`<span class="breadcrumb-current" aria-current="page">${esc(c.label)}</span>`;
+    }else{
+      html+=`<button class="breadcrumb-link" onclick="${c.action}">${esc(c.label)}</button>`;
+    }
+  });
+  html+='</div>';
+  return html;
+}
+
 function prevToolbar(path,showRaw){
   const _ja=S.lang==='ja';
   const rawBtn=showRaw?`<button class="btn btn-xs btn-s" onclick="toggleMdRaw('${escAttr(path)}')">📝 Raw</button>`:'';
   const canBack=_prevHistIdx>0;
   const canFwd=_prevHistIdx<_prevHistory.length-1;
   const navBtns=`<button class="btn btn-xs btn-s prev-nav-btn${canBack?'':' disabled'}" onclick="prevBack()" title="${_ja?'戻る':'Back'}">◀</button><button class="btn btn-xs btn-s prev-nav-btn${canFwd?'':' disabled'}" onclick="prevForward()" title="${_ja?'進む':'Forward'}">▶</button>`;
-  return `<div class="prev-toolbar">${navBtns}<span class="prev-path">📄 ${esc(path)}</span><div class="prev-toolbar-r">${rawBtn}<button class="btn btn-xs btn-s" onclick="openEditor('${escAttr(path)}')">✏️ ${_ja?'編集':'Edit'}</button>${diffBtn(path)}<button class="btn btn-xs btn-s" onclick="copyFileContent('${escAttr(path)}')">📋 ${_ja?'コピー':'Copy'}</button><button class="btn btn-xs btn-s" onclick="printCurrentFile()">🖨️ ${_ja?'印刷':'Print'}</button></div></div>`;
+  return `<div class="prev-toolbar">${navBtns}${getBreadcrumb(path)}<div class="prev-toolbar-r">${rawBtn}<button class="btn btn-xs btn-s" onclick="openEditor('${escAttr(path)}')">✏️ ${_ja?'編集':'Edit'}</button>${diffBtn(path)}<button class="btn btn-xs btn-s" onclick="copyFileContent('${escAttr(path)}')">📋 ${_ja?'コピー':'Copy'}</button><button class="btn btn-xs btn-s" onclick="printCurrentFile()">🖨️ ${_ja?'印刷':'Print'}</button></div></div>`;
 }
 function initPrevTabs(){
   const _ja=S.lang==='ja';
@@ -174,6 +218,45 @@ function initPillarTabs(){
   });
 }
 
+// Pin/Unpin file (HCD: ②使いやすさ C継続利用)
+function togglePin(path){
+  if(!S.pinnedFiles)S.pinnedFiles=[];
+  const idx=S.pinnedFiles.indexOf(path);
+  const _ja=S.lang==='ja';
+  if(idx>=0){
+    S.pinnedFiles.splice(idx,1);
+    toast(_ja?'📌 ピン留め解除しました':'📌 Unpinned',{type:'info'});
+  }else{
+    S.pinnedFiles.push(path);
+    toast(_ja?'📌 ピン留めしました':'📌 Pinned',{type:'success'});
+  }
+  save();
+  showFileTree();
+}
+
+function clearFileHistory(){
+  const _ja=S.lang==='ja';
+  if((!S.recentFiles||!S.recentFiles.length)&&(!S.pinnedFiles||!S.pinnedFiles.length)){
+    toast(_ja?'クリアする履歴がありません':'No history to clear');return;
+  }
+  const backup={recentFiles:[...(S.recentFiles||[])],pinnedFiles:[...(S.pinnedFiles||[])]};
+  S.recentFiles=[];
+  S.pinnedFiles=[];
+  _prevHistory=[];_prevHistIdx=-1;
+  _viewHistory=[];_viewHistIdx=-1;
+  save();showFileTree();
+  toast(_ja?'履歴をクリアしました':'History cleared',{
+    type:'success',duration:5000,
+    actionLabel:_ja?'元に戻す':'Undo',
+    undoFn:()=>{
+      S.recentFiles=backup.recentFiles;
+      S.pinnedFiles=backup.pinnedFiles;
+      save();showFileTree();
+      toast(_ja?'✅ 復元しました':'✅ Restored',{type:'success'});
+    }
+  });
+}
+
 function updatePreview(){
   showFileTree();
 }
@@ -196,6 +279,40 @@ function showFileTree(){
   
   let h='<div class="ft-search"><input type="text" id="ftSearch" placeholder="'+(_ja?'🔍 ファイル検索…':'🔍 Search files…')+'" aria-label="'+(_ja?'ファイル検索':'Search files')+'" oninput="filterFileTree(this.value)"></div>';
   h+='<ul class="file-tree" id="ftList">';
+
+  // Pinned files section (HCD: ②使いやすさ C継続利用)
+  if(S.pinnedFiles&&S.pinnedFiles.length>0){
+    h+='<li class="ft-section-header">📌 '+(_ja?'ピン留め':'Pinned')+'</li>';
+    S.pinnedFiles.forEach(path=>{
+      if(!S.files[path])return; // Skip if file no longer exists
+      const isActive=S.previewFile===path;
+      const fileName=path.split('/').pop();
+      h+=`<li data-path="${esc(path)}" class="tree-item ft-pinned${isActive?' active':''}" onclick="previewFile('${escAttr(path)}')">
+        📄 ${esc(fileName)}<button class="ft-unpin" onclick="event.stopPropagation();togglePin('${escAttr(path)}')" title="${_ja?'ピン留め解除':'Unpin'}">📌</button>
+      </li>`;
+    });
+  }
+
+  // Recent files section
+  if(S.recentFiles&&S.recentFiles.length>0){
+    h+='<li class="ft-section-header">🕐 '+(_ja?'最近':'Recent')+'</li>';
+    S.recentFiles.slice(0,5).forEach(path=>{ // Show max 5 recent
+      if(!S.files[path])return;
+      const isActive=S.previewFile===path;
+      const isPinned=S.pinnedFiles&&S.pinnedFiles.includes(path);
+      if(isPinned)return; // Don't show in recent if already pinned
+      const fileName=path.split('/').pop();
+      h+=`<li data-path="${esc(path)}" class="tree-item ft-recent${isActive?' active':''}" onclick="previewFile('${escAttr(path)}')">
+        📄 ${esc(fileName)}
+      </li>`;
+    });
+  }
+
+  if((S.pinnedFiles&&S.pinnedFiles.length>0)||(S.recentFiles&&S.recentFiles.length>0)){
+    h+='<li class="ft-clear-history"><button class="ft-clear-btn" onclick="clearFileHistory()" title="'+(_ja?'履歴をクリア':'Clear history')+'">🗑️ '+(_ja?'履歴クリア':'Clear')+'</button></li>';
+    h+='<li class="ft-separator">────────────────</li>';
+  }
+
   tree.forEach(f=>{
     if(!f.name||f.name==='───────────'){h+='<li class="ft-separator">────────────────</li>';return;}
     if(f.folder) h+=`<li class="folder">📁 ${f.name}/</li>`;
@@ -203,8 +320,10 @@ function showFileTree(){
       const isGen=hasFiles&&S.files[f.path];
       const isActive=S.previewFile===f.path;
       const isEdited=S.editedFiles&&S.editedFiles[f.path];
+      const isPinned=S.pinnedFiles&&S.pinnedFiles.includes(f.path);
+      const pinBtn=isGen?`<button class="ft-pin${isPinned?' ft-pin-active':''}" onclick="event.stopPropagation();togglePin('${escAttr(f.path)}')" title="${_ja?(isPinned?'ピン留め解除':'ピン留め'):(isPinned?'Unpin':'Pin')}">${isPinned?'📌':'○'}</button>`:'';
       h+=`<li data-path="${esc(f.path)}" onclick="previewFile('${escAttr(f.path)}')" class="tree-item${isActive?' active':''}${f.name.startsWith('  ')?' tree-indent':''}${isGen?'':' tree-disabled'}">
-        ${isGen?'📄':'⬜'} ${esc(f.name.trim())}${isEdited?'<span class="tree-edited" title="Edited">●</span>':''}${isGen?'<span class="tree-gen">✓</span>':''}
+        ${isGen?'📄':'⬜'} ${esc(f.name.trim())}${isEdited?'<span class="tree-edited" title="Edited">●</span>':''}${isGen?'<span class="tree-gen">✓</span>':''}${pinBtn}
       </li>`;
     }
   });
@@ -324,7 +443,17 @@ function previewFile(path){
   }
   _prevNavFlag=false;
   pushView({pillar:S.pillar,type:'preview',file:path});
-  S.previewFile=path;save();
+  S.previewFile=path;
+
+  // Track recent files (HCD: ②使いやすさ C継続利用)
+  if(!S.recentFiles)S.recentFiles=[];
+  S.recentFiles=S.recentFiles.filter(p=>p!==path); // Remove duplicates
+  S.recentFiles.unshift(path); // Add to front
+  if(S.recentFiles.length>10)S.recentFiles=S.recentFiles.slice(0,10); // Max 10
+
+  save();
+  // Update QBar to show file actions (Edit/Copy)
+  if(typeof updateQbar==='function')updateQbar();
   document.querySelectorAll('.file-tree li').forEach(li=>{
     li.classList.toggle('active',li.getAttribute('data-path')===path);
   });
@@ -338,23 +467,28 @@ function previewFile(path){
         _mmBlocks.push(code.replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>'));
         return '<div class="mermaid" id="'+id+'"></div>';});
       $('prevBody').innerHTML=prevToolbar(path,true)+`<div id="mdRendered" class="md-rendered">${html}</div>`;
-      _mmBlocks.forEach((c,i)=>{const el=document.getElementById('_mm'+i);if(el)el.textContent=c;});
+      _mmBlocks.forEach((c,i)=>{const el=document.getElementById('_mm'+i);if(el){el.textContent=c;el.setAttribute('data-mermaid-code',c);}});
       _markBrokenLinks();
-      loadMermaid(()=>{
+      loadMermaid(async ()=>{
         if(_mermaidReady){
           try{
             const nodes=document.querySelectorAll('#mdRendered .mermaid');
             if(nodes.length>0){
-              if(mermaid.run) mermaid.run({nodes:nodes});
+              if(mermaid.run) await mermaid.run({nodes:nodes});
               else if(mermaid.init) mermaid.init(undefined,nodes);
             }
           }catch(e){console.warn('Mermaid render:',e);}
         }
+        _addCodeCopyBtns();
+        _addTableCopyBtns();
+        _addMermaidCopyBtns();
       });
     } else if(path.endsWith('.md')){
       const html=safeMD(raw);
       $('prevBody').innerHTML=prevToolbar(path,true)+`<div id="mdRendered" class="md-rendered">${html}</div>`;
       _markBrokenLinks();
+      _addCodeCopyBtns();
+      _addTableCopyBtns();
     } else {
       $('prevBody').innerHTML=prevToolbar(path,false)+`<pre>${escHtml(raw)}</pre>`;
     }
@@ -384,6 +518,83 @@ function copyFileContent(path){
 
 function _fallbackCopy(text){const ta=document.createElement('textarea');ta.value=text;ta.style.cssText='position:fixed;left:-9999px;';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');}catch(e){}ta.remove();}
 
+function _getTableText(table){
+  let md='';
+  const rows=table.querySelectorAll('tr');
+  rows.forEach((row,i)=>{
+    const cells=row.querySelectorAll('th, td');
+    const cellTexts=Array.from(cells).map(c=>c.textContent.trim());
+    md+='| '+cellTexts.join(' | ')+' |\n';
+    if(i===0&&cells[0].tagName.toLowerCase()==='th'){
+      md+='| '+cellTexts.map(()=>'---').join(' | ')+' |\n';
+    }
+  });
+  return md;
+}
+
+function _addCodeCopyBtns(){
+  const _ja=S.lang==='ja';
+  document.querySelectorAll('#mdRendered pre').forEach(pre=>{
+    const btn=document.createElement('button');
+    btn.className='code-copy-btn';
+    btn.textContent='📋';
+    btn.title=_ja?'コードをコピー':'Copy code';
+    btn.onclick=()=>{
+      const code=pre.querySelector('code');
+      const text=code?code.textContent:pre.textContent;
+      if(navigator.clipboard&&navigator.clipboard.writeText){
+        navigator.clipboard.writeText(text)
+          .then(()=>{btn.textContent='✅';setTimeout(()=>btn.textContent='📋',1500);toast(t('copyDone'));})
+          .catch(()=>{_fallbackCopy(text);btn.textContent='✅';setTimeout(()=>btn.textContent='📋',1500);toast(t('copyDone'));});
+      }else{_fallbackCopy(text);btn.textContent='✅';setTimeout(()=>btn.textContent='📋',1500);toast(t('copyDone'));}
+    };
+    pre.appendChild(btn);
+  });
+}
+
+function _addTableCopyBtns(){
+  const _ja=S.lang==='ja';
+  document.querySelectorAll('#mdRendered table').forEach(table=>{
+    const wrapper=document.createElement('div');
+    wrapper.className='table-wrapper';
+    table.parentNode.insertBefore(wrapper,table);
+    wrapper.appendChild(table);
+    const btn=document.createElement('button');
+    btn.className='table-copy-btn';
+    btn.textContent='📋';
+    btn.title=_ja?'表をコピー':'Copy table';
+    btn.onclick=()=>{
+      const text=_getTableText(table);
+      if(navigator.clipboard&&navigator.clipboard.writeText){
+        navigator.clipboard.writeText(text)
+          .then(()=>{btn.textContent='✅';setTimeout(()=>btn.textContent='📋',1500);toast(t('copyDone'));})
+          .catch(()=>{_fallbackCopy(text);btn.textContent='✅';setTimeout(()=>btn.textContent='📋',1500);toast(t('copyDone'));});
+      }else{_fallbackCopy(text);btn.textContent='✅';setTimeout(()=>btn.textContent='📋',1500);toast(t('copyDone'));}
+    };
+    wrapper.appendChild(btn);
+  });
+}
+
+function _addMermaidCopyBtns(){
+  const _ja=S.lang==='ja';
+  document.querySelectorAll('#mdRendered .mermaid').forEach(mermaid=>{
+    const code=mermaid.getAttribute('data-mermaid-code');
+    if(!code)return;
+    const btn=document.createElement('button');
+    btn.className='mermaid-copy-btn';
+    btn.textContent='📋';
+    btn.title=_ja?'Mermaidコードをコピー':'Copy Mermaid code';
+    btn.onclick=()=>{
+      if(navigator.clipboard&&navigator.clipboard.writeText){
+        navigator.clipboard.writeText(code)
+          .then(()=>{btn.textContent='✅';setTimeout(()=>btn.textContent='📋',1500);toast(t('copyDone'));})
+          .catch(()=>{_fallbackCopy(code);btn.textContent='✅';setTimeout(()=>btn.textContent='📋',1500);toast(t('copyDone'));});
+      }else{_fallbackCopy(code);btn.textContent='✅';setTimeout(()=>btn.textContent='📋',1500);toast(t('copyDone'));}
+    };
+    mermaid.appendChild(btn);
+  });
+}
+
 function prevBack(){
   if(_prevHistIdx>0){
     _prevHistIdx--;
@@ -400,13 +611,14 @@ function prevForward(){
   }
 }
 
-function printCurrentFile(){
+async function printCurrentFile(){
   const path=S.previewFile;
   if(!path||!S.files[path])return;
   const raw=S.files[path];
   const G=S.genLang==='ja';
-  const content=path.endsWith('.md')?safeMD(raw):'<pre>'+escHtml(raw)+'</pre>';
-  const css='body{font-family:-apple-system,sans-serif;padding:40px;max-width:800px;margin:0 auto;color:#1e222d;}'+'pre{background:#f5f5f5;padding:16px;border-radius:8px;overflow-x:auto;}'+'table{width:100%;border-collapse:collapse;}th,td{border:1px solid #ddd;padding:8px;text-align:left;}th{background:#f0f0f0;}';
+  let content=path.endsWith('.md')?safeMD(raw):'<pre>'+escHtml(raw)+'</pre>';
+  if(path.endsWith('.md'))content=await _renderMermaidSVG(content);
+  const css='body{font-family:-apple-system,sans-serif;padding:40px;max-width:800px;margin:0 auto;color:#1e222d;}'+'pre{background:#f5f5f5;padding:16px;border-radius:8px;overflow-x:auto;}'+'table{width:100%;border-collapse:collapse;}th,td{border:1px solid #ddd;padding:8px;text-align:left;}th{background:#f0f0f0;}'+'div[style*="page-break-inside:avoid"] svg{max-width:100%;height:auto;}'+'@media print{div[style*="page-break-inside:avoid"]{page-break-inside:avoid;}svg{max-width:100%;}}';
   const _CSP_META='<meta http-equiv="Content-Security-Policy" content="default-src \'none\'; style-src \'unsafe-inline\'; img-src data: blob:;">';
   const html='<!DOCTYPE html><html><head>'+_CSP_META+'<title>'+escHtml(path)+'</title><style>'+css+'</style></head><body>'+'<h1 style="border-bottom:2px solid #3b82f6;padding-bottom:8px;">'+escHtml(path)+'</h1>'+content+'</body></html>';
   const win=window.open('','_blank');

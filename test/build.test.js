@@ -38,6 +38,7 @@ describe('Build System', () => {
       'showAILauncher', 'selectLaunchTemplate', 'copyLaunchPrompt',
       'autoSelectStack', 'scoreStack',
       '_initLinkInterceptor', '_resolveFileRef', '_markBrokenLinks',
+      'createQbar', 'updateQbar', 'showCommandPalette', 'closeCmdPalette',
     ];
     for (const fn of expected) {
       assert.ok(html.includes(fn), `Missing function: ${fn}`);
@@ -207,6 +208,32 @@ describe('Build System', () => {
     }
   });
 
+  it('QBar and Command Palette CSS classes are defined in build', () => {
+    const html = fs.readFileSync(OUTPUT, 'utf-8');
+    const requiredClasses = [
+      'qbar', 'qbar-group', 'qbar-action', 'qbar-primary',
+      'qbar-fab', 'qbar-icon', 'qbar-label',
+      'cmdpalette-overlay', 'cmdpalette-box', 'cmdpalette-input',
+      'cmdpalette-results', 'cmdpalette-item', 'cmdpalette-item-selected',
+      'cmdpalette-empty'
+    ];
+    for (const cls of requiredClasses) {
+      const hasDef = html.includes('.' + cls + '{') || html.includes('.' + cls + ' ');
+      assert.ok(hasDef, `CSS class .${cls} should be defined in built output`);
+    }
+  });
+
+  it('QBar and CmdPalette are integrated with core modules', () => {
+    const html = fs.readFileSync(OUTPUT, 'utf-8');
+    assert.ok(html.includes('createQbar()'), 'createQbar called in init/generators');
+    assert.ok(html.includes("updateQbar==='function')updateQbar()"),
+      'applyLang should refresh QBar on language change');
+    assert.ok(html.includes('pushModal(overlay,closeCmdPalette)'),
+      'CmdPalette should integrate with modal stack');
+    assert.ok(html.includes('removeModal(cp)'),
+      'closeCmdPalette should clean modal stack');
+  });
+
   it('safeMD falls back when marked is unavailable', () => {
     const html = fs.readFileSync(OUTPUT, 'utf-8');
     assert.ok(html.includes('function safeMD('), 'safeMD helper should exist');
@@ -226,10 +253,12 @@ describe('Build System', () => {
   it('toast uses CSS class not inline style', () => {
     const html = fs.readFileSync(OUTPUT, 'utf-8');
     // toast function should use className not style.cssText
-    const toastMatch = html.match(/function toast\(m\)\{[^}]+\}/);
+    const toastMatch = html.match(/function toast\([^)]+\)/);
     assert.ok(toastMatch, 'toast function should exist');
-    assert.ok(toastMatch[0].includes('toast-msg'), 'toast should use CSS class');
-    assert.ok(!toastMatch[0].includes('cssText'), 'toast should not use inline cssText');
+    const funcStart = html.indexOf(toastMatch[0]);
+    const funcBody = html.substring(funcStart, funcStart + 3000);
+    assert.ok(funcBody.includes('toast-msg'), 'toast should use CSS class');
+    assert.ok(!funcBody.includes('cssText'), 'toast should not use inline cssText');
   });
 
   it('sanitize function prevents XSS', () => {

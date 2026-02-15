@@ -144,7 +144,8 @@ test('Security Enhancements', async (t) => {
       const funcStart = html.indexOf(toolbarMatch[0]);
       const funcBody = html.substring(funcStart, funcStart + 1000);
       assert.ok(funcBody.includes("escAttr(path)"), 'prevToolbar should escape path in onclick attributes');
-      assert.ok(funcBody.includes("esc(path)"), 'prevToolbar should escape path in display text');
+      // prevToolbar now uses getBreadcrumb(path) which handles escaping internally
+      assert.ok(funcBody.includes("getBreadcrumb(path)") || funcBody.includes("esc(path)"), 'prevToolbar should use getBreadcrumb or esc for path display');
     }
   });
 
@@ -224,6 +225,16 @@ test('Security Enhancements', async (t) => {
       const funcBody = html.substring(funcStart, funcStart + 2000);
       assert.ok(funcBody.includes('esc(iss.msg)'), 'showCompatAlert should escape issue messages');
     }
+  });
+
+  await t.test('Command Palette uses esc() for result labels', () => {
+    assert.ok(html.includes('esc(r.label)'), 'cmdpalette should escape labels');
+    assert.ok(html.includes('esc(r.kb)'), 'cmdpalette should escape kb shortcuts');
+  });
+
+  await t.test('QBar file actions guard with S.previewFile', () => {
+    assert.ok(html.includes('if(S.previewFile)openEditor(S.previewFile)'),
+      'QBar edit uses runtime reference (not interpolated path)');
   });
 
   // ═══ Phase 4: .claude/settings.json Security Tests ═══
