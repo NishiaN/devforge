@@ -31,7 +31,7 @@ describe('Build System', () => {
     const html = fs.readFileSync(OUTPUT, 'utf-8');
     const expected = [
       'genPillar1_SDD', 'genPillar2_DevContainer', 'genPillar3_MCP',
-      'genPillar4_AIRules', 'genPillar5_QualityIntelligence', 'genPillar7_Roadmap', 'genPillar9_DesignSystem', 'genPillar10_ReverseEngineering', 'genPillar11_ImplIntelligence', 'genPillar12_SecurityIntelligence', 'genPillar13_StrategicIntelligence', 'genPillar14_OpsIntelligence', 'genPillar15', 'genPillar16_DevIQ', 'genDocs21', 'genCommonFiles',
+      'genPillar4_AIRules', 'genPillar5_QualityIntelligence', 'genPillar7_Roadmap', 'genPillar9_DesignSystem', 'genPillar10_ReverseEngineering', 'genPillar11_ImplIntelligence', 'genPillar12_SecurityIntelligence', 'genPillar13_StrategicIntelligence', 'genPillar14_OpsIntelligence', 'genPillar15', 'genPillar16_DevIQ', 'genPillar17_PromptGenome', 'genDocs21', 'genCommonFiles',
       'openEditor', 'saveEdited', 'revertFile', 'showDiff', 'lineDiff', 'snapshotFiles',
       'reqLabel', 'priceLabel', 'showExplorer', 'showDashboard',
       'trapFocus', 'releaseFocus', 'announce',
@@ -102,16 +102,16 @@ describe('Build System', () => {
     assert.deepStrictEqual(missingInJA, [], `Keys in EN but not JA: ${missingInJA.join(', ')}`);
   });
 
-  it('16 pillars consistency across all references', () => {
+  it('17 pillars consistency across all references', () => {
     const html = fs.readFileSync(OUTPUT, 'utf-8');
-    // Check hero description has 16 pillars
-    assert.ok(html.includes('16の柱') || html.includes('15の柱'), 'Should contain "16の柱" or "15の柱" in Japanese hero');
-    assert.ok(html.includes('16 pillars') || html.includes('15 pillars') || html.match(/100\+.*1[56].*pillar/i), 'Should contain "16 pillars" or "15 pillars" or similar in English');
-    // Check pillar arrays have 16 items
+    // Check hero description has 17 pillars
+    assert.ok(html.includes('17の柱') || html.includes('16の柱'), 'Should contain "17の柱" or "16の柱" in Japanese hero');
+    assert.ok(html.includes('17 Pillars') || html.includes('17 pillars') || html.includes('16 Pillars') || html.includes('16 pillars'), 'Should contain "17 Pillars" or "16 Pillars" in English');
+    // Check pillar arrays have 17 items
     const pillarJA = html.match(/pillar:\[([^\]]+)\]/);
     if (pillarJA) {
       const items = pillarJA[1].split(',').length;
-      assert.ok(items === 16, `Pillar array should have 16 items, got ${items}`);
+      assert.ok(items === 17, `Pillar array should have 17 items, got ${items}`);
     }
     // Check P14 & P15 references exist
     assert.ok(html.includes('⑭運用インテリジェンス') || html.includes('⑭Ops Intelligence'), 'Should have ⑭Ops badge');
@@ -132,6 +132,9 @@ describe('Build System', () => {
     assert.ok(html.includes('⑯開発IQ'), 'Should have ⑯開発IQ badge');
     assert.ok(html.includes('⑯Dev IQ'), 'Should have ⑯Dev IQ badge');
     assert.ok(html.includes('genPillar16_DevIQ'), 'Should have P16 generator function');
+    assert.ok(html.includes('⑰プロンプトゲノム') || html.includes('⑰ゲノム'), 'Should have ⑰Genome badge');
+    assert.ok(html.includes('⑰Prompt Genome'), 'Should have ⑰Prompt Genome badge');
+    assert.ok(html.includes('genPillar17_PromptGenome'), 'Should have P17 generator function');
   });
 
   it('tour has correct number of steps', () => {

@@ -27,6 +27,7 @@ eval(fs.readFileSync('src/generators/p13-strategy.js','utf-8').replace(/const (I
 eval(fs.readFileSync('src/generators/p14-ops.js','utf-8'));
 eval(fs.readFileSync('src/generators/p15-future.js','utf-8').replace(/const (DOMAIN_MARKET|PERSONA_ARCHETYPES|GTM_STRATEGY|REGULATORY_HORIZON)/g,'var $1'));
 eval(fs.readFileSync('src/generators/p16-deviq.js','utf-8').replace(/const (DEV_METHODOLOGY_MAP|PHASE_PROMPTS|INDUSTRY_STRATEGY|NEXT_GEN_UX|mapDomainToIndustry|gen60|gen61|gen62|gen63|genPillar16_DevIQ)/g,'var $1'));
+eval(fs.readFileSync('src/generators/p17-promptgenome.js','utf-8').replace(/const (CRITERIA_FRAMEWORK|AI_MATURITY_MODEL|_APPROACHES|_SYNERGY_RAW|APPROACH_KPI|getSynergy|gen65|gen66|gen67|gen68|genPillar17_PromptGenome)/g,'var $1').replace(/function (_cri|_mat)/g,'var $1 = function'));
 
 // ═══ Helper ═══
 function generate(answers, name, lang) {
@@ -48,6 +49,7 @@ function generate(answers, name, lang) {
   genPillar14_OpsIntelligence(answers, name);
   genPillar15(answers);
   genPillar16_DevIQ(answers, name);
+  genPillar17_PromptGenome(answers, name);
   return { ...S.files };
 }
 
@@ -66,14 +68,14 @@ describe('Snapshot A: LMS/Supabase/Stripe', () => {
     ai_auto: 'マルチAgent協調'
   }, 'LMS');
 
-  test('file count in range 96-125 (P4 adds +6, P14 adds +3, P15 adds +4, P16 adds +4, cross-platform adds +3)', () => {
+  test('file count in range 100-130 (P4 adds +6, P14 adds +3, P15 adds +4, P16 adds +4, P17 adds +4, cross-platform adds +3)', () => {
     const count = Object.keys(files).length;
-    assert.ok(count >= 96 && count <= 125, `Expected 96-125 files (P4 adds +6, P14 adds +3, P15 adds +4, P16 adds +4, cross-platform adds +3), got ${count}`);
+    assert.ok(count >= 100 && count <= 130, `Expected 100-130 files (P4 +6, P14 +3, P15 +4, P16 +4, P17 +4, cross-platform +3), got ${count}`);
   });
 
-  test('total tokens in range 12000-54000 (P16 adds ~4-8K tokens)', () => {
+  test('total tokens in range 12000-60000 (P17 adds ~4-8K tokens)', () => {
     const total = Object.values(files).reduce((s, v) => s + tokens(v), 0);
-    assert.ok(total >= 12000 && total <= 54000, `Expected 12K-54K tokens (P16 adds ~4-8K), got ${total}`);
+    assert.ok(total >= 12000 && total <= 60000, `Expected 12K-60K tokens (P17 adds ~4-8K), got ${total}`);
   });
 
   // Core files existence
@@ -598,6 +600,24 @@ describe('Snapshot A: LMS/Supabase/Stripe', () => {
     assert.ok(qa.includes('Security') || qa.includes('セキュリティ'), 'Missing security priority');
     assert.ok(qa.includes('UX'), 'Missing UX priority');
   });
+
+  test('P17 Prompt Genome docs/65-68 exist', () => {
+    assert.ok(files['docs/65_prompt_genome.md'], 'docs/65 missing');
+    assert.ok(files['docs/66_ai_maturity_assessment.md'], 'docs/66 missing');
+    assert.ok(files['docs/67_prompt_composition_guide.md'], 'docs/67 missing');
+    assert.ok(files['docs/68_prompt_kpi_dashboard.md'], 'docs/68 missing');
+  });
+
+  test('P17 doc65 contains CRITERIA scoring', () => {
+    const doc65 = files['docs/65_prompt_genome.md'];
+    assert.ok(doc65.includes('CRITERIA'), 'doc65 has CRITERIA section');
+    assert.ok(doc65.includes('プロンプトゲノム') || doc65.includes('Prompt Genome'), 'doc65 has genome title');
+  });
+
+  test('P17 doc67 contains synergy matrix', () => {
+    const doc67 = files['docs/67_prompt_composition_guide.md'];
+    assert.ok(doc67.includes('12×12') || doc67.includes('12x12') || doc67.includes('Synergy'), 'doc67 has synergy matrix');
+  });
 });
 
 // ═══ Dev Environment Type Tests ═══
@@ -647,9 +667,9 @@ describe('Snapshot B: Blog/Vite/Netlify', () => {
     dev_methods: 'TDD', ai_tools: 'Cursor', orm: ''
   }, 'Blog');
 
-  test('file count in range 87-116 (P14 adds +3, P4 adds +6, P15 adds +4, P16 adds +4, cross-platform adds +3)', () => {
+  test('file count in range 91-120 (P14 adds +3, P4 adds +6, P15 adds +4, P16 adds +4, P17 adds +4, cross-platform adds +3)', () => {
     const count = Object.keys(files).length;
-    assert.ok(count >= 87 && count <= 116, `Expected 87-116 files (P14 adds +3, P4 adds +6, P15 adds +4, P16 adds +4, cross-platform adds +3), got ${count}`);
+    assert.ok(count >= 91 && count <= 120, `Expected 91-120 files (P14 +3, P4 +6, P15 +4, P16 +4, P17 +4, cross-platform +3), got ${count}`);
   });
 
   test('no Stripe content when payment absent', () => {
@@ -1149,5 +1169,159 @@ describe('P13 Extended Industry Detection', () => {
     claudeFiles.forEach(path => {
       assert.ok(files[path], `Should have ${path}`);
     });
+  });
+});
+
+// ═══ Scenario G: Healthcare (Express + PostgreSQL, 99.99% SLO, PHI/HIPAA) ═══
+describe('Snapshot G: Healthcare/Medical domain', () => {
+  const files = generate({
+    purpose: '医療記録管理システム', target: '医師, 看護師, 患者',
+    frontend: 'React + Next.js', backend: 'Express', database: 'PostgreSQL',
+    deploy: 'AWS (EC2/ECS/Lambda)', auth: 'メール/パスワード, MFA',
+    mvp_features: '患者管理, 診断記録, 予約管理, 処方箋管理',
+    screens: 'ダッシュボード, 患者詳細, 予約管理, 管理画面',
+    data_entities: 'Patient, Doctor, Appointment, MedicalRecord',
+    dev_methods: 'TDD', ai_tools: 'Cursor',
+  }, 'HealthApp');
+
+  test('domain detected as health', () => {
+    // Verify detectDomain maps 医療 → health
+    const domain = detectDomain('医療記録管理システム');
+    assert.equal(domain, 'health', `Expected health domain, got: ${domain}`);
+  });
+
+  test('ops runbook references 99.99% SLO', () => {
+    const runbook = files['docs/53_ops_runbook.md'];
+    assert.ok(runbook, 'docs/53_ops_runbook.md missing');
+    assert.ok(
+      runbook.includes('99.99%'),
+      'Healthcare ops runbook should reference 99.99% SLO'
+    );
+  });
+
+  test('ops runbook mentions PHI encryption requirement', () => {
+    const runbook = files['docs/53_ops_runbook.md'];
+    assert.ok(
+      runbook.includes('PHI') || runbook.includes('暗号化'),
+      'Healthcare ops runbook should mention PHI or encryption'
+    );
+  });
+
+  test('compliance matrix includes healthcare regulations', () => {
+    const compliance = files['docs/45_compliance_matrix.md'];
+    assert.ok(compliance, 'docs/45_compliance_matrix.md missing');
+    assert.ok(
+      compliance.includes('HIPAA') || compliance.includes('医療法') || compliance.includes('個人情報'),
+      'Healthcare compliance matrix should include HIPAA or medical law'
+    );
+  });
+
+  test('security intelligence has health-domain audit fields', () => {
+    const opsRunbook = files['docs/53_ops_runbook.md'];
+    // P14 ops includes domain-specific audit fields table with patient_id, PHI_flag
+    assert.ok(
+      opsRunbook.includes('patient_id') || opsRunbook.includes('PHI_flag') || opsRunbook.includes('PHI'),
+      'Health ops runbook should reference PHI audit fields'
+    );
+  });
+});
+
+// ═══ Scenario H: Fintech (Express + PostgreSQL, 99.99% SLO, PCI DSS) ═══
+describe('Snapshot H: Fintech/Payment domain', () => {
+  const files = generate({
+    purpose: 'フィンテック決済管理システム', target: '個人ユーザー, 企業',
+    frontend: 'React + Next.js', backend: 'Express', database: 'PostgreSQL',
+    deploy: 'AWS (EC2/ECS/Lambda)', auth: 'メール/パスワード, MFA',
+    payment: 'Stripe決済',
+    mvp_features: '決済処理, 取引履歴, 残高管理, 不正検知',
+    screens: 'ダッシュボード, 取引一覧, 送金, 設定',
+    data_entities: 'User, Account, Transaction, Payment',
+    dev_methods: 'TDD', ai_tools: 'Cursor',
+  }, 'FintechApp');
+
+  test('domain detected as fintech', () => {
+    const domain = detectDomain('フィンテック決済管理システム');
+    assert.equal(domain, 'fintech', `Expected fintech domain, got: ${domain}`);
+  });
+
+  test('ops runbook references 99.99% SLO for transaction success rate', () => {
+    const runbook = files['docs/53_ops_runbook.md'];
+    assert.ok(runbook, 'docs/53_ops_runbook.md missing');
+    assert.ok(
+      runbook.includes('99.99%'),
+      'Fintech ops runbook should reference 99.99% SLO'
+    );
+  });
+
+  test('ops plane design mentions PCI DSS compliance', () => {
+    const opsPlane = files['docs/55_ops_plane_design.md'];
+    assert.ok(opsPlane, 'docs/55_ops_plane_design.md missing');
+    assert.ok(
+      opsPlane.includes('PCI') || opsPlane.includes('SOX') || opsPlane.includes('fintech'),
+      'Fintech ops plane design should mention PCI DSS, SOX or fintech'
+    );
+  });
+
+  test('compliance matrix includes fintech regulations', () => {
+    const compliance = files['docs/45_compliance_matrix.md'];
+    assert.ok(compliance, 'docs/45_compliance_matrix.md missing');
+    assert.ok(
+      compliance.includes('PCI') || compliance.includes('SOX') || compliance.includes('金融') || compliance.includes('fintech'),
+      'Fintech compliance matrix should include PCI DSS or financial regulations'
+    );
+  });
+
+  test('ops runbook includes fintech-specific audit fields (transaction_id, amount)', () => {
+    const runbook = files['docs/53_ops_runbook.md'];
+    assert.ok(
+      runbook.includes('transaction_id') || runbook.includes('amount') || runbook.includes('取引'),
+      'Fintech ops runbook should reference transaction audit fields'
+    );
+  });
+});
+
+// ═══ Scenario I: Government (Express + PostgreSQL, WCAG, ISMS) ═══
+describe('Snapshot I: Government/Civic domain', () => {
+  const files = generate({
+    purpose: '行政サービス申請管理システム', target: '市民, 職員, 管理者',
+    frontend: 'React + Next.js', backend: 'Express', database: 'PostgreSQL',
+    deploy: 'AWS (EC2/ECS/Lambda)', auth: 'メール/パスワード',
+    mvp_features: '申請管理, 書類管理, 審査ワークフロー, 市民向けポータル',
+    screens: 'ダッシュボード, 申請一覧, 申請詳細, 管理画面',
+    data_entities: 'Citizen, Application, Document, Review, Department',
+    dev_methods: 'TDD', ai_tools: 'Cursor',
+  }, 'GovApp');
+
+  test('domain detected as government', () => {
+    const domain = detectDomain('行政サービス申請管理システム');
+    assert.equal(domain, 'government', `Expected government domain, got: ${domain}`);
+  });
+
+  test('quality intelligence references WCAG 2.1 AA for government', () => {
+    // p5-quality.js maps government → 'WCAG 2.1 AA'
+    const qa = files['docs/28_qa_strategy.md'];
+    assert.ok(qa, 'docs/28_qa_strategy.md missing');
+    assert.ok(
+      qa.includes('WCAG') || qa.includes('アクセシビリティ') || qa.includes('Accessibility'),
+      'Government QA strategy should reference WCAG accessibility standard'
+    );
+  });
+
+  test('industry blueprint includes government regulatory requirements', () => {
+    const blueprint = files['docs/48_industry_blueprint.md'];
+    assert.ok(blueprint, 'docs/48_industry_blueprint.md missing');
+    assert.ok(
+      blueprint.includes('ISMAP') || blueprint.includes('JPKI') || blueprint.includes('行政') || blueprint.includes('Government'),
+      'Government industry blueprint should include government-specific requirements'
+    );
+  });
+
+  test('security intelligence references government security standards', () => {
+    const secIntel = files['docs/43_security_intelligence.md'];
+    assert.ok(secIntel, 'docs/43_security_intelligence.md missing');
+    assert.ok(
+      secIntel.includes('ISMS') || secIntel.includes('ISMAP') || secIntel.includes('ISO') || secIntel.includes('セキュリティ'),
+      'Government security intelligence should reference security standards'
+    );
   });
 });
