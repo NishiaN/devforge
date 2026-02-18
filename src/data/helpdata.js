@@ -44,6 +44,10 @@ const HELP_DATA={
     ja:{title:'MVP機能',desc:'3〜5個に絞る。「これがないと使えない」機能だけ選択。',example:'最小: 認証 + メイン機能1つ + 設定'},
     en:{title:'MVP Features',desc:'Narrow to 3-5. Only pick features users cannot live without.',example:'Minimum: Auth + 1 core feature + Settings'}
   },
+  org_model:{
+    ja:{title:'組織・テナント構造',desc:'マルチテナント選択でRLSポリシー・組織ERモデル・承認フローが自動生成されます。',example:'SaaS: マルチテナント(RLS) / 社内ツール: シングルテナント'},
+    en:{title:'Organization & Tenant Structure',desc:'Multi-tenant selection auto-generates RLS policies, org ER model, and approval workflows.',example:'SaaS: Multi-tenant (RLS) / Internal tool: Single-tenant'}
+  },
   future_features:{
     ja:{title:'将来追加機能',desc:'Phase 2, 3として計画。MVPリリース後に再評価。',example:'課金→PMF確認後、モバイル→DAU 1000+時'},
     en:{title:'Future Features',desc:'Plan as Phase 2-3. Re-evaluate after MVP launch.',example:'Billing→after PMF, Mobile→at DAU 1000+'}

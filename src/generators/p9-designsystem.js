@@ -123,6 +123,25 @@ function genPillar9_DesignSystem(a,pn){
   designDoc+='| Table | data, columns, sortable | default, striped, compact |\n';
   designDoc+='| Badge | color, size | success, warning, error, info |\n\n';
 
+  // Enterprise Component Specifications (conditional)
+  var isEnterprise=/マルチテナント|Multi-tenant|RBAC|承認|approval|admin|multi.*tenant/i.test(
+    (a.mvp_features||'')+(a.org_model||'')+(a.screens||''));
+  if(isEnterprise){
+    designDoc+=(G?'### エンタープライズコンポーネント仕様\n\n':'### Enterprise Component Specifications\n\n');
+    designDoc+=(G?'| コンポーネント | 主要Props | バリエーション | A11y |\n|------------|---------|------------|------|\n':
+                   '| Component | Key Props | Variants | A11y |\n|-----------|-----------|----------|------|\n');
+    designDoc+='| StatusBadge | status, size, variant | pending/approved/rejected/active | role="status" aria-label |\n';
+    designDoc+='| ApprovalBar | request, onApprove, onReject, currentUserRole | pending/approved/rejected | button aria-label, aria-disabled |\n';
+    designDoc+='| DataTable | data, columns, sortable, filterable, paginated, bulkActions | basic/sortable/paginated | role="table", aria-sort |\n';
+    designDoc+='| NotificationBell | count, items, onRead | unread/empty | aria-label="N unread", aria-live |\n';
+    designDoc+='| OrgSwitcher | orgs, current, onChange | single/multi/create | combobox role, aria-expanded |\n';
+    designDoc+='| OnboardingStepper | steps, current, onComplete | horizontal/vertical/progress | aria-current="step" |\n';
+    designDoc+='| AuditTimeline | events, filter, maxItems | compact/detailed/filtered | role="feed", time datetime |\n';
+    designDoc+='| InviteManager | invites, onCreate, onRevoke | list/form/bulk | AlertDialog confirm, aria-live |\n\n';
+    designDoc+=(G?'> 詳細仕様は `docs/76_enterprise_components.md` を参照。\n\n':
+                   '> See `docs/76_enterprise_components.md` for detailed specifications.\n\n');
+  }
+
   // Framework Component Mapping
   designDoc+=(G?'### コンポーネント対応表\n\n':'### Component Framework Mapping\n\n');
   designDoc+='| '+(G?'コンポーネント':'Component')+' | Tailwind (shadcn/ui) | Vuetify | Angular Material |\n|-------------|----------------------|---------|------------------|\n';

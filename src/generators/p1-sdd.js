@@ -314,6 +314,30 @@ function genPillar1_SDD(a,pn){
     '- '+(G?'トークン':'Token')+': '+auth.tokenType,
     '- '+(G?'検証方法':'Verification')+': '+auth.tokenVerify,
     auth.social.length?'- '+(G?'対応プロバイダ':'Providers')+': '+auth.social.join(', '):'','',
+    (()=>{
+      var isMultiTenant=/マルチ|multi|RLS|組織|org.*hier/i.test((a.org_model||'')+(a.mvp_features||''));
+      if(!isMultiTenant) return '';
+      return [
+        G?'## 4.5 マルチテナントアーキテクチャ':'## 4.5 Multi-Tenant Architecture',
+        G?'### テナント分離戦略: Row-Level Security (RLS)':'### Tenant Isolation: Row-Level Security (RLS)',
+        '```mermaid\ngraph LR\n  U[User]-->|auth.uid()|R[RLS Policy]\n  R-->|org_id check|T['+pn+' Data]\n  R-->|blocked|X[Other Org Data]\n  style R fill:#4f46e5,color:#fff\n```',
+        '',
+        G?'### 権限モデル (4階層)':'### Permission Model (4-tier)',
+        '| Role | '+( G?'権限':'Permissions')+' |',
+        '|------|-------------|',
+        '| owner | '+( G?'全権限 (削除・課金含む)':'Full access (delete, billing)') +' |',
+        '| admin | '+(G?'メンバー管理・設定変更':'Member mgmt, config changes')+' |',
+        '| member | '+(G?'コンテンツ作成・編集':'Create/edit content')+' |',
+        '| viewer | '+(G?'読み込みのみ':'Read only')+' |',
+        '',
+        G?'### データパーティション方針':'### Data Partitioning',
+        '- '+( G?'全テーブルに `org_id` カラム必須':'All tables require `org_id` column'),
+        '- '+(G?'クロステナントクエリ防止: RLSポリシーで強制':'Cross-tenant prevention: enforced by RLS'),
+        '- '+(G?'インデックス: `(org_id, id)` 複合インデックス推奨':'Index: composite `(org_id, id)` recommended'),
+        G?'> 詳細: `docs/73_enterprise_architecture.md`':
+          '> Details: `docs/73_enterprise_architecture.md`'
+      ].join('\n');
+    })(),
     G?'## 5. 開発環境':'## 5. Dev Environment',
     '- Docker DevContainer (.devcontainer/)',
     '- '+(arch.isBaaS?be+' CLI (local emulator)':'Node.js LTS + '+db),

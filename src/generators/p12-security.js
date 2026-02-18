@@ -578,6 +578,46 @@ function genPillar12_SecurityIntelligence(a,pn){
   doc43+='- [Incident Response](./34_incident_response.md)\n';
   doc43+='- [Security (Overview)](./08_security.md)\n';
 
+  // Org-scoped RLS (multi-tenant enhancement)
+  var _isMultiTenant=/マルチ|multi|RLS|組織|org.*hier/i.test((a.org_model||'')+(a.mvp_features||''));
+  if(_isMultiTenant){
+    doc43+='\n## '+(G?'🔒 組織スコープ RLSポリシー (マルチテナント)':'🔒 Org-Scoped RLS Policies (Multi-tenant)')+'\n\n';
+    doc43+=(G?'> マルチテナント環境での完全なテナント分離を実現するRLSポリシーテンプレート。\n\n':
+               '> RLS policy templates for complete tenant isolation in multi-tenant environments.\n\n');
+    doc43+='```sql\n';
+    doc43+='-- '+(G?'基本: 組織メンバーのみアクセス可能':'Base: org members only') +'\n';
+    doc43+='CREATE POLICY "org_isolation" ON resources\n';
+    doc43+='  FOR SELECT USING (\n';
+    doc43+='    org_id IN (\n';
+    doc43+='      SELECT org_id FROM org_members\n';
+    doc43+='      WHERE user_id = auth.uid()\n';
+    doc43+='    )\n';
+    doc43+='  );\n\n';
+    doc43+='-- '+(G?'Admin以上のみ書込可能':'Admin or above can write')+'\n';
+    doc43+='CREATE POLICY "admin_write" ON org_settings\n';
+    doc43+='  FOR ALL USING (\n';
+    doc43+='    org_id IN (\n';
+    doc43+='      SELECT org_id FROM org_members\n';
+    doc43+='      WHERE user_id = auth.uid()\n';
+    doc43+='      AND role IN (\'owner\', \'admin\')\n';
+    doc43+='    )\n';
+    doc43+='  );\n\n';
+    doc43+='-- '+(G?'Ownerのみ削除可能':'Owner only can delete')+'\n';
+    doc43+='CREATE POLICY "owner_delete" ON organizations\n';
+    doc43+='  FOR DELETE USING (\n';
+    doc43+='    id IN (\n';
+    doc43+='      SELECT org_id FROM org_members\n';
+    doc43+='      WHERE user_id = auth.uid() AND role = \'owner\'\n';
+    doc43+='    )\n';
+    doc43+='  );\n```\n\n';
+    doc43+=(G?'### クロステナントクエリ防止チェックリスト\n\n':'### Cross-tenant Query Prevention Checklist\n\n');
+    doc43+=(G?'- [ ] 全テーブルに `org_id` カラムが存在するか\n':'- [ ] All tables have `org_id` column\n');
+    doc43+=(G?'- [ ] 全テーブルでRLSが `ENABLED` になっているか\n':'- [ ] RLS is ENABLED on all tables\n');
+    doc43+=(G?'- [ ] `service_role` キーはサーバーサイドのみで使用されているか\n':'- [ ] `service_role` key used server-side only\n');
+    doc43+=(G?'- [ ] `auth.uid()` を使ったポリシーが全テーブルに設定されているか\n':'- [ ] `auth.uid()` policies set on all tables\n');
+    doc43+=(G?'- [ ] org_idでのINDEX設定 (`(org_id, id)`) が完了しているか\n':'- [ ] Index on `(org_id, id)` created for performance\n');
+  }
+
   S.files['docs/43_security_intelligence.md']=doc43;
 
   // ═══ DOC 44: STRIDE Threat Model ═══

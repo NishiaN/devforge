@@ -217,22 +217,22 @@ const DOMAIN_ENTITIES={
   marketplace:{core:['User','Listing','Order','Review','Message','Category'],warn:['Course','Lesson'],suggest:{}},
   community:{core:['User','Post','Comment','Tag','Like','Follow'],warn:['Product','Order','Cart','Payment'],suggest:{Product:'Resource',Order:'Invitation'}},
   content:{core:['User','Post','Category','Tag','Comment','Media'],warn:['Product','Order','Cart'],suggest:{Product:'Content',Order:'Subscription'}},
-  analytics:{core:['User','Dashboard','DataSource','Widget','Report','Chart'],warn:['Post','Comment','Product'],suggest:{}},
+  analytics:{core:['User','Organization','OrgMember','Dashboard','DataSource','Widget','Report','Chart'],warn:['Post','Comment','Product'],suggest:{}},
   booking:{core:['User','Service','Booking','TimeSlot','Review','Payment'],warn:['Post','Cart','Lesson'],suggest:{Product:'Service',Order:'Booking'}},
-  saas:{core:['User','Workspace','Project','Task','Subscription','Invoice'],warn:[],suggest:{Product:'Plan',Order:'Subscription'}},
+  saas:{core:['User','Organization','OrgMember','Workspace','Project','Task','Subscription','Invoice'],warn:[],suggest:{Product:'Plan',Order:'Subscription'}},
   portfolio:{core:['User','Project','Skill','Experience','ContactMessage'],warn:['Product','Order','Cart','Payment'],suggest:{}},
-  tool:{core:['User','Workspace','Task','Setting','Log'],warn:['Product','Order','Cart'],suggest:{}},
+  tool:{core:['User','Organization','OrgMember','Workspace','Task','Setting','Log'],warn:['Product','Order','Cart'],suggest:{}},
   iot:{core:['User','Device','Sensor','SensorData','Alert','Dashboard'],warn:['Product','Order','Cart'],suggest:{}},
   realestate:{core:['User','Property','Category','Viewing','Contract','RealEstateAgent'],warn:['Product','Order','Cart'],suggest:{Product:'Property',Order:'Viewing'}},
   legal:{core:['User','Contract','Template','Review','Client','Document'],warn:['Product','Order','Cart'],suggest:{}},
-  hr:{core:['User','JobPosting','Applicant','Interview','Evaluation','Department'],warn:['Product','Order','Cart'],suggest:{}},
+  hr:{core:['User','Organization','OrgMember','JobPosting','Applicant','Interview','Evaluation','Department'],warn:['Product','Order','Cart'],suggest:{}},
   fintech:{core:['User','Account','Transaction','Transfer','Card','Statement'],warn:['Post','Comment','Course'],suggest:{}},
   health:{core:['User','Patient','Doctor','Appointment','MedicalRecord','Prescription'],warn:['Product','Order','Cart'],suggest:{Product:'Service',Order:'Appointment'}},
   ai:{core:['User','Conversation','Message','Prompt','Agent','Tool','ApiUsage'],warn:['Product','Order','Cart'],suggest:{}},
-  automation:{core:['User','Workflow','Trigger','Action','Execution','Connection','Log'],warn:['Product','Order'],suggest:{}},
+  automation:{core:['User','Organization','OrgMember','Workflow','Trigger','Action','Execution','Connection','Log'],warn:['Product','Order'],suggest:{}},
   event:{core:['User','Event','Ticket','Attendee','Venue','Session','Survey'],warn:['Product','Order'],suggest:{Product:'Ticket',Order:'Booking'}},
   gamify:{core:['User','Badge','Challenge','Reward','Leaderboard','PointLog','Achievement'],warn:['Product','Order','Cart'],suggest:{}},
-  collab:{core:['User','Document','Workspace','Comment','Version','Permission','Activity'],warn:['Product','Order','Cart'],suggest:{}},
+  collab:{core:['User','Organization','OrgMember','Document','Workspace','Comment','Version','Permission','Activity'],warn:['Product','Order','Cart'],suggest:{}},
   devtool:{core:['User','ApiKey','Project','RequestLog','Webhook','Documentation'],warn:['Product','Order','Cart'],suggest:{}},
   creator:{core:['User','Content','Subscription','Payment','Tier','Comment','Tip'],warn:['Order','Cart'],suggest:{}},
   newsletter:{core:['User','Post','Subscriber','Campaign','Analytics','Plan'],warn:['Product','Order','Cart'],suggest:{Product:'Plan',Order:'Subscription'}},
@@ -314,6 +314,10 @@ const ENTITY_COLUMNS={
   Skill:[_CAT,'level:INT:DEFAULT 0:レベル:Level'],
   Experience:['user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID','company:VARCHAR(255)::企業名:Company','title:VARCHAR(255)::役職:Title','start_date:DATE::開始日:Start date','end_date:DATE::終了日:End date','description:TEXT::説明:Description'],
   ContactMessage:['email:VARCHAR(255):NOT NULL:メールアドレス:Email','subject:VARCHAR(255)::件名:Subject','body:TEXT:NOT NULL:本文:Body','status:VARCHAR(20):DEFAULT \'unread\':対応状態:Status'],
+  // ── Enterprise/Multi-tenant ──
+  Organization:['slug:VARCHAR(100):UNIQUE NOT NULL:スラグ:Slug','status:VARCHAR(20):DEFAULT \'active\':ステータス:Status','plan:VARCHAR(20):DEFAULT \'free\':プラン:Plan','logo_url:TEXT::ロゴURL:Logo URL'],
+  OrgMember:['org_id:UUID:FK(Organization) NOT NULL:組織ID:Organization ID',_U,'role:VARCHAR(20):DEFAULT \'member\':ロール:Role','joined_at:TIMESTAMP:DEFAULT now():参加日:Joined at'],
+  OrgInvite:['org_id:UUID:FK(Organization) NOT NULL:組織ID:Organization ID','email:VARCHAR(255):NOT NULL:メール:Email','role:VARCHAR(20):DEFAULT \'member\':ロール:Role','token:UUID:DEFAULT gen_random_uuid():トークン:Token','expires_at:TIMESTAMP:NOT NULL:期限:Expires at','redeemed_at:TIMESTAMP::利用日:Redeemed at'],
   // ── SaaS/Workspace ──
   Team:['workspace_id:UUID:FK(Workspace) NOT NULL:ワークスペースID:Workspace ID','role:VARCHAR(20):DEFAULT \'member\':チーム権限:Team role'],
   Activity:[_U,'action:VARCHAR(100):NOT NULL:操作種別:Action type','resource_type:VARCHAR(50)::対象リソース:Resource type','resource_id:UUID::対象ID:Resource ID',_M],
@@ -784,6 +788,11 @@ function inferER(a){
   if(has('Customer')&&has('Policy')) rels.push('Customer 1 ──N Policy');
   if(has('Customer')&&has('Quote')) rels.push('Customer 1 ──N Quote');
   if(has('Policy')&&has('Claim')) rels.push('Policy 1 ──N Claim');
+  // Enterprise/Multi-tenant
+  if(has('Organization')&&has('OrgMember')) rels.push('Organization 1 ──N OrgMember');
+  if(has('Organization')&&has('OrgInvite')) rels.push('Organization 1 ──N OrgInvite');
+  if(has('User')&&has('OrgMember')) rels.push('User 1 ──N OrgMember');
+  if(has('Organization')&&has('Workspace')) rels.push('Organization 1 ──N Workspace');
 
   return {domain,warnings,suggestions,relationships:rels};
 }

@@ -3,7 +3,7 @@ const I18N={
 ja:{
 p1:'Phase 1',p2:'Phase 2',p3:'Phase 3',
 heroTitle:'DevForge v9',
-heroDesc:'質問に答えるだけで、126+ファイルの開発ドキュメント・環境設定・AIルール・学習ロードマップを自動生成。18の柱でAI駆動開発をゼロから完全サポート。',
+heroDesc:'質問に答えるだけで、130+ファイルの開発ドキュメント・環境設定・AIルール・学習ロードマップを自動生成。19の柱でAI駆動開発をゼロから完全サポート。',
 startBtn:'🚀 開始する',
 statFiles:'生成ファイル',statTech:'技術エントリ',statPillars:'柱 (Pillars)',statAI:'AIツール対応',
 skillAsk:'スキルレベルを選択',
@@ -20,19 +20,19 @@ answerConfirm:'回答を確認',edit:'修正',
 tourNext:'次へ',tourPrev:'前へ',tourDone:'完了',tourStart:'ツアー開始',
 phEnd1:'Phase 1 完了！技術選定に進みます。',
 phEnd2:'Phase 2 完了！機能・データ設計に進みます。',
-genBtn:'📦 126+ファイル生成',
-genDone:'✅ 126+ファイルが生成されました！プレビューパネルで確認してください。',
+genBtn:'📦 130+ファイル生成',
+genDone:'✅ 130+ファイルが生成されました！プレビューパネルで確認してください。',
 copyDone:'クリップボードにコピーしました',
 pmTitle:'📁 プロジェクト管理',pmNew:'新規プロジェクト',pmEmpty:'保存されたプロジェクトはありません',
 helpClose:'閉じる',
 kbTitle:'⌨️ ショートカット',
 kb:['ヘルプ・マニュアル','ショートカット一覧','コマンドパレット','テーマ切替','言語切替','エクスポート','全ファイルコピー','プロジェクト管理','サイドバー切替','エクスプローラー','ダッシュボード','ロードマップ','AI起動'],
-pillar:['①SDD統合','②DevContainer','③MCP設定','④AIルール','⑤並列探索','⑥Dashboard','⑦ロードマップ','⑧AIランチャー','⑨デザインシステム','⑩リバースEng','⑪実装ガイド','⑫セキュリティ','⑬戦略インテリジェンス','⑭運用インテリジェンス','⑮未来戦略','⑯開発IQ','⑰プロンプトゲノム','⑱Prompt Ops']
+pillar:['①SDD統合','②DevContainer','③MCP設定','④AIルール','⑤並列探索','⑥Dashboard','⑦ロードマップ','⑧AIランチャー','⑨デザインシステム','⑩リバースEng','⑪実装ガイド','⑫セキュリティ','⑬戦略インテリジェンス','⑭運用インテリジェンス','⑮未来戦略','⑯開発IQ','⑰プロンプトゲノム','⑱Prompt Ops','⑲エンタープライズ']
 },
 en:{
 p1:'Phase 1',p2:'Phase 2',p3:'Phase 3',
 heroTitle:'DevForge v9',
-heroDesc:'Answer questions to auto-generate 126+ development documents, environment configs, AI rules & learning roadmaps. 18 pillars for complete AI-driven development support.',
+heroDesc:'Answer questions to auto-generate 130+ development documents, environment configs, AI rules & learning roadmaps. 19 pillars for complete AI-driven development support.',
 startBtn:'🚀 Get Started',
 statFiles:'Generated Files',statTech:'Tech Entries',statPillars:'Pillars',statAI:'AI Tools',
 skillAsk:'Select your skill level',
@@ -49,14 +49,14 @@ answerConfirm:'Confirm answer',edit:'Edit',
 tourNext:'Next',tourPrev:'Back',tourDone:'Done',tourStart:'Start Tour',
 phEnd1:'Phase 1 complete! Moving to tech stack.',
 phEnd2:'Phase 2 complete! Moving to feature design.',
-genBtn:'📦 Generate 126+ Files',
-genDone:'✅ 126+ files generated! Check the preview panel.',
+genBtn:'📦 Generate 130+ Files',
+genDone:'✅ 130+ files generated! Check the preview panel.',
 copyDone:'Copied to clipboard',
 pmTitle:'📁 Project Manager',pmNew:'New Project',pmEmpty:'No saved projects',
 helpClose:'Close',
 kbTitle:'⌨️ Shortcuts',
 kb:['Help / Manual','Shortcuts','Command Palette','Toggle Theme','Toggle Language','Export','Copy All Files','Project Manager','Toggle Sidebar','Explorer','Dashboard','Roadmap','AI Launcher'],
-pillar:['①SDD','②DevContainer','③MCP','④AI Rules','⑤Explorer','⑥Dashboard','⑦Roadmap','⑧AI Launcher','⑨Design System','⑩Reverse Eng','⑪Impl Guide','⑫Security','⑬Strategic Intelligence','⑭Ops Intelligence','⑮Future Strategy','⑯Dev IQ','⑰Prompt Genome','⑱Prompt Ops']
+pillar:['①SDD','②DevContainer','③MCP','④AI Rules','⑤Explorer','⑥Dashboard','⑦Roadmap','⑧AI Launcher','⑨Design System','⑩Reverse Eng','⑪Impl Guide','⑫Security','⑬Strategic Intelligence','⑭Ops Intelligence','⑮Future Strategy','⑯Dev IQ','⑰Prompt Genome','⑱Prompt Ops','⑲Enterprise']
 }
 };
 const t=k=>I18N[S.lang][k]||k;

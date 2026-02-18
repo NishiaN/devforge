@@ -645,3 +645,61 @@ test('ENTITY_COLUMNS: new 8-domain entities are defined (Task B)', () => {
   assert.equal(missingEntities.length, 0,
     `Missing ENTITY_COLUMNS for new 8-domain entities (${missingEntities.length}/23): ` + missingEntities.join(', '));
 });
+
+// ═══ P19: Enterprise SaaS Blueprint — Entity Coverage ═══
+
+test('ENTITY_COLUMNS: enterprise multi-tenant entities are defined', () => {
+  const enterpriseEntities = ['Organization', 'OrgMember', 'OrgInvite'];
+  enterpriseEntities.forEach(entity => {
+    assert.ok(ENTITY_COLUMNS[entity], `Missing ENTITY_COLUMNS.${entity}`);
+    assert.ok(Array.isArray(ENTITY_COLUMNS[entity]) && ENTITY_COLUMNS[entity].length >= 3,
+      `${entity} should have >=3 column definitions`);
+  });
+});
+
+test('ENTITY_COLUMNS: Organization has slug, plan, and status fields', () => {
+  const org = ENTITY_COLUMNS['Organization'];
+  assert.ok(org, 'Organization entity should exist');
+  const colStr = org.join(' ');
+  assert.ok(colStr.includes('slug'), 'Organization has slug column');
+  assert.ok(colStr.includes('plan'), 'Organization has plan column');
+});
+
+test('ENTITY_COLUMNS: OrgMember has org_id and user_id FK references', () => {
+  const member = ENTITY_COLUMNS['OrgMember'];
+  assert.ok(member, 'OrgMember entity should exist');
+  const colStr = member.join(' ');
+  assert.ok(colStr.includes('FK(Organization)'), 'OrgMember has FK to Organization');
+  assert.ok(colStr.includes('role'), 'OrgMember has role column');
+});
+
+test('ENTITY_COLUMNS: OrgInvite has email, token, and expires_at fields', () => {
+  const invite = ENTITY_COLUMNS['OrgInvite'];
+  assert.ok(invite, 'OrgInvite entity should exist');
+  const colStr = invite.join(' ');
+  assert.ok(colStr.includes('email'), 'OrgInvite has email column');
+  assert.ok(colStr.includes('token'), 'OrgInvite has token column');
+  assert.ok(colStr.includes('expires_at'), 'OrgInvite has expires_at column');
+});
+
+test('DOMAIN_ENTITIES: saas domain includes Organization/OrgMember', () => {
+  assert.ok(DOMAIN_ENTITIES['saas'], 'saas domain exists');
+  const saas = DOMAIN_ENTITIES['saas'];
+  const entities = saas.core ? saas.core.join(',') : (saas.join ? saas.join(',') : String(saas));
+  assert.ok(entities.includes('Organization') || entities.includes('OrgMember'),
+    'saas domain entities include Organization or OrgMember');
+});
+
+test('inferER: generates Organization relationships when entities present', () => {
+  const S_backup = globalThis.S;
+  globalThis.S = {genLang: 'ja'};
+  try {
+    const result = inferER({purpose: 'SaaS', data_entities: 'Organization, OrgMember, OrgInvite, User'});
+    const rels = result.relationships || result;
+    const relStr = Array.isArray(rels) ? rels.join('\n') : String(rels);
+    assert.ok(relStr.includes('Organization') && relStr.includes('OrgMember'),
+      'inferER generates Organization 1 ──N OrgMember');
+  } finally {
+    globalThis.S = S_backup;
+  }
+});

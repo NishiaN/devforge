@@ -305,7 +305,7 @@ const I18N={
 ja:{
 p1:'Phase 1',p2:'Phase 2',p3:'Phase 3',
 heroTitle:'DevForge v9',
-heroDesc:'質問に答えるだけで、126+ファイルの開発ドキュメント・環境設定・AIルール・学習ロードマップを自動生成。18の柱でAI駆動開発をゼロから完全サポート。',
+heroDesc:'質問に答えるだけで、130+ファイルの開発ドキュメント・環境設定・AIルール・学習ロードマップを自動生成。19の柱でAI駆動開発をゼロから完全サポート。',
 startBtn:'🚀 開始する',
 statFiles:'生成ファイル',statTech:'技術エントリ',statPillars:'柱 (Pillars)',statAI:'AIツール対応',
 skillAsk:'スキルレベルを選択',
@@ -322,19 +322,19 @@ answerConfirm:'回答を確認',edit:'修正',
 tourNext:'次へ',tourPrev:'前へ',tourDone:'完了',tourStart:'ツアー開始',
 phEnd1:'Phase 1 完了！技術選定に進みます。',
 phEnd2:'Phase 2 完了！機能・データ設計に進みます。',
-genBtn:'📦 126+ファイル生成',
-genDone:'✅ 126+ファイルが生成されました！プレビューパネルで確認してください。',
+genBtn:'📦 130+ファイル生成',
+genDone:'✅ 130+ファイルが生成されました！プレビューパネルで確認してください。',
 copyDone:'クリップボードにコピーしました',
 pmTitle:'📁 プロジェクト管理',pmNew:'新規プロジェクト',pmEmpty:'保存されたプロジェクトはありません',
 helpClose:'閉じる',
 kbTitle:'⌨️ ショートカット',
 kb:['ヘルプ・マニュアル','ショートカット一覧','コマンドパレット','テーマ切替','言語切替','エクスポート','全ファイルコピー','プロジェクト管理','サイドバー切替','エクスプローラー','ダッシュボード','ロードマップ','AI起動'],
-pillar:['①SDD統合','②DevContainer','③MCP設定','④AIルール','⑤並列探索','⑥Dashboard','⑦ロードマップ','⑧AIランチャー','⑨デザインシステム','⑩リバースEng','⑪実装ガイド','⑫セキュリティ','⑬戦略インテリジェンス','⑭運用インテリジェンス','⑮未来戦略','⑯開発IQ','⑰プロンプトゲノム','⑱Prompt Ops']
+pillar:['①SDD統合','②DevContainer','③MCP設定','④AIルール','⑤並列探索','⑥Dashboard','⑦ロードマップ','⑧AIランチャー','⑨デザインシステム','⑩リバースEng','⑪実装ガイド','⑫セキュリティ','⑬戦略インテリジェンス','⑭運用インテリジェンス','⑮未来戦略','⑯開発IQ','⑰プロンプトゲノム','⑱Prompt Ops','⑲エンタープライズ']
 },
 en:{
 p1:'Phase 1',p2:'Phase 2',p3:'Phase 3',
 heroTitle:'DevForge v9',
-heroDesc:'Answer questions to auto-generate 126+ development documents, environment configs, AI rules & learning roadmaps. 18 pillars for complete AI-driven development support.',
+heroDesc:'Answer questions to auto-generate 130+ development documents, environment configs, AI rules & learning roadmaps. 19 pillars for complete AI-driven development support.',
 startBtn:'🚀 Get Started',
 statFiles:'Generated Files',statTech:'Tech Entries',statPillars:'Pillars',statAI:'AI Tools',
 skillAsk:'Select your skill level',
@@ -351,14 +351,14 @@ answerConfirm:'Confirm answer',edit:'Edit',
 tourNext:'Next',tourPrev:'Back',tourDone:'Done',tourStart:'Start Tour',
 phEnd1:'Phase 1 complete! Moving to tech stack.',
 phEnd2:'Phase 2 complete! Moving to feature design.',
-genBtn:'📦 Generate 126+ Files',
-genDone:'✅ 126+ files generated! Check the preview panel.',
+genBtn:'📦 Generate 130+ Files',
+genDone:'✅ 130+ files generated! Check the preview panel.',
 copyDone:'Copied to clipboard',
 pmTitle:'📁 Project Manager',pmNew:'New Project',pmEmpty:'No saved projects',
 helpClose:'Close',
 kbTitle:'⌨️ Shortcuts',
 kb:['Help / Manual','Shortcuts','Command Palette','Toggle Theme','Toggle Language','Export','Copy All Files','Project Manager','Toggle Sidebar','Explorer','Dashboard','Roadmap','AI Launcher'],
-pillar:['①SDD','②DevContainer','③MCP','④AI Rules','⑤Explorer','⑥Dashboard','⑦Roadmap','⑧AI Launcher','⑨Design System','⑩Reverse Eng','⑪Impl Guide','⑫Security','⑬Strategic Intelligence','⑭Ops Intelligence','⑮Future Strategy','⑯Dev IQ','⑰Prompt Genome','⑱Prompt Ops']
+pillar:['①SDD','②DevContainer','③MCP','④AI Rules','⑤Explorer','⑥Dashboard','⑦Roadmap','⑧AI Launcher','⑨Design System','⑩Reverse Eng','⑪Impl Guide','⑫Security','⑬Strategic Intelligence','⑭Ops Intelligence','⑮Future Strategy','⑯Dev IQ','⑰Prompt Genome','⑱Prompt Ops','⑲Enterprise']
 }
 };
 const t=k=>I18N[S.lang][k]||k;
@@ -579,6 +579,7 @@ placeholder:ja?'追加…':'Add...',tip:lv==='beginner'?(ja?'TDD + SDD がAI駆�
 3:{name:ja?'機能・データ設計':'Feature & Data Design',questions:[
 {id:'mvp_features',q:ja?'MVP機能（3〜5個推奨）':'MVP Features (3-5 recommended)',type:'chip-multi',sortable:true,chips:ja?['ユーザー登録・ログイン','プロフィール編集','ダッシュボード','一覧表示・検索','詳細ページ','作成・編集・削除','ファイルアップロード','通知機能','お気に入り','コメント機能','シェア機能','設定画面',...(lv!=='beginner'?['API連携','管理画面','エクスポート','多言語','サブスクリプション']:[]),...(lv==='pro'?['リアルタイム同期','Webhook','RBAC','監査ログ','マルチテナント']:[])]
 :['User Auth','Profile Edit','Dashboard','List & Search','Detail Page','CRUD','File Upload','Notifications','Favorites','Comments','Share','Settings',...(lv!=='beginner'?['API Integration','Admin Panel','Export','i18n','Subscription']:[]),...(lv==='pro'?['Realtime Sync','Webhook','RBAC','Audit Log','Multi-tenant']:[])],placeholder:ja?'追加…':'Add...',tip:ja?'3〜5個に絞りましょう':'Keep it to 3-5',help:'mvp_features'},
+{id:'org_model',q:ja?'組織・テナント構造':'Organization & Tenant Structure',type:'chip',condition:(a)=>/saas|analytics|collab|hr|tool|automation/i.test(detectDomain(a.purpose||'')||''),chips:ja?['シングルテナント','マルチテナント(RLS)','ワークスペース型','組織+チーム階層']:['Single-tenant','Multi-tenant (RLS)','Workspace-based','Org + Team hierarchy'],placeholder:ja?'追加…':'Add...',tip:ja?'マルチテナントはRLS設計・組織モデルを生成します':'Multi-tenant generates RLS design & org model',help:'org_model'},
 {id:'future_features',q:ja?'将来追加機能':'Future Features',type:'chip-multi',chips:ja?['課金・サブスク','チーム機能','カレンダー連携','チャット','分析レポート','AI機能','モバイルアプリ','API公開','外部連携','A/Bテスト']
 :['Billing','Team features','Calendar','Chat','Analytics','AI features','Mobile app','Public API','Integrations','A/B testing'],placeholder:ja?'追加…':'Add...',tip:ja?'Phase 2, 3として計画':'Plan for Phase 2, 3',help:'future_features'},
 {id:'data_entities',q:ja?'データテーブル':'Data Entities',type:'chip-multi',condition:{backend:v=>!/なし|None|static/i.test(v)},chips:['User','Post','Comment','Tag','Category','Product','Order','Task','Project','Message','Notification','File','Setting','Log',...(lv!=='beginner'?['Course','Lesson','Progress','Quiz','Certificate','Event','Group','Review','Invoice','Subscription']:[])],placeholder:ja?'追加…':'Add...',tip:ja?'英語・単数形が標準':'English, singular form is standard',help:'data_entities'},
@@ -934,6 +935,10 @@ en:{title:'Dev Methodologies',desc:'TDD=test-first, BDD=behavior-driven, DDD=dom
 mvp_features:{
 ja:{title:'MVP機能',desc:'3〜5個に絞る。「これがないと使えない」機能だけ選択。',example:'最小: 認証 + メイン機能1つ + 設定'},
 en:{title:'MVP Features',desc:'Narrow to 3-5. Only pick features users cannot live without.',example:'Minimum: Auth + 1 core feature + Settings'}
+},
+org_model:{
+ja:{title:'組織・テナント構造',desc:'マルチテナント選択でRLSポリシー・組織ERモデル・承認フローが自動生成されます。',example:'SaaS: マルチテナント(RLS) / 社内ツール: シングルテナント'},
+en:{title:'Organization & Tenant Structure',desc:'Multi-tenant selection auto-generates RLS policies, org ER model, and approval workflows.',example:'SaaS: Multi-tenant (RLS) / Internal tool: Single-tenant'}
 },
 future_features:{
 ja:{title:'将来追加機能',desc:'Phase 2, 3として計画。MVPリリース後に再評価。',example:'課金→PMF確認後、モバイル→DAU 1000+時'},
@@ -3522,10 +3527,10 @@ if(!confirm((_j?'⚠️ スタック相性エラーが検出されました:\n\n
 }
 addMsg('bot',S.lang==='ja'?'🔨 ファイルを生成中...':'🔨 Generating files...');
 // Smart loading UI (HCD: ⑤感情体験 ③認知負荷)
-const pillarIcons=['📋','🐳','🔌','🤖','✅','🗺️','🎨','🔍','💡','🔒','📊','⚙️','🔮','🧬','🧩','🔧','📄','📦'];
-const pillarNames=_j?['SDD','DevContainer','MCP','AIルール','品質','ロードマップ','デザイン','リバース','実装','セキュリティ','戦略','運用','未来','開発IQ','ゲノム','Prompt Ops','仕様書','共通']:['SDD','DevContainer','MCP','AI Rules','Quality','Roadmap','Design','Reverse','Impl','Security','Strategy','Ops','Future','Dev IQ','Genome','Prompt Ops','Docs','Common'];
+const pillarIcons=['📋','🐳','🔌','🤖','✅','🗺️','🎨','🔍','💡','🔒','📊','⚙️','🔮','🧬','🧩','🔧','🏢','📄','📦'];
+const pillarNames=_j?['SDD','DevContainer','MCP','AIルール','品質','ロードマップ','デザイン','リバース','実装','セキュリティ','戦略','運用','未来','開発IQ','ゲノム','Prompt Ops','Enterprise','仕様書','共通']:['SDD','DevContainer','MCP','AI Rules','Quality','Roadmap','Design','Reverse','Impl','Security','Strategy','Ops','Future','Dev IQ','Genome','Prompt Ops','Enterprise','Docs','Common'];
 let pillarGrid='<div class="gen-pillar-grid">';
-for(let i=0;i<18;i++){
+for(let i=0;i<19;i++){
 pillarGrid+=`<div class="gen-pillar-card" id="genPillar${i}" data-status="pending">
 <div class="gen-pillar-icon">${pillarIcons[i]}</div>
 <div class="gen-pillar-name">${pillarNames[i]}</div>
@@ -3560,6 +3565,7 @@ const steps=[
 {fn:()=>genPillar16_DevIQ(a,pn),lbl:_j?'柱⑯ 開発IQ':'Pillar ⑯ Dev IQ',err:'P16-DevIQ'},
 {fn:()=>genPillar17_PromptGenome(a,pn),lbl:_j?'柱⑰ プロンプトゲノム':'Pillar ⑰ Prompt Genome',err:'P17-PG'},
 {fn:()=>genPillar18_PromptOps(a,pn),lbl:_j?'柱⑱ Prompt Ops':'Pillar ⑱ Prompt Ops',err:'P18-POps'},
+{fn:()=>genPillar19_EnterpriseSaaS(a,pn),lbl:_j?'柱⑲ エンタープライズ':'Pillar ⑲ Enterprise',err:'P19-Ent'},
 {fn:()=>genDocs21(a,pn),lbl:_j?'仕様書28種':'28 Spec Docs',err:'Docs'},
 {fn:()=>genCommonFiles(a,pn),lbl:_j?'共通ファイル':'Common Files',err:'Common'},
 ];
@@ -4007,6 +4013,30 @@ G?'## 4. 認証設計':'## 4. Auth Design',
 '- '+(G?'トークン':'Token')+': '+auth.tokenType,
 '- '+(G?'検証方法':'Verification')+': '+auth.tokenVerify,
 auth.social.length?'- '+(G?'対応プロバイダ':'Providers')+': '+auth.social.join(', '):'','',
+(()=>{
+var isMultiTenant=/マルチ|multi|RLS|組織|org.*hier/i.test((a.org_model||'')+(a.mvp_features||''));
+if(!isMultiTenant) return '';
+return [
+G?'## 4.5 マルチテナントアーキテクチャ':'## 4.5 Multi-Tenant Architecture',
+G?'### テナント分離戦略: Row-Level Security (RLS)':'### Tenant Isolation: Row-Level Security (RLS)',
+'```mermaid\ngraph LR\n  U[User]-->|auth.uid()|R[RLS Policy]\n  R-->|org_id check|T['+pn+' Data]\n  R-->|blocked|X[Other Org Data]\n  style R fill:#4f46e5,color:#fff\n```',
+'',
+G?'### 権限モデル (4階層)':'### Permission Model (4-tier)',
+'| Role | '+( G?'権限':'Permissions')+' |',
+'|------|-------------|',
+'| owner | '+( G?'全権限 (削除・課金含む)':'Full access (delete, billing)') +' |',
+'| admin | '+(G?'メンバー管理・設定変更':'Member mgmt, config changes')+' |',
+'| member | '+(G?'コンテンツ作成・編集':'Create/edit content')+' |',
+'| viewer | '+(G?'読み込みのみ':'Read only')+' |',
+'',
+G?'### データパーティション方針':'### Data Partitioning',
+'- '+( G?'全テーブルに `org_id` カラム必須':'All tables require `org_id` column'),
+'- '+(G?'クロステナントクエリ防止: RLSポリシーで強制':'Cross-tenant prevention: enforced by RLS'),
+'- '+(G?'インデックス: `(org_id, id)` 複合インデックス推奨':'Index: composite `(org_id, id)` recommended'),
+G?'> 詳細: `docs/73_enterprise_architecture.md`':
+'> Details: `docs/73_enterprise_architecture.md`'
+].join('\n');
+})(),
 G?'## 5. 開発環境':'## 5. Dev Environment',
 '- Docker DevContainer (.devcontainer/)',
 '- '+(arch.isBaaS?be+' CLI (local emulator)':'Node.js LTS + '+db),
@@ -6498,6 +6528,24 @@ designDoc+='| Card | elevated, outlined | default, clickable, media |\n';
 designDoc+='| Modal | open, onClose | sm, md, lg, fullscreen |\n';
 designDoc+='| Table | data, columns, sortable | default, striped, compact |\n';
 designDoc+='| Badge | color, size | success, warning, error, info |\n\n';
+// Enterprise Component Specifications (conditional)
+var isEnterprise=/マルチテナント|Multi-tenant|RBAC|承認|approval|admin|multi.*tenant/i.test(
+(a.mvp_features||'')+(a.org_model||'')+(a.screens||''));
+if(isEnterprise){
+designDoc+=(G?'### エンタープライズコンポーネント仕様\n\n':'### Enterprise Component Specifications\n\n');
+designDoc+=(G?'| コンポーネント | 主要Props | バリエーション | A11y |\n|------------|---------|------------|------|\n':
+'| Component | Key Props | Variants | A11y |\n|-----------|-----------|----------|------|\n');
+designDoc+='| StatusBadge | status, size, variant | pending/approved/rejected/active | role="status" aria-label |\n';
+designDoc+='| ApprovalBar | request, onApprove, onReject, currentUserRole | pending/approved/rejected | button aria-label, aria-disabled |\n';
+designDoc+='| DataTable | data, columns, sortable, filterable, paginated, bulkActions | basic/sortable/paginated | role="table", aria-sort |\n';
+designDoc+='| NotificationBell | count, items, onRead | unread/empty | aria-label="N unread", aria-live |\n';
+designDoc+='| OrgSwitcher | orgs, current, onChange | single/multi/create | combobox role, aria-expanded |\n';
+designDoc+='| OnboardingStepper | steps, current, onComplete | horizontal/vertical/progress | aria-current="step" |\n';
+designDoc+='| AuditTimeline | events, filter, maxItems | compact/detailed/filtered | role="feed", time datetime |\n';
+designDoc+='| InviteManager | invites, onCreate, onRevoke | list/form/bulk | AlertDialog confirm, aria-live |\n\n';
+designDoc+=(G?'> 詳細仕様は `docs/76_enterprise_components.md` を参照。\n\n':
+'> See `docs/76_enterprise_components.md` for detailed specifications.\n\n');
+}
 // Framework Component Mapping
 designDoc+=(G?'### コンポーネント対応表\n\n':'### Component Framework Mapping\n\n');
 designDoc+='| '+(G?'コンポーネント':'Component')+' | Tailwind (shadcn/ui) | Vuetify | Angular Material |\n|-------------|----------------------|---------|------------------|\n';
@@ -8715,6 +8763,46 @@ doc43+='- [AI Security Playbook](./46_ai_security.md)\n';
 doc43+='- [Security Testing](./47_security_testing.md)\n';
 doc43+='- [Incident Response](./34_incident_response.md)\n';
 doc43+='- [Security (Overview)](./08_security.md)\n';
+// Org-scoped RLS (multi-tenant enhancement)
+var _isMultiTenant=/マルチ|multi|RLS|組織|org.*hier/i.test((a.org_model||'')+(a.mvp_features||''));
+if(_isMultiTenant){
+doc43+='\n## '+(G?'🔒 組織スコープ RLSポリシー (マルチテナント)':'🔒 Org-Scoped RLS Policies (Multi-tenant)')+'\n\n';
+doc43+=(G?'> マルチテナント環境での完全なテナント分離を実現するRLSポリシーテンプレート。\n\n':
+'> RLS policy templates for complete tenant isolation in multi-tenant environments.\n\n');
+doc43+='```sql\n';
+doc43+='-- '+(G?'基本: 組織メンバーのみアクセス可能':'Base: org members only') +'\n';
+doc43+='CREATE POLICY "org_isolation" ON resources\n';
+doc43+='  FOR SELECT USING (\n';
+doc43+='    org_id IN (\n';
+doc43+='      SELECT org_id FROM org_members\n';
+doc43+='      WHERE user_id = auth.uid()\n';
+doc43+='    )\n';
+doc43+='  );\n\n';
+doc43+='-- '+(G?'Admin以上のみ書込可能':'Admin or above can write')+'\n';
+doc43+='CREATE POLICY "admin_write" ON org_settings\n';
+doc43+='  FOR ALL USING (\n';
+doc43+='    org_id IN (\n';
+doc43+='      SELECT org_id FROM org_members\n';
+doc43+='      WHERE user_id = auth.uid()\n';
+doc43+='      AND role IN (\'owner\', \'admin\')\n';
+doc43+='    )\n';
+doc43+='  );\n\n';
+doc43+='-- '+(G?'Ownerのみ削除可能':'Owner only can delete')+'\n';
+doc43+='CREATE POLICY "owner_delete" ON organizations\n';
+doc43+='  FOR DELETE USING (\n';
+doc43+='    id IN (\n';
+doc43+='      SELECT org_id FROM org_members\n';
+doc43+='      WHERE user_id = auth.uid() AND role = \'owner\'\n';
+doc43+='    )\n';
+doc43+='  );\n```\n\n';
+doc43+=(G?'### クロステナントクエリ防止チェックリスト\n\n':'### Cross-tenant Query Prevention Checklist\n\n');
+doc43+=(G?'- [ ] 全テーブルに `org_id` カラムが存在するか\n':'- [ ] All tables have `org_id` column\n');
+doc43+=(G?'- [ ] 全テーブルでRLSが `ENABLED` になっているか\n':'- [ ] RLS is ENABLED on all tables\n');
+doc43+=(G?'- [ ] `service_role` キーはサーバーサイドのみで使用されているか\n':'- [ ] `service_role` key used server-side only\n');
+doc43+=(G?'- [ ] `auth.uid()` を使ったポリシーが全テーブルに設定されているか\n':'- [ ] `auth.uid()` policies set on all tables\n');
+doc43+=(G?'- [ ] org_idでのINDEX設定 (`(org_id, id)`) が完了しているか\n':'- [ ] Index on `(org_id, id)` created for performance\n');
+}
+
 S.files['docs/43_security_intelligence.md']=doc43;
 // ═══ DOC 44: STRIDE Threat Model ═══
 let doc44='';
@@ -13939,6 +14027,613 @@ S.files['docs/70_react_workflow.md'] = gen70(G, domain, matLv, a, pn);
 S.files['docs/71_llmops_dashboard.md'] = gen71(G, matLv, a, pn);
 S.files['docs/72_prompt_registry.md'] = gen72(G, domain, meth, matLv, a, pn);
 }
+// P19: Enterprise SaaS Blueprint
+// Generates: docs/73_enterprise_architecture.md, 74_workflow_engine.md,
+//            75_admin_dashboard_spec.md, 76_enterprise_components.md
+
+// ============================================================================
+// DATA CONSTANTS
+// ============================================================================
+
+// Factory: Enterprise Architecture Pattern
+function _ep(pattern, tenantIsolation, rbacModel, scalingStrategy, rlsExample) {
+return {pattern, tenantIsolation, rbacModel, scalingStrategy, rlsExample};
+}
+var ENTERPRISE_ARCH_PATTERNS = {
+rls: _ep('Row-Level Security (RLS)',
+'org_id column on all tables + Supabase/Postgres RLS policies',
+'Owner > Admin > Member > Viewer (4-tier)',
+'Single DB, scales to millions of tenants with row filtering',
+'USING (org_id IN (SELECT org_id FROM org_members WHERE user_id = auth.uid()))'
+),
+schema: _ep('Schema-per-tenant',
+'Separate Postgres schema per tenant (search_path = tenant_{id})',
+'Role inherited from schema owner + row-level for sub-roles',
+'Good isolation, ~1K tenant limit per instance; use with pgBouncer',
+'SET search_path TO tenant_<org_id>; -- per connection'
+),
+db: _ep('Database-per-tenant',
+'Separate DB instance per tenant (connection string in config table)',
+'Full DB-level role separation, no cross-tenant queries possible',
+'Maximum isolation; high cost; use for regulated industries (fintech/health)',
+'N/A — isolation at DB level; use separate Supabase projects'
+),
+hybrid: _ep('Hybrid (RLS + Feature Flags)',
+'RLS for data + LaunchDarkly/Unleash for feature gating per org plan',
+'RLS roles + plan-based feature entitlements (free/pro/enterprise)',
+'Best of both: data isolation + flexible feature rollout per org tier',
+'USING (org_id IN (...)) AND EXISTS (SELECT 1 FROM org_features WHERE org_id = org_members.org_id AND feature = \'advanced_reports\')'
+)
+};
+// Factory: Workflow state machine
+function _wf(name, name_ja, states, transitions, roles, sla_ja, sla_en) {
+return {name, name_ja, states, transitions, roles, sla_ja, sla_en};
+}
+var WORKFLOW_TEMPLATES = {
+approval: _wf('Approval', '承認ワークフロー',
+['draft', 'pending', 'approved', 'rejected', 'cancelled'],
+[['draft','pending','Submit for review'],['pending','approved','Approver approves'],['pending','rejected','Approver rejects'],['rejected','draft','Requester revises'],['pending','cancelled','Requester cancels']],
+['Requester: create/edit draft, cancel', 'Approver: approve/reject', 'Admin: override any state'],
+'承認期限: SLA 48h / エスカレーション: 72h で上位承認者へ自動通知',
+'Approval SLA: 48h / Escalation: auto-notify senior approver after 72h'
+),
+ticket: _wf('Ticket', 'チケット管理',
+['open', 'in_progress', 'review', 'resolved', 'closed'],
+[['open','in_progress','Assign to agent'],['in_progress','review','Mark for review'],['review','resolved','Verify fix'],['resolved','closed','Auto-close after 7d'],['resolved','open','Customer re-opens']],
+['Customer: create/reopen', 'Agent: move to in_progress/review', 'Manager: close/escalate'],
+'応答時間: P1=1h, P2=4h, P3=24h / 解決時間: P1=4h, P2=8h, P3=72h',
+'Response: P1=1h, P2=4h, P3=24h / Resolution: P1=4h, P2=8h, P3=72h'
+),
+order: _wf('Order', '注文フロー',
+['created', 'paid', 'processing', 'shipped', 'delivered', 'cancelled'],
+[['created','paid','Payment confirmed'],['paid','processing','Fulfillment starts'],['processing','shipped','Carrier pickup'],['shipped','delivered','Delivery confirmed'],['created','cancelled','Customer cancels'],['paid','cancelled','Refund initiated']],
+['Customer: create/cancel unpaid', 'Warehouse: processing/ship', 'System: auto-delivered via webhook'],
+'処理時間: 支払→発送 24h以内 / 配達確認: 配送完了から48h以内に自動確認',
+'Processing: payment→ship within 24h / Delivery confirm: auto-confirm within 48h'
+),
+contract: _wf('Contract', '契約管理',
+['draft', 'review', 'negotiation', 'signed', 'active', 'expired'],
+[['draft','review','Submit for review'],['review','negotiation','Request changes'],['negotiation','review','Re-submit revised'],['review','signed','All parties sign'],['signed','active','Effective date reached'],['active','expired','End date reached']],
+['Author: create/edit draft', 'Legal: review/negotiate', 'Signatory: sign', 'System: activate/expire'],
+'レビュー期限: 5営業日 / 署名期限: 10営業日 / 期限切れ: 終了日+30日でアーカイブ',
+'Review deadline: 5 business days / Signing deadline: 10 days / Expiry: archive 30d after end date'
+),
+onboarding: _wf('Onboarding', 'オンボーディング',
+['invited', 'registered', 'profile_setup', 'team_joined', 'active'],
+[['invited','registered','User registers'],['registered','profile_setup','Complete profile'],['profile_setup','team_joined','Join/create team'],['team_joined','active','Complete checklist']],
+['System: send invite/reminders', 'User: progress through steps', 'Admin: monitor/resend invites'],
+'フォローアップ: 招待後24h未登録→リマインダー / 7日未完了→管理者通知',
+'Follow-up: 24h no register→reminder / 7d incomplete→admin notify'
+)
+};
+// Factory: Admin dashboard specification
+function _adm(category, category_ja, kpis, widgets_ja, widgets_en) {
+return {category, category_ja, kpis, widgets_ja, widgets_en};
+}
+var ADMIN_DASHBOARD_SPECS = {
+overview: _adm('Overview', '概要', ['total_users', 'active_orgs', 'mrr', 'churn_rate'],
+['総ユーザー数 (前週比)', 'アクティブ組織数', 'MRR (月次課金収入)', 'チャーン率 (7日移動平均)', '日次新規登録グラフ', '機能別利用率ヒートマップ'],
+['Total users (vs. last week)', 'Active organizations', 'MRR (monthly recurring revenue)', 'Churn rate (7-day moving avg)', 'Daily registration chart', 'Feature adoption heatmap']
+),
+users: _adm('User Analytics', 'ユーザー分析', ['dau_mau', 'retention', 'cohort'],
+['DAU/MAU比率', '7日/30日リテンション', 'コホート分析テーブル', 'ユーザーセグメント分布', 'スキルレベル別利用パターン', 'オンボーディング完了率'],
+['DAU/MAU ratio', '7-day / 30-day retention', 'Cohort analysis table', 'User segment distribution', 'Usage patterns by skill level', 'Onboarding completion rate']
+),
+billing: _adm('Billing', '課金管理', ['mrr', 'arr', 'arpu', 'ltv'],
+['プラン別収益内訳', 'MRR推移グラフ (12ヶ月)', 'アップグレード/ダウングレード率', 'ARPU (ユーザー単価)', 'LTV予測', 'Stripe Webhook受信ステータス'],
+['Revenue by plan', 'MRR trend (12 months)', 'Upgrade/downgrade rate', 'ARPU (average revenue per user)', 'LTV forecast', 'Stripe Webhook status']
+),
+ops: _adm('Operations', '運用管理', ['sla_compliance', 'ticket_resolution', 'uptime'],
+['SLA遵守率 (目標99%)', 'チケット平均解決時間', 'サービス稼働率', '未解決チケット (優先度別)', '監査ログ最近50件', 'APIエラー率ダッシュボード'],
+['SLA compliance rate (target 99%)', 'Avg ticket resolution time', 'Service uptime', 'Open tickets by priority', 'Recent 50 audit log entries', 'API error rate dashboard']
+)
+};
+// Factory: Enterprise UI Component
+function _ec(name, props_ja, variants_ja, a11y_ja, framework) {
+return {name, props_ja, variants_ja, a11y_ja, framework};
+}
+var ENTERPRISE_COMPONENTS = {
+StatusBadge: _ec('StatusBadge',
+['status: string (draft|pending|approved|rejected|active|expired)', 'size?: sm|md|lg', 'variant?: solid|outline|subtle'],
+['pending → 黄色 (⏳)', 'approved → 緑 (✅)', 'rejected → 赤 (❌)', 'active → 青 (🔵)', 'expired → グレー'],
+['role="status" aria-label="{status}"', 'カラーだけでなくアイコン+テキストで状態を伝達'],
+'shadcn/ui Badge + カスタムバリアント / Vuetify v-chip / Angular Material chip'
+),
+ApprovalBar: _ec('ApprovalBar',
+['request: ApprovalRequest', 'onApprove: (id) => void', 'onReject: (id, reason) => void', 'currentUserRole: string'],
+['pending (承認待ち: 承認/却下ボタン表示)', 'approved (完了: 緑バナー)', 'rejected (却下: 理由表示)'],
+['button aria-label="承認"/"却下"', '却下時はモーダルでreason入力必須', 'aria-disabled={!canApprove}'],
+'shadcn/ui AlertDialog + Button / Headless UI Dialog'
+),
+DataTable: _ec('DataTable',
+['data: T[]', 'columns: ColumnDef<T>[]', 'sortable?: boolean', 'filterable?: boolean', 'paginated?: boolean', 'onRowSelect?: (rows) => void', 'bulkActions?: Action[]'],
+['基本テーブル', 'ソート有効', 'フィルタ有効', 'ページネーション', '行選択+一括操作'],
+['role="table" + aria-sort', 'ページネーション aria-label="ページ {n}"', 'フィルタ label 対応'],
+'TanStack Table v8 + shadcn/ui / AG Grid Community / Vuetify v-data-table'
+),
+NotificationBell: _ec('NotificationBell',
+['count: number', 'items: Notification[]', 'onRead: (id) => void', 'onReadAll: () => void', 'maxDisplay?: number'],
+['未読あり (赤バッジ+数字)', '未読なし (通常アイコン)', 'ドロップダウン展開 (最新5件)'],
+['aria-label="通知 {count}件未読"', 'role="alert" aria-live="polite" (新着時)', '通知リスト role="list"'],
+'shadcn/ui Popover + Badge / Radix UI Popover'
+),
+OrgSwitcher: _ec('OrgSwitcher',
+['orgs: Organization[]', 'current: Organization', 'onChange: (org) => void', 'canCreate?: boolean'],
+['単一組織 (表示のみ)', '複数組織 (切替ドロップダウン)', '組織作成ボタン付き'],
+['combobox role + aria-expanded', '選択中組織に aria-selected="true"', 'キーボードナビゲーション対応'],
+'shadcn/ui Command + Popover / Headless UI Combobox'
+),
+OnboardingStepper: _ec('OnboardingStepper',
+['steps: Step[]', 'current: number', 'onComplete: () => void', 'onStepClick?: (n) => void'],
+['水平ステッパー (デスクトップ)', '垂直ステッパー (モバイル)', '進捗バー付き'],
+['aria-current="step" for active', 'completed steps aria-label="{step} 完了"', 'progress bar aria-valuenow'],
+'shadcn/ui Steps (custom) / Vuetify v-stepper / Angular Material stepper'
+),
+AuditTimeline: _ec('AuditTimeline',
+['events: AuditEvent[]', 'filter?: { action, user, dateRange }', 'maxItems?: number'],
+['コンパクト (アイコン+サマリー)', '詳細 (フルメタデータ表示)', 'フィルタパネル付き'],
+['role="feed" aria-label="監査ログ"', '各エントリ role="article"', 'time datetime="{ISO}"'],
+'カスタムコンポーネント (shadcn/ui Card) / Vuetify v-timeline'
+),
+InviteManager: _ec('InviteManager',
+['invites: OrgInvite[]', 'onCreate: (email, role) => void', 'onRevoke: (id) => void', 'onResend: (id) => void'],
+['招待一覧テーブル (保留中/期限切れ)', '招待作成フォーム (メール+ロール選択)', '一括招待 (CSVインポート)'],
+['フォーム label 対応', '削除確認 AlertDialog', 'aria-live="polite" (招待送信完了)'],
+'shadcn/ui Table + Dialog + Form / React Hook Form + Zod validation'
+)
+};
+// ============================================================================
+// GENERATOR FUNCTIONS
+// ============================================================================
+
+function gen73(G, domain, orgModel, isMultiTenant, a, pn) {
+var d = G ? '# エンタープライズアーキテクチャ — ' + pn + '\n\n' :
+'# Enterprise Architecture — ' + pn + '\n\n';
+d += G ? '> マルチテナント設計・組織データモデル・権限マトリクス・RLSポリシーテンプレート。\n\n' :
+'> Multi-tenant design, organization data model, permission matrix, RLS policy templates.\n\n';
+// Architecture pattern selection
+var pat = ENTERPRISE_ARCH_PATTERNS[isMultiTenant ? 'rls' : 'rls'];
+if (/schema.*per/i.test(orgModel)) pat = ENTERPRISE_ARCH_PATTERNS.schema;
+else if (/database.*per|db.*per/i.test(orgModel)) pat = ENTERPRISE_ARCH_PATTERNS.db;
+else if (/hybrid/i.test(orgModel)) pat = ENTERPRISE_ARCH_PATTERNS.hybrid;
+d += G ? '## 🏗️ テナント分離戦略\n\n' : '## 🏗️ Tenant Isolation Strategy\n\n';
+d += G ? '| パターン | テナント分離 | RBACモデル | スケーリング |\n|---------|------------|------------|------------|\n' :
+'| Pattern | Tenant Isolation | RBAC Model | Scaling |\n|---------|-----------------|------------|----------|\n';
+Object.entries(ENTERPRISE_ARCH_PATTERNS).forEach(function(entry) {
+var k = entry[0]; var p = entry[1];
+var sel = (k === (isMultiTenant ? 'rls' : 'rls') && !(/schema|db|hybrid/i.test(orgModel))) ||
+(k === 'schema' && /schema.*per/i.test(orgModel)) ||
+(k === 'db' && /database.*per|db.*per/i.test(orgModel)) ||
+(k === 'hybrid' && /hybrid/i.test(orgModel));
+d += '| ' + (sel ? '**✅ ' : '') + p.pattern + (sel ? ' (選択中)**' : '') + ' | ' + p.tenantIsolation.substring(0, 40) + '... | ' + p.rbacModel + ' | ' + p.scalingStrategy.substring(0, 45) + '... |\n';
+});
+d += '\n';
+d += G ? '### 採用パターン詳細: ' + pat.pattern + '\n\n' : '### Selected Pattern Detail: ' + pat.pattern + '\n\n';
+d += G ? '- **テナント分離**: ' + pat.tenantIsolation + '\n' : '- **Tenant Isolation**: ' + pat.tenantIsolation + '\n';
+d += G ? '- **RBACモデル**: ' + pat.rbacModel + '\n' : '- **RBAC Model**: ' + pat.rbacModel + '\n';
+d += G ? '- **スケーリング**: ' + pat.scalingStrategy + '\n\n' : '- **Scaling**: ' + pat.scalingStrategy + '\n\n';
+// Organization ER Diagram
+d += G ? '## 📊 組織データモデル (ER図)\n\n' : '## 📊 Organization Data Model (ER Diagram)\n\n';
+d += '```mermaid\nerDiagram\n';
+d += '  User {\n    uuid id PK\n    varchar email UK\n    varchar role\n  }\n';
+d += '  Organization {\n    uuid id PK\n    varchar slug UK\n    varchar plan\n    varchar status\n  }\n';
+d += '  OrgMember {\n    uuid org_id FK\n    uuid user_id FK\n    varchar role\n    timestamp joined_at\n  }\n';
+d += '  OrgInvite {\n    uuid id PK\n    uuid org_id FK\n    varchar email\n    varchar role\n    uuid token UK\n    timestamp expires_at\n  }\n';
+if (domain === 'saas' || domain === 'collab' || domain === 'tool') {
+d += '  Workspace {\n    uuid id PK\n    uuid org_id FK\n    varchar slug\n    varchar plan\n  }\n';
+d += '  Organization ||--o{ Workspace : "has"\n';
+}
+d += '  Organization ||--o{ OrgMember : "has"\n';
+d += '  Organization ||--o{ OrgInvite : "sends"\n';
+d += '  User ||--o{ OrgMember : "belongs to"\n';
+d += '```\n\n';
+// Permission Matrix
+d += G ? '## 🔐 権限マトリクス\n\n' : '## 🔐 Permission Matrix\n\n';
+d += G ? '| リソース | Owner | Admin | Member | Viewer |\n|--------|-------|-------|--------|--------|\n' :
+'| Resource | Owner | Admin | Member | Viewer |\n|---------|-------|-------|--------|--------|\n';
+var resources = G ? [
+['組織設定', '✅ CRUD', '✅ 読込・更新', '❌', '❌'],
+['メンバー管理', '✅ CRUD', '✅ 招待・削除', '👁️ 一覧表示', '❌'],
+['招待管理', '✅ CRUD', '✅ 招待・取消', '❌', '❌'],
+['プロジェクト', '✅ CRUD', '✅ CRUD', '✅ 作成・更新', '👁️ 読込のみ'],
+['請求・課金', '✅ CRUD', '👁️ 読込のみ', '❌', '❌'],
+['監査ログ', '✅ 読込', '✅ 読込', '❌', '❌']
+] : [
+['Org Settings', '✅ CRUD', '✅ Read/Update', '❌', '❌'],
+['Member Mgmt', '✅ CRUD', '✅ Invite/Remove', '👁️ List only', '❌'],
+['Invite Mgmt', '✅ CRUD', '✅ Invite/Revoke', '❌', '❌'],
+['Projects', '✅ CRUD', '✅ CRUD', '✅ Create/Update', '👁️ Read only'],
+['Billing', '✅ CRUD', '👁️ Read only', '❌', '❌'],
+['Audit Log', '✅ Read', '✅ Read', '❌', '❌']
+];
+resources.forEach(function(r) {
+d += '| ' + r.join(' | ') + ' |\n';
+});
+d += '\n';
+// RLS Policy Templates
+d += G ? '## 🛡️ RLSポリシーテンプレート\n\n' : '## 🛡️ RLS Policy Templates\n\n';
+d += G ? '### 組織スコープ分離 (全テーブル共通)\n\n' : '### Org-scoped isolation (shared across tables)\n\n';
+d += '```sql\n';
+d += '-- ' + (G ? '組織メンバーのみ読込可能' : 'Only org members can read') + '\n';
+d += 'CREATE POLICY "org_isolation" ON resources\n';
+d += '  FOR SELECT USING (\n';
+d += '    org_id IN (\n';
+d += '      SELECT org_id FROM org_members\n';
+d += '      WHERE user_id = auth.uid()\n';
+d += '    )\n';
+d += '  );\n\n';
+d += '-- ' + (G ? 'Admin以上のみ書込可能' : 'Admin or above can write') + '\n';
+d += 'CREATE POLICY "admin_write" ON org_settings\n';
+d += '  FOR ALL USING (\n';
+d += '    org_id IN (\n';
+d += '      SELECT org_id FROM org_members\n';
+d += '      WHERE user_id = auth.uid()\n';
+d += '      AND role IN (\'owner\', \'admin\')\n';
+d += '    )\n';
+d += '  );\n\n';
+d += '-- ' + (G ? 'Ownerのみ組織削除可能' : 'Only owner can delete org') + '\n';
+d += 'CREATE POLICY "owner_only_delete" ON organizations\n';
+d += '  FOR DELETE USING (\n';
+d += '    id IN (\n';
+d += '      SELECT org_id FROM org_members\n';
+d += '      WHERE user_id = auth.uid()\n';
+d += '      AND role = \'owner\'\n';
+d += '    )\n';
+d += '  );\n```\n\n';
+// Invite Flow Sequence
+d += G ? '## 📧 招待フロー シーケンス図\n\n' : '## 📧 Invite Flow Sequence Diagram\n\n';
+d += '```mermaid\nsequenceDiagram\n';
+d += '  participant A as Admin\n';
+d += '  participant S as Server\n';
+d += '  participant E as Email\n';
+d += '  participant U as ' + (G ? '招待ユーザー' : 'Invited User') + '\n';
+d += '  A->>S: POST /invites {email, role}\n';
+d += '  S->>S: ' + (G ? 'OrgInvite 作成 (token=UUID, expires=+7d)' : 'Create OrgInvite (token=UUID, expires=+7d)') + '\n';
+d += '  S->>E: ' + (G ? '招待メール送信 (/invite?token=UUID)' : 'Send invite email (/invite?token=UUID)') + '\n';
+d += '  U->>S: GET /invite?token=UUID\n';
+d += '  S->>S: ' + (G ? 'token検証・期限チェック' : 'Validate token & expiry') + '\n';
+d += '  U->>S: POST /invite/accept {token}\n';
+d += '  S->>S: ' + (G ? 'OrgMember作成 / redeemed_at=NOW()' : 'Create OrgMember / set redeemed_at=NOW()') + '\n';
+d += '  S->>U: ' + (G ? '組織ダッシュボードへリダイレクト' : 'Redirect to org dashboard') + '\n';
+d += '```\n\n';
+// Scaling decision tree
+d += G ? '## 📈 スケーリング判断基準\n\n' : '## 📈 Scaling Decision Tree\n\n';
+d += '```mermaid\ngraph TD\n';
+d += '  S{' + (G ? '規制要件は?' : 'Regulatory req?') + '} -->|' + (G ? '金融/医療' : 'Fintech/Health') + '| DB[' + (G ? 'DB-per-tenant' : 'DB-per-tenant') + ']\n';
+d += '  S -->|' + (G ? 'なし' : 'None') + '| T{' + (G ? 'テナント数?' : 'Tenant count?') + '}\n';
+d += '  T -->|< 100| R[RLS]\n';
+d += '  T -->|100-1000| H[' + (G ? 'Hybrid (RLS+FF)' : 'Hybrid (RLS+FF)') + ']\n';
+d += '  T -->|> 1000| SC[' + (G ? 'Schema-per-tenant' : 'Schema-per-tenant') + ']\n';
+d += '  style R fill:#22c55e,color:#fff\n';
+d += '  style H fill:#f59e0b,color:#fff\n';
+d += '  style SC fill:#3b82f6,color:#fff\n';
+d += '  style DB fill:#ef4444,color:#fff\n';
+d += '```\n';
+return d;
+}
+
+function gen74(G, domain, orgModel, isMultiTenant, a, pn) {
+var d = G ? '# ワークフローエンジン設計 — ' + pn + '\n\n' :
+'# Workflow Engine Design — ' + pn + '\n\n';
+d += G ? '> ビジネスプロセスのステートマシン定義・承認チェーン・SLAトラッキング。\n\n' :
+'> Business process state machines, approval chains, SLA tracking.\n\n';
+// Select relevant workflows by domain
+var selectedWorkflows = [];
+if (/saas|collab|tool|automation|hr/i.test(domain)) selectedWorkflows.push('approval');
+if (/saas|tool|automation|ai/i.test(domain)) selectedWorkflows.push('ticket');
+if (/ec|marketplace|logistics/i.test(domain)) selectedWorkflows.push('order');
+if (/legal|fintech|insurance/i.test(domain)) selectedWorkflows.push('contract');
+if (/saas|hr|collab/i.test(domain)) selectedWorkflows.push('onboarding');
+if (selectedWorkflows.length === 0) selectedWorkflows = ['approval', 'onboarding'];
+// State machine diagrams
+d += G ? '## 🔄 ステートマシン定義\n\n' : '## 🔄 State Machine Definitions\n\n';
+selectedWorkflows.forEach(function(wfKey) {
+var wf = WORKFLOW_TEMPLATES[wfKey];
+d += '### ' + (G ? wf.name_ja : wf.name) + '\n\n';
+d += '```mermaid\nstateDiagram-v2\n';
+d += '  [*] --> ' + wf.states[0] + '\n';
+wf.transitions.forEach(function(t) {
+d += '  ' + t[0] + ' --> ' + t[1] + ' : ' + t[2] + '\n';
+});
+d += '  ' + wf.states[wf.states.length - 1] + ' --> [*]\n';
+d += '```\n\n';
+// Roles per workflow
+d += G ? '**ロール別操作権限:**\n\n' : '**Role-based operations:**\n\n';
+wf.roles.forEach(function(r) { d += '- ' + r + '\n'; });
+d += '\n';
+// SLA
+d += G ? '**SLA / エスカレーション:** ' + wf.sla_ja + '\n\n' :
+'**SLA / Escalation:** ' + wf.sla_en + '\n\n';
+d += '---\n\n';
+});
+// Approval chain patterns
+d += G ? '## 🔗 承認チェーンパターン\n\n' : '## 🔗 Approval Chain Patterns\n\n';
+d += G ? '| パターン | 説明 | 適用シーン |\n|---------|------|----------|\n' :
+'| Pattern | Description | Use Case |\n|---------|-------------|----------|\n';
+var chains = G ? [
+['単一承認', '1人の承認者が承認/却下', '小規模チーム・軽微な変更'],
+['順次承認 (Sequential)', 'A→B→C の順で全員の承認が必要', '予算申請・契約締結'],
+['並列承認 (Parallel)', 'A・B・C 全員が同時並行で承認', '複数部署承認が必要な案件'],
+['委任承認 (Delegation)', '上位承認者が代理承認者を指定可能', '長期不在・権限委任'],
+['閾値承認 (Threshold)', 'N人中M人以上が承認で通過', '過半数決議・委員会承認']
+] : [
+['Single approval', 'One approver approves/rejects', 'Small team, minor changes'],
+['Sequential', 'A→B→C all must approve in order', 'Budget requests, contracts'],
+['Parallel', 'A, B, C all approve simultaneously', 'Multi-department approvals'],
+['Delegation', 'Senior approver can designate proxy', 'Long absence, delegated authority'],
+['Threshold', 'M of N approvers must approve', 'Majority vote, committee decisions']
+];
+chains.forEach(function(c) { d += '| ' + c.join(' | ') + ' |\n'; });
+d += '\n';
+// SLA tracking
+d += G ? '## ⏱️ SLAトラッキング実装\n\n' : '## ⏱️ SLA Tracking Implementation\n\n';
+d += '```typescript\n';
+d += '// SLA ' + (G ? '期限管理' : 'deadline management') + '\n';
+d += 'interface SLAConfig {\n  workflowType: string;\n  slaHours: number;\n  escalationHours: number;\n  escalateTo: string; // role\n}\n\n';
+d += '// Cron job: ' + (G ? '期限チェック（15分ごと）' : 'deadline check (every 15 min)') + '\n';
+d += 'async function checkSLABreaches() {\n';
+d += '  const overdue = await db.query(`\n';
+d += '    SELECT * FROM approval_requests\n';
+d += '    WHERE status = \'pending\'\n';
+d += '    AND created_at < NOW() - INTERVAL \'1 hour\' * sla_hours\n';
+d += '    AND escalated_at IS NULL\n';
+d += '  `);\n';
+d += '  for (const req of overdue) {\n';
+d += '    await notifyEscalation(req);\n';
+d += '    await markEscalated(req.id);\n';
+d += '  }\n';
+d += '}\n```\n\n';
+// Domain-specific workflow customization
+d += G ? '## 🎯 ' + domain + 'ドメイン固有のワークフロー最適化\n\n' :
+'## 🎯 ' + domain + ' Domain Workflow Customization\n\n';
+var customizations = {
+saas: G ? ['プランアップグレード承認フロー', 'サブスクキャンセル確認フロー', 'カスタム機能リクエスト管理'] :
+['Plan upgrade approval flow', 'Subscription cancellation confirmation', 'Custom feature request management'],
+hr: G ? ['採用承認ステップ', 'オファー承認チェーン', '入社チェックリスト自動化'] :
+['Hiring approval steps', 'Offer approval chain', 'Onboarding checklist automation'],
+fintech: G ? ['送金承認ワークフロー (金額閾値)', 'コンプライアンスレビュー', 'KYC/AML承認プロセス'] :
+['Transfer approval (amount threshold)', 'Compliance review', 'KYC/AML approval process'],
+legal: G ? ['契約書レビューチェーン', 'eSign統合 (DocuSign)', '条項交渉ステップ'] :
+['Contract review chain', 'eSign integration (DocuSign)', 'Clause negotiation steps'],
+ec: G ? ['返金承認フロー', '大口注文承認', '在庫アラート承認'] :
+['Refund approval flow', 'Large order approval', 'Inventory alert approval'],
+collab: G ? ['コンテンツ公開承認', 'メンバー招待承認', 'ワークスペース作成申請'] :
+['Content publish approval', 'Member invite approval', 'Workspace creation request']
+};
+var domCustom = customizations[domain] || (G ? ['承認ワークフロー', 'オンボーディング自動化', '状態変更通知'] :
+['Approval workflow', 'Onboarding automation', 'State change notifications']);
+domCustom.forEach(function(c) { d += '- ' + c + '\n'; });
+d += '\n';
+// Notification triggers
+d += G ? '## 🔔 状態変化通知トリガー\n\n' : '## 🔔 State Change Notification Triggers\n\n';
+d += G ? '| 状態変化 | 通知先 | チャネル |\n|---------|-------|--------|\n' :
+'| State change | Notify to | Channel |\n|-------------|-----------|----------|\n';
+var triggers = G ? [
+['draft → pending', '承認者全員', 'メール + アプリ内通知'],
+['pending → approved', '申請者 + Slackチャンネル', 'メール + Slack Webhook'],
+['pending → rejected', '申請者', 'メール + アプリ内通知 (理由付き)'],
+['SLA超過', '申請者 + 管理者', 'メール + Slack @mention'],
+['invited → registered', '招待者 + 管理者', 'アプリ内通知']
+] : [
+['draft → pending', 'All approvers', 'Email + in-app notification'],
+['pending → approved', 'Requester + Slack channel', 'Email + Slack Webhook'],
+['pending → rejected', 'Requester', 'Email + in-app (with reason)'],
+['SLA breach', 'Requester + Admin', 'Email + Slack @mention'],
+['invited → registered', 'Inviter + Admin', 'In-app notification']
+];
+triggers.forEach(function(t) { d += '| ' + t.join(' | ') + ' |\n'; });
+return d;
+}
+
+function gen75(G, domain, orgModel, isMultiTenant, a, pn) {
+var d = G ? '# 管理ダッシュボード仕様 — ' + pn + '\n\n' :
+'# Admin Dashboard Specification — ' + pn + '\n\n';
+d += G ? '> KPIカード定義・チャート仕様・ユーザー分析・ロールベースビュー。\n\n' :
+'> KPI card definitions, chart specs, user analytics, role-based views.\n\n';
+// Dashboard layout wireframe
+d += G ? '## 🖥️ 管理画面レイアウト\n\n' : '## 🖥️ Admin Dashboard Layout\n\n';
+d += '```\n';
+d += '┌─────────────────────────────────────────────────────────────┐\n';
+d += '│  ' + (G ? '組織スイッチャー' : 'OrgSwitcher') + '    ' + pn + ' Admin     🔔 ' + (G ? '通知' : 'Notif') + '  👤 ' + (G ? 'プロフィール' : 'Profile') + '  │\n';
+d += '├──────────┬──────────────────────────────────────────────────┤\n';
+d += '│          │  📊 ' + (G ? '概要' : 'Overview') + '                                      │\n';
+d += '│  📊 ' + (G ? '概要' : 'Ovrvw') + '   │  ┌────────┐ ┌────────┐ ┌────────┐ ┌────────┐  │\n';
+d += '│  👥 ' + (G ? 'ユーザー' : 'Users ') + '  │  │ ' + (G ? '総ユーザー' : 'Total  ') + ' │ │ MRR    │ │ ' + (G ? 'チャーン' : 'Churn ') + ' │ │ ' + (G ? 'アクティブ' : 'Active ') + '│  │\n';
+d += '│  💰 ' + (G ? '課金' : 'Billing') + '  │  │ 12,450 │ │ $48K   │ │ 2.1%  │ │ 87%   │  │\n';
+d += '│  🎫 ' + (G ? 'チケット' : 'Tickets') + '│  └────────┘ └────────┘ └────────┘ └────────┘  │\n';
+d += '│  ⚙️ ' + (G ? '設定' : 'Settings') + '  │  📈 ' + (G ? '週次トレンド (折れ線グラフ)' : 'Weekly Trend (line chart)') + '               │\n';
+d += '│          │  ┌───────────────────────────────────────────┐  │\n';
+d += '│          │  │  [Chart.js / Recharts Line Chart]         │  │\n';
+d += '│          │  └───────────────────────────────────────────┘  │\n';
+d += '│          │  📋 ' + (G ? '最近のアクティビティ' : 'Recent Activity') + '   ⚠️ ' + (G ? 'SLAアラート' : 'SLA Alerts') + '         │\n';
+d += '└──────────┴──────────────────────────────────────────────────┘\n';
+d += '```\n\n';
+// KPI Card definitions
+d += G ? '## 📊 KPIカード定義\n\n' : '## 📊 KPI Card Definitions\n\n';
+Object.entries(ADMIN_DASHBOARD_SPECS).forEach(function(entry) {
+var spec = entry[1];
+d += '### ' + (G ? spec.category_ja : spec.category) + '\n\n';
+d += G ? '| ウィジェット | クエリ/計算式 | 閾値/警告 |\n|------------|-------------|----------|\n' :
+'| Widget | Query / Formula | Threshold / Alert |\n|--------|-----------------|-------------------|\n';
+spec.widgets_ja.forEach(function(w, i) {
+var we = spec.widgets_en[i] || w;
+d += '| ' + (G ? w : we) + ' | ' + (G ? '`SELECT COUNT(*) FROM ...`' : '`SELECT COUNT(*) FROM ...`') + ' | — |\n';
+});
+d += '\n';
+});
+// Weekly trends chart spec
+d += G ? '## 📈 週次トレンドチャート仕様\n\n' : '## 📈 Weekly Trend Chart Specification\n\n';
+d += '```typescript\n';
+d += '// Recharts ' + (G ? 'ライン チャート設定' : 'Line Chart Config') + '\n';
+d += 'const weeklyTrendConfig = {\n';
+d += '  dataKey: \'date\',\n';
+d += '  lines: [\n';
+d += '    { dataKey: \'new_users\', color: \'#4f46e5\', name: \'' + (G ? '新規ユーザー' : 'New Users') + '\' },\n';
+d += '    { dataKey: \'active_users\', color: \'#22c55e\', name: \'' + (G ? 'アクティブユーザー' : 'Active Users') + '\' },\n';
+d += '    { dataKey: \'mrr\', color: \'#f59e0b\', name: \'MRR ($)\' }\n';
+d += '  ],\n';
+d += '  timeRange: \'last_12_weeks\',\n';
+d += '  refreshInterval: 300 // ' + (G ? '5分ごと' : 'every 5 min') + '\n';
+d += '};\n```\n\n';
+// User workload analytics
+d += G ? '## 👥 ユーザー作業量分析\n\n' : '## 👥 User Workload Analytics\n\n';
+d += G ? '| メトリクス | 説明 | アクション |\n|-----------|------|----------|\n' :
+'| Metric | Description | Action |\n|--------|-------------|--------|\n';
+var workload = G ? [
+['上位承認者', '承認待ち件数が最も多い担当者', '負荷分散・委任推奨'],
+['ボトルネック特定', '平均待機時間が長いステップ', 'SLA見直し・担当者追加'],
+['期限超過率', 'SLA違反の割合 (目標<5%)', 'エスカレーション設定見直し'],
+['非アクティブメンバー', '30日間ログインなし', 'リテンションキャンペーン']
+] : [
+['Top approvers', 'Users with most pending approvals', 'Load balance / suggest delegation'],
+['Bottleneck identification', 'Steps with longest avg wait time', 'Revise SLA / add staff'],
+['SLA breach rate', 'Ratio of SLA violations (target <5%)', 'Review escalation settings'],
+['Inactive members', '30d no login', 'Retention campaign']
+];
+workload.forEach(function(w) { d += '| ' + w.join(' | ') + ' |\n'; });
+d += '\n';
+// Stale item alerts
+d += G ? '## ⚠️ 滞留アイテムアラート\n\n' : '## ⚠️ Stale Item Alerts\n\n';
+var staleItems = G ? [
+'承認待ち 48h超 → 承認者と申請者に自動リマインダー',
+'チケット未対応 24h超 → 管理者にSlack通知',
+'期限切れ招待 → 管理画面でバッジ表示 (自動再送オプション付き)',
+'MRRダウン 10%超 → アラートメール + 原因分析レポート生成'
+] : [
+'Approval pending > 48h → auto-reminder to approver and requester',
+'Ticket unassigned > 24h → Slack notify to manager',
+'Expired invites → badge in admin panel (with auto-resend option)',
+'MRR drop > 10% → alert email + cause analysis report'
+];
+staleItems.forEach(function(s) { d += '- ' + s + '\n'; });
+d += '\n';
+// Role-based dashboard views
+d += G ? '## 🔐 ロールベース ダッシュボードビュー\n\n' : '## 🔐 Role-based Dashboard Views\n\n';
+d += G ? '| 表示要素 | Owner | Admin | Manager | Member |\n|---------|-------|-------|---------|--------|\n' :
+'| Element | Owner | Admin | Manager | Member |\n|---------|-------|-------|---------|--------|\n';
+var views = G ? [
+['課金・MRR', '✅', '👁️ 読込', '❌', '❌'],
+['ユーザー管理', '✅', '✅', '👁️ 自チームのみ', '❌'],
+['監査ログ', '✅', '✅', '❌', '❌'],
+['SLAダッシュボード', '✅', '✅', '✅', '❌'],
+['自分のチケット', '✅', '✅', '✅', '✅']
+] : [
+['Billing / MRR', '✅', '👁️ Read', '❌', '❌'],
+['User management', '✅', '✅', '👁️ Own team', '❌'],
+['Audit log', '✅', '✅', '❌', '❌'],
+['SLA dashboard', '✅', '✅', '✅', '❌'],
+['Own tickets', '✅', '✅', '✅', '✅']
+];
+views.forEach(function(v) { d += '| ' + v.join(' | ') + ' |\n'; });
+return d;
+}
+
+function gen76(G, domain, orgModel, isMultiTenant, a, pn) {
+var d = G ? '# エンタープライズコンポーネントカタログ — ' + pn + '\n\n' :
+'# Enterprise Component Catalog — ' + pn + '\n\n';
+d += G ? '> 8つのエンタープライズUIコンポーネント仕様。Props・バリアント・A11y・フレームワーク対応。\n\n' :
+'> 8 enterprise UI component specifications. Props, Variants, A11y, Framework mapping.\n\n';
+// Component specs
+d += G ? '## 🧩 コンポーネント仕様\n\n' : '## 🧩 Component Specifications\n\n';
+Object.entries(ENTERPRISE_COMPONENTS).forEach(function(entry) {
+var name = entry[0]; var comp = entry[1];
+d += '### `<' + name + '>`\n\n';
+d += G ? '**Props:**\n\n' : '**Props:**\n\n';
+comp.props_ja.forEach(function(p) { d += '- `' + p + '`\n'; });
+d += '\n';
+d += G ? '**バリアント:**\n\n' : '**Variants:**\n\n';
+comp.variants_ja.forEach(function(v) { d += '- ' + v + '\n'; });
+d += '\n';
+d += G ? '**アクセシビリティ:**\n\n' : '**Accessibility:**\n\n';
+comp.a11y_ja.forEach(function(a) { d += '- ' + a + '\n'; });
+d += '\n';
+d += G ? '**フレームワーク対応:** ' + comp.framework + '\n\n' :
+'**Framework mapping:** ' + comp.framework + '\n\n';
+d += '---\n\n';
+});
+// Composition patterns
+d += G ? '## 🔧 コンポジションパターン\n\n' : '## 🔧 Composition Patterns\n\n';
+d += '```tsx\n';
+d += '// ' + (G ? '承認管理ページの組み合わせ例' : 'Approval management page composition') + '\n';
+d += 'export function ApprovalPage() {\n';
+d += '  return (\n';
+d += '    <OrgSwitcher orgs={orgs} current={current} onChange={switchOrg} />\n';
+d += '    <DataTable\n';
+d += '      data={approvals}\n';
+d += '      columns={approvalColumns}\n';
+d += '      sortable filterable paginated\n';
+d += '      bulkActions={[{ label: \'' + (G ? '一括承認' : 'Bulk Approve') + '\', action: bulkApprove }]}\n';
+d += '    />\n';
+d += '    <ApprovalBar\n';
+d += '      request={selected}\n';
+d += '      onApprove={approve}\n';
+d += '      onReject={reject}\n';
+d += '      currentUserRole={userRole}\n';
+d += '    />\n';
+d += '    <NotificationBell count={unread} items={notifications} onRead={markRead} />\n';
+d += '  );\n';
+d += '}\n```\n\n';
+// MVP → Pro → Enterprise roadmap
+d += G ? '## 🗺️ MVP → Pro → Enterprise コンポーネントロードマップ\n\n' :
+'## 🗺️ MVP → Pro → Enterprise Component Roadmap\n\n';
+d += G ? '| コンポーネント | MVP | Pro | Enterprise |\n|-------------|-----|-----|------------|\n' :
+'| Component | MVP | Pro | Enterprise |\n|-----------|-----|-----|------------|\n';
+var roadmap = [
+['DataTable', G ? '基本テーブル' : 'Basic table', G ? 'ソート+フィルタ' : 'Sort + filter', G ? 'バーチャルスクロール+一括操作' : 'Virtual scroll + bulk ops'],
+['StatusBadge', G ? '色+テキスト' : 'Color + text', G ? '全ステータス+アイコン' : 'All statuses + icon', G ? 'カスタムステータス+API連携' : 'Custom statuses + API'],
+['ApprovalBar', G ? 'シンプル承認' : 'Simple approve', G ? '理由入力+通知' : 'Reason + notify', G ? 'マルチ承認+委任' : 'Multi-approver + delegation'],
+['OrgSwitcher', G ? 'なし' : 'N/A', G ? '組織切替' : 'Org switch', G ? '組織作成+招待' : 'Create org + invite'],
+['AuditTimeline', G ? 'なし' : 'N/A', G ? '基本ログ' : 'Basic log', G ? 'フィルタ+エクスポート' : 'Filter + export'],
+['InviteManager', G ? 'メール招待のみ' : 'Email invite only', G ? 'ロール選択' : 'Role selection', G ? 'CSV一括招待+SSO' : 'CSV bulk invite + SSO']
+];
+roadmap.forEach(function(r) { d += '| ' + r.join(' | ') + ' |\n'; });
+d += '\n';
+// Real-time update patterns
+d += G ? '## ⚡ リアルタイム更新パターン\n\n' : '## ⚡ Real-time Update Patterns\n\n';
+d += '```typescript\n';
+d += '// Supabase Realtime ' + (G ? '統合例 (NotificationBell)' : 'integration (NotificationBell)') + '\n';
+d += 'useEffect(() => {\n';
+d += '  const sub = supabase\n';
+d += '    .channel(\'notifications\')\n';
+d += '    .on(\'postgres_changes\', {\n';
+d += '      event: \'INSERT\',\n';
+d += '      schema: \'public\',\n';
+d += '      table: \'notifications\',\n';
+d += '      filter: \'user_id=eq.\' + userId\n';
+d += '    }, (payload) => {\n';
+d += '      setNotifications(prev => [payload.new, ...prev]);\n';
+d += '    })\n';
+d += '    .subscribe();\n';
+d += '  return () => supabase.removeChannel(sub);\n';
+d += '}, [userId]);\n```\n\n';
+// Dark/Light mode adaptation
+d += G ? '## 🎨 ダーク/ライトモード対応\n\n' : '## 🎨 Dark / Light Mode Adaptation\n\n';
+d += '```css\n';
+d += '/* ' + (G ? 'ステータスバッジ カラーシステム' : 'Status badge color system') + ' */\n';
+d += ':root {\n';
+d += '  --status-pending: hsl(45 90% 50%);\n  --status-approved: hsl(142 70% 45%);\n';
+d += '  --status-rejected: hsl(0 72% 51%);\n  --status-active: hsl(221 83% 53%);\n';
+d += '}\n[data-theme="dark"] {\n';
+d += '  --status-pending: hsl(45 80% 60%);\n  --status-approved: hsl(142 60% 55%);\n';
+d += '  --status-rejected: hsl(0 65% 62%);\n  --status-active: hsl(221 75% 65%);\n}\n```\n';
+return d;
+}
+
+function genPillar19_EnterpriseSaaS(a, pn) {
+var G = S.genLang === 'ja';
+var domain = detectDomain(a.purpose || '') || 'saas';
+var orgModel = a.org_model || '';
+var mvpFeatures = a.mvp_features || '';
+var isMultiTenant = /マルチ|multi|RLS|組織|org/i.test(orgModel) ||
+/マルチテナント|Multi-tenant|RBAC/i.test(mvpFeatures);
+// Only generate for relevant domains
+var relevantDomain = /saas|analytics|hr|collab|tool|automation|fintech|legal|ec|marketplace|logistics|insurance/i.test(domain);
+if (!relevantDomain && !isMultiTenant) return;
+S.files['docs/73_enterprise_architecture.md'] = gen73(G, domain, orgModel, isMultiTenant, a, pn);
+S.files['docs/74_workflow_engine.md'] = gen74(G, domain, orgModel, isMultiTenant, a, pn);
+S.files['docs/75_admin_dashboard_spec.md'] = gen75(G, domain, orgModel, isMultiTenant, a, pn);
+S.files['docs/76_enterprise_components.md'] = gen76(G, domain, orgModel, isMultiTenant, a, pn);
+}
 function genDocs21(a,pn){
 const G=S.genLang==='ja';
 const date=new Date().toISOString().split('T')[0];
@@ -14710,22 +15405,22 @@ ec:{core:['User','Product','Category','Order','Cart','Payment','Review'],warn:['
 marketplace:{core:['User','Listing','Order','Review','Message','Category'],warn:['Course','Lesson'],suggest:{}},
 community:{core:['User','Post','Comment','Tag','Like','Follow'],warn:['Product','Order','Cart','Payment'],suggest:{Product:'Resource',Order:'Invitation'}},
 content:{core:['User','Post','Category','Tag','Comment','Media'],warn:['Product','Order','Cart'],suggest:{Product:'Content',Order:'Subscription'}},
-analytics:{core:['User','Dashboard','DataSource','Widget','Report','Chart'],warn:['Post','Comment','Product'],suggest:{}},
+analytics:{core:['User','Organization','OrgMember','Dashboard','DataSource','Widget','Report','Chart'],warn:['Post','Comment','Product'],suggest:{}},
 booking:{core:['User','Service','Booking','TimeSlot','Review','Payment'],warn:['Post','Cart','Lesson'],suggest:{Product:'Service',Order:'Booking'}},
-saas:{core:['User','Workspace','Project','Task','Subscription','Invoice'],warn:[],suggest:{Product:'Plan',Order:'Subscription'}},
+saas:{core:['User','Organization','OrgMember','Workspace','Project','Task','Subscription','Invoice'],warn:[],suggest:{Product:'Plan',Order:'Subscription'}},
 portfolio:{core:['User','Project','Skill','Experience','ContactMessage'],warn:['Product','Order','Cart','Payment'],suggest:{}},
-tool:{core:['User','Workspace','Task','Setting','Log'],warn:['Product','Order','Cart'],suggest:{}},
+tool:{core:['User','Organization','OrgMember','Workspace','Task','Setting','Log'],warn:['Product','Order','Cart'],suggest:{}},
 iot:{core:['User','Device','Sensor','SensorData','Alert','Dashboard'],warn:['Product','Order','Cart'],suggest:{}},
 realestate:{core:['User','Property','Category','Viewing','Contract','RealEstateAgent'],warn:['Product','Order','Cart'],suggest:{Product:'Property',Order:'Viewing'}},
 legal:{core:['User','Contract','Template','Review','Client','Document'],warn:['Product','Order','Cart'],suggest:{}},
-hr:{core:['User','JobPosting','Applicant','Interview','Evaluation','Department'],warn:['Product','Order','Cart'],suggest:{}},
+hr:{core:['User','Organization','OrgMember','JobPosting','Applicant','Interview','Evaluation','Department'],warn:['Product','Order','Cart'],suggest:{}},
 fintech:{core:['User','Account','Transaction','Transfer','Card','Statement'],warn:['Post','Comment','Course'],suggest:{}},
 health:{core:['User','Patient','Doctor','Appointment','MedicalRecord','Prescription'],warn:['Product','Order','Cart'],suggest:{Product:'Service',Order:'Appointment'}},
 ai:{core:['User','Conversation','Message','Prompt','Agent','Tool','ApiUsage'],warn:['Product','Order','Cart'],suggest:{}},
-automation:{core:['User','Workflow','Trigger','Action','Execution','Connection','Log'],warn:['Product','Order'],suggest:{}},
+automation:{core:['User','Organization','OrgMember','Workflow','Trigger','Action','Execution','Connection','Log'],warn:['Product','Order'],suggest:{}},
 event:{core:['User','Event','Ticket','Attendee','Venue','Session','Survey'],warn:['Product','Order'],suggest:{Product:'Ticket',Order:'Booking'}},
 gamify:{core:['User','Badge','Challenge','Reward','Leaderboard','PointLog','Achievement'],warn:['Product','Order','Cart'],suggest:{}},
-collab:{core:['User','Document','Workspace','Comment','Version','Permission','Activity'],warn:['Product','Order','Cart'],suggest:{}},
+collab:{core:['User','Organization','OrgMember','Document','Workspace','Comment','Version','Permission','Activity'],warn:['Product','Order','Cart'],suggest:{}},
 devtool:{core:['User','ApiKey','Project','RequestLog','Webhook','Documentation'],warn:['Product','Order','Cart'],suggest:{}},
 creator:{core:['User','Content','Subscription','Payment','Tier','Comment','Tip'],warn:['Order','Cart'],suggest:{}},
 newsletter:{core:['User','Post','Subscriber','Campaign','Analytics','Plan'],warn:['Product','Order','Cart'],suggest:{Product:'Plan',Order:'Subscription'}},
@@ -14806,6 +15501,10 @@ AuditLog:[_U,'action:VARCHAR(100):NOT NULL:操作:Action','resource_type:VARCHAR
 Skill:[_CAT,'level:INT:DEFAULT 0:レベル:Level'],
 Experience:['user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID','company:VARCHAR(255)::企業名:Company','title:VARCHAR(255)::役職:Title','start_date:DATE::開始日:Start date','end_date:DATE::終了日:End date','description:TEXT::説明:Description'],
 ContactMessage:['email:VARCHAR(255):NOT NULL:メールアドレス:Email','subject:VARCHAR(255)::件名:Subject','body:TEXT:NOT NULL:本文:Body','status:VARCHAR(20):DEFAULT \'unread\':対応状態:Status'],
+// ── Enterprise/Multi-tenant ──
+Organization:['slug:VARCHAR(100):UNIQUE NOT NULL:スラグ:Slug','status:VARCHAR(20):DEFAULT \'active\':ステータス:Status','plan:VARCHAR(20):DEFAULT \'free\':プラン:Plan','logo_url:TEXT::ロゴURL:Logo URL'],
+OrgMember:['org_id:UUID:FK(Organization) NOT NULL:組織ID:Organization ID',_U,'role:VARCHAR(20):DEFAULT \'member\':ロール:Role','joined_at:TIMESTAMP:DEFAULT now():参加日:Joined at'],
+OrgInvite:['org_id:UUID:FK(Organization) NOT NULL:組織ID:Organization ID','email:VARCHAR(255):NOT NULL:メール:Email','role:VARCHAR(20):DEFAULT \'member\':ロール:Role','token:UUID:DEFAULT gen_random_uuid():トークン:Token','expires_at:TIMESTAMP:NOT NULL:期限:Expires at','redeemed_at:TIMESTAMP::利用日:Redeemed at'],
 // ── SaaS/Workspace ──
 Team:['workspace_id:UUID:FK(Workspace) NOT NULL:ワークスペースID:Workspace ID','role:VARCHAR(20):DEFAULT \'member\':チーム権限:Team role'],
 Activity:[_U,'action:VARCHAR(100):NOT NULL:操作種別:Action type','resource_type:VARCHAR(50)::対象リソース:Resource type','resource_id:UUID::対象ID:Resource ID',_M],
@@ -15271,6 +15970,11 @@ if(has('Hotel')&&has('Booking')) rels.push('Hotel 1 ──N Booking');
 if(has('Customer')&&has('Policy')) rels.push('Customer 1 ──N Policy');
 if(has('Customer')&&has('Quote')) rels.push('Customer 1 ──N Quote');
 if(has('Policy')&&has('Claim')) rels.push('Policy 1 ──N Claim');
+// Enterprise/Multi-tenant
+if(has('Organization')&&has('OrgMember')) rels.push('Organization 1 ──N OrgMember');
+if(has('Organization')&&has('OrgInvite')) rels.push('Organization 1 ──N OrgInvite');
+if(has('User')&&has('OrgMember')) rels.push('User 1 ──N OrgMember');
+if(has('Organization')&&has('Workspace')) rels.push('Organization 1 ──N Workspace');
 return {domain,warnings,suggestions,relationships:rels};
 }
 // ── Feature Detail Dictionary ──
@@ -17554,6 +18258,14 @@ maturity:{icon:'📊',label:_ja?'AI成熟度レビュー':'AI Maturity Review',d
 sys:_ja?'あなたは組織のAI採用・成熟度向上のコンサルタントです。docs/66_ai_maturity_assessment.mdの5次元評価マトリクスを基に、現在のAI成熟度を診断し、次のレベルへの移行計画を策定します。':'You are a consultant for organizational AI adoption and maturity improvement. Diagnose current AI maturity and develop a transition plan to the next level based on the 5-dimension evaluation matrix from docs/66_ai_maturity_assessment.md.',
 prompt:_ja?'以下の手順で実行:\n1. docs/66_ai_maturity_assessment.mdの現在の成熟度レベル（Level 1/2/3）と特徴を確認\n2. 5次元評価マトリクス（プロンプト設計力・AI協調力・品質保証・チームプラクティス・効果測定）で現在のチーム状況を自己評価（各次元1-3点）\n3. 各次元のギャップ分析（現状 vs 目標レベル）を実施\n4. 段階的採用ロードマップ（フェーズ1→2→3）の現在地を特定\n5. 次レベルへの最優先アクション3つを提案（工数・効果・リスクを評価）\n6. docs/68_prompt_kpi_dashboard.mdのKPI指標と照合し、測定可能な成功基準を設定':'Follow these steps:\n1. Review current maturity level (Level 1/2/3) and characteristics from docs/66_ai_maturity_assessment.md\n2. Self-assess current team status on 5-dimension evaluation matrix (prompt design, AI collaboration, QA, team practices, measurement): 1-3 points each\n3. Conduct gap analysis for each dimension (current vs target level)\n4. Identify current position in phased adoption roadmap (Phase 1→2→3)\n5. Propose top 3 priority actions for next level (evaluate effort, effect, and risk)\n6. Set measurable success criteria by cross-referencing KPI metrics in docs/68_prompt_kpi_dashboard.md',
 fmt:_ja?'## 現状診断\n| 次元 | 現状 | 目標 | ギャップ | 優先度 |\n|------|------|------|---------|--------|\n| プロンプト設計力 | Level ? | Level ? | ... | P? |\n\n**総合成熟度**: Level ? → Level ?\n\n## 次レベルへの3大アクション\n1. **アクション1**: ... (工数: M, 効果: 高)\n2. **アクション2**: ...\n3. **アクション3**: ...\n\n## 成功KPI\n| KPI | 現状値 | 目標値 | 計測方法 |':'## Current Assessment\n| Dimension | Current | Target | Gap | Priority |\n|-----------|---------|--------|-----|----------|\n| Prompt Design | Level ? | Level ? | ... | P? |\n\n**Overall Maturity**: Level ? → Level ?\n\n## Top 3 Actions for Next Level\n1. **Action 1**: ... (Effort: M, Effect: High)\n2. **Action 2**: ...\n3. **Action 3**: ...\n\n## Success KPIs\n| KPI | Current | Target | Measurement |'},
+enterprise_arch:{icon:'🏢',label:_ja?'エンタープライズアーキ':'Enterprise Arch Review',desc:_ja?'docs/73でマルチテナント・RLS・組織モデルを検証':'Verify multi-tenant, RLS, org model from docs/73',
+sys:_ja?'あなたはエンタープライズSaaSアーキテクトです。マルチテナント設計、RLSポリシー、組織データモデルのレビューを専門とします。docs/73_enterprise_architecture.mdを参照し、セキュリティ・スケーラビリティ・権限設計を総合評価します。':'You are an enterprise SaaS architect specializing in multi-tenant design, RLS policies, and org data models. Review the architecture comprehensively using docs/73_enterprise_architecture.md.',
+prompt:_ja?'以下の手順でエンタープライズアーキテクチャをレビューしてください:\n\n1. **テナント分離評価** (docs/73 §テナント分離戦略): 採用パターン（RLS/Schema/DB）の適切性を判断。テナント数・規制要件・コストの観点からトレードオフを評価。\n\n2. **組織データモデル検証**: Organization/OrgMember/OrgInviteのER関係が正しいか確認。FK整合性・インデックス・RLSポリシーの漏れを指摘。\n\n3. **権限マトリクス監査** (docs/73 §権限マトリクス): Owner/Admin/Member/Viewerの4階層が適切に分離されているか。最小権限原則の適用を確認。\n\n4. **RLSポリシーレビュー** (docs/43_security_intelligence.md §RLS): 全テーブルでorg_idフィルタが適用されているか。クロステナントアクセスの可能性を洗い出し。\n\n5. **スケーリング判断**: 現在のテナント数予測から最適なアーキテクチャパターンを推奨。':'Review the enterprise architecture following these steps:\n\n1. **Tenant isolation assessment** (docs/73 §Tenant Isolation): Judge appropriateness of selected pattern (RLS/Schema/DB). Evaluate trade-offs from tenant count, regulatory, and cost perspectives.\n\n2. **Org data model validation**: Verify ER relationships for Organization/OrgMember/OrgInvite. Identify FK integrity issues, missing indexes, and RLS policy gaps.\n\n3. **Permission matrix audit** (docs/73 §Permission Matrix): Verify 4-tier Owner/Admin/Member/Viewer separation. Confirm least-privilege principle application.\n\n4. **RLS policy review** (docs/43 §RLS): Check org_id filter applied to all tables. Surface any cross-tenant access risks.\n\n5. **Scaling recommendation**: Recommend optimal architecture pattern based on projected tenant count.',
+fmt:_ja?'## テナント分離評価\n| 評価項目 | 現状 | 推奨 | 優先度 |\n|---------|------|------|--------|\n| 分離パターン | RLS/Schema/DB | ... | P? |\n\n## 組織ERモデル問題点\n| テーブル | 問題 | 修正案 |\n\n## 権限マトリクス違反\n| リソース | 現状 | 正しい設定 |\n\n## RLSポリシー漏れ\n| テーブル | 問題 | 修正SQL |':'## Tenant Isolation Assessment\n| Item | Current | Recommended | Priority |\n|------|---------|-------------|----------|\n| Pattern | RLS/Schema/DB | ... | P? |\n\n## Org ER Model Issues\n| Table | Issue | Fix |\n\n## Permission Matrix Violations\n| Resource | Current | Correct |\n\n## RLS Policy Gaps\n| Table | Issue | Fix SQL |'},
+workflow_audit:{icon:'📋',label:_ja?'ワークフロー監査':'Workflow Process Audit',desc:_ja?'docs/74で承認・チケット・注文フローのステートマシンを検証':'Audit approval/ticket/order state machines from docs/74',
+sys:_ja?'あなたはビジネスプロセス設計とワークフローエンジンの専門家です。docs/74_workflow_engine.mdのステートマシン定義・承認チェーン・SLAトラッキングをレビューし、実装の完全性と正確性を評価します。':'You are a business process design and workflow engine expert. Review state machine definitions, approval chains, and SLA tracking in docs/74_workflow_engine.md to evaluate implementation completeness and accuracy.',
+prompt:_ja?'以下の手順でワークフロープロセスを監査してください:\n\n1. **ステートマシン完全性チェック** (docs/74): 全ワークフロー（承認/チケット/注文等）の状態遷移が網羅されているか確認。デッドロック・孤立状態・欠損遷移を特定。\n\n2. **承認チェーン適切性評価**: 選択された承認パターン（単一/順次/並列/委任/閾値）がビジネス要件に合っているか判断。\n\n3. **SLAトラッキング実装確認**: 各ワークフローのSLA期限設定・エスカレーション通知・自動リマインダーが実装されているか確認。\n\n4. **通知トリガー完全性**: 状態変化ごとの通知先・チャネル・タイミングが定義されているか確認。未定義のトリガーを指摘。\n\n5. **ドメイン固有最適化**: detectDomain()の結果に基づき、ドメイン特有のワークフロー要件が反映されているか評価。':'Audit workflow processes following these steps:\n\n1. **State machine completeness** (docs/74): Verify all workflow state transitions are covered (approval/ticket/order etc). Identify deadlocks, orphan states, and missing transitions.\n\n2. **Approval chain appropriateness**: Determine if selected pattern (single/sequential/parallel/delegation/threshold) matches business requirements.\n\n3. **SLA tracking implementation**: Verify SLA deadline settings, escalation notifications, and auto-reminders are implemented for each workflow.\n\n4. **Notification trigger completeness**: Confirm notification recipients, channels, and timing are defined for each state change. Flag undefined triggers.\n\n5. **Domain-specific optimization**: Evaluate if domain-specific workflow requirements are reflected based on detectDomain() result.',
+fmt:_ja?'## ステートマシン問題\n| ワークフロー | 問題種別 | 詳細 | 修正提案 |\n|------------|---------|------|--------|\n\n## SLAギャップ\n| ワークフロー | 設定SLA | 推奨SLA | 差異 |\n\n## 未定義通知トリガー\n| 状態変化 | 本来の通知先 | 実装状況 |\n\n## 優先修正アクション\n1. P0: ...\n2. P1: ...\n3. P2: ...':'## State Machine Issues\n| Workflow | Issue Type | Detail | Fix |\n|---------|-----------|--------|-----|\n\n## SLA Gaps\n| Workflow | Set SLA | Recommended | Gap |\n\n## Missing Notification Triggers\n| State Change | Expected Recipients | Status |\n\n## Priority Fix Actions\n1. P0: ...\n2. P1: ...\n3. P2: ...'},
 }:{
 review:{icon:'🔍',label:'Spec Review',desc:'Find contradictions, gaps & improvements',
 sys:'You are an experienced tech lead and SDD architect.',
@@ -17742,7 +18454,7 @@ h+=`</div>`;
 h+=`<div class="empty-preview-sm">${_ja?'⚠️ まず質問に回答してファイルを生成してください':'⚠️ Answer questions first to generate files'}</div>`;
 }
 /* ── Prompt templates (ordered by dev lifecycle) ── */
-const templateOrder=['review','arch','reverse','implement','api','i18n','test','qa','security','a11y','perf','metrics','refactor','debug','incident','ops','docs','migrate','cicd','growth','strategy','methodology','brainstorm','industry','nextgen','cognitive','genome','maturity','react_debug','prompt_ops','risk','onboard'];
+const templateOrder=['review','arch','reverse','implement','api','i18n','test','qa','security','a11y','perf','metrics','refactor','debug','incident','ops','docs','migrate','cicd','growth','strategy','methodology','brainstorm','industry','nextgen','cognitive','genome','maturity','react_debug','prompt_ops','enterprise_arch','workflow_audit','risk','onboard'];
 h+=`<div class="launch-templates"><h4>${_ja?'📋 プロンプトテンプレート':'📋 Prompt Templates'}</h4>`;
 templateOrder.forEach(key=>{
 const t=PT[key];
@@ -18460,15 +19172,15 @@ const o=$('helpOverlay');o.classList.add('show');
 pushModal(o,()=>{o.classList.remove('show');releaseFocus(o);});
 const _ja=S.lang==='ja';
 const MANUAL=[
-{id:'overview',title:_ja?'概要':'Overview',body:_ja?'<h2>DevForge v9.0 とは</h2><p>質問に答えるだけで、プロジェクトに必要な126+ファイルを自動生成するAI駆動開発プラットフォームです。'+_TECH_COUNT+'テクノロジー対応。</p>'+
-'<h3>18の柱</h3><table><tr><th>柱</th><th>内容</th><th>ファイル数</th></tr><tr><td>①SDD統合</td><td>Spec Kit互換の仕様書</td><td>5</td></tr><tr><td>②DevContainer</td><td>Docker開発環境</td><td>4</td></tr><tr><td>③MCP設定</td><td>Model Context Protocol</td><td>3</td></tr><tr><td>④AIルール</td><td>10+ツール設定+スキル</td><td>10+</td></tr>'+
-'<tr><td>⑤並列探索</td><td>スタック比較+おすすめランキング</td><td>UI</td></tr><tr><td>⑥Dashboard</td><td>コンテキスト可視化+技術DB</td><td>UI</td></tr><tr><td>⑦ロードマップ</td><td>学習パス（インタラクティブ）</td><td>9+UI</td></tr><tr><td>⑧AIランチャー</td><td>プロンプトテンプレート+トークン推定</td><td>UI</td></tr><tr><td>⑨デザインシステム</td><td>デザイントークン+シーケンス図</td><td>2</td></tr><tr><td>⑩リバースEng</td><td>ゴール逆算型プランニング</td><td>2</td></tr><tr><td>⑪実装ガイド</td><td>業種別実装パターン+AI運用手順</td><td>3</td></tr><tr><td>⑫セキュリティ</td><td>OWASP・STRIDE・コンプライアンス</td><td>5</td></tr><tr><td>⑬戦略インテリジェンス</td><td>業種別設計図・技術レーダー・ステークホルダー戦略・先端シナリオ</td><td>5</td></tr><tr><td>⑭運用インテリジェンス</td><td>Ops Plane設計・12 Ops Capabilities・SLO/SLI</td><td>3</td></tr><tr><td>⑮未来戦略</td><td>市場ポジショニング・UX戦略・エコシステム・規制対応</td><td>4</td></tr><tr><td>⑯開発IQ</td><td>最適手法選定・AIプロンプトプレイブック・業界特化・次世代UX</td><td>4</td></tr><tr><td>⑰プロンプトゲノム</td><td>CRITERIA 8軸スコア・AI成熟度・シナジーマトリクス・KPIダッシュボード</td><td>4</td></tr><tr><td>⑱Prompt Ops</td><td>ReAct自律ワークフロー・LLMOpsダッシュボード・Prompt CI/CD・[META]レジストリ</td><td>4</td></tr></table>'+
-'<p>+ docs（72仕様書）+ 共通ファイル（4）= <strong>126+ファイル</strong></p>':'<h2>What is DevForge v9.0?</h2><p>An AI-driven dev platform that auto-generates 126+ project files just by answering questions. Supports '+_TECH_COUNT+' technologies.</p>'+
-'<h3>18 Pillars</h3><table><tr><th>Pillar</th><th>Content</th><th>Files</th></tr><tr><td>①SDD</td><td>Spec Kit compatible specs</td><td>5</td></tr><tr><td>②DevContainer</td><td>Docker dev environment</td><td>4</td></tr><tr><td>③MCP</td><td>Model Context Protocol</td><td>3</td></tr><tr><td>④AI Rules</td><td>10+ tool configs + skills</td><td>10+</td></tr>'+
-'<tr><td>⑤Explorer</td><td>Stack comparison + recommendation</td><td>UI</td></tr><tr><td>⑥Dashboard</td><td>Context visualization + Tech DB</td><td>UI</td></tr><tr><td>⑦Roadmap</td><td>Learning path (interactive)</td><td>9+UI</td></tr><tr><td>⑧AI Launcher</td><td>Prompt templates + token estimation</td><td>UI</td></tr><tr><td>⑨Design System</td><td>Design tokens + Sequence diagrams</td><td>2</td></tr><tr><td>⑩Reverse Eng</td><td>Goal-driven reverse planning</td><td>2</td></tr><tr><td>⑪Impl Guide</td><td>Domain-specific impl patterns + AI runbook</td><td>3</td></tr><tr><td>⑫Security</td><td>OWASP, STRIDE, Compliance</td><td>5</td></tr><tr><td>⑬Strategic Intelligence</td><td>Industry blueprint, Tech radar, Stakeholder strategy, Advanced scenarios</td><td>5</td></tr><tr><td>⑭Ops Intelligence</td><td>Ops Plane design, 12 Ops Capabilities, SLO/SLI</td><td>3</td></tr><tr><td>⑮Future Strategy</td><td>Market positioning, UX strategy, Ecosystem, Regulatory</td><td>4</td></tr><tr><td>⑯Dev IQ</td><td>Optimal methodology, AI brainstorm playbook, Industry deep dive, Next-gen UX</td><td>4</td></tr><tr><td>⑰Prompt Genome</td><td>CRITERIA 8-axis scoring, AI maturity, Synergy matrix, KPI dashboard</td><td>4</td></tr><tr><td>⑱Prompt Ops</td><td>ReAct workflow, LLMOps dashboard, Prompt CI/CD, [META] registry</td><td>4</td></tr></table>'+
-'<p>+ docs (72 specs) + common (4) = <strong>126+ files</strong></p>'},
+{id:'overview',title:_ja?'概要':'Overview',body:_ja?'<h2>DevForge v9.0 とは</h2><p>質問に答えるだけで、プロジェクトに必要な130+ファイルを自動生成するAI駆動開発プラットフォームです。'+_TECH_COUNT+'テクノロジー対応。</p>'+
+'<h3>19の柱</h3><table><tr><th>柱</th><th>内容</th><th>ファイル数</th></tr><tr><td>①SDD統合</td><td>Spec Kit互換の仕様書</td><td>5</td></tr><tr><td>②DevContainer</td><td>Docker開発環境</td><td>4</td></tr><tr><td>③MCP設定</td><td>Model Context Protocol</td><td>3</td></tr><tr><td>④AIルール</td><td>10+ツール設定+スキル</td><td>10+</td></tr>'+
+'<tr><td>⑤並列探索</td><td>スタック比較+おすすめランキング</td><td>UI</td></tr><tr><td>⑥Dashboard</td><td>コンテキスト可視化+技術DB</td><td>UI</td></tr><tr><td>⑦ロードマップ</td><td>学習パス（インタラクティブ）</td><td>9+UI</td></tr><tr><td>⑧AIランチャー</td><td>プロンプトテンプレート+トークン推定</td><td>UI</td></tr><tr><td>⑨デザインシステム</td><td>デザイントークン+シーケンス図</td><td>2</td></tr><tr><td>⑩リバースEng</td><td>ゴール逆算型プランニング</td><td>2</td></tr><tr><td>⑪実装ガイド</td><td>業種別実装パターン+AI運用手順</td><td>3</td></tr><tr><td>⑫セキュリティ</td><td>OWASP・STRIDE・コンプライアンス</td><td>5</td></tr><tr><td>⑬戦略インテリジェンス</td><td>業種別設計図・技術レーダー・ステークホルダー戦略・先端シナリオ</td><td>5</td></tr><tr><td>⑭運用インテリジェンス</td><td>Ops Plane設計・12 Ops Capabilities・SLO/SLI</td><td>3</td></tr><tr><td>⑮未来戦略</td><td>市場ポジショニング・UX戦略・エコシステム・規制対応</td><td>4</td></tr><tr><td>⑯開発IQ</td><td>最適手法選定・AIプロンプトプレイブック・業界特化・次世代UX</td><td>4</td></tr><tr><td>⑰プロンプトゲノム</td><td>CRITERIA 8軸スコア・AI成熟度・シナジーマトリクス・KPIダッシュボード</td><td>4</td></tr><tr><td>⑱Prompt Ops</td><td>ReAct自律ワークフロー・LLMOpsダッシュボード・Prompt CI/CD・[META]レジストリ</td><td>4</td></tr><tr><td>⑲エンタープライズSaaS</td><td>マルチテナント設計・組織モデル・ワークフローエンジン・エンタープライズUIコンポーネント</td><td>4</td></tr></table>'+
+'<p>+ docs（76仕様書）+ 共通ファイル（4）= <strong>130+ファイル</strong></p>':'<h2>What is DevForge v9.0?</h2><p>An AI-driven dev platform that auto-generates 130+ project files just by answering questions. Supports '+_TECH_COUNT+' technologies.</p>'+
+'<h3>19 Pillars</h3><table><tr><th>Pillar</th><th>Content</th><th>Files</th></tr><tr><td>①SDD</td><td>Spec Kit compatible specs</td><td>5</td></tr><tr><td>②DevContainer</td><td>Docker dev environment</td><td>4</td></tr><tr><td>③MCP</td><td>Model Context Protocol</td><td>3</td></tr><tr><td>④AI Rules</td><td>10+ tool configs + skills</td><td>10+</td></tr>'+
+'<tr><td>⑤Explorer</td><td>Stack comparison + recommendation</td><td>UI</td></tr><tr><td>⑥Dashboard</td><td>Context visualization + Tech DB</td><td>UI</td></tr><tr><td>⑦Roadmap</td><td>Learning path (interactive)</td><td>9+UI</td></tr><tr><td>⑧AI Launcher</td><td>Prompt templates + token estimation</td><td>UI</td></tr><tr><td>⑨Design System</td><td>Design tokens + Sequence diagrams</td><td>2</td></tr><tr><td>⑩Reverse Eng</td><td>Goal-driven reverse planning</td><td>2</td></tr><tr><td>⑪Impl Guide</td><td>Domain-specific impl patterns + AI runbook</td><td>3</td></tr><tr><td>⑫Security</td><td>OWASP, STRIDE, Compliance</td><td>5</td></tr><tr><td>⑬Strategic Intelligence</td><td>Industry blueprint, Tech radar, Stakeholder strategy, Advanced scenarios</td><td>5</td></tr><tr><td>⑭Ops Intelligence</td><td>Ops Plane design, 12 Ops Capabilities, SLO/SLI</td><td>3</td></tr><tr><td>⑮Future Strategy</td><td>Market positioning, UX strategy, Ecosystem, Regulatory</td><td>4</td></tr><tr><td>⑯Dev IQ</td><td>Optimal methodology, AI brainstorm playbook, Industry deep dive, Next-gen UX</td><td>4</td></tr><tr><td>⑰Prompt Genome</td><td>CRITERIA 8-axis scoring, AI maturity, Synergy matrix, KPI dashboard</td><td>4</td></tr><tr><td>⑱Prompt Ops</td><td>ReAct workflow, LLMOps dashboard, Prompt CI/CD, [META] registry</td><td>4</td></tr><tr><td>⑲Enterprise SaaS</td><td>Multi-tenant design, Org model, Workflow engine, Enterprise UI components</td><td>4</td></tr></table>'+
+'<p>+ docs (76 specs) + common (4) = <strong>130+ files</strong></p>'},
 {id:'start',title:_ja?'はじめ方':'Getting Started',body:_ja?
-'<h2>はじめ方</h2><p>1. スキルレベルを選択（Beginner/Intermediate/Pro）<br>2. プロジェクト名を入力<br>3. テンプレート選択（任意・41種類）<br>4. Phase 1-3の質問に回答（スキップ＆後で回答可）<br>5. 生成ボタンで126+ファイル作成<br>6. ZIPダウンロードまたはPDF印刷</p>'+
+'<h2>はじめ方</h2><p>1. スキルレベルを選択（Beginner/Intermediate/Pro）<br>2. プロジェクト名を入力<br>3. テンプレート選択（任意・41種類）<br>4. Phase 1-3の質問に回答（スキップ＆後で回答可）<br>5. 生成ボタンで130+ファイル作成<br>6. ZIPダウンロードまたはPDF印刷</p>'+
 '<h3>UX機能</h3>'+
 '<p>• 🌱⚡🔥 スキルレベルで質問の選択肢が動的変化<br>• 🎯 41プリセットテンプレート<br>• ✎ 回答の編集（✎ボタン）<br>• ⏭️ スキップ＆後で回答<br>• 📊 複雑度分析（0-100スコア）<br>• 📁 プロジェクト管理（Ctrl+M）<br>• 🎙️ 音声入力<br>• ? 質問ごとのヘルプアイコン<br>• 🔀 ドラッグ&ドロップ優先度ソート</p>'+
 '<h3>V8 新機能</h3>'+
@@ -18476,10 +19188,10 @@ const MANUAL=[
 '<h3>V8.3 新機能</h3>'+
 '<p>• 📊 Mermaid図ライブレンダリング (ER図・画面遷移・ガント)<br>• 📝 OpenAPI準拠API仕様書<br>• ✅ テストケースマトリクス (機能×正常/異常)<br>• 📋 リリースチェックリスト (デプロイ先別動的生成)<br>• 🔨 WBS 3階層+工数見積り<br>• 🎯 プロンプトプレイブック (フェーズ別AI投入プロンプト集)<br>• 📎 GitHub Issues風タスク分解<br>• 📋 全ファイル結合コピー (AI一括投入用)</p>'+
 '<h3>V9 新機能</h3>'+
-'<p>• 🧪 品質インテリジェンスエンジン (業種別QA戦略・テストマトリクス・インシデント対応)<br>• 🎨 デザインシステム自動生成 (デザイントークン・シーケンス図)<br>• 🔄 リバースエンジニアリング (ゴール逆算型プランニング・32ドメイン対応)<br>• 🏗️ 実装インテリジェンス (業種別実装パターン・AI運用手順書・擬似コード)<br>• 🧠 AI開発OS (コンテキスト圧縮・ファイル選択マトリクス・サブエージェント分離)<br>• 🌐 32ドメイン対応 (AI, IoT, 不動産, 法務, 人事, 金融, 製造, 物流, 農業, エネルギー, メディア, 行政, 旅行, 保険 等を追加)<br>• 📦 126+ファイル生成 (docs 68種, AIルール12+, スキル8+)<br>• 🎯 41プリセット (CRM, SNS, 物流, アンケート, 求人 追加)<br>• 🏗️ 未来戦略インテリジェンス (市場ポジショニング・UX戦略・エコシステム・規制フォーサイト)<br>• 📄 CLAUDE.md 3-layer分割 (薄いルート + パス別ルール + 設定)<br>• 🧬 開発IQインテリジェンス ⑯ (32ドメイン×12手法のポリモーフィック開発戦略)<br>• 🧩 プロンプトゲノムエンジン ⑰ (CRITERIA 8軸品質スコア付きプロンプトDNA自動生成)<br>• 🔧 Prompt Engineering OS ⑱ (ReAct自律ワークフロー・LLMOpsダッシュボード・Prompt CI/CD・[META]レジストリ)</p>'+
+'<p>• 🧪 品質インテリジェンスエンジン (業種別QA戦略・テストマトリクス・インシデント対応)<br>• 🎨 デザインシステム自動生成 (デザイントークン・シーケンス図)<br>• 🔄 リバースエンジニアリング (ゴール逆算型プランニング・32ドメイン対応)<br>• 🏗️ 実装インテリジェンス (業種別実装パターン・AI運用手順書・擬似コード)<br>• 🧠 AI開発OS (コンテキスト圧縮・ファイル選択マトリクス・サブエージェント分離)<br>• 🌐 32ドメイン対応 (AI, IoT, 不動産, 法務, 人事, 金融, 製造, 物流, 農業, エネルギー, メディア, 行政, 旅行, 保険 等を追加)<br>• 📦 130+ファイル生成 (docs 76種, AIルール12+, スキル8+)<br>• 🎯 41プリセット (CRM, SNS, 物流, アンケート, 求人 追加)<br>• 🏗️ 未来戦略インテリジェンス (市場ポジショニング・UX戦略・エコシステム・規制フォーサイト)<br>• 📄 CLAUDE.md 3-layer分割 (薄いルート + パス別ルール + 設定)<br>• 🧬 開発IQインテリジェンス ⑯ (32ドメイン×12手法のポリモーフィック開発戦略)<br>• 🧩 プロンプトゲノムエンジン ⑰ (CRITERIA 8軸品質スコア付きプロンプトDNA自動生成)<br>• 🔧 Prompt Engineering OS ⑱ (ReAct自律ワークフロー・LLMOpsダッシュボード・Prompt CI/CD・[META]レジストリ)<br>• 🏢 エンタープライズSaaS Blueprint ⑲ (マルチテナント設計・組織モデル・ワークフローエンジン・エンタープライズUIコンポーネント)</p>'+
 '<p class="workflow-ref">📘 <strong>生成後の手順は <a href="#" onclick="event.preventDefault();showManual(\'workflow\')">生成後ワークフローガイド</a> を参照</strong></p>'
 :
-'<h2>Getting Started</h2><p>1. Select your skill level (Beginner/Intermediate/Pro)<br>2. Enter project name<br>3. Choose a template (optional, 41 types)<br>4. Answer Phase 1-3 questions (skip & answer later OK)<br>5. Click Generate for 126+ files<br>6. Download ZIP or print PDF</p>'+
+'<h2>Getting Started</h2><p>1. Select your skill level (Beginner/Intermediate/Pro)<br>2. Enter project name<br>3. Choose a template (optional, 41 types)<br>4. Answer Phase 1-3 questions (skip & answer later OK)<br>5. Click Generate for 130+ files<br>6. Download ZIP or print PDF</p>'+
 '<h3>UX Features</h3>'+
 '<p>• 🌱⚡🔥 Dynamic options by skill level<br>• 🎯 41 preset templates<br>• ✎ Edit answers (✎ button)<br>• ⏭️ Skip & answer later<br>• 📊 Complexity analysis (0-100 score)<br>• 📁 Project manager (Ctrl+M)<br>• 🎙️ Voice input<br>• ? Help icon per question<br>• 🔀 Drag & drop priority sort</p>'+
 '<h3>V8 Features</h3>'+
@@ -18487,11 +19199,11 @@ const MANUAL=[
 '<h3>V8.3 Features</h3>'+
 '<p>• 📊 Mermaid diagram live rendering (ER/screen flow/Gantt)<br>• 📝 OpenAPI-compliant API specs<br>• ✅ Test case matrix (feature × normal/abnormal)<br>• 📋 Release checklist (per deploy target)<br>• 🔨 WBS 3-level + effort estimation<br>• 🎯 Prompt playbook (phase-specific AI prompts)<br>• 📎 GitHub Issues-style task breakdown<br>• 📋 Copy all files combined (for bulk AI input)</p>'+
 '<h3>V9 Features</h3>'+
-'<p>• 🧪 Quality Intelligence Engine (industry-specific QA strategies, test matrix, incident response)<br>• 🎨 Design System generation (design tokens, sequence diagrams)<br>• 🔄 Reverse Engineering (goal-driven reverse planning, 32 domains)<br>• 🏗️ Implementation Intelligence (domain-specific impl patterns, AI runbook, pseudo-code)<br>• 🧠 AI Development OS (context compression, file selection matrix, sub-agent isolation)<br>• 🌐 32 domain support (AI, IoT, Real Estate, Legal, HR, FinTech, Manufacturing, Logistics, Agriculture, Energy, Media, Government, Travel, Insurance added)<br>• 📦 122+ file generation (68 docs, 12+ AI rules, 8+ skills)<br>• 🎯 41 presets (CRM, Social, Logistics, Survey, Job Board added)<br>• 🏗️ Future Strategy Intelligence (market positioning, UX strategy, ecosystem, regulatory foresight)<br>• 📄 CLAUDE.md 3-layer split (thin root + path-specific rules + settings)<br>• 🧬 Dev IQ Intelligence ⑯ (polymorphic development strategy for 32 domains × 12 approaches)<br>• 🧩 Prompt Genome Engine ⑰ (project-specific Prompt DNA with CRITERIA 8-axis quality scoring)</p>'+
+'<p>• 🧪 Quality Intelligence Engine (industry-specific QA strategies, test matrix, incident response)<br>• 🎨 Design System generation (design tokens, sequence diagrams)<br>• 🔄 Reverse Engineering (goal-driven reverse planning, 32 domains)<br>• 🏗️ Implementation Intelligence (domain-specific impl patterns, AI runbook, pseudo-code)<br>• 🧠 AI Development OS (context compression, file selection matrix, sub-agent isolation)<br>• 🌐 32 domain support (AI, IoT, Real Estate, Legal, HR, FinTech, Manufacturing, Logistics, Agriculture, Energy, Media, Government, Travel, Insurance added)<br>• 📦 130+ file generation (76 docs, 12+ AI rules, 8+ skills)<br>• 🎯 41 presets (CRM, Social, Logistics, Survey, Job Board added)<br>• 🏗️ Future Strategy Intelligence (market positioning, UX strategy, ecosystem, regulatory foresight)<br>• 📄 CLAUDE.md 3-layer split (thin root + path-specific rules + settings)<br>• 🧬 Dev IQ Intelligence ⑯ (polymorphic development strategy for 32 domains × 12 approaches)<br>• 🧩 Prompt Genome Engine ⑰ (project-specific Prompt DNA with CRITERIA 8-axis quality scoring)<br>• 🏢 Enterprise SaaS Blueprint ⑲ (multi-tenant design, org model, workflow engine, enterprise UI components)</p>'+
 '<p class="workflow-ref">📘 <strong>For post-generation workflow, see <a href="#" onclick="event.preventDefault();showManual(\'workflow\')">Post-Gen Workflow Guide</a></strong></p>'
 },
-{id:'pillars',title:_ja?'18の柱':'18 Pillars',body:_ja?
-'<h2>18の柱の詳細</h2><h3>① SDD統合 (5ファイル)</h3>'+
+{id:'pillars',title:_ja?'19の柱':'19 Pillars',body:_ja?
+'<h2>19の柱の詳細</h2><h3>① SDD統合 (5ファイル)</h3>'+
 '<p>constitution.md / specification.md / technical-plan.md / tasks.md / verification.md</p>'+
 '<h3>② DevContainer (4ファイル)</h3>'+
 '<p>devcontainer.json / Dockerfile / docker-compose.yml / post-create.sh — VSCode/Cursorで開くだけ。</p>'+
@@ -18506,7 +19218,7 @@ const MANUAL=[
 '<h3>⑦ ロードマップ (9ファイル+UI)</h3>'+
 '<p>LEARNING_PATH / TECH_STACK_GUIDE / MOBILE_GUIDE / TOOLS_SETUP / RESOURCES / MILESTONES / AI_WORKFLOW / AI_AUTONOMOUS / SAAS_COMMERCE_GUIDE — インタラクティブUIで進捗管理可能。</p>'+
 '<h3>⑧ AIプロンプトランチャー (UI)</h3>'+
-'<p>生成した仕様書をAIツールに一括投入。32のプロンプトテンプレート（レビュー・実装・テスト・リファクタ・セキュリティ・ドキュメント・QA・デバッグ・アーキテクチャ・パフォーマンス・API統合・アクセシビリティ・マイグレーション・メトリクス・i18n・グロース・リバースエンジニアリング・インシデント対応・Ops準備・戦略インテリジェンス・リスクコンプライアンス・オンボーディング・CI/CD設計・最適手法選定・AIブレスト・業界特化分析・次世代UX・認知負荷分析・プロンプトゲノム分析・AI成熟度レビュー・ReActデバッグ・プロンプトOpsレビュー）。フォルダ別トークン推定・モデル適合度表示。<strong>詳細は「📋 プロンプトマニュアル」参照</strong>。</p>'+
+'<p>生成した仕様書をAIツールに一括投入。34のプロンプトテンプレート（レビュー・実装・テスト・リファクタ・セキュリティ・ドキュメント・QA・デバッグ・アーキテクチャ・パフォーマンス・API統合・アクセシビリティ・マイグレーション・メトリクス・i18n・グロース・リバースエンジニアリング・インシデント対応・Ops準備・戦略インテリジェンス・リスクコンプライアンス・オンボーディング・CI/CD設計・最適手法選定・AIブレスト・業界特化分析・次世代UX・認知負荷分析・プロンプトゲノム分析・AI成熟度レビュー・ReActデバッグ・プロンプトOpsレビュー・エンタープライズアーキテクチャ・ワークフロー監査）。フォルダ別トークン推定・モデル適合度表示。<strong>詳細は「📋 プロンプトマニュアル」参照</strong>。</p>'+
 '<h3>⑨ デザインシステム (2ファイル)</h3>'+
 '<p>design_system.md (デザイントークン・色・タイポ・コンポーネントカタログ) / sequence_diagrams.md (認証・CRUD・決済フローのMermaidシーケンス図) — フレームワーク別実装ガイド。</p>'+
 '<h3>⑩ リバースエンジニアリング (2ファイル)</h3>'+
@@ -18524,9 +19236,13 @@ const MANUAL=[
 '<h3>⑯ 開発IQインテリジェンス (4ファイル)</h3>'+
 '<p>dev_methodology.md (32ドメイン対応の開発方法論・TDD/DDD/BDD/FDD・ポリモーフィック開発戦略) / phase_prompts.md (6フェーズ×設計アプローチ別AIプロンプト・実装ガイダンス) / industry_dev_strategy.md (15業種別開発戦略・推奨スタック・KPI・失敗パターン回避) / next_gen_ux.md (次世代UX手法・Voice-First・Spatial Computing・Haptic Feedback・Predictive UI) — 32ドメイン×12設計アプローチのポリモーフィック開発インテリジェンス。</p>'+
 '<h3>⑰ プロンプトゲノムエンジン (4ファイル)</h3>'+
-'<p>65_prompt_genome.md (プロジェクト固有プロンプトDNA・CRITERIA 8軸品質スコア付き全フェーズプロンプト) / 66_ai_maturity_assessment.md (チームAI成熟度5次元評価・Assisted→Augmented→Autonomous段階的ロードマップ) / 67_prompt_composition_guide.md (12設計アプローチ×12シナジーマトリクス・4層テンプレートアーキテクチャ・複合プロンプトパターン) / 68_prompt_kpi_dashboard.md (アプローチ別成功KPI・測定計画・AI効果測定ダッシュボード) — 世界初のプロジェクト固有プロンプトDNA自動生成エンジン。CRITERIA品質スコア付き。</p>'
+'<p>65_prompt_genome.md (プロジェクト固有プロンプトDNA・CRITERIA 8軸品質スコア付き全フェーズプロンプト) / 66_ai_maturity_assessment.md (チームAI成熟度5次元評価・Assisted→Augmented→Autonomous段階的ロードマップ) / 67_prompt_composition_guide.md (12設計アプローチ×12シナジーマトリクス・4層テンプレートアーキテクチャ・複合プロンプトパターン) / 68_prompt_kpi_dashboard.md (アプローチ別成功KPI・測定計画・AI効果測定ダッシュボード) — 世界初のプロジェクト固有プロンプトDNA自動生成エンジン。CRITERIA品質スコア付き。</p>'+
+'<h3>⑱ Prompt Engineering OS (4ファイル)</h3>'+
+'<p>69_prompt_ops_pipeline.md (Prompt CI/CDパイプライン・5ステージライフサイクル・バージョン管理・A/Bテスト・ロールバック) / 70_react_workflow.md (ReAct自律ワークフロー・6フェーズ×Reason→Act→Observe→Verify・自己デバッグループ・障害回復) / 71_llmops_dashboard.md (LLMOps評価ダッシュボード・CRITERIA統合メトリクス・コスト最適化・可観測性) / 72_prompt_registry.md ([META]構造化プロンプトレジストリ・Template-ID命名・バージョン履歴・ドメイン別カタログ) — 世界初Prompt DevOpsプラットフォーム自動生成。⑰のPrompt DNAを運用化。</p>'+
+'<h3>⑲ エンタープライズSaaS Blueprint (4ファイル)</h3>'+
+'<p>73_enterprise_architecture.md (マルチテナントアーキテクチャ・組織ERモデル・RLSポリシー・権限マトリクス・招待フロー) / 74_workflow_engine.md (承認・チケット・注文・契約・オンボーディングのステートマシン・SLAトラッキング) / 75_admin_dashboard_spec.md (管理ダッシュボードワイヤーフレーム・KPIカード・週次トレンド・ユーザーワークロード分析) / 76_enterprise_components.md (8+エンタープライズUIコンポーネント仕様・Props・バリアント・A11y・フレームワーク対応) — SaaS/Analytics/HR/Collab/Toolドメインで自動生成。世界唯一のエンタープライズSaaSアーキテクチャ自動生成エンジン。</p>'
 :
-'<h2>18 Pillars in Detail</h2><h3>① SDD Integration (5 files)</h3>'+
+'<h2>19 Pillars in Detail</h2><h3>① SDD Integration (5 files)</h3>'+
 '<p>constitution.md / specification.md / technical-plan.md / tasks.md / verification.md</p>'+
 '<h3>② DevContainer (4 files)</h3>'+
 '<p>devcontainer.json / Dockerfile / docker-compose.yml / post-create.sh — Just open in VS Code/Cursor.</p>'+
@@ -18541,7 +19257,7 @@ const MANUAL=[
 '<h3>⑦ Roadmap (9 files + UI)</h3>'+
 '<p>LEARNING_PATH / TECH_STACK_GUIDE / MOBILE_GUIDE / TOOLS_SETUP / RESOURCES / MILESTONES / AI_WORKFLOW / AI_AUTONOMOUS / SAAS_COMMERCE_GUIDE — Interactive UI for progress tracking.</p>'+
 '<h3>⑧ AI Prompt Launcher (UI)</h3>'+
-'<p>Bulk-feed generated specs to AI tools. 32 prompt templates (Review, Implement, Test, Refactor, Security, Docs, QA, Debug, Architecture, Performance, API, Accessibility, Migration, Metrics, i18n, Growth, Reverse Engineering, Incident Response, Ops Readiness, Strategic Intelligence, Risk & Compliance, Onboarding, CI/CD Design, Optimal Methodology, AI Brainstorm, Industry Deep Dive, Next-Gen UX, Cognitive Load, Prompt Genome Analysis, AI Maturity Review, ReAct Debug Loop, Prompt Ops Review). Per-folder token estimation and model fit display. <strong>See "📋 Prompt Manual" for details</strong>.</p>'+
+'<p>Bulk-feed generated specs to AI tools. 34 prompt templates (Review, Implement, Test, Refactor, Security, Docs, QA, Debug, Architecture, Performance, API, Accessibility, Migration, Metrics, i18n, Growth, Reverse Engineering, Incident Response, Ops Readiness, Strategic Intelligence, Risk & Compliance, Onboarding, CI/CD Design, Optimal Methodology, AI Brainstorm, Industry Deep Dive, Next-Gen UX, Cognitive Load, Prompt Genome Analysis, AI Maturity Review, ReAct Debug Loop, Prompt Ops Review, Enterprise Architecture Review, Workflow Process Audit). Per-folder token estimation and model fit display. <strong>See "📋 Prompt Manual" for details</strong>.</p>'+
 '<h3>⑨ Design System (2 files)</h3>'+
 '<p>design_system.md (design tokens, colors, typography, component catalog) / sequence_diagrams.md (auth, CRUD, payment Mermaid sequence diagrams) — Framework-specific guides.</p>'+
 '<h3>⑩ Reverse Engineering (2 files)</h3>'+
@@ -18561,19 +19277,21 @@ const MANUAL=[
 '<h3>⑰ Prompt Genome Engine (4 files)</h3>'+
 '<p>65_prompt_genome.md (project-specific Prompt DNA, full-phase prompts with CRITERIA 8-axis quality scores) / 66_ai_maturity_assessment.md (team AI maturity 5-dimension assessment, Assisted→Augmented→Autonomous progressive roadmap) / 67_prompt_composition_guide.md (12 design approaches × 12 synergy matrix, 4-layer template architecture, composite prompt patterns) / 68_prompt_kpi_dashboard.md (per-approach success KPIs, measurement plan, AI effectiveness dashboard) — World\'s first project-specific Prompt DNA auto-generation engine with CRITERIA quality scoring.</p>'+
 '<h3>⑱ Prompt Engineering OS (4 files)</h3>'+
-'<p>69_prompt_ops_pipeline.md (Prompt CI/CD pipeline, 5-stage lifecycle, version control, A/B test framework, rollback procedure) / 70_react_workflow.md (ReAct autonomous workflow, 6 phases × Reason→Act→Observe→Verify, self-debug loop, failure recovery patterns) / 71_llmops_dashboard.md (LLMOps evaluation dashboard, CRITERIA-integrated metrics, cost optimization, observability) / 72_prompt_registry.md ([META] structured prompt registry, Template-ID naming, version history, domain-specific catalog) — World\'s first Prompt DevOps platform auto-generation. Operationalizes Prompt DNA from ⑰.</p>'
+'<p>69_prompt_ops_pipeline.md (Prompt CI/CD pipeline, 5-stage lifecycle, version control, A/B test framework, rollback procedure) / 70_react_workflow.md (ReAct autonomous workflow, 6 phases × Reason→Act→Observe→Verify, self-debug loop, failure recovery patterns) / 71_llmops_dashboard.md (LLMOps evaluation dashboard, CRITERIA-integrated metrics, cost optimization, observability) / 72_prompt_registry.md ([META] structured prompt registry, Template-ID naming, version history, domain-specific catalog) — World\'s first Prompt DevOps platform auto-generation. Operationalizes Prompt DNA from ⑰.</p>'+
+'<h3>⑲ Enterprise SaaS Blueprint (4 files)</h3>'+
+'<p>73_enterprise_architecture.md (multi-tenant architecture, org ER model, RLS policies, permission matrix, invite flow) / 74_workflow_engine.md (approval, ticket, order, contract, onboarding state machines, SLA tracking) / 75_admin_dashboard_spec.md (admin dashboard wireframe, KPI cards, weekly trends, user workload analytics) / 76_enterprise_components.md (8+ enterprise UI component specs, Props, Variants, A11y, framework mapping) — Auto-generated for SaaS/Analytics/HR/Collab/Tool domains. World\'s only enterprise SaaS architecture auto-generation engine.</p>'
 },
 {id:'export',title:_ja?'エクスポート':'Export',body:_ja?
-'<h2>エクスポート方法</h2><p><strong>ZIP</strong>: 全126+ファイルをフォルダ構造付きでZIP圧縮ダウンロード。<br><strong>PDF</strong>: Markdownファイルを整形してブラウザのPDF印刷で出力。<br><strong>URL共有</strong>: プロジェクト設定をBase64エンコードしてURL共有。<br><strong>全ファイルコピー</strong>: 全ドキュメントを1テキストに結合してクリップボードにコピー（Ctrl+Shift+C）。AIへの一括投入に最適。</p><h3>テンプレート保存</h3><p>プロジェクト設定をlocalStorageに保存し、次回起動時に読み込み可能。</p>'+
+'<h2>エクスポート方法</h2><p><strong>ZIP</strong>: 全130+ファイルをフォルダ構造付きでZIP圧縮ダウンロード。<br><strong>PDF</strong>: Markdownファイルを整形してブラウザのPDF印刷で出力。<br><strong>URL共有</strong>: プロジェクト設定をBase64エンコードしてURL共有。<br><strong>全ファイルコピー</strong>: 全ドキュメントを1テキストに結合してクリップボードにコピー（Ctrl+Shift+C）。AIへの一括投入に最適。</p><h3>テンプレート保存</h3><p>プロジェクト設定をlocalStorageに保存し、次回起動時に読み込み可能。</p>'+
 '<p class="workflow-ref">📘 <strong>エクスポート後の開発手順は <a href="#" onclick="event.preventDefault();showManual(\'workflow\')">生成後ワークフローガイド</a> を参照</strong></p>'
 :
-'<h2>Export Methods</h2><p><strong>ZIP</strong>: Download all 126+ files as a ZIP with folder structure.<br><strong>PDF</strong>: Format Markdown files and print via browser PDF.<br><strong>URL Sharing</strong>: Base64-encode project settings and share via URL.<br><strong>Copy All Files</strong>: Combine all documents into one text and copy to clipboard (Ctrl+Shift+C). Ideal for bulk AI input.</p><h3>Template Save</h3><p>Save project settings to localStorage and load them on next launch.</p>'+
+'<h2>Export Methods</h2><p><strong>ZIP</strong>: Download all 130+ files as a ZIP with folder structure.<br><strong>PDF</strong>: Format Markdown files and print via browser PDF.<br><strong>URL Sharing</strong>: Base64-encode project settings and share via URL.<br><strong>Copy All Files</strong>: Combine all documents into one text and copy to clipboard (Ctrl+Shift+C). Ideal for bulk AI input.</p><h3>Template Save</h3><p>Save project settings to localStorage and load them on next launch.</p>'+
 '<p class="workflow-ref">📘 <strong>For development workflow after export, see <a href="#" onclick="event.preventDefault();showManual(\'workflow\')">Post-Gen Workflow Guide</a></strong></p>'
 },
 {id:'guide',title:_ja?'🚀 活用ガイド':'🚀 Usage Guide',body:function(){
 const baseBody=_ja?
 '<h2>🚀 生成ファイル活用ガイド</h2>'+
-'<p>DevForge v9 は世界で唯一の<strong>仕様駆動AIプロジェクトジェネレーター</strong>です。他のツールが「コード」を生成するのに対し、DevForge は「開発の知性」── 設計・環境・ルール・学習計画を126+ファイルで生成します。</p>'+
+'<p>DevForge v9 は世界で唯一の<strong>仕様駆動AIプロジェクトジェネレーター</strong>です。他のツールが「コード」を生成するのに対し、DevForge は「開発の知性」── 設計・環境・ルール・学習計画を130+ファイルで生成します。</p>'+
 '<h3>🌱 Beginner — まず動かす</h3>'+
 '<h4>⭐ 具体的な使用方法（手順詳細）</h4>'+
 '<p><strong>Step 1: ロードマップに従う</strong><br>ダッシュボード（柱⑦）のロードマップUIがそのまま学習計画。Layer 1から順にチェック。📖ボタンで公式ドキュメントに直接ジャンプ。各技術の学習順序が最適化されています。</p>'+
@@ -18582,7 +19300,7 @@ const baseBody=_ja?
 '<div class="hg-flow"><span class="hg-n hg-b">DevForge<br>生成</span><span class="hg-a">→</span><span class="hg-n hg-c">Ctrl+Shift+C<br>コピー</span><span class="hg-a">→</span><span class="hg-n hg-p">AI貼付<br>Cursor等</span><span class="hg-a">→</span><span class="hg-n hg-g">開発<br>スタート</span></div>'+
 '<h4>⭐ 注意事項（リスク回避）</h4>'+
 '<p>• <strong>必ずZIP+JSONバックアップ</strong> — localStorageは消失リスクあり。作業後は必ず📦ZIPダウンロード + 📤JSONエクスポートの2段構え<br>'+
-'• <strong>生成ファイルは設計書</strong> — 126+ファイルは実行コードではなく設計ドキュメント。AIツールに投入して実コードを生成<br>'+
+'• <strong>生成ファイルは設計書</strong> — 130+ファイルは実行コードではなく設計ドキュメント。AIツールに投入して実コードを生成<br>'+
 '• <strong>スキルレベルは途中で変更しない</strong> — 回答との不整合が起きる。最初に正しく設定<br>'+
 '• <strong>モデル適合度80%超時はフォルダ選択で絞る</strong> — ダッシュボードでモデル適合度確認。80%超時はランチャーのフォルダ選択で.spec/のみ等に絞る</p>'+
 '<h4>⭐ よくある失敗例</h4>'+
@@ -18608,7 +19326,7 @@ const baseBody=_ja?
 '<h4>⭐⭐⭐ 高度な統合・自動化</h4>'+
 '<p><strong>Agent Teams並列開発:</strong> AGENTS.mdでエージェント役割を定義 → Claude Code Subagents / Antigravity Manager View で並列実行。tasks.mdがタスクキューとして機能。</p>'+
 '<p><strong>CI/CDゲート化:</strong> .ai/hooks.yml → GitHub Actions変換。docs/09_release_checklist.mdをデプロイゲートに。verification.mdを品質基準に。</p>'+
-'<p><strong>32テンプレートパイプライン:</strong> 柱⑧の全テンプレート順次実行 → 📋レビュー→🔨実装→🧪テスト→♻️リファクタ→🔒セキュリティ→📝ドキュメント→🛡️Ops準備。仕様書が全工程の入力。<strong>（📖 詳細はプロンプトマニュアル参照）</strong></p>'+
+'<p><strong>34テンプレートパイプライン:</strong> 柱⑧の全テンプレート順次実行 → 📋レビュー→🔨実装→🧪テスト→♻️リファクタ→🔒セキュリティ→📝ドキュメント→🛡️Ops準備→🏢エンタープライズアーキテクチャ。仕様書が全工程の入力。<strong>（📖 詳細はプロンプトマニュアル参照）</strong></p>'+
 '<h4>⭐⭐⭐ パフォーマンス最適化</h4>'+
 '<p>• <strong>CLAUDE.md 3-layer split</strong> — ルートCLAUDE.md（薄い ~1.5Kトークン） + .claude/rules/（パス別5ファイル） + .claude/settings.json でトークン消費を最小化<br>'+
 '• <strong>フォルダ選択最適化</strong> — デバッグ時: docs/25+37のみ、仕様確認時: .spec/のみ等、状況に応じて選択<br>'+
@@ -18635,7 +19353,7 @@ const baseBody=_ja?
 '<tr><td><code>.devcontainer/</code></td><td>そのまま</td><td>カスタマイズ</td><td>チーム標準化</td></tr>'+
 '<tr><td><code>.claude/rules/</code> (5ファイル)</td><td>触らない</td><td>カスタマイズ</td><td>パス別最適化</td></tr>'+
 '<tr><td><code>roadmap/</code></td><td>学習ガイド</td><td>進捗管理</td><td>オンボーディング</td></tr>'+
-'<tr><td><code>docs/</code> 72ファイル</td><td>後で参照</td><td>レビュー素材</td><td>CI/CDゲート</td></tr>'+
+'<tr><td><code>docs/</code> 76ファイル</td><td>後で参照</td><td>レビュー素材</td><td>CI/CDゲート</td></tr>'+
 '<tr><td><code>docs/29-30</code> リバースEng</td><td>読むだけ</td><td>逆算計画</td><td>マイルストーン管理</td></tr>'+
 '<tr><td><code>docs/43-47</code> セキュリティ</td><td>不要</td><td>セキュリティ監査</td><td>セキュリティゲート</td></tr>'+
 '<tr><td><code>docs/48-52</code> 戦略</td><td>不要</td><td>業種確認</td><td>戦略統合</td></tr>'+
@@ -18650,7 +19368,7 @@ const baseBody=_ja?
 '<p class="guide-action-p"><button class="btn btn-p btn-sm" onclick="closeManual();showPostGenGuide(true)">🚀 レベル別ガイドを表示</button> <button class="btn btn-s btn-sm" onclick="showManual(\'workflow\')">📘 生成後ワークフロー</button></p>'+
 '<p class="guide-action-p"><button class="btn btn-s btn-sm" onclick="window.open(\'devforge-v9-usage-guide.html\',\'_blank\',\'noopener\')">📖 活用ガイド（別ページ）</button> <button class="btn btn-s btn-sm" onclick="window.open(\'tech-selection-guide.html\',\'_blank\',\'noopener\')">📊 技術選定ガイド</button></p>':
 '<h2>🚀 Generated Files Usage Guide</h2>'+
-'<p>DevForge v9 is the world\'s only <strong>spec-driven AI project generator</strong>. While other tools generate code, DevForge generates "development intelligence" — design, environment, rules, and learning plans through 126+ files.</p>'+
+'<p>DevForge v9 is the world\'s only <strong>spec-driven AI project generator</strong>. While other tools generate code, DevForge generates "development intelligence" — design, environment, rules, and learning plans through 130+ files.</p>'+
 '<h3>🌱 Beginner — Get Started</h3>'+
 '<h4>⭐ Specific Usage Methods (Detailed Steps)</h4>'+
 '<p><strong>Step 1: Follow the Roadmap</strong><br>The Dashboard (Pillar ⑦) roadmap UI is your learning plan. Check off from Layer 1. Hit 📖 to jump to official docs. Learning order is optimized for each tech stack.</p>'+
@@ -18659,7 +19377,7 @@ const baseBody=_ja?
 '<div class="hg-flow"><span class="hg-n hg-b">DevForge<br>Generate</span><span class="hg-a">→</span><span class="hg-n hg-c">Ctrl+Shift+C<br>Copy</span><span class="hg-a">→</span><span class="hg-n hg-p">Paste to<br>AI Tool</span><span class="hg-a">→</span><span class="hg-n hg-g">Start<br>Coding</span></div>'+
 '<h4>⭐ Cautions (Risk Avoidance)</h4>'+
 '<p>• <strong>Always Backup ZIP+JSON</strong> — localStorage has loss risk. After work: 📦ZIP Download + 📤JSON Export (2-layer backup)<br>'+
-'• <strong>Files are Design Docs</strong> — 126+ files are not executable code but design documents. Feed them to AI tools to generate real code<br>'+
+'• <strong>Files are Design Docs</strong> — 130+ files are not executable code but design documents. Feed them to AI tools to generate real code<br>'+
 '• <strong>Don\'t Change Skill Level Mid-Project</strong> — Causes inconsistency with answers. Set correctly at the start<br>'+
 '• <strong>Use Folder Selection When Model Fit >80%</strong> — Check model fit in Dashboard. If >80%, narrow down to .spec/ only via launcher folder selection</p>'+
 '<h4>⭐ Common Pitfalls</h4>'+
@@ -18685,7 +19403,7 @@ const baseBody=_ja?
 '<h4>⭐⭐⭐ Advanced Integration & Automation</h4>'+
 '<p><strong>Agent Teams Parallel Dev:</strong> AGENTS.md defines agent roles → Run with Claude Code Subagents / Antigravity Manager View in parallel. tasks.md serves as task queue.</p>'+
 '<p><strong>CI/CD Gates:</strong> .ai/hooks.yml → GitHub Actions conversion. docs/09_release_checklist.md as deploy gate. verification.md as quality baseline.</p>'+
-'<p><strong>32-Template Pipeline:</strong> Pillar ⑧ full template sequential execution → 📋Review→🔨Implement→🧪Test→♻️Refactor→🔒Security→📝Docs→🛡️Ops Readiness. Specs feed all stages. <strong>(📖 See Prompt Manual for details)</strong></p>'+
+'<p><strong>34-Template Pipeline:</strong> Pillar ⑧ full template sequential execution → 📋Review→🔨Implement→🧪Test→♻️Refactor→🔒Security→📝Docs→🛡️Ops Readiness→🏢Enterprise Arch. Specs feed all stages. <strong>(📖 See Prompt Manual for details)</strong></p>'+
 '<h4>⭐⭐⭐ Performance Optimization</h4>'+
 '<p>• <strong>CLAUDE.md 3-layer split</strong> — Root CLAUDE.md (thin ~1.5K tokens) + .claude/rules/ (path-specific 5 files) + .claude/settings.json minimizes token consumption<br>'+
 '• <strong>Folder Selection Optimization</strong> — Debugging: docs/25+37 only, Spec check: .spec/ only etc. Select by context<br>'+
@@ -18756,12 +19474,12 @@ return h;
 }},
 {id:'workflow',title:_ja?'📘 生成後ワークフロー':'📘 Post-Gen Workflow',body:_ja?
 '<h2>📘 生成後ワークフロー完全ガイド</h2>'+
-'<p class="guide-workflow-intro">DevForge v9で126+ファイルを生成した後、<strong>実際に動くアプリを作るまでの一気通貫の手順</strong>を5フェーズで解説します。</p>'+
+'<p class="guide-workflow-intro">DevForge v9で130+ファイルを生成した後、<strong>実際に動くアプリを作るまでの一気通貫の手順</strong>を5フェーズで解説します。</p>'+
 '<h3>① 基礎概念 — DevForgeの生成物を理解する</h3>'+
 '<div class="workflow-concept"><p><strong>重要:</strong> DevForgeが生成するのは<strong class="workflow-highlight">設計ドキュメント</strong>であり、実行可能なアプリケーションコードではありません。</p>'+
 '<p><strong>SDD（仕様駆動開発）の思想:</strong> <code>.spec/</code>がSSoT（信頼できる唯一の情報源）として機能します。</p>'+
 '<div class="hg-flow"><span class="hg-n hg-b">DevForge<br>生成</span><span class="hg-a">→</span><span class="hg-n hg-c">AIツールに<br>投入</span><span class="hg-a">→</span><span class="hg-n hg-p">実コード<br>生成</span><span class="hg-a">→</span><span class="hg-n hg-g">動くアプリ<br>完成</span></div></div>'+
-'<h4>126+ファイルの全体像</h4>'+
+'<h4>130+ファイルの全体像</h4>'+
 '<table class="workflow-files"><tr><th>カテゴリ</th><th>内容</th><th>ファイル数</th></tr>'+
 '<tr><td>.spec/</td><td>仕様駆動開発の5点セット</td><td>5</td></tr>'+
 '<tr><td>.devcontainer/</td><td>Docker開発環境</td><td>4</td></tr>'+
@@ -18822,7 +19540,7 @@ return h;
 '<h5>推奨ワークフロー</h5>'+
 '<ol class="workflow-level-steps">'+
 '<li>AGENTS.md でエージェント役割定義 → 並列開発</li>'+
-'<li>32テンプレート全パイプライン: レビュー→実装→テスト→リファクタ→セキュリティ→Docs→Ops</li>'+
+'<li>34テンプレート全パイプライン: レビュー→実装→テスト→リファクタ→セキュリティ→Docs→Ops→エンタープライズ</li>'+
 '<li>CLAUDE.md 3-layer (root ~1.5K + .claude/rules/ + settings.json)</li>'+
 '<li>mcp-config.json + skills/pipelines.md で自動化</li>'+
 '<li>docs/55 Circuit Breaker + Evidence-Based Ops</li>'+
@@ -18837,7 +19555,7 @@ return h;
 '<h5>自動化チェック</h5>'+
 '<p class="workflow-level-checklist">'+
 '✅ .ai/hooks.yml → CI/CDゲート化<br>'+
-'✅ 全32テンプレートパイプライン完走<br>'+
+'✅ 全34テンプレートパイプライン完走<br>'+
 '✅ SLO 99.9%設計完了<br>'+
 '✅ Feature Flags全キルスイッチ設定</p>'+
 '</div>'+
@@ -19180,7 +19898,8 @@ return h;
 '<tr><td><strong>ガバナンス</strong></td><td>⚖️リスク・コンプライアンス</td></tr>'+
 '<tr><td><strong>チーム</strong></td><td>🎓オンボーディング</td></tr>'+
 '<tr><td><strong>AI知性</strong></td><td>🧬最適手法 / 💡ブレスト / 🏭業界 / 🔮UX / 🧠認知負荷</td></tr>'+
-'<tr><td><strong>プロンプトEng</strong></td><td>🧩ゲノム / 📊成熟度 / 🔄ReAct / 🔧Prompt Ops</td></tr></table>'+
+'<tr><td><strong>プロンプトEng</strong></td><td>🧩ゲノム / 📊成熟度 / 🔄ReAct / 🔧Prompt Ops</td></tr>'+
+'<tr><td><strong>エンタープライズ</strong></td><td>🏢エンタープライズアーキテクチャ / 📋ワークフロー監査</td></tr></table>'+
 '<h3>🌱🔥⚡ スキルレベル別ベストプラクティス</h3>'+
 '<p><strong>🌱 Beginner — まず動かす</strong></p>'+
 '<ul><li>🔍仕様レビュー + 🚀MVP実装 の2つから始める</li>'+
@@ -19191,10 +19910,10 @@ return h;
 '<li><code>.spec/</code> + <code>docs/</code> を含めて包括的なコンテキストを提供</li>'+
 '<li>モデル適合度を確認し、80%以内に収める</li></ul>'+
 '<p><strong>⚡ Professional — パイプライン化</strong></p>'+
-'<ul><li>全32テンプレートをパイプラインとして順次実行</li>'+
+'<ul><li>全34テンプレートをパイプラインとして順次実行</li>'+
 '<li>フォルダ選択を最適化（デバッグ時は<code>docs/25</code>+<code>docs/37</code>のみ等）</li>'+
 '<li><code>docs/39_implementation_playbook.md</code> と <code>docs/40_ai_dev_runbook.md</code> も活用</li></ul>'+
-'<h3>📋 全32テンプレート早見表</h3>'+
+'<h3>📋 全34テンプレート早見表</h3>'+
 '<table><tr><th>Icon</th><th>名前</th><th>フェーズ</th><th>主要参照ドキュメント</th></tr>'+
 '<tr><td>🔍</td><td>仕様レビュー</td><td>設計</td><td>.spec/*</td></tr>'+
 '<tr><td>📐</td><td>アーキテクチャ</td><td>設計</td><td>docs/03, docs/27, docs/26</td></tr>'+
@@ -19227,6 +19946,8 @@ return h;
 '<tr><td>📊</td><td>AI成熟度</td><td>プロンプトEng</td><td>docs/66, docs/68</td></tr>'+
 '<tr><td>🔄</td><td>ReActデバッグ</td><td>プロンプトEng</td><td>docs/70</td></tr>'+
 '<tr><td>🔧</td><td>Prompt Ops</td><td>プロンプトEng</td><td>docs/69, docs/71, docs/72, docs/65</td></tr>'+
+'<tr><td>🏢</td><td>エンタープライズアーキテクチャ</td><td>エンタープライズ</td><td>docs/73, docs/74</td></tr>'+
+'<tr><td>📋</td><td>ワークフロー監査</td><td>エンタープライズ</td><td>docs/74, docs/75, docs/76</td></tr>'+
 '<tr><td>🎓</td><td>オンボーディング</td><td>チーム</td><td>docs/42, docs/37, .claude/rules/, docs/55</td></tr></table>'+
 '<h3>💡 Tips</h3>'+
 '<p><strong>フォルダ選択のコツ:</strong> 不要なフォルダのチェックを外してトークン節約。例: デバッグ時は<code>docs/</code>の大半は不要。</p>'+
@@ -19259,7 +19980,8 @@ return h;
 '<tr><td><strong>Governance</strong></td><td>⚖️Risk & Compliance</td></tr>'+
 '<tr><td><strong>Team</strong></td><td>🎓Onboarding</td></tr>'+
 '<tr><td><strong>AI Intelligence</strong></td><td>🧬Methodology / 💡Brainstorm / 🏭Industry / 🔮Next-Gen UX / 🧠Cognitive</td></tr>'+
-'<tr><td><strong>Prompt Eng</strong></td><td>🧩Genome / 📊Maturity / 🔄ReAct Debug / 🔧Prompt Ops</td></tr></table>'+
+'<tr><td><strong>Prompt Eng</strong></td><td>🧩Genome / 📊Maturity / 🔄ReAct Debug / 🔧Prompt Ops</td></tr>'+
+'<tr><td><strong>Enterprise</strong></td><td>🏢Enterprise Architecture / 📋Workflow Process Audit</td></tr></table>'+
 '<h3>🌱🔥⚡ Best Practices by Skill Level</h3>'+
 '<p><strong>🌱 Beginner — Get Started</strong></p>'+
 '<ul><li>Start with 🔍Spec Review + 🚀MVP Build</li>'+
@@ -19270,7 +19992,7 @@ return h;
 '<li>Include <code>.spec/</code> + <code>docs/</code> for comprehensive context</li>'+
 '<li>Keep model fit under 80%</li></ul>'+
 '<p><strong>⚡ Professional — Full Pipeline</strong></p>'+
-'<ul><li>Execute all 32 templates as a pipeline</li>'+
+'<ul><li>Execute all 34 templates as a pipeline</li>'+
 '<li>Optimize folder selection (e.g., for debugging: only <code>docs/25</code>+<code>docs/37</code>)</li>'+
 '<li>Leverage <code>docs/39_implementation_playbook.md</code> and <code>docs/40_ai_dev_runbook.md</code></li></ul>'+
 '<h3>📋 All 32 Templates Quick Reference</h3>'+
@@ -19306,6 +20028,8 @@ return h;
 '<tr><td>📊</td><td>AI Maturity</td><td>Prompt Eng</td><td>docs/66, docs/68</td></tr>'+
 '<tr><td>🔄</td><td>ReAct Debug</td><td>Prompt Eng</td><td>docs/70</td></tr>'+
 '<tr><td>🔧</td><td>Prompt Ops</td><td>Prompt Eng</td><td>docs/69, docs/71, docs/72, docs/65</td></tr>'+
+'<tr><td>🏢</td><td>Enterprise Architecture</td><td>Enterprise</td><td>docs/73, docs/74</td></tr>'+
+'<tr><td>📋</td><td>Workflow Process Audit</td><td>Enterprise</td><td>docs/74, docs/75, docs/76</td></tr>'+
 '<tr><td>🎓</td><td>Onboarding</td><td>Team</td><td>docs/42, docs/37, .claude/rules/, docs/55</td></tr></table>'+
 '<h3>💡 Tips</h3>'+
 '<p><strong>Folder Selection:</strong> Uncheck unnecessary folders to save tokens. Example: for debugging, most of <code>docs/</code> is unnecessary.</p>'+
@@ -19892,10 +20616,10 @@ return [
 {title:_ja?'📝 テンプレート':'📝 Templates',desc:_ja?'41種類のプリセットから選ぶと、回答が自動入力されます。':'Pick from 41 presets to auto-fill answers.'},
 {title:_ja?'💬 質問フロー':'💬 Q&A Flow',desc:_ja?'Phase 1-3 の質問に答えるだけ。スキップも後で回答も可能です。':'Just answer Phase 1-3 questions. Skip and answer later anytime.'},
 {title:_ja?'✎ 回答編集':'✎ Edit Answers',desc:_ja?'送信済みの回答に表示される ✎ ボタンで修正できます。':'Click the ✎ button on submitted answers to edit them.'},
-{title:_ja?'📦 126+ファイル生成':'📦 126+ File Generation',desc:_ja?'全質問回答後、18の柱で126+ファイルが自動生成されます。':'After all questions, 126+ files auto-generate across 18 pillars.'},
+{title:_ja?'📦 130+ファイル生成':'📦 130+ File Generation',desc:_ja?'全質問回答後、19の柱で130+ファイルが自動生成されます。':'After all questions, 130+ files auto-generate across 19 pillars.'},
 {title:_ja?'⚡ 並列探索':'⚡ Parallel Explorer',desc:_ja?'Pillar ⑤ で7スタックを比較。回答に基づくおすすめランキング付き。':'Compare 7 stacks in Pillar ⑤ with recommendation ranking based on your answers.'},
 {title:'📊 Dashboard',desc:_ja?'Pillar ⑥ でコンテキスト可視化＋'+_TECH_COUNT+'技術DBを閲覧。':'Visualize context + browse '+_TECH_COUNT+' tech DB in Pillar ⑥.'},
-{title:_ja?'🤖 AIランチャー':'🤖 AI Launcher',desc:_ja?'Pillar ⑧ で仕様書をAIツールにワンクリック投入。32テンプレート＋トークン推定。':'Feed specs to AI tools in one click from Pillar ⑧. 32 templates + token estimation.'},
+{title:_ja?'🤖 AIランチャー':'🤖 AI Launcher',desc:_ja?'Pillar ⑧ で仕様書をAIツールにワンクリック投入。34テンプレート＋トークン推定。':'Feed specs to AI tools in one click from Pillar ⑧. 34 templates + token estimation.'},
 {title:_ja?'💾 データ保存の注意':'💾 Save Your Work',desc:_ja?'全データはブラウザのlocalStorageに保存されます。閲覧履歴の消去やブラウザ変更でデータが消失します。作業後は必ず📤 JSONエクスポートと📦 ZIPダウンロードで保存してください。':'All data is stored in browser localStorage. Clearing browser data or switching browsers will erase everything. Always export JSON 📤 and download ZIP 📦 after work.'},
 {title:_ja?'⚠️ 注意事項を確認':'⚠️ Read Cautions',desc:_ja?'ヘルプ（F1）の「⚠️ 注意事項」タブにスキルレベル設定・言語切替・ストレージ上限などの重要な注意点をまとめています。':'Check the "⚠️ Cautions" tab in Help (F1) for important notes on skill level, language switching, storage limits, and more.'},
 ];

@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ---
 
-# DevForge v9.3.0
+# DevForge v9.4.0
 
 ## Documentation Structure
 
@@ -13,15 +13,15 @@ DevForge v9's documentation is optimized into role-specific files:
 - **CLAUDE.md** (this file) — Core development guidelines, critical rules, common bugs, quick reference
 - **docs/CLAUDE-REFERENCE.md** — Detailed reference: complete data structures, generated output catalog, pillar addition guide, compression patterns, test patterns
 - **docs/CLAUDE-TROUBLESHOOTING.md** — Environment setup, git workflow, deployment, troubleshooting
-- **docs/AI_CODING_PROMPTS.md** — 32 AI prompt templates (spec review, MVP implementation, test generation, refactoring, security audit, etc.)
+- **docs/AI_CODING_PROMPTS.md** — 34 AI prompt templates (spec review, MVP implementation, test generation, refactoring, security audit, etc.)
 - **未来志向アプリ開発戦略フレームワーク（2026-2035）.md** (local only) — 28 strategic frameworks for future app development (2026-2035 horizon)
 
 ## Architecture
-- **53 modules** in `src/` → `node build.js` → single `devforge-v9.html` (~1707KB)
+- **54 modules** in `src/` → `node build.js` → single `devforge-v9.html` (~1764KB)
 - Vanilla JS, no frameworks. CSS custom properties. CDN: marked.js, mermaid.js, JSZip.
-- **AI Development OS**: Generates 126+ files including context intelligence, operations playbooks, business models, growth strategies, industry-specific strategic intelligence, ops intelligence, future strategy intelligence, polymorphic development intelligence, prompt genome engine, prompt ops pipeline, and path-specific AI rules
+- **AI Development OS**: Generates 130+ files including context intelligence, operations playbooks, business models, growth strategies, industry-specific strategic intelligence, ops intelligence, future strategy intelligence, polymorphic development intelligence, prompt genome engine, prompt ops pipeline, enterprise SaaS blueprint, and path-specific AI rules
 - **Security-hardened**: Phase 1 (CSP, SRI, sanitization) + Phase 2 (16 XSS/injection fixes) + Pillar ⑫ (context-aware security audit prompts)
-- **Latest**: v9.3.x — Pillars ⑰ (Prompt Genome) + ⑱ (Prompt Ops), 32 launcher templates, 18 pillars total
+- **Latest**: v9.4.0 — Pillar ⑲ (Enterprise SaaS Blueprint), 34 launcher templates, 19 pillars total
 
 ## Build & Test
 ```bash
@@ -32,7 +32,7 @@ node build.js --report     # Show size report
 node build.js --check-css  # Validate CSS custom properties
 
 # Test
-npm test                   # Run all tests (457 tests, all passing)
+npm test                   # Run all tests (483 tests, all passing)
 npm run test:watch         # Watch mode for test development
 node --test test/gen-coherence.test.js  # Run single test file
 node --test test/data-coverage.test.js  # Run data integrity tests
@@ -48,7 +48,7 @@ npm run check              # Syntax check extracted JS
 
 ## Build Process Deep Dive
 
-`build.js` concatenates 53 modules into single HTML:
+`build.js` concatenates 54 modules into single HTML:
 
 1. **Read modules** in dependency order (defined in `jsFiles` array)
 2. **Read CSS** from `styles/all.css`
@@ -57,7 +57,7 @@ npm run check              # Syntax check extracted JS
 5. **Write** to `devforge-v9.html`
 6. **Validate** size ≤2000KB (warn if exceeded)
 
-**Current Status:** ~1707KB / 2000KB limit (~85% utilized, P18 complete, room for expansion)
+**Current Status:** ~1764KB / 2000KB limit (~88% utilized, P19 complete, room for expansion)
 
 ### ⚠️ Critical: Minification Strategy
 
@@ -90,7 +90,7 @@ npm run check              # Syntax check extracted JS
 |----------|-------|---------|
 | core/ | state, i18n, events, tour, init | State, language, shortcuts |
 | data/ | presets(41), questions, techdb, compat-rules, gen-templates, helpdata | Static data (41 presets: 36 original + 5 new: CRM, Social, Logistics, Survey, Job Board) |
-| generators/ | index, p1-sdd, p2-devcontainer, p3-mcp, p4-airules, p5-quality, p7-roadmap, p9-designsystem (v2: Figma MCP, Anti-AI checklist), p10-reverse, p11-implguide (skill_guide.md), p12-security (context-aware audit prompts), p13-strategy (industry intelligence), p14-ops (ops intelligence), p15-future (market/UX/ecosystem/regulatory strategy), p16-deviq (polymorphic development intelligence), p17-promptgenome (CRITERIA 8-axis + AI Maturity), p18-promptops (ReAct + LLMOps + Prompt Registry), docs, common | 126+ file generation engine (18 pillars) |
+| generators/ | index, p1-sdd, p2-devcontainer, p3-mcp, p4-airules, p5-quality, p7-roadmap, p9-designsystem (v2: Figma MCP, Anti-AI checklist), p10-reverse, p11-implguide (skill_guide.md), p12-security (context-aware audit prompts), p13-strategy (industry intelligence), p14-ops (ops intelligence), p15-future (market/UX/ecosystem/regulatory strategy), p16-deviq (polymorphic development intelligence), p17-promptgenome (CRITERIA 8-axis + AI Maturity), p18-promptops (ReAct + LLMOps + Prompt Registry), p19-enterprise (multi-tenant arch + workflow engine + admin dashboard + enterprise components), docs, common | 130+ file generation engine (19 pillars) |
 | ui/ | wizard, render, edit, help, confirm, complexity, toc, voice, project, presets, preview, editor, diff, export, explorer, dashboard, templates, qbar, cmdpalette | UI components |
 | styles/ | all.css | Theme (dark/light), responsive |
 
@@ -227,7 +227,7 @@ See Phase 2 security audit for detailed examples.
 
 **Fix:**
 - Always add both `ja` and `en` versions
-- Search for all instances when updating numbers (41 presets, 126+ files, 18 pillars)
+- Search for all instances when updating numbers (41 presets, 130+ files, 19 pillars)
 - Use static strings in data files, not `S.lang` conditionals
 
 ### Cross-Reference Number Updates
@@ -254,6 +254,14 @@ npm run open                # Visual verification
 - Generated files: 118+→126+ (docs/65-72 added)
 - Templates: 23→32 (Launcher PT expanded for P16/P17/P18)
 - Docs count: 72 numbered files in docs/
+
+**Recent Updates (v9.4.0):**
+- Pillar ⑲ (Enterprise SaaS Blueprint) added: 18→19 pillars
+- Tests: 457→483 (added enterprise.test.js 26 tests)
+- Generated files: 126+→130+ (docs/73-76 added: enterprise arch, workflow engine, admin dashboard, enterprise components)
+- Templates: 32→34 (added Enterprise Architecture Review + Workflow Process Audit)
+- Docs count: 76 numbered files in docs/
+- Build size: ~1707KB→~1764KB (54 modules)
 
 ### Property Name Mismatches with Helper-Generated Objects
 **Problem:** Accessing properties on objects created by helper functions without checking the actual property structure.
@@ -397,7 +405,7 @@ const PR = {
 
 ## Generated Output
 
-DevForge generates **126+ files** (base: 90 files, +4 for skills/ when ai_auto=multi/full/orch, +1 for business_model.md when payment≠none, +3 for P14 ops docs, +4 for P15 future strategy docs, +4 for P16 dev IQ docs, +4 for P17 prompt genome docs, +4 for P18 prompt ops docs, +6 for .claude/ structure).
+DevForge generates **130+ files** (base: 90 files, +4 for skills/ when ai_auto=multi/full/orch, +1 for business_model.md when payment≠none, +3 for P14 ops docs, +4 for P15 future strategy docs, +4 for P16 dev IQ docs, +4 for P17 prompt genome docs, +4 for P18 prompt ops docs, +4 for P19 enterprise docs (for SaaS-like domains), +6 for .claude/ structure).
 
 → See `docs/CLAUDE-REFERENCE.md` for complete file catalog.
 
@@ -432,17 +440,23 @@ DevForge generates **126+ files** (base: 90 files, +4 for skills/ when ai_auto=m
 - `docs/71_llmops_dashboard.md` — LLMOps dashboard (3-level stack: Basic/Advanced/Enterprise)
 - `docs/72_prompt_registry.md` — Prompt registry (versioned catalog + governance)
 
+**New in v9.4.0 (Pillar ⑲):**
+- `docs/73_enterprise_architecture.md` — Multi-tenant arch (RLS/schema/DB/hybrid patterns, org ER, permission matrix, invite flow)
+- `docs/74_workflow_engine.md` — Business workflow state machines (approval/ticket/order/contract/onboarding, Mermaid stateDiagram)
+- `docs/75_admin_dashboard_spec.md` — Admin dashboard spec (KPI cards, business metrics, workload analytics, role-based views)
+- `docs/76_enterprise_components.md` — Enterprise component catalog (8 components: StatusBadge, ApprovalBar, DataTable, NotificationBell, OrgSwitcher, OnboardingStepper, AuditTimeline, InviteManager)
+
 **Key pillars:**
 - **.spec/** — constitution, specification, technical-plan, tasks, verification
 - **.devcontainer/** — devcontainer.json, Dockerfile, docker-compose.yml, post-create.sh
 - **.claude/** — 3-layer AI rules (thin root + path-specific rules + settings)
-- **docs/** — 72 documents including architecture, ER, API, screen, test-cases, security, release, WBS, prompt-playbook, design_system, qa_strategy, reverse_engineering, growth_intelligence, skill_guide, security_intelligence (OWASP 2025), threat_model, compliance_matrix, ai_security, security_testing, industry_blueprint, tech_radar, stakeholder_strategy, operational_excellence, ops_runbook, ops_checklist, prompt_genome, ai_maturity, prompt_composition, prompt_kpi, prompt_ops_pipeline, react_workflow, llmops_dashboard, prompt_registry
+- **docs/** — 76 documents including architecture, ER, API, screen, test-cases, security, release, WBS, prompt-playbook, design_system, qa_strategy, reverse_engineering, growth_intelligence, skill_guide, security_intelligence (OWASP 2025), threat_model, compliance_matrix, ai_security, security_testing, industry_blueprint, tech_radar, stakeholder_strategy, operational_excellence, ops_runbook, ops_checklist, prompt_genome, ai_maturity, prompt_composition, prompt_kpi, prompt_ops_pipeline, react_workflow, llmops_dashboard, prompt_registry, enterprise_architecture, workflow_engine, admin_dashboard_spec, enterprise_components
 - **AI rules** — CLAUDE.md (thin), .claude/rules/ (5 files), .claude/settings.json, AI_BRIEF.md, .cursorrules, .clinerules, .windsurfrules, AGENTS.md, skills/ (project.md, factory.md, catalog.md, pipelines.md, skill_map.md, agents/)
 - **CI/CD** — .github/workflows/ci.yml
 
 ## AI Prompt Launcher (Pillar ⑧)
 
-DevForge includes a **Prompt Launcher** that generates structured prompts by auto-injecting project context (name, stack, auth, entities) into 32 specialized templates:
+DevForge includes a **Prompt Launcher** that generates structured prompts by auto-injecting project context (name, stack, auth, entities) into 34 specialized templates:
 
 **Key Templates:**
 - 🔍 **Spec Review** — 4-step structured review (mission → requirements → architecture → consistency)
@@ -469,6 +483,8 @@ DevForge includes a **Prompt Launcher** that generates structured prompts by aut
 - 📊 **AI Maturity Review** — AI maturity level assessment + upgrade roadmap (P17)
 - 🔄 **ReAct Debug Loop** — ReAct 6-phase debugging protocol (P18)
 - 🔧 **Prompt Ops Review** — Prompt Ops pipeline + LLMOps dashboard review (P18)
+- 🏢 **Enterprise Architecture Review** — Multi-tenant arch, RLS, org model, permission matrix review (P19)
+- 📋 **Workflow Process Audit** — Approval/ticket/order state machine audit, SLA compliance (P19)
 
 → See `docs/AI_CODING_PROMPTS.md` for full template details and usage examples.
 
@@ -477,10 +493,10 @@ DevForge includes a **Prompt Launcher** that generates structured prompts by aut
 |------|-------|---------|
 | gen-coherence.test.js | 253 assertions | Full LMS generation + structural validation + post-generation audit (C2-C10) |
 | snapshot.test.js | 53 tests | 6 scenario regression (LMS/Blog/EC/English/PropertyMgmt/Helpdesk) + context engineering + skills validation + quality files + P12 security intelligence + P13 industry detection + P14 ops + P4 .claude/ structure (6 new tests) |
-| data-coverage.test.js | 34 tests | Data integrity: entity coverage, FK validation, domain detection (32 domains), playbook completeness, DOMAIN_OPS coverage, DOMAIN_MARKET coverage (3 new P15 tests) |
+| data-coverage.test.js | 40 tests | Data integrity: entity coverage, FK validation, domain detection (32 domains), playbook completeness, DOMAIN_OPS coverage, DOMAIN_MARKET coverage (3 new P15 tests), P19 entity tests (Organization/OrgMember/OrgInvite) |
 | r27-regression.test.js | 17 tests | Bug fixes: prices, FK, KPI, ports |
 | r28-regression.test.js | 19 tests | Quality: REST methods, AC, scope_out, verification |
-| build.test.js | build | Build size ≤2000KB, pillar function existence (P1-P18) |
+| build.test.js | build | Build size ≤2000KB, pillar function existence (P1-P19) |
 | compat.test.js | 75 tests + 7 synergy | Compatibility validation (58 rules: 11 ERROR, 37 WARN, 10 INFO) + calcSynergy unit tests |
 | security.test.js | 26 tests | Security: CSP, SRI, sanitization, XSS prevention, proto pollution, .claude/settings.json safety (2 new tests) |
 | ops.test.js | 16 tests | Ops Intelligence (P14): runbook generation, checklist, ops plane design, SLO adaptation, domain-specific flags, observability stack, circuit breaker, audit schema |
@@ -488,10 +504,11 @@ DevForge includes a **Prompt Launcher** that generates structured prompts by aut
 | deviq.test.js | 20 tests | Polymorphic Development Intelligence (P16): DEV_METHODOLOGY_MAP (32 domains), PHASE_PROMPTS (6 phases), INDUSTRY_STRATEGY (15 industries), NEXT_GEN_UX (4 keywords), doc generation (60-63), Mermaid diagrams, bilingual content |
 | promptgenome.test.js | 22 tests | Prompt Genome Engine (P17): CRITERIA_FRAMEWORK (8 axes), AI_MATURITY_MODEL (3 levels), _APPROACHES (12), getSynergy, APPROACH_KPI, doc generation (65-68), bilingual content |
 | promptops.test.js | 26 tests | Prompt Engineering OS (P18): REACT_PROTOCOL (6 phases × 4 stages), LLMOPS_STACK (3 levels), PROMPT_LIFECYCLE (5 stages), doc generation (69-72), no template literal contamination |
+| enterprise.test.js | 26 tests | Enterprise SaaS Blueprint (P19): ENTERPRISE_ARCH_PATTERNS (4), WORKFLOW_TEMPLATES (5), ADMIN_DASHBOARD_SPECS (4), ENTERPRISE_COMPONENTS (8), gen73-76 output, bilingual, domain skip logic |
 | presets.test.js | 4 tests | Preset count (41), bilingual names, tech fields, purpose |
 | Others | ~21 tests | i18n, state, techdb |
 
-**Total: 457 tests (all passing, 100% pass rate) + 7 synergy unit tests**
+**Total: 483 tests (all passing, 100% pass rate) + 7 synergy unit tests**
 
 ## Writing Tests
 
