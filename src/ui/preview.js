@@ -415,6 +415,10 @@ function buildFileTree(){
     files.push({folder:true,name:'docs'});
     ['60_methodology_intelligence','61_ai_brainstorm_playbook','62_industry_deep_dive','63_next_gen_ux_strategy'].forEach(f=>
       files.push({name:'  '+f+'.md',path:'docs/'+f+'.md'}));
+  } else if(pillar===16){ // Prompt Genome (P17)
+    files.push({folder:true,name:'docs'});
+    ['65_prompt_genome','66_ai_maturity_assessment','67_prompt_composition_guide','68_prompt_kpi_dashboard'].forEach(f=>
+      files.push({name:'  '+f+'.md',path:'docs/'+f+'.md'}));
   }
   // Common files
   files.push({name:'───────────',path:''});
