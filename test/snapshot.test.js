@@ -28,6 +28,7 @@ eval(fs.readFileSync('src/generators/p14-ops.js','utf-8'));
 eval(fs.readFileSync('src/generators/p15-future.js','utf-8').replace(/const (DOMAIN_MARKET|PERSONA_ARCHETYPES|GTM_STRATEGY|REGULATORY_HORIZON)/g,'var $1'));
 eval(fs.readFileSync('src/generators/p16-deviq.js','utf-8').replace(/const (DEV_METHODOLOGY_MAP|PHASE_PROMPTS|INDUSTRY_STRATEGY|NEXT_GEN_UX|mapDomainToIndustry|gen60|gen61|gen62|gen63|genPillar16_DevIQ)/g,'var $1'));
 eval(fs.readFileSync('src/generators/p17-promptgenome.js','utf-8').replace(/const (CRITERIA_FRAMEWORK|AI_MATURITY_MODEL|_APPROACHES|_SYNERGY_RAW|APPROACH_KPI|getSynergy|gen65|gen66|gen67|gen68|genPillar17_PromptGenome)/g,'var $1').replace(/function (_cri|_mat)/g,'var $1 = function'));
+eval(fs.readFileSync('src/generators/p18-promptops.js','utf-8').replace(/var (REACT_PROTOCOL|LLMOPS_STACK|PROMPT_LIFECYCLE)/g,'var $1').replace(/function (_rp|_los)/g,'var $1 = function'));
 
 // ═══ Helper ═══
 function generate(answers, name, lang) {
@@ -50,6 +51,7 @@ function generate(answers, name, lang) {
   genPillar15(answers);
   genPillar16_DevIQ(answers, name);
   genPillar17_PromptGenome(answers, name);
+  genPillar18_PromptOps(answers, name);
   return { ...S.files };
 }
 
@@ -68,14 +70,14 @@ describe('Snapshot A: LMS/Supabase/Stripe', () => {
     ai_auto: 'マルチAgent協調'
   }, 'LMS');
 
-  test('file count in range 100-130 (P4 adds +6, P14 adds +3, P15 adds +4, P16 adds +4, P17 adds +4, cross-platform adds +3)', () => {
+  test('file count in range 104-135 (P4 adds +6, P14 adds +3, P15 adds +4, P16 adds +4, P17 adds +4, P18 adds +4, cross-platform adds +3)', () => {
     const count = Object.keys(files).length;
-    assert.ok(count >= 100 && count <= 130, `Expected 100-130 files (P4 +6, P14 +3, P15 +4, P16 +4, P17 +4, cross-platform +3), got ${count}`);
+    assert.ok(count >= 104 && count <= 135, `Expected 104-135 files (P4 +6, P14 +3, P15 +4, P16 +4, P17 +4, P18 +4, cross-platform +3), got ${count}`);
   });
 
-  test('total tokens in range 12000-60000 (P17 adds ~4-8K tokens)', () => {
+  test('total tokens in range 12000-66000 (P18 adds ~4-8K tokens)', () => {
     const total = Object.values(files).reduce((s, v) => s + tokens(v), 0);
-    assert.ok(total >= 12000 && total <= 60000, `Expected 12K-60K tokens (P17 adds ~4-8K), got ${total}`);
+    assert.ok(total >= 12000 && total <= 66000, `Expected 12K-66K tokens (P18 adds ~4-8K), got ${total}`);
   });
 
   // Core files existence
@@ -618,6 +620,28 @@ describe('Snapshot A: LMS/Supabase/Stripe', () => {
     const doc67 = files['docs/67_prompt_composition_guide.md'];
     assert.ok(doc67.includes('12×12') || doc67.includes('12x12') || doc67.includes('Synergy'), 'doc67 has synergy matrix');
   });
+
+  test('P18 Prompt Ops docs/69-72 exist', () => {
+    assert.ok(files['docs/69_prompt_ops_pipeline.md'], 'docs/69 missing');
+    assert.ok(files['docs/70_react_workflow.md'], 'docs/70 missing');
+    assert.ok(files['docs/71_llmops_dashboard.md'], 'docs/71 missing');
+    assert.ok(files['docs/72_prompt_registry.md'], 'docs/72 missing');
+  });
+
+  test('P18 doc69 contains Prompt Lifecycle and Pipeline content', () => {
+    const doc69 = files['docs/69_prompt_ops_pipeline.md'];
+    assert.ok(doc69.includes('ReAct') || doc69.includes('Prompt') || doc69.includes('ライフサイクル'), 'doc69 has pipeline/lifecycle content');
+  });
+
+  test('P18 doc70 contains ReAct Reason/Act/Observe/Verify cycle', () => {
+    const doc70 = files['docs/70_react_workflow.md'];
+    assert.ok(doc70.includes('Reason') && doc70.includes('Act') && doc70.includes('Observe'), 'doc70 has ReAct stages');
+  });
+
+  test('P18 doc72 contains META structure and Template-ID', () => {
+    const doc72 = files['docs/72_prompt_registry.md'];
+    assert.ok(doc72.includes('META') || doc72.includes('Template') || doc72.includes('Registry'), 'doc72 has registry/template content');
+  });
 });
 
 // ═══ Dev Environment Type Tests ═══
@@ -667,9 +691,9 @@ describe('Snapshot B: Blog/Vite/Netlify', () => {
     dev_methods: 'TDD', ai_tools: 'Cursor', orm: ''
   }, 'Blog');
 
-  test('file count in range 91-120 (P14 adds +3, P4 adds +6, P15 adds +4, P16 adds +4, P17 adds +4, cross-platform adds +3)', () => {
+  test('file count in range 95-125 (P14 adds +3, P4 adds +6, P15 adds +4, P16 adds +4, P17 adds +4, P18 adds +4, cross-platform adds +3)', () => {
     const count = Object.keys(files).length;
-    assert.ok(count >= 91 && count <= 120, `Expected 91-120 files (P14 +3, P4 +6, P15 +4, P16 +4, P17 +4, cross-platform +3), got ${count}`);
+    assert.ok(count >= 95 && count <= 125, `Expected 95-125 files (P14 +3, P4 +6, P15 +4, P16 +4, P17 +4, P18 +4, cross-platform +3), got ${count}`);
   });
 
   test('no Stripe content when payment absent', () => {

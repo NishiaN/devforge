@@ -74,6 +74,7 @@ const jsFiles = [
   'generators/p15-future.js',
   'generators/p16-deviq.js',
   'generators/p17-promptgenome.js',
+  'generators/p18-promptops.js',
   'generators/docs.js',
   'generators/common.js',
 
