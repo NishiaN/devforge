@@ -1,7 +1,7 @@
 /* ═══ WIZARD CORE ═══ */
 function initPills(){
   const _ja=S.lang==='ja';
-  const c=$('pills');if(!c)return;c.innerHTML='';
+  const c=$('sbPills');if(!c)return;c.innerHTML='';
   const qs=getQ();
   for(let i=1;i<=3;i++){
     const ph=qs[i];if(!ph)continue;

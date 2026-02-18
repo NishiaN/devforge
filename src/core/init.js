@@ -100,9 +100,9 @@ function applyLang(){
   }
   // Keyboard shortcuts overlay
   const kbRows=document.querySelectorAll('.kb-row span:first-child');
-  const kbJa=['ヘルプ・マニュアル','ショートカット一覧','コマンドパレット','テーマ切替','言語切替','エクスポート','全ファイルコピー','プロジェクト管理','エクスプローラー','ダッシュボード','ロードマップ','AI起動'];
-  const kbEn=['Help / Manual','Shortcut List','Command Palette','Toggle Theme','Toggle Language','Export','Copy All Files','Project Manager','Explorer','Dashboard','Roadmap','AI Launcher'];
-  kbRows.forEach((el,i)=>{if(i<12)el.textContent=ja?kbJa[i]:kbEn[i];});
+  const kbJa=['ヘルプ・マニュアル','ショートカット一覧','コマンドパレット','テーマ切替','言語切替','エクスポート','全ファイルコピー','プロジェクト管理','サイドバー切替','エクスプローラー','ダッシュボード','ロードマップ','AI起動'];
+  const kbEn=['Help / Manual','Shortcut List','Command Palette','Toggle Theme','Toggle Language','Export','Copy All Files','Project Manager','Toggle Sidebar','Explorer','Dashboard','Roadmap','AI Launcher'];
+  kbRows.forEach((el,i)=>{if(i<13)el.textContent=ja?kbJa[i]:kbEn[i];});
   // Mobile tabs
   const mobtabs=document.querySelectorAll('.mobtab');
   if(mobtabs.length>=2){mobtabs[0].textContent=ja?'💬 チャット':'💬 Chat';mobtabs[1].textContent=ja?'📄 プレビュー':'📄 Preview';}
@@ -113,6 +113,7 @@ function applyLang(){
     const p=prevP.querySelector('p');if(p&&!S.previewFile)p.textContent=ja?'質問に回答するとリアルタイムでプレビューが更新されます':'Preview updates in real-time as you answer questions';
   }
   // Phase pills
+  if(typeof updateSidebarLabels==='function')updateSidebarLabels();
   initPills();
   // Refresh presets for lang
   if($('presetRow'))initPresets();
@@ -164,6 +165,7 @@ document.querySelectorAll('.skcard').forEach(el=>{
 if(S.projectName&&S.phase>0){
   $('onboard').style.display='none';
   $('ws').style.display='flex';
+  if(typeof initSidebar==='function')initSidebar();
   initPills();updProgress();
   if(Object.keys(S.files).length>0){initPrevTabs();initPillarTabs();showFileTree();createQbar();}
   findNext();

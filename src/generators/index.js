@@ -144,6 +144,7 @@ function finishGen(_errs){
     _sb2.appendChild(_sn);_sb2.scrollTop=_sb2.scrollHeight;
     showExportGrid();
     showFileTree();
+    if(typeof switchSidebarTab==='function')switchSidebarTab('files');
     initPrevTabs();initPillarTabs();updProgress();save();
     createQbar();
     setTimeout(showPostGenGuide,400);

@@ -131,6 +131,7 @@ function start(){
     setTimeout(()=>ws.classList.remove('phase-enter'),300);
   },200);
 
+  if(typeof initSidebar==='function')initSidebar();
   initPills();updProgress();showQ();
   if(presetName&&preFilledCount>0){
     toast(_ja?`✅ "${presetName}" を適用 — ${preFilledCount}件の回答を自動入力`:`✅ Applied "${presetName}" — ${preFilledCount} answers pre-filled`);

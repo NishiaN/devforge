@@ -54,6 +54,7 @@ document.addEventListener('keydown',e=>{
   if(e.ctrlKey&&k==='5'){e.preventDefault();S.pillar=5;if(typeof showFileTree==='function')showFileTree();}
   if(e.ctrlKey&&k==='6'){e.preventDefault();S.pillar=6;if(typeof showRoadmapUI==='function')showRoadmapUI();}
   if(e.ctrlKey&&k==='7'){e.preventDefault();if(typeof showAILauncher==='function')showAILauncher();}
+  if(e.ctrlKey&&k==='b'){e.preventDefault();if(typeof toggleSidebar==='function')toggleSidebar();}
   if(e.key==='Escape'){
     if(!popModal()){
       // Fallback: close any visible modal

@@ -55,6 +55,7 @@ const jsFiles = [
   'ui/project.js',
   'ui/presets.js',
   'ui/preview.js',
+  'ui/sidebar.js',
 
   // Generators (file generation engine)
   'generators/index.js',

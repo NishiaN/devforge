@@ -2,7 +2,7 @@
 const $=id=>document.getElementById(id);
 const KEY='devforge-v9';
 const V=9;
-let S={phase:0,step:0,answers:{},projectName:'',skill:'intermediate',preset:'custom',lang:'ja',genLang:'ja',theme:'dark',pillar:0,previewFile:null,files:{},skipped:[],progress:{},editedFiles:{},prevFiles:{},qbarDismissed:false,pinnedFiles:[],recentFiles:[],_v:V};
+let S={phase:0,step:0,answers:{},projectName:'',skill:'intermediate',preset:'custom',lang:'ja',genLang:'ja',theme:'dark',pillar:0,previewFile:null,files:{},skipped:[],progress:{},editedFiles:{},prevFiles:{},qbarDismissed:false,pinnedFiles:[],recentFiles:[],sidebarOpen:true,_v:V};
 function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML;}
 function escAttr(s){return String(s).replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/"/g,'&quot;');}
 function _jp(s,d){if(s==null)return d;try{return JSON.parse(s);}catch(e){return d;}}
@@ -140,6 +140,7 @@ function load(){
     if(typeof o.qbarDismissed==='boolean')S.qbarDismissed=o.qbarDismissed;
     if(Array.isArray(o.pinnedFiles))S.pinnedFiles=o.pinnedFiles;
     if(Array.isArray(o.recentFiles))S.recentFiles=o.recentFiles;
+    if(typeof o.sidebarOpen==='boolean')S.sidebarOpen=o.sidebarOpen;
     if(typeof o._v==='number')S._v=o._v;
     if(!S._v||S._v<V){
       S.genLang=S.genLang||S.lang||'ja';

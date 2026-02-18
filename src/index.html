@@ -33,18 +33,6 @@
   </header>
   <div class="pstrip"><div class="pstrip-fill" id="pbar" style="width:0%"></div></div>
 
-  <!-- Left Hover Navigation Drawer -->
-  <nav class="pill-drawer" role="navigation" aria-label="Progress" id="pillDrawer">
-    <div class="pill-drawer-tab">PHASE</div>
-    <div class="pill-drawer-body">
-      <div class="pd-title" id="pdTitle">Progress</div>
-      <div id="pills"></div>
-      <div class="pd-progress"><div class="pd-bar"><div class="pd-bar-fill" id="pdBar" style="width:0%"></div></div><span id="pdPct">0%</span></div>
-      <button class="btn btn-p pd-gen" id="pdGenBtn" onclick="generateAll()">🚀 生成</button>
-    </div>
-  </nav>
-
-
   <!-- Onboarding -->
   <div class="onboard" id="onboard" role="region" aria-label="Onboarding">
     <div class="hero-anim">
@@ -91,19 +79,44 @@
   <main id="ws" role="main" aria-label="Workspace" style="display:none;">
     <div class="toc-panel" id="tocPanel" role="navigation" aria-label="Table of contents"></div>
     <div class="mobtabs" role="tablist" aria-label="View switch"><div class="mobtab on" onclick="mobSw('c')" role="tab" aria-selected="true">💬 チャット</div><div class="mobtab" onclick="mobSw('p')" role="tab" aria-selected="false">📄 プレビュー</div></div>
-    <div class="ws">
-      <div class="panel-c" id="panC">
-        <div class="cbody" id="cbody" role="log" aria-live="polite" aria-label="Conversation"></div>
-        <div class="izone" id="izone" role="form" aria-label="Answer input"></div>
-      </div>
-      <div class="panel-p" id="panP" role="complementary" aria-label="Preview panel">
-        <div class="prev-head">
-          <h3 id="panPTitle">📁 生成ファイル</h3>
-          <div class="view-nav" id="viewNav"><button class="btn btn-xs btn-s view-nav-btn disabled" id="viewBackBtn" onclick="viewBack()" title="前の画面" aria-label="Previous screen">⏮</button><button class="btn btn-xs btn-s view-nav-btn disabled" id="viewFwdBtn" onclick="viewForward()" title="次の画面" aria-label="Next screen">⏭</button></div>
-          <div class="prev-tabs" id="prevTabs" role="tablist" aria-label="Preview tabs"></div>
+    <div class="ws-outer">
+      <aside class="sidebar" id="sidebar" role="complementary" aria-label="Sidebar navigation">
+        <div class="sb-head">
+          <button class="sb-toggle" id="sbToggle" onclick="toggleSidebar()" title="サイドバー切替 (Ctrl+B)" aria-label="Toggle sidebar">◀</button>
         </div>
-        <div class="pillar-tabs" id="pillarTabs" role="tablist" aria-label="Pillar tabs"></div>
-        <div class="prev-body" id="prevBody" aria-live="polite"><p class="prev-placeholder">質問に回答するとリアルタイムでプレビューが更新されます</p></div>
+        <div class="sb-body" id="sbBody">
+          <div class="sb-tabs" role="tablist" aria-label="Sidebar tabs">
+            <button class="sb-tab on" data-tab="progress" onclick="switchSidebarTab('progress')" role="tab" aria-selected="true">📋</button>
+            <button class="sb-tab" data-tab="files" onclick="switchSidebarTab('files')" role="tab" aria-selected="false">📁</button>
+          </div>
+          <div class="sb-section sb-progress" id="sbProgress">
+            <div class="pd-title" id="pdTitle">Progress</div>
+            <div id="sbPills"></div>
+            <div class="pd-progress"><div class="pd-bar"><div class="pd-bar-fill" id="pdBar" style="width:0%"></div></div><span id="pdPct">0%</span></div>
+            <button class="btn btn-p pd-gen" id="pdGenBtn" onclick="generateAll()">🚀 生成</button>
+          </div>
+          <div class="sb-section sb-files" id="sbFiles" style="display:none"></div>
+        </div>
+      </aside>
+      <div class="sb-iconbar" id="sbIconbar" style="display:none" aria-hidden="true">
+        <button class="sb-icon-btn" onclick="toggleSidebar()" title="サイドバーを開く" aria-label="Open sidebar">▶</button>
+        <button class="sb-icon-btn" onclick="toggleSidebar();switchSidebarTab('progress')" title="進捗" aria-label="Progress">📋</button>
+        <button class="sb-icon-btn" onclick="toggleSidebar();switchSidebarTab('files')" title="ファイル" aria-label="Files">📁</button>
+      </div>
+      <div class="ws">
+        <div class="panel-c" id="panC">
+          <div class="cbody" id="cbody" role="log" aria-live="polite" aria-label="Conversation"></div>
+          <div class="izone" id="izone" role="form" aria-label="Answer input"></div>
+        </div>
+        <div class="panel-p" id="panP" role="complementary" aria-label="Preview panel">
+          <div class="prev-head">
+            <h3 id="panPTitle">📁 生成ファイル</h3>
+            <div class="view-nav" id="viewNav"><button class="btn btn-xs btn-s view-nav-btn disabled" id="viewBackBtn" onclick="viewBack()" title="前の画面" aria-label="Previous screen">⏮</button><button class="btn btn-xs btn-s view-nav-btn disabled" id="viewFwdBtn" onclick="viewForward()" title="次の画面" aria-label="Next screen">⏭</button></div>
+            <div class="prev-tabs" id="prevTabs" role="tablist" aria-label="Preview tabs"></div>
+          </div>
+          <div class="pillar-tabs" id="pillarTabs" role="tablist" aria-label="Pillar tabs"></div>
+          <div class="prev-body" id="prevBody" aria-live="polite"><p class="prev-placeholder">質問に回答するとリアルタイムでプレビューが更新されます</p></div>
+        </div>
       </div>
     </div>
   </main>
@@ -130,6 +143,7 @@
       <div class="kb-row"><span class="kblbl">エクスポート</span><span class="kb-key">Ctrl+E</span></div>
       <div class="kb-row"><span class="kblbl">全ファイルコピー</span><span class="kb-key">Ctrl+Shift+C</span></div>
       <div class="kb-row"><span class="kblbl">プロジェクト管理</span><span class="kb-key">Ctrl+M</span></div>
+      <div class="kb-row"><span class="kblbl">サイドバー切替</span><span class="kb-key">Ctrl+B</span></div>
       <div class="kb-row"><span class="kblbl">エクスプローラー</span><span class="kb-key">Ctrl+4</span></div>
       <div class="kb-row"><span class="kblbl">ダッシュボード</span><span class="kb-key">Ctrl+5</span></div>
       <div class="kb-row"><span class="kblbl">ロードマップ</span><span class="kb-key">Ctrl+6</span></div>

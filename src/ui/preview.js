@@ -338,6 +338,7 @@ function showFileTree(){
   }
   
   body.innerHTML=h;
+  if(typeof renderSidebarFiles==='function')renderSidebarFiles();
 }
 
 function buildFileTree(){
@@ -456,6 +457,7 @@ function previewFile(path){
   if(S.recentFiles.length>10)S.recentFiles=S.recentFiles.slice(0,10); // Max 10
 
   save();
+  if(typeof renderSidebarFiles==='function')renderSidebarFiles();
   // Update QBar to show file actions (Edit/Copy)
   if(typeof updateQbar==='function')updateQbar();
   document.querySelectorAll('.file-tree li').forEach(li=>{
