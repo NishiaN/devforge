@@ -29,6 +29,7 @@ eval(fs.readFileSync('src/generators/p15-future.js','utf-8').replace(/const (DOM
 eval(fs.readFileSync('src/generators/p16-deviq.js','utf-8').replace(/const (DEV_METHODOLOGY_MAP|PHASE_PROMPTS|INDUSTRY_STRATEGY|NEXT_GEN_UX|mapDomainToIndustry|gen60|gen61|gen62|gen63|genPillar16_DevIQ)/g,'var $1'));
 eval(fs.readFileSync('src/generators/p17-promptgenome.js','utf-8').replace(/const (CRITERIA_FRAMEWORK|AI_MATURITY_MODEL|_APPROACHES|_SYNERGY_RAW|APPROACH_KPI|getSynergy|gen65|gen66|gen67|gen68|genPillar17_PromptGenome)/g,'var $1').replace(/function (_cri|_mat)/g,'var $1 = function'));
 eval(fs.readFileSync('src/generators/p18-promptops.js','utf-8').replace(/var (REACT_PROTOCOL|LLMOPS_STACK|PROMPT_LIFECYCLE)/g,'var $1').replace(/function (_rp|_los)/g,'var $1 = function'));
+eval(fs.readFileSync('src/generators/p19-enterprise.js','utf-8'));
 
 // ═══ Helper ═══
 function generate(answers, name, lang) {
@@ -52,6 +53,7 @@ function generate(answers, name, lang) {
   genPillar16_DevIQ(answers, name);
   genPillar17_PromptGenome(answers, name);
   genPillar18_PromptOps(answers, name);
+  genPillar19_EnterpriseSaaS(answers, name);
   return { ...S.files };
 }
 
@@ -786,6 +788,13 @@ describe('Snapshot C: EC/Express/Railway', () => {
     assert.ok(qa.includes('ec') || qa.includes('EC'), 'Missing EC domain marker');
     assert.ok(qa.includes('在庫競合') || qa.includes('inventory conflicts') || qa.includes('同時購入'), 'Missing EC-specific QA focus area');
   });
+
+  test('P19 Enterprise docs/73-76 exist for EC domain', () => {
+    assert.ok(files['docs/73_enterprise_architecture.md'], 'docs/73 missing for EC');
+    assert.ok(files['docs/74_workflow_engine.md'], 'docs/74 missing for EC');
+    assert.ok(files['docs/75_admin_dashboard_spec.md'], 'docs/75 missing for EC');
+    assert.ok(files['docs/76_enterprise_components.md'], 'docs/76 missing for EC');
+  });
 });
 
 // ═══ Scenario D: English output ═══
@@ -821,6 +830,19 @@ describe('Snapshot D: English Output', () => {
     assert.ok(qa.includes('saas'), 'Missing saas domain marker');
     assert.ok(qa.includes('Multi-tenant') || qa.includes('tenant'), 'Missing saas-specific QA focus area');
     assert.ok(qa.includes('Priority Matrix'), 'Missing English priority matrix');
+  });
+
+  test('P19 Enterprise docs/73-76 exist for SaaS domain (English)', () => {
+    assert.ok(files['docs/73_enterprise_architecture.md'], 'docs/73 missing for SaaS');
+    assert.ok(files['docs/74_workflow_engine.md'], 'docs/74 missing for SaaS');
+    assert.ok(files['docs/75_admin_dashboard_spec.md'], 'docs/75 missing for SaaS');
+    assert.ok(files['docs/76_enterprise_components.md'], 'docs/76 missing for SaaS');
+  });
+
+  test('P19 doc73 has Organization and RLS content (English output)', () => {
+    const doc73 = files['docs/73_enterprise_architecture.md'];
+    assert.ok(doc73.includes('Organization') || doc73.includes('RLS') || doc73.includes('Row-Level'), 'doc73 missing org/RLS content');
+    assert.ok(doc73.includes('Enterprise') || doc73.includes('multi-tenant') || doc73.includes('Multi-tenant'), 'doc73 missing enterprise/multi-tenant content');
   });
 });
 
@@ -936,6 +958,11 @@ describe('Snapshot F: Helpdesk', () => {
     const playbook = files['docs/31_industry_playbook.md'];
     // Check for skill description format
     assert.ok(playbook.includes('チャーン予測') || playbook.includes('Churn Prediction') || playbook.includes('入力:') || playbook.includes('Input:'), 'Missing saas AI skill');
+  });
+
+  test('P19 Enterprise docs/73 and docs/76 exist for saas/helpdesk domain', () => {
+    assert.ok(files['docs/73_enterprise_architecture.md'], 'docs/73 missing for Helpdesk/SaaS');
+    assert.ok(files['docs/76_enterprise_components.md'], 'docs/76 missing for Helpdesk/SaaS');
   });
 });
 
@@ -1300,6 +1327,18 @@ describe('Snapshot H: Fintech/Payment domain', () => {
     assert.ok(
       runbook.includes('transaction_id') || runbook.includes('amount') || runbook.includes('取引'),
       'Fintech ops runbook should reference transaction audit fields'
+    );
+  });
+
+  test('P19 Enterprise docs/73 exists for Fintech domain', () => {
+    assert.ok(files['docs/73_enterprise_architecture.md'], 'docs/73 missing for Fintech');
+  });
+
+  test('P19 doc73 has isolation/tenant content for Fintech', () => {
+    const doc73 = files['docs/73_enterprise_architecture.md'];
+    assert.ok(
+      doc73.includes('fintech') || doc73.includes('RLS') || doc73.includes('tenant') || doc73.includes('isolation'),
+      'doc73 missing fintech/isolation content'
     );
   });
 });
