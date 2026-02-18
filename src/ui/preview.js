@@ -423,6 +423,10 @@ function buildFileTree(){
     files.push({folder:true,name:'docs'});
     ['69_prompt_ops_pipeline','70_react_workflow','71_llmops_dashboard','72_prompt_registry'].forEach(f=>
       files.push({name:'  '+f+'.md',path:'docs/'+f+'.md'}));
+  } else if(pillar===18){ // Enterprise SaaS (P19)
+    files.push({folder:true,name:'docs'});
+    ['73_enterprise_architecture','74_workflow_engine','75_admin_dashboard_spec','76_enterprise_components'].forEach(f=>
+      files.push({name:'  '+f+'.md',path:'docs/'+f+'.md'}));
   }
   // Common files
   files.push({name:'───────────',path:''});
