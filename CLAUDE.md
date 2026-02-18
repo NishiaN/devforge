@@ -32,7 +32,7 @@ node build.js --report     # Show size report
 node build.js --check-css  # Validate CSS custom properties
 
 # Test
-npm test                   # Run all tests (483 tests, all passing)
+npm test                   # Run all tests (489 tests, all passing)
 npm run test:watch         # Watch mode for test development
 node --test test/gen-coherence.test.js  # Run single test file
 node --test test/data-coverage.test.js  # Run data integrity tests
@@ -403,6 +403,8 @@ const PR = {
 
 **Summary:** Create generator → Register in build system → Update UI & i18n → Update docs → Add tests → Check size budget (≤2000KB)
 
+**⚠️ Easy to miss:** Add an `else if(pillar===N)` branch to `buildFileTree()` in `src/ui/preview.js` (line ~426). Each pillar tab maps to an index (P1=0 … P19=18). Without this, the pillar's docs are invisible in the file tree even though they exist in `S.files`.
+
 ## Generated Output
 
 DevForge generates **130+ files** (base: 90 files, +4 for skills/ when ai_auto=multi/full/orch, +1 for business_model.md when payment≠none, +3 for P14 ops docs, +4 for P15 future strategy docs, +4 for P16 dev IQ docs, +4 for P17 prompt genome docs, +4 for P18 prompt ops docs, +4 for P19 enterprise docs (for SaaS-like domains), +6 for .claude/ structure).
@@ -508,7 +510,7 @@ DevForge includes a **Prompt Launcher** that generates structured prompts by aut
 | presets.test.js | 4 tests | Preset count (41), bilingual names, tech fields, purpose |
 | Others | ~21 tests | i18n, state, techdb |
 
-**Total: 483 tests (all passing, 100% pass rate) + 7 synergy unit tests**
+**Total: 489 tests (all passing, 100% pass rate) + 7 synergy unit tests**
 
 ## Writing Tests
 
