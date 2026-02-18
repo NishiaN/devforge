@@ -17468,7 +17468,7 @@ prompt:'API統合コード生成:\n1. docs/05_api_design.mdのエンドポイン
 fmt:'```typescript:lib/api/client.ts\n// API client with types\n```\n```typescript:lib/api/types.ts\n// Request/Response types\n```\n```typescript:tests/api/integration.test.ts\n// Integration tests\n```'},
 a11y:{icon:'♿',label:'アクセシビリティ監査',desc:'WCAG 2.1準拠チェックと修正',
 sys:'あなたはアクセシビリティ専門家です。WCAG 2.1 AA基準でUIを監査します。',
-prompt:'アクセシビリティ監査:\n1. docs/26_design_system.mdのデザイントークン（色コントラスト・フォントサイズ）を確認\n2. docs/06_screen_design.mdの画面一覧から主要画面のUI要素を特定\n3. WCAG 2.1 AA 4原則（知覚可能・操作可能・理解可能・堅牢）で評価\n4. 各違反に具体的なHTML/ARIA修正コードを提示\n5. axe-coreによる自動テストコードを生成',
+prompt:'アクセシビリティ監査:\n1. docs/26_design_system.mdのデザイントークン（色コントラスト・フォントサイズ）を確認\n2. docs/06_screen_design.mdの画面一覧から主要画面のUI要素を特定\n3. WCAG 2.1 AA 4原則（知覚可能・操作可能・理解可能・堅牢）で評価\n4. 各違反に具体的なHTML/ARIA修正コードを提示\n5. docs/57_user_experience_strategy.mdのアクセシビリティ戦略・デジタルウェルビーイングセクションを参照し、UX包括性の観点で追加評価\n6. axe-coreによる自動テストコードを生成',
 fmt:'## WCAG 2.1 AA 監査結果\n| # | 基準 | 画面 | 要素 | 状態 | 修正コード |\n|---|------|------|------|------|------------|\n\n## 自動テスト\n```typescript:tests/a11y.test.ts\n// axe-core tests\n```'},
 migrate:{icon:'🔄',label:'マイグレーション支援',desc:'技術スタック移行計画の策定',
 sys:'あなたはマイグレーションアーキテクトです。データ整合性を保ちながら段階的移行を計画します。',
@@ -17484,7 +17484,7 @@ prompt:'国際化実装:\n1. コードからハードコードされた文字列
 fmt:'## 抽出された文字列\n| キー | 日本語 | English |\n|------|--------|----------|\n\n```json:locales/ja.json\n{}\n```\n```json:locales/en.json\n{}\n```\n\n## 変換後コード\n```typescript:path/to/file.ts\n// i18n-ready code\n```'},
 growth:{icon:'📈',label:'グロース戦略',desc:'成長ファネル・KPI・価格戦略の最適化',
 sys:'あなたはグロースエンジニアです。データドリブンな成長戦略を設計します。',
-prompt:'グロース分析:\n1. docs/41_growth_intelligence.mdの成長ファネルとCVRベンチマークを確認\n2. 現在のスタック構成のシナジースコアを評価\n3. ドメイン別グロース方程式に基づきボトルネックを特定\n4. 5つの成長レバーを優先度順に提案\n5. 松竹梅の3段階価格戦略を設計（行動経済学: 妥協効果・アンカリング）\n6. docs/48_industry_blueprint.mdの業界成長パターン（TAM/SAM/SOM戦略）と照合\n7. docs/50_stakeholder_strategy.mdのターゲット戦略との整合性を検証',
+prompt:'グロース分析:\n1. docs/41_growth_intelligence.mdの成長ファネルとCVRベンチマークを確認\n2. 現在のスタック構成のシナジースコアを評価\n3. ドメイン別グロース方程式に基づきボトルネックを特定\n4. 5つの成長レバーを優先度順に提案\n5. 松竹梅の3段階価格戦略を設計（行動経済学: 妥協効果・アンカリング）\n6. docs/48_industry_blueprint.mdの業界成長パターン（TAM/SAM/SOM戦略）と照合\n7. docs/50_stakeholder_strategy.mdのターゲット戦略との整合性を検証\n8. docs/56_market_positioning.mdの市場ポジショニング・競合分析をグロースファネルに統合し、差別化優位を特定',
 fmt:'## ファネル分析\n| ステージ | 現状CVR | 目標CVR | 改善施策 |\n\n## 成長レバー\n| # | レバー | 期待効果 | 工数 | 優先度 |\n\n## 価格戦略\n| プラン | 価格 | 機能 | ターゲット |'},
 reverse:{icon:'🎯',label:'ゴール逆算設計',desc:'目標からの逆算計画とギャップ分析',
 sys:'あなたはプロジェクトストラテジストです。ゴールから逆算して計画を策定します。',
@@ -17508,11 +17508,11 @@ prompt:'Ops準備レビュー:\n1. docs/53_ops_runbook.mdのSLO/SLI定義がド�
 fmt:'## Ops Readiness スコア\n| Capability | 状態 | 妥当性 | 改善アクション |\n|------------|------|--------|----------------|\n| SLO定義 | ✅/⚠️/❌ | 99.9%(要件: 99.99%) | ... |\n\n## SLO妥当性評価\n| SLI | 現在設定 | ドメイン推奨 | 判定 |\n\n## 改善ロードマップ\n| 優先度 | 項目 | 期限 | 担当 |'},
 strategy:{icon:'🏢',label:'戦略インテリジェンス',desc:'業界ブループリント・テックレーダー・ステークホルダー戦略',
 sys:'あなたはProduct Strategist/Business Analystです。事業戦略の整合性を検証します。',
-prompt:'戦略インテリジェンス分析:\n1. docs/48_industry_blueprint.mdの業界ブループリントとの適合度を検証（TAM/SAM/SOM戦略、規制遵守）\n2. docs/49_tech_radar.mdのテックレーダー評価（Adopt/Trial/Assess/Hold）と技術選定の整合性をチェック\n3. docs/50_stakeholder_strategy.mdのステークホルダー戦略（ターゲット・KPI・成長指標）との乖離を検出\n4. docs/51_operational_excellence.mdの運用成熟度ギャップ分析（現状Lv1→目標Lv3等）\n5. docs/52_advanced_scenarios.mdのロードマップから短期アクション（3ヶ月以内）を抽出\n6. docs/41_growth_intelligence.mdの成長方程式とビジネスモデルの整合性を評価\n7. 戦略スコアカード（5軸評価）を作成し、優先改善領域を提示',
+prompt:'戦略インテリジェンス分析:\n1. docs/48_industry_blueprint.mdの業界ブループリントとの適合度を検証（TAM/SAM/SOM戦略、規制遵守）\n2. docs/49_tech_radar.mdのテックレーダー評価（Adopt/Trial/Assess/Hold）と技術選定の整合性をチェック\n3. docs/50_stakeholder_strategy.mdのステークホルダー戦略（ターゲット・KPI・成長指標）との乖離を検出\n4. docs/51_operational_excellence.mdの運用成熟度ギャップ分析（現状Lv1→目標Lv3等）\n5. docs/52_advanced_scenarios.mdのロードマップから短期アクション（3ヶ月以内）を抽出\n6. docs/41_growth_intelligence.mdの成長方程式とビジネスモデルの整合性を評価\n7. docs/56_market_positioning.mdのMOAT分析・GTM戦略・ユニットエコノミクスを戦略スコアカードに統合\n8. docs/58_ecosystem_strategy.mdのエコシステム戦略・API-as-Product・DX評価を戦略に統合\n9. 戦略スコアカード（5軸評価）を作成し、優先改善領域を提示',
 fmt:'## 戦略スコアカード\n| 軸 | スコア(1-5) | 評価 | ギャップ |\n|-----|------------|------|----------|\n| 業界適合 | X/5 | ... | ... |\n| 技術選定 | X/5 | ... | ... |\n\n## テックレーダー評価\n| 技術 | 現状採用判断 | Radar推奨 | 乖離理由 |\n\n## 短期アクションプラン（3ヶ月）\n| # | アクション | KPI | 担当 | 期限 |'},
 risk:{icon:'⚖️',label:'リスク・コンプライアンス',desc:'4軸リスク再評価・STRIDE残存リスク・コンプライアンス充足',
 sys:'あなたはRisk Analyst/Compliance Officerです。リスクとコンプライアンスを統合評価します。',
-prompt:'リスク・コンプライアンス分析:\n1. docs/14_risks.mdの4軸リスク（技術・組織・法務・運用）を再評価し、現在の緩和策の有効性を検証\n2. docs/45_compliance_matrix.mdのコンプライアンス充足度（GDPR, PCI-DSS等）をチェック\n3. docs/44_threat_model.mdのSTRIDE脅威分析から残存リスクTOP5を抽出\n4. docs/53_ops_runbook.mdのSLO運用リスク（SLO未達ペナルティ・エスカレーション体制）を評価\n5. リスクヒートマップ（発生確率×影響度）を作成し、P0リスクを特定\n6. コンプライアンス自動監査（Terraform Sentinel/OPA等）の導入状況を確認\n7. リスク緩和策TOP5を優先度順に提示（技術的対策・プロセス改善・保険等）',
+prompt:'リスク・コンプライアンス分析:\n1. docs/14_risks.mdの4軸リスク（技術・組織・法務・運用）を再評価し、現在の緩和策の有効性を検証\n2. docs/45_compliance_matrix.mdのコンプライアンス充足度（GDPR, PCI-DSS等）をチェック\n3. docs/44_threat_model.mdのSTRIDE脅威分析から残存リスクTOP5を抽出\n4. docs/53_ops_runbook.mdのSLO運用リスク（SLO未達ペナルティ・エスカレーション体制）を評価\n5. リスクヒートマップ（発生確率×影響度）を作成し、P0リスクを特定\n6. コンプライアンス自動監査（Terraform Sentinel/OPA等）の導入状況を確認\n7. docs/59_regulatory_foresight.mdの規制対応（EU AI Act・ESGメトリクス・2026-2030展望）をリスク再評価に統合\n8. リスク緩和策TOP5を優先度順に提示（技術的対策・プロセス改善・保険等）',
 fmt:'## リスクヒートマップ\n| リスク | 確率 | 影響度 | スコア | 緩和策 | 状態 |\n|--------|------|--------|--------|--------|------|\n| ... | H/M/L | H/M/L | X | ... | ✅/⚠️/❌ |\n\n## コンプライアンス充足度\n| 規制 | 要求項目数 | 充足数 | 充足率 | 未対応項目 |\n\n## 残存リスクTOP5\n| # | リスク | STRIDE分類 | 現状緩和策 | 推奨追加対策 | 工数 |'},
 qa:{icon:'🐛',label:_ja?'QA・バグ検出':'QA & Bug Detection',desc:_ja?'ドメイン別バグパターンとQA戦略を基にテスト計画を生成':'Generate test plan based on domain-specific bug patterns and QA strategy',
 sys:_ja?'あなたはQAエンジニアです。docs/28_qa_strategy.mdのドメイン別バグパターンを参照し、具体的なテストシナリオを設計してください。':'You are a QA engineer. Reference docs/28_qa_strategy.md domain-specific bug patterns to design concrete test scenarios.',
@@ -17595,7 +17595,7 @@ prompt:'Generate API integration code:\n1. Review endpoints and auth in docs/05_
 fmt:'```typescript:lib/api/client.ts\n// API client with types\n```\n```typescript:lib/api/types.ts\n// Request/Response types\n```\n```typescript:tests/api/integration.test.ts\n// Integration tests\n```'},
 a11y:{icon:'♿',label:'Accessibility Audit',desc:'WCAG 2.1 compliance check & fixes',
 sys:'You are an accessibility expert. You audit UI components against WCAG 2.1 AA.',
-prompt:'Accessibility audit:\n1. Review design tokens (color contrast, font sizes) in docs/26_design_system.md\n2. Identify key UI elements from docs/06_screen_design.md screen list\n3. Evaluate against WCAG 2.1 AA 4 principles (Perceivable, Operable, Understandable, Robust)\n4. Provide specific HTML/ARIA fix code for each violation\n5. Generate axe-core automated tests',
+prompt:'Accessibility audit:\n1. Review design tokens (color contrast, font sizes) in docs/26_design_system.md\n2. Identify key UI elements from docs/06_screen_design.md screen list\n3. Evaluate against WCAG 2.1 AA 4 principles (Perceivable, Operable, Understandable, Robust)\n4. Provide specific HTML/ARIA fix code for each violation\n5. Reference docs/57_user_experience_strategy.md accessibility strategy and digital wellbeing sections for inclusive UX additional assessment\n6. Generate axe-core automated tests',
 fmt:'## WCAG 2.1 AA Audit Results\n| # | Criterion | Screen | Element | Status | Fix Code |\n|---|-----------|--------|---------|--------|----------|\n\n## Automated Tests\n```typescript:tests/a11y.test.ts\n// axe-core tests\n```'},
 migrate:{icon:'🔄',label:'Migration Assistant',desc:'Tech stack migration planning',
 sys:'You are a migration architect. You plan phased migrations while guaranteeing data integrity.',
@@ -17611,7 +17611,7 @@ prompt:'Implement internationalization:\n1. Extract all hardcoded strings from t
 fmt:'## Extracted Strings\n| Key | Japanese | English |\n|-----|----------|----------|\n\n```json:locales/ja.json\n{}\n```\n```json:locales/en.json\n{}\n```\n\n## Converted Code\n```typescript:path/to/file.ts\n// i18n-ready code\n```'},
 growth:{icon:'📈',label:'Growth Strategy',desc:'Optimize growth funnels, KPIs & pricing',
 sys:'You are a growth engineer. You design data-driven growth strategies.',
-prompt:'Growth analysis:\n1. Review growth funnel and CVR benchmarks in docs/41_growth_intelligence.md\n2. Evaluate stack synergy score for current configuration\n3. Identify bottlenecks using domain-specific growth equation\n4. Propose 5 growth levers in priority order\n5. Design 3-tier pricing strategy (behavioral economics: compromise effect, anchoring)\n6. Cross-reference docs/48_industry_blueprint.md industry growth patterns (TAM/SAM/SOM strategy)\n7. Validate alignment with docs/50_stakeholder_strategy.md target strategy',
+prompt:'Growth analysis:\n1. Review growth funnel and CVR benchmarks in docs/41_growth_intelligence.md\n2. Evaluate stack synergy score for current configuration\n3. Identify bottlenecks using domain-specific growth equation\n4. Propose 5 growth levers in priority order\n5. Design 3-tier pricing strategy (behavioral economics: compromise effect, anchoring)\n6. Cross-reference docs/48_industry_blueprint.md industry growth patterns (TAM/SAM/SOM strategy)\n7. Validate alignment with docs/50_stakeholder_strategy.md target strategy\n8. Integrate docs/56_market_positioning.md market positioning and competitive analysis into growth funnel to identify differentiation advantages',
 fmt:'## Funnel Analysis\n| Stage | Current CVR | Target CVR | Improvement |\n\n## Growth Levers\n| # | Lever | Expected Impact | Effort | Priority |\n\n## Pricing Strategy\n| Plan | Price | Features | Target |'},
 reverse:{icon:'🎯',label:'Goal Reverse Design',desc:'Reverse-plan from goals with gap analysis',
 sys:'You are a project strategist. You reverse-engineer plans from goals.',
@@ -17635,11 +17635,11 @@ prompt:'Ops Readiness Review:\n1. Verify docs/53_ops_runbook.md SLO/SLI definiti
 fmt:'## Ops Readiness Score\n| Capability | Status | Validity | Improvement Action |\n|------------|--------|----------|--------------------|\n| SLO Definition | ✅/⚠️/❌ | 99.9% (req: 99.99%) | ... |\n\n## SLO Validity Assessment\n| SLI | Current Setting | Domain Recommended | Verdict |\n\n## Improvement Roadmap\n| Priority | Item | Deadline | Owner |'},
 strategy:{icon:'🏢',label:'Strategic Intelligence',desc:'Industry blueprint, tech radar, stakeholder strategy',
 sys:'You are a Product Strategist/Business Analyst. You validate business strategy alignment.',
-prompt:'Strategic Intelligence Analysis:\n1. Verify docs/48_industry_blueprint.md industry blueprint alignment (TAM/SAM/SOM, regulatory compliance)\n2. Check docs/49_tech_radar.md tech radar ratings (Adopt/Trial/Assess/Hold) vs current tech choices\n3. Detect gaps in docs/50_stakeholder_strategy.md stakeholder strategy (targets, KPIs, growth metrics)\n4. Analyze docs/51_operational_excellence.md operational maturity gap (current Lv1→target Lv3)\n5. Extract short-term actions (within 3 months) from docs/52_advanced_scenarios.md\n6. Evaluate business model alignment with docs/41_growth_intelligence.md growth equation\n7. Create strategic scorecard (5-axis assessment) and prioritize improvement areas',
+prompt:'Strategic Intelligence Analysis:\n1. Verify docs/48_industry_blueprint.md industry blueprint alignment (TAM/SAM/SOM, regulatory compliance)\n2. Check docs/49_tech_radar.md tech radar ratings (Adopt/Trial/Assess/Hold) vs current tech choices\n3. Detect gaps in docs/50_stakeholder_strategy.md stakeholder strategy (targets, KPIs, growth metrics)\n4. Analyze docs/51_operational_excellence.md operational maturity gap (current Lv1→target Lv3)\n5. Extract short-term actions (within 3 months) from docs/52_advanced_scenarios.md\n6. Evaluate business model alignment with docs/41_growth_intelligence.md growth equation\n7. Integrate docs/56_market_positioning.md MOAT analysis, GTM strategy, and unit economics into strategic scorecard\n8. Integrate docs/58_ecosystem_strategy.md ecosystem strategy, API-as-Product, and DX assessment into strategy\n9. Create strategic scorecard (5-axis assessment) and prioritize improvement areas',
 fmt:'## Strategic Scorecard\n| Axis | Score(1-5) | Assessment | Gap |\n|------|------------|------------|-----|\n| Industry Fit | X/5 | ... | ... |\n| Tech Choice | X/5 | ... | ... |\n\n## Tech Radar Assessment\n| Technology | Current Adoption | Radar Recommendation | Gap Reason |\n\n## Short-Term Action Plan (3 months)\n| # | Action | KPI | Owner | Deadline |'},
 risk:{icon:'⚖️',label:'Risk & Compliance',desc:'4-axis risk re-assessment, STRIDE residual risks, compliance',
 sys:'You are a Risk Analyst/Compliance Officer. You perform integrated risk and compliance assessment.',
-prompt:'Risk & Compliance Analysis:\n1. Re-assess docs/14_risks.md 4-axis risks (technical, organizational, legal, operational) and validate mitigation effectiveness\n2. Check docs/45_compliance_matrix.md compliance coverage (GDPR, PCI-DSS, etc.)\n3. Extract TOP5 residual risks from docs/44_threat_model.md STRIDE threat analysis\n4. Evaluate docs/53_ops_runbook.md SLO operational risks (SLO breach penalties, escalation)\n5. Create risk heatmap (probability × impact) and identify P0 risks\n6. Verify compliance automation (Terraform Sentinel/OPA) implementation status\n7. Present TOP5 risk mitigation measures in priority order (technical controls, process improvements, insurance, etc.)',
+prompt:'Risk & Compliance Analysis:\n1. Re-assess docs/14_risks.md 4-axis risks (technical, organizational, legal, operational) and validate mitigation effectiveness\n2. Check docs/45_compliance_matrix.md compliance coverage (GDPR, PCI-DSS, etc.)\n3. Extract TOP5 residual risks from docs/44_threat_model.md STRIDE threat analysis\n4. Evaluate docs/53_ops_runbook.md SLO operational risks (SLO breach penalties, escalation)\n5. Create risk heatmap (probability × impact) and identify P0 risks\n6. Verify compliance automation (Terraform Sentinel/OPA) implementation status\n7. Integrate docs/59_regulatory_foresight.md regulatory foresight (EU AI Act, ESG metrics, 2026-2030 horizon) into risk re-assessment\n8. Present TOP5 risk mitigation measures in priority order (technical controls, process improvements, insurance, etc.)',
 fmt:'## Risk Heatmap\n| Risk | Probability | Impact | Score | Mitigation | Status |\n|------|-------------|--------|-------|------------|--------|\n| ... | H/M/L | H/M/L | X | ... | ✅/⚠️/❌ |\n\n## Compliance Coverage\n| Regulation | Required Items | Met Items | Coverage % | Unmet Items |\n\n## TOP5 Residual Risks\n| # | Risk | STRIDE Category | Current Mitigation | Recommended Additional Controls | Effort |'},
 qa:{icon:'🐛',label:_ja?'QA・バグ検出':'QA & Bug Detection',desc:_ja?'ドメイン別バグパターンとQA戦略を基にテスト計画を生成':'Generate test plan based on domain-specific bug patterns and QA strategy',
 sys:_ja?'あなたはQAエンジニアです。docs/28_qa_strategy.mdのドメイン別バグパターンを参照し、具体的なテストシナリオを設計してください。':'You are a QA engineer. Reference docs/28_qa_strategy.md domain-specific bug patterns to design concrete test scenarios.',
@@ -18490,7 +18490,7 @@ const MANUAL=[
 '<h3>⑦ ロードマップ (9ファイル+UI)</h3>'+
 '<p>LEARNING_PATH / TECH_STACK_GUIDE / MOBILE_GUIDE / TOOLS_SETUP / RESOURCES / MILESTONES / AI_WORKFLOW / AI_AUTONOMOUS / SAAS_COMMERCE_GUIDE — インタラクティブUIで進捗管理可能。</p>'+
 '<h3>⑧ AIプロンプトランチャー (UI)</h3>'+
-'<p>生成した仕様書をAIツールに一括投入。25のプロンプトテンプレート（レビュー・実装・テスト・リファクタ・セキュリティ・ドキュメント・QA・デバッグ・アーキテクチャ・パフォーマンス・API統合・アクセシビリティ・マイグレーション・メトリクス・i18n・グロース・リバースエンジニアリング・インシデント対応・Ops準備・戦略インテリジェンス・リスクコンプライアンス・オンボーディング・CI/CD設計・プロンプトゲノム分析・AI成熟度レビュー）。フォルダ別トークン推定・モデル適合度表示。<strong>詳細は「📋 プロンプトマニュアル」参照</strong>。</p>'+
+'<p>生成した仕様書をAIツールに一括投入。32のプロンプトテンプレート（レビュー・実装・テスト・リファクタ・セキュリティ・ドキュメント・QA・デバッグ・アーキテクチャ・パフォーマンス・API統合・アクセシビリティ・マイグレーション・メトリクス・i18n・グロース・リバースエンジニアリング・インシデント対応・Ops準備・戦略インテリジェンス・リスクコンプライアンス・オンボーディング・CI/CD設計・最適手法選定・AIブレスト・業界特化分析・次世代UX・認知負荷分析・プロンプトゲノム分析・AI成熟度レビュー・ReActデバッグ・プロンプトOpsレビュー）。フォルダ別トークン推定・モデル適合度表示。<strong>詳細は「📋 プロンプトマニュアル」参照</strong>。</p>'+
 '<h3>⑨ デザインシステム (2ファイル)</h3>'+
 '<p>design_system.md (デザイントークン・色・タイポ・コンポーネントカタログ) / sequence_diagrams.md (認証・CRUD・決済フローのMermaidシーケンス図) — フレームワーク別実装ガイド。</p>'+
 '<h3>⑩ リバースエンジニアリング (2ファイル)</h3>'+
@@ -18525,7 +18525,7 @@ const MANUAL=[
 '<h3>⑦ Roadmap (9 files + UI)</h3>'+
 '<p>LEARNING_PATH / TECH_STACK_GUIDE / MOBILE_GUIDE / TOOLS_SETUP / RESOURCES / MILESTONES / AI_WORKFLOW / AI_AUTONOMOUS / SAAS_COMMERCE_GUIDE — Interactive UI for progress tracking.</p>'+
 '<h3>⑧ AI Prompt Launcher (UI)</h3>'+
-'<p>Bulk-feed generated specs to AI tools. 32 prompt templates (Review, Implement, Test, Refactor, Security, Docs, QA, Debug, Architecture, Performance, API, Accessibility, Migration, Metrics, i18n, Growth, Reverse Engineering, Incident Response, Ops Readiness, Strategic Intelligence, Risk & Compliance, Onboarding, CI/CD Design, Next-Gen UX, Cognitive Load, Prompt Genome Analysis, AI Maturity Review, ReAct Debug Loop, Prompt Ops Review, Industry Deep Dive, Brainstorming). Per-folder token estimation and model fit display. <strong>See "📋 Prompt Manual" for details</strong>.</p>'+
+'<p>Bulk-feed generated specs to AI tools. 32 prompt templates (Review, Implement, Test, Refactor, Security, Docs, QA, Debug, Architecture, Performance, API, Accessibility, Migration, Metrics, i18n, Growth, Reverse Engineering, Incident Response, Ops Readiness, Strategic Intelligence, Risk & Compliance, Onboarding, CI/CD Design, Optimal Methodology, AI Brainstorm, Industry Deep Dive, Next-Gen UX, Cognitive Load, Prompt Genome Analysis, AI Maturity Review, ReAct Debug Loop, Prompt Ops Review). Per-folder token estimation and model fit display. <strong>See "📋 Prompt Manual" for details</strong>.</p>'+
 '<h3>⑨ Design System (2 files)</h3>'+
 '<p>design_system.md (design tokens, colors, typography, component catalog) / sequence_diagrams.md (auth, CRUD, payment Mermaid sequence diagrams) — Framework-specific guides.</p>'+
 '<h3>⑩ Reverse Engineering (2 files)</h3>'+
@@ -18592,7 +18592,7 @@ const baseBody=_ja?
 '<h4>⭐⭐⭐ 高度な統合・自動化</h4>'+
 '<p><strong>Agent Teams並列開発:</strong> AGENTS.mdでエージェント役割を定義 → Claude Code Subagents / Antigravity Manager View で並列実行。tasks.mdがタスクキューとして機能。</p>'+
 '<p><strong>CI/CDゲート化:</strong> .ai/hooks.yml → GitHub Actions変換。docs/09_release_checklist.mdをデプロイゲートに。verification.mdを品質基準に。</p>'+
-'<p><strong>23テンプレートパイプライン:</strong> 柱⑧の全テンプレート順次実行 → 📋レビュー→🔨実装→🧪テスト→♻️リファクタ→🔒セキュリティ→📝ドキュメント→🛡️Ops準備。仕様書が全工程の入力。<strong>（📖 詳細はプロンプトマニュアル参照）</strong></p>'+
+'<p><strong>32テンプレートパイプライン:</strong> 柱⑧の全テンプレート順次実行 → 📋レビュー→🔨実装→🧪テスト→♻️リファクタ→🔒セキュリティ→📝ドキュメント→🛡️Ops準備。仕様書が全工程の入力。<strong>（📖 詳細はプロンプトマニュアル参照）</strong></p>'+
 '<h4>⭐⭐⭐ パフォーマンス最適化</h4>'+
 '<p>• <strong>CLAUDE.md 3-layer split</strong> — ルートCLAUDE.md（薄い ~1.5Kトークン） + .claude/rules/（パス別5ファイル） + .claude/settings.json でトークン消費を最小化<br>'+
 '• <strong>フォルダ選択最適化</strong> — デバッグ時: docs/25+37のみ、仕様確認時: .spec/のみ等、状況に応じて選択<br>'+
@@ -18619,7 +18619,7 @@ const baseBody=_ja?
 '<tr><td><code>.devcontainer/</code></td><td>そのまま</td><td>カスタマイズ</td><td>チーム標準化</td></tr>'+
 '<tr><td><code>.claude/rules/</code> (5ファイル)</td><td>触らない</td><td>カスタマイズ</td><td>パス別最適化</td></tr>'+
 '<tr><td><code>roadmap/</code></td><td>学習ガイド</td><td>進捗管理</td><td>オンボーディング</td></tr>'+
-'<tr><td><code>docs/</code> 59ファイル</td><td>後で参照</td><td>レビュー素材</td><td>CI/CDゲート</td></tr>'+
+'<tr><td><code>docs/</code> 72ファイル</td><td>後で参照</td><td>レビュー素材</td><td>CI/CDゲート</td></tr>'+
 '<tr><td><code>docs/29-30</code> リバースEng</td><td>読むだけ</td><td>逆算計画</td><td>マイルストーン管理</td></tr>'+
 '<tr><td><code>docs/43-47</code> セキュリティ</td><td>不要</td><td>セキュリティ監査</td><td>セキュリティゲート</td></tr>'+
 '<tr><td><code>docs/48-52</code> 戦略</td><td>不要</td><td>業種確認</td><td>戦略統合</td></tr>'+
@@ -18669,7 +18669,7 @@ const baseBody=_ja?
 '<h4>⭐⭐⭐ Advanced Integration & Automation</h4>'+
 '<p><strong>Agent Teams Parallel Dev:</strong> AGENTS.md defines agent roles → Run with Claude Code Subagents / Antigravity Manager View in parallel. tasks.md serves as task queue.</p>'+
 '<p><strong>CI/CD Gates:</strong> .ai/hooks.yml → GitHub Actions conversion. docs/09_release_checklist.md as deploy gate. verification.md as quality baseline.</p>'+
-'<p><strong>23-Template Pipeline:</strong> Pillar ⑧ full template sequential execution → 📋Review→🔨Implement→🧪Test→♻️Refactor→🔒Security→📝Docs→🛡️Ops Readiness. Specs feed all stages. <strong>(📖 See Prompt Manual for details)</strong></p>'+
+'<p><strong>32-Template Pipeline:</strong> Pillar ⑧ full template sequential execution → 📋Review→🔨Implement→🧪Test→♻️Refactor→🔒Security→📝Docs→🛡️Ops Readiness. Specs feed all stages. <strong>(📖 See Prompt Manual for details)</strong></p>'+
 '<h4>⭐⭐⭐ Performance Optimization</h4>'+
 '<p>• <strong>CLAUDE.md 3-layer split</strong> — Root CLAUDE.md (thin ~1.5K tokens) + .claude/rules/ (path-specific 5 files) + .claude/settings.json minimizes token consumption<br>'+
 '• <strong>Folder Selection Optimization</strong> — Debugging: docs/25+37 only, Spec check: .spec/ only etc. Select by context<br>'+
@@ -18806,7 +18806,7 @@ return h;
 '<h5>推奨ワークフロー</h5>'+
 '<ol class="workflow-level-steps">'+
 '<li>AGENTS.md でエージェント役割定義 → 並列開発</li>'+
-'<li>23テンプレート全パイプライン: レビュー→実装→テスト→リファクタ→セキュリティ→Docs→Ops</li>'+
+'<li>32テンプレート全パイプライン: レビュー→実装→テスト→リファクタ→セキュリティ→Docs→Ops</li>'+
 '<li>CLAUDE.md 3-layer (root ~1.5K + .claude/rules/ + settings.json)</li>'+
 '<li>mcp-config.json + skills/pipelines.md で自動化</li>'+
 '<li>docs/55 Circuit Breaker + Evidence-Based Ops</li>'+
@@ -18821,7 +18821,7 @@ return h;
 '<h5>自動化チェック</h5>'+
 '<p class="workflow-level-checklist">'+
 '✅ .ai/hooks.yml → CI/CDゲート化<br>'+
-'✅ 全23テンプレートパイプライン完走<br>'+
+'✅ 全32テンプレートパイプライン完走<br>'+
 '✅ SLO 99.9%設計完了<br>'+
 '✅ Feature Flags全キルスイッチ設定</p>'+
 '</div>'+
@@ -19162,7 +19162,9 @@ return h;
 '<tr><td><strong>運用</strong></td><td>♻️リファクタ / 🔧デバッグ / 🚨インシデント / 🛡️Ops準備 / 📝ドキュメント / 🔄マイグレーション / ⚙️CI/CD</td></tr>'+
 '<tr><td><strong>ビジネス</strong></td><td>📈グロース / 🏢戦略</td></tr>'+
 '<tr><td><strong>ガバナンス</strong></td><td>⚖️リスク・コンプライアンス</td></tr>'+
-'<tr><td><strong>チーム</strong></td><td>🎓オンボーディング</td></tr></table>'+
+'<tr><td><strong>チーム</strong></td><td>🎓オンボーディング</td></tr>'+
+'<tr><td><strong>AI知性</strong></td><td>🧬最適手法 / 💡ブレスト / 🏭業界 / 🔮UX / 🧠認知負荷</td></tr>'+
+'<tr><td><strong>プロンプトEng</strong></td><td>🧩ゲノム / 📊成熟度 / 🔄ReAct / 🔧Prompt Ops</td></tr></table>'+
 '<h3>🌱🔥⚡ スキルレベル別ベストプラクティス</h3>'+
 '<p><strong>🌱 Beginner — まず動かす</strong></p>'+
 '<ul><li>🔍仕様レビュー + 🚀MVP実装 の2つから始める</li>'+
@@ -19173,10 +19175,10 @@ return h;
 '<li><code>.spec/</code> + <code>docs/</code> を含めて包括的なコンテキストを提供</li>'+
 '<li>モデル適合度を確認し、80%以内に収める</li></ul>'+
 '<p><strong>⚡ Professional — パイプライン化</strong></p>'+
-'<ul><li>全23テンプレートをパイプラインとして順次実行</li>'+
+'<ul><li>全32テンプレートをパイプラインとして順次実行</li>'+
 '<li>フォルダ選択を最適化（デバッグ時は<code>docs/25</code>+<code>docs/37</code>のみ等）</li>'+
 '<li><code>docs/39_implementation_playbook.md</code> と <code>docs/40_ai_dev_runbook.md</code> も活用</li></ul>'+
-'<h3>📋 全23テンプレート早見表</h3>'+
+'<h3>📋 全32テンプレート早見表</h3>'+
 '<table><tr><th>Icon</th><th>名前</th><th>フェーズ</th><th>主要参照ドキュメント</th></tr>'+
 '<tr><td>🔍</td><td>仕様レビュー</td><td>設計</td><td>.spec/*</td></tr>'+
 '<tr><td>📐</td><td>アーキテクチャ</td><td>設計</td><td>docs/03, docs/27, docs/26</td></tr>'+
@@ -19200,6 +19202,15 @@ return h;
 '<tr><td>📈</td><td>グロース</td><td>ビジネス</td><td>docs/41, docs/48, docs/50</td></tr>'+
 '<tr><td>🏢</td><td>戦略</td><td>ビジネス</td><td>docs/48-52, docs/41</td></tr>'+
 '<tr><td>⚖️</td><td>リスク・コンプライアンス</td><td>ガバナンス</td><td>docs/14, docs/44, docs/45, docs/53</td></tr>'+
+'<tr><td>🧬</td><td>最適手法選定</td><td>AI知性</td><td>docs/60</td></tr>'+
+'<tr><td>💡</td><td>AIブレスト</td><td>AI知性</td><td>docs/61, docs/03</td></tr>'+
+'<tr><td>🏭</td><td>業界特化分析</td><td>AI知性</td><td>docs/62, docs/45</td></tr>'+
+'<tr><td>🔮</td><td>次世代UX</td><td>AI知性</td><td>docs/63</td></tr>'+
+'<tr><td>🧠</td><td>認知負荷分析</td><td>AI知性</td><td>docs/60, docs/26</td></tr>'+
+'<tr><td>🧩</td><td>ゲノム分析</td><td>プロンプトEng</td><td>docs/65, docs/67</td></tr>'+
+'<tr><td>📊</td><td>AI成熟度</td><td>プロンプトEng</td><td>docs/66, docs/68</td></tr>'+
+'<tr><td>🔄</td><td>ReActデバッグ</td><td>プロンプトEng</td><td>docs/70</td></tr>'+
+'<tr><td>🔧</td><td>Prompt Ops</td><td>プロンプトEng</td><td>docs/69, docs/71, docs/72, docs/65</td></tr>'+
 '<tr><td>🎓</td><td>オンボーディング</td><td>チーム</td><td>docs/42, docs/37, .claude/rules/, docs/55</td></tr></table>'+
 '<h3>💡 Tips</h3>'+
 '<p><strong>フォルダ選択のコツ:</strong> 不要なフォルダのチェックを外してトークン節約。例: デバッグ時は<code>docs/</code>の大半は不要。</p>'+
@@ -19209,7 +19220,9 @@ return h;
 '<li>バグ修正: 🔧デバッグ → ♻️リファクタ → 🧪テスト → 🚨インシデント対応</li>'+
 '<li>パフォーマンス改善: ⚡パフォーマンス → 📊メトリクス → ♻️リファクタ → 🧪テスト</li>'+
 '<li>本番リリース準備: 🔒セキュリティ → 🛡️Ops準備 → ⚙️CI/CD → 🎓オンボーディング</li>'+
-'<li>事業戦略レビュー: 🏢戦略 → 📈グロース → ⚖️リスク → 🎯ゴール逆算</li></ul>':
+'<li>事業戦略レビュー: 🏢戦略 → 📈グロース → ⚖️リスク → 🎯ゴール逆算</li>'+
+'<li>AI成熟度向上: 🧩ゲノム分析 → 📊AI成熟度 → 🔧Prompt Ops → 🧬最適手法</li>'+
+'<li>自律デバッグ: 🔄ReActデバッグ → 🔧デバッグ → 🧪テスト → ♻️リファクタ</li></ul>':
 '<h2>🤖 AI Prompt Launcher User Manual</h2>'+
 '<h3>🔧 How It Works</h3>'+
 '<div class="hg-flow"><span class="hg-n hg-b">📂<br>Select Folders</span><span class="hg-a">→</span><span class="hg-n hg-c">📋<br>Pick Template</span><span class="hg-a">→</span><span class="hg-n hg-p">⚙️<br>Auto-compose</span><span class="hg-a">→</span><span class="hg-n hg-g">📋<br>Copy→Feed AI</span></div>'+
@@ -19228,7 +19241,9 @@ return h;
 '<tr><td><strong>Operations</strong></td><td>♻️Refactor / 🔧Debug / 🚨Incident / 🛡️Ops Readiness / 📝Docs / 🔄Migration / ⚙️CI/CD</td></tr>'+
 '<tr><td><strong>Business</strong></td><td>📈Growth / 🏢Strategy</td></tr>'+
 '<tr><td><strong>Governance</strong></td><td>⚖️Risk & Compliance</td></tr>'+
-'<tr><td><strong>Team</strong></td><td>🎓Onboarding</td></tr></table>'+
+'<tr><td><strong>Team</strong></td><td>🎓Onboarding</td></tr>'+
+'<tr><td><strong>AI Intelligence</strong></td><td>🧬Methodology / 💡Brainstorm / 🏭Industry / 🔮Next-Gen UX / 🧠Cognitive</td></tr>'+
+'<tr><td><strong>Prompt Eng</strong></td><td>🧩Genome / 📊Maturity / 🔄ReAct Debug / 🔧Prompt Ops</td></tr></table>'+
 '<h3>🌱🔥⚡ Best Practices by Skill Level</h3>'+
 '<p><strong>🌱 Beginner — Get Started</strong></p>'+
 '<ul><li>Start with 🔍Spec Review + 🚀MVP Build</li>'+
@@ -19239,10 +19254,10 @@ return h;
 '<li>Include <code>.spec/</code> + <code>docs/</code> for comprehensive context</li>'+
 '<li>Keep model fit under 80%</li></ul>'+
 '<p><strong>⚡ Professional — Full Pipeline</strong></p>'+
-'<ul><li>Execute all 23 templates as a pipeline</li>'+
+'<ul><li>Execute all 32 templates as a pipeline</li>'+
 '<li>Optimize folder selection (e.g., for debugging: only <code>docs/25</code>+<code>docs/37</code>)</li>'+
 '<li>Leverage <code>docs/39_implementation_playbook.md</code> and <code>docs/40_ai_dev_runbook.md</code></li></ul>'+
-'<h3>📋 All 23 Templates Quick Reference</h3>'+
+'<h3>📋 All 32 Templates Quick Reference</h3>'+
 '<table><tr><th>Icon</th><th>Name</th><th>Phase</th><th>Key Docs</th></tr>'+
 '<tr><td>🔍</td><td>Spec Review</td><td>Design</td><td>.spec/*</td></tr>'+
 '<tr><td>📐</td><td>Architecture</td><td>Design</td><td>docs/03, docs/27, docs/26</td></tr>'+
@@ -19266,6 +19281,15 @@ return h;
 '<tr><td>📈</td><td>Growth</td><td>Business</td><td>docs/41, docs/48, docs/50</td></tr>'+
 '<tr><td>🏢</td><td>Strategy</td><td>Business</td><td>docs/48-52, docs/41</td></tr>'+
 '<tr><td>⚖️</td><td>Risk & Compliance</td><td>Governance</td><td>docs/14, docs/44, docs/45, docs/53</td></tr>'+
+'<tr><td>🧬</td><td>Optimal Methodology</td><td>AI Intelligence</td><td>docs/60</td></tr>'+
+'<tr><td>💡</td><td>AI Brainstorm</td><td>AI Intelligence</td><td>docs/61, docs/03</td></tr>'+
+'<tr><td>🏭</td><td>Industry Deep Dive</td><td>AI Intelligence</td><td>docs/62, docs/45</td></tr>'+
+'<tr><td>🔮</td><td>Next-Gen UX</td><td>AI Intelligence</td><td>docs/63</td></tr>'+
+'<tr><td>🧠</td><td>Cognitive Load</td><td>AI Intelligence</td><td>docs/60, docs/26</td></tr>'+
+'<tr><td>🧩</td><td>Prompt Genome</td><td>Prompt Eng</td><td>docs/65, docs/67</td></tr>'+
+'<tr><td>📊</td><td>AI Maturity</td><td>Prompt Eng</td><td>docs/66, docs/68</td></tr>'+
+'<tr><td>🔄</td><td>ReAct Debug</td><td>Prompt Eng</td><td>docs/70</td></tr>'+
+'<tr><td>🔧</td><td>Prompt Ops</td><td>Prompt Eng</td><td>docs/69, docs/71, docs/72, docs/65</td></tr>'+
 '<tr><td>🎓</td><td>Onboarding</td><td>Team</td><td>docs/42, docs/37, .claude/rules/, docs/55</td></tr></table>'+
 '<h3>💡 Tips</h3>'+
 '<p><strong>Folder Selection:</strong> Uncheck unnecessary folders to save tokens. Example: for debugging, most of <code>docs/</code> is unnecessary.</p>'+
@@ -19275,7 +19299,9 @@ return h;
 '<li>Bug fix: 🔧Debug → ♻️Refactor → 🧪Test → 🚨Incident</li>'+
 '<li>Performance: ⚡Performance → 📊Metrics → ♻️Refactor → 🧪Test</li>'+
 '<li>Production release prep: 🔒Security → 🛡️Ops Readiness → ⚙️CI/CD → 🎓Onboarding</li>'+
-'<li>Business strategy review: 🏢Strategy → 📈Growth → ⚖️Risk → 🎯Goal Reverse</li></ul>'
+'<li>Business strategy review: 🏢Strategy → 📈Growth → ⚖️Risk → 🎯Goal Reverse</li>'+
+'<li>AI maturity upgrade: 🧩Genome → 📊Maturity → 🔧Prompt Ops → 🧬Methodology</li>'+
+'<li>Autonomous debugging: 🔄ReAct Debug → 🔧Debug → 🧪Test → ♻️Refactor</li></ul>'
 },
 {id:'techdb',title:_ja?'技術DB':'Tech DB',body:_ja?
 '<h2>技術マスターテーブル</h2><p>'+_TECH_COUNT+'テクノロジーを15カテゴリに分類。Context Dashboardから閲覧可能。</p><h3>カテゴリ一覧</h3><p>言語 / フロントエンド / モバイル / バックエンド / BaaS / 決済・CMS・EC / DevOps / AIツール / AI自律 / 手法 / テスト / API / ビルド / データ / セキュリティ</p><h3>フィルタ機能</h3><p>カテゴリ / 必須度 / キーワード検索で絞り込み可能。</p>'
@@ -19850,10 +19876,10 @@ return [
 {title:_ja?'📝 テンプレート':'📝 Templates',desc:_ja?'41種類のプリセットから選ぶと、回答が自動入力されます。':'Pick from 41 presets to auto-fill answers.'},
 {title:_ja?'💬 質問フロー':'💬 Q&A Flow',desc:_ja?'Phase 1-3 の質問に答えるだけ。スキップも後で回答も可能です。':'Just answer Phase 1-3 questions. Skip and answer later anytime.'},
 {title:_ja?'✎ 回答編集':'✎ Edit Answers',desc:_ja?'送信済みの回答に表示される ✎ ボタンで修正できます。':'Click the ✎ button on submitted answers to edit them.'},
-{title:_ja?'📦 114+ファイル生成':'📦 114+ File Generation',desc:_ja?'全質問回答後、15の柱で114+ファイルが自動生成されます。':'After all questions, 114+ files auto-generate across 15 pillars.'},
+{title:_ja?'📦 126+ファイル生成':'📦 126+ File Generation',desc:_ja?'全質問回答後、18の柱で126+ファイルが自動生成されます。':'After all questions, 126+ files auto-generate across 18 pillars.'},
 {title:_ja?'⚡ 並列探索':'⚡ Parallel Explorer',desc:_ja?'Pillar ⑤ で7スタックを比較。回答に基づくおすすめランキング付き。':'Compare 7 stacks in Pillar ⑤ with recommendation ranking based on your answers.'},
 {title:'📊 Dashboard',desc:_ja?'Pillar ⑥ でコンテキスト可視化＋'+_TECH_COUNT+'技術DBを閲覧。':'Visualize context + browse '+_TECH_COUNT+' tech DB in Pillar ⑥.'},
-{title:_ja?'🤖 AIランチャー':'🤖 AI Launcher',desc:_ja?'Pillar ⑧ で仕様書をAIツールにワンクリック投入。23テンプレート＋トークン推定。':'Feed specs to AI tools in one click from Pillar ⑧. 23 templates + token estimation.'},
+{title:_ja?'🤖 AIランチャー':'🤖 AI Launcher',desc:_ja?'Pillar ⑧ で仕様書をAIツールにワンクリック投入。32テンプレート＋トークン推定。':'Feed specs to AI tools in one click from Pillar ⑧. 32 templates + token estimation.'},
 {title:_ja?'💾 データ保存の注意':'💾 Save Your Work',desc:_ja?'全データはブラウザのlocalStorageに保存されます。閲覧履歴の消去やブラウザ変更でデータが消失します。作業後は必ず📤 JSONエクスポートと📦 ZIPダウンロードで保存してください。':'All data is stored in browser localStorage. Clearing browser data or switching browsers will erase everything. Always export JSON 📤 and download ZIP 📦 after work.'},
 {title:_ja?'⚠️ 注意事項を確認':'⚠️ Read Cautions',desc:_ja?'ヘルプ（F1）の「⚠️ 注意事項」タブにスキルレベル設定・言語切替・ストレージ上限などの重要な注意点をまとめています。':'Check the "⚠️ Cautions" tab in Help (F1) for important notes on skill level, language switching, storage limits, and more.'},
 ];
