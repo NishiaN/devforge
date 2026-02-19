@@ -69,13 +69,13 @@ function showManual(sec){
   pushModal(o,()=>{o.classList.remove('show');releaseFocus(o);});
   const _ja=S.lang==='ja';
   const MANUAL=[
-    {id:'overview',title:_ja?'概要':'Overview',body:_ja?'<h2>DevForge v9.5 とは</h2><p>質問に答えるだけで、プロジェクトに必要な134+ファイルを自動生成するAI駆動開発プラットフォームです。'+_TECH_COUNT+'テクノロジー対応。</p>'+
+    {id:'overview',title:_ja?'概要':'Overview',body:_ja?'<h2>DevForge v9.5 とは</h2><p>質問に答えるだけで、プロジェクトに必要な135+ファイルを自動生成するAI駆動開発プラットフォームです。'+_TECH_COUNT+'テクノロジー対応。</p>'+
       '<h3>20の柱</h3><table><tr><th>柱</th><th>内容</th><th>ファイル数</th></tr><tr><td>①SDD統合</td><td>Spec Kit互換の仕様書</td><td>5</td></tr><tr><td>②DevContainer</td><td>Docker開発環境</td><td>4</td></tr><tr><td>③MCP設定</td><td>Model Context Protocol</td><td>3</td></tr><tr><td>④AIルール</td><td>10+ツール設定+スキル</td><td>10+</td></tr>'+
       '<tr><td>⑤並列探索</td><td>スタック比較+おすすめランキング</td><td>UI</td></tr><tr><td>⑥Dashboard</td><td>コンテキスト可視化+技術DB</td><td>UI</td></tr><tr><td>⑦ロードマップ</td><td>学習パス（インタラクティブ）</td><td>9+UI</td></tr><tr><td>⑧AIランチャー</td><td>プロンプトテンプレート+トークン推定</td><td>UI</td></tr><tr><td>⑨デザインシステム</td><td>デザイントークン+シーケンス図</td><td>2</td></tr><tr><td>⑩リバースEng</td><td>ゴール逆算型プランニング</td><td>2</td></tr><tr><td>⑪実装ガイド</td><td>業種別実装パターン+AI運用手順</td><td>3</td></tr><tr><td>⑫セキュリティ</td><td>OWASP・STRIDE・コンプライアンス</td><td>5</td></tr><tr><td>⑬戦略インテリジェンス</td><td>業種別設計図・技術レーダー・ステークホルダー戦略・先端シナリオ</td><td>5</td></tr><tr><td>⑭運用インテリジェンス</td><td>Ops Plane設計・12 Ops Capabilities・SLO/SLI</td><td>3</td></tr><tr><td>⑮未来戦略</td><td>市場ポジショニング・UX戦略・エコシステム・規制対応</td><td>4</td></tr><tr><td>⑯開発IQ</td><td>最適手法選定・AIプロンプトプレイブック・業界特化・次世代UX</td><td>4</td></tr><tr><td>⑰プロンプトゲノム</td><td>CRITERIA 8軸スコア・AI成熟度・シナジーマトリクス・KPIダッシュボード</td><td>4</td></tr><tr><td>⑱Prompt Ops</td><td>ReAct自律ワークフロー・LLMOpsダッシュボード・Prompt CI/CD・[META]レジストリ</td><td>4</td></tr><tr><td>⑲エンタープライズSaaS</td><td>マルチテナント設計・組織モデル・ワークフローエンジン・エンタープライズUIコンポーネント</td><td>4</td></tr><tr><td>⑳CI/CDインテリジェンス</td><td>パイプライン設計・デプロイ戦略・品質ゲートマトリクス・リリースエンジニアリング</td><td>4</td></tr></table>'+
-      '<p>+ docs（80仕様書）+ 共通ファイル（4）= <strong>134+ファイル</strong></p>':'<h2>What is DevForge v9.5?</h2><p>An AI-driven dev platform that auto-generates 134+ project files just by answering questions. Supports '+_TECH_COUNT+' technologies.</p>'+
+      '<p>+ docs（81仕様書）+ 共通ファイル（4）= <strong>135+ファイル</strong></p>':'<h2>What is DevForge v9.5?</h2><p>An AI-driven dev platform that auto-generates 135+ project files just by answering questions. Supports '+_TECH_COUNT+' technologies.</p>'+
       '<h3>20 Pillars</h3><table><tr><th>Pillar</th><th>Content</th><th>Files</th></tr><tr><td>①SDD</td><td>Spec Kit compatible specs</td><td>5</td></tr><tr><td>②DevContainer</td><td>Docker dev environment</td><td>4</td></tr><tr><td>③MCP</td><td>Model Context Protocol</td><td>3</td></tr><tr><td>④AI Rules</td><td>10+ tool configs + skills</td><td>10+</td></tr>'+
       '<tr><td>⑤Explorer</td><td>Stack comparison + recommendation</td><td>UI</td></tr><tr><td>⑥Dashboard</td><td>Context visualization + Tech DB</td><td>UI</td></tr><tr><td>⑦Roadmap</td><td>Learning path (interactive)</td><td>9+UI</td></tr><tr><td>⑧AI Launcher</td><td>Prompt templates + token estimation</td><td>UI</td></tr><tr><td>⑨Design System</td><td>Design tokens + Sequence diagrams</td><td>2</td></tr><tr><td>⑩Reverse Eng</td><td>Goal-driven reverse planning</td><td>2</td></tr><tr><td>⑪Impl Guide</td><td>Domain-specific impl patterns + AI runbook</td><td>3</td></tr><tr><td>⑫Security</td><td>OWASP, STRIDE, Compliance</td><td>5</td></tr><tr><td>⑬Strategic Intelligence</td><td>Industry blueprint, Tech radar, Stakeholder strategy, Advanced scenarios</td><td>5</td></tr><tr><td>⑭Ops Intelligence</td><td>Ops Plane design, 12 Ops Capabilities, SLO/SLI</td><td>3</td></tr><tr><td>⑮Future Strategy</td><td>Market positioning, UX strategy, Ecosystem, Regulatory</td><td>4</td></tr><tr><td>⑯Dev IQ</td><td>Optimal methodology, AI brainstorm playbook, Industry deep dive, Next-gen UX</td><td>4</td></tr><tr><td>⑰Prompt Genome</td><td>CRITERIA 8-axis scoring, AI maturity, Synergy matrix, KPI dashboard</td><td>4</td></tr><tr><td>⑱Prompt Ops</td><td>ReAct workflow, LLMOps dashboard, Prompt CI/CD, [META] registry</td><td>4</td></tr><tr><td>⑲Enterprise SaaS</td><td>Multi-tenant design, Org model, Workflow engine, Enterprise UI components</td><td>4</td></tr><tr><td>⑳CI/CD Intelligence</td><td>Pipeline design, Deploy strategy, Quality gate matrix, Release engineering</td><td>4</td></tr></table>'+
-      '<p>+ docs (80 specs) + common (4) = <strong>134+ files</strong></p>'},
+      '<p>+ docs (81 specs) + common (4) = <strong>135+ files</strong></p>'},
     {id:'start',title:_ja?'はじめ方':'Getting Started',body:_ja?
       '<h2>はじめ方</h2><p>1. スキルレベルを選択（Beginner/Intermediate/Pro）<br>2. プロジェクト名を入力<br>3. テンプレート選択（任意・41種類）<br>4. Phase 1-3の質問に回答（スキップ＆後で回答可）<br>5. 生成ボタンで130+ファイル作成<br>6. ZIPダウンロードまたはPDF印刷</p>'+
       '<h3>UX機能</h3>'+
@@ -227,7 +227,7 @@ function showManual(sec){
       '<h4>⭐⭐⭐ 高度な統合・自動化</h4>'+
       '<p><strong>Agent Teams並列開発:</strong> AGENTS.mdでエージェント役割を定義 → Claude Code Subagents / Antigravity Manager View で並列実行。tasks.mdがタスクキューとして機能。</p>'+
       '<p><strong>CI/CDゲート化:</strong> .ai/hooks.yml → GitHub Actions変換。docs/09_release_checklist.mdをデプロイゲートに。verification.mdを品質基準に。</p>'+
-      '<p><strong>36テンプレートパイプライン:</strong> 柱⑧の全テンプレート順次実行 → 📋レビュー→🔨実装→🧪テスト→♻️リファクタ→🔒セキュリティ→📝ドキュメント→🛡️Ops準備→🏢エンタープライズアーキテクチャ。仕様書が全工程の入力。<strong>（📖 詳細はプロンプトマニュアル参照）</strong></p>'+
+      '<p><strong>37テンプレートパイプライン:</strong> 柱⑧の全テンプレート順次実行 → 📋レビュー→🔨実装→🧪テスト→♻️リファクタ→🔒セキュリティ→📝ドキュメント→🛡️Ops準備→🏢エンタープライズアーキテクチャ。仕様書が全工程の入力。<strong>（📖 詳細はプロンプトマニュアル参照）</strong></p>'+
       '<h4>⭐⭐⭐ パフォーマンス最適化</h4>'+
       '<p>• <strong>CLAUDE.md 3-layer split</strong> — ルートCLAUDE.md（薄い ~1.5Kトークン） + .claude/rules/（パス別5ファイル） + .claude/settings.json でトークン消費を最小化<br>'+
       '• <strong>フォルダ選択最適化</strong> — デバッグ時: docs/25+37のみ、仕様確認時: .spec/のみ等、状況に応じて選択<br>'+
@@ -456,7 +456,7 @@ function showManual(sec){
       '<h5>自動化チェック</h5>'+
       '<p class="workflow-level-checklist">'+
       '✅ .ai/hooks.yml → CI/CDゲート化<br>'+
-      '✅ 全36テンプレートパイプライン完走<br>'+
+      '✅ 全37テンプレートパイプライン完走<br>'+
       '✅ SLO 99.9%設計完了<br>'+
       '✅ Feature Flags全キルスイッチ設定</p>'+
       '</div>'+
@@ -811,10 +811,10 @@ function showManual(sec){
       '<li><code>.spec/</code> + <code>docs/</code> を含めて包括的なコンテキストを提供</li>'+
       '<li>モデル適合度を確認し、80%以内に収める</li></ul>'+
       '<p><strong>⚡ Professional — パイプライン化</strong></p>'+
-      '<ul><li>全36テンプレートをパイプラインとして順次実行</li>'+
+      '<ul><li>全37テンプレートをパイプラインとして順次実行</li>'+
       '<li>フォルダ選択を最適化（デバッグ時は<code>docs/25</code>+<code>docs/37</code>のみ等）</li>'+
       '<li><code>docs/39_implementation_playbook.md</code> と <code>docs/40_ai_dev_runbook.md</code> も活用</li></ul>'+
-      '<h3>📋 全36テンプレート早見表</h3>'+
+      '<h3>📋 全37テンプレート早見表</h3>'+
       '<table><tr><th>Icon</th><th>名前</th><th>フェーズ</th><th>主要参照ドキュメント</th></tr>'+
       '<tr><td>🔍</td><td>仕様レビュー</td><td>設計</td><td>.spec/*</td></tr>'+
       '<tr><td>📐</td><td>アーキテクチャ</td><td>設計</td><td>docs/03, docs/27, docs/26</td></tr>'+
@@ -841,6 +841,7 @@ function showManual(sec){
       '<tr><td>🧬</td><td>最適手法選定</td><td>AI知性</td><td>docs/60</td></tr>'+
       '<tr><td>🎭</td><td>9人の専門家ブレスト</td><td>AI知性</td><td>docs/61, docs/03</td></tr>'+
       '<tr><td>🎯</td><td>UXジャーニー設計</td><td>AI知性</td><td>docs/06, docs/57</td></tr>'+
+      '<tr><td>🔬</td><td>UX習熟度監査</td><td>AI知性</td><td>docs/81, docs/06</td></tr>'+
       '<tr><td>🤖</td><td>AIモデル使い分け</td><td>AI知性</td><td>docs/60, docs/61</td></tr>'+
       '<tr><td>🏭</td><td>業界特化分析</td><td>AI知性</td><td>docs/62, docs/45</td></tr>'+
       '<tr><td>🔮</td><td>次世代UX</td><td>AI知性</td><td>docs/63</td></tr>'+
@@ -895,10 +896,10 @@ function showManual(sec){
       '<li>Include <code>.spec/</code> + <code>docs/</code> for comprehensive context</li>'+
       '<li>Keep model fit under 80%</li></ul>'+
       '<p><strong>⚡ Professional — Full Pipeline</strong></p>'+
-      '<ul><li>Execute all 36 templates as a pipeline</li>'+
+      '<ul><li>Execute all 37 templates as a pipeline</li>'+
       '<li>Optimize folder selection (e.g., for debugging: only <code>docs/25</code>+<code>docs/37</code>)</li>'+
       '<li>Leverage <code>docs/39_implementation_playbook.md</code> and <code>docs/40_ai_dev_runbook.md</code></li></ul>'+
-      '<h3>📋 All 34 Templates Quick Reference</h3>'+
+      '<h3>📋 All 37 Templates Quick Reference</h3>'+
       '<table><tr><th>Icon</th><th>Name</th><th>Phase</th><th>Key Docs</th></tr>'+
       '<tr><td>🔍</td><td>Spec Review</td><td>Design</td><td>.spec/*</td></tr>'+
       '<tr><td>📐</td><td>Architecture</td><td>Design</td><td>docs/03, docs/27, docs/26</td></tr>'+
@@ -925,6 +926,7 @@ function showManual(sec){
       '<tr><td>🧬</td><td>Optimal Methodology</td><td>AI Intelligence</td><td>docs/60</td></tr>'+
       '<tr><td>🎭</td><td>9-Expert Brainstorm</td><td>AI Intelligence</td><td>docs/61, docs/03</td></tr>'+
       '<tr><td>🎯</td><td>UX Journey Design</td><td>AI Intelligence</td><td>docs/06, docs/57</td></tr>'+
+      '<tr><td>🔬</td><td>UX Proficiency Audit</td><td>AI Intelligence</td><td>docs/81, docs/06</td></tr>'+
       '<tr><td>🤖</td><td>AI Model Selection</td><td>AI Intelligence</td><td>docs/60, docs/61</td></tr>'+
       '<tr><td>🏭</td><td>Industry Deep Dive</td><td>AI Intelligence</td><td>docs/62, docs/45</td></tr>'+
       '<tr><td>🔮</td><td>Next-Gen UX</td><td>AI Intelligence</td><td>docs/63</td></tr>'+

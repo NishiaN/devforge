@@ -389,7 +389,7 @@ function buildFileTree(){
       files.push({name:'  '+f+'.md',path:'docs/'+f+'.md'}));
   } else if(pillar===10){ // Implementation Intelligence
     files.push({folder:true,name:'docs'});
-    ['39_implementation_playbook','40_ai_dev_runbook','42_skill_guide'].forEach(f=>
+    ['39_implementation_playbook','40_ai_dev_runbook','42_skill_guide','81_ux_proficiency_audit'].forEach(f=>
       files.push({name:'  '+f+'.md',path:'docs/'+f+'.md'}));
     if(S.files['skills/impl-patterns.md']){
       files.push({folder:true,name:'skills'});
