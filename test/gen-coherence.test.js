@@ -782,6 +782,16 @@ check('K10-5: Release checklist mentions Netlify',r25bRel.includes('Netlify'));
 check('K10-6: posts table (correct plural)',r25bApi.includes("'posts'"));
 check('K10-7: categories table (correct plural)',r25bApi.includes("'categories'"));
 
+// ═══ gen81: UX Proficiency Audit doc ═══
+console.log('\n━━ gen81: UX Proficiency Audit ━━');
+S.files={};S.genLang='ja';
+S.projectName='TestProject';
+S.answers={target:'ユーザー',screens:'ダッシュボード, 設定',auth:'NextAuth',mvp_features:'ログイン, ダッシュボード'};
+gen81();
+check('gen81: docs/81_ux_proficiency_audit.md exists',!!S.files['docs/81_ux_proficiency_audit.md']);
+const doc81=S.files['docs/81_ux_proficiency_audit.md']||'';
+check('gen81: has Lv.0 through Lv.6 headers',['Lv.0','Lv.1','Lv.2','Lv.3','Lv.4','Lv.5','Lv.6'].every(lv=>doc81.includes(lv)));
+
 // ═══ SUMMARY ═══
 console.log(`\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
 console.log(`# pass ${pass}`);
