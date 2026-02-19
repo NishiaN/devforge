@@ -63,6 +63,7 @@ function applyLang(){
   if($('helpBtn'))$('helpBtn').title=ja?'ヘルプ':'Help';
   if($('kbBtn'))$('kbBtn').title=ja?'ショートカット':'Shortcuts';
   if($('pmBtn'))$('pmBtn').title=ja?'プロジェクト管理':'Projects';
+  if($('searchBtn'))$('searchBtn').title=ja?'検索 (Ctrl+P)':'Search (Ctrl+P)';
   // Landing stat labels
   const statLbls=document.querySelectorAll('.stat-item .lbl');
   const slJa=['生成ファイル','技術エントリ','柱 (Pillars)','AIツール対応'];
@@ -70,14 +71,18 @@ function applyLang(){
   statLbls.forEach((el,i)=>{if(i<4)el.textContent=ja?slJa[i]:slEn[i];});
   // Info cards
   const icards=document.querySelectorAll('.icard');
-  const icJa=[['😱 3つの悪夢を解決','真っ白な画面の絶望・終わらない連携地獄・「俺の環境では動く」症候群…DevForgeが全て自動解決'],['🧪 20の柱×134+ファイル','質問に答えるだけで、仕様・環境・AIルール・戦略・UX全てを自動生成。認知負荷ゼロで開発開始'],['📱 モバイル対応','Expo / React Native 開発パス・EAS Build・OTA更新'],['🤖 AI自律開発','Vibe Coding・マルチAgent・Claude Code Subagents'],['💳 決済・CMS・EC','Stripe・microCMS・Medusa・Shopify Hydrogen'],['📦 フルエクスポート','ZIP・PDF・全ファイル結合コピー・URLシェア']];
-  const icEn=[['😱 Solve 3 Dev Nightmares','Blank screen paralysis, endless integration hell, "works on my machine" syndrome… DevForge auto-resolves all'],['🧪 20 Pillars × 134+ Files','Just answer questions to auto-generate specs, env, AI rules, strategy & UX. Zero cognitive load to start'],['📱 Mobile Support','Expo / React Native dev path, EAS Build, OTA updates'],['🤖 AI Autonomous Dev','Vibe Coding, Multi-Agent, Claude Code Subagents'],['💳 Payment/CMS/EC','Stripe, microCMS, Medusa, Shopify Hydrogen'],['📦 Full Export','ZIP, PDF, Copy All Files, URL Share']];
+  const icJa=[['😱 3つの悪夢を解決','真っ白な画面の絶望・終わらない連携地獄・「俺の環境では動く」症候群…DevForgeが全て自動解決'],['🧪 20の柱×134+ファイル','設計書を自動生成 → AIに投入 → 実コード。質問に答えるだけで仕様・環境・AIルール全てを自動生成。'],['📱 モバイル対応','Expo / React Native 開発パス・EAS Build・OTA更新'],['🤖 AI自律開発','Vibe Coding・マルチAgent・Claude Code Subagents'],['💳 決済・CMS・EC','Stripe・microCMS・Medusa・Shopify Hydrogen'],['📦 フルエクスポート','ZIP・PDF・全ファイル結合コピー・URLシェア']];
+  const icEn=[['😱 Solve 3 Dev Nightmares','Blank screen paralysis, endless integration hell, "works on my machine" syndrome… DevForge auto-resolves all'],['🧪 20 Pillars × 134+ Files','Auto-generate specs → Feed to AI → Real code. Answer questions to auto-generate specs, env, AI rules & strategy.'],['📱 Mobile Support','Expo / React Native dev path, EAS Build, OTA updates'],['🤖 AI Autonomous Dev','Vibe Coding, Multi-Agent, Claude Code Subagents'],['💳 Payment/CMS/EC','Stripe, microCMS, Medusa, Shopify Hydrogen'],['📦 Full Export','ZIP, PDF, Copy All Files, URL Share']];
   icards.forEach((el,i)=>{if(i<6){const d=ja?icJa[i]:icEn[i];const h4=el.querySelector('h4');const p=el.querySelector('p');if(h4)h4.textContent=d[0];if(p)p.textContent=d[1];}});
   // Pillar badges
   const pbadges=document.querySelectorAll('.pbadge');
   const pbJa=['①SDD統合','②DevContainer','③MCP設定','④AIルール','⑤並列探索','⑥Dashboard','⑦ロードマップ','⑧AIランチャー','⑨デザインシステム','⑩リバースEng','⑪実装ガイド','⑫セキュリティ','⑬戦略インテリジェンス','⑭運用インテリジェンス','⑮未来戦略','⑯開発IQ','⑰プロンプトゲノム','⑱Prompt Ops','⑲エンタープライズ','⑳CI/CD'];
   const pbEn=['①SDD','②DevContainer','③MCP','④AI Rules','⑤Explorer','⑥Dashboard','⑦Roadmap','⑧AI Launcher','⑨Design System','⑩Reverse Eng','⑪Impl Guide','⑫Security','⑬Strategic Intelligence','⑭Ops Intelligence','⑮Future Strategy','⑯Dev IQ','⑰Prompt Genome','⑱Prompt Ops','⑲Enterprise','⑳CI/CD'];
   pbadges.forEach((el,i)=>{if(i<20)el.textContent=ja?pbJa[i]:pbEn[i];});
+  // Pillar badge tooltips
+  const pbTipJa=['仕様書・タスク・検証の統合設計ドキュメント5本組','VSCode/Cursor対応Docker開発環境を即時構築','Model Context Protocol設定でAIをプロジェクト対応','10+ツール対応AIルール（Claude/Cursor/Copilot等）','7スタック並列比較＋おすすめランキング','コンテキスト可視化＋技術DBブラウザ','インタラクティブ学習ロードマップ（Layer別進捗）','36プロンプトテンプレート＋AIモデル推薦','デザイントークン＋シーケンス図自動生成','ゴール逆算型プランニング（リバースエンジニアリング）','業種別実装パターン＋AI運用手順書','OWASP/STRIDE対応セキュリティ監査プロンプト','業界特化設計図＋技術レーダー＋ステークホルダー戦略','SLO/SLI・Feature Flags・12 Ops Capabilities設計','市場・UX・エコシステム・規制フォーサイト（2026-2035）','32ドメイン×12手法のポリモーフィック開発戦略','CRITERIA 8軸プロンプト品質スコア＋AI成熟度評価','ReAct自律ワークフロー＋LLMOpsダッシュボード','マルチテナント設計＋組織モデル＋エンタープライズUI','9ステージCI/CDパイプライン＋デプロイ戦略設計'];
+  const pbTipEn=['5-doc spec suite: constitution, spec, plan, tasks, verification','Instant Docker dev env compatible with VSCode/Cursor','MCP config to give AI full project awareness','10+ AI tool configs (Claude, Cursor, Copilot, Windsurf, etc.)','Compare 7 stacks in parallel with recommendation ranking','Context visualization + browsable tech DB','Interactive learning roadmap with layer-based progress','36 prompt templates + AI model recommendations','Design tokens + sequence diagrams auto-generation','Goal-driven reverse engineering planning','Domain-specific implementation patterns + AI runbook','OWASP/STRIDE security audit prompts (context-aware)','Industry blueprint + tech radar + stakeholder strategy','SLO/SLI, Feature Flags, 12 Ops Capabilities design','Market, UX, ecosystem & regulatory foresight (2026-2035)','Polymorphic dev strategy: 32 domains × 12 approaches','CRITERIA 8-axis prompt quality scoring + AI maturity model','ReAct autonomous workflow + LLMOps dashboard','Multi-tenant design + org model + enterprise UI components','9-stage CI/CD pipeline + deploy strategy design'];
+  pbadges.forEach((el,i)=>{if(i<20)el.title=ja?pbTipJa[i]:pbTipEn[i];});
   // Keyboard shortcuts overlay
   const kbT=$('kbTitle');if(kbT)kbT.textContent=t('kbTitle');
   const kbLabels=document.querySelectorAll('.kblbl');
@@ -119,7 +124,7 @@ function applyLang(){
   if($('presetRow'))initPresets();
   // Update html lang attribute and document title (D3)
   document.documentElement.lang=S.lang;
-  document.title=ja?'DevForge v9.0 — AI駆動開発 統合プラットフォーム':'DevForge v9.0 — AI-Driven Development Platform';
+  document.title=ja?'DevForge v9.5 — AI駆動開発 統合プラットフォーム':'DevForge v9.5 — AI-Driven Development Platform';
   // Compare button translation (D4)
   const cl=$('compareLbl');if(cl)cl.textContent=ja?'テンプレート比較':'Compare Templates';
   // Update QBar labels when language changes
@@ -172,7 +177,7 @@ if(S.projectName&&S.phase>0){
 }
 
 // What's New indicator (HCD: C継続利用)
-const CURRENT_VERSION='9.4.0';
+const CURRENT_VERSION='9.5.0';
 const lastSeenVersion=_lsGet('devforge-last-version');
 if(lastSeenVersion!==CURRENT_VERSION){
   const helpBtn=$('helpBtn')||document.querySelector('[onclick*="showManual"]');

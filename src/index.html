@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self' https://cdnjs.cloudflare.com; object-src 'none'; base-uri 'self'; form-action 'self';">
-<title>DevForge v9.0 — AI駆動開発 統合プラットフォーム</title>
+<title>DevForge v9.5 — AI駆動開発 統合プラットフォーム</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js" integrity="sha384-+mbV2IY1Zk/X1p/nWllGySJSUN8uMs+gUAN10Or95UBH0fpj6GfKgPmgC5EXieXG" crossorigin="anonymous" onerror="window._noZip=true"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js" integrity="sha384-/TQbtLCAerC3jgaim+N78RZSDYV7ryeoBCVqTuzRrFec2akfBkHS7ACQ3PQhvMVi" crossorigin="anonymous" onerror="window._noMarked=true"></script>
 <style>
@@ -26,6 +26,7 @@
     <div class="topbar-right">
       <button class="theme-btn" onclick="toggleLang()" title="EN/JA" aria-label="Toggle language" id="langBtn">🌐</button>
       <button class="theme-btn" onclick="toggleTheme()" title="Theme" aria-label="Toggle theme" id="themeBtn">🌙</button>
+      <button class="theme-btn" onclick="if(typeof showCommandPalette==='function')showCommandPalette()" title="検索 (Ctrl+P)" id="searchBtn" aria-label="Search">🔍</button>
       <button class="theme-btn" onclick="showManual()" title="Help" id="helpBtn" aria-label="Help">❓</button>
       <button class="theme-btn" onclick="showKB()" title="Shortcuts" id="kbBtn" aria-label="Keyboard shortcuts">⌨️</button>
       <button class="theme-btn" onclick="showPM()" title="Projects" id="pmBtn">📁</button>
@@ -37,7 +38,7 @@
   <div class="onboard" id="onboard" role="region" aria-label="Onboarding">
     <div class="hero-anim">
       <div class="hero-content">
-        <div class="version-badge">v9.0 — 2026 Edition</div>
+        <div class="version-badge">v9.5 — 2026 Edition</div>
         <h1 id="heroTitle">DevForge v9</h1>
         <p id="heroDesc">開発の3大悪夢を解決。質問に答えるだけで134+ファイルの設計図を自動生成。20の柱が、AIと共に「ひらめき→仕様→実装」の階段をガイド。</p>
       </div>
@@ -50,7 +51,7 @@
     </div>
     <div class="info-grid">
       <div class="icard"><h4>😱 3つの悪夢を解決</h4><p>真っ白な画面の絶望・終わらない連携地獄・「俺の環境では動く」症候群…DevForgeが全て自動解決</p></div>
-      <div class="icard"><h4>🧪 20の柱×134+ファイル</h4><p>質問に答えるだけで、仕様・環境・AIルール・戦略・UX全てを自動生成。認知負荷ゼロで開発開始</p></div>
+      <div class="icard"><h4>🧪 20の柱×134+ファイル</h4><p>設計書を自動生成 → AIに投入 → 実コード。質問に答えるだけで仕様・環境・AIルール全てを自動生成。</p></div>
       <div class="icard"><h4>📱 モバイル対応</h4><p>Expo / React Native 開発パス・EAS Build・OTA更新</p></div>
       <div class="icard"><h4>🤖 AI自律開発</h4><p>Vibe Coding・マルチAgent・Claude Code Subagents</p></div>
       <div class="icard"><h4>💳 決済・CMS・EC</h4><p>Stripe・microCMS・Medusa・Shopify Hydrogen</p></div>
@@ -92,7 +93,7 @@
           <div class="sb-section sb-progress" id="sbProgress">
             <div class="pd-title" id="pdTitle">Progress</div>
             <div id="sbPills"></div>
-            <div class="pd-progress"><div class="pd-bar"><div class="pd-bar-fill" id="pdBar" style="width:0%"></div></div><span id="pdPct">0%</span></div>
+            <div class="pd-progress"><div class="pd-bar"><div class="pd-bar-fill" id="pdBar" style="width:0%"></div></div><span id="pdPct">0%</span><span id="cxMini"></span></div>
             <button class="btn btn-p pd-gen" id="pdGenBtn" onclick="generateAll()">🚀 生成</button>
           </div>
           <div class="sb-section sb-files" id="sbFiles" style="display:none"></div>

@@ -111,6 +111,10 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:1
 .sb-file-tree .ft-file a:hover{background:var(--bg-3);color:var(--text);}
 .sb-file-tree .ft-file.active a{background:color-mix(in srgb,var(--accent) 15%,transparent);color:var(--accent);font-weight:600;}
 .sb-empty{font-size:11px;color:var(--text-3);padding:8px 4px;}
+.sb-key-banner{font-size:10px;font-weight:700;color:var(--success);padding:5px 6px 3px;background:color-mix(in srgb,var(--success) 8%,transparent);border-radius:var(--radius);margin-bottom:4px;letter-spacing:0.3px;}
+.sb-key-files{list-style:none;margin:0 0 8px;padding:0;font-size:11px;font-family:var(--mono);}
+.sb-key-files .ft-file a{color:var(--success);text-decoration:none;display:block;padding:2px 6px;border-radius:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sb-key-files .ft-file a:hover{background:color-mix(in srgb,var(--success) 10%,transparent);}
 .sb-iconbar{width:40px;flex-shrink:0;background:var(--bg-2);border-right:1px solid var(--border);display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 0;}
 .sb-icon-btn{background:none;border:none;border-radius:6px;padding:6px;cursor:pointer;font-size:14px;color:var(--text-3);transition:all 0.15s;width:32px;height:32px;display:flex;align-items:center;justify-content:center;}
 .sb-icon-btn:hover{background:var(--bg-3);color:var(--text);}
@@ -455,6 +459,13 @@ mark{background:var(--accent-soft);color:var(--accent);padding:0 2px;border-radi
 .dash-backup-yellow{background:color-mix(in srgb,var(--warn) 9%,transparent);border:1px solid color-mix(in srgb,var(--warn) 25%,transparent);color:var(--warn);}
 .dash-guide{background:var(--accent-soft);border:1px solid color-mix(in srgb,var(--accent) 25%,transparent);color:var(--accent);}
 .guide-action-p{margin-top:16px;}
+.cx-mini{margin-left:6px;font-size:10px;font-weight:700;opacity:0.9;}
+.dash-advanced{margin:12px 0;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;}
+.dash-adv-toggle{padding:8px 12px;background:var(--bg-3);cursor:pointer;font-size:12px;font-weight:600;color:var(--text-2);list-style:none;display:block;}
+.dash-adv-toggle::-webkit-details-marker{display:none;}
+.dash-adv-toggle::before{content:'▶ ';font-size:10px;}
+details[open]>.dash-adv-toggle::before{content:'▼ ';}
+.dash-advanced>summary~*{padding:0 4px;}
 .dash-info{font-size:12px;}
 .dash-center{margin-top:16px;text-align:center;}
 .dash-center .btn{font-size:11px;}

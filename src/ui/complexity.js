@@ -28,6 +28,28 @@ function getComplexityHTML(){
 </div><div class="complexity-item"><span>${_ja?'認証方式':'Auth Methods'}</span><span>${authCount}${_s}</span></div><div class="complexity-item"><span>${_ja?'推定期間':'Est. Duration'}</span><span>${weeks}</span></div>
 <div class="complexity-item"><span>${_ja?'推奨人数':'Team Size'}</span><span>${devs}</span></div></div></div>`;
 }
+function getComplexityMini(){
+  const a=S.answers;
+  const fs=(a.mvp_features||'').split(',').map(s=>s.trim()).filter(Boolean);
+  const fCount=fs.length;
+  const eCount=((a.data_entities||'').split(',')).filter(Boolean).length;
+  const sCount=((a.screens||'').split(',')).filter(Boolean).length;
+  const authCount=((a.auth||'').split(',')).filter(Boolean).length;
+  const hasTDD=hasDM('TDD')?1:0,hasBDD=hasDM('BDD')?1:0,hasDDD=hasDM('DDD')?1:0;
+  const beComplex=(a.backend||'').includes('なし')||(a.backend||'').includes('None')?0:(a.backend||'').includes('Firebase')||(a.backend||'').includes('Supabase')?1:2;
+  let score=0;
+  score+=Math.min(fCount*8,50);
+  score+=Math.min(eCount*3,20);
+  score+=Math.min(sCount*2,14);
+  score+=authCount*2;
+  score+=beComplex*5;
+  score+=(hasTDD+hasBDD+hasDDD)*3;
+  score=Math.min(score,100);
+  if(!score)return '';
+  const color=score<=30?'var(--success)':score<=60?'var(--warn)':'var(--danger)';
+  const label=score<=30?'🟢':score<=60?'🟡':'🔴';
+  return '<span class="cx-mini" style="color:'+color+'" title="Complexity: '+score+'">⚡'+score+'</span>';
+}
 function showComplexity(){
   const body=$('cbody');
   const card=document.createElement('div');

@@ -39,7 +39,27 @@ function renderSidebarFiles(){
     el.innerHTML='<p class="sb-empty">'+(_ja?'ファイル未生成':'No files yet')+'</p>';
     return;
   }
-  let h='<div class="sb-file-search"><input type="text" id="sbSearchInput" placeholder="'+(_ja?'🔍 検索':'🔍 Search')+'" oninput="filterSidebarTree(this.value)" aria-label="'+(_ja?'ファイル検索':'Search files')+'"></div>';
+  let h='';
+  // Beginner: show key files banner first
+  if(S.skill==='beginner'){
+    const keyFiles=[
+      {p:'README.md',l:_ja?'README.md — プロジェクト概要':'README.md — Project overview'},
+      {p:'CLAUDE.md',l:_ja?'CLAUDE.md — AIに全仕様を理解させる':'CLAUDE.md — Give AI full context'},
+      {p:'.devcontainer/devcontainer.json',l:_ja?'devcontainer.json — 開発環境一発起動':'devcontainer.json — Instant dev env'},
+      {p:'.spec/constitution.md',l:_ja?'constitution.md — 最初に読む原則':'constitution.md — Principles (read first)'},
+    ];
+    const validKeyFiles=keyFiles.filter(kf=>files[kf.p]);
+    if(validKeyFiles.length){
+      h+='<div class="sb-key-banner">🌱 '+(_ja?'まずこれを読もう':'Start Here')+'</div>';
+      h+='<ul class="sb-key-files">';
+      validKeyFiles.forEach(kf=>{
+        const active=S.previewFile===kf.p;
+        h+='<li class="ft-file'+(active?' active':'')+'" data-path="'+escAttr(kf.p)+'"><a href="#" onclick="previewFile(\''+escAttr(kf.p)+'\');return false;" title="'+escAttr(kf.p)+'">'+esc(kf.l)+'</a></li>';
+      });
+      h+='</ul>';
+    }
+  }
+  h+='<div class="sb-file-search"><input type="text" id="sbSearchInput" placeholder="'+(_ja?'🔍 検索':'🔍 Search')+'" oninput="filterSidebarTree(this.value)" aria-label="'+(_ja?'ファイル検索':'Search files')+'"></div>';
   h+='<ul class="sb-file-tree" id="sbFileList">';
   // Pinned
   const pinned=S.pinnedFiles||[];

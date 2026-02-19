@@ -8,7 +8,8 @@ function showDashboard(){
   const totalChars=Object.values(S.files).reduce((s,f)=>s+f.length,0);
   const tokens=Math.round(totalChars/4);
   const answered=Object.keys(a).length;
-  
+  const _adv=S.skill!=='beginner';
+
   let h=`<div class="dash-head"><h3>📊 Context Dashboard</h3><p>${_ja?'プロジェクトのコンテキスト情報を一覧':'Project context overview'}</p></div>`;
   
   // Backup reminder banner
@@ -33,7 +34,8 @@ function showDashboard(){
     <div class="ctx-stat"><div class="num">${TECH_DB.length}</div><div class="lbl">${_ja?'技術DB':'Tech DB'}</div></div>
   </div>`;
   
-  // Model fit analysis
+  // Model fit analysis (advanced — collapsed for beginners)
+  h+=(_adv?'<details class="dash-advanced" open>':'<details class="dash-advanced">')+'<summary class="dash-adv-toggle">'+(_ja?'🔬 AI モデル & スタック分析':'🔬 AI Model & Stack Analysis')+'</summary>';
   const models=[
     {name:'Claude Opus 4.6',ctx:1000000,color:'var(--accent)'},
     {name:'Claude Sonnet 4.5',ctx:200000,color:'var(--accent-2)'},
@@ -136,6 +138,7 @@ function showDashboard(){
   h+=`</div>`;
   if(syn.domain)h+=`<div class="synergy-domain">${_ja?'検出ドメイン':'Detected Domain'}: <strong>${syn.domain}</strong></div>`;
   h+=`</div>`;
+  h+='</details>';
 
   // Stack compatibility report
   const compat=checkCompat(a);
@@ -175,7 +178,8 @@ function showDashboard(){
   // Project health score
   h+=getHealthHTML(_ja,fileCount,answered);
 
-  // File Dependency Tree
+  // File Dependency Tree + File Size (advanced — collapsed for beginners)
+  h+=(_adv?'<details class="dash-advanced" open>':'<details class="dash-advanced">')+'<summary class="dash-adv-toggle">'+(_ja?'🔗 ファイル依存関係 & 構造':'🔗 File Dependencies & Structure')+'</summary>';
   if(fileCount>0){
     h+=`<h4 class="dash-h4-mt">🔗 ${_ja?'ファイル依存関係':'File Dependencies'}</h4>`;
     const groups=[
@@ -245,7 +249,8 @@ function showDashboard(){
     });
     h+='</div>';
   }
-  
+  h+='</details>';
+
   // Tech DB button
   h+=`<div class="dash-center"><button class="btn btn-s" onclick="renderTechDB()">📊 ${_ja?'技術マスターテーブル':'Tech Master Table'} (${TECH_DB.length} ${_ja?'エントリ':'entries'})</button></div>`;
   

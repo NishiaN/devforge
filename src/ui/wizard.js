@@ -38,6 +38,7 @@ function updProgress(){
   
   const pdBar=$('pdBar');if(pdBar)pdBar.style.width=pct+'%';
   const pdPct=$('pdPct');if(pdPct)pdPct.textContent=done+'/'+total+' ('+pct+'%)';
+  const cxMiniEl=$('cxMini');if(cxMiniEl&&typeof getComplexityMini==='function')cxMiniEl.innerHTML=getComplexityMini();
   for(let i=1;i<=3;i++){
     const el=$('pp'+i);if(el){el.classList.toggle('active',S.phase===i);el.classList.toggle('done',S.phase>i);}
     /* Update question-level status */
