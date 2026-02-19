@@ -26,13 +26,13 @@ DevForge v9's documentation is optimized into role-specific files:
 ## Build & Test
 ```bash
 # Build
-node build.js              # Produces devforge-v9.html (~2000KB)
+node build.js              # Produces devforge-v9.html (~1765KB, limit 2000KB)
 node build.js --no-minify  # Skip minification (debug)
 node build.js --report     # Show size report
 node build.js --check-css  # Validate CSS custom properties
 
 # Test
-npm test                   # Run all tests (489 tests, all passing)
+npm test                   # Run all tests (497 tests, all passing)
 npm run test:watch         # Watch mode for test development
 node --test test/gen-coherence.test.js  # Run single test file
 node --test test/data-coverage.test.js  # Run data integrity tests
@@ -334,7 +334,7 @@ The compatibility checker validates tech stack combinations with **58 rules** (1
 4. Add test cases to `test/compat.test.js` (both positive and negative)
 5. Update test header comment
 6. Update all documentation references (see Cross-Reference section above)
-7. Run `npm test` to verify all 489 tests pass
+7. Run `npm test` to verify all 497 tests pass
 
 ## Key Data Structures & Helper Functions
 
