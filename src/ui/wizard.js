@@ -34,6 +34,7 @@ function updProgress(){
   for(let p=1;p<=3;p++){const ph=qs[p];if(!ph)continue;ph.questions.forEach(q=>{if(!isQActive(q))return;total++;if(S.answers[q.id])done++;});}
   const pct=total?Math.round(done/total*100):0;
   $('pbar').style.width=pct+'%';
+  const _pstrip=$('pbar').parentElement;if(_pstrip)_pstrip.setAttribute('aria-valuenow',pct);
   
   const pdBar=$('pdBar');if(pdBar)pdBar.style.width=pct+'%';
   const pdPct=$('pdPct');if(pdPct)pdPct.textContent=done+'/'+total+' ('+pct+'%)';

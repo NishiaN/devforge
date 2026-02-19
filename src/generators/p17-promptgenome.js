@@ -40,7 +40,7 @@ const CRITERIA_FRAMEWORK = [
     '1=One-shot, 3=Feedback possible, 5=Iterative process with evaluation criteria and convergence conditions'),
   _cri('Adaptation', 10,
     '適応性', 'Adaptation',
-    '1=固定, 3=言語切替可, 3=コンテキスト・スキルレベル・出力形式を動的に適応',
+    '1=固定, 3=言語切替可, 5=コンテキスト・スキルレベル・出力形式を動的に適応',
     '1=Fixed, 3=Language switchable, 5=Dynamically adapts context, skill level, and output format')
 ];
 

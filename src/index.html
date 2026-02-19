@@ -26,12 +26,12 @@
     <div class="topbar-right">
       <button class="theme-btn" onclick="toggleLang()" title="EN/JA" aria-label="Toggle language" id="langBtn">🌐</button>
       <button class="theme-btn" onclick="toggleTheme()" title="Theme" aria-label="Toggle theme" id="themeBtn">🌙</button>
-      <button class="theme-btn" onclick="showManual()" title="Help" id="helpBtn">❓</button>
-      <button class="theme-btn" onclick="showKB()" title="Shortcuts" id="kbBtn">⌨️</button>
+      <button class="theme-btn" onclick="showManual()" title="Help" id="helpBtn" aria-label="Help">❓</button>
+      <button class="theme-btn" onclick="showKB()" title="Shortcuts" id="kbBtn" aria-label="Keyboard shortcuts">⌨️</button>
       <button class="theme-btn" onclick="showPM()" title="Projects" id="pmBtn">📁</button>
     </div>
   </header>
-  <div class="pstrip"><div class="pstrip-fill" id="pbar" style="width:0%"></div></div>
+  <div class="pstrip" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Phase progress"><div class="pstrip-fill" id="pbar" style="width:0%"></div></div>
 
   <!-- Onboarding -->
   <div class="onboard" id="onboard" role="region" aria-label="Onboarding">
@@ -78,7 +78,7 @@
   <!-- Workspace -->
   <main id="ws" role="main" aria-label="Workspace" style="display:none;">
     <div class="toc-panel" id="tocPanel" role="navigation" aria-label="Table of contents"></div>
-    <div class="mobtabs" role="tablist" aria-label="View switch"><div class="mobtab on" onclick="mobSw('c')" role="tab" aria-selected="true">💬 チャット</div><div class="mobtab" onclick="mobSw('p')" role="tab" aria-selected="false">📄 プレビュー</div></div>
+    <div class="mobtabs" role="tablist" aria-label="View switch"><div class="mobtab on" onclick="mobSw('c')" role="tab" aria-selected="true" tabindex="0">💬 チャット</div><div class="mobtab" onclick="mobSw('p')" role="tab" aria-selected="false" tabindex="0">📄 プレビュー</div></div>
     <div class="ws-outer">
       <aside class="sidebar" id="sidebar" role="complementary" aria-label="Sidebar navigation">
         <div class="sb-head">

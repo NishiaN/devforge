@@ -172,7 +172,7 @@ if(S.projectName&&S.phase>0){
 }
 
 // What's New indicator (HCD: C継続利用)
-const CURRENT_VERSION='9.3.0';
+const CURRENT_VERSION='9.4.0';
 const lastSeenVersion=_lsGet('devforge-last-version');
 if(lastSeenVersion!==CURRENT_VERSION){
   const helpBtn=$('helpBtn')||document.querySelector('[onclick*="showManual"]');

@@ -4,11 +4,12 @@ const KEY='devforge-v9';
 const V=9;
 let S={phase:0,step:0,answers:{},projectName:'',skill:'intermediate',preset:'custom',lang:'ja',genLang:'ja',theme:'dark',pillar:0,previewFile:null,files:{},skipped:[],progress:{},editedFiles:{},prevFiles:{},qbarDismissed:false,pinnedFiles:[],recentFiles:[],sidebarOpen:true,_v:V};
 function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML;}
-function escAttr(s){return String(s).replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/"/g,'&quot;');}
+function escAttr(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/"/g,'&quot;');}
 function _jp(s,d){if(s==null)return d;try{return JSON.parse(s);}catch(e){return d;}}
 function sanitize(s,max=500){if(!s||typeof s!=='string')return '';return s.replace(/<[^>]*>/g,'').slice(0,max).trim();}
 function sanitizeName(s){if(!s||typeof s!=='string')return '';return s.replace(/[<>"'&\\\/]/g,'').slice(0,100).trim();}
 function fileSlug(s){if(!s)return 'devforge-project';const r=s.replace(/[^a-zA-Z0-9\s_-]/g,'').replace(/[\s_]+/g,'-').replace(/-{2,}/g,'-').replace(/^-|-$/g,'').slice(0,80);return r||'devforge-project';}
+function _filterProto(obj){if(!obj||typeof obj!=='object')return obj;['__proto__','constructor','prototype'].forEach(k=>{delete obj[k];});return obj;}
 // Toast stacking state
 let _toastStack=[];
 const _maxToasts=5;
@@ -123,7 +124,7 @@ function load(){
     const o=JSON.parse(d);
     if(typeof o.phase==='number')S.phase=o.phase;
     if(typeof o.step==='number')S.step=o.step;
-    if(o.answers&&typeof o.answers==='object'&&!Array.isArray(o.answers))S.answers=o.answers;
+    if(o.answers&&typeof o.answers==='object'&&!Array.isArray(o.answers))S.answers=_filterProto(o.answers);
     if(typeof o.projectName==='string')S.projectName=o.projectName;
     if(typeof o.skill==='string')S.skill=o.skill;
     if(typeof o.preset==='string')S.preset=o.preset;
@@ -132,11 +133,11 @@ function load(){
     if(typeof o.theme==='string')S.theme=o.theme;
     if(typeof o.pillar==='number')S.pillar=o.pillar;
     if(typeof o.previewFile==='string'||o.previewFile===null)S.previewFile=o.previewFile;
-    if(o.files&&typeof o.files==='object'&&!Array.isArray(o.files))S.files=o.files;
+    if(o.files&&typeof o.files==='object'&&!Array.isArray(o.files))S.files=_filterProto(o.files);
     if(Array.isArray(o.skipped))S.skipped=o.skipped;
     if(o.progress&&typeof o.progress==='object'&&!Array.isArray(o.progress))S.progress=o.progress;
-    if(o.editedFiles&&typeof o.editedFiles==='object'&&!Array.isArray(o.editedFiles))S.editedFiles=o.editedFiles;
-    if(o.prevFiles&&typeof o.prevFiles==='object'&&!Array.isArray(o.prevFiles))S.prevFiles=o.prevFiles;
+    if(o.editedFiles&&typeof o.editedFiles==='object'&&!Array.isArray(o.editedFiles))S.editedFiles=_filterProto(o.editedFiles);
+    if(o.prevFiles&&typeof o.prevFiles==='object'&&!Array.isArray(o.prevFiles))S.prevFiles=_filterProto(o.prevFiles);
     if(typeof o.qbarDismissed==='boolean')S.qbarDismissed=o.qbarDismissed;
     if(Array.isArray(o.pinnedFiles))S.pinnedFiles=o.pinnedFiles;
     if(Array.isArray(o.recentFiles))S.recentFiles=o.recentFiles;

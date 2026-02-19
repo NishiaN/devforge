@@ -176,7 +176,7 @@ function prevToolbar(path,showRaw){
   const rawBtn=showRaw?`<button class="btn btn-xs btn-s" onclick="toggleMdRaw('${escAttr(path)}')">📝 Raw</button>`:'';
   const canBack=_prevHistIdx>0;
   const canFwd=_prevHistIdx<_prevHistory.length-1;
-  const navBtns=`<button class="btn btn-xs btn-s prev-nav-btn${canBack?'':' disabled'}" onclick="prevBack()" title="${_ja?'戻る':'Back'}">◀</button><button class="btn btn-xs btn-s prev-nav-btn${canFwd?'':' disabled'}" onclick="prevForward()" title="${_ja?'進む':'Forward'}">▶</button>`;
+  const navBtns=`<button class="btn btn-xs btn-s prev-nav-btn${canBack?'':' disabled'}" aria-disabled="${canBack?'false':'true'}" onclick="prevBack()" title="${_ja?'戻る':'Back'}">◀</button><button class="btn btn-xs btn-s prev-nav-btn${canFwd?'':' disabled'}" aria-disabled="${canFwd?'false':'true'}" onclick="prevForward()" title="${_ja?'進む':'Forward'}">▶</button>`;
   return `<div class="prev-toolbar">${navBtns}${getBreadcrumb(path)}<div class="prev-toolbar-r">${rawBtn}<button class="btn btn-xs btn-s" onclick="openEditor('${escAttr(path)}')">✏️ ${_ja?'編集':'Edit'}</button>${diffBtn(path)}<button class="btn btn-xs btn-s" onclick="copyFileContent('${escAttr(path)}')">📋 ${_ja?'コピー':'Copy'}</button><button class="btn btn-xs btn-s" onclick="printCurrentFile()">🖨️ ${_ja?'印刷':'Print'}</button></div></div>`;
 }
 function initPrevTabs(){
@@ -287,7 +287,7 @@ function showFileTree(){
       if(!S.files[path])return; // Skip if file no longer exists
       const isActive=S.previewFile===path;
       const fileName=path.split('/').pop();
-      h+=`<li data-path="${esc(path)}" class="tree-item ft-pinned${isActive?' active':''}" onclick="previewFile('${escAttr(path)}')">
+      h+=`<li data-path="${esc(path)}" class="tree-item ft-pinned${isActive?' active':''}" role="treeitem" tabindex="0" onclick="previewFile('${escAttr(path)}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();previewFile('${escAttr(path)}')}">
         📄 ${esc(fileName)}<button class="ft-unpin" onclick="event.stopPropagation();togglePin('${escAttr(path)}')" title="${_ja?'ピン留め解除':'Unpin'}">📌</button>
       </li>`;
     });
@@ -302,7 +302,7 @@ function showFileTree(){
       const isPinned=S.pinnedFiles&&S.pinnedFiles.includes(path);
       if(isPinned)return; // Don't show in recent if already pinned
       const fileName=path.split('/').pop();
-      h+=`<li data-path="${esc(path)}" class="tree-item ft-recent${isActive?' active':''}" onclick="previewFile('${escAttr(path)}')">
+      h+=`<li data-path="${esc(path)}" class="tree-item ft-recent${isActive?' active':''}" role="treeitem" tabindex="0" onclick="previewFile('${escAttr(path)}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();previewFile('${escAttr(path)}')}">
         📄 ${esc(fileName)}
       </li>`;
     });
@@ -322,7 +322,7 @@ function showFileTree(){
       const isEdited=S.editedFiles&&S.editedFiles[f.path];
       const isPinned=S.pinnedFiles&&S.pinnedFiles.includes(f.path);
       const pinBtn=isGen?`<button class="ft-pin${isPinned?' ft-pin-active':''}" onclick="event.stopPropagation();togglePin('${escAttr(f.path)}')" title="${_ja?(isPinned?'ピン留め解除':'ピン留め'):(isPinned?'Unpin':'Pin')}">${isPinned?'📌':'○'}</button>`:'';
-      h+=`<li data-path="${esc(f.path)}" onclick="previewFile('${escAttr(f.path)}')" class="tree-item${isActive?' active':''}${f.name.startsWith('  ')?' tree-indent':''}${isGen?'':' tree-disabled'}">
+      h+=`<li data-path="${esc(f.path)}" onclick="previewFile('${escAttr(f.path)}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();previewFile('${escAttr(f.path)}')}" class="tree-item${isActive?' active':''}${f.name.startsWith('  ')?' tree-indent':''}${isGen?'':' tree-disabled'}" role="treeitem" tabindex="0">
         ${isGen?'📄':'⬜'} ${esc(f.name.trim())}${isEdited?'<span class="tree-edited" title="Edited">●</span>':''}${isGen?'<span class="tree-gen">✓</span>':''}${pinBtn}
       </li>`;
     }
@@ -705,7 +705,9 @@ function updViewNav(){
   if(!bb||!fb)return;
   const _ja=S.lang==='ja';
   bb.classList.toggle('disabled',_viewHistIdx<=0);
+  bb.setAttribute('aria-disabled',String(_viewHistIdx<=0));
   fb.classList.toggle('disabled',_viewHistIdx>=_viewHistory.length-1);
+  fb.setAttribute('aria-disabled',String(_viewHistIdx>=_viewHistory.length-1));
   bb.title=_ja?'前の画面':'Previous Screen';
   fb.title=_ja?'次の画面':'Next Screen';
 }

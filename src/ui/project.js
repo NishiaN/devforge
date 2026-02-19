@@ -87,7 +87,7 @@ function showPM(){
     names.forEach(name=>{
       const isCurrent=name===S.projectName;
       const meta=ps[name].date?new Date(ps[name].date).toLocaleDateString():'';
-      html+='<div class="pm-item'+(isCurrent?' current':'')+'" onclick="switchProject(\''+name.replace(/\\/g,'\\\\').replace(/'/g,"\\'")+'\')"><div><div class="pm-item-name">'+esc(name)+(isCurrent?' ✓':'')+'</div><div class="pm-item-meta">'+meta+'</div></div><div class="pm-item-acts"><button onclick="event.stopPropagation();deleteProject(\''+name.replace(/\\/g,'\\\\').replace(/'/g,"\\'")+'\')">🗑️</button></div></div>';
+      html+='<div class="pm-item'+(isCurrent?' current':'')+'" onclick="switchProject(\''+escAttr(name)+'\')"><div><div class="pm-item-name">'+esc(name)+(isCurrent?' ✓':'')+'</div><div class="pm-item-meta">'+meta+'</div></div><div class="pm-item-acts"><button onclick="event.stopPropagation();deleteProject(\''+escAttr(name)+'\')">🗑️</button></div></div>';
     });
   }
   html+='<div class="pm-actions"><button class="btn btn-s" onclick="newProject()">➕ '+(_ja?'新規プロジェクト':'New Project')+'</button><button class="btn btn-s" onclick="importProject()">📥 '+(_ja?'インポート':'Import')+'</button>';

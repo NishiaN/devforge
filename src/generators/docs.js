@@ -409,7 +409,7 @@ _(${G?'追記してください':'Add entries here'})_
 ### ${G?'デプロイ':'Deploy'}
 _(${G?'追記してください':'Add entries here'})_`],
     ['28_qa_strategy',G?'QA戦略・バグ検出ガイド':'QA Strategy & Bug Detection Guide',(()=>{
-  const domain=detectDomain(a.purpose);
+  const domain=detectDomain(a.purpose||'');
   const qa=domain?getDomainQA(domain,G):null;
   if(qa){
     const priObj={};qa.priority.split('|').forEach(p=>{const[k,v]=p.split(':');priObj[k]=v;});

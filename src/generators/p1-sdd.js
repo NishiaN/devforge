@@ -12,7 +12,7 @@ function genPillar1_SDD(a,pn){
 
   // B4: scope_out auto-adjustment + G3: domain inference
   let scopeOut=a.scope_out || (()=>{
-    const domain=detectDomain(a.purpose);
+    const domain=detectDomain(a.purpose||'');
     const defaults={
       education: G?'ネイティブアプリ, 動画配信インフラ, 決済以外の金融機能':'Native apps, Video streaming infrastructure, Non-payment financial features',
       ec: G?'ネイティブアプリ, 実店舗POS連携, 会計ソフト連携, 物流管理':'Native apps, POS integration, Accounting software, Logistics management',
@@ -48,7 +48,7 @@ function genPillar1_SDD(a,pn){
     G?'## 2. ターゲットユーザー':'## 2. Target Users',a.target||(G?'（未定義）':'(Undefined)'),'',
     G?'## 3. 成功指標':'## 3. Success Metrics',
     a.success || (()=>{
-      const domain=detectDomain(a.purpose);
+      const domain=detectDomain(a.purpose||'');
       const kpis={
         education: G?'- コース完了率: 70%以上\n- 月間アクティブ学習者数 (MAL): 前月比+10%\n- 学習者満足度 (NPS): 40以上':'- Course completion rate: 70%+\n- Monthly Active Learners (MAL): +10% MoM\n- Learner NPS: 40+',
         ec: G?'- 月間GMV: 前月比+15%\n- 購入CVR: 3%以上\n- カート離脱率: 70%以下':'- Monthly GMV: +15% MoM\n- Purchase CVR: 3%+\n- Cart abandonment: <70%',

@@ -349,7 +349,7 @@ CLAUDE.md        → ${G?'Claude Code用ルール':'Claude Code rules'}
   const aiAuto=a.ai_auto||'';
   if(aiAuto&&!isNone(aiAuto)){
     // Detect domain for domain-specific skills
-    const domain=detectDomain(a.purpose);
+    const domain=detectDomain(a.purpose||'');
 
     // Compressed: role:name_ja:name_en:purpose_ja:purpose_en:judgment_ja:judgment_en
     const coreSkills=['0:ゴール逆算:Goal Reversal:KPI→機能→実装の逆算:KPI → Features → Impl:ギャップ0:0 gaps','0:要件レビュー:Req Review:要件検証:Verify reqs:欠落0:0 gaps','1:設計検証:Arch Review:技術評価:Eval tech:P0リスク0:0 P0 risks','2:実装支援:Code Support:実装支援:Impl support:エラー0:0 errors','3:デプロイ検証:Deploy Check:デプロイ前チェック:Pre-deploy check:全PASS:All PASS'];

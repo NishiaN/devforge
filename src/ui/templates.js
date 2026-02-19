@@ -96,7 +96,7 @@ function showManual(sec){
       '<h3>V8.3 Features</h3>'+
       '<p>• 📊 Mermaid diagram live rendering (ER/screen flow/Gantt)<br>• 📝 OpenAPI-compliant API specs<br>• ✅ Test case matrix (feature × normal/abnormal)<br>• 📋 Release checklist (per deploy target)<br>• 🔨 WBS 3-level + effort estimation<br>• 🎯 Prompt playbook (phase-specific AI prompts)<br>• 📎 GitHub Issues-style task breakdown<br>• 📋 Copy all files combined (for bulk AI input)</p>'+
       '<h3>V9 Features</h3>'+
-      '<p>• 🧪 Quality Intelligence Engine (industry-specific QA strategies, test matrix, incident response)<br>• 🎨 Design System generation (design tokens, sequence diagrams)<br>• 🔄 Reverse Engineering (goal-driven reverse planning, 32 domains)<br>• 🏗️ Implementation Intelligence (domain-specific impl patterns, AI runbook, pseudo-code)<br>• 🧠 AI Development OS (context compression, file selection matrix, sub-agent isolation)<br>• 🌐 32 domain support (AI, IoT, Real Estate, Legal, HR, FinTech, Manufacturing, Logistics, Agriculture, Energy, Media, Government, Travel, Insurance added)<br>• 📦 130+ file generation (76 docs, 12+ AI rules, 8+ skills)<br>• 🎯 41 presets (CRM, Social, Logistics, Survey, Job Board added)<br>• 🏗️ Future Strategy Intelligence (market positioning, UX strategy, ecosystem, regulatory foresight)<br>• 📄 CLAUDE.md 3-layer split (thin root + path-specific rules + settings)<br>• 🧬 Dev IQ Intelligence ⑯ (polymorphic development strategy for 32 domains × 12 approaches)<br>• 🧩 Prompt Genome Engine ⑰ (project-specific Prompt DNA with CRITERIA 8-axis quality scoring)<br>• 🏢 Enterprise SaaS Blueprint ⑲ (multi-tenant design, org model, workflow engine, enterprise UI components)</p>'+
+      '<p>• 🧪 Quality Intelligence Engine (industry-specific QA strategies, test matrix, incident response)<br>• 🎨 Design System generation (design tokens, sequence diagrams)<br>• 🔄 Reverse Engineering (goal-driven reverse planning, 32 domains)<br>• 🏗️ Implementation Intelligence (domain-specific impl patterns, AI runbook, pseudo-code)<br>• 🧠 AI Development OS (context compression, file selection matrix, sub-agent isolation)<br>• 🌐 32 domain support (AI, IoT, Real Estate, Legal, HR, FinTech, Manufacturing, Logistics, Agriculture, Energy, Media, Government, Travel, Insurance added)<br>• 📦 130+ file generation (76 docs, 12+ AI rules, 8+ skills)<br>• 🎯 41 presets (CRM, Social, Logistics, Survey, Job Board added)<br>• 🏗️ Future Strategy Intelligence (market positioning, UX strategy, ecosystem, regulatory foresight)<br>• 📄 CLAUDE.md 3-layer split (thin root + path-specific rules + settings)<br>• 🧬 Dev IQ Intelligence ⑯ (polymorphic development strategy for 32 domains × 12 approaches)<br>• 🧩 Prompt Genome Engine ⑰ (project-specific Prompt DNA with CRITERIA 8-axis quality scoring)<br>• 🔧 Prompt Engineering OS ⑱ (ReAct autonomous workflow, LLMOps dashboard, Prompt CI/CD, [META] registry)<br>• 🏢 Enterprise SaaS Blueprint ⑲ (multi-tenant design, org model, workflow engine, enterprise UI components)</p>'+
       '<p class="workflow-ref">📘 <strong>For post-generation workflow, see <a href="#" onclick="event.preventDefault();showManual(\'workflow\')">Post-Gen Workflow Guide</a></strong></p>'
     },
     {id:'pillars',title:_ja?'19の柱':'19 Pillars',body:_ja?
@@ -327,7 +327,7 @@ function showManual(sec){
       '<tr><td><code>.devcontainer/</code></td><td>As-is</td><td>Customize</td><td>Team standard</td></tr>'+
       '<tr><td><code>.claude/rules/</code> (5 files)</td><td>Don\'t touch</td><td>Customize</td><td>Path-specific tuning</td></tr>'+
       '<tr><td><code>roadmap/</code></td><td>Learning</td><td>Progress</td><td>Onboarding</td></tr>'+
-      '<tr><td><code>docs/</code> 59 files</td><td>Later</td><td>Review material</td><td>CI/CD gates</td></tr>'+
+      '<tr><td><code>docs/</code> 76 files</td><td>Later</td><td>Review material</td><td>CI/CD gates</td></tr>'+
       '<tr><td><code>docs/29-30</code> Reverse Eng</td><td>Read only</td><td>Reverse planning</td><td>Milestone mgmt</td></tr>'+
       '<tr><td><code>docs/43-47</code> Security</td><td>Skip</td><td>Security audit</td><td>Security gates</td></tr>'+
       '<tr><td><code>docs/48-52</code> Strategy</td><td>Skip</td><td>Industry check</td><td>Full strategy</td></tr>'+
@@ -383,7 +383,7 @@ function showManual(sec){
       '<tr><td>.mcp/</td><td>Model Context Protocol設定</td><td>3</td></tr>'+
       '<tr><td>AIルール</td><td>10+ツール対応（Cursor, Claude Code等）</td><td>12+</td></tr>'+
       '<tr><td>.claude/</td><td>パス別AIルール+設定</td><td>6</td></tr>'+
-      '<tr><td>docs/</td><td>59種類の仕様書・設計書</td><td>59</td></tr>'+
+      '<tr><td>docs/</td><td>76種類の仕様書・設計書</td><td>76</td></tr>'+
       '<tr><td>roadmap/</td><td>学習パス</td><td>9</td></tr>'+
       '<tr><td>共通</td><td>README, LICENSE等</td><td>4</td></tr>'+
       '<tr><td>未来戦略</td><td>市場・UX・エコシステム・規制</td><td>4</td></tr></table>'+
@@ -402,7 +402,7 @@ function showManual(sec){
       '<h5>注意事項</h5>'+
       '<ul class="workflow-level-cautions">'+
       '<li>生成ファイルを直接実行しない（設計書であり実行コードではない）</li>'+
-      '<li>全126+ファイルを一度にAIに投入しない（.spec/から開始）</li>'+
+      '<li>全130+ファイルを一度にAIに投入しない（.spec/から開始）</li>'+
       '<li>AIに「何を作ればいいですか？」と聞かない（tasks.mdに全て書いてある）</li>'+
       '<li>バックアップを忘れない（localStorage消失リスク）</li></ul>'+
       '<h5>よくある失敗</h5>'+
@@ -573,19 +573,19 @@ function showManual(sec){
       '<p class="workflow-footer"><button class="btn btn-p btn-sm" onclick="closeManual();showPostGenGuide(true)">🚀 レベル別ガイドを表示</button></p></div>'
       :
       '<h2>📘 Complete Post-Generation Workflow Guide</h2>'+
-      '<p class="guide-workflow-intro">After generating 126+ files with DevForge v9, follow this <strong>end-to-end workflow</strong> in 5 phases to build a working app.</p>'+
+      '<p class="guide-workflow-intro">After generating 130+ files with DevForge v9, follow this <strong>end-to-end workflow</strong> in 5 phases to build a working app.</p>'+
       '<h3>① Fundamentals — Understanding DevForge Output</h3>'+
       '<div class="workflow-concept"><p><strong>Important:</strong> DevForge generates <strong class="workflow-highlight">design documents</strong>, not runnable application code.</p>'+
       '<p><strong>SDD (Spec-Driven Development) Philosophy:</strong> <code>.spec/</code> serves as your SSoT (Single Source of Truth).</p>'+
       '<div class="hg-flow"><span class="hg-n hg-b">DevForge<br>Generate</span><span class="hg-a">→</span><span class="hg-n hg-c">Feed to<br>AI Tool</span><span class="hg-a">→</span><span class="hg-n hg-p">Generate<br>Real Code</span><span class="hg-a">→</span><span class="hg-n hg-g">Working<br>App</span></div></div>'+
-      '<h4>114+ Files Overview</h4>'+
+      '<h4>130+ Files Overview</h4>'+
       '<table class="workflow-files"><tr><th>Category</th><th>Content</th><th>Files</th></tr>'+
       '<tr><td>.spec/</td><td>SDD 5-point set</td><td>5</td></tr>'+
       '<tr><td>.devcontainer/</td><td>Docker dev environment</td><td>4</td></tr>'+
       '<tr><td>.mcp/</td><td>Model Context Protocol config</td><td>3</td></tr>'+
       '<tr><td>AI Rules</td><td>10+ tool support (Cursor, Claude Code, etc.)</td><td>12+</td></tr>'+
       '<tr><td>.claude/</td><td>Path-specific AI rules + config</td><td>6</td></tr>'+
-      '<tr><td>docs/</td><td>59 spec/design documents</td><td>59</td></tr>'+
+      '<tr><td>docs/</td><td>76 spec/design documents</td><td>76</td></tr>'+
       '<tr><td>roadmap/</td><td>Learning paths</td><td>9</td></tr>'+
       '<tr><td>Common</td><td>README, LICENSE, etc.</td><td>4</td></tr>'+
       '<tr><td>Future Strategy</td><td>Market, UX, Ecosystem, Regulatory</td><td>4</td></tr></table>'+
@@ -604,7 +604,7 @@ function showManual(sec){
       '<h5>Cautions</h5>'+
       '<ul class="workflow-level-cautions">'+
       '<li>Don\'t run generated files directly (they are design docs, not executable code)</li>'+
-      '<li>Don\'t feed all 126+ files to AI at once (start with .spec/)</li>'+
+      '<li>Don\'t feed all 130+ files to AI at once (start with .spec/)</li>'+
       '<li>Don\'t ask AI "What should I build?" (tasks.md has everything)</li>'+
       '<li>Don\'t forget backups (localStorage loss risk)</li></ul>'+
       '<h5>Common Pitfalls</h5>'+
@@ -639,7 +639,7 @@ function showManual(sec){
       '<h5>Recommended Workflow</h5>'+
       '<ol class="workflow-level-steps">'+
       '<li>AGENTS.md define agent roles → Parallel development</li>'+
-      '<li>Full 23-template pipeline: Review→Implement→Test→Refactor→Security→Docs→Ops</li>'+
+      '<li>Full 34-template pipeline: Review→Implement→Test→Refactor→Security→Docs→Ops</li>'+
       '<li>CLAUDE.md 3-layer (root ~1.5K + .claude/rules/ + settings.json)</li>'+
       '<li>mcp-config.json + skills/pipelines.md for automation</li>'+
       '<li>docs/55 Circuit Breaker + Evidence-Based Ops</li>'+
@@ -654,7 +654,7 @@ function showManual(sec){
       '<h5>Automation Checks</h5>'+
       '<p class="workflow-level-checklist">'+
       '✅ .ai/hooks.yml → CI/CD gate integration<br>'+
-      '✅ All 23 template pipeline complete<br>'+
+      '✅ All 34 template pipeline complete<br>'+
       '✅ SLO 99.9% design complete<br>'+
       '✅ Feature Flags all kill switches configured</p>'+
       '</div>'+
@@ -959,7 +959,7 @@ function showManual(sec){
       '<h3>🔴 ストレージ上限</h3>'+
       '<p>localStorageの上限は約5MBです。20〜30プロジェクトで上限に達する可能性があります。古いプロジェクトはエクスポート後に削除してください。</p>'+
       '<h3>🟡 生成ファイルについて</h3>'+
-      '<p>生成される126+ファイルは<strong>設計ドキュメント</strong>（SDD仕様書・DevContainer設定・AIルール等）です。npm installで即座に動くアプリケーションコードではありません。Claude Code / Cursor等のAIツールに入力して実コードを生成する運用が前提です。</p>'+
+      '<p>生成される130+ファイルは<strong>設計ドキュメント</strong>（SDD仕様書・DevContainer設定・AIルール等）です。npm installで即座に動くアプリケーションコードではありません。Claude Code / Cursor等のAIツールに入力して実コードを生成する運用が前提です。</p>'+
       '<p class="workflow-ref">📘 <strong>詳しい手順は <a href="#" onclick="event.preventDefault();showManual(\'workflow\')">生成後ワークフローガイド</a> を参照</strong></p>'+
       '<h3>🟡 スキルレベル</h3>'+
       '<p>スキルレベルにより表示される選択肢が変わります。途中変更すると既回答との不整合が起きうるため、<strong>最初に正しく設定</strong>してください。</p>'+
@@ -976,7 +976,7 @@ function showManual(sec){
       '<h3>🔴 Storage Limit</h3>'+
       '<p>localStorage limit is ~5MB. You may reach the limit with 20-30 projects. Export and delete old projects.</p>'+
       '<h3>🟡 Generated Files</h3>'+
-      '<p>114+ generated files are <strong>design documents</strong> (SDD specs, DevContainer configs, AI rules). They are not runnable app code. Feed them to AI tools like Claude Code / Cursor to generate actual code.</p>'+
+      '<p>130+ generated files are <strong>design documents</strong> (SDD specs, DevContainer configs, AI rules). They are not runnable app code. Feed them to AI tools like Claude Code / Cursor to generate actual code.</p>'+
       '<p class="workflow-ref">📘 <strong>For detailed workflow, see <a href="#" onclick="event.preventDefault();showManual(\'workflow\')">Post-Gen Workflow Guide</a></strong></p>'+
       '<h3>🟡 Skill Level</h3>'+
       '<p>Changing skill level mid-project may cause inconsistencies with existing answers. <strong>Set it correctly at the start.</strong></p>'+
@@ -985,7 +985,7 @@ function showManual(sec){
       '<h3>🔵 Other</h3>'+
       '<p>・ZIP export requires JSZip via CDN (use "Copy All" Ctrl+Shift+C offline)<br>・Switch to light mode before PDF export<br>・URL sharing may truncate on SNS for complex projects</p>'
     },
-    {id:'about',title:'About',body:'<h2>DevForge v9.0</h2><p>'+(_ja?'AI駆動開発 統合プラットフォーム':'AI-Driven Dev Platform')+'</p><p>Version 9.0.0 — 2026 Edition (Modular Architecture)</p><p>'+(_ja?''+_TECH_COUNT+'テクノロジー ・ 126+ファイル ・ 15の柱 ・ 41プリセット ・ Mermaid図 ・ プロンプトプレイブック':''+_TECH_COUNT+' technologies ・ 126+ files ・ 15 pillars ・ 41 presets ・ Mermaid diagrams ・ Prompt playbook')+'</p><p>© 2026 エンジニアリングのタネ制作委員会<br>by にしあん</p>'},
+    {id:'about',title:'About',body:'<h2>DevForge v9.4</h2><p>'+(_ja?'AI駆動開発 統合プラットフォーム':'AI-Driven Dev Platform')+'</p><p>Version 9.4.0 — 2026 Edition (Modular Architecture)</p><p>'+(_ja?''+_TECH_COUNT+'テクノロジー ・ 130+ファイル ・ 19の柱 ・ 41プリセット ・ Mermaid図 ・ プロンプトプレイブック':''+_TECH_COUNT+' technologies ・ 130+ files ・ 19 pillars ・ 41 presets ・ Mermaid diagrams ・ Prompt playbook')+'</p><p>© 2026 エンジニアリングのタネ制作委員会<br>by にしあん</p>'},
   ];
   const nav=$('helpNav');
   // Keep search input, clear nav links after it
