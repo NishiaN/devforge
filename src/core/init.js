@@ -129,6 +129,15 @@ function applyLang(){
   const cl=$('compareLbl');if(cl)cl.textContent=ja?'テンプレート比較':'Compare Templates';
   // Update QBar labels when language changes
   if(typeof updateQbar==='function')updateQbar();
+  // Sync skill slider and label to current S.skillLv
+  var sl=$('skillLvSlider');if(sl)sl.value=S.skillLv;
+  if(typeof _updateSkillLabel==='function')_updateSkillLabel(S.skillLv);
+  // Lv0 hero supplemental hint
+  var h0=$('heroLv0Hint');
+  if(h0){
+    h0.style.display=S.skillLv===0?'block':'none';
+    h0.textContent=ja?'難しい知識は不要。質問に答えるだけ':'No technical knowledge needed. Just answer questions.';
+  }
 }
 
 // Initialize
@@ -161,6 +170,9 @@ document.querySelectorAll('.skcard').forEach(el=>{
       }
       if(data.preset&&typeof data.preset==='string')S.preset=data.preset;
       if(data.skill&&['beginner','intermediate','pro'].includes(data.skill))S.skill=data.skill;
+      if(typeof data.skillLv==='number'&&data.skillLv>=0&&data.skillLv<=6){
+        S.skillLv=data.skillLv; S.skill=skillTier(data.skillLv);
+      }
       if(data.lang&&['ja','en'].includes(data.lang))S.lang=data.lang;
       save();location.hash='';location.reload();
     }

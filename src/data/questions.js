@@ -97,7 +97,9 @@ function _kpiChips(ja,lv){
   // Skill-level trim
   if(lv==='beginner')return all.slice(0,6);
   if(lv==='pro')return all;
-  return all.slice(0,10);
+  // Lv2 (Getting Started) gets 8 chips as a stepping-stone between beginner(6) and intermediate(10)
+  var kpiCount=S.skillLv===2?8:10;
+  return all.slice(0,kpiCount);
 }
 function getQ(){
   const lv=S.skill;

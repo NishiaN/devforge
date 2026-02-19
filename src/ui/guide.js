@@ -52,6 +52,13 @@ function showPostGenGuide(force){
     ['.claude/rules/ Customization','Edit 5 path-specific rules (spec.md/frontend.md/backend.md/test.md/ops.md) for your project. Auto-loaded by path.'],
     ['9-Expert Brainstorm','Use Pillar ⑧ "🎭 9-Expert Brainstorm" for multi-perspective ideas. Check at minimum 4 viewpoints: Business, Technical, User, and Disruptor.'],
   ]);
+  // Lv6 community sharing step — visible for Evangelists only
+  if(S.skillLv>=6){
+    steps.push([
+      _ja?'📢 コミュニティで共有':'📢 Share with Community',
+      _ja?'生成した設計書をコミュニティで共有しましょう。URLコピーボタンで簡単に共有できます。あなたの知見が次の開発者を助けます。<button class="btn btn-xs btn-s" onclick="shareURL()" style="margin-top:6px;">URLをコピーして共有</button>':'Share your generated specs with the community. Use the URL copy button for easy sharing. Your insights help the next developer.<button class="btn btn-xs btn-s" onclick="shareURL()" style="margin-top:6px;">Copy URL &amp; Share</button>'
+    ]);
+  }
   const lvKey=isB?'b':isP?'p':'i';
   const prog=_jp(_lsGet('devforge-guide-prog'),{});
   const stepsHtml=steps.map((s,i)=>{

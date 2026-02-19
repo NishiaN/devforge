@@ -1,6 +1,6 @@
 /* ═══ V9 CONFIRM DIALOG ═══ */
 function showConfirm(val,onOk){
-  if(S.skill!=='pro'){onOk();return;}
+  if(S.skillLv<5){onOk();return;}
   _confirmCb=onOk;
   const ov=$('confirmOverlay');ov.style.display='flex';
   pushModal(ov,()=>{ov.style.display='none';releaseFocus(ov);_confirmCb=null;});

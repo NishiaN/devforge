@@ -1,5 +1,33 @@
 /* ═══ PRESET & START ═══ */
-function pickSkill(lv){S.skill=lv;document.querySelectorAll('.skcard').forEach(c=>{c.classList.toggle('on',c.dataset.lv===lv);c.setAttribute('aria-checked',String(c.dataset.lv===lv));});save();}
+function _updateSkillLabel(lv){
+  const _ja=S.lang==='ja';
+  var n=SKILL_NAMES[lv]||SKILL_NAMES[3];
+  var el=$('skillFineLabel');
+  if(el)el.textContent=n.emoji+' '+(_ja?n.ja:n.en);
+}
+function pickSkillLv(n){
+  n=Math.max(0,Math.min(6,+n));
+  S.skillLv=n;
+  S.skill=skillTier(n);
+  // sync card highlight
+  var cards=document.querySelectorAll('.skcard');
+  cards.forEach(function(c){c.classList.remove('on');c.setAttribute('aria-checked','false');});
+  var tIdx={'beginner':0,'intermediate':1,'pro':2}[S.skill];
+  if(cards[tIdx]){cards[tIdx].classList.add('on');cards[tIdx].setAttribute('aria-checked','true');}
+  _updateSkillLabel(n);
+  save();
+}
+function pickSkill(lv){
+  S.skill=lv;
+  // Set skillLv to tier's default level
+  var defaultLv={'beginner':1,'intermediate':3,'pro':5}[lv]||3;
+  S.skillLv=defaultLv;
+  document.querySelectorAll('.skcard').forEach(c=>{c.classList.toggle('on',c.dataset.lv===lv);c.setAttribute('aria-checked',String(c.dataset.lv===lv));});
+  // Sync slider and label
+  var sl=$('skillLvSlider');if(sl){sl.value=S.skillLv;}
+  _updateSkillLabel(S.skillLv);
+  save();
+}
 
 /* Preset category map */
 const PRESET_CAT_MAP={
@@ -144,6 +172,12 @@ function start(){
   const name=sanitizeName($('nameIn').value);
   if(!name){toast(_ja?'プロジェクト名を入力してください':'Please enter a project name');return;}
   S.projectName=name;S.phase=1;S.step=0;S.skipped=[];
+  // Lv0 forced preset: absolute beginners get SaaS preset auto-selected
+  if(S.skillLv===0&&S.preset==='custom'){
+    S.preset='saas';
+    loadPreset('saas');
+    toast(_ja?'初心者向けにSaaSプリセットを自動選択しました':'Auto-selected SaaS preset for beginners');
+  }
   const p=PR[S.preset];const _en=S.lang==='en';
   if(p&&p.name){
     if(p.purpose)S.answers.purpose=(_en&&p.purposeEn)?p.purposeEn:p.purpose;
@@ -194,6 +228,8 @@ function autoFillPhase2Defaults(){
   // Only fill fields not already set by preset
   if(!S.answers.frontend)S.answers.frontend='React + Next.js';
   if(!S.answers.css_fw)S.answers.css_fw='Tailwind CSS';
+  // Lv0: use Firebase (simpler BaaS, no SQL required)
+  if(S.skillLv===0&&!S.answers.backend){S.answers.backend='Firebase';}
   if(!S.answers.backend)S.answers.backend='Supabase';
   if(!S.answers.mobile)S.answers.mobile=_ja?'なし':'None';
   if(!S.answers.ai_auto)S.answers.ai_auto=_ja?'Vibe Coding入門':'Vibe Coding Intro';

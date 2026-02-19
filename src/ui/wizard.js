@@ -102,7 +102,7 @@ function showQ(){
   updProgress();
   addMsg('bot',q.q,q.tip,null,q.help);
   renderInputFor(q,(val)=>{
-    if(S.skill==='pro'){showConfirm(val,()=>{doSubmit(q.id,val);});}
+    if(S.skillLv>=5){showConfirm(val,()=>{doSubmit(q.id,val);});}
     else{doSubmit(q.id,val);}
   },true);
 }

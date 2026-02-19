@@ -119,8 +119,8 @@ function renderOpts(zone,q,onSubmit){
     const h=document.createElement('h5');
     const label=typeof o==='string'?o:o.label;
     h.textContent=label;
-    // ⭐ Recommended badge on first option for tech questions (Beginner/Intermediate)
-    if(showBadge&&idx===0&&S.skill!=='pro'){
+    // ⭐ Recommended badge on first option for tech questions (Beginner/Intermediate/Lower Advanced)
+    if(showBadge&&idx===0&&S.skillLv<4){
       const badge=document.createElement('span');badge.className='ocard-rec-badge';
       badge.textContent=_ja?'⭐ おすすめ':'⭐ Recommended';
       h.appendChild(badge);
