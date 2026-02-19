@@ -309,6 +309,12 @@ describe('Build System', () => {
     }
   });
 
+  it('has correct number of pillar badges', () => {
+    const html = fs.readFileSync(OUTPUT, 'utf-8');
+    const pbadgeCount = (html.match(/class="pbadge"/g) || []).length;
+    assert.strictEqual(pbadgeCount, 19, `pbadge count should be 19 (one per pillar), got ${pbadgeCount}`);
+  });
+
   it('no duplicate @keyframes definitions', () => {
     const html = fs.readFileSync(OUTPUT, 'utf-8');
     const kfNames = [...html.matchAll(/@keyframes\s+([a-zA-Z]+)/g)].map(m => m[1]);

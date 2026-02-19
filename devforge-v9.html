@@ -40,18 +40,18 @@
       <div class="hero-content">
         <div class="version-badge">v9.0 — 2026 Edition</div>
         <h1 id="heroTitle">DevForge v9</h1>
-        <p id="heroDesc">質問に答えるだけで、126+ファイルの開発ドキュメント・環境設定・AIルール・学習ロードマップを自動生成。18の柱でAI駆動開発をゼロから完全サポート。</p>
+        <p id="heroDesc">質問に答えるだけで、130+ファイルの開発ドキュメント・環境設定・AIルール・学習ロードマップを自動生成。19の柱でAI駆動開発をゼロから完全サポート。</p>
       </div>
     </div>
     <div class="stat-row">
-      <div class="stat-item"><div class="num" id="statFileNum">126+</div><div class="lbl" id="statFiles">生成ファイル</div></div>
+      <div class="stat-item"><div class="num" id="statFileNum">130+</div><div class="lbl" id="statFiles">生成ファイル</div></div>
       <div class="stat-item"><div class="num" id="statTechNum"></div><div class="lbl" id="statTech">技術エントリ</div></div>
-      <div class="stat-item"><div class="num">18</div><div class="lbl" id="statPillars">柱 (Pillars)</div></div>
+      <div class="stat-item"><div class="num">19</div><div class="lbl" id="statPillars">柱 (Pillars)</div></div>
       <div class="stat-item"><div class="num">10+</div><div class="lbl" id="statAI">AIツール対応</div></div>
     </div>
     <div class="info-grid">
-      <div class="icard"><h4>📝 126+ファイル生成</h4><p>SDD仕様書・Docker・MCP・AIルール10種・ロードマップ9種・仕様書38種</p></div>
-      <div class="icard"><h4>🧪 18の柱</h4><p>SDD・DevContainer・MCP・AIルール・並列探索・Dashboard・ロードマップ・AIランチャー・デザインシステム・リバースEng・実装ガイド・セキュリティ・戦略・運用・未来戦略・開発IQ・プロンプトゲノム・Prompt Ops</p></div>
+      <div class="icard"><h4>📝 130+ファイル生成</h4><p>SDD仕様書・Docker・MCP・AIルール10種・ロードマップ9種・仕様書38種</p></div>
+      <div class="icard"><h4>🧪 19の柱</h4><p>SDD・DevContainer・MCP・AIルール・並列探索・Dashboard・ロードマップ・AIランチャー・デザインシステム・リバースEng・実装ガイド・セキュリティ・戦略・運用・未来戦略・開発IQ・プロンプトゲノム・Prompt Ops・エンタープライズ</p></div>
       <div class="icard"><h4>📱 モバイル対応</h4><p>Expo / React Native 開発パス・EAS Build・OTA更新</p></div>
       <div class="icard"><h4>🤖 AI自律開発</h4><p>Vibe Coding・マルチAgent・Claude Code Subagents</p></div>
       <div class="icard"><h4>💳 決済・CMS・EC</h4><p>Stripe・microCMS・Medusa・Shopify Hydrogen</p></div>
@@ -59,7 +59,7 @@
     </div>
     <div class="pillars-badge">
       <span class="pbadge">①SDD統合</span><span class="pbadge">②DevContainer</span><span class="pbadge">③MCP設定</span>
-      <span class="pbadge">④AIルール</span><span class="pbadge">⑤並列探索</span><span class="pbadge">⑥Dashboard</span><span class="pbadge">⑦ロードマップ</span><span class="pbadge">⑧AIランチャー</span><span class="pbadge">⑨デザインシステム</span><span class="pbadge">⑩リバースEng</span><span class="pbadge">⑪実装ガイド</span><span class="pbadge">⑫セキュリティ</span><span class="pbadge">⑬戦略</span><span class="pbadge">⑭運用</span><span class="pbadge">⑮未来戦略</span><span class="pbadge">⑯開発IQ</span><span class="pbadge">⑰ゲノム</span><span class="pbadge">⑱Prompt Ops</span>
+      <span class="pbadge">④AIルール</span><span class="pbadge">⑤並列探索</span><span class="pbadge">⑥Dashboard</span><span class="pbadge">⑦ロードマップ</span><span class="pbadge">⑧AIランチャー</span><span class="pbadge">⑨デザインシステム</span><span class="pbadge">⑩リバースEng</span><span class="pbadge">⑪実装ガイド</span><span class="pbadge">⑫セキュリティ</span><span class="pbadge">⑬戦略</span><span class="pbadge">⑭運用</span><span class="pbadge">⑮未来戦略</span><span class="pbadge">⑯開発IQ</span><span class="pbadge">⑰ゲノム</span><span class="pbadge">⑱Prompt Ops</span><span class="pbadge">⑲エンタープライズ</span>
     </div>
     <div class="start-zone">
       <div class="szl" id="skillAsk">Select your skill level</div>
@@ -20719,14 +20719,14 @@ const slEn=['Generated Files','Tech Entries','Pillars','AI Tools'];
 statLbls.forEach((el,i)=>{if(i<4)el.textContent=ja?slJa[i]:slEn[i];});
 // Info cards
 const icards=document.querySelectorAll('.icard');
-const icJa=[['📝 126+ファイル生成','SDD仕様書・Docker・MCP・AIルール10種・ロードマップ9種・仕様書40種・戦略インテリジェンス'],['🧪 18の柱','SDD・DevContainer・MCP・AIルール・並列探索・Dashboard・ロードマップ・AIランチャー・デザインシステム・リバースEng・実装ガイド・セキュリティ・戦略・運用・未来戦略・開発IQ・プロンプトゲノム・Prompt Ops'],['📱 モバイル対応','Expo / React Native 開発パス・EAS Build・OTA更新'],['🤖 AI自律開発','Vibe Coding・マルチAgent・Claude Code Subagents'],['💳 決済・CMS・EC','Stripe・microCMS・Medusa・Shopify Hydrogen'],['📦 フルエクスポート','ZIP・PDF・全ファイル結合コピー・URLシェア']];
-const icEn=[['📝 126+ File Generation','SDD specs, Docker, MCP, 10 AI rules, 9 roadmaps, 40 specs, Strategic Intelligence'],['🧪 18 Pillars','SDD, DevContainer, MCP, AI Rules, Explorer, Dashboard, Roadmap, AI Launcher, Design System, Reverse Eng, Impl Guide, Security, Strategy, Ops, Future Strategy, Dev IQ, Prompt Genome, Prompt Ops'],['📱 Mobile Support','Expo / React Native dev path, EAS Build, OTA updates'],['🤖 AI Autonomous Dev','Vibe Coding, Multi-Agent, Claude Code Subagents'],['💳 Payment/CMS/EC','Stripe, microCMS, Medusa, Shopify Hydrogen'],['📦 Full Export','ZIP, PDF, Copy All Files, URL Share']];
+const icJa=[['📝 130+ファイル生成','SDD仕様書・Docker・MCP・AIルール10種・ロードマップ9種・仕様書40種・戦略インテリジェンス'],['🧪 19の柱','SDD・DevContainer・MCP・AIルール・並列探索・Dashboard・ロードマップ・AIランチャー・デザインシステム・リバースEng・実装ガイド・セキュリティ・戦略・運用・未来戦略・開発IQ・プロンプトゲノム・Prompt Ops・エンタープライズ'],['📱 モバイル対応','Expo / React Native 開発パス・EAS Build・OTA更新'],['🤖 AI自律開発','Vibe Coding・マルチAgent・Claude Code Subagents'],['💳 決済・CMS・EC','Stripe・microCMS・Medusa・Shopify Hydrogen'],['📦 フルエクスポート','ZIP・PDF・全ファイル結合コピー・URLシェア']];
+const icEn=[['📝 130+ File Generation','SDD specs, Docker, MCP, 10 AI rules, 9 roadmaps, 40 specs, Strategic Intelligence'],['🧪 19 Pillars','SDD, DevContainer, MCP, AI Rules, Explorer, Dashboard, Roadmap, AI Launcher, Design System, Reverse Eng, Impl Guide, Security, Strategy, Ops, Future Strategy, Dev IQ, Prompt Genome, Prompt Ops, Enterprise'],['📱 Mobile Support','Expo / React Native dev path, EAS Build, OTA updates'],['🤖 AI Autonomous Dev','Vibe Coding, Multi-Agent, Claude Code Subagents'],['💳 Payment/CMS/EC','Stripe, microCMS, Medusa, Shopify Hydrogen'],['📦 Full Export','ZIP, PDF, Copy All Files, URL Share']];
 icards.forEach((el,i)=>{if(i<6){const d=ja?icJa[i]:icEn[i];const h4=el.querySelector('h4');const p=el.querySelector('p');if(h4)h4.textContent=d[0];if(p)p.textContent=d[1];}});
 // Pillar badges
 const pbadges=document.querySelectorAll('.pbadge');
-const pbJa=['①SDD統合','②DevContainer','③MCP設定','④AIルール','⑤並列探索','⑥Dashboard','⑦ロードマップ','⑧AIランチャー','⑨デザインシステム','⑩リバースEng','⑪実装ガイド','⑫セキュリティ','⑬戦略インテリジェンス','⑭運用インテリジェンス','⑮未来戦略','⑯開発IQ','⑰プロンプトゲノム','⑱Prompt Ops'];
-const pbEn=['①SDD','②DevContainer','③MCP','④AI Rules','⑤Explorer','⑥Dashboard','⑦Roadmap','⑧AI Launcher','⑨Design System','⑩Reverse Eng','⑪Impl Guide','⑫Security','⑬Strategic Intelligence','⑭Ops Intelligence','⑮Future Strategy','⑯Dev IQ','⑰Prompt Genome','⑱Prompt Ops'];
-pbadges.forEach((el,i)=>{if(i<18)el.textContent=ja?pbJa[i]:pbEn[i];});
+const pbJa=['①SDD統合','②DevContainer','③MCP設定','④AIルール','⑤並列探索','⑥Dashboard','⑦ロードマップ','⑧AIランチャー','⑨デザインシステム','⑩リバースEng','⑪実装ガイド','⑫セキュリティ','⑬戦略インテリジェンス','⑭運用インテリジェンス','⑮未来戦略','⑯開発IQ','⑰プロンプトゲノム','⑱Prompt Ops','⑲エンタープライズ'];
+const pbEn=['①SDD','②DevContainer','③MCP','④AI Rules','⑤Explorer','⑥Dashboard','⑦Roadmap','⑧AI Launcher','⑨Design System','⑩Reverse Eng','⑪Impl Guide','⑫Security','⑬Strategic Intelligence','⑭Ops Intelligence','⑮Future Strategy','⑯Dev IQ','⑰Prompt Genome','⑱Prompt Ops','⑲Enterprise'];
+pbadges.forEach((el,i)=>{if(i<19)el.textContent=ja?pbJa[i]:pbEn[i];});
 // Keyboard shortcuts overlay
 const kbT=$('kbTitle');if(kbT)kbT.textContent=t('kbTitle');
 const kbLabels=document.querySelectorAll('.kblbl');
