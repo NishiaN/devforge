@@ -334,7 +334,7 @@ The compatibility checker validates tech stack combinations with **58 rules** (1
 4. Add test cases to `test/compat.test.js` (both positive and negative)
 5. Update test header comment
 6. Update all documentation references (see Cross-Reference section above)
-7. Run `npm test` to verify all 457 tests pass
+7. Run `npm test` to verify all 489 tests pass
 
 ## Key Data Structures & Helper Functions
 
