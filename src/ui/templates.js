@@ -115,7 +115,7 @@ function showManual(sec){
       '<h3>⑦ ロードマップ (9ファイル+UI)</h3>'+
       '<p>LEARNING_PATH / TECH_STACK_GUIDE / MOBILE_GUIDE / TOOLS_SETUP / RESOURCES / MILESTONES / AI_WORKFLOW / AI_AUTONOMOUS / SAAS_COMMERCE_GUIDE — インタラクティブUIで進捗管理可能。</p>'+
       '<h3>⑧ AIプロンプトランチャー (UI)</h3>'+
-      '<p>生成した仕様書をAIツールに一括投入。34のプロンプトテンプレート（レビュー・実装・テスト・リファクタ・セキュリティ・ドキュメント・QA・デバッグ・アーキテクチャ・パフォーマンス・API統合・アクセシビリティ・マイグレーション・メトリクス・i18n・グロース・リバースエンジニアリング・インシデント対応・Ops準備・戦略インテリジェンス・リスクコンプライアンス・オンボーディング・CI/CD設計・最適手法選定・AIブレスト・業界特化分析・次世代UX・認知負荷分析・プロンプトゲノム分析・AI成熟度レビュー・ReActデバッグ・プロンプトOpsレビュー・エンタープライズアーキテクチャ・ワークフロー監査）。フォルダ別トークン推定・モデル適合度表示。<strong>詳細は「📋 プロンプトマニュアル」参照</strong>。</p>'+
+      '<p>生成した仕様書をAIツールに一括投入。36のプロンプトテンプレート（レビュー・実装・テスト・リファクタ・セキュリティ・ドキュメント・QA・デバッグ・アーキテクチャ・パフォーマンス・API統合・アクセシビリティ・マイグレーション・メトリクス・i18n・グロース・リバースエンジニアリング・インシデント対応・Ops準備・戦略インテリジェンス・リスクコンプライアンス・オンボーディング・CI/CD設計・最適手法選定・9人の専門家ブレスト・UXジャーニー設計・AIモデル使い分け・業界特化分析・次世代UX・認知負荷分析・プロンプトゲノム分析・AI成熟度レビュー・ReActデバッグ・プロンプトOpsレビュー・エンタープライズアーキテクチャ・ワークフロー監査）。フォルダ別トークン推定・モデル適合度表示。<strong>詳細は「📋 プロンプトマニュアル」参照</strong>。</p>'+
       '<h3>⑨ デザインシステム (2ファイル)</h3>'+
       '<p>design_system.md (デザイントークン・色・タイポ・コンポーネントカタログ) / sequence_diagrams.md (認証・CRUD・決済フローのMermaidシーケンス図) — フレームワーク別実装ガイド。</p>'+
       '<h3>⑩ リバースエンジニアリング (2ファイル)</h3>'+
@@ -154,7 +154,7 @@ function showManual(sec){
       '<h3>⑦ Roadmap (9 files + UI)</h3>'+
       '<p>LEARNING_PATH / TECH_STACK_GUIDE / MOBILE_GUIDE / TOOLS_SETUP / RESOURCES / MILESTONES / AI_WORKFLOW / AI_AUTONOMOUS / SAAS_COMMERCE_GUIDE — Interactive UI for progress tracking.</p>'+
       '<h3>⑧ AI Prompt Launcher (UI)</h3>'+
-      '<p>Bulk-feed generated specs to AI tools. 34 prompt templates (Review, Implement, Test, Refactor, Security, Docs, QA, Debug, Architecture, Performance, API, Accessibility, Migration, Metrics, i18n, Growth, Reverse Engineering, Incident Response, Ops Readiness, Strategic Intelligence, Risk & Compliance, Onboarding, CI/CD Design, Optimal Methodology, AI Brainstorm, Industry Deep Dive, Next-Gen UX, Cognitive Load, Prompt Genome Analysis, AI Maturity Review, ReAct Debug Loop, Prompt Ops Review, Enterprise Architecture Review, Workflow Process Audit). Per-folder token estimation and model fit display. <strong>See "📋 Prompt Manual" for details</strong>.</p>'+
+      '<p>Bulk-feed generated specs to AI tools. 36 prompt templates (Review, Implement, Test, Refactor, Security, Docs, QA, Debug, Architecture, Performance, API, Accessibility, Migration, Metrics, i18n, Growth, Reverse Engineering, Incident Response, Ops Readiness, Strategic Intelligence, Risk & Compliance, Onboarding, CI/CD Design, Optimal Methodology, 9-Expert Brainstorm, UX Journey Design, AI Model Selection, Industry Deep Dive, Next-Gen UX, Cognitive Load, Prompt Genome Analysis, AI Maturity Review, ReAct Debug Loop, Prompt Ops Review, Enterprise Architecture Review, Workflow Process Audit). Per-folder token estimation and model fit display. <strong>See "📋 Prompt Manual" for details</strong>.</p>'+
       '<h3>⑨ Design System (2 files)</h3>'+
       '<p>design_system.md (design tokens, colors, typography, component catalog) / sequence_diagrams.md (auth, CRUD, payment Mermaid sequence diagrams) — Framework-specific guides.</p>'+
       '<h3>⑩ Reverse Engineering (2 files)</h3>'+
@@ -223,7 +223,7 @@ function showManual(sec){
       '<h4>⭐⭐⭐ 高度な統合・自動化</h4>'+
       '<p><strong>Agent Teams並列開発:</strong> AGENTS.mdでエージェント役割を定義 → Claude Code Subagents / Antigravity Manager View で並列実行。tasks.mdがタスクキューとして機能。</p>'+
       '<p><strong>CI/CDゲート化:</strong> .ai/hooks.yml → GitHub Actions変換。docs/09_release_checklist.mdをデプロイゲートに。verification.mdを品質基準に。</p>'+
-      '<p><strong>34テンプレートパイプライン:</strong> 柱⑧の全テンプレート順次実行 → 📋レビュー→🔨実装→🧪テスト→♻️リファクタ→🔒セキュリティ→📝ドキュメント→🛡️Ops準備→🏢エンタープライズアーキテクチャ。仕様書が全工程の入力。<strong>（📖 詳細はプロンプトマニュアル参照）</strong></p>'+
+      '<p><strong>36テンプレートパイプライン:</strong> 柱⑧の全テンプレート順次実行 → 📋レビュー→🔨実装→🧪テスト→♻️リファクタ→🔒セキュリティ→📝ドキュメント→🛡️Ops準備→🏢エンタープライズアーキテクチャ。仕様書が全工程の入力。<strong>（📖 詳細はプロンプトマニュアル参照）</strong></p>'+
       '<h4>⭐⭐⭐ パフォーマンス最適化</h4>'+
       '<p>• <strong>CLAUDE.md 3-layer split</strong> — ルートCLAUDE.md（薄い ~1.5Kトークン） + .claude/rules/（パス別5ファイル） + .claude/settings.json でトークン消費を最小化<br>'+
       '• <strong>フォルダ選択最適化</strong> — デバッグ時: docs/25+37のみ、仕様確認時: .spec/のみ等、状況に応じて選択<br>'+
@@ -452,7 +452,7 @@ function showManual(sec){
       '<h5>自動化チェック</h5>'+
       '<p class="workflow-level-checklist">'+
       '✅ .ai/hooks.yml → CI/CDゲート化<br>'+
-      '✅ 全34テンプレートパイプライン完走<br>'+
+      '✅ 全36テンプレートパイプライン完走<br>'+
       '✅ SLO 99.9%設計完了<br>'+
       '✅ Feature Flags全キルスイッチ設定</p>'+
       '</div>'+
@@ -654,7 +654,7 @@ function showManual(sec){
       '<h5>Automation Checks</h5>'+
       '<p class="workflow-level-checklist">'+
       '✅ .ai/hooks.yml → CI/CD gate integration<br>'+
-      '✅ All 34 template pipeline complete<br>'+
+      '✅ All 36 template pipeline complete<br>'+
       '✅ SLO 99.9% design complete<br>'+
       '✅ Feature Flags all kill switches configured</p>'+
       '</div>'+
@@ -807,10 +807,10 @@ function showManual(sec){
       '<li><code>.spec/</code> + <code>docs/</code> を含めて包括的なコンテキストを提供</li>'+
       '<li>モデル適合度を確認し、80%以内に収める</li></ul>'+
       '<p><strong>⚡ Professional — パイプライン化</strong></p>'+
-      '<ul><li>全34テンプレートをパイプラインとして順次実行</li>'+
+      '<ul><li>全36テンプレートをパイプラインとして順次実行</li>'+
       '<li>フォルダ選択を最適化（デバッグ時は<code>docs/25</code>+<code>docs/37</code>のみ等）</li>'+
       '<li><code>docs/39_implementation_playbook.md</code> と <code>docs/40_ai_dev_runbook.md</code> も活用</li></ul>'+
-      '<h3>📋 全34テンプレート早見表</h3>'+
+      '<h3>📋 全36テンプレート早見表</h3>'+
       '<table><tr><th>Icon</th><th>名前</th><th>フェーズ</th><th>主要参照ドキュメント</th></tr>'+
       '<tr><td>🔍</td><td>仕様レビュー</td><td>設計</td><td>.spec/*</td></tr>'+
       '<tr><td>📐</td><td>アーキテクチャ</td><td>設計</td><td>docs/03, docs/27, docs/26</td></tr>'+
@@ -835,7 +835,9 @@ function showManual(sec){
       '<tr><td>🏢</td><td>戦略</td><td>ビジネス</td><td>docs/48-52, docs/41</td></tr>'+
       '<tr><td>⚖️</td><td>リスク・コンプライアンス</td><td>ガバナンス</td><td>docs/14, docs/44, docs/45, docs/53</td></tr>'+
       '<tr><td>🧬</td><td>最適手法選定</td><td>AI知性</td><td>docs/60</td></tr>'+
-      '<tr><td>💡</td><td>AIブレスト</td><td>AI知性</td><td>docs/61, docs/03</td></tr>'+
+      '<tr><td>🎭</td><td>9人の専門家ブレスト</td><td>AI知性</td><td>docs/61, docs/03</td></tr>'+
+      '<tr><td>🎯</td><td>UXジャーニー設計</td><td>AI知性</td><td>docs/06, docs/57</td></tr>'+
+      '<tr><td>🤖</td><td>AIモデル使い分け</td><td>AI知性</td><td>docs/60, docs/61</td></tr>'+
       '<tr><td>🏭</td><td>業界特化分析</td><td>AI知性</td><td>docs/62, docs/45</td></tr>'+
       '<tr><td>🔮</td><td>次世代UX</td><td>AI知性</td><td>docs/63</td></tr>'+
       '<tr><td>🧠</td><td>認知負荷分析</td><td>AI知性</td><td>docs/60, docs/26</td></tr>'+
@@ -889,7 +891,7 @@ function showManual(sec){
       '<li>Include <code>.spec/</code> + <code>docs/</code> for comprehensive context</li>'+
       '<li>Keep model fit under 80%</li></ul>'+
       '<p><strong>⚡ Professional — Full Pipeline</strong></p>'+
-      '<ul><li>Execute all 34 templates as a pipeline</li>'+
+      '<ul><li>Execute all 36 templates as a pipeline</li>'+
       '<li>Optimize folder selection (e.g., for debugging: only <code>docs/25</code>+<code>docs/37</code>)</li>'+
       '<li>Leverage <code>docs/39_implementation_playbook.md</code> and <code>docs/40_ai_dev_runbook.md</code></li></ul>'+
       '<h3>📋 All 34 Templates Quick Reference</h3>'+
@@ -917,7 +919,9 @@ function showManual(sec){
       '<tr><td>🏢</td><td>Strategy</td><td>Business</td><td>docs/48-52, docs/41</td></tr>'+
       '<tr><td>⚖️</td><td>Risk & Compliance</td><td>Governance</td><td>docs/14, docs/44, docs/45, docs/53</td></tr>'+
       '<tr><td>🧬</td><td>Optimal Methodology</td><td>AI Intelligence</td><td>docs/60</td></tr>'+
-      '<tr><td>💡</td><td>AI Brainstorm</td><td>AI Intelligence</td><td>docs/61, docs/03</td></tr>'+
+      '<tr><td>🎭</td><td>9-Expert Brainstorm</td><td>AI Intelligence</td><td>docs/61, docs/03</td></tr>'+
+      '<tr><td>🎯</td><td>UX Journey Design</td><td>AI Intelligence</td><td>docs/06, docs/57</td></tr>'+
+      '<tr><td>🤖</td><td>AI Model Selection</td><td>AI Intelligence</td><td>docs/60, docs/61</td></tr>'+
       '<tr><td>🏭</td><td>Industry Deep Dive</td><td>AI Intelligence</td><td>docs/62, docs/45</td></tr>'+
       '<tr><td>🔮</td><td>Next-Gen UX</td><td>AI Intelligence</td><td>docs/63</td></tr>'+
       '<tr><td>🧠</td><td>Cognitive Load</td><td>AI Intelligence</td><td>docs/60, docs/26</td></tr>'+

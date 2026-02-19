@@ -144,7 +144,7 @@ describe('Build System', () => {
   it('tour has correct number of steps', () => {
     const tour = fs.readFileSync(path.join(ROOT, 'src/core/tour.js'), 'utf-8');
     const steps = (tour.match(/\{title:/g) || []).length;
-    assert.ok(steps === 10, `Tour should have 10 steps, got ${steps}`);
+    assert.ok(steps === 11, `Tour should have 11 steps, got ${steps}`);
     assert.ok(tour.includes('AI Launcher'), 'Tour should include AI Launcher step');
   });
 

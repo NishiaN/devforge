@@ -1,12 +1,52 @@
 /* ═══ HELP DATA ═══ */
 const HELP_DATA={
   purpose:{
-    ja:{title:'プロジェクトの目的',desc:'「誰が・何を・なぜ」使うのかを1文で表現しましょう。',example:'例: "フリーランスが見積書を5分で作成できるSaaS"'},
-    en:{title:'Project Purpose',desc:'Express "who uses what and why" in one sentence.',example:'e.g. "A SaaS where freelancers create invoices in 5 min"'}
+    ja:{title:'プロジェクトの目的',desc:'「誰が・何を・なぜ」使うのかを1文で表現しましょう。',example:'例: "フリーランスが見積書を5分で作成できるSaaS"',
+      expertHints:[
+        {icon:'🎨',name:'クリエイティブ',hint:'このアプリで、ユーザーにどんな「物語」を体験させたいですか？'},
+        {icon:'⚙️',name:'技術専門家',hint:'既存の技術で不可能だったことを、新技術でどう実現しますか？'},
+        {icon:'📊',name:'ビジネス',hint:'ユーザーは今、何にお金を払っていて、それより何が優れていますか？'},
+        {icon:'📚',name:'学術研究者',hint:'この問題について、学術的に最も有効とされるアプローチは何ですか？'},
+        {icon:'🔬',name:'科学者',hint:'この仮説を検証するために、最小のMVPで測定すべきデータは何ですか？'},
+        {icon:'👤',name:'ユーザー',hint:'ターゲットが朝起きて最初に感じるフラストレーションは何ですか？'},
+        {icon:'💥',name:'ディスラプター',hint:'この業界で「当たり前」とされていることを、もし逆にしたらどうなりますか？'},
+        {icon:'😄',name:'ユーモリスト',hint:'このアプリを使うとき、思わず笑顔になる瞬間はどこですか？'},
+        {icon:'🧭',name:'冒険家',hint:'もし失敗のリスクがゼロなら、最も大胆な機能は何ですか？'}
+      ]},
+    en:{title:'Project Purpose',desc:'Express "who uses what and why" in one sentence.',example:'e.g. "A SaaS where freelancers create invoices in 5 min"',
+      expertHints:[
+        {icon:'🎨',name:'Creative',hint:'What "story" do you want users to experience with this app?'},
+        {icon:'⚙️',name:'Technical',hint:'What was previously impossible that new technology now enables?'},
+        {icon:'📊',name:'Business',hint:'What do users currently pay for, and how are you better?'},
+        {icon:'📚',name:'Academic',hint:'What is the most evidence-backed approach to this problem?'},
+        {icon:'🔬',name:'Scientist',hint:'What is the minimum measurable data your MVP must capture to validate this hypothesis?'},
+        {icon:'👤',name:'User Rep',hint:'What is the first frustration your target user feels when they wake up?'},
+        {icon:'💥',name:'Disruptor',hint:'What if you did the exact opposite of what this industry considers "standard"?'},
+        {icon:'😄',name:'Humorist',hint:'At what moment will users smile unexpectedly when using this app?'},
+        {icon:'🧭',name:'Adventurer',hint:'If failure risk were zero, what is the boldest feature you would build?'}
+      ]}
   },
   target:{
-    ja:{title:'ターゲットユーザー',desc:'具体的なペルソナを2〜3人イメージすると設計がブレません。',example:'例: "30代エンジニア、副業で受注管理に困っている"'},
-    en:{title:'Target Users',desc:'Imagine 2-3 specific personas to keep your design focused.',example:'e.g. "30s engineer struggling with freelance order management"'}
+    ja:{title:'ターゲットユーザー',desc:'具体的なペルソナを2〜3人イメージすると設計がブレません。',example:'例: "30代エンジニア、副業で受注管理に困っている"',
+      expertHints:[
+        {icon:'🎨',name:'クリエイティブ',hint:'あなたのユーザーが今日体験した「小さな感動」は何でしたか？'},
+        {icon:'⚙️',name:'技術専門家',hint:'ターゲットユーザーの技術リテラシーは？その制約がアーキテクチャに与える影響は？'},
+        {icon:'📊',name:'ビジネス',hint:'このユーザー層の年間「不満解消」予算はいくらですか？'},
+        {icon:'👤',name:'ユーザー',hint:'ユーザーが現在使っているワークアラウンドは何ですか？（Excel/メモ帳/脳内管理）'},
+        {icon:'💥',name:'ディスラプター',hint:'「こんな人は使わない」と思っていたユーザー層が実は最大の市場では？'},
+        {icon:'🔬',name:'科学者',hint:'ユーザー行動の中で「習慣化」できる部分はどこですか？'},
+        {icon:'🧭',name:'冒険家',hint:'3年後にこのアプリの「熱狂的ファン」になっているのはどんな人ですか？'}
+      ]},
+    en:{title:'Target Users',desc:'Imagine 2-3 specific personas to keep your design focused.',example:'e.g. "30s engineer struggling with freelance order management"',
+      expertHints:[
+        {icon:'🎨',name:'Creative',hint:'What was a small moment of delight your users experienced today?'},
+        {icon:'⚙️',name:'Technical',hint:'What is this user\'s tech literacy, and how does that constrain your architecture?'},
+        {icon:'📊',name:'Business',hint:'What is this user segment\'s annual budget for "solving frustrations"?'},
+        {icon:'👤',name:'User Rep',hint:'What workaround are users currently using? (Excel/notepad/memory)'},
+        {icon:'💥',name:'Disruptor',hint:'Could the user segment you thought "would never use this" actually be your biggest market?'},
+        {icon:'🔬',name:'Scientist',hint:'Which part of user behavior can be turned into a habit loop?'},
+        {icon:'🧭',name:'Adventurer',hint:'Who will be the "super fan" of this app in 3 years?'}
+      ]}
   },
   success:{
     ja:{title:'成功指標（KPI）',desc:'プロジェクト種別に応じた指標を自動提案。📈成長 💰収益 🔄継続 😊満足 ⚡技術 の10カテゴリから3〜5つ選択。',example:'例: EC→"GMV月100万" / 教育→"完了率80%+"'},
@@ -41,8 +81,24 @@ const HELP_DATA={
     en:{title:'Dev Methodologies',desc:'TDD=test-first, BDD=behavior-driven, DDD=domain-model-centric.',example:'Recommended: TDD (essential) + BDD'}
   },
   mvp_features:{
-    ja:{title:'MVP機能',desc:'3〜5個に絞る。「これがないと使えない」機能だけ選択。',example:'最小: 認証 + メイン機能1つ + 設定'},
-    en:{title:'MVP Features',desc:'Narrow to 3-5. Only pick features users cannot live without.',example:'Minimum: Auth + 1 core feature + Settings'}
+    ja:{title:'MVP機能',desc:'3〜5個に絞る。「これがないと使えない」機能だけ選択。',example:'最小: 認証 + メイン機能1つ + 設定',
+      expertHints:[
+        {icon:'⚙️',name:'技術専門家',hint:'この機能リストの中で、技術的に最もリスクが高いものはどれですか？先に検証すべきです。'},
+        {icon:'📊',name:'ビジネス',hint:'各機能の「開発コスト/収益貢献度」比率を計算してください。ROI最大の機能だけ残す。'},
+        {icon:'👤',name:'ユーザー',hint:'ユーザーが「これができないなら使わない」と言う機能は何ですか？それだけ作ればいい。'},
+        {icon:'💥',name:'ディスラプター',hint:'競合が全部持っている機能を全て外したら、何が残りますか？それが差別化の核心。'},
+        {icon:'🔬',name:'科学者',hint:'この機能の中で「使われるか検証できていない」ものはどれですか？仮説として明示してください。'},
+        {icon:'🧭',name:'冒険家',hint:'今の機能リストを半分に削ったとき、残すのはどれですか？'}
+      ]},
+    en:{title:'MVP Features',desc:'Narrow to 3-5. Only pick features users cannot live without.',example:'Minimum: Auth + 1 core feature + Settings',
+      expertHints:[
+        {icon:'⚙️',name:'Technical',hint:'Which feature has the highest technical risk? Validate that one first.'},
+        {icon:'📊',name:'Business',hint:'Calculate development cost vs revenue contribution for each feature. Keep only the highest ROI ones.'},
+        {icon:'👤',name:'User Rep',hint:'Which feature would make users say "then I won\'t use it"? Build only that.'},
+        {icon:'💥',name:'Disruptor',hint:'If you removed every feature competitors have, what remains? That\'s your differentiation core.'},
+        {icon:'🔬',name:'Scientist',hint:'Which features are unvalidated hypotheses? Flag them explicitly.'},
+        {icon:'🧭',name:'Adventurer',hint:'If you cut this list in half, which ones survive?'}
+      ]}
   },
   org_model:{
     ja:{title:'組織・テナント構造',desc:'マルチテナント選択でRLSポリシー・組織ERモデル・承認フローが自動生成されます。',example:'SaaS: マルチテナント(RLS) / 社内ツール: シングルテナント'},
@@ -61,8 +117,24 @@ const HELP_DATA={
     en:{title:'Authentication',desc:'OAuth (Google/GitHub) is easy to implement and improves UX.',example:'Minimum: Email/PW + Google OAuth'}
   },
   screens:{
-    ja:{title:'主要画面',desc:'ユーザーフローに沿って画面を洗い出し。',example:'LP → ログイン → ダッシュボード → 詳細'},
-    en:{title:'Key Screens',desc:'Map out screens following the user flow.',example:'LP → Login → Dashboard → Detail'}
+    ja:{title:'主要画面',desc:'ユーザーフローに沿って画面を洗い出し。',example:'LP → ログイン → ダッシュボード → 詳細',
+      expertHints:[
+        {icon:'🎨',name:'クリエイティブ',hint:'ユーザーが初めてアプリを開いた瞬間、どんな感情を感じてほしいですか？その感情から逆算して画面を設計してください。'},
+        {icon:'⚙️',name:'技術専門家',hint:'この画面リストで、サーバーサイドレンダリングが必要な画面はどれですか？最初から分類しておくとアーキテクチャが安定します。'},
+        {icon:'👤',name:'ユーザー',hint:'ユーザーが最も頻繁に訪問する画面はどれですか？そこに全エネルギーを集中してください。'},
+        {icon:'💥',name:'ディスラプター',hint:'「ダッシュボード」や「設定」を作らないとしたら、本当に必要な画面は何ですか？'},
+        {icon:'😄',name:'ユーモリスト',hint:'この画面の中で「思わずスクリーンショットを撮りたくなる」デザインができる画面はどれですか？'},
+        {icon:'🧭',name:'冒険家',hint:'一番難しい画面から作り始めたら、後の全てが簡単に感じます。どれが最難関ですか？'}
+      ]},
+    en:{title:'Key Screens',desc:'Map out screens following the user flow.',example:'LP → Login → Dashboard → Detail',
+      expertHints:[
+        {icon:'🎨',name:'Creative',hint:'What emotion should users feel the moment they first open your app? Design backwards from that emotion.'},
+        {icon:'⚙️',name:'Technical',hint:'Which screens need server-side rendering? Classify early to stabilize your architecture.'},
+        {icon:'👤',name:'User Rep',hint:'Which screen will users visit most frequently? Invest all your energy there.'},
+        {icon:'💥',name:'Disruptor',hint:'If you refused to build a "Dashboard" or "Settings", what screens are truly necessary?'},
+        {icon:'😄',name:'Humorist',hint:'Which screen could be designed so beautifully that users take screenshots to share?'},
+        {icon:'🧭',name:'Adventurer',hint:'Start with the hardest screen first — everything else will feel easy. Which is the hardest?'}
+      ]}
   },
   payment:{
     ja:{title:'決済・CMS・EC',desc:'Stripe=最も導入しやすい。MoR=税務処理代行。',example:'SaaS→Stripe、グローバル→Paddle'},

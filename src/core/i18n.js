@@ -32,7 +32,7 @@ pillar:['①SDD統合','②DevContainer','③MCP設定','④AIルール','⑤並
 en:{
 p1:'Phase 1',p2:'Phase 2',p3:'Phase 3',
 heroTitle:'DevForge v9',
-heroDesc:'Answer questions to auto-generate 130+ development documents, environment configs, AI rules & learning roadmaps. 19 pillars for complete AI-driven development support.',
+heroDesc:'Solve 3 dev nightmares. Answer questions to auto-generate 130+ design docs. 19 pillars guide your "idea → spec → code" journey with AI.',
 startBtn:'🚀 Get Started',
 statFiles:'Generated Files',statTech:'Tech Entries',statPillars:'Pillars',statAI:'AI Tools',
 skillAsk:'Select your skill level',
