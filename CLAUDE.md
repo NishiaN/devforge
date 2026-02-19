@@ -13,20 +13,20 @@ DevForge v9's documentation is optimized into role-specific files:
 - **CLAUDE.md** (this file) — Core development guidelines, critical rules, common bugs, quick reference
 - **docs/CLAUDE-REFERENCE.md** — Detailed reference: complete data structures, generated output catalog, pillar addition guide, compression patterns, test patterns
 - **docs/CLAUDE-TROUBLESHOOTING.md** — Environment setup, git workflow, deployment, troubleshooting
-- **docs/AI_CODING_PROMPTS.md** — 34 AI prompt templates (spec review, MVP implementation, test generation, refactoring, security audit, etc.)
+- **docs/AI_CODING_PROMPTS.md** — 36 AI prompt templates (spec review, MVP implementation, test generation, refactoring, security audit, etc.)
 - **未来志向アプリ開発戦略フレームワーク（2026-2035）.md** (local only) — 28 strategic frameworks for future app development (2026-2035 horizon)
 
 ## Architecture
-- **54 modules** in `src/` → `node build.js` → single `devforge-v9.html` (~1764KB)
+- **54 modules** in `src/` → `node build.js` → single `devforge-v9.html` (~1789KB)
 - Vanilla JS, no frameworks. CSS custom properties. CDN: marked.js, mermaid.js, JSZip.
 - **AI Development OS**: Generates 130+ files including context intelligence, operations playbooks, business models, growth strategies, industry-specific strategic intelligence, ops intelligence, future strategy intelligence, polymorphic development intelligence, prompt genome engine, prompt ops pipeline, enterprise SaaS blueprint, and path-specific AI rules
 - **Security-hardened**: Phase 1 (CSP, SRI, sanitization) + Phase 2 (16 XSS/injection fixes) + Pillar ⑫ (context-aware security audit prompts)
-- **Latest**: v9.4.0 — Pillar ⑲ (Enterprise SaaS Blueprint), 34 launcher templates, 19 pillars total
+- **Latest**: v9.4.x — Pillar ⑲ (Enterprise SaaS Blueprint) + Creative UX Pack (9-expert brainstorm, AI model guide, UX journey, expertHints), 36 launcher templates, 19 pillars total
 
 ## Build & Test
 ```bash
 # Build
-node build.js              # Produces devforge-v9.html (~1765KB, limit 2000KB)
+node build.js              # Produces devforge-v9.html (~1789KB, limit 2000KB)
 node build.js --no-minify  # Skip minification (debug)
 node build.js --report     # Show size report
 node build.js --check-css  # Validate CSS custom properties
@@ -57,7 +57,7 @@ npm run check              # Syntax check extracted JS
 5. **Write** to `devforge-v9.html`
 6. **Validate** size ≤2000KB (warn if exceeded)
 
-**Current Status:** ~1764KB / 2000KB limit (~88% utilized, P19 complete, room for expansion)
+**Current Status:** ~1789KB / 2000KB limit (~89% utilized, P19 + Creative UX Pack complete, room for expansion)
 
 ### ⚠️ Critical: Minification Strategy
 
@@ -263,6 +263,15 @@ npm run open                # Visual verification
 - Docs count: 76 numbered files in docs/
 - Build size: ~1707KB→~1764KB (54 modules)
 
+**Recent Updates (v9.4.x — Creative UX Pack):**
+- Templates: 34→36 (added 🎭 9-Expert Brainstorm + 🎯 UX Journey Design + 🤖 AI Model Selection; enhanced old brainstorm)
+- AI_REC map in `launcher.js`: all 36 templates tagged with recommended AI model (Gemini/Claude/ChatGPT/Copilot)
+- **expertHints system**: `src/data/helpdata.js` — 4 key questions (purpose/target/mvp_features/screens) now include `expertHints[]` arrays with 9-expert creative prompts per question; displayed in `src/ui/help.js` help popup with `cycleExpertHint()` / `_renderExpertHint()` rotation
+- Hero section: icard[0] → "3つの悪夢を解決" storytelling, icard[1] → "19の柱×130+ファイル" reframing
+- Tour: 10→11 steps (added "9-Expert Brainstorm" step); build.test.js assertion updated accordingly
+- Post-gen guide: 5→6 steps per skill level (added brainstorm/creative step for all 3 levels)
+- Build size: ~1764KB→~1789KB
+
 ### Property Name Mismatches with Helper-Generated Objects
 **Problem:** Accessing properties on objects created by helper functions without checking the actual property structure.
 
@@ -349,6 +358,12 @@ The compatibility checker validates tech stack combinations with **58 rules** (1
 
 **Essential functions from `src/ui/wizard.js`:**
 - **`isQActive(q)`** — Check if question's condition is met (centralizes conditional question evaluation)
+
+**expertHints system (added Creative UX Pack):**
+- **`src/data/helpdata.js`** — `HELP_DATA[id].ja.expertHints[]` / `.en.expertHints[]` — arrays of `{icon, name, hint}` for 4 questions: `purpose`, `target`, `mvp_features`, `screens`
+- **`src/ui/help.js`** — `showHelp()` reads `expertHints`, stores in `window._ehData` / `window._ehIdx`, renders via `_renderExpertHint(_ja)` helper
+- **`cycleExpertHint()`** — global function, increments `window._ehIdx` mod length, updates `.help-expert-hint` DOM in place (no re-render)
+- **CSS classes**: `.help-expert-hint`, `.help-eh-head`, `.help-eh-text`, `.help-eh-next` in `styles/all.css`
 
 **New in v9.2.0 — DOMAIN_OPS (Ops Intelligence):**
 - **`DOMAIN_OPS`** — 32-domain operational requirements (SLO, Feature Flags, Jobs, Backup, Hardening)
@@ -458,7 +473,7 @@ DevForge generates **130+ files** (base: 90 files, +4 for skills/ when ai_auto=m
 
 ## AI Prompt Launcher (Pillar ⑧)
 
-DevForge includes a **Prompt Launcher** that generates structured prompts by auto-injecting project context (name, stack, auth, entities) into 34 specialized templates:
+DevForge includes a **Prompt Launcher** that generates structured prompts by auto-injecting project context (name, stack, auth, entities) into 36 specialized templates:
 
 **Key Templates:**
 - 🔍 **Spec Review** — 4-step structured review (mission → requirements → architecture → consistency)
@@ -477,7 +492,9 @@ DevForge includes a **Prompt Launcher** that generates structured prompts by aut
 - 📊 **Code Metrics** — Cyclomatic/cognitive complexity, coupling, DRY violations, ROI prioritization
 - 🌍 **i18n Implementation** — Extract strings, define translation keys, generate JSON, replace with t()
 - 🧬 **Optimal Methodology** — Select optimal dev methodology from DEV_METHODOLOGY_MAP (P16)
-- 💡 **AI Brainstorm** — AI-driven ideation using industry + domain + tech context
+- 🎭 **9-Expert Brainstorm** — 9 expert personas (Creative/Tech/Business/Academic/Science/User/Disruptor/Humor/Explorer) generate ideas + 3-axis evaluation (appeal × feasibility × validity)
+- 🎯 **UX Journey Design** — Lv.0-5 progressive disclosure user journey (persona/pain/UX pattern/churn risk/action per level) + "3 Nightmares" anti-failure UI design
+- 🤖 **AI Model Selection** — Per-dev-phase AI model matching (Gemini=precision, Claude=ethics, ChatGPT=creativity, Copilot=balance) with natural prompt examples
 - 🏭 **Industry Analysis** — Industry-specific blueprint + tech radar + stakeholder strategy
 - 🔮 **Next-Gen UX** — Next-gen UX patterns + cognitive load audit
 - 🧠 **Cognitive Load Analysis** — Cognitive complexity audit + simplification roadmap
@@ -487,6 +504,8 @@ DevForge includes a **Prompt Launcher** that generates structured prompts by aut
 - 🔧 **Prompt Ops Review** — Prompt Ops pipeline + LLMOps dashboard review (P18)
 - 🏢 **Enterprise Architecture Review** — Multi-tenant arch, RLS, org model, permission matrix review (P19)
 - 📋 **Workflow Process Audit** — Approval/ticket/order state machine audit, SLA compliance (P19)
+
+**AI Model Recommendation Badges:** Each template card shows a recommended AI model via `AI_REC` map in `src/ui/launcher.js`. Gemini=precision tasks (review/arch/metrics), Claude=ethical/UX tasks (risk/ux_journey/strategy), ChatGPT=creative tasks (brainstorm/nextgen/cognitive), Copilot=balanced tasks (implement/test/debug).
 
 → See `docs/AI_CODING_PROMPTS.md` for full template details and usage examples.
 
