@@ -1007,6 +1007,11 @@ function showManual(sec){
     if(s.id===(sec||'overview'))a.classList.add('on');
     nav.appendChild(a);
   });
+  // Tour restart button (P3: persistent re-discovery)
+  const tourBtn=document.createElement('button');tourBtn.className='help-tour-btn';
+  tourBtn.textContent=_ja?'🔄 ツアーを再開':'🔄 Restart Tour';
+  tourBtn.onclick=()=>{closeManual();if(typeof startTour==='function')startTour();};
+  nav.appendChild(tourBtn);
   const initSec=MANUAL.find(s=>s.id===(sec||'overview'));
   $('helpBody').innerHTML=typeof initSec.body==='function'?initSec.body():initSec.body;
   trapFocus(o);

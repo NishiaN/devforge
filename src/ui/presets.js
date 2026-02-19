@@ -1,29 +1,69 @@
 /* ═══ PRESET & START ═══ */
 function pickSkill(lv){S.skill=lv;document.querySelectorAll('.skcard').forEach(c=>{c.classList.toggle('on',c.dataset.lv===lv);c.setAttribute('aria-checked',String(c.dataset.lv===lv));});save();}
 
+/* Preset category map */
+const PRESET_CAT_MAP={
+  saas:'saas_ai',ai_agent:'saas_ai',ai_content:'saas_ai',automation:'saas_ai',chatbot:'saas_ai',devtool:'saas_ai',
+  ec:'ec_market',marketplace:'ec_market',booking:'ec_market',event:'ec_market',restaurant:'ec_market',
+  creator:'media_sns',newsletter:'media_sns',cms:'media_sns',community:'media_sns',linkbio:'media_sns',social:'media_sns',gamify:'media_sns',pwa:'media_sns',
+  hr:'business',helpdesk:'business',crm:'business',knowledge_base:'business',contract_mgmt:'business',survey:'business',job_board:'business',
+  dashboard:'data_iot',iot:'data_iot',collab:'data_iot',field_service:'data_iot',logistics:'data_iot',
+  fintech:'life_pro',health:'life_pro',property_mgmt:'life_pro',veterinary:'life_pro',clinic:'life_pro',construction_pay:'life_pro',lms:'life_pro',tutoring:'life_pro',portfolio:'life_pro',
+};
+const PRESET_CATS_JA=[{key:'all',label:'すべて',desc:'全41プリセット'},{key:'saas_ai',label:'☁️ SaaS・AI',desc:'クラウドサービス・AI自動化'},{key:'ec_market',label:'🛒 EC・マーケット',desc:'販売・予約・イベント'},{key:'media_sns',label:'📱 メディア・SNS',desc:'情報発信・クリエイター・交流'},{key:'business',label:'🏢 ビジネス・業務',desc:'業務効率化・HR・CRM'},{key:'data_iot',label:'📊 データ・IoT',desc:'分析・デバイス管理・コラボ'},{key:'life_pro',label:'🏥 生活・専門',desc:'医療・教育・不動産・物流'}];
+const PRESET_CATS_EN=[{key:'all',label:'All',desc:'All 41 presets'},{key:'saas_ai',label:'☁️ SaaS & AI',desc:'Cloud services & AI automation'},{key:'ec_market',label:'🛒 E-Commerce',desc:'Sales, booking & events'},{key:'media_sns',label:'📱 Media & SNS',desc:'Content, creator & community'},{key:'business',label:'🏢 Business',desc:'Workflow, HR & CRM'},{key:'data_iot',label:'📊 Data & IoT',desc:'Analytics, devices & collab'},{key:'life_pro',label:'🏥 Life & Pro',desc:'Healthcare, education & logistics'}];
+let _presetCatFilter='all';
+
+function _renderPresetChips(){
+  const row=$('presetRow');if(!row)return;
+  const _ja=S.lang==='ja';const _en=!_ja;
+  // Remove existing chips (keep category bar + footer)
+  Array.from(row.querySelectorAll('.prchip')).forEach(c=>c.remove());
+  const insertBefore=row.querySelector('.preset-footer');
+  Object.entries(PR).forEach(([k,v])=>{
+    if(k==='custom'||!v.name)return;
+    const cat=PRESET_CAT_MAP[k]||'saas_ai';
+    if(_presetCatFilter!=='all'&&cat!==_presetCatFilter)return;
+    const c=document.createElement('span');c.className='prchip';
+    c.textContent=(v.icon||'')+(v.icon?' ':'')+(_en&&v.nameEn?v.nameEn:v.name);
+    if(S.preset===k)c.classList.add('on');
+    c.onclick=(e)=>pickPreset(k,e);
+    const desc=(_en&&v.purposeEn)?v.purposeEn:v.purpose||'';
+    const fe=v.frontend||'-';const be=v.backend||'-';
+    const fts=(_en&&v.featuresEn?v.featuresEn:v.features)||[];
+    const ftStr=Array.isArray(fts)?fts.slice(0,3).join(', ')+(fts.length>3?' …':''):fts;
+    c.title=desc+'\n─────\nFrontend: '+fe+'\nBackend: '+be+'\nFeatures: '+ftStr;
+    if(insertBefore)row.insertBefore(c,insertBefore);else row.appendChild(c);
+  });
+}
+
 function initPresets(){
   const row=$('presetRow');row.innerHTML='';
   const _ja=S.lang==='ja';
-  Object.entries(PR).forEach(([k,v])=>{
-    if(k==='custom'||!v.name)return;
-    const c=document.createElement('span');c.className='prchip';
-    c.textContent=(v.icon||'')+(v.icon?' ':'')+(!_ja&&v.nameEn?v.nameEn:v.name);
-    c.onclick=(e)=>pickPreset(k,e);
-    // Preview tooltip
-    const _en=!_ja;
-    const desc=(_en&&v.purposeEn)?v.purposeEn:v.purpose||'';
-    const fe=v.frontend||'-';
-    const be=v.backend||'-';
-    const fts=(_en&&v.featuresEn?v.featuresEn:v.features)||[];
-    const ftStr=Array.isArray(fts)?fts.slice(0,3).join(', ')+(fts.length>3?' …':''):fts;
-    c.title=`${desc}\n─────\nFrontend: ${fe}\nBackend: ${be}\nFeatures: ${ftStr}`;
-    row.appendChild(c);
+  // Category filter bar
+  const catBar=document.createElement('div');catBar.className='preset-cat-bar';catBar.id='presetCatBar';
+  const cats=_ja?PRESET_CATS_JA:PRESET_CATS_EN;
+  cats.forEach(cat=>{
+    const btn=document.createElement('button');
+    btn.className='preset-cat-btn'+(_presetCatFilter===cat.key?' active':'');
+    btn.textContent=cat.label;btn.title=cat.desc;
+    btn.onclick=()=>{
+      _presetCatFilter=cat.key;
+      row.querySelectorAll('.preset-cat-btn').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      _renderPresetChips();
+    };
+    catBar.appendChild(btn);
   });
+  row.appendChild(catBar);
+
+  // Footer area (compare + custom + notice) — appended BEFORE chips so _renderPresetChips can insertBefore it
+  const footer=document.createElement('div');footer.className='preset-footer';
   // Compare button
   const cb=document.createElement('span');cb.className='prchip prchip-cmp';
   cb.textContent=_ja?'⚔️ 比較':'⚔️ Compare';
   cb.onclick=()=>showPresetCompare();
-  row.appendChild(cb);
+  footer.appendChild(cb);
   // "Start from scratch" custom mode chip
   const cs=document.createElement('span');cs.className='prchip prchip-custom';
   cs.textContent=_ja?'📝 白紙から始める':'📝 Start from scratch';
@@ -33,7 +73,17 @@ function initPresets(){
     cs.classList.add('sel');
     toast(_ja?'カスタムモード — 全質問に回答します':'Custom mode — answer all questions');
   };
-  row.appendChild(cs);
+  footer.appendChild(cs);
+  // localStorage safety notice
+  const notice=document.createElement('div');notice.className='preset-storage-notice';
+  notice.innerHTML='<span>💾 '+(  _ja
+    ?'データはこのブラウザのみに保存されます。履歴消去で消えます — 完了後は必ずZIPで保存を'
+    :'Data is saved in this browser only. Clearing history erases it — always download ZIP when done'
+  )+'</span>';
+  footer.appendChild(notice);
+  row.appendChild(footer);
+  // Render chips (inserted before footer)
+  _renderPresetChips();
 }
 
 function showPresetCompare(){
@@ -134,6 +184,21 @@ function start(){
   if(typeof initSidebar==='function')initSidebar();
   initPills();updProgress();showQ();
   if(presetName&&preFilledCount>0){
-    toast(_ja?`✅ "${presetName}" を適用 — ${preFilledCount}件の回答を自動入力`:`✅ Applied "${presetName}" — ${preFilledCount} answers pre-filled`);
+    toast(_ja?'✅ "'+presetName+'" を適用 — '+preFilledCount+'件の回答を自動入力':'✅ Applied "'+presetName+'" — '+preFilledCount+' answers pre-filled');
   }
+}
+
+/* Auto-fill Phase 2 (tech stack) defaults for Beginner mode */
+function autoFillPhase2Defaults(){
+  const _ja=S.lang==='ja';
+  // Only fill fields not already set by preset
+  if(!S.answers.frontend)S.answers.frontend='React + Next.js';
+  if(!S.answers.css_fw)S.answers.css_fw='Tailwind CSS';
+  if(!S.answers.backend)S.answers.backend='Supabase';
+  if(!S.answers.mobile)S.answers.mobile=_ja?'なし':'None';
+  if(!S.answers.ai_auto)S.answers.ai_auto=_ja?'Vibe Coding入門':'Vibe Coding Intro';
+  if(!S.answers.deploy)S.answers.deploy='Vercel';
+  if(!S.answers.dev_methods)S.answers.dev_methods=_ja?'TDD（テスト駆動）, SDD（仕様駆動）':'TDD (Test-Driven), SDD (Spec-Driven)';
+  if(!S.answers.payment)S.answers.payment=_ja?'なし':'None';
+  save();
 }

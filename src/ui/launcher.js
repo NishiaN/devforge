@@ -380,16 +380,46 @@ function showAILauncher(){
   /* ── Prompt templates (ordered by dev lifecycle) ── */
   const AI_REC={review:'Gemini',arch:'Gemini',reverse:'Claude',implement:'Copilot',api:'Copilot',i18n:'Copilot',test:'Copilot',qa:'Copilot',security:'Gemini',a11y:'Gemini',perf:'Gemini',metrics:'Gemini',refactor:'Claude',debug:'Copilot',incident:'Copilot',ops:'Gemini',docs:'Claude',migrate:'Claude',cicd:'Copilot',growth:'ChatGPT',strategy:'Claude',methodology:'Claude',brainstorm:'ChatGPT',ux_journey:'Claude',ai_model_guide:'Gemini',industry:'Gemini',nextgen:'ChatGPT',cognitive:'Claude',genome:'Claude',maturity:'Claude',react_debug:'Copilot',prompt_ops:'Claude',enterprise_arch:'Gemini',workflow_audit:'Claude',risk:'Claude',onboard:'Claude'};
   const templateOrder=['review','arch','reverse','implement','api','i18n','test','qa','security','a11y','perf','metrics','refactor','debug','incident','ops','docs','migrate','cicd','growth','strategy','methodology','brainstorm','ux_journey','ai_model_guide','industry','nextgen','cognitive','genome','maturity','react_debug','prompt_ops','enterprise_arch','workflow_audit','risk','onboard'];
-  h+=`<div class="launch-templates"><h4>${_ja?'📋 プロンプトテンプレート':'📋 Prompt Templates'}</h4>`;
+  // Category definition for templates
+  const LAUNCH_CATS_JA=[{key:'all',label:'すべて'},{key:'review',label:'🔍 レビュー・監査'},{key:'implement',label:'🚀 実装・開発'},{key:'strategy',label:'🏢 戦略・UX'},{key:'ai_prompt',label:'🤖 AI・プロンプト'},{key:'ops',label:'⚙️ Ops・運用'}];
+  const LAUNCH_CATS_EN=[{key:'all',label:'All'},{key:'review',label:'🔍 Review & Audit'},{key:'implement',label:'🚀 Implement & Dev'},{key:'strategy',label:'🏢 Strategy & UX'},{key:'ai_prompt',label:'🤖 AI & Prompt'},{key:'ops',label:'⚙️ Ops & DevOps'}];
+  const LAUNCH_CAT_MAP={review:'review',arch:'review',security:'review',a11y:'review',perf:'review',metrics:'review',risk:'review',reverse:'review',implement:'implement',api:'implement',i18n:'implement',test:'implement',qa:'implement',refactor:'implement',debug:'implement',docs:'implement',migrate:'implement',cicd:'ops',growth:'strategy',strategy:'strategy',methodology:'strategy',brainstorm:'strategy',ux_journey:'strategy',ai_model_guide:'ai_prompt',industry:'strategy',nextgen:'strategy',cognitive:'strategy',genome:'ai_prompt',maturity:'ai_prompt',react_debug:'ai_prompt',prompt_ops:'ai_prompt',enterprise_arch:'review',workflow_audit:'review',incident:'ops',ops:'ops',onboard:'ops'};
+  // Skill-based recommendations
+  const LAUNCH_SKILL_REC={beginner:['implement','test','debug','brainstorm','ux_journey','docs'],intermediate:['review','implement','security','strategy','methodology','cicd'],pro:['arch','ops','enterprise_arch','genome','react_debug','risk']};
+  const recKeys=LAUNCH_SKILL_REC[S.skill]||LAUNCH_SKILL_REC.intermediate;
+  const lcats=_ja?LAUNCH_CATS_JA:LAUNCH_CATS_EN;
+  // Cat filter state (closure)
+  let _lcf='all';
+  h+=`<div class="launch-templates">`;
+  // Category filter bar (rendered as static HTML; interactivity via onclick)
+  h+=`<div class="launch-cat-bar" id="launchCatBar">`;
+  lcats.forEach(cat=>{
+    h+=`<button class="launch-cat-btn${cat.key==='all'?' active':''}" onclick="filterLaunchCat('${cat.key}')" data-lcat="${cat.key}">${cat.label}</button>`;
+  });
+  h+=`</div>`;
+  // Recommended section (skill-based top 4)
+  const recFiltered=recKeys.filter(k=>PT[k]).slice(0,4);
+  if(recFiltered.length){
+    h+=`<div class="launch-rec-row" id="launchRecRow"><span class="launch-rec-lbl">⭐ ${_ja?'あなたへのおすすめ':'Recommended for you'}</span>`;
+    recFiltered.forEach(key=>{
+      const t=PT[key];if(!t)return;
+      h+=`<button class="launch-rec-chip" onclick="selectLaunchTemplate('${key}')" title="${t.desc}">${t.icon} ${t.label}</button>`;
+    });
+    h+=`</div>`;
+  }
+  h+=`<h4>${_ja?'📋 プロンプトテンプレート':'📋 Prompt Templates'}</h4>`;
+  h+=`<div id="launchTplList">`;
   templateOrder.forEach(key=>{
     const t=PT[key];
     if(!t)return;
-    h+=`<div class="launch-tpl" onclick="selectLaunchTemplate('${key}')">
+    const cat=LAUNCH_CAT_MAP[key]||'implement';
+    h+=`<div class="launch-tpl" onclick="selectLaunchTemplate('${key}')" data-lcat="${cat}">
       <div class="launch-tpl-icon">${t.icon}</div>
       <div class="launch-tpl-info"><strong>${t.label}</strong><span>${t.desc}</span></div>
       ${AI_REC[key]?'<span class="launch-airec" title="'+(_ja?'推奨AI':'Recommended AI')+'">'+AI_REC[key]+'</span>':''}
     </div>`;
   });
+  h+=`</div>`;
   h+=`</div>`;
 
   /* ── Output area ── */
@@ -456,6 +486,22 @@ function updateLaunchPreview(){
     const _ja=S.lang==='ja';
     meta.textContent=`${sel.length} ${_ja?'ファイル':'files'} · ~${tokens.toLocaleString()} tokens`;
   }
+}
+
+/* ── Filter launcher templates by category ── */
+function filterLaunchCat(catKey){
+  // Update active button
+  document.querySelectorAll('.launch-cat-btn').forEach(b=>{
+    b.classList.toggle('active',b.dataset.lcat===catKey);
+  });
+  // Show/hide template items
+  document.querySelectorAll('#launchTplList .launch-tpl').forEach(el=>{
+    const ec=el.dataset.lcat||'implement';
+    el.style.display=(catKey==='all'||ec===catKey)?'':'none';
+  });
+  // Show/hide recommended row based on "all" selection
+  const recRow=$('launchRecRow');
+  if(recRow)recRow.style.display=catKey==='all'?'':'none';
 }
 
 /* ── Copy to clipboard ── */

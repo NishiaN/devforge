@@ -105,15 +105,29 @@ function renderChips(zone,q,multi,onSubmit,withVoice){
   zone.appendChild(ft);
 }
 
+/* Tech question IDs where first option gets a "⭐ おすすめ" badge */
+const _REC_BADGE_QS=new Set(['frontend','css_fw','backend','database','orm','deploy','mobile','auth']);
+
 function renderOpts(zone,q,onSubmit){
+  const _ja=S.lang==='ja';
   const cards=document.createElement('div');cards.className='ocards';
-  (q.options||[]).forEach(o=>{
+  const showBadge=_REC_BADGE_QS.has(q.id);
+  (q.options||[]).forEach((o,idx)=>{
     const c=document.createElement('div');c.className='ocard';
     c.setAttribute('tabindex','0');
     c.setAttribute('role','option');
-    const h=document.createElement('h5');h.textContent=typeof o==='string'?o:o.label;c.appendChild(h);
+    const h=document.createElement('h5');
+    const label=typeof o==='string'?o:o.label;
+    h.textContent=label;
+    // ⭐ Recommended badge on first option for tech questions (Beginner/Intermediate)
+    if(showBadge&&idx===0&&S.skill!=='pro'){
+      const badge=document.createElement('span');badge.className='ocard-rec-badge';
+      badge.textContent=_ja?'⭐ おすすめ':'⭐ Recommended';
+      h.appendChild(badge);
+    }
+    c.appendChild(h);
     if(o.desc){const p=document.createElement('p');p.textContent=o.desc;c.appendChild(p);}
-    c.onclick=()=>onSubmit(typeof o==='string'?o:o.label);
+    c.onclick=()=>onSubmit(label);
     c.onkeydown=(e)=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();c.click();}};
     cards.appendChild(c);
   });

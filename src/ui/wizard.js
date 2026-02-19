@@ -134,6 +134,19 @@ function showCompatAlert(answers){
 
 function phaseEnd(){
   if(S.phase<3){
+    // Beginner auto-mode: skip Phase 2 tech questions and auto-fill with best-practice defaults
+    if(S.phase===1&&S.skill==='beginner'){
+      if(typeof autoFillPhase2Defaults==='function')autoFillPhase2Defaults();
+      const _ja=S.lang==='ja';
+      const autoMsg=_ja
+        ?'✅ 技術構成は初心者向けベストプラクティスで自動選択しました（Next.js + Supabase + Vercel）\n💡 Phase 2をスキップして機能設計へ進みます。後から設定画面で変更できます。'
+        :'✅ Tech stack auto-selected using beginner best practices (Next.js + Supabase + Vercel)\n💡 Skipping Phase 2 to go straight to feature design. You can change settings later.';
+      addMsg('bot',autoMsg);
+      if(typeof announce==='function')announce(autoMsg);
+      S.phase=3;S.step=0;save();
+      setTimeout(()=>showQ(),600);
+      return;
+    }
     const msg=t('phEnd'+S.phase);
     addMsg('bot',msg);
     if(typeof announce==='function')announce(msg);
