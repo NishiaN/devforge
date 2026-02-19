@@ -1,4 +1,4 @@
-/* ═══ FILE GENERATION ENGINE — 15 PILLARS ═══ */
+/* ═══ FILE GENERATION ENGINE — 19 PILLARS ═══ */
 function generateAll(){
   const _be=S.answers.backend||'';
   const _minKeys=(/なし|None|static/i.test(_be))?['frontend','backend']:['frontend','backend','database'];

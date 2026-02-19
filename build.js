@@ -174,6 +174,12 @@ const sizeKB = (Buffer.byteLength(html) / 1024).toFixed(0);
 const moduleCount = jsFiles.length;
 const minifierInfo = NO_MINIFY ? ', unminified' : `, minified with ${MINIFIER}`;
 console.log(`✅ Built devforge-v9.html (${sizeKB}KB, ${moduleCount} modules${minifierInfo})`);
+if (parseInt(sizeKB) > 2000) {
+  console.error('❌ Build size exceeds 2000KB limit! (' + sizeKB + 'KB / 2000KB)');
+  process.exit(1);
+} else if (parseInt(sizeKB) > 1900) {
+  console.warn('⚠️  Build size approaching 2000KB limit (' + sizeKB + 'KB / 2000KB)');
+}
 
 // Verify: check for common issues
 const issues = [];
