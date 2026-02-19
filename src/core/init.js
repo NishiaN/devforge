@@ -184,7 +184,7 @@ if(S.projectName&&S.phase>0){
   $('ws').style.display='flex';
   if(typeof initSidebar==='function')initSidebar();
   initPills();updProgress();
-  if(Object.keys(S.files).length>0){initPrevTabs();initPillarTabs();showFileTree();createQbar();}
+  if(Object.keys(S.files).length>0){initPrevTabs();initPillarTabs();showFileTree();createQbar();if(typeof renderPillarGrid==='function')renderPillarGrid();}
   findNext();
 }
 

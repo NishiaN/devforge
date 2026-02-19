@@ -10,6 +10,7 @@ function initSidebar(){
     const ib=$('sbIconbar');if(ib)ib.style.display='none';
   }
   updateSidebarLabels();
+  renderPillarGrid();
 }
 
 function toggleSidebar(){
@@ -114,4 +115,39 @@ function updateSidebarLabels(){
   // Update toggle button tooltip
   const tog=$('sbToggle');
   if(tog)tog.title=_ja?'サイドバー切替 (Ctrl+B)':'Toggle Sidebar (Ctrl+B)';
+  renderPillarGrid();
+}
+
+/* ═══ PILLAR ICON GRID ═══ */
+var PILLAR_ICONS=['📋','🐳','🔌','🤖','✅','🗺️','🎨','🔍','💡','🔒','📊','⚙️','🔮','🧬','🧩','🔧','🏢','🚀','📄','📦'];
+var GEN_TO_PILLAR=[0,1,2,3,0,6,8,9,10,11,12,13,14,15,16,17,18,19,0,0];
+var PILLAR_FIRST_FILE=['.spec/constitution.md','.devcontainer/devcontainer.json','.mcp/project-context.md',null,null,null,'roadmap/LEARNING_PATH.md',null,'docs/26_design_system.md','docs/29_reverse_engineering.md','docs/39_implementation_playbook.md','docs/43_security_intelligence.md','docs/48_industry_blueprint.md','docs/53_ops_runbook.md','docs/56_market_positioning.md','docs/60_methodology_intelligence.md','docs/65_prompt_genome.md','docs/69_prompt_ops_pipeline.md','docs/73_enterprise_architecture.md','docs/77_cicd_pipeline_design.md'];
+
+function renderPillarGrid(){
+  const g=$('sbPillarGrid');if(!g)return;
+  const _ja=S.lang==='ja';
+  const hasFiles=Object.keys(S.files||{}).length>0;
+  const names=_ja?['SDD','DevContainer','MCP','AIルール','品質','ロードマップ','デザイン','リバース','実装','セキュリティ','戦略','運用','未来','開発IQ','ゲノム','Prompt Ops','Enterprise','CI/CD','仕様書','共通']:['SDD','DevContainer','MCP','AI Rules','Quality','Roadmap','Design','Reverse','Impl','Security','Strategy','Ops','Future','Dev IQ','Genome','Prompt Ops','Enterprise','CI/CD','Docs','Common'];
+  let h='';
+  for(let i=0;i<20;i++){
+    const cls='sb-pillar-icon'+(hasFiles?' completed':' inactive');
+    h+='<button class="'+cls+'" title="'+esc(names[i])+'" onclick="clickPillarIcon('+i+')" aria-label="'+esc(names[i])+'">'+PILLAR_ICONS[i]+'</button>';
+  }
+  g.innerHTML=h;
+}
+
+function clickPillarIcon(genIdx){
+  if(!Object.keys(S.files||{}).length)return;
+  const p=GEN_TO_PILLAR[genIdx];
+  S.pillar=p;
+  document.querySelectorAll('.piltab').forEach(function(t,i){
+    t.classList.toggle('on',i===p);
+    t.setAttribute('aria-selected',String(i===p));
+  });
+  if(p===4){if(typeof showExplorer==='function')showExplorer();return;}
+  if(p===5){if(typeof showDashboard==='function')showDashboard();return;}
+  if(p===7){if(typeof showAILauncher==='function')showAILauncher();return;}
+  if(typeof showFileTree==='function')showFileTree();
+  const f=PILLAR_FIRST_FILE[p];
+  if(f&&S.files[f]&&typeof previewFile==='function')previewFile(f);
 }

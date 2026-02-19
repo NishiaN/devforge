@@ -66,6 +66,8 @@ function doGenerate(lang){
 
   const a=S.answers;const pn=S.projectName;
   S.files={};const _errs=[];
+  // Reset sidebar pillar grid to inactive at generation start
+  {const _sbGr=$('sbPillarGrid');if(_sbGr)_sbGr.querySelectorAll('.sb-pillar-icon').forEach(ic=>{ic.className='sb-pillar-icon inactive';});}
   const steps=[
     {fn:()=>genPillar1_SDD(a,pn),lbl:_j?'柱① SDD仕様書':'Pillar ① SDD',err:'P1-SDD'},
     {fn:()=>genPillar2_DevContainer(a,pn),lbl:_j?'柱② DevContainer':'Pillar ② DevContainer',err:'P2-Dev'},
@@ -101,12 +103,18 @@ function doGenerate(lang){
       card.setAttribute('data-status','processing');
       if(typeof announce==='function')announce(s.lbl);
     }
+    // Update sidebar pillar icon to processing
+    const _sbGrid=$('sbPillarGrid');
+    const _sbIc=_sbGrid?_sbGrid.children[si]:null;
+    if(_sbIc){_sbIc.classList.remove('inactive','completed');_sbIc.classList.add('processing');}
 
     setTimeout(()=>{
       try{s.fn();}catch(e){_errs.push(s.err);console.error('❌ '+s.err+' error:',e);}
 
       // Mark as completed
       if(card)card.setAttribute('data-status','completed');
+      // Update sidebar pillar icon to completed
+      if(_sbIc){_sbIc.classList.remove('processing','inactive');_sbIc.classList.add('completed');}
 
       si++;runStep();
     },60);
@@ -149,6 +157,7 @@ function finishGen(_errs){
     showExportGrid();
     showFileTree();
     if(typeof switchSidebarTab==='function')switchSidebarTab('files');
+    if(typeof renderPillarGrid==='function')renderPillarGrid();
     initPrevTabs();initPillarTabs();updProgress();save();
     createQbar();
     setTimeout(showPostGenGuide,400);
@@ -226,7 +235,7 @@ function clearFiles(){
 
   // Clear
   S.files={};S.editedFiles={};S.prevFiles={};S.genLang=null;S.previewFile=null;
-  save();showFileTree();showExportGrid();
+  save();showFileTree();showExportGrid();if(typeof renderPillarGrid==='function')renderPillarGrid();
   if($('qbar'))$('qbar').remove();
 
   // Show undo toast
@@ -240,7 +249,7 @@ function clearFiles(){
       S.prevFiles=backup.prevFiles;
       S.genLang=backup.genLang;
       S.previewFile=backup.previewFile;
-      save();showFileTree();showExportGrid();createQbar();
+      save();showFileTree();showExportGrid();createQbar();if(typeof renderPillarGrid==='function')renderPillarGrid();
       toast(_ja?'✅ 復元しました':'✅ Restored',{type:'success'});
     }
   });

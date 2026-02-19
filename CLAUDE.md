@@ -13,26 +13,26 @@ DevForge v9's documentation is optimized into role-specific files:
 - **CLAUDE.md** (this file) — Core development guidelines, critical rules, common bugs, quick reference
 - **docs/CLAUDE-REFERENCE.md** — Detailed reference: complete data structures, generated output catalog, pillar addition guide, compression patterns, test patterns
 - **docs/CLAUDE-TROUBLESHOOTING.md** — Environment setup, git workflow, deployment, troubleshooting
-- **docs/AI_CODING_PROMPTS.md** — 36 AI prompt templates (spec review, MVP implementation, test generation, refactoring, security audit, etc.)
+- **docs/AI_CODING_PROMPTS.md** — 37 AI prompt templates (spec review, MVP implementation, test generation, refactoring, security audit, etc.)
 - **未来志向アプリ開発戦略フレームワーク（2026-2035）.md** (local only) — 28 strategic frameworks for future app development (2026-2035 horizon)
 
 ## Architecture
-- **55 modules** in `src/` → `node build.js` → single `devforge-v9.html` (~1835KB)
+- **55 modules** in `src/` → `node build.js` → single `devforge-v9.html` (~1874KB)
 - Vanilla JS, no frameworks. CSS custom properties. CDN: marked.js, mermaid.js, JSZip.
-- **AI Development OS**: Generates 134+ files including context intelligence, operations playbooks, business models, growth strategies, industry-specific strategic intelligence, ops intelligence, future strategy intelligence, polymorphic development intelligence, prompt genome engine, prompt ops pipeline, enterprise SaaS blueprint, CI/CD intelligence, and path-specific AI rules
+- **AI Development OS**: Generates 135+ files including context intelligence, operations playbooks, business models, growth strategies, industry-specific strategic intelligence, ops intelligence, future strategy intelligence, polymorphic development intelligence, prompt genome engine, prompt ops pipeline, enterprise SaaS blueprint, CI/CD intelligence, and path-specific AI rules
 - **Security-hardened**: Phase 1 (CSP, SRI, sanitization) + Phase 2 (16 XSS/injection fixes) + Pillar ⑫ (context-aware security audit prompts)
-- **Latest**: v9.5.x — Pillar ⑳ (CI/CD Intelligence) + Creative UX Pack (9-expert brainstorm, AI model guide, UX journey, expertHints), 36 launcher templates, 20 pillars total
+- **Latest**: v9.5.x — Pillar ⑳ (CI/CD Intelligence) + 7-Level Skill System (Lv0-6 slider) + Sidebar Pillar Icon Grid (5×4 always-visible nav) + Creative UX Pack, 37 launcher templates, 20 pillars total
 
 ## Build & Test
 ```bash
 # Build
-node build.js              # Produces devforge-v9.html (~1835KB, limit 2000KB)
+node build.js              # Produces devforge-v9.html (~1874KB, limit 2000KB)
 node build.js --no-minify  # Skip minification (debug)
 node build.js --report     # Show size report
 node build.js --check-css  # Validate CSS custom properties
 
 # Test
-npm test                   # Run all tests (527 tests, all passing)
+npm test                   # Run all tests (550 tests, all passing)
 npm run test:watch         # Watch mode for test development
 node --test test/gen-coherence.test.js  # Run single test file
 node --test test/data-coverage.test.js  # Run data integrity tests
@@ -57,7 +57,7 @@ npm run check              # Syntax check extracted JS
 5. **Write** to `devforge-v9.html`
 6. **Validate** size ≤2000KB (warn if exceeded)
 
-**Current Status:** ~1835KB / 2000KB limit (~92% utilized, P20 CI/CD Intelligence complete, room for expansion)
+**Current Status:** ~1874KB / 2000KB limit (~94% utilized, P20 CI/CD Intelligence + 7-level skill system + sidebar pillar grid complete)
 
 ### ⚠️ Critical: Minification Strategy
 
@@ -90,8 +90,8 @@ npm run check              # Syntax check extracted JS
 |----------|-------|---------|
 | core/ | state, i18n, events, tour, init | State, language, shortcuts |
 | data/ | presets(41), questions, techdb, compat-rules, gen-templates, helpdata | Static data (41 presets: 36 original + 5 new: CRM, Social, Logistics, Survey, Job Board) |
-| generators/ | index, p1-sdd, p2-devcontainer, p3-mcp, p4-airules, p5-quality, p7-roadmap, p9-designsystem (v2: Figma MCP, Anti-AI checklist), p10-reverse, p11-implguide (skill_guide.md), p12-security (context-aware audit prompts), p13-strategy (industry intelligence), p14-ops (ops intelligence), p15-future (market/UX/ecosystem/regulatory strategy), p16-deviq (polymorphic development intelligence), p17-promptgenome (CRITERIA 8-axis + AI Maturity), p18-promptops (ReAct + LLMOps + Prompt Registry), p19-enterprise (multi-tenant arch + workflow engine + admin dashboard + enterprise components), docs, common | 130+ file generation engine (19 pillars) |
-| ui/ | wizard, render, edit, help, confirm, complexity, toc, voice, project, presets, preview, editor, diff, export, explorer, dashboard, templates, qbar, cmdpalette | UI components |
+| generators/ | index, p1-sdd, p2-devcontainer, p3-mcp, p4-airules, p5-quality, p7-roadmap, p9-designsystem (v2: Figma MCP, Anti-AI checklist), p10-reverse, p11-implguide (skill_guide.md + gen81 UX audit), p12-security (context-aware audit prompts), p13-strategy (industry intelligence), p14-ops (ops intelligence), p15-future (market/UX/ecosystem/regulatory strategy), p16-deviq (polymorphic development intelligence), p17-promptgenome (CRITERIA 8-axis + AI Maturity), p18-promptops (ReAct + LLMOps + Prompt Registry), p19-enterprise (multi-tenant arch + workflow engine + admin dashboard + enterprise components), p20-cicd (CI/CD intelligence), docs, common | 135+ file generation engine (20 pillars) |
+| ui/ | wizard, render, edit, help, confirm, complexity, toc, voice, project, presets, preview, editor, diff, export, explorer, dashboard, templates, qbar, cmdpalette, **sidebar** (pillar icon grid + file tree + progress) | UI components |
 | styles/ | all.css | Theme (dark/light), responsive |
 
 ## Key State: `S` (Global State Object)
@@ -115,7 +115,8 @@ Located in `src/core/state.js`. Call `save()` after mutations to persist to loca
 - `prevFiles` — Previous generation for diff view
 - `skipped` — Array of skipped question IDs
 - `progress` — Phase completion tracking
-- `pillar` — Current pillar view (0-8)
+- `pillar` — Current pillar view (0-19)
+- `skillLv` — Fine-grained skill level (0-6 int); coexists with `skill` (3-tier string); `SKILL_TIERS[]` + `skillTier(lv)` in state.js
 - `previewFile` — Currently previewed file path
 - `qbarDismissed` — QBar minimized to FAB state (boolean)
 - `pinnedFiles` — User-pinned files for quick access (Array)
@@ -248,39 +249,12 @@ node build.js               # Rebuild HTML
 npm run open                # Visual verification
 ```
 
-**Recent Updates (2026-02-19):**
-- Pillars ⑰ (Prompt Genome) + ⑱ (Prompt Ops) added: 16→18 pillars
-- Tests: 335→457 (added promptgenome.test.js 22 + promptops.test.js 26 + mermaid.test.js + utils.test.js)
-- Generated files: 118+→126+ (docs/65-72 added)
-- Templates: 23→32 (Launcher PT expanded for P16/P17/P18)
-- Docs count: 72 numbered files in docs/
-
-**Recent Updates (v9.4.0):**
-- Pillar ⑲ (Enterprise SaaS Blueprint) added: 18→19 pillars
-- Tests: 457→483 (added enterprise.test.js 26 tests)
-- Generated files: 126+→130+ (docs/73-76 added: enterprise arch, workflow engine, admin dashboard, enterprise components)
-- Templates: 32→34 (added Enterprise Architecture Review + Workflow Process Audit)
-- Docs count: 76 numbered files in docs/
-- Build size: ~1707KB→~1764KB (54 modules)
-
-**Recent Updates (v9.5.x — Pillar ⑳ CI/CD Intelligence):**
-- Pillar ⑳ (CI/CD Intelligence) added: 19→20 pillars
-- Tests: 497→527 (added cicd.test.js 30 tests)
-- Generated files: 130+→134+ (docs/77-80: cicd_pipeline_design, deployment_strategy, quality_gate_matrix, release_engineering)
-- Docs count: 76→80 numbered files in docs/
-- Build size: ~1789KB→~1835KB (55 modules)
-- All domains generate CI/CD docs (no domain skip, unlike P19)
-- Deploy target config: 9 targets (Vercel/Firebase/CF/Railway/Fly/Render/AWS/Docker/Netlify)
-- Domain-specific: fintech→dual-approval+compliance audit, healthcare→HIPAA+PHI scan, ec→payment smoke test, iot→firmware build
-
-**Recent Updates (v9.4.x — Creative UX Pack):**
-- Templates: 34→36 (added 🎭 9-Expert Brainstorm + 🎯 UX Journey Design + 🤖 AI Model Selection; enhanced old brainstorm)
-- AI_REC map in `launcher.js`: all 36 templates tagged with recommended AI model (Gemini/Claude/ChatGPT/Copilot)
-- **expertHints system**: `src/data/helpdata.js` — 4 key questions (purpose/target/mvp_features/screens) now include `expertHints[]` arrays with 9-expert creative prompts per question; displayed in `src/ui/help.js` help popup with `cycleExpertHint()` / `_renderExpertHint()` rotation
-- Hero section: icard[0] → "3つの悪夢を解決" storytelling, icard[1] → "19の柱×130+ファイル" reframing
-- Tour: 10→11 steps (added "9-Expert Brainstorm" step); build.test.js assertion updated accordingly
-- Post-gen guide: 5→6 steps per skill level (added brainstorm/creative step for all 3 levels)
-- Build size: ~1764KB→~1789KB
+**Recent Updates (v9.5.x — current):**
+- **Sidebar Pillar Icon Grid**: 5×4 grid of pillar icons in sidebar Progress tab (always visible); click → pillar tab switch + first-file preview; states: inactive/processing/completed synced with generation steps; `renderPillarGrid()` + `clickPillarIcon()` in `src/ui/sidebar.js`; `GEN_TO_PILLAR[20]` + `PILLAR_FIRST_FILE[20]` mapping arrays
+- **7-Level Skill System**: `S.skillLv` (0-6) + `S.skill` (3-tier) coexist; `pickSkillLv(n)` in presets.js; Lv0 forces saas+Firebase, Lv4+ skips confirm dialog, Lv6 adds evangelist section; gen81() generates docs/81_ux_proficiency_audit.md; ux_audit launcher template added (37 total)
+- **Pillar ⑳ CI/CD Intelligence**: docs/77-80 (pipeline_design, deployment_strategy, quality_gate_matrix, release_engineering); all 32 domains generate; 9 deploy targets; domain-specific gates (fintech/healthcare/ec/iot)
+- **Creative UX Pack**: 11-step tour, 37 launcher templates with AI_REC badges, expertHints system in helpdata.js (9-expert rotating hints), 6-step post-gen guide
+- Tests: 527→548→550 | Build: ~1835KB→~1874KB | 55 modules | 20 pillars | 135+ files
 
 ### Property Name Mismatches with Helper-Generated Objects
 **Problem:** Accessing properties on objects created by helper functions without checking the actual property structure.
@@ -353,7 +327,7 @@ The compatibility checker validates tech stack combinations with **58 rules** (1
 4. Add test cases to `test/compat.test.js` (both positive and negative)
 5. Update test header comment
 6. Update all documentation references (see Cross-Reference section above)
-7. Run `npm test` to verify all 527 tests pass
+7. Run `npm test` to verify all 550 tests pass
 
 ## Key Data Structures & Helper Functions
 
@@ -374,6 +348,20 @@ The compatibility checker validates tech stack combinations with **58 rules** (1
 - **`src/ui/help.js`** — `showHelp()` reads `expertHints`, stores in `window._ehData` / `window._ehIdx`, renders via `_renderExpertHint(_ja)` helper
 - **`cycleExpertHint()`** — global function, increments `window._ehIdx` mod length, updates `.help-expert-hint` DOM in place (no re-render)
 - **CSS classes**: `.help-expert-hint`, `.help-eh-head`, `.help-eh-text`, `.help-eh-next` in `styles/all.css`
+
+**Sidebar Pillar Icon Grid (v9.5.x):**
+- **`src/ui/sidebar.js`** — `PILLAR_ICONS[20]`, `GEN_TO_PILLAR[20]` (gen step → pillar tab), `PILLAR_FIRST_FILE[20]` (pillar tab → first file path)
+- **`renderPillarGrid()`** — renders 20 icon buttons; `inactive` when no files, `completed` when files exist; called from `initSidebar()` + `updateSidebarLabels()` + `finishGen()` + `clearFiles()`
+- **`clickPillarIcon(genIdx)`** — switches `.piltab` active state, calls `showFileTree()` + `previewFile()` for regular pillars; `showExplorer/showDashboard/showAILauncher` for special pillars (4/5/7)
+- **CSS**: `.sb-pillar-grid`, `.sb-pillar-icon` with `.inactive`/`.processing`/`.completed` states; reuses existing `@keyframes pillarPulse` — **do not add a duplicate declaration**
+- **`src/generators/index.js`**: per-step `.processing`→`.completed` transition using pre-captured `_sbIc=_sbGrid.children[si]` (captured before `setTimeout`)
+
+**7-Level Skill System (v9.5.x):**
+- `S.skillLv` (0-6 int) and `S.skill` (beginner/intermediate/pro) coexist; `skillTier(lv)` maps lv→string
+- `pickSkillLv(n)` in `src/data/presets.js` — clamps 0-6, syncs both fields, updates `#skillFineLabel`
+- `pickSkill(t)` extended to also set `skillLv` to tier default (beginner→1, intermediate→3, pro→5)
+- Lv0: saas preset forced, Firebase default; Lv2: 8 KPI chips (bridge); Lv4+: skips confirm dialog; Lv6+: evangelist section in docs/42, community sharing step in guide
+- `load()` migration: if `skillLv` invalid, infer from `S.skill`
 
 **New in v9.2.0 — DOMAIN_OPS (Ops Intelligence):**
 - **`DOMAIN_OPS`** — 32-domain operational requirements (SLO, Feature Flags, Jobs, Backup, Hardening)
@@ -428,11 +416,13 @@ const PR = {
 
 **Summary:** Create generator → Register in build system → Update UI & i18n → Update docs → Add tests → Check size budget (≤2000KB)
 
-**⚠️ Easy to miss:** Add an `else if(pillar===N)` branch to `buildFileTree()` in `src/ui/preview.js` (line ~426). Each pillar tab maps to an index (P1=0 … P19=18). Without this, the pillar's docs are invisible in the file tree even though they exist in `S.files`.
+**⚠️ Easy to miss:** Add an `else if(pillar===N)` branch to `buildFileTree()` in `src/ui/preview.js` (line ~426). Each pillar tab maps to an index (P1=0 … P20=19). Without this, the pillar's docs are invisible in the file tree even though they exist in `S.files`.
+
+**⚠️ Also update:** `PILLAR_FIRST_FILE` array in `src/ui/sidebar.js` (add the new pillar's first file at index N) and `GEN_TO_PILLAR` if the new gen step doesn't map 1:1 to the pillar index. Update Hero Section per the pattern documented in MEMORY.md.
 
 ## Generated Output
 
-DevForge generates **134+ files** (base: 90 files, +4 for skills/ when ai_auto=multi/full/orch, +1 for business_model.md when payment≠none, +3 for P14 ops docs, +4 for P15 future strategy docs, +4 for P16 dev IQ docs, +4 for P17 prompt genome docs, +4 for P18 prompt ops docs, +4 for P19 enterprise docs (for SaaS-like domains), +4 for P20 CI/CD docs (all domains), +6 for .claude/ structure).
+DevForge generates **135+ files** (base: 90 files, +4 for skills/ when ai_auto=multi/full/orch, +1 for business_model.md when payment≠none, +3 for P14 ops docs, +4 for P15 future strategy docs, +4 for P16 dev IQ docs, +4 for P17 prompt genome docs, +4 for P18 prompt ops docs, +4 for P19 enterprise docs (for SaaS-like domains), +4 for P20 CI/CD docs (all domains), +1 for docs/81_ux_proficiency_audit.md (all), +6 for .claude/ structure).
 
 → See `docs/CLAUDE-REFERENCE.md` for complete file catalog.
 
@@ -473,17 +463,24 @@ DevForge generates **134+ files** (base: 90 files, +4 for skills/ when ai_auto=m
 - `docs/75_admin_dashboard_spec.md` — Admin dashboard spec (KPI cards, business metrics, workload analytics, role-based views)
 - `docs/76_enterprise_components.md` — Enterprise component catalog (8 components: StatusBadge, ApprovalBar, DataTable, NotificationBell, OrgSwitcher, OnboardingStepper, AuditTimeline, InviteManager)
 
+**New in v9.5.x (Pillar ⑳ + 7-level skill):**
+- `docs/77_cicd_pipeline_design.md` — CI/CD pipeline design (9 stages, GitHub Actions, quality gates)
+- `docs/78_deployment_strategy.md` — Deployment strategy (blue-green/canary/rolling/feature-flag)
+- `docs/79_quality_gate_matrix.md` — Quality gate matrix (5 gates, domain-specific rules)
+- `docs/80_release_engineering.md` — Release engineering (3 release models, 9 deploy targets)
+- `docs/81_ux_proficiency_audit.md` — 7-level UX proficiency audit with project context (all domains)
+
 **Key pillars:**
 - **.spec/** — constitution, specification, technical-plan, tasks, verification
 - **.devcontainer/** — devcontainer.json, Dockerfile, docker-compose.yml, post-create.sh
 - **.claude/** — 3-layer AI rules (thin root + path-specific rules + settings)
-- **docs/** — 76 documents including architecture, ER, API, screen, test-cases, security, release, WBS, prompt-playbook, design_system, qa_strategy, reverse_engineering, growth_intelligence, skill_guide, security_intelligence (OWASP 2025), threat_model, compliance_matrix, ai_security, security_testing, industry_blueprint, tech_radar, stakeholder_strategy, operational_excellence, ops_runbook, ops_checklist, prompt_genome, ai_maturity, prompt_composition, prompt_kpi, prompt_ops_pipeline, react_workflow, llmops_dashboard, prompt_registry, enterprise_architecture, workflow_engine, admin_dashboard_spec, enterprise_components
+- **docs/** — 81 documents including architecture, ER, API, screen, test-cases, security, release, WBS, prompt-playbook, design_system, qa_strategy, reverse_engineering, growth_intelligence, skill_guide, security_intelligence (OWASP 2025), threat_model, compliance_matrix, ai_security, security_testing, industry_blueprint, tech_radar, stakeholder_strategy, operational_excellence, ops_runbook, ops_checklist, prompt_genome, ai_maturity, prompt_composition, prompt_kpi, prompt_ops_pipeline, react_workflow, llmops_dashboard, prompt_registry, enterprise_architecture, workflow_engine, admin_dashboard_spec, enterprise_components, cicd_pipeline_design, deployment_strategy, quality_gate_matrix, release_engineering, ux_proficiency_audit
 - **AI rules** — CLAUDE.md (thin), .claude/rules/ (5 files), .claude/settings.json, AI_BRIEF.md, .cursorrules, .clinerules, .windsurfrules, AGENTS.md, skills/ (project.md, factory.md, catalog.md, pipelines.md, skill_map.md, agents/)
 - **CI/CD** — .github/workflows/ci.yml
 
 ## AI Prompt Launcher (Pillar ⑧)
 
-DevForge includes a **Prompt Launcher** that generates structured prompts by auto-injecting project context (name, stack, auth, entities) into 36 specialized templates:
+DevForge includes a **Prompt Launcher** that generates structured prompts by auto-injecting project context (name, stack, auth, entities) into 37 specialized templates:
 
 **Key Templates:**
 - 🔍 **Spec Review** — 4-step structured review (mission → requirements → architecture → consistency)
@@ -514,6 +511,7 @@ DevForge includes a **Prompt Launcher** that generates structured prompts by aut
 - 🔧 **Prompt Ops Review** — Prompt Ops pipeline + LLMOps dashboard review (P18)
 - 🏢 **Enterprise Architecture Review** — Multi-tenant arch, RLS, org model, permission matrix review (P19)
 - 📋 **Workflow Process Audit** — Approval/ticket/order state machine audit, SLA compliance (P19)
+- 🔬 **UX Proficiency Audit** — 7-level UX audit with project context, generates docs/81 (strategy category, Claude)
 
 **AI Model Recommendation Badges:** Each template card shows a recommended AI model via `AI_REC` map in `src/ui/launcher.js`. Gemini=precision tasks (review/arch/metrics), Claude=ethical/UX tasks (risk/ux_journey/strategy), ChatGPT=creative tasks (brainstorm/nextgen/cognitive), Copilot=balanced tasks (implement/test/debug).
 
@@ -527,7 +525,7 @@ DevForge includes a **Prompt Launcher** that generates structured prompts by aut
 | data-coverage.test.js | 40 tests | Data integrity: entity coverage, FK validation, domain detection (32 domains), playbook completeness, DOMAIN_OPS coverage, DOMAIN_MARKET coverage (3 new P15 tests), P19 entity tests (Organization/OrgMember/OrgInvite) |
 | r27-regression.test.js | 17 tests | Bug fixes: prices, FK, KPI, ports |
 | r28-regression.test.js | 19 tests | Quality: REST methods, AC, scope_out, verification |
-| build.test.js | build | Build size ≤2000KB, pillar function existence (P1-P19) |
+| build.test.js | build | Build size ≤2000KB, pillar function existence (P1-P20), sbPillarGrid element, PILLAR array lengths |
 | compat.test.js | 75 tests + 7 synergy | Compatibility validation (58 rules: 11 ERROR, 37 WARN, 10 INFO) + calcSynergy unit tests |
 | security.test.js | 26 tests | Security: CSP, SRI, sanitization, XSS prevention, proto pollution, .claude/settings.json safety (2 new tests) |
 | ops.test.js | 16 tests | Ops Intelligence (P14): runbook generation, checklist, ops plane design, SLO adaptation, domain-specific flags, observability stack, circuit breaker, audit schema |
@@ -537,10 +535,11 @@ DevForge includes a **Prompt Launcher** that generates structured prompts by aut
 | promptops.test.js | 26 tests | Prompt Engineering OS (P18): REACT_PROTOCOL (6 phases × 4 stages), LLMOPS_STACK (3 levels), PROMPT_LIFECYCLE (5 stages), doc generation (69-72), no template literal contamination |
 | enterprise.test.js | 33 tests | Enterprise SaaS Blueprint (P19): ENTERPRISE_ARCH_PATTERNS (4), WORKFLOW_TEMPLATES (5), ADMIN_DASHBOARD_SPECS (4), ENTERPRISE_COMPONENTS (8), gen73-76 output, bilingual, domain skip logic, pattern selection (7 chip→selKey mapping tests) |
 | cicd.test.js | 30 tests | CI/CD Intelligence (P20): PIPELINE_STAGES (9), DEPLOY_STRATEGIES (4), QUALITY_GATES (5), RELEASE_MODELS (3), DEPLOY_TARGET_CONFIG (9), gen77-80 output, bilingual, all-domain generation, deploy target customization (9 targets), domain-specific gates (fintech/healthcare/ec/iot), Docker JA key normalization, template literal contamination |
+| skill-level.test.js | 21 tests | 7-Level Skill System: SKILL_NAMES (7), SKILL_TIERS, pickSkillLv, Lv0/Lv2/Lv4/Lv6 behaviors, gen81 UX audit output, ux_audit launcher template |
 | presets.test.js | 4 tests | Preset count (41), bilingual names, tech fields, purpose |
-| Others | ~21 tests | i18n, state, techdb |
+| Others | ~23 tests | i18n, state, techdb |
 
-**Total: 527 tests (all passing, 100% pass rate) + 7 synergy unit tests**
+**Total: 550 tests (all passing, 100% pass rate) + 7 synergy unit tests**
 
 ## Writing Tests
 
