@@ -2,7 +2,18 @@
 const $=id=>document.getElementById(id);
 const KEY='devforge-v9';
 const V=9;
-let S={phase:0,step:0,answers:{},projectName:'',skill:'intermediate',preset:'custom',lang:'ja',genLang:'ja',theme:'dark',pillar:0,previewFile:null,files:{},skipped:[],progress:{},editedFiles:{},prevFiles:{},qbarDismissed:false,pinnedFiles:[],recentFiles:[],sidebarOpen:true,_v:V};
+var SKILL_TIERS=['beginner','beginner','intermediate','intermediate','pro','pro','pro'];
+function skillTier(lv){return SKILL_TIERS[lv]||'intermediate';}
+var SKILL_NAMES=[
+  {ja:'完全初心者',en:'Absolute Beginner',emoji:'🔰'},
+  {ja:'初心者',en:'Beginner',emoji:'🌱'},
+  {ja:'慣れ始め',en:'Getting Started',emoji:'📗'},
+  {ja:'中級者',en:'Intermediate',emoji:'⚡'},
+  {ja:'上級者',en:'Advanced',emoji:'🔥'},
+  {ja:'エキスパート',en:'Expert',emoji:'💎'},
+  {ja:'伝道者',en:'Evangelist',emoji:'👑'}
+];
+let S={phase:0,step:0,answers:{},projectName:'',skill:'intermediate',skillLv:3,preset:'custom',lang:'ja',genLang:'ja',theme:'dark',pillar:0,previewFile:null,files:{},skipped:[],progress:{},editedFiles:{},prevFiles:{},qbarDismissed:false,pinnedFiles:[],recentFiles:[],sidebarOpen:true,_v:V};
 function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML;}
 function escAttr(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/"/g,'&quot;');}
 function _jp(s,d){if(s==null)return d;try{return JSON.parse(s);}catch(e){return d;}}
@@ -127,6 +138,7 @@ function load(){
     if(o.answers&&typeof o.answers==='object'&&!Array.isArray(o.answers))S.answers=_filterProto(o.answers);
     if(typeof o.projectName==='string')S.projectName=o.projectName;
     if(typeof o.skill==='string')S.skill=o.skill;
+    if(typeof o.skillLv==='number'&&o.skillLv>=0&&o.skillLv<=6){S.skillLv=o.skillLv;S.skill=skillTier(o.skillLv);}else{S.skillLv=S.skill==='beginner'?1:S.skill==='pro'?5:3;}
     if(typeof o.preset==='string')S.preset=o.preset;
     if(typeof o.lang==='string')S.lang=o.lang;
     if(typeof o.genLang==='string')S.genLang=o.genLang;
