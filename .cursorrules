@@ -1,11 +1,11 @@
-# DevForge v9.3.0
+# DevForge v9.5.0
 
-You are working on DevForge v9.3.0, an AI-driven development platform and spec generator.
-47 JS modules in src/ build into a single devforge-v9.html (~1448KB / 2000KB limit).
+You are working on DevForge v9.5.0, an AI-driven development platform and spec generator.
+55 JS modules in src/ build into a single devforge-v9.html (~1835KB / 2000KB limit).
 
 ## Essential Commands
 - Build: `node build.js` (produces devforge-v9.html)
-- Test: `npm test` (305+ tests, all passing)
+- Test: `npm test` (527 tests, all passing)
 - Dev: `npm run dev` (build + live-server on port 3000)
 - Always run tests before committing
 
@@ -24,11 +24,11 @@ You are working on DevForge v9.3.0, an AI-driven development platform and spec g
 5. Call `save()` after S mutations
 
 ## Output
-Generates **111+ files** across 15 pillars:
+Generates **134+ files** across 20 pillars:
 - .spec/ (5 files: constitution, specification, technical-plan, tasks, verification)
 - .devcontainer/ (4 files)
 - .claude/ (6 files: thin CLAUDE.md + 5 path-specific rules + settings.json)
-- docs/ (53 documents including security, ops, strategy, quality intelligence)
+- docs/ (80 documents including security, ops, strategy, quality, CI/CD intelligence)
 - AI rules (CLAUDE.md, AI_BRIEF.md, .cursorrules, .clinerules, .windsurfrules, AGENTS.md, skills/)
 - CI/CD (.github/workflows/ci.yml)
 

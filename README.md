@@ -1,31 +1,27 @@
-# DevForge v9.3.0
+# DevForge v9.5.0
 
 [![CI](https://github.com/NishiaN/devforge/actions/workflows/ci.yml/badge.svg)](https://github.com/NishiaN/devforge/actions/workflows/ci.yml)
 
-> 114+ファイルの開発ドキュメント・AI設定を自動生成するAI駆動開発プラットフォーム
+> 134+ファイルの開発ドキュメント・AI設定を自動生成するAI駆動開発プラットフォーム
 
 ## 概要
 
-DevForgeは、対話形式の質問に答えるだけで、プロジェクト開発に必要な仕様書・設計書・AI設定ファイル・DevContainer環境・CI/CDパイプラインなど **114+ファイル** を自動生成するAI駆動開発プラットフォームです。
+DevForgeは、対話形式の質問に答えるだけで、プロジェクト開発に必要な仕様書・設計書・AI設定ファイル・DevContainer環境・CI/CDパイプラインなど **134+ファイル** を自動生成するAI駆動開発プラットフォームです。
 
-### 🆕 最新アップデート (2026-02-15)
+### 🆕 最新アップデート (2026-02-19)
 
-- **🌍 クロスプラットフォーム対応**
-  - `.gitattributes` — LF改行統一、Windows CRLF問題を解消
-  - `.editorconfig` — エディタ設定統一（indent/改行/文字コード）
-  - `docs/64_cross_platform_guide.md` — トラブルシューティング付き開発ガイド
+- **🚀 Pillar ⑳ CI/CD Intelligence 追加**
+  - `docs/77_cicd_pipeline_design.md` — 9ステージパイプライン（Mermaid graph TD）、デプロイ先別GitHub Actions YAML
+  - `docs/78_deployment_strategy.md` — 環境戦略（dev/staging/prod）、blue-green/canary/rolling/recreate比較、ロールバック自動化
+  - `docs/79_quality_gate_matrix.md` — ステージ×品質ゲートマトリクス、カバレッジ閾値、パフォーマンスバジェット
+  - `docs/80_release_engineering.md` — ブランチモデル（Mermaid gitGraph）、semver、Renovate設定、SBOM生成
+  - 9デプロイ先対応（Vercel/Firebase/Cloudflare/Railway/Fly.io/Render/AWS/Docker/Netlify）
+  - ドメイン固有設定（fintech→デュアル承認+PCI、healthcare→HIPAA、ec→決済スモークテスト）
 
-- **☁️ BaaS開発環境モード選択**
-  - Supabase/Firebase選択時に3モードから選択可能:
-    - **ローカル開発**: エミュレーター自動起動（オフライン開発OK）
-    - **クラウド接続**: リモートBaaS直接接続（本番相当データ）
-    - **ハイブリッド**: 両方の設定を生成、手動切替
-  - `post-create.sh` と `.env.example` がモード別に自動生成
-
-- **📊 品質向上**
-  - テスト数: 325 → 335（全テスト通過）
-  - ファイル数: 114+（base: 90）
-  - ビルドサイズ: 1598KB（2000KB制限内）
+- **📊 統計**
+  - テスト数: 497 → 527（全テスト通過）
+  - ファイル数: 130+ → 134+、docs: 76 → 80
+  - モジュール数: 54 → 55、ビルドサイズ: ~1789KB → ~1835KB
 
 詳細は [CHANGELOG.md](./CHANGELOG.md) を参照。
 
@@ -57,13 +53,13 @@ npm install
 node build.js
 
 # テスト
-npm test  # 305+テスト（全通過）
+npm test  # 527テスト（全通過）
 
 # 使う
 open devforge-v9.html  # ブラウザで開く
 ```
 
-## 生成ファイル (114+ファイル)
+## 生成ファイル (134+ファイル)
 
 ### .spec/ — SDD仕様書
 | ファイル | 内容 |
@@ -159,11 +155,11 @@ Entities: User, Course, Lesson, Progress
 src/
 ├── core/       # state, i18n, events, tour, init
 ├── data/       # presets(41), questions, techdb, compat-rules
-├── generators/ # p1-sdd, p2-devcontainer, p3-mcp, p4-airules, p5-quality, p7-roadmap, p9-designsystem, p10-reverse, p11-implguide, docs, common
+├── generators/ # p1-sdd … p20-cicd, docs, common (20 pillars)
 ├── ui/         # wizard, render, edit, preview, export, explorer, dashboard...
 └── styles/     # all.css (dark/light theme)
-test/           # 304+ tests
-build.js        # Concatenates 47 modules → single HTML
+test/           # 527 tests
+build.js        # Concatenates 55 modules → single HTML
 ```
 
 ### ルール
@@ -185,7 +181,7 @@ build.js        # Concatenates 47 modules → single HTML
 | compat | 75+7 | 互換性ルール (58 rules + 7 synergy tests) |
 | その他 | ~21 | i18n, presets, state, techdb |
 
-**Total: 305+ tests** (品質インテリジェンス・実装インテリジェンス・戦略インテリジェンス・運用インテリジェンス・未来戦略検証含む、全パス）
+**Total: 527 tests** (品質インテリジェンス・実装インテリジェンス・戦略インテリジェンス・運用インテリジェンス・未来戦略検証・CI/CDインテリジェンス含む、全パス）
 
 ## ドキュメント構造
 

@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ---
 
-# DevForge v9.4.0
+# DevForge v9.5.0
 
 ## Documentation Structure
 
