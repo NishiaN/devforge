@@ -68,6 +68,13 @@
         <div class="skcard on" data-lv="intermediate" onclick="pickSkill('intermediate')" role="radio" aria-checked="true" tabindex="0"><div class="em">⚡</div><h4 class="sk-title">Intermediate</h4><p class="sk-desc">1年以上の経験。Svelte, DDD等の中級オプション解放</p></div>
         <div class="skcard" data-lv="pro" onclick="pickSkill('pro')" role="radio" aria-checked="false" tabindex="0"><div class="em">🔥</div><h4 class="sk-title">Professional</h4><p class="sk-desc">全オプション解放。MDD, RBAC, SSO等＋確認ダイアログ付き</p></div>
       </div>
+      <div class="skill-fine" id="skillFine">
+        <div class="skill-fine-ticks">
+          <span>🔰</span><span>🌱</span><span>📗</span><span>⚡</span><span>🔥</span><span>💎</span><span>👑</span>
+        </div>
+        <input type="range" id="skillLvSlider" min="0" max="6" step="1" value="3" oninput="pickSkillLv(+this.value)" aria-label="スキル微調整">
+        <div class="skill-fine-label" id="skillFineLabel">⚡ 中級者</div>
+      </div>
       <input class="nameIn" id="nameIn" placeholder="" aria-label="Project name">
       <div class="preset-row" id="presetRow"></div>
       <button class="btn btn-g btn-xs" onclick="showPresetCompare()" style="margin-bottom:8px" id="compareBtn">⚔️ <span id="compareLbl">テンプレート比較</span></button>
