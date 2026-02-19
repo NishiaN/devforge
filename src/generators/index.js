@@ -43,10 +43,10 @@ function doGenerate(lang){
   addMsg('bot',S.lang==='ja'?'🔨 ファイルを生成中...':'🔨 Generating files...');
 
   // Smart loading UI (HCD: ⑤感情体験 ③認知負荷)
-  const pillarIcons=['📋','🐳','🔌','🤖','✅','🗺️','🎨','🔍','💡','🔒','📊','⚙️','🔮','🧬','🧩','🔧','🏢','📄','📦'];
-  const pillarNames=_j?['SDD','DevContainer','MCP','AIルール','品質','ロードマップ','デザイン','リバース','実装','セキュリティ','戦略','運用','未来','開発IQ','ゲノム','Prompt Ops','Enterprise','仕様書','共通']:['SDD','DevContainer','MCP','AI Rules','Quality','Roadmap','Design','Reverse','Impl','Security','Strategy','Ops','Future','Dev IQ','Genome','Prompt Ops','Enterprise','Docs','Common'];
+  const pillarIcons=['📋','🐳','🔌','🤖','✅','🗺️','🎨','🔍','💡','🔒','📊','⚙️','🔮','🧬','🧩','🔧','🏢','🚀','📄','📦'];
+  const pillarNames=_j?['SDD','DevContainer','MCP','AIルール','品質','ロードマップ','デザイン','リバース','実装','セキュリティ','戦略','運用','未来','開発IQ','ゲノム','Prompt Ops','Enterprise','CI/CD','仕様書','共通']:['SDD','DevContainer','MCP','AI Rules','Quality','Roadmap','Design','Reverse','Impl','Security','Strategy','Ops','Future','Dev IQ','Genome','Prompt Ops','Enterprise','CI/CD','Docs','Common'];
   let pillarGrid='<div class="gen-pillar-grid">';
-  for(let i=0;i<19;i++){
+  for(let i=0;i<20;i++){
     pillarGrid+=`<div class="gen-pillar-card" id="genPillar${i}" data-status="pending">
       <div class="gen-pillar-icon">${pillarIcons[i]}</div>
       <div class="gen-pillar-name">${pillarNames[i]}</div>
@@ -84,6 +84,7 @@ function doGenerate(lang){
     {fn:()=>genPillar17_PromptGenome(a,pn),lbl:_j?'柱⑰ プロンプトゲノム':'Pillar ⑰ Prompt Genome',err:'P17-PG'},
     {fn:()=>genPillar18_PromptOps(a,pn),lbl:_j?'柱⑱ Prompt Ops':'Pillar ⑱ Prompt Ops',err:'P18-POps'},
     {fn:()=>genPillar19_EnterpriseSaaS(a,pn),lbl:_j?'柱⑲ エンタープライズ':'Pillar ⑲ Enterprise',err:'P19-Ent'},
+    {fn:()=>genPillar20_CICDIntelligence(a,pn),lbl:_j?'柱⑳ CI/CDインテリジェンス':'Pillar ⑳ CI/CD Intelligence',err:'P20-CICD'},
     {fn:()=>genDocs21(a,pn),lbl:_j?'仕様書28種':'28 Spec Docs',err:'Docs'},
     {fn:()=>genCommonFiles(a,pn),lbl:_j?'共通ファイル':'Common Files',err:'Common'},
   ];

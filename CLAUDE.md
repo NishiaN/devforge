@@ -17,22 +17,22 @@ DevForge v9's documentation is optimized into role-specific files:
 - **未来志向アプリ開発戦略フレームワーク（2026-2035）.md** (local only) — 28 strategic frameworks for future app development (2026-2035 horizon)
 
 ## Architecture
-- **54 modules** in `src/` → `node build.js` → single `devforge-v9.html` (~1789KB)
+- **55 modules** in `src/` → `node build.js` → single `devforge-v9.html` (~1835KB)
 - Vanilla JS, no frameworks. CSS custom properties. CDN: marked.js, mermaid.js, JSZip.
-- **AI Development OS**: Generates 130+ files including context intelligence, operations playbooks, business models, growth strategies, industry-specific strategic intelligence, ops intelligence, future strategy intelligence, polymorphic development intelligence, prompt genome engine, prompt ops pipeline, enterprise SaaS blueprint, and path-specific AI rules
+- **AI Development OS**: Generates 134+ files including context intelligence, operations playbooks, business models, growth strategies, industry-specific strategic intelligence, ops intelligence, future strategy intelligence, polymorphic development intelligence, prompt genome engine, prompt ops pipeline, enterprise SaaS blueprint, CI/CD intelligence, and path-specific AI rules
 - **Security-hardened**: Phase 1 (CSP, SRI, sanitization) + Phase 2 (16 XSS/injection fixes) + Pillar ⑫ (context-aware security audit prompts)
-- **Latest**: v9.4.x — Pillar ⑲ (Enterprise SaaS Blueprint) + Creative UX Pack (9-expert brainstorm, AI model guide, UX journey, expertHints), 36 launcher templates, 19 pillars total
+- **Latest**: v9.5.x — Pillar ⑳ (CI/CD Intelligence) + Creative UX Pack (9-expert brainstorm, AI model guide, UX journey, expertHints), 36 launcher templates, 20 pillars total
 
 ## Build & Test
 ```bash
 # Build
-node build.js              # Produces devforge-v9.html (~1789KB, limit 2000KB)
+node build.js              # Produces devforge-v9.html (~1835KB, limit 2000KB)
 node build.js --no-minify  # Skip minification (debug)
 node build.js --report     # Show size report
 node build.js --check-css  # Validate CSS custom properties
 
 # Test
-npm test                   # Run all tests (497 tests, all passing)
+npm test                   # Run all tests (527 tests, all passing)
 npm run test:watch         # Watch mode for test development
 node --test test/gen-coherence.test.js  # Run single test file
 node --test test/data-coverage.test.js  # Run data integrity tests
@@ -48,7 +48,7 @@ npm run check              # Syntax check extracted JS
 
 ## Build Process Deep Dive
 
-`build.js` concatenates 54 modules into single HTML:
+`build.js` concatenates 55 modules into single HTML:
 
 1. **Read modules** in dependency order (defined in `jsFiles` array)
 2. **Read CSS** from `styles/all.css`
@@ -57,7 +57,7 @@ npm run check              # Syntax check extracted JS
 5. **Write** to `devforge-v9.html`
 6. **Validate** size ≤2000KB (warn if exceeded)
 
-**Current Status:** ~1789KB / 2000KB limit (~89% utilized, P19 + Creative UX Pack complete, room for expansion)
+**Current Status:** ~1835KB / 2000KB limit (~92% utilized, P20 CI/CD Intelligence complete, room for expansion)
 
 ### ⚠️ Critical: Minification Strategy
 
@@ -227,7 +227,7 @@ See Phase 2 security audit for detailed examples.
 
 **Fix:**
 - Always add both `ja` and `en` versions
-- Search for all instances when updating numbers (41 presets, 130+ files, 19 pillars)
+- Search for all instances when updating numbers (41 presets, 134+ files, 20 pillars)
 - Use static strings in data files, not `S.lang` conditionals
 
 ### Cross-Reference Number Updates
@@ -262,6 +262,16 @@ npm run open                # Visual verification
 - Templates: 32→34 (added Enterprise Architecture Review + Workflow Process Audit)
 - Docs count: 76 numbered files in docs/
 - Build size: ~1707KB→~1764KB (54 modules)
+
+**Recent Updates (v9.5.x — Pillar ⑳ CI/CD Intelligence):**
+- Pillar ⑳ (CI/CD Intelligence) added: 19→20 pillars
+- Tests: 497→527 (added cicd.test.js 30 tests)
+- Generated files: 130+→134+ (docs/77-80: cicd_pipeline_design, deployment_strategy, quality_gate_matrix, release_engineering)
+- Docs count: 76→80 numbered files in docs/
+- Build size: ~1789KB→~1835KB (55 modules)
+- All domains generate CI/CD docs (no domain skip, unlike P19)
+- Deploy target config: 9 targets (Vercel/Firebase/CF/Railway/Fly/Render/AWS/Docker/Netlify)
+- Domain-specific: fintech→dual-approval+compliance audit, healthcare→HIPAA+PHI scan, ec→payment smoke test, iot→firmware build
 
 **Recent Updates (v9.4.x — Creative UX Pack):**
 - Templates: 34→36 (added 🎭 9-Expert Brainstorm + 🎯 UX Journey Design + 🤖 AI Model Selection; enhanced old brainstorm)
@@ -343,7 +353,7 @@ The compatibility checker validates tech stack combinations with **58 rules** (1
 4. Add test cases to `test/compat.test.js` (both positive and negative)
 5. Update test header comment
 6. Update all documentation references (see Cross-Reference section above)
-7. Run `npm test` to verify all 497 tests pass
+7. Run `npm test` to verify all 527 tests pass
 
 ## Key Data Structures & Helper Functions
 
@@ -422,7 +432,7 @@ const PR = {
 
 ## Generated Output
 
-DevForge generates **130+ files** (base: 90 files, +4 for skills/ when ai_auto=multi/full/orch, +1 for business_model.md when payment≠none, +3 for P14 ops docs, +4 for P15 future strategy docs, +4 for P16 dev IQ docs, +4 for P17 prompt genome docs, +4 for P18 prompt ops docs, +4 for P19 enterprise docs (for SaaS-like domains), +6 for .claude/ structure).
+DevForge generates **134+ files** (base: 90 files, +4 for skills/ when ai_auto=multi/full/orch, +1 for business_model.md when payment≠none, +3 for P14 ops docs, +4 for P15 future strategy docs, +4 for P16 dev IQ docs, +4 for P17 prompt genome docs, +4 for P18 prompt ops docs, +4 for P19 enterprise docs (for SaaS-like domains), +4 for P20 CI/CD docs (all domains), +6 for .claude/ structure).
 
 → See `docs/CLAUDE-REFERENCE.md` for complete file catalog.
 
@@ -526,10 +536,11 @@ DevForge includes a **Prompt Launcher** that generates structured prompts by aut
 | promptgenome.test.js | 22 tests | Prompt Genome Engine (P17): CRITERIA_FRAMEWORK (8 axes), AI_MATURITY_MODEL (3 levels), _APPROACHES (12), getSynergy, APPROACH_KPI, doc generation (65-68), bilingual content |
 | promptops.test.js | 26 tests | Prompt Engineering OS (P18): REACT_PROTOCOL (6 phases × 4 stages), LLMOPS_STACK (3 levels), PROMPT_LIFECYCLE (5 stages), doc generation (69-72), no template literal contamination |
 | enterprise.test.js | 33 tests | Enterprise SaaS Blueprint (P19): ENTERPRISE_ARCH_PATTERNS (4), WORKFLOW_TEMPLATES (5), ADMIN_DASHBOARD_SPECS (4), ENTERPRISE_COMPONENTS (8), gen73-76 output, bilingual, domain skip logic, pattern selection (7 chip→selKey mapping tests) |
+| cicd.test.js | 30 tests | CI/CD Intelligence (P20): PIPELINE_STAGES (9), DEPLOY_STRATEGIES (4), QUALITY_GATES (5), RELEASE_MODELS (3), DEPLOY_TARGET_CONFIG (9), gen77-80 output, bilingual, all-domain generation, deploy target customization (9 targets), domain-specific gates (fintech/healthcare/ec/iot), Docker JA key normalization, template literal contamination |
 | presets.test.js | 4 tests | Preset count (41), bilingual names, tech fields, purpose |
 | Others | ~21 tests | i18n, state, techdb |
 
-**Total: 497 tests (all passing, 100% pass rate) + 7 synergy unit tests**
+**Total: 527 tests (all passing, 100% pass rate) + 7 synergy unit tests**
 
 ## Writing Tests
 

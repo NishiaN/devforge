@@ -18,6 +18,7 @@ eval(fs.readFileSync('src/generators/p9-designsystem.js','utf-8'));
 eval(fs.readFileSync('src/generators/p10-reverse.js','utf-8').replace('const REVERSE_FLOW_MAP','var REVERSE_FLOW_MAP'));
 eval(fs.readFileSync('src/generators/p11-implguide.js','utf-8'));
 eval(fs.readFileSync('src/generators/docs.js','utf-8'));
+eval(fs.readFileSync('src/generators/p20-cicd.js','utf-8'));
 
 let pass=0,fail=0;
 function check(name,cond){

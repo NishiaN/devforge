@@ -30,6 +30,7 @@ eval(fs.readFileSync('src/generators/p16-deviq.js','utf-8').replace(/const (DEV_
 eval(fs.readFileSync('src/generators/p17-promptgenome.js','utf-8').replace(/const (CRITERIA_FRAMEWORK|AI_MATURITY_MODEL|_APPROACHES|_SYNERGY_RAW|APPROACH_KPI|getSynergy|gen65|gen66|gen67|gen68|genPillar17_PromptGenome)/g,'var $1').replace(/function (_cri|_mat)/g,'var $1 = function'));
 eval(fs.readFileSync('src/generators/p18-promptops.js','utf-8').replace(/var (REACT_PROTOCOL|LLMOPS_STACK|PROMPT_LIFECYCLE)/g,'var $1').replace(/function (_rp|_los)/g,'var $1 = function'));
 eval(fs.readFileSync('src/generators/p19-enterprise.js','utf-8'));
+eval(fs.readFileSync('src/generators/p20-cicd.js','utf-8'));
 
 // ═══ Helper ═══
 function generate(answers, name, lang) {
@@ -54,6 +55,7 @@ function generate(answers, name, lang) {
   genPillar17_PromptGenome(answers, name);
   genPillar18_PromptOps(answers, name);
   genPillar19_EnterpriseSaaS(answers, name);
+  genPillar20_CICDIntelligence(answers, name);
   return { ...S.files };
 }
 
@@ -72,9 +74,9 @@ describe('Snapshot A: LMS/Supabase/Stripe', () => {
     ai_auto: 'マルチAgent協調'
   }, 'LMS');
 
-  test('file count in range 104-135 (P4 adds +6, P14 adds +3, P15 adds +4, P16 adds +4, P17 adds +4, P18 adds +4, cross-platform adds +3)', () => {
+  test('file count in range 108-139 (P4 adds +6, P14 adds +3, P15 adds +4, P16 adds +4, P17 adds +4, P18 adds +4, P20 adds +4, cross-platform adds +3)', () => {
     const count = Object.keys(files).length;
-    assert.ok(count >= 104 && count <= 135, `Expected 104-135 files (P4 +6, P14 +3, P15 +4, P16 +4, P17 +4, P18 +4, cross-platform +3), got ${count}`);
+    assert.ok(count >= 108 && count <= 139, `Expected 108-139 files (P4 +6, P14 +3, P15 +4, P16 +4, P17 +4, P18 +4, P20 +4, cross-platform +3), got ${count}`);
   });
 
   test('total tokens in range 12000-66000 (P18 adds ~4-8K tokens)', () => {
@@ -693,9 +695,9 @@ describe('Snapshot B: Blog/Vite/Netlify', () => {
     dev_methods: 'TDD', ai_tools: 'Cursor', orm: ''
   }, 'Blog');
 
-  test('file count in range 95-125 (P14 adds +3, P4 adds +6, P15 adds +4, P16 adds +4, P17 adds +4, P18 adds +4, cross-platform adds +3)', () => {
+  test('file count in range 99-129 (P14 adds +3, P4 adds +6, P15 adds +4, P16 adds +4, P17 adds +4, P18 adds +4, P20 adds +4, cross-platform adds +3)', () => {
     const count = Object.keys(files).length;
-    assert.ok(count >= 95 && count <= 125, `Expected 95-125 files (P14 +3, P4 +6, P15 +4, P16 +4, P17 +4, P18 +4, cross-platform +3), got ${count}`);
+    assert.ok(count >= 99 && count <= 129, `Expected 99-129 files (P14 +3, P4 +6, P15 +4, P16 +4, P17 +4, P18 +4, P20 +4, cross-platform +3), got ${count}`);
   });
 
   test('no Stripe content when payment absent', () => {

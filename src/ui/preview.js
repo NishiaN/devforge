@@ -427,6 +427,10 @@ function buildFileTree(){
     files.push({folder:true,name:'docs'});
     ['73_enterprise_architecture','74_workflow_engine','75_admin_dashboard_spec','76_enterprise_components'].forEach(f=>
       files.push({name:'  '+f+'.md',path:'docs/'+f+'.md'}));
+  } else if(pillar===19){ // CI/CD Intelligence (P20)
+    files.push({folder:true,name:'docs'});
+    ['77_cicd_pipeline_design','78_deployment_strategy','79_quality_gate_matrix','80_release_engineering'].forEach(f=>
+      files.push({name:'  '+f+'.md',path:'docs/'+f+'.md'}));
   }
   // Common files
   files.push({name:'───────────',path:''});

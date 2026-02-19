@@ -31,7 +31,7 @@ describe('Build System', () => {
     const html = fs.readFileSync(OUTPUT, 'utf-8');
     const expected = [
       'genPillar1_SDD', 'genPillar2_DevContainer', 'genPillar3_MCP',
-      'genPillar4_AIRules', 'genPillar5_QualityIntelligence', 'genPillar7_Roadmap', 'genPillar9_DesignSystem', 'genPillar10_ReverseEngineering', 'genPillar11_ImplIntelligence', 'genPillar12_SecurityIntelligence', 'genPillar13_StrategicIntelligence', 'genPillar14_OpsIntelligence', 'genPillar15', 'genPillar16_DevIQ', 'genPillar17_PromptGenome', 'genPillar18_PromptOps', 'genPillar19_EnterpriseSaaS', 'genDocs21', 'genCommonFiles',
+      'genPillar4_AIRules', 'genPillar5_QualityIntelligence', 'genPillar7_Roadmap', 'genPillar9_DesignSystem', 'genPillar10_ReverseEngineering', 'genPillar11_ImplIntelligence', 'genPillar12_SecurityIntelligence', 'genPillar13_StrategicIntelligence', 'genPillar14_OpsIntelligence', 'genPillar15', 'genPillar16_DevIQ', 'genPillar17_PromptGenome', 'genPillar18_PromptOps', 'genPillar19_EnterpriseSaaS', 'genPillar20_CICDIntelligence', 'genDocs21', 'genCommonFiles',
       'openEditor', 'saveEdited', 'revertFile', 'showDiff', 'lineDiff', 'snapshotFiles',
       'reqLabel', 'priceLabel', 'showExplorer', 'showDashboard',
       'trapFocus', 'releaseFocus', 'announce',
@@ -102,16 +102,16 @@ describe('Build System', () => {
     assert.deepStrictEqual(missingInJA, [], `Keys in EN but not JA: ${missingInJA.join(', ')}`);
   });
 
-  it('19 pillars consistency across all references', () => {
+  it('20 pillars consistency across all references', () => {
     const html = fs.readFileSync(OUTPUT, 'utf-8');
-    // Check hero description has 19 pillars
-    assert.ok(html.includes('19の柱') || html.includes('18の柱'), 'Should contain "19の柱" or "18の柱" in Japanese hero');
-    assert.ok(html.includes('19 Pillars') || html.includes('19 pillars') || html.includes('18 Pillars') || html.includes('18 pillars'), 'Should contain "19 Pillars" or "18 Pillars" in English');
-    // Check pillar arrays have 19 items
+    // Check hero description has 20 pillars
+    assert.ok(html.includes('20の柱') || html.includes('19の柱'), 'Should contain "20の柱" or "19の柱" in Japanese hero');
+    assert.ok(html.includes('20 Pillars') || html.includes('20 pillars') || html.includes('19 Pillars') || html.includes('19 pillars'), 'Should contain "20 Pillars" or "19 Pillars" in English');
+    // Check pillar arrays have 20 items
     const pillarJA = html.match(/pillar:\[([^\]]+)\]/);
     if (pillarJA) {
       const items = pillarJA[1].split(',').length;
-      assert.ok(items === 19, `Pillar array should have 19 items, got ${items}`);
+      assert.ok(items === 20, `Pillar array should have 20 items, got ${items}`);
     }
     // Check P14 & P15 references exist
     assert.ok(html.includes('⑭運用インテリジェンス') || html.includes('⑭Ops Intelligence'), 'Should have ⑭Ops badge');
@@ -139,6 +139,8 @@ describe('Build System', () => {
     assert.ok(html.includes('genPillar18_PromptOps'), 'Should have P18 generator function');
     assert.ok(html.includes('⑲エンタープライズ') || html.includes('⑲Enterprise'), 'Should have ⑲Enterprise badge');
     assert.ok(html.includes('genPillar19_EnterpriseSaaS'), 'Should have P19 generator function');
+    assert.ok(html.includes('⑳CI/CD'), 'Should have ⑳CI/CD badge');
+    assert.ok(html.includes('genPillar20_CICDIntelligence'), 'Should have P20 generator function');
   });
 
   it('tour has correct number of steps', () => {
@@ -312,7 +314,7 @@ describe('Build System', () => {
   it('has correct number of pillar badges', () => {
     const html = fs.readFileSync(OUTPUT, 'utf-8');
     const pbadgeCount = (html.match(/class="pbadge"/g) || []).length;
-    assert.strictEqual(pbadgeCount, 19, `pbadge count should be 19 (one per pillar), got ${pbadgeCount}`);
+    assert.strictEqual(pbadgeCount, 20, `pbadge count should be 20 (one per pillar), got ${pbadgeCount}`);
   });
 
   it('no duplicate @keyframes definitions', () => {
