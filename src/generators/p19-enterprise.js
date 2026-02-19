@@ -167,22 +167,20 @@ function gen73(G, domain, orgModel, isMultiTenant, a, pn) {
   d += G ? '> マルチテナント設計・組織データモデル・権限マトリクス・RLSポリシーテンプレート。\n\n' :
            '> Multi-tenant design, organization data model, permission matrix, RLS policy templates.\n\n';
 
-  // Architecture pattern selection
-  var pat = ENTERPRISE_ARCH_PATTERNS[isMultiTenant ? 'rls' : 'rls'];
-  if (/schema.*per/i.test(orgModel)) pat = ENTERPRISE_ARCH_PATTERNS.schema;
-  else if (/database.*per|db.*per/i.test(orgModel)) pat = ENTERPRISE_ARCH_PATTERNS.db;
-  else if (/hybrid/i.test(orgModel)) pat = ENTERPRISE_ARCH_PATTERNS.hybrid;
+  // Architecture pattern selection — map chip values to pattern keys
+  var selKey = 'rls';
+  if (/ワークスペース|workspace/i.test(orgModel)) selKey = 'schema';
+  else if (/組織.*チーム|org.*team|hierarchy|階層/i.test(orgModel)) selKey = 'hybrid';
+  else if (/database.*per|db.*per/i.test(orgModel)) selKey = 'db';
+  var pat = ENTERPRISE_ARCH_PATTERNS[selKey];
 
   d += G ? '## 🏗️ テナント分離戦略\n\n' : '## 🏗️ Tenant Isolation Strategy\n\n';
   d += G ? '| パターン | テナント分離 | RBACモデル | スケーリング |\n|---------|------------|------------|------------|\n' :
            '| Pattern | Tenant Isolation | RBAC Model | Scaling |\n|---------|-----------------|------------|----------|\n';
   Object.entries(ENTERPRISE_ARCH_PATTERNS).forEach(function(entry) {
     var k = entry[0]; var p = entry[1];
-    var sel = (k === (isMultiTenant ? 'rls' : 'rls') && !(/schema|db|hybrid/i.test(orgModel))) ||
-              (k === 'schema' && /schema.*per/i.test(orgModel)) ||
-              (k === 'db' && /database.*per|db.*per/i.test(orgModel)) ||
-              (k === 'hybrid' && /hybrid/i.test(orgModel));
-    d += '| ' + (sel ? '**✅ ' : '') + p.pattern + (sel ? ' (選択中)**' : '') + ' | ' + p.tenantIsolation.substring(0, 40) + '... | ' + p.rbacModel + ' | ' + p.scalingStrategy.substring(0, 45) + '... |\n';
+    var sel = (k === selKey);
+    d += '| ' + (sel ? '**✅ ' : '') + p.pattern + (sel ? ' (' + (G ? '選択中' : 'selected') + ')**' : '') + ' | ' + p.tenantIsolation.substring(0, 40) + '... | ' + p.rbacModel + ' | ' + p.scalingStrategy.substring(0, 45) + '... |\n';
   });
   d += '\n';
 

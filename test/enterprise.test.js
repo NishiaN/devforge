@@ -237,3 +237,64 @@ test('[P19] gen74: mermaid stateDiagram present in output', () => {
   const doc = gen74(true, 'saas', 'マルチテナント(RLS)', true, a, 'TestApp');
   assert.ok(doc.includes('stateDiagram') || doc.includes('mermaid'), 'has mermaid state diagram');
 });
+
+// ============================================================================
+// PATTERN SELECTION TESTS (chip value → selKey mapping)
+// ============================================================================
+
+test('[P19] gen73 pattern selection: Workspace-based → schema (EN)', () => {
+  const doc = gen73(false, 'saas', 'Workspace-based', true, {purpose: 'SaaS'}, 'TestApp');
+  assert.ok(doc.includes('(selected)'), 'has selected marker');
+  // schema pattern should be marked selected
+  const lines = doc.split('\n');
+  const selectedLine = lines.find(l => l.includes('(selected)'));
+  assert.ok(selectedLine && /Schema.*per.*tenant|schema/i.test(selectedLine), 'schema pattern is selected');
+});
+
+test('[P19] gen73 pattern selection: ワークスペース型 → schema (JA)', () => {
+  const doc = gen73(true, 'saas', 'ワークスペース型', true, {purpose: 'SaaS'}, 'TestApp');
+  assert.ok(doc.includes('(選択中)'), 'has JA selected marker');
+  const lines = doc.split('\n');
+  const selectedLine = lines.find(l => l.includes('(選択中)'));
+  assert.ok(selectedLine && /Schema.*per.*tenant|schema/i.test(selectedLine), 'schema pattern is selected (JA)');
+});
+
+test('[P19] gen73 pattern selection: Org + Team hierarchy → hybrid (EN)', () => {
+  const doc = gen73(false, 'saas', 'Org + Team hierarchy', true, {purpose: 'SaaS'}, 'TestApp');
+  assert.ok(doc.includes('(selected)'), 'has selected marker');
+  const lines = doc.split('\n');
+  const selectedLine = lines.find(l => l.includes('(selected)'));
+  assert.ok(selectedLine && /Hybrid|RLS.*Feature|hybrid/i.test(selectedLine), 'hybrid pattern is selected');
+});
+
+test('[P19] gen73 pattern selection: 組織+チーム階層 → hybrid (JA)', () => {
+  const doc = gen73(true, 'saas', '組織+チーム階層', true, {purpose: 'SaaS'}, 'TestApp');
+  assert.ok(doc.includes('(選択中)'), 'has JA selected marker');
+  const lines = doc.split('\n');
+  const selectedLine = lines.find(l => l.includes('(選択中)'));
+  assert.ok(selectedLine && /Hybrid|RLS.*Feature|hybrid/i.test(selectedLine), 'hybrid pattern is selected (JA)');
+});
+
+test('[P19] gen73 pattern selection: Multi-tenant (RLS) → rls (EN)', () => {
+  const doc = gen73(false, 'saas', 'Multi-tenant (RLS)', true, {purpose: 'SaaS'}, 'TestApp');
+  assert.ok(doc.includes('(selected)'), 'has selected marker');
+  const lines = doc.split('\n');
+  const selectedLine = lines.find(l => l.includes('(selected)'));
+  assert.ok(selectedLine && /RLS.*Shared.*Schema|Row.*Level.*Security|rls/i.test(selectedLine), 'rls pattern is selected');
+});
+
+test('[P19] gen73 pattern selection: Single-tenant → rls default (EN)', () => {
+  const doc = gen73(false, 'saas', 'Single-tenant', false, {purpose: 'SaaS'}, 'TestApp');
+  assert.ok(doc.includes('(selected)'), 'has selected marker');
+  const lines = doc.split('\n');
+  const selectedLine = lines.find(l => l.includes('(selected)'));
+  assert.ok(selectedLine && /RLS.*Shared.*Schema|Row.*Level.*Security|rls/i.test(selectedLine), 'rls pattern is selected for single-tenant');
+});
+
+test('[P19] gen73 pattern selection: empty orgModel → rls default', () => {
+  const doc = gen73(false, 'saas', '', false, {purpose: 'SaaS'}, 'TestApp');
+  assert.ok(doc.includes('(selected)'), 'has selected marker');
+  const lines = doc.split('\n');
+  const selectedLine = lines.find(l => l.includes('(selected)'));
+  assert.ok(selectedLine && /RLS.*Shared.*Schema|Row.*Level.*Security|rls/i.test(selectedLine), 'rls pattern is default when orgModel is empty');
+});

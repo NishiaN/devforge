@@ -506,11 +506,11 @@ DevForge includes a **Prompt Launcher** that generates structured prompts by aut
 | deviq.test.js | 20 tests | Polymorphic Development Intelligence (P16): DEV_METHODOLOGY_MAP (32 domains), PHASE_PROMPTS (6 phases), INDUSTRY_STRATEGY (15 industries), NEXT_GEN_UX (4 keywords), doc generation (60-63), Mermaid diagrams, bilingual content |
 | promptgenome.test.js | 22 tests | Prompt Genome Engine (P17): CRITERIA_FRAMEWORK (8 axes), AI_MATURITY_MODEL (3 levels), _APPROACHES (12), getSynergy, APPROACH_KPI, doc generation (65-68), bilingual content |
 | promptops.test.js | 26 tests | Prompt Engineering OS (P18): REACT_PROTOCOL (6 phases × 4 stages), LLMOPS_STACK (3 levels), PROMPT_LIFECYCLE (5 stages), doc generation (69-72), no template literal contamination |
-| enterprise.test.js | 26 tests | Enterprise SaaS Blueprint (P19): ENTERPRISE_ARCH_PATTERNS (4), WORKFLOW_TEMPLATES (5), ADMIN_DASHBOARD_SPECS (4), ENTERPRISE_COMPONENTS (8), gen73-76 output, bilingual, domain skip logic |
+| enterprise.test.js | 33 tests | Enterprise SaaS Blueprint (P19): ENTERPRISE_ARCH_PATTERNS (4), WORKFLOW_TEMPLATES (5), ADMIN_DASHBOARD_SPECS (4), ENTERPRISE_COMPONENTS (8), gen73-76 output, bilingual, domain skip logic, pattern selection (7 chip→selKey mapping tests) |
 | presets.test.js | 4 tests | Preset count (41), bilingual names, tech fields, purpose |
 | Others | ~21 tests | i18n, state, techdb |
 
-**Total: 489 tests (all passing, 100% pass rate) + 7 synergy unit tests**
+**Total: 497 tests (all passing, 100% pass rate) + 7 synergy unit tests**
 
 ## Writing Tests
 
