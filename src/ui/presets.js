@@ -239,6 +239,11 @@ function autoFillPhase2Defaults(){
   // Lv0: use Firebase (simpler BaaS, no SQL required)
   if(S.skillLv===0&&!S.answers.backend){S.answers.backend='Firebase';}
   if(!S.answers.backend)S.answers.backend='Supabase';
+  if(!S.answers.database){
+    if(/Firebase/i.test(S.answers.backend))S.answers.database='Firebase Firestore';
+    else if(/Supabase/i.test(S.answers.backend))S.answers.database='Supabase (PostgreSQL)';
+    else S.answers.database='PostgreSQL';
+  }
   if(!S.answers.mobile)S.answers.mobile=_ja?'なし':'None';
   if(!S.answers.ai_auto)S.answers.ai_auto=_ja?'Vibe Coding入門':'Vibe Coding Intro';
   if(!S.answers.deploy)S.answers.deploy='Vercel';
