@@ -200,6 +200,18 @@ function showExportGrid(){
     </div>`
   );
 
+  // Lv4+ Power Ops panel
+  const _powerOps=(S.skillLv>=4?(function(){
+    var _ja=S.lang==='ja';
+    return '<div class="power-ops-panel">'+
+      '<div class="power-ops-title">'+(_ja?'⚡ パワーOps':'⚡ Power Ops')+'</div>'+
+      '<div class="power-ops-btns">'+
+      '<button class="btn btn-xs btn-s" onclick="showDiffView()">'+(_ja?'📊 差分比較':'📊 Diff View')+'</button>'+
+      '<button class="btn btn-xs btn-s" onclick="shareURL()">'+(_ja?'🔗 URL共有':'🔗 Share URL')+'</button>'+
+      '<button class="btn btn-xs btn-s" onclick="showPM()">'+(_ja?'📁 プロジェクト管理':'📁 Projects')+'</button>'+
+      '</div></div>';
+  })():'');
+
   // AI Quick Start card (GAP1: post-gen AI workflow guide)
   const _aiQs=(function(){
     if(typeof AI_TOOL_RECIPES==='undefined')return '';
@@ -312,7 +324,7 @@ function showExportGrid(){
     '</div>';
   })();
 
-  $('izone').innerHTML=summary+heroCard+_aiQs+_startHere+exportGroup+mgmtGroup+dangerZone;
+  $('izone').innerHTML=summary+heroCard+_powerOps+_aiQs+_startHere+exportGroup+mgmtGroup+dangerZone;
 }
 
 function clearFiles(){

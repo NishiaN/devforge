@@ -26,11 +26,13 @@ function loadTemplateList(){
 /* ── URL State Sharing ── */
 function shareURL(){
   const _ja=S.lang==='ja';
-  const data={p:S.projectName,a:S.answers,pr:S.preset};
+  const data={projectName:S.projectName,answers:S.answers,preset:S.preset,skillLv:S.skillLv,lang:S.lang};
   const encoded=btoa(unescape(encodeURIComponent(JSON.stringify(data))));
   const url=location.origin+location.pathname+'#df='+encoded;
   navigator.clipboard.writeText(url).then(()=>{
-    addMsg('bot',_ja?`🔗 URLをクリップボードにコピーしました。このURLを共有すると同じ設定で開けます。`:`🔗 URL copied to clipboard. Share it to open with the same settings.`);
+    var msg=_ja?'🔗 URLをクリップボードにコピーしました。このURLを共有すると同じ設定で開けます。':'🔗 URL copied to clipboard. Share it to open with the same settings.';
+    if(S.skillLv>=6)msg+=_ja?' あなたの知見が次の開発者を助けます！SNSやブログでの共有もおすすめです。':' Your insights help the next developer! Consider sharing on social media or blogs.';
+    addMsg('bot',msg);
   }).catch(()=>{
     addMsg('bot',`🔗 ${_ja?'共有URL':'Share URL'}:\n${url}`);
   });

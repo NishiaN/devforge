@@ -194,7 +194,9 @@ document.querySelectorAll('.skcard').forEach(el=>{
 (function loadFromURL(){
   try{
     const h=location.hash;if(!h||!h.startsWith('#df='))return;
-    const data=JSON.parse(atob(h.slice(4)));
+    const data=JSON.parse(decodeURIComponent(escape(atob(h.slice(4)))));
+    // Backward compatibility: support old short keys {p,a,pr}
+    if(!data.projectName&&data.p){data.projectName=data.p;data.answers=data.a;data.preset=data.pr;}
     if(data.projectName){
       S.projectName=sanitizeName(data.projectName);
       if(data.answers){

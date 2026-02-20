@@ -9,7 +9,7 @@ function saveProject(){
 function switchProject(name){
   const ps=getProjects();const p=ps[name];
   if(p&&p.state){
-    const _SAFE_KEYS=['phase','step','answers','projectName','skill','preset','lang','genLang','theme','pillar','previewFile','files','skipped','progress','editedFiles','prevFiles','_v'];
+    const _SAFE_KEYS=['phase','step','answers','projectName','skill','skillLv','preset','lang','genLang','theme','pillar','previewFile','files','skipped','progress','editedFiles','prevFiles','_v'];
     _SAFE_KEYS.forEach(k=>{if(Object.prototype.hasOwnProperty.call(p.state,k))S[k]=p.state[k];});
     save();location.reload();
   }
@@ -61,7 +61,7 @@ function importProject(){
         const ps=getProjects();
         ps[data.state.projectName]=data;
         _lsSet('devforge-projects',JSON.stringify(ps));
-        const _SAFE_KEYS=['phase','step','answers','projectName','skill','preset','lang','genLang','theme','pillar','previewFile','files','skipped','progress','editedFiles','prevFiles','_v'];
+        const _SAFE_KEYS=['phase','step','answers','projectName','skill','skillLv','preset','lang','genLang','theme','pillar','previewFile','files','skipped','progress','editedFiles','prevFiles','_v'];
         _SAFE_KEYS.forEach(k=>{if(Object.prototype.hasOwnProperty.call(data.state,k))S[k]=data.state[k];});
         save();
         toast(_ja?'✅ インポート完了':'✅ Import complete');

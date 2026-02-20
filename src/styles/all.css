@@ -986,6 +986,10 @@ div.guide-sub.guide-lv-p{background:none;color:var(--danger);}
 /* F6: AI context recovery — expanded variant for Lv0-1 */
 .ai-qs-recovery-open{margin-top:8px;padding:8px 12px;border:1px solid var(--border);border-radius:8px;background:var(--bg-2);}
 .ai-qs-recovery-title{font-weight:600;margin-bottom:6px;font-size:.88em;}
+/* G2-6: Lv4+ Power Ops panel */
+.power-ops-panel{margin:12px 0;padding:10px 14px;background:var(--bg-2);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:8px;}
+.power-ops-title{font-size:.85em;font-weight:700;margin-bottom:8px;color:var(--accent);}
+.power-ops-btns{display:flex;flex-wrap:wrap;gap:6px;}
 /* F7: sidebar all-files collapse */
 .sb-all-collapse summary.ft-section-header{cursor:pointer;user-select:none;display:list-item;}
 .sb-all-collapse summary:hover{opacity:.8;}

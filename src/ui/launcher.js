@@ -393,10 +393,10 @@ function showAILauncher(){
   const LAUNCH_CATS_EN=[{key:'all',label:'All'},{key:'review',label:'🔍 Review & Audit'},{key:'implement',label:'🚀 Implement & Dev'},{key:'strategy',label:'🏢 Strategy & UX'},{key:'ai_prompt',label:'🤖 AI & Prompt'},{key:'ops',label:'⚙️ Ops & DevOps'}];
   const LAUNCH_CAT_MAP={review:'review',arch:'review',security:'review',a11y:'review',perf:'review',metrics:'review',risk:'review',reverse:'review',implement:'implement',api:'implement',i18n:'implement',test:'implement',qa:'implement',refactor:'implement',debug:'implement',docs:'implement',migrate:'implement',cicd:'ops',growth:'strategy',strategy:'strategy',methodology:'strategy',brainstorm:'strategy',ux_journey:'strategy',ux_audit:'strategy',ai_model_guide:'ai_prompt',industry:'strategy',nextgen:'strategy',cognitive:'strategy',genome:'ai_prompt',maturity:'ai_prompt',react_debug:'ai_prompt',prompt_ops:'ai_prompt',enterprise_arch:'review',workflow_audit:'review',incident:'ops',ops:'ops',onboard:'ops'};
   // Skill-based recommendations
-  const LAUNCH_SKILL_REC={beginner:['implement','test','debug','brainstorm','ux_journey','docs'],intermediate:['review','implement','security','strategy','methodology','cicd','ux_audit'],pro:['arch','ops','enterprise_arch','genome','react_debug','risk','ux_audit']};
+  const LAUNCH_SKILL_REC={beginner:['implement','test','debug','brainstorm','ux_journey','docs'],intermediate:['review','implement','security','strategy','methodology','cicd','ux_audit'],advanced:['enterprise_arch','genome','react_debug','ops','arch','risk','ux_audit'],pro:['arch','ops','enterprise_arch','genome','react_debug','risk','ux_audit']};
   // F1: whitelist for Lv0-1 — 8 essential templates only
   const _LAUNCH_BEGINNER=new Set(['implement','test','debug','docs','brainstorm','ux_journey','review','onboard']);
-  const recKeys=S.skillLv<=1?LAUNCH_SKILL_REC.beginner:S.skillLv>=5?LAUNCH_SKILL_REC.pro:LAUNCH_SKILL_REC.intermediate;
+  const recKeys=S.skillLv<=1?LAUNCH_SKILL_REC.beginner:S.skillLv>=5?LAUNCH_SKILL_REC.pro:S.skillLv>=4?LAUNCH_SKILL_REC.advanced:LAUNCH_SKILL_REC.intermediate;
   const lcats=_ja?LAUNCH_CATS_JA:LAUNCH_CATS_EN;
   // Cat filter state (closure)
   let _lcf='all';

@@ -104,6 +104,26 @@ function showPostGenGuide(force){
         </button>
       </div>
     </div>`:''}
+    ${S.skillLv===3?`<div class="guide-bridge">
+      <div class="guide-bridge-title">${_ja?'🛡️ 次に探索すべき3つのピラー — Lv.3 → 4 へ':'🛡️ 3 Pillars to Level Up — Lv.3 → 4'}</div>
+      <div class="guide-bridge-cards">
+        <button class="guide-bridge-card" onclick="this.closest('.guide-overlay').remove();var _t=document.querySelectorAll('.piltab');if(_t[11])_t[11].click();">
+          <span class="bridge-icon">🛡️</span>
+          <div class="bridge-name">${_ja?'⑫ セキュリティ':'⑫ Security'}</div>
+          <div class="bridge-why">${_ja?'OWASP+STRIDEで設計を守る。脅威モデル・監査プロンプト自動生成':'OWASP+STRIDE threat modeling & audit prompts auto-generated'}</div>
+        </button>
+        <button class="guide-bridge-card" onclick="this.closest('.guide-overlay').remove();showCommandPalette();">
+          <span class="bridge-icon">📊</span>
+          <div class="bridge-name">${_ja?'コマンドパレット':'Command Palette'}</div>
+          <div class="bridge-why">${_ja?'Ctrl+K で全機能を即アクセス。ファイル検索・エクスポート・ナビを一括操作':'Ctrl+K to access all features instantly — search, export, navigate'}</div>
+        </button>
+        <button class="guide-bridge-card" onclick="this.closest('.guide-overlay').remove();var _t=document.querySelectorAll('.piltab');if(_t[19])_t[19].click();">
+          <span class="bridge-icon">⚙️</span>
+          <div class="bridge-name">${_ja?'⑳ CI/CD':'⑳ CI/CD'}</div>
+          <div class="bridge-why">${_ja?'デプロイ戦略・品質ゲート・リリースエンジニアリングを設計書に追加':'Add deploy strategy, quality gates & release engineering to your specs'}</div>
+        </button>
+      </div>
+    </div>`:''}
     <div class="guide-actions">
       ${S.skillLv<=1?`
       <button class="btn btn-s btn-sm" onclick="exportZIP()">${_ja?'📦 まずZIPを保存':'📦 Save ZIP First'}</button>
