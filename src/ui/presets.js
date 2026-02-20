@@ -244,6 +244,11 @@ function autoFillPhase2Defaults(){
     else if(/Supabase/i.test(S.answers.backend))S.answers.database='Supabase (PostgreSQL)';
     else S.answers.database='PostgreSQL';
   }
+  if(!S.answers.auth){
+    if(/Firebase/i.test(S.answers.backend))S.answers.auth='Firebase Auth';
+    else if(/Supabase/i.test(S.answers.backend))S.answers.auth='Supabase Auth';
+    else S.answers.auth=_ja?'メール/パスワード':'Email/Password';
+  }
   if(!S.answers.mobile)S.answers.mobile=_ja?'なし':'None';
   if(!S.answers.ai_auto)S.answers.ai_auto=_ja?'Vibe Coding入門':'Vibe Coding Intro';
   if(!S.answers.deploy)S.answers.deploy='Vercel';

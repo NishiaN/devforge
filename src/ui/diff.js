@@ -48,6 +48,41 @@ function showDiff(path){
   h+='</div>';
   $('prevBody').innerHTML=h;
 }
+function showDiffView(){
+  const _ja=S.lang==='ja';
+  const prev=S.prevFiles||{};
+  if(!Object.keys(prev).length){
+    toast(_ja?'前回生成がありません（再生成後に差分が表示されます）':'No previous generation to compare (regenerate first)');
+    return;
+  }
+  const curr=S.files||{};
+  const allPaths=new Set([...Object.keys(prev),...Object.keys(curr)]);
+  const changed=[],added=[],removed=[];
+  allPaths.forEach(p=>{
+    if(!prev[p])added.push(p);
+    else if(!curr[p])removed.push(p);
+    else if(prev[p]!==curr[p])changed.push(p);
+  });
+  if(!changed.length&&!added.length&&!removed.length){
+    toast(_ja?'差分なし':'No differences');return;
+  }
+  let h='<div class="diff-header"><div class="diff-title">📊 '+(_ja?'差分サマリー':'Diff Summary')+'</div><div class="diff-stats"><span class="add">+'+added.length+'</span><span class="del">-'+removed.length+'</span><span>~'+changed.length+'</span></div></div>';
+  h+='<div class="diff-body" style="padding:12px">';
+  if(changed.length){
+    h+='<p><strong>✏️ '+(_ja?'変更':'Changed')+' ('+changed.length+')</strong></p>';
+    changed.forEach(p=>{h+='<div class="ft-file" style="cursor:pointer;padding:4px 8px" onclick="showDiff(\''+escAttr(p)+'\')">'+esc(p)+'</div>';});
+  }
+  if(added.length){
+    h+='<p><strong>➕ '+(_ja?'追加':'Added')+' ('+added.length+')</strong></p>';
+    added.forEach(p=>{h+='<div style="color:var(--success);padding:4px 8px">'+esc(p)+'</div>';});
+  }
+  if(removed.length){
+    h+='<p><strong>➖ '+(_ja?'削除':'Removed')+' ('+removed.length+')</strong></p>';
+    removed.forEach(p=>{h+='<div style="color:var(--danger);padding:4px 8px">'+esc(p)+'</div>';});
+  }
+  h+='</div>';
+  $('prevBody').innerHTML=h;
+}
 function snapshotFiles(){
   S.prevFiles=JSON.parse(JSON.stringify(S.files));
 }

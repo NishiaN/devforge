@@ -1,4 +1,4 @@
-/* ═══ FILE GENERATION ENGINE — 19 PILLARS ═══ */
+/* ═══ FILE GENERATION ENGINE — 20 PILLARS ═══ */
 function generateAll(){
   const _be=S.answers.backend||'';
   const _minKeys=(/なし|None|static/i.test(_be))?['frontend','backend']:['frontend','backend','database'];
@@ -272,9 +272,9 @@ function showExportGrid(){
   const exportGroup=`
     <div class="export-group-label">📤 ${_ja?'エクスポート':'Export'}</div>
     <div class="export-grid export-grid-compact">
-      <div class="export-card" onclick="exportPDF()"><div class="icon">📄</div><h4>${_ja?'PDF 印刷':'PDF Print'}</h4><p>${_ja?'仕様書をPDF化':'Export specs as PDF'}</p></div>
-      <div class="export-card" onclick="copyAllFiles()"><div class="icon">📋</div><h4>${_ja?'全ファイルコピー':'Copy All'}</h4><p>${_ja?'テキスト結合コピー':'Copy combined text'}</p></div>
-      <div class="export-card" onclick="copyForAI()"><div class="icon">🤖</div><h4>${_ja?'AI向けMD':'AI Markdown'}</h4><p>${_ja?'TOC付きMD形式':'MD with TOC for AI'}</p></div>
+      <div class="export-card" role="button" tabindex="0" onclick="exportPDF()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}"><div class="icon">📄</div><h4>${_ja?'PDF 印刷':'PDF Print'}</h4><p>${_ja?'仕様書をPDF化':'Export specs as PDF'}</p></div>
+      <div class="export-card" role="button" tabindex="0" onclick="copyAllFiles()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}"><div class="icon">📋</div><h4>${_ja?'全ファイルコピー':'Copy All'}</h4><p>${_ja?'テキスト結合コピー':'Copy combined text'}</p></div>
+      <div class="export-card" role="button" tabindex="0" onclick="copyForAI()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}"><div class="icon">🤖</div><h4>${_ja?'AI向けMD':'AI Markdown'}</h4><p>${_ja?'TOC付きMD形式':'MD with TOC for AI'}</p></div>
     </div>
   `;
 
@@ -282,9 +282,9 @@ function showExportGrid(){
   const mgmtGroup=`
     <div class="export-group-label">⚙️ ${_ja?'管理':'Management'}</div>
     <div class="export-grid export-grid-compact">
-      <div class="export-card" onclick="saveTemplate()"><div class="icon">💾</div><h4>${_ja?'テンプレート保存':'Save Template'}</h4><p>${_ja?'設定を保存':'Save settings'}</p></div>
-      <div class="export-card" onclick="shareURL()"><div class="icon">🔗</div><h4>${_ja?'URL共有':'Share URL'}</h4><p>${_ja?'設定をURLで共有':'Share via URL'}</p></div>
-      <div class="export-card export-card-regen" onclick="generateAll()"><div class="icon">🔄</div><h4>${_ja?'再生成':'Regenerate'}</h4><p>${_ja?'全ファイル再作成':'Rebuild all files'}</p></div>
+      <div class="export-card" role="button" tabindex="0" onclick="saveTemplate()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}"><div class="icon">💾</div><h4>${_ja?'テンプレート保存':'Save Template'}</h4><p>${_ja?'設定を保存':'Save settings'}</p></div>
+      <div class="export-card" role="button" tabindex="0" onclick="shareURL()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}"`+(S.skillLv>=4?' style="display:none"':'')+`><div class="icon">🔗</div><h4>${_ja?'URL共有':'Share URL'}</h4><p>${_ja?'設定をURLで共有':'Share via URL'}</p></div>
+      <div class="export-card export-card-regen" role="button" tabindex="0" onclick="generateAll()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}"><div class="icon">🔄</div><h4>${_ja?'再生成':'Regenerate'}</h4><p>${_ja?'全ファイル再作成':'Rebuild all files'}</p></div>
     </div>
   `;
 
@@ -292,7 +292,7 @@ function showExportGrid(){
   const dangerZone=`
     <div class="export-danger-zone">
       <div class="export-danger-label">⚠️ ${_ja?'注意が必要な操作':'Caution Required'}</div>
-      <div class="export-card export-card-danger" onclick="clearFiles()">
+      <div class="export-card export-card-danger" role="button" tabindex="0" onclick="clearFiles()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}">
         <div class="icon">🗑️</div>
         <h4>${_ja?'生成ファイルをクリア':'Clear Generated Files'}</h4>
         <p>${_ja?fc+'ファイルを削除（5秒間Undo可能）':'Delete '+fc+' files (Undo within 5s)'}</p>
@@ -312,7 +312,7 @@ function showExportGrid(){
     return '<div class="start-here-card">'+
       '<div class="start-here-title">📂 '+(_ja?'まずこの3ファイルを読もう！':'Start Here: Read These 3 Files First!')+'</div>'+
       _sf.map(function(f){
-        return '<div class="start-here-file" onclick="previewFile(\''+escAttr(f.path)+'\')" role="button" tabindex="0">'+
+        return '<div class="start-here-file" onclick="previewFile(\''+escAttr(f.path)+'\')" role="button" tabindex="0" onkeydown="if(event.key===\'Enter\'||event.key===\' \')this.click()">'+
           '<span class="start-here-icon">'+f.icon+'</span>'+
           '<div class="start-here-info">'+
             '<span class="start-here-name">'+esc(f.path.replace('.spec/',''))+'</span>'+

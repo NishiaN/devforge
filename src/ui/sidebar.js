@@ -25,7 +25,7 @@ function toggleSidebar(){
 function switchSidebarTab(tab){
   const spEl=$('sbProgress');
   const sfEl=$('sbFiles');
-  document.querySelectorAll('.sb-tab').forEach(t=>t.classList.toggle('on',t.dataset.tab===tab));
+  document.querySelectorAll('.sb-tab').forEach(t=>{t.classList.toggle('on',t.dataset.tab===tab);t.setAttribute('aria-selected',String(t.dataset.tab===tab));});
   if(spEl)spEl.style.display=tab==='progress'?'':'none';
   if(sfEl){sfEl.style.display=tab==='files'?'':'none';if(tab==='files')renderSidebarFiles();}
 }
@@ -102,6 +102,8 @@ function renderSidebarFiles(){
   if(S.skillLv<=1){h+='</details>';}
   h+='</ul>';
   el.innerHTML=h;
+  const activeEl=el.querySelector('.ft-file.active');
+  if(activeEl)activeEl.scrollIntoView({block:'nearest',behavior:'smooth'});
 }
 
 function filterSidebarTree(q){

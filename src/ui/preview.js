@@ -354,6 +354,9 @@ function buildFileTree(){
     ['devcontainer.json','Dockerfile','docker-compose.yml','post-create.sh'].forEach(f=>
       files.push({name:'  '+f,path:'.devcontainer/'+f}));
     files.push({name:'.env.example',path:'.env.example'});
+    files.push({name:'.gitattributes',path:'.gitattributes'});
+    files.push({name:'.editorconfig',path:'.editorconfig'});
+    files.push({name:'docs/64_cross_platform_guide.md',path:'docs/64_cross_platform_guide.md'});
   } else if(pillar===2){ // MCP
     files.push({folder:true,name:'.mcp'});
     ['project-context.md','tools-manifest.json','README.md'].forEach(f=>

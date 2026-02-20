@@ -7,22 +7,6 @@ function saveTemplate(){
   addMsg('bot',_ja?`💾 テンプレート「${S.projectName}」を保存しました。次回起動時に読み込めます。`:`💾 Template "${S.projectName}" saved. Load it next time.`);
 }
 
-function loadTemplateList(){
-  const templates=_jp(_lsGet('devforge-templates'),[]);
-  if(templates.length===0)return;
-  const row=$('presetRow');
-  templates.forEach((tpl,i)=>{
-    const c=document.createElement('div');c.className='prchip';
-    c.textContent='💾 '+tpl.name;
-    c.onclick=()=>{
-      S.preset='custom';S.answers={...tpl.answers};
-      $('nameIn').value=tpl.name;
-      document.querySelectorAll('.prchip').forEach(x=>x.classList.remove('on'));c.classList.add('on');
-    };
-    row.appendChild(c);
-  });
-}
-
 /* ── URL State Sharing ── */
 function shareURL(){
   const _ja=S.lang==='ja';
@@ -81,7 +65,7 @@ function showManual(sec){
       '<tr><td>⑤Explorer</td><td>Stack comparison + recommendation</td><td>UI</td></tr><tr><td>⑥Dashboard</td><td>Context visualization + Tech DB</td><td>UI</td></tr><tr><td>⑦Roadmap</td><td>Learning path (interactive)</td><td>9+UI</td></tr><tr><td>⑧AI Launcher</td><td>Prompt templates + token estimation</td><td>UI</td></tr><tr><td>⑨Design System</td><td>Design tokens + Sequence diagrams</td><td>2</td></tr><tr><td>⑩Reverse Eng</td><td>Goal-driven reverse planning</td><td>2</td></tr><tr><td>⑪Impl Guide</td><td>Domain-specific impl patterns + AI runbook</td><td>3</td></tr><tr><td>⑫Security</td><td>OWASP, STRIDE, Compliance</td><td>5</td></tr><tr><td>⑬Strategic Intelligence</td><td>Industry blueprint, Tech radar, Stakeholder strategy, Advanced scenarios</td><td>5</td></tr><tr><td>⑭Ops Intelligence</td><td>Ops Plane design, 12 Ops Capabilities, SLO/SLI</td><td>3</td></tr><tr><td>⑮Future Strategy</td><td>Market positioning, UX strategy, Ecosystem, Regulatory</td><td>4</td></tr><tr><td>⑯Dev IQ</td><td>Optimal methodology, AI brainstorm playbook, Industry deep dive, Next-gen UX</td><td>4</td></tr><tr><td>⑰Prompt Genome</td><td>CRITERIA 8-axis scoring, AI maturity, Synergy matrix, KPI dashboard</td><td>4</td></tr><tr><td>⑱Prompt Ops</td><td>ReAct workflow, LLMOps dashboard, Prompt CI/CD, [META] registry</td><td>4</td></tr><tr><td>⑲Enterprise SaaS</td><td>Multi-tenant design, Org model, Workflow engine, Enterprise UI components</td><td>4</td></tr><tr><td>⑳CI/CD Intelligence</td><td>Pipeline design, Deploy strategy, Quality gate matrix, Release engineering</td><td>4</td></tr></table>'+
       '<p>+ docs (81 specs) + common (4) = <strong>135+ files</strong></p>'},
     {id:'start',title:_ja?'はじめ方':'Getting Started',body:_ja?
-      '<h2>はじめ方</h2><p>1. スキルレベルを選択（Beginner/Intermediate/Pro）<br>2. プロジェクト名を入力<br>3. テンプレート選択（任意・41種類）<br>4. Phase 1-3の質問に回答（スキップ＆後で回答可）<br>5. 生成ボタンで130+ファイル作成<br>6. ZIPダウンロードまたはPDF印刷</p>'+
+      '<h2>はじめ方</h2><p>1. スキルレベルを選択（Beginner/Intermediate/Pro）<br>2. プロジェクト名を入力<br>3. テンプレート選択（任意・41種類）<br>4. Phase 1-3の質問に回答（スキップ＆後で回答可）<br>5. 生成ボタンで135+ファイル作成<br>6. ZIPダウンロードまたはPDF印刷</p>'+
       '<h3>UX機能</h3>'+
       '<p>• 🌱⚡🔥 スキルレベルで質問の選択肢が動的変化<br>• 🎯 41プリセットテンプレート<br>• ✎ 回答の編集（✎ボタン）<br>• ⏭️ スキップ＆後で回答<br>• 📊 複雑度分析（0-100スコア）<br>• 📁 プロジェクト管理（Ctrl+M）<br>• 🎙️ 音声入力<br>• ? 質問ごとのヘルプアイコン<br>• 🔀 ドラッグ&ドロップ優先度ソート</p>'+
       '<h3>V8 新機能</h3>'+
@@ -89,10 +73,10 @@ function showManual(sec){
       '<h3>V8.3 新機能</h3>'+
       '<p>• 📊 Mermaid図ライブレンダリング (ER図・画面遷移・ガント)<br>• 📝 OpenAPI準拠API仕様書<br>• ✅ テストケースマトリクス (機能×正常/異常)<br>• 📋 リリースチェックリスト (デプロイ先別動的生成)<br>• 🔨 WBS 3階層+工数見積り<br>• 🎯 プロンプトプレイブック (フェーズ別AI投入プロンプト集)<br>• 📎 GitHub Issues風タスク分解<br>• 📋 全ファイル結合コピー (AI一括投入用)</p>'+
       '<h3>V9 新機能</h3>'+
-      '<p>• 🧪 品質インテリジェンスエンジン (業種別QA戦略・テストマトリクス・インシデント対応)<br>• 🎨 デザインシステム自動生成 (デザイントークン・シーケンス図)<br>• 🔄 リバースエンジニアリング (ゴール逆算型プランニング・32ドメイン対応)<br>• 🏗️ 実装インテリジェンス (業種別実装パターン・AI運用手順書・擬似コード)<br>• 🧠 AI開発OS (コンテキスト圧縮・ファイル選択マトリクス・サブエージェント分離)<br>• 🌐 32ドメイン対応 (AI, IoT, 不動産, 法務, 人事, 金融, 製造, 物流, 農業, エネルギー, メディア, 行政, 旅行, 保険 等を追加)<br>• 📦 130+ファイル生成 (docs 76種, AIルール12+, スキル8+)<br>• 🎯 41プリセット (CRM, SNS, 物流, アンケート, 求人 追加)<br>• 🏗️ 未来戦略インテリジェンス (市場ポジショニング・UX戦略・エコシステム・規制フォーサイト)<br>• 📄 CLAUDE.md 3-layer分割 (薄いルート + パス別ルール + 設定)<br>• 🧬 開発IQインテリジェンス ⑯ (32ドメイン×12手法のポリモーフィック開発戦略)<br>• 🧩 プロンプトゲノムエンジン ⑰ (CRITERIA 8軸品質スコア付きプロンプトDNA自動生成)<br>• 🔧 Prompt Engineering OS ⑱ (ReAct自律ワークフロー・LLMOpsダッシュボード・Prompt CI/CD・[META]レジストリ)<br>• 🏢 エンタープライズSaaS Blueprint ⑲ (マルチテナント設計・組織モデル・ワークフローエンジン・エンタープライズUIコンポーネント)</p>'+
+      '<p>• 🧪 品質インテリジェンスエンジン (業種別QA戦略・テストマトリクス・インシデント対応)<br>• 🎨 デザインシステム自動生成 (デザイントークン・シーケンス図)<br>• 🔄 リバースエンジニアリング (ゴール逆算型プランニング・32ドメイン対応)<br>• 🏗️ 実装インテリジェンス (業種別実装パターン・AI運用手順書・擬似コード)<br>• 🧠 AI開発OS (コンテキスト圧縮・ファイル選択マトリクス・サブエージェント分離)<br>• 🌐 32ドメイン対応 (AI, IoT, 不動産, 法務, 人事, 金融, 製造, 物流, 農業, エネルギー, メディア, 行政, 旅行, 保険 等を追加)<br>• 📦 135+ファイル生成 (docs 81種, AIルール12+, スキル8+)<br>• 🎯 41プリセット (CRM, SNS, 物流, アンケート, 求人 追加)<br>• 🏗️ 未来戦略インテリジェンス (市場ポジショニング・UX戦略・エコシステム・規制フォーサイト)<br>• 📄 CLAUDE.md 3-layer分割 (薄いルート + パス別ルール + 設定)<br>• 🧬 開発IQインテリジェンス ⑯ (32ドメイン×12手法のポリモーフィック開発戦略)<br>• 🧩 プロンプトゲノムエンジン ⑰ (CRITERIA 8軸品質スコア付きプロンプトDNA自動生成)<br>• 🔧 Prompt Engineering OS ⑱ (ReAct自律ワークフロー・LLMOpsダッシュボード・Prompt CI/CD・[META]レジストリ)<br>• 🏢 エンタープライズSaaS Blueprint ⑲ (マルチテナント設計・組織モデル・ワークフローエンジン・エンタープライズUIコンポーネント)</p>'+
       '<p class="workflow-ref">📘 <strong>生成後の手順は <a href="#" onclick="event.preventDefault();showManual(\'workflow\')">生成後ワークフローガイド</a> を参照</strong></p>'
       :
-      '<h2>Getting Started</h2><p>1. Select your skill level (Beginner/Intermediate/Pro)<br>2. Enter project name<br>3. Choose a template (optional, 41 types)<br>4. Answer Phase 1-3 questions (skip & answer later OK)<br>5. Click Generate for 130+ files<br>6. Download ZIP or print PDF</p>'+
+      '<h2>Getting Started</h2><p>1. Select your skill level (Beginner/Intermediate/Pro)<br>2. Enter project name<br>3. Choose a template (optional, 41 types)<br>4. Answer Phase 1-3 questions (skip & answer later OK)<br>5. Click Generate for 135+ files<br>6. Download ZIP or print PDF</p>'+
       '<h3>UX Features</h3>'+
       '<p>• 🌱⚡🔥 Dynamic options by skill level<br>• 🎯 41 preset templates<br>• ✎ Edit answers (✎ button)<br>• ⏭️ Skip & answer later<br>• 📊 Complexity analysis (0-100 score)<br>• 📁 Project manager (Ctrl+M)<br>• 🎙️ Voice input<br>• ? Help icon per question<br>• 🔀 Drag & drop priority sort</p>'+
       '<h3>V8 Features</h3>'+
@@ -100,7 +84,7 @@ function showManual(sec){
       '<h3>V8.3 Features</h3>'+
       '<p>• 📊 Mermaid diagram live rendering (ER/screen flow/Gantt)<br>• 📝 OpenAPI-compliant API specs<br>• ✅ Test case matrix (feature × normal/abnormal)<br>• 📋 Release checklist (per deploy target)<br>• 🔨 WBS 3-level + effort estimation<br>• 🎯 Prompt playbook (phase-specific AI prompts)<br>• 📎 GitHub Issues-style task breakdown<br>• 📋 Copy all files combined (for bulk AI input)</p>'+
       '<h3>V9 Features</h3>'+
-      '<p>• 🧪 Quality Intelligence Engine (industry-specific QA strategies, test matrix, incident response)<br>• 🎨 Design System generation (design tokens, sequence diagrams)<br>• 🔄 Reverse Engineering (goal-driven reverse planning, 32 domains)<br>• 🏗️ Implementation Intelligence (domain-specific impl patterns, AI runbook, pseudo-code)<br>• 🧠 AI Development OS (context compression, file selection matrix, sub-agent isolation)<br>• 🌐 32 domain support (AI, IoT, Real Estate, Legal, HR, FinTech, Manufacturing, Logistics, Agriculture, Energy, Media, Government, Travel, Insurance added)<br>• 📦 130+ file generation (76 docs, 12+ AI rules, 8+ skills)<br>• 🎯 41 presets (CRM, Social, Logistics, Survey, Job Board added)<br>• 🏗️ Future Strategy Intelligence (market positioning, UX strategy, ecosystem, regulatory foresight)<br>• 📄 CLAUDE.md 3-layer split (thin root + path-specific rules + settings)<br>• 🧬 Dev IQ Intelligence ⑯ (polymorphic development strategy for 32 domains × 12 approaches)<br>• 🧩 Prompt Genome Engine ⑰ (project-specific Prompt DNA with CRITERIA 8-axis quality scoring)<br>• 🔧 Prompt Engineering OS ⑱ (ReAct autonomous workflow, LLMOps dashboard, Prompt CI/CD, [META] registry)<br>• 🏢 Enterprise SaaS Blueprint ⑲ (multi-tenant design, org model, workflow engine, enterprise UI components)</p>'+
+      '<p>• 🧪 Quality Intelligence Engine (industry-specific QA strategies, test matrix, incident response)<br>• 🎨 Design System generation (design tokens, sequence diagrams)<br>• 🔄 Reverse Engineering (goal-driven reverse planning, 32 domains)<br>• 🏗️ Implementation Intelligence (domain-specific impl patterns, AI runbook, pseudo-code)<br>• 🧠 AI Development OS (context compression, file selection matrix, sub-agent isolation)<br>• 🌐 32 domain support (AI, IoT, Real Estate, Legal, HR, FinTech, Manufacturing, Logistics, Agriculture, Energy, Media, Government, Travel, Insurance added)<br>• 📦 135+ file generation (81 docs, 12+ AI rules, 8+ skills)<br>• 🎯 41 presets (CRM, Social, Logistics, Survey, Job Board added)<br>• 🏗️ Future Strategy Intelligence (market positioning, UX strategy, ecosystem, regulatory foresight)<br>• 📄 CLAUDE.md 3-layer split (thin root + path-specific rules + settings)<br>• 🧬 Dev IQ Intelligence ⑯ (polymorphic development strategy for 32 domains × 12 approaches)<br>• 🧩 Prompt Genome Engine ⑰ (project-specific Prompt DNA with CRITERIA 8-axis quality scoring)<br>• 🔧 Prompt Engineering OS ⑱ (ReAct autonomous workflow, LLMOps dashboard, Prompt CI/CD, [META] registry)<br>• 🏢 Enterprise SaaS Blueprint ⑲ (multi-tenant design, org model, workflow engine, enterprise UI components)</p>'+
       '<p class="workflow-ref">📘 <strong>For post-generation workflow, see <a href="#" onclick="event.preventDefault();showManual(\'workflow\')">Post-Gen Workflow Guide</a></strong></p>'
     },
     {id:'pillars',title:_ja?'20の柱':'20 Pillars',body:_ja?
@@ -187,16 +171,16 @@ function showManual(sec){
       '<p>77_cicd_pipeline_design.md (9-stage pipeline design, Mermaid graph TD, deploy-target GitHub Actions YAML, cache strategy, matrix tests) / 78_deployment_strategy.md (dev/staging/prod env strategy, blue-green/canary/rolling/recreate strategy selection, rollback automation, secrets management) / 79_quality_gate_matrix.md (stage × gate matrix, coverage thresholds, performance budget, domain-specific gates, Mermaid flow) / 80_release_engineering.md (Trunk-Based/GitFlow/GitHub Flow selection, Mermaid gitGraph, semantic versioning, Renovate config, SBOM generation) — Generated for all domains. CI/CD pipeline auto-design engine optimized for 9 deploy targets (Vercel/Firebase/CF/Railway/Fly/Render/AWS/Docker/Netlify).</p>'
     },
     {id:'export',title:_ja?'エクスポート':'Export',body:_ja?
-      '<h2>エクスポート方法</h2><p><strong>ZIP</strong>: 全130+ファイルをフォルダ構造付きでZIP圧縮ダウンロード。<br><strong>PDF</strong>: Markdownファイルを整形してブラウザのPDF印刷で出力。<br><strong>URL共有</strong>: プロジェクト設定をBase64エンコードしてURL共有。<br><strong>全ファイルコピー</strong>: 全ドキュメントを1テキストに結合してクリップボードにコピー（Ctrl+Shift+C）。AIへの一括投入に最適。</p><h3>テンプレート保存</h3><p>プロジェクト設定をlocalStorageに保存し、次回起動時に読み込み可能。</p>'+
+      '<h2>エクスポート方法</h2><p><strong>ZIP</strong>: 全135+ファイルをフォルダ構造付きでZIP圧縮ダウンロード。<br><strong>PDF</strong>: Markdownファイルを整形してブラウザのPDF印刷で出力。<br><strong>URL共有</strong>: プロジェクト設定をBase64エンコードしてURL共有。<br><strong>全ファイルコピー</strong>: 全ドキュメントを1テキストに結合してクリップボードにコピー（Ctrl+Shift+C）。AIへの一括投入に最適。</p><h3>テンプレート保存</h3><p>プロジェクト設定をlocalStorageに保存し、次回起動時に読み込み可能。</p>'+
       '<p class="workflow-ref">📘 <strong>エクスポート後の開発手順は <a href="#" onclick="event.preventDefault();showManual(\'workflow\')">生成後ワークフローガイド</a> を参照</strong></p>'
       :
-      '<h2>Export Methods</h2><p><strong>ZIP</strong>: Download all 130+ files as a ZIP with folder structure.<br><strong>PDF</strong>: Format Markdown files and print via browser PDF.<br><strong>URL Sharing</strong>: Base64-encode project settings and share via URL.<br><strong>Copy All Files</strong>: Combine all documents into one text and copy to clipboard (Ctrl+Shift+C). Ideal for bulk AI input.</p><h3>Template Save</h3><p>Save project settings to localStorage and load them on next launch.</p>'+
+      '<h2>Export Methods</h2><p><strong>ZIP</strong>: Download all 135+ files as a ZIP with folder structure.<br><strong>PDF</strong>: Format Markdown files and print via browser PDF.<br><strong>URL Sharing</strong>: Base64-encode project settings and share via URL.<br><strong>Copy All Files</strong>: Combine all documents into one text and copy to clipboard (Ctrl+Shift+C). Ideal for bulk AI input.</p><h3>Template Save</h3><p>Save project settings to localStorage and load them on next launch.</p>'+
       '<p class="workflow-ref">📘 <strong>For development workflow after export, see <a href="#" onclick="event.preventDefault();showManual(\'workflow\')">Post-Gen Workflow Guide</a></strong></p>'
     },
     {id:'guide',title:_ja?'🚀 活用ガイド':'🚀 Usage Guide',body:function(){
       const baseBody=_ja?
       '<h2>🚀 生成ファイル活用ガイド</h2>'+
-      '<p>DevForge v9 は世界で唯一の<strong>仕様駆動AIプロジェクトジェネレーター</strong>です。他のツールが「コード」を生成するのに対し、DevForge は「開発の知性」── 設計・環境・ルール・学習計画を130+ファイルで生成します。</p>'+
+      '<p>DevForge v9 は世界で唯一の<strong>仕様駆動AIプロジェクトジェネレーター</strong>です。他のツールが「コード」を生成するのに対し、DevForge は「開発の知性」── 設計・環境・ルール・学習計画を135+ファイルで生成します。</p>'+
       '<h3>🌱 Beginner — まず動かす</h3>'+
       '<h4>⭐ 具体的な使用方法（手順詳細）</h4>'+
       '<p><strong>Step 1: ロードマップに従う</strong><br>ダッシュボード（柱⑦）のロードマップUIがそのまま学習計画。Layer 1から順にチェック。📖ボタンで公式ドキュメントに直接ジャンプ。各技術の学習順序が最適化されています。</p>'+
@@ -205,7 +189,7 @@ function showManual(sec){
       '<div class="hg-flow"><span class="hg-n hg-b">DevForge<br>生成</span><span class="hg-a">→</span><span class="hg-n hg-c">Ctrl+Shift+C<br>コピー</span><span class="hg-a">→</span><span class="hg-n hg-p">AI貼付<br>Cursor等</span><span class="hg-a">→</span><span class="hg-n hg-g">開発<br>スタート</span></div>'+
       '<h4>⭐ 注意事項（リスク回避）</h4>'+
       '<p>• <strong>必ずZIP+JSONバックアップ</strong> — localStorageは消失リスクあり。作業後は必ず📦ZIPダウンロード + 📤JSONエクスポートの2段構え<br>'+
-      '• <strong>生成ファイルは設計書</strong> — 130+ファイルは実行コードではなく設計ドキュメント。AIツールに投入して実コードを生成<br>'+
+      '• <strong>生成ファイルは設計書</strong> — 135+ファイルは実行コードではなく設計ドキュメント。AIツールに投入して実コードを生成<br>'+
       '• <strong>スキルレベルは途中で変更しない</strong> — 回答との不整合が起きる。最初に正しく設定<br>'+
       '• <strong>モデル適合度80%超時はフォルダ選択で絞る</strong> — ダッシュボードでモデル適合度確認。80%超時はランチャーのフォルダ選択で.spec/のみ等に絞る</p>'+
       '<h4>⭐ よくある失敗例</h4>'+
@@ -273,7 +257,7 @@ function showManual(sec){
       '<p class="guide-action-p"><button class="btn btn-p btn-sm" onclick="closeManual();showPostGenGuide(true)">🚀 レベル別ガイドを表示</button> <button class="btn btn-s btn-sm" onclick="showManual(\'workflow\')">📘 生成後ワークフロー</button></p>'+
       '<p class="guide-action-p"><button class="btn btn-s btn-sm" onclick="window.open(\'devforge-v9-usage-guide.html\',\'_blank\',\'noopener\')">📖 活用ガイド（別ページ）</button> <button class="btn btn-s btn-sm" onclick="window.open(\'tech-selection-guide.html\',\'_blank\',\'noopener\')">📊 技術選定ガイド</button></p>':
       '<h2>🚀 Generated Files Usage Guide</h2>'+
-      '<p>DevForge v9 is the world\'s only <strong>spec-driven AI project generator</strong>. While other tools generate code, DevForge generates "development intelligence" — design, environment, rules, and learning plans through 130+ files.</p>'+
+      '<p>DevForge v9 is the world\'s only <strong>spec-driven AI project generator</strong>. While other tools generate code, DevForge generates "development intelligence" — design, environment, rules, and learning plans through 135+ files.</p>'+
       '<h3>🌱 Beginner — Get Started</h3>'+
       '<h4>⭐ Specific Usage Methods (Detailed Steps)</h4>'+
       '<p><strong>Step 1: Follow the Roadmap</strong><br>The Dashboard (Pillar ⑦) roadmap UI is your learning plan. Check off from Layer 1. Hit 📖 to jump to official docs. Learning order is optimized for each tech stack.</p>'+
@@ -282,7 +266,7 @@ function showManual(sec){
       '<div class="hg-flow"><span class="hg-n hg-b">DevForge<br>Generate</span><span class="hg-a">→</span><span class="hg-n hg-c">Ctrl+Shift+C<br>Copy</span><span class="hg-a">→</span><span class="hg-n hg-p">Paste to<br>AI Tool</span><span class="hg-a">→</span><span class="hg-n hg-g">Start<br>Coding</span></div>'+
       '<h4>⭐ Cautions (Risk Avoidance)</h4>'+
       '<p>• <strong>Always Backup ZIP+JSON</strong> — localStorage has loss risk. After work: 📦ZIP Download + 📤JSON Export (2-layer backup)<br>'+
-      '• <strong>Files are Design Docs</strong> — 130+ files are not executable code but design documents. Feed them to AI tools to generate real code<br>'+
+      '• <strong>Files are Design Docs</strong> — 135+ files are not executable code but design documents. Feed them to AI tools to generate real code<br>'+
       '• <strong>Don\'t Change Skill Level Mid-Project</strong> — Causes inconsistency with answers. Set correctly at the start<br>'+
       '• <strong>Use Folder Selection When Model Fit >80%</strong> — Check model fit in Dashboard. If >80%, narrow down to .spec/ only via launcher folder selection</p>'+
       '<h4>⭐ Common Pitfalls</h4>'+
@@ -379,12 +363,12 @@ function showManual(sec){
     }},
     {id:'workflow',title:_ja?'📘 生成後ワークフロー':'📘 Post-Gen Workflow',body:_ja?
       '<h2>📘 生成後ワークフロー完全ガイド</h2>'+
-      '<p class="guide-workflow-intro">DevForge v9で130+ファイルを生成した後、<strong>実際に動くアプリを作るまでの一気通貫の手順</strong>を5フェーズで解説します。</p>'+
+      '<p class="guide-workflow-intro">DevForge v9で135+ファイルを生成した後、<strong>実際に動くアプリを作るまでの一気通貫の手順</strong>を5フェーズで解説します。</p>'+
       '<h3>① 基礎概念 — DevForgeの生成物を理解する</h3>'+
       '<div class="workflow-concept"><p><strong>重要:</strong> DevForgeが生成するのは<strong class="workflow-highlight">設計ドキュメント</strong>であり、実行可能なアプリケーションコードではありません。</p>'+
       '<p><strong>SDD（仕様駆動開発）の思想:</strong> <code>.spec/</code>がSSoT（信頼できる唯一の情報源）として機能します。</p>'+
       '<div class="hg-flow"><span class="hg-n hg-b">DevForge<br>生成</span><span class="hg-a">→</span><span class="hg-n hg-c">AIツールに<br>投入</span><span class="hg-a">→</span><span class="hg-n hg-p">実コード<br>生成</span><span class="hg-a">→</span><span class="hg-n hg-g">動くアプリ<br>完成</span></div></div>'+
-      '<h4>130+ファイルの全体像</h4>'+
+      '<h4>135+ファイルの全体像</h4>'+
       '<table class="workflow-files"><tr><th>カテゴリ</th><th>内容</th><th>ファイル数</th></tr>'+
       '<tr><td>.spec/</td><td>仕様駆動開発の5点セット</td><td>5</td></tr>'+
       '<tr><td>.devcontainer/</td><td>Docker開発環境</td><td>4</td></tr>'+
@@ -410,7 +394,7 @@ function showManual(sec){
       '<h5>注意事項</h5>'+
       '<ul class="workflow-level-cautions">'+
       '<li>生成ファイルを直接実行しない（設計書であり実行コードではない）</li>'+
-      '<li>全130+ファイルを一度にAIに投入しない（.spec/から開始）</li>'+
+      '<li>全135+ファイルを一度にAIに投入しない（.spec/から開始）</li>'+
       '<li>AIに「何を作ればいいですか？」と聞かない（tasks.mdに全て書いてある）</li>'+
       '<li>バックアップを忘れない（localStorage消失リスク）</li></ul>'+
       '<h5>よくある失敗</h5>'+
@@ -581,12 +565,12 @@ function showManual(sec){
       '<p class="workflow-footer"><button class="btn btn-p btn-sm" onclick="closeManual();showPostGenGuide(true)">🚀 レベル別ガイドを表示</button></p></div>'
       :
       '<h2>📘 Complete Post-Generation Workflow Guide</h2>'+
-      '<p class="guide-workflow-intro">After generating 130+ files with DevForge v9, follow this <strong>end-to-end workflow</strong> in 5 phases to build a working app.</p>'+
+      '<p class="guide-workflow-intro">After generating 135+ files with DevForge v9, follow this <strong>end-to-end workflow</strong> in 5 phases to build a working app.</p>'+
       '<h3>① Fundamentals — Understanding DevForge Output</h3>'+
       '<div class="workflow-concept"><p><strong>Important:</strong> DevForge generates <strong class="workflow-highlight">design documents</strong>, not runnable application code.</p>'+
       '<p><strong>SDD (Spec-Driven Development) Philosophy:</strong> <code>.spec/</code> serves as your SSoT (Single Source of Truth).</p>'+
       '<div class="hg-flow"><span class="hg-n hg-b">DevForge<br>Generate</span><span class="hg-a">→</span><span class="hg-n hg-c">Feed to<br>AI Tool</span><span class="hg-a">→</span><span class="hg-n hg-p">Generate<br>Real Code</span><span class="hg-a">→</span><span class="hg-n hg-g">Working<br>App</span></div></div>'+
-      '<h4>130+ Files Overview</h4>'+
+      '<h4>135+ Files Overview</h4>'+
       '<table class="workflow-files"><tr><th>Category</th><th>Content</th><th>Files</th></tr>'+
       '<tr><td>.spec/</td><td>SDD 5-point set</td><td>5</td></tr>'+
       '<tr><td>.devcontainer/</td><td>Docker dev environment</td><td>4</td></tr>'+
@@ -612,7 +596,7 @@ function showManual(sec){
       '<h5>Cautions</h5>'+
       '<ul class="workflow-level-cautions">'+
       '<li>Don\'t run generated files directly (they are design docs, not executable code)</li>'+
-      '<li>Don\'t feed all 130+ files to AI at once (start with .spec/)</li>'+
+      '<li>Don\'t feed all 135+ files to AI at once (start with .spec/)</li>'+
       '<li>Don\'t ask AI "What should I build?" (tasks.md has everything)</li>'+
       '<li>Don\'t forget backups (localStorage loss risk)</li></ul>'+
       '<h5>Common Pitfalls</h5>'+
@@ -662,7 +646,7 @@ function showManual(sec){
       '<h5>Automation Checks</h5>'+
       '<p class="workflow-level-checklist">'+
       '✅ .ai/hooks.yml → CI/CD gate integration<br>'+
-      '✅ All 36 template pipeline complete<br>'+
+      '✅ All 37 template pipeline complete<br>'+
       '✅ SLO 99.9% design complete<br>'+
       '✅ Feature Flags all kill switches configured</p>'+
       '</div>'+
@@ -973,7 +957,7 @@ function showManual(sec){
       '<h3>🔴 ストレージ上限</h3>'+
       '<p>localStorageの上限は約5MBです。20〜30プロジェクトで上限に達する可能性があります。古いプロジェクトはエクスポート後に削除してください。</p>'+
       '<h3>🟡 生成ファイルについて</h3>'+
-      '<p>生成される130+ファイルは<strong>設計ドキュメント</strong>（SDD仕様書・DevContainer設定・AIルール等）です。npm installで即座に動くアプリケーションコードではありません。Claude Code / Cursor等のAIツールに入力して実コードを生成する運用が前提です。</p>'+
+      '<p>生成される135+ファイルは<strong>設計ドキュメント</strong>（SDD仕様書・DevContainer設定・AIルール等）です。npm installで即座に動くアプリケーションコードではありません。Claude Code / Cursor等のAIツールに入力して実コードを生成する運用が前提です。</p>'+
       '<p class="workflow-ref">📘 <strong>詳しい手順は <a href="#" onclick="event.preventDefault();showManual(\'workflow\')">生成後ワークフローガイド</a> を参照</strong></p>'+
       '<h3>🟡 スキルレベル</h3>'+
       '<p>スキルレベルにより表示される選択肢が変わります。途中変更すると既回答との不整合が起きうるため、<strong>最初に正しく設定</strong>してください。</p>'+
@@ -990,7 +974,7 @@ function showManual(sec){
       '<h3>🔴 Storage Limit</h3>'+
       '<p>localStorage limit is ~5MB. You may reach the limit with 20-30 projects. Export and delete old projects.</p>'+
       '<h3>🟡 Generated Files</h3>'+
-      '<p>130+ generated files are <strong>design documents</strong> (SDD specs, DevContainer configs, AI rules). They are not runnable app code. Feed them to AI tools like Claude Code / Cursor to generate actual code.</p>'+
+      '<p>135+ generated files are <strong>design documents</strong> (SDD specs, DevContainer configs, AI rules). They are not runnable app code. Feed them to AI tools like Claude Code / Cursor to generate actual code.</p>'+
       '<p class="workflow-ref">📘 <strong>For detailed workflow, see <a href="#" onclick="event.preventDefault();showManual(\'workflow\')">Post-Gen Workflow Guide</a></strong></p>'+
       '<h3>🟡 Skill Level</h3>'+
       '<p>Changing skill level mid-project may cause inconsistencies with existing answers. <strong>Set it correctly at the start.</strong></p>'+
@@ -999,7 +983,7 @@ function showManual(sec){
       '<h3>🔵 Other</h3>'+
       '<p>・ZIP export requires JSZip via CDN (use "Copy All" Ctrl+Shift+C offline)<br>・Switch to light mode before PDF export<br>・URL sharing may truncate on SNS for complex projects</p>'
     },
-    {id:'about',title:'About',body:'<h2>DevForge v9.5</h2><p>'+(_ja?'AI駆動開発 統合プラットフォーム':'AI-Driven Dev Platform')+'</p><p>Version 9.5.0 — 2026 Edition (Modular Architecture)</p><p>'+(_ja?''+_TECH_COUNT+'テクノロジー ・ 130+ファイル ・ 19の柱 ・ 41プリセット ・ Mermaid図 ・ プロンプトプレイブック':''+_TECH_COUNT+' technologies ・ 130+ files ・ 19 pillars ・ 41 presets ・ Mermaid diagrams ・ Prompt playbook')+'</p><p>© 2026 エンジニアリングのタネ制作委員会<br>by にしあん</p>'},
+    {id:'about',title:'About',body:'<h2>DevForge v9.5</h2><p>'+(_ja?'AI駆動開発 統合プラットフォーム':'AI-Driven Dev Platform')+'</p><p>Version 9.5.0 — 2026 Edition (Modular Architecture)</p><p>'+(_ja?''+_TECH_COUNT+'テクノロジー ・ 135+ファイル ・ 20の柱 ・ 41プリセット ・ Mermaid図 ・ プロンプトプレイブック':''+_TECH_COUNT+' technologies ・ 135+ files ・ 20 pillars ・ 41 presets ・ Mermaid diagrams ・ Prompt playbook')+'</p><p>© 2026 エンジニアリングのタネ制作委員会<br>by にしあん</p>'},
   ];
   const nav=$('helpNav');
   // Keep search input, clear nav links after it

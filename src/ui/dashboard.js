@@ -246,7 +246,7 @@ function showDashboard(){
 
   // File size distribution by Pillar
   if(Object.keys(S.files).length>0){
-    const pillarMap={'.spec/':'P1 SDD','.devcontainer/':'P2 DevContainer','mcp-config':'P3 MCP','.cursor/':'P4 AI Rules','.clinerules':'P4','.windsurfrules':'P4','.gemini/':'P4','.github/':'P4','CLAUDE.md':'P4','AGENTS.md':'P4','codex-instructions':'P4','.kiro/':'P4','skills/':'P4','roadmap/':'P7 Roadmap','docs/43_security':'P12 Security','docs/44_threat':'P12 Security','docs/45_compliance':'P12 Security','docs/46_ai_security':'P12 Security','docs/47_security_testing':'P12 Security','docs/48_industry':'P13 Strategy','docs/49_tech_radar':'P13 Strategy','docs/50_stakeholder':'P13 Strategy','docs/51_operational':'P13 Strategy','docs/52_advanced':'P13 Strategy','docs/53_ops':'P14 Ops','docs/54_ops':'P14 Ops','docs/55_ops':'P14 Ops','docs/56_market':'P15 Future','docs/57_user':'P15 Future','docs/58_ecosystem':'P15 Future','docs/59_regulatory':'P15 Future','docs/':'Docs','README.md':'Common','.gitignore':'Common','LICENSE':'Common','package.json':'Common','.ai/':'Common','.mcp/':'P3 MCP'};
+    const pillarMap={'.spec/':'P1 SDD','.devcontainer/':'P2 DevContainer','mcp-config':'P3 MCP','.cursor/':'P4 AI Rules','.clinerules':'P4','.windsurfrules':'P4','.gemini/':'P4','.github/':'P4','CLAUDE.md':'P4','AGENTS.md':'P4','codex-instructions':'P4','.kiro/':'P4','skills/':'P4','roadmap/':'P7 Roadmap','docs/43_security':'P12 Security','docs/44_threat':'P12 Security','docs/45_compliance':'P12 Security','docs/46_ai_security':'P12 Security','docs/47_security_testing':'P12 Security','docs/48_industry':'P13 Strategy','docs/49_tech_radar':'P13 Strategy','docs/50_stakeholder':'P13 Strategy','docs/51_operational':'P13 Strategy','docs/52_advanced':'P13 Strategy','docs/53_ops':'P14 Ops','docs/54_ops':'P14 Ops','docs/55_ops':'P14 Ops','docs/56_market':'P15 Future','docs/57_user':'P15 Future','docs/58_ecosystem':'P15 Future','docs/59_regulatory':'P15 Future','docs/60_':'P16 Dev IQ','docs/61_':'P16 Dev IQ','docs/62_':'P16 Dev IQ','docs/63_':'P16 Dev IQ','docs/64_':'P16 Dev IQ','docs/65_':'P17 Genome','docs/66_':'P17 Genome','docs/67_':'P17 Genome','docs/68_':'P17 Genome','docs/69_':'P18 Prompt Ops','docs/70_':'P18 Prompt Ops','docs/71_':'P18 Prompt Ops','docs/72_':'P18 Prompt Ops','docs/73_':'P19 Enterprise','docs/74_':'P19 Enterprise','docs/75_':'P19 Enterprise','docs/76_':'P19 Enterprise','docs/77_':'P20 CI/CD','docs/78_':'P20 CI/CD','docs/79_':'P20 CI/CD','docs/80_':'P20 CI/CD','docs/81_':'P20 CI/CD','docs/':'Docs','README.md':'Common','.gitignore':'Common','LICENSE':'Common','package.json':'Common','.ai/':'Common','.mcp/':'P3 MCP'};
     const pillarSizes={};
     Object.entries(S.files).forEach(([p,c])=>{
       let pil='Other';
@@ -255,7 +255,7 @@ function showDashboard(){
     });
     const sorted=Object.entries(pillarSizes).sort((a,b)=>b[1]-a[1]);
     const max=sorted[0]?sorted[0][1]:1;
-    const pillarColors={'P1 SDD':'var(--accent)','P2 DevContainer':'var(--accent-2)','P3 MCP':'var(--success)','P4 AI Rules':'var(--warn)','P5 Quality':'var(--danger)','P7 Roadmap':'var(--danger)','P9 Design System':'var(--accent)','P10 Reverse Eng':'var(--success)','P11 Impl Intelligence':'var(--accent-2)','P12 Security':'var(--danger)','P13 Strategy':'var(--warn)','P14 Ops':'var(--success)','P15 Future':'var(--accent)','Docs':'var(--layer-5)','Common':'var(--text-3)'};
+    const pillarColors={'P1 SDD':'var(--accent)','P2 DevContainer':'var(--accent-2)','P3 MCP':'var(--success)','P4 AI Rules':'var(--warn)','P5 Quality':'var(--danger)','P7 Roadmap':'var(--danger)','P9 Design System':'var(--accent)','P10 Reverse Eng':'var(--success)','P11 Impl Intelligence':'var(--accent-2)','P12 Security':'var(--danger)','P13 Strategy':'var(--warn)','P14 Ops':'var(--success)','P15 Future':'var(--accent)','P16 Dev IQ':'var(--accent-2)','P17 Genome':'var(--success)','P18 Prompt Ops':'var(--warn)','P19 Enterprise':'var(--danger)','P20 CI/CD':'var(--accent)','Docs':'var(--layer-5)','Common':'var(--text-3)'};
     h+='<h4 class="dash-h4-mt">'+(_ja?'📦 ファイルサイズ分布':'📦 File Size Distribution')+'</h4>';
     h+='<div class="fsize-chart">';
     sorted.forEach(([pil,sz])=>{
@@ -329,6 +329,11 @@ function getHealthHTML(_ja,fileCount,answered){
     {key:'docs/48_',label:_ja?'⑬戦略インテリジェンス':'⑬Strategic Intelligence'},
     {key:'docs/53_',label:_ja?'⑭運用インテリジェンス':'⑭Ops Intelligence'},
     {key:'docs/56_',label:_ja?'⑮未来戦略':'⑮Future Strategy'},
+    {key:'docs/60_',label:_ja?'⑯開発IQ':'⑯Dev IQ'},
+    {key:'docs/65_',label:_ja?'⑰プロンプトゲノム':'⑰Prompt Genome'},
+    {key:'docs/69_',label:_ja?'⑱Prompt Ops':'⑱Prompt Ops'},
+    {key:'docs/73_',label:_ja?'⑲Enterprise':'⑲Enterprise'},
+    {key:'docs/77_',label:_ja?'⑳CI/CD':'⑳CI/CD'},
   ];
   const fileKeys=Object.keys(S.files);
   let pillarOK=0;

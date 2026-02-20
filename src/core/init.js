@@ -246,7 +246,7 @@ if(lastSeenVersion!==CURRENT_VERSION){
     window.showManual=function(){
       _lsSet('devforge-last-version',CURRENT_VERSION);
       if(dot)dot.remove();
-      if(_origShowManual)_origShowManual();
+      if(_origShowManual)_origShowManual.apply(this,arguments);
     };
   }
 }

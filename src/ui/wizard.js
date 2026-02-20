@@ -138,7 +138,7 @@ function showCompatAlert(answers){
 function phaseEnd(){
   if(S.phase<3){
     // Beginner auto-mode: skip Phase 2 tech questions and auto-fill with best-practice defaults
-    if(S.phase===1&&S.skill==='beginner'){
+    if(S.phase===1&&S.skillLv<=1){
       if(typeof autoFillPhase2Defaults==='function')autoFillPhase2Defaults();
       const _ja=S.lang==='ja';
       const _stackName=S.skillLv===0?(_ja?'Next.js + Firebase + Vercel':'Next.js + Firebase + Vercel'):(_ja?'Next.js + Supabase + Vercel':'Next.js + Supabase + Vercel');

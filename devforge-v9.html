@@ -1943,7 +1943,7 @@ body.scrollTop=body.scrollHeight;
 function phaseEnd(){
 if(S.phase<3){
 // Beginner auto-mode: skip Phase 2 tech questions and auto-fill with best-practice defaults
-if(S.phase===1&&S.skill==='beginner'){
+if(S.phase===1&&S.skillLv<=1){
 if(typeof autoFillPhase2Defaults==='function')autoFillPhase2Defaults();
 const _ja=S.lang==='ja';
 const _stackName=S.skillLv===0?(_ja?'Next.js + Firebase + Vercel':'Next.js + Firebase + Vercel'):(_ja?'Next.js + Supabase + Vercel':'Next.js + Supabase + Vercel');
@@ -2393,14 +2393,14 @@ const steps=isB?(_ja?[
 ]):isP?(_ja?[
 ['Agent Teams並列開発','AGENTS.mdでエージェント役割定義 → Claude Code Subagents / Antigravity Manager Viewで並列実行。'],
 ['SDD仕様駆動','<code>.spec/</code>がSSoT。tasks.mdをタスクキューとしてAIに投入。verification.mdで品質判定。'],
-['36テンプレートパイプライン','柱⑧で📋レビュー→🔨実装→🧪テスト→♻️リファクタ→🔒セキュリティ→📝ドキュメント→🛡️Ops準備。全工程自動化。'],
+['37テンプレートパイプライン','柱⑧で📋レビュー→🔨実装→🧪テスト→♻️リファクタ→🔒セキュリティ→📝ドキュメント→🛡️Ops準備。全工程自動化。'],
 ['3-layer CLAUDE.md','ルートCLAUDE.md(薄い ~1.5Kトークン) + .claude/rules/(パス別5ファイル) + .claude/settings.json でトークン最小化。'],
 ['Ops Plane統合','docs/53-55でSLO/SLI設計・Feature Flags・Circuit Breaker・12 Ops Capabilities。運用自動化。'],
 ['創造工学×AI活用','柱⑧「🎭 9人の専門家ブレスト」+「🎯 UXジャーニー設計」+「🤖 AIモデル使い分け」で創造的思考→UX設計→AI最適化の全工程をカバー。'],
 ]:[
 ['Agent Teams Parallel Dev','AGENTS.md defines roles → Run with Claude Code Subagents / Antigravity Manager View.'],
 ['SDD Spec-Driven','<code>.spec/</code> is your SSoT. Feed tasks.md as task queue. Verify with verification.md.'],
-['36-Template Pipeline','Pillar ⑧: 📋Review → 🔨Implement → 🧪Test → ♻️Refactor → 🔒Security → 📝Docs → 🛡️Ops. Full automation.'],
+['37-Template Pipeline','Pillar ⑧: 📋Review → 🔨Implement → 🧪Test → ♻️Refactor → 🔒Security → 📝Docs → 🛡️Ops. Full automation.'],
 ['3-layer CLAUDE.md','Root CLAUDE.md (thin ~1.5K tokens) + .claude/rules/ (path-specific 5 files) + .claude/settings.json minimizes tokens.'],
 ['Ops Plane Integration','docs/53-55 for SLO/SLI design, Feature Flags, Circuit Breaker, 12 Ops Capabilities. Ops automation.'],
 ['Creative Eng × AI','Pillar ⑧ "🎭 9-Expert Brainstorm" + "🎯 UX Journey Design" + "🤖 AI Model Selection" covers the full pipeline: creative thinking → UX design → AI optimization.'],
@@ -2977,6 +2977,11 @@ if(/Firebase/i.test(S.answers.backend))S.answers.database='Firebase Firestore';
 else if(/Supabase/i.test(S.answers.backend))S.answers.database='Supabase (PostgreSQL)';
 else S.answers.database='PostgreSQL';
 }
+if(!S.answers.auth){
+if(/Firebase/i.test(S.answers.backend))S.answers.auth='Firebase Auth';
+else if(/Supabase/i.test(S.answers.backend))S.answers.auth='Supabase Auth';
+else S.answers.auth=_ja?'メール/パスワード':'Email/Password';
+}
 if(!S.answers.mobile)S.answers.mobile=_ja?'なし':'None';
 if(!S.answers.ai_auto)S.answers.ai_auto=_ja?'Vibe Coding入門':'Vibe Coding Intro';
 if(!S.answers.deploy)S.answers.deploy='Vercel';
@@ -3317,6 +3322,9 @@ files.push({folder:true,name:'.devcontainer'});
 ['devcontainer.json','Dockerfile','docker-compose.yml','post-create.sh'].forEach(f=>
 files.push({name:'  '+f,path:'.devcontainer/'+f}));
 files.push({name:'.env.example',path:'.env.example'});
+files.push({name:'.gitattributes',path:'.gitattributes'});
+files.push({name:'.editorconfig',path:'.editorconfig'});
+files.push({name:'docs/64_cross_platform_guide.md',path:'docs/64_cross_platform_guide.md'});
 } else if(pillar===2){ // MCP
 files.push({folder:true,name:'.mcp'});
 ['project-context.md','tools-manifest.json','README.md'].forEach(f=>
@@ -3759,7 +3767,7 @@ save();
 function switchSidebarTab(tab){
 const spEl=$('sbProgress');
 const sfEl=$('sbFiles');
-document.querySelectorAll('.sb-tab').forEach(t=>t.classList.toggle('on',t.dataset.tab===tab));
+document.querySelectorAll('.sb-tab').forEach(t=>{t.classList.toggle('on',t.dataset.tab===tab);t.setAttribute('aria-selected',String(t.dataset.tab===tab));});
 if(spEl)spEl.style.display=tab==='progress'?'':'none';
 if(sfEl){sfEl.style.display=tab==='files'?'':'none';if(tab==='files')renderSidebarFiles();}
 }
@@ -3835,6 +3843,8 @@ h+='<li class="ft-file'+(active?' active':'')+'" data-path="'+escAttr(p)+'"><a h
 if(S.skillLv<=1){h+='</details>';}
 h+='</ul>';
 el.innerHTML=h;
+const activeEl=el.querySelector('.ft-file.active');
+if(activeEl)activeEl.scrollIntoView({block:'nearest',behavior:'smooth'});
 }
 function filterSidebarTree(q){
 const items=document.querySelectorAll('#sbFileList .ft-file');
@@ -4151,25 +4161,25 @@ return '<div class="ai-qs-rp"><span class="ai-qs-rp-lbl">'+esc(r.lbl)+'</span>'+
 const exportGroup=`
 <div class="export-group-label">📤 ${_ja?'エクスポート':'Export'}</div>
 <div class="export-grid export-grid-compact">
-<div class="export-card" onclick="exportPDF()"><div class="icon">📄</div><h4>${_ja?'PDF 印刷':'PDF Print'}</h4><p>${_ja?'仕様書をPDF化':'Export specs as PDF'}</p></div>
-<div class="export-card" onclick="copyAllFiles()"><div class="icon">📋</div><h4>${_ja?'全ファイルコピー':'Copy All'}</h4><p>${_ja?'テキスト結合コピー':'Copy combined text'}</p></div>
-<div class="export-card" onclick="copyForAI()"><div class="icon">🤖</div><h4>${_ja?'AI向けMD':'AI Markdown'}</h4><p>${_ja?'TOC付きMD形式':'MD with TOC for AI'}</p></div>
+<div class="export-card" role="button" tabindex="0" onclick="exportPDF()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}"><div class="icon">📄</div><h4>${_ja?'PDF 印刷':'PDF Print'}</h4><p>${_ja?'仕様書をPDF化':'Export specs as PDF'}</p></div>
+<div class="export-card" role="button" tabindex="0" onclick="copyAllFiles()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}"><div class="icon">📋</div><h4>${_ja?'全ファイルコピー':'Copy All'}</h4><p>${_ja?'テキスト結合コピー':'Copy combined text'}</p></div>
+<div class="export-card" role="button" tabindex="0" onclick="copyForAI()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}"><div class="icon">🤖</div><h4>${_ja?'AI向けMD':'AI Markdown'}</h4><p>${_ja?'TOC付きMD形式':'MD with TOC for AI'}</p></div>
 </div>
 `;
 // Management group
 const mgmtGroup=`
 <div class="export-group-label">⚙️ ${_ja?'管理':'Management'}</div>
 <div class="export-grid export-grid-compact">
-<div class="export-card" onclick="saveTemplate()"><div class="icon">💾</div><h4>${_ja?'テンプレート保存':'Save Template'}</h4><p>${_ja?'設定を保存':'Save settings'}</p></div>
-<div class="export-card" onclick="shareURL()"><div class="icon">🔗</div><h4>${_ja?'URL共有':'Share URL'}</h4><p>${_ja?'設定をURLで共有':'Share via URL'}</p></div>
-<div class="export-card export-card-regen" onclick="generateAll()"><div class="icon">🔄</div><h4>${_ja?'再生成':'Regenerate'}</h4><p>${_ja?'全ファイル再作成':'Rebuild all files'}</p></div>
+<div class="export-card" role="button" tabindex="0" onclick="saveTemplate()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}"><div class="icon">💾</div><h4>${_ja?'テンプレート保存':'Save Template'}</h4><p>${_ja?'設定を保存':'Save settings'}</p></div>
+<div class="export-card" role="button" tabindex="0" onclick="shareURL()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}"`+(S.skillLv>=4?' style="display:none"':'')+`><div class="icon">🔗</div><h4>${_ja?'URL共有':'Share URL'}</h4><p>${_ja?'設定をURLで共有':'Share via URL'}</p></div>
+<div class="export-card export-card-regen" role="button" tabindex="0" onclick="generateAll()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}"><div class="icon">🔄</div><h4>${_ja?'再生成':'Regenerate'}</h4><p>${_ja?'全ファイル再作成':'Rebuild all files'}</p></div>
 </div>
 `;
 // Danger zone
 const dangerZone=`
 <div class="export-danger-zone">
 <div class="export-danger-label">⚠️ ${_ja?'注意が必要な操作':'Caution Required'}</div>
-<div class="export-card export-card-danger" onclick="clearFiles()">
+<div class="export-card export-card-danger" role="button" tabindex="0" onclick="clearFiles()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}">
 <div class="icon">🗑️</div>
 <h4>${_ja?'生成ファイルをクリア':'Clear Generated Files'}</h4>
 <p>${_ja?fc+'ファイルを削除（5秒間Undo可能）':'Delete '+fc+' files (Undo within 5s)'}</p>
@@ -4188,7 +4198,7 @@ if(!_sf.length)return '';
 return '<div class="start-here-card">'+
 '<div class="start-here-title">📂 '+(_ja?'まずこの3ファイルを読もう！':'Start Here: Read These 3 Files First!')+'</div>'+
 _sf.map(function(f){
-return '<div class="start-here-file" onclick="previewFile(\''+escAttr(f.path)+'\')" role="button" tabindex="0">'+
+return '<div class="start-here-file" onclick="previewFile(\''+escAttr(f.path)+'\')" role="button" tabindex="0" onkeydown="if(event.key===\'Enter\'||event.key===\' \')this.click()">'+
 '<span class="start-here-icon">'+f.icon+'</span>'+
 '<div class="start-here-info">'+
 '<span class="start-here-name">'+esc(f.path.replace('.spec/',''))+'</span>'+
@@ -19118,6 +19128,41 @@ else{h+=`<div class="diff-del"><span class="diff-ln">-</span>${esc(d.line)}</div
 h+='</div>';
 $('prevBody').innerHTML=h;
 }
+function showDiffView(){
+const _ja=S.lang==='ja';
+const prev=S.prevFiles||{};
+if(!Object.keys(prev).length){
+toast(_ja?'前回生成がありません（再生成後に差分が表示されます）':'No previous generation to compare (regenerate first)');
+return;
+}
+const curr=S.files||{};
+const allPaths=new Set([...Object.keys(prev),...Object.keys(curr)]);
+const changed=[],added=[],removed=[];
+allPaths.forEach(p=>{
+if(!prev[p])added.push(p);
+else if(!curr[p])removed.push(p);
+else if(prev[p]!==curr[p])changed.push(p);
+});
+if(!changed.length&&!added.length&&!removed.length){
+toast(_ja?'差分なし':'No differences');return;
+}
+let h='<div class="diff-header"><div class="diff-title">📊 '+(_ja?'差分サマリー':'Diff Summary')+'</div><div class="diff-stats"><span class="add">+'+added.length+'</span><span class="del">-'+removed.length+'</span><span>~'+changed.length+'</span></div></div>';
+h+='<div class="diff-body" style="padding:12px">';
+if(changed.length){
+h+='<p><strong>✏️ '+(_ja?'変更':'Changed')+' ('+changed.length+')</strong></p>';
+changed.forEach(p=>{h+='<div class="ft-file" style="cursor:pointer;padding:4px 8px" onclick="showDiff(\''+escAttr(p)+'\')">'+esc(p)+'</div>';});
+}
+if(added.length){
+h+='<p><strong>➕ '+(_ja?'追加':'Added')+' ('+added.length+')</strong></p>';
+added.forEach(p=>{h+='<div style="color:var(--success);padding:4px 8px">'+esc(p)+'</div>';});
+}
+if(removed.length){
+h+='<p><strong>➖ '+(_ja?'削除':'Removed')+' ('+removed.length+')</strong></p>';
+removed.forEach(p=>{h+='<div style="color:var(--danger);padding:4px 8px">'+esc(p)+'</div>';});
+}
+h+='</div>';
+$('prevBody').innerHTML=h;
+}
 function snapshotFiles(){
 S.prevFiles=JSON.parse(JSON.stringify(S.files));
 }
@@ -20108,7 +20153,7 @@ h+=`</div></div>`;
 }
 // File size distribution by Pillar
 if(Object.keys(S.files).length>0){
-const pillarMap={'.spec/':'P1 SDD','.devcontainer/':'P2 DevContainer','mcp-config':'P3 MCP','.cursor/':'P4 AI Rules','.clinerules':'P4','.windsurfrules':'P4','.gemini/':'P4','.github/':'P4','CLAUDE.md':'P4','AGENTS.md':'P4','codex-instructions':'P4','.kiro/':'P4','skills/':'P4','roadmap/':'P7 Roadmap','docs/43_security':'P12 Security','docs/44_threat':'P12 Security','docs/45_compliance':'P12 Security','docs/46_ai_security':'P12 Security','docs/47_security_testing':'P12 Security','docs/48_industry':'P13 Strategy','docs/49_tech_radar':'P13 Strategy','docs/50_stakeholder':'P13 Strategy','docs/51_operational':'P13 Strategy','docs/52_advanced':'P13 Strategy','docs/53_ops':'P14 Ops','docs/54_ops':'P14 Ops','docs/55_ops':'P14 Ops','docs/56_market':'P15 Future','docs/57_user':'P15 Future','docs/58_ecosystem':'P15 Future','docs/59_regulatory':'P15 Future','docs/':'Docs','README.md':'Common','.gitignore':'Common','LICENSE':'Common','package.json':'Common','.ai/':'Common','.mcp/':'P3 MCP'};
+const pillarMap={'.spec/':'P1 SDD','.devcontainer/':'P2 DevContainer','mcp-config':'P3 MCP','.cursor/':'P4 AI Rules','.clinerules':'P4','.windsurfrules':'P4','.gemini/':'P4','.github/':'P4','CLAUDE.md':'P4','AGENTS.md':'P4','codex-instructions':'P4','.kiro/':'P4','skills/':'P4','roadmap/':'P7 Roadmap','docs/43_security':'P12 Security','docs/44_threat':'P12 Security','docs/45_compliance':'P12 Security','docs/46_ai_security':'P12 Security','docs/47_security_testing':'P12 Security','docs/48_industry':'P13 Strategy','docs/49_tech_radar':'P13 Strategy','docs/50_stakeholder':'P13 Strategy','docs/51_operational':'P13 Strategy','docs/52_advanced':'P13 Strategy','docs/53_ops':'P14 Ops','docs/54_ops':'P14 Ops','docs/55_ops':'P14 Ops','docs/56_market':'P15 Future','docs/57_user':'P15 Future','docs/58_ecosystem':'P15 Future','docs/59_regulatory':'P15 Future','docs/60_':'P16 Dev IQ','docs/61_':'P16 Dev IQ','docs/62_':'P16 Dev IQ','docs/63_':'P16 Dev IQ','docs/64_':'P16 Dev IQ','docs/65_':'P17 Genome','docs/66_':'P17 Genome','docs/67_':'P17 Genome','docs/68_':'P17 Genome','docs/69_':'P18 Prompt Ops','docs/70_':'P18 Prompt Ops','docs/71_':'P18 Prompt Ops','docs/72_':'P18 Prompt Ops','docs/73_':'P19 Enterprise','docs/74_':'P19 Enterprise','docs/75_':'P19 Enterprise','docs/76_':'P19 Enterprise','docs/77_':'P20 CI/CD','docs/78_':'P20 CI/CD','docs/79_':'P20 CI/CD','docs/80_':'P20 CI/CD','docs/81_':'P20 CI/CD','docs/':'Docs','README.md':'Common','.gitignore':'Common','LICENSE':'Common','package.json':'Common','.ai/':'Common','.mcp/':'P3 MCP'};
 const pillarSizes={};
 Object.entries(S.files).forEach(([p,c])=>{
 let pil='Other';
@@ -20117,7 +20162,7 @@ pillarSizes[pil]=(pillarSizes[pil]||0)+c.length;
 });
 const sorted=Object.entries(pillarSizes).sort((a,b)=>b[1]-a[1]);
 const max=sorted[0]?sorted[0][1]:1;
-const pillarColors={'P1 SDD':'var(--accent)','P2 DevContainer':'var(--accent-2)','P3 MCP':'var(--success)','P4 AI Rules':'var(--warn)','P5 Quality':'var(--danger)','P7 Roadmap':'var(--danger)','P9 Design System':'var(--accent)','P10 Reverse Eng':'var(--success)','P11 Impl Intelligence':'var(--accent-2)','P12 Security':'var(--danger)','P13 Strategy':'var(--warn)','P14 Ops':'var(--success)','P15 Future':'var(--accent)','Docs':'var(--layer-5)','Common':'var(--text-3)'};
+const pillarColors={'P1 SDD':'var(--accent)','P2 DevContainer':'var(--accent-2)','P3 MCP':'var(--success)','P4 AI Rules':'var(--warn)','P5 Quality':'var(--danger)','P7 Roadmap':'var(--danger)','P9 Design System':'var(--accent)','P10 Reverse Eng':'var(--success)','P11 Impl Intelligence':'var(--accent-2)','P12 Security':'var(--danger)','P13 Strategy':'var(--warn)','P14 Ops':'var(--success)','P15 Future':'var(--accent)','P16 Dev IQ':'var(--accent-2)','P17 Genome':'var(--success)','P18 Prompt Ops':'var(--warn)','P19 Enterprise':'var(--danger)','P20 CI/CD':'var(--accent)','Docs':'var(--layer-5)','Common':'var(--text-3)'};
 h+='<h4 class="dash-h4-mt">'+(_ja?'📦 ファイルサイズ分布':'📦 File Size Distribution')+'</h4>';
 h+='<div class="fsize-chart">';
 sorted.forEach(([pil,sz])=>{
@@ -20187,6 +20232,11 @@ const pillarChecks=[
 {key:'docs/48_',label:_ja?'⑬戦略インテリジェンス':'⑬Strategic Intelligence'},
 {key:'docs/53_',label:_ja?'⑭運用インテリジェンス':'⑭Ops Intelligence'},
 {key:'docs/56_',label:_ja?'⑮未来戦略':'⑮Future Strategy'},
+{key:'docs/60_',label:_ja?'⑯開発IQ':'⑯Dev IQ'},
+{key:'docs/65_',label:_ja?'⑰プロンプトゲノム':'⑰Prompt Genome'},
+{key:'docs/69_',label:_ja?'⑱Prompt Ops':'⑱Prompt Ops'},
+{key:'docs/73_',label:_ja?'⑲Enterprise':'⑲Enterprise'},
+{key:'docs/77_',label:_ja?'⑳CI/CD':'⑳CI/CD'},
 ];
 const fileKeys=Object.keys(S.files);
 let pillarOK=0;
@@ -20497,21 +20547,6 @@ templates.push(tpl);
 _lsSet('devforge-templates',JSON.stringify(templates));
 addMsg('bot',_ja?`💾 テンプレート「${S.projectName}」を保存しました。次回起動時に読み込めます。`:`💾 Template "${S.projectName}" saved. Load it next time.`);
 }
-function loadTemplateList(){
-const templates=_jp(_lsGet('devforge-templates'),[]);
-if(templates.length===0)return;
-const row=$('presetRow');
-templates.forEach((tpl,i)=>{
-const c=document.createElement('div');c.className='prchip';
-c.textContent='💾 '+tpl.name;
-c.onclick=()=>{
-S.preset='custom';S.answers={...tpl.answers};
-$('nameIn').value=tpl.name;
-document.querySelectorAll('.prchip').forEach(x=>x.classList.remove('on'));c.classList.add('on');
-};
-row.appendChild(c);
-});
-}
 /* ── URL State Sharing ── */
 function shareURL(){
 const _ja=S.lang==='ja';
@@ -20568,7 +20603,7 @@ const MANUAL=[
 '<tr><td>⑤Explorer</td><td>Stack comparison + recommendation</td><td>UI</td></tr><tr><td>⑥Dashboard</td><td>Context visualization + Tech DB</td><td>UI</td></tr><tr><td>⑦Roadmap</td><td>Learning path (interactive)</td><td>9+UI</td></tr><tr><td>⑧AI Launcher</td><td>Prompt templates + token estimation</td><td>UI</td></tr><tr><td>⑨Design System</td><td>Design tokens + Sequence diagrams</td><td>2</td></tr><tr><td>⑩Reverse Eng</td><td>Goal-driven reverse planning</td><td>2</td></tr><tr><td>⑪Impl Guide</td><td>Domain-specific impl patterns + AI runbook</td><td>3</td></tr><tr><td>⑫Security</td><td>OWASP, STRIDE, Compliance</td><td>5</td></tr><tr><td>⑬Strategic Intelligence</td><td>Industry blueprint, Tech radar, Stakeholder strategy, Advanced scenarios</td><td>5</td></tr><tr><td>⑭Ops Intelligence</td><td>Ops Plane design, 12 Ops Capabilities, SLO/SLI</td><td>3</td></tr><tr><td>⑮Future Strategy</td><td>Market positioning, UX strategy, Ecosystem, Regulatory</td><td>4</td></tr><tr><td>⑯Dev IQ</td><td>Optimal methodology, AI brainstorm playbook, Industry deep dive, Next-gen UX</td><td>4</td></tr><tr><td>⑰Prompt Genome</td><td>CRITERIA 8-axis scoring, AI maturity, Synergy matrix, KPI dashboard</td><td>4</td></tr><tr><td>⑱Prompt Ops</td><td>ReAct workflow, LLMOps dashboard, Prompt CI/CD, [META] registry</td><td>4</td></tr><tr><td>⑲Enterprise SaaS</td><td>Multi-tenant design, Org model, Workflow engine, Enterprise UI components</td><td>4</td></tr><tr><td>⑳CI/CD Intelligence</td><td>Pipeline design, Deploy strategy, Quality gate matrix, Release engineering</td><td>4</td></tr></table>'+
 '<p>+ docs (81 specs) + common (4) = <strong>135+ files</strong></p>'},
 {id:'start',title:_ja?'はじめ方':'Getting Started',body:_ja?
-'<h2>はじめ方</h2><p>1. スキルレベルを選択（Beginner/Intermediate/Pro）<br>2. プロジェクト名を入力<br>3. テンプレート選択（任意・41種類）<br>4. Phase 1-3の質問に回答（スキップ＆後で回答可）<br>5. 生成ボタンで130+ファイル作成<br>6. ZIPダウンロードまたはPDF印刷</p>'+
+'<h2>はじめ方</h2><p>1. スキルレベルを選択（Beginner/Intermediate/Pro）<br>2. プロジェクト名を入力<br>3. テンプレート選択（任意・41種類）<br>4. Phase 1-3の質問に回答（スキップ＆後で回答可）<br>5. 生成ボタンで135+ファイル作成<br>6. ZIPダウンロードまたはPDF印刷</p>'+
 '<h3>UX機能</h3>'+
 '<p>• 🌱⚡🔥 スキルレベルで質問の選択肢が動的変化<br>• 🎯 41プリセットテンプレート<br>• ✎ 回答の編集（✎ボタン）<br>• ⏭️ スキップ＆後で回答<br>• 📊 複雑度分析（0-100スコア）<br>• 📁 プロジェクト管理（Ctrl+M）<br>• 🎙️ 音声入力<br>• ? 質問ごとのヘルプアイコン<br>• 🔀 ドラッグ&ドロップ優先度ソート</p>'+
 '<h3>V8 新機能</h3>'+
@@ -20576,10 +20611,10 @@ const MANUAL=[
 '<h3>V8.3 新機能</h3>'+
 '<p>• 📊 Mermaid図ライブレンダリング (ER図・画面遷移・ガント)<br>• 📝 OpenAPI準拠API仕様書<br>• ✅ テストケースマトリクス (機能×正常/異常)<br>• 📋 リリースチェックリスト (デプロイ先別動的生成)<br>• 🔨 WBS 3階層+工数見積り<br>• 🎯 プロンプトプレイブック (フェーズ別AI投入プロンプト集)<br>• 📎 GitHub Issues風タスク分解<br>• 📋 全ファイル結合コピー (AI一括投入用)</p>'+
 '<h3>V9 新機能</h3>'+
-'<p>• 🧪 品質インテリジェンスエンジン (業種別QA戦略・テストマトリクス・インシデント対応)<br>• 🎨 デザインシステム自動生成 (デザイントークン・シーケンス図)<br>• 🔄 リバースエンジニアリング (ゴール逆算型プランニング・32ドメイン対応)<br>• 🏗️ 実装インテリジェンス (業種別実装パターン・AI運用手順書・擬似コード)<br>• 🧠 AI開発OS (コンテキスト圧縮・ファイル選択マトリクス・サブエージェント分離)<br>• 🌐 32ドメイン対応 (AI, IoT, 不動産, 法務, 人事, 金融, 製造, 物流, 農業, エネルギー, メディア, 行政, 旅行, 保険 等を追加)<br>• 📦 130+ファイル生成 (docs 76種, AIルール12+, スキル8+)<br>• 🎯 41プリセット (CRM, SNS, 物流, アンケート, 求人 追加)<br>• 🏗️ 未来戦略インテリジェンス (市場ポジショニング・UX戦略・エコシステム・規制フォーサイト)<br>• 📄 CLAUDE.md 3-layer分割 (薄いルート + パス別ルール + 設定)<br>• 🧬 開発IQインテリジェンス ⑯ (32ドメイン×12手法のポリモーフィック開発戦略)<br>• 🧩 プロンプトゲノムエンジン ⑰ (CRITERIA 8軸品質スコア付きプロンプトDNA自動生成)<br>• 🔧 Prompt Engineering OS ⑱ (ReAct自律ワークフロー・LLMOpsダッシュボード・Prompt CI/CD・[META]レジストリ)<br>• 🏢 エンタープライズSaaS Blueprint ⑲ (マルチテナント設計・組織モデル・ワークフローエンジン・エンタープライズUIコンポーネント)</p>'+
+'<p>• 🧪 品質インテリジェンスエンジン (業種別QA戦略・テストマトリクス・インシデント対応)<br>• 🎨 デザインシステム自動生成 (デザイントークン・シーケンス図)<br>• 🔄 リバースエンジニアリング (ゴール逆算型プランニング・32ドメイン対応)<br>• 🏗️ 実装インテリジェンス (業種別実装パターン・AI運用手順書・擬似コード)<br>• 🧠 AI開発OS (コンテキスト圧縮・ファイル選択マトリクス・サブエージェント分離)<br>• 🌐 32ドメイン対応 (AI, IoT, 不動産, 法務, 人事, 金融, 製造, 物流, 農業, エネルギー, メディア, 行政, 旅行, 保険 等を追加)<br>• 📦 135+ファイル生成 (docs 81種, AIルール12+, スキル8+)<br>• 🎯 41プリセット (CRM, SNS, 物流, アンケート, 求人 追加)<br>• 🏗️ 未来戦略インテリジェンス (市場ポジショニング・UX戦略・エコシステム・規制フォーサイト)<br>• 📄 CLAUDE.md 3-layer分割 (薄いルート + パス別ルール + 設定)<br>• 🧬 開発IQインテリジェンス ⑯ (32ドメイン×12手法のポリモーフィック開発戦略)<br>• 🧩 プロンプトゲノムエンジン ⑰ (CRITERIA 8軸品質スコア付きプロンプトDNA自動生成)<br>• 🔧 Prompt Engineering OS ⑱ (ReAct自律ワークフロー・LLMOpsダッシュボード・Prompt CI/CD・[META]レジストリ)<br>• 🏢 エンタープライズSaaS Blueprint ⑲ (マルチテナント設計・組織モデル・ワークフローエンジン・エンタープライズUIコンポーネント)</p>'+
 '<p class="workflow-ref">📘 <strong>生成後の手順は <a href="#" onclick="event.preventDefault();showManual(\'workflow\')">生成後ワークフローガイド</a> を参照</strong></p>'
 :
-'<h2>Getting Started</h2><p>1. Select your skill level (Beginner/Intermediate/Pro)<br>2. Enter project name<br>3. Choose a template (optional, 41 types)<br>4. Answer Phase 1-3 questions (skip & answer later OK)<br>5. Click Generate for 130+ files<br>6. Download ZIP or print PDF</p>'+
+'<h2>Getting Started</h2><p>1. Select your skill level (Beginner/Intermediate/Pro)<br>2. Enter project name<br>3. Choose a template (optional, 41 types)<br>4. Answer Phase 1-3 questions (skip & answer later OK)<br>5. Click Generate for 135+ files<br>6. Download ZIP or print PDF</p>'+
 '<h3>UX Features</h3>'+
 '<p>• 🌱⚡🔥 Dynamic options by skill level<br>• 🎯 41 preset templates<br>• ✎ Edit answers (✎ button)<br>• ⏭️ Skip & answer later<br>• 📊 Complexity analysis (0-100 score)<br>• 📁 Project manager (Ctrl+M)<br>• 🎙️ Voice input<br>• ? Help icon per question<br>• 🔀 Drag & drop priority sort</p>'+
 '<h3>V8 Features</h3>'+
@@ -20587,7 +20622,7 @@ const MANUAL=[
 '<h3>V8.3 Features</h3>'+
 '<p>• 📊 Mermaid diagram live rendering (ER/screen flow/Gantt)<br>• 📝 OpenAPI-compliant API specs<br>• ✅ Test case matrix (feature × normal/abnormal)<br>• 📋 Release checklist (per deploy target)<br>• 🔨 WBS 3-level + effort estimation<br>• 🎯 Prompt playbook (phase-specific AI prompts)<br>• 📎 GitHub Issues-style task breakdown<br>• 📋 Copy all files combined (for bulk AI input)</p>'+
 '<h3>V9 Features</h3>'+
-'<p>• 🧪 Quality Intelligence Engine (industry-specific QA strategies, test matrix, incident response)<br>• 🎨 Design System generation (design tokens, sequence diagrams)<br>• 🔄 Reverse Engineering (goal-driven reverse planning, 32 domains)<br>• 🏗️ Implementation Intelligence (domain-specific impl patterns, AI runbook, pseudo-code)<br>• 🧠 AI Development OS (context compression, file selection matrix, sub-agent isolation)<br>• 🌐 32 domain support (AI, IoT, Real Estate, Legal, HR, FinTech, Manufacturing, Logistics, Agriculture, Energy, Media, Government, Travel, Insurance added)<br>• 📦 130+ file generation (76 docs, 12+ AI rules, 8+ skills)<br>• 🎯 41 presets (CRM, Social, Logistics, Survey, Job Board added)<br>• 🏗️ Future Strategy Intelligence (market positioning, UX strategy, ecosystem, regulatory foresight)<br>• 📄 CLAUDE.md 3-layer split (thin root + path-specific rules + settings)<br>• 🧬 Dev IQ Intelligence ⑯ (polymorphic development strategy for 32 domains × 12 approaches)<br>• 🧩 Prompt Genome Engine ⑰ (project-specific Prompt DNA with CRITERIA 8-axis quality scoring)<br>• 🔧 Prompt Engineering OS ⑱ (ReAct autonomous workflow, LLMOps dashboard, Prompt CI/CD, [META] registry)<br>• 🏢 Enterprise SaaS Blueprint ⑲ (multi-tenant design, org model, workflow engine, enterprise UI components)</p>'+
+'<p>• 🧪 Quality Intelligence Engine (industry-specific QA strategies, test matrix, incident response)<br>• 🎨 Design System generation (design tokens, sequence diagrams)<br>• 🔄 Reverse Engineering (goal-driven reverse planning, 32 domains)<br>• 🏗️ Implementation Intelligence (domain-specific impl patterns, AI runbook, pseudo-code)<br>• 🧠 AI Development OS (context compression, file selection matrix, sub-agent isolation)<br>• 🌐 32 domain support (AI, IoT, Real Estate, Legal, HR, FinTech, Manufacturing, Logistics, Agriculture, Energy, Media, Government, Travel, Insurance added)<br>• 📦 135+ file generation (81 docs, 12+ AI rules, 8+ skills)<br>• 🎯 41 presets (CRM, Social, Logistics, Survey, Job Board added)<br>• 🏗️ Future Strategy Intelligence (market positioning, UX strategy, ecosystem, regulatory foresight)<br>• 📄 CLAUDE.md 3-layer split (thin root + path-specific rules + settings)<br>• 🧬 Dev IQ Intelligence ⑯ (polymorphic development strategy for 32 domains × 12 approaches)<br>• 🧩 Prompt Genome Engine ⑰ (project-specific Prompt DNA with CRITERIA 8-axis quality scoring)<br>• 🔧 Prompt Engineering OS ⑱ (ReAct autonomous workflow, LLMOps dashboard, Prompt CI/CD, [META] registry)<br>• 🏢 Enterprise SaaS Blueprint ⑲ (multi-tenant design, org model, workflow engine, enterprise UI components)</p>'+
 '<p class="workflow-ref">📘 <strong>For post-generation workflow, see <a href="#" onclick="event.preventDefault();showManual(\'workflow\')">Post-Gen Workflow Guide</a></strong></p>'
 },
 {id:'pillars',title:_ja?'20の柱':'20 Pillars',body:_ja?
@@ -20674,16 +20709,16 @@ const MANUAL=[
 '<p>77_cicd_pipeline_design.md (9-stage pipeline design, Mermaid graph TD, deploy-target GitHub Actions YAML, cache strategy, matrix tests) / 78_deployment_strategy.md (dev/staging/prod env strategy, blue-green/canary/rolling/recreate strategy selection, rollback automation, secrets management) / 79_quality_gate_matrix.md (stage × gate matrix, coverage thresholds, performance budget, domain-specific gates, Mermaid flow) / 80_release_engineering.md (Trunk-Based/GitFlow/GitHub Flow selection, Mermaid gitGraph, semantic versioning, Renovate config, SBOM generation) — Generated for all domains. CI/CD pipeline auto-design engine optimized for 9 deploy targets (Vercel/Firebase/CF/Railway/Fly/Render/AWS/Docker/Netlify).</p>'
 },
 {id:'export',title:_ja?'エクスポート':'Export',body:_ja?
-'<h2>エクスポート方法</h2><p><strong>ZIP</strong>: 全130+ファイルをフォルダ構造付きでZIP圧縮ダウンロード。<br><strong>PDF</strong>: Markdownファイルを整形してブラウザのPDF印刷で出力。<br><strong>URL共有</strong>: プロジェクト設定をBase64エンコードしてURL共有。<br><strong>全ファイルコピー</strong>: 全ドキュメントを1テキストに結合してクリップボードにコピー（Ctrl+Shift+C）。AIへの一括投入に最適。</p><h3>テンプレート保存</h3><p>プロジェクト設定をlocalStorageに保存し、次回起動時に読み込み可能。</p>'+
+'<h2>エクスポート方法</h2><p><strong>ZIP</strong>: 全135+ファイルをフォルダ構造付きでZIP圧縮ダウンロード。<br><strong>PDF</strong>: Markdownファイルを整形してブラウザのPDF印刷で出力。<br><strong>URL共有</strong>: プロジェクト設定をBase64エンコードしてURL共有。<br><strong>全ファイルコピー</strong>: 全ドキュメントを1テキストに結合してクリップボードにコピー（Ctrl+Shift+C）。AIへの一括投入に最適。</p><h3>テンプレート保存</h3><p>プロジェクト設定をlocalStorageに保存し、次回起動時に読み込み可能。</p>'+
 '<p class="workflow-ref">📘 <strong>エクスポート後の開発手順は <a href="#" onclick="event.preventDefault();showManual(\'workflow\')">生成後ワークフローガイド</a> を参照</strong></p>'
 :
-'<h2>Export Methods</h2><p><strong>ZIP</strong>: Download all 130+ files as a ZIP with folder structure.<br><strong>PDF</strong>: Format Markdown files and print via browser PDF.<br><strong>URL Sharing</strong>: Base64-encode project settings and share via URL.<br><strong>Copy All Files</strong>: Combine all documents into one text and copy to clipboard (Ctrl+Shift+C). Ideal for bulk AI input.</p><h3>Template Save</h3><p>Save project settings to localStorage and load them on next launch.</p>'+
+'<h2>Export Methods</h2><p><strong>ZIP</strong>: Download all 135+ files as a ZIP with folder structure.<br><strong>PDF</strong>: Format Markdown files and print via browser PDF.<br><strong>URL Sharing</strong>: Base64-encode project settings and share via URL.<br><strong>Copy All Files</strong>: Combine all documents into one text and copy to clipboard (Ctrl+Shift+C). Ideal for bulk AI input.</p><h3>Template Save</h3><p>Save project settings to localStorage and load them on next launch.</p>'+
 '<p class="workflow-ref">📘 <strong>For development workflow after export, see <a href="#" onclick="event.preventDefault();showManual(\'workflow\')">Post-Gen Workflow Guide</a></strong></p>'
 },
 {id:'guide',title:_ja?'🚀 活用ガイド':'🚀 Usage Guide',body:function(){
 const baseBody=_ja?
 '<h2>🚀 生成ファイル活用ガイド</h2>'+
-'<p>DevForge v9 は世界で唯一の<strong>仕様駆動AIプロジェクトジェネレーター</strong>です。他のツールが「コード」を生成するのに対し、DevForge は「開発の知性」── 設計・環境・ルール・学習計画を130+ファイルで生成します。</p>'+
+'<p>DevForge v9 は世界で唯一の<strong>仕様駆動AIプロジェクトジェネレーター</strong>です。他のツールが「コード」を生成するのに対し、DevForge は「開発の知性」── 設計・環境・ルール・学習計画を135+ファイルで生成します。</p>'+
 '<h3>🌱 Beginner — まず動かす</h3>'+
 '<h4>⭐ 具体的な使用方法（手順詳細）</h4>'+
 '<p><strong>Step 1: ロードマップに従う</strong><br>ダッシュボード（柱⑦）のロードマップUIがそのまま学習計画。Layer 1から順にチェック。📖ボタンで公式ドキュメントに直接ジャンプ。各技術の学習順序が最適化されています。</p>'+
@@ -20692,7 +20727,7 @@ const baseBody=_ja?
 '<div class="hg-flow"><span class="hg-n hg-b">DevForge<br>生成</span><span class="hg-a">→</span><span class="hg-n hg-c">Ctrl+Shift+C<br>コピー</span><span class="hg-a">→</span><span class="hg-n hg-p">AI貼付<br>Cursor等</span><span class="hg-a">→</span><span class="hg-n hg-g">開発<br>スタート</span></div>'+
 '<h4>⭐ 注意事項（リスク回避）</h4>'+
 '<p>• <strong>必ずZIP+JSONバックアップ</strong> — localStorageは消失リスクあり。作業後は必ず📦ZIPダウンロード + 📤JSONエクスポートの2段構え<br>'+
-'• <strong>生成ファイルは設計書</strong> — 130+ファイルは実行コードではなく設計ドキュメント。AIツールに投入して実コードを生成<br>'+
+'• <strong>生成ファイルは設計書</strong> — 135+ファイルは実行コードではなく設計ドキュメント。AIツールに投入して実コードを生成<br>'+
 '• <strong>スキルレベルは途中で変更しない</strong> — 回答との不整合が起きる。最初に正しく設定<br>'+
 '• <strong>モデル適合度80%超時はフォルダ選択で絞る</strong> — ダッシュボードでモデル適合度確認。80%超時はランチャーのフォルダ選択で.spec/のみ等に絞る</p>'+
 '<h4>⭐ よくある失敗例</h4>'+
@@ -20760,7 +20795,7 @@ const baseBody=_ja?
 '<p class="guide-action-p"><button class="btn btn-p btn-sm" onclick="closeManual();showPostGenGuide(true)">🚀 レベル別ガイドを表示</button> <button class="btn btn-s btn-sm" onclick="showManual(\'workflow\')">📘 生成後ワークフロー</button></p>'+
 '<p class="guide-action-p"><button class="btn btn-s btn-sm" onclick="window.open(\'devforge-v9-usage-guide.html\',\'_blank\',\'noopener\')">📖 活用ガイド（別ページ）</button> <button class="btn btn-s btn-sm" onclick="window.open(\'tech-selection-guide.html\',\'_blank\',\'noopener\')">📊 技術選定ガイド</button></p>':
 '<h2>🚀 Generated Files Usage Guide</h2>'+
-'<p>DevForge v9 is the world\'s only <strong>spec-driven AI project generator</strong>. While other tools generate code, DevForge generates "development intelligence" — design, environment, rules, and learning plans through 130+ files.</p>'+
+'<p>DevForge v9 is the world\'s only <strong>spec-driven AI project generator</strong>. While other tools generate code, DevForge generates "development intelligence" — design, environment, rules, and learning plans through 135+ files.</p>'+
 '<h3>🌱 Beginner — Get Started</h3>'+
 '<h4>⭐ Specific Usage Methods (Detailed Steps)</h4>'+
 '<p><strong>Step 1: Follow the Roadmap</strong><br>The Dashboard (Pillar ⑦) roadmap UI is your learning plan. Check off from Layer 1. Hit 📖 to jump to official docs. Learning order is optimized for each tech stack.</p>'+
@@ -20769,7 +20804,7 @@ const baseBody=_ja?
 '<div class="hg-flow"><span class="hg-n hg-b">DevForge<br>Generate</span><span class="hg-a">→</span><span class="hg-n hg-c">Ctrl+Shift+C<br>Copy</span><span class="hg-a">→</span><span class="hg-n hg-p">Paste to<br>AI Tool</span><span class="hg-a">→</span><span class="hg-n hg-g">Start<br>Coding</span></div>'+
 '<h4>⭐ Cautions (Risk Avoidance)</h4>'+
 '<p>• <strong>Always Backup ZIP+JSON</strong> — localStorage has loss risk. After work: 📦ZIP Download + 📤JSON Export (2-layer backup)<br>'+
-'• <strong>Files are Design Docs</strong> — 130+ files are not executable code but design documents. Feed them to AI tools to generate real code<br>'+
+'• <strong>Files are Design Docs</strong> — 135+ files are not executable code but design documents. Feed them to AI tools to generate real code<br>'+
 '• <strong>Don\'t Change Skill Level Mid-Project</strong> — Causes inconsistency with answers. Set correctly at the start<br>'+
 '• <strong>Use Folder Selection When Model Fit >80%</strong> — Check model fit in Dashboard. If >80%, narrow down to .spec/ only via launcher folder selection</p>'+
 '<h4>⭐ Common Pitfalls</h4>'+
@@ -20866,12 +20901,12 @@ return h;
 }},
 {id:'workflow',title:_ja?'📘 生成後ワークフロー':'📘 Post-Gen Workflow',body:_ja?
 '<h2>📘 生成後ワークフロー完全ガイド</h2>'+
-'<p class="guide-workflow-intro">DevForge v9で130+ファイルを生成した後、<strong>実際に動くアプリを作るまでの一気通貫の手順</strong>を5フェーズで解説します。</p>'+
+'<p class="guide-workflow-intro">DevForge v9で135+ファイルを生成した後、<strong>実際に動くアプリを作るまでの一気通貫の手順</strong>を5フェーズで解説します。</p>'+
 '<h3>① 基礎概念 — DevForgeの生成物を理解する</h3>'+
 '<div class="workflow-concept"><p><strong>重要:</strong> DevForgeが生成するのは<strong class="workflow-highlight">設計ドキュメント</strong>であり、実行可能なアプリケーションコードではありません。</p>'+
 '<p><strong>SDD（仕様駆動開発）の思想:</strong> <code>.spec/</code>がSSoT（信頼できる唯一の情報源）として機能します。</p>'+
 '<div class="hg-flow"><span class="hg-n hg-b">DevForge<br>生成</span><span class="hg-a">→</span><span class="hg-n hg-c">AIツールに<br>投入</span><span class="hg-a">→</span><span class="hg-n hg-p">実コード<br>生成</span><span class="hg-a">→</span><span class="hg-n hg-g">動くアプリ<br>完成</span></div></div>'+
-'<h4>130+ファイルの全体像</h4>'+
+'<h4>135+ファイルの全体像</h4>'+
 '<table class="workflow-files"><tr><th>カテゴリ</th><th>内容</th><th>ファイル数</th></tr>'+
 '<tr><td>.spec/</td><td>仕様駆動開発の5点セット</td><td>5</td></tr>'+
 '<tr><td>.devcontainer/</td><td>Docker開発環境</td><td>4</td></tr>'+
@@ -20897,7 +20932,7 @@ return h;
 '<h5>注意事項</h5>'+
 '<ul class="workflow-level-cautions">'+
 '<li>生成ファイルを直接実行しない（設計書であり実行コードではない）</li>'+
-'<li>全130+ファイルを一度にAIに投入しない（.spec/から開始）</li>'+
+'<li>全135+ファイルを一度にAIに投入しない（.spec/から開始）</li>'+
 '<li>AIに「何を作ればいいですか？」と聞かない（tasks.mdに全て書いてある）</li>'+
 '<li>バックアップを忘れない（localStorage消失リスク）</li></ul>'+
 '<h5>よくある失敗</h5>'+
@@ -21068,12 +21103,12 @@ return h;
 '<p class="workflow-footer"><button class="btn btn-p btn-sm" onclick="closeManual();showPostGenGuide(true)">🚀 レベル別ガイドを表示</button></p></div>'
 :
 '<h2>📘 Complete Post-Generation Workflow Guide</h2>'+
-'<p class="guide-workflow-intro">After generating 130+ files with DevForge v9, follow this <strong>end-to-end workflow</strong> in 5 phases to build a working app.</p>'+
+'<p class="guide-workflow-intro">After generating 135+ files with DevForge v9, follow this <strong>end-to-end workflow</strong> in 5 phases to build a working app.</p>'+
 '<h3>① Fundamentals — Understanding DevForge Output</h3>'+
 '<div class="workflow-concept"><p><strong>Important:</strong> DevForge generates <strong class="workflow-highlight">design documents</strong>, not runnable application code.</p>'+
 '<p><strong>SDD (Spec-Driven Development) Philosophy:</strong> <code>.spec/</code> serves as your SSoT (Single Source of Truth).</p>'+
 '<div class="hg-flow"><span class="hg-n hg-b">DevForge<br>Generate</span><span class="hg-a">→</span><span class="hg-n hg-c">Feed to<br>AI Tool</span><span class="hg-a">→</span><span class="hg-n hg-p">Generate<br>Real Code</span><span class="hg-a">→</span><span class="hg-n hg-g">Working<br>App</span></div></div>'+
-'<h4>130+ Files Overview</h4>'+
+'<h4>135+ Files Overview</h4>'+
 '<table class="workflow-files"><tr><th>Category</th><th>Content</th><th>Files</th></tr>'+
 '<tr><td>.spec/</td><td>SDD 5-point set</td><td>5</td></tr>'+
 '<tr><td>.devcontainer/</td><td>Docker dev environment</td><td>4</td></tr>'+
@@ -21099,7 +21134,7 @@ return h;
 '<h5>Cautions</h5>'+
 '<ul class="workflow-level-cautions">'+
 '<li>Don\'t run generated files directly (they are design docs, not executable code)</li>'+
-'<li>Don\'t feed all 130+ files to AI at once (start with .spec/)</li>'+
+'<li>Don\'t feed all 135+ files to AI at once (start with .spec/)</li>'+
 '<li>Don\'t ask AI "What should I build?" (tasks.md has everything)</li>'+
 '<li>Don\'t forget backups (localStorage loss risk)</li></ul>'+
 '<h5>Common Pitfalls</h5>'+
@@ -21149,7 +21184,7 @@ return h;
 '<h5>Automation Checks</h5>'+
 '<p class="workflow-level-checklist">'+
 '✅ .ai/hooks.yml → CI/CD gate integration<br>'+
-'✅ All 36 template pipeline complete<br>'+
+'✅ All 37 template pipeline complete<br>'+
 '✅ SLO 99.9% design complete<br>'+
 '✅ Feature Flags all kill switches configured</p>'+
 '</div>'+
@@ -21460,7 +21495,7 @@ return h;
 '<h3>🔴 ストレージ上限</h3>'+
 '<p>localStorageの上限は約5MBです。20〜30プロジェクトで上限に達する可能性があります。古いプロジェクトはエクスポート後に削除してください。</p>'+
 '<h3>🟡 生成ファイルについて</h3>'+
-'<p>生成される130+ファイルは<strong>設計ドキュメント</strong>（SDD仕様書・DevContainer設定・AIルール等）です。npm installで即座に動くアプリケーションコードではありません。Claude Code / Cursor等のAIツールに入力して実コードを生成する運用が前提です。</p>'+
+'<p>生成される135+ファイルは<strong>設計ドキュメント</strong>（SDD仕様書・DevContainer設定・AIルール等）です。npm installで即座に動くアプリケーションコードではありません。Claude Code / Cursor等のAIツールに入力して実コードを生成する運用が前提です。</p>'+
 '<p class="workflow-ref">📘 <strong>詳しい手順は <a href="#" onclick="event.preventDefault();showManual(\'workflow\')">生成後ワークフローガイド</a> を参照</strong></p>'+
 '<h3>🟡 スキルレベル</h3>'+
 '<p>スキルレベルにより表示される選択肢が変わります。途中変更すると既回答との不整合が起きうるため、<strong>最初に正しく設定</strong>してください。</p>'+
@@ -21477,7 +21512,7 @@ return h;
 '<h3>🔴 Storage Limit</h3>'+
 '<p>localStorage limit is ~5MB. You may reach the limit with 20-30 projects. Export and delete old projects.</p>'+
 '<h3>🟡 Generated Files</h3>'+
-'<p>130+ generated files are <strong>design documents</strong> (SDD specs, DevContainer configs, AI rules). They are not runnable app code. Feed them to AI tools like Claude Code / Cursor to generate actual code.</p>'+
+'<p>135+ generated files are <strong>design documents</strong> (SDD specs, DevContainer configs, AI rules). They are not runnable app code. Feed them to AI tools like Claude Code / Cursor to generate actual code.</p>'+
 '<p class="workflow-ref">📘 <strong>For detailed workflow, see <a href="#" onclick="event.preventDefault();showManual(\'workflow\')">Post-Gen Workflow Guide</a></strong></p>'+
 '<h3>🟡 Skill Level</h3>'+
 '<p>Changing skill level mid-project may cause inconsistencies with existing answers. <strong>Set it correctly at the start.</strong></p>'+
@@ -21486,7 +21521,7 @@ return h;
 '<h3>🔵 Other</h3>'+
 '<p>・ZIP export requires JSZip via CDN (use "Copy All" Ctrl+Shift+C offline)<br>・Switch to light mode before PDF export<br>・URL sharing may truncate on SNS for complex projects</p>'
 },
-{id:'about',title:'About',body:'<h2>DevForge v9.5</h2><p>'+(_ja?'AI駆動開発 統合プラットフォーム':'AI-Driven Dev Platform')+'</p><p>Version 9.5.0 — 2026 Edition (Modular Architecture)</p><p>'+(_ja?''+_TECH_COUNT+'テクノロジー ・ 130+ファイル ・ 19の柱 ・ 41プリセット ・ Mermaid図 ・ プロンプトプレイブック':''+_TECH_COUNT+' technologies ・ 130+ files ・ 19 pillars ・ 41 presets ・ Mermaid diagrams ・ Prompt playbook')+'</p><p>© 2026 エンジニアリングのタネ制作委員会<br>by にしあん</p>'},
+{id:'about',title:'About',body:'<h2>DevForge v9.5</h2><p>'+(_ja?'AI駆動開発 統合プラットフォーム':'AI-Driven Dev Platform')+'</p><p>Version 9.5.0 — 2026 Edition (Modular Architecture)</p><p>'+(_ja?''+_TECH_COUNT+'テクノロジー ・ 135+ファイル ・ 20の柱 ・ 41プリセット ・ Mermaid図 ・ プロンプトプレイブック':''+_TECH_COUNT+' technologies ・ 135+ files ・ 20 pillars ・ 41 presets ・ Mermaid diagrams ・ Prompt playbook')+'</p><p>© 2026 エンジニアリングのタネ制作委員会<br>by にしあん</p>'},
 ];
 const nav=$('helpNav');
 // Keep search input, clear nav links after it
@@ -22024,7 +22059,7 @@ var steps=[
 {title:_ja?'📝 テンプレート':'📝 Templates',desc:_ja?'41種のテンプレートを6カテゴリで絞り込み。⚔️比較で違いを一覧。選ぶと回答が自動入力。':'Browse 41 templates with 6 category filters. Use ⚔️ Compare to see differences. Pick one to auto-fill answers.'},
 {title:_ja?'💬 質問フロー':'💬 Q&A Flow',desc:_ja?'Phase 1-3 の質問に答えるだけ。Beginner: Phase 2自動スキップ＆⭐おすすめ技術をハイライト。スキップ＆後で回答も可能。':'Just answer Phase 1-3 questions. Beginners: Phase 2 auto-skipped & ⭐ recommended tech highlighted. Skip & answer later anytime.'},
 {title:_ja?'✎ 回答編集':'✎ Edit Answers',desc:_ja?'送信済みの回答に表示される ✎ ボタンで修正できます。':'Click the ✎ button on submitted answers to edit them.'},
-{title:_ja?'📦 134+ファイル生成':'📦 134+ File Generation',desc:_ja?'全質問回答後、20の柱で134+ファイルが自動生成されます。':'After all questions, 134+ files auto-generate across 20 pillars.'},
+{title:_ja?'📦 135+ファイル生成':'📦 135+ File Generation',desc:_ja?'全質問回答後、20の柱で135+ファイルが自動生成されます。':'After all questions, 135+ files auto-generate across 20 pillars.'},
 {title:_ja?'⚡ 並列探索':'⚡ Parallel Explorer',desc:_ja?'Pillar ⑤ で7スタックを比較。回答に基づくおすすめランキング付き。':'Compare 7 stacks in Pillar ⑤ with recommendation ranking based on your answers.'},
 {title:'📊 Dashboard',desc:_ja?'Pillar ⑥ でコンテキスト可視化＋'+_TECH_COUNT+'技術DBを閲覧。':'Visualize context + browse '+_TECH_COUNT+' tech DB in Pillar ⑥.'},
 {title:_ja?'🤖 AIランチャー':'🤖 AI Launcher',desc:_ja?'Pillar ⑧ で仕様書をAIツールにワンクリック投入。37テンプレート＋トークン推定。':'Feed specs to AI tools in one click from Pillar ⑧. 37 templates + token estimation.'},
@@ -22299,7 +22334,7 @@ const _origShowManual=window.showManual;
 window.showManual=function(){
 _lsSet('devforge-last-version',CURRENT_VERSION);
 if(dot)dot.remove();
-if(_origShowManual)_origShowManual();
+if(_origShowManual)_origShowManual.apply(this,arguments);
 };
 }
 }
