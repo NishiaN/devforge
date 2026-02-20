@@ -1969,6 +1969,7 @@ return;
 const msg=t('phEnd'+S.phase);
 addMsg('bot',msg);
 if(typeof announce==='function')announce(msg);
+if(S.skillLv<=1){const _ja=S.lang==='ja';var _phMsg=S.phase===1?(_ja?'✅ Phase 1完了！あと2ステップ':'✅ Phase 1 done! 2 more steps'):S.phase===2?(_ja?'✅ Phase 2完了！あと1ステップ':'✅ Phase 2 done! 1 more step'):(_ja?'✅ 最終Phase完了！':'✅ Final phase done!');toast(_phMsg);}
 S.phase++;S.step=0;save();
 setTimeout(()=>showQ(),400);
 } else {
@@ -2051,6 +2052,7 @@ ai_auto:'AI Autonomous',method:'Methods',test:'Testing',api:'API',
 build:'Build',data:'Data',security:'Security'}
 };
 function renderInputFor(q,onSubmit,allowSkip){
+const _ja=S.lang==='ja';
 const zone=$('izone');
 const existingBanner=zone.querySelector('.edit-banner')||zone.querySelector('.skipped-banner');
 if(!existingBanner)zone.innerHTML='';
@@ -2081,7 +2083,7 @@ zone.appendChild(tb);
 }
 if(allowSkip!==false){
 const sk=document.createElement('div');sk.style.cssText='padding:4px 20px 10px;text-align:right;';
-const btn=document.createElement('button');btn.className='skip-btn';btn.textContent=t('skip');
+const btn=document.createElement('button');btn.className='skip-btn';btn.textContent=S.skillLv<=1?(_ja?'スキップ（後で回答OK）':'Skip (answer later)'):t('skip');
 btn.onclick=()=>skipQ(q.id);
 sk.appendChild(btn);zone.appendChild(sk);
 }
@@ -2463,11 +2465,16 @@ overlay.innerHTML=`<div class="guide-modal">
 ${progBar}
 <div class="guide-steps">${stepsHtml}</div>
 <div class="guide-actions">
+${S.skillLv<=1?`
+<button class="btn btn-s btn-sm" onclick="exportZIP()">${_ja?'📦 まずZIPを保存':'📦 Save ZIP First'}</button>
+<button class="btn btn-p btn-sm" onclick="this.closest('.guide-overlay').remove()">${_ja?'✨ 始める':'✨ Let\'s Go'}</button>
+`:`
 <button class="btn btn-s btn-sm" onclick="window.open('devforge-v9-usage-guide.html','_blank','noopener')">${_ja?'📖 活用ガイド（別ページ）':'📖 Usage Guide (Full)'}</button>
 <button class="btn btn-s btn-sm" onclick="window.open('tech-selection-guide.html','_blank','noopener')">${_ja?'📊 技術選定ガイド':'📊 Tech Selection Guide'}</button>
 <button class="btn btn-s btn-sm" onclick="this.closest('.guide-overlay').remove();showManual('guide')">${_ja?'📖 詳細ガイド':'📖 Full Guide'}</button>
 <button class="btn btn-s btn-sm" onclick="this.closest('.guide-overlay').remove();showManual('workflow')">${_ja?'📘 ワークフロー':'📘 Workflow'}</button>
 <button class="btn btn-p btn-sm" onclick="this.closest('.guide-overlay').remove()">${_ja?'✨ 始める':'✨ Let\'s Go'}</button>
+`}
 </div>
 </div>`;
 // Keyboard accessibility
@@ -2929,7 +2936,9 @@ ws.classList.add('phase-enter');
 setTimeout(()=>ws.classList.remove('phase-enter'),300);
 },200);
 if(typeof initSidebar==='function')initSidebar();
-initPills();updProgress();showQ();
+initPills();updProgress();
+if(S.skillLv<=1){addMsg('bot',_ja?'🌱 質問に答えるだけで設計書が自動生成されます。難しく考えなくてOK！スキップもできます。':'🌱 Just answer the questions and design docs will be auto-generated. Don\'t overthink it — you can skip any question!');}
+showQ();
 if(presetName&&preFilledCount>0){
 toast(_ja?'✅ "'+presetName+'" を適用 — '+preFilledCount+'件の回答を自動入力':'✅ Applied "'+presetName+'" — '+preFilledCount+' answers pre-filled');
 }
@@ -3743,7 +3752,7 @@ return;
 }
 let h='';
 // Beginner: show key files banner first
-if(S.skill==='beginner'){
+if(S.skillLv<=1){
 const keyFiles=[
 {p:'README.md',l:_ja?'README.md — プロジェクト概要':'README.md — Project overview'},
 {p:'CLAUDE.md',l:_ja?'CLAUDE.md — AIに全仕様を理解させる':'CLAUDE.md — Give AI full context'},
@@ -3918,7 +3927,7 @@ ${pillarGrid}
 <div class="spin gen-spinner-icon">⚙️</div>
 </div>`;
 const a=S.answers;const pn=S.projectName;
-S.files={};const _errs=[];
+S.files={};S._zipDone=false;const _errs=[];
 // Reset sidebar pillar grid to inactive at generation start
 {const _sbGr=$('sbPillarGrid');if(_sbGr)_sbGr.querySelectorAll('.sb-pillar-icon').forEach(ic=>{ic.className='sb-pillar-icon inactive';});}
 const steps=[
@@ -4161,7 +4170,7 @@ genLang:S.genLang,
 previewFile:S.previewFile
 };
 // Clear
-S.files={};S.editedFiles={};S.prevFiles={};S.genLang=null;S.previewFile=null;
+S.files={};S._zipDone=false;S.editedFiles={};S.prevFiles={};S.genLang=null;S.previewFile=null;
 save();showFileTree();showExportGrid();if(typeof renderPillarGrid==='function')renderPillarGrid();
 if($('qbar'))$('qbar').remove();
 // Show undo toast
@@ -21482,12 +21491,12 @@ html+=`<button class="qbar-action" onclick="S.pillar=6;showRoadmapUI();updateQba
 <span class="qbar-icon">🗺️</span><span class="qbar-label">${_ja?'Roadmap':'Roadmap'}</span>
 <span class="qbar-kb">Ctrl+6</span>
 </button>`;
-// AI Launcher / Explorer for intermediate+
-if(skill!=='beginner'){
+// AI Launcher for all skill levels; Explorer for intermediate+
 html+=`<button class="qbar-action" onclick="showAILauncher()" title="${_ja?'AIプロンプト起動 (Ctrl+7)':'Launch AI Prompts (Ctrl+7)'}" aria-label="${_ja?'AI起動':'AI Launcher'}">
 <span class="qbar-icon">🚀</span><span class="qbar-label">${_ja?'AI起動':'Launcher'}</span>
 <span class="qbar-kb">Ctrl+7</span>
 </button>`;
+if(skill!=='beginner'){
 html+=`<button class="qbar-action" onclick="showExplorer()" title="${_ja?'エクスプローラー (Ctrl+4)':'Explorer (Ctrl+4)'}" aria-label="Explorer">
 <span class="qbar-icon">🗂️</span><span class="qbar-label">Explorer</span>
 <span class="qbar-kb">Ctrl+4</span>
@@ -21909,7 +21918,7 @@ if(tabs.length>1&&tabs[1])tabs[1].click();
 /* ═══ TOUR ═══ */
 function _getTourSteps(){
 const _ja=S.lang==='ja';
-return [
+var steps=[
 {title:_ja?'🌱 スキルレベル':'🌱 Skill Level',desc:_ja?'Beginner / Intermediate / Pro を選ぶと、質問の選択肢が自動調整されます。':'Choose Beginner / Intermediate / Pro to auto-adjust question options.'},
 {title:_ja?'📝 テンプレート':'📝 Templates',desc:_ja?'41種のテンプレートを6カテゴリで絞り込み。⚔️比較で違いを一覧。選ぶと回答が自動入力。':'Browse 41 templates with 6 category filters. Use ⚔️ Compare to see differences. Pick one to auto-fill answers.'},
 {title:_ja?'💬 質問フロー':'💬 Q&A Flow',desc:_ja?'Phase 1-3 の質問に答えるだけ。Beginner: Phase 2自動スキップ＆⭐おすすめ技術をハイライト。スキップ＆後で回答も可能。':'Just answer Phase 1-3 questions. Beginners: Phase 2 auto-skipped & ⭐ recommended tech highlighted. Skip & answer later anytime.'},
@@ -21922,6 +21931,9 @@ return [
 {title:_ja?'💾 データ保存の注意':'💾 Save Your Work',desc:_ja?'全データはブラウザのlocalStorageに保存されます。閲覧履歴の消去やブラウザ変更でデータが消失します。作業後は必ず📤 JSONエクスポートと📦 ZIPダウンロードで保存してください。':'All data is stored in browser localStorage. Clearing browser data or switching browsers will erase everything. Always export JSON 📤 and download ZIP 📦 after work.'},
 {title:_ja?'⚠️ 注意事項を確認':'⚠️ Read Cautions',desc:_ja?'ヘルプ（F1）の「⚠️ 注意事項」タブにスキルレベル設定・言語切替・ストレージ上限などの重要な注意点をまとめています。':'Check the "⚠️ Cautions" tab in Help (F1) for important notes on skill level, language switching, storage limits, and more.'},
 ];
+// Lv0-1: essential steps only (skill, templates, Q&A, generation, save, cautions)
+if(S.skillLv<=1){var _ti=[0,1,2,4,9,10];return _ti.map(function(i){return steps[i];});}
+return steps;
 }
 let tourStep=-1;
 function startTour(){

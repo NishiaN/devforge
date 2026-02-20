@@ -17,6 +17,7 @@ const _CAT_LABELS={
 };
 
 function renderInputFor(q,onSubmit,allowSkip){
+  const _ja=S.lang==='ja';
   const zone=$('izone');
   const existingBanner=zone.querySelector('.edit-banner')||zone.querySelector('.skipped-banner');
   if(!existingBanner)zone.innerHTML='';
@@ -47,7 +48,7 @@ function renderInputFor(q,onSubmit,allowSkip){
   }
   if(allowSkip!==false){
     const sk=document.createElement('div');sk.style.cssText='padding:4px 20px 10px;text-align:right;';
-    const btn=document.createElement('button');btn.className='skip-btn';btn.textContent=t('skip');
+    const btn=document.createElement('button');btn.className='skip-btn';btn.textContent=S.skillLv<=1?(_ja?'スキップ（後で回答OK）':'Skip (answer later)'):t('skip');
     btn.onclick=()=>skipQ(q.id);
     sk.appendChild(btn);zone.appendChild(sk);
   }

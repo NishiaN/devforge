@@ -222,7 +222,9 @@ function start(){
   },200);
 
   if(typeof initSidebar==='function')initSidebar();
-  initPills();updProgress();showQ();
+  initPills();updProgress();
+  if(S.skillLv<=1){addMsg('bot',_ja?'🌱 質問に答えるだけで設計書が自動生成されます。難しく考えなくてOK！スキップもできます。':'🌱 Just answer the questions and design docs will be auto-generated. Don\'t overthink it — you can skip any question!');}
+  showQ();
   if(presetName&&preFilledCount>0){
     toast(_ja?'✅ "'+presetName+'" を適用 — '+preFilledCount+'件の回答を自動入力':'✅ Applied "'+presetName+'" — '+preFilledCount+' answers pre-filled');
   }

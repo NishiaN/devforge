@@ -85,11 +85,16 @@ function showPostGenGuide(force){
     ${progBar}
     <div class="guide-steps">${stepsHtml}</div>
     <div class="guide-actions">
+      ${S.skillLv<=1?`
+      <button class="btn btn-s btn-sm" onclick="exportZIP()">${_ja?'📦 まずZIPを保存':'📦 Save ZIP First'}</button>
+      <button class="btn btn-p btn-sm" onclick="this.closest('.guide-overlay').remove()">${_ja?'✨ 始める':'✨ Let\'s Go'}</button>
+      `:`
       <button class="btn btn-s btn-sm" onclick="window.open('devforge-v9-usage-guide.html','_blank','noopener')">${_ja?'📖 活用ガイド（別ページ）':'📖 Usage Guide (Full)'}</button>
       <button class="btn btn-s btn-sm" onclick="window.open('tech-selection-guide.html','_blank','noopener')">${_ja?'📊 技術選定ガイド':'📊 Tech Selection Guide'}</button>
       <button class="btn btn-s btn-sm" onclick="this.closest('.guide-overlay').remove();showManual('guide')">${_ja?'📖 詳細ガイド':'📖 Full Guide'}</button>
       <button class="btn btn-s btn-sm" onclick="this.closest('.guide-overlay').remove();showManual('workflow')">${_ja?'📘 ワークフロー':'📘 Workflow'}</button>
       <button class="btn btn-p btn-sm" onclick="this.closest('.guide-overlay').remove()">${_ja?'✨ 始める':'✨ Let\'s Go'}</button>
+      `}
     </div>
   </div>`;
   // Keyboard accessibility

@@ -154,6 +154,7 @@ function phaseEnd(){
     const msg=t('phEnd'+S.phase);
     addMsg('bot',msg);
     if(typeof announce==='function')announce(msg);
+    if(S.skillLv<=1){const _ja=S.lang==='ja';var _phMsg=S.phase===1?(_ja?'✅ Phase 1完了！あと2ステップ':'✅ Phase 1 done! 2 more steps'):S.phase===2?(_ja?'✅ Phase 2完了！あと1ステップ':'✅ Phase 2 done! 1 more step'):(_ja?'✅ 最終Phase完了！':'✅ Final phase done!');toast(_phMsg);}
     S.phase++;S.step=0;save();
     setTimeout(()=>showQ(),400);
   } else {

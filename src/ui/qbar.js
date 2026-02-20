@@ -52,12 +52,12 @@ function createQbar(){
       <span class="qbar-kb">Ctrl+6</span>
     </button>`;
 
-    // AI Launcher / Explorer for intermediate+
+    // AI Launcher for all skill levels; Explorer for intermediate+
+    html+=`<button class="qbar-action" onclick="showAILauncher()" title="${_ja?'AIプロンプト起動 (Ctrl+7)':'Launch AI Prompts (Ctrl+7)'}" aria-label="${_ja?'AI起動':'AI Launcher'}">
+      <span class="qbar-icon">🚀</span><span class="qbar-label">${_ja?'AI起動':'Launcher'}</span>
+      <span class="qbar-kb">Ctrl+7</span>
+    </button>`;
     if(skill!=='beginner'){
-      html+=`<button class="qbar-action" onclick="showAILauncher()" title="${_ja?'AIプロンプト起動 (Ctrl+7)':'Launch AI Prompts (Ctrl+7)'}" aria-label="${_ja?'AI起動':'AI Launcher'}">
-        <span class="qbar-icon">🚀</span><span class="qbar-label">${_ja?'AI起動':'Launcher'}</span>
-        <span class="qbar-kb">Ctrl+7</span>
-      </button>`;
       html+=`<button class="qbar-action" onclick="showExplorer()" title="${_ja?'エクスプローラー (Ctrl+4)':'Explorer (Ctrl+4)'}" aria-label="Explorer">
         <span class="qbar-icon">🗂️</span><span class="qbar-label">Explorer</span>
         <span class="qbar-kb">Ctrl+4</span>

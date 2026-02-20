@@ -1,7 +1,7 @@
 /* ═══ TOUR ═══ */
 function _getTourSteps(){
   const _ja=S.lang==='ja';
-  return [
+  var steps=[
   {title:_ja?'🌱 スキルレベル':'🌱 Skill Level',desc:_ja?'Beginner / Intermediate / Pro を選ぶと、質問の選択肢が自動調整されます。':'Choose Beginner / Intermediate / Pro to auto-adjust question options.'},
   {title:_ja?'📝 テンプレート':'📝 Templates',desc:_ja?'41種のテンプレートを6カテゴリで絞り込み。⚔️比較で違いを一覧。選ぶと回答が自動入力。':'Browse 41 templates with 6 category filters. Use ⚔️ Compare to see differences. Pick one to auto-fill answers.'},
   {title:_ja?'💬 質問フロー':'💬 Q&A Flow',desc:_ja?'Phase 1-3 の質問に答えるだけ。Beginner: Phase 2自動スキップ＆⭐おすすめ技術をハイライト。スキップ＆後で回答も可能。':'Just answer Phase 1-3 questions. Beginners: Phase 2 auto-skipped & ⭐ recommended tech highlighted. Skip & answer later anytime.'},
@@ -14,6 +14,9 @@ function _getTourSteps(){
   {title:_ja?'💾 データ保存の注意':'💾 Save Your Work',desc:_ja?'全データはブラウザのlocalStorageに保存されます。閲覧履歴の消去やブラウザ変更でデータが消失します。作業後は必ず📤 JSONエクスポートと📦 ZIPダウンロードで保存してください。':'All data is stored in browser localStorage. Clearing browser data or switching browsers will erase everything. Always export JSON 📤 and download ZIP 📦 after work.'},
   {title:_ja?'⚠️ 注意事項を確認':'⚠️ Read Cautions',desc:_ja?'ヘルプ（F1）の「⚠️ 注意事項」タブにスキルレベル設定・言語切替・ストレージ上限などの重要な注意点をまとめています。':'Check the "⚠️ Cautions" tab in Help (F1) for important notes on skill level, language switching, storage limits, and more.'},
   ];
+  // Lv0-1: essential steps only (skill, templates, Q&A, generation, save, cautions)
+  if(S.skillLv<=1){var _ti=[0,1,2,4,9,10];return _ti.map(function(i){return steps[i];});}
+  return steps;
 }
 let tourStep=-1;
 function startTour(){

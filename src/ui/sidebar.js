@@ -42,7 +42,7 @@ function renderSidebarFiles(){
   }
   let h='';
   // Beginner: show key files banner first
-  if(S.skill==='beginner'){
+  if(S.skillLv<=1){
     const keyFiles=[
       {p:'README.md',l:_ja?'README.md — プロジェクト概要':'README.md — Project overview'},
       {p:'CLAUDE.md',l:_ja?'CLAUDE.md — AIに全仕様を理解させる':'CLAUDE.md — Give AI full context'},

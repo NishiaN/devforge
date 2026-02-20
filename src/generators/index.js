@@ -69,7 +69,7 @@ function doGenerate(lang){
   </div>`;
 
   const a=S.answers;const pn=S.projectName;
-  S.files={};const _errs=[];
+  S.files={};S._zipDone=false;const _errs=[];
   // Reset sidebar pillar grid to inactive at generation start
   {const _sbGr=$('sbPillarGrid');if(_sbGr)_sbGr.querySelectorAll('.sb-pillar-icon').forEach(ic=>{ic.className='sb-pillar-icon inactive';});}
   const steps=[
@@ -326,7 +326,7 @@ function clearFiles(){
   };
 
   // Clear
-  S.files={};S.editedFiles={};S.prevFiles={};S.genLang=null;S.previewFile=null;
+  S.files={};S._zipDone=false;S.editedFiles={};S.prevFiles={};S.genLang=null;S.previewFile=null;
   save();showFileTree();showExportGrid();if(typeof renderPillarGrid==='function')renderPillarGrid();
   if($('qbar'))$('qbar').remove();
 
