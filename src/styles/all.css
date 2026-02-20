@@ -974,6 +974,8 @@ div.guide-sub.guide-lv-p{background:none;color:var(--danger);}
 .ai-qs-steps{display:grid;gap:4px;margin-bottom:8px;}
 .ai-qs-detail{font-size:.82em;padding:4px 8px;background:var(--bg-1);border-radius:6px;border-left:2px solid var(--accent);}
 .ai-qs-note{font-size:.8em;opacity:.7;border-top:1px solid var(--border);padding-top:8px;margin-top:4px;}
+.ai-qs-micro-label{font-size:.82em;font-weight:600;color:var(--accent);opacity:.85;margin-bottom:6px;}
+.ai-qs-detail-micro{display:flex;align-items:flex-start;gap:6px;}
 /* Toast warn variant */
 .toast-msg.toast-warn{border-color:var(--warn,#d97706);background:color-mix(in srgb,var(--warn,#d97706) 10%,var(--bg-3));}
 /* Accessibility: Reduced Motion (HCD: A アクセシビリティ) */

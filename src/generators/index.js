@@ -193,16 +193,32 @@ function showExportGrid(){
     const recipe=AI_TOOL_RECIPES[tool]||AI_TOOL_RECIPES._default;
     const steps=_ja?recipe.ja:recipe.en;
     const name=tool==='_default'?(_ja?'汎用ワークフロー':'Generic Workflow'):tool;
+    const _lv0=S.skillLv<=1;
+    // Lv0-1: physical drag-and-drop micro-steps (P3)
+    const _lv0Steps=_ja?[
+      '📦 ZIPをダウンロード → 展開してフォルダをデスクトップに保存',
+      '🤖 Cursor か Claude Code を開いて「@CLAUDE.md」と入力 → 送信',
+      '📝 「tasks.mdの最優先タスクを実装して」と入力 → Enter'
+    ]:[
+      '📦 Download ZIP → Extract and save folder to Desktop',
+      '🤖 Open Cursor or Claude Code → Type "@CLAUDE.md" and send',
+      '📝 Type "Implement the top-priority task from tasks.md" → Enter'
+    ];
     return '<div class="ai-quickstart">'+
       '<div class="ai-qs-title">🚀 '+esc(_ja?'AIツールで開発を開始: '+name:'Start AI Dev with: '+name)+'</div>'+
-      '<div class="ai-qs-flow">'+
-        '<div class="ai-qs-step"><span class="ai-qs-num">①</span>'+(_ja?'ZIP DL':'ZIP DL')+'</div>'+
-        '<span class="ai-qs-arrow">→</span>'+
-        '<div class="ai-qs-step"><span class="ai-qs-num">②</span>'+esc(_ja?'展開 → '+name+' で開く':'Extract → Open in '+name)+'</div>'+
-        '<span class="ai-qs-arrow">→</span>'+
-        '<div class="ai-qs-step"><span class="ai-qs-num">③</span>'+esc((steps&&steps[0])||'')+'</div>'+
-      '</div>'+
-      '<div class="ai-qs-steps">'+(steps||[]).map(s=>'<div class="ai-qs-detail">'+esc(s)+'</div>').join('')+'</div>'+
+      (_lv0?
+        '<div class="ai-qs-micro-label">🔰 '+(_ja?'初心者向け：この3ステップだけ！':'Beginner: Just these 3 steps!')+'</div>'+
+        '<div class="ai-qs-steps">'+_lv0Steps.map(function(s,i){return '<div class="ai-qs-detail ai-qs-detail-micro"><span class="ai-qs-num">'+(i+1)+'</span> '+esc(s)+'</div>';}).join('')+'</div>'
+      :
+        '<div class="ai-qs-flow">'+
+          '<div class="ai-qs-step"><span class="ai-qs-num">①</span>'+(_ja?'ZIP DL':'ZIP DL')+'</div>'+
+          '<span class="ai-qs-arrow">→</span>'+
+          '<div class="ai-qs-step"><span class="ai-qs-num">②</span>'+esc(_ja?'展開 → '+name+' で開く':'Extract → Open in '+name)+'</div>'+
+          '<span class="ai-qs-arrow">→</span>'+
+          '<div class="ai-qs-step"><span class="ai-qs-num">③</span>'+esc((steps&&steps[0])||'')+'</div>'+
+        '</div>'+
+        '<div class="ai-qs-steps">'+(steps||[]).map(function(s){return '<div class="ai-qs-detail">'+esc(s)+'</div>';}).join('')+'</div>'
+      )+
       '<div class="ai-qs-note">💡 '+(_ja?'生成物は設計ドキュメントです。AIツールに投入すると実コードが生成されます。':'Generated files are design docs. Feed to your AI tool to generate real code.')+'</div>'+
     '</div>';
   })();
