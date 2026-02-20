@@ -136,7 +136,7 @@ function legacyMinJS(s) {
   // Regex-based removal doesn't understand string context and breaks syntax
   // Safe whitespace optimization: remove indentation + collapse blank lines
   return s
-    .replace(/\/\* ===.*?=== \*\/\n?/g, '') // Remove module headers only
+    .replace(/\/\*[ \t]*[═=]{3}[\s\S]*?[═=]{3}[ \t]*\*\/\n?/g, '') // Remove module headers (ASCII === and Unicode ═══)
     .replace(/\n{2,}/g, '\n')               // Collapse blank lines
     .replace(/^[ \t]+/gm, '')               // Remove line-leading whitespace (indentation)
     .replace(/;\s*\n/g, ';\n')              // Remove trailing spaces after semicolons

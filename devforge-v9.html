@@ -171,7 +171,6 @@
   <div class="tour-container" id="tourContainer" role="complementary" aria-label="Guided tour"></div>
 </div>
 <script>
-/* ═══ GLOBAL STATE ═══ */
 const $=id=>document.getElementById(id);
 const KEY='devforge-v9';
 const V=9;
@@ -324,7 +323,6 @@ save();
 }catch(e){_lsRm(KEY);}
 }
 let voiceRec=null,voiceBtn=null,_confirmCb=null;
-/* ═══ I18N ═══ */
 const I18N={
 ja:{
 p1:'Phase 1',p2:'Phase 2',p3:'Phase 3',
@@ -388,7 +386,6 @@ skillFineTune:'Skill Fine-Tune'
 }
 };
 const t=k=>I18N[S.lang][k]||k;
-/* ═══ TEMPLATE PRESETS (41 patterns) ═══ */
 const _PD={frontend:'React + Next.js',backend:'Supabase',mobile:'none',ai_auto:'none',payment:'none'};
 function _mp(p){return Object.assign({},_PD,p);}
 const PR={
@@ -455,7 +452,6 @@ survey:_mp({name:'アンケート',nameEn:'Survey',icon:'📋',purpose:'アン�
 job_board:_mp({name:'求人サイト',nameEn:'Job Board',icon:'💼',purpose:'求人掲載・応募管理・マッチング・スカウト',purposeEn:'Job posting, application management, matching & scouting',target:['求職者','企業人事','転職エージェント'],targetEn:['Job Seekers','HR Teams','Recruiters'],features:['求人検索・フィルタ','応募・保存','企業プロフィール','マッチング通知','スカウト機能','応募管理'],featuresEn:['Job Search & Filter','Apply & Save','Company Profiles','Matching Notifications','Scouting','Application Management'],entities:'User, Job, SavedJob, Company, Applicant',payment:'stripe'}),
 custom:{name:'',icon:'⚡'},
 };
-/* ═══ QUESTIONS (Skill-Aware Dynamic) ═══ */
 /* KPI chip builder — purpose-linked dynamic chips */
 function _kpiChips(ja,lv){
 const p=(S.answers.purpose||'').toLowerCase();
@@ -623,7 +619,6 @@ placeholder:ja?'追加…':'Add...',tip:lv==='beginner'?(ja?'TDD + SDD がAI駆�
 ]},
 };
 }
-/* ═══ TECH MASTER TABLE (dynamic count) ═══ */
 const REQ_LABELS={
 ja:{required:'必須',top1:'推奨No.1',top2:'推奨No.2','rec-jp':'推奨(JP)','rec-oss':'推奨(OSS)',recommended:'推奨',optional:'選択'},
 en:{required:'Required',top1:'Top Pick',top2:'2nd Pick','rec-jp':'Rec (JP)','rec-oss':'Rec (OSS)',recommended:'Recommended',optional:'Optional'}
@@ -918,7 +913,6 @@ const TECH_DB=[
 {name:'Snyk',cat:'security',sub:'scanning',req:'optional',level:'pro',price:'free-tier'},
 ];
 const _TECH_COUNT=TECH_DB.length;
-/* ═══ HELP DATA ═══ */
 const HELP_DATA={
 purpose:{
 ja:{title:'プロジェクトの目的',desc:'「誰が・何を・なぜ」使うのかを1文で表現しましょう。',example:'例: "フリーランスが見積書を5分で作成できるSaaS"',
@@ -1111,7 +1105,6 @@ ja:{title:'学習目標',desc:'このプロジェクトで習得したい技術�
 en:{title:'Learning Goal',desc:'Select the technical area you want to master through this project. The roadmap learning path optimizes based on your selection.',example:'Choosing "Full-Stack Dev" generates a comprehensive path from frontend to deployment'}
 },
 };
-/* ═══ STACK COMPATIBILITY & SEMANTIC CONSISTENCY RULES — 58 rules (ERROR×11 + WARN×37 + INFO×10) ═══ */
 const COMPAT_RULES=[
 // ── FE ↔ Mobile (2 ERROR) ──
 {id:'fe-mob-expo',p:['frontend','mobile'],lv:'error',
@@ -1525,7 +1518,6 @@ else d5=70;
 const overall=Math.round(d1*0.25+d2*0.25+d3*0.2+d4*0.2+d5*0.1);
 return{overall,d1:Math.round(d1),d2:Math.round(d2),d3:Math.round(d3),d4:Math.round(d4),d5:Math.round(d5),domain:dom};
 }
-/* ═══ LEARNING RESOURCES DB ═══ */
 /* Each entry: { n: display name, u: URL }
 Add new entries when new tech choices are added to questions.
 Keys should match the lookup keys used in showRoadmapUI(). */
@@ -1612,7 +1604,6 @@ ddd:{n:'DDD Reference',u:'https://www.domainlanguage.com/ddd/reference/'},
 sdd:{n:'SDD Overview',u:'https://en.wikipedia.org/wiki/Specification-driven_development'},
 fdd:{n:'FDD Guide',u:'https://en.wikipedia.org/wiki/Feature-driven_development'},
 };
-/* ═══ GENERATOR TEMPLATES — Bilingual dictionary for Pillar ⑦ Roadmap ═══ */
 const GT=(()=>{
 const ja={
 none:'なし',
@@ -1818,7 +1809,6 @@ dRoadDeploy:'Deploy',dRoadReset:'🔄 Reset',dRoadFiles:'📁 File List',dRoadPr
 };
 return {ja,en,t:(key)=>(({ja,en})[S.genLang||S.lang]||en)[key]||en[key]||key};
 })();
-/* ═══ WIZARD CORE ═══ */
 function initPills(){
 const _ja=S.lang==='ja';
 const c=$('sbPills');if(!c)return;c.innerHTML='';
@@ -2034,7 +2024,6 @@ if(!S.answers[q.id]){S.phase=p;S.step=s;showQ();return;}
 }
 finish();
 }
-/* ═══ V9 RENDER FUNCTIONS ═══ */
 const _TECHDB_MAP={
 frontend:'front',backend:'back',css_fw:'front',
 database:'back',orm:'back',mobile:'mobile',
@@ -2308,7 +2297,6 @@ onSubmit(ordered.map((item,i)=>'['+priLabels[i]+'] '+item).join(', '));
 };
 ft.appendChild(btn);wrap.appendChild(ft);zone.appendChild(wrap);
 }
-/* ═══ V9 EDIT ANSWER ═══ */
 function editAnswer(qid,msgEl){
 const _ja=S.lang==='ja';
 let targetQ=null;
@@ -2347,7 +2335,6 @@ S.phase=savedPhase;S.step=savedStep;findNext();
 }
 },false);
 }
-/* ═══ V9 HELP POPUP ═══ */
 function showHelp(id,e){
 const _ja=S.lang==='ja';
 const raw=HELP_DATA[id];if(!raw)return;const data=raw[S.lang]||raw.ja;
@@ -2378,7 +2365,6 @@ hint.querySelector('.help-eh-text').textContent=eh.hint;
 }
 function closeHelpPopup(){$('helpPopup').style.display='none';}
 function closeHelpOnClick(e){if(!$('helpPopup').contains(e.target))closeHelpPopup();}
-/* ═══ POST-GENERATION GUIDE ═══ */
 function showPostGenGuide(force){
 if(!force&&_lsGet('devforge-guide-shown'))return;
 _lsSet('devforge-guide-shown','1');
@@ -2508,7 +2494,6 @@ const txt=overlay.querySelector('.guide-prog-txt');
 if(fill)fill.style.width=Math.round(done/total*100)+'%';
 if(txt)txt.textContent=done+'/'+total;
 }
-/* ═══ V9 CONFIRM DIALOG ═══ */
 function showConfirm(val,onOk){
 if(S.skillLv<5){onOk();return;}
 _confirmCb=onOk;
@@ -2522,7 +2507,6 @@ ov.innerHTML='<div class="confirm-modal"><h4>'+t('answerConfirm')+'</h4>'
 +'</div></div>';
 trapFocus(ov);
 }
-/* ═══ V9 COMPLEXITY ANALYSIS ═══ */
 function getComplexityHTML(){
 const a=S.answers;const _ja=S.lang==='ja';
 const fs=(a.mvp_features||'').split(',').map(s=>s.trim()).filter(Boolean);
@@ -2580,7 +2564,6 @@ const card=document.createElement('div');
 card.innerHTML=getComplexityHTML();
 body.appendChild(card.firstChild);body.scrollTop=body.scrollHeight;
 }
-/* ═══ V9 TOC NAVIGATION ═══ */
 function updTOC(){
 const toc=$('tocPanel');if(!toc||!S.projectName)return;
 toc.style.display='block';
@@ -2600,7 +2583,6 @@ function jumpToQ(qid){
 const el=document.querySelector('[data-qid="'+qid+'"]');
 if(el)el.scrollIntoView({behavior:'smooth',block:'center'});
 }
-/* ═══ V9 VOICE INPUT ═══ */
 function initVoice(){
 const _ja=S.lang==='ja';
 if(!('webkitSpeechRecognition' in window)&&!('SpeechRecognition' in window))return;
@@ -2622,7 +2604,6 @@ voiceBtn=btn;
 if(btn.classList.contains('recording')){voiceRec.stop();btn.classList.remove('recording');btn.textContent='🎙️';}
 else{voiceRec.lang=_ja?'ja-JP':'en-US';voiceRec.start();btn.classList.add('recording');btn.textContent='⏹️';}
 }
-/* ═══ V9 PROJECT MANAGER ═══ */
 function getProjects(){return _jp(_lsGet('devforge-projects'),{});}
 function saveProject(){
 if(!S.projectName)return;
@@ -2721,7 +2702,6 @@ ov.innerHTML=html;
 trapFocus(ov);
 }
 function closePM(){$('pmOverlay').style.display='none';releaseFocus($('pmOverlay'));removeModal($('pmOverlay'));}
-/* ═══ PRESET & START ═══ */
 function _updateSkillLabel(lv){
 const _ja=S.lang==='ja';
 var n=SKILL_NAMES[lv]||SKILL_NAMES[3];
@@ -2959,7 +2939,6 @@ if(!S.answers.dev_methods)S.answers.dev_methods=_ja?'TDD（テスト駆動）, S
 if(!S.answers.payment)S.answers.payment=_ja?'なし':'None';
 save();
 }
-/* ═══ PREVIEW SYSTEM ═══ */
 let _prevHistory=[];
 let _prevHistIdx=-1;
 let _prevNavFlag=false;
@@ -3711,7 +3690,6 @@ toast((_ja?'ファイルが見つかりません: ':'File not found: ')+href);
 }
 },true);
 }
-/* ═══ SIDEBAR ═══ */
 function initSidebar(){
 const sb=$('sidebar');
 if(!sb)return;
@@ -3825,7 +3803,6 @@ const tog=$('sbToggle');
 if(tog)tog.title=_ja?'サイドバー切替 (Ctrl+B)':'Toggle Sidebar (Ctrl+B)';
 renderPillarGrid();
 }
-/* ═══ PILLAR ICON GRID ═══ */
 var PILLAR_ICONS=['📋','🐳','🔌','🤖','✅','🗺️','🎨','🔍','💡','🔒','📊','⚙️','🔮','🧬','🧩','🔧','🏢','🚀','📄','📦'];
 var GEN_TO_PILLAR=[0,1,2,3,0,6,8,9,10,11,12,13,14,15,16,17,18,19,0,0];
 var PILLAR_FIRST_FILE=['.spec/constitution.md','.devcontainer/devcontainer.json','.mcp/project-context.md',null,null,null,'roadmap/LEARNING_PATH.md',null,'docs/26_design_system.md','docs/29_reverse_engineering.md','docs/39_implementation_playbook.md','docs/43_security_intelligence.md','docs/48_industry_blueprint.md','docs/53_ops_runbook.md','docs/56_market_positioning.md','docs/60_methodology_intelligence.md','docs/65_prompt_genome.md','docs/69_prompt_ops_pipeline.md','docs/73_enterprise_architecture.md','docs/77_cicd_pipeline_design.md'];
@@ -3859,7 +3836,6 @@ if(typeof showFileTree==='function')showFileTree();
 const f=PILLAR_FIRST_FILE[p];
 if(f&&S.files[f]&&typeof previewFile==='function')previewFile(f);
 }
-/* ═══ FILE GENERATION ENGINE — 19 PILLARS ═══ */
 function generateAll(){
 const _be=S.answers.backend||'';
 const _minKeys=(/なし|None|static/i.test(_be))?['frontend','backend']:['frontend','backend','database'];
@@ -5928,7 +5904,7 @@ alwaysApply: false
 - ${G?'参照':'Reference'}: \`.claude/settings.json\` \`requireConfirmation\` ${G?'リスト':'list'}
 `;
 }
-/* ═══ Quality Intelligence Engine (Industry-Adaptive QA Strategy) ═══ */
+
 function genPillar5_QualityIntelligence(a,pn){
 const G=S.genLang==='ja';
 const domain=detectDomain(a.purpose)||'_default';
@@ -6895,7 +6871,6 @@ npx create-medusa-app@latest
 `:''}
 `:`# ${T('sc_title')}\n\n${T('sc_none')}`;
 }
-/* ═══ Pillar 9: Design System & Sequence Diagrams ═══ */
 // Domain-specific color tokens
 const _dc=(p,s,ac,cta,sj,se)=>({p,s,ac,cta,sj,se});
 const DOMAIN_COLORS={
@@ -7189,7 +7164,6 @@ seqDoc+=(G?'## 決済フロー（Stripe）':'## Payment Flow (Stripe)')+'\n\n```
 seqDoc+=(G?'## エラーハンドリング':'## Error Handling')+'\n\n```mermaid\nsequenceDiagram\n  participant C as Client\n  participant API as Backend\n  C->>API: '+(G?'リクエスト':'Request')+'\n  API-->>C: 400/401/403/500\n  C->>C: '+(G?'エラーメッセージ抽出':'Parse error message')+'\n  C->>C: '+(G?'トースト表示':'Show toast notification')+'\n  alt '+(G?'401 認証エラー':'401 Unauthorized')+'\n    C->>C: '+(G?'ログイン画面へリダイレクト':'Redirect to login')+'\n  else '+(G?'5xx サーバーエラー':'5xx Server Error')+'\n    C->>C: '+(G?'リトライボタン表示':'Show retry button')+'\n  end\n```\n\n';
 S.files['docs/27_sequence_diagrams.md']=seqDoc;
 }
-/* ═══ Pillar 10: Reverse Engineering (Goal-Driven Planning) ═══ */
 // ── Domain-Specific Reverse Flow Map (15 domains + default) ──
 const REVERSE_FLOW_MAP={
 education:{
@@ -8016,7 +7990,7 @@ S.files['docs/38_business_model.md']=_genDoc38(G,domain,rf,a,pn);
 }
 S.files['docs/41_growth_intelligence.md']=_genDoc41(G,domain,a,pn);
 }
-/* ═══ Pillar 11: Implementation Intelligence ═══ */
+
 
 function genPillar11_ImplIntelligence(a,pn){
 const G=S.genLang==='ja';
@@ -8765,7 +8739,7 @@ doc+=G?'4. 離脱リスクが高いLvの改善から着手\n':'4. Start with imp
 doc+=G?'5. 投資対効果TOP5施策を四半期サイクルで実施\n':'5. Implement TOP5 ROI measures in quarterly cycles\n';
 S.files['docs/81_ux_proficiency_audit.md']=doc;
 }
-/* ═══ PILLAR ⑫: SECURITY INTELLIGENCE ═══ */
+
 
 // OWASP Top 10 2025 Check Database
 const OWASP_2025=[
@@ -9984,7 +9958,7 @@ doc47+='- [Test Strategy](./36_test_strategy.md)\n';
 doc47+='- [QA Strategy](./28_qa_strategy.md)\n';
 S.files['docs/47_security_testing.md']=doc47;
 }
-/* ═══ PILLAR ⑬: STRATEGIC INTELLIGENCE ═══ */
+
 
 // Strategic Intelligence helper (10 args → 10 bilingual properties)
 const _si = (reg_ja,reg_en, arch_ja,arch_en, fail_ja,fail_en, trend_ja,trend_en, bm_ja,bm_en) => ({
@@ -10948,7 +10922,7 @@ doc52 += '- [Security Intelligence](./43_security_intelligence.md)\n';
 doc52 += '- [Compliance Matrix](./45_compliance_matrix.md)\n';
 S.files['docs/52_advanced_scenarios.md'] = doc52;
 }
-/* ═══ PILLAR ⑭: OPS INTELLIGENCE ═══ */
+
 
 function genPillar14_OpsIntelligence(a, pn) {
 const G = S.genLang === 'ja';
@@ -16411,7 +16385,6 @@ S.files['.github/workflows/ci.yml']=[
 ''
 ].join('\n');
 }
-/* ═══ Common Helpers for Cross-Generator Consistency ═══ */
 // ── Smart Table Pluralization ──
 function pluralize(name){
 const lower=name.toLowerCase();
@@ -18982,7 +18955,6 @@ ja:['入力検証はクライアント+サーバー両方','サーバーサイ�
 en:['Input validation on both client and server','Server-side validation as trust boundary','SQL injection prevention with ORM/prepared statement','XSS prevention with escaping + CSP']
 }
 };
-/* ═══ INLINE EDITOR ═══ */
 function openEditor(path){
 const content=S.files[path];
 if(!content)return;
@@ -19030,7 +19002,6 @@ save();
 toast(_ja?'↩️ 元に戻しました':'↩️ Reverted');
 openEditor(path);
 }
-/* ═══ DIFF VIEW ═══ */
 function lineDiff(oldText,newText){
 const oldL=oldText.split('\n'),newL=newText.split('\n');
 const result=[];
@@ -19083,7 +19054,6 @@ $('prevBody').innerHTML=h;
 function snapshotFiles(){
 S.prevFiles=JSON.parse(JSON.stringify(S.files));
 }
-/* ═══ EXPORT ═══ */
 async function _renderMermaidSVG(html){
 if(!html.includes('language-mermaid'))return html;
 await _ensureMermaid();
@@ -19182,7 +19152,6 @@ toast(_ja?`🤖 AI向けMarkdown (${files.length}ファイル) をコピー`:`�
 }).catch(()=>{_fallbackCopy(md);toast(_ja?'📋 コピーしました':'📋 Copied');});
 } else {_fallbackCopy(md);toast(_ja?'📋 コピーしました':'📋 Copied');}
 }
-/* ═══ UI HELPERS ═══ */
 /* ── Pillar ⑤ Parallel Explorer (Enhanced with Recommendation) ── */
 function showExplorer(){
 pushView({pillar:4,type:'explorer',file:null});
@@ -19201,7 +19170,6 @@ const bar=v=>'⚡'.repeat(v)+'<span class="exp-dim">'+'⚡'.repeat(5-v)+'</span>
 const metrics=_ja
 ?[['開発速度','speed'],['スケーラビリティ','scale'],['学習容易性','learn'],['エコシステム','eco']]
 :[['Dev Speed','speed'],['Scalability','scale'],['Learnability','learn'],['Ecosystem','eco']];
-/* ════ NEW: Answer-Based Scoring Engine ════ */
 function scoreStack(name,stack){
 let score=0;const reasons=[];
 const skill=S.skill||'intermediate';
@@ -19238,7 +19206,6 @@ return {name,score,reasons,stack};
 const ranked=names.map(n=>scoreStack(n,stacks[n])).sort((a,b)=>b.score-a.score);
 const medals=['🥇','🥈','🥉'];
 const hasAnswers=Object.keys(a).length>2;
-/* ════ RENDER ════ */
 let h=`<div class="exp-header"><h3>⚡ ${_ja?'並列実装探索 — スタック比較':'Parallel Explorer — Stack Comparison'}</h3>
 <p>${_ja?'現在の選択':'Current'}: <strong class="exp-current">${esc(a.frontend||'React + Next.js')} + ${esc(a.backend||'Express')}</strong> — ${_ja?'2つのスタックを比較':'Compare 2 stacks'}</p></div>`;
 /* ── Recommendation Ranking (NEW) ── */
@@ -21443,7 +21410,7 @@ tabs.forEach(m=>{m.classList.remove('on');m.setAttribute('aria-selected','false'
 if(t==='c'){$('panC').classList.remove('hide');$('panP').classList.remove('show');tabs[0].classList.add('on');tabs[0].setAttribute('aria-selected','true');}
 else{$('panC').classList.add('hide');$('panP').classList.add('show');tabs[1].classList.add('on');tabs[1].setAttribute('aria-selected','true');}
 }
-/* ═══ QUICK ACTION BAR (HCD-optimized) ═══ */
+
 // Context-aware action groups, FAB minimize/restore, keyboard navigation, ARIA support
 
 function createQbar(){
@@ -21643,7 +21610,7 @@ toast(_ja?`${path} をコピーしました`:`Copied ${path}`);
 toast(_ja?'コピー失敗':'Copy failed');
 });
 }
-/* ═══ COMMAND PALETTE (Ctrl+P) ═══ */
+
 // Unified command + file search with keyboard navigation
 
 let _cpSelectedIdx=0;
@@ -21822,7 +21789,6 @@ file:_ja?'ファイル':'File'
 };
 return labels[cat]||cat;
 }
-/* ═══ KEYBOARD & ACCESSIBILITY ═══ */
 /* Focus trap for modals */
 function trapFocus(modalEl){
 const focusable=modalEl.querySelectorAll('button,input,select,textarea,a[href],[tabindex]:not([tabindex="-1"])');
@@ -21915,7 +21881,6 @@ if(tabs.length>1&&tabs[1])tabs[1].click();
 }
 },{passive:true});
 }
-/* ═══ TOUR ═══ */
 function _getTourSteps(){
 const _ja=S.lang==='ja';
 var steps=[
@@ -21954,7 +21919,6 @@ const nb=document.createElement('button');nb.className='btn btn-p btn-xs';nb.tex
 nb.onclick=()=>{tourStep++;showTourStep();};acts.appendChild(nb);
 }
 function closeTour(){tourStep=-1;$('tourContainer').innerHTML='';_lsSet('devforge-tour-done','1');}
-/* ═══ INIT ═══ */
 /* Global error handler */
 window.onerror=(msg,src,line)=>{console.error('DevForge error:',{msg,src,line});toast('⚠️ '+msg);};
 window.onunhandledrejection=e=>{console.error('Unhandled:',e.reason);toast('⚠️ '+(e.reason?.message||e.reason));};

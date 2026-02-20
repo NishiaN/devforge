@@ -17,7 +17,7 @@ DevForge v9's documentation is optimized into role-specific files:
 - **未来志向アプリ開発戦略フレームワーク（2026-2035）.md** (local only) — 28 strategic frameworks for future app development (2026-2035 horizon)
 
 ## Architecture
-- **55 modules** in `src/` → `node build.js` → single `devforge-v9.html` (~1887KB)
+- **55 modules** in `src/` → `node build.js` → single `devforge-v9.html` (~1890KB)
 - Vanilla JS, no frameworks. CSS custom properties. CDN: marked.js, mermaid.js, JSZip.
 - **AI Development OS**: Generates 135+ files including context intelligence, operations playbooks, business models, growth strategies, industry-specific strategic intelligence, ops intelligence, future strategy intelligence, polymorphic development intelligence, prompt genome engine, prompt ops pipeline, enterprise SaaS blueprint, CI/CD intelligence, and path-specific AI rules
 - **Security-hardened**: Phase 1 (CSP, SRI, sanitization) + Phase 2 (16 XSS/injection fixes) + Pillar ⑫ (context-aware security audit prompts)
@@ -26,7 +26,7 @@ DevForge v9's documentation is optimized into role-specific files:
 ## Build & Test
 ```bash
 # Build
-node build.js              # Produces devforge-v9.html (~1887KB, limit 2000KB)
+node build.js              # Produces devforge-v9.html (~1890KB, limit 2000KB)
 node build.js --no-minify  # Skip minification (debug)
 node build.js --report     # Show size report
 node build.js --check-css  # Validate CSS custom properties
@@ -57,7 +57,7 @@ npm run check              # Syntax check extracted JS
 5. **Write** to `devforge-v9.html`
 6. **Validate** size ≤2000KB (warn if exceeded)
 
-**Current Status:** ~1887KB / 2000KB limit (~94% utilized, Phase A/B/C UX improvements complete)
+**Current Status:** ~1890KB / 2000KB limit (~94% utilized, Phase A-E UX improvements complete)
 
 ### ⚠️ Critical: Minification Strategy
 
@@ -251,6 +251,21 @@ npm run open                # Visual verification
 ```
 
 **Recent Updates (v9.5.x — current):**
+- **Phase D UX Improvements** (D1-D5):
+  - D1: `beforeunload` handler — warns when files exist and ZIP not saved (`S._zipDone` flag set in `exportZIP()`)
+  - D2: Preset filter for Lv0-1 — `_beginnerPresets` (5 presets only); catBar + compare button hidden for `S.skillLv<=1`
+  - D3: Sidebar Pillar Grid Lv0-1 filter — `_bpFilter` hides 16 pillars, shows only SDD/AIルール/デザイン/ランチャー
+  - D4: Pillar Tabs Lv0-1 filter — `_ptFilter` in `applyLang()`, same 4-pillar filter
+  - D5: `AI_TOOL_RECIPES` — added Cline + Gemini recipes in `ui/templates.js`
+- **Phase E UX Improvements** (E1-E8 — beginner experience final polish):
+  - E1: `S._zipDone=false` reset in `doGenerate()` + `clearFiles()` (beforeunload reactivates after regen)
+  - E2: Sidebar key files banner uses `S.skillLv<=1` (consistent with all other skill gates)
+  - E3: QBar AI Launcher shown to all skill levels; Explorer remains beginner-hidden
+  - E4: Tour filtered to 6 steps for Lv0-1 (`_getTourSteps()` now uses `var steps` + filter)
+  - E5: Welcome message in `start()` for Lv0-1 — reassures before first question
+  - E6: Post-gen guide CTA simplified for Lv0-1 (ZIP + Let's Go only; full 5-button set for Lv2+)
+  - E7: Skip button shows '後で回答OK' for Lv0-1; `const _ja` declared at `renderInputFor()` top
+  - E8: Phase completion milestone toast for Lv0-1 in `phaseEnd()` ('あと2ステップ' etc.)
 - **Phase A/B/C UX Improvements**: Skill-adaptive UI throughout. Key patterns:
   - `showCompatAlert()` filters to errors-only for `S.skillLv<=1` (no warn/info noise for beginners)
   - `generateAll()` shows friendly toast for Lv0-1 instead of "FE/BE/DB" jargon
@@ -263,7 +278,7 @@ npm run open                # Visual verification
 - **7-Level Skill System**: `S.skillLv` (0-6) + `S.skill` (3-tier) coexist; `pickSkillLv(n)` in presets.js; Lv0 forces saas+Firebase, Lv4+ skips confirm dialog, Lv6 adds evangelist section; gen81() generates docs/81_ux_proficiency_audit.md; ux_audit launcher template added (37 total)
 - **Pillar ⑳ CI/CD Intelligence**: docs/77-80 (pipeline_design, deployment_strategy, quality_gate_matrix, release_engineering); all 32 domains generate; 9 deploy targets; domain-specific gates (fintech/healthcare/ec/iot)
 - **Creative UX Pack**: 11-step tour, 37 launcher templates with AI_REC badges, expertHints system in helpdata.js (9-expert rotating hints), 6-step post-gen guide
-- Tests: 550 | Build: ~1887KB | 55 modules | 20 pillars | 135+ files
+- Tests: 550 | Build: ~1890KB | 55 modules | 20 pillars | 135+ files
 
 ### Property Name Mismatches with Helper-Generated Objects
 **Problem:** Accessing properties on objects created by helper functions without checking the actual property structure.
