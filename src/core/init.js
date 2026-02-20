@@ -76,6 +76,9 @@ function applyLang(){
   icards.forEach((el,i)=>{if(i<6){const d=ja?icJa[i]:icEn[i];const h4=el.querySelector('h4');const p=el.querySelector('p');if(h4)h4.textContent=d[0];if(p)p.textContent=d[1];}});
   // P1: Lv0-1 beginner icard simplification — show only 3 simple cards
   if(S.skillLv<=1){
+    // F5: set expectation — output is design docs, not code
+    const _lv0ic0=ja?['📖 設計書を自動で作る','質問に答えるだけでAI用の設計書を生成。そのままCursor等のAIツールに渡すと実コードに変換されます。']:['📖 Auto-Generate Design Docs','Answer questions to generate AI-ready design docs. Feed them to Cursor or other AI tools to get real code.'];
+    if(icards[0]){const h4=icards[0].querySelector('h4'),p=icards[0].querySelector('p');if(h4)h4.textContent=_lv0ic0[0];if(p)p.textContent=_lv0ic0[1];}
     const _lv0ic1=ja?['🚀 3ステップで設計書完成','①質問に答える → ②ZIPダウンロード → ③AIに渡す。それだけ！']:['🚀 Done in 3 Steps','①Answer questions → ②Download ZIP → ③Feed to AI. That\'s it!'];
     const _lv0ic2=ja?['🤖 AIにそのまま渡せる','生成ファイルをAIツールに投入するだけ。難しい知識は不要。']:['🤖 Ready to Feed to AI','Just give generated files to your AI tool. No technical knowledge needed.'];
     if(icards[1]){const h4=icards[1].querySelector('h4'),p=icards[1].querySelector('p');if(h4)h4.textContent=_lv0ic1[0];if(p)p.textContent=_lv0ic1[1];}
@@ -89,6 +92,11 @@ function applyLang(){
   const pbJa=['①SDD統合','②DevContainer','③MCP設定','④AIルール','⑤並列探索','⑥Dashboard','⑦ロードマップ','⑧AIランチャー','⑨デザインシステム','⑩リバースEng','⑪実装ガイド','⑫セキュリティ','⑬戦略インテリジェンス','⑭運用インテリジェンス','⑮未来戦略','⑯開発IQ','⑰プロンプトゲノム','⑱Prompt Ops','⑲エンタープライズ','⑳CI/CD'];
   const pbEn=['①SDD','②DevContainer','③MCP','④AI Rules','⑤Explorer','⑥Dashboard','⑦Roadmap','⑧AI Launcher','⑨Design System','⑩Reverse Eng','⑪Impl Guide','⑫Security','⑬Strategic Intelligence','⑭Ops Intelligence','⑮Future Strategy','⑯Dev IQ','⑰Prompt Genome','⑱Prompt Ops','⑲Enterprise','⑳CI/CD'];
   pbadges.forEach((el,i)=>{if(i<20)el.textContent=ja?pbJa[i]:pbEn[i];});
+  // F4: beginner-friendly pillar badge labels (override for Lv0-1 visible pillars)
+  if(S.skillLv<=1){
+    var _bpL=ja?{0:'①仕様書',3:'④AIルール',7:'⑧AIランチャー',8:'⑨デザイン'}:{0:'①Specs',3:'④AI Rules',7:'⑧AI Launcher',8:'⑨Design'};
+    pbadges.forEach(function(el,i){if(i<20&&_bpL[i]!==undefined)el.textContent=_bpL[i];});
+  }
   // Pillar badge tooltips
   const pbTipJa=['仕様書・タスク・検証の統合設計ドキュメント5本組','VSCode/Cursor対応Docker開発環境を即時構築','Model Context Protocol設定でAIをプロジェクト対応','10+ツール対応AIルール（Claude/Cursor/Copilot等）','7スタック並列比較＋おすすめランキング','コンテキスト可視化＋技術DBブラウザ','インタラクティブ学習ロードマップ（Layer別進捗）','37プロンプトテンプレート＋AIモデル推薦','デザイントークン＋シーケンス図自動生成','ゴール逆算型プランニング（リバースエンジニアリング）','業種別実装パターン＋AI運用手順書','OWASP/STRIDE対応セキュリティ監査プロンプト','業界特化設計図＋技術レーダー＋ステークホルダー戦略','SLO/SLI・Feature Flags・12 Ops Capabilities設計','市場・UX・エコシステム・規制フォーサイト（2026-2035）','32ドメイン×12手法のポリモーフィック開発戦略','CRITERIA 8軸プロンプト品質スコア＋AI成熟度評価','ReAct自律ワークフロー＋LLMOpsダッシュボード','マルチテナント設計＋組織モデル＋エンタープライズUI','9ステージCI/CDパイプライン＋デプロイ戦略設計'];
   const pbTipEn=['5-doc spec suite: constitution, spec, plan, tasks, verification','Instant Docker dev env compatible with VSCode/Cursor','MCP config to give AI full project awareness','10+ AI tool configs (Claude, Cursor, Copilot, Windsurf, etc.)','Compare 7 stacks in parallel with recommendation ranking','Context visualization + browsable tech DB','Interactive learning roadmap with layer-based progress','37 prompt templates + AI model recommendations','Design tokens + sequence diagrams auto-generation','Goal-driven reverse engineering planning','Domain-specific implementation patterns + AI runbook','OWASP/STRIDE security audit prompts (context-aware)','Industry blueprint + tech radar + stakeholder strategy','SLO/SLI, Feature Flags, 12 Ops Capabilities design','Market, UX, ecosystem & regulatory foresight (2026-2035)','Polymorphic dev strategy: 32 domains × 12 approaches','CRITERIA 8-axis prompt quality scoring + AI maturity model','ReAct autonomous workflow + LLMOps dashboard','Multi-tenant design + org model + enterprise UI components','9-stage CI/CD pipeline + deploy strategy design'];
@@ -120,6 +128,11 @@ function applyLang(){
       if(names[i])b.textContent=names[i];
       b.style.display=(_ptFilter&&!_ptFilter.has(i))?'none':'';
     });}
+    // F4: beginner-friendly pillar tab labels (override for Lv0-1 visible tabs)
+    if(S.skillLv<=1){
+      var _ptL=ja?{0:'📋 仕様書',3:'🤖 AIルール',7:'🚀 AIランチャー',8:'🎨 デザイン'}:{0:'📋 Specs',3:'🤖 AI Rules',7:'🚀 AI Launcher',8:'🎨 Design'};
+      Array.from($('pillarTabs').children).forEach(function(b,i){if(_ptL[i]!==undefined)b.textContent=_ptL[i];});
+    }
   }
   // Keyboard shortcuts overlay
   const kbRows=document.querySelectorAll('.kb-row span:first-child');
@@ -155,6 +168,14 @@ function applyLang(){
   if(h0){
     h0.style.display=S.skillLv===0?'block':'none';
     h0.textContent=ja?'難しい知識は不要。質問に答えるだけ':'No technical knowledge needed. Just answer questions.';
+  }
+  // F2: hero stats skill-adaptation (Lv0-1 shows 4 pillars / key files to reduce info shock)
+  var _spn=$('statPillarNum');if(_spn)_spn.textContent=S.skillLv<=1?'4':'20';
+  var _sfn=$('statFileNum');if(_sfn&&!Object.keys(S.files||{}).length)_sfn.textContent=S.skillLv<=1?(ja?'主要':'Key'):'135+';
+  var _hd=$('heroDesc');
+  if(_hd){
+    if(S.skillLv<=1)_hd.textContent=ja?'質問に答えるだけで設計書を自動生成。AIにそのまま渡せば開発スタート。':'Answer questions to auto-generate design docs. Feed to AI to start coding.';
+    else _hd.textContent=t('heroDesc');
   }
 }
 

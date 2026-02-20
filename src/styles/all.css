@@ -983,6 +983,12 @@ div.guide-sub.guide-lv-p{background:none;color:var(--danger);}
 .ai-qs-rp-list{display:grid;gap:4px;margin-top:6px;}
 .ai-qs-rp{display:flex;align-items:center;justify-content:space-between;gap:8px;background:var(--bg-1);border-radius:6px;padding:4px 8px;}
 .ai-qs-rp-lbl{font-size:.8em;flex:1;}
+/* F6: AI context recovery — expanded variant for Lv0-1 */
+.ai-qs-recovery-open{margin-top:8px;padding:8px 12px;border:1px solid var(--border);border-radius:8px;background:var(--bg-2);}
+.ai-qs-recovery-title{font-weight:600;margin-bottom:6px;font-size:.88em;}
+/* F7: sidebar all-files collapse */
+.sb-all-collapse summary.ft-section-header{cursor:pointer;user-select:none;display:list-item;}
+.sb-all-collapse summary:hover{opacity:.8;}
 /* C2: ZIP urgent emphasis for Lv0-1 */
 .export-hero-urgent{border:2px solid var(--accent);box-shadow:0 0 12px color-mix(in srgb,var(--accent) 30%,transparent);animation:heroUrgentPulse 2.5s ease-in-out infinite;}
 .export-hero-urgent-label{background:var(--accent);color:#fff;font-size:.8em;font-weight:700;text-align:center;padding:4px 8px;border-radius:6px 6px 0 0;margin:-14px -16px 10px;letter-spacing:.03em;}

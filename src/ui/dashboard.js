@@ -8,7 +8,7 @@ function showDashboard(){
   const totalChars=Object.values(S.files).reduce((s,f)=>s+f.length,0);
   const tokens=Math.round(totalChars/4);
   const answered=Object.keys(a).length;
-  const _adv=S.skill!=='beginner';
+  const _adv=S.skillLv>=3;
 
   let h=`<div class="dash-head"><h3>📊 Context Dashboard</h3><p>${_ja?'プロジェクトのコンテキスト情報を一覧':'Project context overview'}</p></div>`;
   

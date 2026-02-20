@@ -394,7 +394,9 @@ function showAILauncher(){
   const LAUNCH_CAT_MAP={review:'review',arch:'review',security:'review',a11y:'review',perf:'review',metrics:'review',risk:'review',reverse:'review',implement:'implement',api:'implement',i18n:'implement',test:'implement',qa:'implement',refactor:'implement',debug:'implement',docs:'implement',migrate:'implement',cicd:'ops',growth:'strategy',strategy:'strategy',methodology:'strategy',brainstorm:'strategy',ux_journey:'strategy',ux_audit:'strategy',ai_model_guide:'ai_prompt',industry:'strategy',nextgen:'strategy',cognitive:'strategy',genome:'ai_prompt',maturity:'ai_prompt',react_debug:'ai_prompt',prompt_ops:'ai_prompt',enterprise_arch:'review',workflow_audit:'review',incident:'ops',ops:'ops',onboard:'ops'};
   // Skill-based recommendations
   const LAUNCH_SKILL_REC={beginner:['implement','test','debug','brainstorm','ux_journey','docs'],intermediate:['review','implement','security','strategy','methodology','cicd','ux_audit'],pro:['arch','ops','enterprise_arch','genome','react_debug','risk','ux_audit']};
-  const recKeys=LAUNCH_SKILL_REC[S.skill]||LAUNCH_SKILL_REC.intermediate;
+  // F1: whitelist for Lv0-1 — 8 essential templates only
+  const _LAUNCH_BEGINNER=new Set(['implement','test','debug','docs','brainstorm','ux_journey','review','onboard']);
+  const recKeys=S.skillLv<=1?LAUNCH_SKILL_REC.beginner:S.skillLv>=5?LAUNCH_SKILL_REC.pro:LAUNCH_SKILL_REC.intermediate;
   const lcats=_ja?LAUNCH_CATS_JA:LAUNCH_CATS_EN;
   // Cat filter state (closure)
   let _lcf='all';
@@ -421,13 +423,15 @@ function showAILauncher(){
     const t=PT[key];
     if(!t)return;
     const cat=LAUNCH_CAT_MAP[key]||'implement';
-    h+=`<div class="launch-tpl" onclick="selectLaunchTemplate('${key}')" data-lcat="${cat}">
+    const _lHide=S.skillLv<=1&&!_LAUNCH_BEGINNER.has(key);
+    h+=`<div class="launch-tpl${_lHide?' launch-tpl-hidden':''}" onclick="selectLaunchTemplate('${key}')" data-lcat="${cat}"${_lHide?' style="display:none"':''}>
       <div class="launch-tpl-icon">${t.icon}</div>
       <div class="launch-tpl-info"><strong>${t.label}</strong><span>${t.desc}</span></div>
       ${AI_REC[key]?'<span class="launch-airec" title="'+(_ja?'推奨AI':'Recommended AI')+'">'+AI_REC[key]+'</span>':''}
     </div>`;
   });
   h+=`</div>`;
+  if(S.skillLv<=1){h+='<button class="btn btn-xs btn-g launch-showall" onclick="document.querySelectorAll(\'.launch-tpl-hidden\').forEach(function(e){e.style.display=\'\'});this.remove()">'+(_ja?'🔽 全37テンプレートを表示':'🔽 Show all 37 templates')+'</button>';}
   h+=`</div>`;
 
   /* ── Output area ── */

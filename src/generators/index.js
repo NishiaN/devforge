@@ -211,13 +211,13 @@ function showExportGrid(){
     const _lv0=S.skillLv<=1;
     // Lv0-1: physical drag-and-drop micro-steps (P3)
     const _lv0Steps=_ja?[
-      '📦 ZIPをダウンロード → 展開してフォルダをデスクトップに保存',
-      '🤖 Cursor か Claude Code を開いて「@CLAUDE.md」と入力 → 送信',
-      '📝 「tasks.mdの最優先タスクを実装して」と入力 → Enter'
+      '📦 ZIPをダウンロード → ダブルクリックで展開 → フォルダをデスクトップに保存',
+      '🤖 Cursorを起動 →「フォルダーを開く」で展開フォルダを選択 → チャットに「@CLAUDE.md」と入力して送信',
+      '📝 チャットに「tasks.mdの最優先タスクを実装して」と入力 → Enter で開発スタート'
     ]:[
-      '📦 Download ZIP → Extract and save folder to Desktop',
-      '🤖 Open Cursor or Claude Code → Type "@CLAUDE.md" and send',
-      '📝 Type "Implement the top-priority task from tasks.md" → Enter'
+      '📦 Download ZIP → Double-click to extract → Save folder to Desktop',
+      '🤖 Open Cursor → "Open Folder" → Select extracted folder → Type "@CLAUDE.md" in chat and send',
+      '📝 Type "Implement the top-priority task from tasks.md" in chat → Enter to start'
     ];
     return '<div class="ai-quickstart">'+
       '<div class="ai-qs-title">🚀 '+esc(_ja?'AIツールで開発を開始: '+name:'Start AI Dev with: '+name)+'</div>'+
@@ -244,11 +244,14 @@ function showExportGrid(){
           {lbl:'Re-inject Context',txt:'First read CLAUDE.md to understand the project. Then implement the top-priority task from tasks.md.'},
           {lbl:'Error Fix Request',txt:'An error occurred. Fix it following the design in specification.md. Error details: '}
         ];
-        return '<details class="ai-qs-recovery"><summary>🆘 '+(_ja?'AIが文脈を忘れたら？':'If AI loses context?')+'</summary>'+
+        // F6: Lv0-1 shows recovery prompts expanded (always visible); Lv2+ keeps <details> fold
+        return (S.skillLv<=1?
+          '<div class="ai-qs-recovery-open"><div class="ai-qs-recovery-title">🆘 '+(_ja?'AIが文脈を忘れたら？':'If AI loses context?')+'</div>':
+          '<details class="ai-qs-recovery"><summary>🆘 '+(_ja?'AIが文脈を忘れたら？':'If AI loses context?')+'</summary>')+
           '<div class="ai-qs-rp-list">'+_rp.map(function(r){
             return '<div class="ai-qs-rp"><span class="ai-qs-rp-lbl">'+esc(r.lbl)+'</span>'+
               '<button class="btn btn-xs btn-s" onclick="navigator.clipboard.writeText(\''+escAttr(r.txt)+'\').then(function(){toast(\''+(_ja?'📋 コピー済み':'📋 Copied')+'\')})">'+ (_ja?'コピー':'Copy') +'</button></div>';
-          }).join('')+'</div></details>';
+          }).join('')+'</div>'+(S.skillLv<=1?'</div>':'</details>');
       })()+
     '</div>';
   })();

@@ -81,8 +81,12 @@ function renderSidebarFiles(){
       h+='<li class="ft-file'+(active?' active':'')+'" data-path="'+escAttr(p)+'"><a href="#" onclick="previewFile(\''+escAttr(p)+'\');return false;" title="'+escAttr(p)+'">'+esc(p.split('/').pop())+'</a></li>';
     });
   }
-  // All files grouped by folder
-  h+='<li class="ft-section-header">📁 '+(_ja?'全ファイル':'All Files')+'</li>';
+  // All files grouped by folder (F7: Lv0-1 collapses to reduce visual noise)
+  if(S.skillLv<=1){
+    h+='<details class="sb-all-collapse"><summary class="ft-section-header">📁 '+(_ja?'全ファイル ('+keys.length+')':'All Files ('+keys.length+')')+'</summary>';
+  }else{
+    h+='<li class="ft-section-header">📁 '+(_ja?'全ファイル':'All Files')+'</li>';
+  }
   let lastFolder='';
   keys.forEach(p=>{
     const parts=p.split('/');
@@ -95,6 +99,7 @@ function renderSidebarFiles(){
     const fname=parts[parts.length-1];
     h+='<li class="ft-file'+(active?' active':'')+'" data-path="'+escAttr(p)+'"><a href="#" onclick="previewFile(\''+escAttr(p)+'\');return false;" title="'+escAttr(p)+'">'+esc(fname)+'</a></li>';
   });
+  if(S.skillLv<=1){h+='</details>';}
   h+='</ul>';
   el.innerHTML=h;
 }
@@ -128,13 +133,16 @@ function renderPillarGrid(){
   const _ja=S.lang==='ja';
   const hasFiles=Object.keys(S.files||{}).length>0;
   const names=_ja?['SDD','DevContainer','MCP','AIルール','品質','ロードマップ','デザイン','リバース','実装','セキュリティ','戦略','運用','未来','開発IQ','ゲノム','Prompt Ops','Enterprise','CI/CD','仕様書','共通']:['SDD','DevContainer','MCP','AI Rules','Quality','Roadmap','Design','Reverse','Impl','Security','Strategy','Ops','Future','Dev IQ','Genome','Prompt Ops','Enterprise','CI/CD','Docs','Common'];
+  // F8: beginner-friendly tooltips for Lv0-1 visible pillars
+  var _bgTips=S.skillLv<=1?(_ja?{0:'仕様書を見る',3:'AIルールを見る',7:'AIプロンプトを起動',8:'デザインを見る'}:{0:'View Specs',3:'View AI Rules',7:'Launch AI Prompts',8:'View Design'}):null;
   // Lv0-1: show only 4 essential pillars (same set as hero badge filter)
   var _bpFilter=S.skillLv<=1?new Set([0,3,7,8]):null;
   let h='';
   for(let i=0;i<20;i++){
     const cls='sb-pillar-icon'+(hasFiles?' completed':' inactive');
     const hidden=_bpFilter&&!_bpFilter.has(i)?'style="display:none"':'';
-    h+='<button class="'+cls+'" title="'+esc(names[i])+'" onclick="clickPillarIcon('+i+')" aria-label="'+esc(names[i])+'" '+hidden+'>'+PILLAR_ICONS[i]+'</button>';
+    const tip=_bgTips&&_bgTips[i]!==undefined?_bgTips[i]:names[i];
+    h+='<button class="'+cls+'" title="'+esc(tip)+'" onclick="clickPillarIcon('+i+')" aria-label="'+esc(tip)+'" '+hidden+'>'+PILLAR_ICONS[i]+'</button>';
   }
   g.innerHTML=h;
 }
