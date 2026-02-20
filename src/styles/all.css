@@ -976,6 +976,27 @@ div.guide-sub.guide-lv-p{background:none;color:var(--danger);}
 .ai-qs-note{font-size:.8em;opacity:.7;border-top:1px solid var(--border);padding-top:8px;margin-top:4px;}
 .ai-qs-micro-label{font-size:.82em;font-weight:600;color:var(--accent);opacity:.85;margin-bottom:6px;}
 .ai-qs-detail-micro{display:flex;align-items:flex-start;gap:6px;}
+/* C3: AI context recovery prompts */
+.ai-qs-recovery{margin-top:8px;border-top:1px solid var(--border);padding-top:6px;}
+.ai-qs-recovery summary{font-size:.8em;cursor:pointer;opacity:.7;user-select:none;}
+.ai-qs-recovery summary:hover{opacity:1;}
+.ai-qs-rp-list{display:grid;gap:4px;margin-top:6px;}
+.ai-qs-rp{display:flex;align-items:center;justify-content:space-between;gap:8px;background:var(--bg-1);border-radius:6px;padding:4px 8px;}
+.ai-qs-rp-lbl{font-size:.8em;flex:1;}
+/* C2: ZIP urgent emphasis for Lv0-1 */
+.export-hero-urgent{border:2px solid var(--accent);box-shadow:0 0 12px color-mix(in srgb,var(--accent) 30%,transparent);animation:heroUrgentPulse 2.5s ease-in-out infinite;}
+.export-hero-urgent-label{background:var(--accent);color:#fff;font-size:.8em;font-weight:700;text-align:center;padding:4px 8px;border-radius:6px 6px 0 0;margin:-14px -16px 10px;letter-spacing:.03em;}
+@keyframes heroUrgentPulse{0%,100%{box-shadow:0 0 8px color-mix(in srgb,var(--accent) 25%,transparent);}50%{box-shadow:0 0 18px color-mix(in srgb,var(--accent) 50%,transparent);}}
+/* C1: Start Here 3-file spotlight */
+.start-here-card{background:var(--bg-2);border:1px solid var(--success,#22c55e);border-radius:10px;padding:12px 14px;margin:8px 0;}
+.start-here-title{font-weight:700;color:var(--success,#22c55e);margin-bottom:8px;font-size:.9em;}
+.start-here-file{display:flex;align-items:center;gap:10px;padding:7px 8px;border-radius:7px;cursor:pointer;transition:background .15s;}
+.start-here-file:hover{background:var(--bg-1);}
+.start-here-icon{font-size:1.2em;flex-shrink:0;}
+.start-here-info{display:flex;flex-direction:column;flex:1;min-width:0;}
+.start-here-name{font-weight:600;font-size:.88em;font-family:monospace;}
+.start-here-desc{font-size:.78em;opacity:.7;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.start-here-arr{opacity:.4;flex-shrink:0;}
 /* Toast warn variant */
 .toast-msg.toast-warn{border-color:var(--warn,#d97706);background:color-mix(in srgb,var(--warn,#d97706) 10%,var(--bg-3));}
 /* Accessibility: Reduced Motion (HCD: A アクセシビリティ) */

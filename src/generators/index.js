@@ -178,16 +178,27 @@ function showExportGrid(){
   </div>`;
 
   // Hero card for ZIP (HCD: ③認知負荷 ①目的達成)
-  const heroCard=`
-    <div class="export-hero" onclick="exportZIP()">
+  // C2: Lv0-1向け urgency wrapper で視覚的に強調
+  const heroCard=(S.skillLv<=1?
+    `<div class="export-hero export-hero-urgent" onclick="exportZIP()">
+      <div class="export-hero-urgent-label">💾 ${_ja?'データ消失防止のため今すぐ保存！':'Save now to prevent data loss!'}</div>
       <div class="export-hero-badge">${_ja?'推奨':'Recommended'}</div>
       <div class="export-hero-icon">📦</div>
       <div class="export-hero-content">
         <h3>${_ja?'ZIP ダウンロード':'ZIP Download'}</h3>
         <p>${_ja?'全'+fc+'ファイルを一括保存。最も確実で便利な方法です。':'Save all '+fc+' files at once. Most reliable and convenient.'}</p>
       </div>
-    </div>
-  `;
+    </div>`
+  :
+    `<div class="export-hero" onclick="exportZIP()">
+      <div class="export-hero-badge">${_ja?'推奨':'Recommended'}</div>
+      <div class="export-hero-icon">📦</div>
+      <div class="export-hero-content">
+        <h3>${_ja?'ZIP ダウンロード':'ZIP Download'}</h3>
+        <p>${_ja?'全'+fc+'ファイルを一括保存。最も確実で便利な方法です。':'Save all '+fc+' files at once. Most reliable and convenient.'}</p>
+      </div>
+    </div>`
+  );
 
   // AI Quick Start card (GAP1: post-gen AI workflow guide)
   const _aiQs=(function(){
@@ -224,6 +235,21 @@ function showExportGrid(){
         '<div class="ai-qs-steps">'+(steps||[]).map(function(s){return '<div class="ai-qs-detail">'+esc(s)+'</div>';}).join('')+'</div>'
       )+
       '<div class="ai-qs-note">💡 '+(_ja?'生成物は設計ドキュメントです。AIツールに投入すると実コードが生成されます。':'Generated files are design docs. Feed to your AI tool to generate real code.')+'</div>'+
+      // C3: AI context recovery prompts (collapsible)
+      (function(){
+        var _rp=_ja?[
+          {lbl:'コンテキスト再注入',txt:'まずCLAUDE.mdを読んでプロジェクトを把握してください。次にtasks.mdの最優先タスクを実装してください。'},
+          {lbl:'エラー修正依頼',txt:'エラーが発生しました。specification.mdの設計に従って修正してください。エラー内容：'}
+        ]:[
+          {lbl:'Re-inject Context',txt:'First read CLAUDE.md to understand the project. Then implement the top-priority task from tasks.md.'},
+          {lbl:'Error Fix Request',txt:'An error occurred. Fix it following the design in specification.md. Error details: '}
+        ];
+        return '<details class="ai-qs-recovery"><summary>🆘 '+(_ja?'AIが文脈を忘れたら？':'If AI loses context?')+'</summary>'+
+          '<div class="ai-qs-rp-list">'+_rp.map(function(r){
+            return '<div class="ai-qs-rp"><span class="ai-qs-rp-lbl">'+esc(r.lbl)+'</span>'+
+              '<button class="btn btn-xs btn-s" onclick="navigator.clipboard.writeText(\''+escAttr(r.txt)+'\').then(function(){toast(\''+(_ja?'📋 コピー済み':'📋 Copied')+'\')})">'+ (_ja?'コピー':'Copy') +'</button></div>';
+          }).join('')+'</div></details>';
+      })()+
     '</div>';
   })();
 
@@ -259,7 +285,31 @@ function showExportGrid(){
     </div>
   `;
 
-  $('izone').innerHTML=summary+heroCard+_aiQs+exportGroup+mgmtGroup+dangerZone;
+  // C1: "Start Here" 3-file spotlight for Lv0-1 (addresses #1 complaint: "where do I start?")
+  const _startHere=(function(){
+    if(S.skillLv>1)return '';
+    var _sf=[
+      {path:'CLAUDE.md',icon:'🧠',ja:'AIにプロジェクト全体を理解させる最重要ファイル',en:'Most important: gives AI full project context'},
+      {path:'.spec/tasks.md',icon:'📝',ja:'やることリスト。「最優先タスクを実装して」と伝えるベース',en:'Task list. Tell AI "implement the top-priority task"'},
+      {path:'.cursorrules',icon:'⚡',ja:'Cursorが自動読み込み。AIルールを即時適用',en:'Auto-loaded by Cursor. AI rules applied automatically'}
+    ].filter(function(f){return !!S.files[f.path];});
+    if(!_sf.length)return '';
+    return '<div class="start-here-card">'+
+      '<div class="start-here-title">📂 '+(_ja?'まずこの3ファイルを読もう！':'Start Here: Read These 3 Files First!')+'</div>'+
+      _sf.map(function(f){
+        return '<div class="start-here-file" onclick="previewFile(\''+escAttr(f.path)+'\')" role="button" tabindex="0">'+
+          '<span class="start-here-icon">'+f.icon+'</span>'+
+          '<div class="start-here-info">'+
+            '<span class="start-here-name">'+esc(f.path.replace('.spec/',''))+'</span>'+
+            '<span class="start-here-desc">'+esc(_ja?f.ja:f.en)+'</span>'+
+          '</div>'+
+          '<span class="start-here-arr">→</span>'+
+        '</div>';
+      }).join('')+
+    '</div>';
+  })();
+
+  $('izone').innerHTML=summary+heroCard+_aiQs+_startHere+exportGroup+mgmtGroup+dangerZone;
 }
 
 function clearFiles(){
