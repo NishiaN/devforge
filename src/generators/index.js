@@ -185,6 +185,28 @@ function showExportGrid(){
     </div>
   `;
 
+  // AI Quick Start card (GAP1: post-gen AI workflow guide)
+  const _aiQs=(function(){
+    if(typeof AI_TOOL_RECIPES==='undefined')return '';
+    const tools=(S.answers.ai_tools||'').split(',').map(t=>t.trim()).filter(t=>t);
+    const tool=tools.find(t=>AI_TOOL_RECIPES[t])||'_default';
+    const recipe=AI_TOOL_RECIPES[tool]||AI_TOOL_RECIPES._default;
+    const steps=_ja?recipe.ja:recipe.en;
+    const name=tool==='_default'?(_ja?'汎用ワークフロー':'Generic Workflow'):tool;
+    return '<div class="ai-quickstart">'+
+      '<div class="ai-qs-title">🚀 '+esc(_ja?'AIツールで開発を開始: '+name:'Start AI Dev with: '+name)+'</div>'+
+      '<div class="ai-qs-flow">'+
+        '<div class="ai-qs-step"><span class="ai-qs-num">①</span>'+(_ja?'ZIP DL':'ZIP DL')+'</div>'+
+        '<span class="ai-qs-arrow">→</span>'+
+        '<div class="ai-qs-step"><span class="ai-qs-num">②</span>'+esc(_ja?'展開 → '+name+' で開く':'Extract → Open in '+name)+'</div>'+
+        '<span class="ai-qs-arrow">→</span>'+
+        '<div class="ai-qs-step"><span class="ai-qs-num">③</span>'+esc((steps&&steps[0])||'')+'</div>'+
+      '</div>'+
+      '<div class="ai-qs-steps">'+(steps||[]).map(s=>'<div class="ai-qs-detail">'+esc(s)+'</div>').join('')+'</div>'+
+      '<div class="ai-qs-note">💡 '+(_ja?'生成物は設計ドキュメントです。AIツールに投入すると実コードが生成されます。':'Generated files are design docs. Feed to your AI tool to generate real code.')+'</div>'+
+    '</div>';
+  })();
+
   // Export group
   const exportGroup=`
     <div class="export-group-label">📤 ${_ja?'エクスポート':'Export'}</div>
@@ -217,7 +239,7 @@ function showExportGrid(){
     </div>
   `;
 
-  $('izone').innerHTML=summary+heroCard+exportGroup+mgmtGroup+dangerZone;
+  $('izone').innerHTML=summary+heroCard+_aiQs+exportGroup+mgmtGroup+dangerZone;
 }
 
 function clearFiles(){

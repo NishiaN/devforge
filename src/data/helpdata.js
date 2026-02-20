@@ -53,8 +53,22 @@ const HELP_DATA={
     en:{title:'Success Metrics (KPI)',desc:'Auto-suggested by project type. Pick 3-5 from 10 categories: 📈Growth 💰Revenue 🔄Retention 😊Satisfaction ⚡Perf.',example:'e.g. EC→"$10K GMV" / Education→"80%+ completion"'}
   },
   scope_out:{
-    ja:{title:'スコープ外',desc:'「やらないこと」を決めるのがMVP成功の鍵。',example:'例: "v1ではモバイルアプリは作らない"'},
-    en:{title:'Out of Scope',desc:'Deciding what NOT to do is key to MVP success.',example:'e.g. "No mobile app in v1"'}
+    ja:{title:'スコープ外',desc:'「やらないこと」を決めるのがMVP成功の鍵。',example:'例: "v1ではモバイルアプリは作らない"',
+      expertHints:[
+        {icon:'📊',name:'ビジネス',hint:'「これは後でいい」と言えるものを全てリストアップ。半分以上あるはずです。'},
+        {icon:'👤',name:'ユーザー',hint:'最初の1週間でユーザーが絶対に使わない機能は？それは全てスコープ外です。'},
+        {icon:'💥',name:'ディスラプター',hint:'機能を1つだけ残すとしたら？それ以外は全てスコープ外の候補。'},
+        {icon:'⚙️',name:'技術専門家',hint:'実装に1週間以上かかる機能はv1のスコープ外にしてください。'},
+        {icon:'🧭',name:'冒険家',hint:'スコープ外を明確にしないプロジェクトの90%は完成しません。'}
+      ]},
+    en:{title:'Out of Scope',desc:'Deciding what NOT to do is key to MVP success.',example:'e.g. "No mobile app in v1"',
+      expertHints:[
+        {icon:'📊',name:'Business',hint:'"This can wait" — list everything that qualifies. There should be more than half.'},
+        {icon:'👤',name:'User Rep',hint:'Which features won\'t users touch in the first week? Those are all out of scope.'},
+        {icon:'💥',name:'Disruptor',hint:'If you could only keep one feature, what would it be? Everything else is a scope-out candidate.'},
+        {icon:'⚙️',name:'Technical',hint:'Any feature taking more than a week to implement belongs in v2, not v1.'},
+        {icon:'🧭',name:'Adventurer',hint:'90% of projects without a clear scope-out never ship. Define it now.'}
+      ]}
   },
   deadline:{
     ja:{title:'リリース目標',desc:'2週間=超MVP、1ヶ月=基本MVP、3ヶ月=本格版。',example:'TIP: 2週間でまずデプロイ、その後改善サイクルが最速'},

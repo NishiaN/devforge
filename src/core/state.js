@@ -122,7 +122,8 @@ function showSaveIndicator(){
   setTimeout(()=>ind.classList.remove('save-indicator-show'),800);
 }
 
-function save(){const d=JSON.stringify(S);if(d.length>4*1024*1024)console.warn('DevForge: state exceeds 4MB');_lsSet(KEY,d);showSaveIndicator();}
+var _storWarnAt=0;
+function save(){const d=JSON.stringify(S);const sz=d.length;const now=Date.now();if(now-_storWarnAt>30000){if(sz>4*1024*1024){toast(S.lang==='ja'?'⚠️ データ容量が4MBを超えました。ZIPでエクスポートし生成ファイルをクリアしてください':'⚠️ Data exceeded 4MB. Export ZIP and clear generated files.',{type:'error',duration:5000});_storWarnAt=now;}else if(sz>3.5*1024*1024){toast(S.lang==='ja'?'💾 データ容量が3.5MBに近づいています。ZIPエクスポートを推奨します':'💾 Storage nearing 3.5MB. Export ZIP recommended.',{type:'warn',duration:4000});_storWarnAt=now;}}if(_lsOK){try{localStorage.setItem(KEY,d);}catch(e){toast(S.lang==='ja'?'❌ 保存失敗: ブラウザストレージが満杯です。ZIPでエクスポートしてください':'❌ Save failed: Browser storage full. Export as ZIP.',{type:'error',duration:6000});return;}}showSaveIndicator();}
 function load(){
   let d=_lsGet(KEY);
   if(!d){d=_lsGet('devforge-v8');if(d)_lsRm('devforge-v8');}

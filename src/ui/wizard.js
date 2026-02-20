@@ -101,6 +101,7 @@ function showQ(){
   $('pdTitle').textContent=ph.name;
   updProgress();
   addMsg('bot',q.q,q.tip,null,q.help);
+  if(q.id==='scope_out'){const body=$('chatBody');if(body){const _ja=S.lang==='ja';const w=document.createElement('div');w.className='msg';w.innerHTML='<div class="compat-warn"><span class="compat-icon">⚠️</span><span class="compat-msg">'+(_ja?'よくある失敗: スコープ外を定義しないと「機能追加地獄」に陥り、MVPが完成しません。':'Common pitfall: Without defining scope-out, you\'ll fall into "feature hell" and never ship your MVP.')+'</span></div>';body.appendChild(w);body.scrollTop=body.scrollHeight;}}
   renderInputFor(q,(val)=>{
     if(S.skillLv>=5){showConfirm(val,()=>{doSubmit(q.id,val);});}
     else{doSubmit(q.id,val);}

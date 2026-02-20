@@ -964,6 +964,18 @@ div.guide-sub.guide-lv-p{background:none;color:var(--danger);}
 .whats-new-dot{position:absolute;top:-4px;right:-4px;width:10px;height:10px;background:var(--danger);border-radius:50%;border:2px solid var(--bg-1);animation:dotPulse 2s infinite;}
 @keyframes dotPulse{0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.2);opacity:0.8;}}
 
+/* AI Quick Start Card (GAP1: post-gen AI workflow) */
+.ai-quickstart{background:var(--bg-2);border:1px solid var(--accent);border-radius:10px;padding:14px 16px;margin:10px 0;}
+.ai-qs-title{font-weight:700;margin-bottom:10px;color:var(--accent);}
+.ai-qs-flow{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:10px;}
+.ai-qs-step{display:flex;align-items:center;gap:4px;background:var(--bg-1);border-radius:6px;padding:4px 8px;font-size:.85em;}
+.ai-qs-num{font-weight:700;color:var(--accent);}
+.ai-qs-arrow{color:var(--text);opacity:.4;}
+.ai-qs-steps{display:grid;gap:4px;margin-bottom:8px;}
+.ai-qs-detail{font-size:.82em;padding:4px 8px;background:var(--bg-1);border-radius:6px;border-left:2px solid var(--accent);}
+.ai-qs-note{font-size:.8em;opacity:.7;border-top:1px solid var(--border);padding-top:8px;margin-top:4px;}
+/* Toast warn variant */
+.toast-msg.toast-warn{border-color:var(--warn,#d97706);background:color-mix(in srgb,var(--warn,#d97706) 10%,var(--bg-3));}
 /* Accessibility: Reduced Motion (HCD: A アクセシビリティ) */
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{
