@@ -3,7 +3,11 @@ function generateAll(){
   const _be=S.answers.backend||'';
   const _minKeys=(/なし|None|static/i.test(_be))?['frontend','backend']:['frontend','backend','database'];
   if(_minKeys.some(k=>!S.answers[k])){
-    toast(S.lang==='ja'?'⚠️ 基本項目（FE/BE/DB）を先に回答してください':'⚠️ Answer basic items (FE/BE/DB) first');
+    if(S.skillLv<=1){
+      toast(S.lang==='ja'?'💬 まずチャットの質問に答えてから生成できます':'💬 Answer the chat questions first, then generate');
+    }else{
+      toast(S.lang==='ja'?'⚠️ 基本項目（FE/BE/DB）を先に回答してください':'⚠️ Answer basic items (FE/BE/DB) first');
+    }
     return;
   }
   showGenLangChooser();
