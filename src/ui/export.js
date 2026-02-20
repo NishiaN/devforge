@@ -82,6 +82,26 @@ function copyAllFiles(){
   } else {_fallbackCopy(fullText);toast(_ja?'📋 コピーしました':'📋 Copied');}
 }
 
+async function exportSelectedZip(paths){
+  const _ja=S.lang==='ja';
+  if(window._noZip||typeof JSZip==='undefined'){toast(_ja?'⚠️ ZIPエクスポートを利用できません':'⚠️ ZIP export unavailable');return;}
+  if(!paths||!paths.length){toast(_ja?'⚠️ 対象ファイルが見つかりません':'⚠️ No matching files found');return;}
+  const zip=new JSZip();
+  const root=fileSlug(S.projectName);
+  paths.forEach(function(p){if(S.files[p])zip.file(root+'/'+p,S.files[p]);});
+  const blob=await zip.generateAsync({type:'blob'});
+  const url=URL.createObjectURL(blob);
+  const link=document.createElement('a');link.href=url;link.download=root+'-selected.zip';link.click();
+  URL.revokeObjectURL(url);
+  toast(_ja?'📦 '+paths.length+'ファイルをエクスポートしました':'📦 Exported '+paths.length+' files');
+}
+
+function exportPillarGroup(prefixCsv){
+  const prefs=prefixCsv.split(',');
+  const paths=Object.keys(S.files).filter(function(f){return prefs.some(function(pr){return f.startsWith(pr)||f.includes(pr);});});
+  exportSelectedZip(paths);
+}
+
 function copyForAI(){
   const _ja=S.lang==='ja';
   const files=Object.entries(S.files);

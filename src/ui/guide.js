@@ -84,6 +84,26 @@ function showPostGenGuide(force){
     <div class="guide-badge">${_ja?'世界で唯一の仕様駆動AIプロジェクトジェネレーター':'The world\'s only spec-driven AI project generator'}</div>
     ${progBar}
     <div class="guide-steps">${stepsHtml}</div>
+    ${S.skillLv===2?`<div class="guide-bridge">
+      <div class="guide-bridge-title">${_ja?'🔭 次に探索すべき3つのピラー — Lv.2 → 3 へ':'🔭 3 Pillars to Explore Next — Lv.2 → 3'}</div>
+      <div class="guide-bridge-cards">
+        <button class="guide-bridge-card" onclick="this.closest('.guide-overlay').remove();var _t=document.querySelectorAll('.piltab');if(_t[3])_t[3].click();">
+          <span class="bridge-icon">🤖</span>
+          <div class="bridge-name">${_ja?'④ AIルール':'④ AI Rules'}</div>
+          <div class="bridge-why">${_ja?'Cursor/Cline/Windsurf/Gemini全対応ルールを自分仕様にカスタマイズ':'Customize rules for all AI tools to fit your workflow'}</div>
+        </button>
+        <button class="guide-bridge-card" onclick="this.closest('.guide-overlay').remove();var _t=document.querySelectorAll('.piltab');if(_t[7])_t[7].click();">
+          <span class="bridge-icon">🚀</span>
+          <div class="bridge-name">${_ja?'⑧ AIランチャー':'⑧ AI Launcher'}</div>
+          <div class="bridge-why">${_ja?'37種プロンプトでAIをプロジェクト専用に即戦力化':'37 prompt templates — make AI your dedicated team member'}</div>
+        </button>
+        <button class="guide-bridge-card" onclick="this.closest('.guide-overlay').remove();var _t=document.querySelectorAll('.piltab');if(_t[6])_t[6].click();">
+          <span class="bridge-icon">🗺️</span>
+          <div class="bridge-name">${_ja?'⑦ ロードマップ':'⑦ Roadmap'}</div>
+          <div class="bridge-why">${_ja?'学習計画をチェックリストで管理。Layer別に進捗を可視化':'Track learning path by layer with interactive checklist'}</div>
+        </button>
+      </div>
+    </div>`:''}
     <div class="guide-actions">
       ${S.skillLv<=1?`
       <button class="btn btn-s btn-sm" onclick="exportZIP()">${_ja?'📦 まずZIPを保存':'📦 Save ZIP First'}</button>

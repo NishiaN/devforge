@@ -1014,3 +1014,21 @@ div.guide-sub.guide-lv-p{background:none;color:var(--danger);}
     scroll-behavior:auto!important;
   }
 }
+/* Phase G1: Lv2 guide bridge */
+.guide-bridge{margin:14px 0 6px;padding:12px;background:var(--bg-3);border-radius:10px;border:1px solid var(--border);}
+.guide-bridge-title{font-size:11px;font-weight:700;color:var(--text-2);margin-bottom:10px;letter-spacing:.4px;text-transform:uppercase;}
+.guide-bridge-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.guide-bridge-card{background:var(--bg-2);border:1px solid var(--border);border-radius:8px;padding:10px 8px;cursor:pointer;text-align:left;transition:border-color .2s,transform .15s;width:100%;}
+.guide-bridge-card:hover{border-color:var(--accent);transform:translateY(-2px);}
+.bridge-icon{font-size:1.4em;display:block;margin-bottom:4px;}
+.bridge-name{font-size:12px;font-weight:700;color:var(--text);margin-bottom:3px;}
+.bridge-why{font-size:11px;color:var(--text-2);line-height:1.4;}
+/* Phase G2: Lv3 dashboard shortcuts */
+.dash-shortcuts{display:flex;flex-direction:column;gap:6px;padding:4px 0 8px;}
+.dash-sc-row{display:flex;align-items:center;gap:10px;}
+.dash-sc-key{background:var(--bg-3);border:1px solid var(--border);border-bottom-width:2px;border-radius:5px;padding:2px 8px;font-size:11px;font-family:monospace;color:var(--text);white-space:nowrap;}
+.dash-sc-desc{font-size:12px;color:var(--text-2);}
+/* Phase G4: Lv4 pillar export */
+.dash-pex-grid{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
+.dash-pex-btn{font-size:12px!important;display:flex!important;align-items:center;gap:5px;}
+.dash-pex-cnt{background:var(--bg-3);border-radius:4px;padding:1px 5px;font-size:10px;font-weight:700;color:var(--text-2);}

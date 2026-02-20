@@ -34,6 +34,23 @@ function showDashboard(){
     <div class="ctx-stat"><div class="num">${TECH_DB.length}</div><div class="lbl">${_ja?'技術DB':'Tech DB'}</div></div>
   </div>`;
   
+  // Lv3+ Power Shortcuts
+  if(_adv){
+    const _scs=_ja?[
+      ['Ctrl+B','サイドバー 開/閉'],
+      ['Ctrl+K','コマンドパレット（ファイル検索・アクション実行）'],
+      ['Ctrl+Shift+C','全ファイルをAI向けMarkdownでコピー'],
+    ]:[
+      ['Ctrl+B','Toggle sidebar'],
+      ['Ctrl+K','Command palette (search files & run actions)'],
+      ['Ctrl+Shift+C','Copy all files as AI-ready Markdown'],
+    ];
+    h+='<details class="dash-advanced" open><summary class="dash-adv-toggle">⌨️ '+(_ja?'パワーショートカット (Lv.3+)':'Power Shortcuts (Lv.3+)')+'</summary>';
+    h+='<div class="dash-shortcuts">';
+    _scs.forEach(function(sc){h+='<div class="dash-sc-row"><kbd class="dash-sc-key">'+sc[0]+'</kbd><span class="dash-sc-desc">'+sc[1]+'</span></div>';});
+    h+='</div></details>';
+  }
+
   // Model fit analysis (advanced — collapsed for beginners)
   h+=(_adv?'<details class="dash-advanced" open>':'<details class="dash-advanced">')+'<summary class="dash-adv-toggle">'+(_ja?'🔬 AI モデル & スタック分析':'🔬 AI Model & Stack Analysis')+'</summary>';
   const models=[
@@ -253,7 +270,37 @@ function showDashboard(){
 
   // Tech DB button
   h+=`<div class="dash-center"><button class="btn btn-s" onclick="renderTechDB()">📊 ${_ja?'技術マスターテーブル':'Tech Master Table'} (${TECH_DB.length} ${_ja?'エントリ':'entries'})</button></div>`;
-  
+
+  // Lv4+ Pillar selective export
+  if(S.skillLv>=4&&fileCount>0){
+    const _pg=_ja?[
+      {l:'① SDD 仕様書',p:'.spec/'},
+      {l:'② DevContainer',p:'.devcontainer/'},
+      {l:'③ MCP設定',p:'mcp-config'},
+      {l:'④ AIルール',p:'CLAUDE.md,.cursor/,.clinerules,.windsurfrules,AGENTS.md,AI_BRIEF.md,.gemini/,.kiro/,codex-instructions'},
+      {l:'⑦ ロードマップ',p:'roadmap/'},
+      {l:'⑫ セキュリティ',p:'docs/43_,docs/44_,docs/45_,docs/46_,docs/47_'},
+      {l:'docs/ 全文書',p:'docs/'},
+    ]:[
+      {l:'① SDD Specs',p:'.spec/'},
+      {l:'② DevContainer',p:'.devcontainer/'},
+      {l:'③ MCP Config',p:'mcp-config'},
+      {l:'④ AI Rules',p:'CLAUDE.md,.cursor/,.clinerules,.windsurfrules,AGENTS.md,AI_BRIEF.md,.gemini/,.kiro/,codex-instructions'},
+      {l:'⑦ Roadmap',p:'roadmap/'},
+      {l:'⑫ Security',p:'docs/43_,docs/44_,docs/45_,docs/46_,docs/47_'},
+      {l:'All docs/',p:'docs/'},
+    ];
+    h+='<h4 class="dash-h4-mt">📦 '+(_ja?'ピラー別エクスポート (Lv.4+)':'Pillar Export (Lv.4+)')+'</h4>';
+    h+='<div class="dash-pex-grid">';
+    _pg.forEach(function(g){
+      var _prefs=g.p.split(',');
+      var _cnt=Object.keys(S.files).filter(function(f){return _prefs.some(function(pr){return f.startsWith(pr)||f.includes(pr);});}).length;
+      if(_cnt===0)return;
+      h+='<button class="btn btn-s dash-pex-btn" onclick="exportPillarGroup(\''+escAttr(g.p)+'\')">'+esc(g.l)+' <span class="dash-pex-cnt">'+_cnt+'</span></button>';
+    });
+    h+='</div>';
+  }
+
   body.innerHTML=h;
 }
 
