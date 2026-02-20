@@ -37,10 +37,63 @@ const PRESET_CAT_MAP={
   hr:'business',helpdesk:'business',crm:'business',knowledge_base:'business',contract_mgmt:'business',survey:'business',job_board:'business',
   dashboard:'data_iot',iot:'data_iot',collab:'data_iot',field_service:'data_iot',logistics:'data_iot',
   fintech:'life_pro',health:'life_pro',property_mgmt:'life_pro',veterinary:'life_pro',clinic:'life_pro',construction_pay:'life_pro',lms:'life_pro',tutoring:'life_pro',portfolio:'life_pro',
+  factory:'data_iot',agri:'life_pro',energy:'data_iot',media_platform:'media_sns',gov_portal:'business',travel_booking:'life_pro',insurance_mgmt:'life_pro',
 };
-const PRESET_CATS_JA=[{key:'all',label:'すべて',desc:'全41プリセット'},{key:'saas_ai',label:'☁️ SaaS・AI',desc:'クラウドサービス・AI自動化'},{key:'ec_market',label:'🛒 EC・マーケット',desc:'販売・予約・イベント'},{key:'media_sns',label:'📱 メディア・SNS',desc:'情報発信・クリエイター・交流'},{key:'business',label:'🏢 ビジネス・業務',desc:'業務効率化・HR・CRM'},{key:'data_iot',label:'📊 データ・IoT',desc:'分析・デバイス管理・コラボ'},{key:'life_pro',label:'🏥 生活・専門',desc:'医療・教育・不動産・物流'}];
-const PRESET_CATS_EN=[{key:'all',label:'All',desc:'All 41 presets'},{key:'saas_ai',label:'☁️ SaaS & AI',desc:'Cloud services & AI automation'},{key:'ec_market',label:'🛒 E-Commerce',desc:'Sales, booking & events'},{key:'media_sns',label:'📱 Media & SNS',desc:'Content, creator & community'},{key:'business',label:'🏢 Business',desc:'Workflow, HR & CRM'},{key:'data_iot',label:'📊 Data & IoT',desc:'Analytics, devices & collab'},{key:'life_pro',label:'🏥 Life & Pro',desc:'Healthcare, education & logistics'}];
+const PRESET_CATS_JA=[{key:'all',label:'すべて',desc:'全48プリセット'},{key:'saas_ai',label:'☁️ SaaS・AI',desc:'クラウドサービス・AI自動化'},{key:'ec_market',label:'🛒 EC・マーケット',desc:'販売・予約・イベント'},{key:'media_sns',label:'📱 メディア・SNS',desc:'情報発信・クリエイター・交流'},{key:'business',label:'🏢 ビジネス・業務',desc:'業務効率化・HR・CRM'},{key:'data_iot',label:'📊 データ・IoT',desc:'分析・デバイス管理・コラボ'},{key:'life_pro',label:'🏥 生活・専門',desc:'医療・教育・不動産・物流'}];
+const PRESET_CATS_EN=[{key:'all',label:'All',desc:'All 48 presets'},{key:'saas_ai',label:'☁️ SaaS & AI',desc:'Cloud services & AI automation'},{key:'ec_market',label:'🛒 E-Commerce',desc:'Sales, booking & events'},{key:'media_sns',label:'📱 Media & SNS',desc:'Content, creator & community'},{key:'business',label:'🏢 Business',desc:'Workflow, HR & CRM'},{key:'data_iot',label:'📊 Data & IoT',desc:'Analytics, devices & collab'},{key:'life_pro',label:'🏥 Life & Pro',desc:'Healthcare, education & logistics'}];
 let _presetCatFilter='all';
+
+/* ─── Field Preset Mode ─────────────────────────────────────── */
+var _presetMode='standard';   // 'standard' | 'field'
+var _fieldScale='small';      // 'solo'|'small'|'medium'|'large'
+var _fieldCatFilter='all';    // field category key or 'all'
+
+function _renderFieldChips(){
+  const _ja=S.lang==='ja';const _en=!_ja;
+  const row=$('presetRow');if(!row||typeof PR_FIELD==='undefined')return;
+  Array.from(row.querySelectorAll('.prchip')).forEach(c=>c.remove());
+  const insertBefore=row.querySelector('.preset-footer');
+  Object.entries(PR_FIELD).forEach(function([k,v]){
+    if(!v||!v.name)return;
+    if(_fieldCatFilter!=='all'&&v.field!==_fieldCatFilter)return;
+    const c=document.createElement('span');c.className='prchip';
+    c.textContent=(v.icon||'')+(v.icon?' ':'')+(_en&&v.nameEn?v.nameEn:v.name);
+    if(S.preset===('field:'+k))c.classList.add('on');
+    c.onclick=function(e){pickFieldPreset(k,e);};
+    // Tooltip: scaleHint + meta
+    const sh=v.scaleHint&&v.scaleHint[_fieldScale]?(_ja?v.scaleHint[_fieldScale].ja:v.scaleHint[_fieldScale].en):'';
+    const m=v.meta||{};
+    const revLbl=_ja?'💰':'💰';const regLbl=_ja?'📋規制:':'📋Reg:';const agLbl=_ja?'🤖':'🤖';
+    const mmLbl=_ja?'🖼️':'🖼️';const odLbl=_ja?'☁️':'☁️';const apiLbl=_ja?'🔌API:':'🔌API:';
+    const metaStr=regLbl+(m.regulation||'-')+' | '+agLbl+(m.agentLv||'-')+' | '+mmLbl+(m.multimodal||'-')+' | '+odLbl+(m.onDevice||'-');
+    const purpose=(_en&&v.purposeEn)?v.purposeEn:v.purpose||'';
+    c.title=purpose+(sh?'\n─────\n'+sh:'')+'\n─────\n'+metaStr;
+    if(insertBefore)row.insertBefore(c,insertBefore);else row.appendChild(c);
+  });
+}
+
+function pickFieldPreset(k,e){
+  const _ja=S.lang==='ja';const _en=!_ja;
+  const v=PR_FIELD[k];if(!v)return;
+  S.preset='field:'+k;
+  document.querySelectorAll('.prchip').forEach(c=>c.classList.remove('on'));
+  if(e&&e.target)e.target.classList.add('on');
+  if(v.name)$('nameIn').value=(_en&&v.nameEn)?v.nameEn:v.name;
+  save();
+}
+
+function _switchPresetMode(mode){
+  _presetMode=mode;
+  const row=$('presetRow');if(!row)return;
+  // Sync mode toggle button styles
+  const btns=row.querySelectorAll('.preset-mode-btn');
+  btns.forEach(function(b){b.classList.toggle('active',b.dataset.mode===mode);});
+  // Show/hide scale+field-cat bars
+  const scaleSel=row.querySelector('.scale-selector');if(scaleSel)scaleSel.style.display=mode==='field'?'flex':'none';
+  const fcBar=row.querySelector('.field-cat-bar');if(fcBar)fcBar.style.display=mode==='field'?'flex':'none';
+  const stdBar=row.querySelector('.preset-cat-bar');if(stdBar)stdBar.style.display=mode==='standard'?'flex':'none';
+  if(mode==='standard')_renderPresetChips();else _renderFieldChips();
+}
 
 var _beginnerPresets=new Set(['saas','lms','portfolio','cms','ec']);
 function _renderPresetChips(){
@@ -71,8 +124,60 @@ function _renderPresetChips(){
 function initPresets(){
   const row=$('presetRow');row.innerHTML='';
   const _ja=S.lang==='ja';
-  // Category filter bar
+
+  // ── Mode Toggle (📦 標準 | 🎓 分野別) — hidden for Lv0-1 ──
+  if(S.skillLv>=2&&typeof PR_FIELD!=='undefined'){
+    const modeBar=document.createElement('div');modeBar.className='preset-mode-toggle';
+    const modes=_ja?[{k:'standard',l:'📦 標準'},{k:'field',l:'🎓 分野別'}]:[{k:'standard',l:'📦 Standard'},{k:'field',l:'🎓 Field'}];
+    modes.forEach(function(m){
+      const b=document.createElement('button');b.className='preset-mode-btn'+((_presetMode===m.k)?' active':'');
+      b.dataset.mode=m.k;b.textContent=m.l;
+      b.onclick=function(){_switchPresetMode(m.k);};
+      modeBar.appendChild(b);
+    });
+    row.appendChild(modeBar);
+  }
+
+  // ── Scale Selector (field mode only) ──
+  const scaleKeys=['solo','small','medium','large'];
+  const scaleLabels=_ja?['👤 個人','🏠 小規模','🏢 中規模','🏭 大規模']:['👤 Solo','🏠 Small','🏢 Medium','🏭 Large'];
+  const scaleSel=document.createElement('div');scaleSel.className='scale-selector';
+  scaleSel.style.display=_presetMode==='field'?'flex':'none';
+  scaleKeys.forEach(function(sk,i){
+    const b=document.createElement('button');b.className='scale-btn'+((_fieldScale===sk)?' active':'');
+    b.textContent=scaleLabels[i];b.dataset.scale=sk;
+    b.onclick=function(){
+      _fieldScale=sk;
+      scaleSel.querySelectorAll('.scale-btn').forEach(function(sb){sb.classList.toggle('active',sb.dataset.scale===sk);});
+      _renderFieldChips();
+    };
+    scaleSel.appendChild(b);
+  });
+  row.appendChild(scaleSel);
+
+  // ── Field Category Bar (field mode only) ──
+  const fcBar=document.createElement('div');fcBar.className='field-cat-bar';
+  fcBar.style.display=_presetMode==='field'?'flex':'none';
+  if(typeof FIELD_CATS_JA!=='undefined'&&typeof FIELD_CATS_EN!=='undefined'){
+    const fcats=_ja?FIELD_CATS_JA:FIELD_CATS_EN;
+    const trend=typeof FIELD_TREND!=='undefined'?FIELD_TREND:{};
+    fcats.forEach(function(fc){
+      const b=document.createElement('button');b.className='field-cat-btn'+((_fieldCatFilter===fc.key)?' active':'');
+      const stars=fc.key!=='all'&&trend[fc.key]?'⭐'.repeat(trend[fc.key]):'';
+      b.textContent=fc.label+(stars?' '+stars:'');b.title=(fc.desc||'')+(stars?' | 成長トレンド:'+stars:'');
+      b.onclick=function(){
+        _fieldCatFilter=fc.key;
+        fcBar.querySelectorAll('.field-cat-btn').forEach(function(fb){fb.classList.toggle('active',fb===b);});
+        _renderFieldChips();
+      };
+      fcBar.appendChild(b);
+    });
+  }
+  row.appendChild(fcBar);
+
+  // ── Standard Category Bar ──
   const catBar=document.createElement('div');catBar.className='preset-cat-bar';catBar.id='presetCatBar';
+  catBar.style.display=_presetMode==='standard'?'flex':'none';
   const cats=_ja?PRESET_CATS_JA:PRESET_CATS_EN;
   cats.forEach(cat=>{
     const btn=document.createElement('button');
@@ -117,7 +222,7 @@ function initPresets(){
   footer.appendChild(notice);
   row.appendChild(footer);
   // Render chips (inserted before footer)
-  _renderPresetChips();
+  if(_presetMode==='field')_renderFieldChips();else _renderPresetChips();
 }
 
 function showPresetCompare(){
@@ -184,7 +289,39 @@ function start(){
     loadPreset('saas');
     toast(_ja?'初心者向けにSaaSプリセットを自動選択しました':'Auto-selected SaaS preset for beginners');
   }
-  const p=PR[S.preset];const _en=S.lang==='en';
+  const _en=S.lang==='en';
+  // ── Field Preset Mode: apply scale defaults then field preset overrides ──
+  var _isFieldPreset=S.preset&&S.preset.indexOf('field:')==='field:'.indexOf('field:')&&S.preset.slice(0,6)==='field:';
+  if(_isFieldPreset&&typeof PR_FIELD!=='undefined'&&typeof _SCALE_DEFAULTS!=='undefined'){
+    const fk=S.preset.slice(6);
+    const fp=PR_FIELD[fk];
+    const sd=_SCALE_DEFAULTS[_fieldScale]||_SCALE_DEFAULTS.small;
+    if(fp){
+      // Apply scale defaults first
+      if(sd.frontend)S.answers.frontend=sd.frontend;
+      if(sd.backend)S.answers.backend=sd.backend;
+      if(sd.deploy)S.answers.deploy=sd.deploy;
+      if(sd.ai_auto)S.answers.ai_auto=sd.ai_auto;
+      // Then apply field preset specifics
+      if(fp.purpose)S.answers.purpose=(_en&&fp.purposeEn)?fp.purposeEn:fp.purpose;
+      if(fp.target){const t=_en&&fp.targetEn?fp.targetEn:fp.target;S.answers.target=Array.isArray(t)?t.join(', '):t;}
+      if(fp.features){const f=_en&&fp.featuresEn?fp.featuresEn:fp.features;S.answers.mvp_features=Array.isArray(f)?f.join(', '):f;}
+      if(fp.entities)S.answers.data_entities=fp.entities;
+    }
+    var presetName=fp&&fp.name?(_en&&fp.nameEn?fp.nameEn:fp.name):'';
+    var preFilledCount=Object.keys(S.answers).length;
+    save();saveProject();
+    const onbF=$('onboard');const wsF=$('ws');
+    onbF.classList.add('phase-exit');
+    setTimeout(()=>{onbF.style.display='none';wsF.style.display='flex';wsF.classList.add('phase-enter');setTimeout(()=>wsF.classList.remove('phase-enter'),300);},200);
+    if(typeof initSidebar==='function')initSidebar();
+    initPills();updProgress();
+    if(S.skillLv<=1){addMsg('bot',_ja?'🌱 質問に答えるだけで設計書が自動生成されます。難しく考えなくてOK！スキップもできます。':'🌱 Just answer the questions and design docs will be auto-generated. Don\'t overthink it — you can skip any question!');}
+    showQ();
+    if(presetName&&preFilledCount>0){toast(_ja?'✅ "'+presetName+'" ['+(_ja?_fieldScale:'Scale:')+_fieldScale+'] を適用 — '+preFilledCount+'件の回答を自動入力':'✅ Applied "'+presetName+'" [Scale:'+_fieldScale+'] — '+preFilledCount+' answers pre-filled');}
+    return;
+  }
+  const p=PR[S.preset];
   if(p&&p.name){
     if(p.purpose)S.answers.purpose=(_en&&p.purposeEn)?p.purposeEn:p.purpose;
     if(p.target){const t=_en&&p.targetEn?p.targetEn:p.target;S.answers.target=Array.isArray(t)?t.join(', '):t;}
@@ -206,8 +343,8 @@ function start(){
       S.answers.payment=_payMap[p.payment]||p.payment;
     }
   }
-  const presetName=p&&p.name?(_en&&p.nameEn?p.nameEn:p.name):'';
-  const preFilledCount=Object.keys(S.answers).length;
+  var presetName=p&&p.name?(_en&&p.nameEn?p.nameEn:p.name):'';
+  var preFilledCount=Object.keys(S.answers).length;
   save();saveProject();
 
   // View transition animation (HCD: ⑤感情体験)

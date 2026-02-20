@@ -1046,3 +1046,14 @@ div.guide-sub.guide-lv-p{background:none;color:var(--danger);}
 .dash-pex-grid{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
 .dash-pex-btn{font-size:12px!important;display:flex!important;align-items:center;gap:5px;}
 .dash-pex-cnt{background:var(--bg-3);border-radius:4px;padding:1px 5px;font-size:10px;font-weight:700;color:var(--text-2);}
+
+/* Phase J: Field Preset Mode */
+.preset-mode-toggle{display:flex;gap:6px;padding:8px 0 6px;border-bottom:1px solid var(--border);margin-bottom:8px;}
+.preset-mode-btn{background:var(--bg-3);border:1px solid var(--border);border-radius:20px;padding:5px 14px;font-size:12px;cursor:pointer;color:var(--text-2);transition:background .15s,border-color .15s,color .15s;}
+.preset-mode-btn.active,.preset-mode-btn:hover{background:var(--accent);border-color:var(--accent);color:#fff;}
+.scale-selector{display:flex;gap:4px;padding:4px 0 6px;overflow-x:auto;}
+.scale-btn{background:var(--bg-3);border:1px solid var(--border);border-radius:16px;padding:4px 10px;font-size:11px;cursor:pointer;color:var(--text-2);white-space:nowrap;transition:background .15s,border-color .15s,color .15s;}
+.scale-btn.active,.scale-btn:hover{background:var(--accent-2,var(--accent));border-color:var(--accent);color:#fff;}
+.field-cat-bar{display:flex;gap:4px;padding:4px 0 6px;overflow-x:auto;flex-wrap:nowrap;}
+.field-cat-btn{background:var(--bg-3);border:1px solid var(--border);border-radius:16px;padding:4px 10px;font-size:11px;cursor:pointer;color:var(--text-2);white-space:nowrap;transition:background .15s,border-color .15s,color .15s;}
+.field-cat-btn.active,.field-cat-btn:hover{background:var(--bg-2);border-color:var(--accent);color:var(--text);}
