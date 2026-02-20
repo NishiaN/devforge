@@ -26,7 +26,7 @@ DevForge v9's documentation is optimized into role-specific files:
 ## Build & Test
 ```bash
 # Build
-node build.js              # Produces devforge-v9.html (~1890KB, limit 2000KB)
+node build.js              # Produces devforge-v9.html (~1890KB, limit 3000KB)
 node build.js --no-minify  # Skip minification (debug)
 node build.js --report     # Show size report
 node build.js --check-css  # Validate CSS custom properties
@@ -55,9 +55,9 @@ npm run check              # Syntax check extracted JS
 3. **Minify** (unless `--no-minify` flag) — CSS/JS basic minification
 4. **Inject** into `template.html` structure
 5. **Write** to `devforge-v9.html`
-6. **Validate** size ≤2000KB (warn if exceeded)
+6. **Validate** size ≤3000KB (warn if exceeded)
 
-**Current Status:** ~1890KB / 2000KB limit (~94% utilized, Phase A-E UX improvements complete)
+**Current Status:** ~1890KB / 3000KB limit (~63% utilized, Phase A-E UX improvements complete)
 
 ### ⚠️ Critical: Minification Strategy
 
@@ -443,7 +443,7 @@ const PR = {
 
 → See `docs/CLAUDE-REFERENCE.md` for detailed 6-step process.
 
-**Summary:** Create generator → Register in build system → Update UI & i18n → Update docs → Add tests → Check size budget (≤2000KB)
+**Summary:** Create generator → Register in build system → Update UI & i18n → Update docs → Add tests → Check size budget (≤3000KB)
 
 **⚠️ Easy to miss:** Add an `else if(pillar===N)` branch to `buildFileTree()` in `src/ui/preview.js` (line ~426). Each pillar tab maps to an index (P1=0 … P20=19). Without this, the pillar's docs are invisible in the file tree even though they exist in `S.files`.
 
@@ -554,7 +554,7 @@ DevForge includes a **Prompt Launcher** that generates structured prompts by aut
 | data-coverage.test.js | 40 tests | Data integrity: entity coverage, FK validation, domain detection (32 domains), playbook completeness, DOMAIN_OPS coverage, DOMAIN_MARKET coverage (3 new P15 tests), P19 entity tests (Organization/OrgMember/OrgInvite) |
 | r27-regression.test.js | 17 tests | Bug fixes: prices, FK, KPI, ports |
 | r28-regression.test.js | 19 tests | Quality: REST methods, AC, scope_out, verification |
-| build.test.js | build | Build size ≤2000KB, pillar function existence (P1-P20), sbPillarGrid element, PILLAR array lengths |
+| build.test.js | build | Build size ≤3000KB, pillar function existence (P1-P20), sbPillarGrid element, PILLAR array lengths |
 | compat.test.js | 75 tests + 7 synergy | Compatibility validation (58 rules: 11 ERROR, 37 WARN, 10 INFO) + calcSynergy unit tests |
 | security.test.js | 26 tests | Security: CSP, SRI, sanitization, XSS prevention, proto pollution, .claude/settings.json safety (2 new tests) |
 | ops.test.js | 16 tests | Ops Intelligence (P14): runbook generation, checklist, ops plane design, SLO adaptation, domain-specific flags, observability stack, circuit breaker, audit schema |
