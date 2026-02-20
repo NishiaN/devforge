@@ -363,7 +363,29 @@ function checkCompat(answers){
 // ── Stack Synergy Score Data ──
 const SYNERGY_FE_BE={'Next.js|Supabase':95,'Next.js|Firebase':92,'Next.js|Vercel':98,'Next.js|Express':85,'Next.js|NestJS':88,'Next.js|Convex':93,'React|Express':80,'React|Firebase':88,'React|Supabase':90,'Vue|Nuxt|Express':82,'Vue|Nuxt|Firebase':85,'Svelte|SvelteKit|Supabase':90,'Astro|static':95,'Astro|Supabase':88,'Angular|NestJS':90,'Angular|Firebase':92};
 const SYNERGY_DEPLOY={'Next.js|Vercel':98,'Nuxt|Vercel':95,'Nuxt|Netlify':93,'SvelteKit|Vercel':94,'Astro|Vercel':96,'Astro|Netlify':95,'Astro|Cloudflare':93,'React|Vercel':90,'React|Netlify':88,'Firebase|Firebase':98,'Supabase|Vercel':95,'Express|Railway':92,'NestJS|Railway':94,'Django|Railway':93,'FastAPI|Railway':91,'Spring|Railway':88,'Convex|Vercel':96};
-const SYNERGY_DOMAIN={'fintech|Supabase':15,'fintech|PostgreSQL':12,'fintech|Stripe':18,'health|Supabase':14,'health|PostgreSQL':12,'legal|PostgreSQL':10,'ec|Stripe':20,'ec|Saleor':18,'ec|Supabase':12,'education|Firebase':10,'education|Supabase':12,'saas|Supabase':15,'saas|Stripe':18,'iot|Firebase':12,'iot|Supabase':10,'community|Firebase':14,'content|Supabase':12,'marketplace|Stripe':15};
+const SYNERGY_DOMAIN={'fintech|Supabase':15,'fintech|PostgreSQL':12,'fintech|Stripe':18,'health|Supabase':14,'health|PostgreSQL':12,'legal|PostgreSQL':10,'ec|Stripe':20,'ec|Saleor':18,'ec|Supabase':12,'education|Firebase':10,'education|Supabase':12,'saas|Supabase':15,'saas|Stripe':18,'iot|Firebase':12,'iot|Supabase':10,'community|Firebase':14,'content|Supabase':12,'marketplace|Stripe':15,
+  // Extended domain synergy coverage (32 domains)
+  'realestate|Supabase':12,'realestate|PostgreSQL':10,'realestate|Stripe':14,
+  'analytics|Supabase':14,'analytics|PostgreSQL':12,
+  'hr|Supabase':12,'hr|PostgreSQL':10,
+  'portfolio|Astro':18,'portfolio|Vercel':15,
+  'tool|Supabase':12,'tool|Vercel':10,
+  'ai|Supabase':14,'ai|Firebase':12,'ai|Stripe':10,
+  'automation|Supabase':12,'automation|Vercel':10,
+  'event|Stripe':16,'event|Supabase':12,
+  'gamify|Firebase':16,'gamify|Supabase':10,
+  'collab|Supabase':15,'collab|Firebase':14,'collab|Stripe':10,
+  'devtool|Supabase':12,'devtool|Stripe':14,'devtool|Vercel':12,
+  'creator|Stripe':18,'creator|Supabase':12,'creator|Firebase':10,
+  'newsletter|Supabase':14,'newsletter|Stripe':12,
+  'manufacturing|PostgreSQL':12,'manufacturing|Supabase':10,
+  'logistics|Supabase':12,'logistics|PostgreSQL':10,
+  'agriculture|Supabase':10,'agriculture|Firebase':8,
+  'energy|Supabase':12,'energy|PostgreSQL':10,
+  'media|Supabase':14,'media|Stripe':12,'media|Firebase':10,
+  'government|PostgreSQL':12,'government|Supabase':10,
+  'travel|Stripe':16,'travel|Supabase':14,
+  'insurance|PostgreSQL':12,'insurance|Supabase':10,'insurance|Stripe':12};
 
 function calcSynergy(a){
   if(!a||!a.frontend||!a.backend)return{overall:60,d1:60,d2:60,d3:60,d4:60,d5:60,domain:null};

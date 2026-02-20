@@ -75,28 +75,36 @@ window.addEventListener('beforeunload',function(e){
 });
 
 // Mobile swipe gestures (HCD: ④身体負荷 ②使いやすさ)
-if(window.innerWidth<=768){
-  let _swipeStartX=0;
-  let _swipeStartY=0;
-  document.addEventListener('touchstart',e=>{
-    _swipeStartX=e.touches[0].clientX;
-    _swipeStartY=e.touches[0].clientY;
-  },{passive:true});
+let _swipeStartX=0;
+let _swipeStartY=0;
+document.addEventListener('touchstart',e=>{
+  _swipeStartX=e.touches[0].clientX;
+  _swipeStartY=e.touches[0].clientY;
+},{passive:true});
 
-  document.addEventListener('touchend',e=>{
-    const diffX=e.changedTouches[0].clientX-_swipeStartX;
-    const diffY=e.changedTouches[0].clientY-_swipeStartY;
-    if(Math.abs(diffX)<50||Math.abs(diffY)>50)return; // Minimum swipe distance + vertical scroll tolerance
+document.addEventListener('touchend',e=>{
+  if(document.body.clientWidth>768)return; // Evaluate at swipe time (handles resize/rotation)
+  const diffX=e.changedTouches[0].clientX-_swipeStartX;
+  const diffY=e.changedTouches[0].clientY-_swipeStartY;
+  if(Math.abs(diffX)<50||Math.abs(diffY)>50)return; // Minimum swipe distance + vertical scroll tolerance
 
-    if(diffX>0){
-      // Swipe right → show chat
-      const tabs=document.querySelectorAll('.mobtab');
-      if(tabs.length>0&&tabs[0])tabs[0].click();
-    }else{
-      // Swipe left → show preview
-      const tabs=document.querySelectorAll('.mobtab');
-      if(tabs.length>1&&tabs[1])tabs[1].click();
-    }
-  },{passive:true});
+  if(diffX>0){
+    // Swipe right → show chat
+    const tabs=document.querySelectorAll('.mobtab');
+    if(tabs.length>0&&tabs[0])tabs[0].click();
+  }else{
+    // Swipe left → show preview
+    const tabs=document.querySelectorAll('.mobtab');
+    if(tabs.length>1&&tabs[1])tabs[1].click();
+  }
+},{passive:true});
+
+// C-3: Mobile Files tab handler
+function mobFiles(){
+  if(typeof switchSidebarTab==='function')switchSidebarTab('files');
+  // Show sidebar content in the main area on mobile
+  const panel=$('ws');if(panel)panel.style.display='flex';
+  // Activate the files mobtab
+  document.querySelectorAll('.mobtab').forEach((t,i)=>{t.classList.toggle('on',i===2);t.setAttribute('aria-selected',i===2?'true':'false');});
 }
 

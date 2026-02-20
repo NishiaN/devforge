@@ -1,4 +1,5 @@
 /* ═══ V9 PROJECT MANAGER ═══ */
+const _SAFE_KEYS=['phase','step','answers','projectName','skill','skillLv','preset','lang','genLang','theme','pillar','previewFile','files','skipped','progress','editedFiles','prevFiles','_v'];
 function getProjects(){return _jp(_lsGet('devforge-projects'),{});}
 function saveProject(){
   if(!S.projectName)return;
@@ -9,12 +10,13 @@ function saveProject(){
 function switchProject(name){
   const ps=getProjects();const p=ps[name];
   if(p&&p.state){
-    const _SAFE_KEYS=['phase','step','answers','projectName','skill','skillLv','preset','lang','genLang','theme','pillar','previewFile','files','skipped','progress','editedFiles','prevFiles','_v'];
     _SAFE_KEYS.forEach(k=>{if(Object.prototype.hasOwnProperty.call(p.state,k))S[k]=p.state[k];});
     save();location.reload();
   }
 }
 function deleteProject(name){
+  const _ja=S.lang==='ja';
+  if(!confirm(_ja?'「'+name+'」を削除しますか？':'Delete "'+name+'"?'))return;
   const ps=getProjects();delete ps[name];
   _lsSet('devforge-projects',JSON.stringify(ps));
   if(S.projectName===name){_lsRm(KEY);location.reload();}
@@ -61,7 +63,6 @@ function importProject(){
         const ps=getProjects();
         ps[data.state.projectName]=data;
         _lsSet('devforge-projects',JSON.stringify(ps));
-        const _SAFE_KEYS=['phase','step','answers','projectName','skill','skillLv','preset','lang','genLang','theme','pillar','previewFile','files','skipped','progress','editedFiles','prevFiles','_v'];
         _SAFE_KEYS.forEach(k=>{if(Object.prototype.hasOwnProperty.call(data.state,k))S[k]=data.state[k];});
         save();
         toast(_ja?'✅ インポート完了':'✅ Import complete');
@@ -87,9 +88,13 @@ function showPM(){
     names.forEach(name=>{
       const isCurrent=name===S.projectName;
       const meta=ps[name].date?new Date(ps[name].date).toLocaleDateString():'';
-      html+='<div class="pm-item'+(isCurrent?' current':'')+'" onclick="switchProject(\''+escAttr(name)+'\')"><div><div class="pm-item-name">'+esc(name)+(isCurrent?' ✓':'')+'</div><div class="pm-item-meta">'+meta+'</div></div><div class="pm-item-acts"><button onclick="event.stopPropagation();deleteProject(\''+escAttr(name)+'\')">🗑️</button></div></div>';
+      const estKB=Math.round(JSON.stringify(ps[name]).length/512);
+      html+='<div class="pm-item'+(isCurrent?' current':'')+'" onclick="switchProject(\''+escAttr(name)+'\')"><div><div class="pm-item-name">'+esc(name)+(isCurrent?' ✓':'')+'</div><div class="pm-item-meta">'+meta+' · ~'+estKB+'KB</div></div><div class="pm-item-acts"><button onclick="event.stopPropagation();deleteProject(\''+escAttr(name)+'\')" aria-label="'+(esc(_ja?'削除':'Delete'))+'">🗑️</button></div></div>';
     });
   }
+  const usg=typeof _lsUsage==='function'?_lsUsage():{used:0,pct:0};
+  const usgColor=usg.pct>=80?'var(--danger)':usg.pct>=60?'var(--warn)':'var(--success)';
+  html+='<div class="pm-storage"><div class="pm-storage-label"><span>'+(usg.pct)+'% '+(_ja?'使用中':'used')+' (~'+Math.round(usg.used/1024)+'KB / 5120KB)</span></div><div class="pm-storage-bar"><div class="pm-storage-fill" style="width:'+Math.min(100,usg.pct)+'%;background:'+usgColor+'"></div></div></div>';
   html+='<div class="pm-actions"><button class="btn btn-s" onclick="newProject()">➕ '+(_ja?'新規プロジェクト':'New Project')+'</button><button class="btn btn-s" onclick="importProject()">📥 '+(_ja?'インポート':'Import')+'</button>';
   if(S.projectName)html+='<button class="btn btn-s" onclick="exportProject()">📤 '+(_ja?'エクスポート':'Export')+'</button>';
   html+='<button class="btn btn-g btn-sm" onclick="closePM()">'+(_ja?'閉じる':'Close')+'</button></div></div>';

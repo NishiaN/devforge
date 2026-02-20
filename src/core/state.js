@@ -107,6 +107,7 @@ let _lsOK=true;try{localStorage.setItem('_t','1');localStorage.removeItem('_t');
 function _lsGet(k){if(!_lsOK)return null;try{return localStorage.getItem(k);}catch(e){return null;}}
 function _lsSet(k,v){if(!_lsOK)return;try{localStorage.setItem(k,v);}catch(e){}}
 function _lsRm(k){if(!_lsOK)return;try{localStorage.removeItem(k);}catch(e){}}
+function _lsUsage(){try{const bytes=JSON.stringify(localStorage).length*2;return{used:bytes,pct:Math.round(bytes/(5*1024*1024)*100)};}catch(e){return{used:0,pct:0};}}
 
 // Save indicator (HCD: ⑥文脈適合)
 function showSaveIndicator(){
