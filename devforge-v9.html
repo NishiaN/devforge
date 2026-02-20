@@ -2756,6 +2756,7 @@ fintech:'life_pro',health:'life_pro',property_mgmt:'life_pro',veterinary:'life_p
 const PRESET_CATS_JA=[{key:'all',label:'すべて',desc:'全41プリセット'},{key:'saas_ai',label:'☁️ SaaS・AI',desc:'クラウドサービス・AI自動化'},{key:'ec_market',label:'🛒 EC・マーケット',desc:'販売・予約・イベント'},{key:'media_sns',label:'📱 メディア・SNS',desc:'情報発信・クリエイター・交流'},{key:'business',label:'🏢 ビジネス・業務',desc:'業務効率化・HR・CRM'},{key:'data_iot',label:'📊 データ・IoT',desc:'分析・デバイス管理・コラボ'},{key:'life_pro',label:'🏥 生活・専門',desc:'医療・教育・不動産・物流'}];
 const PRESET_CATS_EN=[{key:'all',label:'All',desc:'All 41 presets'},{key:'saas_ai',label:'☁️ SaaS & AI',desc:'Cloud services & AI automation'},{key:'ec_market',label:'🛒 E-Commerce',desc:'Sales, booking & events'},{key:'media_sns',label:'📱 Media & SNS',desc:'Content, creator & community'},{key:'business',label:'🏢 Business',desc:'Workflow, HR & CRM'},{key:'data_iot',label:'📊 Data & IoT',desc:'Analytics, devices & collab'},{key:'life_pro',label:'🏥 Life & Pro',desc:'Healthcare, education & logistics'}];
 let _presetCatFilter='all';
+var _beginnerPresets=new Set(['saas','lms','portfolio','cms','ec']);
 function _renderPresetChips(){
 const row=$('presetRow');if(!row)return;
 const _ja=S.lang==='ja';const _en=!_ja;
@@ -2764,6 +2765,8 @@ Array.from(row.querySelectorAll('.prchip')).forEach(c=>c.remove());
 const insertBefore=row.querySelector('.preset-footer');
 Object.entries(PR).forEach(([k,v])=>{
 if(k==='custom'||!v.name)return;
+// Lv0-1: show only 5 beginner-safe presets
+if(S.skillLv<=1&&!_beginnerPresets.has(k))return;
 const cat=PRESET_CAT_MAP[k]||'saas_ai';
 if(_presetCatFilter!=='all'&&cat!==_presetCatFilter)return;
 const c=document.createElement('span');c.className='prchip';
@@ -2796,13 +2799,16 @@ _renderPresetChips();
 };
 catBar.appendChild(btn);
 });
+// Lv0-1: hide category bar (only 5 presets shown, no need for filters)
+if(S.skillLv<=1)catBar.style.display='none';
 row.appendChild(catBar);
 // Footer area (compare + custom + notice) — appended BEFORE chips so _renderPresetChips can insertBefore it
 const footer=document.createElement('div');footer.className='preset-footer';
-// Compare button
+// Compare button (hidden for Lv0-1)
 const cb=document.createElement('span');cb.className='prchip prchip-cmp';
 cb.textContent=_ja?'⚔️ 比較':'⚔️ Compare';
 cb.onclick=()=>showPresetCompare();
+if(S.skillLv<=1)cb.style.display='none';
 footer.appendChild(cb);
 // "Start from scratch" custom mode chip
 const cs=document.createElement('span');cs.className='prchip prchip-custom';
@@ -3819,10 +3825,13 @@ const g=$('sbPillarGrid');if(!g)return;
 const _ja=S.lang==='ja';
 const hasFiles=Object.keys(S.files||{}).length>0;
 const names=_ja?['SDD','DevContainer','MCP','AIルール','品質','ロードマップ','デザイン','リバース','実装','セキュリティ','戦略','運用','未来','開発IQ','ゲノム','Prompt Ops','Enterprise','CI/CD','仕様書','共通']:['SDD','DevContainer','MCP','AI Rules','Quality','Roadmap','Design','Reverse','Impl','Security','Strategy','Ops','Future','Dev IQ','Genome','Prompt Ops','Enterprise','CI/CD','Docs','Common'];
+// Lv0-1: show only 4 essential pillars (same set as hero badge filter)
+var _bpFilter=S.skillLv<=1?new Set([0,3,7,8]):null;
 let h='';
 for(let i=0;i<20;i++){
 const cls='sb-pillar-icon'+(hasFiles?' completed':' inactive');
-h+='<button class="'+cls+'" title="'+esc(names[i])+'" onclick="clickPillarIcon('+i+')" aria-label="'+esc(names[i])+'">'+PILLAR_ICONS[i]+'</button>';
+const hidden=_bpFilter&&!_bpFilter.has(i)?'style="display:none"':'';
+h+='<button class="'+cls+'" title="'+esc(names[i])+'" onclick="clickPillarIcon('+i+')" aria-label="'+esc(names[i])+'" '+hidden+'>'+PILLAR_ICONS[i]+'</button>';
 }
 g.innerHTML=h;
 }
@@ -19097,6 +19106,7 @@ const url=URL.createObjectURL(blob);
 const link=document.createElement('a');link.href=url;link.download=root+'.zip';link.click();
 URL.revokeObjectURL(url);
 addMsg('bot',_ja?`📦 ${root}.zip (${Object.keys(S.files).length}ファイル) をダウンロードしました！`:`📦 Downloaded ${root}.zip (${Object.keys(S.files).length} files)!`);
+S._zipDone=true;
 _lsSet('devforge-last-export',new Date().toISOString());
 }
 async function exportPDF(){
@@ -20418,6 +20428,8 @@ Cursor:{ja:['Step 1: .cursor/rules配置','Step 2: Ctrl+Shift+I Agent起動','St
 'Claude Code':{ja:['Step 1: CLAUDE.md自動読込','Step 2: /init初期化','Step 3: AI_BRIEF.md→仕様順投入'],en:['Step 1: CLAUDE.md auto-loaded','Step 2: /init','Step 3: Feed AI_BRIEF.md→specs']},
 Copilot:{ja:['Step 1: copilot-instructions.md配置','Step 2: Tab補完+Chat','Step 3: #fileでコンテキスト指定'],en:['Step 1: Place copilot-instructions.md','Step 2: Tab+Chat','Step 3: Use #file context']},
 Windsurf:{ja:['Step 1: .windsurfrules自動読込','Step 2: Cascadeモード起動','Step 3: MCP設定で拡張'],en:['Step 1: .windsurfrules auto-loaded','Step 2: Launch Cascade','Step 3: Extend with MCP']},
+Cline:{ja:['Step 1: フォルダを開いて.clinerules確認','Step 2: tasks.mdの最優先タスクを選択','Step 3: 「このタスクを実装して」で実行'],en:['Step 1: Open folder, check .clinerules','Step 2: Select top task from tasks.md','Step 3: Run with "implement this task"']},
+Gemini:{ja:['Step 1: CLAUDE.mdの内容をプロンプトに貼り付け','Step 2: tasks.mdの最優先タスクを指定','Step 3: コード生成を実行'],en:['Step 1: Paste CLAUDE.md content into prompt','Step 2: Specify top task from tasks.md','Step 3: Execute code generation']},
 _default:{ja:['Step 1: CLAUDE.md貼り付け','Step 2: Ctrl+Shift+C全コピー','Step 3: tasks.md順に指示'],en:['Step 1: Paste CLAUDE.md','Step 2: Ctrl+Shift+C copy all','Step 3: Instruct via tasks.md']}
 };
 function getADRs(a,_ja){
@@ -21864,6 +21876,13 @@ const kb=$('kbOverlay');if(kb){kb.classList.remove('show');releaseFocus(kb);}
 }
 }
 });
+// Warn before leaving page if files are generated and not yet downloaded (D1)
+window.addEventListener('beforeunload',function(e){
+if(Object.keys(S.files||{}).length>0&&!S._zipDone){
+e.preventDefault();
+e.returnValue='';
+}
+});
 // Mobile swipe gestures (HCD: ④身体負荷 ②使いやすさ)
 if(window.innerWidth<=768){
 let _swipeStartX=0;
@@ -22039,7 +22058,12 @@ if(tabs[1])tabs[1].textContent=ja?'プレビュー':'Preview';
 // Pillar tabs
 if($('pillarTabs')&&$('pillarTabs').children.length>0){
 const names=t('pillar');
-if(Array.isArray(names)){Array.from($('pillarTabs').children).forEach((b,i)=>{if(names[i])b.textContent=names[i];});}
+// Lv0-1: show only 4 essential pillar tabs to reduce cognitive load
+var _ptFilter=S.skillLv<=1?new Set([0,3,7,8]):null;
+if(Array.isArray(names)){Array.from($('pillarTabs').children).forEach((b,i)=>{
+if(names[i])b.textContent=names[i];
+b.style.display=(_ptFilter&&!_ptFilter.has(i))?'none':'';
+});}
 }
 // Keyboard shortcuts overlay
 const kbRows=document.querySelectorAll('.kb-row span:first-child');

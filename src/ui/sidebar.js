@@ -128,10 +128,13 @@ function renderPillarGrid(){
   const _ja=S.lang==='ja';
   const hasFiles=Object.keys(S.files||{}).length>0;
   const names=_ja?['SDD','DevContainer','MCP','AIルール','品質','ロードマップ','デザイン','リバース','実装','セキュリティ','戦略','運用','未来','開発IQ','ゲノム','Prompt Ops','Enterprise','CI/CD','仕様書','共通']:['SDD','DevContainer','MCP','AI Rules','Quality','Roadmap','Design','Reverse','Impl','Security','Strategy','Ops','Future','Dev IQ','Genome','Prompt Ops','Enterprise','CI/CD','Docs','Common'];
+  // Lv0-1: show only 4 essential pillars (same set as hero badge filter)
+  var _bpFilter=S.skillLv<=1?new Set([0,3,7,8]):null;
   let h='';
   for(let i=0;i<20;i++){
     const cls='sb-pillar-icon'+(hasFiles?' completed':' inactive');
-    h+='<button class="'+cls+'" title="'+esc(names[i])+'" onclick="clickPillarIcon('+i+')" aria-label="'+esc(names[i])+'">'+PILLAR_ICONS[i]+'</button>';
+    const hidden=_bpFilter&&!_bpFilter.has(i)?'style="display:none"':'';
+    h+='<button class="'+cls+'" title="'+esc(names[i])+'" onclick="clickPillarIcon('+i+')" aria-label="'+esc(names[i])+'" '+hidden+'>'+PILLAR_ICONS[i]+'</button>';
   }
   g.innerHTML=h;
 }

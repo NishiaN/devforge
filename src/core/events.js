@@ -66,6 +66,14 @@ document.addEventListener('keydown',e=>{
   }
 });
 
+// Warn before leaving page if files are generated and not yet downloaded (D1)
+window.addEventListener('beforeunload',function(e){
+  if(Object.keys(S.files||{}).length>0&&!S._zipDone){
+    e.preventDefault();
+    e.returnValue='';
+  }
+});
+
 // Mobile swipe gestures (HCD: ④身体負荷 ②使いやすさ)
 if(window.innerWidth<=768){
   let _swipeStartX=0;

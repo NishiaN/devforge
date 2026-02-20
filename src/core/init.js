@@ -114,7 +114,12 @@ function applyLang(){
   // Pillar tabs
   if($('pillarTabs')&&$('pillarTabs').children.length>0){
     const names=t('pillar');
-    if(Array.isArray(names)){Array.from($('pillarTabs').children).forEach((b,i)=>{if(names[i])b.textContent=names[i];});}
+    // Lv0-1: show only 4 essential pillar tabs to reduce cognitive load
+    var _ptFilter=S.skillLv<=1?new Set([0,3,7,8]):null;
+    if(Array.isArray(names)){Array.from($('pillarTabs').children).forEach((b,i)=>{
+      if(names[i])b.textContent=names[i];
+      b.style.display=(_ptFilter&&!_ptFilter.has(i))?'none':'';
+    });}
   }
   // Keyboard shortcuts overlay
   const kbRows=document.querySelectorAll('.kb-row span:first-child');

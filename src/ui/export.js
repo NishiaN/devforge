@@ -30,6 +30,7 @@ async function exportZIP(){
   const link=document.createElement('a');link.href=url;link.download=root+'.zip';link.click();
   URL.revokeObjectURL(url);
   addMsg('bot',_ja?`📦 ${root}.zip (${Object.keys(S.files).length}ファイル) をダウンロードしました！`:`📦 Downloaded ${root}.zip (${Object.keys(S.files).length} files)!`);
+  S._zipDone=true;
   _lsSet('devforge-last-export',new Date().toISOString());
 }
 

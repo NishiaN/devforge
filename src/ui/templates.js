@@ -50,6 +50,8 @@ const AI_TOOL_RECIPES={
   'Claude Code':{ja:['Step 1: CLAUDE.md自動読込','Step 2: /init初期化','Step 3: AI_BRIEF.md→仕様順投入'],en:['Step 1: CLAUDE.md auto-loaded','Step 2: /init','Step 3: Feed AI_BRIEF.md→specs']},
   Copilot:{ja:['Step 1: copilot-instructions.md配置','Step 2: Tab補完+Chat','Step 3: #fileでコンテキスト指定'],en:['Step 1: Place copilot-instructions.md','Step 2: Tab+Chat','Step 3: Use #file context']},
   Windsurf:{ja:['Step 1: .windsurfrules自動読込','Step 2: Cascadeモード起動','Step 3: MCP設定で拡張'],en:['Step 1: .windsurfrules auto-loaded','Step 2: Launch Cascade','Step 3: Extend with MCP']},
+  Cline:{ja:['Step 1: フォルダを開いて.clinerules確認','Step 2: tasks.mdの最優先タスクを選択','Step 3: 「このタスクを実装して」で実行'],en:['Step 1: Open folder, check .clinerules','Step 2: Select top task from tasks.md','Step 3: Run with "implement this task"']},
+  Gemini:{ja:['Step 1: CLAUDE.mdの内容をプロンプトに貼り付け','Step 2: tasks.mdの最優先タスクを指定','Step 3: コード生成を実行'],en:['Step 1: Paste CLAUDE.md content into prompt','Step 2: Specify top task from tasks.md','Step 3: Execute code generation']},
   _default:{ja:['Step 1: CLAUDE.md貼り付け','Step 2: Ctrl+Shift+C全コピー','Step 3: tasks.md順に指示'],en:['Step 1: Paste CLAUDE.md','Step 2: Ctrl+Shift+C copy all','Step 3: Instruct via tasks.md']}
 };
 function getADRs(a,_ja){

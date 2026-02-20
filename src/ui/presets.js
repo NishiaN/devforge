@@ -42,6 +42,7 @@ const PRESET_CATS_JA=[{key:'all',label:'すべて',desc:'全41プリセット'},
 const PRESET_CATS_EN=[{key:'all',label:'All',desc:'All 41 presets'},{key:'saas_ai',label:'☁️ SaaS & AI',desc:'Cloud services & AI automation'},{key:'ec_market',label:'🛒 E-Commerce',desc:'Sales, booking & events'},{key:'media_sns',label:'📱 Media & SNS',desc:'Content, creator & community'},{key:'business',label:'🏢 Business',desc:'Workflow, HR & CRM'},{key:'data_iot',label:'📊 Data & IoT',desc:'Analytics, devices & collab'},{key:'life_pro',label:'🏥 Life & Pro',desc:'Healthcare, education & logistics'}];
 let _presetCatFilter='all';
 
+var _beginnerPresets=new Set(['saas','lms','portfolio','cms','ec']);
 function _renderPresetChips(){
   const row=$('presetRow');if(!row)return;
   const _ja=S.lang==='ja';const _en=!_ja;
@@ -50,6 +51,8 @@ function _renderPresetChips(){
   const insertBefore=row.querySelector('.preset-footer');
   Object.entries(PR).forEach(([k,v])=>{
     if(k==='custom'||!v.name)return;
+    // Lv0-1: show only 5 beginner-safe presets
+    if(S.skillLv<=1&&!_beginnerPresets.has(k))return;
     const cat=PRESET_CAT_MAP[k]||'saas_ai';
     if(_presetCatFilter!=='all'&&cat!==_presetCatFilter)return;
     const c=document.createElement('span');c.className='prchip';
@@ -83,14 +86,17 @@ function initPresets(){
     };
     catBar.appendChild(btn);
   });
+  // Lv0-1: hide category bar (only 5 presets shown, no need for filters)
+  if(S.skillLv<=1)catBar.style.display='none';
   row.appendChild(catBar);
 
   // Footer area (compare + custom + notice) — appended BEFORE chips so _renderPresetChips can insertBefore it
   const footer=document.createElement('div');footer.className='preset-footer';
-  // Compare button
+  // Compare button (hidden for Lv0-1)
   const cb=document.createElement('span');cb.className='prchip prchip-cmp';
   cb.textContent=_ja?'⚔️ 比較':'⚔️ Compare';
   cb.onclick=()=>showPresetCompare();
+  if(S.skillLv<=1)cb.style.display='none';
   footer.appendChild(cb);
   // "Start from scratch" custom mode chip
   const cs=document.createElement('span');cs.className='prchip prchip-custom';
