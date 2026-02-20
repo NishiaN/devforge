@@ -17,7 +17,7 @@ DevForge v9's documentation is optimized into role-specific files:
 - **未来志向アプリ開発戦略フレームワーク（2026-2035）.md** (local only) — 28 strategic frameworks for future app development (2026-2035 horizon)
 
 ## Architecture
-- **55 modules** in `src/` → `node build.js` → single `devforge-v9.html` (~1874KB)
+- **55 modules** in `src/` → `node build.js` → single `devforge-v9.html` (~1887KB)
 - Vanilla JS, no frameworks. CSS custom properties. CDN: marked.js, mermaid.js, JSZip.
 - **AI Development OS**: Generates 135+ files including context intelligence, operations playbooks, business models, growth strategies, industry-specific strategic intelligence, ops intelligence, future strategy intelligence, polymorphic development intelligence, prompt genome engine, prompt ops pipeline, enterprise SaaS blueprint, CI/CD intelligence, and path-specific AI rules
 - **Security-hardened**: Phase 1 (CSP, SRI, sanitization) + Phase 2 (16 XSS/injection fixes) + Pillar ⑫ (context-aware security audit prompts)
@@ -26,7 +26,7 @@ DevForge v9's documentation is optimized into role-specific files:
 ## Build & Test
 ```bash
 # Build
-node build.js              # Produces devforge-v9.html (~1874KB, limit 2000KB)
+node build.js              # Produces devforge-v9.html (~1887KB, limit 2000KB)
 node build.js --no-minify  # Skip minification (debug)
 node build.js --report     # Show size report
 node build.js --check-css  # Validate CSS custom properties
@@ -57,7 +57,7 @@ npm run check              # Syntax check extracted JS
 5. **Write** to `devforge-v9.html`
 6. **Validate** size ≤2000KB (warn if exceeded)
 
-**Current Status:** ~1874KB / 2000KB limit (~94% utilized, P20 CI/CD Intelligence + 7-level skill system + sidebar pillar grid complete)
+**Current Status:** ~1887KB / 2000KB limit (~94% utilized, Phase A/B/C UX improvements complete)
 
 ### ⚠️ Critical: Minification Strategy
 
@@ -144,6 +144,7 @@ Located in `src/core/state.js`. Call `save()` after mutations to persist to loca
 7. **State**: call `save()` after S mutations
 8. **getEntityColumns**: always pass 3rd arg `knownEntities` to filter undefined FK refs
 9. **ENTITY_METHODS**: REST API methods are entity-specific (see common.js)
+10. **`_ja` local var required in UI files**: `build.test.js` rejects bare `S.lang==='ja'` in `src/ui/` files. Always declare `const _ja=S.lang==='ja';` at function top and use `_ja` throughout. Core files (`src/core/`) may use `const ja=S.lang==='ja'`.
 
 ## Common Bugs & Security Best Practices
 
@@ -250,11 +251,19 @@ npm run open                # Visual verification
 ```
 
 **Recent Updates (v9.5.x — current):**
+- **Phase A/B/C UX Improvements**: Skill-adaptive UI throughout. Key patterns:
+  - `showCompatAlert()` filters to errors-only for `S.skillLv<=1` (no warn/info noise for beginners)
+  - `generateAll()` shows friendly toast for Lv0-1 instead of "FE/BE/DB" jargon
+  - `applyLang()` in `init.js`: Lv0-1 hides 16 pillar badges (shows only 4: SDD/AIルール/AIランチャー/デザイン), simplifies icards[1-2] + hides icards[3-5]
+  - `showExportGrid()` in `generators/index.js`: three `S.skillLv` gates — heroCard urgency wrapper (Lv0-1), `_aiQs` micro-steps vs tool recipe (Lv0-1 vs Lv2+), `_startHere` 3-file spotlight (Lv0-1 only). Token count hidden for Lv0-1.
+  - `showPostGenGuide()` in `guide.js`: reads `S.skillLv` (not `S.answers.skill_level`) as primary signal
+  - `save()` in `state.js`: shows toast at 3.5MB (warn) and 4MB (error), try/catch on `localStorage.setItem`
+- **New CSS classes** (all.css): `.ai-quickstart`, `.ai-qs-micro-label`, `.ai-qs-detail-micro`, `.ai-qs-recovery`, `.ai-qs-rp`, `.export-hero-urgent`, `.export-hero-urgent-label`, `.start-here-card`, `.start-here-file`, `@keyframes heroUrgentPulse`
 - **Sidebar Pillar Icon Grid**: 5×4 grid of pillar icons in sidebar Progress tab (always visible); click → pillar tab switch + first-file preview; states: inactive/processing/completed synced with generation steps; `renderPillarGrid()` + `clickPillarIcon()` in `src/ui/sidebar.js`; `GEN_TO_PILLAR[20]` + `PILLAR_FIRST_FILE[20]` mapping arrays
 - **7-Level Skill System**: `S.skillLv` (0-6) + `S.skill` (3-tier) coexist; `pickSkillLv(n)` in presets.js; Lv0 forces saas+Firebase, Lv4+ skips confirm dialog, Lv6 adds evangelist section; gen81() generates docs/81_ux_proficiency_audit.md; ux_audit launcher template added (37 total)
 - **Pillar ⑳ CI/CD Intelligence**: docs/77-80 (pipeline_design, deployment_strategy, quality_gate_matrix, release_engineering); all 32 domains generate; 9 deploy targets; domain-specific gates (fintech/healthcare/ec/iot)
 - **Creative UX Pack**: 11-step tour, 37 launcher templates with AI_REC badges, expertHints system in helpdata.js (9-expert rotating hints), 6-step post-gen guide
-- Tests: 527→548→550 | Build: ~1835KB→~1874KB | 55 modules | 20 pillars | 135+ files
+- Tests: 550 | Build: ~1887KB | 55 modules | 20 pillars | 135+ files
 
 ### Property Name Mismatches with Helper-Generated Objects
 **Problem:** Accessing properties on objects created by helper functions without checking the actual property structure.
@@ -360,8 +369,13 @@ The compatibility checker validates tech stack combinations with **58 rules** (1
 - `S.skillLv` (0-6 int) and `S.skill` (beginner/intermediate/pro) coexist; `skillTier(lv)` maps lv→string
 - `pickSkillLv(n)` in `src/data/presets.js` — clamps 0-6, syncs both fields, updates `#skillFineLabel`
 - `pickSkill(t)` extended to also set `skillLv` to tier default (beginner→1, intermediate→3, pro→5)
-- Lv0: saas preset forced, Firebase default; Lv2: 8 KPI chips (bridge); Lv4+: skips confirm dialog; Lv6+: evangelist section in docs/42, community sharing step in guide
 - `load()` migration: if `skillLv` invalid, infer from `S.skill`
+- **Lv-specific behaviors** (search for `S.skillLv` to find all gates):
+  - Lv0: saas preset forced + Firebase default (`autoFillPhase2Defaults()`); `#heroLv0Hint` shown; `generateAll()` shows "チャットの質問に答えてから" toast instead of FE/BE/DB jargon
+  - Lv0-1: badge filter (4 pillars only, `init.js`); icard simplification (`init.js`); `showCompatAlert()` errors-only; `_aiQs` shows micro-steps; `_startHere` card + ZIP urgency in `showExportGrid()`; token count hidden in export summary
+  - Lv2: KPI chip count=8 (bridge); token count visible
+  - Lv4+: recommended badge hidden; confirm dialog skipped (`wizard.js`: `S.skillLv>=5`)
+  - Lv6+: evangelist section in docs/42; community sharing step in `guide.js`
 
 **New in v9.2.0 — DOMAIN_OPS (Ops Intelligence):**
 - **`DOMAIN_OPS`** — 32-domain operational requirements (SLO, Feature Flags, Jobs, Backup, Hardening)
