@@ -170,7 +170,7 @@ function showExportGrid(){
   const summary=`<div class="export-summary">
     <span>📁 ${fc} ${_ja?'ファイル':'files'}</span>
     <span>📏 ~${sizeKB.toLocaleString()}KB</span>
-    <span>🔤 ~${tokens.toLocaleString()} ${_ja?'トークン':'tokens'}</span>
+    ${S.skillLv>=2?`<span>🔤 ~${tokens.toLocaleString()} ${_ja?'トークン':'tokens'}</span>`:''}
   </div>`;
 
   // Hero card for ZIP (HCD: ③認知負荷 ①目的達成)

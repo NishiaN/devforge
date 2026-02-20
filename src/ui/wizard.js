@@ -120,7 +120,8 @@ function doSubmit(qid,val){
   },300);
 }
 function showCompatAlert(answers){
-  const issues=checkCompat(answers).filter(i=>i.level==='error'||i.level==='warn'||i.level==='info');
+  // Lv0-1: show errors only — warn/info are too technical for beginners and safe stack is auto-selected
+  const issues=checkCompat(answers).filter(i=>S.skillLv<=1?i.level==='error':(i.level==='error'||i.level==='warn'||i.level==='info'));
   if(!issues.length)return;
   const _ja=S.lang==='ja';const body=$('cbody');
   issues.forEach(iss=>{
@@ -140,9 +141,10 @@ function phaseEnd(){
     if(S.phase===1&&S.skill==='beginner'){
       if(typeof autoFillPhase2Defaults==='function')autoFillPhase2Defaults();
       const _ja=S.lang==='ja';
+      const _stackName=S.skillLv===0?(_ja?'Next.js + Firebase + Vercel':'Next.js + Firebase + Vercel'):(_ja?'Next.js + Supabase + Vercel':'Next.js + Supabase + Vercel');
       const autoMsg=_ja
-        ?'✅ 技術構成は初心者向けベストプラクティスで自動選択しました（Next.js + Supabase + Vercel）\n💡 Phase 2をスキップして機能設計へ進みます。後から設定画面で変更できます。'
-        :'✅ Tech stack auto-selected using beginner best practices (Next.js + Supabase + Vercel)\n💡 Skipping Phase 2 to go straight to feature design. You can change settings later.';
+        ?'✅ 技術構成は初心者向けベストプラクティスで自動選択しました（'+_stackName+'）\n💡 Phase 2をスキップして機能設計へ進みます。後から設定画面で変更できます。'
+        :'✅ Tech stack auto-selected using beginner best practices ('+_stackName+')\n💡 Skipping Phase 2 to go straight to feature design. You can change settings later.';
       addMsg('bot',autoMsg);
       if(typeof announce==='function')announce(autoMsg);
       S.phase=3;S.step=0;save();

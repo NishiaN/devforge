@@ -3,25 +3,26 @@ function showPostGenGuide(force){
   if(!force&&_lsGet('devforge-guide-shown'))return;
   _lsSet('devforge-guide-shown','1');
   const _ja=S.lang==='ja';
-  const lv=S.answers.skill_level||'Intermediate';
+  // Use skillLv slider as primary source; fall back to wizard answer
+  const lv=S.skillLv<=1?'Beginner':S.skillLv>=5?'Professional':(S.answers.skill_level||'Intermediate');
   const isB=lv.includes('Beginner');const isP=lv.includes('Professional');
   const overlay=document.createElement('div');
   overlay.className='guide-overlay';
   overlay.onclick=e=>{if(e.target===overlay)overlay.remove();};
   const level=isB?{em:'🌱',name:_ja?'Beginner':'Beginner',cls:'guide-lv-b'}:isP?{em:'⚡',name:_ja?'Professional':'Professional',cls:'guide-lv-p'}:{em:'🔥',name:_ja?'Intermediate':'Intermediate',cls:'guide-lv-i'};
   const steps=isB?(_ja?[
-    ['ロードマップに従う','ダッシュボード柱⑦のロードマップUIがそのまま学習計画。Layer 1から順にチェック。📖で公式ドキュメントにジャンプ。'],
-    ['3ファイルだけ覚える','<code>README.md</code>(GitHub公開用) / <code>.devcontainer/</code>(開発環境一発) / <code>CLAUDE.md</code>(AIに全仕様を理解させる)'],
+    ['生成物は設計書',`<strong>最重要:</strong> 生成された${Object.keys(S.files||{}).length||135}+ファイルは「設計ドキュメント」。npm installで動くコードではない。AIツールに投入することで実コードが生成される。`],
+    ['まずZIPを保存','📦 ZIPダウンロード → ローカルに保存。ブラウザのデータは消えることがある。この1ステップが全財産を守る。'],
+    ['3ファイルだけ覚える','<code>CLAUDE.md</code>(AIに全仕様を理解させる) / <code>.cursorrules</code>(Cursor自動読込) / <code>tasks.md</code>(やることリスト)'],
     ['AIに丸ごと渡す','「全ファイルコピー」(Ctrl+Shift+C)でAIに貼り付け → 仕様を把握した状態で開発スタート。'],
-    ['バックアップ必須','ZIP+JSONで2重保存。localStorageのみに依存しない。📦ZIPダウンロード + 📤JSONエクスポートを必ず実行。'],
-    ['生成物は設計書','134+ファイルは設計ドキュメント。AIツールに投入して実コードを生成。npm installで動くコードではない。'],
+    ['ロードマップに従う','ダッシュボード柱⑦のロードマップUIがそのまま学習計画。Layer 1から順にチェック。📖で公式ドキュメントにジャンプ。'],
     ['AIで発想を広げる','AIランチャー柱⑧の「🎭 9人の専門家ブレスト」で、9つの視点からアイデアを生成。「平凡な答え」から脱却しましょう。'],
   ]:[
-    ['Follow the Roadmap','Dashboard Pillar ⑦ is your learning plan. Check off from Layer 1. Hit 📖 for official docs.'],
-    ['Remember 3 Files','<code>README.md</code>(GitHub ready) / <code>.devcontainer/</code>(instant dev env) / <code>CLAUDE.md</code>(AI understands your project)'],
+    ['Files are Design Docs',`<strong>Key fact:</strong> The ${Object.keys(S.files||{}).length||135}+ generated files are design documents, not executable code. Feed them to an AI tool to generate real code.`],
+    ['Save ZIP First','📦 ZIP Download → save locally. Browser data can be lost. This one step protects everything you just created.'],
+    ['Remember 3 Files','<code>CLAUDE.md</code>(AI understands your project) / <code>.cursorrules</code>(Cursor auto-loads) / <code>tasks.md</code>(your todo list)'],
     ['Feed Everything to AI','"Copy All" (Ctrl+Shift+C) → Paste into AI → Start coding with full context.'],
-    ['Always Backup','ZIP+JSON dual backup. Don\'t rely only on localStorage. 📦ZIP Download + 📤JSON Export are mandatory.'],
-    ['Files are Design Docs','134+ files are design documents. Feed to AI tools to generate real code. Not npm-installable code.'],
+    ['Follow the Roadmap','Dashboard Pillar ⑦ is your learning plan. Check off from Layer 1. Hit 📖 for official docs.'],
     ['Expand Ideas with AI','Use "🎭 9-Expert Brainstorm" in AI Launcher Pillar ⑧ to generate ideas from 9 perspectives. Break out of "average answers".'],
   ]):isP?(_ja?[
     ['Agent Teams並列開発','AGENTS.mdでエージェント役割定義 → Claude Code Subagents / Antigravity Manager Viewで並列実行。'],
