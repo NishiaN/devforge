@@ -149,7 +149,7 @@ Full 6-step process in `docs/CLAUDE-REFERENCE.md`. Key steps often missed:
 
 ## Adding Compat Rules
 
-File: `src/data/compat-rules.js` — currently 60 rules (11 error + 38 warn + 11 info).
+File: `src/data/compat-rules.js` — currently 63 rules (13 error + 39 warn + 11 info).
 Structure: `{id, p:['field1','field2'], lv:'error'|'warn'|'info', t:conditionFn, ja, en, fix, fixFn}`
 After adding: update header comment totals, add tests to `test/compat.test.js`, update CLAUDE.md rule count.
 

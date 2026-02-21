@@ -1,4 +1,4 @@
-// Compat rules functional test (60 rules: 11 ERROR + 38 WARN + 11 INFO)
+// Compat rules functional test (63 rules: 13 ERROR + 39 WARN + 11 INFO)
 const assert=require('node:assert/strict');
 const S={lang:'ja',skill:'pro'};
 eval(require('fs').readFileSync('src/data/compat-rules.js','utf-8'));
@@ -100,6 +100,16 @@ const tests=[
   {name:'Expo+Drizzle=WARN',a:{mobile:'Expo (React Native)',orm:'Drizzle ORM'},expect:'warn',id:'mob-expo-drizzle'},
   {name:'Flutter+Drizzle=noWARN',a:{mobile:'Flutter',orm:'Drizzle ORM'},expect:'none'},
   {name:'Expo+Prisma=OK',a:{mobile:'Expo (React Native)',orm:'Prisma'},expect:'none'},
+  // Kysely compat rules
+  {name:'Python+Kysely=ERROR',a:{backend:'Python + FastAPI',orm:'Kysely'},expect:'error',id:'be-orm-py-prisma'},
+  {name:'Java+Kysely=ERROR',a:{backend:'Java + Spring Boot',orm:'Kysely'},expect:'error',id:'be-orm-java-prisma'},
+  {name:'Go+Kysely=ERROR',a:{backend:'Go + Gin',orm:'Kysely'},expect:'error',id:'be-orm-java-prisma'},
+  {name:'Express+Kysely=OK',a:{backend:'Node.js + Express',orm:'Kysely'},expect:'none'},
+  {name:'Kysely+Firestore=ERROR',a:{orm:'Kysely',database:'Firebase Firestore'},expect:'error',id:'orm-kysely-fs'},
+  {name:'Kysely+MongoDB=ERROR',a:{orm:'Kysely',database:'MongoDB'},expect:'error',id:'orm-kysely-mongo'},
+  {name:'Kysely+PostgreSQL=OK',a:{orm:'Kysely',database:'PostgreSQL'},expect:'none'},
+  {name:'Expo+Kysely=WARN',a:{mobile:'Expo (React Native)',orm:'Kysely'},expect:'warn',id:'mob-expo-kysely'},
+  {name:'Flutter+Kysely=noWARN',a:{mobile:'Flutter',orm:'Kysely'},expect:'none'},
 ];
 
 let pass=0,fail=0;
