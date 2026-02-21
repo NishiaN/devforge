@@ -140,7 +140,7 @@ function load(){
     if(o.answers&&typeof o.answers==='object'&&!Array.isArray(o.answers))S.answers=_filterProto(o.answers);
     if(typeof o.projectName==='string')S.projectName=o.projectName;
     if(typeof o.skill==='string')S.skill=o.skill;
-    if(typeof o.skillLv==='number'&&o.skillLv>=0&&o.skillLv<=6){S.skillLv=o.skillLv;S.skill=skillTier(o.skillLv);}else{S.skillLv=S.skill==='beginner'?1:S.skill==='pro'?5:3;}
+    if(typeof o.skillLv==='number'&&!isNaN(o.skillLv)&&o.skillLv>=0&&o.skillLv<=6){S.skillLv=Math.min(6,Math.max(0,Math.round(o.skillLv)));S.skill=skillTier(S.skillLv);}else{S.skillLv=S.skill==='beginner'?1:S.skill==='pro'?5:3;}
     if(typeof o.preset==='string')S.preset=o.preset;
     if(typeof o.lang==='string')S.lang=o.lang;
     if(typeof o.genLang==='string')S.genLang=o.genLang;

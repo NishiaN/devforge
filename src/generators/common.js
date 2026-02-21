@@ -2389,6 +2389,13 @@ function postGenerationAudit(files,a){
   if(arch.pattern==='baas'&&techPlan.includes('API Gateway')){
     findings.push({level:'error',msg:G?'BaaS構成なのにAPI Gatewayが記載されています':'API Gateway present in BaaS architecture'});
   }
+  // C2b: API design docs mentioning API Gateway in BaaS project
+  if(arch.pattern==='baas'){
+    const apiDocContent=Object.keys(files).filter(k=>k.startsWith('docs/')&&/api/i.test(k)).map(k=>files[k]||'').join('\n');
+    if(apiDocContent.includes('API Gateway')){
+      findings.push({level:'warn',msg:G?'BaaS構成のAPIドキュメントにAPI Gatewayが記載されています':'API Gateway referenced in API docs for BaaS architecture'});
+    }
+  }
   if(arch.pattern==='bff'&&techPlan.includes('api/')){
     // Only warn if separate api/ directory exists (should use app/api/)
     if(techPlan.includes('├── api/')){
@@ -2396,8 +2403,13 @@ function postGenerationAudit(files,a){
     }
   }
 
-  // C3: Scope vs features conflict
+  // C3: Scope vs features conflict (answers-level check)
   const scopeOut=(a.scope_out||'').toLowerCase();
+  const mobileAns=(a.mobile||'').toLowerCase();
+  if((scopeOut.includes('ネイティブ')||scopeOut.includes('native'))&&(mobileAns.includes('expo')||mobileAns.includes('react native')||mobileAns.includes('flutter'))){
+    findings.push({level:'warn',msg:G?'scope_outにネイティブアプリがありますがmobile設定と矛盾しています':'scope_out excludes native but mobile answer uses a native framework'});
+  }
+  // C3b: Check generated spec files too
   if(scopeOut.includes('ネイティブ')&&spec.includes('Expo')&&!constitution.includes('Expo Web UI')){
     findings.push({level:'error',msg:G?'スコープ外「ネイティブ」と仕様のExpo記述が矛盾':'Scope excludes native but spec includes Expo'});
   }
@@ -2438,13 +2450,14 @@ function postGenerationAudit(files,a){
     findings.push({level:'error',msg:G?'Vite SPAなのに.envにNEXT_PUBLIC_があります':'Vite SPA but .env uses NEXT_PUBLIC_ prefix'});
   }
   if(feRaw.includes('Next')&&envFile.includes('VITE_')){
-    findings.push({level:'error',msg:G?'Next.jsなのに.envにVITE_があります':'Next.js but .env uses VITE_ prefix'});
+    findings.push({level:'warn',msg:G?'Next.jsなのに.envにVITE_があります':'Next.js but .env uses VITE_ prefix'});
   }
 
-  // C9: Monitoring matches deploy target
-  const monDoc=files['docs/17_monitoring.md']||'';
+  // C9: Monitoring matches deploy target (check all monitoring docs)
   const deploy=a.deploy||'';
-  if(!deploy.includes('Vercel')&&monDoc.includes('Vercel Analytics')){
+  const allMonContent=Object.keys(files).filter(k=>k.startsWith('docs/')&&/monitor/i.test(k)).map(k=>files[k]||'').join('\n');
+  const monCheck=(allMonContent||files['docs/17_monitoring.md']||'');
+  if(!deploy.includes('Vercel')&&monCheck.includes('Vercel Analytics')){
     findings.push({level:'warn',msg:G?'デプロイ先がVercelではないのにVercel Analyticsが記載されています':'Non-Vercel deploy but Vercel Analytics in monitoring doc'});
   }
 

@@ -1,4 +1,5 @@
-// Compat rules functional test (58 rules: 11 ERROR + 37 WARN + 10 INFO)
+// Compat rules functional test (60 rules: 11 ERROR + 38 WARN + 11 INFO)
+const assert=require('node:assert/strict');
 const S={lang:'ja',skill:'pro'};
 eval(require('fs').readFileSync('src/data/compat-rules.js','utf-8'));
 eval(require('fs').readFileSync('src/generators/common.js','utf-8')); // For detectDomain
@@ -93,8 +94,12 @@ const tests=[
   {name:'Express+Netlify=OK',a:{backend:'Node.js + Express',deploy:'Netlify'},expect:'none'},
   // Flutter + Firebase synergy
   {name:'Flutter+Firebase=INFO',a:{mobile:'Flutter',backend:'Firebase'},expect:'info',id:'mob-flutter-firebase'},
-  {name:'Flutter+Supabase=noFirebaseINFO',a:{mobile:'Flutter',backend:'Supabase'},expect:'none'},
+  {name:'Flutter+Supabase=INFO',a:{mobile:'Flutter',backend:'Supabase'},expect:'info',id:'mob-flutter-supabase'},
   {name:'Expo+Firebase=noFlutterINFO',a:{mobile:'Expo (React Native)',backend:'Firebase'},expect:'none'},
+  // New Phase 5 rules
+  {name:'Expo+Drizzle=WARN',a:{mobile:'Expo (React Native)',orm:'Drizzle ORM'},expect:'warn',id:'mob-expo-drizzle'},
+  {name:'Flutter+Drizzle=noWARN',a:{mobile:'Flutter',orm:'Drizzle ORM'},expect:'none'},
+  {name:'Expo+Prisma=OK',a:{mobile:'Expo (React Native)',orm:'Prisma'},expect:'none'},
 ];
 
 let pass=0,fail=0;
@@ -232,3 +237,5 @@ synergyTests.forEach(t => {
 });
 console.log('---');
 console.log(synergyPass + '/' + synergyTests.length + ' calcSynergy tests passed');
+assert.strictEqual(fail, 0, `compat: ${fail} compat rule checks failed (see ❌ above)`);
+assert.strictEqual(synergyFail, 0, `compat: ${synergyFail} synergy checks failed (see ❌ above)`);

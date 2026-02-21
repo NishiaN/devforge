@@ -1,5 +1,6 @@
 // Generation coherence test — verifies generated docs are internally consistent
 const fs=require('fs');
+const assert=require('node:assert/strict');
 const S={answers:{},skill:'pro',lang:'ja',preset:'custom',projectName:'TestProject',phase:1,step:0,skipped:[],files:{},editedFiles:{},prevFiles:{},genLang:'ja',previewFile:null,pillar:0};
 const save=()=>{};const _lsGet=()=>null;const _lsSet=()=>{};const _lsRm=()=>{};const sanitize=v=>v;
 
@@ -796,3 +797,4 @@ check('gen81: has Lv.0 through Lv.6 headers',['Lv.0','Lv.1','Lv.2','Lv.3','Lv.4'
 console.log(`\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
 console.log(`# pass ${pass}`);
 if(fail>0) console.log(`# fail ${fail}`);
+assert.strictEqual(fail, 0, `gen-coherence: ${fail} checks failed (see ❌ above)`);

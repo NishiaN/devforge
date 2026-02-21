@@ -1,4 +1,4 @@
-/* ═══ STACK COMPATIBILITY & SEMANTIC CONSISTENCY RULES — 58 rules (ERROR×11 + WARN×37 + INFO×10) ═══ */
+/* ═══ STACK COMPATIBILITY & SEMANTIC CONSISTENCY RULES — 60 rules (ERROR×11 + WARN×38 + INFO×11) ═══ */
 const COMPAT_RULES=[
   // ── FE ↔ Mobile (2 ERROR) ──
   {id:'fe-mob-expo',p:['frontend','mobile'],lv:'error',
@@ -264,6 +264,15 @@ const COMPAT_RULES=[
    t:a=>inc(a.mobile,'Flutter')&&inc(a.backend,'Firebase'),
    ja:'✨ Flutter + Firebaseは最適な組み合わせです（FlutterFire統合）',
    en:'✨ Flutter + Firebase is an excellent combination (FlutterFire integration)'},
+  {id:'mob-flutter-supabase',p:['mobile','backend'],lv:'info',
+   t:a=>inc(a.mobile,'Flutter')&&inc(a.backend,'Supabase'),
+   ja:'✨ Flutter + Supabaseは良い組み合わせです（supabase_flutter パッケージを使用）',
+   en:'✨ Flutter + Supabase works well — use the supabase_flutter package for native SDK access'},
+  {id:'mob-expo-drizzle',p:['mobile','orm'],lv:'warn',
+   t:a=>inc(a.mobile,'Expo')&&inc(a.orm,'Drizzle'),
+   ja:'DrizzleはサーバーサイドORMです。Expo(React Native)では動作しません。モバイルにはRNSQLiteまたはBaaSを使用してください',
+   en:'Drizzle is a server-side ORM and will not work in Expo (React Native). Use RN SQLite or a BaaS backend instead',
+   fix:{f:'orm',s:'Prisma'}},
   // ── Semantic Consistency Rules (Phase A) ── 8 rules ──
   // A1: scope_out「ネイティブ」 vs mobile有効
   {id:'sem-scope-mobile',p:['scope_out','mobile'],lv:'error',

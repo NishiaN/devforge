@@ -546,16 +546,19 @@ function start(){
 function _applyUniversalPostProcess(_en){
   const _ja=S.lang==='ja';
   const be=S.answers.backend||'';
-  if(!be||/なし|None|static/i.test(be))return;
-  if(!S.answers.database){
-    if(/Firebase/i.test(be))S.answers.database='Firebase Firestore';
-    else if(/Supabase/i.test(be))S.answers.database='Supabase (PostgreSQL)';
-    else S.answers.database='PostgreSQL';
-  }
-  if(!S.answers.auth){
-    if(/Firebase/i.test(be))S.answers.auth='Firebase Auth';
-    else if(/Supabase/i.test(be))S.answers.auth='Supabase Auth';
-    else S.answers.auth=_en?'Email/Password':_ja?'メール/パスワード':'Email/Password';
+  const _isStatic=!be||/なし|None|static/i.test(be);
+  // Database/Auth defaults: only for non-static backends
+  if(!_isStatic){
+    if(!S.answers.database){
+      if(/Firebase/i.test(be))S.answers.database='Firebase Firestore';
+      else if(/Supabase/i.test(be))S.answers.database='Supabase (PostgreSQL)';
+      else S.answers.database='PostgreSQL';
+    }
+    if(!S.answers.auth){
+      if(/Firebase/i.test(be))S.answers.auth='Firebase Auth';
+      else if(/Supabase/i.test(be))S.answers.auth='Supabase Auth';
+      else S.answers.auth=_en?'Email/Password':_ja?'メール/パスワード':'Email/Password';
+    }
   }
   // N-3: dev_env_type for BaaS backends
   if(!S.answers.dev_env_type&&/Firebase|Supabase|Convex/i.test(be)){

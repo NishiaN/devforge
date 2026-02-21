@@ -12,17 +12,17 @@ This document contains detailed reference information for DevForge v9 developmen
 - **ENTITY_METHODS**: REST API method restrictions per entity (added 5: AuditLog, PointLog, Achievement, ClickLog, SensorData)
 - **FEATURE_DETAILS**: 31 feature patterns with acceptance criteria & test cases (added 10: Social, Settings, MFA, Webhook, Onboarding, API Key, Audit, Map, Import, Template)
 - **SCREEN_COMPONENTS**: UI component dictionary by screen type
-- **DOMAIN_ENTITIES**: Core entities per domain with warnings & suggestions (24 domains: 16 original + 8 new)
-- **DOMAIN_QA_MAP**: 24 domain-specific QA strategies (added 8: AI, Automation, Event, Gamify, Collab, DevTool, Creator, Newsletter)
-- **DOMAIN_PLAYBOOK**: 24 complete domain playbooks with implementation flows, compliance rules, bug prevention, context mapping, and AI skills
+- **DOMAIN_ENTITIES**: Core entities per domain with warnings & suggestions (32 domains)
+- **DOMAIN_QA_MAP**: 32 domain-specific QA strategies
+- **DOMAIN_PLAYBOOK**: 32 complete domain playbooks with implementation flows, compliance rules, bug prevention, context mapping, and AI skills
 - **DOMAIN_GROWTH**: Growth intelligence data for 8 domains + default (funnel stages, CVR benchmarks, growth equations, levers, pricing strategies)
 
 **Helper Functions:**
 - **`pluralize(name)`** — Smart table name pluralization
 - **`getEntityColumns(name, G, knownEntities)`** — Get columns for entity (ALWAYS pass 3 args)
 - **`getEntityMethods(name)`** — Get allowed REST methods for entity
-- **`detectDomain(purpose)`** — Infer domain from purpose text (24 domains supported)
-  - Returns: 'education', 'ec', 'marketplace', 'community', 'content', 'analytics', 'booking', 'saas', 'iot', 'realestate', 'legal', 'hr', 'fintech', 'portfolio', 'tool', 'ai', 'automation', 'event', 'gamify', 'collab', 'devtool', 'creator', 'newsletter', or null
+- **`detectDomain(purpose)`** — Infer domain from purpose text (32 domains supported)
+  - Returns: 'education', 'ec', 'marketplace', 'community', 'content', 'analytics', 'booking', 'saas', 'iot', 'realestate', 'legal', 'hr', 'fintech', 'portfolio', 'tool', 'ai', 'automation', 'event', 'gamify', 'collab', 'devtool', 'creator', 'newsletter', 'health', 'media', 'government', 'travel', 'insurance', 'manufacturing', 'logistics', 'agriculture', 'energy', or null
   - Used by: AI skills catalog generation, domain-specific KPI/acceptance criteria, MCP tool recommendations
   - Pattern matching: regex-based on Japanese/English keywords in purpose text (specific patterns first, generic last)
 - **`resolveAuth(answers)`** — Determine auth architecture from answers
@@ -475,7 +475,7 @@ test('pluralize', () => {
 | r27-regression.test.js | 17 tests | Bug fixes: prices, FK, KPI, ports |
 | r28-regression.test.js | 19 tests | Quality: REST methods, AC, scope_out, verification |
 | build.test.js | build | Build size ≤3000KB, pillar function existence (P1-P20), sbPillarGrid element, PILLAR array lengths |
-| compat.test.js | 75 tests + 7 synergy | Compatibility validation (58 rules: 11 ERROR, 37 WARN, 10 INFO) + calcSynergy unit tests |
+| compat.test.js | 78 tests + 7 synergy | Compatibility validation (60 rules: 11 ERROR, 38 WARN, 11 INFO) + calcSynergy unit tests |
 | security.test.js | 26 tests | Security: CSP, SRI, sanitization, XSS prevention, proto pollution, .claude/settings.json safety |
 | ops.test.js | 16 tests | Ops Intelligence (P14): runbook generation, checklist, ops plane design, SLO adaptation, domain-specific flags, observability stack, circuit breaker, audit schema |
 | future.test.js | 16 tests | Future Strategy Intelligence (P15): DOMAIN_MARKET coverage, PERSONA_ARCHETYPES, GTM_STRATEGY, REGULATORY_HORIZON, doc generation (56-59), mermaid diagrams, bilingual content |
@@ -489,7 +489,7 @@ test('pluralize', () => {
 | field-presets.test.js | 18 tests | Field preset system: PR_FIELD=82, scaleHint 4×ja/en, meta 6 dims, FIELD_CAT_MAP=82, FIELD_TREND=19, FIELD_CATS=21 |
 | Others | ~23 tests | i18n, state, techdb |
 
-**Total: 584 tests (all passing, 100% pass rate) + 7 synergy unit tests**
+**Total: 734 tests (all passing, 100% pass rate)**
 
 ---
 
@@ -656,3 +656,21 @@ test('pluralize', () => {
 - PR_FIELD individual overrides: 7 presets with custom target/payment/mobile
 - Coverage: 7/25 → 11/25 questions pre-filled (target+screens+payment+mobile added)
 - `test/field-presets.test.js`: +12 tests (FIELD_CAT_DEFAULTS×7 + individual overrides×5)
+
+### Phase ④⑤ — 生成品質改善 (v9.6.x)
+- `future_features` → constitution §8 + LEARNING_PATH roadmap section (p1-sdd.js + p7-roadmap.js)
+- `learning_path` → LEARNING_PATH.md header `| 学習パス: ... |` (p7-roadmap.js)
+- ORM bug fix: `_orm` handles Prisma/Drizzle/TypeORM/SQLAlchemy/Kysely (p7-roadmap.js)
+- `ai_tools` → prompt_composition_guide AI tool optimization table (p17-promptgenome.js gen67)
+- `dev_env_type` → release_engineering branch strategy section (p20-cicd.js gen80)
+- `gen-templates.js`: ff_title/ff_span/ff_integrate/lp_path (JA+EN)
+- `test/gen-quality.test.js`: 59 tests covering Suites 1-12
+
+### Phase 保守計画 — 品質・堅牢性改善 (v9.6.x+)
+- **Phase 1**: gen-coherence.test.js + compat.test.js: assert追加でサイレント失敗を排除; `postGenerationAudit` C2/C3/C8/C9 バグ修正
+- **Phase 2**: 調査のみ — `_SAFE_KEYS`, `detectDomain()` fallback, INDUSTRY_TEST_MATRIX は全て問題なし
+- **Phase 3**: 調査のみ — genPillar15 引数, GEN_TO_PILLAR, P17/P18 undefined ガード は全て問題なし
+- **Phase 4**: `_applyUniversalPostProcess`: static backend での早期 return を廃止し G-1〜G-4 が常に実行されるよう修正; `load()` skillLv に `!isNaN` + `Math.round` + clamp 強化
+- **Phase 5**: compat-rules.js: 2ルール追加 (`mob-flutter-supabase` INFO + `mob-expo-drizzle` WARN) → 60ルール (11+38+11)
+- **Phase 6**: .cursorrules/CLAUDE.md/CLAUDE-REFERENCE.md を 734テスト/2129KB/60ルール に更新
+

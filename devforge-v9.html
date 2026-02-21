@@ -297,7 +297,7 @@ if(typeof o.step==='number')S.step=o.step;
 if(o.answers&&typeof o.answers==='object'&&!Array.isArray(o.answers))S.answers=_filterProto(o.answers);
 if(typeof o.projectName==='string')S.projectName=o.projectName;
 if(typeof o.skill==='string')S.skill=o.skill;
-if(typeof o.skillLv==='number'&&o.skillLv>=0&&o.skillLv<=6){S.skillLv=o.skillLv;S.skill=skillTier(o.skillLv);}else{S.skillLv=S.skill==='beginner'?1:S.skill==='pro'?5:3;}
+if(typeof o.skillLv==='number'&&!isNaN(o.skillLv)&&o.skillLv>=0&&o.skillLv<=6){S.skillLv=Math.min(6,Math.max(0,Math.round(o.skillLv)));S.skill=skillTier(S.skillLv);}else{S.skillLv=S.skill==='beginner'?1:S.skill==='pro'?5:3;}
 if(typeof o.preset==='string')S.preset=o.preset;
 if(typeof o.lang==='string')S.lang=o.lang;
 if(typeof o.genLang==='string')S.genLang=o.genLang;
@@ -1672,6 +1672,15 @@ fix:{f:'mobile',s:'Expo (Managed)'}},
 t:a=>inc(a.mobile,'Flutter')&&inc(a.backend,'Firebase'),
 ja:'✨ Flutter + Firebaseは最適な組み合わせです（FlutterFire統合）',
 en:'✨ Flutter + Firebase is an excellent combination (FlutterFire integration)'},
+{id:'mob-flutter-supabase',p:['mobile','backend'],lv:'info',
+t:a=>inc(a.mobile,'Flutter')&&inc(a.backend,'Supabase'),
+ja:'✨ Flutter + Supabaseは良い組み合わせです（supabase_flutter パッケージを使用）',
+en:'✨ Flutter + Supabase works well — use the supabase_flutter package for native SDK access'},
+{id:'mob-expo-drizzle',p:['mobile','orm'],lv:'warn',
+t:a=>inc(a.mobile,'Expo')&&inc(a.orm,'Drizzle'),
+ja:'DrizzleはサーバーサイドORMです。Expo(React Native)では動作しません。モバイルにはRNSQLiteまたはBaaSを使用してください',
+en:'Drizzle is a server-side ORM and will not work in Expo (React Native). Use RN SQLite or a BaaS backend instead',
+fix:{f:'orm',s:'Prisma'}},
 // ── Semantic Consistency Rules (Phase A) ── 8 rules ──
 // A1: scope_out「ネイティブ」 vs mobile有効
 {id:'sem-scope-mobile',p:['scope_out','mobile'],lv:'error',
@@ -3606,7 +3615,9 @@ toast(_ja?'✅ "'+presetName+'" を適用 — '+preFilledCount+'件の回答を�
 function _applyUniversalPostProcess(_en){
 const _ja=S.lang==='ja';
 const be=S.answers.backend||'';
-if(!be||/なし|None|static/i.test(be))return;
+const _isStatic=!be||/なし|None|static/i.test(be);
+// Database/Auth defaults: only for non-static backends
+if(!_isStatic){
 if(!S.answers.database){
 if(/Firebase/i.test(be))S.answers.database='Firebase Firestore';
 else if(/Supabase/i.test(be))S.answers.database='Supabase (PostgreSQL)';
@@ -3616,6 +3627,7 @@ if(!S.answers.auth){
 if(/Firebase/i.test(be))S.answers.auth='Firebase Auth';
 else if(/Supabase/i.test(be))S.answers.auth='Supabase Auth';
 else S.answers.auth=_en?'Email/Password':_ja?'メール/パスワード':'Email/Password';
+}
 }
 // N-3: dev_env_type for BaaS backends
 if(!S.answers.dev_env_type&&/Firebase|Supabase|Convex/i.test(be)){
@@ -19603,14 +19615,26 @@ const arch=resolveArch(a);
 if(arch.pattern==='baas'&&techPlan.includes('API Gateway')){
 findings.push({level:'error',msg:G?'BaaS構成なのにAPI Gatewayが記載されています':'API Gateway present in BaaS architecture'});
 }
+// C2b: API design docs mentioning API Gateway in BaaS project
+if(arch.pattern==='baas'){
+const apiDocContent=Object.keys(files).filter(k=>k.startsWith('docs/')&&/api/i.test(k)).map(k=>files[k]||'').join('\n');
+if(apiDocContent.includes('API Gateway')){
+findings.push({level:'warn',msg:G?'BaaS構成のAPIドキュメントにAPI Gatewayが記載されています':'API Gateway referenced in API docs for BaaS architecture'});
+}
+}
 if(arch.pattern==='bff'&&techPlan.includes('api/')){
 // Only warn if separate api/ directory exists (should use app/api/)
 if(techPlan.includes('├── api/')){
 findings.push({level:'warn',msg:G?'BFF構成では api/ ディレクトリは不要です（app/api/ を使用）':'BFF pattern should not have separate api/ directory (use app/api/)'});
 }
 }
-// C3: Scope vs features conflict
+// C3: Scope vs features conflict (answers-level check)
 const scopeOut=(a.scope_out||'').toLowerCase();
+const mobileAns=(a.mobile||'').toLowerCase();
+if((scopeOut.includes('ネイティブ')||scopeOut.includes('native'))&&(mobileAns.includes('expo')||mobileAns.includes('react native')||mobileAns.includes('flutter'))){
+findings.push({level:'warn',msg:G?'scope_outにネイティブアプリがありますがmobile設定と矛盾しています':'scope_out excludes native but mobile answer uses a native framework'});
+}
+// C3b: Check generated spec files too
 if(scopeOut.includes('ネイティブ')&&spec.includes('Expo')&&!constitution.includes('Expo Web UI')){
 findings.push({level:'error',msg:G?'スコープ外「ネイティブ」と仕様のExpo記述が矛盾':'Scope excludes native but spec includes Expo'});
 }
@@ -19646,12 +19670,13 @@ if(feRaw.includes('Vite')&&envFile.includes('NEXT_PUBLIC_')){
 findings.push({level:'error',msg:G?'Vite SPAなのに.envにNEXT_PUBLIC_があります':'Vite SPA but .env uses NEXT_PUBLIC_ prefix'});
 }
 if(feRaw.includes('Next')&&envFile.includes('VITE_')){
-findings.push({level:'error',msg:G?'Next.jsなのに.envにVITE_があります':'Next.js but .env uses VITE_ prefix'});
+findings.push({level:'warn',msg:G?'Next.jsなのに.envにVITE_があります':'Next.js but .env uses VITE_ prefix'});
 }
-// C9: Monitoring matches deploy target
-const monDoc=files['docs/17_monitoring.md']||'';
+// C9: Monitoring matches deploy target (check all monitoring docs)
 const deploy=a.deploy||'';
-if(!deploy.includes('Vercel')&&monDoc.includes('Vercel Analytics')){
+const allMonContent=Object.keys(files).filter(k=>k.startsWith('docs/')&&/monitor/i.test(k)).map(k=>files[k]||'').join('\n');
+const monCheck=(allMonContent||files['docs/17_monitoring.md']||'');
+if(!deploy.includes('Vercel')&&monCheck.includes('Vercel Analytics')){
 findings.push({level:'warn',msg:G?'デプロイ先がVercelではないのにVercel Analyticsが記載されています':'Non-Vercel deploy but Vercel Analytics in monitoring doc'});
 }
 // C10: BaaS should not have Prisma deps
