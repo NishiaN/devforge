@@ -31,6 +31,11 @@ eval(fs.readFileSync('src/generators/p17-promptgenome.js','utf-8').replace(/cons
 eval(fs.readFileSync('src/generators/p18-promptops.js','utf-8').replace(/var (REACT_PROTOCOL|LLMOPS_STACK|PROMPT_LIFECYCLE)/g,'var $1').replace(/function (_rp|_los)/g,'var $1 = function'));
 eval(fs.readFileSync('src/generators/p19-enterprise.js','utf-8'));
 eval(fs.readFileSync('src/generators/p20-cicd.js','utf-8'));
+eval(fs.readFileSync('src/generators/p21-api.js','utf-8'));
+eval(fs.readFileSync('src/generators/p22-database.js','utf-8'));
+eval(fs.readFileSync('src/generators/p23-testing.js','utf-8'));
+eval(fs.readFileSync('src/generators/p24-aisafety.js','utf-8'));
+eval(fs.readFileSync('src/generators/p25-performance.js','utf-8'));
 
 // ═══ Helper ═══
 function generate(answers, name, lang) {
@@ -56,6 +61,11 @@ function generate(answers, name, lang) {
   genPillar18_PromptOps(answers, name);
   genPillar19_EnterpriseSaaS(answers, name);
   genPillar20_CICDIntelligence(answers, name);
+  genPillar21_APIIntelligence(answers, name);
+  genPillar22_DatabaseIntelligence(answers, name);
+  genPillar23_TestingIntelligence(answers, name);
+  genPillar24_AISafety(answers, name);
+  genPillar25_Performance(answers, name);
   return { ...S.files };
 }
 
@@ -74,14 +84,14 @@ describe('Snapshot A: LMS/Supabase/Stripe', () => {
     ai_auto: 'マルチAgent協調'
   }, 'LMS');
 
-  test('file count in range 108-139 (P4 adds +6, P14 adds +3, P15 adds +4, P16 adds +4, P17 adds +4, P18 adds +4, P20 adds +4, cross-platform adds +3)', () => {
+  test('file count in range 128-159 (P21-P25 each add +4 docs, total +20)', () => {
     const count = Object.keys(files).length;
-    assert.ok(count >= 108 && count <= 139, `Expected 108-139 files (P4 +6, P14 +3, P15 +4, P16 +4, P17 +4, P18 +4, P20 +4, cross-platform +3), got ${count}`);
+    assert.ok(count >= 128 && count <= 159, `Expected 128-159 files (P21-P25 each +4 docs), got ${count}`);
   });
 
-  test('total tokens in range 12000-66000 (P18 adds ~4-8K tokens)', () => {
+  test('total tokens in range 12000-90000 (P21-P25 each add ~4-6K tokens)', () => {
     const total = Object.values(files).reduce((s, v) => s + tokens(v), 0);
-    assert.ok(total >= 12000 && total <= 66000, `Expected 12K-66K tokens (P18 adds ~4-8K), got ${total}`);
+    assert.ok(total >= 12000 && total <= 90000, `Expected 12K-90K tokens (P21-P25 each +4-6K), got ${total}`);
   });
 
   // Core files existence
@@ -646,6 +656,41 @@ describe('Snapshot A: LMS/Supabase/Stripe', () => {
     const doc72 = files['docs/72_prompt_registry.md'];
     assert.ok(doc72.includes('META') || doc72.includes('Template') || doc72.includes('Registry'), 'doc72 has registry/template content');
   });
+
+  test('P21 API Intelligence docs/83-86 exist', () => {
+    assert.ok(files['docs/83_api_design_principles.md'], 'docs/83 missing');
+    assert.ok(files['docs/84_openapi_specification.md'], 'docs/84 missing');
+    assert.ok(files['docs/85_api_security_checklist.md'], 'docs/85 missing');
+    assert.ok(files['docs/86_api_testing_strategy.md'], 'docs/86 missing');
+  });
+
+  test('P22 Database Intelligence docs/87-90 exist', () => {
+    assert.ok(files['docs/87_database_design_principles.md'], 'docs/87 missing');
+    assert.ok(files['docs/88_query_optimization_guide.md'], 'docs/88 missing');
+    assert.ok(files['docs/89_migration_strategy.md'], 'docs/89 missing');
+    assert.ok(files['docs/90_backup_disaster_recovery.md'], 'docs/90 missing');
+  });
+
+  test('P23 Testing Intelligence docs/91-94 exist', () => {
+    assert.ok(files['docs/91_testing_strategy.md'], 'docs/91 missing');
+    assert.ok(files['docs/92_coverage_design.md'], 'docs/92 missing');
+    assert.ok(files['docs/93_e2e_test_architecture.md'], 'docs/93 missing');
+    assert.ok(files['docs/94_performance_testing.md'], 'docs/94 missing');
+  });
+
+  test('P24 AI Safety docs/95-98 exist', () => {
+    assert.ok(files['docs/95_ai_safety_framework.md'], 'docs/95 missing');
+    assert.ok(files['docs/96_ai_guardrail_implementation.md'], 'docs/96 missing');
+    assert.ok(files['docs/97_ai_model_evaluation.md'], 'docs/97 missing');
+    assert.ok(files['docs/98_prompt_injection_defense.md'], 'docs/98 missing');
+  });
+
+  test('P25 Performance Intelligence docs/99-102 exist', () => {
+    assert.ok(files['docs/99_performance_strategy.md'], 'docs/99 missing');
+    assert.ok(files['docs/100_database_performance.md'], 'docs/100 missing');
+    assert.ok(files['docs/101_cache_strategy.md'], 'docs/101 missing');
+    assert.ok(files['docs/102_performance_monitoring.md'], 'docs/102 missing');
+  });
 });
 
 // ═══ Dev Environment Type Tests ═══
@@ -695,9 +740,9 @@ describe('Snapshot B: Blog/Vite/Netlify', () => {
     dev_methods: 'TDD', ai_tools: 'Cursor', orm: ''
   }, 'Blog');
 
-  test('file count in range 99-129 (P14 adds +3, P4 adds +6, P15 adds +4, P16 adds +4, P17 adds +4, P18 adds +4, P20 adds +4, cross-platform adds +3)', () => {
+  test('file count in range 119-149 (P21-P25 each add +4 docs, total +20)', () => {
     const count = Object.keys(files).length;
-    assert.ok(count >= 99 && count <= 129, `Expected 99-129 files (P14 +3, P4 +6, P15 +4, P16 +4, P17 +4, P18 +4, P20 +4, cross-platform +3), got ${count}`);
+    assert.ok(count >= 119 && count <= 149, `Expected 119-149 files (P21-P25 each +4 docs), got ${count}`);
   });
 
   test('no Stripe content when payment absent', () => {

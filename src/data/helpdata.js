@@ -102,7 +102,8 @@ const HELP_DATA={
         {icon:'👤',name:'ユーザー',hint:'ユーザーが「これができないなら使わない」と言う機能は何ですか？それだけ作ればいい。'},
         {icon:'💥',name:'ディスラプター',hint:'競合が全部持っている機能を全て外したら、何が残りますか？それが差別化の核心。'},
         {icon:'🔬',name:'科学者',hint:'この機能の中で「使われるか検証できていない」ものはどれですか？仮説として明示してください。'},
-        {icon:'🧭',name:'冒険家',hint:'今の機能リストを半分に削ったとき、残すのはどれですか？'}
+        {icon:'🧭',name:'冒険家',hint:'今の機能リストを半分に削ったとき、残すのはどれですか？'},
+        {icon:'🔐',name:'APIアーキテクト',hint:'各機能はAPIエンドポイントに対応しますか？「GET /posts」「POST /orders」のように列挙するとOpenAPI仕様(docs/84)が自動生成されます。'}
       ]},
     en:{title:'MVP Features',desc:'Narrow to 3-5. Only pick features users cannot live without.',example:'Minimum: Auth + 1 core feature + Settings',
       expertHints:[
@@ -111,7 +112,8 @@ const HELP_DATA={
         {icon:'👤',name:'User Rep',hint:'Which feature would make users say "then I won\'t use it"? Build only that.'},
         {icon:'💥',name:'Disruptor',hint:'If you removed every feature competitors have, what remains? That\'s your differentiation core.'},
         {icon:'🔬',name:'Scientist',hint:'Which features are unvalidated hypotheses? Flag them explicitly.'},
-        {icon:'🧭',name:'Adventurer',hint:'If you cut this list in half, which ones survive?'}
+        {icon:'🧭',name:'Adventurer',hint:'If you cut this list in half, which ones survive?'},
+        {icon:'🔐',name:'API Architect',hint:'Does each feature map to an API endpoint? Listing them as "GET /posts, POST /orders" helps auto-generate the OpenAPI spec (docs/84).'}
       ]}
   },
   org_model:{
@@ -138,7 +140,8 @@ const HELP_DATA={
         {icon:'👤',name:'ユーザー',hint:'ユーザーが最も頻繁に訪問する画面はどれですか？そこに全エネルギーを集中してください。'},
         {icon:'💥',name:'ディスラプター',hint:'「ダッシュボード」や「設定」を作らないとしたら、本当に必要な画面は何ですか？'},
         {icon:'😄',name:'ユーモリスト',hint:'この画面の中で「思わずスクリーンショットを撮りたくなる」デザインができる画面はどれですか？'},
-        {icon:'🧭',name:'冒険家',hint:'一番難しい画面から作り始めたら、後の全てが簡単に感じます。どれが最難関ですか？'}
+        {icon:'🧭',name:'冒険家',hint:'一番難しい画面から作り始めたら、後の全てが簡単に感じます。どれが最難関ですか？'},
+        {icon:'⚡',name:'パフォーマンス',hint:'どの画面がCore Web Vitals (LCP/INP/CLS)の問題を起こしやすいですか？早期特定でバンドル最適化(docs/101)が活きます。'}
       ]},
     en:{title:'Key Screens',desc:'Map out screens following the user flow.',example:'LP → Login → Dashboard → Detail',
       expertHints:[
@@ -147,7 +150,8 @@ const HELP_DATA={
         {icon:'👤',name:'User Rep',hint:'Which screen will users visit most frequently? Invest all your energy there.'},
         {icon:'💥',name:'Disruptor',hint:'If you refused to build a "Dashboard" or "Settings", what screens are truly necessary?'},
         {icon:'😄',name:'Humorist',hint:'Which screen could be designed so beautifully that users take screenshots to share?'},
-        {icon:'🧭',name:'Adventurer',hint:'Start with the hardest screen first — everything else will feel easy. Which is the hardest?'}
+        {icon:'🧭',name:'Adventurer',hint:'Start with the hardest screen first — everything else will feel easy. Which is the hardest?'},
+        {icon:'⚡',name:'Performance',hint:'Which screens are most likely to fail Core Web Vitals (LCP/INP/CLS)? Identify them early to apply bundle optimization (docs/101).'}
       ]}
   },
   payment:{

@@ -75,7 +75,9 @@ function _dbORM(a){
   if(typeof resolveORM==='function') return resolveORM(a);
   var orm=a.orm||''; var be=a.backend||'';
   var isPy=/Python|Django|FastAPI/i.test(be);
-  if(/Supabase|Firebase|Convex/i.test(be)) return {name:be,dir:'supabase',isBaaS:true,isPython:false};
+  if(/Supabase/i.test(be)) return {name:'Supabase Client',dir:'',isBaaS:true,isPython:false};
+  if(/Firebase/i.test(be)) return {name:'Firebase SDK',dir:'',isBaaS:true,isPython:false};
+  if(/Convex/i.test(be)) return {name:'Convex',dir:'',isBaaS:true,isPython:false};
   if(orm.includes('Drizzle'))    return {name:'Drizzle ORM',dir:'drizzle',isBaaS:false,isPython:false};
   if(orm.includes('TypeORM'))    return {name:'TypeORM',dir:'typeorm',isBaaS:false,isPython:false};
   if(orm.includes('SQLAlchemy')) return {name:'SQLAlchemy',dir:'alembic',isBaaS:false,isPython:true};

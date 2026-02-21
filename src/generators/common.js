@@ -19,6 +19,18 @@ function isNone(v){
   return !v||v==='none'||v==='None'||v==='なし';
 }
 
+// ── P15: Stakeholder type inference from domain ──
+function inferStakeholder(domain){
+  var map={
+    fintech:'enterprise',insurance:'enterprise',legal:'enterprise',
+    government:'enterprise',manufacturing:'enterprise',logistics:'enterprise',
+    hr:'enterprise',saas:'team',collab:'team',analytics:'team',
+    devtool:'developer',ai:'developer',automation:'developer',
+    education:'educator',health:'clinician'
+  };
+  return map[domain]||'startup';
+}
+
 // ── Screen Component Dictionary ──
 const SCREEN_COMPONENTS={
   'ランディング|landing|LP|トップ|home':{
@@ -2644,6 +2656,47 @@ function genArchIntegrityCheck(files,a,compatResults,auditFindings){
       issue:G?'CIパイプラインにカバレッジ閾値 (Statement ≥80%, Branch ≥70%) を設定してテスト品質を担保することを推奨します':
              'Add coverage thresholds (Statement ≥80%, Branch ≥70%) to CI pipeline to enforce test quality',
       sev:'🟡 INFO',fix:G?'docs/92のカバレッジ閾値設定例を参照してください':'Refer to coverage threshold examples in docs/92'});
+  }
+
+  // C-K: AI Safety guardrails for AI-enabled apps (P24)
+  const aiAuto=a.ai_auto||'';
+  const hasAIFeature=aiAuto&&!/なし|none/i.test(aiAuto);
+  if(hasAIFeature){
+    const hasGuardrail=Object.values(files).some(function(v){
+      return (v||'').includes('ガードレール')||(v||'').includes('guardrail')||(v||'').includes('Guardrail');
+    });
+    if(!hasGuardrail){
+      yellowCount++;
+      rows.push({loc:'docs/96_ai_guardrail_implementation.md',src:G?'アーキテクチャチェック':'Architecture check',
+        issue:G?'AI機能が有効ですが、入力バリデーション・出力検証・レート制限のガードレール実装が確認できません':
+               'AI features enabled but input validation / output validation / rate-limit guardrails not found',
+        sev:'🟡 INFO',fix:G?'docs/96のガードレール実装パターンを参照してください':'See docs/96 for guardrail implementation patterns'});
+    }
+    const hasInjectionDef=Object.values(files).some(function(v){
+      return (v||'').includes('プロンプトインジェクション')||(v||'').includes('prompt injection')||(v||'').includes('Injection');
+    });
+    if(!hasInjectionDef){
+      yellowCount++;
+      rows.push({loc:'docs/98_prompt_injection_defense.md',src:G?'アーキテクチャチェック':'Architecture check',
+        issue:G?'AI機能使用時はプロンプトインジェクション防御パターンの実装が推奨されます':
+               'AI features: implement prompt injection defense patterns (see docs/98)',
+        sev:'🟡 INFO',fix:G?'docs/98のDirect/Indirect Injection防御を実装':'Implement Direct/Indirect Injection defense from docs/98'});
+    }
+  }
+
+  // C-L: Performance monitoring for production apps (P25)
+  const isProduction=/production|本番|Vercel|Netlify|AWS|GCP|Azure|Railway|Fly\.io/i.test(a.deploy||'');
+  if(isProduction){
+    const hasAPM=Object.values(files).some(function(v){
+      return (v||'').includes('Sentry')||(v||'').includes('OpenTelemetry')||(v||'').includes('Datadog')||(v||'').includes('監視');
+    });
+    if(!hasAPM){
+      yellowCount++;
+      rows.push({loc:'docs/102_performance_monitoring.md',src:G?'アーキテクチャチェック':'Architecture check',
+        issue:G?'本番デプロイ構成ですが、APM/可観測性設定(Sentry/OpenTelemetry等)が確認できません':
+               'Production deployment configured but no APM/observability setup (Sentry/OpenTelemetry) found',
+        sev:'🟡 INFO',fix:G?'docs/102のAPM設定例を参照してください':'See docs/102 for APM configuration examples'});
+    }
   }
 
   // C-F: MongoDB × Prisma (experimental support warning)

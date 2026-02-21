@@ -822,10 +822,10 @@ function genPillar15(answers) {
   const domain = detectDomain(answers.purpose || '');
   const mkt = DOMAIN_MARKET[domain] || DOMAIN_MARKET._default;
   const personas = PERSONA_ARCHETYPES[domain] || PERSONA_ARCHETYPES._default;
-  const stakeholder = answers.stakeholder || 'startup';
+  const stakeholder = (typeof inferStakeholder==='function') ? inferStakeholder(domain) : 'startup';
   const gtm = GTM_STRATEGY[stakeholder] || GTM_STRATEGY.startup;
-  const arch = answers.architecture || 'baas';
-  const deploy = answers.deployment || 'vercel';
+  const arch = (typeof resolveArch==='function') ? resolveArch(answers).pattern : 'baas';
+  const deploy = answers.deploy || 'vercel';
 
   S.files['docs/56_market_positioning.md'] = gen56Market(G, domain, mkt, gtm, stakeholder);
   S.files['docs/57_user_experience_strategy.md'] = gen57UX(G, domain, personas, mkt);
@@ -1134,7 +1134,7 @@ function gen58Ecosystem(G, domain, mkt, arch, deploy, answers) {
 // DOC 59: Regulatory Foresight & Sustainability
 // ============================================================================
 function gen59Regulatory(G, domain, mkt, answers) {
-  const deploy = answers.deployment || 'vercel';
+  const deploy = answers.deploy || 'vercel';
   let doc = '';
   doc += G ? '# 59. 規制フォーサイト & サステナビリティ\n\n' : '# 59. Regulatory Foresight & Sustainability\n\n';
   doc += G ? '**対象:** 規制/コンプライアンス、投資家、ビジネス\n\n' : '**Audience:** Regulatory/Compliance, Investors, Business\n\n';

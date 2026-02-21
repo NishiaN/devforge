@@ -143,7 +143,16 @@ function gen99(a,pn){
     if(isPy){
       doc+='```python\n# FastAPI: async endpoints + connection pool\nfrom sqlalchemy.ext.asyncio import AsyncSession\n\n@app.get("/items")\nasync def get_items(db: AsyncSession = Depends(get_db)):\n    result = await db.execute(select(Item).options(selectinload(Item.tags)))\n    return result.scalars().all()\n```\n';
     } else {
-      doc+='```typescript\n// Prisma: select only needed fields\nconst users = await prisma.user.findMany({\n  select: { id: true, name: true, email: true }, // avoid SELECT *\n  take: 20, // pagination\n  skip: (page - 1) * 20,\n  orderBy: { createdAt: \'desc\' },\n});\n```\n';
+      var _orm25=(typeof resolveORM==='function')?resolveORM(a).name:'Prisma ORM';
+      if(/Drizzle/i.test(_orm25)){
+        doc+='```typescript\n// Drizzle: select only needed fields\nconst users = await db.select({ id: users.id, name: users.name, email: users.email })\n  .from(users).limit(20).offset((page - 1) * 20).orderBy(desc(users.createdAt));\n```\n';
+      } else if(/Kysely/i.test(_orm25)){
+        doc+='```typescript\n// Kysely: select specific columns\nconst users = await db.selectFrom(\'users\')\n  .select([\'id\', \'name\', \'email\'])\n  .limit(20).offset((page - 1) * 20).orderBy(\'createdAt\', \'desc\').execute();\n```\n';
+      } else if(/TypeORM/i.test(_orm25)){
+        doc+='```typescript\n// TypeORM: select specific columns\nconst users = await userRepo.find({\n  select: [\'id\', \'name\', \'email\'],\n  take: 20, skip: (page - 1) * 20,\n  order: { createdAt: \'DESC\' },\n});\n```\n';
+      } else {
+        doc+='```typescript\n// Prisma: select only needed fields\nconst users = await prisma.user.findMany({\n  select: { id: true, name: true, email: true }, // avoid SELECT *\n  take: 20, // pagination\n  skip: (page - 1) * 20,\n  orderBy: { createdAt: \'desc\' },\n});\n```\n';
+      }
     }
   }
 
@@ -172,7 +181,12 @@ function gen100(a,pn){
       doc+='```sql\n'+p.sql+'\n```\n\n';
     }
     doc+=(G?'**ポイント:**':'**Tips:**')+'\n';
-    p.tips.forEach(t=>{ doc+='- '+t+'\n'; });
+    var _ormName100=(typeof resolveORM==='function')?resolveORM(a).name:'Prisma ORM';
+    p.tips.forEach(function(t){
+      var tip=t;
+      if(!/Prisma/i.test(_ormName100)) tip=tip.replace(/Prisma/g,_ormName100);
+      doc+='- '+tip+'\n';
+    });
     doc+='\n';
   });
 
@@ -213,9 +227,16 @@ function gen101(a,pn){
   doc+=(G?'ユーザー':'User')+' → '+(G?'CDN/エッジ':'CDN/Edge')+' → '+(G?'アプリサーバー':'App Server')+' → '+(G?'Redisキャッシュ':'Redis Cache')+' → DB\n';
   doc+=(G?'      キャッシュHIT率目標: CDN 60-80% / App 30-50%':'      Cache hit rate targets: CDN 60-80% / App 30-50%')+'\n```\n\n';
 
-  CACHE_LAYERS.forEach(l=>{
+  var _ormName101=(typeof resolveORM==='function')?resolveORM(a).name:'Prisma ORM';
+  CACHE_LAYERS.forEach(function(l){
     doc+='## '+(G?l.ja:l.en)+'\n\n';
-    doc+='**'+(G?'ツール':'Tools')+':** '+l.tools.join(', ')+'\n\n';
+    var toolsList=l.tools.map(function(tool){
+      if(!/Prisma/i.test(_ormName101)&&/Prisma Accelerate/i.test(tool)){
+        return tool.replace('Prisma Accelerate',_ormName101+' query optimization');
+      }
+      return tool;
+    });
+    doc+='**'+(G?'ツール':'Tools')+':** '+toolsList.join(', ')+'\n\n';
     doc+='```\n'+l.headers.join('\n')+'\n```\n';
     doc+='**TTL:** '+l.ttl+'\n\n';
   });
@@ -291,7 +312,10 @@ function gen102(a,pn){
          'Vercel Analytics automatically collects RUM (Real User Monitoring). View in Dashboard → Analytics → Web Vitals.')+'\n';
   } else {
     doc+='## Sentry '+(G?'パフォーマンストレーシング':'Performance Tracing')+'\n\n';
-    doc+='```typescript\n// sentry.server.config.ts\nimport * as Sentry from \'@sentry/nextjs\';\nSentry.init({\n  tracesSampleRate: 0.1, // 10% sampling in production\n  profilesSampleRate: 0.1,\n  integrations: [\n    Sentry.prismaIntegration(), // Prisma query tracing\n  ],\n});\n```\n\n';
+    var _sentryPkg=(/Next/i.test(a.frontend||''))?'@sentry/nextjs':'@sentry/node';
+    var _orm102=(typeof resolveORM==='function')?resolveORM(a).name:'Prisma ORM';
+    var _ormInteg=/Prisma/i.test(_orm102)?'Sentry.prismaIntegration(), // Prisma query tracing':'// ORM: '+_orm102+' (manual span tracking)';
+    doc+='```typescript\n// sentry.server.config.ts\nimport * as Sentry from \''+_sentryPkg+'\';\nSentry.init({\n  tracesSampleRate: 0.1, // 10% sampling in production\n  profilesSampleRate: 0.1,\n  integrations: [\n    '+_ormInteg+'\n  ],\n});\n```\n\n';
   }
 
   doc+='\n## '+(G?'アラート設定指針':'Alert Configuration Guidelines')+'\n\n';

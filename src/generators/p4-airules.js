@@ -306,6 +306,7 @@ ${G?'- 🔄 予備バッファ: 10% (1K)':'- 🔄 Reserve buffer: 10% (1K)'}
 - docs/37_bug_prevention.md ${G?'— バグ予防':'— Bug prevention'}
 - docs/38_business_model.md ${G?'— ビジネスモデル (payment≠none時)':'— Business model (if payment≠none)'}
 - skills/agents/*.md ${G?'— エージェント定義 (ai_auto=multi/full時)':'— Agent definitions (if ai_auto=multi/full)'}
+- docs/83-102 ${G?'— P21-25: API/DB/テスト/AI安全/パフォーマンス':'— P21-25: API/DB/Testing/AI Safety/Performance'}
 
 ## DB Schema
 \`\`\`

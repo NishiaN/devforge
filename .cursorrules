@@ -1,11 +1,11 @@
 # DevForge v9.6.0
 
 You are working on DevForge v9.6.0, an AI-driven development platform and spec generator.
-55 JS modules in src/ build into a single devforge-v9.html (~2127KB / 3000KB limit).
+61 JS modules in src/ build into a single devforge-v9.html (~2463KB / 3000KB limit).
 
 ## Essential Commands
 - Build: `node build.js` (produces devforge-v9.html)
-- Test: `npm test` (734 tests, all passing)
+- Test: `npm test` (967 tests, all passing)
 - Dev: `npm run dev` (build + live-server on port 3000)
 - Always run tests before committing
 
@@ -24,13 +24,20 @@ You are working on DevForge v9.6.0, an AI-driven development platform and spec g
 5. Call `save()` after S mutations
 
 ## Output
-Generates **135+ files** across 20 pillars:
+Generates **175+ files** across 25 pillars:
 - .spec/ (5 files: constitution, specification, technical-plan, tasks, verification)
 - .devcontainer/ (4 files)
 - .claude/ (6 files: thin CLAUDE.md + 5 path-specific rules + settings.json)
-- docs/ (80 documents including security, ops, strategy, quality, CI/CD intelligence)
+- docs/ (102 documents: 01-82 base + 83-86 API + 87-90 DB + 91-94 Testing + 95-98 AI Safety + 99-102 Performance)
 - AI rules (CLAUDE.md, AI_BRIEF.md, .cursorrules, .clinerules, .windsurfrules, AGENTS.md, skills/)
 - CI/CD (.github/workflows/ci.yml)
+
+## P21-P25 Intelligence Pillars (docs/83-102)
+- **P21 API**: docs/83 REST principles, docs/84 OpenAPI 3.1, docs/85 OWASP security, docs/86 k6 testing
+- **P22 DB**: docs/87 schema design, docs/88 N+1/query, docs/89 migration, docs/90 backup/DR
+- **P23 Testing**: docs/91 pyramid, docs/92 coverage, docs/93 E2E/Playwright, docs/94 performance
+- **P24 AI Safety**: docs/95 risk framework, docs/96 guardrails, docs/97 model eval, docs/98 injection defense
+- **P25 Performance**: docs/99 strategy, docs/100 DB perf, docs/101 cache, docs/102 monitoring/APM
 
 ## Critical
 **See CLAUDE.md for complete documentation** — comprehensive development guidelines, security best practices, common bugs, troubleshooting, and detailed architecture. CLAUDE.md is the authoritative source of truth.

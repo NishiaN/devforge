@@ -1,4 +1,4 @@
-// Compat rules functional test (76 rules: 13 ERROR + 46 WARN + 17 INFO)
+// Compat rules functional test (79 rules: 13 ERROR + 46 WARN + 20 INFO)
 const assert=require('node:assert/strict');
 const S={lang:'ja',skill:'pro'};
 eval(require('fs').readFileSync('src/data/compat-rules.js','utf-8'));
@@ -144,6 +144,13 @@ const tests=[
   {name:'AI+Express=RateLimitINFO',a:{ai_auto:'Claude API',backend:'Node.js + Express'},expect:'info',id:'ai-ratelimit-reminder'},
   {name:'AI+BaaS=noRateLimitINFO',a:{ai_auto:'Claude API',backend:'Firebase'},expect:'none',id:'ai-ratelimit-reminder'},
   {name:'Ollama+Vercel=infraINFO',a:{ai_auto:'Ollama (ローカルLLM) + llama3',deploy:'Vercel'},expect:'info',id:'ai-local-model-infra'},
+  // Cross-pillar P21/P22/P25
+  {name:'4ents=OpenAPIremind',a:{data_entities:'User,Post,Comment,Tag',mvp_features:'投稿管理'},expect:'info',id:'api-openapi-remind'},
+  {name:'3ents=noOpenAPIremind',a:{data_entities:'User,Post,Comment',mvp_features:'投稿管理'},expect:'none',id:'api-openapi-remind'},
+  {name:'5ents+Prisma=N1risk',a:{orm:'Prisma ORM',data_entities:'User,Post,Comment,Tag,Category'},expect:'info',id:'orm-n1-risk'},
+  {name:'5ents+noORM=noN1risk',a:{orm:'',data_entities:'User,Post,Comment,Tag,Category'},expect:'none',id:'orm-n1-risk'},
+  {name:'Vercel+PostgreSQL=backupRemind',a:{deploy:'Vercel',database:'PostgreSQL (Neon)'},expect:'info',id:'prod-backup-remind'},
+  {name:'noDeployDB=noBackupRemind',a:{deploy:'localhost',database:'SQLite'},expect:'none',id:'prod-backup-remind'},
 ];
 
 let pass=0,fail=0;

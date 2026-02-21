@@ -67,6 +67,14 @@ if (aiRecMatch) {
 const ptUxAuditJa = launcherCode.includes("ux_audit:{icon:'🔬'");
 const ptUxAuditEn = launcherCode.includes("'UX Proficiency Audit'");
 
+// P21-P25 new template presence checks
+const ptDbIntelJa = launcherCode.includes("db_intelligence:{icon:'🗄️'");
+const ptDbIntelEn = launcherCode.includes("'DB Design Intelligence'");
+const ptAiSafetyJa = launcherCode.includes("ai_safety:{icon:'🤖🛡️'");
+const ptAiSafetyEn = launcherCode.includes("'AI Safety Review'");
+const ptTestIntelJa = launcherCode.includes("test_intel:{icon:'🔬🧪'");
+const ptTestIntelEn = launcherCode.includes("'Testing Strategy Intelligence'");
+
 // ═══ Setup: load p11-implguide.js to get gen81 ═══
 const p11Code = fs.readFileSync(path.join(__dirname, '../src/generators/p11-implguide.js'), 'utf8');
 
@@ -186,9 +194,9 @@ describe('[SkillLevel] Migration from old skill string', () => {
 });
 
 describe('[SkillLevel] templateOrder count', () => {
-  test('launcher templateOrder has 37 entries', () => {
+  test('launcher templateOrder has 40 entries', () => {
     assert.ok(templateOrder !== null, 'templateOrder should be parseable from launcher.js');
-    assert.strictEqual(templateOrder.length, 37, `templateOrder.length should be 37, got ${templateOrder ? templateOrder.length : 'null'}`);
+    assert.strictEqual(templateOrder.length, 40, `templateOrder.length should be 40, got ${templateOrder ? templateOrder.length : 'null'}`);
   });
 });
 
@@ -205,6 +213,63 @@ describe('[SkillLevel] AI_REC ux_audit', () => {
   test('AI_REC["ux_audit"] === "Claude"', () => {
     assert.ok(AI_REC !== null, 'AI_REC should be parseable from launcher.js');
     assert.strictEqual(AI_REC['ux_audit'], 'Claude', `AI_REC.ux_audit should be 'Claude', got '${AI_REC ? AI_REC['ux_audit'] : 'null'}'`);
+  });
+});
+
+describe('[SkillLevel] db_intelligence template exists', () => {
+  test('PT["db_intelligence"] exists with ja label', () => {
+    assert.ok(ptDbIntelJa, 'launcher.js should contain db_intelligence with ja icon+key');
+  });
+  test('PT["db_intelligence"] exists with en label', () => {
+    assert.ok(ptDbIntelEn, 'launcher.js should contain "DB Design Intelligence" (en label)');
+  });
+});
+
+describe('[SkillLevel] ai_safety template exists', () => {
+  test('PT["ai_safety"] exists with ja label', () => {
+    assert.ok(ptAiSafetyJa, 'launcher.js should contain ai_safety with ja icon+key');
+  });
+  test('PT["ai_safety"] exists with en label', () => {
+    assert.ok(ptAiSafetyEn, 'launcher.js should contain "AI Safety Review" (en label)');
+  });
+});
+
+describe('[SkillLevel] test_intel template exists', () => {
+  test('PT["test_intel"] exists with ja label', () => {
+    assert.ok(ptTestIntelJa, 'launcher.js should contain test_intel with ja icon+key');
+  });
+  test('PT["test_intel"] exists with en label', () => {
+    assert.ok(ptTestIntelEn, 'launcher.js should contain "Testing Strategy Intelligence" (en label)');
+  });
+});
+
+describe('[SkillLevel] AI_REC new templates', () => {
+  test('AI_REC["db_intelligence"] === "Gemini"', () => {
+    assert.ok(AI_REC !== null, 'AI_REC should be parseable from launcher.js');
+    assert.strictEqual(AI_REC['db_intelligence'], 'Gemini', `AI_REC.db_intelligence should be 'Gemini', got '${AI_REC ? AI_REC['db_intelligence'] : 'null'}'`);
+  });
+  test('AI_REC["ai_safety"] === "Claude"', () => {
+    assert.ok(AI_REC !== null, 'AI_REC should be parseable from launcher.js');
+    assert.strictEqual(AI_REC['ai_safety'], 'Claude', `AI_REC.ai_safety should be 'Claude', got '${AI_REC ? AI_REC['ai_safety'] : 'null'}'`);
+  });
+  test('AI_REC["test_intel"] === "Copilot"', () => {
+    assert.ok(AI_REC !== null, 'AI_REC should be parseable from launcher.js');
+    assert.strictEqual(AI_REC['test_intel'], 'Copilot', `AI_REC.test_intel should be 'Copilot', got '${AI_REC ? AI_REC['test_intel'] : 'null'}'`);
+  });
+});
+
+describe('[SkillLevel] new templates in templateOrder', () => {
+  test('templateOrder contains db_intelligence', () => {
+    assert.ok(templateOrder !== null, 'templateOrder should be parseable');
+    assert.ok(templateOrder.includes('db_intelligence'), 'templateOrder should include db_intelligence');
+  });
+  test('templateOrder contains ai_safety', () => {
+    assert.ok(templateOrder !== null, 'templateOrder should be parseable');
+    assert.ok(templateOrder.includes('ai_safety'), 'templateOrder should include ai_safety');
+  });
+  test('templateOrder contains test_intel', () => {
+    assert.ok(templateOrder !== null, 'templateOrder should be parseable');
+    assert.ok(templateOrder.includes('test_intel'), 'templateOrder should include test_intel');
   });
 });
 

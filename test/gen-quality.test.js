@@ -1973,3 +1973,320 @@ describe('Suite 20: Pillar ㉕ Performance Intelligence', () => {
     });
   });
 });
+
+/*
+   Suite 21 — Cross-pillar ORM Consistency
+   Tests: P25 + Drizzle/SQLAlchemy/Kysely should not leak "Prisma"
+          P11 + ORM should mention correct migration tool
+*/
+const s21Drizzle = {
+  frontend:'React + Next.js', backend:'Node.js + Express',
+  database:'PostgreSQL', deploy:'Railway', orm:'Drizzle ORM',
+  auth:'JWT', mobile:'なし',
+};
+const s21Kysely = {
+  frontend:'React + Vite', backend:'Node.js + Express',
+  database:'PostgreSQL', deploy:'Railway', orm:'Kysely',
+  auth:'JWT', mobile:'なし',
+};
+const s21Sqlalchemy = {
+  frontend:'React + Vite', backend:'Python + FastAPI',
+  database:'PostgreSQL', deploy:'Railway', orm:'SQLAlchemy (Python)',
+  auth:'JWT', mobile:'なし',
+};
+const s21Baas = {
+  frontend:'React + Next.js', backend:'Supabase',
+  database:'Supabase (PostgreSQL)', deploy:'Vercel',
+  auth:'Supabase Auth', mobile:'なし',
+};
+const s21VueExpress = {
+  frontend:'Vue 3 + Vite', backend:'Node.js + Express',
+  database:'PostgreSQL', deploy:'Railway', orm:'Prisma',
+  auth:'JWT', mobile:'なし',
+};
+
+describe('Suite 21: Cross-pillar ORM Consistency', () => {
+
+  it('P25+Drizzle: docs/99 has no "prisma.user"', () => {
+    const f = gPerf(s21Drizzle);
+    const doc = f['docs/99_performance_strategy.md'] || '';
+    assert.ok(!doc.includes('prisma.user'), 'docs/99 must not contain prisma.user when ORM is Drizzle');
+  });
+
+  it('P25+Drizzle: docs/99 contains Drizzle ORM pattern', () => {
+    const f = gPerf(s21Drizzle);
+    const doc = f['docs/99_performance_strategy.md'] || '';
+    assert.ok(doc.includes('Drizzle') || doc.includes('drizzle'), 'docs/99 must contain Drizzle pattern');
+  });
+
+  it('P25+Drizzle: docs/100 tips mention Drizzle not Prisma', () => {
+    const f = gPerf(s21Drizzle);
+    const doc = f['docs/100_database_performance.md'] || '';
+    assert.ok(doc.includes('Drizzle'), 'docs/100 tips must mention Drizzle ORM');
+  });
+
+  it('P25+Drizzle: docs/101 no "Prisma Accelerate" in tools', () => {
+    const f = gPerf(s21Drizzle);
+    const doc = f['docs/101_cache_strategy.md'] || '';
+    assert.ok(!doc.includes('Prisma Accelerate'), 'docs/101 must not contain Prisma Accelerate for Drizzle');
+  });
+
+  it('P25+Drizzle: docs/102 no "prismaIntegration"', () => {
+    const f = gPerf(s21Drizzle);
+    const doc = f['docs/102_performance_monitoring.md'] || '';
+    assert.ok(!doc.includes('prismaIntegration'), 'docs/102 must not contain prismaIntegration for Drizzle');
+  });
+
+  it('P25+SQLAlchemy: docs/99 has Python async pattern', () => {
+    const f = gPerf(s21Sqlalchemy);
+    const doc = f['docs/99_performance_strategy.md'] || '';
+    assert.ok(doc.includes('sqlalchemy') || doc.includes('FastAPI') || doc.includes('async'), 'docs/99 must contain Python/SQLAlchemy pattern');
+  });
+
+  it('P25+SQLAlchemy: docs/100 tips mention SQLAlchemy', () => {
+    const f = gPerf(s21Sqlalchemy);
+    const doc = f['docs/100_database_performance.md'] || '';
+    assert.ok(doc.includes('SQLAlchemy'), 'docs/100 tips must mention SQLAlchemy');
+  });
+
+  it('P25+BaaS: docs/99 generates successfully', () => {
+    const f = gPerf(s21Baas);
+    assert.ok(f['docs/99_performance_strategy.md'], 'docs/99 must generate for BaaS');
+  });
+
+  it('P25+Vue+Express: docs/102 uses @sentry/node (not @sentry/nextjs)', () => {
+    const f = gPerf(s21VueExpress);
+    const doc = f['docs/102_performance_monitoring.md'] || '';
+    assert.ok(doc.includes('@sentry/node'), 'docs/102 must use @sentry/node for non-Next.js+non-Vercel');
+    assert.ok(!doc.includes('@sentry/nextjs'), 'docs/102 must not use @sentry/nextjs for Vue+Express');
+  });
+
+  it('P11+Kysely: migration tool mentions Kysely', () => {
+    S.files={}; S.genLang='ja'; S.skill='intermediate';
+    genPillar11_ImplIntelligence(s21Kysely,'QTest');
+    const doc = S.files['docs/39_implementation_playbook.md'] || '';
+    assert.ok(doc.includes('Kysely'), 'docs/39 migration tool must mention Kysely');
+  });
+
+  it('P11+Drizzle: migration tool mentions Drizzle', () => {
+    S.files={}; S.genLang='ja'; S.skill='intermediate';
+    genPillar11_ImplIntelligence(s21Drizzle,'QTest');
+    const doc = S.files['docs/39_implementation_playbook.md'] || '';
+    assert.ok(doc.includes('Drizzle'), 'docs/39 migration tool must mention Drizzle');
+  });
+
+  it('P11+SQLAlchemy: migration tool mentions SQLAlchemy', () => {
+    S.files={}; S.genLang='ja'; S.skill='intermediate';
+    genPillar11_ImplIntelligence(s21Sqlalchemy,'QTest');
+    const doc = S.files['docs/39_implementation_playbook.md'] || '';
+    assert.ok(doc.includes('SQLAlchemy'), 'docs/39 migration tool must mention SQLAlchemy');
+  });
+});
+
+/*
+   Suite 22 — Cross-pillar Auth/Payment Consistency
+   Tests: P21 BaaS authn adaptation, P15 stakeholder inference, P12 payment detection
+*/
+const supabaseApiAnswers = {
+  frontend:'React + Next.js', backend:'Supabase',
+  database:'Supabase (PostgreSQL)', deploy:'Vercel',
+  auth:'Supabase Auth', mobile:'なし', payment:'なし',
+};
+const firebaseApiAnswers = {
+  frontend:'React + Next.js', backend:'Firebase',
+  database:'Firebase Firestore', deploy:'Vercel',
+  auth:'Firebase Auth', mobile:'なし', payment:'なし',
+};
+const expressApiAnswers = {
+  frontend:'React + Next.js', backend:'Node.js + Express',
+  database:'PostgreSQL', deploy:'Vercel',
+  auth:'JWT', mobile:'なし', payment:'なし',
+};
+
+function gAPI21(answers, lang) {
+  S.files={}; S.genLang=lang||'ja'; S.skill='intermediate';
+  genPillar21_APIIntelligence(answers,'QTest');
+  return S.files;
+}
+function gSec12(answers, lang) {
+  S.files={}; S.genLang=lang||'ja'; S.skill='intermediate';
+  genPillar12_SecurityIntelligence(answers,'QTest');
+  return S.files;
+}
+function gFuture15(answers, lang) {
+  S.files={}; S.genLang=lang||'ja'; S.skill='intermediate';
+  genPillar15(answers);
+  return S.files;
+}
+
+describe('Suite 22: Cross-pillar Auth/Payment Consistency', () => {
+
+  it('P21+Supabase: docs/85 authn item mentions Supabase not JWT', () => {
+    const f = gAPI21(supabaseApiAnswers);
+    const doc = f['docs/85_api_security_checklist.md'] || '';
+    assert.ok(doc.includes('Supabase'), 'docs/85 authn must mention Supabase for BaaS backend');
+    assert.ok(!doc.includes('JWTトークン検証') && !doc.includes('JWT token validation'), 'docs/85 must not use JWT authn text for BaaS');
+  });
+
+  it('P21+Firebase: docs/85 authn item mentions Firebase', () => {
+    const f = gAPI21(firebaseApiAnswers);
+    const doc = f['docs/85_api_security_checklist.md'] || '';
+    assert.ok(doc.includes('Firebase'), 'docs/85 authn must mention Firebase for BaaS backend');
+  });
+
+  it('P21+Express: docs/85 authn item uses JWT verification', () => {
+    const f = gAPI21(expressApiAnswers);
+    const doc = f['docs/85_api_security_checklist.md'] || '';
+    assert.ok(doc.includes('JWT') || doc.includes('jose'), 'docs/85 authn must mention JWT for non-BaaS backend');
+  });
+
+  it('P15+fintech domain: stakeholder resolves to enterprise', () => {
+    const ans = { purpose:'金融サービス向け決済管理プラットフォーム', target:'法人', frontend:'React + Next.js', backend:'Node.js + Express', database:'PostgreSQL', deploy:'Vercel' };
+    const f = gFuture15(ans);
+    const doc = f['docs/56_market_positioning.md'] || '';
+    assert.ok(doc.includes('enterprise') || doc.includes('Enterprise') || doc.includes('エンタープライズ'), 'docs/56 must reflect enterprise stakeholder for fintech domain');
+  });
+
+  it('P15+devtool domain: stakeholder resolves to developer', () => {
+    const ans = { purpose:'開発者ツール APIキー管理プラットフォーム', target:'エンジニア', frontend:'React + Next.js', backend:'Node.js + Express', database:'PostgreSQL', deploy:'Vercel' };
+    const f = gFuture15(ans);
+    const doc = f['docs/56_market_positioning.md'] || '';
+    assert.ok(doc.includes('developer') || doc.includes('Developer') || doc.includes('開発者'), 'docs/56 must reflect developer stakeholder for devtool domain');
+  });
+
+  it('P15+generic: stakeholder resolves to startup', () => {
+    const ans = { purpose:'汎用ブログプラットフォーム', target:'ブロガー', frontend:'React + Next.js', backend:'Node.js + Express', database:'PostgreSQL', deploy:'Vercel' };
+    const f = gFuture15(ans);
+    assert.ok(f['docs/56_market_positioning.md'], 'docs/56 must generate for generic domain');
+  });
+
+  it('inferStakeholder: hr domain → enterprise', () => {
+    assert.ok(typeof inferStakeholder === 'function', 'inferStakeholder should be globally available');
+    assert.strictEqual(inferStakeholder('hr'), 'enterprise', 'hr domain must map to enterprise');
+  });
+
+  it('inferStakeholder: ai domain → developer', () => {
+    assert.ok(typeof inferStakeholder === 'function', 'inferStakeholder should be globally available');
+    assert.strictEqual(inferStakeholder('ai'), 'developer', 'ai domain must map to developer');
+  });
+
+  it('inferStakeholder: saas domain → team', () => {
+    assert.ok(typeof inferStakeholder === 'function', 'inferStakeholder should be globally available');
+    assert.strictEqual(inferStakeholder('saas'), 'team', 'saas domain must map to team');
+  });
+
+  it('inferStakeholder: unknown domain → startup fallback', () => {
+    assert.ok(typeof inferStakeholder === 'function', 'inferStakeholder should be globally available');
+    assert.strictEqual(inferStakeholder('unknown_xyz'), 'startup', 'unknown domain must fall back to startup');
+  });
+
+  it('P12+payment=なし: no PCI DSS references', () => {
+    const ans = { ...expressApiAnswers, purpose:'ブログ', target:'ブロガー', payment:'なし', ai_auto:'なし', data_entities:'User, Post', mvp_features:'投稿, 管理' };
+    const f = gSec12(ans);
+    const doc = f['docs/43_security_intelligence.md'] || '';
+    assert.ok(!doc.includes('PCI DSS'), 'docs/43 must not mention PCI DSS when payment=なし');
+  });
+
+  it('P12+payment=None: no PCI DSS references', () => {
+    const ans = { ...expressApiAnswers, purpose:'ブログ', target:'ブロガー', payment:'None', ai_auto:'None', data_entities:'User, Post', mvp_features:'投稿, 管理' };
+    const f = gSec12(ans);
+    const doc = f['docs/43_security_intelligence.md'] || '';
+    assert.ok(!doc.includes('PCI DSS'), 'docs/43 must not mention PCI DSS when payment=None');
+  });
+});
+
+/* ══════════════════════════════════════════════════════════════════
+   Suite 23 — Cross-Domain P21-P25 (MongoDB / Java / Mobile)
+   ════════════════════════════════════════════════════════════════ */
+
+const javaTestAnswers = Object.assign({}, A25, {
+  backend: 'Spring Boot (Java)',
+  frontend: 'React / Next.js',
+  orm: 'TypeORM',
+  database: 'PostgreSQL (Neon)',
+  mobile: 'なし',
+  auth: 'JWT (カスタム実装)',
+});
+
+const mobilePerfAnswers = Object.assign({}, {
+  frontend: 'React Native (Expo)',
+  backend: 'Supabase',
+  database: 'Supabase Database',
+  deploy: 'EAS Build',
+  orm: '',
+  auth: 'Supabase Auth',
+  mobile: 'Expo (React Native)',
+  ai_auto: 'なし',
+  purpose: 'モバイルECアプリ',
+  target: 'スマートフォンユーザー',
+  mvp_features: '商品閲覧, カート, 決済',
+  screens: 'ホーム, 商品詳細, カート',
+  data_entities: 'User, Product, Order',
+  dev_methods: 'TDD',
+  ai_tools: 'Cursor',
+  payment: 'Stripe',
+});
+
+describe('Suite 23: Cross-Domain P21-P25 (MongoDB / Java / Mobile)', () => {
+
+  // ── MongoDB + P22 Database Intelligence ──
+  it('P22+MongoDB: docs/87 contains MongoDB document design', () => {
+    const f = gDB(mongoAnswers);
+    const doc = f['docs/87_database_design_principles.md'] || '';
+    assert.ok(doc.includes('MongoDB') || doc.includes('Embed') || doc.includes('Reference'), 'docs/87 MongoDB must include document design principles');
+  });
+
+  it('P22+MongoDB: docs/88 query optimization generates successfully', () => {
+    const f = gDB(mongoAnswers);
+    const doc = f['docs/88_query_optimization_guide.md'] || '';
+    assert.ok(doc.length > 200, 'docs/88 must generate content for MongoDB scenario');
+    assert.ok(doc.includes('N+1') || doc.includes('クエリ') || doc.includes('query') || doc.includes('Index'), 'docs/88 must include query optimization content');
+  });
+
+  it('P22+MongoDB: docs/89 migration strategy generates successfully', () => {
+    const f = gDB(mongoAnswers);
+    assert.ok(f['docs/89_migration_strategy.md'], 'docs/89 must generate for MongoDB');
+  });
+
+  // ── Java + P23 Testing Intelligence ──
+  it('P23+Java: docs/91 uses JUnit framework', () => {
+    const f = gTest(javaTestAnswers);
+    const doc = f['docs/91_testing_strategy.md'] || '';
+    assert.ok(doc.includes('JUnit') || doc.includes('Mockito') || doc.includes('Java') || doc.includes('Spring'), 'docs/91 Java must reference JUnit/Spring testing');
+  });
+
+  it('P23+Java: docs/92 uses JaCoCo for coverage', () => {
+    const f = gTest(javaTestAnswers);
+    const doc = f['docs/92_coverage_design.md'] || '';
+    assert.ok(doc.includes('JaCoCo') || doc.includes('Java') || doc.includes('Maven') || doc.includes('Gradle'), 'docs/92 Java must reference JaCoCo or build tool');
+  });
+
+  it('P23+Java: all 4 testing docs generate for Java backend', () => {
+    const f = gTest(javaTestAnswers);
+    ['docs/91_testing_strategy.md','docs/92_coverage_design.md',
+     'docs/93_e2e_test_architecture.md','docs/94_performance_testing.md'].forEach(p => {
+      assert.ok(f[p], p + ' must generate for Java backend');
+    });
+  });
+
+  // ── Mobile (Expo) + P25 Performance Intelligence ──
+  it('P25+Mobile: all 4 performance docs generate for Expo backend', () => {
+    const f = gPerf(mobilePerfAnswers);
+    ['docs/99_performance_strategy.md','docs/100_database_performance.md',
+     'docs/101_cache_strategy.md','docs/102_performance_monitoring.md'].forEach(p => {
+      assert.ok(f[p], p + ' must generate for mobile/Expo scenario');
+    });
+  });
+
+  it('P25+Mobile: docs/99 mentions BaaS/Supabase optimization', () => {
+    const f = gPerf(mobilePerfAnswers);
+    const doc = f['docs/99_performance_strategy.md'] || '';
+    assert.ok(doc.includes('Supabase') || doc.includes('BaaS') || doc.includes('キャッシュ') || doc.includes('cache'), 'docs/99 mobile must include Supabase or cache optimization');
+  });
+
+  it('P25+Mobile: docs/94 contains mobile performance or web vitals', () => {
+    const f = gTest(mobileTestAnswers);
+    const doc = f['docs/94_performance_testing.md'] || '';
+    assert.ok(doc.includes('Detox') || doc.includes('Maestro') || doc.includes('mobile') || doc.includes('React Native') || doc.includes('Expo') || doc.includes('LCP') || doc.includes('Lighthouse'), 'docs/94 mobile must include mobile testing or web vitals');
+  });
+});

@@ -212,7 +212,7 @@ function gen92(a,pn,G,feType,beType){
 // doc 93: E2E Test Architecture
 function gen93(a,pn,G,feType,beType){
   var isMobile=/Expo|Flutter|React Native/i.test(a.mobile||'');
-  var hasAuth=a.auth&&!/なし|None|none/i.test(a.auth);
+  var hasAuth=a.auth&&!(typeof isNone==='function'?isNone(a.auth):/なし|none/i.test(a.auth));
 
   var doc='';
   doc+='# '+(G?'E2Eテストアーキテクチャ':'E2E Test Architecture')+'\n\n';

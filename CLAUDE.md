@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 # DevForge v9.6.0
 
-**AI Development OS** — 61 JS modules in `src/` → single `devforge-v9.html` (~2439KB / 3000KB limit).
+**AI Development OS** — 61 JS modules in `src/` → single `devforge-v9.html` (~2468KB / 3000KB limit).
 Generates **155+ files** across **25 pillars** from a wizard-driven Q&A session.
 
 ## Documentation Map
@@ -18,9 +18,9 @@ Generates **155+ files** across **25 pillars** from a wizard-driven Q&A session.
 ## Build & Test
 
 ```bash
-node build.js                          # → devforge-v9.html (~2439KB, limit 3000KB)
+node build.js                          # → devforge-v9.html (~2468KB, limit 3000KB)
 node build.js --no-minify              # debug (skip minification)
-npm test                               # 921 tests, all passing
+npm test                               # 971 tests, all passing
 node --test test/gen-quality.test.js   # single test file
 npm run dev                            # build + live-server :3000
 npm run check                          # syntax-check extracted JS
@@ -43,7 +43,7 @@ Never reorder without checking dependencies.
 | Category | Purpose |
 |----------|---------|
 | `core/` | State (`S`), i18n (`t()`), keyboard events, wizard tour, app init |
-| `data/` | 48 standard presets (`PR`/`_mp()`), 138 field presets (`PR_FIELD`/`_fpd()`), questions, techdb (323 entries), compat-rules (76 rules), gen-templates (bilingual GT dict), helpdata |
+| `data/` | 48 standard presets (`PR`/`_mp()`), 138 field presets (`PR_FIELD`/`_fpd()`), questions, techdb (323 entries), compat-rules (79 rules), gen-templates (bilingual GT dict), helpdata |
 | `generators/` | `index.js` orchestrator + `p1`–`p25` pillars + `docs.js` + `common.js` |
 | `ui/` | wizard, render, presets, preview, sidebar, editor, diff, export, explorer, dashboard, launcher, templates, qbar, cmdpalette, help, voice |
 | `styles/all.css` | Theme (dark/light), responsive; CSS custom properties only |
@@ -149,7 +149,7 @@ Full 6-step process in `docs/CLAUDE-REFERENCE.md`. Key steps often missed:
 
 ## Adding Compat Rules
 
-File: `src/data/compat-rules.js` — currently 76 rules (13 error + 46 warn + 17 info).
+File: `src/data/compat-rules.js` — currently 79 rules (13 error + 46 warn + 20 info).
 Structure: `{id, p:['field1','field2'], lv:'error'|'warn'|'info', t:conditionFn, ja, en, fix, fixFn}`
 After adding: update header comment totals, add tests to `test/compat.test.js`, update CLAUDE.md rule count.
 
@@ -165,7 +165,7 @@ After adding: update header comment totals, add tests to `test/compat.test.js`, 
 | Preset matching | phase-n (N-1〜N-9 + G-1〜G-7, 68 tests) | ~68 |
 | Other | i18n, state, techdb | ~23 |
 
-**Total: 921 tests** | Test harness pattern: `eval(fs.readFileSync(...))` to load src files; global `S` mock at top.
+**Total: 971 tests** | Test harness pattern: `eval(fs.readFileSync(...))` to load src files; global `S` mock at top.
 
 **When adding domains**, update: `test/data-coverage.test.js` (4 arrays), `test/gen-coherence.test.js`, `test/ops.test.js`.
 

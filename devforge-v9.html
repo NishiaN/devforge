@@ -41,19 +41,19 @@
       <div class="hero-content">
         <div class="version-badge">v9.5 — 2026 Edition</div>
         <h1 id="heroTitle">DevForge v9</h1>
-        <p id="heroDesc">開発の3大悪夢を解決。質問に答えるだけで155+ファイルの設計図を自動生成。25の柱が、AIと共に「ひらめき→仕様→実装」の階段をガイド。</p>
+        <p id="heroDesc">開発の3大悪夢を解決。質問に答えるだけで175+ファイルの設計図を自動生成。25の柱が、AIと共に「ひらめき→仕様→実装」の階段をガイド。</p>
         <p id="heroLv0Hint" style="display:none">難しい知識は不要。質問に答えるだけ</p>
       </div>
     </div>
     <div class="stat-row">
-      <div class="stat-item"><div class="num" id="statFileNum">155+</div><div class="lbl" id="statFiles">生成ファイル</div></div>
+      <div class="stat-item"><div class="num" id="statFileNum">175+</div><div class="lbl" id="statFiles">生成ファイル</div></div>
       <div class="stat-item"><div class="num" id="statTechNum"></div><div class="lbl" id="statTech">技術エントリ</div></div>
       <div class="stat-item"><div class="num" id="statPillarNum">25</div><div class="lbl" id="statPillars">柱 (Pillars)</div></div>
       <div class="stat-item"><div class="num">10+</div><div class="lbl" id="statAI">AIツール対応</div></div>
     </div>
     <div class="info-grid">
       <div class="icard"><h4>😱 3つの悪夢を解決</h4><p>真っ白な画面の絶望・終わらない連携地獄・「俺の環境では動く」症候群…DevForgeが全て自動解決</p></div>
-      <div class="icard"><h4>⚡ 25の柱×155+ファイル</h4><p>設計書を自動生成 → AIに投入 → 実コード。質問に答えるだけで仕様・環境・AIルール全てを自動生成。</p></div>
+      <div class="icard"><h4>⚡ 25の柱×175+ファイル</h4><p>設計書を自動生成 → AIに投入 → 実コード。質問に答えるだけで仕様・環境・AIルール全てを自動生成。</p></div>
       <div class="icard"><h4>📱 モバイル対応</h4><p>Expo / React Native 開発パス・EAS Build・OTA更新</p></div>
       <div class="icard"><h4>🤖 AI自律開発</h4><p>Vibe Coding・マルチAgent・Claude Code Subagents</p></div>
       <div class="icard"><h4>💳 決済・CMS・EC</h4><p>Stripe・microCMS・Medusa・Shopify Hydrogen</p></div>
@@ -1636,7 +1636,8 @@ expertHints:[
 {icon:'👤',name:'ユーザー',hint:'ユーザーが「これができないなら使わない」と言う機能は何ですか？それだけ作ればいい。'},
 {icon:'💥',name:'ディスラプター',hint:'競合が全部持っている機能を全て外したら、何が残りますか？それが差別化の核心。'},
 {icon:'🔬',name:'科学者',hint:'この機能の中で「使われるか検証できていない」ものはどれですか？仮説として明示してください。'},
-{icon:'🧭',name:'冒険家',hint:'今の機能リストを半分に削ったとき、残すのはどれですか？'}
+{icon:'🧭',name:'冒険家',hint:'今の機能リストを半分に削ったとき、残すのはどれですか？'},
+{icon:'🔐',name:'APIアーキテクト',hint:'各機能はAPIエンドポイントに対応しますか？「GET /posts」「POST /orders」のように列挙するとOpenAPI仕様(docs/84)が自動生成されます。'}
 ]},
 en:{title:'MVP Features',desc:'Narrow to 3-5. Only pick features users cannot live without.',example:'Minimum: Auth + 1 core feature + Settings',
 expertHints:[
@@ -1645,7 +1646,8 @@ expertHints:[
 {icon:'👤',name:'User Rep',hint:'Which feature would make users say "then I won\'t use it"? Build only that.'},
 {icon:'💥',name:'Disruptor',hint:'If you removed every feature competitors have, what remains? That\'s your differentiation core.'},
 {icon:'🔬',name:'Scientist',hint:'Which features are unvalidated hypotheses? Flag them explicitly.'},
-{icon:'🧭',name:'Adventurer',hint:'If you cut this list in half, which ones survive?'}
+{icon:'🧭',name:'Adventurer',hint:'If you cut this list in half, which ones survive?'},
+{icon:'🔐',name:'API Architect',hint:'Does each feature map to an API endpoint? Listing them as "GET /posts, POST /orders" helps auto-generate the OpenAPI spec (docs/84).'}
 ]}
 },
 org_model:{
@@ -1672,7 +1674,8 @@ expertHints:[
 {icon:'👤',name:'ユーザー',hint:'ユーザーが最も頻繁に訪問する画面はどれですか？そこに全エネルギーを集中してください。'},
 {icon:'💥',name:'ディスラプター',hint:'「ダッシュボード」や「設定」を作らないとしたら、本当に必要な画面は何ですか？'},
 {icon:'😄',name:'ユーモリスト',hint:'この画面の中で「思わずスクリーンショットを撮りたくなる」デザインができる画面はどれですか？'},
-{icon:'🧭',name:'冒険家',hint:'一番難しい画面から作り始めたら、後の全てが簡単に感じます。どれが最難関ですか？'}
+{icon:'🧭',name:'冒険家',hint:'一番難しい画面から作り始めたら、後の全てが簡単に感じます。どれが最難関ですか？'},
+{icon:'⚡',name:'パフォーマンス',hint:'どの画面がCore Web Vitals (LCP/INP/CLS)の問題を起こしやすいですか？早期特定でバンドル最適化(docs/101)が活きます。'}
 ]},
 en:{title:'Key Screens',desc:'Map out screens following the user flow.',example:'LP → Login → Dashboard → Detail',
 expertHints:[
@@ -1681,7 +1684,8 @@ expertHints:[
 {icon:'👤',name:'User Rep',hint:'Which screen will users visit most frequently? Invest all your energy there.'},
 {icon:'💥',name:'Disruptor',hint:'If you refused to build a "Dashboard" or "Settings", what screens are truly necessary?'},
 {icon:'😄',name:'Humorist',hint:'Which screen could be designed so beautifully that users take screenshots to share?'},
-{icon:'🧭',name:'Adventurer',hint:'Start with the hardest screen first — everything else will feel easy. Which is the hardest?'}
+{icon:'🧭',name:'Adventurer',hint:'Start with the hardest screen first — everything else will feel easy. Which is the hardest?'},
+{icon:'⚡',name:'Performance',hint:'Which screens are most likely to fail Core Web Vitals (LCP/INP/CLS)? Identify them early to apply bundle optimization (docs/101).'}
 ]}
 },
 payment:{
@@ -2182,6 +2186,30 @@ return isLocal&&isProd;
 },
 ja:'ローカル/セルフホストLLMとクラウドデプロイの組み合わせはGPUインスタンス（RunPod/Lambda Labs）またはvLLM/Ollamaサーバーの別途ホスティングが必要です',
 en:'Local/self-hosted LLM with cloud deployment requires GPU instances (RunPod/Lambda Labs) or separate vLLM/Ollama hosting'},
+// ── クロスピラー P21/P22/P25 (INFO×3) ──
+{id:'api-openapi-remind',p:['mvp_features','data_entities'],lv:'info',
+t:a=>{
+const ents=(a.data_entities||'').split(/[,、]\s*/).filter(Boolean).length;
+return ents>=4&&!/(OpenAPI|swagger|api.spec|仕様書)/i.test(a.mvp_features||'');
+},
+ja:'エンティティが4件以上あります。docs/84_openapi_specification.md のOpenAPI 3.1仕様を活用してAPIコントラクトを明確にしてください',
+en:'4+ entities detected. Use OpenAPI 3.1 spec (docs/84) to clarify API contracts and generate client SDKs'},
+{id:'orm-n1-risk',p:['orm','data_entities'],lv:'info',
+t:a=>{
+const ents=(a.data_entities||'').split(/[,、]\s*/).filter(Boolean).length;
+const hasRelORM=/(Prisma|TypeORM|Drizzle|SQLAlchemy)/i.test(a.orm||'');
+return hasRelORM&&ents>=5;
+},
+ja:'エンティティが5件以上ありORMを使用しています。N+1問題に注意してください。docs/100_database_performance.md のEAGER LOADING設定を確認してください',
+en:'5+ entities with relational ORM: N+1 risk is high. See docs/100 for eager loading and batch query patterns'},
+{id:'prod-backup-remind',p:['deploy','database'],lv:'info',
+t:a=>{
+const isProd=/Vercel|Railway|Fly\.io|Render|Heroku|AWS|GCP|Azure/i.test(a.deploy||'');
+const hasDB=a.database&&!/なし|None/i.test(a.database);
+return isProd&&hasDB;
+},
+ja:'本番デプロイ+DB構成を検出しました。docs/90_backup_disaster_recovery.md のRTO/RPO目標とバックアップ戦略を必ず設定してください',
+en:'Production deployment + DB detected. Set RTO/RPO targets and backup strategy per docs/90 before going live'},
 ];
 // helpers
 function inc(v,k){return v&&typeof v==='string'&&v.indexOf(k)!==-1;}
@@ -6142,7 +6170,7 @@ const G=S.genLang==='ja';
 const fe=a.frontend||'React';
 const be=a.backend||'Node.js + Express';
 const db=a.database||'PostgreSQL';
-const orm=a.orm||'';
+const orm=(typeof resolveORM==='function')?resolveORM(a).name:(a.orm||'');
 const devEnv=a.dev_env_type||'';
 const isLocal=/Local|ローカル/i.test(devEnv)||!devEnv;
 const isCloud=/Cloud|クラウド/i.test(devEnv);
@@ -6810,6 +6838,7 @@ ${G?'- 🔄 予備バッファ: 10% (1K)':'- 🔄 Reserve buffer: 10% (1K)'}
 - docs/37_bug_prevention.md ${G?'— バグ予防':'— Bug prevention'}
 - docs/38_business_model.md ${G?'— ビジネスモデル (payment≠none時)':'— Business model (if payment≠none)'}
 - skills/agents/*.md ${G?'— エージェント定義 (ai_auto=multi/full時)':'— Agent definitions (if ai_auto=multi/full)'}
+- docs/83-102 ${G?'— P21-25: API/DB/テスト/AI安全/パフォーマンス':'— P21-25: API/DB/Testing/AI Safety/Performance'}
 ## DB Schema
 \`\`\`
 ${dbSchema}
@@ -9666,7 +9695,8 @@ doc39+=(G?'- 環境変数は.envで管理、dotenv-safe推奨\n':'- Manage env v
 }
 doc39+='\n### '+(G?'データベース：':'Database: ')+db+'\n';
 if(db.includes('PostgreSQL')){
-doc39+=(G?'- マイグレーションツールはPrisma/Drizzle\n':'- Migration tool: Prisma/Drizzle\n');
+var _orm11=(typeof resolveORM==='function')?resolveORM(a).name:'Prisma/Drizzle';
+doc39+=(G?'- マイグレーションツールは'+_orm11+'\n':'- Migration tool: '+_orm11+'\n');
 doc39+=(G?'- インデックスは外部キー・検索条件カラムに必須\n':'- Indexes required on FKs and search columns\n');
 doc39+=(G?'- トランザクション分離レベルはREAD COMMITTED（デフォルト）\n':'- Transaction isolation: READ COMMITTED (default)\n');
 }else if(db.includes('MongoDB')){
@@ -10279,7 +10309,8 @@ var a=S.answers;
 var pn=S.projectName||'MyProject';
 var target=a.target||(G?'ユーザー':'users');
 var screens=a.screens||(G?'主要画面':'main screens');
-var auth=a.auth||(G?'認証方式':'auth method');
+var _authObj11=(typeof resolveAuth==='function')?resolveAuth(a):null;
+var auth=_authObj11?_authObj11.sot:(a.auth||(G?'認証方式':'auth method'));
 var mvp=a.mvp_features||(G?'主要機能':'main features');
 var doc='';
 doc+=(G?'# UX習熟度別監査テンプレート — ':'# UX Proficiency Audit Template — ')+pn+'\n\n';
@@ -10763,8 +10794,8 @@ const database=a.database||'PostgreSQL';
 const auth=resolveAuth(a);
 const entities=(a.data_entities||'').split(/[,、]/).map(e=>e.trim()).filter(e=>e);
 const features=(a.mvp_features||'').split(/[,、]/).map(f=>f.trim()).filter(f=>f);
-const hasPayment=a.payment&&a.payment!=='none';
-const hasAI=a.ai_auto&&a.ai_auto!=='none';
+const hasPayment=a.payment&&!(typeof isNone==='function'?isNone(a.payment):/なし|none/i.test(a.payment));
+const hasAI=a.ai_auto&&!(typeof isNone==='function'?isNone(a.ai_auto):/なし|none/i.test(a.ai_auto));
 const hasMobile=!!(a.mobile&&!/なし|none/i.test(a.mobile)&&/expo|react.?native|flutter/i.test(a.mobile));
 // ═══ DOC 43: Security Intelligence Report ═══
 let doc43='';
@@ -14070,10 +14101,10 @@ const G = S.genLang === 'ja';
 const domain = detectDomain(answers.purpose || '');
 const mkt = DOMAIN_MARKET[domain] || DOMAIN_MARKET._default;
 const personas = PERSONA_ARCHETYPES[domain] || PERSONA_ARCHETYPES._default;
-const stakeholder = answers.stakeholder || 'startup';
+const stakeholder = (typeof inferStakeholder==='function') ? inferStakeholder(domain) : 'startup';
 const gtm = GTM_STRATEGY[stakeholder] || GTM_STRATEGY.startup;
-const arch = answers.architecture || 'baas';
-const deploy = answers.deployment || 'vercel';
+const arch = (typeof resolveArch==='function') ? resolveArch(answers).pattern : 'baas';
+const deploy = answers.deploy || 'vercel';
 S.files['docs/56_market_positioning.md'] = gen56Market(G, domain, mkt, gtm, stakeholder);
 S.files['docs/57_user_experience_strategy.md'] = gen57UX(G, domain, personas, mkt);
 S.files['docs/58_ecosystem_strategy.md'] = gen58Ecosystem(G, domain, mkt, arch, deploy, answers);
@@ -14333,7 +14364,7 @@ return doc;
 // DOC 59: Regulatory Foresight & Sustainability
 // ============================================================================
 function gen59Regulatory(G, domain, mkt, answers) {
-const deploy = answers.deployment || 'vercel';
+const deploy = answers.deploy || 'vercel';
 let doc = '';
 doc += G ? '# 59. 規制フォーサイト & サステナビリティ\n\n' : '# 59. Regulatory Foresight & Sustainability\n\n';
 doc += G ? '**対象:** 規制/コンプライアンス、投資家、ビジネス\n\n' : '**Audience:** Regulatory/Compliance, Investors, Business\n\n';
@@ -17868,7 +17899,8 @@ S.files['docs/83_api_design_principles.md']=doc;
 function gen84(a,pn,G){
 const be=a.backend||'';
 const entities=(a.entities||'User, Post').split(',').map(function(e){return e.trim();}).filter(Boolean);
-const hasAuth=!/なし|None|public/i.test(a.auth||'JWT');
+var _authObj21=(typeof resolveAuth==='function')?resolveAuth(a):null;
+var hasAuth=_authObj21?(_authObj21.provider!=='none'):!/なし|None|public/i.test(a.auth||'JWT');
 const isPython=/Python|Django|FastAPI/i.test(be);
 const isBaaS=/Supabase|Firebase|Convex/i.test(be);
 var doc='';
@@ -17970,6 +18002,7 @@ doc+='| 🟡 MEDIUM | '+medCount+' | [ ] '+(G?'対応推奨':'Suggested')+' |\n'
 doc+='\n';
 // Full checklist
 doc+='## '+(G?'詳細チェックリスト':'Detailed Checklist')+'\n\n';
+var _authProv85=isBaaS?(be||'BaaS'):'JWT';
 var currentLv='';
 API_SECURITY_ITEMS.forEach(function(item){
 if(item.lv!==currentLv){
@@ -17978,8 +18011,16 @@ if(item.lv==='critical') doc+='### 🔴 CRITICAL\n\n';
 else if(item.lv==='high') doc+='### 🟠 HIGH\n\n';
 else doc+='### 🟡 MEDIUM\n\n';
 }
-doc+='- [ ] **'+(G?item.ja:item.en)+'**\n';
-doc+='  - '+(G?'対応':'Fix')+': '+(G?item.ja_fix:item.en_fix)+'\n';
+var jaText=item.ja;var enText=item.en;
+var jaFix=item.ja_fix;var enFix=item.en_fix;
+if(item.id==='authn'&&isBaaS){
+jaText='認証: '+_authProv85+' SDK による認証検証';
+enText='Authentication: '+_authProv85+' SDK authentication verification';
+jaFix=_authProv85+' SDK の getUser()/getSession() でサーバーサイド検証';
+enFix='Server-side verification with '+_authProv85+' SDK getUser()/getSession()';
+}
+doc+='- [ ] **'+(G?jaText:enText)+'**\n';
+doc+='  - '+(G?'対応':'Fix')+': '+(G?jaFix:enFix)+'\n';
 });
 doc+='\n';
 // BaaS-specific
@@ -18199,7 +18240,9 @@ function _dbORM(a){
 if(typeof resolveORM==='function') return resolveORM(a);
 var orm=a.orm||''; var be=a.backend||'';
 var isPy=/Python|Django|FastAPI/i.test(be);
-if(/Supabase|Firebase|Convex/i.test(be)) return {name:be,dir:'supabase',isBaaS:true,isPython:false};
+if(/Supabase/i.test(be)) return {name:'Supabase Client',dir:'',isBaaS:true,isPython:false};
+if(/Firebase/i.test(be)) return {name:'Firebase SDK',dir:'',isBaaS:true,isPython:false};
+if(/Convex/i.test(be)) return {name:'Convex',dir:'',isBaaS:true,isPython:false};
 if(orm.includes('Drizzle'))    return {name:'Drizzle ORM',dir:'drizzle',isBaaS:false,isPython:false};
 if(orm.includes('TypeORM'))    return {name:'TypeORM',dir:'typeorm',isBaaS:false,isPython:false};
 if(orm.includes('SQLAlchemy')) return {name:'SQLAlchemy',dir:'alembic',isBaaS:false,isPython:true};
@@ -18735,7 +18778,7 @@ S.files['docs/92_coverage_design.md']=doc;
 // doc 93: E2E Test Architecture
 function gen93(a,pn,G,feType,beType){
 var isMobile=/Expo|Flutter|React Native/i.test(a.mobile||'');
-var hasAuth=a.auth&&!/なし|None|none/i.test(a.auth);
+var hasAuth=a.auth&&!(typeof isNone==='function'?isNone(a.auth):/なし|none/i.test(a.auth));
 var doc='';
 doc+='# '+(G?'E2Eテストアーキテクチャ':'E2E Test Architecture')+'\n\n';
 doc+='> '+(G?'推奨ツール: **Playwright** (クロスブラウザ・並列実行対応)':'Recommended: **Playwright** (cross-browser, parallel execution)')+'\n\n';
@@ -19404,7 +19447,16 @@ doc+='\n### '+(G?'バックエンド最適化ポイント':'Backend Optimization
 if(isPy){
 doc+='```python\n# FastAPI: async endpoints + connection pool\nfrom sqlalchemy.ext.asyncio import AsyncSession\n\n@app.get("/items")\nasync def get_items(db: AsyncSession = Depends(get_db)):\n    result = await db.execute(select(Item).options(selectinload(Item.tags)))\n    return result.scalars().all()\n```\n';
 } else {
+var _orm25=(typeof resolveORM==='function')?resolveORM(a).name:'Prisma ORM';
+if(/Drizzle/i.test(_orm25)){
+doc+='```typescript\n// Drizzle: select only needed fields\nconst users = await db.select({ id: users.id, name: users.name, email: users.email })\n  .from(users).limit(20).offset((page - 1) * 20).orderBy(desc(users.createdAt));\n```\n';
+} else if(/Kysely/i.test(_orm25)){
+doc+='```typescript\n// Kysely: select specific columns\nconst users = await db.selectFrom(\'users\')\n  .select([\'id\', \'name\', \'email\'])\n  .limit(20).offset((page - 1) * 20).orderBy(\'createdAt\', \'desc\').execute();\n```\n';
+} else if(/TypeORM/i.test(_orm25)){
+doc+='```typescript\n// TypeORM: select specific columns\nconst users = await userRepo.find({\n  select: [\'id\', \'name\', \'email\'],\n  take: 20, skip: (page - 1) * 20,\n  order: { createdAt: \'DESC\' },\n});\n```\n';
+} else {
 doc+='```typescript\n// Prisma: select only needed fields\nconst users = await prisma.user.findMany({\n  select: { id: true, name: true, email: true }, // avoid SELECT *\n  take: 20, // pagination\n  skip: (page - 1) * 20,\n  orderBy: { createdAt: \'desc\' },\n});\n```\n';
+}
 }
 }
 
@@ -19431,7 +19483,12 @@ doc+='```javascript\n// MongoDB compound index\nawait db.collection(\'posts\').c
 doc+='```sql\n'+p.sql+'\n```\n\n';
 }
 doc+=(G?'**ポイント:**':'**Tips:**')+'\n';
-p.tips.forEach(t=>{ doc+='- '+t+'\n'; });
+var _ormName100=(typeof resolveORM==='function')?resolveORM(a).name:'Prisma ORM';
+p.tips.forEach(function(t){
+var tip=t;
+if(!/Prisma/i.test(_ormName100)) tip=tip.replace(/Prisma/g,_ormName100);
+doc+='- '+tip+'\n';
+});
 doc+='\n';
 });
 if(isBaaS&&/Supabase/i.test(a.backend||'')){
@@ -19468,9 +19525,16 @@ doc+='## '+(G?'キャッシュ階層設計':'Cache Layer Architecture')+'\n\n';
 doc+='```\n';
 doc+=(G?'ユーザー':'User')+' → '+(G?'CDN/エッジ':'CDN/Edge')+' → '+(G?'アプリサーバー':'App Server')+' → '+(G?'Redisキャッシュ':'Redis Cache')+' → DB\n';
 doc+=(G?'      キャッシュHIT率目標: CDN 60-80% / App 30-50%':'      Cache hit rate targets: CDN 60-80% / App 30-50%')+'\n```\n\n';
-CACHE_LAYERS.forEach(l=>{
+var _ormName101=(typeof resolveORM==='function')?resolveORM(a).name:'Prisma ORM';
+CACHE_LAYERS.forEach(function(l){
 doc+='## '+(G?l.ja:l.en)+'\n\n';
-doc+='**'+(G?'ツール':'Tools')+':** '+l.tools.join(', ')+'\n\n';
+var toolsList=l.tools.map(function(tool){
+if(!/Prisma/i.test(_ormName101)&&/Prisma Accelerate/i.test(tool)){
+return tool.replace('Prisma Accelerate',_ormName101+' query optimization');
+}
+return tool;
+});
+doc+='**'+(G?'ツール':'Tools')+':** '+toolsList.join(', ')+'\n\n';
 doc+='```\n'+l.headers.join('\n')+'\n```\n';
 doc+='**TTL:** '+l.ttl+'\n\n';
 });
@@ -19538,7 +19602,10 @@ doc+=(G?'Vercel Analyticsは自動でRUM (Real User Monitoring) を収集しま�
 'Vercel Analytics automatically collects RUM (Real User Monitoring). View in Dashboard → Analytics → Web Vitals.')+'\n';
 } else {
 doc+='## Sentry '+(G?'パフォーマンストレーシング':'Performance Tracing')+'\n\n';
-doc+='```typescript\n// sentry.server.config.ts\nimport * as Sentry from \'@sentry/nextjs\';\nSentry.init({\n  tracesSampleRate: 0.1, // 10% sampling in production\n  profilesSampleRate: 0.1,\n  integrations: [\n    Sentry.prismaIntegration(), // Prisma query tracing\n  ],\n});\n```\n\n';
+var _sentryPkg=(/Next/i.test(a.frontend||''))?'@sentry/nextjs':'@sentry/node';
+var _orm102=(typeof resolveORM==='function')?resolveORM(a).name:'Prisma ORM';
+var _ormInteg=/Prisma/i.test(_orm102)?'Sentry.prismaIntegration(), // Prisma query tracing':'// ORM: '+_orm102+' (manual span tracking)';
+doc+='```typescript\n// sentry.server.config.ts\nimport * as Sentry from \''+_sentryPkg+'\';\nSentry.init({\n  tracesSampleRate: 0.1, // 10% sampling in production\n  profilesSampleRate: 0.1,\n  integrations: [\n    '+_ormInteg+'\n  ],\n});\n```\n\n';
 }
 
 doc+='\n## '+(G?'アラート設定指針':'Alert Configuration Guidelines')+'\n\n';
@@ -20137,6 +20204,17 @@ return lower+'s';
 // ── Check if value is "none" in any language ──
 function isNone(v){
 return !v||v==='none'||v==='None'||v==='なし';
+}
+// ── P15: Stakeholder type inference from domain ──
+function inferStakeholder(domain){
+var map={
+fintech:'enterprise',insurance:'enterprise',legal:'enterprise',
+government:'enterprise',manufacturing:'enterprise',logistics:'enterprise',
+hr:'enterprise',saas:'team',collab:'team',analytics:'team',
+devtool:'developer',ai:'developer',automation:'developer',
+education:'educator',health:'clinician'
+};
+return map[domain]||'startup';
 }
 // ── Screen Component Dictionary ──
 const SCREEN_COMPONENTS={
@@ -22704,6 +22782,45 @@ issue:G?'CIパイプラインにカバレッジ閾値 (Statement ≥80%, Branch 
 'Add coverage thresholds (Statement ≥80%, Branch ≥70%) to CI pipeline to enforce test quality',
 sev:'🟡 INFO',fix:G?'docs/92のカバレッジ閾値設定例を参照してください':'Refer to coverage threshold examples in docs/92'});
 }
+// C-K: AI Safety guardrails for AI-enabled apps (P24)
+const aiAuto=a.ai_auto||'';
+const hasAIFeature=aiAuto&&!/なし|none/i.test(aiAuto);
+if(hasAIFeature){
+const hasGuardrail=Object.values(files).some(function(v){
+return (v||'').includes('ガードレール')||(v||'').includes('guardrail')||(v||'').includes('Guardrail');
+});
+if(!hasGuardrail){
+yellowCount++;
+rows.push({loc:'docs/96_ai_guardrail_implementation.md',src:G?'アーキテクチャチェック':'Architecture check',
+issue:G?'AI機能が有効ですが、入力バリデーション・出力検証・レート制限のガードレール実装が確認できません':
+'AI features enabled but input validation / output validation / rate-limit guardrails not found',
+sev:'🟡 INFO',fix:G?'docs/96のガードレール実装パターンを参照してください':'See docs/96 for guardrail implementation patterns'});
+}
+const hasInjectionDef=Object.values(files).some(function(v){
+return (v||'').includes('プロンプトインジェクション')||(v||'').includes('prompt injection')||(v||'').includes('Injection');
+});
+if(!hasInjectionDef){
+yellowCount++;
+rows.push({loc:'docs/98_prompt_injection_defense.md',src:G?'アーキテクチャチェック':'Architecture check',
+issue:G?'AI機能使用時はプロンプトインジェクション防御パターンの実装が推奨されます':
+'AI features: implement prompt injection defense patterns (see docs/98)',
+sev:'🟡 INFO',fix:G?'docs/98のDirect/Indirect Injection防御を実装':'Implement Direct/Indirect Injection defense from docs/98'});
+}
+}
+// C-L: Performance monitoring for production apps (P25)
+const isProduction=/production|本番|Vercel|Netlify|AWS|GCP|Azure|Railway|Fly\.io/i.test(a.deploy||'');
+if(isProduction){
+const hasAPM=Object.values(files).some(function(v){
+return (v||'').includes('Sentry')||(v||'').includes('OpenTelemetry')||(v||'').includes('Datadog')||(v||'').includes('監視');
+});
+if(!hasAPM){
+yellowCount++;
+rows.push({loc:'docs/102_performance_monitoring.md',src:G?'アーキテクチャチェック':'Architecture check',
+issue:G?'本番デプロイ構成ですが、APM/可観測性設定(Sentry/OpenTelemetry等)が確認できません':
+'Production deployment configured but no APM/observability setup (Sentry/OpenTelemetry) found',
+sev:'🟡 INFO',fix:G?'docs/102のAPM設定例を参照してください':'See docs/102 for APM configuration examples'});
+}
+}
 // C-F: MongoDB × Prisma (experimental support warning)
 const db=a.database||'';
 if(/MongoDB|Mongo/i.test(db)&&orm.includes('Prisma')&&!isBaaS){
@@ -23512,7 +23629,7 @@ prompt:'docs/23_tasks.mdから最優先タスク(P0またはIssue #1)を1つ選�
 fmt:'ファイルパス付きコードブロック:\n```typescript:path/to/file.ts\n// code\n```\n必ずテストを含めてください。'},
 test:{icon:'🧪',label:'テスト生成',desc:'テストケース自動作成',
 sys:'あなたはQAエンジニアです。仕様書からテストケースを網羅的に作成します。',
-prompt:'docs/07_test_cases.mdを参照し、以下の順序でテストケースを生成してください:\n1. 正常系(Happy Path): 基本的なCRUD操作\n2. 異常系(Error Cases): バリデーションエラー、権限エラー\n3. 境界値(Boundary): 空文字列、最大長、NULL\n4. docs/33_test_matrix.mdのテスト優先度マトリクスで実行順序を決定\n5. docs/36_test_strategy.mdの戦略に沿って非機能テストも追加\n\n各テストケースには期待結果を明記してください。',
+prompt:'docs/07_test_cases.mdを参照し、以下の順序でテストケースを生成してください:\n1. 正常系(Happy Path): 基本的なCRUD操作\n2. 異常系(Error Cases): バリデーションエラー、権限エラー\n3. 境界値(Boundary): 空文字列、最大長、NULL\n4. docs/33_test_matrix.mdのテスト優先度マトリクスで実行順序を決定\n5. docs/36_test_strategy.mdの戦略に沿って非機能テストも追加\n6. docs/91_testing_strategy.mdのテストピラミッド戦略とフレームワーク選定ガイドラインを参照\n7. docs/92_coverage_design.mdのカバレッジ目標（Statements 80%/Branches 75%/Functions 85%）と照合し不足を特定\n\n各テストケースには期待結果を明記してください。',
 fmt:'Vitestテストファイル:\n```typescript:tests/xxx.test.ts\nimport { describe, it, expect } from \'vitest\';\n// tests\n```'},
 refactor:{icon:'♻️',label:'リファクタ提案',desc:'構造改善と技術的負債の解消',
 sys:'あなたはコードレビュアーです。アーキテクチャの改善提案を行います。',
@@ -23525,7 +23642,10 @@ prompt:'以下のセキュリティドキュメントを事前に確認してく
 '- docs/44_threat_model.md (STRIDE脅威分析)\n'+
 '- docs/45_compliance_matrix.md (コンプライアンス要件)\n'+
 '- docs/46_ai_security.md (AI/LLMセキュリティ)\n'+
-'- docs/47_security_testing.md (テストテンプレート)\n\n'+
+'- docs/47_security_testing.md (テストテンプレート)\n'+
+'- docs/95_ai_safety_framework.md (AI安全性フレームワーク・EU AI Act)\n'+
+'- docs/96_ai_guardrail_implementation.md (ガードレール実装)\n'+
+'- docs/98_prompt_injection_defense.md (プロンプトインジェクション防御)\n\n'+
 '仕様書のセキュリティ面をOWASP Top 10 2025の各項目別にチェックしてください:\n'+
 '1. A01 – アクセス制御の不備\n2. A02 – セキュリティ設定ミス\n'+
 '3. A03 – ソフトウェアサプライチェーン\n4. A04 – SSRF（入力検証・URL制限）\n'+
@@ -23550,11 +23670,11 @@ prompt:'アーキテクチャ整合性チェック:\n1. docs/03_architecture.md�
 fmt:'Markdown表:\n| # | 違反箇所 | 定義元 | 違反内容 | 深刻度 | 修正案 |\n|---|---------|--------|---------|--------|--------|\n\n## アーキテクチャ適合スコア: X/10'},
 perf:{icon:'⚡',label:'パフォーマンス最適化',desc:'ボトルネック特定と改善提案',
 sys:'あなたはパフォーマンスエンジニアです。非機能要件に基づきボトルネックを特定します。',
-prompt:'パフォーマンス分析:\n1. .spec/constitution.mdの非機能要件（NFR）からパフォーマンス目標値を抽出\n2. docs/41_growth_intelligence.mdのパフォーマンスバジェットとCore Web Vitals目標値を確認\n3. N+1クエリ、不要な再レンダリング、バンドルサイズ問題を検出\n4. 各問題に改善前/改善後の推定値を付与\n5. 優先度順の改善ロードマップを作成\n6. docs/19_performance.mdのパフォーマンス設計パターンと照合\n7. docs/17_monitoring.mdの監視メトリクス（レイテンシ・スループット）との整合性を確認',
+prompt:'パフォーマンス分析:\n1. .spec/constitution.mdの非機能要件（NFR）からパフォーマンス目標値を抽出\n2. docs/41_growth_intelligence.mdのパフォーマンスバジェットとCore Web Vitals目標値を確認\n3. N+1クエリ、不要な再レンダリング、バンドルサイズ問題を検出\n4. 各問題に改善前/改善後の推定値を付与\n5. 優先度順の改善ロードマップを作成\n6. docs/19_performance.mdのパフォーマンス設計パターンと照合\n7. docs/17_monitoring.mdの監視メトリクス（レイテンシ・スループット）との整合性を確認\n8. docs/99_db_performance_tuning.mdのN+1検出・インデックス最適化・クエリプロファイリング診断を実行\n9. docs/100_cache_strategy.mdのキャッシュ層設計（CDN/Redis/HTTP Cache/Query Cache）最適化を評価\n10. docs/101_frontend_performance.mdのバンドル最適化・Critical CSS・画像最適化チューニングを確認\n11. docs/102_performance_monitoring.mdのAPM設定とパフォーマンスバジェットアラートを検証',
 fmt:'## ボトルネック一覧\n| # | 箇所 | 種別 | 現状推定 | 目標値 | 改善策 | 効果 |\n|---|------|------|---------|--------|--------|------|\n\n## 改善コード例\n```typescript:path/to/file.ts\n// optimized\n```'},
 api:{icon:'🔌',label:'API統合コード生成',desc:'外部API連携コードの自動生成',
 sys:'あなたはインテグレーションエンジニアです。型安全なAPI統合コードを生成します。',
-prompt:'API統合コード生成:\n1. docs/05_api_design.mdのエンドポイント定義と認証方式を確認\n2. docs/04_er_diagram.mdのエンティティスキーマからリクエスト/レスポンス型を定義\n3. エラーハンドリング（リトライ・タイムアウト・レート制限）を含む統合コードを生成\n4. docs/08_security.mdのセキュリティ要件に準拠した実装にする\n5. 統合テストのスケルトンを作成',
+prompt:'API Intelligence レビュー:\n1. docs/83_api_design_principles.mdのRESTful設計6原則（リソース命名・HTTP動詞・冪等性・ページネーション・バージョニング・エラー設計）を確認\n2. docs/84_openapi_specification.mdのOpenAPI 3.1スキーマから型定義を生成\n3. docs/85_api_security_checklist.mdのOWASP API Security Top 10（2023）で認証・認可・入力検証を確認\n4. docs/86_api_testing_strategy.mdのk6負荷テスト・統合テストシナリオを参照しテストコードを生成\n5. docs/05_api_design.mdのエンドポイント定義と認証方式を確認\n6. エラーハンドリング（リトライ・タイムアウト・レート制限）を含む型安全な統合コードを生成',
 fmt:'```typescript:lib/api/client.ts\n// API client with types\n```\n```typescript:lib/api/types.ts\n// Request/Response types\n```\n```typescript:tests/api/integration.test.ts\n// Integration tests\n```'},
 a11y:{icon:'♿',label:'アクセシビリティ監査',desc:'WCAG 2.1準拠チェックと修正',
 sys:'あなたはアクセシビリティ専門家です。WCAG 2.1 AA基準でUIを監査します。',
@@ -23562,7 +23682,7 @@ prompt:'アクセシビリティ監査:\n1. docs/26_design_system.mdのデザイ
 fmt:'## WCAG 2.1 AA 監査結果\n| # | 基準 | 画面 | 要素 | 状態 | 修正コード |\n|---|------|------|------|------|------------|\n\n## 自動テスト\n```typescript:tests/a11y.test.ts\n// axe-core tests\n```'},
 migrate:{icon:'🔄',label:'マイグレーション支援',desc:'技術スタック移行計画の策定',
 sys:'あなたはマイグレーションアーキテクトです。データ整合性を保ちながら段階的移行を計画します。',
-prompt:'マイグレーション計画策定:\n1. .spec/technical-plan.mdから現行スタック構成を確認\n2. docs/04_er_diagram.mdからデータスキーマとリレーションを把握\n3. 移行先に合わせたスキーマ変換スクリプトとデータ検証クエリを生成\n4. ブルーグリーンまたはカナリアデプロイによるリスク最小化計画を作成\n5. ロールバック手順を各フェーズに明記',
+prompt:'マイグレーション計画策定:\n1. docs/89_migration_strategy.mdのゼロダウンタイムマイグレーション（Expand-Contract パターン）手順を確認し、現在のスキーマへの適用方法を計画\n2. docs/90_backup_disaster_recovery.mdのRTO/RPO目標・PITRポリシー・DRランブックを検証し、マイグレーション前のバックアップ戦略を策定\n3. .spec/technical-plan.mdから現行スタック構成を確認\n4. docs/04_er_diagram.mdからデータスキーマとリレーションを把握\n5. 移行先に合わせたスキーマ変換スクリプトとデータ検証クエリを生成\n6. ブルーグリーンまたはカナリアデプロイによるリスク最小化計画を作成\n7. ロールバック手順を各フェーズに明記',
 fmt:'## マイグレーション計画\n| フェーズ | 作業内容 | 期間 | ロールバック | リスク |\n|---------|---------|------|------------|--------|\n\n## スキーマ変換\n```sql\n-- migration script\n```\n\n## データ検証\n```sql\n-- validation queries\n```'},
 metrics:{icon:'📊',label:'コードメトリクス分析',desc:'複雑度・保守性の定量評価',
 sys:'あなたはソフトウェアメトリクスアナリストです。コード品質を定量的に評価します。',
@@ -23660,6 +23780,18 @@ ux_audit:{icon:'🔬',label:_ja?'UX習熟度監査':'UX Proficiency Audit',desc:
 sys:_ja?'あなたは7段階のユーザー習熟度（Lv.0完全初心者〜Lv.6伝道者）のそれぞれのペルソナを順番に演じるUX監査AIです。':'You are a UX audit AI that plays each persona of 7 user proficiency levels (Lv.0 Absolute Beginner to Lv.6 Evangelist) in order.',
 prompt:_ja?'以下のプロジェクト仕様に基づき、各レベルごとに:\n① このアプリの第一印象/使い心地を評価（そのLvの視点で）\n② つまずきポイントを3つ特定\n③ 離脱リスクを判定（高/中/低）\n④ 改善アクションを優先度順に3つ提案\n\n全7レベル完了後、「構造的乖離マップ」を作成:\n- どのレベル間に最大のUXギャップがあるか\n- 最も離脱リスクが高いレベルはどこか\n- 投資対効果が最も高い改善施策TOP5\n\n対象プロジェクト情報は以下のドキュメントを参照してください。':'Based on the following project spec, for each level:\n① Evaluate this app\'s first impression/usability (from that Lv\'s perspective)\n② Identify 3 stumbling points\n③ Determine dropout risk (High/Medium/Low)\n④ Propose 3 improvement actions in priority order\n\nAfter all 7 levels, create a "Structural Gap Map":\n- Between which levels is the largest UX gap?\n- Which level has the highest dropout risk?\n- TOP5 improvement measures with best ROI\n\nRefer to the following project documents for context.',
 fmt:_ja?'## Lv別UX監査\n| Lv | ペルソナ | 第一印象 | つまずき | 離脱リスク | 改善アクション |\n\n## 構造的乖離マップ\n| ギャップ区間 | 深刻度 | 改善施策 | 投資対効果 |\n\n## TOP5改善施策\n| # | 施策 | 対象Lv | 効果 | 工数 | 優先度 |':'## Lv UX Audit\n| Lv | Persona | First Impression | Stumbling Points | Dropout Risk | Improvement Actions |\n\n## Structural Gap Map\n| Gap Segment | Severity | Improvement | ROI |\n\n## TOP5 Improvements\n| # | Measure | Target Lv | Effect | Effort | Priority |'},
+db_intelligence:{icon:'🗄️',label:_ja?'DB設計インテリジェンス':'DB Design Intelligence',desc:_ja?'DB設計・クエリ最適化・マイグレーション戦略':'Database design, query optimization & migration strategy',
+sys:_ja?'あなたはデータベースアーキテクトです。データモデル設計・クエリ最適化・マイグレーション戦略を専門とします。':'You are a database architect specializing in data model design, query optimization, and migration strategies.',
+prompt:_ja?'DBインテリジェンスレビュー:\n1. docs/87_database_design_principles.mdの命名規約・インデックス設計・正規化ガイドラインを確認し、現在のスキーマとの乖離を特定\n2. docs/88_query_optimization_guide.mdのN+1問題・EXPLAIN ANALYZE・実行計画最適化パターンを適用し、現在のクエリのボトルネックを検出\n3. docs/89_migration_strategy.mdのゼロダウンタイムマイグレーション（Expand-Contract パターン）手順を確認し、次のマイグレーション計画を策定\n4. docs/90_backup_disaster_recovery.mdのRTO/RPO目標・PITRポリシー・DRランブックを検証し、現在の設定との差異を指摘\n5. docs/04_er_diagram.mdの現行スキーマと照合し、整合性・インデックス・RLSポリシーの問題を特定':'DB Intelligence Review:\n1. Review docs/87_database_design_principles.md naming conventions, index design, and normalization guidelines to identify gaps with current schema\n2. Apply docs/88_query_optimization_guide.md N+1 detection, EXPLAIN ANALYZE, and execution plan patterns to identify query bottlenecks\n3. Review docs/89_migration_strategy.md zero-downtime migration (Expand-Contract pattern) and plan the next migration\n4. Validate docs/90_backup_disaster_recovery.md RTO/RPO targets, PITR policies, and DR runbook against current settings\n5. Cross-reference docs/04_er_diagram.md current schema to identify integrity, index, and RLS policy issues',
+fmt:_ja?'## スキーマ問題\n| テーブル | 問題 | 推奨修正 | 優先度 |\n|---------|------|---------|--------|\n\n## クエリ最適化\n| クエリ | 問題 | 最適化案 | 効果推定 |\n\n## マイグレーション計画\n| フェーズ | 作業内容 | ダウンタイム | ロールバック |\n\n## バックアップ評価\n| 項目 | 現在設定 | 推奨 | 判定 |':'## Schema Issues\n| Table | Issue | Recommended Fix | Priority |\n|-------|-------|-----------------|----------|\n\n## Query Optimization\n| Query | Issue | Optimization | Est. Impact |\n\n## Migration Plan\n| Phase | Tasks | Downtime | Rollback |\n\n## Backup Assessment\n| Item | Current Config | Recommended | Status |'},
+ai_safety:{icon:'🤖🛡️',label:_ja?'AI安全性レビュー':'AI Safety Review',desc:_ja?'AIリスク分類・ガードレール実装・インジェクション防御':'AI risk classification, guardrail implementation & injection defense',
+sys:_ja?'あなたはAI安全性エンジニアです。EU AI Act・NIST AI RMF・ISO 42001に基づくAIシステムの安全性評価と防御実装を専門とします。':'You are an AI safety engineer specializing in AI system safety evaluation and defense implementation per EU AI Act, NIST AI RMF, and ISO 42001.',
+prompt:_ja?'AI安全性レビュー:\n1. docs/95_ai_safety_framework.mdの6分類AIリスク評価（バイアス/プライバシー/セキュリティ/透明性/依存性/誤情報）で現在のAI機能をスクリーニング\n2. docs/96_ai_guardrail_implementation.mdの4層ガードレール（入力検証→コンテンツモデレーション→出力バリデーション→監査ログ）の実装状況を確認\n3. docs/97_ai_model_evaluation.mdのRAGAS評価指標（Faithfulness/Relevancy/Context Precision等）でAI品質を評価し、Langfuse観測設定を検証\n4. docs/98_prompt_injection_defense.mdのDirect/Indirect Injection攻撃パターンに対する防御実装状況を確認し、未対応リスクを特定\n5. EU AI Act リスク分類（高リスク/限定リスク/最小リスク）で機能を分類し、コンプライアンス対応優先度を設定':'AI Safety Review:\n1. Screen current AI features using 6-category risk assessment from docs/95_ai_safety_framework.md (bias/privacy/security/transparency/dependency/misinformation)\n2. Verify 4-layer guardrail implementation (input validation→content moderation→output validation→audit log) from docs/96_ai_guardrail_implementation.md\n3. Evaluate AI quality using RAGAS metrics (Faithfulness/Relevancy/Context Precision) from docs/97_ai_model_evaluation.md and verify Langfuse observability setup\n4. Check defense implementation against Direct/Indirect Injection attack patterns from docs/98_prompt_injection_defense.md and identify unaddressed risks\n5. Classify features by EU AI Act risk level (High/Limited/Minimal Risk) and set compliance response priorities',
+fmt:_ja?'## AIリスク評価\n| 機能 | リスク分類 | EU AI Act | 対策状況 | 優先度 |\n|------|-----------|-----------|---------|--------|\n\n## ガードレール実装状況\n| 層 | 内容 | 状態 | 改善アクション |\n|---|------|------|----------------|\n\n## インジェクション防御チェック\n| 攻撃パターン | 防御実装 | 状態 | 対策 |\n\n## コンプライアンスアクション\n| 規制 | 要求事項 | 現状 | 対応期限 |':'## AI Risk Assessment\n| Feature | Risk Class | EU AI Act | Defense Status | Priority |\n|---------|-----------|-----------|----------------|----------|\n\n## Guardrail Implementation\n| Layer | Content | Status | Improvement |\n|-------|---------|--------|-------------|\n\n## Injection Defense Check\n| Attack Pattern | Defense | Status | Action |\n\n## Compliance Actions\n| Regulation | Requirement | Current | Deadline |'},
+test_intel:{icon:'🔬🧪',label:_ja?'テスト戦略インテリジェンス':'Testing Strategy Intelligence',desc:_ja?'テストピラミッド・カバレッジ・E2E・パフォーマンステスト':'Test pyramid, coverage design, E2E & performance testing',
+sys:_ja?'あなたはテストアーキテクトです。テストピラミッド設計・カバレッジ最大化・E2E自動化・Core Web Vitals計測を専門とします。':'You are a test architect specializing in test pyramid design, coverage maximization, E2E automation, and Core Web Vitals measurement.',
+prompt:_ja?'テスト戦略インテリジェンスレビュー:\n1. docs/91_testing_strategy.mdのテストピラミッド（Unit/Integration/E2E）バランスを確認し、現在のフレームワーク選定（Jest/Vitest/pytest/JUnit）の妥当性を評価\n2. docs/92_coverage_design.mdのカバレッジ目標（Statements 80%/Branches 75%/Functions 85%）達成状況を評価し、ミューテーションテスト（Stryker）の導入計画を策定\n3. docs/93_e2e_test_architecture.mdのPlaywright POMパターン・storageState認証・モバイルDetox/Maestro設定を確認し、CI YAMLとの整合性を検証\n4. docs/94_performance_testing.mdのCore Web Vitals目標（LCP<2.5s/INP<200ms/CLS<0.1）・Lighthouse CI設定・k6/Locustシナリオを評価\n5. docs/07_test_cases.md・docs/36_test_strategy.mdとの整合性を確認し、不足テストタイプを特定':'Testing Strategy Intelligence Review:\n1. Review test pyramid (Unit/Integration/E2E) balance from docs/91_testing_strategy.md and evaluate current framework selection (Jest/Vitest/pytest/JUnit) validity\n2. Assess coverage target achievement (Statements 80%/Branches 75%/Functions 85%) from docs/92_coverage_design.md and plan mutation testing (Stryker) introduction\n3. Verify Playwright POM pattern, storageState auth, and mobile Detox/Maestro config from docs/93_e2e_test_architecture.md against CI YAML\n4. Evaluate Core Web Vitals targets (LCP<2.5s/INP<200ms/CLS<0.1), Lighthouse CI config, and k6/Locust scenarios from docs/94_performance_testing.md\n5. Cross-reference docs/07_test_cases.md and docs/36_test_strategy.md to identify missing test types',
+fmt:_ja?'## テストピラミッド分析\n| テスト種別 | 現状比率 | 推奨比率 | フレームワーク | 改善アクション |\n|-----------|---------|---------|-------------|----------------|\n\n## カバレッジ評価\n| 指標 | 現状 | 目標 | 差異 | 改善策 |\n\n## E2Eアーキテクチャ問題\n| 項目 | 状態 | 推奨 |\n\n## パフォーマンステスト計画\n| Core Web Vital | 現状 | 目標 | 計測ツール |':'## Test Pyramid Analysis\n| Test Type | Current Ratio | Recommended | Framework | Improvement |\n|-----------|--------------|-------------|-----------|-------------|\n\n## Coverage Assessment\n| Metric | Current | Target | Gap | Action |\n\n## E2E Architecture Issues\n| Item | Status | Recommended |\n\n## Performance Testing Plan\n| Core Web Vital | Current | Target | Tool |'},
 workflow_audit:{icon:'📋',label:_ja?'ワークフロー監査':'Workflow Process Audit',desc:_ja?'docs/74で承認・チケット・注文フローのステートマシンを検証':'Audit approval/ticket/order state machines from docs/74',
 sys:_ja?'あなたはビジネスプロセス設計とワークフローエンジンの専門家です。docs/74_workflow_engine.mdのステートマシン定義・承認チェーン・SLAトラッキングをレビューし、実装の完全性と正確性を評価します。':'You are a business process design and workflow engine expert. Review state machine definitions, approval chains, and SLA tracking in docs/74_workflow_engine.md to evaluate implementation completeness and accuracy.',
 prompt:_ja?'以下の手順でワークフロープロセスを監査してください:\n\n1. **ステートマシン完全性チェック** (docs/74): 全ワークフロー（承認/チケット/注文等）の状態遷移が網羅されているか確認。デッドロック・孤立状態・欠損遷移を特定。\n\n2. **承認チェーン適切性評価**: 選択された承認パターン（単一/順次/並列/委任/閾値）がビジネス要件に合っているか判断。\n\n3. **SLAトラッキング実装確認**: 各ワークフローのSLA期限設定・エスカレーション通知・自動リマインダーが実装されているか確認。\n\n4. **通知トリガー完全性**: 状態変化ごとの通知先・チャネル・タイミングが定義されているか確認。未定義のトリガーを指摘。\n\n5. **ドメイン固有最適化**: detectDomain()の結果に基づき、ドメイン特有のワークフロー要件が反映されているか評価。':'Audit workflow processes following these steps:\n\n1. **State machine completeness** (docs/74): Verify all workflow state transitions are covered (approval/ticket/order etc). Identify deadlocks, orphan states, and missing transitions.\n\n2. **Approval chain appropriateness**: Determine if selected pattern (single/sequential/parallel/delegation/threshold) matches business requirements.\n\n3. **SLA tracking implementation**: Verify SLA deadline settings, escalation notifications, and auto-reminders are implemented for each workflow.\n\n4. **Notification trigger completeness**: Confirm notification recipients, channels, and timing are defined for each state change. Flag undefined triggers.\n\n5. **Domain-specific optimization**: Evaluate if domain-specific workflow requirements are reflected based on detectDomain() result.',
@@ -23675,7 +23807,7 @@ prompt:'Select the highest priority task (P0 or Issue #1) from docs/23_tasks.md 
 fmt:'Code blocks with file paths:\n```typescript:path/to/file.ts\n// code\n```\nMust include tests.'},
 test:{icon:'🧪',label:'Test Generation',desc:'Auto-generate test cases',
 sys:'You are a QA engineer. You create comprehensive test cases from specifications.',
-prompt:'Reference docs/07_test_cases.md and generate test cases in this order:\n1. Happy Path: Basic CRUD operations\n2. Error Cases: Validation errors, permission errors\n3. Boundary: Empty strings, max length, NULL\n4. Use docs/33_test_matrix.md priority matrix to determine execution order\n5. Add non-functional tests following docs/36_test_strategy.md strategy\n\nSpecify expected results for each test case.',
+prompt:'Reference docs/07_test_cases.md and generate test cases in this order:\n1. Happy Path: Basic CRUD operations\n2. Error Cases: Validation errors, permission errors\n3. Boundary: Empty strings, max length, NULL\n4. Use docs/33_test_matrix.md priority matrix to determine execution order\n5. Add non-functional tests following docs/36_test_strategy.md strategy\n6. Reference docs/91_testing_strategy.md test pyramid strategy and framework selection guidelines\n7. Cross-reference docs/92_coverage_design.md coverage targets (Statements 80%/Branches 75%/Functions 85%) to identify gaps\n\nSpecify expected results for each test case.',
 fmt:'Vitest test file:\n```typescript:tests/xxx.test.ts\nimport { describe, it, expect } from \'vitest\';\n// tests\n```'},
 refactor:{icon:'♻️',label:'Refactor Proposal',desc:'Architecture improvements & tech debt',
 sys:'You are a code reviewer focused on architecture improvements.',
@@ -23688,7 +23820,10 @@ prompt:'Reference these security documents first:\n'+
 '- docs/44_threat_model.md (STRIDE threat analysis)\n'+
 '- docs/45_compliance_matrix.md (Compliance requirements)\n'+
 '- docs/46_ai_security.md (AI/LLM security)\n'+
-'- docs/47_security_testing.md (Test templates)\n\n'+
+'- docs/47_security_testing.md (Test templates)\n'+
+'- docs/95_ai_safety_framework.md (AI Safety Framework & EU AI Act)\n'+
+'- docs/96_ai_guardrail_implementation.md (Guardrail Implementation)\n'+
+'- docs/98_prompt_injection_defense.md (Prompt Injection Defense)\n\n'+
 'Check security aspects against OWASP Top 10 2025:\n'+
 '1. A01 – Broken Access Control\n2. A02 – Security Misconfiguration\n'+
 '3. A03 – Software Supply Chain\n4. A04 – SSRF (Input Validation & URL Restrictions)\n'+
@@ -23713,11 +23848,11 @@ prompt:'Architecture compliance check:\n1. Review layer structure and patterns i
 fmt:'Markdown table:\n| # | Location | Source | Violation | Severity | Fix |\n|---|----------|--------|-----------|----------|-----|\n\n## Architecture Compliance Score: X/10'},
 perf:{icon:'⚡',label:'Performance Optimization',desc:'Identify bottlenecks & suggest fixes',
 sys:'You are a performance engineer. You identify bottlenecks against NFR targets and propose improvements.',
-prompt:'Performance analysis:\n1. Extract performance targets from NFR section in .spec/constitution.md\n2. Review docs/41_growth_intelligence.md performance budgets and Core Web Vitals targets (LCP<2.5s, FID<100ms, CLS<0.1)\n3. Detect N+1 queries, unnecessary re-renders, bundle size issues\n4. Provide before/after estimates for each issue\n5. Create a prioritized improvement roadmap\n6. Cross-reference docs/19_performance.md performance design patterns\n7. Verify alignment with docs/17_monitoring.md metrics (latency/throughput)',
+prompt:'Performance analysis:\n1. Extract performance targets from NFR section in .spec/constitution.md\n2. Review docs/41_growth_intelligence.md performance budgets and Core Web Vitals targets (LCP<2.5s, FID<100ms, CLS<0.1)\n3. Detect N+1 queries, unnecessary re-renders, bundle size issues\n4. Provide before/after estimates for each issue\n5. Create a prioritized improvement roadmap\n6. Cross-reference docs/19_performance.md performance design patterns\n7. Verify alignment with docs/17_monitoring.md metrics (latency/throughput)\n8. Run docs/99_db_performance_tuning.md N+1 detection, index optimization, and query profiling diagnostics\n9. Evaluate docs/100_cache_strategy.md cache layer design (CDN/Redis/HTTP Cache/Query Cache) optimization\n10. Review docs/101_frontend_performance.md bundle optimization, Critical CSS, and image optimization tuning\n11. Verify docs/102_performance_monitoring.md APM configuration and performance budget alerts',
 fmt:'## Bottleneck List\n| # | Location | Type | Current Est. | Target | Fix | Impact |\n|---|----------|------|-------------|--------|-----|--------|\n\n## Optimized Code\n```typescript:path/to/file.ts\n// optimized\n```'},
 api:{icon:'🔌',label:'API Integration Generator',desc:'Generate type-safe API integration code',
 sys:'You are an integration engineer. You generate type-safe API integration code.',
-prompt:'Generate API integration code:\n1. Review endpoints and auth in docs/05_api_design.md\n2. Define request/response types from docs/04_er_diagram.md entity schemas\n3. Generate integration code with error handling (retry, timeout, rate limiting)\n4. Ensure compliance with docs/08_security.md security requirements\n5. Create integration test skeletons',
+prompt:'API Intelligence Review:\n1. Review RESTful design 6 principles (resource naming, HTTP verbs, idempotency, pagination, versioning, error design) from docs/83_api_design_principles.md\n2. Generate type definitions from docs/84_openapi_specification.md OpenAPI 3.1 schema\n3. Check auth, authorization, and input validation against OWASP API Security Top 10 (2023) in docs/85_api_security_checklist.md\n4. Generate test code referencing k6 load testing and integration test scenarios from docs/86_api_testing_strategy.md\n5. Review endpoints and auth in docs/05_api_design.md\n6. Generate type-safe integration code with error handling (retry, timeout, rate limiting)',
 fmt:'```typescript:lib/api/client.ts\n// API client with types\n```\n```typescript:lib/api/types.ts\n// Request/Response types\n```\n```typescript:tests/api/integration.test.ts\n// Integration tests\n```'},
 a11y:{icon:'♿',label:'Accessibility Audit',desc:'WCAG 2.1 compliance check & fixes',
 sys:'You are an accessibility expert. You audit UI components against WCAG 2.1 AA.',
@@ -23725,7 +23860,7 @@ prompt:'Accessibility audit:\n1. Review design tokens (color contrast, font size
 fmt:'## WCAG 2.1 AA Audit Results\n| # | Criterion | Screen | Element | Status | Fix Code |\n|---|-----------|--------|---------|--------|----------|\n\n## Automated Tests\n```typescript:tests/a11y.test.ts\n// axe-core tests\n```'},
 migrate:{icon:'🔄',label:'Migration Assistant',desc:'Tech stack migration planning',
 sys:'You are a migration architect. You plan phased migrations while guaranteeing data integrity.',
-prompt:'Create migration plan:\n1. Review current stack from .spec/technical-plan.md\n2. Understand data schemas and relationships from docs/04_er_diagram.md\n3. Generate schema conversion scripts and data validation queries\n4. Create risk-minimized deployment plan (blue-green or canary)\n5. Document rollback steps for each phase',
+prompt:'Create migration plan:\n1. Review docs/89_migration_strategy.md zero-downtime migration (Expand-Contract pattern) and plan application to current schema\n2. Validate docs/90_backup_disaster_recovery.md RTO/RPO targets, PITR policies, and DR runbook; define pre-migration backup strategy\n3. Review current stack from .spec/technical-plan.md\n4. Understand data schemas and relationships from docs/04_er_diagram.md\n5. Generate schema conversion scripts and data validation queries\n6. Create risk-minimized deployment plan (blue-green or canary)\n7. Document rollback steps for each phase',
 fmt:'## Migration Plan\n| Phase | Tasks | Duration | Rollback | Risk |\n|-------|-------|----------|----------|------|\n\n## Schema Conversion\n```sql\n-- migration script\n```\n\n## Data Validation\n```sql\n-- validation queries\n```'},
 metrics:{icon:'📊',label:'Code Metrics Analysis',desc:'Quantitative quality evaluation',
 sys:'You are a software metrics analyst. You quantitatively evaluate code quality.',
@@ -23819,6 +23954,18 @@ ux_audit:{icon:'🔬',label:_ja?'UX習熟度監査':'UX Proficiency Audit',desc:
 sys:_ja?'あなたは7段階のユーザー習熟度（Lv.0完全初心者〜Lv.6伝道者）のそれぞれのペルソナを順番に演じるUX監査AIです。':'You are a UX audit AI that plays each persona of 7 user proficiency levels (Lv.0 Absolute Beginner to Lv.6 Evangelist) in order.',
 prompt:_ja?'以下のプロジェクト仕様に基づき、各レベルごとに:\n① このアプリの第一印象/使い心地を評価（そのLvの視点で）\n② つまずきポイントを3つ特定\n③ 離脱リスクを判定（高/中/低）\n④ 改善アクションを優先度順に3つ提案\n\n全7レベル完了後、「構造的乖離マップ」を作成:\n- どのレベル間に最大のUXギャップがあるか\n- 最も離脱リスクが高いレベルはどこか\n- 投資対効果が最も高い改善施策TOP5\n\n対象プロジェクト情報は以下のドキュメントを参照してください。':'Based on the following project spec, for each level:\n① Evaluate this app\'s first impression/usability (from that Lv\'s perspective)\n② Identify 3 stumbling points\n③ Determine dropout risk (High/Medium/Low)\n④ Propose 3 improvement actions in priority order\n\nAfter all 7 levels, create a "Structural Gap Map":\n- Between which levels is the largest UX gap?\n- Which level has the highest dropout risk?\n- TOP5 improvement measures with best ROI\n\nRefer to the following project documents for context.',
 fmt:_ja?'## Lv別UX監査\n| Lv | ペルソナ | 第一印象 | つまずき | 離脱リスク | 改善アクション |\n\n## 構造的乖離マップ\n| ギャップ区間 | 深刻度 | 改善施策 | 投資対効果 |\n\n## TOP5改善施策\n| # | 施策 | 対象Lv | 効果 | 工数 | 優先度 |':'## Lv UX Audit\n| Lv | Persona | First Impression | Stumbling Points | Dropout Risk | Improvement Actions |\n\n## Structural Gap Map\n| Gap Segment | Severity | Improvement | ROI |\n\n## TOP5 Improvements\n| # | Measure | Target Lv | Effect | Effort | Priority |'},
+db_intelligence:{icon:'🗄️',label:_ja?'DB設計インテリジェンス':'DB Design Intelligence',desc:_ja?'DB設計・クエリ最適化・マイグレーション戦略':'Database design, query optimization & migration strategy',
+sys:_ja?'あなたはデータベースアーキテクトです。データモデル設計・クエリ最適化・マイグレーション戦略を専門とします。':'You are a database architect specializing in data model design, query optimization, and migration strategies.',
+prompt:_ja?'DBインテリジェンスレビュー:\n1. docs/87_database_design_principles.mdの命名規約・インデックス設計・正規化ガイドラインを確認し、現在のスキーマとの乖離を特定\n2. docs/88_query_optimization_guide.mdのN+1問題・EXPLAIN ANALYZE・実行計画最適化パターンを適用し、現在のクエリのボトルネックを検出\n3. docs/89_migration_strategy.mdのゼロダウンタイムマイグレーション（Expand-Contract パターン）手順を確認し、次のマイグレーション計画を策定\n4. docs/90_backup_disaster_recovery.mdのRTO/RPO目標・PITRポリシー・DRランブックを検証し、現在の設定との差異を指摘\n5. docs/04_er_diagram.mdの現行スキーマと照合し、整合性・インデックス・RLSポリシーの問題を特定':'DB Intelligence Review:\n1. Review docs/87_database_design_principles.md naming conventions, index design, and normalization guidelines to identify gaps with current schema\n2. Apply docs/88_query_optimization_guide.md N+1 detection, EXPLAIN ANALYZE, and execution plan patterns to identify query bottlenecks\n3. Review docs/89_migration_strategy.md zero-downtime migration (Expand-Contract pattern) and plan the next migration\n4. Validate docs/90_backup_disaster_recovery.md RTO/RPO targets, PITR policies, and DR runbook against current settings\n5. Cross-reference docs/04_er_diagram.md current schema to identify integrity, index, and RLS policy issues',
+fmt:_ja?'## スキーマ問題\n| テーブル | 問題 | 推奨修正 | 優先度 |\n|---------|------|---------|--------|\n\n## クエリ最適化\n| クエリ | 問題 | 最適化案 | 効果推定 |\n\n## マイグレーション計画\n| フェーズ | 作業内容 | ダウンタイム | ロールバック |\n\n## バックアップ評価\n| 項目 | 現在設定 | 推奨 | 判定 |':'## Schema Issues\n| Table | Issue | Recommended Fix | Priority |\n|-------|-------|-----------------|----------|\n\n## Query Optimization\n| Query | Issue | Optimization | Est. Impact |\n\n## Migration Plan\n| Phase | Tasks | Downtime | Rollback |\n\n## Backup Assessment\n| Item | Current Config | Recommended | Status |'},
+ai_safety:{icon:'🤖🛡️',label:_ja?'AI安全性レビュー':'AI Safety Review',desc:_ja?'AIリスク分類・ガードレール実装・インジェクション防御':'AI risk classification, guardrail implementation & injection defense',
+sys:_ja?'あなたはAI安全性エンジニアです。EU AI Act・NIST AI RMF・ISO 42001に基づくAIシステムの安全性評価と防御実装を専門とします。':'You are an AI safety engineer specializing in AI system safety evaluation and defense implementation per EU AI Act, NIST AI RMF, and ISO 42001.',
+prompt:_ja?'AI安全性レビュー:\n1. docs/95_ai_safety_framework.mdの6分類AIリスク評価（バイアス/プライバシー/セキュリティ/透明性/依存性/誤情報）で現在のAI機能をスクリーニング\n2. docs/96_ai_guardrail_implementation.mdの4層ガードレール（入力検証→コンテンツモデレーション→出力バリデーション→監査ログ）の実装状況を確認\n3. docs/97_ai_model_evaluation.mdのRAGAS評価指標（Faithfulness/Relevancy/Context Precision等）でAI品質を評価し、Langfuse観測設定を検証\n4. docs/98_prompt_injection_defense.mdのDirect/Indirect Injection攻撃パターンに対する防御実装状況を確認し、未対応リスクを特定\n5. EU AI Act リスク分類（高リスク/限定リスク/最小リスク）で機能を分類し、コンプライアンス対応優先度を設定':'AI Safety Review:\n1. Screen current AI features using 6-category risk assessment from docs/95_ai_safety_framework.md (bias/privacy/security/transparency/dependency/misinformation)\n2. Verify 4-layer guardrail implementation (input validation→content moderation→output validation→audit log) from docs/96_ai_guardrail_implementation.md\n3. Evaluate AI quality using RAGAS metrics (Faithfulness/Relevancy/Context Precision) from docs/97_ai_model_evaluation.md and verify Langfuse observability setup\n4. Check defense implementation against Direct/Indirect Injection attack patterns from docs/98_prompt_injection_defense.md and identify unaddressed risks\n5. Classify features by EU AI Act risk level (High/Limited/Minimal Risk) and set compliance response priorities',
+fmt:_ja?'## AIリスク評価\n| 機能 | リスク分類 | EU AI Act | 対策状況 | 優先度 |\n|------|-----------|-----------|---------|--------|\n\n## ガードレール実装状況\n| 層 | 内容 | 状態 | 改善アクション |\n|---|------|------|----------------|\n\n## インジェクション防御チェック\n| 攻撃パターン | 防御実装 | 状態 | 対策 |\n\n## コンプライアンスアクション\n| 規制 | 要求事項 | 現状 | 対応期限 |':'## AI Risk Assessment\n| Feature | Risk Class | EU AI Act | Defense Status | Priority |\n|---------|-----------|-----------|----------------|----------|\n\n## Guardrail Implementation\n| Layer | Content | Status | Improvement |\n|-------|---------|--------|-------------|\n\n## Injection Defense Check\n| Attack Pattern | Defense | Status | Action |\n\n## Compliance Actions\n| Regulation | Requirement | Current | Deadline |'},
+test_intel:{icon:'🔬🧪',label:_ja?'テスト戦略インテリジェンス':'Testing Strategy Intelligence',desc:_ja?'テストピラミッド・カバレッジ・E2E・パフォーマンステスト':'Test pyramid, coverage design, E2E & performance testing',
+sys:_ja?'あなたはテストアーキテクトです。テストピラミッド設計・カバレッジ最大化・E2E自動化・Core Web Vitals計測を専門とします。':'You are a test architect specializing in test pyramid design, coverage maximization, E2E automation, and Core Web Vitals measurement.',
+prompt:_ja?'テスト戦略インテリジェンスレビュー:\n1. docs/91_testing_strategy.mdのテストピラミッド（Unit/Integration/E2E）バランスを確認し、現在のフレームワーク選定（Jest/Vitest/pytest/JUnit）の妥当性を評価\n2. docs/92_coverage_design.mdのカバレッジ目標（Statements 80%/Branches 75%/Functions 85%）達成状況を評価し、ミューテーションテスト（Stryker）の導入計画を策定\n3. docs/93_e2e_test_architecture.mdのPlaywright POMパターン・storageState認証・モバイルDetox/Maestro設定を確認し、CI YAMLとの整合性を検証\n4. docs/94_performance_testing.mdのCore Web Vitals目標（LCP<2.5s/INP<200ms/CLS<0.1）・Lighthouse CI設定・k6/Locustシナリオを評価\n5. docs/07_test_cases.md・docs/36_test_strategy.mdとの整合性を確認し、不足テストタイプを特定':'Testing Strategy Intelligence Review:\n1. Review test pyramid (Unit/Integration/E2E) balance from docs/91_testing_strategy.md and evaluate current framework selection (Jest/Vitest/pytest/JUnit) validity\n2. Assess coverage target achievement (Statements 80%/Branches 75%/Functions 85%) from docs/92_coverage_design.md and plan mutation testing (Stryker) introduction\n3. Verify Playwright POM pattern, storageState auth, and mobile Detox/Maestro config from docs/93_e2e_test_architecture.md against CI YAML\n4. Evaluate Core Web Vitals targets (LCP<2.5s/INP<200ms/CLS<0.1), Lighthouse CI config, and k6/Locust scenarios from docs/94_performance_testing.md\n5. Cross-reference docs/07_test_cases.md and docs/36_test_strategy.md to identify missing test types',
+fmt:_ja?'## テストピラミッド分析\n| テスト種別 | 現状比率 | 推奨比率 | フレームワーク | 改善アクション |\n|-----------|---------|---------|-------------|----------------|\n\n## カバレッジ評価\n| 指標 | 現状 | 目標 | 差異 | 改善策 |\n\n## E2Eアーキテクチャ問題\n| 項目 | 状態 | 推奨 |\n\n## パフォーマンステスト計画\n| Core Web Vital | 現状 | 目標 | 計測ツール |':'## Test Pyramid Analysis\n| Test Type | Current Ratio | Recommended | Framework | Improvement |\n|-----------|--------------|-------------|-----------|-------------|\n\n## Coverage Assessment\n| Metric | Current | Target | Gap | Action |\n\n## E2E Architecture Issues\n| Item | Status | Recommended |\n\n## Performance Testing Plan\n| Core Web Vital | Current | Target | Tool |'},
 };
 /* ── Header ── */
 let h=`<div class="exp-header"><h3>🤖 ${_ja?'AI プロンプトランチャー':'AI Prompt Launcher'} <button class="btn btn-xs" onclick="showManual('launcher-guide')">📖 ${_ja?'使い方':'Manual'}</button></h3>
@@ -23864,14 +24011,14 @@ h+=`</div>`;
 h+=`<div class="empty-preview-sm">${_ja?'⚠️ まず質問に回答してファイルを生成してください':'⚠️ Answer questions first to generate files'}</div>`;
 }
 /* ── Prompt templates (ordered by dev lifecycle) ── */
-const AI_REC={review:'Gemini',arch:'Gemini',reverse:'Claude',implement:'Copilot',api:'Copilot',i18n:'Copilot',test:'Copilot',qa:'Copilot',security:'Gemini',a11y:'Gemini',perf:'Gemini',metrics:'Gemini',refactor:'Claude',debug:'Copilot',incident:'Copilot',ops:'Gemini',docs:'Claude',migrate:'Claude',cicd:'Copilot',growth:'ChatGPT',strategy:'Claude',methodology:'Claude',brainstorm:'ChatGPT',ux_journey:'Claude',ai_model_guide:'Gemini',industry:'Gemini',nextgen:'ChatGPT',cognitive:'Claude',genome:'Claude',maturity:'Claude',react_debug:'Copilot',prompt_ops:'Claude',enterprise_arch:'Gemini',workflow_audit:'Claude',risk:'Claude',onboard:'Claude',ux_audit:'Claude'};
-const templateOrder=['review','arch','reverse','implement','api','i18n','test','qa','security','a11y','perf','metrics','refactor','debug','incident','ops','docs','migrate','cicd','growth','strategy','methodology','brainstorm','ux_journey','ux_audit','ai_model_guide','industry','nextgen','cognitive','genome','maturity','react_debug','prompt_ops','enterprise_arch','workflow_audit','risk','onboard'];
+const AI_REC={review:'Gemini',arch:'Gemini',reverse:'Claude',implement:'Copilot',api:'Copilot',i18n:'Copilot',test:'Copilot',qa:'Copilot',security:'Gemini',a11y:'Gemini',perf:'Gemini',metrics:'Gemini',refactor:'Claude',debug:'Copilot',incident:'Copilot',ops:'Gemini',docs:'Claude',migrate:'Claude',cicd:'Copilot',growth:'ChatGPT',strategy:'Claude',methodology:'Claude',brainstorm:'ChatGPT',ux_journey:'Claude',ai_model_guide:'Gemini',industry:'Gemini',nextgen:'ChatGPT',cognitive:'Claude',genome:'Claude',maturity:'Claude',react_debug:'Copilot',prompt_ops:'Claude',enterprise_arch:'Gemini',workflow_audit:'Claude',risk:'Claude',onboard:'Claude',ux_audit:'Claude',db_intelligence:'Gemini',ai_safety:'Claude',test_intel:'Copilot'};
+const templateOrder=['review','arch','reverse','implement','api','i18n','test','test_intel','qa','security','ai_safety','a11y','perf','metrics','refactor','debug','incident','ops','docs','migrate','db_intelligence','cicd','growth','strategy','methodology','brainstorm','ux_journey','ux_audit','ai_model_guide','industry','nextgen','cognitive','genome','maturity','react_debug','prompt_ops','enterprise_arch','workflow_audit','risk','onboard'];
 // Category definition for templates
 const LAUNCH_CATS_JA=[{key:'all',label:'すべて'},{key:'review',label:'🔍 レビュー・監査'},{key:'implement',label:'🚀 実装・開発'},{key:'strategy',label:'🏢 戦略・UX'},{key:'ai_prompt',label:'🤖 AI・プロンプト'},{key:'ops',label:'⚙️ Ops・運用'}];
 const LAUNCH_CATS_EN=[{key:'all',label:'All'},{key:'review',label:'🔍 Review & Audit'},{key:'implement',label:'🚀 Implement & Dev'},{key:'strategy',label:'🏢 Strategy & UX'},{key:'ai_prompt',label:'🤖 AI & Prompt'},{key:'ops',label:'⚙️ Ops & DevOps'}];
-const LAUNCH_CAT_MAP={review:'review',arch:'review',security:'review',a11y:'review',perf:'review',metrics:'review',risk:'review',reverse:'review',implement:'implement',api:'implement',i18n:'implement',test:'implement',qa:'implement',refactor:'implement',debug:'implement',docs:'implement',migrate:'implement',cicd:'ops',growth:'strategy',strategy:'strategy',methodology:'strategy',brainstorm:'strategy',ux_journey:'strategy',ux_audit:'strategy',ai_model_guide:'ai_prompt',industry:'strategy',nextgen:'strategy',cognitive:'strategy',genome:'ai_prompt',maturity:'ai_prompt',react_debug:'ai_prompt',prompt_ops:'ai_prompt',enterprise_arch:'review',workflow_audit:'review',incident:'ops',ops:'ops',onboard:'ops'};
+const LAUNCH_CAT_MAP={review:'review',arch:'review',security:'review',a11y:'review',perf:'review',metrics:'review',risk:'review',reverse:'review',implement:'implement',api:'implement',i18n:'implement',test:'implement',test_intel:'implement',qa:'implement',refactor:'implement',debug:'implement',docs:'implement',migrate:'implement',db_intelligence:'implement',cicd:'ops',growth:'strategy',strategy:'strategy',methodology:'strategy',brainstorm:'strategy',ux_journey:'strategy',ux_audit:'strategy',ai_model_guide:'ai_prompt',industry:'strategy',nextgen:'strategy',cognitive:'strategy',genome:'ai_prompt',maturity:'ai_prompt',react_debug:'ai_prompt',prompt_ops:'ai_prompt',enterprise_arch:'review',workflow_audit:'review',ai_safety:'review',incident:'ops',ops:'ops',onboard:'ops'};
 // Skill-based recommendations
-const LAUNCH_SKILL_REC={beginner:['implement','test','debug','brainstorm','ux_journey','docs'],intermediate:['review','implement','security','strategy','methodology','cicd','ux_audit'],advanced:['enterprise_arch','genome','react_debug','ops','arch','risk','ux_audit'],pro:['arch','ops','enterprise_arch','genome','react_debug','risk','ux_audit']};
+const LAUNCH_SKILL_REC={beginner:['implement','test','debug','brainstorm','ux_journey','docs'],intermediate:['review','implement','security','test_intel','strategy','methodology','cicd','ux_audit'],advanced:['enterprise_arch','genome','react_debug','ai_safety','db_intelligence','ops','arch','risk','ux_audit'],pro:['arch','ops','enterprise_arch','genome','react_debug','ai_safety','db_intelligence','risk','ux_audit']};
 // F1: whitelist for Lv0-1 — 8 essential templates only
 const _LAUNCH_BEGINNER=new Set(['implement','test','debug','docs','brainstorm','ux_journey','review','onboard']);
 const recKeys=S.skillLv<=1?LAUNCH_SKILL_REC.beginner:S.skillLv>=5?LAUNCH_SKILL_REC.pro:S.skillLv>=4?LAUNCH_SKILL_REC.advanced:LAUNCH_SKILL_REC.intermediate;
@@ -23909,7 +24056,7 @@ ${AI_REC[key]?'<span class="launch-airec" title="'+(_ja?'推奨AI':'Recommended 
 </div>`;
 });
 h+=`</div>`;
-if(S.skillLv<=1){h+='<button class="btn btn-xs btn-g launch-showall" onclick="document.querySelectorAll(\'.launch-tpl-hidden\').forEach(function(e){e.style.display=\'\'});this.remove()">'+(_ja?'🔽 全37テンプレートを表示':'🔽 Show all 37 templates')+'</button>';}
+if(S.skillLv<=1){h+='<button class="btn btn-xs btn-g launch-showall" onclick="document.querySelectorAll(\'.launch-tpl-hidden\').forEach(function(e){e.style.display=\'\'});this.remove()">'+(_ja?'🔽 全40テンプレートを表示':'🔽 Show all 40 templates')+'</button>';}
 h+=`</div>`;
 /* ── Output area ── */
 h+=`<div class="launch-output" id="launchOutput">
@@ -26250,8 +26397,8 @@ const slEn=['Generated Files','Tech Entries','Pillars','AI Tools'];
 statLbls.forEach((el,i)=>{if(i<4)el.textContent=ja?slJa[i]:slEn[i];});
 // Info cards
 const icards=document.querySelectorAll('.icard');
-const icJa=[['😱 3つの悪夢を解決','真っ白な画面の絶望・終わらない連携地獄・「俺の環境では動く」症候群…DevForgeが全て自動解決'],['🧪 21の柱×139+ファイル','設計書を自動生成 → AIに投入 → 実コード。質問に答えるだけで仕様・環境・AIルール全てを自動生成。'],['📱 モバイル対応','Expo / React Native 開発パス・EAS Build・OTA更新'],['🤖 AI自律開発','Vibe Coding・マルチAgent・Claude Code Subagents'],['💳 決済・CMS・EC','Stripe・microCMS・Medusa・Shopify Hydrogen'],['📦 フルエクスポート','ZIP・PDF・全ファイル結合コピー・URLシェア']];
-const icEn=[['😱 Solve 3 Dev Nightmares','Blank screen paralysis, endless integration hell, "works on my machine" syndrome… DevForge auto-resolves all'],['🧪 21 Pillars × 139+ Files','Auto-generate specs → Feed to AI → Real code. Answer questions to auto-generate specs, env, AI rules & strategy.'],['📱 Mobile Support','Expo / React Native dev path, EAS Build, OTA updates'],['🤖 AI Autonomous Dev','Vibe Coding, Multi-Agent, Claude Code Subagents'],['💳 Payment/CMS/EC','Stripe, microCMS, Medusa, Shopify Hydrogen'],['📦 Full Export','ZIP, PDF, Copy All Files, URL Share']];
+const icJa=[['😱 3つの悪夢を解決','真っ白な画面の絶望・終わらない連携地獄・「俺の環境では動く」症候群…DevForgeが全て自動解決'],['🧪 25の柱×175+ファイル','設計書を自動生成 → AIに投入 → 実コード。質問に答えるだけで仕様・環境・AIルール全てを自動生成。'],['📱 モバイル対応','Expo / React Native 開発パス・EAS Build・OTA更新'],['🤖 AI自律開発','Vibe Coding・マルチAgent・Claude Code Subagents'],['💳 決済・CMS・EC','Stripe・microCMS・Medusa・Shopify Hydrogen'],['📦 フルエクスポート','ZIP・PDF・全ファイル結合コピー・URLシェア']];
+const icEn=[['😱 Solve 3 Dev Nightmares','Blank screen paralysis, endless integration hell, "works on my machine" syndrome… DevForge auto-resolves all'],['🧪 25 Pillars × 175+ Files','Auto-generate specs → Feed to AI → Real code. Answer questions to auto-generate specs, env, AI rules & strategy.'],['📱 Mobile Support','Expo / React Native dev path, EAS Build, OTA updates'],['🤖 AI Autonomous Dev','Vibe Coding, Multi-Agent, Claude Code Subagents'],['💳 Payment/CMS/EC','Stripe, microCMS, Medusa, Shopify Hydrogen'],['📦 Full Export','ZIP, PDF, Copy All Files, URL Share']];
 icards.forEach((el,i)=>{if(i<6){const d=ja?icJa[i]:icEn[i];const h4=el.querySelector('h4');const p=el.querySelector('p');if(h4)h4.textContent=d[0];if(p)p.textContent=d[1];}});
 // P1: Lv0-1 beginner icard simplification — show only 3 simple cards
 if(S.skillLv<=1){
@@ -26277,8 +26424,8 @@ var _bpL=ja?{0:'①仕様書',3:'④AIルール',7:'⑧AIランチャー',8:'⑨
 pbadges.forEach(function(el,i){if(i<21&&_bpL[i]!==undefined)el.textContent=_bpL[i];});
 }
 // Pillar badge tooltips
-const pbTipJa=['仕様書・タスク・検証の統合設計ドキュメント5本組','VSCode/Cursor対応Docker開発環境を即時構築','Model Context Protocol設定でAIをプロジェクト対応','10+ツール対応AIルール（Claude/Cursor/Copilot等）','7スタック並列比較＋おすすめランキング','コンテキスト可視化＋技術DBブラウザ','インタラクティブ学習ロードマップ（Layer別進捗）','37プロンプトテンプレート＋AIモデル推薦','デザイントークン＋シーケンス図自動生成','ゴール逆算型プランニング（リバースエンジニアリング）','業種別実装パターン＋AI運用手順書','OWASP/STRIDE対応セキュリティ監査プロンプト','業界特化設計図＋技術レーダー＋ステークホルダー戦略','SLO/SLI・Feature Flags・12 Ops Capabilities設計','市場・UX・エコシステム・規制フォーサイト（2026-2035）','32ドメイン×12手法のポリモーフィック開発戦略','CRITERIA 8軸プロンプト品質スコア＋AI成熟度評価','ReAct自律ワークフロー＋LLMOpsダッシュボード','マルチテナント設計＋組織モデル＋エンタープライズUI','9ステージCI/CDパイプライン＋デプロイ戦略設計','REST/GraphQL設計原則＋OpenAPI仕様＋OWASPセキュリティ＋テスト戦略','ORM別スキーマ設計＋N+1対策＋マイグレーション＋バックアップ戦略','テストピラミッド＋カバレッジ設計＋E2Eアーキテクチャ＋パフォーマンステスト','AIリスク分類＋4層ガードレール＋モデル評価＋プロンプトインジェクション防御','Core Web Vitals＋バンドル最適化＋DBパフォーマンス＋キャッシュ戦略＋Lighthouse CI'];
-const pbTipEn=['5-doc spec suite: constitution, spec, plan, tasks, verification','Instant Docker dev env compatible with VSCode/Cursor','MCP config to give AI full project awareness','10+ AI tool configs (Claude, Cursor, Copilot, Windsurf, etc.)','Compare 7 stacks in parallel with recommendation ranking','Context visualization + browsable tech DB','Interactive learning roadmap with layer-based progress','37 prompt templates + AI model recommendations','Design tokens + sequence diagrams auto-generation','Goal-driven reverse engineering planning','Domain-specific implementation patterns + AI runbook','OWASP/STRIDE security audit prompts (context-aware)','Industry blueprint + tech radar + stakeholder strategy','SLO/SLI, Feature Flags, 12 Ops Capabilities design','Market, UX, ecosystem & regulatory foresight (2026-2035)','Polymorphic dev strategy: 32 domains × 12 approaches','CRITERIA 8-axis prompt quality scoring + AI maturity model','ReAct autonomous workflow + LLMOps dashboard','Multi-tenant design + org model + enterprise UI components','9-stage CI/CD pipeline + deploy strategy design','REST/GraphQL design principles + OpenAPI spec + OWASP security + test strategy','ORM schema design + N+1 fix + migration strategy + backup & DR','Test pyramid + coverage design + E2E architecture + performance testing','AI risk classification + 4-layer guardrails + model evaluation + prompt injection defense','Core Web Vitals + bundle optimization + DB performance + cache strategy + Lighthouse CI'];
+const pbTipJa=['仕様書・タスク・検証の統合設計ドキュメント5本組','VSCode/Cursor対応Docker開発環境を即時構築','Model Context Protocol設定でAIをプロジェクト対応','10+ツール対応AIルール（Claude/Cursor/Copilot等）','7スタック並列比較＋おすすめランキング','コンテキスト可視化＋技術DBブラウザ','インタラクティブ学習ロードマップ（Layer別進捗）','40プロンプトテンプレート＋AIモデル推薦','デザイントークン＋シーケンス図自動生成','ゴール逆算型プランニング（リバースエンジニアリング）','業種別実装パターン＋AI運用手順書','OWASP/STRIDE対応セキュリティ監査プロンプト','業界特化設計図＋技術レーダー＋ステークホルダー戦略','SLO/SLI・Feature Flags・12 Ops Capabilities設計','市場・UX・エコシステム・規制フォーサイト（2026-2035）','32ドメイン×12手法のポリモーフィック開発戦略','CRITERIA 8軸プロンプト品質スコア＋AI成熟度評価','ReAct自律ワークフロー＋LLMOpsダッシュボード','マルチテナント設計＋組織モデル＋エンタープライズUI','9ステージCI/CDパイプライン＋デプロイ戦略設計','REST/GraphQL設計原則＋OpenAPI仕様＋OWASPセキュリティ＋テスト戦略','ORM別スキーマ設計＋N+1対策＋マイグレーション＋バックアップ戦略','テストピラミッド＋カバレッジ設計＋E2Eアーキテクチャ＋パフォーマンステスト','AIリスク分類＋4層ガードレール＋モデル評価＋プロンプトインジェクション防御','Core Web Vitals＋バンドル最適化＋DBパフォーマンス＋キャッシュ戦略＋Lighthouse CI'];
+const pbTipEn=['5-doc spec suite: constitution, spec, plan, tasks, verification','Instant Docker dev env compatible with VSCode/Cursor','MCP config to give AI full project awareness','10+ AI tool configs (Claude, Cursor, Copilot, Windsurf, etc.)','Compare 7 stacks in parallel with recommendation ranking','Context visualization + browsable tech DB','Interactive learning roadmap with layer-based progress','40 prompt templates + AI model recommendations','Design tokens + sequence diagrams auto-generation','Goal-driven reverse engineering planning','Domain-specific implementation patterns + AI runbook','OWASP/STRIDE security audit prompts (context-aware)','Industry blueprint + tech radar + stakeholder strategy','SLO/SLI, Feature Flags, 12 Ops Capabilities design','Market, UX, ecosystem & regulatory foresight (2026-2035)','Polymorphic dev strategy: 32 domains × 12 approaches','CRITERIA 8-axis prompt quality scoring + AI maturity model','ReAct autonomous workflow + LLMOps dashboard','Multi-tenant design + org model + enterprise UI components','9-stage CI/CD pipeline + deploy strategy design','REST/GraphQL design principles + OpenAPI spec + OWASP security + test strategy','ORM schema design + N+1 fix + migration strategy + backup & DR','Test pyramid + coverage design + E2E architecture + performance testing','AI risk classification + 4-layer guardrails + model evaluation + prompt injection defense','Core Web Vitals + bundle optimization + DB performance + cache strategy + Lighthouse CI'];
 pbadges.forEach((el,i)=>{if(i<25)el.title=ja?pbTipJa[i]:pbTipEn[i];});
 // Beginner badge filtering: Lv0-1 shows only 4 essential pillars to reduce cognitive load
 var _bpSet=new Set([0,3,7,8]);

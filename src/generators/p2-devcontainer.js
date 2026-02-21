@@ -4,7 +4,7 @@ function genPillar2_DevContainer(a,pn){
   const fe=a.frontend||'React';
   const be=a.backend||'Node.js + Express';
   const db=a.database||'PostgreSQL';
-  const orm=a.orm||'';
+  const orm=(typeof resolveORM==='function')?resolveORM(a).name:(a.orm||'');
   const devEnv=a.dev_env_type||'';
   const isLocal=/Local|ローカル/i.test(devEnv)||!devEnv;
   const isCloud=/Cloud|クラウド/i.test(devEnv);

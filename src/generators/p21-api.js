@@ -254,7 +254,8 @@ function gen83(a,pn,G){
 function gen84(a,pn,G){
   const be=a.backend||'';
   const entities=(a.entities||'User, Post').split(',').map(function(e){return e.trim();}).filter(Boolean);
-  const hasAuth=!/なし|None|public/i.test(a.auth||'JWT');
+  var _authObj21=(typeof resolveAuth==='function')?resolveAuth(a):null;
+  var hasAuth=_authObj21?(_authObj21.provider!=='none'):!/なし|None|public/i.test(a.auth||'JWT');
   const isPython=/Python|Django|FastAPI/i.test(be);
   const isBaaS=/Supabase|Firebase|Convex/i.test(be);
 
@@ -366,6 +367,7 @@ function gen85(a,pn,G){
   // Full checklist
   doc+='## '+(G?'詳細チェックリスト':'Detailed Checklist')+'\n\n';
 
+  var _authProv85=isBaaS?(be||'BaaS'):'JWT';
   var currentLv='';
   API_SECURITY_ITEMS.forEach(function(item){
     if(item.lv!==currentLv){
@@ -374,8 +376,16 @@ function gen85(a,pn,G){
       else if(item.lv==='high') doc+='### 🟠 HIGH\n\n';
       else doc+='### 🟡 MEDIUM\n\n';
     }
-    doc+='- [ ] **'+(G?item.ja:item.en)+'**\n';
-    doc+='  - '+(G?'対応':'Fix')+': '+(G?item.ja_fix:item.en_fix)+'\n';
+    var jaText=item.ja;var enText=item.en;
+    var jaFix=item.ja_fix;var enFix=item.en_fix;
+    if(item.id==='authn'&&isBaaS){
+      jaText='認証: '+_authProv85+' SDK による認証検証';
+      enText='Authentication: '+_authProv85+' SDK authentication verification';
+      jaFix=_authProv85+' SDK の getUser()/getSession() でサーバーサイド検証';
+      enFix='Server-side verification with '+_authProv85+' SDK getUser()/getSession()';
+    }
+    doc+='- [ ] **'+(G?jaText:enText)+'**\n';
+    doc+='  - '+(G?'対応':'Fix')+': '+(G?jaFix:enFix)+'\n';
   });
   doc+='\n';
 

@@ -69,7 +69,8 @@ function genPillar11_ImplIntelligence(a,pn){
   }
   doc39+='\n### '+(G?'データベース：':'Database: ')+db+'\n';
   if(db.includes('PostgreSQL')){
-    doc39+=(G?'- マイグレーションツールはPrisma/Drizzle\n':'- Migration tool: Prisma/Drizzle\n');
+    var _orm11=(typeof resolveORM==='function')?resolveORM(a).name:'Prisma/Drizzle';
+    doc39+=(G?'- マイグレーションツールは'+_orm11+'\n':'- Migration tool: '+_orm11+'\n');
     doc39+=(G?'- インデックスは外部キー・検索条件カラムに必須\n':'- Indexes required on FKs and search columns\n');
     doc39+=(G?'- トランザクション分離レベルはREAD COMMITTED（デフォルト）\n':'- Transaction isolation: READ COMMITTED (default)\n');
   }else if(db.includes('MongoDB')){
@@ -711,7 +712,8 @@ function gen81(){
   var pn=S.projectName||'MyProject';
   var target=a.target||(G?'ユーザー':'users');
   var screens=a.screens||(G?'主要画面':'main screens');
-  var auth=a.auth||(G?'認証方式':'auth method');
+  var _authObj11=(typeof resolveAuth==='function')?resolveAuth(a):null;
+  var auth=_authObj11?_authObj11.sot:(a.auth||(G?'認証方式':'auth method'));
   var mvp=a.mvp_features||(G?'主要機能':'main features');
 
   var doc='';

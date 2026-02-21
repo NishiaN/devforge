@@ -793,6 +793,21 @@ check('gen81: docs/81_ux_proficiency_audit.md exists',!!S.files['docs/81_ux_prof
 const doc81=S.files['docs/81_ux_proficiency_audit.md']||'';
 check('gen81: has Lv.0 through Lv.6 headers',['Lv.0','Lv.1','Lv.2','Lv.3','Lv.4','Lv.5','Lv.6'].every(lv=>doc81.includes(lv)));
 
+// ═══ Cross-reference validation ═══
+console.log('\n━━ Cross-reference validation ━━');
+// Verify inferStakeholder() returns correct values for key domains
+if(typeof inferStakeholder==='function'){
+  check('inferStakeholder(fintech)=enterprise', inferStakeholder('fintech')==='enterprise');
+  check('inferStakeholder(saas)=team', inferStakeholder('saas')==='team');
+  check('inferStakeholder(devtool)=developer', inferStakeholder('devtool')==='developer');
+  check('inferStakeholder(unknown)=startup', inferStakeholder('unknown')==='startup');
+}
+// Verify isNone() catches all variants
+check('isNone(なし)=true', isNone('なし')===true);
+check('isNone(None)=true', isNone('None')===true);
+check('isNone(none)=true', isNone('none')===true);
+check('isNone(Stripe)=false', isNone('Stripe')===false);
+
 // ═══ SUMMARY ═══
 console.log(`\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
 console.log(`# pass ${pass}`);

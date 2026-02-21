@@ -418,8 +418,8 @@ function genPillar12_SecurityIntelligence(a,pn){
   const auth=resolveAuth(a);
   const entities=(a.data_entities||'').split(/[,、]/).map(e=>e.trim()).filter(e=>e);
   const features=(a.mvp_features||'').split(/[,、]/).map(f=>f.trim()).filter(f=>f);
-  const hasPayment=a.payment&&a.payment!=='none';
-  const hasAI=a.ai_auto&&a.ai_auto!=='none';
+  const hasPayment=a.payment&&!(typeof isNone==='function'?isNone(a.payment):/なし|none/i.test(a.payment));
+  const hasAI=a.ai_auto&&!(typeof isNone==='function'?isNone(a.ai_auto):/なし|none/i.test(a.ai_auto));
   const hasMobile=!!(a.mobile&&!/なし|none/i.test(a.mobile)&&/expo|react.?native|flutter/i.test(a.mobile));
 
   // ═══ DOC 43: Security Intelligence Report ═══

@@ -129,7 +129,7 @@ test('[P15] genPillar15: generates 4 documents for education domain', () => {
     purpose: '大学向けLMS',
     stakeholder: 'startup',
     architecture: 'baas',
-    deployment: 'vercel',
+    deploy: 'vercel',
     ai_auto: 'none'
   };
   genPillar15(answers);
@@ -173,7 +173,7 @@ test('[P15] genPillar15: generates English docs when genLang=en', () => {
     purpose: 'University LMS',
     stakeholder: 'enterprise',
     architecture: 'traditional',
-    deployment: 'aws'
+    deploy: 'aws'
   };
   genPillar15(answers);
 
@@ -199,7 +199,7 @@ test('[P15] genPillar15: adapts to fintech domain', () => {
     purpose: 'フィンテック決済アプリ',
     stakeholder: 'enterprise',
     architecture: 'baas',
-    deployment: 'aws',
+    deploy: 'aws',
     ai_auto: 'full'
   };
   genPillar15(answers);
@@ -214,7 +214,7 @@ test('[P15] genPillar15: adapts to fintech domain', () => {
 
 test('[P15] doc56 Market: includes TAM/SAM/SOM', () => {
   global.S = {genLang: 'ja', files: {}};
-  const answers = {purpose: 'EC', stakeholder: 'startup', architecture: 'baas', deployment: 'vercel'};
+  const answers = {purpose: 'EC', stakeholder: 'startup', architecture: 'baas', deploy: 'vercel'};
   genPillar15(answers);
   const doc = S.files['docs/56_market_positioning.md'];
   assert.ok(doc.includes('TAM'), 'includes TAM');
@@ -224,7 +224,7 @@ test('[P15] doc56 Market: includes TAM/SAM/SOM', () => {
 
 test('[P15] doc57 UX: includes Time-to-Value goals', () => {
   global.S = {genLang: 'ja', files: {}};
-  const answers = {purpose: 'SaaS', stakeholder: 'team', architecture: 'baas', deployment: 'vercel'};
+  const answers = {purpose: 'SaaS', stakeholder: 'team', architecture: 'baas', deploy: 'vercel'};
   genPillar15(answers);
   const doc = S.files['docs/57_user_experience_strategy.md'];
   assert.ok(doc.includes('Time-to-Value'), 'includes Time-to-Value');
@@ -235,7 +235,7 @@ test('[P15] doc57 UX: includes Time-to-Value goals', () => {
 
 test('[P15] doc58 Ecosystem: adapts FinOps to deployment', () => {
   global.S = {genLang: 'ja', files: {}};
-  const answers = {purpose: 'Analytics', stakeholder: 'developer', architecture: 'baas', deployment: 'cloudflare'};
+  const answers = {purpose: 'Analytics', stakeholder: 'developer', architecture: 'baas', deploy: 'cloudflare'};
   genPillar15(answers);
   const doc = S.files['docs/58_ecosystem_strategy.md'];
   assert.ok(doc.includes('Cloudflare'), 'mentions Cloudflare');
@@ -245,7 +245,7 @@ test('[P15] doc58 Ecosystem: adapts FinOps to deployment', () => {
 
 test('[P15] doc59 Regulatory: timeline has 2026-2030 entries', () => {
   global.S = {genLang: 'ja', files: {}};
-  const answers = {purpose: 'Health', stakeholder: 'enterprise', architecture: 'traditional', deployment: 'aws', ai_auto: 'full'};
+  const answers = {purpose: 'Health', stakeholder: 'enterprise', architecture: 'traditional', deploy: 'aws', ai_auto: 'full'};
   genPillar15(answers);
   const doc = S.files['docs/59_regulatory_foresight.md'];
   assert.ok(doc.includes('2026') && doc.includes('2030'), 'includes 2026-2030 timeline');
@@ -256,7 +256,7 @@ test('[P15] doc59 Regulatory: timeline has 2026-2030 entries', () => {
 
 test('[P15] All mermaid diagrams are syntactically valid', () => {
   global.S = {genLang: 'ja', files: {}};
-  const answers = {purpose: 'Marketplace', stakeholder: 'startup', architecture: 'baas', deployment: 'vercel'};
+  const answers = {purpose: 'Marketplace', stakeholder: 'startup', architecture: 'baas', deploy: 'vercel'};
   genPillar15(answers);
 
   Object.entries(S.files).forEach(([path, content]) => {
@@ -274,7 +274,7 @@ test('[P15] All mermaid diagrams are syntactically valid', () => {
 
 test('[P15] No ${...} template literals in Japanese content', () => {
   global.S = {genLang: 'ja', files: {}};
-  const answers = {purpose: '教育', stakeholder: 'startup', architecture: 'baas', deployment: 'vercel'};
+  const answers = {purpose: '教育', stakeholder: 'startup', architecture: 'baas', deploy: 'vercel'};
   genPillar15(answers);
 
   Object.values(S.files).forEach(content => {

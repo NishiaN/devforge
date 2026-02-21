@@ -1,4 +1,4 @@
-/* ═══ STACK COMPATIBILITY & SEMANTIC CONSISTENCY RULES — 76 rules (ERROR×13 + WARN×46 + INFO×17) ═══ */
+/* ═══ STACK COMPATIBILITY & SEMANTIC CONSISTENCY RULES — 79 rules (ERROR×13 + WARN×46 + INFO×20) ═══ */
 const COMPAT_RULES=[
   // ── FE ↔ Mobile (2 ERROR) ──
   {id:'fe-mob-expo',p:['frontend','mobile'],lv:'error',
@@ -456,6 +456,30 @@ const COMPAT_RULES=[
    },
    ja:'ローカル/セルフホストLLMとクラウドデプロイの組み合わせはGPUインスタンス（RunPod/Lambda Labs）またはvLLM/Ollamaサーバーの別途ホスティングが必要です',
    en:'Local/self-hosted LLM with cloud deployment requires GPU instances (RunPod/Lambda Labs) or separate vLLM/Ollama hosting'},
+  // ── クロスピラー P21/P22/P25 (INFO×3) ──
+  {id:'api-openapi-remind',p:['mvp_features','data_entities'],lv:'info',
+   t:a=>{
+     const ents=(a.data_entities||'').split(/[,、]\s*/).filter(Boolean).length;
+     return ents>=4&&!/(OpenAPI|swagger|api.spec|仕様書)/i.test(a.mvp_features||'');
+   },
+   ja:'エンティティが4件以上あります。docs/84_openapi_specification.md のOpenAPI 3.1仕様を活用してAPIコントラクトを明確にしてください',
+   en:'4+ entities detected. Use OpenAPI 3.1 spec (docs/84) to clarify API contracts and generate client SDKs'},
+  {id:'orm-n1-risk',p:['orm','data_entities'],lv:'info',
+   t:a=>{
+     const ents=(a.data_entities||'').split(/[,、]\s*/).filter(Boolean).length;
+     const hasRelORM=/(Prisma|TypeORM|Drizzle|SQLAlchemy)/i.test(a.orm||'');
+     return hasRelORM&&ents>=5;
+   },
+   ja:'エンティティが5件以上ありORMを使用しています。N+1問題に注意してください。docs/100_database_performance.md のEAGER LOADING設定を確認してください',
+   en:'5+ entities with relational ORM: N+1 risk is high. See docs/100 for eager loading and batch query patterns'},
+  {id:'prod-backup-remind',p:['deploy','database'],lv:'info',
+   t:a=>{
+     const isProd=/Vercel|Railway|Fly\.io|Render|Heroku|AWS|GCP|Azure/i.test(a.deploy||'');
+     const hasDB=a.database&&!/なし|None/i.test(a.database);
+     return isProd&&hasDB;
+   },
+   ja:'本番デプロイ+DB構成を検出しました。docs/90_backup_disaster_recovery.md のRTO/RPO目標とバックアップ戦略を必ず設定してください',
+   en:'Production deployment + DB detected. Set RTO/RPO targets and backup strategy per docs/90 before going live'},
 ];
 // helpers
 function inc(v,k){return v&&typeof v==='string'&&v.indexOf(k)!==-1;}
