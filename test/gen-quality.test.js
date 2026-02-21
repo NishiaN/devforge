@@ -57,6 +57,7 @@ eval(fs.readFileSync('src/generators/p17-promptgenome.js','utf-8').replace(/cons
 eval(fs.readFileSync('src/generators/p18-promptops.js','utf-8').replace(/var (REACT_PROTOCOL|LLMOPS_STACK|PROMPT_LIFECYCLE)/g,'var $1').replace(/function (_rp|_los)/g,'var $1 = function'));
 eval(fs.readFileSync('src/generators/p19-enterprise.js','utf-8'));
 eval(fs.readFileSync('src/generators/p20-cicd.js','utf-8'));
+eval(fs.readFileSync('src/generators/p21-api.js','utf-8'));
 
 /* ═══ Generation helpers ═══ */
 
@@ -75,7 +76,7 @@ function gRoadmap(answers, lang) {
   return S.files;
 }
 
-/** Full 20-pillar generation (for E2E token and file count tests) */
+/** Full 21-pillar generation (for E2E token and file count tests) */
 function gFull(answers, lang, skill) {
   S.files={}; S.genLang=lang||'ja'; S.skill=skill||'intermediate';
   genPillar1_SDD(answers,'QTest');
@@ -98,6 +99,7 @@ function gFull(answers, lang, skill) {
   genPillar18_PromptOps(answers,'QTest');
   genPillar19_EnterpriseSaaS(answers,'QTest');
   genPillar20_CICDIntelligence(answers,'QTest');
+  genPillar21_APIIntelligence(answers,'QTest');
   return Object.assign({},S.files);
 }
 
@@ -673,13 +675,13 @@ describe('Q7: domain-specific KPI fallback in constitution §3', () => {
    ════════════════════════════════════════════════════════════════ */
 describe('Q8: Full E2E generation — file count, tokens, 25 vs 11 delta', () => {
 
-  it('A25 full generation: file count in 108-139 range', () => {
+  it('A25 full generation: file count in 108-145 range', () => {
     const f = gFull(A25);
     const count = Object.keys(f).length;
-    assert.ok(count >= 108 && count <= 139, `A25 full gen file count should be 108-139, got ${count}`);
+    assert.ok(count >= 108 && count <= 145, `A25 full gen file count should be 108-145, got ${count}`);
   });
 
-  it('A25 full generation: total tokens ≥ 14000 (rich content across 20 pillars)', () => {
+  it('A25 full generation: total tokens ≥ 14000 (rich content across 21 pillars)', () => {
     const f = gFull(A25);
     const total = Object.values(f).reduce((s,v)=>s+tokens(v),0);
     assert.ok(total >= 14000, `A25 total tokens should be ≥14000, got ${total}`);
@@ -1146,5 +1148,208 @@ describe('Suite 15: Python/Split deployment corrections', () => {
     const f = gDev(pyAnswers);
     const ps = f['.devcontainer/post-create.sh'] || '';
     assert.ok(ps.includes('alembic upgrade head'), 'post-create.sh must contain alembic upgrade head for Python+PostgreSQL');
+  });
+});
+
+/* ══════════════════════════════════════════════════════════════════
+   Suite 16 — Pillar ㉑ API Intelligence (docs/83-86)
+   ════════════════════════════════════════════════════════════════ */
+
+/** Run only P21 API Intelligence */
+function gAPI(answers, lang) {
+  S.files={}; S.genLang=lang||'ja'; S.skill='intermediate';
+  genPillar21_APIIntelligence(answers,'QTest');
+  return S.files;
+}
+
+const apiAnswers = Object.assign({}, A25, {
+  backend: 'Express.js + Node.js',
+  frontend: 'React + Vite',
+  database: 'PostgreSQL (Neon)',
+  auth: 'JWT',
+  entities: 'User, Post, Comment',
+  payment: 'なし',
+  orm: 'Prisma ORM',
+});
+
+const pyApiAnswers = Object.assign({}, apiAnswers, {
+  backend: 'FastAPI (Python)',
+  database: 'PostgreSQL (Neon)',
+  orm: 'SQLAlchemy',
+});
+
+const baasApiAnswers = Object.assign({}, A25, {
+  backend: 'Supabase',
+  auth: 'Supabase Auth',
+});
+
+const graphqlAnswers = Object.assign({}, apiAnswers, {
+  backend: 'Express.js + Node.js + GraphQL',
+  frontend: 'React + Next.js',
+});
+
+describe('Suite 16: Pillar ㉑ API Intelligence', () => {
+
+  // ── docs/83 API Design Principles ──
+  it('generates docs/83_api_design_principles.md', () => {
+    const f = gAPI(apiAnswers);
+    assert.ok(f['docs/83_api_design_principles.md'], 'docs/83 must be generated');
+  });
+
+  it('docs/83 REST: contains resource naming principle', () => {
+    const f = gAPI(apiAnswers);
+    const doc = f['docs/83_api_design_principles.md'] || '';
+    assert.ok(doc.includes('Resource Naming') || doc.includes('リソース命名'), 'docs/83 must contain resource naming');
+  });
+
+  it('docs/83 REST: contains URL design conventions section', () => {
+    const f = gAPI(apiAnswers);
+    const doc = f['docs/83_api_design_principles.md'] || '';
+    assert.ok(doc.includes('/api/v1/'), 'docs/83 must include URL convention examples');
+  });
+
+  it('docs/83 Python (FastAPI): contains FastAPI implementation patterns', () => {
+    const f = gAPI(pyApiAnswers);
+    const doc = f['docs/83_api_design_principles.md'] || '';
+    assert.ok(doc.includes('FastAPI') || doc.includes('APIRouter'), 'docs/83 must contain FastAPI patterns for Python backend');
+  });
+
+  it('docs/83 BaaS (Supabase): describes BaaS client SDK approach', () => {
+    const f = gAPI(baasApiAnswers);
+    const doc = f['docs/83_api_design_principles.md'] || '';
+    assert.ok(doc.includes('Supabase') || doc.includes('BaaS'), 'docs/83 must describe BaaS client SDK for BaaS backend');
+  });
+
+  it('docs/83 GraphQL: describes GraphQL design principles', () => {
+    const f = gAPI(graphqlAnswers);
+    const doc = f['docs/83_api_design_principles.md'] || '';
+    assert.ok(doc.includes('GraphQL') || doc.includes('DataLoader'), 'docs/83 must contain GraphQL principles');
+  });
+
+  it('docs/83 EN generation works', () => {
+    const f = gAPI(apiAnswers, 'en');
+    const doc = f['docs/83_api_design_principles.md'] || '';
+    assert.ok(doc.includes('API Design Principles'), 'docs/83 EN must have English title');
+    assert.ok(doc.includes('Resource Naming'), 'docs/83 EN must have English content');
+  });
+
+  // ── docs/84 OpenAPI Specification ──
+  it('generates docs/84_openapi_specification.md', () => {
+    const f = gAPI(apiAnswers);
+    assert.ok(f['docs/84_openapi_specification.md'], 'docs/84 must be generated');
+  });
+
+  it('docs/84 contains OpenAPI 3.1 spec structure', () => {
+    const f = gAPI(apiAnswers);
+    const doc = f['docs/84_openapi_specification.md'] || '';
+    assert.ok(doc.includes('openapi: "3.1.0"') || doc.includes("openapi: '3.1.0'"), 'docs/84 must contain OpenAPI 3.1 version');
+  });
+
+  it('docs/84 generates entity schemas from answers.entities', () => {
+    const f = gAPI(apiAnswers);
+    const doc = f['docs/84_openapi_specification.md'] || '';
+    assert.ok(doc.includes('User') && doc.includes('Post'), 'docs/84 must include schemas for entities from answers');
+  });
+
+  it('docs/84 includes JWT security scheme when auth is JWT', () => {
+    const f = gAPI(apiAnswers);
+    const doc = f['docs/84_openapi_specification.md'] || '';
+    assert.ok(doc.includes('BearerAuth') || doc.includes('bearer'), 'docs/84 must include bearer auth security scheme for JWT');
+  });
+
+  it('docs/84 BaaS: adds note about minimal custom REST API', () => {
+    const f = gAPI(baasApiAnswers);
+    const doc = f['docs/84_openapi_specification.md'] || '';
+    assert.ok(doc.includes('Supabase') || doc.includes('Edge Functions'), 'docs/84 BaaS must note that custom REST is minimal');
+  });
+
+  it('docs/84 FastAPI: mentions FastAPI built-in /docs', () => {
+    const f = gAPI(pyApiAnswers);
+    const doc = f['docs/84_openapi_specification.md'] || '';
+    assert.ok(doc.includes('FastAPI') || doc.includes('/docs'), 'docs/84 must mention FastAPI auto-doc for Python backend');
+  });
+
+  // ── docs/85 API Security Checklist ──
+  it('generates docs/85_api_security_checklist.md', () => {
+    const f = gAPI(apiAnswers);
+    assert.ok(f['docs/85_api_security_checklist.md'], 'docs/85 must be generated');
+  });
+
+  it('docs/85 contains OWASP API Security Top 10', () => {
+    const f = gAPI(apiAnswers);
+    const doc = f['docs/85_api_security_checklist.md'] || '';
+    assert.ok(doc.includes('OWASP') && doc.includes('API1:2023'), 'docs/85 must include OWASP API Top 10');
+  });
+
+  it('docs/85 contains critical items: input validation and SQL injection', () => {
+    const f = gAPI(apiAnswers);
+    const doc = f['docs/85_api_security_checklist.md'] || '';
+    assert.ok(doc.includes('SQLインジェクション') || doc.includes('SQL Injection'), 'docs/85 must include SQL injection check');
+    assert.ok(doc.includes('入力検証') || doc.includes('Input validation'), 'docs/85 must include input validation check');
+  });
+
+  it('docs/85 BaaS (Supabase): adds RLS checklist section', () => {
+    const f = gAPI(baasApiAnswers);
+    const doc = f['docs/85_api_security_checklist.md'] || '';
+    assert.ok(doc.includes('RLS') || doc.includes('Row Level Security'), 'docs/85 BaaS must include RLS checks');
+  });
+
+  it('docs/85 EN generation works', () => {
+    const f = gAPI(apiAnswers, 'en');
+    const doc = f['docs/85_api_security_checklist.md'] || '';
+    assert.ok(doc.includes('API Security Checklist'), 'docs/85 EN must have English title');
+    assert.ok(doc.includes('CRITICAL'), 'docs/85 EN must include CRITICAL section');
+  });
+
+  // ── docs/86 API Testing Strategy ──
+  it('generates docs/86_api_testing_strategy.md', () => {
+    const f = gAPI(apiAnswers);
+    assert.ok(f['docs/86_api_testing_strategy.md'], 'docs/86 must be generated');
+  });
+
+  it('docs/86 contains test pyramid section', () => {
+    const f = gAPI(apiAnswers);
+    const doc = f['docs/86_api_testing_strategy.md'] || '';
+    assert.ok(doc.includes('Test Pyramid') || doc.includes('テストピラミッド'), 'docs/86 must contain test pyramid');
+  });
+
+  it('docs/86 Node backend: contains supertest example', () => {
+    const f = gAPI(apiAnswers);
+    const doc = f['docs/86_api_testing_strategy.md'] || '';
+    assert.ok(doc.includes('supertest'), 'docs/86 Node backend must include supertest example');
+  });
+
+  it('docs/86 Python backend: contains pytest/httpx example', () => {
+    const f = gAPI(pyApiAnswers);
+    const doc = f['docs/86_api_testing_strategy.md'] || '';
+    assert.ok(doc.includes('pytest') || doc.includes('httpx'), 'docs/86 Python backend must include pytest/httpx example');
+  });
+
+  it('docs/86 contains k6 load testing example', () => {
+    const f = gAPI(apiAnswers);
+    const doc = f['docs/86_api_testing_strategy.md'] || '';
+    assert.ok(doc.includes('k6'), 'docs/86 must include k6 load testing');
+  });
+
+  it('docs/86 contains CI integration section', () => {
+    const f = gAPI(apiAnswers);
+    const doc = f['docs/86_api_testing_strategy.md'] || '';
+    assert.ok(doc.includes('CI') || doc.includes('github/workflows'), 'docs/86 must include CI integration');
+  });
+
+  it('docs/86 EN generation works', () => {
+    const f = gAPI(apiAnswers, 'en');
+    const doc = f['docs/86_api_testing_strategy.md'] || '';
+    assert.ok(doc.includes('API Testing Strategy'), 'docs/86 EN must have English title');
+    assert.ok(doc.includes('Test Pyramid'), 'docs/86 EN must have English content');
+  });
+
+  // ── All 4 files present ──
+  it('all 4 docs/83-86 files are generated for standard preset', () => {
+    const f = gAPI(apiAnswers);
+    ['docs/83_api_design_principles.md','docs/84_openapi_specification.md',
+     'docs/85_api_security_checklist.md','docs/86_api_testing_strategy.md'].forEach(path => {
+      assert.ok(f[path], path+' must be generated');
+    });
   });
 });

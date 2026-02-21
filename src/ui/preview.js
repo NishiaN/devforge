@@ -434,6 +434,10 @@ function buildFileTree(){
     files.push({folder:true,name:'docs'});
     ['77_cicd_pipeline_design','78_deployment_strategy','79_quality_gate_matrix','80_release_engineering'].forEach(f=>
       files.push({name:'  '+f+'.md',path:'docs/'+f+'.md'}));
+  } else if(pillar===20){ // API Intelligence (P21)
+    files.push({folder:true,name:'docs'});
+    ['83_api_design_principles','84_openapi_specification','85_api_security_checklist','86_api_testing_strategy'].forEach(f=>
+      files.push({name:'  '+f+'.md',path:'docs/'+f+'.md'}));
   }
   // Common files
   files.push({name:'───────────',path:''});
@@ -450,7 +454,8 @@ function buildFileTree(){
    '26_design_system','27_sequence_diagrams','28_qa_strategy','31_industry_playbook',
    '32_qa_blueprint','33_test_matrix','34_incident_response','35_sitemap',
    '36_test_strategy','37_bug_prevention','38_business_model',
-   '82_architecture_integrity_check'].forEach(f=>
+   '82_architecture_integrity_check',
+   '83_api_design_principles','84_openapi_specification','85_api_security_checklist','86_api_testing_strategy'].forEach(f=>
     files.push({name:'  '+f+'.md',path:'docs/'+f+'.md'}));
   files.push({name:'───────────',path:''});
   ['README.md','.gitignore','package.json','LICENSE'].forEach(f=>files.push({name:f,path:f}));

@@ -77,6 +77,7 @@ const jsFiles = [
   'generators/p18-promptops.js',
   'generators/p19-enterprise.js',
   'generators/p20-cicd.js',
+  'generators/p21-api.js',
   'generators/docs.js',
   'generators/common.js',
 
