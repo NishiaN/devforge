@@ -428,6 +428,87 @@ describe('Phase O G-4: learning_path inference', () => {
   });
 });
 
+/* ── Phase O G-5: ai_auto from skillLv ── */
+describe('Phase O G-5: ai_auto inference from skillLv', () => {
+  it('skillLv=0 → Vibe Coding入門', () => {
+    resetS({ backend: 'Supabase' });
+    h.sandbox.S.skillLv = 0;
+    applyUPP(false);
+    assert.equal(h.sandbox.S.answers.ai_auto, 'Vibe Coding入門');
+  });
+
+  it('skillLv=1 → Vibe Coding入門', () => {
+    resetS({ backend: 'Supabase' });
+    h.sandbox.S.skillLv = 1;
+    applyUPP(false);
+    assert.equal(h.sandbox.S.answers.ai_auto, 'Vibe Coding入門');
+  });
+
+  it('skillLv=2 → マルチAgent協調', () => {
+    resetS({ backend: 'Supabase' });
+    h.sandbox.S.skillLv = 2;
+    applyUPP(false);
+    assert.equal(h.sandbox.S.answers.ai_auto, 'マルチAgent協調');
+  });
+
+  it('skillLv=3 (default) → マルチAgent協調', () => {
+    resetS({ backend: 'Supabase' });
+    applyUPP(false);
+    assert.equal(h.sandbox.S.answers.ai_auto, 'マルチAgent協調');
+  });
+
+  it('skillLv=4 → マルチAgent協調', () => {
+    resetS({ backend: 'Supabase' });
+    h.sandbox.S.skillLv = 4;
+    applyUPP(false);
+    assert.equal(h.sandbox.S.answers.ai_auto, 'マルチAgent協調');
+  });
+
+  it('skillLv=5 → オーケストレーター', () => {
+    resetS({ backend: 'Supabase' });
+    h.sandbox.S.skillLv = 5;
+    applyUPP(false);
+    assert.equal(h.sandbox.S.answers.ai_auto, 'オーケストレーター');
+  });
+
+  it('skillLv=6 → オーケストレーター', () => {
+    resetS({ backend: 'Supabase' });
+    h.sandbox.S.skillLv = 6;
+    applyUPP(false);
+    assert.equal(h.sandbox.S.answers.ai_auto, 'オーケストレーター');
+  });
+
+  it('EN mode: skillLv=3 → Multi-Agent', () => {
+    resetS({ backend: 'Supabase' });
+    h.sandbox.S.lang = 'en';
+    applyUPP(true);
+    assert.equal(h.sandbox.S.answers.ai_auto, 'Multi-Agent');
+  });
+
+  it('EN mode: skillLv=6 → Orchestrator', () => {
+    resetS({ backend: 'Supabase' });
+    h.sandbox.S.skillLv = 6;
+    h.sandbox.S.lang = 'en';
+    applyUPP(true);
+    assert.equal(h.sandbox.S.answers.ai_auto, 'Orchestrator');
+  });
+
+  it('EN mode: skillLv=0 → Vibe Coding Intro', () => {
+    resetS({ backend: 'Supabase' });
+    h.sandbox.S.skillLv = 0;
+    h.sandbox.S.lang = 'en';
+    applyUPP(true);
+    assert.equal(h.sandbox.S.answers.ai_auto, 'Vibe Coding Intro');
+  });
+
+  it('Existing ai_auto is preserved (preset override)', () => {
+    resetS({ backend: 'Supabase', ai_auto: 'フル自律開発' });
+    h.sandbox.S.skillLv = 0;
+    applyUPP(false);
+    assert.equal(h.sandbox.S.answers.ai_auto, 'フル自律開発');
+  });
+});
+
 /* ── Preset Suggest: _scorePreset unit tests ── */
 describe('Preset Suggest: _scorePreset scoring engine', () => {
   const scorePreset = (...a) => h.sandbox._scorePreset(...a);

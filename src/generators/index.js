@@ -131,7 +131,7 @@ function finishGen(_errs){
     const _auditFindings=postGenerationAudit(S.files,S.answers);
     // Phase D: Architecture Integrity Check Report (docs/82)
     const _compatForReport=checkCompat(S.answers);
-    genArchIntegrityCheck(S.files,S.answers,_compatForReport,_auditFindings);
+    const _integrityScore=genArchIntegrityCheck(S.files,S.answers,_compatForReport,_auditFindings);
     const fill=$('genProgFill');if(fill)fill.style.width='100%';
     const lbl=$('genProgLabel');if(lbl)lbl.textContent=S.lang==='ja'?'✅ 完了':'✅ Done';
     const _fc=Object.keys(S.files).length;
@@ -154,6 +154,14 @@ function finishGen(_errs){
       });
       auditHtml+='</div>';
       const ad=document.createElement('div');ad.className='msg';ad.innerHTML=auditHtml;_sb.appendChild(ad);
+    }
+    // Show integrity score badge (docs/82 link)
+    if(typeof _integrityScore==='number'){
+      const _siEmoji=_integrityScore>=9?'✅':_integrityScore>=7?'⚠️':'❌';
+      const _siCls=_integrityScore>=9?'compat-info':_integrityScore>=7?'compat-warn':'compat-error';
+      const _sid=document.createElement('div');_sid.className='msg';
+      _sid.innerHTML='<div class="'+_siCls+'"><span class="compat-icon">'+_siEmoji+'</span><span class="compat-msg"><strong>'+(_ja?'アーキテクチャ整合性スコア':'Architecture Integrity Score')+': '+_integrityScore.toFixed(1)+'/10</strong> — <a href="#" onclick="previewFile(\'docs/82_architecture_integrity_check.md\');return false;">'+(_ja?'報告書を開く →':'Open Report →')+'</a></span></div>';
+      $('cbody').appendChild(_sid);
     }
     if($('statFileNum'))$('statFileNum').textContent=_fc;
     // Save recommendation notice

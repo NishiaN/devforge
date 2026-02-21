@@ -571,6 +571,13 @@ function _applyUniversalPostProcess(_en){
     var _orgInferEn={saas:'Multi-tenant (RLS)',analytics:'Single-tenant',collab:'Workspace-based',hr:'Single-tenant',tool:'Single-tenant',automation:'Workspace-based',fintech:'Single-tenant',legal:'Single-tenant',ec:'Single-tenant',marketplace:'Multi-tenant (RLS)',logistics:'Single-tenant',insurance:'Single-tenant'};
     if(_dom2&&_orgInfer[_dom2]){S.answers.org_model=_en?(_orgInferEn[_dom2]||_orgInfer[_dom2]):_orgInfer[_dom2];}
   }
+  // G-5: ai_auto from skillLv (when not already set by preset or scale defaults)
+  if(!S.answers.ai_auto){
+    var _slv5=typeof S.skillLv==='number'?S.skillLv:3;
+    if(_slv5>=5) S.answers.ai_auto=_en?'Orchestrator':'オーケストレーター';
+    else if(_slv5>=2) S.answers.ai_auto=_en?'Multi-Agent':'マルチAgent協調';
+    else S.answers.ai_auto=_en?'Vibe Coding Intro':'Vibe Coding入門';
+  }
   // N-5: ai_tools from ai_auto level
   if(!S.answers.ai_tools){
     var _aL=S.answers.ai_auto||'';
