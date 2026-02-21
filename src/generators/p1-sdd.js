@@ -223,8 +223,8 @@ function genPillar1_SDD(a,pn){
     else if(be.includes('Firebase')) dirLines.push('├── functions/        # '+(G?'Cloud Functions':'Cloud Functions'));
   } else {
     if(arch.pattern!=='bff') dirLines.push('├── api/              # '+(G?'バックエンドAPI':'Backend API'));
-    const ormN=(a.orm&&a.orm.includes('Drizzle'))?'drizzle':'prisma';
-    dirLines.push('├── '+ormN+'/           # '+(G?'スキーマ・マイグレーション':'Schema & migrations'));
+    const _ormR=resolveORM(a);
+    dirLines.push('├── '+_ormR.dir+'/           # '+(G?'スキーマ・マイグレーション':'Schema & migrations'));
   }
   dirLines.push('├── tests/            # '+(G?'テスト':'Tests'),
     '├── .spec/            # '+(G?'SDD仕様書':'SDD specs'),

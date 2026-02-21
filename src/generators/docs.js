@@ -5,7 +5,7 @@ function genDocs21(a,pn){
   const fe=a.frontend||'React';const be=a.backend||'Node.js';
   const auth=resolveAuth(a);
   const arch=resolveArch(a);
-  const orm=arch.isBaaS?(be.includes('Supabase')?'Supabase Client':be.includes('Firebase')?'Firebase SDK':'Convex'):(a.orm&&a.orm.includes('Drizzle')?'Drizzle':'Prisma');
+  const orm=resolveORM(a).name;
   const stripPri=s=>(s||'').replace(/\[P[0-2]\]\s*/g,'');
   const entities=(stripPri(a.data_entities)||'users, items').split(/[,、]\s*/).map(e=>e.trim()).filter(Boolean);
   const features=(stripPri(a.mvp_features)||(G?'CRUD操作':'CRUD')).split(', ').filter(Boolean);

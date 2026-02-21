@@ -129,6 +129,9 @@ function finishGen(_errs){
     if(_errs.length){toast('⚠️ '+_errs.length+(S.lang==='ja'?' 件のエラー: ':' errors: ')+_errs.join(', '));}
     // Phase C: Post-generation audit
     const _auditFindings=postGenerationAudit(S.files,S.answers);
+    // Phase D: Architecture Integrity Check Report (docs/82)
+    const _compatForReport=checkCompat(S.answers);
+    genArchIntegrityCheck(S.files,S.answers,_compatForReport,_auditFindings);
     const fill=$('genProgFill');if(fill)fill.style.width='100%';
     const lbl=$('genProgLabel');if(lbl)lbl.textContent=S.lang==='ja'?'✅ 完了':'✅ Done';
     const _fc=Object.keys(S.files).length;

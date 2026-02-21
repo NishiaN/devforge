@@ -449,7 +449,8 @@ function buildFileTree(){
    '22_prompt_playbook','23_tasks','24_progress','25_error_logs',
    '26_design_system','27_sequence_diagrams','28_qa_strategy','31_industry_playbook',
    '32_qa_blueprint','33_test_matrix','34_incident_response','35_sitemap',
-   '36_test_strategy','37_bug_prevention','38_business_model'].forEach(f=>
+   '36_test_strategy','37_bug_prevention','38_business_model',
+   '82_architecture_integrity_check'].forEach(f=>
     files.push({name:'  '+f+'.md',path:'docs/'+f+'.md'}));
   files.push({name:'───────────',path:''});
   ['README.md','.gitignore','package.json','LICENSE'].forEach(f=>files.push({name:f,path:f}));

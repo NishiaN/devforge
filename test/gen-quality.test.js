@@ -879,3 +879,148 @@ describe('Q13: Phase ⑥ Gap Fixes — compliance, mobile security, AI guardrail
     );
   });
 });
+
+/* ══════════════════════════════════════════════════════════════════
+   Suite 14 — Architecture Integrity Check (docs/82) + resolveORM/resolveAuth
+   ════════════════════════════════════════════════════════════════ */
+describe('Suite 14: Architecture Integrity Check (docs/82) + ORM/Auth resolvers', () => {
+
+  /** Helper: run genArchIntegrityCheck and return docs/82 content */
+  function gArch(answers, lang) {
+    const f = gFull(answers, lang || 'ja');
+    // Simulate finishGen: run audit + integrity check
+    const compat = checkCompat(answers);
+    const audit = postGenerationAudit(f, answers);
+    genArchIntegrityCheck(f, answers, compat, audit);
+    return f;
+  }
+
+  // ── resolveORM tests ──
+  it('resolveORM: Drizzle ORM answer → {name:"Drizzle ORM", dir:"drizzle"}', () => {
+    const r = resolveORM({ orm: 'Drizzle ORM', backend: 'Node.js + Express' });
+    assert.strictEqual(r.name, 'Drizzle ORM');
+    assert.strictEqual(r.dir, 'drizzle');
+    assert.strictEqual(r.isBaaS, false);
+  });
+
+  it('resolveORM: TypeORM answer → {name:"TypeORM", dir:"typeorm"}', () => {
+    const r = resolveORM({ orm: 'TypeORM', backend: 'NestJS' });
+    assert.strictEqual(r.name, 'TypeORM');
+    assert.strictEqual(r.dir, 'typeorm');
+  });
+
+  it('resolveORM: SQLAlchemy answer → {name:"SQLAlchemy", dir:"alembic", isPython:true}', () => {
+    const r = resolveORM({ orm: 'SQLAlchemy', backend: 'Python + FastAPI' });
+    assert.strictEqual(r.name, 'SQLAlchemy');
+    assert.strictEqual(r.dir, 'alembic');
+    assert.strictEqual(r.isPython, true);
+  });
+
+  it('resolveORM: Kysely answer → {name:"Kysely", dir:"kysely"}', () => {
+    const r = resolveORM({ orm: 'Kysely', backend: 'Node.js + Express' });
+    assert.strictEqual(r.name, 'Kysely');
+    assert.strictEqual(r.dir, 'kysely');
+  });
+
+  it('resolveORM: no orm + Python backend → SQLAlchemy default', () => {
+    const r = resolveORM({ backend: 'Python + FastAPI' });
+    assert.strictEqual(r.name, 'SQLAlchemy');
+    assert.strictEqual(r.isPython, true);
+  });
+
+  it('resolveORM: Supabase backend → BaaS mode {isBaaS:true, dir:"supabase"}', () => {
+    const r = resolveORM({ backend: 'Supabase' });
+    assert.strictEqual(r.isBaaS, true);
+    assert.strictEqual(r.dir, 'supabase');
+    assert.ok(r.name.includes('Supabase'));
+  });
+
+  it('resolveORM: Firebase backend → BaaS mode {dir:"functions"}', () => {
+    const r = resolveORM({ backend: 'Firebase' });
+    assert.strictEqual(r.isBaaS, true);
+    assert.strictEqual(r.dir, 'functions');
+  });
+
+  it('resolveORM: no orm + Node.js → Prisma ORM default', () => {
+    const r = resolveORM({ backend: 'Node.js + Express' });
+    assert.strictEqual(r.name, 'Prisma ORM');
+    assert.strictEqual(r.dir, 'prisma');
+  });
+
+  // ── resolveAuth JWT fallback tests ──
+  it('resolveAuth: Python backend JWT fallback → PyJWT', () => {
+    const r = resolveAuth({ backend: 'Python + FastAPI', auth: '' });
+    assert.ok(r.tokenVerify.includes('PyJWT') || r.tokenVerify.includes('python-jose'),
+      'Python backend should use PyJWT tokenVerify');
+  });
+
+  it('resolveAuth: Spring backend JWT fallback → java-jwt / jjwt', () => {
+    const r = resolveAuth({ backend: 'Spring Boot', auth: '' });
+    assert.ok(r.tokenVerify.includes('java-jwt') || r.tokenVerify.includes('jjwt'),
+      'Spring backend should use java-jwt/jjwt tokenVerify');
+  });
+
+  it('resolveAuth: Go backend JWT fallback → golang-jwt', () => {
+    const r = resolveAuth({ backend: 'Go + Gin', auth: '' });
+    assert.ok(r.tokenVerify.includes('golang-jwt'),
+      'Go backend should use golang-jwt tokenVerify');
+  });
+
+  it('resolveAuth: Node.js backend JWT fallback → jsonwebtoken / jose', () => {
+    const r = resolveAuth({ backend: 'Node.js + Express', auth: '' });
+    assert.ok(r.tokenVerify.includes('jsonwebtoken') || r.tokenVerify.includes('jose'),
+      'Node.js backend should use jsonwebtoken/jose tokenVerify');
+  });
+
+  // ── docs/82 generation tests ──
+  it('docs/82 exists after full generation (standard preset)', () => {
+    const f = gArch(A25);
+    assert.ok(f['docs/82_architecture_integrity_check.md'],
+      'docs/82_architecture_integrity_check.md must be generated');
+  });
+
+  it('docs/82 contains score section', () => {
+    const f = gArch(A25);
+    const doc82 = f['docs/82_architecture_integrity_check.md'] || '';
+    assert.ok(
+      doc82.includes('/10') && (doc82.includes('スコア') || doc82.includes('Score')),
+      'docs/82 must contain architecture compliance score section'
+    );
+  });
+
+  it('docs/82 contains violation table header', () => {
+    const f = gArch(A25);
+    const doc82 = f['docs/82_architecture_integrity_check.md'] || '';
+    assert.ok(
+      doc82.includes('違反') || doc82.includes('Violation'),
+      'docs/82 must contain violation table'
+    );
+  });
+
+  it('docs/82 Python+Prisma mismatch → score < 10', () => {
+    const pyAnswers = Object.assign({}, A25, {
+      backend: 'Python + FastAPI',
+      database: 'PostgreSQL',
+      auth: 'JWT',
+      orm: 'Prisma ORM',
+    });
+    const f = gArch(pyAnswers);
+    const doc82 = f['docs/82_architecture_integrity_check.md'] || '';
+    // Score should be below 10 due to ORM-backend mismatch
+    const scoreMatch = doc82.match(/(\d+\.\d+)\/10/);
+    assert.ok(scoreMatch, 'docs/82 must contain X.X/10 score');
+    const scoreVal = parseFloat(scoreMatch[1]);
+    assert.ok(scoreVal < 10, 'Python+Prisma mismatch should reduce score below 10, got ' + scoreVal);
+  });
+
+  it('docs/82 EN generation: titles in English', () => {
+    const f = gArch(A25, 'en');
+    const doc82 = f['docs/82_architecture_integrity_check.md'] || '';
+    assert.ok(
+      doc82.includes('Architecture Integrity Check Report') ||
+      doc82.includes('Architecture Compliance Score') ||
+      doc82.includes('Strengths'),
+      'docs/82 EN must contain English section titles'
+    );
+  });
+});

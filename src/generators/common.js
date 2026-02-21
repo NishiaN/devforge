@@ -91,7 +91,11 @@ function resolveAuth(a){
   } else {
     // Fallback: use user's auth answer or JWT default
     sot=auth||'JWT + OAuth 2.0';tokenType='Bearer Token (JWT)';
-    tokenVerify='jsonwebtoken verify() / jose jwtVerify()';
+    const _be=a.backend||'';
+    if(/Python|Django|FastAPI/i.test(_be)) tokenVerify='PyJWT decode() / python-jose jwt.decode()';
+    else if(/Spring/.test(_be)) tokenVerify='java-jwt / jjwt (io.jsonwebtoken)';
+    else if(/Go/.test(_be)) tokenVerify='golang-jwt (github.com/golang-jwt/jwt/v5)';
+    else tokenVerify='jsonwebtoken verify() / jose jwtVerify()';
     provider='jwt';
   }
   // Social providers from auth chip
@@ -102,6 +106,24 @@ function resolveAuth(a){
   if(auth.includes('メール')||auth.includes('Email'))social.push('Email/Password');
   if(auth.includes('Magic')||auth.includes('マジック'))social.push('Magic Link');
   return {sot,tokenType,tokenVerify,provider,social};
+}
+
+// ── B3b: ORM Single Source of Truth Resolution ──
+function resolveORM(a){
+  const be=a.backend||'';
+  if(/Supabase|Firebase|Convex/.test(be)){
+    return {name:be.includes('Supabase')?'Supabase Client':be.includes('Firebase')?'Firebase SDK':'Convex',
+            dir:be.includes('Supabase')?'supabase':be.includes('Firebase')?'functions':'convex',
+            isBaaS:true,isPython:false};
+  }
+  const orm=a.orm||'';
+  const isPy=/Python|Django|FastAPI/i.test(be);
+  if(orm.includes('Drizzle'))    return {name:'Drizzle ORM',dir:'drizzle',isBaaS:false,isPython:false};
+  if(orm.includes('TypeORM'))    return {name:'TypeORM',dir:'typeorm',isBaaS:false,isPython:false};
+  if(orm.includes('SQLAlchemy')) return {name:'SQLAlchemy',dir:'alembic',isBaaS:false,isPython:true};
+  if(orm.includes('Kysely'))     return {name:'Kysely',dir:'kysely',isBaaS:false,isPython:false};
+  if(isPy) return {name:'SQLAlchemy',dir:'alembic',isBaaS:false,isPython:true};
+  return {name:'Prisma ORM',dir:'prisma',isBaaS:false,isPython:false};
 }
 
 // ── B1: Architecture Pattern Resolution ──
@@ -191,6 +213,10 @@ function buildDeps(a){
       scripts['db:push']='prisma db push';scripts['db:studio']='prisma studio';scripts['db:generate']='prisma generate';}
     if(orm.includes('Drizzle')){deps['drizzle-orm']='^0.38';devDeps['drizzle-kit']='^0.30';
       scripts['db:push']='drizzle-kit push';scripts['db:studio']='drizzle-kit studio';}
+    if(orm.includes('TypeORM')){deps['typeorm']='^0.3';deps['reflect-metadata']='^0.2';
+      scripts['db:migrate']='typeorm migration:run';scripts['db:generate']='typeorm migration:generate';}
+    if(orm.includes('Kysely')){deps['kysely']='^0.27';devDeps['kysely-codegen']='^0.16';
+      scripts['db:migrate']='kysely migrate:latest';}
   }
 
   // Auth
@@ -2467,6 +2493,176 @@ function postGenerationAudit(files,a){
   }
 
   return findings;
+}
+
+// ── D: Architecture Integrity Check Report (docs/82) ──
+function genArchIntegrityCheck(files,a,compatResults,auditFindings){
+  const G=S.genLang==='ja';
+  const rows=[];
+  let redCount=0,orangeCount=0,yellowCount=0;
+
+  // 1. compat violations (ERROR/WARN only)
+  (compatResults||[]).forEach(function(r){
+    if(r.level==='error'){
+      redCount++;
+      rows.push({loc:r.id||'compat',src:'compat-rules.js',issue:r.msg,
+        sev:'🔴 ERROR',fix:r.fix||(G?'スタック設定を見直してください':'Review stack configuration')});
+    }else if(r.level==='warn'){
+      orangeCount++;
+      rows.push({loc:r.id||'compat',src:'compat-rules.js',issue:r.msg,
+        sev:'🟠 WARN',fix:r.fix||(G?'設定を確認してください':'Check configuration')});
+    }
+  });
+
+  // 2. audit findings (ERROR/WARN only)
+  (auditFindings||[]).forEach(function(f){
+    if(f.level==='error'){
+      redCount++;
+      rows.push({loc:'docs/*.md',src:'postGenerationAudit',issue:f.msg,
+        sev:'🔴 ERROR',fix:G?'生成後チェック参照':'See post-generation audit'});
+    }else if(f.level==='warn'){
+      orangeCount++;
+      rows.push({loc:'docs/*.md',src:'postGenerationAudit',issue:f.msg,
+        sev:'🟠 WARN',fix:G?'生成後チェック参照':'See post-generation audit'});
+    }
+  });
+
+  // 3. New architecture checks
+  const be=a.backend||'';
+  const orm=a.orm||'';
+  const arch=resolveArch(a);
+  const isBaaS=arch.isBaaS;
+  const isPy=/Python|Django|FastAPI/i.test(be);
+  const isGo=/\bGo\b|Golang/.test(be);
+
+  // C-A: ORM-Backend language compatibility
+  if(!isBaaS){
+    if(isPy&&orm&&!orm.includes('SQLAlchemy')&&!isNone(orm)){
+      redCount++;
+      rows.push({loc:'answers.backend+orm',src:G?'アーキテクチャチェック':'Architecture check',
+        issue:G?'Python/FastAPI/DjangoバックエンドにはSQLAlchemyが適切ですが、'+orm+'が選択されています':
+               'Python/FastAPI/Django backend should use SQLAlchemy, but '+orm+' is selected',
+        sev:'🔴 ERROR',fix:G?'ORM選択をSQLAlchemyに変更してください':'Change ORM selection to SQLAlchemy'});
+    }
+    if(isGo&&orm&&(orm.includes('Prisma')||orm.includes('SQLAlchemy'))&&!isNone(orm)){
+      orangeCount++;
+      rows.push({loc:'answers.backend+orm',src:G?'アーキテクチャチェック':'Architecture check',
+        issue:G?'GoバックエンドにはGORM/sqlxが適切ですが、'+orm+'が選択されています':
+               'Go backend should use GORM/sqlx, but '+orm+' is selected',
+        sev:'🟠 WARN',fix:G?'ORM選択をGORM/sqlxに変更してください':'Change ORM to GORM/sqlx'});
+    }
+  }
+
+  // C-C: CORS configuration for split deployment
+  if(arch.pattern==='split'){
+    const corsPresent=Object.values(files).some(function(v){return (v||'').includes('CORS')||(v||'').includes('cors');});
+    if(!corsPresent){
+      orangeCount++;
+      rows.push({loc:'.claude/rules/backend.md',src:G?'アーキテクチャチェック':'Architecture check',
+        issue:G?'フロント/バック分離構成ではCORS設定が必要ですが、生成ドキュメントに記述がありません':
+               'Split deployment requires CORS configuration but none found in generated docs',
+        sev:'🟠 WARN',fix:G?'backend.mdにCORS設定を追加してください':'Add CORS configuration to backend rules'});
+    }
+  }
+
+  // C-D: Async infrastructure
+  const feats=(a.mvp_features||'').toLowerCase();
+  const hasAsync=feats.includes('バックグラウンド')||feats.includes('background')||
+                 feats.includes('非同期')||feats.includes('async queue');
+  if(hasAsync&&!isBaaS){
+    const qPresent=Object.values(files).some(function(v){
+      return (v||'').includes('BullMQ')||(v||'').includes('Celery')||(v||'').includes('Inngest');
+    });
+    if(!qPresent){
+      yellowCount++;
+      rows.push({loc:'docs/09_release_checklist.md',src:G?'アーキテクチャチェック':'Architecture check',
+        issue:G?'非同期処理機能が要求されていますが、キューシステム(BullMQ/Celery/Inngest)の記述がありません':
+               'Async processing required but no queue system (BullMQ/Celery/Inngest) found',
+        sev:'🟡 INFO',fix:G?'BullMQ/Celery/Inngestを技術スタックに追加':'Add BullMQ/Celery/Inngest to tech stack'});
+    }
+  }
+
+  // C-E: Soft delete middleware documentation
+  const hasSoftDelete=Object.values(files).some(function(v){return (v||'').includes('deleted_at');});
+  const hasMW=Object.values(files).some(function(v){
+    return (v||'').includes('soft delete middleware')||(v||'').includes('論理削除ミドルウェア');
+  });
+  if(hasSoftDelete&&!hasMW){
+    yellowCount++;
+    rows.push({loc:'.spec/technical-plan.md',src:G?'アーキテクチャチェック':'Architecture check',
+      issue:G?'deleted_atカラムが定義されていますが、論理削除ミドルウェアの説明がありません':
+             'deleted_at columns defined but soft delete middleware description not found',
+      sev:'🟡 INFO',fix:G?'ORMミドルウェアで論理削除フィルタを実装':'Implement soft delete filter in ORM middleware'});
+  }
+
+  // Score calculation
+  const score=Math.max(0,10.0-redCount*1.0-orangeCount*0.5-yellowCount*0.25);
+  const scoreStr=score.toFixed(1);
+  const scoreEmoji=score>=9?'✅':score>=7?'⚠️':'❌';
+  const scoreLabel=score>=9?(G?'優良 — 整合性が高い水準にあります':'Excellent — High integrity'):
+    score>=7?(G?'良好 — 軽微な改善が必要です':'Good — Minor improvements needed'):
+    (G?'要改善 — 構造的な問題があります':'Needs Improvement — Structural issues present');
+
+  // Strengths
+  const strengths=[];
+  if(!redCount) strengths.push(G?'重大な整合性エラーなし':'No critical integrity errors');
+  const authR=resolveAuth(a);
+  if(authR.sot&&authR.sot!=='JWT + OAuth 2.0') strengths.push(G?'認証SoT明確: '+authR.sot:'Auth SoT clearly defined: '+authR.sot);
+  if(arch.pattern) strengths.push(G?'アーキテクチャパターン確立: '+arch.pattern.toUpperCase():'Architecture pattern established: '+arch.pattern.toUpperCase());
+  if(!isBaaS&&hasSoftDelete) strengths.push(G?'論理削除(deleted_at)スキーマ実装':'Soft delete (deleted_at) schema implemented');
+  if(!strengths.length) strengths.push(G?'基本構成の確認が完了しています':'Basic configuration verification complete');
+
+  // Weaknesses
+  const weaknesses=[];
+  if(redCount>0) weaknesses.push(G?redCount+'件のエラー修正が必要':redCount+' error(s) require immediate fix');
+  if(orangeCount>0) weaknesses.push(G?orangeCount+'件の警告を確認してください':orangeCount+' warning(s) need review');
+  if(yellowCount>0) weaknesses.push(G?yellowCount+'件の改善提案があります':yellowCount+' improvement suggestion(s)');
+  if(!weaknesses.length) weaknesses.push(G?'重大な弱点なし':'No critical weaknesses identified');
+
+  // Refactoring steps
+  const steps=[];
+  rows.filter(function(r){return r.sev.includes('ERROR');}).forEach(function(r,i){
+    steps.push((i+1)+'. **['+(G?'エラー':'ERROR')+'] '+r.loc+'** — '+r.fix);
+  });
+  rows.filter(function(r){return r.sev.includes('WARN');}).slice(0,3).forEach(function(r){
+    steps.push((steps.length+1)+'. **['+(G?'警告':'WARN')+'] '+r.loc+'** — '+r.fix);
+  });
+  if(!steps.length) steps.push(G?'1. 現在のアーキテクチャを維持し、定期的な整合性チェックを実施してください':
+    '1. Maintain current architecture and perform periodic integrity checks');
+
+  // Violation table
+  const hdr1=G?'違反箇所':'Location';
+  const hdr2=G?'定義元':'Source';
+  const hdr3=G?'違反内容':'Issue';
+  const hdr4=G?'深刻度':'Severity';
+  const hdr5=G?'修正案':'Fix';
+  const tableRows=rows.length?rows.map(function(r,i){
+    return '| '+(i+1)+' | '+r.loc+' | '+r.src+' | '+r.issue+' | '+r.sev+' | '+r.fix+' |';
+  }).join('\n'):(G?'| — | — | — | 違反なし ✅ | — | — |':'| — | — | — | No violations ✅ | — | — |');
+
+  const now=new Date().toISOString().split('T')[0];
+  const proj=(a.purpose||'N/A').slice(0,60);
+  const titleJa='アーキテクチャ整合性チェック報告書';
+  const titleEn='Architecture Integrity Check Report';
+
+  files['docs/82_architecture_integrity_check.md']=
+    '# '+titleJa+' / '+titleEn+'\n\n'+
+    '> '+(G?'生成日: ':'Generated: ')+now+' | '+(G?'プロジェクト: ':'Project: ')+proj+'\n\n'+
+    '## '+(G?'違反テーブル / Violation Table':'Violation Table / 違反テーブル')+'\n\n'+
+    '| # | '+hdr1+' | '+hdr2+' | '+hdr3+' | '+hdr4+' | '+hdr5+' |\n'+
+    '|---|------------|-------------|----------------|----------|-----------|\n'+
+    tableRows+'\n\n'+
+    '## '+(G?'アーキテクチャ適合スコア':'Architecture Compliance Score')+': '+scoreStr+'/10\n\n'+
+    scoreEmoji+' '+scoreLabel+'\n\n'+
+    '## '+(G?'評価理由 / Evaluation Rationale':'Evaluation Rationale / 評価理由')+'\n\n'+
+    '### '+(G?'強み / Strengths':'Strengths / 強み')+'\n\n'+
+    strengths.map(function(s){return '- '+s;}).join('\n')+'\n\n'+
+    '### '+(G?'弱み / Weaknesses':'Weaknesses / 弱み')+'\n\n'+
+    weaknesses.map(function(w){return '- '+w;}).join('\n')+'\n\n'+
+    '## '+(G?'リファクタリング手順 / Refactoring Steps':'Refactoring Steps / リファクタリング手順')+'\n\n'+
+    steps.join('\n')+'\n\n'+
+    '---\n'+
+    '*'+(G?'このレポートはDevForge v9により自動生成されました':'This report was auto-generated by DevForge v9')+'*\n';
 }
 
 function genCommonFiles(a,pn){

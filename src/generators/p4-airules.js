@@ -5,7 +5,7 @@ function genPillar4_AIRules(a,pn){
   const be=a.backend||'Node.js + Express';
   const auth=resolveAuth(a);
   const arch=resolveArch(a);
-  const orm=arch.isBaaS?(be.includes('Supabase')?'Supabase Client SDK':be.includes('Firebase')?'Firebase SDK':'Convex Client'):(a.orm&&a.orm.includes('Drizzle')?'Drizzle ORM':'Prisma ORM');
+  const _ormR=resolveORM(a);const orm=_ormR.name;
   const archNote=G?{baas:'BaaS統合パターン（サーバーレス）',bff:'BFF パターン（Next.js API Routes統合）',split:'フロント/バック分離（別ホスト）',traditional:'従来型クライアント-サーバー'}[arch.pattern]:{baas:'BaaS Integration (serverless)',bff:'BFF Pattern (Next.js API Routes)',split:'FE/BE Split (separate hosts)',traditional:'Traditional Client-Server'}[arch.pattern];
 
   const core=`Project: ${pn}
@@ -126,7 +126,7 @@ ${coreRules}`;
   // Layer B: Path-specific rule files
   S.files['.claude/rules/spec.md']=genSpecRules(G,fileSelectionMatrix,domainCtx);
   S.files['.claude/rules/frontend.md']=genFrontendRules(a.frontend||'React',G);
-  S.files['.claude/rules/backend.md']=genBackendRules(arch,be,a.backend||'Node.js + Express',G);
+  S.files['.claude/rules/backend.md']=genBackendRules(arch,be,a.backend||'Node.js + Express',G,orm);
   S.files['.claude/rules/test.md']=genTestRules(a.dev_methods||'TDD',G);
   S.files['.claude/rules/ops.md']=genOpsRules(G);
 
@@ -907,7 +907,7 @@ ${(G?r.patterns_ja:r.patterns_en).map(p=>'- '+p).join('\n')}
 `;
 }
 
-function genBackendRules(arch,be,beRaw,G){
+function genBackendRules(arch,be,beRaw,G,orm){
   // Detect BFF from backend string if arch didn't catch it
   const isBFF=arch.pattern==='bff'||beRaw.includes('API Routes')||beRaw.includes('API routes');
 
@@ -956,7 +956,7 @@ alwaysApply: false
 - **${G?'ミドルウェア':'Middleware'}**: ${G?'認証・CORS・レート制限':'Auth, CORS, rate limiting'}
 
 ## ${G?'データベースルール':'Database Rules'}
-1. **ORM ${G?'使用':'use'}**: Prisma ${G?'または':'or'} Drizzle
+1. **ORM ${G?'使用':'use'}**: ${orm||'Prisma ORM'}
 2. **${G?'型安全':'Type safety'}**: ${G?'DB→TypeScript自動生成':'DB → TypeScript auto-generation'}
 3. **${G?'マイグレーション':'Migrations'}**: ${G?'バージョン管理、ロールバック可能':'Versioned, rollbackable'}
 
@@ -983,7 +983,7 @@ alwaysApply: false
 - **${G?'認証':'Auth'}**: JWT ${G?'または':'or'} session-based
 
 ## ${G?'データベースルール':'Database Rules'}
-1. **ORM ${G?'使用':'use'}**: Prisma, Drizzle, ${G?'または':'or'} TypeORM
+1. **ORM ${G?'使用':'use'}**: ${orm||'Prisma ORM'}
 2. **${G?'生SQLなし':'No raw SQL'}** (${G?'マイグレーションは除く':'except migrations'})
 3. **${G?'トランザクション':'Transactions'}**: ${G?'複数テーブル更新時は必須':'Required for multi-table updates'}
 4. **${G?'接続プーリング':'Connection pooling'}**: ${G?'本番環境で必須':'Required in production'}
