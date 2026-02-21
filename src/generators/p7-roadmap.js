@@ -7,7 +7,7 @@ function genPillar7_Roadmap(a,pn){
   const noMob=mob===GT.ja.none||mob===GT.en.none;const noAI=ai===GT.ja.none||ai===GT.en.none;const noPay=pay===GT.ja.none||pay===GT.en.none;
   const isB=level.includes('Beginner');const isP=level.includes('Professional');
   const _auth=resolveAuth(a);const _arch=resolveArch(a);
-  const _orm=_arch.isBaaS?(be.includes('Supabase')?'Supabase Client':be.includes('Firebase')?'Firebase SDK':'Convex'):!a.orm||a.orm.includes('Prisma')?'Prisma ORM':a.orm.includes('Drizzle')?'Drizzle ORM':a.orm.includes('TypeORM')?'TypeORM':a.orm.includes('SQLAlchemy')?'SQLAlchemy':a.orm.includes('Kysely')?'Kysely':'Prisma ORM';
+  const _ormR=resolveORM(a);const _orm=_ormR.name;
   const months=goal.includes('3')?3:goal.includes('12')?12:6;
   const slug=pn.toLowerCase().replace(/[^a-z0-9]/g,'-');
 
@@ -168,7 +168,7 @@ ${be.includes('Node')?'- [Node.js](https://nodejs.org/docs/)':''}
 ${be.includes('Supabase')?'- [Supabase](https://supabase.com/docs)':''}
 - [TypeScript](https://www.typescriptlang.org/docs/)
 - [Tailwind CSS](https://tailwindcss.com/docs)
-- [${_orm}](${_arch.isBaaS?(be.includes("Supabase")?"https://supabase.com/docs":"https://firebase.google.com/docs"):"https://www.prisma.io/docs"})
+- [${_orm}](${_ormR.isBaaS?(be.includes('Supabase')?'https://supabase.com/docs':be.includes('Firebase')?'https://firebase.google.com/docs':'https://docs.convex.dev'):_orm.includes('Drizzle')?'https://orm.drizzle.team/docs/overview':_orm.includes('TypeORM')?'https://typeorm.io':_orm.includes('SQLAlchemy')?'https://docs.sqlalchemy.org':_orm.includes('Kysely')?'https://kysely.dev/docs/getting-started':'https://www.prisma.io/docs'})
 
 ## ${T('res_ai')}
 - [CLAUDE.md ${T('res_bp')}](https://docs.anthropic.com/)

@@ -93,9 +93,15 @@ function genPillar2_DevContainer(a,pn){
   } else if(isNode&&dbService==='postgres'){
     if(orm.includes('Drizzle')){
       postLines.push('npx drizzle-kit push','echo "📦 Drizzle Studio: npx drizzle-kit studio"');
+    } else if(orm.includes('TypeORM')){
+      postLines.push('npx typeorm migration:run','echo "📦 TypeORM schema: npx typeorm schema:show"');
+    } else if(orm.includes('Kysely')){
+      postLines.push('npx kysely migrate:latest','echo "📦 Kysely migrations applied"');
     } else {
       postLines.push('npx prisma generate','npx prisma db push');
     }
+  } else if(isPython&&dbService==='postgres'&&orm.includes('SQLAlchemy')){
+    postLines.push('alembic upgrade head','echo "📦 Alembic migrations applied"');
   }
 
   postLines.push('','echo "✅ Setup complete! Run \'npm run dev\' to start."');
