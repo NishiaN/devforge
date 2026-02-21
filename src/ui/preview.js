@@ -442,6 +442,10 @@ function buildFileTree(){
     files.push({folder:true,name:'docs'});
     ['87_database_design_principles','88_query_optimization_guide','89_migration_strategy','90_backup_disaster_recovery'].forEach(f=>
       files.push({name:'  '+f+'.md',path:'docs/'+f+'.md'}));
+  } else if(pillar===22){ // Testing Intelligence (P23)
+    files.push({folder:true,name:'docs'});
+    ['91_testing_strategy','92_coverage_design','93_e2e_test_architecture','94_performance_testing'].forEach(f=>
+      files.push({name:'  '+f+'.md',path:'docs/'+f+'.md'}));
   }
   // Common files
   files.push({name:'───────────',path:''});
@@ -460,7 +464,8 @@ function buildFileTree(){
    '36_test_strategy','37_bug_prevention','38_business_model',
    '82_architecture_integrity_check',
    '83_api_design_principles','84_openapi_specification','85_api_security_checklist','86_api_testing_strategy',
-   '87_database_design_principles','88_query_optimization_guide','89_migration_strategy','90_backup_disaster_recovery'].forEach(f=>
+   '87_database_design_principles','88_query_optimization_guide','89_migration_strategy','90_backup_disaster_recovery',
+   '91_testing_strategy','92_coverage_design','93_e2e_test_architecture','94_performance_testing'].forEach(f=>
     files.push({name:'  '+f+'.md',path:'docs/'+f+'.md'}));
   files.push({name:'───────────',path:''});
   ['README.md','.gitignore','package.json','LICENSE'].forEach(f=>files.push({name:f,path:f}));

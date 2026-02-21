@@ -1,4 +1,4 @@
-/* ═══ FILE GENERATION ENGINE — 20 PILLARS ═══ */
+/* ═══ FILE GENERATION ENGINE — 23 PILLARS ═══ */
 function generateAll(){
   const _be=S.answers.backend||'';
   const _minKeys=(/なし|None|static/i.test(_be))?['frontend','backend']:['frontend','backend','database'];
@@ -47,10 +47,10 @@ function doGenerate(lang){
   addMsg('bot',S.lang==='ja'?'🔨 ファイルを生成中...':'🔨 Generating files...');
 
   // Smart loading UI (HCD: ⑤感情体験 ③認知負荷)
-  const pillarIcons=['📋','🐳','🔌','🤖','✅','🗺️','🎨','🔍','💡','🔒','📊','⚙️','🔮','🧬','🧩','🔧','🏢','🚀','🌐','🗄️','📄','📦'];
-  const pillarNames=_j?['SDD','DevContainer','MCP','AIルール','品質','ロードマップ','デザイン','リバース','実装','セキュリティ','戦略','運用','未来','開発IQ','ゲノム','Prompt Ops','Enterprise','CI/CD','API','DB','仕様書','共通']:['SDD','DevContainer','MCP','AI Rules','Quality','Roadmap','Design','Reverse','Impl','Security','Strategy','Ops','Future','Dev IQ','Genome','Prompt Ops','Enterprise','CI/CD','API','DB','Docs','Common'];
+  const pillarIcons=['📋','🐳','🔌','🤖','✅','🗺️','🎨','🔍','💡','🔒','📊','⚙️','🔮','🧬','🧩','🔧','🏢','🚀','🌐','🗄️','📄','📦','🧪'];
+  const pillarNames=_j?['SDD','DevContainer','MCP','AIルール','品質','ロードマップ','デザイン','リバース','実装','セキュリティ','戦略','運用','未来','開発IQ','ゲノム','Prompt Ops','Enterprise','CI/CD','API','DB','仕様書','共通','テスト']:['SDD','DevContainer','MCP','AI Rules','Quality','Roadmap','Design','Reverse','Impl','Security','Strategy','Ops','Future','Dev IQ','Genome','Prompt Ops','Enterprise','CI/CD','API','DB','Docs','Common','Testing'];
   let pillarGrid='<div class="gen-pillar-grid">';
-  for(let i=0;i<22;i++){
+  for(let i=0;i<23;i++){
     pillarGrid+=`<div class="gen-pillar-card" id="genPillar${i}" data-status="pending">
       <div class="gen-pillar-icon">${pillarIcons[i]}</div>
       <div class="gen-pillar-name">${pillarNames[i]}</div>
@@ -93,6 +93,7 @@ function doGenerate(lang){
     {fn:()=>genPillar20_CICDIntelligence(a,pn),lbl:_j?'柱⑳ CI/CDインテリジェンス':'Pillar ⑳ CI/CD Intelligence',err:'P20-CICD'},
     {fn:()=>genPillar21_APIIntelligence(a,pn),lbl:_j?'柱㉑ APIインテリジェンス':'Pillar ㉑ API Intelligence',err:'P21-API'},
     {fn:()=>genPillar22_DatabaseIntelligence(a,pn),lbl:_j?'柱㉒ DBインテリジェンス':'Pillar ㉒ DB Intelligence',err:'P22-DB'},
+    {fn:()=>genPillar23_TestingIntelligence(a,pn),lbl:_j?'柱㉓ テストインテリジェンス':'Pillar ㉓ Testing Intelligence',err:'P23-Test'},
     {fn:()=>genDocs21(a,pn),lbl:_j?'仕様書28種':'28 Spec Docs',err:'Docs'},
     {fn:()=>genCommonFiles(a,pn),lbl:_j?'共通ファイル':'Common Files',err:'Common'},
   ];

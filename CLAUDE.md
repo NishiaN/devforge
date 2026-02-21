@@ -6,8 +6,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 # DevForge v9.6.0
 
-**AI Development OS** — 57 JS modules in `src/` → single `devforge-v9.html` (~2249KB / 3000KB limit).
-Generates **143+ files** across **22 pillars** from a wizard-driven Q&A session.
+**AI Development OS** — 58 JS modules in `src/` → single `devforge-v9.html` (~2281KB / 3000KB limit).
+Generates **147+ files** across **23 pillars** from a wizard-driven Q&A session.
 
 ## Documentation Map
 
@@ -20,7 +20,7 @@ Generates **143+ files** across **22 pillars** from a wizard-driven Q&A session.
 ```bash
 node build.js                          # → devforge-v9.html (~2148KB, limit 3000KB)
 node build.js --no-minify              # debug (skip minification)
-npm test                               # 847 tests, all passing
+npm test                               # 866 tests, all passing
 node --test test/gen-quality.test.js   # single test file
 npm run dev                            # build + live-server :3000
 npm run check                          # syntax-check extracted JS
@@ -161,17 +161,17 @@ After adding: update header comment totals, add tests to `test/compat.test.js`, 
 | Data/coverage | data-coverage, presets, field-presets | ~62 |
 | Security/compat | security, compat (+7 synergy) | ~108 |
 | Pillars (P14-P20+skill) | ops, future, deviq, promptgenome, promptops, enterprise, cicd, skill-level | ~184 |
-| Gen quality | gen-quality (Suites 1-17, 120 tests) | ~121 |
+| Gen quality | gen-quality (Suites 1-18, 139 tests) | ~140 |
 | Preset matching | phase-n (N-1〜N-9 + G-1〜G-6, 60 tests) | ~60 |
 | Other | i18n, state, techdb | ~23 |
 
-**Total: 847 tests** | Test harness pattern: `eval(fs.readFileSync(...))` to load src files; global `S` mock at top.
+**Total: 866 tests** | Test harness pattern: `eval(fs.readFileSync(...))` to load src files; global `S` mock at top.
 
 **When adding domains**, update: `test/data-coverage.test.js` (4 arrays), `test/gen-coherence.test.js`, `test/ops.test.js`.
 
 ## Generated Output
 
-136+ files. Conditional extras: `skills/` (+4, when ai_auto≠none), `business_model.md` (+1, when payment≠none), enterprise docs (+4, for SaaS-like domains), P19 skips 20/32 domains.
+147+ files. Conditional extras: `skills/` (+4, when ai_auto≠none), `business_model.md` (+1, when payment≠none), enterprise docs (+4, for SaaS-like domains), P19 skips 20/32 domains.
 
 `docs/82_architecture_integrity_check.md` — always generated; scores ORM/Auth/CORS/async/soft-delete integrity (10.0 scale).
 

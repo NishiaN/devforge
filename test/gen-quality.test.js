@@ -59,6 +59,7 @@ eval(fs.readFileSync('src/generators/p19-enterprise.js','utf-8'));
 eval(fs.readFileSync('src/generators/p20-cicd.js','utf-8'));
 eval(fs.readFileSync('src/generators/p21-api.js','utf-8'));
 eval(fs.readFileSync('src/generators/p22-database.js','utf-8'));
+eval(fs.readFileSync('src/generators/p23-testing.js','utf-8'));
 
 /* ═══ Generation helpers ═══ */
 
@@ -77,7 +78,7 @@ function gRoadmap(answers, lang) {
   return S.files;
 }
 
-/** Full 22-pillar generation (for E2E token and file count tests) */
+/** Full 23-pillar generation (for E2E token and file count tests) */
 function gFull(answers, lang, skill) {
   S.files={}; S.genLang=lang||'ja'; S.skill=skill||'intermediate';
   genPillar1_SDD(answers,'QTest');
@@ -102,6 +103,7 @@ function gFull(answers, lang, skill) {
   genPillar20_CICDIntelligence(answers,'QTest');
   genPillar21_APIIntelligence(answers,'QTest');
   genPillar22_DatabaseIntelligence(answers,'QTest');
+  genPillar23_TestingIntelligence(answers,'QTest');
   return Object.assign({},S.files);
 }
 
@@ -677,13 +679,13 @@ describe('Q7: domain-specific KPI fallback in constitution §3', () => {
    ════════════════════════════════════════════════════════════════ */
 describe('Q8: Full E2E generation — file count, tokens, 25 vs 11 delta', () => {
 
-  it('A25 full generation: file count in 108-150 range', () => {
+  it('A25 full generation: file count in 108-158 range', () => {
     const f = gFull(A25);
     const count = Object.keys(f).length;
-    assert.ok(count >= 108 && count <= 150, `A25 full gen file count should be 108-150, got ${count}`);
+    assert.ok(count >= 108 && count <= 158, `A25 full gen file count should be 108-158, got ${count}`);
   });
 
-  it('A25 full generation: total tokens ≥ 14000 (rich content across 22 pillars)', () => {
+  it('A25 full generation: total tokens ≥ 14000 (rich content across 23 pillars)', () => {
     const f = gFull(A25);
     const total = Object.values(f).reduce((s,v)=>s+tokens(v),0);
     assert.ok(total >= 14000, `A25 total tokens should be ≥14000, got ${total}`);
@@ -1523,6 +1525,166 @@ describe('Suite 17: Pillar ㉒ DB Intelligence', () => {
     ['docs/87_database_design_principles.md','docs/88_query_optimization_guide.md',
      'docs/89_migration_strategy.md','docs/90_backup_disaster_recovery.md'].forEach(p => {
       assert.ok(f[p], p+' must be generated');
+    });
+  });
+});
+
+/* ══════════════════════════════════════════════════════════════════
+   Suite 18 — Pillar ㉓ Testing Intelligence (docs/91-94)
+   ════════════════════════════════════════════════════════════════ */
+
+/** Run only P23 Testing Intelligence */
+function gTest(answers, lang) {
+  S.files={}; S.genLang=lang||'ja'; S.skill='intermediate';
+  genPillar23_TestingIntelligence(answers,'QTest');
+  return Object.assign({},S.files);
+}
+
+const testAnswers = Object.assign({}, A25, {
+  backend: 'Next.js (App Router) + tRPC',
+  frontend: 'React / Next.js',
+  orm: 'Prisma ORM',
+  database: 'PostgreSQL (Neon)',
+  mobile: 'なし',
+  auth: 'NextAuth.js / Auth.js',
+});
+
+const pyTestAnswers = Object.assign({}, A25, {
+  backend: 'Python / FastAPI',
+  frontend: 'React / Next.js',
+  orm: 'SQLAlchemy',
+  database: 'PostgreSQL (Neon)',
+  mobile: 'なし',
+  auth: 'JWT (カスタム実装)',
+});
+
+const mobileTestAnswers = Object.assign({}, A25, {
+  backend: 'Supabase',
+  frontend: 'React / Next.js',
+  orm: '',
+  database: 'Supabase Database',
+  mobile: 'Expo (React Native)',
+  auth: 'Supabase Auth',
+});
+
+describe('Suite 18: Pillar ㉓ Testing Intelligence', () => {
+
+  // ── docs/91 Testing Strategy ──
+  it('generates docs/91_testing_strategy.md', () => {
+    const f = gTest(testAnswers);
+    assert.ok(f['docs/91_testing_strategy.md'], 'docs/91 must be generated');
+  });
+
+  it('docs/91 contains test pyramid', () => {
+    const f = gTest(testAnswers);
+    const doc = f['docs/91_testing_strategy.md'] || '';
+    assert.ok(doc.includes('ピラミッド') || doc.includes('Pyramid') || doc.includes('Unit') || doc.includes('単体'), 'docs/91 must contain test pyramid concept');
+  });
+
+  it('docs/91 Next.js: contains Jest or Vitest', () => {
+    const f = gTest(testAnswers);
+    const doc = f['docs/91_testing_strategy.md'] || '';
+    assert.ok(doc.includes('Jest') || doc.includes('Vitest'), 'docs/91 Next.js must reference Jest or Vitest');
+  });
+
+  it('docs/91 Python: contains pytest', () => {
+    const f = gTest(pyTestAnswers);
+    const doc = f['docs/91_testing_strategy.md'] || '';
+    assert.ok(doc.includes('pytest'), 'docs/91 Python must reference pytest');
+  });
+
+  it('docs/91 EN generation works', () => {
+    const f = gTest(testAnswers, 'en');
+    const doc = f['docs/91_testing_strategy.md'] || '';
+    assert.ok(doc.includes('Testing Strategy') || doc.includes('Test Strategy'), 'docs/91 EN must have English title');
+  });
+
+  // ── docs/92 Coverage Design ──
+  it('generates docs/92_coverage_design.md', () => {
+    const f = gTest(testAnswers);
+    assert.ok(f['docs/92_coverage_design.md'], 'docs/92 must be generated');
+  });
+
+  it('docs/92 contains coverage targets', () => {
+    const f = gTest(testAnswers);
+    const doc = f['docs/92_coverage_design.md'] || '';
+    assert.ok(doc.includes('80') || doc.includes('カバレッジ') || doc.includes('coverage') || doc.includes('Coverage'), 'docs/92 must contain coverage target');
+  });
+
+  it('docs/92 Node: references Istanbul or V8', () => {
+    const f = gTest(testAnswers);
+    const doc = f['docs/92_coverage_design.md'] || '';
+    assert.ok(doc.includes('Istanbul') || doc.includes('V8') || doc.includes('c8') || doc.includes('nyc'), 'docs/92 Node must reference Istanbul/V8 coverage tool');
+  });
+
+  it('docs/92 Python: references pytest-cov', () => {
+    const f = gTest(pyTestAnswers);
+    const doc = f['docs/92_coverage_design.md'] || '';
+    assert.ok(doc.includes('pytest-cov') || doc.includes('coverage.py'), 'docs/92 Python must reference pytest-cov');
+  });
+
+  // ── docs/93 E2E Test Architecture ──
+  it('generates docs/93_e2e_test_architecture.md', () => {
+    const f = gTest(testAnswers);
+    assert.ok(f['docs/93_e2e_test_architecture.md'], 'docs/93 must be generated');
+  });
+
+  it('docs/93 contains Playwright', () => {
+    const f = gTest(testAnswers);
+    const doc = f['docs/93_e2e_test_architecture.md'] || '';
+    assert.ok(doc.includes('Playwright'), 'docs/93 must reference Playwright');
+  });
+
+  it('docs/93 mobile: references Detox or Maestro', () => {
+    const f = gTest(mobileTestAnswers);
+    const doc = f['docs/93_e2e_test_architecture.md'] || '';
+    assert.ok(doc.includes('Detox') || doc.includes('Maestro'), 'docs/93 mobile must reference Detox or Maestro');
+  });
+
+  it('docs/93 EN generation works', () => {
+    const f = gTest(testAnswers, 'en');
+    const doc = f['docs/93_e2e_test_architecture.md'] || '';
+    assert.ok(doc.includes('E2E') || doc.includes('End-to-End'), 'docs/93 EN must have E2E reference');
+  });
+
+  // ── docs/94 Performance Testing ──
+  it('generates docs/94_performance_testing.md', () => {
+    const f = gTest(testAnswers);
+    assert.ok(f['docs/94_performance_testing.md'], 'docs/94 must be generated');
+  });
+
+  it('docs/94 contains Core Web Vitals', () => {
+    const f = gTest(testAnswers);
+    const doc = f['docs/94_performance_testing.md'] || '';
+    assert.ok(doc.includes('LCP') || doc.includes('Core Web Vitals') || doc.includes('Web Vitals'), 'docs/94 must reference Core Web Vitals');
+  });
+
+  it('docs/94 Node: references k6', () => {
+    const f = gTest(testAnswers);
+    const doc = f['docs/94_performance_testing.md'] || '';
+    assert.ok(doc.includes('k6'), 'docs/94 Node must reference k6 load testing');
+  });
+
+  it('docs/94 Python: references Locust', () => {
+    const f = gTest(pyTestAnswers);
+    const doc = f['docs/94_performance_testing.md'] || '';
+    assert.ok(doc.includes('Locust') || doc.includes('locust'), 'docs/94 Python must reference Locust');
+  });
+
+  // ── All 4 files present ──
+  it('all 4 docs/91-94 files are generated for standard preset', () => {
+    const f = gTest(testAnswers);
+    ['docs/91_testing_strategy.md','docs/92_coverage_design.md',
+     'docs/93_e2e_test_architecture.md','docs/94_performance_testing.md'].forEach(p => {
+      assert.ok(f[p], p+' must be generated');
+    });
+  });
+
+  it('all 4 docs/91-94 files EN generation works', () => {
+    const f = gTest(testAnswers, 'en');
+    ['docs/91_testing_strategy.md','docs/92_coverage_design.md',
+     'docs/93_e2e_test_architecture.md','docs/94_performance_testing.md'].forEach(p => {
+      assert.ok(f[p], p+' EN '+p+' must be generated');
     });
   });
 });
