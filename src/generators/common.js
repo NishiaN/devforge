@@ -2492,6 +2492,23 @@ function postGenerationAudit(files,a){
     findings.push({level:'warn',msg:G?'BaaS構成なのにPrisma依存があります':'BaaS stack but Prisma dependencies present'});
   }
 
+  // C11: GraphQL backend should mention DataLoader in API docs
+  if(be.includes('GraphQL')&&files['docs/83_api_design_principles.md']){
+    const apiDoc=files['docs/83_api_design_principles.md']||'';
+    if(!apiDoc.includes('DataLoader')&&!apiDoc.includes('dataloader')){
+      findings.push({level:'warn',msg:G?'GraphQL使用ですがdocs/83にDataLoaderの記述がありません':'GraphQL backend: DataLoader not mentioned in docs/83'});
+    }
+  }
+
+  // C12: ORM consistency between docs/87 and resolveORM result
+  if(files['docs/87_database_design_principles.md']){
+    const dbDoc=files['docs/87_database_design_principles.md']||'';
+    const ormR=resolveORM(a);
+    if(!ormR.isBaaS&&!dbDoc.includes(ormR.name)){
+      findings.push({level:'warn',msg:G?'docs/87のORM記述が選択ORM ('+ormR.name+') と一致しない可能性があります':'docs/87 ORM content may not match selected ORM ('+ormR.name+')'});
+    }
+  }
+
   return findings;
 }
 

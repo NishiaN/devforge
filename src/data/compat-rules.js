@@ -1,4 +1,4 @@
-/* ═══ STACK COMPATIBILITY & SEMANTIC CONSISTENCY RULES — 63 rules (ERROR×13 + WARN×39 + INFO×11) ═══ */
+/* ═══ STACK COMPATIBILITY & SEMANTIC CONSISTENCY RULES — 65 rules (ERROR×13 + WARN×40 + INFO×12) ═══ */
 const COMPAT_RULES=[
   // ── FE ↔ Mobile (2 ERROR) ──
   {id:'fe-mob-expo',p:['frontend','mobile'],lv:'error',
@@ -366,6 +366,20 @@ const COMPAT_RULES=[
    ja:'Patient/Transaction等の機密情報を扱うエンティティがありますが、認証が設定されていません。個人情報保護のため認証の導入を推奨します',
    en:'Sensitive entities (Patient/Transaction/etc.) detected without authentication. Authentication is recommended for privacy protection',
    fix:{f:'auth',s:'Supabase Auth'}},
+  // ── API品質 (2 WARN) ──
+  {id:'api-graphql-no-dataloader',p:['backend'],lv:'warn',
+   t:a=>inc(a.backend,'GraphQL'),
+   ja:'GraphQL使用時はDataLoaderを導入してN+1問題を防いでください。facebook/dataloaderまたはDataLoader for NestJSを推奨',
+   en:'GraphQL detected: implement DataLoader to prevent N+1 queries. Recommended: facebook/dataloader or NestJS DataLoader'},
+  {id:'api-rest-no-ratelimit',p:['backend'],lv:'info',
+   t:a=>{
+     if(!a.backend)return false;
+     const isREST=!inc(a.backend,'GraphQL')&&!inc(a.backend,'Supabase')&&!inc(a.backend,'Firebase')&&!inc(a.backend,'Convex');
+     const hasAPI=inc(a.backend,'Express')||inc(a.backend,'Fastify')||inc(a.backend,'NestJS')||inc(a.backend,'Hono')||inc(a.backend,'FastAPI')||inc(a.backend,'Django')||inc(a.backend,'Spring');
+     return isREST&&hasAPI;
+   },
+   ja:'REST APIにはレート制限の実装を推奨します。express-rate-limit / slowDown (Node) / slowapi (Python) / bucket4j (Spring)',
+   en:'REST API: implement rate limiting to prevent abuse. Recommended: express-rate-limit (Node) / slowapi (Python) / bucket4j (Spring)'},
 ];
 // helpers
 function inc(v,k){return v&&typeof v==='string'&&v.indexOf(k)!==-1;}

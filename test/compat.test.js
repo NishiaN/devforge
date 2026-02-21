@@ -1,4 +1,4 @@
-// Compat rules functional test (63 rules: 13 ERROR + 39 WARN + 11 INFO)
+// Compat rules functional test (65 rules: 13 ERROR + 40 WARN + 12 INFO)
 const assert=require('node:assert/strict');
 const S={lang:'ja',skill:'pro'};
 eval(require('fs').readFileSync('src/data/compat-rules.js','utf-8'));
@@ -31,7 +31,7 @@ const tests=[
   {name:'Saleor+Express=WARN',a:{backend:'Node.js + Express',payment:'Saleor (Python EC)'},expect:'warn'},
   // OK cases (should have no issues)
   {name:'React+Expo=OK',a:{frontend:'React + Next.js',mobile:'Expo (React Native)'},expect:'none'},
-  {name:'Express+Prisma=OK',a:{backend:'Node.js + Express',orm:'Prisma'},expect:'none'},
+  {name:'Express+Prisma=OK',a:{backend:'Node.js + Express',orm:'Prisma'},expect:'info'},
   {name:'Next+Vercel=OK',a:{frontend:'React + Next.js',deploy:'Vercel'},expect:'none'},
   {name:'Supabase+SupaDB=OK',a:{backend:'Supabase',database:'Supabase (PostgreSQL)'},expect:'none'},
   {name:'Firebase+Firestore=OK',a:{backend:'Firebase',database:'Firebase Firestore'},expect:'none'},
@@ -91,7 +91,7 @@ const tests=[
   {name:'Django+Netlify=WARN',a:{backend:'Python + Django',deploy:'Netlify'},expect:'warn',id:'be-dep-heavy-netlify'},
   {name:'Spring+Netlify=WARN',a:{backend:'Java + Spring Boot',deploy:'Netlify'},expect:'warn',id:'be-dep-heavy-netlify'},
   {name:'NestJS+Netlify=WARN',a:{backend:'Node.js + NestJS',deploy:'Netlify'},expect:'warn',id:'be-dep-nest-netlify'},
-  {name:'Express+Netlify=OK',a:{backend:'Node.js + Express',deploy:'Netlify'},expect:'none'},
+  {name:'Express+Netlify=OK',a:{backend:'Node.js + Express',deploy:'Netlify'},expect:'info'},
   // Flutter + Firebase synergy
   {name:'Flutter+Firebase=INFO',a:{mobile:'Flutter',backend:'Firebase'},expect:'info',id:'mob-flutter-firebase'},
   {name:'Flutter+Supabase=INFO',a:{mobile:'Flutter',backend:'Supabase'},expect:'info',id:'mob-flutter-supabase'},
@@ -104,12 +104,18 @@ const tests=[
   {name:'Python+Kysely=ERROR',a:{backend:'Python + FastAPI',orm:'Kysely'},expect:'error',id:'be-orm-py-prisma'},
   {name:'Java+Kysely=ERROR',a:{backend:'Java + Spring Boot',orm:'Kysely'},expect:'error',id:'be-orm-java-prisma'},
   {name:'Go+Kysely=ERROR',a:{backend:'Go + Gin',orm:'Kysely'},expect:'error',id:'be-orm-java-prisma'},
-  {name:'Express+Kysely=OK',a:{backend:'Node.js + Express',orm:'Kysely'},expect:'none'},
+  {name:'Express+Kysely=OK',a:{backend:'Node.js + Express',orm:'Kysely'},expect:'info'},
   {name:'Kysely+Firestore=ERROR',a:{orm:'Kysely',database:'Firebase Firestore'},expect:'error',id:'orm-kysely-fs'},
   {name:'Kysely+MongoDB=ERROR',a:{orm:'Kysely',database:'MongoDB'},expect:'error',id:'orm-kysely-mongo'},
   {name:'Kysely+PostgreSQL=OK',a:{orm:'Kysely',database:'PostgreSQL'},expect:'none'},
   {name:'Expo+Kysely=WARN',a:{mobile:'Expo (React Native)',orm:'Kysely'},expect:'warn',id:'mob-expo-kysely'},
   {name:'Flutter+Kysely=noWARN',a:{mobile:'Flutter',orm:'Kysely'},expect:'none'},
+  // API品質ルール
+  {name:'GraphQL=DataLoaderWARN',a:{backend:'Express.js + Node.js + GraphQL'},expect:'warn',id:'api-graphql-no-dataloader'},
+  {name:'Supabase=noDataLoaderWARN',a:{backend:'Supabase'},expect:'none',id:'api-graphql-no-dataloader'},
+  {name:'FastAPI=RateLimitINFO',a:{backend:'FastAPI (Python)'},expect:'info',id:'api-rest-no-ratelimit'},
+  {name:'NestJS=RateLimitINFO',a:{backend:'Node.js + NestJS'},expect:'info',id:'api-rest-no-ratelimit'},
+  {name:'Supabase=noRateLimitINFO',a:{backend:'Supabase'},expect:'none',id:'api-rest-no-ratelimit'},
 ];
 
 let pass=0,fail=0;
