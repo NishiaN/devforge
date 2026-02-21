@@ -1080,7 +1080,7 @@ const TECH_DB=[
 {name:'Markdown',cat:'lang',sub:'markup',req:'required',level:'all',weeks:'1d'},
 {name:'JSON',cat:'lang',sub:'data',req:'required',level:'all',weeks:'1d'},
 {name:'YAML',cat:'lang',sub:'config',req:'recommended',level:'int',weeks:'1d'},
-// ── Additional Frontend (8) ──
+// ── Additional Frontend (12) ──
 {name:'Bootstrap',cat:'front',sub:'css-fw',req:'optional',level:'legacy'},
 {name:'Radix UI',cat:'front',sub:'ui',req:'optional',level:'a11y'},
 {name:'Framer Motion',cat:'front',sub:'animation',req:'optional',level:'pro'},
@@ -1089,17 +1089,21 @@ const TECH_DB=[
 {name:'Figma',cat:'front',sub:'design',req:'recommended',level:'int'},
 {name:'Chrome DevTools',cat:'front',sub:'debug',req:'required',level:'all'},
 {name:'React DevTools',cat:'front',sub:'debug',req:'required',level:'react'},
+{name:'TanStack Router',cat:'front',sub:'routing',req:'recommended',level:'int'},
+{name:'TanStack Start',cat:'front',sub:'meta-fw',req:'optional',level:'int'},
+{name:'Biome',cat:'front',sub:'lint',req:'optional',level:'int'},
+{name:'Base UI',cat:'front',sub:'ui',req:'optional',level:'int'},
 // ── Additional Mobile (9) ──
 {name:'EAS Workflows',cat:'mobile',sub:'ci',req:'recommended',level:'pro'},
 {name:'React Native Gesture Handler',cat:'mobile',sub:'gesture',req:'recommended',level:'int'},
 {name:'Detox',cat:'mobile',sub:'e2e',req:'optional',level:'pro'},
 {name:'React Native DevTools',cat:'mobile',sub:'debug',req:'required',level:'int'},
-{name:'Hermes V1',cat:'mobile',sub:'engine',req:'required',level:'all'},
+{name:'Hermes',cat:'mobile',sub:'engine',req:'required',level:'all'},
 {name:'Expo Modules API',cat:'mobile',sub:'native',req:'optional',level:'pro'},
 {name:'Config Plugins',cat:'mobile',sub:'native-config',req:'recommended',level:'int'},
 {name:'Swift/Kotlin (Native)',cat:'mobile',sub:'native-dev',req:'optional',level:'pro'},
 {name:'Expo Go',cat:'mobile',sub:'dev-tool',req:'recommended',level:'beg'},
-// ── Additional Backend (10) ──
+// ── Additional Backend (15) ──
 {name:'Flask',cat:'back',sub:'fw',req:'optional',level:'py'},
 {name:'Gin',cat:'back',sub:'fw',req:'optional',level:'go'},
 {name:'SQLite',cat:'back',sub:'db',req:'optional',level:'embed'},
@@ -1110,17 +1114,23 @@ const TECH_DB=[
 {name:'Bull/BullMQ',cat:'back',sub:'queue',req:'optional',level:'int'},
 {name:'Postman',cat:'back',sub:'api-test',req:'recommended',level:'int'},
 {name:'Jest / Pytest',cat:'back',sub:'test',req:'recommended',level:'int'},
-// ── Additional BaaS (3) ──
+{name:'Bun',cat:'back',sub:'runtime',req:'optional',level:'int'},
+{name:'Deno',cat:'back',sub:'runtime',req:'optional',level:'int'},
+{name:'Better Auth',cat:'back',sub:'auth',req:'optional',level:'int'},
+{name:'Kysely',cat:'back',sub:'orm',req:'optional',level:'int'},
+{name:'Valkey',cat:'back',sub:'cache',req:'optional',level:'int'},
+// ── Additional BaaS (4) ──
 {name:'AWS Lambda',cat:'baas',sub:'serverless',req:'optional',level:'aws'},
 {name:'AWS Amplify',cat:'baas',sub:'full',req:'optional',level:'aws'},
 {name:'Convex',cat:'baas',sub:'reactive',req:'optional',level:'rt'},
+{name:'Turso',cat:'baas',sub:'db',req:'optional',level:'edge'},
 // ── Additional Payment/CMS/EC (5) ──
 {name:'Prismic',cat:'payment',sub:'cms',req:'optional',level:'int',price:'free-100'},
 {name:'Hygraph',cat:'payment',sub:'cms',req:'optional',level:'pro',price:'free-399'},
 {name:'Storyblok',cat:'payment',sub:'cms',req:'optional',level:'int',price:'free-105'},
 {name:'Vendure',cat:'payment',sub:'ec',req:'optional',level:'pro',price:'free-oss'},
 {name:'WooCommerce',cat:'payment',sub:'ec',req:'optional',level:'beg',price:'free'},
-// ── Additional DevOps (9) ──
+// ── Additional DevOps (13) ──
 {name:'Fly.io',cat:'devops',sub:'paas',req:'optional',level:'int'},
 {name:'Netlify',cat:'devops',sub:'paas',req:'optional',level:'static'},
 {name:'GCP (Cloud Run)',cat:'devops',sub:'iaas',req:'optional',level:'pro'},
@@ -1129,7 +1139,11 @@ const TECH_DB=[
 {name:'Grafana',cat:'devops',sub:'viz',req:'optional',level:'pro'},
 {name:'Let\'s Encrypt',cat:'devops',sub:'ssl',req:'recommended',level:'prod'},
 {name:'Cloudflare',cat:'devops',sub:'cdn',req:'optional',level:'pro'},
-// ── Additional AI Tools (10) ──
+{name:'Pulumi',cat:'devops',sub:'iac',req:'optional',level:'pro'},
+{name:'SST',cat:'devops',sub:'iac',req:'optional',level:'pro'},
+{name:'Coolify',cat:'devops',sub:'paas',req:'optional',level:'int'},
+{name:'Azure',cat:'devops',sub:'iaas',req:'optional',level:'pro'},
+// ── Additional AI Tools (13) ──
 {name:'Claude (Chat)',cat:'ai',sub:'chat',req:'recommended',level:'all',price:'$20'},
 {name:'ChatGPT',cat:'ai',sub:'chat',req:'optional',level:'all',price:'$20'},
 {name:'Gemini',cat:'ai',sub:'chat',req:'optional',level:'all',price:'free-20'},
@@ -1140,7 +1154,7 @@ const TECH_DB=[
 {name:'Context7',cat:'ai',sub:'mcp-server',req:'recommended',level:'int'},
 {name:'Playwright MCP',cat:'ai',sub:'test-mcp',req:'recommended',level:'int'},
 {name:'VS Code',cat:'ai',sub:'editor',req:'required',level:'all',price:'free'},
-// ── Additional AI Autonomous (10) ──
+// ── Additional AI Autonomous (13) ──
 {name:'Zencoder/Zenflow',cat:'ai_auto',sub:'spec-agent',req:'optional',level:'pro',price:'paid'},
 {name:'Kilo Code',cat:'ai_auto',sub:'precision',req:'optional',level:'pro',price:'paid'},
 {name:'Continue.dev',cat:'ai_auto',sub:'oss',req:'optional',level:'int',price:'free'},
@@ -1160,8 +1174,14 @@ const TECH_DB=[
 {name:'Gemini Code Assist',cat:'ai',sub:'ext',req:'optional',level:'int',price:'free-tier'},
 {name:'JetBrains Junie',cat:'ai',sub:'ext',req:'optional',level:'int',price:'bundled'},
 {name:'Tabnine',cat:'ai',sub:'ext',req:'optional',level:'int',price:'free-39'},
+{name:'Trae',cat:'ai',sub:'ide',req:'optional',level:'int',price:'free'},
+{name:'Copilot Workspace',cat:'ai',sub:'agent',req:'optional',level:'pro'},
+{name:'Serena MCP',cat:'ai',sub:'mcp-server',req:'optional',level:'pro'},
 {name:'Qwen3-Coder',cat:'ai_auto',sub:'oss-model',req:'optional',level:'pro',price:'free-oss'},
 {name:'DeepSeek V3.2',cat:'ai_auto',sub:'oss-model',req:'optional',level:'pro',price:'free-oss'},
+{name:'Poolside',cat:'ai_auto',sub:'autonomous',req:'optional',level:'pro',price:'paid'},
+{name:'Cursor Composer',cat:'ai_auto',sub:'agent',req:'optional',level:'int'},
+{name:'OpenHands',cat:'ai_auto',sub:'oss',req:'optional',level:'pro',price:'free-oss'},
 // ── Design & Methodology (12) ──
 {name:'TDD',cat:'method',sub:'methodology',req:'recommended',level:'int'},
 {name:'BDD',cat:'method',sub:'methodology',req:'recommended',level:'int'},
@@ -1184,14 +1204,16 @@ const TECH_DB=[
 {name:'Sentry',cat:'test',sub:'monitor',req:'recommended',level:'int',price:'free-26'},
 {name:'SonarQube',cat:'test',sub:'quality',req:'optional',level:'pro'},
 {name:'Codecov',cat:'test',sub:'coverage',req:'optional',level:'int'},
-// ── API & Communication (6) ──
+// ── API & Communication (8) ──
 {name:'tRPC',cat:'api',sub:'typesafe',req:'optional',level:'int'},
 {name:'gRPC',cat:'api',sub:'rpc',req:'optional',level:'pro'},
 {name:'Zod',cat:'api',sub:'validation',req:'recommended',level:'int'},
 {name:'Axios',cat:'api',sub:'http',req:'optional',level:'int'},
 {name:'WebSocket',cat:'api',sub:'realtime',req:'optional',level:'int'},
 {name:'Server-Sent Events',cat:'api',sub:'realtime',req:'optional',level:'int'},
-// ── Build & Toolchain (7) ──
+{name:'Hono RPC',cat:'api',sub:'typesafe',req:'optional',level:'int'},
+{name:'Valibot',cat:'api',sub:'validation',req:'optional',level:'int'},
+// ── Build & Toolchain (9) ──
 {name:'Turbopack',cat:'build',sub:'bundler',req:'optional',level:'next'},
 {name:'esbuild',cat:'build',sub:'bundler',req:'optional',level:'pro'},
 {name:'SWC',cat:'build',sub:'compiler',req:'recommended',level:'int'},
@@ -1199,20 +1221,24 @@ const TECH_DB=[
 {name:'Turborepo',cat:'build',sub:'monorepo',req:'optional',level:'pro'},
 {name:'Changesets',cat:'build',sub:'versioning',req:'optional',level:'pro'},
 {name:'WebAssembly (WASI)',cat:'build',sub:'runtime',req:'optional',level:'pro'},
-// ── Data & Analytics (6) ──
+{name:'Bun (pkg mgr)',cat:'build',sub:'pkgmgr',req:'optional',level:'int'},
+{name:'Oxc',cat:'build',sub:'compiler',req:'optional',level:'pro'},
+// ── Data & Analytics (7) ──
 {name:'Drizzle Studio',cat:'data',sub:'gui',req:'optional',level:'int'},
 {name:'Prisma Studio',cat:'data',sub:'gui',req:'recommended',level:'int'},
 {name:'PostHog',cat:'data',sub:'analytics',req:'optional',level:'int',price:'free-tier'},
 {name:'Plausible',cat:'data',sub:'analytics',req:'optional',level:'int',price:'$9〜'},
 {name:'Vercel Analytics',cat:'data',sub:'analytics',req:'recommended',level:'int',price:'free-tier'},
 {name:'OpenTelemetry',cat:'data',sub:'observability',req:'optional',level:'pro'},
-// ── Security (6) ──
+{name:'Tinybird',cat:'data',sub:'analytics',req:'optional',level:'int',price:'free-tier'},
+// ── Security (7) ──
 {name:'Helmet.js',cat:'security',sub:'headers',req:'recommended',level:'int'},
 {name:'CORS',cat:'security',sub:'policy',req:'required',level:'int'},
 {name:'CSP',cat:'security',sub:'policy',req:'recommended',level:'int'},
 {name:'rate-limiter-flexible',cat:'security',sub:'ratelimit',req:'recommended',level:'int'},
 {name:'npm audit',cat:'security',sub:'deps',req:'required',level:'all'},
 {name:'Snyk',cat:'security',sub:'scanning',req:'optional',level:'pro',price:'free-tier'},
+{name:'Arcjet',cat:'security',sub:'protection',req:'optional',level:'int'},
 ];
 const _TECH_COUNT=TECH_DB.length;
 const HELP_DATA={
