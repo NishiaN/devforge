@@ -60,6 +60,7 @@ eval(fs.readFileSync('src/generators/p20-cicd.js','utf-8'));
 eval(fs.readFileSync('src/generators/p21-api.js','utf-8'));
 eval(fs.readFileSync('src/generators/p22-database.js','utf-8'));
 eval(fs.readFileSync('src/generators/p23-testing.js','utf-8'));
+eval(fs.readFileSync('src/generators/p24-aisafety.js','utf-8'));
 
 /* ═══ Generation helpers ═══ */
 
@@ -78,7 +79,7 @@ function gRoadmap(answers, lang) {
   return S.files;
 }
 
-/** Full 23-pillar generation (for E2E token and file count tests) */
+/** Full 24-pillar generation (for E2E token and file count tests) */
 function gFull(answers, lang, skill) {
   S.files={}; S.genLang=lang||'ja'; S.skill=skill||'intermediate';
   genPillar1_SDD(answers,'QTest');
@@ -104,6 +105,7 @@ function gFull(answers, lang, skill) {
   genPillar21_APIIntelligence(answers,'QTest');
   genPillar22_DatabaseIntelligence(answers,'QTest');
   genPillar23_TestingIntelligence(answers,'QTest');
+  genPillar24_AISafety(answers,'QTest');
   return Object.assign({},S.files);
 }
 
@@ -679,13 +681,13 @@ describe('Q7: domain-specific KPI fallback in constitution §3', () => {
    ════════════════════════════════════════════════════════════════ */
 describe('Q8: Full E2E generation — file count, tokens, 25 vs 11 delta', () => {
 
-  it('A25 full generation: file count in 108-158 range', () => {
+  it('A25 full generation: file count in 108-162 range', () => {
     const f = gFull(A25);
     const count = Object.keys(f).length;
-    assert.ok(count >= 108 && count <= 158, `A25 full gen file count should be 108-158, got ${count}`);
+    assert.ok(count >= 108 && count <= 162, `A25 full gen file count should be 108-162, got ${count}`);
   });
 
-  it('A25 full generation: total tokens ≥ 14000 (rich content across 23 pillars)', () => {
+  it('A25 full generation: total tokens ≥ 14000 (rich content across 24 pillars)', () => {
     const f = gFull(A25);
     const total = Object.values(f).reduce((s,v)=>s+tokens(v),0);
     assert.ok(total >= 14000, `A25 total tokens should be ≥14000, got ${total}`);
@@ -1685,6 +1687,157 @@ describe('Suite 18: Pillar ㉓ Testing Intelligence', () => {
     ['docs/91_testing_strategy.md','docs/92_coverage_design.md',
      'docs/93_e2e_test_architecture.md','docs/94_performance_testing.md'].forEach(p => {
       assert.ok(f[p], p+' EN '+p+' must be generated');
+    });
+  });
+});
+
+/* ══════════════════════════════════════════════════════════════════
+   Suite 19 — Pillar ㉔ AI Safety Intelligence (docs/95-98)
+   ════════════════════════════════════════════════════════════════ */
+
+/** Run only P24 AI Safety */
+function gAISafety(answers, lang) {
+  S.files={}; S.genLang=lang||'ja'; S.skill='intermediate';
+  genPillar24_AISafety(answers,'QTest');
+  return Object.assign({},S.files);
+}
+
+const aiAnswers = Object.assign({}, A25, {
+  backend: 'Next.js (App Router) + tRPC',
+  frontend: 'React / Next.js',
+  ai_auto: 'マルチAIエージェント活用',
+  auth: 'NextAuth.js / Auth.js',
+});
+
+const claudeAnswers = Object.assign({}, A25, {
+  backend: 'Python / FastAPI',
+  ai_auto: 'Claude APIを活用した自律エージェント',
+  auth: 'JWT (カスタム実装)',
+});
+
+const noAIAnswers = Object.assign({}, A25, {
+  backend: 'Node.js + Express',
+  ai_auto: 'なし',
+  auth: 'JWT (カスタム実装)',
+});
+
+describe('Suite 19: Pillar ㉔ AI Safety Intelligence', () => {
+
+  // ── docs/95 AI Safety Framework ──
+  it('generates docs/95_ai_safety_framework.md', () => {
+    const f = gAISafety(aiAnswers);
+    assert.ok(f['docs/95_ai_safety_framework.md'], 'docs/95 must be generated');
+  });
+
+  it('docs/95 contains risk categories table', () => {
+    const f = gAISafety(aiAnswers);
+    const doc = f['docs/95_ai_safety_framework.md'] || '';
+    assert.ok(doc.includes('Hallucination') || doc.includes('ハルシネーション'), 'docs/95 must contain hallucination risk');
+  });
+
+  it('docs/95 contains prompt injection risk', () => {
+    const f = gAISafety(aiAnswers);
+    const doc = f['docs/95_ai_safety_framework.md'] || '';
+    assert.ok(doc.includes('Prompt Injection') || doc.includes('プロンプトインジェクション'), 'docs/95 must contain prompt injection');
+  });
+
+  it('docs/95 Claude provider: contains Claude-specific config', () => {
+    const f = gAISafety(claudeAnswers);
+    const doc = f['docs/95_ai_safety_framework.md'] || '';
+    assert.ok(doc.includes('claude') || doc.includes('Claude') || doc.includes('Anthropic'), 'docs/95 Claude must reference Claude/Anthropic');
+  });
+
+  it('docs/95 EN generation works', () => {
+    const f = gAISafety(aiAnswers, 'en');
+    const doc = f['docs/95_ai_safety_framework.md'] || '';
+    assert.ok(doc.includes('AI Safety Framework') || doc.includes('Safety'), 'docs/95 EN must have English title');
+  });
+
+  // ── docs/96 AI Guardrail Implementation ──
+  it('generates docs/96_ai_guardrail_implementation.md', () => {
+    const f = gAISafety(aiAnswers);
+    assert.ok(f['docs/96_ai_guardrail_implementation.md'], 'docs/96 must be generated');
+  });
+
+  it('docs/96 contains 4-layer guardrail architecture', () => {
+    const f = gAISafety(aiAnswers);
+    const doc = f['docs/96_ai_guardrail_implementation.md'] || '';
+    assert.ok(doc.includes('Layer') || doc.includes('レイヤー'), 'docs/96 must contain guardrail layers');
+  });
+
+  it('docs/96 contains input sanitization code', () => {
+    const f = gAISafety(aiAnswers);
+    const doc = f['docs/96_ai_guardrail_implementation.md'] || '';
+    assert.ok(doc.includes('sanitize') || doc.includes('サニタイズ'), 'docs/96 must contain sanitization implementation');
+  });
+
+  it('docs/96 contains rate limiting implementation', () => {
+    const f = gAISafety(aiAnswers);
+    const doc = f['docs/96_ai_guardrail_implementation.md'] || '';
+    assert.ok(doc.includes('ratelimit') || doc.includes('rate-limit') || doc.includes('レート制限'), 'docs/96 must contain rate limiting');
+  });
+
+  // ── docs/97 AI Model Evaluation ──
+  it('generates docs/97_ai_model_evaluation.md', () => {
+    const f = gAISafety(aiAnswers);
+    assert.ok(f['docs/97_ai_model_evaluation.md'], 'docs/97 must be generated');
+  });
+
+  it('docs/97 contains evaluation metrics table', () => {
+    const f = gAISafety(aiAnswers);
+    const doc = f['docs/97_ai_model_evaluation.md'] || '';
+    assert.ok(doc.includes('Hallucination') || doc.includes('Accuracy'), 'docs/97 must contain evaluation metrics');
+  });
+
+  it('docs/97 contains RAGAS hallucination evaluation', () => {
+    const f = gAISafety(aiAnswers);
+    const doc = f['docs/97_ai_model_evaluation.md'] || '';
+    assert.ok(doc.includes('ragas') || doc.includes('RAGAS') || doc.includes('faithfulness'), 'docs/97 must contain RAGAS evaluation');
+  });
+
+  it('docs/97 EN generation works', () => {
+    const f = gAISafety(aiAnswers, 'en');
+    const doc = f['docs/97_ai_model_evaluation.md'] || '';
+    assert.ok(doc.includes('Evaluation') || doc.includes('Model'), 'docs/97 EN must have English content');
+  });
+
+  // ── docs/98 Prompt Injection Defense ──
+  it('generates docs/98_prompt_injection_defense.md', () => {
+    const f = gAISafety(aiAnswers);
+    assert.ok(f['docs/98_prompt_injection_defense.md'], 'docs/98 must be generated');
+  });
+
+  it('docs/98 contains attack patterns', () => {
+    const f = gAISafety(aiAnswers);
+    const doc = f['docs/98_prompt_injection_defense.md'] || '';
+    assert.ok(doc.includes('Direct Injection') || doc.includes('Indirect'), 'docs/98 must contain injection attack patterns');
+  });
+
+  it('docs/98 contains defense checklist', () => {
+    const f = gAISafety(aiAnswers);
+    const doc = f['docs/98_prompt_injection_defense.md'] || '';
+    assert.ok(doc.includes('[ ]') || doc.includes('checklist') || doc.includes('チェックリスト'), 'docs/98 must contain defense checklist');
+  });
+
+  it('docs/98 no-AI: still generates (defensive docs always needed)', () => {
+    const f = gAISafety(noAIAnswers);
+    assert.ok(f['docs/98_prompt_injection_defense.md'], 'docs/98 must be generated even without AI config');
+  });
+
+  // ── All 4 files present ──
+  it('all 4 docs/95-98 files are generated for standard preset', () => {
+    const f = gAISafety(aiAnswers);
+    ['docs/95_ai_safety_framework.md','docs/96_ai_guardrail_implementation.md',
+     'docs/97_ai_model_evaluation.md','docs/98_prompt_injection_defense.md'].forEach(p => {
+      assert.ok(f[p], p+' must be generated');
+    });
+  });
+
+  it('all 4 docs/95-98 files EN generation works', () => {
+    const f = gAISafety(aiAnswers, 'en');
+    ['docs/95_ai_safety_framework.md','docs/96_ai_guardrail_implementation.md',
+     'docs/97_ai_model_evaluation.md','docs/98_prompt_injection_defense.md'].forEach(p => {
+      assert.ok(f[p], p+' EN must be generated');
     });
   });
 });
