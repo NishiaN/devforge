@@ -2612,6 +2612,40 @@ function genArchIntegrityCheck(files,a,compatResults,auditFindings){
       sev:'🟡 INFO',fix:G?'ORMミドルウェアで論理削除フィルタを実装':'Implement soft delete filter in ORM middleware'});
   }
 
+  // C-H: Mobile × E2E フレームワーク適合性
+  const mobile=a.mobile||'';
+  const hasMobileE2E=/Expo|React Native/i.test(mobile)&&!/なし|None/i.test(mobile);
+  if(hasMobileE2E){
+    orangeCount++;
+    rows.push({loc:'answers.mobile',src:G?'アーキテクチャチェック':'Architecture check',
+      issue:G?'Expo/React Native使用時はPlaywrightではなくDetox (ユニット/インテグレーション) またはMaestro (E2E) が必要です':
+             'Expo/React Native requires Detox (unit/integration) or Maestro (E2E) instead of Playwright',
+      sev:'🟠 WARN',fix:G?'docs/93でDetox/Maestroの設定例を確認してください':'See docs/93 for Detox/Maestro configuration examples'});
+  }
+
+  // C-I: 認証付きE2EテストのstorageState設定
+  const auth=a.auth||'';
+  const fe=a.frontend||'';
+  const hasAuthE2E=auth&&!/なし|None/i.test(auth)&&auth!=='';
+  const hasWebFE=/Next\.js|React|Vue|Svelte/i.test(fe);
+  if(hasAuthE2E&&hasWebFE&&!hasMobileE2E){
+    yellowCount++;
+    rows.push({loc:'answers.auth+frontend',src:G?'アーキテクチャチェック':'Architecture check',
+      issue:G?'認証付きE2EテストではPlaywright storageStateを使用してセッションを再利用し、テストの安定性を確保してください':
+             'E2E tests with auth: use Playwright storageState to reuse sessions and prevent flaky login flows',
+      sev:'🟡 INFO',fix:G?'docs/93のstorageState設定例を参照してください':'Refer to storageState examples in docs/93'});
+  }
+
+  // C-J: テストカバレッジ閾値の推奨
+  const hasBackendForCov=!isBaaS&&be&&!/なし|None/i.test(be);
+  if(hasBackendForCov){
+    yellowCount++;
+    rows.push({loc:'.github/workflows/ci.yml',src:G?'アーキテクチャチェック':'Architecture check',
+      issue:G?'CIパイプラインにカバレッジ閾値 (Statement ≥80%, Branch ≥70%) を設定してテスト品質を担保することを推奨します':
+             'Add coverage thresholds (Statement ≥80%, Branch ≥70%) to CI pipeline to enforce test quality',
+      sev:'🟡 INFO',fix:G?'docs/92のカバレッジ閾値設定例を参照してください':'Refer to coverage threshold examples in docs/92'});
+  }
+
   // C-F: MongoDB × Prisma (experimental support warning)
   const db=a.database||'';
   if(/MongoDB|Mongo/i.test(db)&&orm.includes('Prisma')&&!isBaaS){

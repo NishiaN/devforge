@@ -1,4 +1,4 @@
-/* ═══ STACK COMPATIBILITY & SEMANTIC CONSISTENCY RULES — 68 rules (ERROR×13 + WARN×42 + INFO×13) ═══ */
+/* ═══ STACK COMPATIBILITY & SEMANTIC CONSISTENCY RULES — 71 rules (ERROR×13 + WARN×43 + INFO×15) ═══ */
 const COMPAT_RULES=[
   // ── FE ↔ Mobile (2 ERROR) ──
   {id:'fe-mob-expo',p:['frontend','mobile'],lv:'error',
@@ -398,6 +398,24 @@ const COMPAT_RULES=[
    },
    ja:'REST APIにはレート制限の実装を推奨します。express-rate-limit / slowDown (Node) / slowapi (Python) / bucket4j (Spring)',
    en:'REST API: implement rate limiting to prevent abuse. Recommended: express-rate-limit (Node) / slowapi (Python) / bucket4j (Spring)'},
+  // ── テスト品質 (1 WARN + 2 INFO) ──
+  {id:'test-e2e-auth-storagestate',p:['auth','frontend'],lv:'warn',
+   t:a=>{
+     const hasAuth=a.auth&&!inc(a.auth,'なし')&&!inc(a.auth,'None')&&a.auth!=='';
+     const hasWebFE=inc(a.frontend,'Next.js')||inc(a.frontend,'React')||inc(a.frontend,'Vue')||inc(a.frontend,'Svelte');
+     const hasMobileOnly=inc(a.mobile,'Expo')||inc(a.mobile,'React Native');
+     return hasAuth&&hasWebFE&&!hasMobileOnly;
+   },
+   ja:'認証付きE2EテストはPlaywright storageStateでセッションを再利用し、不安定なログインフローを防いでください',
+   en:'E2E tests with auth: use Playwright storageState to reuse sessions and prevent flaky login flows'},
+  {id:'test-playwright-webkit',p:['frontend'],lv:'info',
+   t:a=>(inc(a.frontend,'Next.js')||inc(a.frontend,'React')||inc(a.frontend,'Vue')||inc(a.frontend,'Svelte'))&&(!a.mobile||inc(a.mobile,'なし')||inc(a.mobile,'None')),
+   ja:'PlaywrightのWebKitプロジェクト設定でSafariクロスブラウザテストを追加することを推奨します',
+   en:'Add Playwright WebKit project to enable Safari cross-browser test coverage'},
+  {id:'test-mutation-stryker',p:['backend'],lv:'info',
+   t:a=>isNodeBE(a)||inc(a.backend,'Next.js'),
+   ja:'Strykerミューテーションテストを導入してテストの実効性（バグ検出力）を検証することを推奨します',
+   en:'Add Stryker mutation testing to measure test effectiveness and catch untested code paths'},
 ];
 // helpers
 function inc(v,k){return v&&typeof v==='string'&&v.indexOf(k)!==-1;}

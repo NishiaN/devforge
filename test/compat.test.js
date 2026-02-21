@@ -1,4 +1,4 @@
-// Compat rules functional test (68 rules: 13 ERROR + 42 WARN + 13 INFO)
+// Compat rules functional test (71 rules: 13 ERROR + 43 WARN + 15 INFO)
 const assert=require('node:assert/strict');
 const S={lang:'ja',skill:'pro'};
 eval(require('fs').readFileSync('src/data/compat-rules.js','utf-8'));
@@ -32,7 +32,7 @@ const tests=[
   // OK cases (should have no issues)
   {name:'React+Expo=OK',a:{frontend:'React + Next.js',mobile:'Expo (React Native)'},expect:'none'},
   {name:'Express+Prisma=OK',a:{backend:'Node.js + Express',orm:'Prisma'},expect:'info'},
-  {name:'Next+Vercel=OK',a:{frontend:'React + Next.js',deploy:'Vercel'},expect:'none'},
+  {name:'Next+Vercel=OK',a:{frontend:'React + Next.js',deploy:'Vercel'},expect:'info'},
   {name:'Supabase+SupaDB=OK',a:{backend:'Supabase',database:'Supabase (PostgreSQL)'},expect:'none'},
   {name:'Firebase+Firestore=OK',a:{backend:'Firebase',database:'Firebase Firestore'},expect:'none'},
   {name:'Pro+FullAuto=OK',a:{ai_auto:'フル自律開発',skill_level:'Professional'},expect:'none'},
@@ -123,6 +123,16 @@ const tests=[
   {name:'SQLite+local=noWARN',a:{database:'SQLite',deploy:'ローカルのみ'},expect:'none',id:'db-sqlite-prod'},
   {name:'MySQL+Kysely=INFO',a:{database:'MySQL',orm:'Kysely'},expect:'info',id:'db-mysql-kysely'},
   {name:'PostgreSQL+Kysely=noINFO',a:{database:'PostgreSQL (Neon)',orm:'Kysely'},expect:'none',id:'db-mysql-kysely'},
+  // テスト品質ルール
+  {name:'Auth+Next.js=E2Ewarn',a:{auth:'NextAuth.js',frontend:'React / Next.js',mobile:'なし'},expect:'warn',id:'test-e2e-auth-storagestate'},
+  {name:'Auth+Expo=noE2Ewarn',a:{auth:'Supabase Auth',frontend:'React / Next.js',mobile:'Expo (React Native)'},expect:'none',id:'test-e2e-auth-storagestate'},
+  {name:'NoAuth+Next.js=noE2Ewarn',a:{auth:'なし',frontend:'React / Next.js',mobile:'なし'},expect:'none',id:'test-e2e-auth-storagestate'},
+  {name:'Next.js=WebKitINFO',a:{frontend:'React / Next.js',mobile:'なし'},expect:'info',id:'test-playwright-webkit'},
+  {name:'Vue=WebKitINFO',a:{frontend:'Vue 3 + Nuxt',mobile:'なし'},expect:'info',id:'test-playwright-webkit'},
+  {name:'Expo-only=noWebKitINFO',a:{frontend:'React / Next.js',mobile:'Expo (React Native)'},expect:'none',id:'test-playwright-webkit'},
+  {name:'Express=StrykerINFO',a:{backend:'Node.js + Express'},expect:'info',id:'test-mutation-stryker'},
+  {name:'NestJS=StrykerINFO',a:{backend:'NestJS + tRPC'},expect:'info',id:'test-mutation-stryker'},
+  {name:'FastAPI=noStrykerINFO',a:{backend:'Python / FastAPI'},expect:'none',id:'test-mutation-stryker'},
 ];
 
 let pass=0,fail=0;
