@@ -2612,6 +2612,28 @@ function genArchIntegrityCheck(files,a,compatResults,auditFindings){
       sev:'🟡 INFO',fix:G?'ORMミドルウェアで論理削除フィルタを実装':'Implement soft delete filter in ORM middleware'});
   }
 
+  // C-F: MongoDB × Prisma (experimental support warning)
+  const db=a.database||'';
+  if(/MongoDB|Mongo/i.test(db)&&orm.includes('Prisma')&&!isBaaS){
+    orangeCount++;
+    rows.push({loc:'answers.database+orm',src:G?'アーキテクチャチェック':'Architecture check',
+      issue:G?'PrismaのMongoDBサポートは実験的です。MongooseまたはDrizzle (MongoDB adapter) を推奨':
+             'Prisma MongoDB support is experimental. Consider Mongoose or native MongoDB driver',
+      sev:'🟠 WARN',fix:G?'MongooseまたはネイティブMongoDBドライバーへの移行を検討':'Consider Mongoose or native MongoDB driver'});
+  }
+
+  // C-G: SQLite × production cloud deploy
+  const deploy=a.deploy||'';
+  const isSQLite=/SQLite/i.test(db);
+  const isCloudDeploy=/Vercel|Railway|Fly\.io|Render|Heroku|AWS|GCP|Azure/i.test(deploy);
+  if(isSQLite&&isCloudDeploy){
+    orangeCount++;
+    rows.push({loc:'answers.database+deploy',src:G?'アーキテクチャチェック':'Architecture check',
+      issue:G?'SQLiteはサーバーレス/クラウドデプロイには不向きです。PostgreSQL (Neon/Supabase) またはTursoを推奨':
+             'SQLite is not recommended for serverless/cloud deployment. Use PostgreSQL (Neon/Supabase) or Turso',
+      sev:'🟠 WARN',fix:G?'PostgreSQL (Neon/Supabase) またはTurso (SQLite互換) に移行':'Migrate to PostgreSQL (Neon/Supabase) or Turso (SQLite-compatible)'});
+  }
+
   // Score calculation
   const score=Math.max(0,10.0-redCount*1.0-orangeCount*0.5-yellowCount*0.25);
   const scoreStr=score.toFixed(1);

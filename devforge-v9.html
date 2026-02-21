@@ -1800,6 +1800,24 @@ return hasSensitive&&noAuth;
 ja:'Patient/Transaction等の機密情報を扱うエンティティがありますが、認証が設定されていません。個人情報保護のため認証の導入を推奨します',
 en:'Sensitive entities (Patient/Transaction/etc.) detected without authentication. Authentication is recommended for privacy protection',
 fix:{f:'auth',s:'Supabase Auth'}},
+// ── DB設計 (2 WARN + 1 INFO) ──
+{id:'db-mongo-prisma',p:['database','orm'],lv:'warn',
+t:a=>inc(a.database,'MongoDB')&&inc(a.orm,'Prisma'),
+ja:'PrismaのMongoDBサポートは実験的です。Mongooseまたはネイティブドライバーを推奨します',
+en:'Prisma MongoDB support is experimental. Consider Mongoose or the native MongoDB driver'},
+{id:'db-sqlite-prod',p:['database','deploy'],lv:'warn',
+t:a=>{
+const isSQLite=inc(a.database,'SQLite');
+const isProd=/Vercel|Railway|Fly\.io|Render|Heroku|AWS|GCP|Azure/i.test(a.deploy||'');
+return isSQLite&&isProd;
+},
+ja:'SQLiteはサーバーレス/クラウドデプロイには不向きです。PostgreSQL (Neon) またはTursoを推奨します',
+en:'SQLite is not suitable for serverless/cloud deployment. Use PostgreSQL (Neon) or Turso',
+fix:{f:'database',s:'Neon (PostgreSQL)'}},
+{id:'db-mysql-kysely',p:['database','orm'],lv:'info',
+t:a=>inc(a.database,'MySQL')&&inc(a.orm,'Kysely'),
+ja:'Kysely + MySQLではmysql2パッケージとMySQLDialectの設定が必要です',
+en:'Kysely + MySQL requires the mysql2 package and MySQLDialect configuration'},
 // ── API品質 (2 WARN) ──
 {id:'api-graphql-no-dataloader',p:['backend'],lv:'warn',
 t:a=>inc(a.backend,'GraphQL'),
@@ -21186,6 +21204,26 @@ rows.push({loc:'.spec/technical-plan.md',src:G?'アーキテクチャチェッ�
 issue:G?'deleted_atカラムが定義されていますが、論理削除ミドルウェアの説明がありません':
 'deleted_at columns defined but soft delete middleware description not found',
 sev:'🟡 INFO',fix:G?'ORMミドルウェアで論理削除フィルタを実装':'Implement soft delete filter in ORM middleware'});
+}
+// C-F: MongoDB × Prisma (experimental support warning)
+const db=a.database||'';
+if(/MongoDB|Mongo/i.test(db)&&orm.includes('Prisma')&&!isBaaS){
+orangeCount++;
+rows.push({loc:'answers.database+orm',src:G?'アーキテクチャチェック':'Architecture check',
+issue:G?'PrismaのMongoDBサポートは実験的です。MongooseまたはDrizzle (MongoDB adapter) を推奨':
+'Prisma MongoDB support is experimental. Consider Mongoose or native MongoDB driver',
+sev:'🟠 WARN',fix:G?'MongooseまたはネイティブMongoDBドライバーへの移行を検討':'Consider Mongoose or native MongoDB driver'});
+}
+// C-G: SQLite × production cloud deploy
+const deploy=a.deploy||'';
+const isSQLite=/SQLite/i.test(db);
+const isCloudDeploy=/Vercel|Railway|Fly\.io|Render|Heroku|AWS|GCP|Azure/i.test(deploy);
+if(isSQLite&&isCloudDeploy){
+orangeCount++;
+rows.push({loc:'answers.database+deploy',src:G?'アーキテクチャチェック':'Architecture check',
+issue:G?'SQLiteはサーバーレス/クラウドデプロイには不向きです。PostgreSQL (Neon/Supabase) またはTursoを推奨':
+'SQLite is not recommended for serverless/cloud deployment. Use PostgreSQL (Neon/Supabase) or Turso',
+sev:'🟠 WARN',fix:G?'PostgreSQL (Neon/Supabase) またはTurso (SQLite互換) に移行':'Migrate to PostgreSQL (Neon/Supabase) or Turso (SQLite-compatible)'});
 }
 // Score calculation
 const score=Math.max(0,10.0-redCount*1.0-orangeCount*0.5-yellowCount*0.25);

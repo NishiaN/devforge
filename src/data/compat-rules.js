@@ -1,4 +1,4 @@
-/* ═══ STACK COMPATIBILITY & SEMANTIC CONSISTENCY RULES — 65 rules (ERROR×13 + WARN×40 + INFO×12) ═══ */
+/* ═══ STACK COMPATIBILITY & SEMANTIC CONSISTENCY RULES — 68 rules (ERROR×13 + WARN×42 + INFO×13) ═══ */
 const COMPAT_RULES=[
   // ── FE ↔ Mobile (2 ERROR) ──
   {id:'fe-mob-expo',p:['frontend','mobile'],lv:'error',
@@ -366,6 +366,24 @@ const COMPAT_RULES=[
    ja:'Patient/Transaction等の機密情報を扱うエンティティがありますが、認証が設定されていません。個人情報保護のため認証の導入を推奨します',
    en:'Sensitive entities (Patient/Transaction/etc.) detected without authentication. Authentication is recommended for privacy protection',
    fix:{f:'auth',s:'Supabase Auth'}},
+  // ── DB設計 (2 WARN + 1 INFO) ──
+  {id:'db-mongo-prisma',p:['database','orm'],lv:'warn',
+   t:a=>inc(a.database,'MongoDB')&&inc(a.orm,'Prisma'),
+   ja:'PrismaのMongoDBサポートは実験的です。Mongooseまたはネイティブドライバーを推奨します',
+   en:'Prisma MongoDB support is experimental. Consider Mongoose or the native MongoDB driver'},
+  {id:'db-sqlite-prod',p:['database','deploy'],lv:'warn',
+   t:a=>{
+     const isSQLite=inc(a.database,'SQLite');
+     const isProd=/Vercel|Railway|Fly\.io|Render|Heroku|AWS|GCP|Azure/i.test(a.deploy||'');
+     return isSQLite&&isProd;
+   },
+   ja:'SQLiteはサーバーレス/クラウドデプロイには不向きです。PostgreSQL (Neon) またはTursoを推奨します',
+   en:'SQLite is not suitable for serverless/cloud deployment. Use PostgreSQL (Neon) or Turso',
+   fix:{f:'database',s:'Neon (PostgreSQL)'}},
+  {id:'db-mysql-kysely',p:['database','orm'],lv:'info',
+   t:a=>inc(a.database,'MySQL')&&inc(a.orm,'Kysely'),
+   ja:'Kysely + MySQLではmysql2パッケージとMySQLDialectの設定が必要です',
+   en:'Kysely + MySQL requires the mysql2 package and MySQLDialect configuration'},
   // ── API品質 (2 WARN) ──
   {id:'api-graphql-no-dataloader',p:['backend'],lv:'warn',
    t:a=>inc(a.backend,'GraphQL'),

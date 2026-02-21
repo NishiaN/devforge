@@ -1,4 +1,4 @@
-// Compat rules functional test (65 rules: 13 ERROR + 40 WARN + 12 INFO)
+// Compat rules functional test (68 rules: 13 ERROR + 42 WARN + 13 INFO)
 const assert=require('node:assert/strict');
 const S={lang:'ja',skill:'pro'};
 eval(require('fs').readFileSync('src/data/compat-rules.js','utf-8'));
@@ -116,6 +116,13 @@ const tests=[
   {name:'FastAPI=RateLimitINFO',a:{backend:'FastAPI (Python)'},expect:'info',id:'api-rest-no-ratelimit'},
   {name:'NestJS=RateLimitINFO',a:{backend:'Node.js + NestJS'},expect:'info',id:'api-rest-no-ratelimit'},
   {name:'Supabase=noRateLimitINFO',a:{backend:'Supabase'},expect:'none',id:'api-rest-no-ratelimit'},
+  // DB設計ルール
+  {name:'MongoDB+Prisma=WARN',a:{database:'MongoDB',orm:'Prisma ORM'},expect:'warn',id:'db-mongo-prisma'},
+  {name:'MongoDB+Mongoose=noWARN',a:{database:'MongoDB',orm:'Mongoose'},expect:'none',id:'db-mongo-prisma'},
+  {name:'SQLite+Vercel=WARN',a:{database:'SQLite',deploy:'Vercel'},expect:'warn',id:'db-sqlite-prod'},
+  {name:'SQLite+local=noWARN',a:{database:'SQLite',deploy:'ローカルのみ'},expect:'none',id:'db-sqlite-prod'},
+  {name:'MySQL+Kysely=INFO',a:{database:'MySQL',orm:'Kysely'},expect:'info',id:'db-mysql-kysely'},
+  {name:'PostgreSQL+Kysely=noINFO',a:{database:'PostgreSQL (Neon)',orm:'Kysely'},expect:'none',id:'db-mysql-kysely'},
 ];
 
 let pass=0,fail=0;
