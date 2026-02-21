@@ -662,6 +662,19 @@ function _applyUniversalPostProcess(_en){
       S.answers.learning_path='PERN Stack';
     }
   }
+  // G-7: dev_schedule from deadline (sprint plan inference)
+  if(!S.answers.dev_schedule&&S.answers.deadline){
+    var _dl7=S.answers.deadline||'';
+    if(/2週間|2 week/i.test(_dl7)){
+      S.answers.dev_schedule=_en?'2 weeks (Ultra MVP: 1 sprint × 2 weeks)':'2週間（超MVP: 1スプリント × 2週）';
+    } else if(/1ヶ月|1 month/i.test(_dl7)){
+      S.answers.dev_schedule=_en?'1 month (Basic MVP: 2 sprints × 2 weeks)':'1ヶ月（基本MVP: 2スプリント × 2週）';
+    } else if(/6ヶ月|6 month/i.test(_dl7)){
+      S.answers.dev_schedule=_en?'6 months (v1.0: 12 sprints × 2 weeks)':'6ヶ月（v1.0: 12スプリント × 2週）';
+    } else {
+      S.answers.dev_schedule=_en?'3 months (Full MVP: 6 sprints × 2 weeks)':'3ヶ月（フルMVP: 6スプリント × 2週）';
+    }
+  }
   // G-6: dev_methods from S.skillLv (when not set by preset)
   if(!S.answers.dev_methods){
     var _slv6=typeof S.skillLv==='number'?S.skillLv:3;

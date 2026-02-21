@@ -593,6 +593,71 @@ describe('Phase O G-6: dev_methods inference from skillLv', () => {
   });
 });
 
+/* ── Phase O G-7: dev_schedule from deadline ── */
+describe('Phase O G-7: dev_schedule inference from deadline', () => {
+  it('2週間 → 超MVP: 1スプリント × 2週 (JA)', () => {
+    resetS({ deadline: '2週間' });
+    applyUPP(false);
+    const ds = h.sandbox.S.answers.dev_schedule || '';
+    assert.ok(ds.includes('1スプリント'), '2週間: 1スプリント included');
+    assert.ok(ds.includes('超MVP'), '2週間: 超MVP included');
+  });
+
+  it('1ヶ月 → 基本MVP: 2スプリント × 2週 (JA)', () => {
+    resetS({ deadline: '1ヶ月' });
+    applyUPP(false);
+    const ds = h.sandbox.S.answers.dev_schedule || '';
+    assert.ok(ds.includes('2スプリント'), '1ヶ月: 2スプリント included');
+    assert.ok(ds.includes('基本MVP'), '1ヶ月: 基本MVP included');
+  });
+
+  it('3ヶ月 → フルMVP: 6スプリント × 2週 (JA)', () => {
+    resetS({ deadline: '3ヶ月' });
+    applyUPP(false);
+    const ds = h.sandbox.S.answers.dev_schedule || '';
+    assert.ok(ds.includes('6スプリント'), '3ヶ月: 6スプリント included');
+    assert.ok(ds.includes('フルMVP'), '3ヶ月: フルMVP included');
+  });
+
+  it('6ヶ月 → v1.0: 12スプリント × 2週 (JA)', () => {
+    resetS({ deadline: '6ヶ月' });
+    applyUPP(false);
+    const ds = h.sandbox.S.answers.dev_schedule || '';
+    assert.ok(ds.includes('12スプリント'), '6ヶ月: 12スプリント included');
+    assert.ok(ds.includes('v1.0'), '6ヶ月: v1.0 included');
+  });
+
+  it('EN mode: 3 months → Full MVP: 6 sprints × 2 weeks', () => {
+    resetS({ deadline: '3 months' });
+    h.sandbox.S.lang = 'en';
+    applyUPP(true);
+    const ds = h.sandbox.S.answers.dev_schedule || '';
+    assert.ok(ds.includes('6 sprints'), 'EN 3 months: 6 sprints included');
+    assert.ok(ds.includes('Full MVP'), 'EN 3 months: Full MVP included');
+  });
+
+  it('EN mode: 6 months → v1.0: 12 sprints × 2 weeks', () => {
+    resetS({ deadline: '6 months' });
+    h.sandbox.S.lang = 'en';
+    applyUPP(true);
+    const ds = h.sandbox.S.answers.dev_schedule || '';
+    assert.ok(ds.includes('12 sprints'), 'EN 6 months: 12 sprints included');
+    assert.ok(ds.includes('v1.0'), 'EN 6 months: v1.0 included');
+  });
+
+  it('No deadline set → dev_schedule not inferred', () => {
+    resetS({ backend: 'Supabase' });
+    applyUPP(false);
+    assert.equal(h.sandbox.S.answers.dev_schedule || '', '', 'No deadline: dev_schedule stays empty');
+  });
+
+  it('Existing dev_schedule is preserved (not overwritten)', () => {
+    resetS({ deadline: '3ヶ月', dev_schedule: 'カスタムスプリント計画' });
+    applyUPP(false);
+    assert.equal(h.sandbox.S.answers.dev_schedule, 'カスタムスプリント計画', 'Custom dev_schedule preserved');
+  });
+});
+
 /* ── Preset Suggest: _scorePreset unit tests ── */
 describe('Preset Suggest: _scorePreset scoring engine', () => {
   const scorePreset = (...a) => h.sandbox._scorePreset(...a);

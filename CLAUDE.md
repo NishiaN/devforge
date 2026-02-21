@@ -18,7 +18,7 @@ Generates **151+ files** across **24 pillars** from a wizard-driven Q&A session.
 ## Build & Test
 
 ```bash
-node build.js                          # → devforge-v9.html (~2148KB, limit 3000KB)
+node build.js                          # → devforge-v9.html (~2313KB, limit 3000KB)
 node build.js --no-minify              # debug (skip minification)
 npm test                               # 885 tests, all passing
 node --test test/gen-quality.test.js   # single test file
@@ -43,8 +43,8 @@ Never reorder without checking dependencies.
 | Category | Purpose |
 |----------|---------|
 | `core/` | State (`S`), i18n (`t()`), keyboard events, wizard tour, app init |
-| `data/` | 48 standard presets (`PR`/`_mp()`), 82 field presets (`PR_FIELD`/`_fpd()`), questions, techdb, compat-rules (60 rules), gen-templates (bilingual GT dict), helpdata |
-| `generators/` | `index.js` orchestrator + `p1`–`p20` pillars + `docs.js` + `common.js` |
+| `data/` | 48 standard presets (`PR`/`_mp()`), 82 field presets (`PR_FIELD`/`_fpd()`), questions, techdb, compat-rules (76 rules), gen-templates (bilingual GT dict), helpdata |
+| `generators/` | `index.js` orchestrator + `p1`–`p24` pillars + `docs.js` + `common.js` |
 | `ui/` | wizard, render, presets, preview, sidebar, editor, diff, export, explorer, dashboard, launcher, templates, qbar, cmdpalette, help, voice |
 | `styles/all.css` | Theme (dark/light), responsive; CSS custom properties only |
 
@@ -60,7 +60,7 @@ S.lang          — UI language 'ja'|'en'
 S.genLang       — generation output language 'ja'|'en'
 S.skill         — 'beginner'|'intermediate'|'pro'
 S.skillLv       — 0-6 (coexists with S.skill; skillTier(lv) maps to string)
-S.pillar        — active pillar tab 0-19
+S.pillar        — active pillar tab 0-23
 S.editedFiles   — user-modified files set
 S.pinnedFiles   — pinned file paths []
 S.recentFiles   — MRU file paths [], max 10
@@ -149,7 +149,7 @@ Full 6-step process in `docs/CLAUDE-REFERENCE.md`. Key steps often missed:
 
 ## Adding Compat Rules
 
-File: `src/data/compat-rules.js` — currently 68 rules (13 error + 42 warn + 13 info).
+File: `src/data/compat-rules.js` — currently 76 rules (13 error + 46 warn + 17 info).
 Structure: `{id, p:['field1','field2'], lv:'error'|'warn'|'info', t:conditionFn, ja, en, fix, fixFn}`
 After adding: update header comment totals, add tests to `test/compat.test.js`, update CLAUDE.md rule count.
 
@@ -179,7 +179,7 @@ Key output structure:
 - `.spec/` — constitution, specification, technical-plan, tasks, verification
 - `.devcontainer/` — devcontainer.json, Dockerfile, docker-compose.yml, post-create.sh
 - `.claude/` — thin CLAUDE.md + 5 path-specific rules + settings.json
-- `docs/` — 90 documents (01_project_overview … 90_backup_disaster_recovery)
+- `docs/` — 98 documents (01_project_overview … 98_prompt_injection_defense)
 - AI rules — AI_BRIEF.md, .cursorrules, .clinerules, .windsurfrules, AGENTS.md, skills/
 - CI/CD — .github/workflows/ci.yml
 

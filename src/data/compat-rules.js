@@ -1,4 +1,4 @@
-/* ═══ STACK COMPATIBILITY & SEMANTIC CONSISTENCY RULES — 71 rules (ERROR×13 + WARN×43 + INFO×15) ═══ */
+/* ═══ STACK COMPATIBILITY & SEMANTIC CONSISTENCY RULES — 76 rules (ERROR×13 + WARN×46 + INFO×17) ═══ */
 const COMPAT_RULES=[
   // ── FE ↔ Mobile (2 ERROR) ──
   {id:'fe-mob-expo',p:['frontend','mobile'],lv:'error',
@@ -416,6 +416,46 @@ const COMPAT_RULES=[
    t:a=>isNodeBE(a)||inc(a.backend,'Next.js'),
    ja:'Strykerミューテーションテストを導入してテストの実効性（バグ検出力）を検証することを推奨します',
    en:'Add Stryker mutation testing to measure test effectiveness and catch untested code paths'},
+  // ── AI安全性 (3 WARN + 2 INFO) ──
+  {id:'ai-guardrail-missing',p:['ai_auto','mvp_features'],lv:'warn',
+   t:a=>{
+     if(!a.ai_auto||/なし|None/i.test(a.ai_auto))return false;
+     return !/(guardrail|ガードレール|安全|safety|filter|フィルタ|sanitize|moderate|モデレート|validation|検証)/i.test(a.mvp_features||'');
+   },
+   ja:'AI機能が有効ですが、mvp_featuresにガードレール/安全フィルタの記述がありません。入力検証・出力モデレーション・レート制限を実装してください (docs/96参照)',
+   en:'AI features active but no guardrail/safety filter in mvp_features. Implement input validation, output moderation, and rate limiting (see docs/96)'},
+  {id:'ai-noauth-llm',p:['ai_auto','auth'],lv:'warn',
+   t:a=>{
+     if(!a.ai_auto||/なし|None/i.test(a.ai_auto))return false;
+     return inc(a.auth,'なし')||inc(a.auth,'None')||a.auth==='none';
+   },
+   ja:'AI機能が有効ですが認証が設定されていません。LLMエンドポイントは認証なしでは悪用・コスト爆発のリスクがあります',
+   en:'AI features active but no authentication. Unauthenticated LLM endpoints risk abuse and cost explosion',
+   fix:{f:'auth',s:'Supabase Auth'}},
+  {id:'ai-pii-masking',p:['ai_auto','data_entities'],lv:'warn',
+   t:a=>{
+     if(!a.ai_auto||/なし|None/i.test(a.ai_auto))return false;
+     const piiE=['Patient','MedicalRecord','Transaction','BankAccount','CreditCard','Prescription','Diagnosis','PersonalInfo'];
+     return piiE.some(e=>inc(a.data_entities,e));
+   },
+   ja:'個人情報エンティティ（Patient/Transaction等）がAI機能と併用されています。LLMへの送信前にPIIをマスキング/仮名化してください (docs/95参照)',
+   en:'PII entities (Patient/Transaction/etc.) used with AI features. Mask or pseudonymize PII before sending to LLM (see docs/95)'},
+  {id:'ai-ratelimit-reminder',p:['ai_auto','backend'],lv:'info',
+   t:a=>{
+     if(!a.ai_auto||/なし|None/i.test(a.ai_auto))return false;
+     return isNodeBE(a)||isPyBE(a)||inc(a.backend,'Spring');
+   },
+   ja:'AI機能のあるAPIにはトークン消費量ベースのレート制限を実装してください。@upstash/ratelimit (Node) または slowapi with token tracking (Python) を推奨します',
+   en:'Add token-budget rate limiting to AI API endpoints. Recommended: @upstash/ratelimit (Node) or slowapi with token tracking (Python)'},
+  {id:'ai-local-model-infra',p:['ai_auto','deploy'],lv:'info',
+   t:a=>{
+     if(!a.ai_auto||/なし|None/i.test(a.ai_auto))return false;
+     const isLocal=/(Ollama|LM Studio|ローカルLLM|local LLM|llama|mistral|open.?source|セルフホスト|self.?host)/i.test(a.ai_auto);
+     const isProd=/Vercel|Railway|Fly\.io|Render|Heroku|AWS|GCP|Azure/i.test(a.deploy||'');
+     return isLocal&&isProd;
+   },
+   ja:'ローカル/セルフホストLLMとクラウドデプロイの組み合わせはGPUインスタンス（RunPod/Lambda Labs）またはvLLM/Ollamaサーバーの別途ホスティングが必要です',
+   en:'Local/self-hosted LLM with cloud deployment requires GPU instances (RunPod/Lambda Labs) or separate vLLM/Ollama hosting'},
 ];
 // helpers
 function inc(v,k){return v&&typeof v==='string'&&v.indexOf(k)!==-1;}

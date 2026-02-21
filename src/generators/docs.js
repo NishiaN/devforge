@@ -17,7 +17,7 @@ function genDocs21(a,pn){
   const hasPay=a.payment&&!/なし|None|none/.test(a.payment);
 
   // 1. Project Overview
-  S.files['docs/01_project_overview.md']=`# ${pn} — ${G?'プロジェクト概要書':'Project Overview'}\n> ${date}\n\n${G?'## 目的':'## Purpose'}\n${a.purpose||'N/A'}\n\n${G?'## ターゲット':'## Target'}\n${a.target||'N/A'}\n\n${G?'## 成功指標':'## Success Metrics'}\n${a.success||'N/A'}\n\n${G?'## スケジュール':'## Schedule'}\n${a.deadline||(G?'6ヶ月':'6 months')}\n\n## ${G?'技術スタック':'Tech Stack'}\n- Frontend: ${fe}\n- Backend: ${be}\n- DB: ${a.database||'PostgreSQL'}\n- Deploy: ${a.deploy||'Vercel'}`;
+  S.files['docs/01_project_overview.md']=`# ${pn} — ${G?'プロジェクト概要書':'Project Overview'}\n> ${date}\n\n${G?'## 目的':'## Purpose'}\n${a.purpose||'N/A'}\n\n${G?'## ターゲット':'## Target'}\n${a.target||'N/A'}\n\n${G?'## 成功指標':'## Success Metrics'}\n${a.success||'N/A'}\n\n${G?'## スケジュール':'## Schedule'}\n${a.dev_schedule||a.deadline||(G?'6ヶ月':'6 months')}\n\n## ${G?'技術スタック':'Tech Stack'}\n- Frontend: ${fe}\n- Backend: ${be}\n- DB: ${a.database||'PostgreSQL'}\n- Deploy: ${a.deploy||'Vercel'}`;
 
   // 2. Requirements
   S.files['docs/02_requirements.md']=`# ${pn} — ${G?'要件定義書':'Requirements'}\n> ${date}\n\n${G?'## 機能要件':'## Functional Requirements'}\n${features.map(f=>'- '+f).join('\n')}\n\n${G?'## 非機能要件':'## Non-functional'}\n- ${G?'レスポンス':'Response'}: ${S.skill==='pro'?'<200ms (p95)':S.skill==='intermediate'?'<500ms (p95)':'<1000ms (p95)'}\n- ${G?'可用性':'Availability'}: ${S.skill==='pro'?'99.9%':S.skill==='intermediate'?'99%':(G?'ベストエフォート':'Best effort')}\n- ${G?'セキュリティ':'Security'}: OWASP Top 10`;
