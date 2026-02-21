@@ -73,7 +73,12 @@ function genPillar1_SDD(a,pn){
     '- ESLint + Prettier '+(G?'適用':'enforced'),
     '- CI/CD '+(G?'パイプライン必須':'pipeline required'),'',
     G?'## 6. セキュリティ方針':'## 6. Security Policy',...authLines,'',
-    G?'## 7. スコープ外':'## 7. Out of Scope',scopeOut,''
+    G?'## 7. スコープ外':'## 7. Out of Scope',scopeOut,'',
+    G?'## 8. MVP後の拡張計画':'## 8. Post-MVP Feature Roadmap',
+    a.future_features
+      ? a.future_features.split(', ').map((f,i)=>'- Phase '+(i<2?2:3)+': '+f).join('\n')
+      : (G?'- Phase 2: 分析レポート\n- Phase 2: チーム機能':'- Phase 2: Analytics\n- Phase 2: Team features'),
+    ''
   ].join('\n');
 
   // B1: Architecture-aware API design

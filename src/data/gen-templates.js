@@ -15,6 +15,10 @@ const ja={
   deploy:'デプロイ',monitor:'モニタリング基盤',aiUse:'活用',
   mcpCfg:'MCP設定・活用',aiOpt:'AI Agent Rules 最適化',practice:'実践',
   billing:'課金フロー実装',opsScale:'運用・スケール',
+  /* Post-MVP Feature Roadmap section */
+  ff_title:'機能拡張ロードマップ',ff_span:'MVP完成後',ff_integrate:'の実装',
+  /* Learning path label */
+  lp_path:'学習パス',
   /* TECH_STACK_GUIDE.md */
   ts_title:'技術スタックガイド',ts_selected:'選択された技術スタック',
   cat:'カテゴリ',tech:'技術',rationale:'理由',
@@ -122,6 +126,8 @@ const en={
   deploy:'Deploy',monitor:'Monitoring Setup',aiUse:'Integration',
   mcpCfg:'MCP Configuration',aiOpt:'AI Agent Rules Optimization',practice:'Practice',
   billing:'Billing Flow Implementation',opsScale:'Operations & Scaling',
+  ff_title:'Feature Expansion Roadmap',ff_span:'Post-MVP',ff_integrate:'integration',
+  lp_path:'Learning Path',
   ts_title:'Tech Stack Guide',ts_selected:'Selected Tech Stack',
   cat:'Category',tech:'Technology',rationale:'Rationale',
   feLabel:'Frontend',beLabel:'Backend',dbLabel:'Database',

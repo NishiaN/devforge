@@ -1,0 +1,727 @@
+/**
+ * Generation Quality Tests — Phase ④
+ *
+ * End-to-end verification: 25/25 pre-filled answers (Phase N/O/K)
+ * produce richer, more contextual generated documents than 11 minimal answers.
+ *
+ * Each suite targets one specific answer group and traces it through
+ * to the exact generated file(s) that consume it.
+ *
+ * Answer groups under test:
+ *   N-6/G-1  success KPI      → docs/01_project_overview.md, .spec/constitution.md
+ *   N-5      ai_tools         → roadmap/TOOLS_SETUP.md, .spec/technical-plan.md
+ *   N-8      scope_out        → .spec/constitution.md §7
+ *   N-4      org_model        → .spec/technical-plan.md §4.5 (multi-tenant)
+ *   G-2/G-3  skill_level +    → roadmap/LEARNING_PATH.md (timeline, layer labels)
+ *            learning_goal
+ *   N-7/ORM  BaaS backend     → roadmap/LEARNING_PATH.md §Layer 3 ORM
+ *   Domain   detectDomain     → .spec/constitution.md §3 fallback KPI
+ *   E2E      full generation  → file count, token richness, bilingual parity
+ */
+
+const { describe, it } = require('node:test');
+const assert = require('node:assert/strict');
+const fs = require('fs');
+
+/* ═══ Scaffold (same pattern as snapshot.test.js) ═══ */
+const S = {
+  answers:{}, skill:'intermediate', lang:'ja', preset:'custom',
+  projectName:'T', phase:1, step:0, skipped:[], files:{},
+  editedFiles:{}, prevFiles:{}, genLang:'ja', previewFile:null,
+  pillar:0, skillLv:3,
+};
+const save=()=>{};const _lsGet=()=>null;const _lsSet=()=>{};const _lsRm=()=>{};
+const sanitize=v=>v;
+
+eval(fs.readFileSync('src/data/questions.js','utf-8'));
+eval(fs.readFileSync('src/data/presets.js','utf-8').replace('const PR','var PR'));
+eval(fs.readFileSync('src/data/compat-rules.js','utf-8'));
+eval(fs.readFileSync('src/generators/common.js','utf-8').replace(/const /g,'var '));
+eval(fs.readFileSync('src/generators/p1-sdd.js','utf-8'));
+eval(fs.readFileSync('src/generators/p2-devcontainer.js','utf-8'));
+eval(fs.readFileSync('src/generators/docs.js','utf-8'));
+eval(fs.readFileSync('src/generators/p3-mcp.js','utf-8'));
+eval(fs.readFileSync('src/generators/p4-airules.js','utf-8'));
+eval(fs.readFileSync('src/generators/p5-quality.js','utf-8'));
+eval(fs.readFileSync('src/data/gen-templates.js','utf-8').replace('const GT','var GT'));
+eval(fs.readFileSync('src/generators/p7-roadmap.js','utf-8'));
+eval(fs.readFileSync('src/generators/p9-designsystem.js','utf-8'));
+eval(fs.readFileSync('src/generators/p10-reverse.js','utf-8').replace('const REVERSE_FLOW_MAP','var REVERSE_FLOW_MAP'));
+eval(fs.readFileSync('src/generators/p11-implguide.js','utf-8'));
+eval(fs.readFileSync('src/generators/p12-security.js','utf-8'));
+eval(fs.readFileSync('src/generators/p13-strategy.js','utf-8').replace(/const (INDUSTRY_INTEL|STAKEHOLDER_STRATEGY|OPERATIONAL_FRAMEWORKS|OPERATIONAL_FRAMEWORKS_EXT|EXTREME_SCENARIOS|PRAGMATIC_SCENARIOS|TECH_RADAR_BASE)/g,'var $1'));
+eval(fs.readFileSync('src/generators/p14-ops.js','utf-8'));
+eval(fs.readFileSync('src/generators/p15-future.js','utf-8').replace(/const (DOMAIN_MARKET|PERSONA_ARCHETYPES|GTM_STRATEGY|REGULATORY_HORIZON)/g,'var $1'));
+eval(fs.readFileSync('src/generators/p16-deviq.js','utf-8').replace(/const (DEV_METHODOLOGY_MAP|PHASE_PROMPTS|INDUSTRY_STRATEGY|NEXT_GEN_UX|mapDomainToIndustry|gen60|gen61|gen62|gen63|genPillar16_DevIQ)/g,'var $1'));
+eval(fs.readFileSync('src/generators/p17-promptgenome.js','utf-8').replace(/const (CRITERIA_FRAMEWORK|AI_MATURITY_MODEL|_APPROACHES|_SYNERGY_RAW|APPROACH_KPI|getSynergy|gen65|gen66|gen67|gen68|genPillar17_PromptGenome)/g,'var $1').replace(/function (_cri|_mat)/g,'var $1 = function'));
+eval(fs.readFileSync('src/generators/p18-promptops.js','utf-8').replace(/var (REACT_PROTOCOL|LLMOPS_STACK|PROMPT_LIFECYCLE)/g,'var $1').replace(/function (_rp|_los)/g,'var $1 = function'));
+eval(fs.readFileSync('src/generators/p19-enterprise.js','utf-8'));
+eval(fs.readFileSync('src/generators/p20-cicd.js','utf-8'));
+
+/* ═══ Generation helpers ═══ */
+
+/** Run only the SDD+docs generators (covers most 25/25 answer tests) */
+function gSDD(answers, lang) {
+  S.files={}; S.genLang=lang||'ja'; S.skill='intermediate';
+  genPillar1_SDD(answers,'QTest');
+  genDocs21(answers,'QTest');
+  return S.files;
+}
+
+/** Run only roadmap generator (covers skill_level, learning_goal, ai_tools, ORM) */
+function gRoadmap(answers, lang) {
+  S.files={}; S.genLang=lang||'ja'; S.skill='intermediate';
+  genPillar7_Roadmap(answers,'QTest');
+  return S.files;
+}
+
+/** Full 20-pillar generation (for E2E token and file count tests) */
+function gFull(answers, lang, skill) {
+  S.files={}; S.genLang=lang||'ja'; S.skill=skill||'intermediate';
+  genPillar1_SDD(answers,'QTest');
+  genPillar2_DevContainer(answers,'QTest');
+  genCommonFiles(answers,'QTest');
+  genDocs21(answers,'QTest');
+  genPillar3_MCP(answers,'QTest');
+  genPillar4_AIRules(answers,'QTest');
+  genPillar5_QualityIntelligence(answers,'QTest');
+  genPillar7_Roadmap(answers,'QTest');
+  genPillar9_DesignSystem(answers,'QTest');
+  genPillar10_ReverseEngineering(answers,'QTest');
+  genPillar11_ImplIntelligence(answers,'QTest');
+  genPillar12_SecurityIntelligence(answers,'QTest');
+  genPillar13_StrategicIntelligence(answers,'QTest');
+  genPillar14_OpsIntelligence(answers,'QTest');
+  genPillar15(answers);
+  genPillar16_DevIQ(answers,'QTest');
+  genPillar17_PromptGenome(answers,'QTest');
+  genPillar18_PromptOps(answers,'QTest');
+  genPillar19_EnterpriseSaaS(answers,'QTest');
+  genPillar20_CICDIntelligence(answers,'QTest');
+  return Object.assign({},S.files);
+}
+
+function tokens(t) { return Math.round((t||'').length/3.5); }
+
+/* ─── Answer-set builders ─── */
+
+/** 11-answer minimal base (pre-25/25 baseline) */
+const A11 = {
+  purpose: 'SaaS型サブスク管理プラットフォーム',
+  target: 'ビジネスユーザー, 20-40代',
+  frontend: 'React + Next.js',
+  backend: 'Supabase',
+  database: 'Supabase (PostgreSQL)',
+  auth: 'Supabase Auth',
+  deploy: 'Vercel',
+  payment: 'Stripe Billing (サブスク)',
+  mvp_features: 'ユーザー認証, サブスク管理, ダッシュボード',
+  data_entities: 'User, Subscription, Invoice, Plan',
+  screens: 'ランディング, ダッシュボード, 設定, 管理画面',
+};
+
+/** 25-answer full set (post Phase N/O inference) */
+const A25 = Object.assign({}, A11, {
+  dev_methods:      'TDD（テスト駆動）, SDD（仕様駆動）',
+  ai_auto:          'マルチAgent協調',
+  mobile:           'なし',
+  deadline:         '3ヶ月',
+  // Phase N inferred:
+  dev_env_type:     'ローカル開発',
+  org_model:        'マルチテナント(RLS)',
+  ai_tools:         'Cursor, Claude Code, GitHub Copilot',
+  success:          '📈 月間1000ユーザー, 💰 MRR10万円, 🔄 チャーン5%以下',
+  scope_out:        'ネイティブアプリ, AI機能',
+  future_features:  '分析レポート, モバイルアプリ, AI機能, チーム機能',
+  // Phase O inferred:
+  skill_level:      'Intermediate',
+  learning_goal:    '3ヶ月集中',
+  learning_path:    'React + BaaS',
+});
+
+/* ══════════════════════════════════════════════════════════════════
+   Suite 1 — Success KPI (N-6/G-1): propagates to overview + constitution
+   ════════════════════════════════════════════════════════════════ */
+describe('Q1: Success KPI → project_overview + constitution', () => {
+
+  it('A25 success appears verbatim in docs/01_project_overview.md', () => {
+    const f = gSDD(A25);
+    const ov = f['docs/01_project_overview.md'] || '';
+    assert.ok(ov.includes('MRR10万円'), 'project_overview must contain the custom success KPI');
+  });
+
+  it('A25 success appears in .spec/constitution.md §3', () => {
+    const f = gSDD(A25);
+    const con = f['.spec/constitution.md'] || '';
+    assert.ok(con.includes('MRR10万円'), 'constitution §3 must contain the custom success KPI');
+  });
+
+  it('A11 (no success) → docs/01_project_overview.md shows N/A (baseline)', () => {
+    const f = gSDD(A11);
+    const ov = f['docs/01_project_overview.md'] || '';
+    // Without success answer, overview falls back to 'N/A'
+    assert.ok(ov.includes('N/A'), 'without success answer overview shows N/A — 25/25 fills this gap');
+  });
+
+  it('A11 (no success) but domain=education → constitution uses domain KPI fallback, not N/A', () => {
+    const eduAnswers = Object.assign({}, A11, {
+      purpose: '教育プラットフォーム — コース管理・進捗管理',
+      backend: 'Node.js + Express',
+      database: 'PostgreSQL',
+      auth: 'Email/Password',
+    });
+    const f = gSDD(eduAnswers);
+    const con = f['.spec/constitution.md'] || '';
+    // constitution has domain fallback KPI (コース完了率) even without explicit success answer
+    assert.ok(
+      con.includes('コース完了率') || con.includes('Course completion'),
+      'without success answer, constitution uses education domain KPI fallback'
+    );
+  });
+});
+
+/* ══════════════════════════════════════════════════════════════════
+   Suite 2 — AI Tools (N-5): TOOLS_SETUP.md lists each tool explicitly
+   ════════════════════════════════════════════════════════════════ */
+describe('Q2: ai_tools → roadmap/TOOLS_SETUP.md tool enumeration', () => {
+
+  it('A25 with 3 ai_tools → TOOLS_SETUP lists Cursor, Claude Code, GitHub Copilot', () => {
+    const f = gRoadmap(A25);
+    const ts = f['roadmap/TOOLS_SETUP.md'] || '';
+    assert.ok(ts.includes('Cursor'),         'TOOLS_SETUP must list Cursor');
+    assert.ok(ts.includes('Claude'),          'TOOLS_SETUP must list Claude Code');
+    assert.ok(ts.includes('Copilot'),         'TOOLS_SETUP must list GitHub Copilot');
+  });
+
+  it('A11 (no ai_tools) → TOOLS_SETUP AI section defaults to Cursor only', () => {
+    const f = gRoadmap(A11);
+    const ts = f['roadmap/TOOLS_SETUP.md'] || '';
+    // Dynamic tool section uses bold format "- **ToolName**:"
+    assert.ok(ts.includes('- **Cursor**:'),   'default ai_tools should show Cursor as bold dynamic entry');
+    assert.ok(!ts.includes('- **Claude'),      'without ai_tools answer, Claude Code dynamic entry absent — 25/25 adds it');
+    assert.ok(!ts.includes('- **GitHub Copilot'), 'without ai_tools answer, Copilot dynamic entry absent — 25/25 adds it');
+  });
+
+  it('A25 ai_tools first entry appears in LEARNING_PATH Layer 5', () => {
+    const f = gRoadmap(A25);
+    const lp = f['roadmap/LEARNING_PATH.md'] || '';
+    assert.ok(lp.includes('Cursor'), 'LEARNING_PATH Layer 5 shows first ai_tool (Cursor)');
+  });
+
+  it('ai_tools with Antigravity → TOOLS_SETUP links antigravity.google', () => {
+    const orchestratorAnswers = Object.assign({}, A25, {
+      ai_tools: 'Cursor, Claude Code, GitHub Copilot, Google Antigravity',
+      ai_auto: 'オーケストレーター',
+    });
+    const f = gRoadmap(orchestratorAnswers);
+    const ts = f['roadmap/TOOLS_SETUP.md'] || '';
+    assert.ok(ts.includes('Antigravity') || ts.includes('antigravity'), 'Antigravity in ai_tools → TOOLS_SETUP has its URL/name');
+  });
+});
+
+/* ══════════════════════════════════════════════════════════════════
+   Suite 3 — Scope Out (N-8): constitution §7 reflects custom scope
+   ════════════════════════════════════════════════════════════════ */
+describe('Q3: scope_out → .spec/constitution.md §7 Out of Scope', () => {
+
+  it('A25 custom scope_out → constitution §7 contains it', () => {
+    const f = gSDD(A25);
+    const con = f['.spec/constitution.md'] || '';
+    assert.ok(con.includes('AI機能'), 'custom scope_out "AI機能" must appear in constitution §7');
+  });
+
+  it('A11 (no scope_out) + saas domain → constitution uses domain default (ネイティブアプリ)', () => {
+    const f = gSDD(A11);
+    const con = f['.spec/constitution.md'] || '';
+    assert.ok(
+      con.includes('ネイティブアプリ') || con.includes('Native app'),
+      'without scope_out, constitution uses saas domain default (ネイティブアプリ)'
+    );
+  });
+
+  it('A11 without scope_out: "AI機能" NOT in §7 (25/25 adds precision)', () => {
+    const f = gSDD(A11);
+    const con = f['.spec/constitution.md'] || '';
+    // domain default for saas does NOT include AI機能 — only 25/25 adds it
+    assert.ok(!con.includes('AI機能'), 'without 25/25 scope_out, AI機能 should not appear in constitution §7');
+  });
+
+  it('mobile=Expo → scope_out rewrites ネイティブアプリ to ストア配布用ネイティブビルド', () => {
+    const expoAnswers = Object.assign({}, A11, {
+      mobile: 'Expo (React Native)',
+      scope_out: 'ネイティブアプリ, AI機能',
+    });
+    const f = gSDD(expoAnswers);
+    const con = f['.spec/constitution.md'] || '';
+    assert.ok(
+      con.includes('ストア配布用ネイティブビルド') || con.includes('Native app store builds'),
+      'when mobile=Expo, scope_out rewrites native app exclusion to store builds language'
+    );
+  });
+});
+
+/* ══════════════════════════════════════════════════════════════════
+   Suite 4 — Multi-Tenant org_model (N-4): §4.5 in technical-plan.md
+   ════════════════════════════════════════════════════════════════ */
+describe('Q4: org_model マルチテナント → technical-plan §4.5', () => {
+
+  it('A25 org_model=マルチテナント(RLS) → technical-plan has §4.5 section', () => {
+    const f = gSDD(A25);
+    const tp = f['.spec/technical-plan.md'] || '';
+    assert.ok(
+      tp.includes('4.5') && (tp.includes('マルチテナント') || tp.includes('Multi-Tenant')),
+      'multi-tenant org_model must add §4.5 to technical-plan'
+    );
+  });
+
+  it('A25 org_model=マルチテナント → technical-plan has RLS Mermaid diagram', () => {
+    const f = gSDD(A25);
+    const tp = f['.spec/technical-plan.md'] || '';
+    assert.ok(tp.includes('RLS') && tp.includes('mermaid'), 'multi-tenant technical-plan must include RLS mermaid diagram');
+  });
+
+  it('A25 multi-tenant → technical-plan §4.5 has 4-tier permission model (owner/admin/member/viewer)', () => {
+    const f = gSDD(A25);
+    const tp = f['.spec/technical-plan.md'] || '';
+    assert.ok(
+      tp.includes('owner') && tp.includes('admin') && tp.includes('member') && tp.includes('viewer'),
+      'multi-tenant §4.5 must contain 4-tier permission table'
+    );
+  });
+
+  it('A11 (no org_model) → technical-plan does NOT have §4.5 multi-tenant section', () => {
+    const f = gSDD(A11);
+    const tp = f['.spec/technical-plan.md'] || '';
+    assert.ok(
+      !tp.includes('4.5') || !(tp.includes('マルチテナント') || tp.includes('Multi-Tenant')),
+      'without org_model answer, §4.5 must not appear — 25/25 adds this section'
+    );
+  });
+});
+
+/* ══════════════════════════════════════════════════════════════════
+   Suite 5 — Roadmap Personalization (G-2 skill_level + G-3 learning_goal)
+   ════════════════════════════════════════════════════════════════ */
+describe('Q5: skill_level + learning_goal → LEARNING_PATH timeline', () => {
+
+  it('skill_level=Beginner → LEARNING_PATH Layer 1 shows [Month 1-2] timeframe', () => {
+    const begAnswers = Object.assign({}, A25, { skill_level: 'Beginner' });
+    const f = gRoadmap(begAnswers);
+    const lp = f['roadmap/LEARNING_PATH.md'] || '';
+    assert.ok(lp.includes('[Month 1-2]'), 'Beginner skill_level should produce monthly timeline in Layer 1');
+  });
+
+  it('skill_level=Professional → LEARNING_PATH Layer 1 shows [Week 1-2] timeframe', () => {
+    const proAnswers = Object.assign({}, A25, { skill_level: 'Professional' });
+    const f = gRoadmap(proAnswers);
+    const lp = f['roadmap/LEARNING_PATH.md'] || '';
+    assert.ok(lp.includes('[Week 1-2]'), 'Professional skill_level should produce weekly timeline in Layer 1');
+  });
+
+  it('learning_goal=3ヶ月集中 with payment → Layer 6 shows Month 2-3', () => {
+    const shortGoal = Object.assign({}, A25, {
+      skill_level: 'Intermediate',
+      learning_goal: '3ヶ月集中',
+      payment: 'Stripe Billing (サブスク)',
+    });
+    const f = gRoadmap(shortGoal);
+    const lp = f['roadmap/LEARNING_PATH.md'] || '';
+    assert.ok(lp.includes('Month 2-3'), '3-month goal should produce Layer 6 at "Month 2-3"');
+  });
+
+  it('learning_goal=12ヶ月じっくり with payment → Layer 6 shows Month 11-12', () => {
+    const longGoal = Object.assign({}, A25, {
+      skill_level: 'Intermediate',
+      learning_goal: '12ヶ月じっくり',
+      payment: 'Stripe Billing (サブスク)',
+    });
+    const f = gRoadmap(longGoal);
+    const lp = f['roadmap/LEARNING_PATH.md'] || '';
+    assert.ok(lp.includes('Month 11-12'), '12-month goal should produce Layer 6 at "Month 11-12"');
+  });
+
+  it('LEARNING_PATH shows skill_level label in header', () => {
+    const f = gRoadmap(A25);
+    const lp = f['roadmap/LEARNING_PATH.md'] || '';
+    assert.ok(lp.includes('Intermediate'), 'LEARNING_PATH header must echo the skill_level value');
+  });
+
+  it('LEARNING_PATH shows learning_goal in header', () => {
+    const f = gRoadmap(A25);
+    const lp = f['roadmap/LEARNING_PATH.md'] || '';
+    assert.ok(lp.includes('3ヶ月集中'), 'LEARNING_PATH header must echo the learning_goal value');
+  });
+});
+
+/* ══════════════════════════════════════════════════════════════════
+   Suite 6 — BaaS vs Traditional ORM in LEARNING_PATH Layer 3
+   ════════════════════════════════════════════════════════════════ */
+describe('Q6: backend (BaaS vs Traditional) → LEARNING_PATH Layer 3 ORM', () => {
+
+  it('Supabase backend → LEARNING_PATH Layer 3 shows "Supabase Client" (not Prisma)', () => {
+    const supaAnswers = Object.assign({}, A25, {
+      backend: 'Supabase', database: 'Supabase (PostgreSQL)', auth: 'Supabase Auth',
+    });
+    const f = gRoadmap(supaAnswers);
+    const lp = f['roadmap/LEARNING_PATH.md'] || '';
+    assert.ok(lp.includes('Supabase Client'), 'Supabase backend → Layer 3 ORM should be "Supabase Client"');
+    assert.ok(!lp.includes('Prisma ORM'), 'Supabase backend should NOT show Prisma ORM in Layer 3');
+  });
+
+  it('Firebase backend → LEARNING_PATH Layer 3 shows "Firebase SDK"', () => {
+    const fbAnswers = Object.assign({}, A25, {
+      backend: 'Firebase', database: 'Firebase Firestore', auth: 'Firebase Auth',
+    });
+    const f = gRoadmap(fbAnswers);
+    const lp = f['roadmap/LEARNING_PATH.md'] || '';
+    assert.ok(lp.includes('Firebase SDK'), 'Firebase backend → Layer 3 ORM should be "Firebase SDK"');
+  });
+
+  it('Express backend (non-BaaS) → LEARNING_PATH Layer 3 shows "Prisma ORM"', () => {
+    const expAnswers = Object.assign({}, A25, {
+      backend: 'Node.js + Express', database: 'PostgreSQL', auth: 'Email/Password',
+    });
+    const f = gRoadmap(expAnswers);
+    const lp = f['roadmap/LEARNING_PATH.md'] || '';
+    assert.ok(lp.includes('Prisma ORM'), 'Express backend → Layer 3 should default to Prisma ORM');
+  });
+
+  it('Express + Drizzle ORM → LEARNING_PATH Layer 3 shows "Drizzle ORM"', () => {
+    const drizzleAnswers = Object.assign({}, A25, {
+      backend: 'Node.js + Express', database: 'PostgreSQL', auth: 'Email/Password',
+      orm: 'Drizzle',
+    });
+    const f = gRoadmap(drizzleAnswers);
+    const lp = f['roadmap/LEARNING_PATH.md'] || '';
+    assert.ok(lp.includes('Drizzle ORM'), 'Drizzle orm answer → Layer 3 should show Drizzle ORM');
+  });
+
+  it('NestJS + TypeORM → LEARNING_PATH Layer 3 shows "TypeORM" (not Prisma ORM)', () => {
+    const typeormAnswers = Object.assign({}, A25, {
+      backend: 'NestJS', database: 'PostgreSQL', auth: 'Email/Password', orm: 'TypeORM',
+    });
+    const f = gRoadmap(typeormAnswers);
+    const lp = f['roadmap/LEARNING_PATH.md'] || '';
+    assert.ok(lp.includes('TypeORM'), 'TypeORM orm answer → Layer 3 should show TypeORM');
+    assert.ok(!lp.includes('Prisma ORM'), 'TypeORM orm should NOT fall back to Prisma ORM');
+  });
+
+  it('FastAPI + SQLAlchemy → LEARNING_PATH Layer 3 shows "SQLAlchemy" (not Prisma ORM)', () => {
+    const saAnswers = Object.assign({}, A25, {
+      backend: 'FastAPI (Python)', database: 'PostgreSQL', auth: 'Email/Password', orm: 'SQLAlchemy',
+    });
+    const f = gRoadmap(saAnswers);
+    const lp = f['roadmap/LEARNING_PATH.md'] || '';
+    assert.ok(lp.includes('SQLAlchemy'), 'SQLAlchemy orm answer → Layer 3 should show SQLAlchemy');
+    assert.ok(!lp.includes('Prisma ORM'), 'SQLAlchemy orm should NOT fall back to Prisma ORM');
+  });
+
+  it('Express + Kysely → LEARNING_PATH Layer 3 shows "Kysely" (not Prisma ORM)', () => {
+    const kyselyAnswers = Object.assign({}, A25, {
+      backend: 'Node.js + Express', database: 'PostgreSQL', auth: 'Email/Password', orm: 'Kysely',
+    });
+    const f = gRoadmap(kyselyAnswers);
+    const lp = f['roadmap/LEARNING_PATH.md'] || '';
+    assert.ok(lp.includes('Kysely'), 'Kysely orm answer → Layer 3 should show Kysely');
+    assert.ok(!lp.includes('Prisma ORM'), 'Kysely orm should NOT fall back to Prisma ORM');
+  });
+});
+
+/* ══════════════════════════════════════════════════════════════════
+   Suite 9 — future_features connects to constitution §8 + LEARNING_PATH
+   ════════════════════════════════════════════════════════════════ */
+describe('Q9: future_features → constitution §8 + LEARNING_PATH roadmap', () => {
+
+  it('A25 future_features → constitution.md has §8 Post-MVP section', () => {
+    const f = gSDD(A25);
+    const con = f['.spec/constitution.md'] || '';
+    assert.ok(
+      con.includes('8.') && (con.includes('Post-MVP') || con.includes('MVP後の拡張計画')),
+      'constitution must have §8 Post-MVP Feature Roadmap section'
+    );
+  });
+
+  it('A25 future_features → constitution §8 lists features from future_features answer', () => {
+    const f = gSDD(A25);
+    const con = f['.spec/constitution.md'] || '';
+    assert.ok(con.includes('分析レポート'), 'constitution §8 must list 分析レポート from future_features');
+    assert.ok(con.includes('チーム機能'), 'constitution §8 must list チーム機能 from future_features');
+  });
+
+  it('A11 (no future_features) → constitution §8 shows default fallback', () => {
+    const f = gSDD(A11);
+    const con = f['.spec/constitution.md'] || '';
+    assert.ok(
+      con.includes('8.') && con.includes('Phase 2'),
+      'without future_features, constitution §8 still shows default Phase 2 entries'
+    );
+  });
+
+  it('A25 future_features → LEARNING_PATH has feature expansion roadmap section', () => {
+    const f = gRoadmap(A25);
+    const lp = f['roadmap/LEARNING_PATH.md'] || '';
+    assert.ok(
+      lp.includes('機能拡張ロードマップ') || lp.includes('Feature Expansion Roadmap'),
+      'LEARNING_PATH must include Feature Expansion Roadmap section when future_features is set'
+    );
+  });
+
+  it('A25 future_features items appear in LEARNING_PATH expansion section', () => {
+    const f = gRoadmap(A25);
+    const lp = f['roadmap/LEARNING_PATH.md'] || '';
+    assert.ok(
+      lp.includes('分析レポート') || lp.includes('AI機能') || lp.includes('チーム機能'),
+      'LEARNING_PATH expansion section must list future_features items'
+    );
+  });
+
+  it('A11 (no future_features) → LEARNING_PATH has no expansion section', () => {
+    const f = gRoadmap(A11);
+    const lp = f['roadmap/LEARNING_PATH.md'] || '';
+    assert.ok(
+      !lp.includes('機能拡張ロードマップ') && !lp.includes('Feature Expansion Roadmap'),
+      'without future_features, LEARNING_PATH must not have Feature Expansion Roadmap section'
+    );
+  });
+});
+
+/* ══════════════════════════════════════════════════════════════════
+   Suite 10 — learning_path → LEARNING_PATH header
+   ════════════════════════════════════════════════════════════════ */
+describe('Q10: learning_path → LEARNING_PATH.md header', () => {
+
+  it('A25 learning_path appears in LEARNING_PATH header line', () => {
+    const f = gRoadmap(A25);
+    const lp = f['roadmap/LEARNING_PATH.md'] || '';
+    assert.ok(lp.includes('React + BaaS'), 'LEARNING_PATH header must include learning_path value');
+  });
+
+  it('A11 (no learning_path) → LEARNING_PATH header valid, no empty label shown', () => {
+    const f = gRoadmap(A11);
+    const lp = f['roadmap/LEARNING_PATH.md'] || '';
+    const header = (lp.split('\n')[1] || '');
+    assert.ok(!header.includes('学習パス:  |') && !header.includes('Learning Path:  |'),
+      'without learning_path, header must not show empty label pipe');
+  });
+
+  it('Fullstack+Mobile learning_path → header shows Fullstack+Mobile', () => {
+    const mobileAnswers = Object.assign({}, A25, { learning_path: 'Fullstack+Mobile' });
+    const f = gRoadmap(mobileAnswers);
+    const lp = f['roadmap/LEARNING_PATH.md'] || '';
+    assert.ok(lp.includes('Fullstack+Mobile'), 'Fullstack+Mobile learning_path must appear in LEARNING_PATH header');
+  });
+});
+
+/* ══════════════════════════════════════════════════════════════════
+   Suite 11 — ai_tools → prompt_composition_guide (P17 gen67)
+   ════════════════════════════════════════════════════════════════ */
+
+/** Run only P17 Prompt Genome */
+function gP17(answers, lang) {
+  S.files={}; S.genLang=lang||'ja'; S.skill='intermediate';
+  genPillar17_PromptGenome(answers,'QTest');
+  return S.files;
+}
+
+describe('Q11: ai_tools → docs/67_prompt_composition_guide.md tool table', () => {
+
+  it('A25 with Cursor, Claude Code, GitHub Copilot → guide has tool-specific table', () => {
+    const f = gP17(A25);
+    const guide = f['docs/67_prompt_composition_guide.md'] || '';
+    assert.ok(guide.includes('Cursor'), 'prompt_composition_guide must list Cursor in tool table');
+    assert.ok(guide.includes('Claude Code'), 'prompt_composition_guide must list Claude Code');
+    assert.ok(guide.includes('Copilot'), 'prompt_composition_guide must list GitHub Copilot');
+  });
+
+  it('A11 (no ai_tools) → guide defaults to Cursor entry only', () => {
+    const f = gP17(A11);
+    const guide = f['docs/67_prompt_composition_guide.md'] || '';
+    assert.ok(guide.includes('Cursor'), 'without ai_tools, guide defaults to Cursor');
+    assert.ok(!guide.includes('Claude Code'), 'without ai_tools, Claude Code entry absent — 25/25 adds it');
+  });
+
+  it('ai_tools with Aider → guide has Aider row with diff-based pattern', () => {
+    const aiderAnswers = Object.assign({}, A25, { ai_tools: 'Cursor, Aider' });
+    const f = gP17(aiderAnswers);
+    const guide = f['docs/67_prompt_composition_guide.md'] || '';
+    assert.ok(guide.includes('Aider'), 'Aider in ai_tools → prompt guide must have Aider row');
+  });
+
+  it('EN generation: tool table has English headers', () => {
+    const f = gP17(A25, 'en');
+    const guide = f['docs/67_prompt_composition_guide.md'] || '';
+    assert.ok(
+      guide.includes('Tool-Specific Prompt Optimization') || guide.includes('Optimal Pattern'),
+      'EN prompt_composition_guide must have English tool table header'
+    );
+  });
+});
+
+/* ══════════════════════════════════════════════════════════════════
+   Suite 12 — dev_env_type → release_engineering (P20 gen80)
+   ════════════════════════════════════════════════════════════════ */
+
+/** Run only P20 CI/CD */
+function gP20(answers, lang) {
+  S.files={}; S.genLang=lang||'ja'; S.skill='intermediate';
+  genPillar20_CICDIntelligence(answers,'QTest');
+  return S.files;
+}
+
+describe('Q12: dev_env_type → docs/80_release_engineering.md branch strategy', () => {
+
+  it('dev_env_type=ローカル開発 → release_engineering has Local Dev branch strategy', () => {
+    const f = gP20(A25);
+    const rel = f['docs/80_release_engineering.md'] || '';
+    assert.ok(
+      rel.includes('ローカル開発') || rel.includes('Local Dev') || rel.includes('Feature Branch'),
+      'ローカル開発 dev_env_type must produce Local Dev branch strategy section'
+    );
+  });
+
+  it('dev_env_type=クラウド開発 → release_engineering has Cloud Dev branch strategy', () => {
+    const cloudAnswers = Object.assign({}, A25, { dev_env_type: 'クラウド開発' });
+    const f = gP20(cloudAnswers);
+    const rel = f['docs/80_release_engineering.md'] || '';
+    assert.ok(
+      rel.includes('クラウド開発') || rel.includes('Cloud Dev'),
+      'クラウド開発 dev_env_type must produce Cloud Dev branch strategy section'
+    );
+    assert.ok(
+      rel.includes('Trunk-Based') || rel.includes('trunk'),
+      'Cloud Dev strategy must recommend Trunk-Based Development'
+    );
+  });
+
+  it('dev_env_type=ハイブリッド → release_engineering has Hybrid branch strategy', () => {
+    const hybridAnswers = Object.assign({}, A25, { dev_env_type: 'ハイブリッド開発' });
+    const f = gP20(hybridAnswers);
+    const rel = f['docs/80_release_engineering.md'] || '';
+    assert.ok(
+      rel.includes('ハイブリッド') || rel.includes('Hybrid'),
+      'ハイブリッド dev_env_type must produce Hybrid branch strategy section'
+    );
+  });
+
+  it('A11 (no dev_env_type) → release_engineering always has branch strategy section', () => {
+    const f = gP20(A11);
+    const rel = f['docs/80_release_engineering.md'] || '';
+    assert.ok(
+      rel.includes('Branch Strategy by Dev Environment') || rel.includes('開発環境別ブランチ戦略'),
+      'release_engineering always has branch strategy section (defaults to local dev)'
+    );
+  });
+
+  it('EN generation: release_engineering has English branch strategy', () => {
+    const f = gP20(A25, 'en');
+    const rel = f['docs/80_release_engineering.md'] || '';
+    assert.ok(
+      rel.includes('Branch Strategy by Dev Environment') || rel.includes('Local Dev'),
+      'EN release_engineering must have English branch strategy'
+    );
+  });
+});
+
+/* ══════════════════════════════════════════════════════════════════
+   Suite 7 — Domain KPI fallback quality (constitution §3 without success answer)
+   ════════════════════════════════════════════════════════════════ */
+describe('Q7: domain-specific KPI fallback in constitution §3', () => {
+
+  it('EC domain (no success) → constitution has GMV metric', () => {
+    const ecAnswers = Object.assign({}, A11, {
+      purpose: 'ECサイト — 商品販売・在庫管理',
+      backend: 'Node.js + Express', database: 'PostgreSQL', auth: 'Email/Password',
+      payment: 'Stripe決済', data_entities: 'Product, Order, Category, User',
+    });
+    const f = gSDD(ecAnswers);
+    const con = f['.spec/constitution.md'] || '';
+    assert.ok(con.includes('GMV') || con.includes('CVR'), 'EC domain constitution must reference GMV or CVR');
+  });
+
+  it('SaaS domain (no success) → constitution has MRR and チャーン率', () => {
+    const saasAnswers = Object.assign({}, A11, {
+      purpose: 'SaaS型プロジェクト管理ツール サブスク課金',
+    });
+    const f = gSDD(saasAnswers);
+    const con = f['.spec/constitution.md'] || '';
+    assert.ok(con.includes('MRR') || con.includes('チャーン'), 'SaaS domain constitution must have MRR/churn KPI');
+  });
+
+  it('Custom success overrides domain KPI — education domain with explicit success', () => {
+    const customAnswers = Object.assign({}, A11, {
+      purpose: '教育 LMS コース管理',
+      success: 'CUSTOM_KPI_VALUE_12345',
+    });
+    const f = gSDD(customAnswers);
+    const con = f['.spec/constitution.md'] || '';
+    // custom success takes priority over domain fallback
+    assert.ok(con.includes('CUSTOM_KPI_VALUE_12345'), 'explicit success answer must override domain KPI in constitution');
+    assert.ok(!con.includes('コース完了率'), 'domain fallback KPI must not appear when explicit success is set');
+  });
+
+  it('overview: custom success takes priority over N/A', () => {
+    const customAnswers = Object.assign({}, A11, { success: 'MY_UNIQUE_KPI_999' });
+    const f = gSDD(customAnswers);
+    const ov = f['docs/01_project_overview.md'] || '';
+    assert.ok(ov.includes('MY_UNIQUE_KPI_999'), 'custom success appears verbatim in overview');
+    assert.ok(!ov.includes('N/A'), 'with custom success, overview must not show N/A');
+  });
+});
+
+/* ══════════════════════════════════════════════════════════════════
+   Suite 8 — Full E2E Quality: file count, token richness, bilingual parity
+   ════════════════════════════════════════════════════════════════ */
+describe('Q8: Full E2E generation — file count, tokens, 25 vs 11 delta', () => {
+
+  it('A25 full generation: file count in 108-139 range', () => {
+    const f = gFull(A25);
+    const count = Object.keys(f).length;
+    assert.ok(count >= 108 && count <= 139, `A25 full gen file count should be 108-139, got ${count}`);
+  });
+
+  it('A25 full generation: total tokens ≥ 14000 (rich content across 20 pillars)', () => {
+    const f = gFull(A25);
+    const total = Object.values(f).reduce((s,v)=>s+tokens(v),0);
+    assert.ok(total >= 14000, `A25 total tokens should be ≥14000, got ${total}`);
+  });
+
+  it('A25 full generation: technical-plan is content-rich (≥ 800 tokens from org_model §4.5)', () => {
+    const f = gFull(A25);
+    const t = tokens(f['.spec/technical-plan.md'] || '');
+    assert.ok(t >= 800, `technical-plan should be ≥800 tokens with 25/25 answers (org_model adds §4.5), got ${t}`);
+  });
+
+  it('A25 generates more total tokens than A11 (25/25 produces richer docs)', () => {
+    const f25 = gFull(A25);
+    const f11 = gFull(A11);
+    const t25 = Object.values(f25).reduce((s,v)=>s+tokens(v),0);
+    const t11 = Object.values(f11).reduce((s,v)=>s+tokens(v),0);
+    assert.ok(t25 > t11, `25-answer generation (${t25}) must produce more tokens than 11-answer (${t11})`);
+  });
+
+  it('A25 EN generation: same file count as JA (bilingual parity)', () => {
+    const fJA = gFull(A25, 'ja');
+    const fEN = gFull(A25, 'en');
+    const cJA = Object.keys(fJA).length;
+    const cEN = Object.keys(fEN).length;
+    assert.equal(cEN, cJA, `EN and JA generation should produce same file count (JA=${cJA}, EN=${cEN})`);
+  });
+
+  it('A25 EN generation: project_overview has "Success Metrics" section', () => {
+    const f = gSDD(A25, 'en');
+    const ov = f['docs/01_project_overview.md'] || '';
+    assert.ok(ov.includes('Success Metrics'), 'EN project_overview must have "Success Metrics" section header');
+  });
+
+  it('A25 JA generation: project_overview has "成功指標" section', () => {
+    const f = gSDD(A25, 'ja');
+    const ov = f['docs/01_project_overview.md'] || '';
+    assert.ok(ov.includes('成功指標'), 'JA project_overview must have "成功指標" section header');
+  });
+
+  it('A25 LEARNING_PATH is personalized (≥ 200 tokens)', () => {
+    const f = gRoadmap(A25);
+    const t = tokens(f['roadmap/LEARNING_PATH.md'] || '');
+    assert.ok(t >= 200, `LEARNING_PATH with 25/25 answers should be ≥200 tokens, got ${t}`);
+  });
+});

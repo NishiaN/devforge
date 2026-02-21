@@ -403,6 +403,29 @@ function gen67(G, domain, meth, a, pn) {
     d += '**' + (i+1) + '. ' + p[0] + '**\n\n' + p[1] + '\n\n' + p[2] + '\n\n';
   });
 
+  // ai_tools: tool-specific prompt optimization table
+  var aiTools = (a.ai_tools || 'Cursor').split(', ');
+  d += G ? '## 🛠️ AIツール別プロンプト最適化\n\n' : '## 🛠️ Tool-Specific Prompt Optimization\n\n';
+  d += '| ' + (G ? 'ツール' : 'Tool') + ' | ' + (G ? '最適パターン' : 'Optimal Pattern') + ' | ' + (G ? '推奨アプローチ' : 'Recommended Approach') + ' |\n';
+  d += '|---|---|---|\n';
+  aiTools.forEach(function(t) {
+    var tt = t.trim();
+    if (tt.includes('Cursor')) {
+      d += '| Cursor | ' + (G ? 'ワークスペース参照 (@workspace)' : 'Workspace reference (@workspace)') + ' | ' + (G ? 'コンテキスト付き指示で高精度' : 'Context-rich instructions for precision') + ' |\n';
+    } else if (tt.includes('Claude')) {
+      d += '| Claude Code | ' + (G ? 'サブエージェント委任' : 'Subagent delegation') + ' | ' + (G ? 'タスク分割+autonomous実行' : 'Task decomposition + autonomous execution') + ' |\n';
+    } else if (tt.includes('Copilot')) {
+      d += '| GitHub Copilot | ' + (G ? 'インライン補完' : 'Inline completion') + ' | ' + (G ? 'テスト→実装の順序でTDD' : 'TDD: tests first, then implementation') + ' |\n';
+    } else if (tt.includes('Aider')) {
+      d += '| Aider | ' + (G ? 'Git統合編集' : 'Git-integrated editing') + ' | ' + (G ? '差分ベースの指示' : 'Diff-based instructions') + ' |\n';
+    } else if (tt.includes('Antigravity')) {
+      d += '| Antigravity | ' + (G ? 'Agent-first IDE' : 'Agent-first IDE') + ' | ' + (G ? 'Managerビューでタスク管理' : 'Manager view for task orchestration') + ' |\n';
+    } else {
+      d += '| ' + tt + ' | ' + (G ? '汎用プロンプト' : 'General prompt') + ' | ' + (G ? 'CoT+制約明示' : 'CoT + explicit constraints') + ' |\n';
+    }
+  });
+  d += '\n';
+
   return d;
 }
 

@@ -666,7 +666,21 @@ function gen80(G, domain, dtCfg, a, pn) {
   if (rec.id === 'gitflow') {
     doc += '  F --> G[develop ' + (G ? 'にバックポート' : 'backport') + ']\n';
   }
-  doc += '```\n';
+  doc += '```\n\n';
+
+  // dev_env_type: branch strategy by dev environment
+  var devEnv = a.dev_env_type || '';
+  var isCloud = /Cloud|クラウド/i.test(devEnv);
+  var isHybrid = /Hybrid|ハイブリッド/i.test(devEnv);
+  doc += '## ' + (G ? '開発環境別ブランチ戦略' : 'Branch Strategy by Dev Environment') + '\n\n';
+  if (isCloud) {
+    doc += (G ? '**クラウド開発**: Trunk-Based Development推奨 — プレビューデプロイでPR単位の確認が可能\n' : '**Cloud Dev**: Trunk-Based Development — preview deploys enable PR-level verification\n');
+  } else if (isHybrid) {
+    doc += (G ? '**ハイブリッド**: GitHub Flow推奨 — ローカルテスト+クラウドプレビューの併用\n' : '**Hybrid**: GitHub Flow — combine local tests with cloud previews\n');
+  } else {
+    doc += (G ? '**ローカル開発**: Feature Branch + CI推奨 — ローカルテスト完了後にPR作成\n' : '**Local Dev**: Feature Branch + CI — create PRs after local tests pass\n');
+  }
+  doc += '\n';
 
   return doc;
 }
