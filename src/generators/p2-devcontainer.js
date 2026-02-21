@@ -134,7 +134,11 @@ function genPillar2_DevContainer(a,pn){
   if(hasPay&&a.payment.includes('Stripe')){
     envLines.push('# Stripe','STRIPE_SECRET_KEY=sk_test_xxx','STRIPE_WEBHOOK_SECRET=whsec_xxx',envPrefix+'STRIPE_PUBLISHABLE_KEY=pk_test_xxx','');
   }
-  envLines.push('# Security','ALLOWED_ORIGINS=http://localhost:3000,https://yourdomain.com','RATE_LIMIT_MAX=100','RATE_LIMIT_WINDOW_MS=60000','');
+  if(isPython){
+    envLines.push('# CORS — split deployment (FastAPI BE + '+envPrefix.replace(/_$/,'').toLowerCase()+' FE)','FRONTEND_URL=http://localhost:'+ports[0],'ALLOWED_ORIGINS=http://localhost:'+ports[0]+',https://your-app.vercel.app','BACKEND_API_URL=http://localhost:8000','# FE side (add to frontend .env.local)','# '+envPrefix+'API_BASE_URL=http://localhost:8000','');
+  } else {
+    envLines.push('# Security','ALLOWED_ORIGINS=http://localhost:3000,https://yourdomain.com','RATE_LIMIT_MAX=100','RATE_LIMIT_WINDOW_MS=60000','');
+  }
   S.files['.env.example']=envLines.join('\n');
 
   // .gitattributes — enforce LF line endings

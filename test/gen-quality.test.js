@@ -1024,3 +1024,127 @@ describe('Suite 14: Architecture Integrity Check (docs/82) + ORM/Auth resolvers'
     );
   });
 });
+
+/* ══════════════════════════════════════════════════════════════════
+   Suite 15 — Python/Split deployment 是正: SQLAlchemy Mixin / Async Queue / CORS
+   ════════════════════════════════════════════════════════════════ */
+describe('Suite 15: Python/Split deployment corrections', () => {
+
+  // Python FastAPI is always split (Vite SPA + separate FastAPI server)
+  const pyAnswers = Object.assign({}, A25, {
+    frontend: 'React + Vite',   // SPA — no Next.js SSR, resolveArch → 'split'
+    backend: 'Python + FastAPI',
+    database: 'PostgreSQL',
+    orm: 'SQLAlchemy (Python)',
+    deploy: 'Vercel',
+  });
+
+  /** Helper: run p1-sdd only */
+  function gSDD(answers, lang) {
+    S.files = {}; S.genLang = lang || 'ja'; S.skill = 'intermediate';
+    genPillar1_SDD(answers, 'QTest');
+    return S.files;
+  }
+
+  /** Helper: run p2-devcontainer only */
+  function gDev(answers, lang) {
+    S.files = {}; S.genLang = lang || 'ja'; S.skill = 'intermediate';
+    genPillar2_DevContainer(answers, 'QTest');
+    return S.files;
+  }
+
+  // ── 違反#1: SQLAlchemy Soft Delete Mixin ──
+  it('#1 Python backend → technical-plan contains SoftDeleteMixin', () => {
+    const f = gSDD(pyAnswers);
+    const tp = f['.spec/technical-plan.md'] || '';
+    assert.ok(tp.includes('SoftDeleteMixin'), 'technical-plan must contain SoftDeleteMixin for Python backend');
+  });
+
+  it('#1 Python backend → technical-plan contains active_query pattern', () => {
+    const f = gSDD(pyAnswers);
+    const tp = f['.spec/technical-plan.md'] || '';
+    assert.ok(tp.includes('active_query'), 'technical-plan must contain active_query method');
+  });
+
+  it('#1 Python backend → technical-plan contains deleted_at IS NULL reference', () => {
+    const f = gSDD(pyAnswers);
+    const tp = f['.spec/technical-plan.md'] || '';
+    assert.ok(tp.includes('deleted_at'), 'technical-plan must contain deleted_at mixin reference');
+  });
+
+  it('#1 Non-Python backend → no SoftDeleteMixin section', () => {
+    const nodeAnswers = Object.assign({}, A25, { backend: 'Node.js + Express' });
+    const f = gSDD(nodeAnswers);
+    const tp = f['.spec/technical-plan.md'] || '';
+    assert.ok(!tp.includes('SoftDeleteMixin'), 'Node.js backend should not have SoftDeleteMixin section');
+  });
+
+  // ── 違反#2: 非同期ジョブ基盤 ──
+  it('#2 Python + background feature → technical-plan contains BackgroundTasks', () => {
+    const bgAnswers = Object.assign({}, pyAnswers, { mvp_features: 'ユーザー管理, バックグラウンド処理, データエクスポート' });
+    const f = gSDD(bgAnswers);
+    const tp = f['.spec/technical-plan.md'] || '';
+    assert.ok(tp.includes('BackgroundTasks'), 'Python + background feature must include BackgroundTasks section');
+  });
+
+  it('#2 Python + export feature → technical-plan contains Celery', () => {
+    const bgAnswers = Object.assign({}, pyAnswers, { mvp_features: 'ユーザー管理, データエクスポート' });
+    const f = gSDD(bgAnswers);
+    const tp = f['.spec/technical-plan.md'] || '';
+    assert.ok(tp.includes('Celery'), 'Python + export feature must include Celery section');
+  });
+
+  it('#2 Non-Python without background → no async queue section', () => {
+    const nodeAnswers = Object.assign({}, A25, { backend: 'Node.js + Express' });
+    const f = gSDD(nodeAnswers);
+    const tp = f['.spec/technical-plan.md'] || '';
+    assert.ok(!tp.includes('BackgroundTasks'), 'Non-Python without background should not have BackgroundTasks');
+  });
+
+  it('#2 Decision matrix contains threshold comparison', () => {
+    const bgAnswers = Object.assign({}, pyAnswers, { mvp_features: 'バックグラウンド処理' });
+    const f = gSDD(bgAnswers);
+    const tp = f['.spec/technical-plan.md'] || '';
+    assert.ok(tp.includes('10'), 'Async section should include 10s threshold decision');
+  });
+
+  // ── 違反#3: CORS環境変数 ──
+  it('#3 split deployment → technical-plan contains CORS section', () => {
+    const splitAnswers = Object.assign({}, pyAnswers, { deploy: 'Vercel', backend: 'Python + FastAPI' });
+    // arch.pattern='split' when backend is separate server
+    const f = gSDD(splitAnswers);
+    const tp = f['.spec/technical-plan.md'] || '';
+    assert.ok(tp.includes('CORS') || tp.includes('ALLOWED_ORIGINS'), 'Split deployment must include CORS section');
+  });
+
+  it('#3 split deployment → technical-plan contains FRONTEND_URL variable', () => {
+    const f = gSDD(pyAnswers);
+    const tp = f['.spec/technical-plan.md'] || '';
+    assert.ok(tp.includes('FRONTEND_URL'), 'Split deployment must document FRONTEND_URL env var');
+  });
+
+  it('#3 split deployment → technical-plan contains API_BASE_URL variable', () => {
+    const f = gSDD(pyAnswers);
+    const tp = f['.spec/technical-plan.md'] || '';
+    assert.ok(tp.includes('API_BASE_URL'), 'Split deployment must document API_BASE_URL env var');
+  });
+
+  it('#3 Python .env.example contains FRONTEND_URL', () => {
+    const f = gDev(pyAnswers);
+    const env = f['.env.example'] || '';
+    assert.ok(env.includes('FRONTEND_URL'), '.env.example must contain FRONTEND_URL for Python backend');
+  });
+
+  it('#3 Python .env.example contains BACKEND_API_URL', () => {
+    const f = gDev(pyAnswers);
+    const env = f['.env.example'] || '';
+    assert.ok(env.includes('BACKEND_API_URL'), '.env.example must contain BACKEND_API_URL for Python backend');
+  });
+
+  // ── 違反#4: alembic (前回実装済み確認) ──
+  it('#4 Python + PostgreSQL post-create contains alembic upgrade head', () => {
+    const f = gDev(pyAnswers);
+    const ps = f['.devcontainer/post-create.sh'] || '';
+    assert.ok(ps.includes('alembic upgrade head'), 'post-create.sh must contain alembic upgrade head for Python+PostgreSQL');
+  });
+});

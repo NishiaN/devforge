@@ -247,6 +247,8 @@ function genPillar1_SDD(a,pn){
   const erWarnSection=er.warnings.length?'\n'+(G?'### ⚠️ ドメイン適合性の注記':'### ⚠️ Domain Fit Notes')+'\n'+er.warnings.join('\n'):'';
   const supaNote=(arch.isBaaS&&be.includes('Supabase'))?'> '+(G?'Supabase Dashboard または supabase/migrations/ でスキーマ管理':'Manage schema via Supabase Dashboard or supabase/migrations/')+'\n\n':'';
   const deployNote=arch.pattern==='split'?' (FE) + Railway/Render ('+be+')':'';
+  const isPython=/Python|Django|FastAPI/i.test(be);
+  const hasBgTask=(function(){var f=(a.mvp_features||'').toLowerCase();return f.includes('バックグラウンド')||f.includes('background')||f.includes('非同期')||f.includes('async')||f.includes('エクスポート')||f.includes('export')||f.includes('batch')||f.includes('バッチ');})();
 
   // Per-table RLS policies
   let rlsSection='';
@@ -321,6 +323,55 @@ function genPillar1_SDD(a,pn){
     arch.note?'\n> '+arch.note+'\n':'',
     G?'## 2. ディレクトリ構造':'## 2. Directory Structure','```',dirLines.join('\n'),'```',dirNote,'',
     G?'## 3. データベース設計':'## 3. Database Design',fullEntitySection,'',
+    (function(){
+      if(!isPython) return '';
+      return [
+        G?'## 3.5 SQLAlchemy 論理削除 Mixin':'## 3.5 SQLAlchemy Soft Delete Mixin',
+        G?'全エンティティが継承する共通 Mixin — `deleted_at IS NULL` を自動フィルタリング:':
+          'Common Mixin inherited by all entities — auto-filters `deleted_at IS NULL`:',
+        '','```python',
+        '# app/models/base.py',
+        'from datetime import datetime, timezone',
+        'from sqlalchemy import Column, DateTime',
+        'from sqlalchemy.ext.declarative import declared_attr',
+        'from sqlalchemy.orm import Session',
+        '',
+        'class SoftDeleteMixin:',
+        '    """論理削除対応 Mixin — 全エンティティに継承させる"""',
+        '    @declared_attr',
+        '    def deleted_at(cls):',
+        '        return Column(DateTime(timezone=True), nullable=True, index=True)',
+        '',
+        '    def soft_delete(self):',
+        '        self.deleted_at = datetime.now(timezone.utc)',
+        '',
+        '    def restore(self):',
+        '        self.deleted_at = None',
+        '',
+        '# Repository Base — アクティブレコードのみ取得',
+        'class BaseRepository:',
+        '    def __init__(self, db: Session, model):',
+        '        self.db = db',
+        '        self.model = model',
+        '',
+        '    def active_query(self):',
+        '        """論理削除済みを除外したクエリ (デフォルト)"""',
+        '        return self.db.query(self.model).filter(',
+        '            self.model.deleted_at.is_(None)',
+        '        )',
+        '',
+        '    def soft_delete(self, record_id: int):',
+        '        obj = self.db.get(self.model, record_id)',
+        '        if obj:',
+        '            obj.soft_delete()',
+        '            self.db.commit()',
+        '```',
+        '',
+        G?'> アーカイブ一覧: `db.query(Model).filter(Model.deleted_at.isnot(None)).all()`':
+          '> Archive list: `db.query(Model).filter(Model.deleted_at.isnot(None)).all()`',
+        '',
+      ].join('\n');
+    })(),
     G?'## 4. 認証設計':'## 4. Auth Design',
     '- '+(G?'認証SoT':'Auth SoT')+': **'+auth.sot+'**',
     '- '+(G?'トークン':'Token')+': '+auth.tokenType,
@@ -354,8 +405,110 @@ function genPillar1_SDD(a,pn){
     '- Docker DevContainer (.devcontainer/)',
     '- '+(arch.isBaaS?be+' CLI (local emulator)':'Node.js LTS + '+db),
     '- '+((a.ai_tools||'Cursor').split(', ')[0])+' + '+(G?'AI支援':'AI-assisted'),'',
+    (function(){
+      if(!isPython&&!hasBgTask) return '';
+      return [
+        G?'## 5.5 非同期ジョブ基盤':'## 5.5 Async Job Queue Infrastructure',
+        G?'大量データのエクスポートや長時間処理のための非同期実行基盤:':
+          'Async execution infrastructure for bulk export and long-running operations:',
+        '',
+        G?'### 使い分け基準':'### Decision Matrix',
+        '| '+(G?'条件':'Condition')+' | '+(G?'推奨':'Recommended')+' | '+(G?'実装':'Implementation')+' |',
+        '|--------|----------|------------|',
+        '| '+(G?'処理時間 < 10秒 (メール送信・PDF生成)':'< 10s (email, PDF gen)')+
+          ' | FastAPI BackgroundTasks | `background_tasks.add_task(fn, args)` |',
+        '| '+(G?'処理時間 > 10秒 / 大量データ export':'> 10s / bulk export')+
+          ' | Redis + Celery | '+(G?'ワーカープロセスで非同期実行':'Async worker process')+' |',
+        '| '+(G?'定期実行 / バッチ':'Scheduled / batch job')+
+          ' | Celery Beat | `@app.task` + cron schedule |',
+        '',
+        G?'### FastAPI BackgroundTasks（軽量タスク）':'### FastAPI BackgroundTasks (lightweight)',
+        '```python','# routes/export.py','from fastapi import BackgroundTasks','from uuid import uuid4','',
+        '@router.post("/export/csv")',
+        'async def start_csv_export(background_tasks: BackgroundTasks, db: Session = Depends(get_db)):',
+        '    """即時 job_id を返し、バックグラウンドでエクスポートを開始"""',
+        '    job_id = str(uuid4())',
+        '    background_tasks.add_task(generate_csv_export, db, job_id)',
+        '    return {"job_id": job_id, "status": "processing"}',
+        '```',
+        '',
+        G?'### Redis + Celery（大量データ・スケール対応）':'### Redis + Celery (bulk data, scalable)',
+        '```python','# celery_app.py','from celery import Celery','import os','',
+        'celery = Celery(',
+        '    "worker",',
+        '    broker=os.getenv("REDIS_URL", "redis://localhost:6379"),',
+        '    backend=os.getenv("REDIS_URL", "redis://localhost:6379"),',
+        ')',
+        '',
+        '# tasks/export.py',
+        '@celery.task(bind=True, max_retries=3)',
+        'def bulk_export_task(self, user_id: int, fmt: str):',
+        '    try:',
+        '        data = fetch_all_records(user_id)',
+        '        url = upload_to_storage(data, fmt)',
+        '        notify_user(user_id, url)',
+        '    except Exception as exc:',
+        '        raise self.retry(exc=exc, countdown=60)',
+        '```',
+        '',
+        G?'### インフラ追加要素':'### Infrastructure additions',
+        '- Redis: `redis:7-alpine` を docker-compose.yml に追加',
+        '- Celery Worker: `celery -A celery_app worker --loglevel=info`',
+        G?'> **移行戦略**: BackgroundTasks で開始し、負荷増大時に Celery へ段階移行':
+          '> **Migration path**: Start with BackgroundTasks; migrate to Celery as load grows',
+        '',
+      ].join('\n');
+    })(),
     '## 6. CI/CD','- GitHub Actions','- lint → test → build → deploy',
     '- '+(G?'デプロイ先':'Deploy')+': '+(a.deploy||'Vercel')+deployNote,
+    (function(){
+      if(arch.pattern!=='split') return '';
+      var pyCode=[
+        '```python',
+        '# main.py — FastAPI CORS middleware',
+        'import os','from fastapi.middleware.cors import CORSMiddleware','',
+        'allowed_origins = [',
+        '    o.strip() for o in',
+        '    os.getenv("ALLOWED_ORIGINS", "http://localhost:5173").split(",")',
+        ']','',
+        'app.add_middleware(',
+        '    CORSMiddleware,',
+        '    allow_origins=allowed_origins,',
+        '    allow_credentials=True,',
+        '    allow_methods=["GET","POST","PUT","PATCH","DELETE","OPTIONS"],',
+        '    allow_headers=["Authorization","Content-Type","X-Request-ID"],',
+        ')','```',
+      ].join('\n');
+      var tsCode=[
+        '```typescript',
+        '// middleware/cors.ts',
+        'import cors from "cors";',
+        'const origins = process.env.ALLOWED_ORIGINS?.split(",") ?? [];',
+        'app.use(cors({ origin: origins, credentials: true }));','```',
+      ].join('\n');
+      return [
+        '',
+        G?'## 6.5 CORS設定 (FE/BE分離構成)':'## 6.5 CORS Configuration (Split Deployment)',
+        G?'Vercel (FE) と Railway/Render (BE) の別ホスト構成での CORS ミドルウェア管理:':
+          'CORS middleware management for separate Vercel (FE) and Railway/Render (BE) hosts:',
+        '',
+        isPython?pyCode:tsCode,
+        '',
+        G?'### 必須環境変数 (BE + FE 両方に設定)':'### Required Environment Variables',
+        '| '+(G?'変数名':'Variable')+' | '+(G?'設定先':'Where')+' | '+(G?'値の例':'Example')+' |',
+        '|---------|--------|---------|',
+        '| `ALLOWED_ORIGINS` | '+(G?'BE (Railway/Render)':'BE (Railway/Render)')+
+          ' | `https://your-app.vercel.app,http://localhost:5173` |',
+        '| `FRONTEND_URL` | '+(G?'BE (メール・リダイレクト用)':'BE (email/redirect)')+
+          ' | `https://your-app.vercel.app` |',
+        '| `'+(fe.includes('Vite')||fe.includes('SPA')?'VITE_':'NEXT_PUBLIC_')+'API_BASE_URL` | '+(G?'FE (Vite/Next)':'FE (Vite/Next)')+
+          ' | `https://your-api.railway.app` |',
+        '',
+        G?'> **本番**: `ALLOWED_ORIGINS` に `*` は使わず、Vercel の本番 URL のみを許可する':
+          '> **Production**: Never use `*` — allow only the production Vercel URL',
+        '',
+      ].join('\n');
+    })(),
     stripeSection,''
   ].join('\n');
 
