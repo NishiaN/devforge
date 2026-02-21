@@ -20,7 +20,7 @@ Generates **143+ files** across **22 pillars** from a wizard-driven Q&A session.
 ```bash
 node build.js                          # → devforge-v9.html (~2148KB, limit 3000KB)
 node build.js --no-minify              # debug (skip minification)
-npm test                               # 838 tests, all passing
+npm test                               # 847 tests, all passing
 node --test test/gen-quality.test.js   # single test file
 npm run dev                            # build + live-server :3000
 npm run check                          # syntax-check extracted JS
@@ -165,7 +165,7 @@ After adding: update header comment totals, add tests to `test/compat.test.js`, 
 | Preset matching | phase-n (N-1〜N-9 + G-1〜G-6, 60 tests) | ~60 |
 | Other | i18n, state, techdb | ~23 |
 
-**Total: 838 tests** | Test harness pattern: `eval(fs.readFileSync(...))` to load src files; global `S` mock at top.
+**Total: 847 tests** | Test harness pattern: `eval(fs.readFileSync(...))` to load src files; global `S` mock at top.
 
 **When adding domains**, update: `test/data-coverage.test.js` (4 arrays), `test/gen-coherence.test.js`, `test/ops.test.js`.
 

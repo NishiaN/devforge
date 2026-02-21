@@ -662,6 +662,23 @@ function _applyUniversalPostProcess(_en){
       S.answers.learning_path='PERN Stack';
     }
   }
+  // G-6: dev_methods from S.skillLv (when not set by preset)
+  if(!S.answers.dev_methods){
+    var _slv6=typeof S.skillLv==='number'?S.skillLv:3;
+    if(_slv6>=5){
+      S.answers.dev_methods=_en
+        ?'TDD (Test-Driven), BDD (Behavior-Driven), SDD (Spec-Driven), DDD (Domain-Driven), MDD (Model-Driven)'
+        :'TDD（テスト駆動）, BDD（振る舞い駆動）, SDD（仕様駆動）, DDD（ドメイン駆動）, MDD（モデル駆動）';
+    } else if(_slv6>=2){
+      S.answers.dev_methods=_en
+        ?'TDD (Test-Driven), BDD (Behavior-Driven), SDD (Spec-Driven)'
+        :'TDD（テスト駆動）, BDD（振る舞い駆動）, SDD（仕様駆動）';
+    } else {
+      S.answers.dev_methods=_en
+        ?'TDD (Test-Driven), SDD (Spec-Driven)'
+        :'TDD（テスト駆動）, SDD（仕様駆動）';
+    }
+  }
 }
 
 /* Auto-fill Phase 2 (tech stack) defaults for Beginner mode */

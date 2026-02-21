@@ -509,6 +509,90 @@ describe('Phase O G-5: ai_auto inference from skillLv', () => {
   });
 });
 
+/* ── Phase O G-6: dev_methods from skillLv ── */
+describe('Phase O G-6: dev_methods inference from skillLv', () => {
+  it('skillLv=0 → TDD+SDD only (JA)', () => {
+    resetS({ backend: 'Supabase' });
+    h.sandbox.S.skillLv = 0;
+    applyUPP(false);
+    const dm = h.sandbox.S.answers.dev_methods || '';
+    assert.ok(dm.includes('TDD'), 'dev_methods Lv0 should include TDD');
+    assert.ok(dm.includes('SDD'), 'dev_methods Lv0 should include SDD');
+    assert.ok(!dm.includes('BDD'), 'dev_methods Lv0 should NOT include BDD');
+    assert.ok(!dm.includes('DDD'), 'dev_methods Lv0 should NOT include DDD');
+  });
+
+  it('skillLv=1 → TDD+SDD only', () => {
+    resetS({ backend: 'Supabase' });
+    h.sandbox.S.skillLv = 1;
+    applyUPP(false);
+    const dm = h.sandbox.S.answers.dev_methods || '';
+    assert.ok(dm.includes('TDD') && dm.includes('SDD'), 'dev_methods Lv1: TDD+SDD');
+    assert.ok(!dm.includes('BDD'), 'dev_methods Lv1 should NOT include BDD');
+  });
+
+  it('skillLv=2 → TDD+BDD+SDD (JA)', () => {
+    resetS({ backend: 'Supabase' });
+    h.sandbox.S.skillLv = 2;
+    applyUPP(false);
+    const dm = h.sandbox.S.answers.dev_methods || '';
+    assert.ok(dm.includes('TDD') && dm.includes('BDD') && dm.includes('SDD'), 'dev_methods Lv2: TDD+BDD+SDD');
+    assert.ok(!dm.includes('DDD'), 'dev_methods Lv2 should NOT include DDD');
+  });
+
+  it('skillLv=4 → TDD+BDD+SDD', () => {
+    resetS({ backend: 'Supabase' });
+    h.sandbox.S.skillLv = 4;
+    applyUPP(false);
+    const dm = h.sandbox.S.answers.dev_methods || '';
+    assert.ok(dm.includes('TDD') && dm.includes('BDD'), 'dev_methods Lv4: TDD+BDD');
+    assert.ok(!dm.includes('DDD'), 'dev_methods Lv4 should NOT include DDD');
+  });
+
+  it('skillLv=5 → TDD+BDD+SDD+DDD+MDD (JA)', () => {
+    resetS({ backend: 'Supabase' });
+    h.sandbox.S.skillLv = 5;
+    applyUPP(false);
+    const dm = h.sandbox.S.answers.dev_methods || '';
+    assert.ok(dm.includes('DDD'), 'dev_methods Lv5 should include DDD');
+    assert.ok(dm.includes('MDD'), 'dev_methods Lv5 should include MDD');
+  });
+
+  it('skillLv=6 → TDD+BDD+SDD+DDD+MDD (JA)', () => {
+    resetS({ backend: 'Supabase' });
+    h.sandbox.S.skillLv = 6;
+    applyUPP(false);
+    const dm = h.sandbox.S.answers.dev_methods || '';
+    assert.ok(dm.includes('DDD') && dm.includes('MDD'), 'dev_methods Lv6: DDD+MDD included');
+  });
+
+  it('EN mode: skillLv=0 → TDD (Test-Driven), SDD (Spec-Driven)', () => {
+    resetS({ backend: 'Supabase' });
+    h.sandbox.S.skillLv = 0;
+    h.sandbox.S.lang = 'en';
+    applyUPP(true);
+    const dm = h.sandbox.S.answers.dev_methods || '';
+    assert.ok(dm.includes('Test-Driven') && dm.includes('Spec-Driven'), 'EN Lv0: TDD+SDD English');
+    assert.ok(!dm.includes('Behavior-Driven'), 'EN Lv0 should NOT include BDD');
+  });
+
+  it('EN mode: skillLv=5 → includes Domain-Driven and Model-Driven', () => {
+    resetS({ backend: 'Supabase' });
+    h.sandbox.S.skillLv = 5;
+    h.sandbox.S.lang = 'en';
+    applyUPP(true);
+    const dm = h.sandbox.S.answers.dev_methods || '';
+    assert.ok(dm.includes('Domain-Driven') && dm.includes('Model-Driven'), 'EN Lv5: DDD+MDD English');
+  });
+
+  it('Existing dev_methods is preserved (preset override)', () => {
+    resetS({ backend: 'Supabase', dev_methods: 'FDD（機能駆動）' });
+    h.sandbox.S.skillLv = 6;
+    applyUPP(false);
+    assert.equal(h.sandbox.S.answers.dev_methods, 'FDD（機能駆動）');
+  });
+});
+
 /* ── Preset Suggest: _scorePreset unit tests ── */
 describe('Preset Suggest: _scorePreset scoring engine', () => {
   const scorePreset = (...a) => h.sandbox._scorePreset(...a);
