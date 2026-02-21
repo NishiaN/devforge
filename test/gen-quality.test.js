@@ -58,6 +58,7 @@ eval(fs.readFileSync('src/generators/p18-promptops.js','utf-8').replace(/var (RE
 eval(fs.readFileSync('src/generators/p19-enterprise.js','utf-8'));
 eval(fs.readFileSync('src/generators/p20-cicd.js','utf-8'));
 eval(fs.readFileSync('src/generators/p21-api.js','utf-8'));
+eval(fs.readFileSync('src/generators/p22-database.js','utf-8'));
 
 /* ═══ Generation helpers ═══ */
 
@@ -76,7 +77,7 @@ function gRoadmap(answers, lang) {
   return S.files;
 }
 
-/** Full 21-pillar generation (for E2E token and file count tests) */
+/** Full 22-pillar generation (for E2E token and file count tests) */
 function gFull(answers, lang, skill) {
   S.files={}; S.genLang=lang||'ja'; S.skill=skill||'intermediate';
   genPillar1_SDD(answers,'QTest');
@@ -100,6 +101,7 @@ function gFull(answers, lang, skill) {
   genPillar19_EnterpriseSaaS(answers,'QTest');
   genPillar20_CICDIntelligence(answers,'QTest');
   genPillar21_APIIntelligence(answers,'QTest');
+  genPillar22_DatabaseIntelligence(answers,'QTest');
   return Object.assign({},S.files);
 }
 
@@ -675,13 +677,13 @@ describe('Q7: domain-specific KPI fallback in constitution §3', () => {
    ════════════════════════════════════════════════════════════════ */
 describe('Q8: Full E2E generation — file count, tokens, 25 vs 11 delta', () => {
 
-  it('A25 full generation: file count in 108-145 range', () => {
+  it('A25 full generation: file count in 108-150 range', () => {
     const f = gFull(A25);
     const count = Object.keys(f).length;
-    assert.ok(count >= 108 && count <= 145, `A25 full gen file count should be 108-145, got ${count}`);
+    assert.ok(count >= 108 && count <= 150, `A25 full gen file count should be 108-150, got ${count}`);
   });
 
-  it('A25 full generation: total tokens ≥ 14000 (rich content across 21 pillars)', () => {
+  it('A25 full generation: total tokens ≥ 14000 (rich content across 22 pillars)', () => {
     const f = gFull(A25);
     const total = Object.values(f).reduce((s,v)=>s+tokens(v),0);
     assert.ok(total >= 14000, `A25 total tokens should be ≥14000, got ${total}`);
@@ -1350,6 +1352,177 @@ describe('Suite 16: Pillar ㉑ API Intelligence', () => {
     ['docs/83_api_design_principles.md','docs/84_openapi_specification.md',
      'docs/85_api_security_checklist.md','docs/86_api_testing_strategy.md'].forEach(path => {
       assert.ok(f[path], path+' must be generated');
+    });
+  });
+});
+
+/* ══════════════════════════════════════════════════════════════════
+   Suite 17 — Pillar ㉒ DB Intelligence (docs/87-90)
+   ════════════════════════════════════════════════════════════════ */
+
+/** Run only P22 Database Intelligence */
+function gDB(answers, lang) {
+  S.files={}; S.genLang=lang||'ja'; S.skill='intermediate';
+  genPillar22_DatabaseIntelligence(answers,'QTest');
+  return S.files;
+}
+
+const dbAnswers = Object.assign({}, A25, {
+  backend: 'Express.js + Node.js',
+  database: 'PostgreSQL (Neon)',
+  orm: 'Prisma ORM',
+});
+
+const drizzleAnswers = Object.assign({}, dbAnswers, { orm: 'Drizzle ORM' });
+const pyDbAnswers = Object.assign({}, A25, {
+  backend: 'FastAPI (Python)',
+  database: 'PostgreSQL (Neon)',
+  orm: 'SQLAlchemy',
+});
+const mongoAnswers = Object.assign({}, dbAnswers, {
+  database: 'MongoDB',
+  orm: '',
+});
+const baasDbAnswers = Object.assign({}, A25, {
+  backend: 'Supabase',
+  auth: 'Supabase Auth',
+});
+
+describe('Suite 17: Pillar ㉒ DB Intelligence', () => {
+
+  // ── docs/87 Database Design Principles ──
+  it('generates docs/87_database_design_principles.md', () => {
+    const f = gDB(dbAnswers);
+    assert.ok(f['docs/87_database_design_principles.md'], 'docs/87 must be generated');
+  });
+
+  it('docs/87 contains soft delete principle', () => {
+    const f = gDB(dbAnswers);
+    const doc = f['docs/87_database_design_principles.md'] || '';
+    assert.ok(doc.includes('deleted_at') || doc.includes('Soft Delete'), 'docs/87 must contain soft delete pattern');
+  });
+
+  it('docs/87 Prisma: contains Prisma schema example', () => {
+    const f = gDB(dbAnswers);
+    const doc = f['docs/87_database_design_principles.md'] || '';
+    assert.ok(doc.includes('schema.prisma') || doc.includes('prisma'), 'docs/87 Prisma must include Prisma schema');
+  });
+
+  it('docs/87 SQLAlchemy: contains SQLAlchemy model example', () => {
+    const f = gDB(pyDbAnswers);
+    const doc = f['docs/87_database_design_principles.md'] || '';
+    assert.ok(doc.includes('SQLAlchemy') || doc.includes('DeclarativeBase'), 'docs/87 Python must include SQLAlchemy model');
+  });
+
+  it('docs/87 MongoDB: contains document design principles', () => {
+    const f = gDB(mongoAnswers);
+    const doc = f['docs/87_database_design_principles.md'] || '';
+    assert.ok(doc.includes('MongoDB') || doc.includes('Embed'), 'docs/87 MongoDB must include document design');
+  });
+
+  it('docs/87 EN generation works', () => {
+    const f = gDB(dbAnswers, 'en');
+    const doc = f['docs/87_database_design_principles.md'] || '';
+    assert.ok(doc.includes('Database Design Principles'), 'docs/87 EN must have English title');
+    assert.ok(doc.includes('Naming Conventions') || doc.includes('Schema Design'), 'docs/87 EN must have English content');
+  });
+
+  // ── docs/88 Query Optimization ──
+  it('generates docs/88_query_optimization_guide.md', () => {
+    const f = gDB(dbAnswers);
+    assert.ok(f['docs/88_query_optimization_guide.md'], 'docs/88 must be generated');
+  });
+
+  it('docs/88 contains N+1 problem section', () => {
+    const f = gDB(dbAnswers);
+    const doc = f['docs/88_query_optimization_guide.md'] || '';
+    assert.ok(doc.includes('N+1') || doc.includes('n+1'), 'docs/88 must contain N+1 problem');
+  });
+
+  it('docs/88 Prisma: contains include or findMany pattern', () => {
+    const f = gDB(dbAnswers);
+    const doc = f['docs/88_query_optimization_guide.md'] || '';
+    assert.ok(doc.includes('include') || doc.includes('findMany'), 'docs/88 Prisma must include eager loading pattern');
+  });
+
+  it('docs/88 contains connection pooling section', () => {
+    const f = gDB(dbAnswers);
+    const doc = f['docs/88_query_optimization_guide.md'] || '';
+    assert.ok(doc.includes('Connection Pool') || doc.includes('connection pool') || doc.includes('pgBouncer') || doc.includes('Prisma Accelerate'), 'docs/88 must contain connection pooling');
+  });
+
+  it('docs/88 EN generation works', () => {
+    const f = gDB(dbAnswers, 'en');
+    const doc = f['docs/88_query_optimization_guide.md'] || '';
+    assert.ok(doc.includes('Query Optimization'), 'docs/88 EN must have English title');
+  });
+
+  // ── docs/89 Migration Strategy ──
+  it('generates docs/89_migration_strategy.md', () => {
+    const f = gDB(dbAnswers);
+    assert.ok(f['docs/89_migration_strategy.md'], 'docs/89 must be generated');
+  });
+
+  it('docs/89 contains zero-downtime migration principle', () => {
+    const f = gDB(dbAnswers);
+    const doc = f['docs/89_migration_strategy.md'] || '';
+    assert.ok(doc.includes('ゼロダウンタイム') || doc.includes('Zero-Downtime') || doc.includes('zero-downtime'), 'docs/89 must contain zero-downtime principle');
+  });
+
+  it('docs/89 Drizzle: contains drizzle-kit migrate command', () => {
+    const f = gDB(drizzleAnswers);
+    const doc = f['docs/89_migration_strategy.md'] || '';
+    assert.ok(doc.includes('drizzle-kit') || doc.includes('Drizzle'), 'docs/89 Drizzle must include drizzle-kit workflow');
+  });
+
+  it('docs/89 Python: contains Alembic workflow', () => {
+    const f = gDB(pyDbAnswers);
+    const doc = f['docs/89_migration_strategy.md'] || '';
+    assert.ok(doc.includes('alembic') || doc.includes('Alembic'), 'docs/89 Python must include Alembic workflow');
+  });
+
+  it('docs/89 EN generation works', () => {
+    const f = gDB(dbAnswers, 'en');
+    const doc = f['docs/89_migration_strategy.md'] || '';
+    assert.ok(doc.includes('Migration Strategy'), 'docs/89 EN must have English title');
+  });
+
+  // ── docs/90 Backup & DR ──
+  it('generates docs/90_backup_disaster_recovery.md', () => {
+    const f = gDB(dbAnswers);
+    assert.ok(f['docs/90_backup_disaster_recovery.md'], 'docs/90 must be generated');
+  });
+
+  it('docs/90 contains RTO/RPO table', () => {
+    const f = gDB(dbAnswers);
+    const doc = f['docs/90_backup_disaster_recovery.md'] || '';
+    assert.ok(doc.includes('RTO') && doc.includes('RPO'), 'docs/90 must contain RTO/RPO definitions');
+  });
+
+  it('docs/90 Supabase: contains Supabase PITR reference', () => {
+    const f = gDB(baasDbAnswers);
+    const doc = f['docs/90_backup_disaster_recovery.md'] || '';
+    assert.ok(doc.includes('Supabase') || doc.includes('PITR'), 'docs/90 BaaS must reference Supabase PITR');
+  });
+
+  it('docs/90 contains DR runbook', () => {
+    const f = gDB(dbAnswers);
+    const doc = f['docs/90_backup_disaster_recovery.md'] || '';
+    assert.ok(doc.includes('DR') || doc.includes('Runbook') || doc.includes('runbook') || doc.includes('復旧'), 'docs/90 must contain DR runbook');
+  });
+
+  it('docs/90 EN generation works', () => {
+    const f = gDB(dbAnswers, 'en');
+    const doc = f['docs/90_backup_disaster_recovery.md'] || '';
+    assert.ok(doc.includes('Backup') || doc.includes('Disaster Recovery'), 'docs/90 EN must have English title');
+  });
+
+  // ── All 4 files present ──
+  it('all 4 docs/87-90 files are generated for standard preset', () => {
+    const f = gDB(dbAnswers);
+    ['docs/87_database_design_principles.md','docs/88_query_optimization_guide.md',
+     'docs/89_migration_strategy.md','docs/90_backup_disaster_recovery.md'].forEach(p => {
+      assert.ok(f[p], p+' must be generated');
     });
   });
 });

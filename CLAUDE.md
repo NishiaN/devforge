@@ -6,8 +6,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 # DevForge v9.6.0
 
-**AI Development OS** — 56 JS modules in `src/` → single `devforge-v9.html` (~2200KB / 3000KB limit).
-Generates **139+ files** across **21 pillars** from a wizard-driven Q&A session.
+**AI Development OS** — 57 JS modules in `src/` → single `devforge-v9.html` (~2249KB / 3000KB limit).
+Generates **143+ files** across **22 pillars** from a wizard-driven Q&A session.
 
 ## Documentation Map
 
@@ -20,7 +20,7 @@ Generates **139+ files** across **21 pillars** from a wizard-driven Q&A session.
 ```bash
 node build.js                          # → devforge-v9.html (~2148KB, limit 3000KB)
 node build.js --no-minify              # debug (skip minification)
-npm test                               # 816 tests, all passing
+npm test                               # 838 tests, all passing
 node --test test/gen-quality.test.js   # single test file
 npm run dev                            # build + live-server :3000
 npm run check                          # syntax-check extracted JS
@@ -161,11 +161,11 @@ After adding: update header comment totals, add tests to `test/compat.test.js`, 
 | Data/coverage | data-coverage, presets, field-presets | ~62 |
 | Security/compat | security, compat (+7 synergy) | ~108 |
 | Pillars (P14-P20+skill) | ops, future, deviq, promptgenome, promptops, enterprise, cicd, skill-level | ~184 |
-| Gen quality | gen-quality (Suites 1-16, 98 tests) | ~99 |
+| Gen quality | gen-quality (Suites 1-17, 120 tests) | ~121 |
 | Preset matching | phase-n (N-1〜N-9 + G-1〜G-6, 60 tests) | ~60 |
 | Other | i18n, state, techdb | ~23 |
 
-**Total: 816 tests** | Test harness pattern: `eval(fs.readFileSync(...))` to load src files; global `S` mock at top.
+**Total: 838 tests** | Test harness pattern: `eval(fs.readFileSync(...))` to load src files; global `S` mock at top.
 
 **When adding domains**, update: `test/data-coverage.test.js` (4 arrays), `test/gen-coherence.test.js`, `test/ops.test.js`.
 
@@ -179,7 +179,7 @@ Key output structure:
 - `.spec/` — constitution, specification, technical-plan, tasks, verification
 - `.devcontainer/` — devcontainer.json, Dockerfile, docker-compose.yml, post-create.sh
 - `.claude/` — thin CLAUDE.md + 5 path-specific rules + settings.json
-- `docs/` — 81 documents (01_project_overview … 81_ux_proficiency_audit)
+- `docs/` — 90 documents (01_project_overview … 90_backup_disaster_recovery)
 - AI rules — AI_BRIEF.md, .cursorrules, .clinerules, .windsurfrules, AGENTS.md, skills/
 - CI/CD — .github/workflows/ci.yml
 
