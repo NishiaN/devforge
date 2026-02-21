@@ -1185,8 +1185,8 @@ function getFeatureDetail(featureName){
 // ── Domain-specific QA Strategy Map ──
 const DOMAIN_QA_MAP={
   education:{
-    focus_ja:['学習進捗のバックエンド同期','WCAG 2.1 AA準拠','未成年データ保護(FERPA)','コンテンツ配信安定性'],
-    focus_en:['Backend sync for progress','WCAG 2.1 AA compliance','Minor data protection (FERPA)','Content delivery stability'],
+    focus_ja:['学習進捗のバックエンド同期','WCAG 2.2 AA準拠','未成年データ保護(FERPA)','コンテンツ配信安定性'],
+    focus_en:['Backend sync for progress','WCAG 2.2 AA compliance','Minor data protection (FERPA)','Content delivery stability'],
     bugs_ja:['localStorage依存による進捗消失','クイズ正誤判定ミス','ブラウザ別音声再生不具合'],
     bugs_en:['Progress lost on localStorage clear','Quiz scoring errors','Audio playback failures per browser'],
     priority:'Security:HIGH|Performance:MED|DataIntegrity:HIGH|UX:CRITICAL|Compliance:HIGH'
@@ -1456,8 +1456,8 @@ const DOMAIN_PLAYBOOK={
   education:_dpb(
     ['学習目標→知識体系→カリキュラム→評価基準(例:TOEIC 650→900=300h)','成績データ→パターン分析→弱点特定→個別最適化(正答率<60%優先)','理解度テスト→習熟判定→次単元解放(≥80%進む、<60%再履修)'],
     ['Goal→Knowledge map→Curriculum→Assessment (e.g. TOEIC 650→900=300hrs)','Grade data→Pattern analysis→Weakness ID→Personalization (prioritize <60%)','Test→Mastery→Unlock next (≥80% proceed, <60% retry)'],
-    [_CF+':学生データ暗号化、保護者同意、保持5年','WCAG 2.1 AA、スクリーンリーダー対応',_CG+':Right to be forgotten'],
-    [_CF+': student data encrypt, parental consent, 5yr retention','WCAG 2.1 AA, screen reader',_CG+': Right to be forgotten'],
+    [_CF+':学生データ暗号化、保護者同意、保持5年','WCAG 2.2 AA、スクリーンリーダー対応',_CG+':Right to be forgotten'],
+    [_CF+': student data encrypt, parental consent, 5yr retention','WCAG 2.2 AA, screen reader',_CG+': Right to be forgotten'],
     ['進捗消失|localStorage超過'+_PVJ+'IndexedDB移行','カンニング検出漏れ|タブ監視のみ'+_PVJ+'Proctorio+視線追跡','学習時間水増し|非アクティブカウント'+_PVJ+'操作監視、5分で停止'],
     ['Progress loss|localStorage quota'+_PVE+'IndexedDB','Cheating miss|Tab-only monitor'+_PVE+'Proctorio+eye track','Time inflation|Counts inactive'+_PVE+'Activity monitor, 5min pause'],
     ['新機能→requirements.md, design_system.md, error_logs.md','バグ→error_logs.md, test_cases/, architecture.md','分析→architecture.md(model), api_spec.md'],
@@ -2282,8 +2282,8 @@ const DOMAIN_OPS={
     ['Application data aggregation','Approval notification queue','Statistical data generation'],
     ['日次バックアップ+監査ログ (RPO:1h,RTO:2h)','申請データ永久保持(公文書管理法)'],
     ['Daily backup+audit log (RPO:1h,RTO:2h)','Application data permanent retention (Public Records Act)'],
-    ['個人情報暗号化必須','全操作監査ログ','RLS厳格適用','WCAG 2.1 AA準拠'],
-    ['Personal info encryption required','All operations audit logged','Strict RLS application','WCAG 2.1 AA compliance']),
+    ['個人情報暗号化必須','全操作監査ログ','RLS厳格適用','WCAG 2.2 AA準拠'],
+    ['Personal info encryption required','All operations audit logged','Strict RLS application','WCAG 2.2 AA compliance']),
   travel:_dop('99.9%',
     ['予約受付停止','キャンセル処理制限','決済機能停止'],
     ['Booking acceptance stop','Cancellation processing limit','Payment feature stop'],

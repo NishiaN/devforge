@@ -426,6 +426,25 @@ function gen67(G, domain, meth, a, pn) {
   });
   d += '\n';
 
+  if (a.ai_auto && !/なし|none/i.test(a.ai_auto)) {
+    d += '## ' + (G ? 'AI出力ガードレール (Guardrails)' : 'AI Output Guardrails') + '\n\n';
+    d += '### ' + (G ? '入力フィルタリング' : 'Input Filtering') + '\n\n';
+    d += '| ' + (G ? '制御' : 'Control') + ' | ' + (G ? '実装' : 'Implementation') + ' |\n|------|------|\n';
+    d += '| ' + (G ? 'プロンプトインジェクション検知' : 'Prompt injection detection') + ' | ' + (G ? '禁止パターン正規表現 + LLM-as-judge' : 'Forbidden-pattern regex + LLM-as-judge') + ' |\n';
+    d += '| ' + (G ? '禁止カテゴリ拒否' : 'Forbidden category rejection') + ' | ' + (G ? 'コンテンツポリシー分類器' : 'Content policy classifier') + ' |\n';
+    d += '| ' + (G ? 'PII 検出・マスキング' : 'PII detection & masking') + ' | ' + (G ? '正規表現 + Presidio / GLiNER' : 'Regex + Presidio / GLiNER') + ' |\n';
+    d += '\n### ' + (G ? '出力検証' : 'Output Validation') + '\n\n';
+    d += '| ' + (G ? '検証' : 'Validation') + ' | ' + (G ? '手法' : 'Method') + ' |\n|------|------|\n';
+    d += '| ' + (G ? 'JSON Schema検証' : 'JSON Schema validation') + ' | ' + (G ? '構造化出力の型安全性保証' : 'Guarantee type-safety of structured outputs') + ' |\n';
+    d += '| Range check | ' + (G ? '数値・列挙値の範囲検証' : 'Validate numeric/enum ranges') + ' |\n';
+    d += '| ' + (G ? 'ハルシネーション検知' : 'Hallucination detection') + ' | ' + (G ? '参照文書との一貫性スコア (≥0.85)' : 'Consistency score vs. reference docs (≥0.85)') + ' |\n';
+    d += '\n### ' + (G ? '信頼度キャリブレーション' : 'Confidence Calibration') + '\n\n';
+    d += '| ' + (G ? '手法' : 'Method') + ' | ' + (G ? '説明' : 'Detail') + ' |\n|------|------|\n';
+    d += '| ' + (G ? '信頼度スコア付与' : 'Confidence scoring') + ' | ' + (G ? 'ロジット確率 or 自己評価プロンプト' : 'Logit probabilities or self-evaluation prompt') + ' |\n';
+    d += '| ' + (G ? '低信頼度時の HITL' : 'HITL on low confidence') + ' | ' + (G ? 'スコア < 0.7 → 人間レビューキュー' : 'Score < 0.7 → human review queue') + ' |\n';
+    d += '\n';
+  }
+
   return d;
 }
 

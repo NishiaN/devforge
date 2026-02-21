@@ -311,6 +311,24 @@ const COMPLIANCE_DB={
       {id:'§99.7',title:'Security Measures',desc:'Prevent unauthorized access',impl:'Auth + encryption + access control'}
     ]
   },
+  appi:{
+    name:'APPI (個人情報保護法)',
+    domains:['default','saas','hr','health','education','fintech','ec','marketplace','community','legal','government','realestate','insurance'],
+    reqs_ja:[
+      {id:'Art.17',title:'利用目的特定',desc:'個人情報の利用目的を特定し、本人に通知・公表',impl:'プライバシーポリシー + 同意取得フロー'},
+      {id:'Art.23',title:'第三者提供制限',desc:'本人同意なしの第三者提供禁止',impl:'データ共有フロー + 同意管理 (Consent Management)'},
+      {id:'Art.26',title:'漏洩報告義務',desc:'個人情報漏洩時の個人情報保護委員会・本人への報告',impl:'インシデント対応手順 + 72時間以内通報フロー'},
+      {id:'Art.28-2',title:'開示請求対応',desc:'本人からの開示・訂正・削除請求への対応',impl:'ユーザーデータエクスポート機能 + 削除 (論理削除)'},
+      {id:'Art.20',title:'安全管理措置',desc:'個人情報への不正アクセス防止のための安全管理',impl:'暗号化・アクセス制御・監査ログ'}
+    ],
+    reqs_en:[
+      {id:'Art.17',title:'Purpose Specification',desc:'Specify and disclose purpose of personal data use',impl:'Privacy policy + consent flow'},
+      {id:'Art.23',title:'Third-Party Disclosure',desc:'Prohibit third-party sharing without consent',impl:'Data sharing flow + Consent Management'},
+      {id:'Art.26',title:'Breach Notification',desc:'Report breaches to PPC and affected individuals',impl:'Incident response + 72-hour notification flow'},
+      {id:'Art.28-2',title:'Disclosure Requests',desc:'Respond to access/correction/deletion requests',impl:'User data export + deletion (soft delete)'},
+      {id:'Art.20',title:'Security Management',desc:'Prevent unauthorized access to personal data',impl:'Encryption + access control + audit log'}
+    ]
+  },
   asvs:{
     name:'OWASP ASVS Level 2',
     domains:['default'],
@@ -402,6 +420,7 @@ function genPillar12_SecurityIntelligence(a,pn){
   const features=(a.mvp_features||'').split(/[,、]/).map(f=>f.trim()).filter(f=>f);
   const hasPayment=a.payment&&a.payment!=='none';
   const hasAI=a.ai_auto&&a.ai_auto!=='none';
+  const hasMobile=!!(a.mobile&&!/なし|none/i.test(a.mobile)&&/expo|react.?native|flutter/i.test(a.mobile));
 
   // ═══ DOC 43: Security Intelligence Report ═══
   let doc43='';
@@ -569,6 +588,21 @@ function genPillar12_SecurityIntelligence(a,pn){
   doc43+=_chk('並行セッション制限検討','Consider concurrent session limits')+'\n';
   doc43+=_chk('異常なセッション活動を監視','Monitor abnormal session activity')+'\n';
   doc43+=_chk('パスワード変更時に全セッション無効化','Invalidate all sessions on password change')+'\n\n';
+
+  doc43+='## '+(G?'NIST SSDF (SP 800-218) セキュア開発フレームワーク':'NIST SSDF (SP 800-218) Secure Software Development Framework')+'\n\n';
+  doc43+=(G?
+    '| グループ | 概要 |\n|----------|------|\n'+
+    '| **PO** Prepare the Organization | 組織全体でのセキュリティ要件・役割・方針の整備 |\n'+
+    '| **PS** Protect the Software | コード・ビルド成果物・リポジトリの改ざん防止 |\n'+
+    '| **PW** Produce Well-Secured Software | セキュアコーディング・レビュー・静的解析の実施 |\n'+
+    '| **RV** Respond to Vulnerabilities | 脆弱性の受付・分析・修正・開示プロセスの整備 |\n\n'
+    :
+    '| Group | Summary |\n|-------|--------|\n'+
+    '| **PO** Prepare the Organization | Define security requirements, roles, and policies org-wide |\n'+
+    '| **PS** Protect the Software | Prevent tampering of code, build artifacts, and repos |\n'+
+    '| **PW** Produce Well-Secured Software | Apply secure coding, code review, and static analysis |\n'+
+    '| **RV** Respond to Vulnerabilities | Establish vulnerability intake, analysis, remediation, and disclosure |\n\n'
+  );
 
   doc43+=(G?'## 📚 関連ドキュメント\n\n':'## 📚 Related Documents\n\n');
   doc43+='- [Threat Model](./44_threat_model.md)\n';
@@ -801,6 +835,17 @@ function genPillar12_SecurityIntelligence(a,pn){
     doc45+=_compSection(comp,G);
     doc45+='---\n\n';
   });
+
+  doc45+='## '+(G?'🍪 Cookie / トラッキング同意管理':'🍪 Cookie / Tracking Consent Management')+'\n\n';
+  doc45+='| '+(G?'カテゴリ':'Category')+' | '+(G?'例':'Examples')+' | '+(G?'同意要否':'Consent Required')+' |\n';
+  doc45+='|----------|------|----------|\n';
+  doc45+='| '+(G?'必須':'Strictly Necessary')+' | セッションID, CSRF token | '+(G?'不要 (常に有効)':'Not required (always on)')+' |\n';
+  doc45+='| '+(G?'分析':'Analytics')+' | GA4, Plausible, PostHog | '+(G?'必要 (オプトイン)':'Required (opt-in)')+' |\n';
+  doc45+='| '+(G?'マーケティング':'Marketing')+' | Facebook Pixel, LinkedIn Insight | '+(G?'必要 (オプトイン)':'Required (opt-in)')+' |\n\n';
+  doc45+=_chk(G?'同意バナー実装 (初回訪問時表示)':'Implement consent banner (shown on first visit)')+'\n';
+  doc45+=_chk(G?'同意記録の保存 (誰が・いつ・何に同意したか)':'Store consent records (who/when/what)')+'\n';
+  doc45+=_chk(G?'同意撤回機能 (プライバシーページから)':'Allow consent withdrawal (via privacy page)')+'\n';
+  doc45+=_chk(G?'オプトイン後にのみスクリプト読み込み':'Load tracking scripts only after opt-in')+'\n\n';
 
   doc45+=(G?'## 📚 関連ドキュメント\n\n':'## 📚 Related Documents\n\n');
   doc45+='- [Security Intelligence](./43_security_intelligence.md)\n';
@@ -1099,7 +1144,21 @@ function genPillar12_SecurityIntelligence(a,pn){
     doc46+=(G?'> ai_auto=noneのため、このセクションはスキップされます。\n\n':'> ai_auto=none, this section is skipped.\n\n');
   }
 
-  doc46+='## '+(G?'6. Privacy Mode & Data Protection':'6. Privacy Mode & Data Protection')+'\n\n';
+  if(hasMobile){
+    doc46+='## '+(G?'6. MASVS モバイルセキュリティ (OWASP Mobile Application Security Verification Standard)':'6. MASVS Mobile Security (OWASP Mobile Application Security Verification Standard)')+'\n\n';
+    doc46+='| '+(G?'カテゴリ':'Category')+' | '+(G?'チェック項目':'Check')+' | Status |\n';
+    doc46+='|----------|------|--------|\n';
+    doc46+='| MASVS-STORAGE | '+(G?'機密データをSharedPrefs/NSUserDefaultsに平文保存しない':'No plaintext secrets in SharedPrefs/NSUserDefaults')+' | ⬜ |\n';
+    doc46+='| MASVS-STORAGE | '+(G?'Keychain/Keystoreで認証情報を保護':'Protect credentials with Keychain/Keystore')+' | ⬜ |\n';
+    doc46+='| MASVS-CRYPTO | '+(G?'最新の暗号アルゴリズム使用 (AES-256, RSA-2048以上)':'Use modern algorithms (AES-256, RSA-2048+)')+' | ⬜ |\n';
+    doc46+='| MASVS-CRYPTO | '+(G?'ハードコードされた暗号鍵なし':'No hardcoded cryptographic keys')+' | ⬜ |\n';
+    doc46+='| MASVS-NETWORK | '+(G?'全通信をTLS 1.2+で保護 (Certificate Pinning検討)':'All traffic over TLS 1.2+ (consider certificate pinning)')+' | ⬜ |\n';
+    doc46+='| MASVS-NETWORK | '+(G?'ATS (iOS) / Network Security Config (Android) 設定':'Configure ATS (iOS) / Network Security Config (Android)')+' | ⬜ |\n';
+    doc46+='| MASVS-RESILIENCE | '+(G?'ルート化/Jailbreak検知 (高セキュリティアプリのみ)':'Root/Jailbreak detection (high-security apps only)')+' | ⬜ |\n';
+    doc46+='| MASVS-RESILIENCE | '+(G?'デバッグビルドを本番リリースから除外':'Exclude debug builds from production release')+' | ⬜ |\n\n';
+  }
+
+  doc46+='## '+(G?'7. Privacy Mode & Data Protection':'7. Privacy Mode & Data Protection')+'\n\n';
   doc46+=(G?'### AI開発ツールのプライバシーモード設定\n\n':'### AI Development Tool Privacy Mode\n\n');
   doc46+='- **GitHub Copilot:** Settings → Suggestions matching public code: Block\n';
   doc46+='- **Cursor:** Settings → Privacy Mode: Enabled\n';

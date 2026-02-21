@@ -127,6 +127,33 @@ function genPillar14_OpsIntelligence(a, pn) {
   });
   runbook += '\n';
 
+  // C6: Mobile SLI + M4: Mobile performance (conditional)
+  var _mob = a.mobile || '';
+  var hasMobileOps = _mob && !/なし|none/i.test(_mob) && /expo|react.?native|flutter/i.test(_mob);
+  if (hasMobileOps) {
+    runbook += `### ${G ? 'モバイル固有 SLI' : 'Mobile-Specific SLI'}\n\n`;
+    runbook += G
+      ? `| メトリクス | 目標 | 計測方法 |\n|----------|------|----------|\n`
+      : `| Metric | Target | Method |\n|--------|--------|--------|\n`;
+    runbook += `| ${G ? 'クラッシュフリーレート' : 'Crash-Free Rate'} | ≥99.5% | ${G ? 'Firebase Crashlytics / Sentry Mobile' : 'Firebase Crashlytics / Sentry Mobile'} |\n`;
+    runbook += `| ANR ${G ? '発生率' : 'Rate'} | <0.5% | ${G ? 'Google Play Console / Firebase Performance' : 'Google Play Console / Firebase Performance'} |\n`;
+    runbook += `| ${G ? 'コールドスタート時間' : 'Cold Start Time'} | <2s | ${G ? 'Firebase Performance / Expo DevTools' : 'Firebase Performance / Expo DevTools'} |\n`;
+    runbook += `| ${G ? 'メモリ使用量' : 'Memory Usage'} | <200MB | ${G ? 'Android Profiler / Xcode Instruments' : 'Android Profiler / Xcode Instruments'} |\n`;
+    runbook += `| ${G ? 'バッテリー消費' : 'Battery Drain'} | ${G ? 'Background < 5%/hr' : 'Background < 5%/hr'} | ${G ? 'iOS Energy Log / Android Battery Historian' : 'iOS Energy Log / Android Battery Historian'} |\n\n`;
+  }
+
+  // H8: Notification delivery monitoring (all apps)
+  runbook += `### ${G ? '通知配信監視' : 'Notification Delivery Monitoring'}\n\n`;
+  runbook += G
+    ? `| メトリクス | 目標 | アクション |\n|----------|------|----------|\n`
+    : `| Metric | Target | Action |\n|--------|--------|--------|\n`;
+  runbook += `| ${G ? 'メール到達率' : 'Email Delivery Rate'} | ≥95% | ${G ? 'バウンス率監視・SPF/DKIM確認' : 'Monitor bounce rate, verify SPF/DKIM'} |\n`;
+  if (hasMobileOps) {
+    runbook += `| ${G ? 'プッシュ通知到達率' : 'Push Notification Delivery Rate'} | ≥90% | ${G ? 'FCM/APNs配信ログ確認' : 'Check FCM/APNs delivery logs'} |\n`;
+    runbook += `| ${G ? '通知遅延 P95' : 'Notification Latency P95'} | <30s | ${G ? 'キュー処理速度モニタリング' : 'Monitor queue processing speed'} |\n`;
+  }
+  runbook += '\n';
+
   // Section 4: Observability Stack
   runbook += `## ${G ? '4. Observability Stack' : '4. Observability Stack'}\n\n`;
   runbook += `### ${G ? 'ログ・メトリクス・トレース' : 'Logs, Metrics, Traces'}\n\n`;
@@ -399,6 +426,21 @@ function genPillar14_OpsIntelligence(a, pn) {
   checklist += G
     ? `- [ ] **操作確認**: 破壊的操作 (削除/無効化) は確認ダイアログ必須\n\n`
     : `- [ ] **Confirmation Dialog**: Destructive actions (delete/disable) require confirmation\n\n`;
+
+  // M1-M2: Environment access control + offboarding
+  checklist += `### ${G ? '環境別アクセス制御' : 'Environment Access Control'}\n\n`;
+  checklist += G
+    ? `- [ ] **本番環境**: 最小権限・承認フロー必須 (最低2名承認)\n`
+    : `- [ ] **Production**: Minimum privilege + approval flow (min 2 approvers)\n`;
+  checklist += G
+    ? `- [ ] **Staging環境**: 開発者アクセスは許可、本番データの複製禁止\n`
+    : `- [ ] **Staging**: Developer access OK; no copying of production data\n`;
+  checklist += G
+    ? `- [ ] **退職者管理**: 退職当日にアカウント無効化 + アクセスキー失効\n`
+    : `- [ ] **Offboarding**: Disable account and revoke access keys on last day\n`;
+  checklist += G
+    ? `- [ ] **四半期アクセスレビュー**: 不要な権限の棚卸し・削除\n\n`
+    : `- [ ] **Quarterly Access Review**: Audit and remove unnecessary permissions\n\n`;
 
   // Monitoring Thresholds
   checklist += `## ${G ? 'モニタリング閾値' : 'Monitoring Thresholds'}\n\n`;

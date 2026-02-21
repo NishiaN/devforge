@@ -418,8 +418,8 @@ const PHASE_PROMPTS = {
         id: 'design_system',
         label_ja: 'デザインシステム構築',
         label_en: 'Design System Construction',
-        prompt_ja: 'プロジェクト「{projectName}」のデザインシステムを、アトミック設計の観点で構築してください。デザイントークン（色/タイポグラフィ/スペーシング）、コンポーネントライブラリ（Atoms/Molecules/Organisms）、アクセシビリティガイドライン（WCAG 2.1 AA準拠）、ダークモード対応を含めてください。',
-        prompt_en: 'Build design system for "{projectName}" from atomic design perspective. Include design tokens (color/typography/spacing), component library (Atoms/Molecules/Organisms), accessibility guidelines (WCAG 2.1 AA compliance), and dark mode support.'
+        prompt_ja: 'プロジェクト「{projectName}」のデザインシステムを、アトミック設計の観点で構築してください。デザイントークン（色/タイポグラフィ/スペーシング）、コンポーネントライブラリ（Atoms/Molecules/Organisms）、アクセシビリティガイドライン（WCAG 2.2 AA準拠）、ダークモード対応を含めてください。',
+        prompt_en: 'Build design system for "{projectName}" from atomic design perspective. Include design tokens (color/typography/spacing), component library (Atoms/Molecules/Organisms), accessibility guidelines (WCAG 2.2 AA compliance), and dark mode support.'
       }
     ]
   },

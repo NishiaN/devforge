@@ -54,7 +54,7 @@ var QUALITY_GATES = [
   _qg('test_coverage', 'テストカバレッジ', 'Test Coverage', 'Vitest / Jest / Istanbul', 'Vitest / Jest / Istanbul', 'ライン80%以上・ブランチ75%以上', 'Line ≥80%, Branch ≥75%', true),
   _qg('security', 'セキュリティ', 'Security', 'Trivy / Snyk / Semgrep / npm audit', 'Trivy / Snyk / Semgrep / npm audit', 'Critical 0件・High 0件（SLA内修正）', 'Critical=0, High=0 (fix within SLA)', true),
   _qg('performance', 'パフォーマンス', 'Performance', 'Lighthouse CI / k6 / Bundle Analyzer', 'Lighthouse CI / k6 / Bundle Analyzer', 'LCP<2.5s・FCP<1.8s・バンドル予算内', 'LCP<2.5s, FCP<1.8s, bundle within budget', false),
-  _qg('accessibility', 'アクセシビリティ', 'Accessibility', 'axe-core / pa11y / WAVE', 'axe-core / pa11y / WAVE', 'WCAG 2.1 AA Critical 0件', 'WCAG 2.1 AA Critical violations=0', false),
+  _qg('accessibility', 'アクセシビリティ', 'Accessibility', 'axe-core / pa11y / WAVE', 'axe-core / pa11y / WAVE', 'WCAG 2.2 AA Critical 0件', 'WCAG 2.2 AA Critical violations=0', false),
 ];
 
 // Factory: Release model
@@ -614,6 +614,20 @@ function gen80(G, domain, dtCfg, a, pn) {
   doc += '  test: '      + (G ? 'テスト追加（リリースなし）' : 'Test additions (no release)') + '\n';
   doc += '```\n\n';
 
+  // M7: Release Notes Template
+  doc += '## ' + (G ? 'リリースノート テンプレート' : 'Release Notes Template') + '\n\n';
+  doc += '```markdown\n';
+  doc += '## v{VERSION} (' + (G ? 'YYYY-MM-DD' : 'YYYY-MM-DD') + ')\n\n';
+  doc += '### ' + (G ? '✨ 新機能' : '✨ New Features') + '\n';
+  doc += '- \n\n';
+  doc += '### ' + (G ? '🔧 改善' : '🔧 Improvements') + '\n';
+  doc += '- \n\n';
+  doc += '### ' + (G ? '🐛 バグ修正' : '🐛 Bug Fixes') + '\n';
+  doc += '- \n\n';
+  doc += '### ' + (G ? '💥 破壊的変更' : '💥 Breaking Changes') + '\n';
+  doc += (G ? '> なし (ある場合は移行手順を記載)\n' : '> None (document migration steps if present)\n');
+  doc += '```\n\n';
+
   doc += '## ' + (G ? '依存関係の自動更新' : 'Dependency Auto-Update') + '\n\n';
   doc += '```yaml\n';
   doc += '# .github/renovate.json\n';
@@ -681,6 +695,25 @@ function gen80(G, domain, dtCfg, a, pn) {
     doc += (G ? '**ローカル開発**: Feature Branch + CI推奨 — ローカルテスト完了後にPR作成\n' : '**Local Dev**: Feature Branch + CI — create PRs after local tests pass\n');
   }
   doc += '\n';
+
+  // C1: App Store submission checklist (mobile apps only)
+  var _mobC1 = a.mobile || '';
+  if (_mobC1 && !/なし|none/i.test(_mobC1) && /expo|react.?native|flutter/i.test(_mobC1)) {
+    doc += '## ' + (G ? 'App Store / Google Play 提出前チェックリスト' : 'App Store / Google Play Submission Checklist') + '\n\n';
+    doc += '### Apple App Store\n\n';
+    doc += '- [ ] ' + (G ? 'デモアカウント情報 (App Review Team用)' : 'Demo account credentials for App Review Team') + '\n';
+    doc += '- [ ] ' + (G ? '年齢区分設定 (Age Rating Questionnaire)' : 'Age rating questionnaire completed') + '\n';
+    doc += '- [ ] ' + (G ? 'Privacy Nutrition Labels — データ収集・使用目的の申告' : 'Privacy Nutrition Labels — declare data collection & use') + '\n';
+    doc += '- [ ] ' + (G ? 'App Privacy Policy URL の登録' : 'App Privacy Policy URL registered') + '\n';
+    doc += '- [ ] ' + (G ? 'エクスポートコンプライアンス (暗号化使用申告)' : 'Export compliance (encryption usage declaration)') + '\n';
+    doc += '- [ ] ' + (G ? 'スクリーンショット全解像度 (6.9", 6.5", 5.5")' : 'Screenshots for all required sizes (6.9", 6.5", 5.5")') + '\n\n';
+    doc += '### Google Play\n\n';
+    doc += '- [ ] ' + (G ? 'Data Safety Section — データ収集・共有・セキュリティの申告' : 'Data Safety Section — declare data collection, sharing, and security') + '\n';
+    doc += '- [ ] ' + (G ? 'ターゲット API レベル (最新 Android 要件に準拠)' : 'Target API level meets latest Android requirements') + '\n';
+    doc += '- [ ] ' + (G ? 'コンテンツレーティング (IARC) 完了' : 'Content rating (IARC) completed') + '\n';
+    doc += '- [ ] ' + (G ? 'プライバシーポリシー URL の登録' : 'Privacy policy URL registered') + '\n';
+    doc += '- [ ] ' + (G ? '高解像度アイコン (512x512 PNG)' : 'Hi-res icon (512x512 PNG)') + '\n\n';
+  }
 
   return doc;
 }

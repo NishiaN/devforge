@@ -620,6 +620,21 @@ function gen76(G, domain, orgModel, isMultiTenant, a, pn) {
   d += '  --status-pending: hsl(45 80% 60%);\n  --status-approved: hsl(142 60% 55%);\n';
   d += '  --status-rejected: hsl(0 65% 62%);\n  --status-active: hsl(221 75% 65%);\n}\n```\n';
 
+  // H7: FAQ / Knowledge Base component (SaaS-like domains)
+  d += G ? '## 📚 FAQ / ナレッジベース システム\n\n' : '## 📚 FAQ / Knowledge Base System\n\n';
+  d += G ? '### 記事構造\n\n' : '### Article Structure\n\n';
+  d += '```\n';
+  d += (G ? 'カテゴリ (階層型)' : 'Categories (hierarchical)') + '\n';
+  d += '  └── ' + (G ? '記事 (Markdown)' : 'Articles (Markdown)') + '\n';
+  d += '       ├── ' + (G ? 'タイトル・スラッグ・タグ' : 'title, slug, tags') + '\n';
+  d += '       ├── ' + (G ? '公開/非公開フラグ' : 'published/draft flag') + '\n';
+  d += '       └── ' + (G ? 'バージョン履歴 (Git ベース)' : 'version history (Git-based)') + '\n```\n\n';
+  d += G ? '### 機能要件\n\n' : '### Feature Requirements\n\n';
+  d += '- ' + (G ? '全文検索 + タグフィルタリング (Algolia / PostgreSQL FTS)' : 'Full-text search + tag filtering (Algolia / PostgreSQL FTS)') + '\n';
+  d += '- ' + (G ? '記事フィードバックウィジェット (役に立ちましたか？ Yes/No)' : 'Article feedback widget (Was this helpful? Yes/No)') + '\n';
+  d += '- ' + (G ? 'RAG 統合: ナレッジベースを AI チャットの文脈ソースとして利用' : 'RAG integration: Use KB as context source for AI chat') + '\n';
+  d += '- ' + (G ? '関連記事サジェスト (コサイン類似度)' : 'Related article suggestions (cosine similarity)') + '\n\n';
+
   return d;
 }
 

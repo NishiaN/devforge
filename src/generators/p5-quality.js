@@ -135,7 +135,7 @@ function genPillar5_QualityIntelligence(a,pn){
     doc32+=(G?'## コンプライアンスチェックリスト':'## Compliance Checklist')+'\n\n';
     const compStd={
       fintech:'PCI DSS',health:'HIPAA',education:'FERPA',hr:'GDPR',
-      legal:'SOX',government:'WCAG 2.1 AA'
+      legal:'SOX',government:'WCAG 2.2 AA'
     }[industry]||'GDPR';
     doc32+='**'+(G?'準拠基準':'Standard')+'**: '+compStd+'\n\n';
     doc32+='- [ ] '+(G?'データ暗号化（保存時・転送時）':'Data encryption (at rest & in transit)')+'\n';
@@ -244,6 +244,27 @@ function genPillar5_QualityIntelligence(a,pn){
   doc33+='| '+(G?'ステートメント':'Statement')+' | ≥80% |\n';
   doc33+='\n';
   doc33+=G?'**注**: 重要機能（P0）は100%カバレッジを目指す\n\n':'**Note**: Critical functions (P0) should aim for 100% coverage\n\n';
+
+  // M5: Boundary value testing methodology
+  doc33+=(G?'## 境界値テスト手法 (Boundary Value Analysis)':'## Boundary Value Analysis')+'\n\n';
+  doc33+=(G?'境界値分析では最小値・最大値の前後を含む6値でテストします。\n\n':'Test 6 values around min/max boundaries for each input.\n\n');
+  doc33+='| '+(G?'値':'Value')+' | '+(G?'説明':'Description')+' | '+(G?'例 (1〜100の入力)':'Example (input 1–100)')+' |\n';
+  doc33+='|------|------|------|\n';
+  doc33+='| min-1 | '+(G?'最小値未満 (無効)':'Below minimum (invalid)')+' | 0 |\n';
+  doc33+='| min | '+(G?'最小値 (有効)':'Minimum (valid)')+' | 1 |\n';
+  doc33+='| min+1 | '+(G?'最小値+1 (有効)':'Min+1 (valid)')+' | 2 |\n';
+  doc33+='| max-1 | '+(G?'最大値-1 (有効)':'Max-1 (valid)')+' | 99 |\n';
+  doc33+='| max | '+(G?'最大値 (有効)':'Maximum (valid)')+' | 100 |\n';
+  doc33+='| max+1 | '+(G?'最大値超過 (無効)':'Above maximum (invalid)')+' | 101 |\n\n';
+
+  // M6: Load test methodology
+  doc33+=(G?'## 負荷テスト手法':'## Load Test Methodology')+'\n\n';
+  doc33+='| '+(G?'ツール':'Tool')+' | '+(G?'用途':'Use')+' | '+(G?'シナリオ':'Scenario')+' |\n';
+  doc33+='|------|------|------|\n';
+  doc33+='| k6 | '+(G?'スクリプトベース負荷テスト':'Script-based load testing')+' | '+(G?'VU数増加・スパイク・ソークテスト':'Ramp-up, spike, soak tests')+' |\n';
+  doc33+='| Artillery | '+(G?'YAMLベース・マルチプロトコル':'YAML-based, multi-protocol')+' | '+(G?'HTTP/WebSocket/GraphQL シナリオ':'HTTP/WebSocket/GraphQL scenarios')+' |\n';
+  doc33+='| Locust | '+(G?'Python DSL・分散テスト':'Python DSL, distributed')+' | '+(G?'大規模同時接続テスト':'Large-scale concurrent user tests')+' |\n\n';
+  doc33+=(G?'**シナリオ分類**: ① Smoke (1VU) → ② Load (想定ピーク) → ③ Stress (限界) → ④ Soak (24h持続)\n\n':'**Scenario Types**: ① Smoke (1VU) → ② Load (expected peak) → ③ Stress (breaking point) → ④ Soak (24h sustained)\n\n');
 
   S.files['docs/33_test_matrix.md']=doc33;
 

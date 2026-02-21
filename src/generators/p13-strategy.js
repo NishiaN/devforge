@@ -12,8 +12,8 @@ const _si = (reg_ja,reg_en, arch_ja,arch_en, fail_ja,fail_en, trend_ja,trend_en,
 // Industry Intelligence Database (32 domains + default)
 const INDUSTRY_INTEL = {
   education: _si(
-    ['FERPA準拠(学生記録保護)','COPPA準拠(13歳未満ユーザー)','アクセシビリティ(WCAG 2.1 AA以上)'],
-    ['FERPA compliance (student record protection)','COPPA compliance (users under 13)','Accessibility (WCAG 2.1 AA minimum)'],
+    ['FERPA準拠(学生記録保護)','COPPA準拠(13歳未満ユーザー)','アクセシビリティ(WCAG 2.2 AA以上)'],
+    ['FERPA compliance (student record protection)','COPPA compliance (users under 13)','Accessibility (WCAG 2.2 AA minimum)'],
     ['適応学習システム(AI活用)','マイクロラーニング設計','xAPI/SCORM標準対応'],
     ['Adaptive learning (AI-powered)','Microlearning architecture','xAPI/SCORM standards compliance'],
     ['進捗追跡の不備→離脱率増加','動画配信コスト過小見積もり','証明書偽造防止不足'],
@@ -396,8 +396,8 @@ const INDUSTRY_INTEL = {
     ['Premium|Contract premium|Policyholders','Agent commission|Sales commission|Agents','SaaS|Insurance operations efficiency|Insurance companies']
   ),
   _default: _si(
-    ['GDPR/CCPA準拠(一般データ保護)','利用規約・プライバシーポリシー必須','アクセシビリティ(WCAG 2.1)'],
-    ['GDPR/CCPA compliance (general data protection)','Terms & privacy policy required','Accessibility (WCAG 2.1)'],
+    ['GDPR/CCPA準拠(一般データ保護)','利用規約・プライバシーポリシー必須','アクセシビリティ(WCAG 2.2)'],
+    ['GDPR/CCPA compliance (general data protection)','Terms & privacy policy required','Accessibility (WCAG 2.2)'],
     ['3層アーキテクチャ(UI/API/DB)','認証・認可分離','RESTful API設計'],
     ['3-tier architecture (UI/API/DB)','Auth/authz separation','RESTful API design'],
     ['セキュリティ対策不足→情報漏洩','スケーラビリティ不足→障害','UX設計不備→離脱率高'],

@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 # DevForge v9.6.0
 
-**AI Development OS** — 55 JS modules in `src/` → single `devforge-v9.html` (~2129KB / 3000KB limit).
+**AI Development OS** — 55 JS modules in `src/` → single `devforge-v9.html` (~2148KB / 3000KB limit).
 Generates **135+ files** across **20 pillars** from a wizard-driven Q&A session.
 
 ## Documentation Map
@@ -18,9 +18,9 @@ Generates **135+ files** across **20 pillars** from a wizard-driven Q&A session.
 ## Build & Test
 
 ```bash
-node build.js                          # → devforge-v9.html (~2129KB, limit 3000KB)
+node build.js                          # → devforge-v9.html (~2148KB, limit 3000KB)
 node build.js --no-minify              # debug (skip minification)
-npm test                               # 734 tests, all passing
+npm test                               # 748 tests, all passing
 node --test test/gen-quality.test.js   # single test file
 npm run dev                            # build + live-server :3000
 npm run check                          # syntax-check extracted JS
@@ -161,11 +161,11 @@ After adding: update header comment totals, add tests to `test/compat.test.js`, 
 | Data/coverage | data-coverage, presets, field-presets | ~62 |
 | Security/compat | security, compat (+7 synergy) | ~108 |
 | Pillars (P14-P20+skill) | ops, future, deviq, promptgenome, promptops, enterprise, cicd, skill-level | ~184 |
-| Gen quality | gen-quality (Suites 1-12, 59 tests) | ~59 |
+| Gen quality | gen-quality (Suites 1-13, 73 tests) | ~73 |
 | Preset matching | phase-n (N-1〜N-9 + G-1〜G-6, 60 tests) | ~60 |
 | Other | i18n, state, techdb | ~23 |
 
-**Total: 734 tests** | Test harness pattern: `eval(fs.readFileSync(...))` to load src files; global `S` mock at top.
+**Total: 748 tests** | Test harness pattern: `eval(fs.readFileSync(...))` to load src files; global `S` mock at top.
 
 **When adding domains**, update: `test/data-coverage.test.js` (4 arrays), `test/gen-coherence.test.js`, `test/ops.test.js`.
 

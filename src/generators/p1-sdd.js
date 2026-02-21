@@ -198,6 +198,13 @@ function genPillar1_SDD(a,pn){
       '- '+(G?'ミドルウェア':'Middleware')+': '+(arch.isBaaS?'RLS + auth.jwt() role check':(G?'API Middleware で role チェック':'API middleware role check')),
       '- '+(G?'管理者ルート':'Admin routes')+': /admin/ → role=admin '+(G?'以上':'or above'),
       '- '+(G?'監査ログ':'Audit log')+': '+(G?'管理者操作は全件記録':'Log all admin actions'),'',
+      G?'### オブジェクトレベル権限 (ABAC)':'### Object-Level Permissions (ABAC)',
+      '- '+(G?'リソース所有者検証':'Resource owner check')+': `WHERE user_id = auth.uid()`'+(arch.isBaaS?' (RLS)':' (Middleware)'),
+      '- '+(G?'共有リソース管理':'Shared resource mgmt')+': `resource_shares` '+(G?'テーブルで権限追跡':'table for permission tracking'),
+      arch.isBaaS
+        ?(G?'- BaaS → RLS ポリシーで行レベル制御 (`auth.uid() = owner_id`)':'- BaaS → Row-Level Security policy (`auth.uid() = owner_id`)')
+        :(G?'- 非BaaS → Middleware で owner_id チェック (不一致は 403 Forbidden)':'- Non-BaaS → Middleware owner_id check (mismatch → 403 Forbidden)'),
+      '',
     );
   }
 
@@ -231,7 +238,7 @@ function genPillar1_SDD(a,pn){
     const cols=getEntityColumns(en,G,entities);
     const lines=['### '+en,'- id: UUID (PK)'];
     cols.forEach(c=>lines.push('- '+c.col+': '+c.type+(c.constraint?' ('+c.constraint+')':'')+(c.desc?' — '+c.desc:'')));
-    lines.push('- created_at: timestamp','- updated_at: timestamp');
+    lines.push('- created_at: timestamp','- updated_at: timestamp','- created_by: UUID (FK→User)','- deleted_at: timestamp '+(G?'(論理削除, NULL=有効)':'(soft delete, NULL=active)'));
     return lines.join('\n');
   }).join('\n\n');
   // B5: ER inference

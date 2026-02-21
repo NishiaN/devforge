@@ -5195,6 +5195,13 @@ G?'### 権限チェック':'### Permission Check',
 '- '+(G?'ミドルウェア':'Middleware')+': '+(arch.isBaaS?'RLS + auth.jwt() role check':(G?'API Middleware で role チェック':'API middleware role check')),
 '- '+(G?'管理者ルート':'Admin routes')+': /admin/ → role=admin '+(G?'以上':'or above'),
 '- '+(G?'監査ログ':'Audit log')+': '+(G?'管理者操作は全件記録':'Log all admin actions'),'',
+G?'### オブジェクトレベル権限 (ABAC)':'### Object-Level Permissions (ABAC)',
+'- '+(G?'リソース所有者検証':'Resource owner check')+': `WHERE user_id = auth.uid()`'+(arch.isBaaS?' (RLS)':' (Middleware)'),
+'- '+(G?'共有リソース管理':'Shared resource mgmt')+': `resource_shares` '+(G?'テーブルで権限追跡':'table for permission tracking'),
+arch.isBaaS
+?(G?'- BaaS → RLS ポリシーで行レベル制御 (`auth.uid() = owner_id`)':'- BaaS → Row-Level Security policy (`auth.uid() = owner_id`)')
+:(G?'- 非BaaS → Middleware で owner_id チェック (不一致は 403 Forbidden)':'- Non-BaaS → Middleware owner_id check (mismatch → 403 Forbidden)'),
+'',
 );
 }
 S.files['.spec/specification.md']=specLines.join('\n');
@@ -5225,7 +5232,7 @@ const entityLines=entities.map(en=>{
 const cols=getEntityColumns(en,G,entities);
 const lines=['### '+en,'- id: UUID (PK)'];
 cols.forEach(c=>lines.push('- '+c.col+': '+c.type+(c.constraint?' ('+c.constraint+')':'')+(c.desc?' — '+c.desc:'')));
-lines.push('- created_at: timestamp','- updated_at: timestamp');
+lines.push('- created_at: timestamp','- updated_at: timestamp','- created_by: UUID (FK→User)','- deleted_at: timestamp '+(G?'(論理削除, NULL=有効)':'(soft delete, NULL=active)'));
 return lines.join('\n');
 }).join('\n\n');
 // B5: ER inference
@@ -6875,7 +6882,7 @@ if(priObj.Compliance==='HIGH'||priObj.Compliance==='CRITICAL'){
 doc32+=(G?'## コンプライアンスチェックリスト':'## Compliance Checklist')+'\n\n';
 const compStd={
 fintech:'PCI DSS',health:'HIPAA',education:'FERPA',hr:'GDPR',
-legal:'SOX',government:'WCAG 2.1 AA'
+legal:'SOX',government:'WCAG 2.2 AA'
 }[industry]||'GDPR';
 doc32+='**'+(G?'準拠基準':'Standard')+'**: '+compStd+'\n\n';
 doc32+='- [ ] '+(G?'データ暗号化（保存時・転送時）':'Data encryption (at rest & in transit)')+'\n';
@@ -6978,6 +6985,25 @@ doc33+='| '+(G?'関数':'Function')+' | ≥85% |\n';
 doc33+='| '+(G?'ステートメント':'Statement')+' | ≥80% |\n';
 doc33+='\n';
 doc33+=G?'**注**: 重要機能（P0）は100%カバレッジを目指す\n\n':'**Note**: Critical functions (P0) should aim for 100% coverage\n\n';
+// M5: Boundary value testing methodology
+doc33+=(G?'## 境界値テスト手法 (Boundary Value Analysis)':'## Boundary Value Analysis')+'\n\n';
+doc33+=(G?'境界値分析では最小値・最大値の前後を含む6値でテストします。\n\n':'Test 6 values around min/max boundaries for each input.\n\n');
+doc33+='| '+(G?'値':'Value')+' | '+(G?'説明':'Description')+' | '+(G?'例 (1〜100の入力)':'Example (input 1–100)')+' |\n';
+doc33+='|------|------|------|\n';
+doc33+='| min-1 | '+(G?'最小値未満 (無効)':'Below minimum (invalid)')+' | 0 |\n';
+doc33+='| min | '+(G?'最小値 (有効)':'Minimum (valid)')+' | 1 |\n';
+doc33+='| min+1 | '+(G?'最小値+1 (有効)':'Min+1 (valid)')+' | 2 |\n';
+doc33+='| max-1 | '+(G?'最大値-1 (有効)':'Max-1 (valid)')+' | 99 |\n';
+doc33+='| max | '+(G?'最大値 (有効)':'Maximum (valid)')+' | 100 |\n';
+doc33+='| max+1 | '+(G?'最大値超過 (無効)':'Above maximum (invalid)')+' | 101 |\n\n';
+// M6: Load test methodology
+doc33+=(G?'## 負荷テスト手法':'## Load Test Methodology')+'\n\n';
+doc33+='| '+(G?'ツール':'Tool')+' | '+(G?'用途':'Use')+' | '+(G?'シナリオ':'Scenario')+' |\n';
+doc33+='|------|------|------|\n';
+doc33+='| k6 | '+(G?'スクリプトベース負荷テスト':'Script-based load testing')+' | '+(G?'VU数増加・スパイク・ソークテスト':'Ramp-up, spike, soak tests')+' |\n';
+doc33+='| Artillery | '+(G?'YAMLベース・マルチプロトコル':'YAML-based, multi-protocol')+' | '+(G?'HTTP/WebSocket/GraphQL シナリオ':'HTTP/WebSocket/GraphQL scenarios')+' |\n';
+doc33+='| Locust | '+(G?'Python DSL・分散テスト':'Python DSL, distributed')+' | '+(G?'大規模同時接続テスト':'Large-scale concurrent user tests')+' |\n\n';
+doc33+=(G?'**シナリオ分類**: ① Smoke (1VU) → ② Load (想定ピーク) → ③ Stress (限界) → ④ Soak (24h持続)\n\n':'**Scenario Types**: ① Smoke (1VU) → ② Load (expected peak) → ③ Stress (breaking point) → ④ Soak (24h sustained)\n\n');
 S.files['docs/33_test_matrix.md']=doc33;
 // ═══ B1: docs/34_incident_response.md (~10KB) ═══
 let doc34='# '+(G?'インシデント対応プレイブック':'Incident Response Playbook')+'\n\n';
@@ -9896,6 +9922,24 @@ reqs_en:[
 {id:'§99.7',title:'Security Measures',desc:'Prevent unauthorized access',impl:'Auth + encryption + access control'}
 ]
 },
+appi:{
+name:'APPI (個人情報保護法)',
+domains:['default','saas','hr','health','education','fintech','ec','marketplace','community','legal','government','realestate','insurance'],
+reqs_ja:[
+{id:'Art.17',title:'利用目的特定',desc:'個人情報の利用目的を特定し、本人に通知・公表',impl:'プライバシーポリシー + 同意取得フロー'},
+{id:'Art.23',title:'第三者提供制限',desc:'本人同意なしの第三者提供禁止',impl:'データ共有フロー + 同意管理 (Consent Management)'},
+{id:'Art.26',title:'漏洩報告義務',desc:'個人情報漏洩時の個人情報保護委員会・本人への報告',impl:'インシデント対応手順 + 72時間以内通報フロー'},
+{id:'Art.28-2',title:'開示請求対応',desc:'本人からの開示・訂正・削除請求への対応',impl:'ユーザーデータエクスポート機能 + 削除 (論理削除)'},
+{id:'Art.20',title:'安全管理措置',desc:'個人情報への不正アクセス防止のための安全管理',impl:'暗号化・アクセス制御・監査ログ'}
+],
+reqs_en:[
+{id:'Art.17',title:'Purpose Specification',desc:'Specify and disclose purpose of personal data use',impl:'Privacy policy + consent flow'},
+{id:'Art.23',title:'Third-Party Disclosure',desc:'Prohibit third-party sharing without consent',impl:'Data sharing flow + Consent Management'},
+{id:'Art.26',title:'Breach Notification',desc:'Report breaches to PPC and affected individuals',impl:'Incident response + 72-hour notification flow'},
+{id:'Art.28-2',title:'Disclosure Requests',desc:'Respond to access/correction/deletion requests',impl:'User data export + deletion (soft delete)'},
+{id:'Art.20',title:'Security Management',desc:'Prevent unauthorized access to personal data',impl:'Encryption + access control + audit log'}
+]
+},
 asvs:{
 name:'OWASP ASVS Level 2',
 domains:['default'],
@@ -9983,6 +10027,7 @@ const entities=(a.data_entities||'').split(/[,、]/).map(e=>e.trim()).filter(e=>
 const features=(a.mvp_features||'').split(/[,、]/).map(f=>f.trim()).filter(f=>f);
 const hasPayment=a.payment&&a.payment!=='none';
 const hasAI=a.ai_auto&&a.ai_auto!=='none';
+const hasMobile=!!(a.mobile&&!/なし|none/i.test(a.mobile)&&/expo|react.?native|flutter/i.test(a.mobile));
 // ═══ DOC 43: Security Intelligence Report ═══
 let doc43='';
 doc43+='# '+(G?'セキュリティインテリジェンスレポート':'Security Intelligence Report')+'\n\n';
@@ -10137,6 +10182,20 @@ doc43+=_chk('ログアウト時にサーバー側でセッション無効化','I
 doc43+=_chk('並行セッション制限検討','Consider concurrent session limits')+'\n';
 doc43+=_chk('異常なセッション活動を監視','Monitor abnormal session activity')+'\n';
 doc43+=_chk('パスワード変更時に全セッション無効化','Invalidate all sessions on password change')+'\n\n';
+doc43+='## '+(G?'NIST SSDF (SP 800-218) セキュア開発フレームワーク':'NIST SSDF (SP 800-218) Secure Software Development Framework')+'\n\n';
+doc43+=(G?
+'| グループ | 概要 |\n|----------|------|\n'+
+'| **PO** Prepare the Organization | 組織全体でのセキュリティ要件・役割・方針の整備 |\n'+
+'| **PS** Protect the Software | コード・ビルド成果物・リポジトリの改ざん防止 |\n'+
+'| **PW** Produce Well-Secured Software | セキュアコーディング・レビュー・静的解析の実施 |\n'+
+'| **RV** Respond to Vulnerabilities | 脆弱性の受付・分析・修正・開示プロセスの整備 |\n\n'
+:
+'| Group | Summary |\n|-------|--------|\n'+
+'| **PO** Prepare the Organization | Define security requirements, roles, and policies org-wide |\n'+
+'| **PS** Protect the Software | Prevent tampering of code, build artifacts, and repos |\n'+
+'| **PW** Produce Well-Secured Software | Apply secure coding, code review, and static analysis |\n'+
+'| **RV** Respond to Vulnerabilities | Establish vulnerability intake, analysis, remediation, and disclosure |\n\n'
+);
 doc43+=(G?'## 📚 関連ドキュメント\n\n':'## 📚 Related Documents\n\n');
 doc43+='- [Threat Model](./44_threat_model.md)\n';
 doc43+='- [Compliance Matrix](./45_compliance_matrix.md)\n';
@@ -10347,6 +10406,16 @@ applicableComp.forEach(comp=>{
 doc45+=_compSection(comp,G);
 doc45+='---\n\n';
 });
+doc45+='## '+(G?'🍪 Cookie / トラッキング同意管理':'🍪 Cookie / Tracking Consent Management')+'\n\n';
+doc45+='| '+(G?'カテゴリ':'Category')+' | '+(G?'例':'Examples')+' | '+(G?'同意要否':'Consent Required')+' |\n';
+doc45+='|----------|------|----------|\n';
+doc45+='| '+(G?'必須':'Strictly Necessary')+' | セッションID, CSRF token | '+(G?'不要 (常に有効)':'Not required (always on)')+' |\n';
+doc45+='| '+(G?'分析':'Analytics')+' | GA4, Plausible, PostHog | '+(G?'必要 (オプトイン)':'Required (opt-in)')+' |\n';
+doc45+='| '+(G?'マーケティング':'Marketing')+' | Facebook Pixel, LinkedIn Insight | '+(G?'必要 (オプトイン)':'Required (opt-in)')+' |\n\n';
+doc45+=_chk(G?'同意バナー実装 (初回訪問時表示)':'Implement consent banner (shown on first visit)')+'\n';
+doc45+=_chk(G?'同意記録の保存 (誰が・いつ・何に同意したか)':'Store consent records (who/when/what)')+'\n';
+doc45+=_chk(G?'同意撤回機能 (プライバシーページから)':'Allow consent withdrawal (via privacy page)')+'\n';
+doc45+=_chk(G?'オプトイン後にのみスクリプト読み込み':'Load tracking scripts only after opt-in')+'\n\n';
 doc45+=(G?'## 📚 関連ドキュメント\n\n':'## 📚 Related Documents\n\n');
 doc45+='- [Security Intelligence](./43_security_intelligence.md)\n';
 doc45+='- [Incident Response](./34_incident_response.md)\n';
@@ -10624,7 +10693,21 @@ doc46+=_chk('ユーザー入力にプレフィックス付与 (例: "User input:
 doc46+=(G?'> ai_auto=noneのため、このセクションはスキップされます。\n\n':'> ai_auto=none, this section is skipped.\n\n');
 }
 
-doc46+='## '+(G?'6. Privacy Mode & Data Protection':'6. Privacy Mode & Data Protection')+'\n\n';
+if(hasMobile){
+doc46+='## '+(G?'6. MASVS モバイルセキュリティ (OWASP Mobile Application Security Verification Standard)':'6. MASVS Mobile Security (OWASP Mobile Application Security Verification Standard)')+'\n\n';
+doc46+='| '+(G?'カテゴリ':'Category')+' | '+(G?'チェック項目':'Check')+' | Status |\n';
+doc46+='|----------|------|--------|\n';
+doc46+='| MASVS-STORAGE | '+(G?'機密データをSharedPrefs/NSUserDefaultsに平文保存しない':'No plaintext secrets in SharedPrefs/NSUserDefaults')+' | ⬜ |\n';
+doc46+='| MASVS-STORAGE | '+(G?'Keychain/Keystoreで認証情報を保護':'Protect credentials with Keychain/Keystore')+' | ⬜ |\n';
+doc46+='| MASVS-CRYPTO | '+(G?'最新の暗号アルゴリズム使用 (AES-256, RSA-2048以上)':'Use modern algorithms (AES-256, RSA-2048+)')+' | ⬜ |\n';
+doc46+='| MASVS-CRYPTO | '+(G?'ハードコードされた暗号鍵なし':'No hardcoded cryptographic keys')+' | ⬜ |\n';
+doc46+='| MASVS-NETWORK | '+(G?'全通信をTLS 1.2+で保護 (Certificate Pinning検討)':'All traffic over TLS 1.2+ (consider certificate pinning)')+' | ⬜ |\n';
+doc46+='| MASVS-NETWORK | '+(G?'ATS (iOS) / Network Security Config (Android) 設定':'Configure ATS (iOS) / Network Security Config (Android)')+' | ⬜ |\n';
+doc46+='| MASVS-RESILIENCE | '+(G?'ルート化/Jailbreak検知 (高セキュリティアプリのみ)':'Root/Jailbreak detection (high-security apps only)')+' | ⬜ |\n';
+doc46+='| MASVS-RESILIENCE | '+(G?'デバッグビルドを本番リリースから除外':'Exclude debug builds from production release')+' | ⬜ |\n\n';
+}
+
+doc46+='## '+(G?'7. Privacy Mode & Data Protection':'7. Privacy Mode & Data Protection')+'\n\n';
 doc46+=(G?'### AI開発ツールのプライバシーモード設定\n\n':'### AI Development Tool Privacy Mode\n\n');
 doc46+='- **GitHub Copilot:** Settings → Suggestions matching public code: Block\n';
 doc46+='- **Cursor:** Settings → Privacy Mode: Enabled\n';
@@ -10816,8 +10899,8 @@ bm_ja, bm_en         // ビジネスモデル (string[], 2-3 items, format: "mod
 // Industry Intelligence Database (32 domains + default)
 const INDUSTRY_INTEL = {
 education: _si(
-['FERPA準拠(学生記録保護)','COPPA準拠(13歳未満ユーザー)','アクセシビリティ(WCAG 2.1 AA以上)'],
-['FERPA compliance (student record protection)','COPPA compliance (users under 13)','Accessibility (WCAG 2.1 AA minimum)'],
+['FERPA準拠(学生記録保護)','COPPA準拠(13歳未満ユーザー)','アクセシビリティ(WCAG 2.2 AA以上)'],
+['FERPA compliance (student record protection)','COPPA compliance (users under 13)','Accessibility (WCAG 2.2 AA minimum)'],
 ['適応学習システム(AI活用)','マイクロラーニング設計','xAPI/SCORM標準対応'],
 ['Adaptive learning (AI-powered)','Microlearning architecture','xAPI/SCORM standards compliance'],
 ['進捗追跡の不備→離脱率増加','動画配信コスト過小見積もり','証明書偽造防止不足'],
@@ -11200,8 +11283,8 @@ insurance: _si(
 ['Premium|Contract premium|Policyholders','Agent commission|Sales commission|Agents','SaaS|Insurance operations efficiency|Insurance companies']
 ),
 _default: _si(
-['GDPR/CCPA準拠(一般データ保護)','利用規約・プライバシーポリシー必須','アクセシビリティ(WCAG 2.1)'],
-['GDPR/CCPA compliance (general data protection)','Terms & privacy policy required','Accessibility (WCAG 2.1)'],
+['GDPR/CCPA準拠(一般データ保護)','利用規約・プライバシーポリシー必須','アクセシビリティ(WCAG 2.2)'],
+['GDPR/CCPA compliance (general data protection)','Terms & privacy policy required','Accessibility (WCAG 2.2)'],
 ['3層アーキテクチャ(UI/API/DB)','認証・認可分離','RESTful API設計'],
 ['3-tier architecture (UI/API/DB)','Auth/authz separation','RESTful API design'],
 ['セキュリティ対策不足→情報漏洩','スケーラビリティ不足→障害','UX設計不備→離脱率高'],
@@ -11886,6 +11969,32 @@ slis.forEach(sli => {
 runbook += `| ${sli.metric} | ${sli.target} | ${sli.method} |\n`;
 });
 runbook += '\n';
+// C6: Mobile SLI + M4: Mobile performance (conditional)
+var _mob = a.mobile || '';
+var hasMobileOps = _mob && !/なし|none/i.test(_mob) && /expo|react.?native|flutter/i.test(_mob);
+if (hasMobileOps) {
+runbook += `### ${G ? 'モバイル固有 SLI' : 'Mobile-Specific SLI'}\n\n`;
+runbook += G
+? `| メトリクス | 目標 | 計測方法 |\n|----------|------|----------|\n`
+: `| Metric | Target | Method |\n|--------|--------|--------|\n`;
+runbook += `| ${G ? 'クラッシュフリーレート' : 'Crash-Free Rate'} | ≥99.5% | ${G ? 'Firebase Crashlytics / Sentry Mobile' : 'Firebase Crashlytics / Sentry Mobile'} |\n`;
+runbook += `| ANR ${G ? '発生率' : 'Rate'} | <0.5% | ${G ? 'Google Play Console / Firebase Performance' : 'Google Play Console / Firebase Performance'} |\n`;
+runbook += `| ${G ? 'コールドスタート時間' : 'Cold Start Time'} | <2s | ${G ? 'Firebase Performance / Expo DevTools' : 'Firebase Performance / Expo DevTools'} |\n`;
+runbook += `| ${G ? 'メモリ使用量' : 'Memory Usage'} | <200MB | ${G ? 'Android Profiler / Xcode Instruments' : 'Android Profiler / Xcode Instruments'} |\n`;
+runbook += `| ${G ? 'バッテリー消費' : 'Battery Drain'} | ${G ? 'Background < 5%/hr' : 'Background < 5%/hr'} | ${G ? 'iOS Energy Log / Android Battery Historian' : 'iOS Energy Log / Android Battery Historian'} |\n\n`;
+}
+
+// H8: Notification delivery monitoring (all apps)
+runbook += `### ${G ? '通知配信監視' : 'Notification Delivery Monitoring'}\n\n`;
+runbook += G
+? `| メトリクス | 目標 | アクション |\n|----------|------|----------|\n`
+: `| Metric | Target | Action |\n|--------|--------|--------|\n`;
+runbook += `| ${G ? 'メール到達率' : 'Email Delivery Rate'} | ≥95% | ${G ? 'バウンス率監視・SPF/DKIM確認' : 'Monitor bounce rate, verify SPF/DKIM'} |\n`;
+if (hasMobileOps) {
+runbook += `| ${G ? 'プッシュ通知到達率' : 'Push Notification Delivery Rate'} | ≥90% | ${G ? 'FCM/APNs配信ログ確認' : 'Check FCM/APNs delivery logs'} |\n`;
+runbook += `| ${G ? '通知遅延 P95' : 'Notification Latency P95'} | <30s | ${G ? 'キュー処理速度モニタリング' : 'Monitor queue processing speed'} |\n`;
+}
+runbook += '\n';
 // Section 4: Observability Stack
 runbook += `## ${G ? '4. Observability Stack' : '4. Observability Stack'}\n\n`;
 runbook += `### ${G ? 'ログ・メトリクス・トレース' : 'Logs, Metrics, Traces'}\n\n`;
@@ -12144,6 +12253,20 @@ checklist += G
 checklist += G
 ? `- [ ] **操作確認**: 破壊的操作 (削除/無効化) は確認ダイアログ必須\n\n`
 : `- [ ] **Confirmation Dialog**: Destructive actions (delete/disable) require confirmation\n\n`;
+// M1-M2: Environment access control + offboarding
+checklist += `### ${G ? '環境別アクセス制御' : 'Environment Access Control'}\n\n`;
+checklist += G
+? `- [ ] **本番環境**: 最小権限・承認フロー必須 (最低2名承認)\n`
+: `- [ ] **Production**: Minimum privilege + approval flow (min 2 approvers)\n`;
+checklist += G
+? `- [ ] **Staging環境**: 開発者アクセスは許可、本番データの複製禁止\n`
+: `- [ ] **Staging**: Developer access OK; no copying of production data\n`;
+checklist += G
+? `- [ ] **退職者管理**: 退職当日にアカウント無効化 + アクセスキー失効\n`
+: `- [ ] **Offboarding**: Disable account and revoke access keys on last day\n`;
+checklist += G
+? `- [ ] **四半期アクセスレビュー**: 不要な権限の棚卸し・削除\n\n`
+: `- [ ] **Quarterly Access Review**: Audit and remove unnecessary permissions\n\n`;
 // Monitoring Thresholds
 checklist += `## ${G ? 'モニタリング閾値' : 'Monitoring Thresholds'}\n\n`;
 checklist += G ? `**${domain}ドメイン** のデフォルトアラート設定:\n\n` : `**${domain} Domain** default alert settings:\n\n`;
@@ -12810,8 +12933,8 @@ moat_ja: '規制独占、データモート（市民データ）、信頼性',
 moat_en: 'Regulatory monopoly, Data moat (citizen data), Trust',
 gtm_ja: '公共調達、RFP対応、先行自治体実績',
 gtm_en: 'Public procurement, RFP response, early municipality track record',
-ux_ja: 'WCAG 2.1 AA準拠、マイナンバー連携、多言語対応',
-ux_en: 'WCAG 2.1 AA compliance, national ID integration, multilingual',
+ux_ja: 'WCAG 2.2 AA準拠、マイナンバー連携、多言語対応',
+ux_en: 'WCAG 2.2 AA compliance, national ID integration, multilingual',
 eco_ja: '電子署名、本人確認API、行政システム連携',
 eco_en: 'Digital signature, identity verification APIs, government system integration',
 reg_ja: '個人情報保護法、公文書管理法、行政手続法、EU AI Act高リスク',
@@ -13981,8 +14104,8 @@ prompt_en: 'Design key interactions for "{projectName}" from flow state maintena
 id: 'design_system',
 label_ja: 'デザインシステム構築',
 label_en: 'Design System Construction',
-prompt_ja: 'プロジェクト「{projectName}」のデザインシステムを、アトミック設計の観点で構築してください。デザイントークン（色/タイポグラフィ/スペーシング）、コンポーネントライブラリ（Atoms/Molecules/Organisms）、アクセシビリティガイドライン（WCAG 2.1 AA準拠）、ダークモード対応を含めてください。',
-prompt_en: 'Build design system for "{projectName}" from atomic design perspective. Include design tokens (color/typography/spacing), component library (Atoms/Molecules/Organisms), accessibility guidelines (WCAG 2.1 AA compliance), and dark mode support.'
+prompt_ja: 'プロジェクト「{projectName}」のデザインシステムを、アトミック設計の観点で構築してください。デザイントークン（色/タイポグラフィ/スペーシング）、コンポーネントライブラリ（Atoms/Molecules/Organisms）、アクセシビリティガイドライン（WCAG 2.2 AA準拠）、ダークモード対応を含めてください。',
+prompt_en: 'Build design system for "{projectName}" from atomic design perspective. Include design tokens (color/typography/spacing), component library (Atoms/Molecules/Organisms), accessibility guidelines (WCAG 2.2 AA compliance), and dark mode support.'
 }
 ]
 },
@@ -14872,6 +14995,24 @@ d += '| ' + tt + ' | ' + (G ? '汎用プロンプト' : 'General prompt') + ' | 
 }
 });
 d += '\n';
+if (a.ai_auto && !/なし|none/i.test(a.ai_auto)) {
+d += '## ' + (G ? 'AI出力ガードレール (Guardrails)' : 'AI Output Guardrails') + '\n\n';
+d += '### ' + (G ? '入力フィルタリング' : 'Input Filtering') + '\n\n';
+d += '| ' + (G ? '制御' : 'Control') + ' | ' + (G ? '実装' : 'Implementation') + ' |\n|------|------|\n';
+d += '| ' + (G ? 'プロンプトインジェクション検知' : 'Prompt injection detection') + ' | ' + (G ? '禁止パターン正規表現 + LLM-as-judge' : 'Forbidden-pattern regex + LLM-as-judge') + ' |\n';
+d += '| ' + (G ? '禁止カテゴリ拒否' : 'Forbidden category rejection') + ' | ' + (G ? 'コンテンツポリシー分類器' : 'Content policy classifier') + ' |\n';
+d += '| ' + (G ? 'PII 検出・マスキング' : 'PII detection & masking') + ' | ' + (G ? '正規表現 + Presidio / GLiNER' : 'Regex + Presidio / GLiNER') + ' |\n';
+d += '\n### ' + (G ? '出力検証' : 'Output Validation') + '\n\n';
+d += '| ' + (G ? '検証' : 'Validation') + ' | ' + (G ? '手法' : 'Method') + ' |\n|------|------|\n';
+d += '| ' + (G ? 'JSON Schema検証' : 'JSON Schema validation') + ' | ' + (G ? '構造化出力の型安全性保証' : 'Guarantee type-safety of structured outputs') + ' |\n';
+d += '| Range check | ' + (G ? '数値・列挙値の範囲検証' : 'Validate numeric/enum ranges') + ' |\n';
+d += '| ' + (G ? 'ハルシネーション検知' : 'Hallucination detection') + ' | ' + (G ? '参照文書との一貫性スコア (≥0.85)' : 'Consistency score vs. reference docs (≥0.85)') + ' |\n';
+d += '\n### ' + (G ? '信頼度キャリブレーション' : 'Confidence Calibration') + '\n\n';
+d += '| ' + (G ? '手法' : 'Method') + ' | ' + (G ? '説明' : 'Detail') + ' |\n|------|------|\n';
+d += '| ' + (G ? '信頼度スコア付与' : 'Confidence scoring') + ' | ' + (G ? 'ロジット確率 or 自己評価プロンプト' : 'Logit probabilities or self-evaluation prompt') + ' |\n';
+d += '| ' + (G ? '低信頼度時の HITL' : 'HITL on low confidence') + ' | ' + (G ? 'スコア < 0.7 → 人間レビューキュー' : 'Score < 0.7 → human review queue') + ' |\n';
+d += '\n';
+}
 return d;
 }
 function gen68(G, domain, meth, a, pn) {
@@ -16017,6 +16158,20 @@ d += '  --status-rejected: hsl(0 72% 51%);\n  --status-active: hsl(221 83% 53%);
 d += '}\n[data-theme="dark"] {\n';
 d += '  --status-pending: hsl(45 80% 60%);\n  --status-approved: hsl(142 60% 55%);\n';
 d += '  --status-rejected: hsl(0 65% 62%);\n  --status-active: hsl(221 75% 65%);\n}\n```\n';
+// H7: FAQ / Knowledge Base component (SaaS-like domains)
+d += G ? '## 📚 FAQ / ナレッジベース システム\n\n' : '## 📚 FAQ / Knowledge Base System\n\n';
+d += G ? '### 記事構造\n\n' : '### Article Structure\n\n';
+d += '```\n';
+d += (G ? 'カテゴリ (階層型)' : 'Categories (hierarchical)') + '\n';
+d += '  └── ' + (G ? '記事 (Markdown)' : 'Articles (Markdown)') + '\n';
+d += '       ├── ' + (G ? 'タイトル・スラッグ・タグ' : 'title, slug, tags') + '\n';
+d += '       ├── ' + (G ? '公開/非公開フラグ' : 'published/draft flag') + '\n';
+d += '       └── ' + (G ? 'バージョン履歴 (Git ベース)' : 'version history (Git-based)') + '\n```\n\n';
+d += G ? '### 機能要件\n\n' : '### Feature Requirements\n\n';
+d += '- ' + (G ? '全文検索 + タグフィルタリング (Algolia / PostgreSQL FTS)' : 'Full-text search + tag filtering (Algolia / PostgreSQL FTS)') + '\n';
+d += '- ' + (G ? '記事フィードバックウィジェット (役に立ちましたか？ Yes/No)' : 'Article feedback widget (Was this helpful? Yes/No)') + '\n';
+d += '- ' + (G ? 'RAG 統合: ナレッジベースを AI チャットの文脈ソースとして利用' : 'RAG integration: Use KB as context source for AI chat') + '\n';
+d += '- ' + (G ? '関連記事サジェスト (コサイン類似度)' : 'Related article suggestions (cosine similarity)') + '\n\n';
 return d;
 }
 
@@ -16089,7 +16244,7 @@ _qg('code_quality', 'コード品質', 'Code Quality', 'ESLint / TypeScript / Pr
 _qg('test_coverage', 'テストカバレッジ', 'Test Coverage', 'Vitest / Jest / Istanbul', 'Vitest / Jest / Istanbul', 'ライン80%以上・ブランチ75%以上', 'Line ≥80%, Branch ≥75%', true),
 _qg('security', 'セキュリティ', 'Security', 'Trivy / Snyk / Semgrep / npm audit', 'Trivy / Snyk / Semgrep / npm audit', 'Critical 0件・High 0件（SLA内修正）', 'Critical=0, High=0 (fix within SLA)', true),
 _qg('performance', 'パフォーマンス', 'Performance', 'Lighthouse CI / k6 / Bundle Analyzer', 'Lighthouse CI / k6 / Bundle Analyzer', 'LCP<2.5s・FCP<1.8s・バンドル予算内', 'LCP<2.5s, FCP<1.8s, bundle within budget', false),
-_qg('accessibility', 'アクセシビリティ', 'Accessibility', 'axe-core / pa11y / WAVE', 'axe-core / pa11y / WAVE', 'WCAG 2.1 AA Critical 0件', 'WCAG 2.1 AA Critical violations=0', false),
+_qg('accessibility', 'アクセシビリティ', 'Accessibility', 'axe-core / pa11y / WAVE', 'axe-core / pa11y / WAVE', 'WCAG 2.2 AA Critical 0件', 'WCAG 2.2 AA Critical violations=0', false),
 ];
 // Factory: Release model
 function _rm(id, name_ja, name_en, branches_ja, best_for_ja, branches_en, best_for_en) {
@@ -16613,6 +16768,19 @@ doc += '  docs: '      + (G ? 'ドキュメント（リリースなし）' : 'Do
 doc += '  refactor: '  + (G ? 'リファクタリング（PATCH or リリースなし）' : 'Refactor (PATCH or no release)') + '\n';
 doc += '  test: '      + (G ? 'テスト追加（リリースなし）' : 'Test additions (no release)') + '\n';
 doc += '```\n\n';
+// M7: Release Notes Template
+doc += '## ' + (G ? 'リリースノート テンプレート' : 'Release Notes Template') + '\n\n';
+doc += '```markdown\n';
+doc += '## v{VERSION} (' + (G ? 'YYYY-MM-DD' : 'YYYY-MM-DD') + ')\n\n';
+doc += '### ' + (G ? '✨ 新機能' : '✨ New Features') + '\n';
+doc += '- \n\n';
+doc += '### ' + (G ? '🔧 改善' : '🔧 Improvements') + '\n';
+doc += '- \n\n';
+doc += '### ' + (G ? '🐛 バグ修正' : '🐛 Bug Fixes') + '\n';
+doc += '- \n\n';
+doc += '### ' + (G ? '💥 破壊的変更' : '💥 Breaking Changes') + '\n';
+doc += (G ? '> なし (ある場合は移行手順を記載)\n' : '> None (document migration steps if present)\n');
+doc += '```\n\n';
 doc += '## ' + (G ? '依存関係の自動更新' : 'Dependency Auto-Update') + '\n\n';
 doc += '```yaml\n';
 doc += '# .github/renovate.json\n';
@@ -16677,6 +16845,25 @@ doc += (G ? '**ハイブリッド**: GitHub Flow推奨 — ローカルテスト
 doc += (G ? '**ローカル開発**: Feature Branch + CI推奨 — ローカルテスト完了後にPR作成\n' : '**Local Dev**: Feature Branch + CI — create PRs after local tests pass\n');
 }
 doc += '\n';
+// C1: App Store submission checklist (mobile apps only)
+var _mobC1 = a.mobile || '';
+if (_mobC1 && !/なし|none/i.test(_mobC1) && /expo|react.?native|flutter/i.test(_mobC1)) {
+doc += '## ' + (G ? 'App Store / Google Play 提出前チェックリスト' : 'App Store / Google Play Submission Checklist') + '\n\n';
+doc += '### Apple App Store\n\n';
+doc += '- [ ] ' + (G ? 'デモアカウント情報 (App Review Team用)' : 'Demo account credentials for App Review Team') + '\n';
+doc += '- [ ] ' + (G ? '年齢区分設定 (Age Rating Questionnaire)' : 'Age rating questionnaire completed') + '\n';
+doc += '- [ ] ' + (G ? 'Privacy Nutrition Labels — データ収集・使用目的の申告' : 'Privacy Nutrition Labels — declare data collection & use') + '\n';
+doc += '- [ ] ' + (G ? 'App Privacy Policy URL の登録' : 'App Privacy Policy URL registered') + '\n';
+doc += '- [ ] ' + (G ? 'エクスポートコンプライアンス (暗号化使用申告)' : 'Export compliance (encryption usage declaration)') + '\n';
+doc += '- [ ] ' + (G ? 'スクリーンショット全解像度 (6.9", 6.5", 5.5")' : 'Screenshots for all required sizes (6.9", 6.5", 5.5")') + '\n\n';
+doc += '### Google Play\n\n';
+doc += '- [ ] ' + (G ? 'Data Safety Section — データ収集・共有・セキュリティの申告' : 'Data Safety Section — declare data collection, sharing, and security') + '\n';
+doc += '- [ ] ' + (G ? 'ターゲット API レベル (最新 Android 要件に準拠)' : 'Target API level meets latest Android requirements') + '\n';
+doc += '- [ ] ' + (G ? 'コンテンツレーティング (IARC) 完了' : 'Content rating (IARC) completed') + '\n';
+doc += '- [ ] ' + (G ? 'プライバシーポリシー URL の登録' : 'Privacy policy URL registered') + '\n';
+doc += '- [ ] ' + (G ? '高解像度アイコン (512x512 PNG)' : 'Hi-res icon (512x512 PNG)') + '\n\n';
+}
+
 return doc;
 }
 
@@ -17018,7 +17205,7 @@ ${G?'E2Eテスト':'E2E Tests'} :test, after s${features.length-1}, 3d\n  ${G?'�
 ['17_monitoring',G?'監視設計書':'Monitoring Design',`${G?'## 監視項目':'## Monitoring Items'}\n- ${G?'アプリケーションログ':'Application logs'}\n- ${G?'エラーレート':'Error rate'}\n- ${G?'レスポンスタイム':'Response time'}\n- CPU/${G?'メモリ使用率':'Memory usage'}\n\n${G?'## ツール':'## Tools'}\n- ${deployTarget.includes('Vercel')?'Vercel Analytics':deployTarget.includes('Netlify')?'Netlify Analytics':'PostHog / Plausible Analytics'}\n- Sentry (${G?'エラー追跡':'Error tracking'})${arch.isBaaS&&be.includes('Supabase')?'\n- Supabase Dashboard ('+( G?'DB監視・RLS監査':'DB monitoring & RLS audit')+')':''}`],
 ['18_data_migration',G?'データ移行計画書':'Data Migration Plan',`${G?'## 移行戦略':'## Migration Strategy'}\n- ${G?'段階的移行':'Phased migration'}\n- ${G?'ロールバック計画':'Rollback plan'}\n- ${G?'データ検証手順':'Data validation'}`],
 ['19_performance',G?'パフォーマンス設計書':'Performance Design',`${G?'## 目標値':'## Targets'}\n- LCP: < 2.5s\n- FID: < 100ms\n- CLS: < 0.1\n\n${G?'## 最適化施策':'## Optimizations'}\n- ${G?'画像最適化':'Image optimization'} (${fe.includes('Next')?'next/image':fe.includes('Vite')||fe.includes('SPA')?'vite-imagetools / sharp':'sharp / imagemin'})\n- Code Splitting${fe.includes('Vite')||fe.includes('SPA')?' (Vite dynamic import)':fe.includes('Next')?' (Next.js dynamic)':''}\n- ${deployTarget.includes('Vercel')||deployTarget.includes('Netlify')?'Edge Caching (CDN)':'CDN Caching'}`],
-['20_a11y',G?'アクセシビリティ設計書':'Accessibility Design',`## WCAG 2.1 AA\n- ${G?'キーボードナビゲーション':'Keyboard navigation'}\n- ${G?'スクリーンリーダー対応':'Screen reader support'}\n- ${G?'カラーコントラスト比':'Color contrast ratio'} 4.5:1+\n- ${G?'フォーカス管理':'Focus management'}`],
+['20_a11y',G?'アクセシビリティ設計書':'Accessibility Design',`## WCAG 2.2 AA\n- ${G?'キーボードナビゲーション':'Keyboard navigation'}\n- ${G?'スクリーンリーダー対応':'Screen reader support'}\n- ${G?'カラーコントラスト比':'Color contrast ratio'} 4.5:1+\n- ${G?'フォーカス管理':'Focus management'}${(a.mobile&&!/なし|none/i.test(a.mobile)&&/expo|react.?native|flutter/i.test(a.mobile))?'\n\n## '+(G?'モバイル HIG / Android Quality Guidelines':'Mobile HIG / Android Quality Guidelines')+'\n- '+(G?'Apple HIG: ネイティブコントロール使用・セーフエリア対応・最小タップターゲット 44×44pt':'Apple HIG: use native controls, support safe area, min tap target 44×44pt')+'\n- '+(G?'Material Design 3: 最小タップターゲット 48×48dp・バックジェスチャー対応':'Material Design 3: min tap target 48×48dp, support back gesture'):''}\n\n## ${G?'スクリーンリーダーテスト手順':'Screen Reader Test Procedures'}\n| ${G?'ツール':'Tool'} | ${G?'対象':'Platform'} | ${G?'テスト観点':'Test Points'} |\n|------|--------|----------|\n| VoiceOver | iOS / macOS | ${G?'論理的な読み上げ順序・アクション確認':'Logical reading order & action confirmation'} |\n| TalkBack | Android | ${G?'タップジェスチャー・フォーカス移動':'Tap gestures & focus navigation'} |\n| NVDA | Windows | ${G?'フォームラベル・エラー通知':'Form labels & error announcements'} |`],
 ['21_changelog',G?'変更履歴':'Changelog',`## v1.0.0 (${date})\n- ${G?'初期リリース':'Initial release'}\n- ${features.slice(0,3).join(', ')} 実装\n\n## ${G?'DevForge v9による自動生成':'Auto-generated by DevForge v9'}\n- ${G?'114+ファイル生成':'114+ files generated'}\n- ${G?'15の柱対応':'15 pillars support'}\n- ${G?'Mermaid図・プロンプトプレイブック・タスク分解対応':'Mermaid diagrams, Prompt Playbook, Task decomposition'}`],
 ['24_progress',G?'進捗管理表':'Progress Tracker',
 `${G?'> AIエージェントはタスク完了後にこのファイルを更新してください。':
@@ -18423,8 +18610,8 @@ return null;
 // ── Domain-specific QA Strategy Map ──
 const DOMAIN_QA_MAP={
 education:{
-focus_ja:['学習進捗のバックエンド同期','WCAG 2.1 AA準拠','未成年データ保護(FERPA)','コンテンツ配信安定性'],
-focus_en:['Backend sync for progress','WCAG 2.1 AA compliance','Minor data protection (FERPA)','Content delivery stability'],
+focus_ja:['学習進捗のバックエンド同期','WCAG 2.2 AA準拠','未成年データ保護(FERPA)','コンテンツ配信安定性'],
+focus_en:['Backend sync for progress','WCAG 2.2 AA compliance','Minor data protection (FERPA)','Content delivery stability'],
 bugs_ja:['localStorage依存による進捗消失','クイズ正誤判定ミス','ブラウザ別音声再生不具合'],
 bugs_en:['Progress lost on localStorage clear','Quiz scoring errors','Audio playback failures per browser'],
 priority:'Security:HIGH|Performance:MED|DataIntegrity:HIGH|UX:CRITICAL|Compliance:HIGH'
@@ -18690,8 +18877,8 @@ const DOMAIN_PLAYBOOK={
 education:_dpb(
 ['学習目標→知識体系→カリキュラム→評価基準(例:TOEIC 650→900=300h)','成績データ→パターン分析→弱点特定→個別最適化(正答率<60%優先)','理解度テスト→習熟判定→次単元解放(≥80%進む、<60%再履修)'],
 ['Goal→Knowledge map→Curriculum→Assessment (e.g. TOEIC 650→900=300hrs)','Grade data→Pattern analysis→Weakness ID→Personalization (prioritize <60%)','Test→Mastery→Unlock next (≥80% proceed, <60% retry)'],
-[_CF+':学生データ暗号化、保護者同意、保持5年','WCAG 2.1 AA、スクリーンリーダー対応',_CG+':Right to be forgotten'],
-[_CF+': student data encrypt, parental consent, 5yr retention','WCAG 2.1 AA, screen reader',_CG+': Right to be forgotten'],
+[_CF+':学生データ暗号化、保護者同意、保持5年','WCAG 2.2 AA、スクリーンリーダー対応',_CG+':Right to be forgotten'],
+[_CF+': student data encrypt, parental consent, 5yr retention','WCAG 2.2 AA, screen reader',_CG+': Right to be forgotten'],
 ['進捗消失|localStorage超過'+_PVJ+'IndexedDB移行','カンニング検出漏れ|タブ監視のみ'+_PVJ+'Proctorio+視線追跡','学習時間水増し|非アクティブカウント'+_PVJ+'操作監視、5分で停止'],
 ['Progress loss|localStorage quota'+_PVE+'IndexedDB','Cheating miss|Tab-only monitor'+_PVE+'Proctorio+eye track','Time inflation|Counts inactive'+_PVE+'Activity monitor, 5min pause'],
 ['新機能→requirements.md, design_system.md, error_logs.md','バグ→error_logs.md, test_cases/, architecture.md','分析→architecture.md(model), api_spec.md'],
@@ -19513,8 +19700,8 @@ government:_dop('99.95%',
 ['Application data aggregation','Approval notification queue','Statistical data generation'],
 ['日次バックアップ+監査ログ (RPO:1h,RTO:2h)','申請データ永久保持(公文書管理法)'],
 ['Daily backup+audit log (RPO:1h,RTO:2h)','Application data permanent retention (Public Records Act)'],
-['個人情報暗号化必須','全操作監査ログ','RLS厳格適用','WCAG 2.1 AA準拠'],
-['Personal info encryption required','All operations audit logged','Strict RLS application','WCAG 2.1 AA compliance']),
+['個人情報暗号化必須','全操作監査ログ','RLS厳格適用','WCAG 2.2 AA準拠'],
+['Personal info encryption required','All operations audit logged','Strict RLS application','WCAG 2.2 AA compliance']),
 travel:_dop('99.9%',
 ['予約受付停止','キャンセル処理制限','決済機能停止'],
 ['Booking acceptance stop','Cancellation processing limit','Payment feature stop'],

@@ -725,3 +725,157 @@ describe('Q8: Full E2E generation — file count, tokens, 25 vs 11 delta', () =>
     assert.ok(t >= 200, `LEARNING_PATH with 25/25 answers should be ≥200 tokens, got ${t}`);
   });
 });
+
+/* ══════════════════════════════════════════════════════════════════
+   Suite 13 — Phase ⑥ 是正更新: ギャップ修正の検証
+   ════════════════════════════════════════════════════════════════ */
+describe('Q13: Phase ⑥ Gap Fixes — compliance, mobile security, AI guardrails', () => {
+
+  const AMobile = Object.assign({}, A25, {
+    mobile: 'Expo (React Native)',
+    ai_auto: 'マルチAgent協調',
+    target: '管理者, 一般ユーザー',
+  });
+
+  function gSec(answers, lang) {
+    S.files = {}; S.genLang = lang || 'ja';
+    genPillar12_SecurityIntelligence(answers, 'QTest');
+    return S.files;
+  }
+
+  function gOps(answers, lang) {
+    S.files = {}; S.genLang = lang || 'ja';
+    genPillar14_OpsIntelligence(answers, 'QTest');
+    return S.files;
+  }
+
+  function gPrompt(answers, lang) {
+    S.files = {}; S.genLang = lang || 'ja';
+    genPillar17_PromptGenome(answers, 'QTest');
+    return S.files;
+  }
+
+  function gCICD(answers, lang) {
+    S.files = {}; S.genLang = lang || 'ja';
+    genPillar20_CICDIntelligence(answers, 'QTest');
+    return S.files;
+  }
+
+  // C2: APPI appears in doc45 compliance matrix (saas domain includes appi)
+  it('C2: doc45 compliance matrix includes APPI (個人情報保護法)', () => {
+    const f = gSec(A25);
+    const doc45 = f['docs/45_compliance_matrix.md'] || '';
+    assert.ok(
+      doc45.includes('APPI') || doc45.includes('個人情報保護法'),
+      `doc45 must include APPI compliance for saas domain, got: ${doc45.slice(0,400)}`
+    );
+  });
+
+  // C3: MASVS in doc46 when mobile
+  it('C3: doc46 contains MASVS section when mobile=Expo', () => {
+    const f = gSec(AMobile);
+    const doc46 = f['docs/46_ai_security.md'] || '';
+    assert.ok(doc46.includes('MASVS'), `doc46 must include MASVS when mobile=Expo, got ${doc46.slice(0,200)}`);
+  });
+
+  it('C3: doc46 does NOT contain MASVS when no mobile', () => {
+    const f = gSec(A25);
+    const doc46 = f['docs/46_ai_security.md'] || '';
+    assert.ok(!doc46.includes('MASVS-STORAGE'), 'doc46 should not include MASVS when mobile=なし');
+  });
+
+  // C4: created_by + deleted_at in technical-plan.md (entity schema section)
+  it('C4: technical-plan.md contains created_by field', () => {
+    const f = gSDD(A25);
+    const plan = f['.spec/technical-plan.md'] || '';
+    assert.ok(plan.includes('created_by'), `technical-plan.md must contain created_by, got: ${plan.slice(0,400)}`);
+  });
+
+  it('C4+H5: technical-plan.md contains deleted_at field (soft delete)', () => {
+    const f = gSDD(A25);
+    const plan = f['.spec/technical-plan.md'] || '';
+    assert.ok(plan.includes('deleted_at'), 'technical-plan.md must contain deleted_at (soft delete)');
+  });
+
+  // C5: AI Guardrails in doc67 when ai_auto set
+  it('C5: doc67 contains Guardrail section when ai_auto set', () => {
+    const f = gPrompt(AMobile);
+    const doc67 = f['docs/67_prompt_composition_guide.md'] || '';
+    assert.ok(
+      doc67.includes('Guardrail') || doc67.includes('ガードレール'),
+      `doc67 must include AI guardrails section when ai_auto≠none, got ${doc67.slice(0,300)}`
+    );
+  });
+
+  // C6: Crash-Free Rate in runbook when mobile
+  it('C6: runbook contains Crash-Free Rate SLI when mobile=Expo', () => {
+    const f = gOps(AMobile);
+    const runbook = f['docs/53_ops_runbook.md'] || '';
+    assert.ok(
+      runbook.includes('Crash-Free') || runbook.includes('クラッシュフリー'),
+      `runbook must include Crash-Free Rate SLI when mobile=Expo`
+    );
+  });
+
+  // H1: NIST SSDF in doc43
+  it('H1: doc43 contains NIST SSDF reference', () => {
+    const f = gSec(A25);
+    const doc43 = f['docs/43_security_intelligence.md'] || '';
+    assert.ok(
+      doc43.includes('NIST SSDF') || doc43.includes('SP 800-218'),
+      `doc43 must reference NIST SSDF (SP 800-218)`
+    );
+  });
+
+  // H2: WCAG 2.2 in a11y doc
+  it('H2: docs/20_a11y contains WCAG 2.2 (not 2.1)', () => {
+    const f = gSDD(A25);
+    const a11y = f['docs/20_a11y.md'] || '';
+    assert.ok(a11y.includes('WCAG 2.2'), 'a11y doc must reference WCAG 2.2');
+    assert.ok(!a11y.includes('WCAG 2.1'), 'a11y doc must NOT reference deprecated WCAG 2.1');
+  });
+
+  // H3: Cookie consent in doc45
+  it('H3: doc45 contains Cookie consent section', () => {
+    const f = gSec(A25);
+    const doc45 = f['docs/45_compliance_matrix.md'] || '';
+    assert.ok(doc45.includes('Cookie'), `doc45 must include Cookie consent section`);
+  });
+
+  // H8: Notification monitoring in runbook
+  it('H8: runbook contains notification delivery monitoring', () => {
+    const f = gOps(A25);
+    const runbook = f['docs/53_ops_runbook.md'] || '';
+    assert.ok(
+      runbook.includes('通知') || runbook.includes('Notification'),
+      `runbook must include notification delivery monitoring`
+    );
+  });
+
+  // C1: App Store checklist in doc80 when mobile
+  it('C1: doc80 contains App Store submission checklist when mobile=Expo', () => {
+    const f = gCICD(AMobile);
+    const doc80 = f['docs/80_release_engineering.md'] || '';
+    assert.ok(
+      doc80.includes('App Store') || doc80.includes('Google Play'),
+      `doc80 must include store submission checklist when mobile=Expo`
+    );
+  });
+
+  it('C1: doc80 does NOT contain store checklist when mobile=なし', () => {
+    const f = gCICD(A25);
+    const doc80 = f['docs/80_release_engineering.md'] || '';
+    assert.ok(!doc80.includes('App Store Submission') && !doc80.includes('提出前チェックリスト'),
+      'doc80 should not include store checklist when no mobile');
+  });
+
+  // M5: Boundary value testing in doc33
+  it('M5: doc33 contains boundary value test methodology', () => {
+    const f = gFull(A25);
+    const doc33 = f['docs/33_test_matrix.md'] || '';
+    assert.ok(
+      doc33.includes('境界値') || doc33.includes('Boundary'),
+      `doc33 must include boundary value test methodology`
+    );
+  });
+});
