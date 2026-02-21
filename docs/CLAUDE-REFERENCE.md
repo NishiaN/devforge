@@ -462,3 +462,197 @@ test('pluralize', () => {
   assert.equal(pluralize('Category'), 'categories');
 });
 ```
+
+---
+
+## Test Architecture (Detailed)
+
+| File | Tests | Purpose |
+|------|-------|---------|
+| gen-coherence.test.js | 253 assertions | Full LMS generation + structural validation + post-generation audit (C2-C10) |
+| snapshot.test.js | 53 tests | 6 scenario regression (LMS/Blog/EC/English/PropertyMgmt/Helpdesk) + context engineering + skills validation + quality files + P12 security intelligence + P13 industry detection + P14 ops + P4 .claude/ structure |
+| data-coverage.test.js | 40 tests | Data integrity: entity coverage, FK validation, domain detection (32 domains), playbook completeness, DOMAIN_OPS coverage, DOMAIN_MARKET coverage, P19 entity tests |
+| r27-regression.test.js | 17 tests | Bug fixes: prices, FK, KPI, ports |
+| r28-regression.test.js | 19 tests | Quality: REST methods, AC, scope_out, verification |
+| build.test.js | build | Build size ≤3000KB, pillar function existence (P1-P20), sbPillarGrid element, PILLAR array lengths |
+| compat.test.js | 75 tests + 7 synergy | Compatibility validation (58 rules: 11 ERROR, 37 WARN, 10 INFO) + calcSynergy unit tests |
+| security.test.js | 26 tests | Security: CSP, SRI, sanitization, XSS prevention, proto pollution, .claude/settings.json safety |
+| ops.test.js | 16 tests | Ops Intelligence (P14): runbook generation, checklist, ops plane design, SLO adaptation, domain-specific flags, observability stack, circuit breaker, audit schema |
+| future.test.js | 16 tests | Future Strategy Intelligence (P15): DOMAIN_MARKET coverage, PERSONA_ARCHETYPES, GTM_STRATEGY, REGULATORY_HORIZON, doc generation (56-59), mermaid diagrams, bilingual content |
+| deviq.test.js | 20 tests | Polymorphic Development Intelligence (P16): DEV_METHODOLOGY_MAP (32 domains), PHASE_PROMPTS (6 phases), INDUSTRY_STRATEGY (15 industries), NEXT_GEN_UX (4 keywords), doc generation (60-63) |
+| promptgenome.test.js | 22 tests | Prompt Genome Engine (P17): CRITERIA_FRAMEWORK (8 axes), AI_MATURITY_MODEL (3 levels), _APPROACHES (12), getSynergy, APPROACH_KPI, doc generation (65-68), bilingual content |
+| promptops.test.js | 26 tests | Prompt Engineering OS (P18): REACT_PROTOCOL (6 phases × 4 stages), LLMOPS_STACK (3 levels), PROMPT_LIFECYCLE (5 stages), doc generation (69-72), no template literal contamination |
+| enterprise.test.js | 33 tests | Enterprise SaaS Blueprint (P19): ENTERPRISE_ARCH_PATTERNS (4), WORKFLOW_TEMPLATES (5), ADMIN_DASHBOARD_SPECS (4), ENTERPRISE_COMPONENTS (8), gen73-76 output, bilingual, domain skip logic, pattern selection (7 chip→selKey) |
+| cicd.test.js | 30 tests | CI/CD Intelligence (P20): PIPELINE_STAGES (9), DEPLOY_STRATEGIES (4), QUALITY_GATES (5), RELEASE_MODELS (3), DEPLOY_TARGET_CONFIG (9), gen77-80, all-domain generation, Docker JA key normalization |
+| skill-level.test.js | 21 tests | 7-Level Skill System: SKILL_NAMES (7), SKILL_TIERS, pickSkillLv, Lv0/Lv2/Lv4/Lv6 behaviors, gen81 UX audit output, ux_audit launcher template |
+| presets.test.js | 4 tests | Preset count (48 standard), bilingual names, tech fields, purpose |
+| field-presets.test.js | 18 tests | Field preset system: PR_FIELD=82, scaleHint 4×ja/en, meta 6 dims, FIELD_CAT_MAP=82, FIELD_TREND=19, FIELD_CATS=21 |
+| Others | ~23 tests | i18n, state, techdb |
+
+**Total: 584 tests (all passing, 100% pass rate) + 7 synergy unit tests**
+
+---
+
+## AI Prompt Launcher Templates (Full List)
+
+37 templates in `src/ui/launcher.js`. Auto-inject project context (name, stack, auth, entities):
+
+- 🔍 **Spec Review** — 4-step structured review (mission → requirements → architecture → consistency)
+- 🚀 **MVP Implementation** — Select priority task from tasks.md, implement with types → data → logic → UI → tests
+- 🧪 **Test Generation** — Reference docs/07, create normal → error → boundary tests (Vitest format)
+- ♻️ **Refactoring** — Detect SOLID violations, estimate effort (S/M/L), prioritize
+- 🔒 **Security Audit** — OWASP Top 10 checklist with status (✅/⚠️/❌)
+- 📝 **Doc Completion** — Gap analysis + generate most critical missing doc
+- 🐛 **QA/Bug Detection** — Domain-specific bug patterns, test plan, priority matrix
+- 🔧 **Debug Support** — Cross-reference error_logs.md, 5 Whys analysis, fix code
+- 📐 **Architecture Consistency** — Detect layer violations, verify tech policy alignment
+- ⚡ **Performance Optimization** — NFR comparison, bottleneck identification, improvement roadmap
+- 🔌 **API Integration** — Type-safe client code with error handling + test skeleton
+- ♿ **Accessibility Audit** — WCAG 2.1 AA 4-principle check + axe-core tests
+- 🔄 **Migration Support** — Schema conversion scripts, validation queries, deploy plan
+- 📊 **Code Metrics** — Cyclomatic/cognitive complexity, coupling, DRY violations, ROI prioritization
+- 🌍 **i18n Implementation** — Extract strings, define translation keys, generate JSON, replace with t()
+- 🧬 **Optimal Methodology** — Select optimal dev methodology from DEV_METHODOLOGY_MAP (P16)
+- 🎭 **9-Expert Brainstorm** — 9 expert personas (Creative/Tech/Business/Academic/Science/User/Disruptor/Humor/Explorer) generate ideas + 3-axis evaluation
+- 🎯 **UX Journey Design** — Lv.0-5 progressive disclosure user journey (persona/pain/UX pattern/churn risk/action per level) + "3 Nightmares" anti-failure UI design
+- 🤖 **AI Model Selection** — Per-dev-phase AI model matching (Gemini=precision, Claude=ethics, ChatGPT=creativity, Copilot=balance) with natural prompt examples
+- 🏭 **Industry Analysis** — Industry-specific blueprint + tech radar + stakeholder strategy
+- 🔮 **Next-Gen UX** — Next-gen UX patterns + cognitive load audit
+- 🧠 **Cognitive Load Analysis** — Cognitive complexity audit + simplification roadmap
+- 🧩 **Prompt Genome Analysis** — CRITERIA 8-axis prompt evaluation (P17)
+- 📊 **AI Maturity Review** — AI maturity level assessment + upgrade roadmap (P17)
+- 🔄 **ReAct Debug Loop** — ReAct 6-phase debugging protocol (P18)
+- 🔧 **Prompt Ops Review** — Prompt Ops pipeline + LLMOps dashboard review (P18)
+- 🏢 **Enterprise Architecture Review** — Multi-tenant arch, RLS, org model, permission matrix review (P19)
+- 📋 **Workflow Process Audit** — Approval/ticket/order state machine audit, SLA compliance (P19)
+- 🔬 **UX Proficiency Audit** — 7-level UX audit with project context, generates docs/81 (strategy category, Claude)
+
+---
+
+## Generated Output Catalog (Per-Version)
+
+### New in v9.3.0 (Phase 4: CLAUDE.md 3-layer split + Cross-Platform)
+- `.claude/rules/spec.md` — Spec-driven development rules (auto-loads for .spec/**)
+- `.claude/rules/frontend.md` — Framework-specific FE rules (auto-loads for src/components/**, app/**)
+- `.claude/rules/backend.md` — Architecture-aware BE rules (auto-loads for src/api/**, src/lib/**)
+- `.claude/rules/test.md` — Testing methodology rules (auto-loads for **.test.*, **.spec.*)
+- `.claude/rules/ops.md` — Operations & deployment rules (auto-loads for .github/**, docs/34_*, docs/53_*, docs/54_*)
+- `.claude/settings.json` — Permissions, context config, dangerous command warnings
+- `.gitattributes` — Line ending normalization (prevents Windows CRLF issues)
+- `.editorconfig` — Editor settings standardization
+- `docs/64_cross_platform_guide.md` — Cross-platform development guide
+
+### New in v9.2.0 (Pillar ⑭)
+- `docs/53_ops_runbook.md` — Ops Plane design (Feature Flags, SLO/SLI, Observability, Jobs, Backup, Rate Limiting)
+- `docs/54_ops_checklist.md` — Day-1 ops readiness checklist (12 Ops Capabilities Matrix)
+- `docs/55_ops_plane_design.md` — Ops Plane Architecture (12 Ops Capabilities impl patterns, Circuit Breaker, Evidence-Based Ops)
+- `docs/56_market_positioning.md` — Market positioning & competitive intelligence (MOAT analysis, GTM strategy, unit economics)
+- `docs/57_user_experience_strategy.md` — User experience & retention strategy (personas, user journeys, accessibility, digital wellbeing)
+- `docs/58_ecosystem_strategy.md` — Ecosystem & platform strategy (API-as-product, DX, FinOps, community strategy)
+- `docs/59_regulatory_foresight.md` — Regulatory foresight & sustainability (2026-2030 horizon, EU AI Act, ESG metrics)
+
+### New in v9.3.x (Pillars ⑰⑱)
+- `docs/65_prompt_genome.md` — Prompt genome analysis (CRITERIA 8-axis framework, approach scoring)
+- `docs/66_ai_maturity_assessment.md` — AI maturity level assessment (3-level model: Assist/Augment/Autonomous)
+- `docs/67_prompt_composition_guide.md` — Prompt composition guide (12 approaches + synergy matrix)
+- `docs/68_prompt_kpi_dashboard.md` — Prompt KPI dashboard (metrics per approach + measurement plan)
+- `docs/69_prompt_ops_pipeline.md` — Prompt Ops pipeline (5-stage lifecycle management)
+- `docs/70_react_workflow.md` — ReAct workflow (6-phase × 4-stage protocol)
+- `docs/71_llmops_dashboard.md` — LLMOps dashboard (3-level stack: Basic/Advanced/Enterprise)
+- `docs/72_prompt_registry.md` — Prompt registry (versioned catalog + governance)
+
+### New in v9.4.0 (Pillar ⑲)
+- `docs/73_enterprise_architecture.md` — Multi-tenant arch (RLS/schema/DB/hybrid patterns, org ER, permission matrix, invite flow)
+- `docs/74_workflow_engine.md` — Business workflow state machines (approval/ticket/order/contract/onboarding, Mermaid stateDiagram)
+- `docs/75_admin_dashboard_spec.md` — Admin dashboard spec (KPI cards, business metrics, workload analytics, role-based views)
+- `docs/76_enterprise_components.md` — Enterprise component catalog (8 components: StatusBadge, ApprovalBar, DataTable, NotificationBell, OrgSwitcher, OnboardingStepper, AuditTimeline, InviteManager)
+
+### New in v9.5.x (Pillar ⑳ + 7-level skill)
+- `docs/77_cicd_pipeline_design.md` — CI/CD pipeline design (9 stages, GitHub Actions, quality gates)
+- `docs/78_deployment_strategy.md` — Deployment strategy (blue-green/canary/rolling/feature-flag)
+- `docs/79_quality_gate_matrix.md` — Quality gate matrix (5 gates, domain-specific rules)
+- `docs/80_release_engineering.md` — Release engineering (3 release models, 9 deploy targets)
+- `docs/81_ux_proficiency_audit.md` — 7-level UX proficiency audit with project context (all domains)
+
+---
+
+## Version History (Phase A-J)
+
+### Phase D UX Improvements (D1-D5)
+- D1: `beforeunload` handler — warns when files exist and ZIP not saved (`S._zipDone` flag set in `exportZIP()`)
+- D2: Preset filter for Lv0-1 — `_beginnerPresets` (5 presets only); catBar + compare button hidden for `S.skillLv<=1`
+- D3: Sidebar Pillar Grid Lv0-1 filter — `_bpFilter` hides 16 pillars, shows only SDD/AIルール/デザイン/ランチャー
+- D4: Pillar Tabs Lv0-1 filter — `_ptFilter` in `applyLang()`, same 4-pillar filter
+- D5: `AI_TOOL_RECIPES` — added Cline + Gemini recipes in `ui/templates.js`
+
+### Phase E UX Improvements (E1-E8 — beginner experience final polish)
+- E1: `S._zipDone=false` reset in `doGenerate()` + `clearFiles()` (beforeunload reactivates after regen)
+- E2: Sidebar key files banner uses `S.skillLv<=1` (consistent with all other skill gates)
+- E3: QBar AI Launcher shown to all skill levels; Explorer remains beginner-hidden
+- E4: Tour filtered to 6 steps for Lv0-1 (`_getTourSteps()` now uses `var steps` + filter)
+- E5: Welcome message in `start()` for Lv0-1 — reassures before first question
+- E6: Post-gen guide CTA simplified for Lv0-1 (ZIP + Let's Go only; full 5-button set for Lv2+)
+- E7: Skip button shows '後で回答OK' for Lv0-1; `const _ja` declared at `renderInputFor()` top
+- E8: Phase completion milestone toast for Lv0-1 in `phaseEnd()` ('あと2ステップ' etc.)
+
+### Phase A/B/C UX Improvements
+- `showCompatAlert()` filters to errors-only for `S.skillLv<=1` (no warn/info noise for beginners)
+- `generateAll()` shows friendly toast for Lv0-1 instead of "FE/BE/DB" jargon
+- `applyLang()` in `init.js`: Lv0-1 hides 16 pillar badges (shows only 4: SDD/AIルール/AIランチャー/デザイン), simplifies icards[1-2] + hides icards[3-5]
+- `showExportGrid()` in `generators/index.js`: three `S.skillLv` gates — heroCard urgency (Lv0-1), `_aiQs` micro-steps vs tool recipe (Lv0-1 vs Lv2+), `_startHere` 3-file spotlight (Lv0-1 only). Token count hidden for Lv0-1.
+- `showPostGenGuide()` in `guide.js`: reads `S.skillLv` (not `S.answers.skill_level`) as primary signal
+- `save()` in `state.js`: shows toast at 3.5MB (warn) and 4MB (error), try/catch on `localStorage.setItem`
+- New CSS classes (all.css): `.ai-quickstart`, `.ai-qs-micro-label`, `.ai-qs-detail-micro`, `.ai-qs-recovery`, `.ai-qs-rp`, `.export-hero-urgent`, `.export-hero-urgent-label`, `.start-here-card`, `.start-here-file`, `@keyframes heroUrgentPulse`
+
+### Phase F UX (F1-F8)
+- F1: Launcher Lv0-1 filter (8 templates + "全表示" toggle)
+- F2: `statPillarNum` id added to index.html; Lv0-1: pillar=4/files=主要/heroDesc簡略
+- F3: dashboard.js — `S.skill!=='beginner'` → `S.skillLv>=3`
+- F4: pbadges/pillarTabs Lv0-1 labels overridden to plain-language names
+- F5: Lv0-1 icard[0] changed to "📖 設計書を自動で作る"
+- F6: micro-steps具体化+リカバリー Lv0-1は展開表示; all.css: `.ai-qs-recovery-open`
+- F7: sidebar renderSidebarFiles — Lv0-1: full files section collapsed via `<details>`
+- F8: renderPillarGrid — Lv0-1: tooltip plain-text via `_bgTips`
+
+### Phase G Round 2 (G2-1–G2-7)
+- G2-1: `shareURL()` key names fixed (`p/a/pr`→`projectName/answers/preset`) + Unicode `decodeURIComponent(escape(atob(...)))`; `_SAFE_KEYS` includes `skillLv`
+- G2-2: project.js `_SAFE_KEYS` includes `skillLv` (switchProject + importProject)
+- G2-3: cmdpalette.js `exportJSON()` → `exportProject()` (fixed nonexistent function call)
+- G2-4: guide.js Lv3 bridge card (`S.skillLv===3` — ⑫セキュリティ/コマンドパレット/⑳CI/CD)
+- G2-5: launcher.js `LAUNCH_SKILL_REC.advanced` added; recKeys: Lv0-1→beginner, Lv2-3→intermediate, Lv4→advanced, Lv5+→pro
+- G2-6: generators/index.js `_powerOps` (`S.skillLv>=4`); CSS `.power-ops-panel/.power-ops-title/.power-ops-btns`
+- G2-7: shareURL() Lv6 success message includes SNS/blog sharing recommendation
+
+### Phase H (H-1–H-16)
+- H-1: `showDiffView()` added to diff.js (Lv4+ Power Ops Diff View now works)
+- H-2: `showManual()` apply(this,arguments) — section nav fixed
+- H-3: Dashboard pillarChecks/Map/Colors now covers P16-P20 (13→18 pillars)
+- H-4/5/6/7: Number fixes — 37テンプレート, 135+ファイル, 20の柱 (all files updated)
+- H-8: `switchSidebarTab()` aria-selected updated on tab change
+- H-9/10: Export cards + start-here-file keyboard support (role=button + Enter/Space)
+- H-11: wizard.js `phaseEnd()` `S.skill==='beginner'` → `S.skillLv<=1`
+- H-12: sidebar `renderSidebarFiles()` → scrollIntoView for active file
+- H-13: preview.js pillar 1 adds .gitattributes/.editorconfig/docs/64
+- H-14: shareURL card hidden in mgmtGroup for Lv4+ (Power Ops already has it)
+- H-15: `autoFillPhase2Defaults()` auto-sets auth based on backend
+- H-16: `loadTemplateList()` dead code removed from templates.js
+
+### Phase I (I-A–I-D)
+- A: templates.js counts 37/48 (was 34/41)
+- B: `_lsUsage()` + `_SAFE_KEYS` moved to module level + delete confirmation + storage bar (project.js)
+- C: 44px touch targets + swipe fix (resize-aware) + 3rd mobile tab 📁ファイル
+- D: 7 new standard presets (factory/agri/energy/media/gov/travel/insurance) → 48 total; SYNERGY_DOMAIN expanded (18→41+ entries)
+
+### Phase J — Field Presets (v9.6.0)
+- `src/data/presets.js`: PR_FIELD (82 entries), `_SCALE_DEFAULTS` (4 scales), `_fpd()` helper, FIELD_CAT_MAP (82), FIELD_CATS_JA/EN (21 each), FIELD_TREND (19 fields)
+- `src/generators/common.js`: +142 entities for 20 academic/industry domains
+- `src/ui/presets.js`: `_presetMode('standard'|'field')`, `pickFieldPreset()`, `_switchPresetMode()`; `S.preset` prefixed `'field:'`; Lv0-1: mode toggle hidden
+- ⚠️ `var presetName`/`var preFilledCount` at line ~346 (NOT `const` — avoids hoisting conflict)
+- `test/field-presets.test.js`: 18 tests; `test/harness.js`: PR_FIELD/FIELD_CAT_MAP/FIELD_CATS_JA/EN/FIELD_TREND/_SCALE_DEFAULTS getters
+
+### Phase K — Field Preset → Wizard Question 最適マッチング
+- `FIELD_CAT_DEFAULTS` (20 categories) — Layer 2 category defaults for target/screens/payment/mobile
+- start() field preset branch: 4-layer logic (scale→category→fp→meta inference)
+- PR_FIELD individual overrides: 7 presets with custom target/payment/mobile
+- Coverage: 7/25 → 11/25 questions pre-filled (target+screens+payment+mobile added)
+- `test/field-presets.test.js`: +12 tests (FIELD_CAT_DEFAULTS×7 + individual overrides×5)
