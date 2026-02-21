@@ -102,16 +102,16 @@ describe('Build System', () => {
     assert.deepStrictEqual(missingInJA, [], `Keys in EN but not JA: ${missingInJA.join(', ')}`);
   });
 
-  it('24 pillars consistency across all references', () => {
+  it('25 pillars consistency across all references', () => {
     const html = fs.readFileSync(OUTPUT, 'utf-8');
-    // Check hero description has 24 pillars
-    assert.ok(html.includes('24の柱') || html.includes('23の柱'), 'Should contain "24の柱" or "23の柱" in Japanese hero');
-    assert.ok(html.includes('24 Pillars') || html.includes('24 pillars') || html.includes('23 Pillars') || html.includes('23 pillars'), 'Should contain "24 Pillars" or "23 Pillars" in English');
-    // Check pillar arrays have 24 items
+    // Check hero description has 25 pillars
+    assert.ok(html.includes('25の柱') || html.includes('24の柱'), 'Should contain "25の柱" or "24の柱" in Japanese hero');
+    assert.ok(html.includes('25 pillars') || html.includes('24 pillars') || html.includes('25 Pillars'), 'Should contain "25 pillars" in English');
+    // Check pillar arrays have 25 items
     const pillarJA = html.match(/pillar:\[([^\]]+)\]/);
     if (pillarJA) {
       const items = pillarJA[1].split(',').length;
-      assert.ok(items === 24, `Pillar array should have 24 items, got ${items}`);
+      assert.ok(items === 25, `Pillar array should have 25 items, got ${items}`);
     }
     // Check P14 & P15 references exist
     assert.ok(html.includes('⑭運用インテリジェンス') || html.includes('⑭Ops Intelligence'), 'Should have ⑭Ops badge');
@@ -149,6 +149,8 @@ describe('Build System', () => {
     assert.ok(html.includes('genPillar23_TestingIntelligence'), 'Should have P23 generator function');
     assert.ok(html.includes('㉔AI安全') || html.includes('㉔AI Safety'), 'Should have ㉔AI Safety badge');
     assert.ok(html.includes('genPillar24_AISafety'), 'Should have P24 generator function');
+    assert.ok(html.includes('㉕パフォーマンス') || html.includes('㉕Performance'), 'Should have ㉕Performance badge');
+    assert.ok(html.includes('genPillar25_Performance'), 'Should have P25 generator function');
   });
 
   it('tour has correct number of steps', () => {
@@ -322,7 +324,7 @@ describe('Build System', () => {
   it('has correct number of pillar badges', () => {
     const html = fs.readFileSync(OUTPUT, 'utf-8');
     const pbadgeCount = (html.match(/class="pbadge"/g) || []).length;
-    assert.strictEqual(pbadgeCount, 24, `pbadge count should be 24 (one per pillar), got ${pbadgeCount}`);
+    assert.strictEqual(pbadgeCount, 25, `pbadge count should be 25 (one per pillar), got ${pbadgeCount}`);
   });
 
   it('no duplicate @keyframes definitions', () => {
@@ -367,20 +369,20 @@ describe('Build System', () => {
     assert.ok(html.includes('function clickPillarIcon'), 'clickPillarIcon function should exist');
   });
 
-  it('sidebar pillar grid data arrays have 24 entries', () => {
+  it('sidebar pillar grid data arrays have 25 entries', () => {
     const js = fs.readFileSync(path.join(ROOT, 'src/ui/sidebar.js'), 'utf-8');
     const icons = js.match(/var PILLAR_ICONS=\[([^\]]+)\]/);
     assert.ok(icons, 'PILLAR_ICONS should be defined');
     const iconCount = (icons[1].match(/'/g) || []).length / 2;
-    assert.strictEqual(iconCount, 24, `PILLAR_ICONS should have 24 entries, got ${iconCount}`);
+    assert.strictEqual(iconCount, 25, `PILLAR_ICONS should have 25 entries, got ${iconCount}`);
     const gtp = js.match(/var GEN_TO_PILLAR=\[([^\]]+)\]/);
     assert.ok(gtp, 'GEN_TO_PILLAR should be defined');
     const gtpCount = gtp[1].split(',').length;
-    assert.strictEqual(gtpCount, 24, `GEN_TO_PILLAR should have 24 entries, got ${gtpCount}`);
+    assert.strictEqual(gtpCount, 25, `GEN_TO_PILLAR should have 25 entries, got ${gtpCount}`);
     const pff = js.match(/var PILLAR_FIRST_FILE=\[([^\]]+)\]/);
     assert.ok(pff, 'PILLAR_FIRST_FILE should be defined');
     const pffCount = pff[1].split(',').length;
-    assert.strictEqual(pffCount, 24, `PILLAR_FIRST_FILE should have 24 entries, got ${pffCount}`);
+    assert.strictEqual(pffCount, 25, `PILLAR_FIRST_FILE should have 25 entries, got ${pffCount}`);
   });
 
   it('all t() calls reference valid i18n keys', () => {

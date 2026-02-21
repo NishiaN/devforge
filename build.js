@@ -81,6 +81,7 @@ const jsFiles = [
   'generators/p22-database.js',
   'generators/p23-testing.js',
   'generators/p24-aisafety.js',
+  'generators/p25-performance.js',
   'generators/docs.js',
   'generators/common.js',
 

@@ -6,8 +6,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 # DevForge v9.6.0
 
-**AI Development OS** — 59 JS modules in `src/` → single `devforge-v9.html` (~2313KB / 3000KB limit).
-Generates **151+ files** across **24 pillars** from a wizard-driven Q&A session.
+**AI Development OS** — 60 JS modules in `src/` → single `devforge-v9.html` (~2339KB / 3000KB limit).
+Generates **155+ files** across **25 pillars** from a wizard-driven Q&A session.
 
 ## Documentation Map
 
@@ -18,9 +18,9 @@ Generates **151+ files** across **24 pillars** from a wizard-driven Q&A session.
 ## Build & Test
 
 ```bash
-node build.js                          # → devforge-v9.html (~2313KB, limit 3000KB)
+node build.js                          # → devforge-v9.html (~2339KB, limit 3000KB)
 node build.js --no-minify              # debug (skip minification)
-npm test                               # 885 tests, all passing
+npm test                               # 909 tests, all passing
 node --test test/gen-quality.test.js   # single test file
 npm run dev                            # build + live-server :3000
 npm run check                          # syntax-check extracted JS
@@ -44,7 +44,7 @@ Never reorder without checking dependencies.
 |----------|---------|
 | `core/` | State (`S`), i18n (`t()`), keyboard events, wizard tour, app init |
 | `data/` | 48 standard presets (`PR`/`_mp()`), 82 field presets (`PR_FIELD`/`_fpd()`), questions, techdb, compat-rules (76 rules), gen-templates (bilingual GT dict), helpdata |
-| `generators/` | `index.js` orchestrator + `p1`–`p24` pillars + `docs.js` + `common.js` |
+| `generators/` | `index.js` orchestrator + `p1`–`p25` pillars + `docs.js` + `common.js` |
 | `ui/` | wizard, render, presets, preview, sidebar, editor, diff, export, explorer, dashboard, launcher, templates, qbar, cmdpalette, help, voice |
 | `styles/all.css` | Theme (dark/light), responsive; CSS custom properties only |
 
@@ -60,7 +60,7 @@ S.lang          — UI language 'ja'|'en'
 S.genLang       — generation output language 'ja'|'en'
 S.skill         — 'beginner'|'intermediate'|'pro'
 S.skillLv       — 0-6 (coexists with S.skill; skillTier(lv) maps to string)
-S.pillar        — active pillar tab 0-23
+S.pillar        — active pillar tab 0-24
 S.editedFiles   — user-modified files set
 S.pinnedFiles   — pinned file paths []
 S.recentFiles   — MRU file paths [], max 10
@@ -179,7 +179,7 @@ Key output structure:
 - `.spec/` — constitution, specification, technical-plan, tasks, verification
 - `.devcontainer/` — devcontainer.json, Dockerfile, docker-compose.yml, post-create.sh
 - `.claude/` — thin CLAUDE.md + 5 path-specific rules + settings.json
-- `docs/` — 98 documents (01_project_overview … 98_prompt_injection_defense)
+- `docs/` — 102 documents (01_project_overview … 102_performance_monitoring)
 - AI rules — AI_BRIEF.md, .cursorrules, .clinerules, .windsurfrules, AGENTS.md, skills/
 - CI/CD — .github/workflows/ci.yml
 

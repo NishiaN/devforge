@@ -61,6 +61,7 @@ eval(fs.readFileSync('src/generators/p21-api.js','utf-8'));
 eval(fs.readFileSync('src/generators/p22-database.js','utf-8'));
 eval(fs.readFileSync('src/generators/p23-testing.js','utf-8'));
 eval(fs.readFileSync('src/generators/p24-aisafety.js','utf-8'));
+eval(fs.readFileSync('src/generators/p25-performance.js','utf-8'));
 
 /* ═══ Generation helpers ═══ */
 
@@ -79,7 +80,7 @@ function gRoadmap(answers, lang) {
   return S.files;
 }
 
-/** Full 24-pillar generation (for E2E token and file count tests) */
+/** Full 25-pillar generation (for E2E token and file count tests) */
 function gFull(answers, lang, skill) {
   S.files={}; S.genLang=lang||'ja'; S.skill=skill||'intermediate';
   genPillar1_SDD(answers,'QTest');
@@ -106,6 +107,7 @@ function gFull(answers, lang, skill) {
   genPillar22_DatabaseIntelligence(answers,'QTest');
   genPillar23_TestingIntelligence(answers,'QTest');
   genPillar24_AISafety(answers,'QTest');
+  genPillar25_Performance(answers,'QTest');
   return Object.assign({},S.files);
 }
 
@@ -684,7 +686,7 @@ describe('Q8: Full E2E generation — file count, tokens, 25 vs 11 delta', () =>
   it('A25 full generation: file count in 108-162 range', () => {
     const f = gFull(A25);
     const count = Object.keys(f).length;
-    assert.ok(count >= 108 && count <= 162, `A25 full gen file count should be 108-162, got ${count}`);
+    assert.ok(count >= 108 && count <= 166, `A25 full gen file count should be 108-166, got ${count}`);
   });
 
   it('A25 full generation: total tokens ≥ 14000 (rich content across 24 pillars)', () => {
@@ -1837,6 +1839,136 @@ describe('Suite 19: Pillar ㉔ AI Safety Intelligence', () => {
     const f = gAISafety(aiAnswers, 'en');
     ['docs/95_ai_safety_framework.md','docs/96_ai_guardrail_implementation.md',
      'docs/97_ai_model_evaluation.md','docs/98_prompt_injection_defense.md'].forEach(p => {
+      assert.ok(f[p], p+' EN must be generated');
+    });
+  });
+});
+
+/*
+   Suite 20 — Pillar ㉕ Performance Intelligence (docs/99-102)
+   Tests: generate, content, stack-aware, EN
+*/
+function gPerf(answers, lang) {
+  S.files={}; S.genLang=lang||'ja'; S.skill='intermediate';
+  genPillar25_Performance(answers,'QTest');
+  return S.files;
+}
+
+const perfAnswers = {
+  frontend:'React + Next.js', backend:'Node.js + NestJS',
+  database:'PostgreSQL', deploy:'Vercel', orm:'Prisma',
+  auth:'Supabase Auth', mobile:'なし',
+};
+const perfPythonAnswers = {
+  frontend:'React + Next.js', backend:'Python + FastAPI',
+  database:'PostgreSQL', deploy:'Railway', orm:'SQLAlchemy (Python)',
+  mobile:'なし',
+};
+const perfCFAnswers = {
+  frontend:'React + Next.js', backend:'Node.js + Hono',
+  database:'Neon (PostgreSQL)', deploy:'Cloudflare Workers',
+  mobile:'なし',
+};
+
+describe('Suite 20: Pillar ㉕ Performance Intelligence', () => {
+
+  // ── docs/99 Performance Strategy ──
+  it('generates docs/99_performance_strategy.md', () => {
+    const f = gPerf(perfAnswers);
+    assert.ok(f['docs/99_performance_strategy.md'], 'docs/99 must be generated');
+  });
+
+  it('docs/99 contains Core Web Vitals table', () => {
+    const f = gPerf(perfAnswers);
+    const doc = f['docs/99_performance_strategy.md'] || '';
+    assert.ok(doc.includes('LCP') && doc.includes('INP') && doc.includes('CLS'), 'docs/99 must contain LCP/INP/CLS');
+  });
+
+  it('docs/99 Next.js: contains dynamic import optimization', () => {
+    const f = gPerf(perfAnswers);
+    const doc = f['docs/99_performance_strategy.md'] || '';
+    assert.ok(doc.includes('next/dynamic') || doc.includes('Dynamic import'), 'docs/99 Next.js must contain dynamic import');
+  });
+
+  it('docs/99 contains response time targets table', () => {
+    const f = gPerf(perfAnswers);
+    const doc = f['docs/99_performance_strategy.md'] || '';
+    assert.ok(doc.includes('P95') || doc.includes('P50'), 'docs/99 must contain response time targets');
+  });
+
+  // ── docs/100 Database Performance ──
+  it('generates docs/100_database_performance.md', () => {
+    const f = gPerf(perfAnswers);
+    assert.ok(f['docs/100_database_performance.md'], 'docs/100 must be generated');
+  });
+
+  it('docs/100 contains N+1 pattern', () => {
+    const f = gPerf(perfAnswers);
+    const doc = f['docs/100_database_performance.md'] || '';
+    assert.ok(doc.includes('N+1') || doc.includes('include'), 'docs/100 must contain N+1 fix');
+  });
+
+  it('docs/100 contains index design', () => {
+    const f = gPerf(perfAnswers);
+    const doc = f['docs/100_database_performance.md'] || '';
+    assert.ok(doc.includes('INDEX') || doc.includes('インデックス'), 'docs/100 must contain index design');
+  });
+
+  it('docs/100 contains slow query detection', () => {
+    const f = gPerf(perfAnswers);
+    const doc = f['docs/100_database_performance.md'] || '';
+    assert.ok(doc.includes('slow') || doc.includes('スロークエリ') || doc.includes('pg_stat'), 'docs/100 must contain slow query content');
+  });
+
+  // ── docs/101 Cache Strategy ──
+  it('generates docs/101_cache_strategy.md', () => {
+    const f = gPerf(perfAnswers);
+    assert.ok(f['docs/101_cache_strategy.md'], 'docs/101 must be generated');
+  });
+
+  it('docs/101 contains Redis/Upstash implementation', () => {
+    const f = gPerf(perfAnswers);
+    const doc = f['docs/101_cache_strategy.md'] || '';
+    assert.ok(doc.includes('Redis') || doc.includes('Upstash'), 'docs/101 must contain Redis/Upstash cache');
+  });
+
+  it('docs/101 Vercel: contains Vercel edge cache config', () => {
+    const f = gPerf(perfAnswers);
+    const doc = f['docs/101_cache_strategy.md'] || '';
+    assert.ok(doc.includes('Vercel') || doc.includes('Cache-Control'), 'docs/101 Vercel must contain edge cache');
+  });
+
+  // ── docs/102 Performance Monitoring ──
+  it('generates docs/102_performance_monitoring.md', () => {
+    const f = gPerf(perfAnswers);
+    assert.ok(f['docs/102_performance_monitoring.md'], 'docs/102 must be generated');
+  });
+
+  it('docs/102 contains Lighthouse CI configuration', () => {
+    const f = gPerf(perfAnswers);
+    const doc = f['docs/102_performance_monitoring.md'] || '';
+    assert.ok(doc.includes('lighthouserc') || doc.includes('Lighthouse'), 'docs/102 must contain Lighthouse CI config');
+  });
+
+  it('docs/102 contains performance budget table', () => {
+    const f = gPerf(perfAnswers);
+    const doc = f['docs/102_performance_monitoring.md'] || '';
+    assert.ok(doc.includes('Budget') || doc.includes('バジェット') || doc.includes('bundle'), 'docs/102 must contain budget info');
+  });
+
+  // ── All 4 files + EN ──
+  it('all 4 docs/99-102 files generated', () => {
+    const f = gPerf(perfAnswers);
+    ['docs/99_performance_strategy.md','docs/100_database_performance.md',
+     'docs/101_cache_strategy.md','docs/102_performance_monitoring.md'].forEach(p => {
+      assert.ok(f[p], p+' must be generated');
+    });
+  });
+
+  it('all 4 docs/99-102 EN generation works', () => {
+    const f = gPerf(perfAnswers, 'en');
+    ['docs/99_performance_strategy.md','docs/100_database_performance.md',
+     'docs/101_cache_strategy.md','docs/102_performance_monitoring.md'].forEach(p => {
       assert.ok(f[p], p+' EN must be generated');
     });
   });

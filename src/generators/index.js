@@ -47,10 +47,10 @@ function doGenerate(lang){
   addMsg('bot',S.lang==='ja'?'🔨 ファイルを生成中...':'🔨 Generating files...');
 
   // Smart loading UI (HCD: ⑤感情体験 ③認知負荷)
-  const pillarIcons=['📋','🐳','🔌','🤖','✅','🗺️','🎨','🔍','💡','🔒','📊','⚙️','🔮','🧬','🧩','🔧','🏢','🚀','🌐','🗄️','📄','📦','🧪','🛡️'];
-  const pillarNames=_j?['SDD','DevContainer','MCP','AIルール','品質','ロードマップ','デザイン','リバース','実装','セキュリティ','戦略','運用','未来','開発IQ','ゲノム','Prompt Ops','Enterprise','CI/CD','API','DB','仕様書','共通','テスト','AI安全']:['SDD','DevContainer','MCP','AI Rules','Quality','Roadmap','Design','Reverse','Impl','Security','Strategy','Ops','Future','Dev IQ','Genome','Prompt Ops','Enterprise','CI/CD','API','DB','Docs','Common','Testing','AI Safety'];
+  const pillarIcons=['📋','🐳','🔌','🤖','✅','🗺️','🎨','🔍','💡','🔒','📊','⚙️','🔮','🧬','🧩','🔧','🏢','🚀','🌐','🗄️','📄','📦','🧪','🛡️','⚡'];
+  const pillarNames=_j?['SDD','DevContainer','MCP','AIルール','品質','ロードマップ','デザイン','リバース','実装','セキュリティ','戦略','運用','未来','開発IQ','ゲノム','Prompt Ops','Enterprise','CI/CD','API','DB','仕様書','共通','テスト','AI安全','パフォ']:['SDD','DevContainer','MCP','AI Rules','Quality','Roadmap','Design','Reverse','Impl','Security','Strategy','Ops','Future','Dev IQ','Genome','Prompt Ops','Enterprise','CI/CD','API','DB','Docs','Common','Testing','AI Safety','Perf'];
   let pillarGrid='<div class="gen-pillar-grid">';
-  for(let i=0;i<24;i++){
+  for(let i=0;i<25;i++){
     pillarGrid+=`<div class="gen-pillar-card" id="genPillar${i}" data-status="pending">
       <div class="gen-pillar-icon">${pillarIcons[i]}</div>
       <div class="gen-pillar-name">${pillarNames[i]}</div>
@@ -95,6 +95,7 @@ function doGenerate(lang){
     {fn:()=>genPillar22_DatabaseIntelligence(a,pn),lbl:_j?'柱㉒ DBインテリジェンス':'Pillar ㉒ DB Intelligence',err:'P22-DB'},
     {fn:()=>genPillar23_TestingIntelligence(a,pn),lbl:_j?'柱㉓ テストインテリジェンス':'Pillar ㉓ Testing Intelligence',err:'P23-Test'},
     {fn:()=>genPillar24_AISafety(a,pn),lbl:_j?'柱㉔ AI安全性インテリジェンス':'Pillar ㉔ AI Safety Intelligence',err:'P24-AISafety'},
+    {fn:()=>genPillar25_Performance(a,pn),lbl:_j?'柱㉕ パフォーマンスインテリジェンス':'Pillar ㉕ Performance Intelligence',err:'P25-Perf'},
     {fn:()=>genDocs21(a,pn),lbl:_j?'仕様書28種':'28 Spec Docs',err:'Docs'},
     {fn:()=>genCommonFiles(a,pn),lbl:_j?'共通ファイル':'Common Files',err:'Common'},
   ];
