@@ -317,6 +317,56 @@ const TECH_DB=[
 {name:'npm audit',cat:'security',sub:'deps',req:'required',level:'all'},
 {name:'Snyk',cat:'security',sub:'scanning',req:'optional',level:'pro',price:'free-tier'},
 {name:'Arcjet',cat:'security',sub:'protection',req:'optional',level:'int'},
+// ── Game & 3D (6) ──
+{name:'Unity',cat:'front',sub:'game-engine',req:'optional',level:'game'},
+{name:'Unreal Engine',cat:'front',sub:'game-engine',req:'optional',level:'game'},
+{name:'Godot',cat:'front',sub:'game-engine',req:'optional',level:'game',price:'free-oss'},
+{name:'Three.js',cat:'front',sub:'3d',req:'optional',level:'int'},
+{name:'PixiJS',cat:'front',sub:'2d',req:'optional',level:'int'},
+{name:'Babylon.js',cat:'front',sub:'3d',req:'optional',level:'int'},
+// ── Video & Media (4) ──
+{name:'FFmpeg',cat:'back',sub:'media',req:'optional',level:'pro',price:'free-oss'},
+{name:'Remotion',cat:'front',sub:'video',req:'optional',level:'int'},
+{name:'Cloudinary',cat:'back',sub:'media-cdn',req:'optional',level:'int',price:'free-tier'},
+{name:'Mux',cat:'back',sub:'video-stream',req:'optional',level:'pro',price:'usage'},
+// ── AI (domain-specific) (7) ──
+{name:'MediaPipe',cat:'ai',sub:'vision',req:'optional',level:'int',price:'free-oss'},
+{name:'DeepAR',cat:'ai',sub:'ar',req:'optional',level:'pro',price:'usage'},
+{name:'Whisper',cat:'ai',sub:'speech',req:'optional',level:'int',price:'free-oss'},
+{name:'ElevenLabs',cat:'ai',sub:'tts',req:'optional',level:'int',price:'free-tier'},
+{name:'Suno API',cat:'ai',sub:'music-gen',req:'optional',level:'pro',price:'usage'},
+{name:'RunwayML',cat:'ai',sub:'video-gen',req:'optional',level:'pro',price:'paid'},
+{name:'DeepL',cat:'ai',sub:'translation',req:'optional',level:'int',price:'free-tier'},
+// ── AI Agent Frameworks (4) ──
+{name:'CrewAI',cat:'ai_auto',sub:'agent-fw',req:'optional',level:'pro',price:'free-oss'},
+{name:'LangGraph',cat:'ai_auto',sub:'agent-fw',req:'optional',level:'pro',price:'free-oss'},
+{name:'OpenAI Agents SDK',cat:'ai_auto',sub:'agent-fw',req:'optional',level:'pro',price:'usage'},
+{name:'AutoGen',cat:'ai_auto',sub:'agent-fw',req:'optional',level:'pro',price:'free-oss'},
+// ── Mobile Health & Wearable (3) ──
+{name:'Apple HealthKit',cat:'mobile',sub:'health',req:'optional',level:'ios'},
+{name:'Google Fit API',cat:'mobile',sub:'health',req:'optional',level:'android'},
+{name:'MMKV',cat:'mobile',sub:'storage',req:'optional',level:'int',price:'free-oss'},
+// ── Event & Music Backend APIs (4) ──
+{name:'Ticketmaster API',cat:'back',sub:'event',req:'optional',level:'int',price:'usage'},
+{name:'Spotify API',cat:'back',sub:'music',req:'optional',level:'int',price:'free-tier'},
+{name:'Stripe Billing',cat:'back',sub:'payment',req:'optional',level:'int',price:'usage'},
+{name:'YouTube Data API',cat:'back',sub:'video',req:'optional',level:'int',price:'free-tier'},
+// ── Analytics & Analytics Tools (4) ──
+{name:'Mixpanel',cat:'data',sub:'analytics',req:'optional',level:'int',price:'free-tier'},
+{name:'Amplitude',cat:'data',sub:'analytics',req:'optional',level:'int',price:'free-tier'},
+{name:'Segment',cat:'data',sub:'cdp',req:'optional',level:'pro',price:'free-tier'},
+{name:'Grafana',cat:'data',sub:'observability',req:'optional',level:'pro',price:'free-oss'},
+// ── Game DevOps (2) ──
+{name:'PlayFab',cat:'devops',sub:'game-backend',req:'optional',level:'game',price:'free-tier'},
+{name:'GameAnalytics',cat:'data',sub:'game-analytics',req:'optional',level:'game',price:'free-tier'},
+// ── Smart Home & IoT (3) ──
+{name:'Home Assistant API',cat:'back',sub:'iot',req:'optional',level:'int',price:'free-oss'},
+{name:'SmartThings API',cat:'back',sub:'iot',req:'optional',level:'int',price:'free-tier'},
+{name:'Matter SDK',cat:'back',sub:'iot-protocol',req:'optional',level:'pro',price:'free-oss'},
+// ── Compliance & Verification (3) ──
+{name:'axe-core',cat:'test',sub:'a11y',req:'optional',level:'int',price:'free-oss'},
+{name:'Open Food Facts API',cat:'back',sub:'food',req:'optional',level:'int',price:'free-oss'},
+{name:'CoinGecko API',cat:'back',sub:'crypto',req:'optional',level:'int',price:'free-tier'},
 ];
 const _TECH_COUNT=TECH_DB.length;
 

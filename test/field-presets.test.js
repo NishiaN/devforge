@@ -10,6 +10,7 @@ const FIELD_CATS_JA = h.FIELD_CATS_JA;
 const FIELD_CATS_EN = h.FIELD_CATS_EN;
 const PR = h.PR;
 const FIELD_CAT_DEFAULTS = h.FIELD_CAT_DEFAULTS;
+const THEME_OVERLAYS = h.THEME_OVERLAYS;
 
 describe('Field Presets (PR_FIELD)', () => {
   const fieldKeys = Object.keys(PR_FIELD);
@@ -17,13 +18,17 @@ describe('Field Presets (PR_FIELD)', () => {
     'engineering','science','agriculture','medical','social',
     'humanities','education_field','art','interdisciplinary',
     'environment','architecture','sports','welfare','tourism',
-    'biotech','mobility','cybersecurity','fintech_field','smart_factory','cross_theme'
+    'biotech','mobility','cybersecurity','fintech_field','smart_factory','cross_theme',
+    // Phase L: 14 new categories
+    'gaming','video','live_event','publishing','gambling',
+    'podcast','music_biz','housing','food','mental_health',
+    'fashion','shopping','pet','car_life'
   ]);
   const VALID_SCALES = ['solo','small','medium','large'];
   const META_DIMS = ['revenue','regulation','apiDep','agentLv','multimodal','onDevice'];
 
-  it('PR_FIELD has 82 entries', () => {
-    assert.equal(fieldKeys.length, 82);
+  it('PR_FIELD has 138 entries', () => {
+    assert.equal(fieldKeys.length, 138);
   });
 
   it('every field preset has bilingual name and icon', () => {
@@ -109,8 +114,8 @@ describe('_SCALE_DEFAULTS', () => {
 });
 
 describe('FIELD_CAT_MAP', () => {
-  it('covers all 82 field presets', () => {
-    assert.equal(Object.keys(FIELD_CAT_MAP).length, 82);
+  it('covers all 138 field presets', () => {
+    assert.equal(Object.keys(FIELD_CAT_MAP).length, 138);
   });
 
   it('all FIELD_CAT_MAP values match PR_FIELD[key].field', () => {
@@ -126,8 +131,8 @@ describe('FIELD_CAT_MAP', () => {
 });
 
 describe('FIELD_TREND', () => {
-  it('has 20 field category entries', () => {
-    assert.equal(Object.keys(FIELD_TREND).length, 20);
+  it('has 34 field category entries', () => {
+    assert.equal(Object.keys(FIELD_TREND).length, 34);
   });
 
   it('all trend values are integers 1-5', () => {
@@ -141,12 +146,12 @@ describe('FIELD_TREND', () => {
 });
 
 describe('FIELD_CATS_JA / FIELD_CATS_EN', () => {
-  it('FIELD_CATS_JA has 21 buttons (all + 20 fields)', () => {
-    assert.equal(FIELD_CATS_JA.length, 21);
+  it('FIELD_CATS_JA has 35 buttons (all + 34 fields)', () => {
+    assert.equal(FIELD_CATS_JA.length, 35);
   });
 
-  it('FIELD_CATS_EN has 21 buttons (all + 20 fields)', () => {
-    assert.equal(FIELD_CATS_EN.length, 21);
+  it('FIELD_CATS_EN has 35 buttons (all + 34 fields)', () => {
+    assert.equal(FIELD_CATS_EN.length, 35);
   });
 
   it('both start with an all category', () => {
@@ -167,13 +172,17 @@ describe('FIELD_CAT_DEFAULTS (Layer 2)', () => {
     'engineering','science','agriculture','medical','social',
     'humanities','education_field','art','interdisciplinary',
     'environment','architecture','sports','welfare','tourism',
-    'biotech','mobility','cybersecurity','fintech_field','smart_factory','cross_theme'
+    'biotech','mobility','cybersecurity','fintech_field','smart_factory','cross_theme',
+    // Phase L: 14 new categories
+    'gaming','video','live_event','publishing','gambling',
+    'podcast','music_biz','housing','food','mental_health',
+    'fashion','shopping','pet','car_life'
   ];
   const VALID_PAYMENT = new Set(['none','stripe','stripe_billing','ec_build']);
   const VALID_MOBILE = new Set(['none','Expo (React Native)','Flutter','PWA']);
 
-  it('covers all 20 field categories', () => {
-    assert.equal(Object.keys(FIELD_CAT_DEFAULTS).length, 20);
+  it('covers all 34 field categories', () => {
+    assert.equal(Object.keys(FIELD_CAT_DEFAULTS).length, 34);
     for (const f of VALID_FIELDS) {
       assert.ok(FIELD_CAT_DEFAULTS[f], `Missing category: ${f}`);
     }
@@ -270,9 +279,9 @@ describe('PR_FIELD individual overrides', () => {
 });
 
 describe('PR_FIELD meta value integrity', () => {
-  const VALID_REVENUE = new Set(['subscription','btob','subsidy']);
-  const VALID_REGULATION = new Set(['low','moderate','high','strict']);
-  const VALID_ON_DEVICE = new Set(['cloud','edge_cloud','on_device']);
+  const VALID_REVENUE = new Set(['subscription','btob','subsidy','freemium','usage','license','ec']);
+  const VALID_REGULATION = new Set(['low','moderate','medium','high','strict','highest']);
+  const VALID_ON_DEVICE = new Set(['cloud','edge_cloud','on_device','on_premise']);
 
   it('all meta.revenue values are valid', () => {
     for (const k of Object.keys(PR_FIELD)) {
@@ -345,5 +354,129 @@ describe('Standard preset new fields (Phase M)', () => {
 
   it('social.deploy is Firebase Hosting', () => {
     assert.equal(PR['social'].deploy, 'Firebase Hosting', 'social.deploy mismatch');
+  });
+});
+
+describe('Phase L: 14 new domain categories', () => {
+  const NEW_CATS = ['gaming','video','live_event','publishing','gambling',
+    'podcast','music_biz','housing','food','mental_health',
+    'fashion','shopping','pet','car_life'];
+  const NEW_CAT_KEYS = {
+    gaming:['game_npc','game_procgen','game_esports','game_testing'],
+    video:['video_gen','video_edit','video_subtitle','video_analytics'],
+    live_event:['event_mgmt','event_immersive','event_venue','event_fan'],
+    publishing:['pub_manga','pub_novel','pub_translate','pub_ip'],
+    gambling:['gamble_responsible','gamble_fraud','gamble_personalize','gamble_analytics'],
+    podcast:['pod_production','pod_transcript','pod_voice','pod_monetize'],
+    music_biz:['music_compose','music_analysis','music_copyright','music_edu'],
+    housing:['house_smart','house_design','house_maintain','house_match'],
+    food:['food_recipe','food_nutrition','food_restaurant','food_supply'],
+    mental_health:['mental_cbt','mental_stress','mental_sleep','mental_burnout'],
+    fashion:['fashion_stylist','fashion_tryon','fashion_sustain','fashion_trend'],
+    shopping:['shop_budget','shop_points','shop_price','shop_sustain'],
+    pet:['pet_health','pet_behavior','pet_insurance','pet_ec'],
+    car_life:['car_predict','car_ev','car_valuation','car_safety']
+  };
+
+  it('all 14 new categories exist in FIELD_CAT_DEFAULTS', () => {
+    for (const cat of NEW_CATS) {
+      assert.ok(FIELD_CAT_DEFAULTS[cat], `Missing new category: ${cat}`);
+    }
+  });
+
+  it('each new category has exactly 4 presets in PR_FIELD', () => {
+    for (const [cat, keys] of Object.entries(NEW_CAT_KEYS)) {
+      for (const k of keys) {
+        assert.ok(PR_FIELD[k], `Missing preset: ${k} (category: ${cat})`);
+        assert.equal(PR_FIELD[k].field, cat, `${k}.field should be ${cat}`);
+      }
+    }
+  });
+
+  it('new presets have valid bilingual names', () => {
+    for (const keys of Object.values(NEW_CAT_KEYS)) {
+      for (const k of keys) {
+        const p = PR_FIELD[k];
+        assert.ok(p.name, `${k} missing name`);
+        assert.ok(p.nameEn, `${k} missing nameEn`);
+      }
+    }
+  });
+
+  it('FIELD_CATS_JA/EN include all 14 new categories', () => {
+    for (const cat of NEW_CATS) {
+      assert.ok(FIELD_CATS_JA.some(c => c.key === cat), `FIELD_CATS_JA missing: ${cat}`);
+      assert.ok(FIELD_CATS_EN.some(c => c.key === cat), `FIELD_CATS_EN missing: ${cat}`);
+    }
+  });
+
+  it('FIELD_TREND includes all 14 new categories with valid scores', () => {
+    for (const cat of NEW_CATS) {
+      assert.ok(cat in FIELD_TREND, `FIELD_TREND missing: ${cat}`);
+      const stars = FIELD_TREND[cat];
+      assert.ok(Number.isInteger(stars) && stars >= 1 && stars <= 5,
+        `FIELD_TREND.${cat}=${stars} is not 1-5`);
+    }
+  });
+});
+
+describe('THEME_OVERLAYS', () => {
+  const EXPECTED_THEMES = ['theme_security','theme_a11y','theme_sustainability',
+    'theme_agent','theme_analytics','theme_on_device'];
+  const OVERLAY_FIELDS = ['addFeatures','addFeaturesEn','addEntities','addScreens','addScreensEn','metaOverride'];
+
+  it('has 6 theme overlay entries', () => {
+    assert.ok(THEME_OVERLAYS, 'THEME_OVERLAYS not defined');
+    assert.equal(Object.keys(THEME_OVERLAYS).length, 6);
+  });
+
+  it('all 6 expected themes exist', () => {
+    for (const theme of EXPECTED_THEMES) {
+      assert.ok(THEME_OVERLAYS[theme], `Missing theme overlay: ${theme}`);
+    }
+  });
+
+  it('each theme has all required fields', () => {
+    for (const theme of EXPECTED_THEMES) {
+      const ov = THEME_OVERLAYS[theme];
+      for (const field of OVERLAY_FIELDS) {
+        assert.ok(field in ov, `${theme} missing field: ${field}`);
+      }
+    }
+  });
+
+  it('addFeatures and addFeaturesEn are non-empty arrays', () => {
+    for (const theme of EXPECTED_THEMES) {
+      const ov = THEME_OVERLAYS[theme];
+      assert.ok(Array.isArray(ov.addFeatures) && ov.addFeatures.length > 0,
+        `${theme}.addFeatures should be non-empty array`);
+      assert.ok(Array.isArray(ov.addFeaturesEn) && ov.addFeaturesEn.length > 0,
+        `${theme}.addFeaturesEn should be non-empty array`);
+    }
+  });
+
+  it('addFeatures and addFeaturesEn have matching lengths', () => {
+    for (const theme of EXPECTED_THEMES) {
+      const ov = THEME_OVERLAYS[theme];
+      assert.equal(ov.addFeatures.length, ov.addFeaturesEn.length,
+        `${theme} addFeatures/addFeaturesEn length mismatch`);
+    }
+  });
+
+  it('addScreens and addScreensEn are non-empty arrays with matching lengths', () => {
+    for (const theme of EXPECTED_THEMES) {
+      const ov = THEME_OVERLAYS[theme];
+      assert.ok(Array.isArray(ov.addScreens) && ov.addScreens.length > 0,
+        `${theme}.addScreens should be non-empty array`);
+      assert.equal(ov.addScreens.length, ov.addScreensEn.length,
+        `${theme} addScreens/addScreensEn length mismatch`);
+    }
+  });
+
+  it('metaOverride is an object', () => {
+    for (const theme of EXPECTED_THEMES) {
+      assert.equal(typeof THEME_OVERLAYS[theme].metaOverride, 'object',
+        `${theme}.metaOverride should be object`);
+    }
   });
 });

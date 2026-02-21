@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 # DevForge v9.6.0
 
-**AI Development OS** — 60 JS modules in `src/` → single `devforge-v9.html` (~2339KB / 3000KB limit).
+**AI Development OS** — 61 JS modules in `src/` → single `devforge-v9.html` (~2439KB / 3000KB limit).
 Generates **155+ files** across **25 pillars** from a wizard-driven Q&A session.
 
 ## Documentation Map
@@ -18,9 +18,9 @@ Generates **155+ files** across **25 pillars** from a wizard-driven Q&A session.
 ## Build & Test
 
 ```bash
-node build.js                          # → devforge-v9.html (~2339KB, limit 3000KB)
+node build.js                          # → devforge-v9.html (~2439KB, limit 3000KB)
 node build.js --no-minify              # debug (skip minification)
-npm test                               # 909 tests, all passing
+npm test                               # 921 tests, all passing
 node --test test/gen-quality.test.js   # single test file
 npm run dev                            # build + live-server :3000
 npm run check                          # syntax-check extracted JS
@@ -43,7 +43,7 @@ Never reorder without checking dependencies.
 | Category | Purpose |
 |----------|---------|
 | `core/` | State (`S`), i18n (`t()`), keyboard events, wizard tour, app init |
-| `data/` | 48 standard presets (`PR`/`_mp()`), 82 field presets (`PR_FIELD`/`_fpd()`), questions, techdb, compat-rules (76 rules), gen-templates (bilingual GT dict), helpdata |
+| `data/` | 48 standard presets (`PR`/`_mp()`), 138 field presets (`PR_FIELD`/`_fpd()`), questions, techdb (323 entries), compat-rules (76 rules), gen-templates (bilingual GT dict), helpdata |
 | `generators/` | `index.js` orchestrator + `p1`–`p25` pillars + `docs.js` + `common.js` |
 | `ui/` | wizard, render, presets, preview, sidebar, editor, diff, export, explorer, dashboard, launcher, templates, qbar, cmdpalette, help, voice |
 | `styles/all.css` | Theme (dark/light), responsive; CSS custom properties only |
@@ -112,7 +112,7 @@ Key helpers (all globally scoped): `save()`, `esc(s)`, `escAttr(s)`, `_jp(s,d)`,
 - **N-7** `orm` ← backend language (Python→SQLAlchemy, NestJS→TypeORM, BaaS→skip, else→Prisma)
 - **N-8** `scope_out` ← absent payment/mobile/ai_auto features
 - **N-9** `future_features` ← always includes 分析レポート + チーム機能
-- **G-1** `success` ← `FIELD_CAT_DEFAULTS[field]` (field presets, 20 categories)
+- **G-1** `success` ← `FIELD_CAT_DEFAULTS[field]` (field presets, 34 categories)
 - **G-2** `skill_level` ← `S.skillLv` (0-1→Beginner, 2-4→Intermediate, 5-6→Professional)
 - **G-3** `learning_goal` ← `deadline` answer
 - **G-4** `learning_path` ← backend/mobile/ai_auto/payment combination
@@ -135,7 +135,7 @@ saas_variant: _mp({
 
 Then: add any new entities to `ENTITY_COLUMNS` in `common.js`; update count in `test/presets.test.js`.
 
-**Field preset** (`_fpd()` helper): `field` must match one of the 20 `FIELD_CAT_DEFAULTS` keys. Update `test/field-presets.test.js` count assertion.
+**Field preset** (`_fpd()` helper): `field` must match one of the 34 `FIELD_CAT_DEFAULTS` keys (20 original + 14 in `presets-ext.js`). Update `test/field-presets.test.js` count assertion.
 
 ## Adding New Pillars
 
@@ -159,19 +159,19 @@ After adding: update header comment totals, add tests to `test/compat.test.js`, 
 |----------|-------|--------|
 | Core/regression | gen-coherence, snapshot, r27/r28-regression, build | ~342 |
 | Data/coverage | data-coverage, presets, field-presets | ~62 |
-| Security/compat | security, compat (+7 synergy) | ~108 |
+| Security/compat | security, compat (+7 synergy) | ~118 |
 | Pillars (P14-P20+skill) | ops, future, deviq, promptgenome, promptops, enterprise, cicd, skill-level | ~184 |
-| Gen quality | gen-quality (Suites 1-19, 158 tests) | ~159 |
-| Preset matching | phase-n (N-1〜N-9 + G-1〜G-6, 60 tests) | ~60 |
+| Gen quality | gen-quality (Suites 1-20, 174 tests) | ~174 |
+| Preset matching | phase-n (N-1〜N-9 + G-1〜G-7, 68 tests) | ~68 |
 | Other | i18n, state, techdb | ~23 |
 
-**Total: 885 tests** | Test harness pattern: `eval(fs.readFileSync(...))` to load src files; global `S` mock at top.
+**Total: 921 tests** | Test harness pattern: `eval(fs.readFileSync(...))` to load src files; global `S` mock at top.
 
 **When adding domains**, update: `test/data-coverage.test.js` (4 arrays), `test/gen-coherence.test.js`, `test/ops.test.js`.
 
 ## Generated Output
 
-151+ files. Conditional extras: `skills/` (+4, when ai_auto≠none), `business_model.md` (+1, when payment≠none), enterprise docs (+4, for SaaS-like domains), P19 skips 20/32 domains.
+155+ files. Conditional extras: `skills/` (+4, when ai_auto≠none), `business_model.md` (+1, when payment≠none), enterprise docs (+4, for SaaS-like domains), P19 skips 20/32 domains.
 
 `docs/82_architecture_integrity_check.md` — always generated; scores ORM/Auth/CORS/async/soft-delete integrity (10.0 scale).
 

@@ -79,6 +79,79 @@ function pickFieldPreset(k,e){
   if(e&&e.target)e.target.classList.add('on');
   if(v.name)$('nameIn').value=(_en&&v.nameEn)?v.nameEn:v.name;
   save();
+  _renderThemeOverlayPanel();
+}
+
+/* ── Theme Overlay (コンポーザブル) ── */
+var _selectedThemeOverlays=new Set();
+
+function toggleThemeChip(themeKey,btn){
+  if(_selectedThemeOverlays.has(themeKey)){
+    _selectedThemeOverlays.delete(themeKey);
+    if(btn)btn.classList.remove('selected');
+  } else {
+    _selectedThemeOverlays.add(themeKey);
+    if(btn)btn.classList.add('selected');
+  }
+}
+
+function _renderThemeOverlayPanel(){
+  if(typeof THEME_OVERLAYS==='undefined')return;
+  const _ja=S.lang==='ja';
+  var panel=$('themeOverlayPanel');
+  if(!panel){
+    panel=document.createElement('div');
+    panel.id='themeOverlayPanel';panel.className='theme-overlay-panel';
+    const row=$('presetRow');if(row)row.appendChild(panel);
+  }
+  _selectedThemeOverlays.clear();
+  var themeChips=[
+    {k:'theme_security',l:_ja?'🔐 セキュリティ':'🔐 Security'},
+    {k:'theme_a11y',l:_ja?'♿ アクセシビリティ':'♿ Accessibility'},
+    {k:'theme_sustainability',l:_ja?'🌿 サステナビリティ':'🌿 Sustainability'},
+    {k:'theme_agent',l:_ja?'🤖 AIエージェント':'🤖 AI Agent'},
+    {k:'theme_analytics',l:_ja?'📊 分析':'📊 Analytics'},
+    {k:'theme_on_device',l:_ja?'📱 オンデバイス':'📱 On-Device'}
+  ];
+  var chipsHtml='';
+  themeChips.forEach(function(tc){
+    chipsHtml+='<button class="theme-chip" data-theme="'+tc.k+'" onclick="toggleThemeChip(\''+tc.k+'\',this)">'+tc.l+'</button>';
+  });
+  panel.innerHTML='<p class="theme-overlay-title">'+(_ja?'🔀 テーマを重ね掛け (任意)':'🔀 Apply theme overlays (optional)')+'</p>'
+    +'<div class="theme-chips">'+chipsHtml+'</div>';
+  panel.style.display='block';
+}
+
+function applyThemeOverlay(themeKey){
+  if(typeof THEME_OVERLAYS==='undefined')return;
+  var ov=THEME_OVERLAYS[themeKey];if(!ov)return;
+  var _en=S.genLang==='en';
+  // features: append (deduplicate)
+  var curF=(S.answers.mvp_features||'').split(',').map(function(s){return s.trim();}).filter(Boolean);
+  var addF=_en?ov.addFeaturesEn:ov.addFeatures;
+  if(Array.isArray(addF))addF.forEach(function(f){if(!curF.includes(f))curF.push(f);});
+  S.answers.mvp_features=curF.join(', ');
+  // entities: append
+  if(ov.addEntities){
+    var curE=(S.answers.data_entities||'').split(',').map(function(s){return s.trim();}).filter(Boolean);
+    ov.addEntities.split(',').forEach(function(e){var t=e.trim();if(t&&!curE.includes(t))curE.push(t);});
+    S.answers.data_entities=curE.join(', ');
+  }
+  // screens: append
+  var curS=(S.answers.screens||'').split(',').map(function(s){return s.trim();}).filter(Boolean);
+  var addS=_en?ov.addScreensEn:ov.addScreens;
+  if(Array.isArray(addS))addS.forEach(function(s){if(!curS.includes(s))curS.push(s);});
+  S.answers.screens=curS.join(', ');
+  // metaOverride: regulation upgrade only
+  if(ov.metaOverride&&ov.metaOverride.regulation){
+    var regOrder=['low','moderate','medium','high','strict','highest'];
+    var curReg=S.answers._meta_regulation||'low';
+    var newReg=ov.metaOverride.regulation;
+    if(regOrder.indexOf(newReg)>regOrder.indexOf(curReg)){
+      S.answers._meta_regulation=newReg;
+    }
+  }
+  save();
 }
 
 function _switchPresetMode(mode){
@@ -469,6 +542,10 @@ function start(){
           }
         }
       }
+    }
+    // Theme Overlays: apply selected cross-cutting concerns
+    if(_selectedThemeOverlays&&_selectedThemeOverlays.size>0){
+      _selectedThemeOverlays.forEach(function(themeKey){applyThemeOverlay(themeKey);});
     }
     // N-2: deadline default based on scale
     if(!S.answers.deadline){
