@@ -57,12 +57,15 @@ function renderInputFor(q,onSubmit,allowSkip){
 function renderChips(zone,q,multi,onSubmit,withVoice){
   const _ja=S.lang==='ja';
   const sel=new Set();
+  var _preAns=(S.answers&&S.answers[q.id])?String(S.answers[q.id]):'';
+  if(multi&&_preAns){_preAns.split(',').map(v=>v.trim()).filter(Boolean).forEach(v=>sel.add(v));}
   const cz=document.createElement('div');cz.className='czone';
   const lb=document.createElement('div');lb.className='czlabel';lb.textContent=_ja?(multi?'選択してください（複数可・自由入力併用）':'選択するか下に入力'):(multi?'Select multiple or type below':'Select or type below');
   cz.appendChild(lb);
   const gr=document.createElement('div');gr.className='cgrid';
   (q.chips||[]).forEach(ch=>{
     const c=document.createElement('div');c.className='chip';
+    if(multi&&sel.has(ch)){c.classList.add('on');}
     c.setAttribute('tabindex','0');
     c.setAttribute('role',multi?'checkbox':'option');
     if(multi){const ck=document.createElement('span');ck.className='ck';ck.textContent='✓';c.appendChild(ck);}
@@ -78,6 +81,7 @@ function renderChips(zone,q,multi,onSubmit,withVoice){
   const ft=document.createElement('div');ft.className='cfoot';
   const inp=document.createElement('input');inp.className='cadd';inp.placeholder=q.placeholder||(_ja?'自由入力…':'Type here…');
   inp.setAttribute('aria-label', _ja?'自由入力':'Free text input');
+  if(!multi&&_preAns)inp.value=_preAns;
   if(multi){
     inp.addEventListener('keypress',e=>{
       if(e.key==='Enter'&&inp.value.trim()){

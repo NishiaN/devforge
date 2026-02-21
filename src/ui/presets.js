@@ -63,9 +63,8 @@ function _renderFieldChips(){
     // Tooltip: scaleHint + meta
     const sh=v.scaleHint&&v.scaleHint[_fieldScale]?(_ja?v.scaleHint[_fieldScale].ja:v.scaleHint[_fieldScale].en):'';
     const m=v.meta||{};
-    const revLbl=_ja?'💰':'💰';const regLbl=_ja?'📋規制:':'📋Reg:';const agLbl=_ja?'🤖':'🤖';
-    const mmLbl=_ja?'🖼️':'🖼️';const odLbl=_ja?'☁️':'☁️';const apiLbl=_ja?'🔌API:':'🔌API:';
-    const metaStr=regLbl+(m.regulation||'-')+' | '+agLbl+(m.agentLv||'-')+' | '+mmLbl+(m.multimodal||'-')+' | '+odLbl+(m.onDevice||'-');
+    const regLbl=_ja?'📋規制:':'📋Reg:';
+    const metaStr=regLbl+(m.regulation||'-')+' | 🤖'+(m.agentLv||'-')+' | 🖼️'+(m.multimodal||'-')+' | ☁️'+(m.onDevice||'-');
     const purpose=(_en&&v.purposeEn)?v.purposeEn:v.purpose||'';
     c.title=purpose+(sh?'\n─────\n'+sh:'')+'\n─────\n'+metaStr;
     if(insertBefore)row.insertBefore(c,insertBefore);else row.appendChild(c);
@@ -121,9 +120,115 @@ function _renderPresetChips(){
   });
 }
 
+/* ── Preset Suggest ──────────────────────────────────────────────── */
+function _scorePreset(preset, key, query, isField){
+  var words=query.toLowerCase().split(/[\s,、・\/]+/).filter(Boolean);
+  if(!words.length) return 0;
+  var score=0;
+  var nm=((preset.name||'')+(preset.nameEn||'')).toLowerCase();
+  var pu=((preset.purpose||'')+(preset.purposeEn||'')).toLowerCase();
+  var ent=((preset.entities||'')).toLowerCase();
+  for(var i=0;i<words.length;i++){
+    var w=words[i];
+    if(w.length<2) continue;
+    if(nm.indexOf(w)>=0) score+=3;
+    if(pu.indexOf(w)>=0) score+=2;
+    if(ent.indexOf(w)>=0) score+=1;
+    if(key.indexOf(w)>=0) score+=2;
+  }
+  if(typeof detectDomain==='function'){
+    var qDomain=detectDomain(query);
+    if(qDomain){
+      var pDomain=detectDomain(preset.purpose||'');
+      if(pDomain===qDomain) score+=5;
+    }
+  }
+  return score;
+}
+
+function _suggestPresets(query){
+  var box=$('presetSuggestBox');if(!box)return;
+  const _ja=S.lang==='ja';var _en=!_ja;
+  query=(query||'').trim();
+  if(query.length<2){box.innerHTML='';box.style.display='none';return;}
+  var results=[];
+  Object.entries(PR).forEach(function(e){
+    var k=e[0],v=e[1];
+    if(k==='custom'||!v.name)return;
+    if(S.skillLv<=1&&!_beginnerPresets.has(k))return;
+    var sc=_scorePreset(v,k,query,false);
+    if(sc>0)results.push({key:k,preset:v,score:sc,isField:false});
+  });
+  if(S.skillLv>=2&&typeof PR_FIELD!=='undefined'){
+    Object.entries(PR_FIELD).forEach(function(e){
+      var k=e[0],v=e[1];
+      if(!v||!v.name)return;
+      var sc=_scorePreset(v,k,query,true);
+      if(sc>0)results.push({key:k,preset:v,score:sc,isField:true});
+    });
+  }
+  results.sort(function(a,b){return b.score-a.score;});
+  results=results.slice(0,5);
+  if(!results.length){
+    box.innerHTML='<div class="ps-empty">'+(_ja?'一致するプリセットがありません':'No matching presets')+'</div>';
+    box.style.display='block';return;
+  }
+  var out='';
+  results.forEach(function(r){
+    var p=r.preset;
+    var pnm=(_en&&p.nameEn?p.nameEn:p.name)||'';
+    if(p.icon)pnm=p.icon+' '+pnm;
+    var desc=(_en&&p.purposeEn?p.purposeEn:p.purpose||'').slice(0,60);
+    var badge=r.isField?'<span class="ps-badge-field">🎓</span>':'<span class="ps-badge-std">📦</span>';
+    out+='<div class="ps-item" onclick="_pickSuggested(\''+escAttr(r.key)+'\','+r.isField+')" role="button" tabindex="0">';
+    out+=badge+'<span class="ps-name">'+esc(pnm)+'</span>';
+    out+='<span class="ps-desc">'+esc(desc)+'</span>';
+    out+='<span class="ps-score">'+r.score+'pt</span>';
+    out+='</div>';
+  });
+  box.innerHTML=out;box.style.display='block';
+}
+
+function _pickSuggested(key,isField){
+  const _ja=S.lang==='ja';
+  if(isField&&_presetMode!=='field'&&S.skillLv>=2){_switchPresetMode('field');}
+  if(!isField&&_presetMode!=='standard'){_switchPresetMode('standard');}
+  if(isField){pickFieldPreset(key,null);}
+  else{pickPreset(key,null);}
+  var box=$('presetSuggestBox');if(box){box.innerHTML='';box.style.display='none';}
+  var sin=$('presetSuggestIn');if(sin)sin.value='';
+  var pName='';
+  if(!isField&&PR[key]){pName=(_ja||true)&&!(S.lang==='en')&&PR[key].name?PR[key].name:(PR[key].nameEn||PR[key].name||'');}
+  else if(isField&&typeof PR_FIELD!=='undefined'&&PR_FIELD[key]){pName=(S.lang==='en'&&PR_FIELD[key].nameEn?PR_FIELD[key].nameEn:PR_FIELD[key].name)||'';}
+  if(pName){
+    document.querySelectorAll('.prchip').forEach(function(c){
+      if(c.textContent.indexOf(pName)>=0){
+        c.classList.add('on');
+        if(typeof c.scrollIntoView==='function')c.scrollIntoView({behavior:'smooth',block:'nearest'});
+      }
+    });
+  }
+}
+
 function initPresets(){
   const row=$('presetRow');row.innerHTML='';
   const _ja=S.lang==='ja';
+  if(S.preset&&S.preset.slice(0,6)==='field:'&&typeof PR_FIELD!=='undefined'){_presetMode='field';}
+
+  // ── Preset Suggest Input ──
+  var suggestWrap=document.createElement('div');suggestWrap.className='preset-suggest-wrap';
+  var suggestIn=document.createElement('input');suggestIn.type='text';suggestIn.className='preset-suggest-in';
+  suggestIn.id='presetSuggestIn';
+  suggestIn.placeholder=_ja?'🔍 何を作りたい？ 例: 農業IoT / 教育チューター / 医療カルテ':'🔍 What to build? e.g., farm IoT / tutoring / medical records';
+  suggestIn.setAttribute('aria-label',_ja?'プリセット検索':'Search presets');
+  var suggestBox=document.createElement('div');suggestBox.className='preset-suggest-box';suggestBox.id='presetSuggestBox';
+  suggestWrap.appendChild(suggestIn);suggestWrap.appendChild(suggestBox);
+  row.appendChild(suggestWrap);
+  var _suggestTimer=null;
+  suggestIn.addEventListener('input',function(){
+    clearTimeout(_suggestTimer);
+    _suggestTimer=setTimeout(function(){_suggestPresets(suggestIn.value);},300);
+  });
 
   // ── Mode Toggle (📦 標準 | 🎓 分野別) — hidden for Lv0-1 ──
   if(S.skillLv>=2&&typeof PR_FIELD!=='undefined'){
@@ -164,7 +269,7 @@ function initPresets(){
     fcats.forEach(function(fc){
       const b=document.createElement('button');b.className='field-cat-btn'+((_fieldCatFilter===fc.key)?' active':'');
       const stars=fc.key!=='all'&&trend[fc.key]?'⭐'.repeat(trend[fc.key]):'';
-      b.textContent=fc.label+(stars?' '+stars:'');b.title=(fc.desc||'')+(stars?' | 成長トレンド:'+stars:'');
+      b.textContent=fc.label+(stars?' '+stars:'');b.title=(fc.desc||'')+(stars?' | '+(_ja?'成長トレンド: ':'Growth Trend: ')+stars:'');
       b.onclick=function(){
         _fieldCatFilter=fc.key;
         fcBar.querySelectorAll('.field-cat-btn').forEach(function(fb){fb.classList.toggle('active',fb===b);});
@@ -286,28 +391,90 @@ function start(){
   // Lv0 forced preset: absolute beginners get SaaS preset auto-selected
   if(S.skillLv===0&&S.preset==='custom'){
     S.preset='saas';
-    loadPreset('saas');
     toast(_ja?'初心者向けにSaaSプリセットを自動選択しました':'Auto-selected SaaS preset for beginners');
   }
   const _en=S.lang==='en';
   // ── Field Preset Mode: apply scale defaults then field preset overrides ──
-  var _isFieldPreset=S.preset&&S.preset.indexOf('field:')==='field:'.indexOf('field:')&&S.preset.slice(0,6)==='field:';
+  var _isFieldPreset=S.preset&&S.preset.slice(0,6)==='field:';
   if(_isFieldPreset&&typeof PR_FIELD!=='undefined'&&typeof _SCALE_DEFAULTS!=='undefined'){
     const fk=S.preset.slice(6);
     const fp=PR_FIELD[fk];
     const sd=_SCALE_DEFAULTS[_fieldScale]||_SCALE_DEFAULTS.small;
     if(fp){
-      // Apply scale defaults first
+      // Layer 1: Apply scale defaults first
       if(sd.frontend)S.answers.frontend=sd.frontend;
       if(sd.backend)S.answers.backend=sd.backend;
       if(sd.deploy)S.answers.deploy=sd.deploy;
       if(sd.ai_auto)S.answers.ai_auto=sd.ai_auto;
-      // Then apply field preset specifics
+      if(sd.database)S.answers.database=sd.database;
+      if(sd.auth){S.answers.auth=_en&&sd.auth==='メール/パスワード'?'Email/Password':sd.auth;}
+      if(sd.css_fw)S.answers.css_fw=sd.css_fw;
+      if(sd.dev_methods){S.answers.dev_methods=_en&&sd.dev_methodsEn?sd.dev_methodsEn:sd.dev_methods;}
+      if(_en&&S.answers.ai_auto){
+        var _aiMap={'Vibe Coding入門':'Vibe Coding Intro','エージェント型開発':'Agentic Dev','マルチAgent協調':'Multi-Agent','フル自律開発':'Full Autonomous','オーケストレーター':'Orchestrator'};
+        S.answers.ai_auto=_aiMap[S.answers.ai_auto]||S.answers.ai_auto;
+      }
+      // Layer 2: Category defaults (target, screens, payment, mobile)
+      var _catDef=(typeof FIELD_CAT_DEFAULTS!=='undefined')?FIELD_CAT_DEFAULTS[fp.field]:null;
+      if(_catDef){
+        if(_catDef.target){
+          var _ct=_en&&_catDef.targetEn?_catDef.targetEn:_catDef.target;
+          S.answers.target=Array.isArray(_ct)?_ct.join(', '):_ct;
+        }
+        if(_catDef.screens){
+          var _cs=_en&&_catDef.screensEn?_catDef.screensEn:_catDef.screens;
+          S.answers.screens=Array.isArray(_cs)?_cs.join(', '):_cs;
+        }
+        var _payMapL2=_en
+          ?{stripe:'Stripe',stripe_billing:'Stripe Billing (Sub)',ec_build:'Stripe, Medusa (OSS EC)'}
+          :{stripe:'Stripe決済',stripe_billing:'Stripe Billing (サブスク)',ec_build:'Stripe決済, Medusa (OSS EC)'};
+        if(_catDef.payment&&_catDef.payment!=='none'){
+          S.answers.payment=_payMapL2[_catDef.payment]||_catDef.payment;
+        }
+        if(_catDef.mobile&&_catDef.mobile!=='none'){
+          S.answers.mobile=_catDef.mobile;
+        }
+        if(_catDef.org_model){var _omMapL2={'マルチテナント(RLS)':'Multi-tenant (RLS)','ワークスペース型':'Workspace-based','シングルテナント':'Single-tenant','組織+チーム階層':'Org + Team hierarchy'};S.answers.org_model=_en?(_omMapL2[_catDef.org_model]||_catDef.org_model):_catDef.org_model;}
+      }
+      // Layer 3: Field preset specifics (overrides Layer 2)
       if(fp.purpose)S.answers.purpose=(_en&&fp.purposeEn)?fp.purposeEn:fp.purpose;
-      if(fp.target){const t=_en&&fp.targetEn?fp.targetEn:fp.target;S.answers.target=Array.isArray(t)?t.join(', '):t;}
-      if(fp.features){const f=_en&&fp.featuresEn?fp.featuresEn:fp.features;S.answers.mvp_features=Array.isArray(f)?f.join(', '):f;}
+      if(fp.target){var _ft=_en&&fp.targetEn?fp.targetEn:fp.target;S.answers.target=Array.isArray(_ft)?_ft.join(', '):_ft;}
+      if(fp.features){var _ff=_en&&fp.featuresEn?fp.featuresEn:fp.features;S.answers.mvp_features=Array.isArray(_ff)?_ff.join(', '):_ff;}
       if(fp.entities)S.answers.data_entities=fp.entities;
+      if(fp.payment&&fp.payment!=='none'){S.answers.payment=_payMapL2[fp.payment]||fp.payment;}
+      if(fp.mobile&&fp.mobile!=='none')S.answers.mobile=fp.mobile;
+      if(fp.screens){var _fsc=_en&&fp.screensEn?fp.screensEn:fp.screens;S.answers.screens=Array.isArray(_fsc)?_fsc.join(', '):_fsc;}
+      // Layer 4: meta→answer inference
+      if(fp.meta){
+        // revenue='subscription' → payment (if not already set by L2/L3)
+        if(fp.meta.revenue==='subscription'&&(!S.answers.payment||/なし|None/i.test(S.answers.payment))){
+          S.answers.payment=_en?'Stripe Billing (Sub)':'Stripe Billing (サブスク)';
+        }
+        // onDevice='edge_cloud' + multimodal contains 'image' → mobile (if not already set by L2/L3)
+        if(fp.meta.onDevice==='edge_cloud'&&/image/i.test(fp.meta.multimodal||'')
+          &&(!S.answers.mobile||/なし|None/i.test(S.answers.mobile))){
+          S.answers.mobile='Expo (React Native)';
+        }
+        // regulation='strict' → dev_methods (always override — security must be enforced)
+        if(fp.meta.regulation==='strict'){
+          S.answers.dev_methods=_en
+            ?'TDD (Test-Driven), SDD (Spec-Driven), Security-First'
+            :'TDD（テスト駆動）, SDD（仕様駆動）, セキュリティファースト';
+        }
+        // btob + strict → org_model enterprise upgrade (if single-tenant default from L2)
+        if(fp.meta.revenue==='btob'&&fp.meta.regulation==='strict'){
+          var _cur=S.answers.org_model||'';
+          if(!_cur||/シングルテナント|Single-tenant/i.test(_cur)){
+            S.answers.org_model=_en?'Org + Team hierarchy':'組織+チーム階層';
+          }
+        }
+      }
     }
+    // N-2: deadline default based on scale
+    if(!S.answers.deadline){
+      S.answers.deadline=(_fieldScale==='large'||_fieldScale==='medium')?(_en?'6 months':'6ヶ月'):(_en?'3 months':'3ヶ月');
+    }
+    _applyUniversalPostProcess(_en);
     var presetName=fp&&fp.name?(_en&&fp.nameEn?fp.nameEn:fp.name):'';
     var preFilledCount=Object.keys(S.answers).length;
     save();saveProject();
@@ -318,7 +485,7 @@ function start(){
     initPills();updProgress();
     if(S.skillLv<=1){addMsg('bot',_ja?'🌱 質問に答えるだけで設計書が自動生成されます。難しく考えなくてOK！スキップもできます。':'🌱 Just answer the questions and design docs will be auto-generated. Don\'t overthink it — you can skip any question!');}
     showQ();
-    if(presetName&&preFilledCount>0){toast(_ja?'✅ "'+presetName+'" ['+(_ja?_fieldScale:'Scale:')+_fieldScale+'] を適用 — '+preFilledCount+'件の回答を自動入力':'✅ Applied "'+presetName+'" [Scale:'+_fieldScale+'] — '+preFilledCount+' answers pre-filled');}
+    if(presetName&&preFilledCount>0){toast(_ja?'✅ "'+presetName+'" ['+_fieldScale+'] を適用 — '+preFilledCount+'件の回答を自動入力':'✅ Applied "'+presetName+'" [Scale: '+_fieldScale+'] — '+preFilledCount+' answers pre-filled');}
     return;
   }
   const p=PR[S.preset];
@@ -329,6 +496,11 @@ function start(){
     if(p.backend)S.answers.backend=p.backend;
     if(p.features){const f=_en&&p.featuresEn?p.featuresEn:p.features;S.answers.mvp_features=Array.isArray(f)?f.join(', '):f;}
     if(p.entities)S.answers.data_entities=p.entities;
+    if(p.screens){const sc=_en&&p.screensEn?p.screensEn:p.screens;S.answers.screens=Array.isArray(sc)?sc.join(', '):sc;}
+    if(p.org_model){var _omMap={'マルチテナント(RLS)':'Multi-tenant (RLS)','ワークスペース型':'Workspace-based','シングルテナント':'Single-tenant','組織+チーム階層':'Org + Team hierarchy'};S.answers.org_model=_en?(_omMap[p.org_model]||p.org_model):p.org_model;}
+    if(p.deploy)S.answers.deploy=p.deploy;
+    if(p.css_fw)S.answers.css_fw=p.css_fw;
+    if(p.dev_methods)S.answers.dev_methods=_en&&p.dev_methodsEn?p.dev_methodsEn:p.dev_methods;
     if(p.mobile&&p.mobile!=='none')S.answers.mobile=p.mobile;
     if(p.ai_auto&&p.ai_auto!=='none'){
       if(_en){
@@ -343,6 +515,9 @@ function start(){
       S.answers.payment=_payMap[p.payment]||p.payment;
     }
   }
+  // N-2: deadline default (3ヶ月 for standard presets)
+  if(!S.answers.deadline) S.answers.deadline=_en?'3 months':'3ヶ月';
+  _applyUniversalPostProcess(_en);
   var presetName=p&&p.name?(_en&&p.nameEn?p.nameEn:p.name):'';
   var preFilledCount=Object.keys(S.answers).length;
   save();saveProject();
@@ -364,6 +539,118 @@ function start(){
   showQ();
   if(presetName&&preFilledCount>0){
     toast(_ja?'✅ "'+presetName+'" を適用 — '+preFilledCount+'件の回答を自動入力':'✅ Applied "'+presetName+'" — '+preFilledCount+' answers pre-filled');
+  }
+}
+
+/* Universal post-processing: infer database & auth from backend (all presets, all skill levels) */
+function _applyUniversalPostProcess(_en){
+  const _ja=S.lang==='ja';
+  const be=S.answers.backend||'';
+  if(!be||/なし|None|static/i.test(be))return;
+  if(!S.answers.database){
+    if(/Firebase/i.test(be))S.answers.database='Firebase Firestore';
+    else if(/Supabase/i.test(be))S.answers.database='Supabase (PostgreSQL)';
+    else S.answers.database='PostgreSQL';
+  }
+  if(!S.answers.auth){
+    if(/Firebase/i.test(be))S.answers.auth='Firebase Auth';
+    else if(/Supabase/i.test(be))S.answers.auth='Supabase Auth';
+    else S.answers.auth=_en?'Email/Password':_ja?'メール/パスワード':'Email/Password';
+  }
+  // N-3: dev_env_type for BaaS backends
+  if(!S.answers.dev_env_type&&/Firebase|Supabase|Convex/i.test(be)){
+    S.answers.dev_env_type=_ja?'ローカル開発':'Local Development';
+  }
+  // N-4: org_model inference from domain (if not already set by preset/Layer 2-3)
+  if(!S.answers.org_model&&S.answers.purpose){
+    var _dom2=(typeof detectDomain==='function')?detectDomain(S.answers.purpose||''):'';
+    var _orgInfer={saas:'マルチテナント(RLS)',analytics:'シングルテナント',collab:'ワークスペース型',hr:'シングルテナント',tool:'シングルテナント',automation:'ワークスペース型',fintech:'シングルテナント',legal:'シングルテナント',ec:'シングルテナント',marketplace:'マルチテナント(RLS)',logistics:'シングルテナント',insurance:'シングルテナント'};
+    var _orgInferEn={saas:'Multi-tenant (RLS)',analytics:'Single-tenant',collab:'Workspace-based',hr:'Single-tenant',tool:'Single-tenant',automation:'Workspace-based',fintech:'Single-tenant',legal:'Single-tenant',ec:'Single-tenant',marketplace:'Multi-tenant (RLS)',logistics:'Single-tenant',insurance:'Single-tenant'};
+    if(_dom2&&_orgInfer[_dom2]){S.answers.org_model=_en?(_orgInferEn[_dom2]||_orgInfer[_dom2]):_orgInfer[_dom2];}
+  }
+  // N-5: ai_tools from ai_auto level
+  if(!S.answers.ai_tools){
+    var _aL=S.answers.ai_auto||'';
+    if(_aL&&!/none|なし/i.test(_aL)){
+      if(/オーケストレーター|Orchestrator/i.test(_aL)||/フル自律|Full Autonomous/i.test(_aL)){
+        S.answers.ai_tools='Cursor, Claude Code, GitHub Copilot, Google Antigravity';
+      } else if(/マルチAgent|Multi-Agent/i.test(_aL)){
+        S.answers.ai_tools='Cursor, Claude Code, GitHub Copilot';
+      } else {
+        S.answers.ai_tools='Cursor, Claude Code';
+      }
+    }
+  }
+  // N-6 (G-6 extended): success KPI from domain — all 32 domains (standard presets only)
+  if(!S.answers.success&&S.answers.purpose&&!(S.preset||'').startsWith('field:')){
+    var _domSuc=(typeof detectDomain==='function')?detectDomain(S.answers.purpose||''):'';
+    var _sucJa={saas:'📈 月間1000ユーザー, 💰 月売上10万円(MRR), 🔄 月間チャーン5%以下',ec:'💰 GMV月100万円, 💰 CV率3%+, 🏪 カート放棄30%以下',marketplace:'💰 GMV月100万円, 💰 テイクレート10%, 🏪 取引完了率95%+',education:'📚 コース完了率80%+, 📚 クイズ合格率70%+, 🔄 7日連続利用率50%+',community:'👥 日次投稿50件+, 👥 メンバー月10%増, 🔄 DAU/MAU比率30%+',fintech:'💰 月間取引高1000万円, 🏢 不正検知率99%+, ⚡ 決済成功率99.5%+',analytics:'🏢 レポート作成1分以内, 📈 月間1000ユーザー, 😊 CSAT 4.5/5',booking:'🏪 予約転換率60%+, 🏪 リソース稼働率80%+, 😊 CSAT 4.5/5',hr:'🏢 採用日数30日以内, 🏢 オファー承諾率80%+, 😊 従業員満足度4/5',automation:'🤖 手動作業70%削減, 🤖 処理時間50%短縮, ⚡ エラー率0.1%以下',ai:'🤖 AI正答率90%+, 🤖 有人対応20%以下, 😊 CSAT 4.5/5',collab:'👥 同時編集5人+, 🔄 機能利用率80%+, 😊 NPS 50以上',
+      content:'📝 月間1万PV, ⏱ 平均滞在3分+, 📧 読者登録率10%+',health:'😊 日次利用者500人+, 🏥 機能活用率80%+, ⚡ 応答1秒以内',iot:'📡 デバイス稼働率99%+, ⚡ センサー応答1秒以内, 🚨 異常検知率95%+',realestate:'🏠 物件成約率15%+, 📊 内覧率30%+, 😊 CSAT 4.5/5',legal:'⚖️ 文書処理24時間以内, 🔒 機密漏洩ゼロ, 😊 顧客満足度4/5+',portfolio:'👁 月間閲覧5000回+, 📧 コンタクト月10件+, ⭐ 採用内定率向上',tool:'⚡ 処理速度業界比30%向上, 🔄 週次アクティブ率60%+, 😊 CSAT 4.5/5',event:'🎫 チケット販売1000枚/月, 🏪 キャンセル率5%以下, 😊 参加満足度4.5/5',gamify:'🎮 DAU/MAU 40%+, 🔄 7日継続率60%+, 🏆 達成バッジ取得率70%+',devtool:'⭐ GitHub Stars 1000+, 🔄 週次アクティブ開発者500+, 📦 月間インストール10K+',creator:'🎨 投稿数100件/月, 👥 フォロワー10%増/月, 💰 クリエイター収益1万円/月+',newsletter:'📧 開封率35%+, 🔗 クリック率10%+, 📈 購読者月5%増',manufacturing:'🏭 生産効率20%向上, 🚨 不良品率0.1%以下, ⚡ ライン稼働率95%+',logistics:'📦 配送精度99%+, ⚡ 在庫回転率向上30%, 🚚 遅延率2%以下',agriculture:'🌱 収量予測精度85%+, 📱 現場入力完了率90%+, ⚡ 農薬最適化20%削減',energy:'⚡ エネルギー削減15%+, 📊 計測精度99%+, 🚨 異常検知率95%+',media:'📺 月間視聴1万時間+, 🔄 継続率60%+, 📈 広告収益月10万円+',government:'🏛 申請処理3日以内, 😊 市民満足度4/5+, 🔒 データ漏洩ゼロ',travel:'✈️ 予約CV率8%+, 😊 旅行者満足度4.5/5, 🔄 リピート率40%+',insurance:'🔒 審査処理24時間以内, 💰 損害率10%削減, 😊 顧客維持率95%+'};
+    var _sucEn={saas:'📈 1,000 MAU, 💰 $1K MRR, 🔄 <5% monthly churn',ec:'💰 $10K GMV, 💰 3%+ conversion, 🏪 <30% cart abandon',marketplace:'💰 $10K GMV, 💰 10% take rate, 🏪 95%+ fulfillment',education:'📚 80%+ completion, 📚 70%+ quiz pass, 🔄 50%+ 7-day streak',community:'👥 50+ posts/day, 👥 10%+ member growth/mo, 🔄 30%+ DAU/MAU',fintech:'💰 $100K transactions/mo, 🏢 99%+ fraud detection, ⚡ 99.5%+ payment success',analytics:'🏢 Reports in <1min, 📈 1,000 MAU, 😊 CSAT 4.5/5',booking:'🏪 60%+ booking conv., 🏪 80%+ utilization, 😊 CSAT 4.5/5',hr:'🏢 <30 days time-to-hire, 🏢 80%+ offer acceptance, 😊 4/5 employee satisfaction',automation:'🤖 70% manual reduction, 🤖 50% time saved, ⚡ <0.1% error rate',ai:'🤖 90%+ AI accuracy, 🤖 <20% human handoff, 😊 CSAT 4.5/5',collab:'👥 5+ concurrent editors, 🔄 80%+ feature adoption, 😊 NPS 50+',
+      content:'📝 10K monthly PVs, ⏱ 3+ min avg session, 📧 10%+ subscriber conversion',health:'😊 500+ daily users, 🏥 80%+ feature adoption, ⚡ <1s response time',iot:'📡 99%+ device uptime, ⚡ <1s sensor response, 🚨 95%+ anomaly detection',realestate:'🏠 15%+ deal close rate, 📊 30%+ viewing rate, 😊 CSAT 4.5/5',legal:'⚖️ 24hr document processing, 🔒 Zero confidential breach, 😊 4/5+ client satisfaction',portfolio:'👁 5K+ monthly views, 📧 10+ contacts/month, ⭐ Higher job offer rate',tool:'⚡ 30% faster than alternatives, 🔄 60%+ weekly active rate, 😊 CSAT 4.5/5',event:'🎫 1,000 tickets/month, 🏪 <5% cancellation, 😊 4.5/5 attendee satisfaction',gamify:'🎮 40%+ DAU/MAU ratio, 🔄 60%+ 7-day retention, 🏆 70%+ badge completion',devtool:'⭐ 1K+ GitHub stars, 🔄 500+ weekly active devs, 📦 10K+ monthly installs',creator:'🎨 100+ posts/month, 👥 10%+ follower growth/mo, 💰 $100+ monthly creator revenue',newsletter:'📧 35%+ open rate, 🔗 10%+ click rate, 📈 5%+ subscriber growth/mo',manufacturing:'🏭 20% efficiency gain, 🚨 <0.1% defect rate, ⚡ 95%+ line uptime',logistics:'📦 99%+ delivery accuracy, ⚡ 30% inventory turnover, 🚚 <2% delay rate',agriculture:'🌱 85%+ yield prediction, 📱 90%+ field entry completion, ⚡ 20% pesticide reduction',energy:'⚡ 15%+ energy reduction, 📊 99%+ measurement accuracy, 🚨 95%+ anomaly detection',media:'📺 10K+ watch hours/mo, 🔄 60%+ retention rate, 📈 $1K+ monthly ad revenue',government:'🏛 3-day processing, 😊 4/5+ citizen satisfaction, 🔒 Zero data breach',travel:'✈️ 8%+ booking conversion, 😊 4.5/5 traveler satisfaction, 🔄 40%+ repeat rate',insurance:'🔒 24hr claim processing, 💰 10% loss ratio reduction, 😊 95%+ retention'};
+    if(_domSuc&&(_en?_sucEn[_domSuc]:_sucJa[_domSuc])){S.answers.success=_en?_sucEn[_domSuc]:_sucJa[_domSuc];}
+  }
+  // N-7: orm from backend type
+  if(!S.answers.orm&&be&&!/Firebase|Supabase|Convex|なし|None|static/i.test(be)){
+    if(/Python/i.test(be))S.answers.orm='SQLAlchemy (Python)';
+    else if(/NestJS/i.test(be))S.answers.orm='TypeORM';
+    else S.answers.orm='Prisma';
+  }
+  // N-8: scope_out from current preset config (excluded features → scope_out)
+  if(!S.answers.scope_out){
+    var _so=[];var _soE=[];
+    var _pa=S.answers.payment||'';var _mo=S.answers.mobile||'';var _aa=S.answers.ai_auto||'';
+    if(!_pa||/none|なし/i.test(_pa)){_so.push('決済機能');_soE.push('Payments');}
+    if(!_mo||/none|なし/i.test(_mo)){_so.push('ネイティブアプリ');_soE.push('Native app');}
+    if(!_aa||/none|なし/i.test(_aa)){_so.push('AI機能');_soE.push('AI features');}
+    if(_so.length>0){S.answers.scope_out=_en?_soE.join(', '):_so.join(', ');}
+  }
+  // N-9: future_features from preset config (out-of-scope items become future features)
+  if(!S.answers.future_features){
+    var _ff=[];var _ffE=[];
+    var _pa2=S.answers.payment||'';var _mo2=S.answers.mobile||'';var _aa2=S.answers.ai_auto||'';
+    _ff.push('分析レポート');_ffE.push('Analytics');
+    if(!_pa2||/none|なし/i.test(_pa2)){_ff.push('課金・サブスク');_ffE.push('Billing');}
+    if(!_mo2||/none|なし/i.test(_mo2)){_ff.push('モバイルアプリ');_ffE.push('Mobile app');}
+    if(!_aa2||/none|なし/i.test(_aa2)){_ff.push('AI機能');_ffE.push('AI features');}
+    _ff.push('チーム機能');_ffE.push('Team features');
+    S.answers.future_features=_en?_ffE.join(', '):_ff.join(', ');
+  }
+  // G-1: success KPI for field presets (category-based, 20 field categories)
+  if(!S.answers.success&&(S.preset||'').startsWith('field:')){
+    var _fpKey2=(S.preset||'').slice(6);
+    var _fp2=(typeof PR_FIELD!=='undefined'&&_fpKey2)?PR_FIELD[_fpKey2]:null;
+    var _fpField2=_fp2?_fp2.field:'';
+    var _sucFldJa={engineering:'🏭 工程時間30%短縮, 🚨 不良品率0.1%以下, ⚡ 計測精度99%+',science:'📊 分析精度90%+, 📝 論文引用数向上, 🔬 実験サイクル50%短縮',agriculture:'🌱 収量20%向上, 📱 現場記録完了率90%+, ⚡ 農薬使用量30%削減',medical:'🏥 診断サポート精度90%+, ⚡ 患者待ち時間30%削減, 🔒 データ漏洩ゼロ',social:'📈 DAU 1000人+, 💬 エンゲージ率20%+, 🔄 月次継続率85%+',humanities:'📚 リサーチ効率50%向上, 📝 執筆量30%増, 👥 コラボ参加率70%+',education_field:'📚 学習完了率80%+, 📊 テスト成績10%向上, 🔄 7日継続率60%+',art:'🎨 作品投稿数月200件+, 👥 クリエイター数500人+, 💰 月間売上10万円+',interdisciplinary:'🤝 プロジェクト完了率90%+, 👥 学際コラボ数月10件+, 📈 成果発表率80%+',environment:'🌿 CO2削減量10%+, 📊 ESGスコア向上, 🚨 異常早期発見率95%+',architecture:'🏠 設計効率40%向上, 📊 承認フロー50%短縮, 😊 顧客満足度4.5/5',sports:'⚡ パフォーマンス指標10%向上, 🏆 目標達成率80%+, 🔄 トレーニング継続率90%+',welfare:'👴 サービス提供効率30%向上, 📱 記録入力時間50%短縮, 😊 利用者満足度4/5+',tourism:'✈️ 予約CV率10%+, 😊 旅行者満足度4.5/5, 🔄 リピート訪問率40%+',biotech:'🔬 実験データ精度95%+, 📊 承認申請期間30%短縮, 🔒 GxP準拠100%',mobility:'🚗 交通最適化15%向上, 📡 データ収集精度99%+, ⚡ 応答時間1秒以内',cybersecurity:'🔒 脅威検知率99%+, ⚡ インシデント応答1時間以内, 📊 誤検知率0.1%以下',fintech_field:'💰 取引精度99.99%+, 🔒 不正検知率99%+, ⚡ 決済応答1秒以内',smart_factory:'🏭 OEE90%+, 🚨 異常予知精度90%+, ⚡ 計画外停止30%削減',cross_theme:'📈 月間1000ユーザー, 🔄 継続率80%+, 😊 CSAT 4.5/5'};
+    var _sucFldEn={engineering:'🏭 30% cycle time reduction, 🚨 <0.1% defect rate, ⚡ 99%+ measurement accuracy',science:'📊 90%+ analysis accuracy, 📝 Citation impact improvement, 🔬 50% faster experiment cycles',agriculture:'🌱 20% yield increase, 📱 90%+ field record completion, ⚡ 30% pesticide reduction',medical:'🏥 90%+ diagnostic support accuracy, ⚡ 30% wait time reduction, 🔒 Zero data breach',social:'📈 1,000+ DAU, 💬 20%+ engagement rate, 🔄 85%+ monthly retention',humanities:'📚 50% faster research, 📝 30% more output, 👥 70%+ collaboration rate',education_field:'📚 80%+ course completion, 📊 10% grade improvement, 🔄 60%+ 7-day streak',art:'🎨 200+ works/month, 👥 500+ creators, 💰 $1K+ monthly creator revenue',interdisciplinary:'🤝 90%+ project completion, 👥 10+ cross-discipline collabs/month, 📈 80%+ publication rate',environment:'🌿 10%+ CO2 reduction, 📊 ESG score improvement, 🚨 95%+ early anomaly detection',architecture:'🏠 40% design efficiency, 📊 50% faster approvals, 😊 4.5/5 client satisfaction',sports:'⚡ 10% performance improvement, 🏆 80%+ goal achievement, 🔄 90%+ training adherence',welfare:'👴 30% efficiency gain, 📱 50% faster record input, 😊 4/5+ user satisfaction',tourism:'✈️ 10%+ booking conversion, 😊 4.5/5 traveler satisfaction, 🔄 40%+ repeat visitors',biotech:'🔬 95%+ experimental accuracy, 📊 30% faster regulatory approval, 🔒 100% GxP compliance',mobility:'🚗 15% traffic optimization, 📡 99%+ data collection accuracy, ⚡ <1s response time',cybersecurity:'🔒 99%+ threat detection, ⚡ <1hr incident response, 📊 <0.1% false positive rate',fintech_field:'💰 99.99%+ transaction accuracy, 🔒 99%+ fraud detection, ⚡ <1s payment response',smart_factory:'🏭 OEE 90%+, 🚨 90%+ predictive accuracy, ⚡ 30% less unplanned downtime',cross_theme:'📈 1,000+ MAU, 🔄 80%+ retention, 😊 CSAT 4.5/5'};
+    if(_fpField2&&_sucFldJa[_fpField2]){S.answers.success=_en?(_sucFldEn[_fpField2]||_sucFldJa[_fpField2]):_sucFldJa[_fpField2];}
+  }
+  // G-2: skill_level from S.skillLv (options: Beginner / Intermediate / Professional)
+  if(!S.answers.skill_level){
+    var _slv2=typeof S.skillLv==='number'?S.skillLv:3;
+    S.answers.skill_level=_slv2<=1?'Beginner':_slv2>=5?'Professional':'Intermediate';
+  }
+  // G-3: learning_goal from deadline (options mapped to question labels)
+  if(!S.answers.learning_goal&&S.answers.deadline){
+    var _dl=S.answers.deadline||'';
+    if(/12ヶ月|12 month/i.test(_dl)){S.answers.learning_goal=_en?'12 months thorough':'12ヶ月じっくり';}
+    else if(/6ヶ月|6 month/i.test(_dl)){S.answers.learning_goal=_en?'6 months standard':'6ヶ月標準';}
+    else{S.answers.learning_goal=_en?'3 months intensive':'3ヶ月集中';}
+  }
+  // G-4: learning_path from backend/mobile/ai_auto/payment
+  if(!S.answers.learning_path){
+    var _mo3=S.answers.mobile||'';var _aa3=S.answers.ai_auto||'';var _pm3=S.answers.payment||'';
+    if(/オーケストレーター|Orchestrator/i.test(_aa3)||/フル自律|Full Autonomous/i.test(_aa3)){
+      S.answers.learning_path=_en?'AI Orchestrator':'AI自律オーケストレーター';
+    } else if(/Billing|サブスク/i.test(_pm3)&&/Stripe/i.test(_pm3)){
+      S.answers.learning_path=_en?'SaaS Monetization':'SaaS収益化特化';
+    } else if(/Expo|Flutter/i.test(_mo3)&&!/none|なし/i.test(_mo3)){
+      S.answers.learning_path=_en?'Fullstack+Mobile':'フルスタック+モバイル';
+    } else if(/Firebase|Supabase|Convex/i.test(be)){
+      S.answers.learning_path='React + BaaS';
+    } else {
+      S.answers.learning_path='PERN Stack';
+    }
   }
 }
 

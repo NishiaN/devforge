@@ -9,6 +9,7 @@ const _SCALE_DEFAULTS = h._SCALE_DEFAULTS;
 const FIELD_CATS_JA = h.FIELD_CATS_JA;
 const FIELD_CATS_EN = h.FIELD_CATS_EN;
 const PR = h.PR;
+const FIELD_CAT_DEFAULTS = h.FIELD_CAT_DEFAULTS;
 
 describe('Field Presets (PR_FIELD)', () => {
   const fieldKeys = Object.keys(PR_FIELD);
@@ -90,7 +91,7 @@ describe('Field Presets (PR_FIELD)', () => {
 });
 
 describe('_SCALE_DEFAULTS', () => {
-  const REQUIRED_SCALE_FIELDS = ['frontend','backend','deploy','ai_auto'];
+  const REQUIRED_SCALE_FIELDS = ['frontend','backend','deploy','ai_auto','database','auth','css_fw','dev_methods','dev_methodsEn'];
 
   it('has 4 scale entries', () => {
     assert.equal(Object.keys(_SCALE_DEFAULTS).length, 4);
@@ -125,8 +126,8 @@ describe('FIELD_CAT_MAP', () => {
 });
 
 describe('FIELD_TREND', () => {
-  it('has 19 field category entries', () => {
-    assert.equal(Object.keys(FIELD_TREND).length, 19);
+  it('has 20 field category entries', () => {
+    assert.equal(Object.keys(FIELD_TREND).length, 20);
   });
 
   it('all trend values are integers 1-5', () => {
@@ -158,5 +159,191 @@ describe('FIELD_CATS_JA / FIELD_CATS_EN', () => {
     for (let i = 0; i < FIELD_CATS_JA.length; i++) {
       assert.equal(FIELD_CATS_JA[i].key, FIELD_CATS_EN[i].key, `Key mismatch at index ${i}`);
     }
+  });
+});
+
+describe('FIELD_CAT_DEFAULTS (Layer 2)', () => {
+  const VALID_FIELDS = [
+    'engineering','science','agriculture','medical','social',
+    'humanities','education_field','art','interdisciplinary',
+    'environment','architecture','sports','welfare','tourism',
+    'biotech','mobility','cybersecurity','fintech_field','smart_factory','cross_theme'
+  ];
+  const VALID_PAYMENT = new Set(['none','stripe','stripe_billing','ec_build']);
+  const VALID_MOBILE = new Set(['none','Expo (React Native)','Flutter','PWA']);
+
+  it('covers all 20 field categories', () => {
+    assert.equal(Object.keys(FIELD_CAT_DEFAULTS).length, 20);
+    for (const f of VALID_FIELDS) {
+      assert.ok(FIELD_CAT_DEFAULTS[f], `Missing category: ${f}`);
+    }
+  });
+
+  it('every category has bilingual target arrays', () => {
+    for (const f of VALID_FIELDS) {
+      const d = FIELD_CAT_DEFAULTS[f];
+      assert.ok(Array.isArray(d.target), `${f} target not array`);
+      assert.ok(d.target.length >= 2, `${f} target too short`);
+      assert.ok(Array.isArray(d.targetEn), `${f} targetEn not array`);
+      assert.ok(d.targetEn.length >= 2, `${f} targetEn too short`);
+    }
+  });
+
+  it('every category has bilingual screens arrays (≥3)', () => {
+    for (const f of VALID_FIELDS) {
+      const d = FIELD_CAT_DEFAULTS[f];
+      assert.ok(Array.isArray(d.screens), `${f} screens not array`);
+      assert.ok(d.screens.length >= 3, `${f} screens too short`);
+      assert.ok(Array.isArray(d.screensEn), `${f} screensEn not array`);
+      assert.ok(d.screensEn.length >= 3, `${f} screensEn too short`);
+    }
+  });
+
+  it('target/targetEn lengths match per category', () => {
+    for (const f of VALID_FIELDS) {
+      const d = FIELD_CAT_DEFAULTS[f];
+      assert.equal(d.target.length, d.targetEn.length, `${f} target/targetEn length mismatch`);
+    }
+  });
+
+  it('screens/screensEn lengths match per category', () => {
+    for (const f of VALID_FIELDS) {
+      const d = FIELD_CAT_DEFAULTS[f];
+      assert.equal(d.screens.length, d.screensEn.length, `${f} screens/screensEn length mismatch`);
+    }
+  });
+
+  it('payment values are valid (none|stripe|stripe_billing|ec_build)', () => {
+    for (const f of VALID_FIELDS) {
+      const d = FIELD_CAT_DEFAULTS[f];
+      assert.ok(VALID_PAYMENT.has(d.payment), `${f} invalid payment: ${d.payment}`);
+    }
+  });
+
+  it('mobile values are valid (none|Expo|Flutter|PWA)', () => {
+    for (const f of VALID_FIELDS) {
+      const d = FIELD_CAT_DEFAULTS[f];
+      assert.ok(VALID_MOBILE.has(d.mobile), `${f} invalid mobile: ${d.mobile}`);
+    }
+  });
+
+  it('every category has org_model field', () => {
+    const VALID_ORG = new Set(['シングルテナント','マルチテナント(RLS)','ワークスペース型','組織+チーム階層']);
+    for (const f of VALID_FIELDS) {
+      const d = FIELD_CAT_DEFAULTS[f];
+      assert.ok(VALID_ORG.has(d.org_model), `${f} invalid org_model: ${d.org_model}`);
+    }
+  });
+});
+
+describe('PR_FIELD individual overrides', () => {
+  it('edu_tutor_bot overrides target to students/parents', () => {
+    const fp = PR_FIELD['edu_tutor_bot'];
+    assert.ok(fp.target, 'edu_tutor_bot missing target override');
+    const targets = Array.isArray(fp.target) ? fp.target : fp.target.split(', ');
+    assert.ok(targets.some(t => /保護者|Parents/i.test(t)), 'edu_tutor_bot target should include parents');
+  });
+
+  it('arch_realestate overrides target to investors', () => {
+    const fp = PR_FIELD['arch_realestate'];
+    assert.ok(fp.target, 'arch_realestate missing target override');
+    const targets = Array.isArray(fp.target) ? fp.target : fp.target.split(', ');
+    assert.ok(targets.some(t => /投資家|Investor/i.test(t)), 'arch_realestate target should include investors');
+  });
+
+  it('sport_stadium overrides target to fans', () => {
+    const fp = PR_FIELD['sport_stadium'];
+    assert.ok(fp.target, 'sport_stadium missing target override');
+    const targets = Array.isArray(fp.target) ? fp.target : fp.target.split(', ');
+    assert.ok(targets.some(t => /ファン|Fan/i.test(t)), 'sport_stadium target should include fans');
+  });
+
+  it('sport_injury overrides mobile to Expo', () => {
+    const fp = PR_FIELD['sport_injury'];
+    assert.equal(fp.mobile, 'Expo (React Native)', 'sport_injury mobile should be Expo');
+  });
+
+  it('welf_record overrides mobile to Expo', () => {
+    const fp = PR_FIELD['welf_record'];
+    assert.equal(fp.mobile, 'Expo (React Native)', 'welf_record mobile should be Expo');
+  });
+});
+
+describe('PR_FIELD meta value integrity', () => {
+  const VALID_REVENUE = new Set(['subscription','btob','subsidy']);
+  const VALID_REGULATION = new Set(['low','moderate','high','strict']);
+  const VALID_ON_DEVICE = new Set(['cloud','edge_cloud','on_device']);
+
+  it('all meta.revenue values are valid', () => {
+    for (const k of Object.keys(PR_FIELD)) {
+      const m = PR_FIELD[k].meta;
+      assert.ok(VALID_REVENUE.has(m.revenue), `${k} invalid meta.revenue: ${m.revenue}`);
+    }
+  });
+
+  it('all meta.regulation values are valid', () => {
+    for (const k of Object.keys(PR_FIELD)) {
+      const m = PR_FIELD[k].meta;
+      assert.ok(VALID_REGULATION.has(m.regulation), `${k} invalid meta.regulation: ${m.regulation}`);
+    }
+  });
+
+  it('all meta.onDevice values are valid', () => {
+    for (const k of Object.keys(PR_FIELD)) {
+      const m = PR_FIELD[k].meta;
+      assert.ok(VALID_ON_DEVICE.has(m.onDevice), `${k} invalid meta.onDevice: ${m.onDevice}`);
+    }
+  });
+
+  it('subscription revenue presets count ≥10', () => {
+    const count = Object.values(PR_FIELD).filter(p => p.meta.revenue === 'subscription').length;
+    assert.ok(count >= 10, `Expected ≥10 subscription presets, got ${count}`);
+  });
+
+  it('strict regulation presets count ≥10', () => {
+    const count = Object.values(PR_FIELD).filter(p => p.meta.regulation === 'strict').length;
+    assert.ok(count >= 10, `Expected ≥10 strict regulation presets, got ${count}`);
+  });
+});
+
+describe('Standard preset new fields (Phase M)', () => {
+  const _PD = h._PD;
+
+  it('_PD has deploy field', () => {
+    assert.ok(_PD.deploy, '_PD missing deploy');
+  });
+
+  it('_PD has dev_methods field', () => {
+    assert.ok(_PD.dev_methods, '_PD missing dev_methods');
+    assert.ok(_PD.dev_methodsEn, '_PD missing dev_methodsEn');
+  });
+
+  it('saas.screens includes ダッシュボード and プラン管理', () => {
+    const s = PR['saas'];
+    assert.ok(Array.isArray(s.screens), 'saas.screens not array');
+    assert.ok(s.screens.some(x => x.includes('ダッシュボード')), 'saas.screens missing dashboard');
+    assert.ok(s.screens.some(x => x.includes('プラン')), 'saas.screens missing plan');
+  });
+
+  it('ec.screens includes カート and チェックアウト', () => {
+    const s = PR['ec'];
+    assert.ok(s.screens.some(x => x.includes('カート')), 'ec.screens missing cart');
+    assert.ok(s.screens.some(x => x.includes('チェックアウト')), 'ec.screens missing checkout');
+  });
+
+  it('saas.org_model is マルチテナント(RLS)', () => {
+    assert.equal(PR['saas'].org_model, 'マルチテナント(RLS)', 'saas.org_model mismatch');
+  });
+
+  it('collab.org_model is ワークスペース型', () => {
+    assert.equal(PR['collab'].org_model, 'ワークスペース型', 'collab.org_model mismatch');
+  });
+
+  it('lms.deploy is Firebase Hosting', () => {
+    assert.equal(PR['lms'].deploy, 'Firebase Hosting', 'lms.deploy mismatch');
+  });
+
+  it('social.deploy is Firebase Hosting', () => {
+    assert.equal(PR['social'].deploy, 'Firebase Hosting', 'social.deploy mismatch');
   });
 });

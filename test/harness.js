@@ -73,6 +73,8 @@ module.exports = {
   get FIELD_CATS_EN(){return sandbox.FIELD_CATS_EN;},
   get FIELD_TREND(){return sandbox.FIELD_TREND;},
   get _SCALE_DEFAULTS(){return sandbox._SCALE_DEFAULTS;},
+  get FIELD_CAT_DEFAULTS(){return sandbox.FIELD_CAT_DEFAULTS;},
+  get _PD(){return sandbox._PD;},
   get REQ_LABELS(){return sandbox.REQ_LABELS;},
   esc:(...a)=>sandbox.esc(...a),
   hasDM:(...a)=>sandbox.hasDM(...a),
