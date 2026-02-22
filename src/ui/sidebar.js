@@ -9,8 +9,35 @@ function initSidebar(){
     sb.classList.remove('collapsed');
     const ib=$('sbIconbar');if(ib)ib.style.display='none';
   }
+  ['sbProgress','sbFiles','sbSummary'].forEach(function(id){
+    const el=$(id);if(el)el.addEventListener('scroll',_sbScrUpdate);
+  });
   updateSidebarLabels();
   renderPillarGrid();
+}
+
+function sbScrollSect(delta){
+  const el=_sbActiveSect();if(el)el.scrollTop+=delta;
+}
+
+function _sbActiveSect(){
+  var ids=['sbProgress','sbFiles','sbSummary'];
+  for(var i=0;i<ids.length;i++){var el=$(ids[i]);if(el&&el.style.display!=='none')return el;}
+  return null;
+}
+
+function _sbScrUpdate(){
+  const up=$('sbScrUp'),dn=$('sbScrDn');if(!up||!dn)return;
+  const el=_sbActiveSect();
+  if(!el||el.scrollHeight<=el.clientHeight+5){
+    up.className='sb-scr sb-scr-up inactive';
+    dn.className='sb-scr sb-scr-dn inactive';
+    return;
+  }
+  const atTop=el.scrollTop<=5;
+  const atBot=el.scrollTop>=el.scrollHeight-el.clientHeight-5;
+  up.className='sb-scr sb-scr-up'+(atTop?' inactive':' active');
+  dn.className='sb-scr sb-scr-dn'+(atBot?' inactive':' active');
 }
 
 function toggleSidebar(){
@@ -28,6 +55,7 @@ function switchSidebarTab(tab){
   if(spEl)spEl.style.display=tab==='progress'?'':'none';
   if(sfEl){sfEl.style.display=tab==='files'?'':'none';if(tab==='files')renderSidebarFiles();}
   if(ssEl){ssEl.style.display=tab==='summary'?'':'none';if(tab==='summary')renderSidebarSummary();}
+  _sbScrUpdate();
 }
 
 function renderSidebarFiles(){
@@ -104,6 +132,7 @@ function renderSidebarFiles(){
   el.innerHTML=h;
   const activeEl=el.querySelector('.ft-file.active');
   if(activeEl)activeEl.scrollIntoView({block:'nearest',behavior:'smooth'});
+  _sbScrUpdate();
 }
 
 function filterSidebarTree(q){
@@ -168,6 +197,7 @@ function renderSidebarSummary(){
   }
   if(!h)h='<p class="sb-empty">'+(_ja?'質問未表示':'No questions')+'</p>';
   el.innerHTML=h;
+  _sbScrUpdate();
 }
 
 function updateSidebarLabels(){
