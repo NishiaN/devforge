@@ -1,26 +1,59 @@
-# AGENTS.md — DevForge v9.0
+# AGENTS.md — DevForge v9.6.0
 
 ## Project
-39-module web app → builds to single HTML (~484KB).
-Vanilla JS + CSS custom properties + CDN libs (marked.js, mermaid.js, JSZip).
-Generates 62 project spec files from wizard answers.
+62 JS modules → single `devforge-v9.html` (~2634KB / 3000KB limit).
+Vanilla JS, no frameworks. CDN: marked.js, mermaid.js, JSZip.
+Generates **175+ files** across **25 pillars** from a wizard-driven Q&A session.
 
-## Build: `node build.js`
-## Test: `npm test` (127 tests + 248 assertions)
+## Commands
+```bash
+node build.js          # build → devforge-v9.html
+node build.js --report # build + size breakdown
+npm test               # 1059 tests, all passing
+npm run dev            # build + live-server :3000
+```
+
+## Module Load Order (critical — never reorder)
+```
+core/state.js, core/i18n.js → data/*.js → generators/*.js → ui/*.js → core/init.js
+```
 
 ## Agent Roles
-- **UI Agent**: `src/ui/` — CSS custom properties, test both themes/languages
-- **Generator Agent**: `src/generators/` — Define `const G=S.genLang==='ja'` at top. Never `${}` in single quotes
-- **Data Agent**: `src/data/` — 26 presets, ENTITY_COLUMNS (30+ entities), FEATURE_DETAILS, ENTITY_METHODS, compat-rules
-- **I18N Agent**: `src/core/i18n.js` + `src/data/` — Every string needs JA+EN
-- **Test Agent**: `test/` — 127 tests across 9 test files
 
-## After Changes: `npm test && node build.js`
+**UI Agent** (`src/ui/`):
+- Always declare `const _ja = S.lang==='ja';` at function top (never bare `S.lang==='ja'`)
+- CSS custom properties only (`--accent`, `--bg-2`, `--text`, etc.)
+- Test both dark/light themes and ja/en languages
 
-## Key Data Maps (common.js)
-- `ENTITY_COLUMNS` — 30+ entity column definitions with FK/constraint/i18n
-- `ENTITY_METHODS` — REST API method restrictions per entity (18 entries)
-- `FEATURE_DETAILS` — Domain-specific acceptance criteria per feature
-- `getEntityColumns(name, G, knownEntities)` — Always pass knownEntities (3rd arg)
-- `getEntityMethods(name)` — Returns allowed HTTP methods
-- `detectDomain(purpose)` — Returns domain key for KPI/scope inference
+**Generator Agent** (`src/generators/`):
+- Start every generator function with `const G = S.genLang==='ja';`
+- Never use `${}` inside single-quoted strings — use concatenation
+- Always use `+=` when building strings (`doc + 'text'` does nothing)
+- `getEntityColumns(name, G, knownEntities)` — always pass all 3 args
+
+**Data Agent** (`src/data/`):
+- 48 standard presets (`PR` / `_mp()`), 138 field presets (`PR_FIELD` / `_fpd()`)
+- 10 extended categories + 40 presets in `presets-ext2.js` (62nd module)
+- techdb.js: 338 entries; compat-rules.js: 91 rules (13E+53W+25I)
+- `detectDomain(purpose)` returns exactly 32 domains — never hardcode unlisted ones
+
+**Test Agent** (`test/`):
+- 1059 tests across 27 test files; harness: `eval(fs.readFileSync(...))` pattern
+- `test/harness.js` loads `presets-ext2.js` — file must exist in git or CI crashes
+- Run `node build.js` before `npm test` when build.test.js reads from output file
+
+## Key Helpers (common.js, globally scoped)
+- `resolveORM(a)` — 5 ORMs + BaaS + Python default; returns `{name,dir,isBaaS,isPython}`
+- `resolveAuth(a)` — JWT library by backend language
+- `detectDomain(purpose)` — 32-domain inference from purpose text
+- `inferStakeholder(domain)` — enterprise/team/developer/startup
+- `genADR(a,pn)` — ADR doc generation (docs/00)
+- `genArchIntegrityCheck()` — docs/82; C-A〜C-L integrity checks
+- `save()`, `esc(s)`, `escAttr(s)`, `_jp(s,d)`, `sanitize(s,max)`, `toast(msg)`
+
+## After Any Change
+```bash
+npm test && node build.js
+```
+
+**See CLAUDE.md for complete documentation** — authoritative source of truth.
