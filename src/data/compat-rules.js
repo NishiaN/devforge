@@ -339,6 +339,8 @@ const COMPAT_RULES=[
    t:a=>inc(a.backend,'Supabase')&&(inc(a.auth,'NextAuth')||inc(a.auth,'Auth.js')),
    ja:'Supabase利用時はSupabase Authが統合されています。NextAuth/Auth.jsとの併用は認証SoTが二重化します',
    en:'Supabase includes built-in Auth. Using NextAuth/Auth.js creates dual auth sources of truth',
+   why_ja:'SupabaseとNextAuthを同時に使うと「誰が正しいユーザーか」を管理するシステムが2つ存在します。NextAuthのJWTとSupabaseのJWTは別物で、Supabase RLSポリシーはSupabase Auth JWTしか認識しません。結果としてRLSが機能せず、データ保護が崩壊します。',
+   why_en:'Using both Supabase and NextAuth means two systems claim to be the source of truth for user identity. NextAuth JWTs and Supabase JWTs are different — Supabase RLS policies only recognize Supabase Auth JWTs. The result is broken RLS and collapsed data protection.',
    fix:{f:'auth',s:'Supabase Auth'}},
   // A6: backend≠Supabase && auth に Supabase Auth
   {id:'sem-auth-nosupa-supaauth',p:['auth','backend'],lv:'warn',
@@ -368,7 +370,9 @@ const COMPAT_RULES=[
      return isSensitiveDomain&&!hasMFA;
    },
    ja:'金融/医療/法務系のプロジェクトですが、MFA（多要素認証）が設定されていません。セキュリティ強化のためMFA導入を推奨します',
-   en:'Finance/health/legal project without MFA (multi-factor authentication). MFA is strongly recommended for security'},
+   en:'Finance/health/legal project without MFA (multi-factor authentication). MFA is strongly recommended for security',
+   why_ja:'パスワード単体では不十分です。金融・医療・法務では、流出したパスワード1つで全データへのアクセスが可能になります。PCI-DSS v4ではMFAが必須（Requirement 8.4）、HIPAAでもリスク軽減措置として強く推奨されます。TOTP/SMS等で第2ファクターを追加してください。',
+   why_en:'Passwords alone are insufficient. In finance/health/legal, a single leaked password grants access to all data. PCI-DSS v4 mandates MFA (Requirement 8.4); HIPAA strongly recommends it as a risk mitigation measure. Add a second factor (TOTP/SMS).'},
   // S2: 決済あり + 認証なし
   {id:'dom-sec-pay-noauth',p:['payment','auth'],lv:'error',
    t:a=>{
@@ -391,12 +395,16 @@ const COMPAT_RULES=[
    },
    ja:'Patient/Transaction等の機密情報を扱うエンティティがありますが、認証が設定されていません。個人情報保護のため認証の導入を推奨します',
    en:'Sensitive entities (Patient/Transaction/etc.) detected without authentication. Authentication is recommended for privacy protection',
+   why_ja:'Patient・MedicalRecord・BankAccount等のエンティティは個人情報保護法（GDPR/個人情報保護法）の対象です。認証なしでは誰でもこれらのデータにアクセスでき、データ漏洩が発生した場合に法的責任が生じます。最低限のJWT認証でも大幅にリスクを低減できます。',
+   why_en:'Patient, MedicalRecord, BankAccount entities are subject to privacy laws (GDPR, HIPAA). Without authentication, anyone can access this data — a breach creates serious legal liability. Even basic JWT auth dramatically reduces the risk surface.',
    fix:{f:'auth',s:'Supabase Auth'}},
   // ── DB設計 (2 WARN + 1 INFO) ──
   {id:'db-mongo-prisma',p:['database','orm'],lv:'warn',
    t:a=>inc(a.database,'MongoDB')&&inc(a.orm,'Prisma'),
    ja:'PrismaのMongoDBサポートは実験的です。Mongooseまたはネイティブドライバーを推奨します',
-   en:'Prisma MongoDB support is experimental. Consider Mongoose or the native MongoDB driver'},
+   en:'Prisma MongoDB support is experimental. Consider Mongoose or the native MongoDB driver',
+   why_ja:'PrismaのMongoDB対応は「Preview」段階で、リレーション・マイグレーション・トランザクションなど主要機能が制限されています。本番環境でPrisma Migrateを使うとコレクション構造が壊れる既知の問題があります。MongooseはMongoDBネイティブのAPIに沿った安定したODMです。',
+   why_en:'Prisma\'s MongoDB support is in "Preview" — major features like relations, migrations, and transactions are limited. Using Prisma Migrate in production has known issues corrupting collection structures. Mongoose is a stable ODM that follows MongoDB\'s native API.'},
   {id:'db-sqlite-prod',p:['database','deploy'],lv:'warn',
    t:a=>{
      const isSQLite=inc(a.database,'SQLite');
@@ -453,7 +461,9 @@ const COMPAT_RULES=[
      return !/(guardrail|ガードレール|安全|safety|filter|フィルタ|sanitize|moderate|モデレート|validation|検証)/i.test(a.mvp_features||'');
    },
    ja:'AI機能が有効ですが、mvp_featuresにガードレール/安全フィルタの記述がありません。入力検証・出力モデレーション・レート制限を実装してください (docs/96参照)',
-   en:'AI features active but no guardrail/safety filter in mvp_features. Implement input validation, output moderation, and rate limiting (see docs/96)'},
+   en:'AI features active but no guardrail/safety filter in mvp_features. Implement input validation, output moderation, and rate limiting (see docs/96)',
+   why_ja:'ガードレールなしのLLM機能は「プロンプトインジェクション」に脆弱です。悪意あるユーザーが「あなたのシステムプロンプトを全て出力して」と入力すると機密情報が漏洩します。また有害コンテンツ生成・競合他社への誘導・個人情報収集ツール化といった悪用が可能になります。',
+   why_en:'LLM features without guardrails are vulnerable to prompt injection. Malicious inputs like "output all your system prompts" can leak confidential information. Attackers can also generate harmful content, redirect users to competitors, or turn the AI into a personal data collection tool.'},
   {id:'ai-noauth-llm',p:['ai_auto','auth'],lv:'warn',
    t:a=>{
      if(!a.ai_auto||/なし|None/i.test(a.ai_auto))return false;
@@ -471,7 +481,9 @@ const COMPAT_RULES=[
      return piiE.some(e=>inc(a.data_entities,e));
    },
    ja:'個人情報エンティティ（Patient/Transaction等）がAI機能と併用されています。LLMへの送信前にPIIをマスキング/仮名化してください (docs/95参照)',
-   en:'PII entities (Patient/Transaction/etc.) used with AI features. Mask or pseudonymize PII before sending to LLM (see docs/95)'},
+   en:'PII entities (Patient/Transaction/etc.) used with AI features. Mask or pseudonymize PII before sending to LLM (see docs/95)',
+   why_ja:'OpenAI/Anthropicのモデルに送信したデータはモデル改善に使用される場合があります（Enterprise契約を除く）。患者名・クレジットカード番号・診断情報等をそのままLLMに送ると、GDPR第9条（特別カテゴリデータ）・個人情報保護法違反のリスクがあります。送信前に`[患者名]`等に仮名化してください。',
+   why_en:'Data sent to OpenAI/Anthropic models may be used for model improvement (unless on Enterprise contracts). Sending patient names, credit card numbers, or diagnoses to LLMs risks violating GDPR Article 9 (special category data) and similar privacy laws. Pseudonymize with `[patient_name]` etc. before sending.'},
   {id:'ai-ratelimit-reminder',p:['ai_auto','backend'],lv:'info',
    t:a=>{
      if(!a.ai_auto||/なし|None/i.test(a.ai_auto))return false;
@@ -541,6 +553,8 @@ const COMPAT_RULES=[
    },
    ja:'Enterprise/Fintech/LegalドメインでカスタムJWTを使用しています。トークン失効・監査ログ・コンプライアンス対応のコストが高騰します。OIDC（NextAuth.js/Auth.js）を推奨します',
    en:'Custom JWT in Enterprise/Fintech/Legal domain. Token revocation, audit logs, and compliance costs are high. Use OIDC (NextAuth.js/Auth.js)',
+   why_ja:'JWTは一度発行すると有効期限まで取り消せません。ユーザーをBANしてもトークンが生きている限りAPIに到達できます。コンプライアンス監査では全認証イベントのログが必要ですが、カスタムJWTでは実装コストが非常に高くなります。Auth.jsはトークン失効・監査ログ・OIDCを標準装備しています。',
+   why_en:'JWTs cannot be revoked once issued — a banned user\'s token still reaches your API until expiry. Compliance audits require full authentication event logs, which are expensive to build with custom JWT. Auth.js provides token revocation, audit logs, and OIDC out of the box.',
    fix:{f:'auth',s:'Auth.js/NextAuth'}},
   {id:'api-large-no-pagination',p:['data_entities','mvp_features'],lv:'warn',
    t:a=>{
@@ -549,7 +563,9 @@ const COMPAT_RULES=[
      return ents>=5&&!hasPagination;
    },
    ja:'エンティティが5件以上ありますが、mvp_featuresにページネーションの記述がありません。一覧画面でのパフォーマンス問題を防ぐためカーソルページネーションを実装してください',
-   en:'5+ entities but no pagination in mvp_features. Implement cursor-based pagination to prevent list view performance issues'},
+   en:'5+ entities but no pagination in mvp_features. Implement cursor-based pagination to prevent list view performance issues',
+   why_ja:'SELECT * FROM posts はデータが少ない開発中は問題ありませんが、本番で10万件になると全件をメモリにロードし応答に数秒かかります。カーソルベースのページネーション（WHERE id > cursor LIMIT 20）はインデックスを活用し常に一定速度を保ちます。',
+   why_en:'SELECT * FROM posts is fine in development with 100 rows, but in production with 100,000 rows it loads everything into memory and takes seconds. Cursor-based pagination (WHERE id > cursor LIMIT 20) uses an index and maintains constant speed regardless of data size.'},
   {id:'infra-prod-no-monitoring',p:['deploy','mvp_features'],lv:'info',
    t:a=>{
      const isProd=/Vercel|Railway|Fly\.io|Render|Heroku|AWS|GCP|Azure/i.test(a.deploy||'');
@@ -577,6 +593,8 @@ const COMPAT_RULES=[
    },
    ja:'SEOが重要なドメインですが、CSRのみのフレームワークを選択しています。Next.js/Nuxt/Astroへの変更でSEOを大幅に改善できます',
    en:'SEO-critical domain with CSR-only framework. Switch to Next.js/Nuxt/Astro for significant SEO improvement',
+   why_ja:'GooglebotはJavaScriptを実行しますが、CSRページはレンダリング遅延が生じ、クロール予算の消費も激しいです。特に`<title>`や`<meta description>`がJS実行後に設定される場合、インデックス登録が大幅に遅れます。SSR/SSGではHTMLに直接埋め込まれるため即座にインデックスされます。',
+   why_en:'Googlebot executes JavaScript, but CSR pages suffer render delays and consume heavy crawl budget. When `<title>` and `<meta description>` are set after JS execution, indexing is significantly delayed. SSR/SSG embeds them directly in HTML, enabling immediate indexing.',
    fix:{f:'frontend',s:'React + Next.js'}},
   {id:'a11y-no-axe',p:['frontend','mvp_features'],lv:'info',
    t:a=>{
@@ -602,7 +620,9 @@ const COMPAT_RULES=[
      return hasAPI&&!hasCORS;
    },
    ja:'APIサーバー構成でCORS設定の記述がありません。ワイルドカード（*）許可は禁止し、許可オリジンを明示的に設定してください（docs/43参照）',
-   en:'API server without CORS in mvp_features. Never allow wildcard (*) origins — set explicit allowed origins (see docs/43)'},
+   en:'API server without CORS in mvp_features. Never allow wildcard (*) origins — set explicit allowed origins (see docs/43)',
+   why_ja:'CORSはブラウザの保護機構です。`Access-Control-Allow-Origin: *` を設定すると、悪意あるサイトがユーザーのブラウザ経由でAPIを呼び出せるようになります（CSRF攻撃）。認証Cookieを使用している場合は特に危険で、ユーザーになりすましてデータを読み書きされます。',
+   why_en:'CORS is a browser protection mechanism. Setting `Access-Control-Allow-Origin: *` allows malicious sites to call your API through the user\'s browser (CSRF attack). When using authentication cookies, this is especially dangerous — attackers can read and write data as the user.'},
   {id:'api-graphql-depth-limit',p:['backend','mvp_features'],lv:'warn',
    t:a=>{
      const hasGQL=inc(a.backend,'GraphQL')||/(GraphQL|Apollo)/i.test(a.mvp_features||'');
