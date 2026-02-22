@@ -482,7 +482,7 @@ function showAILauncher(){
           <div class="launch-bar"><div class="launch-bar-fill" style="width:${pct}%"></div></div>
         </div>`;
         h+=`<div class="launch-dg-panel" id="launchDgPanel">`;
-        Object.entries(docGroupStats).forEach(([gid,gs])=>{
+        Object.entries(docGroupStats).sort((a,b)=>b[1].tokens-a[1].tokens).forEach(([gid,gs])=>{
           const gLabel=DOC_GROUPS[gid]?(_ja?DOC_GROUPS[gid].ja:DOC_GROUPS[gid].en):(_ja?'その他':'Other');
           h+=`<div class="launch-dg-row">
             <label><input type="checkbox" checked data-dg="${gid}" onchange="updateDocGroupState()"> ${gLabel}<small>(${gs.files.length}f)</small></label>
@@ -636,6 +636,7 @@ function selectLaunchTemplate(key){
       document.querySelectorAll('.launch-folder-row input[data-dir]').forEach(c=>{
         if(c.dataset.dir!=='docs')c.checked=folderSet.has(c.dataset.dir);
       });
+      updateLaunchPreview();
     }
     window._launchScope=key;
   }
@@ -709,12 +710,24 @@ function updateLaunchPreview(){
     });
     modelsDiv.innerHTML=mh;
   }
-  // Update output meta if output is showing
+  // Update output meta + rebuild prompt if output is showing
   const meta=$('launchOutputMeta');
   if(meta&&$('launchOutput').style.display!=='none'){
     const totalTok=Object.values(window._launchFolders||{}).reduce((s,f)=>s+f.tokens,0);
     const reducePct=totalTok>0?Math.round((1-tokens/totalTok)*100):0;
     meta.textContent=`${sel.length} ${_ja?'ファイル':'files'} · ~${tokens.toLocaleString()} tokens${reducePct>0?' ('+(_ja?'全体比':'vs all')+' '+reducePct+'% '+(_ja?'削減':'reduction')+')':''}`;
+    // Rebuild full prompt so copy reflects current selection
+    const key=window._launchScope;const PT=window._launchPT;
+    if(key&&PT&&PT[key]){
+      const t=PT[key];
+      const a=S.answers;const pn=S.projectName||'Project';
+      const ctx='Project: '+pn+'\nStack: '+(a.frontend||'N/A')+' + '+(a.backend||'N/A')+' + '+(a.database||'N/A')+'\nAuth: '+(a.auth||'N/A')+'\nEntities: '+(a.data_entities||'N/A');
+      const content=sel.map(([k,v])=>`--- ${k} ---\n${v}`).join('\n\n');
+      const full='# System\n'+t.sys+'\n\n# Context\n'+ctx+'\n\n# Task\n'+t.prompt+'\n\n# Output Format\n'+t.fmt+'\n\n---\n\n'+content;
+      window._launchFullPrompt=full;
+      const pre=$('launchOutputPre');
+      if(pre)pre.textContent=full.slice(0,2000)+(full.length>2000?`\n\n... (${_ja?'残り':'remaining'} ${(full.length-2000).toLocaleString()} chars)`:'');
+    }
   }
 }
 
