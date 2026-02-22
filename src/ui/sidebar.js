@@ -115,6 +115,27 @@ function filterSidebarTree(q){
   });
 }
 
+function renderCompatBadge(){
+  const el=$('sbCompatBadge');if(!el)return;
+  if(typeof checkCompat!=='function'){el.innerHTML='';return;}
+  const _ja=S.lang==='ja';
+  const issues=checkCompat(S.answers||{});
+  const errors=issues.filter(function(i){return i.level==='error';}).length;
+  const warns=issues.filter(function(i){return i.level==='warn';}).length;
+  const infos=issues.filter(function(i){return i.level==='info';}).length;
+  if(!errors&&!warns&&!infos){
+    el.innerHTML='<div class="compat-badge-ok">✅ '+(_ja?'スタック相性: 良好':'Stack: Compatible')+'</div>';
+    return;
+  }
+  let h='<div class="compat-badge-row">';
+  if(errors)h+='<span class="cb-error">❌ '+errors+'</span>';
+  if(warns)h+='<span class="cb-warn">⚠️ '+warns+'</span>';
+  if(infos)h+='<span class="cb-info">ℹ️ '+infos+'</span>';
+  h+=(_ja?'<span class="cb-label">未解決の警告</span>':'<span class="cb-label">open issues</span>');
+  h+='</div>';
+  el.innerHTML=h;
+}
+
 function goToQ(phase,step){
   S.phase=phase;S.step=step;save();
   if(typeof showQ==='function')showQ();
@@ -154,6 +175,7 @@ function updateSidebarLabels(){
   const sfEl=$('sbFiles');
   if(sfEl&&sfEl.style.display!=='none')renderSidebarFiles();
   const ssEl=$('sbSummary');if(ssEl&&ssEl.style.display!=='none')renderSidebarSummary();
+  renderCompatBadge();
   // Update toggle button tooltip
   const tog=$('sbToggle');
   if(tog)tog.title=_ja?'サイドバー切替 (Ctrl+B)':'Toggle Sidebar (Ctrl+B)';

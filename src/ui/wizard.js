@@ -1,4 +1,14 @@
 /* ═══ WIZARD CORE ═══ */
+function findQStep(qId){
+  if(typeof getQ!=='function')return null;
+  const qs=getQ();
+  for(let p=1;p<=3;p++){
+    const ph=qs[p];if(!ph)continue;
+    for(let s=0;s<ph.questions.length;s++){
+      if(ph.questions[s].id===qId)return{phase:p,step:s,q:ph.questions[s]};}
+  }
+  return null;
+}
 function _applyCompatFix(btn,f,s){
   S.answers[f]=s;save();
   const _ja=S.lang==='ja';
@@ -136,6 +146,7 @@ function doSubmit(qid,val){
   S.answers[qid]=sanitize(val.trim?val.trim():String(val));
   addMsg('user',String(val),null,qid);
   showCompatAlert(S.answers);
+  if(typeof renderCompatBadge==='function')renderCompatBadge();
   S.step++;save();
   setTimeout(()=>{
     const ph=getQ()[S.phase];
@@ -155,9 +166,35 @@ function showCompatAlert(answers){
     let h=`<div class="${cls}"><span class="compat-icon">${icon}</span><span class="compat-msg">${esc(iss.msg)}</span>`;
     if(iss.chain){h+=`<button class="btn btn-xs btn-s compat-fix" onclick="_applyCascadingFix(this,'${escAttr(JSON.stringify(iss.chain))}')">${_ja?'一括修正':'Batch Fix'}</button>`;}
     else if(iss.fix){h+=`<button class="btn btn-xs btn-s compat-fix" onclick="_applyCompatFix(this,'${escAttr(iss.fix.f)}','${escAttr(iss.fix.s)}')">${_ja?'修正':'Fix'}</button>`;}
+    if(iss.pair&&iss.pair.length){iss.pair.forEach(function(fid){const loc=findQStep(fid);if(loc){const lbl=_ja?(loc.q.label||fid):(loc.q.labelEn||loc.q.label||fid);h+='<button class="btn btn-xs btn-g compat-jump" onclick="goToQ('+loc.phase+','+loc.step+')">📍 '+esc(lbl)+'</button>';}});}
     if(iss.why)h+=`<details class="compat-why"><summary class="compat-why-toggle">${_ja?'▶ なぜ？':'▶ Why?'}</summary><div class="compat-why-body">${esc(iss.why)}</div></details>`;
     h+='</div>';d.innerHTML=h;body.appendChild(d);
   });
+  body.scrollTop=body.scrollHeight;
+}
+
+function showCompatSummary(issues){
+  const _ja=S.lang==='ja';
+  const body=$('cbody');if(!body)return;
+  const d=document.createElement('div');d.className='msg';
+  const hasWarn=issues.some(function(i){return i.level==='warn';});
+  let h='<div class="compat-summary-card">';
+  h+='<div class="compat-summary-title">'+(hasWarn?'⚠️':'ℹ️')+' ';
+  h+=(_ja?'スタック警告サマリー（'+issues.length+'件）':'Stack Warning Summary ('+issues.length+')');
+  h+='</div>';
+  issues.forEach(function(iss){
+    const icon=iss.level==='warn'?'⚠️':'ℹ️';
+    const cls=iss.level==='warn'?'compat-warn':'compat-info';
+    h+='<div class="'+cls+' compat-sum-item"><span class="compat-icon">'+icon+'</span><span class="compat-msg">'+esc(iss.msg)+'</span>';
+    if(iss.chain){h+='<button class="btn btn-xs btn-s compat-fix" onclick="_applyCascadingFix(this,\''+escAttr(JSON.stringify(iss.chain))+'\')">'+(  _ja?'一括修正':'Batch Fix')+'</button>';}
+    else if(iss.fix){h+='<button class="btn btn-xs btn-s compat-fix" onclick="_applyCompatFix(this,\''+escAttr(iss.fix.f)+'\',\''+escAttr(iss.fix.s)+'\')">'+(  _ja?'修正':'Fix')+'</button>';}
+    if(iss.pair&&iss.pair.length){iss.pair.forEach(function(fid){const loc=findQStep(fid);if(loc){const lbl=_ja?(loc.q.label||fid):(loc.q.labelEn||loc.q.label||fid);h+='<button class="btn btn-xs btn-g compat-jump" onclick="goToQ('+loc.phase+','+loc.step+')">📍 '+esc(lbl)+'</button>';}});}
+    h+='</div>';
+  });
+  h+='<div class="compat-summary-actions">';
+  h+='<button class="btn btn-g btn-sm compat-sum-dismiss" onclick="this.closest(\'.compat-summary-card\').classList.add(\'dismissed\')">'+(  _ja?'このまま続ける':'Continue anyway')+'</button>';
+  h+='</div></div>';
+  d.innerHTML=h;body.appendChild(d);
   body.scrollTop=body.scrollHeight;
 }
 
@@ -186,6 +223,10 @@ function phaseEnd(){
         if(typeof announce==='function')announce(_errMsg);
         return;
       }
+    }
+    if(S.skillLv>=2){
+      const _warnIssues=checkCompat(S.answers).filter(function(i){return i.level==='warn'||i.level==='info';});
+      if(_warnIssues.length>0)showCompatSummary(_warnIssues);
     }
     const msg=t('phEnd'+S.phase);
     addMsg('bot',msg);
