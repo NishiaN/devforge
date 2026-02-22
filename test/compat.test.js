@@ -1,4 +1,4 @@
-// Compat rules functional test (91 rules: 13 ERROR + 53 WARN + 25 INFO)
+// Compat rules functional test (94 rules: 13 ERROR + 56 WARN + 25 INFO)
 const assert=require('node:assert/strict');
 const S={lang:'ja',skill:'pro'};
 eval(require('fs').readFileSync('src/data/compat-rules.js','utf-8'));

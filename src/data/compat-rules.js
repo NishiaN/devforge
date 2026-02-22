@@ -1,4 +1,4 @@
-/* ═══ STACK COMPATIBILITY & SEMANTIC CONSISTENCY RULES — 91 rules (ERROR×13 + WARN×53 + INFO×25) ═══ */
+/* ═══ STACK COMPATIBILITY & SEMANTIC CONSISTENCY RULES — 94 rules (ERROR×13 + WARN×56 + INFO×25) ═══ */
 const COMPAT_RULES=[
   // ── FE ↔ Mobile (2 ERROR) ──
   {id:'fe-mob-expo',p:['frontend','mobile'],lv:'error',
@@ -73,12 +73,16 @@ const COMPAT_RULES=[
    t:a=>isStaticBE(a)&&a.orm&&!inc(a.orm,'なし')&&!inc(a.orm,'None')&&a.orm!=='none',
    ja:'静的サイトではORMは不要です',
    en:'ORM is unnecessary for static sites',
+   why_ja:'静的サイト（GitHub Pages・S3・Firebase Hosting等）はHTMLファイルをCDNから配信するだけで、サーバーサイドのランタイムがありません。ORMはサーバー上でDBクエリを実行するためのツールであり、静的サイトにインストールしてもビルド時に使われないデッドコードになります。データが必要な場合はBaaSのFirebase/Supabaseのクライアントライブラリを直接使用してください。',
+   why_en:'Static sites (GitHub Pages, S3, Firebase Hosting, etc.) deliver HTML files from a CDN with no server-side runtime. ORM is a tool for executing DB queries on a server — installing it in a static site creates dead code that is never used at build time. If you need data, use the Firebase/Supabase client library directly.',
    fix:{f:'orm',s:'None / Using BaaS'}},
   // ── BE ↔ DB (4 WARN) ──
   {id:'be-db-fb-notfs',p:['backend','database'],lv:'warn',
    t:a=>inc(a.backend,'Firebase')&&a.database&&!inc(a.database,'Firestore'),
    ja:'Firebase利用時はFirestoreが最適です',
    en:'Firestore is the optimal DB for Firebase',
+   why_ja:'FirebaseのエコシステムはFirestoreを中心に設計されています。Firebase SDK（`firebase/firestore`）・Cloud Functions・Firebase Auth・Firebase StorageはすべてFirestoreのリアルタイムリスナー・セキュリティルール・オフライン同期と統合されます。PostgreSQL/MySQLを選ぶとFirebaseのBaaS機能を捨て、別途DBサーバーの管理が必要になり、Firebaseを使う意味が薄れます。',
+   why_en:'Firebase\'s ecosystem is designed around Firestore. The Firebase SDK (`firebase/firestore`), Cloud Functions, Firebase Auth, and Firebase Storage all integrate with Firestore\'s realtime listeners, security rules, and offline sync. Choosing PostgreSQL/MySQL abandons Firebase\'s BaaS capabilities and requires separately managing a DB server, negating the benefit of using Firebase.',
    fix:{f:'database',s:'Firestore'}},
   {id:'be-db-supa-notpg',p:['backend','database'],lv:'warn',
    t:a=>inc(a.backend,'Supabase')&&a.database&&!inc(a.database,'Supabase')&&!inc(a.database,'PostgreSQL')&&!inc(a.database,'Neon'),
@@ -155,6 +159,20 @@ const COMPAT_RULES=[
    t:a=>inc(a.frontend,'Nuxt')&&inc(a.deploy,'Firebase'),
    ja:'Nuxt 3はVercel/Netlifyが最適デプロイ先です',
    en:'Nuxt 3 deploys best on Vercel or Netlify',
+   fix:{f:'deploy',s:'Vercel'}},
+  {id:'fe-remix-firebase',p:['frontend','deploy'],lv:'warn',
+   t:a=>inc(a.frontend,'Remix')&&inc(a.deploy,'Firebase'),
+   ja:'RemixはNode.jsサーバー必須。Firebase HostingはSSRを提供しません',
+   en:'Remix requires a Node.js server runtime; Firebase Hosting cannot serve SSR',
+   why_ja:'RemixはすべてのページレンダリングをNode.jsサーバー上でサーバーサイドレンダリング（SSR）します。Firebase Hosting は静的CDN（HTML/CSS/JSファイルの配信のみ）で、Node.jsランタイムを持ちません。RemixをFirebaseで動かすには別途Cloud Functionsをサーバーとして用意する複雑な構成が必要です。VercelまたはFly.ioが推奨デプロイ先です。',
+   why_en:'Remix renders all pages via server-side rendering (SSR) on a Node.js server. Firebase Hosting is a static CDN (delivers HTML/CSS/JS only) with no Node.js runtime. Running Remix on Firebase requires a complex setup with Cloud Functions as the server. Vercel or Fly.io are the recommended deploy targets.',
+   fix:{f:'deploy',s:'Vercel'}},
+  {id:'fe-sveltekit-firebase',p:['frontend','deploy'],lv:'warn',
+   t:a=>inc(a.frontend,'SvelteKit')&&inc(a.deploy,'Firebase'),
+   ja:'SvelteKit SSRはNode.jsサーバーが必要。Firebase HostingはSSRに対応しません',
+   en:'SvelteKit SSR requires a server runtime; Firebase Hosting is a static CDN',
+   why_ja:'SvelteKitはSSR・エッジレンダリング・APIルートをサポートするフルスタックフレームワークです。Firebase Hostingは静的ファイルのCDN配信のみをサポートし、Node.jsサーバーランタイムがありません。SvelteKitをFirebaseで動かすにはCloud Functionsを組み合わせる必要がありますが、コールドスタート遅延・設定の複雑さが問題になります。VercelまたはNetlifyが推奨です。',
+   why_en:'SvelteKit is a full-stack framework supporting SSR, edge rendering, and API routes. Firebase Hosting only delivers static files via CDN with no Node.js runtime. Running SvelteKit on Firebase requires combining Cloud Functions, causing cold-start delays and configuration complexity. Vercel or Netlify are recommended.',
    fix:{f:'deploy',s:'Vercel'}},
   // ── AI Auto ↔ Skill (3 WARN) ──
   {id:'ai-sk-auto-beg',p:['ai_auto','skill_level'],lv:'warn',
@@ -246,7 +264,9 @@ const COMPAT_RULES=[
   {id:'dep-db-cf-pg',p:['deploy','database'],lv:'info',
    t:a=>inc(a.deploy,'Cloudflare')&&inc(a.database,'PostgreSQL'),
    ja:'Cloudflare Workers→外部DBはHyperdriveまたはD1への移行を推奨',
-   en:'Cloudflare Workers → external DB: use Hyperdrive or consider D1'},
+   en:'Cloudflare Workers → external DB: use Hyperdrive or consider D1',
+   why_ja:'Cloudflare Workers V8ランタイムはTCPソケットAPIを持たないため、従来のPostgresクライアント（pg）が直接DB接続を確立できません。Cloudflareが提供するHyperdriveを使えばWorkers→外部PostgreSQLのコネクションプーリングが可能です。あるいはCloudflare D1（SQLite互換のエッジDB）への移行で、TCPを介さないネイティブバインディングが得られます。',
+   why_en:'The Cloudflare Workers V8 runtime has no TCP socket API, so traditional Postgres clients (pg) cannot establish direct DB connections. Using Cloudflare\'s Hyperdrive enables connection pooling from Workers to external PostgreSQL. Alternatively, migrating to Cloudflare D1 (SQLite-compatible edge DB) provides native bindings without TCP.'},
   {id:'dep-db-cf-fs',p:['deploy','database'],lv:'warn',
    t:a=>inc(a.deploy,'Cloudflare')&&inc(a.database,'Firestore'),
    ja:'Cloudflare Workers + Firestoreはレイテンシー高。D1/KV/Durableを推奨',
@@ -273,6 +293,13 @@ const COMPAT_RULES=[
    t:a=>inc(a.deploy,'Cloudflare')&&inc(a.backend,'Hono'),
    ja:'✨ Hono + Cloudflare Workersは最適な組み合わせです（超高速Edge実行）',
    en:'✨ Hono + Cloudflare Workers is optimal (ultra-fast edge execution)'},
+  {id:'db-prisma-cf-workers',p:['orm','deploy'],lv:'warn',
+   t:a=>inc(a.orm,'Prisma')&&inc(a.deploy,'Cloudflare'),
+   ja:'PrismaはCloudflare Workers非対応（Node.js専用コード生成）。Drizzle/Kyselyを推奨',
+   en:'Prisma generates Node.js-specific code incompatible with Cloudflare Workers. Use Drizzle or Kysely',
+   why_ja:'Prisma Clientは生成時にNode.jsのfs・path・child_processモジュールに依存したコードを出力します。Cloudflare WorkersのV8サンドボックスはこれらのNode.js APIを提供しないため、Prismaのクエリエンジン（.soバイナリ）をロードできず実行時エラーになります。DrizzleまたはKyselyはエッジランタイムを考慮して設計されており、Workers上で正常動作します。',
+   why_en:'Prisma Client generates code that depends on Node.js modules (fs, path, child_process) at build time. Cloudflare Workers\' V8 sandbox does not provide these Node.js APIs, so Prisma\'s query engine (.so binary) cannot be loaded, causing runtime errors. Drizzle and Kysely are designed with edge runtimes in mind and work correctly on Workers.',
+   fix:{f:'orm',s:'Drizzle'}},
   // ── Domain ↔ Auth/Payment (2 ERROR/WARN) ──
   {id:'dom-sec-noauth',p:['purpose','auth'],lv:'error',
    t:a=>{
@@ -319,6 +346,8 @@ const COMPAT_RULES=[
    t:a=>inc(a.backend,'Convex')&&a.orm&&!inc(a.orm,'なし')&&!inc(a.orm,'None')&&a.orm!=='none',
    ja:'ConvexはTypeScript定義で完結します。ORMは通常不要',
    en:'Convex uses TypeScript definitions. ORM typically not needed',
+   why_ja:'ConvexはORMそのものです。`defineTable()`でスキーマを定義し、`ctx.db.query()`・`ctx.db.insert()`・`ctx.db.patch()`でデータ操作を行います。PrismaやDrizzleをConvexと組み合わせても、ConvexのDBには接続できず、むしろ別DBへの接続が必要になり二重管理になります。Convexを使うならORMは「なし」にしてください。',
+   why_en:'Convex IS the ORM. You define schemas with `defineTable()` and manipulate data with `ctx.db.query()`, `ctx.db.insert()`, and `ctx.db.patch()`. Adding Prisma or Drizzle alongside Convex cannot connect to Convex\'s DB — it would require a separate DB, creating double management. If using Convex, set ORM to "None".',
    fix:{f:'orm',s:'None / Using BaaS'}},
   // ── Misc (3 INFO) ──
   {id:'ai-tools-multi',p:['ai_tools'],lv:'info',
@@ -328,11 +357,15 @@ const COMPAT_RULES=[
     return tools>=3;
    },
    ja:'複数AIツール(3+)選択時は、CLAUDE.md等のAIルールが統一管理されます',
-   en:'Multiple AI tools (3+) selected: AI rules are unified via CLAUDE.md'},
+   en:'Multiple AI tools (3+) selected: AI rules are unified via CLAUDE.md',
+   why_ja:'Cursor・Windsurf・Clineなど複数のAIコーディングツールを同時使用する場合、各ツールが異なるルールを読み込むと一貫性のないコードが生成されます。DevForgeはCLAUDE.md・.cursorrules・.windsurfrules・.clinerules・AGENTS.mdを自動生成し、すべてのAIツールが同一のプロジェクト規約（コーディング規則・禁止パターン・アーキテクチャ決定）に従うよう統一管理します。',
+   why_en:'Using multiple AI coding tools simultaneously (Cursor, Windsurf, Cline, etc.) can produce inconsistent code if each tool reads different rules. DevForge automatically generates CLAUDE.md, .cursorrules, .windsurfrules, .clinerules, and AGENTS.md, ensuring all AI tools follow the same project conventions (coding rules, forbidden patterns, architecture decisions).'},
   {id:'mobile-expo-rn',p:['mobile'],lv:'info',
    t:a=>inc(a.mobile,'bare')||inc(a.mobile,'Bare'),
    ja:'React Native bareは柔軟性が高いですが、Expoの方が開発速度が速いです',
    en:'React Native bare offers flexibility, but Expo is faster for development',
+   why_ja:'React Native bare workflowはExpoのマネージドレイヤーを除いた純粋なReact Nativeです。カスタムネイティブモジュール（BLE・ARKit等）を使いたい場合や、Expoのバージョン制約に縛られたくない場合に選びます。しかし、Xcodeビルド設定・CocoaPods・Gradleを自分で管理する必要があり、OTA（Over-the-Air）アップデートも自前で構築が必要です。Expo GoやEAS Buildで対応できるなら、Expoの方が開発速度は速くなります。',
+   why_en:'React Native bare workflow is pure React Native without Expo\'s managed layer. Choose it when you need custom native modules (BLE, ARKit, etc.) or cannot accept Expo\'s version constraints. However, you must manage Xcode build settings, CocoaPods, and Gradle yourself, and OTA (Over-the-Air) updates must be built from scratch. If Expo Go or EAS Build can handle your needs, Expo provides significantly faster development.',
    fix:{f:'mobile',s:'Expo (Managed)'}},
   {id:'mob-flutter-firebase',p:['mobile','backend'],lv:'info',
    t:a=>inc(a.mobile,'Flutter')&&inc(a.backend,'Firebase'),
@@ -368,7 +401,9 @@ const COMPAT_RULES=[
   {id:'sem-scope-payment',p:['scope_out','payment'],lv:'warn',
    t:a=>(inc(a.scope_out,'決済')||inc(a.scope_out,'EC')||inc(a.scope_out,'payment')||inc(a.scope_out,'Payment'))&&a.payment&&!inc(a.payment,'なし')&&!inc(a.payment,'None')&&a.payment!=='none',
    ja:'スコープ外に「決済/EC」がありますが、決済方式が選択されています。仕様書のスコープ定義に矛盾が生じます',
-   en:'Scope excludes "payment/EC" but a payment method is selected. Spec scope definition will conflict'},
+   en:'Scope excludes "payment/EC" but a payment method is selected. Spec scope definition will conflict',
+   why_ja:'スコープ外（scope_out）に「決済」と記載すると、生成されるdocs/13_payment.md・docs/45_compliance_matrix.mdに「このフェーズでは決済を実装しない」と明記されます。同時に決済方式（Stripe等）を選ぶと、Stripe SDKのセットアップ・Webhook設定・PCI-DSS対応手順が生成されます。この矛盾した出力をAIが受け取ると、どちらの仕様を実装するか判断できなくなります。',
+   why_en:'Setting "payment" in scope_out causes generated docs (docs/13_payment.md, docs/45_compliance_matrix.md) to state "payment will not be implemented this phase." Simultaneously selecting a payment method (Stripe, etc.) generates Stripe SDK setup, Webhook configuration, and PCI-DSS compliance steps. An AI receiving these contradictory specs cannot determine which instruction to implement.'},
   // A3: scope_out「EC」 vs entities に Product/Order
   {id:'sem-scope-entities',p:['scope_out','data_entities'],lv:'warn',
    t:a=>(inc(a.scope_out,'EC')||inc(a.scope_out,'commerce')||inc(a.scope_out,'Commerce'))&&(inc(a.data_entities,'Product')||inc(a.data_entities,'Order')||inc(a.data_entities,'Cart')),
@@ -403,12 +438,16 @@ const COMPAT_RULES=[
    t:a=>(inc(a.purpose,'教育')||inc(a.purpose,'学習')||inc(a.purpose,'Education')||inc(a.purpose,'Learning')||inc(a.purpose,'LMS'))&&(inc(a.data_entities,'Product')||inc(a.data_entities,'Order')),
    ja:'教育・学習系のプロジェクトにProduct/Orderエンティティがあります。教材販売が目的でなければCourse/Lessonへの変更を検討してください',
    en:'Education project has Product/Order entities. Consider Course/Lesson unless this is for course sales',
+   why_ja:'エンティティ名は生成されるDBスキーマ・APIエンドポイント・テスト・ドキュメントに直接使われます。教育プラットフォームでProductとOrderを使うと、EC系の命名規則（SKU・カート・返品ポリシー）が混入した仕様書が生成されます。学習管理システム（LMS）ではCourse・Lesson・Enrollment・Progressが標準的なドメイン語彙です。',
+   why_en:'Entity names are used directly in generated DB schemas, API endpoints, tests, and documentation. Using Product and Order in an education platform causes generated specs to include EC naming conventions (SKU, cart, return policy). Learning Management Systems (LMS) use Course, Lesson, Enrollment, and Progress as standard domain vocabulary.',
    fixFn:a=>({f:'data_entities',s:(a.data_entities||'').replace(/Product/g,'Course').replace(/Order/g,'Enrollment')})},
   // A8: deploy=Vercel && backend含Express && frontend含Next.js（BFF曖昧）
   {id:'sem-deploy-bff',p:['deploy','backend','frontend'],lv:'info',
    t:a=>inc(a.deploy,'Vercel')&&inc(a.backend,'Express')&&inc(a.frontend,'Next.js'),
    ja:'Next.js + Express + Vercelの構成です。ExpressをNext.js API Routesに統合するか、Expressを別ホスト（Railway等）にする設計判断が必要です。生成文書ではAPI Routes統合を前提とします',
-   en:'Next.js + Express + Vercel stack detected. Decide whether to merge Express into Next.js API Routes or host Express separately. Generated docs will assume API Routes integration'},
+   en:'Next.js + Express + Vercel stack detected. Decide whether to merge Express into Next.js API Routes or host Express separately. Generated docs will assume API Routes integration',
+   why_ja:'VercelはExpressのようなステートフルサーバーをデプロイできません（サーバーレス関数のみ）。Next.js API RoutesはVercelサーバーレス関数として動作し、Expressを置き換えられます。一方、SocketIO・長時間バックグラウンド処理・大容量ファイル処理が必要な場合はExpressをRailway/Fly.ioに分離する「BFF（Backend for Frontend）」構成が必要です。',
+   why_en:'Vercel cannot deploy stateful servers like Express (serverless functions only). Next.js API Routes run as Vercel serverless functions and can replace Express. However, if you need SocketIO, long-running background processing, or large file handling, you need to host Express separately on Railway/Fly.io as a "BFF (Backend for Frontend)" architecture.'},
   // ── Security Rules (3 rules: 1 ERROR + 2 WARN) ──
   // S1: 金融/医療/法務 + MFA未設定
   {id:'dom-sec-nomfa',p:['purpose','mvp_features'],lv:'warn',
@@ -469,7 +508,9 @@ const COMPAT_RULES=[
   {id:'db-mysql-kysely',p:['database','orm'],lv:'info',
    t:a=>inc(a.database,'MySQL')&&inc(a.orm,'Kysely'),
    ja:'Kysely + MySQLではmysql2パッケージとMySQLDialectの設定が必要です',
-   en:'Kysely + MySQL requires the mysql2 package and MySQLDialect configuration'},
+   en:'Kysely + MySQL requires the mysql2 package and MySQLDialect configuration',
+   why_ja:'Kyselyはデータベースドライバーをダイアレクト（方言）プラグインとして抽象化しています。PostgreSQLには`@kysely-org/kysely`にバンドルされた`PostgresDialect`がありますが、MySQLサポートは別途`mysql2`パッケージのインストールと`MysqlDialect`の明示的な設定が必要です。これを忘れると「DialectAdapter is not defined」エラーが実行時に発生します。',
+   why_en:'Kysely abstracts database drivers as dialect plugins. PostgreSQL has `PostgresDialect` bundled in `@kysely-org/kysely`, but MySQL support requires separately installing the `mysql2` package and explicitly configuring `MysqlDialect`. Forgetting this causes a "DialectAdapter is not defined" runtime error.'},
   // ── API品質 (2 WARN) ──
   {id:'api-graphql-no-dataloader',p:['backend'],lv:'warn',
    t:a=>inc(a.backend,'GraphQL'),
@@ -485,7 +526,9 @@ const COMPAT_RULES=[
      return isREST&&hasAPI;
    },
    ja:'REST APIにはレート制限の実装を推奨します。express-rate-limit / slowDown (Node) / slowapi (Python) / bucket4j (Spring)',
-   en:'REST API: implement rate limiting to prevent abuse. Recommended: express-rate-limit (Node) / slowapi (Python) / bucket4j (Spring)'},
+   en:'REST API: implement rate limiting to prevent abuse. Recommended: express-rate-limit (Node) / slowapi (Python) / bucket4j (Spring)',
+   why_ja:'レート制限なしのAPIは1秒間に数千リクエストを処理しようとしてDBコネクションプールが枯渇します。悪意ある攻撃者は認証ブルートフォース（1秒1000回試行）・スクレイピング・サービス妨害が可能になります。`express-rate-limit`は1行で追加でき、IPアドレスベースのウィンドウカウンターでリクエストを制限します。',
+   why_en:'APIs without rate limiting attempt to process thousands of requests per second, exhausting the DB connection pool. Malicious actors can perform authentication brute force (1000 attempts/second), scraping, or denial-of-service. `express-rate-limit` adds protection in one line using IP-based window counters to limit requests.'},
   // ── テスト品質 (1 WARN + 2 INFO) ──
   {id:'test-e2e-auth-storagestate',p:['auth','frontend'],lv:'warn',
    t:a=>{
@@ -505,7 +548,9 @@ const COMPAT_RULES=[
   {id:'test-mutation-stryker',p:['backend'],lv:'info',
    t:a=>isNodeBE(a)||inc(a.backend,'Next.js'),
    ja:'Strykerミューテーションテストを導入してテストの実効性（バグ検出力）を検証することを推奨します',
-   en:'Add Stryker mutation testing to measure test effectiveness and catch untested code paths'},
+   en:'Add Stryker mutation testing to measure test effectiveness and catch untested code paths',
+   why_ja:'ミューテーションテストとは、コードに意図的なバグ（例：`===`→`!==`、`+`→`-`）を自動的に埋め込み（ミュータント生成）、テストスイートがそのバグを検出（ミュータントを「殺す」）できるか検証する手法です。カバレッジ100%でもミューテーションスコアが低い場合、テストは実行されていてもバグを検出できない「空のテスト」である可能性があります。Strykerはこのミューテーション解析をNode.js/TypeScriptで自動化します。',
+   why_en:'Mutation testing automatically injects intentional bugs into code (e.g., `===` → `!==`, `+` → `-`) to generate "mutants," then verifies whether your test suite detects (kills) each mutant. Even with 100% coverage, a low mutation score means tests execute but don\'t actually detect bugs — "empty tests." Stryker automates this mutation analysis for Node.js/TypeScript.'},
   // ── AI安全性 (3 WARN + 2 INFO) ──
   {id:'ai-guardrail-missing',p:['ai_auto','mvp_features'],lv:'warn',
    t:a=>{
@@ -542,7 +587,9 @@ const COMPAT_RULES=[
      return isNodeBE(a)||isPyBE(a)||inc(a.backend,'Spring');
    },
    ja:'AI機能のあるAPIにはトークン消費量ベースのレート制限を実装してください。@upstash/ratelimit (Node) または slowapi with token tracking (Python) を推奨します',
-   en:'Add token-budget rate limiting to AI API endpoints. Recommended: @upstash/ratelimit (Node) or slowapi with token tracking (Python)'},
+   en:'Add token-budget rate limiting to AI API endpoints. Recommended: @upstash/ratelimit (Node) or slowapi with token tracking (Python)',
+   why_ja:'通常のAPIリクエストは数ミリ秒ですが、LLM APIコール1回で数千〜数万トークンを消費し、月額コストが急増します。ユーザーが意図的またはバグで大量リクエストを送った場合、APIキーの料金上限に達してサービス全体が停止します。トークンバジェット方式では「1ユーザーあたり1分間に10,000トークンまで」という制限をかけ、コスト上限を保証します。',
+   why_en:'Regular API requests take milliseconds, but a single LLM API call consumes thousands to tens of thousands of tokens, rapidly increasing monthly costs. If users intentionally or accidentally send many requests, hitting the API key spending limit stops the entire service. Token budget rate limiting guarantees a cost ceiling, e.g., "10,000 tokens per user per minute."'},
   {id:'ai-local-model-infra',p:['ai_auto','deploy'],lv:'info',
    t:a=>{
      if(!a.ai_auto||/なし|None/i.test(a.ai_auto))return false;
@@ -551,7 +598,9 @@ const COMPAT_RULES=[
      return isLocal&&isProd;
    },
    ja:'ローカル/セルフホストLLMとクラウドデプロイの組み合わせはGPUインスタンス（RunPod/Lambda Labs）またはvLLM/Ollamaサーバーの別途ホスティングが必要です',
-   en:'Local/self-hosted LLM with cloud deployment requires GPU instances (RunPod/Lambda Labs) or separate vLLM/Ollama hosting'},
+   en:'Local/self-hosted LLM with cloud deployment requires GPU instances (RunPod/Lambda Labs) or separate vLLM/Ollama hosting',
+   why_ja:'OllamaやLM Studioはローカル開発マシン（GPU搭載）でLLMを動かすツールです。Vercel/Railway等のクラウドサーバーレス環境にはGPUがなく、CPUのみでLlama-3-70Bを実行すると1トークン生成に数秒かかり実用不可です。本番環境でセルフホストLLMを使う場合はRunPod・Lambda Labs・Vast.aiのGPUインスタンスか、vLLMサーバーを別途用意し、アプリはそのAPIエンドポイントを呼び出す設計にしてください。',
+   why_en:'Ollama and LM Studio run LLMs on local development machines (with GPU). Cloud serverless environments like Vercel/Railway have no GPU — running Llama-3-70B on CPU alone takes several seconds per token, making it impractical. For production self-hosted LLM, provision a GPU instance on RunPod, Lambda Labs, or Vast.ai, or set up a separate vLLM server, with your app calling its API endpoint.'},
   // ── クロスピラー P21/P22/P25 (INFO×3) ──
   {id:'api-openapi-remind',p:['mvp_features','data_entities'],lv:'info',
    t:a=>{
@@ -559,7 +608,9 @@ const COMPAT_RULES=[
      return ents>=4&&!/(OpenAPI|swagger|api.spec|仕様書)/i.test(a.mvp_features||'');
    },
    ja:'エンティティが4件以上あります。docs/84_openapi_specification.md のOpenAPI 3.1仕様を活用してAPIコントラクトを明確にしてください',
-   en:'4+ entities detected. Use OpenAPI 3.1 spec (docs/84) to clarify API contracts and generate client SDKs'},
+   en:'4+ entities detected. Use OpenAPI 3.1 spec (docs/84) to clarify API contracts and generate client SDKs',
+   why_ja:'エンティティが4件以上になると、APIエンドポイントは通常20件を超えます。OpenAPI 3.1仕様書がないと、フロントエンド・バックエンド・AIエージェント間でAPIの期待値が口頭合意・コード読み取りに頼ることになります。OpenAPI仕様からは自動的にTypeScriptクライアントSDK（openapi-typescript）・バリデーション・APIドキュメントサイトが生成でき、チーム規模が大きいほど効果があります。',
+   why_en:'With 4+ entities, API endpoints typically exceed 20. Without an OpenAPI 3.1 spec, expected values between frontend, backend, and AI agents rely on verbal agreements or code reading. From an OpenAPI spec, you can automatically generate TypeScript client SDKs (openapi-typescript), validation, and API documentation sites — the larger the team, the greater the benefit.'},
   {id:'orm-n1-risk',p:['orm','data_entities'],lv:'info',
    t:a=>{
      const ents=(a.data_entities||'').split(/[,、]\s*/).filter(Boolean).length;
@@ -577,7 +628,9 @@ const COMPAT_RULES=[
      return isProd&&hasDB;
    },
    ja:'本番デプロイ+DB構成を検出しました。docs/90_backup_disaster_recovery.md のRTO/RPO目標とバックアップ戦略を必ず設定してください',
-   en:'Production deployment + DB detected. Set RTO/RPO targets and backup strategy per docs/90 before going live'},
+   en:'Production deployment + DB detected. Set RTO/RPO targets and backup strategy per docs/90 before going live',
+   why_ja:'RTO（Recovery Time Objective）はシステム復旧までの許容時間、RPO（Recovery Point Objective）はデータ損失の許容量です。バックアップ戦略のないDB障害では、最悪ケースでデータが完全に失われます。NeonのPoint-in-Time Recoveryは1分単位で復元可能、SupabaseはPITR（有料プラン）でDBスナップショットを提供します。本番リリース前に自動バックアップのテストを必ず実施してください。',
+   why_en:'RTO (Recovery Time Objective) is the acceptable time to restore a system; RPO (Recovery Point Objective) is the acceptable data loss window. Without a backup strategy, a DB failure at worst means complete data loss. Neon\'s Point-in-Time Recovery restores to minute-level precision; Supabase offers PITR DB snapshots (paid plans). Always test automated backups before production launch.'},
   // ── クロスレイヤー整合性 CL-1〜CL-12 (WARN×7 + INFO×5) ──
   {id:'infra-pg-no-pool',p:['deploy','database'],lv:'warn',
    t:a=>{
@@ -625,7 +678,9 @@ const COMPAT_RULES=[
      return isProd&&!hasMonitor;
    },
    ja:'本番デプロイ構成ですが、監視/APM（Sentry/Datadog/OpenTelemetry）がmvp_featuresに含まれていません（docs/102参照）',
-   en:'Production deployment without monitoring/APM in mvp_features. See docs/102 for Sentry/Datadog/OpenTelemetry setup'},
+   en:'Production deployment without monitoring/APM in mvp_features. See docs/102 for Sentry/Datadog/OpenTelemetry setup',
+   why_ja:'本番環境でエラーが発生しても、監視がなければユーザーからの苦情が来るまで気づきません。Sentryはエラーを自動キャプチャしスタックトレース・ユーザー影響数・再現率をダッシュボードに表示します。OpenTelemetryは分散トレーシング（どのAPIコールが遅いか）を可視化します。「エラーが起きたら直す」ではなく「エラーが起きる前に検知する」体制が本番品質のサービスには必要です。',
+   why_en:'Without monitoring, you won\'t know when errors occur in production until users complain. Sentry automatically captures errors and shows stack traces, user impact counts, and reproduction rates in a dashboard. OpenTelemetry visualizes distributed tracing (which API calls are slow). Production-quality services require a posture of "detect before errors happen," not "fix after errors happen."'},
   {id:'supa-no-rls',p:['backend','data_entities'],lv:'info',
    t:a=>{
      const hasSupa=inc(a.backend,'Supabase');
@@ -655,7 +710,9 @@ const COMPAT_RULES=[
      return hasWebFE&&!hasA11y;
    },
    ja:'アクセシビリティテスト（axe-core/Pa11y）をCI/CDに組み込むことを推奨します（docs/91参照）',
-   en:'Add accessibility testing (axe-core/Pa11y) to CI/CD pipeline for inclusive design (see docs/91)'},
+   en:'Add accessibility testing (axe-core/Pa11y) to CI/CD pipeline for inclusive design (see docs/91)',
+   why_ja:'WCAG 2.1 AA準拠はEUのEAA（欧州アクセシビリティ法、2025年6月施行）・米国ADA（障害者法）・日本の障害者差別解消法で要求されています。axe-coreはChrome拡張またはPlaywrightプラグインで、ARIAラベル欠如・コントラスト比・キーボードフォーカス等のアクセシビリティ違反を自動検出します。CI/CDに組み込めばリグレッション（既存のアクセシビリティ違反の再混入）を防止できます。',
+   why_en:'WCAG 2.1 AA compliance is required by the EU\'s EAA (European Accessibility Act, enforced June 2025), the US ADA (Americans with Disabilities Act), and similar laws globally. axe-core detects accessibility violations (missing ARIA labels, insufficient contrast ratios, keyboard focus issues) via Chrome extension or Playwright plugin. Integrating it into CI/CD prevents regressions (re-introducing previously fixed accessibility violations).'},
   {id:'zt-db-privilege',p:['database','deploy'],lv:'info',
    t:a=>{
      const isProd=/Vercel|Railway|Fly\.io|Render|Heroku|AWS|GCP|Azure/i.test(a.deploy||'');
@@ -664,7 +721,9 @@ const COMPAT_RULES=[
      return isProd&&hasPgMy&&!hasRoles;
    },
    ja:'本番PostgreSQL/MySQL構成です。アプリ用の最小権限ロール（SELECT/INSERT/UPDATE のみ）を作成し、rootユーザーでの接続を避けてください（docs/43参照）',
-   en:'Production PostgreSQL/MySQL: create least-privilege app roles (SELECT/INSERT/UPDATE only). Never connect as root (see docs/43)'},
+   en:'Production PostgreSQL/MySQL: create least-privilege app roles (SELECT/INSERT/UPDATE only). Never connect as root (see docs/43)',
+   why_ja:'アプリケーションがrootまたはsuperuser権限でDBに接続していると、SQLインジェクション脆弱性が発覚した場合に攻撃者がDB全体を削除・書き換えできます。最小権限ロール（アプリ用: SELECT/INSERT/UPDATE/DELETE + マイグレーション用: CREATE/ALTER/DROP を分離）を作成することで、攻撃の影響範囲を限定できます。PostgreSQLでは`GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES TO app_role;`で設定できます。',
+   why_en:'When an application connects to a DB as root/superuser, a SQL injection vulnerability gives attackers the ability to delete or rewrite the entire DB. Creating least-privilege roles (app role: SELECT/INSERT/UPDATE/DELETE; migration role: CREATE/ALTER/DROP, separated) limits the blast radius of an attack. In PostgreSQL, set it with `GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES TO app_role;`.'},
   {id:'api-cors-wildcard',p:['backend','deploy'],lv:'warn',
    t:a=>{
      const hasAPI=inc(a.backend,'Express')||inc(a.backend,'Fastify')||inc(a.backend,'NestJS')||inc(a.backend,'Hono')||inc(a.backend,'FastAPI')||inc(a.backend,'Django')||inc(a.backend,'Spring');
@@ -692,7 +751,9 @@ const COMPAT_RULES=[
      return hasPgMy&&!hasMigration;
    },
    ja:'SQLデータベースを使用しています。マイグレーションツール（Prisma Migrate/Drizzle Kit/Alembic）の設定を推奨します（docs/88参照）',
-   en:'SQL database without migration tool detected. Set up schema migrations (Prisma Migrate/Drizzle Kit/Alembic) for safe schema evolution (see docs/88)'},
+   en:'SQL database without migration tool detected. Set up schema migrations (Prisma Migrate/Drizzle Kit/Alembic) for safe schema evolution (see docs/88)',
+   why_ja:'マイグレーションツールなしでDBスキーマを変更すると、本番DBとコードのスキーマが乖離します。手動ALTER TABLEは本番環境への適用漏れ・適用順序ミス・ロールバック不能が頻発します。Prisma Migrateは差分を`migrations/`ディレクトリに保存し、`prisma migrate deploy`で本番に安全に適用・ロールバックができます。チーム開発では特にスキーマのバージョン管理が重要です。',
+   why_en:'Changing DB schemas without migration tooling causes divergence between production DB and code schemas. Manual ALTER TABLE frequently results in missed production deployments, incorrect ordering, and inability to roll back. Prisma Migrate saves diffs to a `migrations/` directory and applies them safely with `prisma migrate deploy`. Schema version control is especially critical in team development.'},
 ];
 // helpers
 function inc(v,k){return v&&typeof v==='string'&&v.indexOf(k)!==-1;}
