@@ -119,7 +119,7 @@ function renderCompatBadge(){
   const el=$('sbCompatBadge');if(!el)return;
   if(typeof checkCompat!=='function'){el.innerHTML='';return;}
   const _ja=S.lang==='ja';
-  const issues=checkCompat(S.answers||{});
+  const issues=checkCompat(S.answers||{}).filter(function(i){return !S.compatAcked.includes(i.id);});
   const errors=issues.filter(function(i){return i.level==='error';}).length;
   const warns=issues.filter(function(i){return i.level==='warn';}).length;
   const infos=issues.filter(function(i){return i.level==='info';}).length;
