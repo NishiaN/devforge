@@ -44,8 +44,14 @@ vm.createContext(sandbox);
 
 const srcDir = path.join(__dirname,'..','src');
 
-function loadModule(relPath) {
-  let code = fs.readFileSync(path.join(srcDir,relPath),'utf8');
+function loadModule(relPath, { optional = false } = {}) {
+  let code;
+  try {
+    code = fs.readFileSync(path.join(srcDir,relPath),'utf8');
+  } catch(e) {
+    if (optional) { console.warn(`⚠️ optional module not found: ${relPath}`); return; }
+    throw new Error(`Required module missing: ${relPath}\n  → ${e.message}\n  Tip: ensure the file is committed to git.`);
+  }
   // Convert top-level const/let to var so they attach to sandbox
   code = code.replace(/^(const|let)\s+/gm, 'var ');
   try { vm.runInContext(code, sandbox, {filename:relPath}); }

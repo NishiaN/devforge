@@ -87,6 +87,8 @@ function updateCmdResults(query,_ja,input,resultsDiv){
       {cat:'export',icon:'📋',label:_ja?'全ファイルコピー':'Copy All Files',labelEn:'Copy All Files',kb:'Ctrl+Shift+C',action:()=>copyAllFiles()},
       {cat:'export',icon:'📤',label:_ja?'JSONエクスポート':'Export JSON',labelEn:'Export JSON',action:()=>exportProject()},
       {cat:'export',icon:'🤖',label:_ja?'AI向けマークダウン':'AI Markdown',labelEn:'AI Markdown',action:()=>showAIMarkdown()},
+      {cat:'export',icon:'💾',label:_ja?'回答JSON保存':'Save Answers JSON',labelEn:'Save Answers JSON',action:()=>exportAnswersJSON()},
+      {cat:'export',icon:'📂',label:_ja?'回答JSON読込':'Load Answers JSON',labelEn:'Load Answers JSON',action:()=>importAnswersJSON()},
     ]:[]),
     // Navigate group
     ...(hasFiles?[

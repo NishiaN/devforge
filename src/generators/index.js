@@ -291,6 +291,8 @@ function showExportGrid(){
       <div class="export-card" role="button" tabindex="0" onclick="exportPDF()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}"><div class="icon">📄</div><h4>${_ja?'PDF 印刷':'PDF Print'}</h4><p>${_ja?'仕様書をPDF化':'Export specs as PDF'}</p></div>
       <div class="export-card" role="button" tabindex="0" onclick="copyAllFiles()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}"><div class="icon">📋</div><h4>${_ja?'全ファイルコピー':'Copy All'}</h4><p>${_ja?'テキスト結合コピー':'Copy combined text'}</p></div>
       <div class="export-card" role="button" tabindex="0" onclick="copyForAI()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}"><div class="icon">🤖</div><h4>${_ja?'AI向けMD':'AI Markdown'}</h4><p>${_ja?'TOC付きMD形式':'MD with TOC for AI'}</p></div>
+      <div class="export-card" role="button" tabindex="0" onclick="exportAnswersJSON()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}"><div class="icon">💾</div><h4>${_ja?'回答JSON保存':'Save Answers'}</h4><p>${_ja?'Q&A設定をJSONで保存':'Save Q&A as JSON'}</p></div>
+      <div class="export-card" role="button" tabindex="0" onclick="importAnswersJSON()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}"><div class="icon">📂</div><h4>${_ja?'回答JSON読込':'Load Answers'}</h4><p>${_ja?'JSONから設定を復元':'Restore Q&A from JSON'}</p></div>
     </div>
   `;
 

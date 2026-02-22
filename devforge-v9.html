@@ -6302,6 +6302,8 @@ const exportGroup=`
 <div class="export-card" role="button" tabindex="0" onclick="exportPDF()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}"><div class="icon">📄</div><h4>${_ja?'PDF 印刷':'PDF Print'}</h4><p>${_ja?'仕様書をPDF化':'Export specs as PDF'}</p></div>
 <div class="export-card" role="button" tabindex="0" onclick="copyAllFiles()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}"><div class="icon">📋</div><h4>${_ja?'全ファイルコピー':'Copy All'}</h4><p>${_ja?'テキスト結合コピー':'Copy combined text'}</p></div>
 <div class="export-card" role="button" tabindex="0" onclick="copyForAI()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}"><div class="icon">🤖</div><h4>${_ja?'AI向けMD':'AI Markdown'}</h4><p>${_ja?'TOC付きMD形式':'MD with TOC for AI'}</p></div>
+<div class="export-card" role="button" tabindex="0" onclick="exportAnswersJSON()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}"><div class="icon">💾</div><h4>${_ja?'回答JSON保存':'Save Answers'}</h4><p>${_ja?'Q&A設定をJSONで保存':'Save Q&A as JSON'}</p></div>
+<div class="export-card" role="button" tabindex="0" onclick="importAnswersJSON()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}"><div class="icon">📂</div><h4>${_ja?'回答JSON読込':'Load Answers'}</h4><p>${_ja?'JSONから設定を復元':'Restore Q&A from JSON'}</p></div>
 </div>
 `;
 // Management group
@@ -24628,6 +24630,65 @@ toast(_ja?`🤖 AI向けMarkdown (${files.length}ファイル) をコピー`:`�
 }).catch(()=>{_fallbackCopy(md);toast(_ja?'📋 コピーしました':'📋 Copied');});
 } else {_fallbackCopy(md);toast(_ja?'📋 コピーしました':'📋 Copied');}
 }
+function exportAnswersJSON(){
+const _ja=S.lang==='ja';
+const data={
+_devforge:'answers-v1',
+_version:9,
+projectName:S.projectName||'',
+preset:S.preset||'custom',
+lang:S.lang||'ja',
+genLang:S.genLang||'ja',
+skillLv:typeof S.skillLv==='number'?S.skillLv:0,
+answers:Object.assign({},S.answers),
+};
+const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+const url=URL.createObjectURL(blob);
+const a=document.createElement('a');a.href=url;
+a.download=(fileSlug(S.projectName)||'devforge')+'.answers.json';
+a.click();URL.revokeObjectURL(url);
+toast(_ja?'💾 回答をJSONで保存しました':'💾 Answers saved as JSON');
+}
+function importAnswersJSON(){
+const _ja=S.lang==='ja';
+const inp=document.createElement('input');inp.type='file';inp.accept='.json';
+inp.onchange=function(e){
+const f=e.target.files[0];if(!f)return;
+const reader=new FileReader();
+reader.onload=function(ev){
+try{
+const data=_jp(ev.target.result,null);
+if(!data||data._devforge!=='answers-v1'){toast(_ja?'❌ 無効なファイル形式です（.answers.json が必要）':'❌ Invalid format (need .answers.json)');return;}
+if(data.projectName)S.projectName=sanitizeName(data.projectName);
+if(typeof data.preset==='string')S.preset=sanitize(data.preset,100);
+if(data.lang==='ja'||data.lang==='en')S.lang=data.lang;
+if(data.genLang==='ja'||data.genLang==='en')S.genLang=data.genLang;
+if(typeof data.skillLv==='number'&&data.skillLv>=0&&data.skillLv<=6){
+S.skillLv=data.skillLv;
+if(typeof skillTier==='function')S.skill=skillTier(data.skillLv);
+}
+if(data.answers&&typeof data.answers==='object'&&!Array.isArray(data.answers)){
+const ans={};
+Object.keys(data.answers).forEach(function(k){
+if(['__proto__','constructor','prototype'].includes(k))return;
+const v=data.answers[k];
+if(typeof v==='string')ans[k]=sanitize(v,500);
+else if(Array.isArray(v))ans[k]=v.filter(function(x){return typeof x==='string';}).map(function(x){return sanitize(x,200);});
+});
+S.answers=ans;
+}
+save();
+toast(_ja?'✅ 回答を読み込みました — ウィザードで確認してください':'✅ Answers imported — review in wizard');
+S.phase=1;S.step=0;save();
+if(typeof renderWizard==='function')renderWizard();
+}catch(err){
+toast(_ja?'❌ 読み込みに失敗しました':'❌ Import failed');
+}
+};
+reader.readAsText(f);
+};
+inp.click();
+}
 /* ── Pillar ⑤ Parallel Explorer (Enhanced with Recommendation) ── */
 function showExplorer(){
 pushView({pillar:4,type:'explorer',file:null});
@@ -27254,6 +27315,8 @@ const commands=[
 {cat:'export',icon:'📋',label:_ja?'全ファイルコピー':'Copy All Files',labelEn:'Copy All Files',kb:'Ctrl+Shift+C',action:()=>copyAllFiles()},
 {cat:'export',icon:'📤',label:_ja?'JSONエクスポート':'Export JSON',labelEn:'Export JSON',action:()=>exportProject()},
 {cat:'export',icon:'🤖',label:_ja?'AI向けマークダウン':'AI Markdown',labelEn:'AI Markdown',action:()=>showAIMarkdown()},
+{cat:'export',icon:'💾',label:_ja?'回答JSON保存':'Save Answers JSON',labelEn:'Save Answers JSON',action:()=>exportAnswersJSON()},
+{cat:'export',icon:'📂',label:_ja?'回答JSON読込':'Load Answers JSON',labelEn:'Load Answers JSON',action:()=>importAnswersJSON()},
 ]:[]),
 // Navigate group
 ...(hasFiles?[

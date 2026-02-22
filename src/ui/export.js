@@ -121,5 +121,68 @@ function copyForAI(){
   } else {_fallbackCopy(md);toast(_ja?'📋 コピーしました':'📋 Copied');}
 }
 
+/* ═══ ANSWERS JSON EXPORT / IMPORT ═══ */
+
+function exportAnswersJSON(){
+  const _ja=S.lang==='ja';
+  const data={
+    _devforge:'answers-v1',
+    _version:9,
+    projectName:S.projectName||'',
+    preset:S.preset||'custom',
+    lang:S.lang||'ja',
+    genLang:S.genLang||'ja',
+    skillLv:typeof S.skillLv==='number'?S.skillLv:0,
+    answers:Object.assign({},S.answers),
+  };
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;
+  a.download=(fileSlug(S.projectName)||'devforge')+'.answers.json';
+  a.click();URL.revokeObjectURL(url);
+  toast(_ja?'💾 回答をJSONで保存しました':'💾 Answers saved as JSON');
+}
+
+function importAnswersJSON(){
+  const _ja=S.lang==='ja';
+  const inp=document.createElement('input');inp.type='file';inp.accept='.json';
+  inp.onchange=function(e){
+    const f=e.target.files[0];if(!f)return;
+    const reader=new FileReader();
+    reader.onload=function(ev){
+      try{
+        const data=_jp(ev.target.result,null);
+        if(!data||data._devforge!=='answers-v1'){toast(_ja?'❌ 無効なファイル形式です（.answers.json が必要）':'❌ Invalid format (need .answers.json)');return;}
+        if(data.projectName)S.projectName=sanitizeName(data.projectName);
+        if(typeof data.preset==='string')S.preset=sanitize(data.preset,100);
+        if(data.lang==='ja'||data.lang==='en')S.lang=data.lang;
+        if(data.genLang==='ja'||data.genLang==='en')S.genLang=data.genLang;
+        if(typeof data.skillLv==='number'&&data.skillLv>=0&&data.skillLv<=6){
+          S.skillLv=data.skillLv;
+          if(typeof skillTier==='function')S.skill=skillTier(data.skillLv);
+        }
+        if(data.answers&&typeof data.answers==='object'&&!Array.isArray(data.answers)){
+          const ans={};
+          Object.keys(data.answers).forEach(function(k){
+            if(['__proto__','constructor','prototype'].includes(k))return;
+            const v=data.answers[k];
+            if(typeof v==='string')ans[k]=sanitize(v,500);
+            else if(Array.isArray(v))ans[k]=v.filter(function(x){return typeof x==='string';}).map(function(x){return sanitize(x,200);});
+          });
+          S.answers=ans;
+        }
+        save();
+        toast(_ja?'✅ 回答を読み込みました — ウィザードで確認してください':'✅ Answers imported — review in wizard');
+        S.phase=1;S.step=0;save();
+        if(typeof renderWizard==='function')renderWizard();
+      }catch(err){
+        toast(_ja?'❌ 読み込みに失敗しました':'❌ Import failed');
+      }
+    };
+    reader.readAsText(f);
+  };
+  inp.click();
+}
+
 /* ═══ UI HELPERS ═══ */
 
