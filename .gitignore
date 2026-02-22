@@ -17,8 +17,27 @@ coverage/
 err.png
 error-*.png
 
-# Personal planning documents
+# Claude Code local settings (personal, machine-specific)
+.claude/
+.agents/
+
+# Screenshots / local images
+確認.jpg
+*.screenshot.png
+
+# Personal planning documents (root-level Japanese notes)
 全方位・アプリ開発戦略完全ガイド*.md
+[0-9]*.md
+AI*.md
+Ai*.md
+Lv.*.md
+DevForge v9*.md
+まず*.md
+キーワード*.md
+全体照査*.md
+改善提案.md
+駆動開発*.md
+(例)*.md
 
 # Japanese guide collection (docs only, not tracked)
 docs/guides/ja/
