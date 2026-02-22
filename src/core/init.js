@@ -222,6 +222,7 @@ document.querySelectorAll('.skcard').forEach(el=>{
 // Restore session
 if(S.projectName&&S.phase>0){
   $('onboard').style.display='none';
+  $('app').classList.add('ws-on');
   $('ws').style.display='flex';
   if(typeof initSidebar==='function')initSidebar();
   initPills();updProgress();

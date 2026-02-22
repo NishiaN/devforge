@@ -1,4 +1,80 @@
 /* ── Pillar ⑧ AI Prompt Launcher ── */
+/* ── Doc group definitions for docs/ semantic grouping ── */
+const DOC_GROUPS={
+  core:{ja:'基盤',en:'Foundation',nums:[0,1,2,3,4]},
+  api:{ja:'API・統合',en:'API & Integration',nums:[5,83,84,85,86]},
+  ui:{ja:'UI・デザイン',en:'UI & Design',nums:[6,26,27,57,63,81]},
+  test:{ja:'テスト・QA',en:'Testing & QA',nums:[7,28,32,33,34,36,37,91,92,93,94]},
+  security:{ja:'セキュリティ',en:'Security',nums:[8,43,44,45,46,47]},
+  plan:{ja:'計画・管理',en:'Planning',nums:[9,10,11,14,15,23,24,25]},
+  dev:{ja:'開発',en:'Development',nums:[12,13,16,21,22,31,35,39,40,42,64]},
+  ops:{ja:'運用',en:'Operations',nums:[17,53,54,55]},
+  perf:{ja:'パフォーマンス',en:'Performance',nums:[19,99,100,101,102]},
+  a11y:{ja:'アクセシビリティ',en:'Accessibility',nums:[20]},
+  strategy:{ja:'戦略・成長',en:'Strategy & Growth',nums:[29,30,38,41,48,49,50,51,52,56,58,59]},
+  prompt:{ja:'プロンプト・AI',en:'Prompt & AI',nums:[65,66,67,68,69,70,71,72,95,96,97,98]},
+  enterprise:{ja:'エンタープライズ',en:'Enterprise & CI/CD',nums:[73,74,75,76,77,78,79,80]},
+  db:{ja:'データベース',en:'Database',nums:[87,88,89,90]},
+  methodology:{ja:'方法論・UX',en:'Methodology & UX',nums:[60,61,62]},
+};
+const _DOC_NUM_MAP={};
+Object.entries(DOC_GROUPS).forEach(([gid,g])=>{g.nums.forEach(n=>{_DOC_NUM_MAP[n]=gid;});});
+function _docGroupOf(path){const m=path.match(/^docs\/(\d+)/);return m?(_DOC_NUM_MAP[parseInt(m[1],10)]||null):null;}
+
+/* ── Template-to-scope mapping ── */
+const TEMPLATE_SCOPE={
+  review:{docs:['core'],folders:['.spec']},
+  arch:{docs:['core','ui'],folders:['.spec']},
+  reverse:{docs:['core','strategy']},
+  implement:{docs:['core','dev','plan'],folders:['.spec']},
+  api:{docs:['core','api']},
+  i18n:{docs:['core','dev','ui']},
+  test:{docs:['core','test']},
+  test_intel:{docs:['core','test','perf']},
+  qa:{docs:['core','test']},
+  security:{docs:['core','security','prompt']},
+  ai_safety:{docs:['core','security','prompt']},
+  a11y:{docs:['core','ui','a11y']},
+  perf:{docs:['core','perf','ops']},
+  metrics:{docs:['core','dev']},
+  refactor:{docs:['core','dev']},
+  debug:{docs:['core','dev','test']},
+  incident:{docs:['core','ops','test']},
+  ops:{docs:['core','ops']},
+  docs:{docs:['core','plan','dev']},
+  migrate:{docs:['core','db','dev']},
+  db_intelligence:{docs:['core','db']},
+  cicd:{docs:['core','enterprise','ops']},
+  growth:{docs:['core','strategy']},
+  strategy:{docs:['core','strategy']},
+  methodology:{docs:['core','methodology']},
+  brainstorm:{docs:['core']},
+  ux_journey:{docs:['core','ui']},
+  ux_audit:{docs:['core','ui']},
+  ai_model_guide:{docs:['core','prompt']},
+  industry:{docs:['core','strategy','methodology']},
+  nextgen:{docs:['core','ui','methodology']},
+  cognitive:{docs:['core','ui','methodology']},
+  genome:{docs:['core','prompt']},
+  maturity:{docs:['core','prompt']},
+  react_debug:{docs:['core','dev','prompt']},
+  prompt_ops:{docs:['core','prompt']},
+  enterprise_arch:{docs:['core','enterprise','security']},
+  workflow_audit:{docs:['core','enterprise']},
+  risk:{docs:['core','security','strategy','ops']},
+  onboard:{docs:['core','dev','plan'],folders:['.spec','.claude']},
+};
+
+/* ── Model list (module-level for reuse in updateLaunchPreview) ── */
+const _LAUNCH_MODELS=[
+  {name:'Claude Opus 4.6',ctx:1000000,icon:'🟣'},
+  {name:'Claude Sonnet 4.5',ctx:200000,icon:'🔵'},
+  {name:'GPT-5.2',ctx:400000,icon:'🟢'},
+  {name:'Gemini 2.5 Pro',ctx:1000000,icon:'🟡'},
+  {name:'Claude Haiku 4.5',ctx:200000,icon:'🟣'},
+  {name:'Gemini 3 Flash',ctx:200000,icon:'🟡'},
+];
+
 function showAILauncher(){
   pushView({pillar:7,type:'launcher',file:null});
   const body=$('prevBody');const _ja=S.lang==='ja';
@@ -16,6 +92,17 @@ function showAILauncher(){
     folders[dir].tokens+=Math.round(c/4);
   });
   const totalTokens=Object.values(folders).reduce((s,f)=>s+f.tokens,0);
+  const docGroupStats={};
+  if(folders['docs']){
+    folders['docs'].files.forEach(k=>{
+      const gid=_docGroupOf(k)||'_other';
+      if(!docGroupStats[gid])docGroupStats[gid]={files:[],chars:0,tokens:0};
+      docGroupStats[gid].files.push(k);
+      const c=files[k].length;
+      docGroupStats[gid].chars+=c;
+      docGroupStats[gid].tokens+=Math.round(c/4);
+    });
+  }
 
   /* ── Prompt templates ── */
   const PT=_ja?{
@@ -378,7 +465,7 @@ function showAILauncher(){
   if(hasFiles){
     h+=`<div class="launch-stats">
       <div class="launch-stat"><span class="launch-num">${fKeys.length}</span><span class="launch-lbl">${_ja?'ファイル':'Files'}</span></div>
-      <div class="launch-stat"><span class="launch-num">${totalTokens.toLocaleString()}</span><span class="launch-lbl">${_ja?'推定トークン':'Est. Tokens'}</span></div>
+      <div class="launch-stat"><span class="launch-num" id="launchTokNum">${totalTokens.toLocaleString()}</span><span class="launch-lbl">${_ja?'推定トークン':'Est. Tokens'}</span></div>
       <div class="launch-stat"><span class="launch-num">${Object.keys(folders).length}</span><span class="launch-lbl">${_ja?'フォルダ':'Folders'}</span></div>
     </div>`;
 
@@ -387,25 +474,38 @@ function showAILauncher(){
     const sortedDirs=Object.entries(folders).sort((a,b)=>b[1].tokens-a[1].tokens);
     sortedDirs.forEach(([dir,info])=>{
       const pct=Math.round(info.tokens/totalTokens*100);
-      h+=`<div class="launch-folder-row">
-        <label><input type="checkbox" checked data-dir="${dir}" onchange="updateLaunchPreview()"> <strong>${dir}/</strong></label>
-        <span>${info.files.length} ${_ja?'ファイル':'files'} · ${info.tokens.toLocaleString()} tok (${pct}%)</span>
-        <div class="launch-bar"><div class="launch-bar-fill" style="width:${pct}%"></div></div>
-      </div>`;
+      if(dir==='docs'&&Object.keys(docGroupStats).length>1){
+        h+=`<div class="launch-folder-row">
+          <label><input type="checkbox" checked data-dir="docs" onchange="updateLaunchPreview()"> <strong>docs/</strong></label>
+          <span>${info.files.length} ${_ja?'ファイル':'files'} · ${info.tokens.toLocaleString()} tok (${pct}%)</span>
+          <button class="launch-dg-toggle" onclick="toggleDocGroupPanel()" title="${_ja?'サブグループを折畳':'Collapse subgroups'}">▼</button>
+          <div class="launch-bar"><div class="launch-bar-fill" style="width:${pct}%"></div></div>
+        </div>`;
+        h+=`<div class="launch-dg-panel" id="launchDgPanel">`;
+        Object.entries(docGroupStats).forEach(([gid,gs])=>{
+          const gLabel=DOC_GROUPS[gid]?(_ja?DOC_GROUPS[gid].ja:DOC_GROUPS[gid].en):(_ja?'その他':'Other');
+          h+=`<div class="launch-dg-row">
+            <label><input type="checkbox" checked data-dg="${gid}" onchange="updateDocGroupState()"> ${gLabel}<small>(${gs.files.length}f)</small></label>
+            <span>~${gs.tokens.toLocaleString()} tok</span>
+          </div>`;
+        });
+        h+=`<div class="launch-dg-actions">
+          <button class="btn btn-xs" onclick="toggleDocGroupAll(true)">${_ja?'全選択':'All'}</button>
+          <button class="btn btn-xs" onclick="toggleDocGroupAll(false)">${_ja?'全解除':'None'}</button>
+        </div></div>`;
+      } else {
+        h+=`<div class="launch-folder-row">
+          <label><input type="checkbox" checked data-dir="${dir}" onchange="updateLaunchPreview()"> <strong>${dir}/</strong></label>
+          <span>${info.files.length} ${_ja?'ファイル':'files'} · ${info.tokens.toLocaleString()} tok (${pct}%)</span>
+          <div class="launch-bar"><div class="launch-bar-fill" style="width:${pct}%"></div></div>
+        </div>`;
+      }
     });
     h+=`</div>`;
 
     /* ── Model fit indicator ── */
-    const models=[
-      {name:'Claude Opus 4.6',ctx:1000000,icon:'🟣'},
-      {name:'Claude Sonnet 4.5',ctx:200000,icon:'🔵'},
-      {name:'GPT-5.2',ctx:400000,icon:'🟢'},
-      {name:'Gemini 2.5 Pro',ctx:1000000,icon:'🟡'},
-      {name:'Claude Haiku 4.5',ctx:200000,icon:'🟣'},
-      {name:'Gemini 3 Flash',ctx:200000,icon:'🟡'},
-    ];
-    h+=`<div class="launch-models"><h4>${_ja?'🤖 モデル適合':'🤖 Model Fit'}</h4>`;
-    models.forEach(m=>{
+    h+=`<div class="launch-models" id="launchModels"><h4>${_ja?'🤖 モデル適合':'🤖 Model Fit'}</h4>`;
+    _LAUNCH_MODELS.forEach(m=>{
       const pct=Math.min(100,Math.round(totalTokens/m.ctx*100));
       const ok=pct<80;
       h+=`<div class="launch-model-row">${m.icon} ${m.name} <span class="launch-model-pct ${ok?'launch-ok':'launch-warn'}">${pct}% ${ok?(_ja?'余裕':'OK'):(pct<100?(_ja?'注意':'tight'):(_ja?'超過':'over'))}</span></div>`;
@@ -483,6 +583,38 @@ function showAILauncher(){
   window._launchPT=PT;
   window._launchFolders=folders;
   window._launchFiles=files;
+  window._launchDocGroups=docGroupStats;
+  window._launchScope=null;
+}
+
+/* ── Doc group panel toggle ── */
+function toggleDocGroupPanel(){
+  const panel=$('launchDgPanel');
+  if(!panel)return;
+  const hidden=panel.style.display==='none';
+  panel.style.display=hidden?'':'none';
+  const btn=document.querySelector('.launch-dg-toggle');
+  if(btn)btn.textContent=hidden?'▼':'▶';
+}
+
+/* ── Select/deselect all doc subgroups ── */
+function toggleDocGroupAll(checked){
+  document.querySelectorAll('#launchDgPanel input[data-dg]').forEach(c=>{c.checked=checked;});
+  const parentChk=document.querySelector('input[data-dir="docs"]');
+  if(parentChk){parentChk.checked=checked;parentChk.indeterminate=false;}
+  updateLaunchPreview();
+}
+
+/* ── Sync parent checkbox indeterminate state ── */
+function updateDocGroupState(){
+  const all=document.querySelectorAll('#launchDgPanel input[data-dg]');
+  const checkedCount=Array.from(all).filter(c=>c.checked).length;
+  const parentChk=document.querySelector('input[data-dir="docs"]');
+  if(parentChk){
+    parentChk.checked=checkedCount>0;
+    parentChk.indeterminate=checkedCount>0&&checkedCount<all.length;
+  }
+  updateLaunchPreview();
 }
 
 /* ── Select prompt template ── */
@@ -490,6 +622,23 @@ function selectLaunchTemplate(key){
   const _ja=S.lang==='ja';
   const PT=window._launchPT;
   const t=PT[key];if(!t)return;
+  // Apply TEMPLATE_SCOPE auto-selection
+  const scope=TEMPLATE_SCOPE[key];
+  if(scope){
+    const panel=$('launchDgPanel');
+    if(panel){
+      const scopeSet=new Set(scope.docs||[]);
+      panel.querySelectorAll('input[data-dg]').forEach(c=>{c.checked=scopeSet.has(c.dataset.dg);});
+      updateDocGroupState();
+    }
+    if(scope.folders){
+      const folderSet=new Set(scope.folders);
+      document.querySelectorAll('.launch-folder-row input[data-dir]').forEach(c=>{
+        if(c.dataset.dir!=='docs')c.checked=folderSet.has(c.dataset.dir);
+      });
+    }
+    window._launchScope=key;
+  }
   const selectedFiles=getSelectedLaunchFiles();
   const content=selectedFiles.map(([k,v])=>`--- ${k} ---\n${v}`).join('\n\n');
   const selTokens=Math.round(content.length/4);
@@ -500,7 +649,9 @@ function selectLaunchTemplate(key){
 
   const out=$('launchOutput');out.style.display='block';
   $('launchOutputTitle').textContent=`${t.icon} ${t.label}`;
-  $('launchOutputMeta').textContent=`${selectedFiles.length} ${_ja?'ファイル':'files'} · ~${selTokens.toLocaleString()} tokens`;
+  const _totalTok=Object.values(window._launchFolders||{}).reduce((s,f)=>s+f.tokens,0);
+  const _reducePct=_totalTok>0?Math.round((1-selTokens/_totalTok)*100):0;
+  $('launchOutputMeta').textContent=`${selectedFiles.length} ${_ja?'ファイル':'files'} · ~${selTokens.toLocaleString()} tokens${_reducePct>0?' ('+(_ja?'全体比':'vs all')+' '+_reducePct+'% '+(_ja?'削減':'reduction')+')':''}`;
   $('launchOutputPre').textContent=full.slice(0,2000)+(full.length>2000?`\n\n... (${_ja?'残り':'remaining'} ${(full.length-2000).toLocaleString()} chars)`:'');
   window._launchFullPrompt=full;
   out.scrollIntoView({behavior:'smooth',block:'nearest'});
@@ -508,10 +659,31 @@ function selectLaunchTemplate(key){
 
 /* ── Get selected files from checkboxes ── */
 function getSelectedLaunchFiles(){
+  const files=window._launchFiles||S.files;
+  const dgChecks=document.querySelectorAll('#launchDgPanel input[data-dg]');
+  if(dgChecks.length>0){
+    const selectedGroups=new Set();
+    dgChecks.forEach(c=>{if(c.checked)selectedGroups.add(c.dataset.dg);});
+    const docsChk=document.querySelector('input[data-dir="docs"]');
+    const docsEnabled=docsChk?(docsChk.checked||docsChk.indeterminate):true;
+    const selectedDirs=new Set();
+    document.querySelectorAll('.launch-folder-row input[data-dir]').forEach(c=>{
+      if(c.checked&&c.dataset.dir!=='docs')selectedDirs.add(c.dataset.dir);
+    });
+    return Object.entries(files).filter(([k])=>{
+      const dir=k.includes('/')?k.split('/')[0]:'root';
+      if(dir==='docs'){
+        if(!docsEnabled)return false;
+        const gid=_docGroupOf(k);
+        return gid?selectedGroups.has(gid):false;
+      }
+      return selectedDirs.has(dir);
+    });
+  }
+  // Fallback: original behavior
   const checks=document.querySelectorAll('.launch-folder-row input[type=checkbox]');
   const selectedDirs=new Set();
   checks.forEach(c=>{if(c.checked)selectedDirs.add(c.dataset.dir);});
-  const files=window._launchFiles||S.files;
   return Object.entries(files).filter(([k])=>{
     const dir=k.includes('/')?k.split('/')[0]:'root';
     return selectedDirs.has(dir);
@@ -522,11 +694,27 @@ function getSelectedLaunchFiles(){
 function updateLaunchPreview(){
   const sel=getSelectedLaunchFiles();
   const tokens=sel.reduce((s,e)=>s+Math.round(e[1].length/4),0);
-  // Update stats if output is showing
+  const _ja=S.lang==='ja';
+  // Update stats bar token count
+  const tokNum=$('launchTokNum');
+  if(tokNum)tokNum.textContent=tokens.toLocaleString();
+  // Update model fit
+  const modelsDiv=$('launchModels');
+  if(modelsDiv){
+    let mh=`<h4>${_ja?'🤖 モデル適合':'🤖 Model Fit'}</h4>`;
+    _LAUNCH_MODELS.forEach(m=>{
+      const pct=Math.min(100,Math.round(tokens/m.ctx*100));
+      const ok=pct<80;
+      mh+=`<div class="launch-model-row">${m.icon} ${m.name} <span class="launch-model-pct ${ok?'launch-ok':'launch-warn'}">${pct}% ${ok?(_ja?'余裕':'OK'):(pct<100?(_ja?'注意':'tight'):(_ja?'超過':'over'))}</span></div>`;
+    });
+    modelsDiv.innerHTML=mh;
+  }
+  // Update output meta if output is showing
   const meta=$('launchOutputMeta');
   if(meta&&$('launchOutput').style.display!=='none'){
-    const _ja=S.lang==='ja';
-    meta.textContent=`${sel.length} ${_ja?'ファイル':'files'} · ~${tokens.toLocaleString()} tokens`;
+    const totalTok=Object.values(window._launchFolders||{}).reduce((s,f)=>s+f.tokens,0);
+    const reducePct=totalTok>0?Math.round((1-tokens/totalTok)*100):0;
+    meta.textContent=`${sel.length} ${_ja?'ファイル':'files'} · ~${tokens.toLocaleString()} tokens${reducePct>0?' ('+(_ja?'全体比':'vs all')+' '+reducePct+'% '+(_ja?'削減':'reduction')+')':''}`;
   }
 }
 

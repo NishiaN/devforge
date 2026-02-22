@@ -63,6 +63,18 @@ if (aiRecMatch) {
   }
 }
 
+// Extract DOC_GROUPS and TEMPLATE_SCOPE from launcher source
+let DOC_GROUPS_parsed = null;
+let TEMPLATE_SCOPE_parsed = null;
+try {
+  eval(launcherCode.match(/const DOC_GROUPS=(\{[\s\S]*?\});/)[0].replace('const ','var '));
+  DOC_GROUPS_parsed = DOC_GROUPS;
+} catch(e) {}
+try {
+  eval(launcherCode.match(/const TEMPLATE_SCOPE=(\{[\s\S]*?\});/)[0].replace('const ','var '));
+  TEMPLATE_SCOPE_parsed = TEMPLATE_SCOPE;
+} catch(e) {}
+
 // Also extract the PT object for ux_audit check — search in source
 const ptUxAuditJa = launcherCode.includes("ux_audit:{icon:'🔬'");
 const ptUxAuditEn = launcherCode.includes("'UX Proficiency Audit'");
@@ -255,6 +267,55 @@ describe('[SkillLevel] AI_REC new templates', () => {
   test('AI_REC["test_intel"] === "Copilot"', () => {
     assert.ok(AI_REC !== null, 'AI_REC should be parseable from launcher.js');
     assert.strictEqual(AI_REC['test_intel'], 'Copilot', `AI_REC.test_intel should be 'Copilot', got '${AI_REC ? AI_REC['test_intel'] : 'null'}'`);
+  });
+});
+
+describe('[SkillLevel] DOC_GROUPS and TEMPLATE_SCOPE coverage', () => {
+  test('DOC_GROUPS is parseable from launcher.js', () => {
+    assert.ok(DOC_GROUPS_parsed !== null, 'DOC_GROUPS should be parseable from launcher.js');
+    assert.ok(typeof DOC_GROUPS_parsed === 'object', 'DOC_GROUPS should be an object');
+    assert.ok(Object.keys(DOC_GROUPS_parsed).length >= 10, 'DOC_GROUPS should have at least 10 groups');
+  });
+  test('TEMPLATE_SCOPE is parseable from launcher.js', () => {
+    assert.ok(TEMPLATE_SCOPE_parsed !== null, 'TEMPLATE_SCOPE should be parseable from launcher.js');
+    assert.ok(typeof TEMPLATE_SCOPE_parsed === 'object', 'TEMPLATE_SCOPE should be an object');
+  });
+  test('all 40 templateOrder keys exist in TEMPLATE_SCOPE', () => {
+    assert.ok(templateOrder !== null, 'templateOrder should be parseable');
+    assert.ok(TEMPLATE_SCOPE_parsed !== null, 'TEMPLATE_SCOPE should be parseable');
+    const missing = templateOrder.filter(k => !TEMPLATE_SCOPE_parsed[k]);
+    assert.strictEqual(missing.length, 0, `templateOrder keys missing from TEMPLATE_SCOPE: ${missing.join(', ')}`);
+  });
+  test('all TEMPLATE_SCOPE docs entries reference valid DOC_GROUPS keys', () => {
+    assert.ok(DOC_GROUPS_parsed !== null, 'DOC_GROUPS should be parseable');
+    assert.ok(TEMPLATE_SCOPE_parsed !== null, 'TEMPLATE_SCOPE should be parseable');
+    const validGroups = new Set(Object.keys(DOC_GROUPS_parsed));
+    const invalid = [];
+    Object.entries(TEMPLATE_SCOPE_parsed).forEach(([tpl, scope]) => {
+      (scope.docs || []).forEach(gid => {
+        if (!validGroups.has(gid)) invalid.push(`${tpl}.docs.${gid}`);
+      });
+    });
+    assert.strictEqual(invalid.length, 0, `Invalid DOC_GROUPS refs in TEMPLATE_SCOPE: ${invalid.join(', ')}`);
+  });
+  test('DOC_GROUPS doc numbers have no duplicates across groups', () => {
+    assert.ok(DOC_GROUPS_parsed !== null, 'DOC_GROUPS should be parseable');
+    const seen = {};
+    const dupes = [];
+    Object.entries(DOC_GROUPS_parsed).forEach(([gid, g]) => {
+      (g.nums || []).forEach(n => {
+        if (seen[n]) dupes.push(`${n} in both ${seen[n]} and ${gid}`);
+        else seen[n] = gid;
+      });
+    });
+    assert.strictEqual(dupes.length, 0, `Duplicate doc numbers in DOC_GROUPS: ${dupes.join(', ')}`);
+  });
+  test('all TEMPLATE_SCOPE entries include core group', () => {
+    assert.ok(TEMPLATE_SCOPE_parsed !== null, 'TEMPLATE_SCOPE should be parseable');
+    const missingCore = Object.entries(TEMPLATE_SCOPE_parsed)
+      .filter(([,scope]) => !(scope.docs || []).includes('core'))
+      .map(([k]) => k);
+    assert.strictEqual(missingCore.length, 0, `Templates missing core in docs scope: ${missingCore.join(', ')}`);
   });
 });
 

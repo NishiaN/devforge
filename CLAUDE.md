@@ -44,7 +44,7 @@ Never reorder without checking dependencies.
 | Category | Purpose |
 |----------|---------|
 | `core/` | State (`S`), i18n (`t()`), keyboard events, wizard tour, app init |
-| `data/` | 48 standard presets (`PR`/`_mp()`), 138 field presets (`PR_FIELD`/`_fpd()`), questions, techdb (323 entries), compat-rules (79 rules), gen-templates (bilingual GT dict), helpdata |
+| `data/` | 48 standard presets (`PR`/`_mp()`), 138 field presets (`PR_FIELD`/`_fpd()`), questions, techdb (323 entries), compat-rules (91 rules), gen-templates (bilingual GT dict), helpdata |
 | `generators/` | `index.js` orchestrator + `p1`–`p25` pillars + `docs.js` + `common.js` |
 | `ui/` | wizard, render, presets, preview, sidebar, editor, diff, export, explorer, dashboard, launcher, templates, qbar, cmdpalette, help, voice |
 | `styles/all.css` | Theme (dark/light), responsive; CSS custom properties only |
@@ -78,8 +78,8 @@ Key helpers (all globally scoped): `save()`, `esc(s)`, `escAttr(s)`, `_jp(s,d)`,
 5. **`getEntityColumns(name, G, knownEntities)`** — always pass all 3 args
 6. **`save()`** after every `S` mutation
 7. **Bilingual**: always add both `ja` + `en` fields; i18n arrays must stay in sync with `.kblbl` count in `index.html`
-8. **CSS**: custom properties only (`--accent`, `--bg-2`, `--text`, etc.); add new vars to both `:root` and `[data-theme="light"]`
-9. **New UI modules**: add to `build.js` jsFiles after `ui/preview.js`, before generators
+8. **CSS**: custom properties only (`--accent`, `--bg-2`, `--text`, etc.); add new vars to both `:root` and `[data-theme="light"]`. **Layout**: `.app` uses `min-height:100vh` (no overflow) for onboarding; add `.ws-on` class to `.app` when transitioning to workspace — this applies `height:100vh; overflow:hidden` for the 3-panel fixed layout. Always add via `$('app').classList.add('ws-on')` in any code that shows `#ws`.
+9. **New UI modules**: two slots in `build.js` jsFiles — wizard-flow UI goes after `ui/preview.js` (before generators); dashboard/export UI goes after `generators/common.js` (before `core/events.js`)
 10. **New state fields**: add default in `S` AND add restore line in `load()`
 
 ## Common Bugs

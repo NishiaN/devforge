@@ -578,7 +578,7 @@ function start(){
     save();saveProject();
     const onbF=$('onboard');const wsF=$('ws');
     onbF.classList.add('phase-exit');
-    setTimeout(()=>{onbF.style.display='none';wsF.style.display='flex';wsF.classList.add('phase-enter');setTimeout(()=>wsF.classList.remove('phase-enter'),300);},200);
+    setTimeout(()=>{onbF.style.display='none';$('app').classList.add('ws-on');wsF.style.display='flex';wsF.classList.add('phase-enter');setTimeout(()=>wsF.classList.remove('phase-enter'),300);},200);
     if(typeof initSidebar==='function')initSidebar();
     initPills();updProgress();
     if(S.skillLv<=1){addMsg('bot',_ja?'🌱 質問に答えるだけで設計書が自動生成されます。難しく考えなくてOK！スキップもできます。':'🌱 Just answer the questions and design docs will be auto-generated. Don\'t overthink it — you can skip any question!');}
@@ -626,6 +626,7 @@ function start(){
   onb.classList.add('phase-exit');
   setTimeout(()=>{
     onb.style.display='none';
+    $('app').classList.add('ws-on');
     ws.style.display='flex';
     ws.classList.add('phase-enter');
     setTimeout(()=>ws.classList.remove('phase-enter'),300);
