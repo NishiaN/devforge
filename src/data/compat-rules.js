@@ -1,4 +1,4 @@
-/* ═══ STACK COMPATIBILITY & SEMANTIC CONSISTENCY RULES — 79 rules (ERROR×13 + WARN×46 + INFO×20) ═══ */
+/* ═══ STACK COMPATIBILITY & SEMANTIC CONSISTENCY RULES — 91 rules (ERROR×13 + WARN×53 + INFO×25) ═══ */
 const COMPAT_RULES=[
   // ── FE ↔ Mobile (2 ERROR) ──
   {id:'fe-mob-expo',p:['frontend','mobile'],lv:'error',
@@ -68,7 +68,7 @@ const COMPAT_RULES=[
    t:a=>inc(a.backend,'Supabase')&&a.database&&!inc(a.database,'Supabase')&&!inc(a.database,'PostgreSQL')&&!inc(a.database,'Neon'),
    ja:'Supabase利用時はSupabase (PostgreSQL)が統合されています',
    en:'Supabase integrates best with Supabase (PostgreSQL)',
-   fix:{f:'database',s:'Supabase (PostgreSQL)'}},
+   chain:[{f:'database',s:'Supabase (PostgreSQL)'},{f:'orm',s:'None / Using BaaS'}]},
   {id:'be-db-static-db',p:['backend','database'],lv:'warn',
    t:a=>isStaticBE(a)&&a.database&&!inc(a.database,'なし')&&a.database!=='None',
    ja:'静的サイトではDBは通常不要です',
@@ -321,7 +321,7 @@ const COMPAT_RULES=[
    t:a=>!inc(a.backend,'Supabase')&&inc(a.auth,'Supabase Auth'),
    ja:'Supabase Authが選択されていますが、バックエンドがSupabaseではありません。認証の接続先が不明確になります',
    en:'Supabase Auth selected but backend is not Supabase. Auth connection target will be unclear',
-   fix:{f:'backend',s:'Supabase'}},
+   chain:[{f:'backend',s:'Supabase'},{f:'database',s:'Supabase (PostgreSQL)'}]},
   // A7: purpose=教育系 && entities に Product/Order（ドメイン不一致）
   {id:'sem-purpose-entities',p:['purpose','data_entities'],lv:'info',
    t:a=>(inc(a.purpose,'教育')||inc(a.purpose,'学習')||inc(a.purpose,'Education')||inc(a.purpose,'Learning')||inc(a.purpose,'LMS'))&&(inc(a.data_entities,'Product')||inc(a.data_entities,'Order')),
@@ -354,6 +354,8 @@ const COMPAT_RULES=[
    },
    ja:'決済機能が有効ですが、認証が設定されていません。決済機能には必ず認証が必要です',
    en:'Payment is enabled but authentication is not configured. Payment features require authentication',
+   why_ja:'認証なしの決済エンドポイントは誰でも決済処理を呼び出せる状態です。悪意あるユーザーによる不正決済・二重請求・チャージバック詐欺の温床となります。PCI-DSS要件でも認証は必須です。',
+   why_en:'Unauthenticated payment endpoints allow anyone to trigger charges. This enables fraudulent payments, double-charging, and chargeback fraud. PCI-DSS compliance also mandates authentication.',
    fix:{f:'auth',s:'Supabase Auth'}},
   // S3: 機密エンティティ + 認証なし
   {id:'dom-sec-sensitive-noauth',p:['data_entities','auth'],lv:'warn',
@@ -379,6 +381,8 @@ const COMPAT_RULES=[
    },
    ja:'SQLiteはサーバーレス/クラウドデプロイには不向きです。PostgreSQL (Neon) またはTursoを推奨します',
    en:'SQLite is not suitable for serverless/cloud deployment. Use PostgreSQL (Neon) or Turso',
+   why_ja:'SQLiteはファイルベースDBで、並行書き込みが発生するとロック競合を起こします。複数のサーバーレスインスタンスが同時にアクセスすると書き込みが競合し、タイムアウトやデータ破損のリスクがあります。',
+   why_en:'SQLite is file-based and serializes writes. Multiple serverless instances competing simultaneously cause lock contention, timeouts, and potential data corruption.',
    fix:{f:'database',s:'Neon (PostgreSQL)'}},
   {id:'db-mysql-kysely',p:['database','orm'],lv:'info',
    t:a=>inc(a.database,'MySQL')&&inc(a.orm,'Kysely'),
@@ -388,7 +392,9 @@ const COMPAT_RULES=[
   {id:'api-graphql-no-dataloader',p:['backend'],lv:'warn',
    t:a=>inc(a.backend,'GraphQL'),
    ja:'GraphQL使用時はDataLoaderを導入してN+1問題を防いでください。facebook/dataloaderまたはDataLoader for NestJSを推奨',
-   en:'GraphQL detected: implement DataLoader to prevent N+1 queries. Recommended: facebook/dataloader or NestJS DataLoader'},
+   en:'GraphQL detected: implement DataLoader to prevent N+1 queries. Recommended: facebook/dataloader or NestJS DataLoader',
+   why_ja:'GraphQLでは、ユーザー一覧10件を取得しそれぞれのプロフィールを取得すると10+1=11回のDBクエリが発生します（N+1問題）。DataLoaderはリクエストをバッチ化し1回のクエリにまとめます。',
+   why_en:'GraphQL fetching 10 users and their profiles triggers 10+1=11 DB queries (N+1). DataLoader batches all requests into a single query, dramatically reducing DB load.'},
   {id:'api-rest-no-ratelimit',p:['backend'],lv:'info',
    t:a=>{
      if(!a.backend)return false;
@@ -431,6 +437,8 @@ const COMPAT_RULES=[
    },
    ja:'AI機能が有効ですが認証が設定されていません。LLMエンドポイントは認証なしでは悪用・コスト爆発のリスクがあります',
    en:'AI features active but no authentication. Unauthenticated LLM endpoints risk abuse and cost explosion',
+   why_ja:'認証なしのLLMエンドポイントは誰でも無制限にAPIを呼び出せます。悪意あるユーザーが数万回のリクエストを送ると、月額APIコストが数十万円に膨れ上がる「コスト爆発」が実際に発生しています。',
+   why_en:'Unauthenticated LLM endpoints allow unlimited API calls by anyone. Malicious actors sending thousands of requests can cause "cost explosion" — real incidents have resulted in $10,000+ monthly API bills.',
    fix:{f:'auth',s:'Supabase Auth'}},
   {id:'ai-pii-masking',p:['ai_auto','data_entities'],lv:'warn',
    t:a=>{
@@ -471,7 +479,9 @@ const COMPAT_RULES=[
      return hasRelORM&&ents>=5;
    },
    ja:'エンティティが5件以上ありORMを使用しています。N+1問題に注意してください。docs/100_database_performance.md のEAGER LOADING設定を確認してください',
-   en:'5+ entities with relational ORM: N+1 risk is high. See docs/100 for eager loading and batch query patterns'},
+   en:'5+ entities with relational ORM: N+1 risk is high. See docs/100 for eager loading and batch query patterns',
+   why_ja:'N+1問題はORMのデフォルト挙動で発生します。例：ユーザー100件を取得→各ユーザーの投稿をループで取得=101クエリ。include/selectでEager Loadingを指定すれば1クエリになります（docs/100参照）。',
+   why_en:'N+1 is ORM default behavior. Example: fetch 100 users → loop fetching each user\'s posts = 101 queries. Using include/select for Eager Loading reduces this to 1 query (see docs/100).'},
   {id:'prod-backup-remind',p:['deploy','database'],lv:'info',
    t:a=>{
      const isProd=/Vercel|Railway|Fly\.io|Render|Heroku|AWS|GCP|Azure/i.test(a.deploy||'');
@@ -480,6 +490,113 @@ const COMPAT_RULES=[
    },
    ja:'本番デプロイ+DB構成を検出しました。docs/90_backup_disaster_recovery.md のRTO/RPO目標とバックアップ戦略を必ず設定してください',
    en:'Production deployment + DB detected. Set RTO/RPO targets and backup strategy per docs/90 before going live'},
+  // ── クロスレイヤー整合性 CL-1〜CL-12 (WARN×7 + INFO×5) ──
+  {id:'infra-pg-no-pool',p:['deploy','database'],lv:'warn',
+   t:a=>{
+     const isServerless=/Vercel|Netlify|Cloudflare/i.test(a.deploy||'');
+     const isPg=/(PostgreSQL|Neon|Supabase)/i.test(a.database||'');
+     const hasPool=/(PgBouncer|Pooler|connection.?pool|pgpool|コネクションプール|接続プール)/i.test((a.mvp_features||'')+(a.backend||''));
+     return isServerless&&isPg&&!hasPool;
+   },
+   ja:'Serverless+PostgreSQL構成です。コネクションプーリング（Neon Pooler/Supabase Pooler/PgBouncer）なしでは接続数枯渇が起きます（docs/100参照）',
+   en:'Serverless + PostgreSQL without connection pooling. Neon Pooler/Supabase Pooler/PgBouncer required to prevent connection exhaustion (see docs/100)',
+   why_ja:'Serverless関数は起動のたびに新規DB接続を作成します。PgBouncer等のプーリングなしでは数百の同時接続が発生しPostgreSQLの接続上限（通常100）を超えてサービス停止します。',
+   why_en:'Serverless functions create new DB connections on each invocation. Without pooling, hundreds of simultaneous connections exceed PostgreSQL\'s limit (typically 100), causing service outages.'},
+  {id:'be-python-sync-driver',p:['backend','database'],lv:'warn',
+   t:a=>inc(a.backend,'FastAPI')&&/(PostgreSQL|Neon)/i.test(a.database||''),
+   ja:'FastAPI + PostgreSQL: 非同期ドライバ（asyncpg または psycopg3）を使用してください。psycopg2はFastAPIのasync処理をブロックします',
+   en:'FastAPI + PostgreSQL: use async driver (asyncpg or psycopg3). psycopg2 blocks FastAPI async handlers',
+   why_ja:'FastAPIはasync/awaitベースです。同期ドライバのpsycopg2を使うとDBクエリ中にイベントループがブロックされ、他のリクエストが全て待機状態になります。asyncpgなら並行処理を維持できます。',
+   why_en:'FastAPI is async/await-based. Synchronous psycopg2 blocks the event loop during DB queries, freezing all other requests. asyncpg maintains concurrency by never blocking the loop.'},
+  {id:'auth-enterprise-jwt',p:['auth','purpose'],lv:'warn',
+   t:a=>{
+     const dom=detectDomain(a.purpose||'');
+     const isEnterprise=['fintech','legal','insurance','government'].includes(dom);
+     const hasCustomJWT=/Custom JWT|custom.?jwt/i.test(a.auth||'');
+     return isEnterprise&&hasCustomJWT;
+   },
+   ja:'Enterprise/Fintech/LegalドメインでカスタムJWTを使用しています。トークン失効・監査ログ・コンプライアンス対応のコストが高騰します。OIDC（NextAuth.js/Auth.js）を推奨します',
+   en:'Custom JWT in Enterprise/Fintech/Legal domain. Token revocation, audit logs, and compliance costs are high. Use OIDC (NextAuth.js/Auth.js)',
+   fix:{f:'auth',s:'Auth.js/NextAuth'}},
+  {id:'api-large-no-pagination',p:['data_entities','mvp_features'],lv:'warn',
+   t:a=>{
+     const ents=(a.data_entities||'').split(/[,、]\s*/).filter(Boolean).length;
+     const hasPagination=/(ページネーション|pagination|cursor|infinite.?scroll|limit|offset)/i.test(a.mvp_features||'');
+     return ents>=5&&!hasPagination;
+   },
+   ja:'エンティティが5件以上ありますが、mvp_featuresにページネーションの記述がありません。一覧画面でのパフォーマンス問題を防ぐためカーソルページネーションを実装してください',
+   en:'5+ entities but no pagination in mvp_features. Implement cursor-based pagination to prevent list view performance issues'},
+  {id:'infra-prod-no-monitoring',p:['deploy','mvp_features'],lv:'info',
+   t:a=>{
+     const isProd=/Vercel|Railway|Fly\.io|Render|Heroku|AWS|GCP|Azure/i.test(a.deploy||'');
+     const hasMonitor=/(監視|monitoring|Sentry|Datadog|OpenTelemetry|APM|ログ管理|logging|alert|アラート)/i.test(a.mvp_features||'');
+     return isProd&&!hasMonitor;
+   },
+   ja:'本番デプロイ構成ですが、監視/APM（Sentry/Datadog/OpenTelemetry）がmvp_featuresに含まれていません（docs/102参照）',
+   en:'Production deployment without monitoring/APM in mvp_features. See docs/102 for Sentry/Datadog/OpenTelemetry setup'},
+  {id:'supa-no-rls',p:['backend','data_entities'],lv:'info',
+   t:a=>{
+     const hasSupa=inc(a.backend,'Supabase');
+     const ents=(a.data_entities||'').split(/[,、]\s*/).filter(Boolean).length;
+     const hasRLS=/(RLS|Row Level Security|行レベルセキュリティ)/i.test(a.mvp_features||'');
+     return hasSupa&&ents>=2&&!hasRLS;
+   },
+   ja:'Supabaseを使用しています。Row Level Security（RLS）ポリシーを全テーブルに設定してください。設定なしでは全データが認証なしで読み取り可能になります（docs/43参照）',
+   en:'Supabase in use: enable Row Level Security (RLS) on all tables. Without RLS, all data is readable without authentication (see docs/43)',
+   why_ja:'SupabaseはデフォルトでanonymousロールがDB全体にアクセスできます。RLSを有効化しないと、Supabase URLとanon keyを知っている誰もが全ユーザーのデータを読み取れます。これは設計上の意図的なデフォルトであり、開発者側で必ず有効化が必要です。',
+   why_en:'Supabase grants the anonymous role full DB access by default. Without RLS enabled, anyone with your URL and anon key can read all user data. This is intentional by design — developers must explicitly enable RLS.'},
+  {id:'fe-seo-nossr',p:['frontend','purpose'],lv:'warn',
+   t:a=>{
+     const seoDomain=['content','media','ec','creator','newsletter','portfolio','travel'].includes(detectDomain(a.purpose||''));
+     const isCSR=/(React|Vue|Angular|Svelte)\b/i.test(a.frontend||'')&&!/(Next|Nuxt|SvelteKit|Astro)/i.test(a.frontend||'');
+     return seoDomain&&isCSR;
+   },
+   ja:'SEOが重要なドメインですが、CSRのみのフレームワークを選択しています。Next.js/Nuxt/Astroへの変更でSEOを大幅に改善できます',
+   en:'SEO-critical domain with CSR-only framework. Switch to Next.js/Nuxt/Astro for significant SEO improvement',
+   fix:{f:'frontend',s:'React + Next.js'}},
+  {id:'a11y-no-axe',p:['frontend','mvp_features'],lv:'info',
+   t:a=>{
+     const hasWebFE=inc(a.frontend,'Next')||inc(a.frontend,'React')||inc(a.frontend,'Vue')||inc(a.frontend,'Svelte')||inc(a.frontend,'Angular');
+     const hasA11y=/(axe|a11y|アクセシビリティ|accessibility|WCAG|WAI-ARIA)/i.test(a.mvp_features||'');
+     return hasWebFE&&!hasA11y;
+   },
+   ja:'アクセシビリティテスト（axe-core/Pa11y）をCI/CDに組み込むことを推奨します（docs/91参照）',
+   en:'Add accessibility testing (axe-core/Pa11y) to CI/CD pipeline for inclusive design (see docs/91)'},
+  {id:'zt-db-privilege',p:['database','deploy'],lv:'info',
+   t:a=>{
+     const isProd=/Vercel|Railway|Fly\.io|Render|Heroku|AWS|GCP|Azure/i.test(a.deploy||'');
+     const hasPgMy=/(PostgreSQL|MySQL|Neon)/i.test(a.database||'');
+     const hasRoles=/(role|権限|privilege|最小権限|least privilege)/i.test(a.mvp_features||'');
+     return isProd&&hasPgMy&&!hasRoles;
+   },
+   ja:'本番PostgreSQL/MySQL構成です。アプリ用の最小権限ロール（SELECT/INSERT/UPDATE のみ）を作成し、rootユーザーでの接続を避けてください（docs/43参照）',
+   en:'Production PostgreSQL/MySQL: create least-privilege app roles (SELECT/INSERT/UPDATE only). Never connect as root (see docs/43)'},
+  {id:'api-cors-wildcard',p:['backend','deploy'],lv:'warn',
+   t:a=>{
+     const hasAPI=inc(a.backend,'Express')||inc(a.backend,'Fastify')||inc(a.backend,'NestJS')||inc(a.backend,'Hono')||inc(a.backend,'FastAPI')||inc(a.backend,'Django')||inc(a.backend,'Spring');
+     const hasCORS=/(CORS|cors|cross.?origin)/i.test(a.mvp_features||'');
+     return hasAPI&&!hasCORS;
+   },
+   ja:'APIサーバー構成でCORS設定の記述がありません。ワイルドカード（*）許可は禁止し、許可オリジンを明示的に設定してください（docs/43参照）',
+   en:'API server without CORS in mvp_features. Never allow wildcard (*) origins — set explicit allowed origins (see docs/43)'},
+  {id:'api-graphql-depth-limit',p:['backend','mvp_features'],lv:'warn',
+   t:a=>{
+     const hasGQL=inc(a.backend,'GraphQL')||/(GraphQL|Apollo)/i.test(a.mvp_features||'');
+     const hasDepth=/(depth.?limit|complexity.?limit|深度制限|クエリ制限)/i.test(a.mvp_features||'');
+     return hasGQL&&!hasDepth;
+   },
+   ja:'GraphQLを使用しています。クエリ深度制限（graphql-depth-limit）を設定しないと、悪意ある深いネストクエリでサーバーが停止します',
+   en:'GraphQL in use: add query depth limiting (graphql-depth-limit) and complexity limits. Deeply nested queries without limits can crash your server',
+   why_ja:'GraphQLは再帰的なクエリを許可します。depth: 100のネストクエリを1リクエストで送ると指数関数的にDBクエリが増加し、DDoS攻撃なしにサーバーをクラッシュさせられます。深度3-10が推奨上限です。',
+   why_en:'GraphQL allows recursive queries. A depth-100 nested query exponentially multiplies DB queries, crashing your server without any DDoS tools needed. Depth limits of 3-10 are recommended.'},
+  {id:'db-migration-tool',p:['database','orm'],lv:'info',
+   t:a=>{
+     const hasPgMy=/(PostgreSQL|MySQL|Neon|Supabase)/i.test(a.database||'');
+     const hasMigration=/(Prisma|Drizzle|Alembic|Flyway|Liquibase|Kysely|TypeORM|migrate|マイグレーション)/i.test((a.orm||'')+(a.mvp_features||''));
+     return hasPgMy&&!hasMigration;
+   },
+   ja:'SQLデータベースを使用しています。マイグレーションツール（Prisma Migrate/Drizzle Kit/Alembic）の設定を推奨します（docs/88参照）',
+   en:'SQL database without migration tool detected. Set up schema migrations (Prisma Migrate/Drizzle Kit/Alembic) for safe schema evolution (see docs/88)'},
 ];
 // helpers
 function inc(v,k){return v&&typeof v==='string'&&v.indexOf(k)!==-1;}
@@ -495,7 +612,7 @@ function checkCompat(answers){
       if(keys.some(k=>!answers[k]))return false;
       return r.t(answers);
     }catch(e){return false;}
-  }).map(r=>({id:r.id,pair:r.p,level:r.lv,msg:S.lang==='ja'?r.ja:r.en,fix:r.fix||(r.fixFn?r.fixFn(answers):null)}));
+  }).map(r=>({id:r.id,pair:r.p,level:r.lv,msg:S.lang==='ja'?r.ja:r.en,fix:r.fix||(r.fixFn?r.fixFn(answers):null),chain:r.chain||null,why:S.lang==='ja'?r.why_ja||null:r.why_en||null}));
 }
 
 // ── Stack Synergy Score Data ──

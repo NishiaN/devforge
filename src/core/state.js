@@ -13,7 +13,7 @@ var SKILL_NAMES=[
   {ja:'エキスパート',en:'Expert',emoji:'💎'},
   {ja:'伝道者',en:'Evangelist',emoji:'👑'}
 ];
-let S={phase:0,step:0,answers:{},projectName:'',skill:'intermediate',skillLv:3,preset:'custom',lang:'ja',genLang:'ja',theme:'dark',pillar:0,previewFile:null,files:{},skipped:[],progress:{},editedFiles:{},prevFiles:{},qbarDismissed:false,pinnedFiles:[],recentFiles:[],sidebarOpen:true,_v:V};
+let S={phase:0,step:0,answers:{},projectName:'',skill:'intermediate',skillLv:3,preset:'custom',lang:'ja',genLang:'ja',theme:'dark',pillar:0,previewFile:null,files:{},skipped:[],progress:{},editedFiles:{},prevFiles:{},qbarDismissed:false,pinnedFiles:[],recentFiles:[],sidebarOpen:true,exportedOnce:false,_v:V};
 function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML;}
 function escAttr(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/"/g,'&quot;');}
 function _jp(s,d){if(s==null)return d;try{return JSON.parse(s);}catch(e){return d;}}
@@ -156,6 +156,7 @@ function load(){
     if(Array.isArray(o.pinnedFiles))S.pinnedFiles=o.pinnedFiles;
     if(Array.isArray(o.recentFiles))S.recentFiles=o.recentFiles;
     if(typeof o.sidebarOpen==='boolean')S.sidebarOpen=o.sidebarOpen;
+    if(typeof o.exportedOnce==='boolean')S.exportedOnce=o.exportedOnce;
     if(typeof o._v==='number')S._v=o._v;
     if(!S._v||S._v<V){
       S.genLang=S.genLang||S.lang||'ja';

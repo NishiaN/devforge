@@ -1,4 +1,4 @@
-// Compat rules functional test (79 rules: 13 ERROR + 46 WARN + 20 INFO)
+// Compat rules functional test (91 rules: 13 ERROR + 53 WARN + 25 INFO)
 const assert=require('node:assert/strict');
 const S={lang:'ja',skill:'pro'};
 eval(require('fs').readFileSync('src/data/compat-rules.js','utf-8'));
@@ -151,6 +151,34 @@ const tests=[
   {name:'5ents+noORM=noN1risk',a:{orm:'',data_entities:'User,Post,Comment,Tag,Category'},expect:'none',id:'orm-n1-risk'},
   {name:'Vercel+PostgreSQL=backupRemind',a:{deploy:'Vercel',database:'PostgreSQL (Neon)'},expect:'info',id:'prod-backup-remind'},
   {name:'noDeployDB=noBackupRemind',a:{deploy:'localhost',database:'SQLite'},expect:'none',id:'prod-backup-remind'},
+  // ── Cross-layer rules CL-1〜CL-12 ──
+  {name:'Vercel+PG+noPool=WARN',a:{deploy:'Vercel',database:'PostgreSQL'},expect:'warn',id:'infra-pg-no-pool'},
+  {name:'Vercel+PG+pooler=noPoolWARN',a:{deploy:'Vercel',database:'Neon (PostgreSQL)',mvp_features:'Connection pooling, auth'},expect:'none',id:'infra-pg-no-pool'},
+  {name:'Railway+PG=noPoolWARN',a:{deploy:'Railway',database:'PostgreSQL'},expect:'none',id:'infra-pg-no-pool'},
+  {name:'FastAPI+PG=syncWARN',a:{backend:'Python + FastAPI',database:'PostgreSQL (Neon)'},expect:'warn',id:'be-python-sync-driver'},
+  {name:'Django+PG=noSyncWARN',a:{backend:'Python + Django',database:'PostgreSQL (Neon)'},expect:'none',id:'be-python-sync-driver'},
+  {name:'Fintech+CustomJWT=WARN',a:{auth:'Custom JWT (jose)',purpose:'金融取引決済プラットフォーム'},expect:'warn',id:'auth-enterprise-jwt'},
+  {name:'SaaS+CustomJWT=noWARN',a:{auth:'Custom JWT (jose)',purpose:'SaaSダッシュボード管理'},expect:'none',id:'auth-enterprise-jwt'},
+  {name:'5ents+noPagination=WARN',a:{data_entities:'User,Post,Comment,Tag,Category',mvp_features:'投稿管理機能'},expect:'warn',id:'api-large-no-pagination'},
+  {name:'5ents+pagination=noWARN',a:{data_entities:'User,Post,Comment,Tag,Category',mvp_features:'投稿管理, ページネーション機能'},expect:'none',id:'api-large-no-pagination'},
+  {name:'4ents+noPagination=noWARN',a:{data_entities:'User,Post,Comment,Tag',mvp_features:'投稿管理'},expect:'none',id:'api-large-no-pagination'},
+  {name:'Vercel+noMonitor=INFO',a:{deploy:'Vercel',mvp_features:'認証機能, ファイル管理'},expect:'info',id:'infra-prod-no-monitoring'},
+  {name:'Vercel+Sentry=noMonitorINFO',a:{deploy:'Vercel',mvp_features:'認証, Sentryエラー監視'},expect:'none',id:'infra-prod-no-monitoring'},
+  {name:'Supabase+2ents+noRLS=INFO',a:{backend:'Supabase',data_entities:'User,Post'},expect:'info',id:'supa-no-rls'},
+  {name:'Supabase+RLS=noINFO',a:{backend:'Supabase',data_entities:'User,Post',mvp_features:'RLSポリシー設定'},expect:'none',id:'supa-no-rls'},
+  {name:'Firebase+noRLS=noINFO',a:{backend:'Firebase',data_entities:'User,Post'},expect:'none',id:'supa-no-rls'},
+  {name:'EC+ReactSPA=SEOwarn',a:{frontend:'React (Vite SPA)',purpose:'ECサイト 商品販売'},expect:'warn',id:'fe-seo-nossr'},
+  {name:'EC+Nextjs=noSEOwarn',a:{frontend:'React + Next.js',purpose:'ECサイト 商品販売'},expect:'none',id:'fe-seo-nossr'},
+  {name:'Next+noA11y=INFO',a:{frontend:'React + Next.js',mvp_features:'認証, ダッシュボード'},expect:'info',id:'a11y-no-axe'},
+  {name:'Next+axe=noA11yINFO',a:{frontend:'React + Next.js',mvp_features:'axeアクセシビリティテスト'},expect:'none',id:'a11y-no-axe'},
+  {name:'Vercel+PG+noPriv=INFO',a:{deploy:'Vercel',database:'PostgreSQL (Neon)'},expect:'info',id:'zt-db-privilege'},
+  {name:'Vercel+PG+roles=noPrivINFO',a:{deploy:'Vercel',database:'PostgreSQL (Neon)',mvp_features:'DB権限ロール設定'},expect:'none',id:'zt-db-privilege'},
+  {name:'Express+noCORS=WARN',a:{backend:'Node.js + Express',deploy:'Vercel'},expect:'warn',id:'api-cors-wildcard'},
+  {name:'Supabase+noCORS=noWARN',a:{backend:'Supabase',deploy:'Vercel'},expect:'none',id:'api-cors-wildcard'},
+  {name:'GraphQL+noDepth=WARN',a:{backend:'Express.js + Node.js + GraphQL',mvp_features:'ユーザー管理'},expect:'warn',id:'api-graphql-depth-limit'},
+  {name:'GraphQL+depth=noWARN',a:{backend:'Express.js + Node.js + GraphQL',mvp_features:'depth-limitクエリ制限'},expect:'none',id:'api-graphql-depth-limit'},
+  {name:'PG+noMigration=INFO',a:{database:'PostgreSQL (Neon)',orm:'なし（BaaS利用）'},expect:'info',id:'db-migration-tool'},
+  {name:'PG+Prisma=noMigrationINFO',a:{database:'PostgreSQL (Neon)',orm:'Prisma ORM'},expect:'none',id:'db-migration-tool'},
 ];
 
 let pass=0,fail=0;

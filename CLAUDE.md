@@ -149,8 +149,9 @@ Full 6-step process in `docs/CLAUDE-REFERENCE.md`. Key steps often missed:
 
 ## Adding Compat Rules
 
-File: `src/data/compat-rules.js` — currently 79 rules (13 error + 46 warn + 20 info).
-Structure: `{id, p:['field1','field2'], lv:'error'|'warn'|'info', t:conditionFn, ja, en, fix, fixFn}`
+File: `src/data/compat-rules.js` — currently 91 rules (13 error + 53 warn + 25 info).
+Structure: `{id, p:['field1','field2'], lv:'error'|'warn'|'info', t:conditionFn, ja, en, fix, fixFn, why_ja, why_en}`
+`why_ja`/`why_en`: optional. When set, shows "▶ なぜ？" expandable card in wizard alerts.
 After adding: update header comment totals, add tests to `test/compat.test.js`, update CLAUDE.md rule count.
 
 ## Test Architecture

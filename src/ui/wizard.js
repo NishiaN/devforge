@@ -8,6 +8,17 @@ function _applyCompatFix(btn,f,s){
   sp.textContent='✅ '+(_ja?'修正済':'Fixed')+': '+f+' → '+s;
   p.appendChild(sp);
 }
+function _applyCascadingFix(btn,chainJson){
+  const chain=_jp(chainJson,[]);
+  if(!chain.length)return;
+  chain.forEach(function(c){if(c&&c.f&&c.s)S.answers[c.f]=c.s;});
+  save();
+  const _ja=S.lang==='ja';
+  const p=btn.parentNode;p.textContent='';
+  const sp=document.createElement('span');
+  sp.textContent='✅ '+(_ja?'一括修正済: ':'Batch fixed: ')+chain.map(function(c){return c.f+' → '+c.s;}).join(', ');
+  p.appendChild(sp);
+}
 function initPills(){
   const _ja=S.lang==='ja';
   const c=$('sbPills');if(!c)return;c.innerHTML='';
@@ -142,7 +153,9 @@ function showCompatAlert(answers){
     const icon=iss.level==='error'?'❌':iss.level==='warn'?'⚠️':'ℹ️';
     const cls=iss.level==='error'?'compat-error':iss.level==='warn'?'compat-warn':'compat-info';
     let h=`<div class="${cls}"><span class="compat-icon">${icon}</span><span class="compat-msg">${esc(iss.msg)}</span>`;
-    if(iss.fix)h+=`<button class="btn btn-xs btn-s compat-fix" onclick="_applyCompatFix(this,'${escAttr(iss.fix.f)}','${escAttr(iss.fix.s)}')">${_ja?'修正':'Fix'}</button>`;
+    if(iss.chain){h+=`<button class="btn btn-xs btn-s compat-fix" onclick="_applyCascadingFix(this,'${escAttr(JSON.stringify(iss.chain))}')">${_ja?'一括修正':'Batch Fix'}</button>`;}
+    else if(iss.fix){h+=`<button class="btn btn-xs btn-s compat-fix" onclick="_applyCompatFix(this,'${escAttr(iss.fix.f)}','${escAttr(iss.fix.s)}')">${_ja?'修正':'Fix'}</button>`;}
+    if(iss.why)h+=`<details class="compat-why"><summary class="compat-why-toggle">${_ja?'▶ なぜ？':'▶ Why?'}</summary><div class="compat-why-body">${esc(iss.why)}</div></details>`;
     h+='</div>';d.innerHTML=h;body.appendChild(d);
   });
   body.scrollTop=body.scrollHeight;
@@ -163,6 +176,16 @@ function phaseEnd(){
       S.phase=3;S.step=0;save();
       setTimeout(()=>showQ(),600);
       return;
+    }
+    if(S.skillLv>=2){
+      const _phErrors=checkCompat(S.answers).filter(i=>i.level==='error');
+      if(_phErrors.length>0){
+        const _ja=S.lang==='ja';
+        const _errMsg=_ja?'⛔ 致命的エラーが'+_phErrors.length+'件あります。赤いエラーを全て修正してから次のフェーズへ進んでください。':'⛔ '+_phErrors.length+' critical error(s) detected. Fix all red errors before advancing to the next phase.';
+        addMsg('bot',_errMsg);
+        if(typeof announce==='function')announce(_errMsg);
+        return;
+      }
     }
     const msg=t('phEnd'+S.phase);
     addMsg('bot',msg);
@@ -221,6 +244,14 @@ function finish(){
 
 function showGenerate(){
   const zone=$('izone');zone.innerHTML='';
+  const _ja=S.lang==='ja';
+  if(!S.exportedOnce){
+    const wb=document.createElement('div');wb.className='export-warn-banner';wb.setAttribute('role','alert');
+    const wt=document.createElement('span');wt.textContent='💾 '+(_ja?'生成後のデータはブラウザを閉じると失われます。必ずJSONまたはZIPで保存してください。':'Generated data is lost if browser storage is cleared. Always save as JSON or ZIP.');
+    const wd=document.createElement('button');wd.className='btn btn-xs';wd.textContent=_ja?'✓ 分かった':'✓ Got it';
+    wd.onclick=()=>{S.exportedOnce=true;save();wb.remove();};
+    wb.appendChild(wt);wb.appendChild(wd);zone.appendChild(wb);
+  }
   const btn=document.createElement('button');btn.className='btn btn-p';btn.style.cssText='padding:14px 40px;font-size:14px;margin:20px;';
   btn.textContent=t('genBtn');
   btn.onclick=()=>{generateAll();};
