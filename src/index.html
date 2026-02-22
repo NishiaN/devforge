@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self' https://cdnjs.cloudflare.com; object-src 'none'; base-uri 'self'; form-action 'self';">
-<title>DevForge v9.5 — AI駆動開発 統合プラットフォーム</title>
+<title>DevForge v9.6 — AI駆動開発 統合プラットフォーム</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js" integrity="sha384-+mbV2IY1Zk/X1p/nWllGySJSUN8uMs+gUAN10Or95UBH0fpj6GfKgPmgC5EXieXG" crossorigin="anonymous" onerror="window._noZip=true"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js" integrity="sha384-/TQbtLCAerC3jgaim+N78RZSDYV7ryeoBCVqTuzRrFec2akfBkHS7ACQ3PQhvMVi" crossorigin="anonymous" onerror="window._noMarked=true"></script>
 <style>
@@ -29,7 +29,7 @@
       <button class="theme-btn" onclick="if(typeof showCommandPalette==='function')showCommandPalette()" title="検索 (Ctrl+P)" id="searchBtn" aria-label="Search">🔍</button>
       <button class="theme-btn" onclick="showManual()" title="Help" id="helpBtn" aria-label="Help">❓</button>
       <button class="theme-btn" onclick="showKB()" title="Shortcuts" id="kbBtn" aria-label="Keyboard shortcuts">⌨️</button>
-      <button class="theme-btn" onclick="showPM()" title="Projects" id="pmBtn">📁</button>
+      <button class="theme-btn" onclick="showPM()" title="Projects" id="pmBtn" aria-label="Project manager">📁</button>
     </div>
   </header>
   <div class="pstrip" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Phase progress"><div class="pstrip-fill" id="pbar" style="width:0%"></div></div>
@@ -38,7 +38,7 @@
   <div class="onboard" id="onboard" role="region" aria-label="Onboarding">
     <div class="hero-anim">
       <div class="hero-content">
-        <div class="version-badge">v9.5 — 2026 Edition</div>
+        <div class="version-badge">v9.6 — 2026 Edition</div>
         <h1 id="heroTitle">DevForge v9</h1>
         <p id="heroDesc">開発の3大悪夢を解決。質問に答えるだけで175+ファイルの設計図を自動生成。25の柱が、AIと共に「ひらめき→仕様→実装」の階段をガイド。</p>
         <p id="heroLv0Hint" style="display:none">難しい知識は不要。質問に答えるだけ</p>
@@ -50,13 +50,14 @@
       <div class="stat-item"><div class="num" id="statPillarNum">25</div><div class="lbl" id="statPillars">柱 (Pillars)</div></div>
       <div class="stat-item"><div class="num">10+</div><div class="lbl" id="statAI">AIツール対応</div></div>
     </div>
-    <div class="info-grid">
-      <div class="icard"><h4>😱 3つの悪夢を解決</h4><p>真っ白な画面の絶望・終わらない連携地獄・「俺の環境では動く」症候群…DevForgeが全て自動解決</p></div>
-      <div class="icard"><h4>⚡ 25の柱×175+ファイル</h4><p>設計書を自動生成 → AIに投入 → 実コード。質問に答えるだけで仕様・環境・AIルール全てを自動生成。</p></div>
-      <div class="icard"><h4>📱 モバイル対応</h4><p>Expo / React Native 開発パス・EAS Build・OTA更新</p></div>
-      <div class="icard"><h4>🤖 AI自律開発</h4><p>Vibe Coding・マルチAgent・Claude Code Subagents</p></div>
-      <div class="icard"><h4>💳 決済・CMS・EC</h4><p>Stripe・microCMS・Medusa・Shopify Hydrogen</p></div>
-      <div class="icard"><h4>📦 フルエクスポート</h4><p>ZIP・PDF・全ファイル結合コピー・URLシェア</p></div>
+    <div class="info-grid" role="region" aria-labelledby="infoGridTitle">
+      <h2 id="infoGridTitle" class="sr-only">機能ハイライト</h2>
+      <div class="icard"><h3>😱 3つの悪夢を解決</h3><p>真っ白な画面の絶望・終わらない連携地獄・「俺の環境では動く」症候群…DevForgeが全て自動解決</p></div>
+      <div class="icard"><h3>⚡ 25の柱×175+ファイル</h3><p>設計書を自動生成 → AIに投入 → 実コード。質問に答えるだけで仕様・環境・AIルール全てを自動生成。</p></div>
+      <div class="icard"><h3>📱 モバイル対応</h3><p>Expo / React Native 開発パス・EAS Build・OTA更新</p></div>
+      <div class="icard"><h3>🤖 AI自律開発</h3><p>Vibe Coding・マルチAgent・Claude Code Subagents</p></div>
+      <div class="icard"><h3>💳 決済・CMS・EC</h3><p>Stripe・microCMS・Medusa・Shopify Hydrogen</p></div>
+      <div class="icard"><h3>📦 フルエクスポート</h3><p>ZIP・PDF・全ファイル結合コピー・URLシェア</p></div>
     </div>
     <div class="pillars-badge">
       <span class="pbadge">①SDD統合</span><span class="pbadge">②DevContainer</span><span class="pbadge">③MCP設定</span>
@@ -65,9 +66,9 @@
     <div class="start-zone">
       <div class="szl" id="skillAsk">Select your skill level</div>
       <div class="skill-sel" id="skillSel" role="radiogroup" aria-label="Skill level">
-        <div class="skcard" data-lv="beginner" onclick="pickSkill('beginner')" role="radio" aria-checked="false" tabindex="0"><div class="em">🌱</div><h4 class="sk-title">Beginner</h4><p class="sk-desc">初めてのWeb開発。最適な選択肢をガイドします</p></div>
-        <div class="skcard on" data-lv="intermediate" onclick="pickSkill('intermediate')" role="radio" aria-checked="true" tabindex="0"><div class="em">⚡</div><h4 class="sk-title">Intermediate</h4><p class="sk-desc">1年以上の経験。Svelte, DDD等の中級オプション解放</p></div>
-        <div class="skcard" data-lv="pro" onclick="pickSkill('pro')" role="radio" aria-checked="false" tabindex="0"><div class="em">🔥</div><h4 class="sk-title">Professional</h4><p class="sk-desc">全オプション解放。MDD, RBAC, SSO等＋確認ダイアログ付き</p></div>
+        <div class="skcard" data-lv="beginner" onclick="pickSkill('beginner')" role="radio" aria-checked="false" tabindex="0"><div class="em">🌱</div><h3 class="sk-title">Beginner</h3><p class="sk-desc">初めてのWeb開発。最適な選択肢をガイドします</p></div>
+        <div class="skcard on" data-lv="intermediate" onclick="pickSkill('intermediate')" role="radio" aria-checked="true" tabindex="0"><div class="em">⚡</div><h3 class="sk-title">Intermediate</h3><p class="sk-desc">1年以上の経験。Svelte, DDD等の中級オプション解放</p></div>
+        <div class="skcard" data-lv="pro" onclick="pickSkill('pro')" role="radio" aria-checked="false" tabindex="0"><div class="em">🔥</div><h3 class="sk-title">Professional</h3><p class="sk-desc">全オプション解放。MDD, RBAC, SSO等＋確認ダイアログ付き</p></div>
       </div>
       <div class="skill-fine" id="skillFine">
         <div class="skill-fine-ticks">
@@ -87,7 +88,7 @@
   <!-- Workspace -->
   <main id="ws" role="main" aria-label="Workspace" style="display:none;">
     <div class="toc-panel" id="tocPanel" role="navigation" aria-label="Table of contents"></div>
-    <div class="mobtabs" role="tablist" aria-label="View switch"><div class="mobtab on" onclick="mobSw('c')" role="tab" aria-selected="true" tabindex="0">💬 チャット</div><div class="mobtab" onclick="mobSw('p')" role="tab" aria-selected="false" tabindex="0">📄 プレビュー</div><div class="mobtab" onclick="mobFiles()" role="tab" aria-selected="false" tabindex="0">📁 ファイル</div></div>
+    <div class="mobtabs" role="tablist" aria-label="View switch"><div class="mobtab on" onclick="mobSw('c')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();mobSw('c');}" role="tab" aria-selected="true" tabindex="0">💬 チャット</div><div class="mobtab" onclick="mobSw('p')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();mobSw('p');}" role="tab" aria-selected="false" tabindex="0">📄 プレビュー</div><div class="mobtab" onclick="mobFiles()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();mobFiles();}" role="tab" aria-selected="false" tabindex="0">📁 ファイル</div></div>
     <div class="ws-outer">
       <aside class="sidebar" id="sidebar" role="complementary" aria-label="Sidebar navigation">
         <div class="sb-head">
@@ -95,13 +96,13 @@
         </div>
         <div class="sb-body" id="sbBody">
           <div class="sb-tabs" role="tablist" aria-label="Sidebar tabs">
-            <button class="sb-tab on" data-tab="progress" onclick="switchSidebarTab('progress')" role="tab" aria-selected="true">📋</button>
-            <button class="sb-tab" data-tab="files" onclick="switchSidebarTab('files')" role="tab" aria-selected="false">📁</button>
+            <button class="sb-tab on" data-tab="progress" onclick="switchSidebarTab('progress')" role="tab" aria-selected="true" aria-label="Progress">📋</button>
+            <button class="sb-tab" data-tab="files" onclick="switchSidebarTab('files')" role="tab" aria-selected="false" aria-label="Files">📁</button>
           </div>
           <div class="sb-section sb-progress" id="sbProgress">
             <div class="pd-title" id="pdTitle">Progress</div>
             <div id="sbPills"></div>
-            <div class="pd-progress"><div class="pd-bar"><div class="pd-bar-fill" id="pdBar" style="width:0%"></div></div><span id="pdPct">0%</span><span id="cxMini"></span></div>
+            <div class="pd-progress"><div class="pd-bar"><div class="pd-bar-fill" id="pdBar" style="width:0%"></div></div><span id="pdPct" aria-live="polite" aria-atomic="true">0%</span><span id="cxMini"></span></div>
             <button class="btn btn-p pd-gen" id="pdGenBtn" onclick="generateAll()">🚀 生成</button>
             <div class="sb-pillar-grid" id="sbPillarGrid"></div>
           </div>
@@ -142,9 +143,9 @@
   </div>
 
   <!-- Keyboard Shortcut Overlay -->
-  <div class="kb-overlay" id="kbOverlay" role="dialog" aria-modal="true" aria-label="Keyboard shortcuts" onclick="if(event.target===this)closeKB()">
+  <div class="kb-overlay" id="kbOverlay" role="dialog" aria-modal="true" aria-labelledby="kbTitle" onclick="if(event.target===this)closeKB()">
     <div class="kb-modal" role="document">
-      <h3 id="kbTitle">⌨️ ショートカット</h3>
+      <h2 id="kbTitle">⌨️ ショートカット</h2>
       <div class="kb-row"><span class="kblbl">ヘルプ・マニュアル</span><span class="kb-key">F1 / Ctrl+H</span></div>
       <div class="kb-row"><span class="kblbl">ショートカット一覧</span><span class="kb-key">Ctrl+K</span></div>
       <div class="kb-row"><span class="kblbl">コマンドパレット</span><span class="kb-key">Ctrl+P</span></div>
@@ -161,7 +162,7 @@
     </div>
   </div>
   <!-- Help Popup (per-question) -->
-  <div id="helpPopup" role="tooltip" aria-live="polite" style="display:none;"></div>
+  <div id="helpPopup" role="region" aria-label="Context help" aria-live="polite" style="display:none;"></div>
   <!-- Confirm Overlay (Pro mode) -->
   <div class="confirm-overlay" id="confirmOverlay" role="alertdialog" aria-modal="true" aria-label="Confirmation"></div>
   <!-- Project Manager Overlay -->

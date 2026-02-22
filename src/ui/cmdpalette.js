@@ -90,8 +90,8 @@ function updateCmdResults(query,_ja,input,resultsDiv){
     ]:[]),
     // Navigate group
     ...(hasFiles?[
-      {cat:'navigate',icon:'📊',label:_ja?'ダッシュボード':'Dashboard',labelEn:'Dashboard',kb:'Ctrl+5',action:()=>{S.pillar=5;showFileTree();}},
-      {cat:'navigate',icon:'🗺️',label:_ja?'ロードマップ':'Roadmap',labelEn:'Roadmap',kb:'Ctrl+6',action:()=>{S.pillar=6;showRoadmapUI();}},
+      {cat:'navigate',icon:'📊',label:_ja?'ダッシュボード':'Dashboard',labelEn:'Dashboard',kb:'Ctrl+5',action:()=>{S.pillar=5;save();showFileTree();}},
+      {cat:'navigate',icon:'🗺️',label:_ja?'ロードマップ':'Roadmap',labelEn:'Roadmap',kb:'Ctrl+6',action:()=>{S.pillar=6;save();showRoadmapUI();}},
       {cat:'navigate',icon:'🚀',label:_ja?'AIプロンプト起動':'AI Launcher',labelEn:'AI Launcher',kb:'Ctrl+7',action:()=>showAILauncher()},
       {cat:'navigate',icon:'🗂️',label:_ja?'エクスプローラー':'Explorer',labelEn:'Explorer',kb:'Ctrl+4',action:()=>showExplorer()},
     ]:[]),

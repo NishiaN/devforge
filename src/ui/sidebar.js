@@ -140,11 +140,11 @@ function renderPillarGrid(){
   // Lv0-1: show only 4 essential pillars (same set as hero badge filter)
   var _bpFilter=S.skillLv<=1?new Set([0,3,7,8]):null;
   let h='';
-  for(let i=0;i<22;i++){
+  for(let i=0;i<25;i++){
     const cls='sb-pillar-icon'+(hasFiles?' completed':' inactive');
     const hidden=_bpFilter&&!_bpFilter.has(i)?'style="display:none"':'';
     const tip=_bgTips&&_bgTips[i]!==undefined?_bgTips[i]:names[i];
-    h+='<button class="'+cls+'" title="'+esc(tip)+'" onclick="clickPillarIcon('+i+')" aria-label="'+esc(tip)+'" '+hidden+'>'+PILLAR_ICONS[i]+'</button>';
+    h+='<button class="'+cls+'" title="'+escAttr(tip)+'" onclick="clickPillarIcon('+i+')" aria-label="'+escAttr(tip)+'" '+hidden+'>'+PILLAR_ICONS[i]+'</button>';
   }
   g.innerHTML=h;
 }
@@ -152,7 +152,7 @@ function renderPillarGrid(){
 function clickPillarIcon(genIdx){
   if(!Object.keys(S.files||{}).length)return;
   const p=GEN_TO_PILLAR[genIdx];
-  S.pillar=p;
+  S.pillar=p;save();
   document.querySelectorAll('.piltab').forEach(function(t,i){
     t.classList.toggle('on',i===p);
     t.setAttribute('aria-selected',String(i===p));

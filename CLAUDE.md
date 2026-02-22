@@ -7,7 +7,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 # DevForge v9.6.0
 
 **AI Development OS** — 61 JS modules in `src/` → single `devforge-v9.html` (~2468KB / 3000KB limit).
-Generates **155+ files** across **25 pillars** from a wizard-driven Q&A session.
+Generates **175+ files** across **25 pillars** from a wizard-driven Q&A session.
 
 ## Documentation Map
 
@@ -171,7 +171,7 @@ After adding: update header comment totals, add tests to `test/compat.test.js`, 
 
 ## Generated Output
 
-155+ files. Conditional extras: `skills/` (+4, when ai_auto≠none), `business_model.md` (+1, when payment≠none), enterprise docs (+4, for SaaS-like domains), P19 skips 20/32 domains.
+175+ files. Conditional extras: `skills/` (+4, when ai_auto≠none), `business_model.md` (+1, when payment≠none), enterprise docs (+4, for SaaS-like domains), P19 skips 20/32 domains.
 
 `docs/82_architecture_integrity_check.md` — always generated; scores ORM/Auth/CORS/async/soft-delete integrity (10.0 scale).
 

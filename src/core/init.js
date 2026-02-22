@@ -155,7 +155,7 @@ function applyLang(){
   if($('presetRow'))initPresets();
   // Update html lang attribute and document title (D3)
   document.documentElement.lang=S.lang;
-  document.title=ja?'DevForge v9.5 — AI駆動開発 統合プラットフォーム':'DevForge v9.5 — AI-Driven Development Platform';
+  document.title=ja?'DevForge v9.6 — AI駆動開発 統合プラットフォーム':'DevForge v9.6 — AI-Driven Development Platform';
   // Compare button translation (D4)
   const cl=$('compareLbl');if(cl)cl.textContent=ja?'テンプレート比較':'Compare Templates';
   // Update QBar labels when language changes
@@ -170,8 +170,8 @@ function applyLang(){
     h0.textContent=ja?'難しい知識は不要。質問に答えるだけ':'No technical knowledge needed. Just answer questions.';
   }
   // F2: hero stats skill-adaptation (Lv0-1 shows 4 pillars / key files to reduce info shock)
-  var _spn=$('statPillarNum');if(_spn)_spn.textContent=S.skillLv<=1?'4':'20';
-  var _sfn=$('statFileNum');if(_sfn&&!Object.keys(S.files||{}).length)_sfn.textContent=S.skillLv<=1?(ja?'主要':'Key'):'135+';
+  var _spn=$('statPillarNum');if(_spn)_spn.textContent=S.skillLv<=1?'4':'25';
+  var _sfn=$('statFileNum');if(_sfn&&!Object.keys(S.files||{}).length)_sfn.textContent=S.skillLv<=1?(ja?'主要':'Key'):'175+';
   var _hd=$('heroDesc');
   if(_hd){
     if(S.skillLv<=1)_hd.textContent=ja?'質問に答えるだけで設計書を自動生成。AIにそのまま渡せば開発スタート。':'Answer questions to auto-generate design docs. Feed to AI to start coding.';

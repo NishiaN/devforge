@@ -43,11 +43,11 @@ function createQbar(){
   // Navigate group
   if(hasFiles){
     html+=`<div class="qbar-group" data-group="navigate">`;
-    html+=`<button class="qbar-action" onclick="S.pillar=5;showFileTree();updateQbar()" title="${_ja?'ダッシュボード表示 (Ctrl+5)':'Show Dashboard (Ctrl+5)'}" aria-label="${_ja?'ダッシュボード':'Dashboard'}">
+    html+=`<button class="qbar-action" onclick="S.pillar=5;save();showFileTree();updateQbar()" title="${_ja?'ダッシュボード表示 (Ctrl+5)':'Show Dashboard (Ctrl+5)'}" aria-label="${_ja?'ダッシュボード':'Dashboard'}">
       <span class="qbar-icon">📊</span><span class="qbar-label">${_ja?'Dashboard':'Dashboard'}</span>
       <span class="qbar-kb">Ctrl+5</span>
     </button>`;
-    html+=`<button class="qbar-action" onclick="S.pillar=6;showRoadmapUI();updateQbar()" title="${_ja?'ロードマップ表示 (Ctrl+6)':'Show Roadmap (Ctrl+6)'}" aria-label="${_ja?'ロードマップ':'Roadmap'}">
+    html+=`<button class="qbar-action" onclick="S.pillar=6;save();showRoadmapUI();updateQbar()" title="${_ja?'ロードマップ表示 (Ctrl+6)':'Show Roadmap (Ctrl+6)'}" aria-label="${_ja?'ロードマップ':'Roadmap'}">
       <span class="qbar-icon">🗺️</span><span class="qbar-label">${_ja?'Roadmap':'Roadmap'}</span>
       <span class="qbar-kb">Ctrl+6</span>
     </button>`;

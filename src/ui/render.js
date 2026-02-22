@@ -63,16 +63,24 @@ function renderChips(zone,q,multi,onSubmit,withVoice){
   const lb=document.createElement('div');lb.className='czlabel';lb.textContent=_ja?(multi?'選択してください（複数可・自由入力併用）':'選択するか下に入力'):(multi?'Select multiple or type below':'Select or type below');
   cz.appendChild(lb);
   const gr=document.createElement('div');gr.className='cgrid';
+  if(!multi){gr.setAttribute('role','listbox');gr.setAttribute('aria-label',_ja?'選択肢':'Options');}
   (q.chips||[]).forEach(ch=>{
     const c=document.createElement('div');c.className='chip';
     if(multi&&sel.has(ch)){c.classList.add('on');}
     c.setAttribute('tabindex','0');
     c.setAttribute('role',multi?'checkbox':'option');
-    if(multi){const ck=document.createElement('span');ck.className='ck';ck.textContent='✓';c.appendChild(ck);}
+    if(multi){
+      c.setAttribute('aria-checked',sel.has(ch)?'true':'false');
+      const ck=document.createElement('span');ck.className='ck';ck.textContent='✓';ck.setAttribute('aria-hidden','true');c.appendChild(ck);
+    }else{
+      c.setAttribute('aria-selected','false');
+    }
     c.appendChild(document.createTextNode(ch));
     c.onclick=()=>{
-      if(multi){if(sel.has(ch)){sel.delete(ch);c.classList.remove('on')}else{sel.add(ch);c.classList.add('on')}}
-      else{onSubmit(ch);}
+      if(multi){
+        if(sel.has(ch)){sel.delete(ch);c.classList.remove('on');c.setAttribute('aria-checked','false');}
+        else{sel.add(ch);c.classList.add('on');c.setAttribute('aria-checked','true');}
+      }else{onSubmit(ch);}
     };
     c.onkeydown=(e)=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();c.click();}};
     gr.appendChild(c);
@@ -99,13 +107,13 @@ function renderChips(zone,q,multi,onSubmit,withVoice){
       else{onSubmit(items.join(', '));}
     };
     ft.appendChild(inp);ft.appendChild(btn);
-    if(withVoice&&voiceRec){const vb=document.createElement('button');vb.className='voice-btn';vb.textContent='🎙️';vb.title=_ja?'音声入力':'Voice Input';vb.onclick=()=>toggleVoice(vb);ft.appendChild(vb);}
+    if(withVoice&&voiceRec){const vb=document.createElement('button');vb.className='voice-btn';vb.textContent='🎙️';vb.title=_ja?'音声入力':'Voice Input';vb.setAttribute('aria-label',_ja?'音声入力':'Voice Input');vb.onclick=()=>toggleVoice(vb);ft.appendChild(vb);}
   } else {
     inp.addEventListener('keypress',e=>{if(e.key==='Enter'&&inp.value.trim())onSubmit(inp.value.trim());});
     const btn=document.createElement('button');btn.className='btn btn-p btn-sm';btn.textContent=t('send');
     btn.onclick=()=>{if(inp.value.trim())onSubmit(inp.value.trim());};
     ft.appendChild(inp);ft.appendChild(btn);
-    if(withVoice&&voiceRec){const vb=document.createElement('button');vb.className='voice-btn';vb.textContent='🎙️';vb.title=_ja?'音声入力':'Voice Input';vb.onclick=()=>toggleVoice(vb);ft.appendChild(vb);}
+    if(withVoice&&voiceRec){const vb=document.createElement('button');vb.className='voice-btn';vb.textContent='🎙️';vb.title=_ja?'音声入力':'Voice Input';vb.setAttribute('aria-label',_ja?'音声入力':'Voice Input');vb.onclick=()=>toggleVoice(vb);ft.appendChild(vb);}
   }
   zone.appendChild(ft);
 }
@@ -116,11 +124,14 @@ const _REC_BADGE_QS=new Set(['frontend','css_fw','backend','database','orm','dep
 function renderOpts(zone,q,onSubmit){
   const _ja=S.lang==='ja';
   const cards=document.createElement('div');cards.className='ocards';
+  cards.setAttribute('role','listbox');
+  cards.setAttribute('aria-label',_ja?'選択肢':'Options');
   const showBadge=_REC_BADGE_QS.has(q.id);
   (q.options||[]).forEach((o,idx)=>{
     const c=document.createElement('div');c.className='ocard';
     c.setAttribute('tabindex','0');
     c.setAttribute('role','option');
+    c.setAttribute('aria-selected','false');
     const h=document.createElement('h5');
     const label=typeof o==='string'?o:o.label;
     h.textContent=label;
@@ -230,7 +241,7 @@ function renderDnD(zone,items,onSubmit){
     li.setAttribute('tabindex','0');
     li.setAttribute('role','option');
     li.setAttribute('aria-label',(_ja?'項目 ':'Item ')+(i+1)+': '+item);
-    const grip=document.createElement('span');grip.className='dnd-grip';grip.textContent='⠿';
+    const grip=document.createElement('span');grip.className='dnd-grip';grip.textContent='⠿';grip.setAttribute('aria-hidden','true');
     const label=document.createElement('span');label.className='dnd-label';label.textContent=item;
     const pri=document.createElement('span');pri.className='dnd-priority';
     li.appendChild(grip);li.appendChild(label);li.appendChild(pri);

@@ -443,7 +443,7 @@ function showAILauncher(){
     h+=`<div class="launch-rec-row" id="launchRecRow"><span class="launch-rec-lbl">⭐ ${_ja?'あなたへのおすすめ':'Recommended for you'}</span>`;
     recFiltered.forEach(key=>{
       const t=PT[key];if(!t)return;
-      h+=`<button class="launch-rec-chip" onclick="selectLaunchTemplate('${key}')" title="${t.desc}">${t.icon} ${t.label}</button>`;
+      h+=`<button class="launch-rec-chip" onclick="selectLaunchTemplate('${key}')" title="${escAttr(t.desc)}">${t.icon} ${t.label}</button>`;
     });
     h+=`</div>`;
   }
@@ -454,8 +454,8 @@ function showAILauncher(){
     if(!t)return;
     const cat=LAUNCH_CAT_MAP[key]||'implement';
     const _lHide=S.skillLv<=1&&!_LAUNCH_BEGINNER.has(key);
-    h+=`<div class="launch-tpl${_lHide?' launch-tpl-hidden':''}" onclick="selectLaunchTemplate('${key}')" data-lcat="${cat}"${_lHide?' style="display:none"':''}>
-      <div class="launch-tpl-icon">${t.icon}</div>
+    h+=`<div class="launch-tpl${_lHide?' launch-tpl-hidden':''}" onclick="selectLaunchTemplate('${key}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();selectLaunchTemplate('${key}');}" tabindex="0" role="button" aria-label="${escAttr(t.label)}" data-lcat="${cat}"${_lHide?' style="display:none"':''}>
+      <div class="launch-tpl-icon" aria-hidden="true">${t.icon}</div>
       <div class="launch-tpl-info"><strong>${t.label}</strong><span>${t.desc}</span></div>
       ${AI_REC[key]?'<span class="launch-airec" title="'+(_ja?'推奨AI':'Recommended AI')+'">'+AI_REC[key]+'</span>':''}
     </div>`;

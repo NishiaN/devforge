@@ -60,6 +60,15 @@ function importProject(){
             if(typeof data.state.files[k]!=='string'){delete data.state.files[k];}
           });
         }
+        ['editedFiles','prevFiles'].forEach(function(fld){
+          if(data.state[fld]&&typeof data.state[fld]==='object'){
+            Object.keys(data.state[fld]).forEach(k=>{
+              if(['__proto__','constructor','prototype'].includes(k)){delete data.state[fld][k];return;}
+              if(typeof data.state[fld][k]!=='string'){delete data.state[fld][k];}
+            });
+          }
+        });
+        if(data.state.skipped&&!Array.isArray(data.state.skipped))delete data.state.skipped;
         const ps=getProjects();
         ps[data.state.projectName]=data;
         _lsSet('devforge-projects',JSON.stringify(ps));
@@ -89,7 +98,7 @@ function showPM(){
       const isCurrent=name===S.projectName;
       const meta=ps[name].date?new Date(ps[name].date).toLocaleDateString():'';
       const estKB=Math.round(JSON.stringify(ps[name]).length/512);
-      html+='<div class="pm-item'+(isCurrent?' current':'')+'" onclick="switchProject(\''+escAttr(name)+'\')"><div><div class="pm-item-name">'+esc(name)+(isCurrent?' ✓':'')+'</div><div class="pm-item-meta">'+meta+' · ~'+estKB+'KB</div></div><div class="pm-item-acts"><button onclick="event.stopPropagation();deleteProject(\''+escAttr(name)+'\')" aria-label="'+(esc(_ja?'削除':'Delete'))+'">🗑️</button></div></div>';
+      html+='<div class="pm-item'+(isCurrent?' current':'')+'" onclick="switchProject(\''+escAttr(name)+'\')"><div><div class="pm-item-name">'+esc(name)+(isCurrent?' ✓':'')+'</div><div class="pm-item-meta">'+meta+' · ~'+estKB+'KB</div></div><div class="pm-item-acts"><button onclick="event.stopPropagation();deleteProject(\''+escAttr(name)+'\')" aria-label="'+(escAttr(_ja?'削除':'Delete'))+'">🗑️</button></div></div>';
     });
   }
   const usg=typeof _lsUsage==='function'?_lsUsage():{used:0,pct:0};

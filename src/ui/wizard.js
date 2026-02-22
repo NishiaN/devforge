@@ -1,4 +1,13 @@
 /* ═══ WIZARD CORE ═══ */
+function _applyCompatFix(btn,f,s){
+  S.answers[f]=s;save();
+  const _ja=S.lang==='ja';
+  const p=btn.parentNode;
+  p.textContent='';
+  const sp=document.createElement('span');
+  sp.textContent='✅ '+(_ja?'修正済':'Fixed')+': '+f+' → '+s;
+  p.appendChild(sp);
+}
 function initPills(){
   const _ja=S.lang==='ja';
   const c=$('sbPills');if(!c)return;c.innerHTML='';
@@ -7,7 +16,9 @@ function initPills(){
     const ph=qs[i];if(!ph)continue;
     const d=document.createElement('div');d.className='pd-phase';d.id='pp'+i;
     d.innerHTML='<span class="pd-dot"></span>'+ph.name;
+    d.setAttribute('tabindex','0');d.setAttribute('role','button');
     d.onclick=()=>{if(S.phase>=i){S.phase=i;S.step=0;save();showQ();updProgress();}};
+    d.onkeydown=(e)=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();d.click();}};
     c.appendChild(d);
     /* Question list under each phase */
     const ul=document.createElement('ul');ul.className='pd-qlist';ul.id='pq'+i;
@@ -16,7 +27,9 @@ function initPills(){
       li.setAttribute('data-qid',q.id);
       const shortQ=q.q.length>18?q.q.slice(0,18)+'…':q.q;
       li.innerHTML='<span class="pd-qmark"></span>'+shortQ;
+      li.setAttribute('tabindex','0');
       li.onclick=(e)=>{e.stopPropagation();if(S.phase>i||(S.phase===i&&S.step>=si)){S.phase=i;S.step=si;save();showQ();updProgress();}};
+      li.onkeydown=(e)=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();li.click();}};
       ul.appendChild(li);
     });
     c.appendChild(ul);
@@ -129,7 +142,7 @@ function showCompatAlert(answers){
     const icon=iss.level==='error'?'❌':iss.level==='warn'?'⚠️':'ℹ️';
     const cls=iss.level==='error'?'compat-error':iss.level==='warn'?'compat-warn':'compat-info';
     let h=`<div class="${cls}"><span class="compat-icon">${icon}</span><span class="compat-msg">${esc(iss.msg)}</span>`;
-    if(iss.fix)h+=`<button class="btn btn-xs btn-s compat-fix" onclick="S.answers['${escAttr(iss.fix.f)}']='${escAttr(iss.fix.s)}';save();this.parentNode.innerHTML='✅ ${_ja?'修正済':'Fixed'}: ${escHtml(iss.fix.f)} → ${escHtml(iss.fix.s)}'">${_ja?'修正':'Fix'}</button>`;
+    if(iss.fix)h+=`<button class="btn btn-xs btn-s compat-fix" onclick="_applyCompatFix(this,'${escAttr(iss.fix.f)}','${escAttr(iss.fix.s)}')">${_ja?'修正':'Fix'}</button>`;
     h+='</div>';d.innerHTML=h;body.appendChild(d);
   });
   body.scrollTop=body.scrollHeight;
@@ -220,7 +233,7 @@ function findNext(){
     for(let s=0;s<ph.questions.length;s++){
       const q=ph.questions[s];
       if(!isQActive(q))continue;
-      if(!S.answers[q.id]){S.phase=p;S.step=s;showQ();return;}
+      if(!S.answers[q.id]){S.phase=p;S.step=s;save();showQ();return;}
     }
   }
   finish();

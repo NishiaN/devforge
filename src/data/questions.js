@@ -95,7 +95,7 @@ function _kpiChips(ja,lv){
   for(const[rx,key]of detect){if(rx.test(p)&&pools[key]){matched.push(...pools[key]);break;}}
   // If no match, add generic SaaS+tool mix
   if(!matched.length){
-    const fallback=pools[ja?'saas':'saas'];
+    const fallback=pools['saas'];
     matched.push(...fallback.slice(0,3));
   }
   // Deduplicate

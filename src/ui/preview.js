@@ -164,7 +164,7 @@ function getBreadcrumb(path){
     if(c.current){
       html+=`<span class="breadcrumb-current" aria-current="page">${esc(c.label)}</span>`;
     }else{
-      html+=`<button class="breadcrumb-link" onclick="${c.action}">${esc(c.label)}</button>`;
+      html+=`<button class="breadcrumb-link" onclick="${escAttr(c.action)}">${esc(c.label)}</button>`;
     }
   });
   html+='</div>';
@@ -201,7 +201,7 @@ function initPillarTabs(){
     const b=document.createElement('button');b.className='piltab'+(i===0?' on':'');
     b.setAttribute('role','tab');b.setAttribute('aria-selected',String(i===0));
     b.textContent=n;b.onclick=()=>{
-      S.pillar=i;
+      S.pillar=i;save();
       document.querySelectorAll('.piltab').forEach(t=>{t.classList.remove('on');t.setAttribute('aria-selected','false');});
       b.classList.add('on');b.setAttribute('aria-selected','true');
       if(i===4) showExplorer();
@@ -706,7 +706,7 @@ function pushView(vs){
 
 function _restoreView(vs){
   _viewNavFlag=true;
-  S.pillar=vs.pillar;
+  S.pillar=vs.pillar;save();
   document.querySelectorAll('.piltab').forEach((t,i)=>{
     t.classList.toggle('on',i===vs.pillar);
     t.setAttribute('aria-selected',String(i===vs.pillar));

@@ -11,14 +11,14 @@ function showPostGenGuide(force){
   overlay.onclick=e=>{if(e.target===overlay)overlay.remove();};
   const level=isB?{em:'🌱',name:_ja?'Beginner':'Beginner',cls:'guide-lv-b'}:isP?{em:'⚡',name:_ja?'Professional':'Professional',cls:'guide-lv-p'}:{em:'🔥',name:_ja?'Intermediate':'Intermediate',cls:'guide-lv-i'};
   const steps=isB?(_ja?[
-    ['生成物は設計書',`<strong>最重要:</strong> 生成された${Object.keys(S.files||{}).length||135}+ファイルは「設計ドキュメント」。npm installで動くコードではない。AIツールに投入することで実コードが生成される。`],
+    ['生成物は設計書',`<strong>最重要:</strong> 生成された${Object.keys(S.files||{}).length||175}+ファイルは「設計ドキュメント」。npm installで動くコードではない。AIツールに投入することで実コードが生成される。`],
     ['まずZIPを保存','📦 ZIPダウンロード → ローカルに保存。ブラウザのデータは消えることがある。この1ステップが全財産を守る。'],
     ['3ファイルだけ覚える','<code>CLAUDE.md</code>(AIに全仕様を理解させる) / <code>.cursorrules</code>(Cursor自動読込) / <code>tasks.md</code>(やることリスト)'],
     ['AIに丸ごと渡す','「全ファイルコピー」(Ctrl+Shift+C)でAIに貼り付け → 仕様を把握した状態で開発スタート。'],
     ['ロードマップに従う','ダッシュボード柱⑦のロードマップUIがそのまま学習計画。Layer 1から順にチェック。📖で公式ドキュメントにジャンプ。'],
     ['AIで発想を広げる','AIランチャー柱⑧の「🎭 9人の専門家ブレスト」で、9つの視点からアイデアを生成。「平凡な答え」から脱却しましょう。'],
   ]:[
-    ['Files are Design Docs',`<strong>Key fact:</strong> The ${Object.keys(S.files||{}).length||135}+ generated files are design documents, not executable code. Feed them to an AI tool to generate real code.`],
+    ['Files are Design Docs',`<strong>Key fact:</strong> The ${Object.keys(S.files||{}).length||175}+ generated files are design documents, not executable code. Feed them to an AI tool to generate real code.`],
     ['Save ZIP First','📦 ZIP Download → save locally. Browser data can be lost. This one step protects everything you just created.'],
     ['Remember 3 Files','<code>CLAUDE.md</code>(AI understands your project) / <code>.cursorrules</code>(Cursor auto-loads) / <code>tasks.md</code>(your todo list)'],
     ['Feed Everything to AI','"Copy All" (Ctrl+Shift+C) → Paste into AI → Start coding with full context.'],
@@ -27,14 +27,14 @@ function showPostGenGuide(force){
   ]):isP?(_ja?[
     ['Agent Teams並列開発','AGENTS.mdでエージェント役割定義 → Claude Code Subagents / Antigravity Manager Viewで並列実行。'],
     ['SDD仕様駆動','<code>.spec/</code>がSSoT。tasks.mdをタスクキューとしてAIに投入。verification.mdで品質判定。'],
-    ['37テンプレートパイプライン','柱⑧で📋レビュー→🔨実装→🧪テスト→♻️リファクタ→🔒セキュリティ→📝ドキュメント→🛡️Ops準備。全工程自動化。'],
+    ['40テンプレートパイプライン','柱⑧で📋レビュー→🔨実装→🧪テスト→♻️リファクタ→🔒セキュリティ→📝ドキュメント→🛡️Ops準備。全工程自動化。'],
     ['3-layer CLAUDE.md','ルートCLAUDE.md(薄い ~1.5Kトークン) + .claude/rules/(パス別5ファイル) + .claude/settings.json でトークン最小化。'],
     ['Ops Plane統合','docs/53-55でSLO/SLI設計・Feature Flags・Circuit Breaker・12 Ops Capabilities。運用自動化。'],
     ['創造工学×AI活用','柱⑧「🎭 9人の専門家ブレスト」+「🎯 UXジャーニー設計」+「🤖 AIモデル使い分け」で創造的思考→UX設計→AI最適化の全工程をカバー。'],
   ]:[
     ['Agent Teams Parallel Dev','AGENTS.md defines roles → Run with Claude Code Subagents / Antigravity Manager View.'],
     ['SDD Spec-Driven','<code>.spec/</code> is your SSoT. Feed tasks.md as task queue. Verify with verification.md.'],
-    ['37-Template Pipeline','Pillar ⑧: 📋Review → 🔨Implement → 🧪Test → ♻️Refactor → 🔒Security → 📝Docs → 🛡️Ops. Full automation.'],
+    ['40-Template Pipeline','Pillar ⑧: 📋Review → 🔨Implement → 🧪Test → ♻️Refactor → 🔒Security → 📝Docs → 🛡️Ops. Full automation.'],
     ['3-layer CLAUDE.md','Root CLAUDE.md (thin ~1.5K tokens) + .claude/rules/ (path-specific 5 files) + .claude/settings.json minimizes tokens.'],
     ['Ops Plane Integration','docs/53-55 for SLO/SLI design, Feature Flags, Circuit Breaker, 12 Ops Capabilities. Ops automation.'],
     ['Creative Eng × AI','Pillar ⑧ "🎭 9-Expert Brainstorm" + "🎯 UX Journey Design" + "🤖 AI Model Selection" covers the full pipeline: creative thinking → UX design → AI optimization.'],
@@ -95,7 +95,7 @@ function showPostGenGuide(force){
         <button class="guide-bridge-card" onclick="this.closest('.guide-overlay').remove();var _t=document.querySelectorAll('.piltab');if(_t[7])_t[7].click();">
           <span class="bridge-icon">🚀</span>
           <div class="bridge-name">${_ja?'⑧ AIランチャー':'⑧ AI Launcher'}</div>
-          <div class="bridge-why">${_ja?'37種プロンプトでAIをプロジェクト専用に即戦力化':'37 prompt templates — make AI your dedicated team member'}</div>
+          <div class="bridge-why">${_ja?'40種プロンプトでAIをプロジェクト専用に即戦力化':'40 prompt templates — make AI your dedicated team member'}</div>
         </button>
         <button class="guide-bridge-card" onclick="this.closest('.guide-overlay').remove();var _t=document.querySelectorAll('.piltab');if(_t[6])_t[6].click();">
           <span class="bridge-icon">🗺️</span>

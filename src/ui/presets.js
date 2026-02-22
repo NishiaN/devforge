@@ -271,8 +271,8 @@ function _pickSuggested(key,isField){
   var box=$('presetSuggestBox');if(box){box.innerHTML='';box.style.display='none';}
   var sin=$('presetSuggestIn');if(sin)sin.value='';
   var pName='';
-  if(!isField&&PR[key]){pName=(_ja||true)&&!(S.lang==='en')&&PR[key].name?PR[key].name:(PR[key].nameEn||PR[key].name||'');}
-  else if(isField&&typeof PR_FIELD!=='undefined'&&PR_FIELD[key]){pName=(S.lang==='en'&&PR_FIELD[key].nameEn?PR_FIELD[key].nameEn:PR_FIELD[key].name)||'';}
+  if(!isField&&PR[key]){pName=_ja&&PR[key].name?PR[key].name:(PR[key].nameEn||PR[key].name||'');}
+  else if(isField&&typeof PR_FIELD!=='undefined'&&PR_FIELD[key]){pName=(!_ja&&PR_FIELD[key].nameEn?PR_FIELD[key].nameEn:PR_FIELD[key].name)||'';}
   if(pName){
     document.querySelectorAll('.prchip').forEach(function(c){
       if(c.textContent.indexOf(pName)>=0){
@@ -385,7 +385,7 @@ function initPresets(){
   const cs=document.createElement('span');cs.className='prchip prchip-custom';
   cs.textContent=_ja?'📝 白紙から始める':'📝 Start from scratch';
   cs.onclick=()=>{
-    S.preset='custom';
+    S.preset='custom';save();
     document.querySelectorAll('.prchip').forEach(c=>c.classList.remove('sel'));
     cs.classList.add('sel');
     toast(_ja?'カスタムモード — 全質問に回答します':'Custom mode — answer all questions');
@@ -448,11 +448,12 @@ function renderCompare(){
 }
 
 function pickPreset(k,e){
+  const _ja=S.lang==='ja';
   S.preset=k;
   document.querySelectorAll('.prchip').forEach(c=>c.classList.remove('on'));
   if(e&&e.target)e.target.classList.add('on');
   const p=PR[k];
-  if(p&&p.name)$('nameIn').value=(S.lang==='en'&&p.nameEn)?p.nameEn:p.name;
+  if(p&&p.name)$('nameIn').value=(!_ja&&p.nameEn)?p.nameEn:p.name;
   save();
 }
 

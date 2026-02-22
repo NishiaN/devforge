@@ -2865,7 +2865,7 @@ function detectAppType(a){
   if((a.mvp_features||'').match(/(リアルタイム|realtime|チャット|chat|通知|notification|ライブ|live)/i)) return 'realtime';
 
   // Mobile-first
-  if(mob!=='none'&&mob!=='なし') return 'mobile';
+  if(!isNone(mob)) return 'mobile';
 
   // API-only (no frontend)
   if(isNone(fe)||fe==='API only') return 'api_only';

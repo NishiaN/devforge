@@ -51,8 +51,8 @@ document.addEventListener('keydown',e=>{
   if(e.altKey&&k==='arrowright'){e.preventDefault();viewForward();}
   if(e.ctrlKey&&k==='m'){e.preventDefault();showPM();}
   if(e.ctrlKey&&k==='4'){e.preventDefault();if(typeof showExplorer==='function')showExplorer();}
-  if(e.ctrlKey&&k==='5'){e.preventDefault();S.pillar=5;if(typeof showFileTree==='function')showFileTree();}
-  if(e.ctrlKey&&k==='6'){e.preventDefault();S.pillar=6;if(typeof showRoadmapUI==='function')showRoadmapUI();}
+  if(e.ctrlKey&&k==='5'){e.preventDefault();S.pillar=5;save();if(typeof showFileTree==='function')showFileTree();}
+  if(e.ctrlKey&&k==='6'){e.preventDefault();S.pillar=6;save();if(typeof showRoadmapUI==='function')showRoadmapUI();}
   if(e.ctrlKey&&k==='7'){e.preventDefault();if(typeof showAILauncher==='function')showAILauncher();}
   if(e.ctrlKey&&k==='b'){e.preventDefault();if(typeof toggleSidebar==='function')toggleSidebar();}
   if(e.key==='Escape'){
