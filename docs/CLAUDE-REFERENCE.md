@@ -469,63 +469,90 @@ test('pluralize', () => {
 
 | File | Tests | Purpose |
 |------|-------|---------|
-| gen-coherence.test.js | 253 assertions | Full LMS generation + structural validation + post-generation audit (C2-C10) |
-| snapshot.test.js | 53 tests | 6 scenario regression (LMS/Blog/EC/English/PropertyMgmt/Helpdesk) + context engineering + skills validation + quality files + P12 security intelligence + P13 industry detection + P14 ops + P4 .claude/ structure |
-| data-coverage.test.js | 40 tests | Data integrity: entity coverage, FK validation, domain detection (32 domains), playbook completeness, DOMAIN_OPS coverage, DOMAIN_MARKET coverage, P19 entity tests |
-| r27-regression.test.js | 17 tests | Bug fixes: prices, FK, KPI, ports |
-| r28-regression.test.js | 19 tests | Quality: REST methods, AC, scope_out, verification |
-| build.test.js | build | Build size ≤3000KB, pillar function existence (P1-P20), sbPillarGrid element, PILLAR array lengths |
-| compat.test.js | 78 tests + 7 synergy | Compatibility validation (60 rules: 11 ERROR, 38 WARN, 11 INFO) + calcSynergy unit tests |
-| security.test.js | 26 tests | Security: CSP, SRI, sanitization, XSS prevention, proto pollution, .claude/settings.json safety |
-| ops.test.js | 16 tests | Ops Intelligence (P14): runbook generation, checklist, ops plane design, SLO adaptation, domain-specific flags, observability stack, circuit breaker, audit schema |
-| future.test.js | 16 tests | Future Strategy Intelligence (P15): DOMAIN_MARKET coverage, PERSONA_ARCHETYPES, GTM_STRATEGY, REGULATORY_HORIZON, doc generation (56-59), mermaid diagrams, bilingual content |
-| deviq.test.js | 20 tests | Polymorphic Development Intelligence (P16): DEV_METHODOLOGY_MAP (32 domains), PHASE_PROMPTS (6 phases), INDUSTRY_STRATEGY (15 industries), NEXT_GEN_UX (4 keywords), doc generation (60-63) |
-| promptgenome.test.js | 22 tests | Prompt Genome Engine (P17): CRITERIA_FRAMEWORK (8 axes), AI_MATURITY_MODEL (3 levels), _APPROACHES (12), getSynergy, APPROACH_KPI, doc generation (65-68), bilingual content |
-| promptops.test.js | 26 tests | Prompt Engineering OS (P18): REACT_PROTOCOL (6 phases × 4 stages), LLMOPS_STACK (3 levels), PROMPT_LIFECYCLE (5 stages), doc generation (69-72), no template literal contamination |
-| enterprise.test.js | 33 tests | Enterprise SaaS Blueprint (P19): ENTERPRISE_ARCH_PATTERNS (4), WORKFLOW_TEMPLATES (5), ADMIN_DASHBOARD_SPECS (4), ENTERPRISE_COMPONENTS (8), gen73-76 output, bilingual, domain skip logic, pattern selection (7 chip→selKey) |
-| cicd.test.js | 30 tests | CI/CD Intelligence (P20): PIPELINE_STAGES (9), DEPLOY_STRATEGIES (4), QUALITY_GATES (5), RELEASE_MODELS (3), DEPLOY_TARGET_CONFIG (9), gen77-80, all-domain generation, Docker JA key normalization |
-| skill-level.test.js | 21 tests | 7-Level Skill System: SKILL_NAMES (7), SKILL_TIERS, pickSkillLv, Lv0/Lv2/Lv4/Lv6 behaviors, gen81 UX audit output, ux_audit launcher template |
-| presets.test.js | 4 tests | Preset count (48 standard), bilingual names, tech fields, purpose |
-| field-presets.test.js | 18 tests | Field preset system: PR_FIELD=82, scaleHint 4×ja/en, meta 6 dims, FIELD_CAT_MAP=82, FIELD_TREND=19, FIELD_CATS=21 |
-| Others | ~23 tests | i18n, state, techdb |
+| gen-coherence.test.js | 1 | Full LMS generation + structural validation + post-generation audit (C2-C10) |
+| snapshot.test.js | 154 | 6 scenario regression (LMS/Blog/EC/English/PropertyMgmt/Helpdesk) + P12-P25 docs existence, context engineering, skills, quality files |
+| data-coverage.test.js | 38 | Data integrity: entity coverage, FK validation, domain detection (32 domains), DOMAIN_OPS/MARKET, P19 entity tests |
+| r27-regression.test.js | 17 | Bug fixes: prices, FK, KPI, ports |
+| r28-regression.test.js | 19 | Quality: REST methods, AC, scope_out, verification |
+| build.test.js | 37 | Build size ≤3000KB, pillar function existence (P1-P25), sbPillarGrid, PILLAR array lengths, tour steps, i18n kb sync |
+| compat.test.js | 1 | Compatibility validation (79 rules: 13 ERROR, 46 WARN, 20 INFO) + calcSynergy unit tests |
+| security.test.js | 29 | Security: CSP, SRI, sanitization, XSS prevention, proto pollution, .claude/settings.json safety |
+| ops.test.js | 15 | Ops Intelligence (P14): runbook, checklist, ops plane design, SLO adaptation, observability, circuit breaker |
+| future.test.js | 16 | Future Strategy (P15): DOMAIN_MARKET, PERSONA_ARCHETYPES, GTM_STRATEGY, REGULATORY_HORIZON, docs 56-59 |
+| deviq.test.js | 20 | Dev IQ (P16): DEV_METHODOLOGY_MAP (32 domains), PHASE_PROMPTS, INDUSTRY_STRATEGY, NEXT_GEN_UX, docs 60-63 |
+| promptgenome.test.js | 22 | Prompt Genome (P17): CRITERIA_FRAMEWORK (8 axes), AI_MATURITY_MODEL (3 Lv), _APPROACHES (12), docs 65-68 |
+| promptops.test.js | 22 | Prompt Ops (P18): REACT_PROTOCOL (6 phases × 4 stages), LLMOPS_STACK (3 Lv), PROMPT_LIFECYCLE (5 stages), docs 69-72 |
+| enterprise.test.js | 27 | Enterprise (P19): ENTERPRISE_ARCH_PATTERNS (4), WORKFLOW_TEMPLATES (5), docs 73-76, domain skip logic |
+| cicd.test.js | 30 | CI/CD (P20): PIPELINE_STAGES (9), DEPLOY_STRATEGIES (4), QUALITY_GATES (5), RELEASE_MODELS (3), docs 77-80 |
+| skill-level.test.js | 33 | 7-Level Skill System: SKILL_NAMES (7), pickSkillLv, Lv0/Lv2/Lv4/Lv6 behaviors, db_intelligence/ai_safety/test_intel templates |
+| presets.test.js | 4 | Preset count (48 standard), bilingual names, tech fields, purpose |
+| field-presets.test.js | 56 | Field preset system: PR_FIELD=138, FIELD_CAT_MAP=138, FIELD_CATS=35, FIELD_TREND=34, THEME_OVERLAYS=6 |
+| gen-quality.test.js | 239 | Suites 1-23: generation quality across all pillars (P1-P25), ORM/Auth/Payment coherence |
+| phase-n.test.js | 93 | N-1〜N-9 preset→wizard auto-fill + G-1〜G-7 skill/deadline/learning-path inference |
+| complexity.test.js | 16 | Complexity scoring, getComplexityMini, risk thresholds |
+| mermaid.test.js | 14 | Mermaid diagram syntax validation across 10+ diagram types |
+| utils.test.js | 43 | Utility functions: esc, escAttr, sanitize, fileSlug, sanitizeName, _jp, _lsGet |
+| Others | 25 | i18n (15), state (5), techdb (5) |
 
-**Total: 734 tests (all passing, 100% pass rate)**
+**Total: 971 tests (all passing, 100% pass rate)**
 
 ---
 
 ## AI Prompt Launcher Templates (Full List)
 
-37 templates in `src/ui/launcher.js`. Auto-inject project context (name, stack, auth, entities):
+40 templates in `src/ui/launcher.js`. Auto-inject project context (name, stack, auth, entities).
+Order: `review › arch › reverse › implement › api › i18n › test › test_intel › qa › security › ai_safety › a11y › perf › metrics › refactor › debug › incident › ops › docs › migrate › db_intelligence › cicd › growth › strategy › methodology › brainstorm › ux_journey › ux_audit › ai_model_guide › industry › nextgen › cognitive › genome › maturity › react_debug › prompt_ops › enterprise_arch › workflow_audit › risk › onboard`
 
+**Review & Audit group:**
 - 🔍 **Spec Review** — 4-step structured review (mission → requirements → architecture → consistency)
-- 🚀 **MVP Implementation** — Select priority task from tasks.md, implement with types → data → logic → UI → tests
-- 🧪 **Test Generation** — Reference docs/07, create normal → error → boundary tests (Vitest format)
-- ♻️ **Refactoring** — Detect SOLID violations, estimate effort (S/M/L), prioritize
-- 🔒 **Security Audit** — OWASP Top 10 checklist with status (✅/⚠️/❌)
-- 📝 **Doc Completion** — Gap analysis + generate most critical missing doc
-- 🐛 **QA/Bug Detection** — Domain-specific bug patterns, test plan, priority matrix
-- 🔧 **Debug Support** — Cross-reference error_logs.md, 5 Whys analysis, fix code
-- 📐 **Architecture Consistency** — Detect layer violations, verify tech policy alignment
-- ⚡ **Performance Optimization** — NFR comparison, bottleneck identification, improvement roadmap
-- 🔌 **API Integration** — Type-safe client code with error handling + test skeleton
+- 📐 **Architecture Compliance** — Detect layer violations, verify tech policy alignment
+- 🎯 **Goal Reverse Design** — Reverse-plan from goals, gap analysis, milestone priority matrix
+- 🔒 **Security Audit** — OWASP Top 10 2025 + docs/43-47 + docs/95-98 AI safety refs (✅/⚠️/❌)
+- 🤖🛡️ **AI Safety Review** — EU AI Act/NIST AI RMF; 6-category risk screening, 4-layer guardrails, injection defense (P24)
 - ♿ **Accessibility Audit** — WCAG 2.1 AA 4-principle check + axe-core tests
-- 🔄 **Migration Support** — Schema conversion scripts, validation queries, deploy plan
+- ⚡ **Performance Optimization** — NFR comparison, bottleneck identification; refs docs/99-102 (P25)
 - 📊 **Code Metrics** — Cyclomatic/cognitive complexity, coupling, DRY violations, ROI prioritization
-- 🌍 **i18n Implementation** — Extract strings, define translation keys, generate JSON, replace with t()
-- 🧬 **Optimal Methodology** — Select optimal dev methodology from DEV_METHODOLOGY_MAP (P16)
-- 🎭 **9-Expert Brainstorm** — 9 expert personas (Creative/Tech/Business/Academic/Science/User/Disruptor/Humor/Explorer) generate ideas + 3-axis evaluation
-- 🎯 **UX Journey Design** — Lv.0-5 progressive disclosure user journey (persona/pain/UX pattern/churn risk/action per level) + "3 Nightmares" anti-failure UI design
-- 🤖 **AI Model Selection** — Per-dev-phase AI model matching (Gemini=precision, Claude=ethics, ChatGPT=creativity, Copilot=balance) with natural prompt examples
-- 🏭 **Industry Analysis** — Industry-specific blueprint + tech radar + stakeholder strategy
-- 🔮 **Next-Gen UX** — Next-gen UX patterns + cognitive load audit
-- 🧠 **Cognitive Load Analysis** — Cognitive complexity audit + simplification roadmap
-- 🧩 **Prompt Genome Analysis** — CRITERIA 8-axis prompt evaluation (P17)
-- 📊 **AI Maturity Review** — AI maturity level assessment + upgrade roadmap (P17)
-- 🔄 **ReAct Debug Loop** — ReAct 6-phase debugging protocol (P18)
-- 🔧 **Prompt Ops Review** — Prompt Ops pipeline + LLMOps dashboard review (P18)
-- 🏢 **Enterprise Architecture Review** — Multi-tenant arch, RLS, org model, permission matrix review (P19)
+- 🏢 **Enterprise Architecture Review** — Multi-tenant arch, RLS, org model, permission matrix (P19)
 - 📋 **Workflow Process Audit** — Approval/ticket/order state machine audit, SLA compliance (P19)
-- 🔬 **UX Proficiency Audit** — 7-level UX audit with project context, generates docs/81 (strategy category, Claude)
+- ⚖️ **Risk & Compliance** — 4-axis risk, STRIDE residual risks, regulatory compliance heatmap
+- 🔬 **UX Proficiency Audit** — 7-level UX audit with project context (strategy category)
+
+**Implement & Dev group:**
+- 🚀 **MVP Implementation** — Select priority task from tasks.md, implement with types → data → logic → UI → tests
+- 🔌 **API Integration Generator** — Type-safe client code; refs docs/83-86 RESTful 6-principles + OWASP API Security Top 10 (P21)
+- 🌍 **i18n Implementation** — Extract strings, define keys, generate JSON, replace with t()
+- 🧪 **Test Generation** — Reference docs/07 + docs/91-94; normal/error/boundary tests, coverage targets (P23)
+- 🔬🧪 **Testing Strategy Intelligence** — Test pyramid, coverage 80%/75%/85%, E2E Playwright, Core Web Vitals (P23)
+- 🐛 **QA/Bug Detection** — Domain-specific bug patterns, test plan, priority matrix
+- ♻️ **Refactoring** — Detect SOLID violations, estimate effort (S/M/L), prioritize
+- 🔧 **Debug Assistant** — Cross-reference error_logs.md, 5 Whys analysis, fix code
+- 🚨 **Incident Response** — Create runbooks, post-mortems; SLO violation assessment
+- 📝 **Doc Completion** — Gap analysis + generate most critical missing doc
+- 🔄 **Migration Assistant** — Schema conversion scripts, validation queries; refs docs/89-90 zero-downtime patterns
+- 🗄️ **DB Design Intelligence** — Schema/query/migration review; refs docs/87-90 N+1/EXPLAIN/PITR (P22)
+- ⚙️ **CI/CD Intelligence Review** — 9-stage pipeline, deploy strategy, quality gates review (P20)
+
+**Strategy & UX group:**
+- 📈 **Growth Strategy** — Funnel CVR, growth levers, 3-tier pricing; refs docs/41/48/50/56
+- 🏢 **Strategic Intelligence** — Industry blueprint TAM/SAM/SOM, tech radar, stakeholder strategy
+- 🧬 **Optimal Methodology** — Select optimal dev methodology from DEV_METHODOLOGY_MAP (P16)
+- 🎭 **9-Expert Brainstorm** — 9 expert personas generate ideas + 3-axis evaluation + cross-pollination
+- 🎯 **UX Journey Design** — Lv.0-5 progressive disclosure journey + "3 Nightmares" anti-failure UI
+- 🔬 **UX Proficiency Audit** — 7-level UX gap analysis with structural gap map
+- 🏭 **Industry Deep Dive** — Industry-specific pitfalls, regulatory compliance, arch patterns (P16)
+- 🔮 **Next-Gen UX** — Agentic Workflow/Generative UI/Spatial Computing/Calm Technology (P16)
+- 🧠 **Cognitive Load Analysis** — Cognitive complexity audit + flow state simplification roadmap
+
+**AI & Prompt group:**
+- 🤖 **AI Model Selection** — Per-dev-phase AI model matching (Gemini/Claude/ChatGPT/Copilot) with natural prompt examples
+- 🧩 **Prompt Genome Analysis** — CRITERIA 8-axis prompt evaluation + 4-layer composite design (P17)
+- 📊 **AI Maturity Review** — 5-dimension AI maturity assessment + level-up roadmap (P17)
+- 🔄 **ReAct Debug Loop** — Reason→Act→Observe→Verify autonomous debug cycle (P18)
+- 🔧 **Prompt Ops Review** — Prompt Ops lifecycle + LLMOps metrics + Registry Template-ID (P18)
+
+**Ops & DevOps group:**
+- 🛡️ **Ops Readiness Review** — SLO/SLI validation, Feature Flags, circuit breaker, 12 Ops Capabilities
+- 🎓 **Onboarding** — Handoff docs for new members & AI agents; CLAUDE.md summary, FAQ, .claude/rules structure
 
 ---
 
@@ -573,6 +600,29 @@ test('pluralize', () => {
 - `docs/79_quality_gate_matrix.md` — Quality gate matrix (5 gates, domain-specific rules)
 - `docs/80_release_engineering.md` — Release engineering (3 release models, 9 deploy targets)
 - `docs/81_ux_proficiency_audit.md` — 7-level UX proficiency audit with project context (all domains)
+
+### New in v9.6.x (Pillars ㉑㉒㉓㉔㉕ + Field Presets Phase L)
+- `docs/82_architecture_integrity_check.md` — Always generated; ORM/Auth/CORS/async/soft-delete integrity (10.0 scale, C-A〜C-L checks)
+- `docs/83_api_design_principles.md` — RESTful 6 principles (resource naming, HTTP verbs, idempotency, pagination, versioning, error design)
+- `docs/84_openapi_specification.md` — OpenAPI 3.1 spec (dynamic paths/schemas from answers, BaaS SDK approach)
+- `docs/85_api_security_checklist.md` — OWASP API Security Top 10 (2023) + stack-adaptive auth/authorization checklist
+- `docs/86_api_testing_strategy.md` — API test strategy (k6 load testing, integration test scenarios, contract testing)
+- `docs/87_database_design_principles.md` — Naming conventions, index design, normalization guidelines, per-ORM patterns
+- `docs/88_query_optimization_guide.md` — N+1 detection, EXPLAIN ANALYZE patterns, query profiling, index recommendations
+- `docs/89_migration_strategy.md` — Zero-downtime Expand-Contract pattern, multi-phase rollout, rollback procedures
+- `docs/90_backup_disaster_recovery.md` — RTO/RPO targets by domain, PITR policies, DR runbook, backup verification
+- `docs/91_testing_strategy.md` — Test pyramid (Unit/Integration/E2E) + framework selection (Jest/Vitest/pytest/JUnit)
+- `docs/92_coverage_design.md` — Coverage targets (Statements 80%/Branches 75%/Functions 85%), mutation testing (Stryker)
+- `docs/93_e2e_test_architecture.md` — Playwright POM pattern, storageState auth, mobile Detox/Maestro, CI YAML
+- `docs/94_performance_testing.md` — Core Web Vitals (LCP<2.5s/INP<200ms/CLS<0.1), Lighthouse CI, k6/Locust scenarios
+- `docs/95_ai_safety_framework.md` — 6-category AI risk (bias/privacy/security/transparency/dependency/misinformation), EU AI Act classification
+- `docs/96_ai_guardrail_implementation.md` — 4-layer guardrails (input validation → content moderation → output validation → audit log)
+- `docs/97_ai_model_evaluation.md` — RAGAS metrics (Faithfulness/Relevancy/Context Precision), Langfuse observability
+- `docs/98_prompt_injection_defense.md` — Direct/Indirect Injection attack patterns + defense implementation
+- `docs/99_performance_strategy.md` — Performance strategy overview, budget allocation, monitoring approach
+- `docs/100_database_performance.md` — DB-specific tuning, connection pool, slow query identification, index strategy
+- `docs/101_cache_strategy.md` — Cache layer design (CDN/Redis/HTTP Cache/Query Cache), invalidation patterns
+- `docs/102_performance_monitoring.md` — APM provider selection (Sentry/Datadog/New Relic/CloudWatch), performance budget alerts
 
 ---
 
