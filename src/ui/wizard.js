@@ -91,7 +91,7 @@ function updProgress(){
 
 function addMsg(type,text,tip,qid,helpId){
   const _ja=S.lang==='ja';
-  const body=$('cbody'),d=document.createElement('div');d.className='msg';
+  const body=$('cbody'),d=document.createElement('div');d.className='msg';d.dataset.phase=String(S.phase);
   const cls=type==='bot'?'m-bot':'m-usr';
   const w=document.createElement('div');w.className=cls;w.style.position='relative';
   const lbl=document.createElement('div');lbl.className='m-lbl';
@@ -212,6 +212,21 @@ function showCompatSummary(issues){
   body.scrollTop=body.scrollHeight;
 }
 
+function _foldPhase(phaseNum){
+  const _ja=S.lang==='ja';
+  const body=$('cbody');if(!body)return;
+  const msgs=body.querySelectorAll('.msg[data-phase="'+phaseNum+'"]');
+  if(msgs.length<3)return;
+  const det=document.createElement('details');det.className='phase-fold';
+  const sum=document.createElement('summary');
+  sum.className='phase-fold-sum';
+  sum.textContent=(_ja?'Phase '+phaseNum+' の会話（'+msgs.length+'件）':'Phase '+phaseNum+' conversation ('+msgs.length+')');
+  det.appendChild(sum);
+  const first=msgs[0];
+  body.insertBefore(det,first);
+  msgs.forEach(function(m){det.appendChild(m);});
+}
+
 function phaseEnd(){
   if(S.phase<3){
     // Beginner auto-mode: skip Phase 2 tech questions and auto-fill with best-practice defaults
@@ -246,7 +261,7 @@ function phaseEnd(){
     addMsg('bot',msg);
     if(typeof announce==='function')announce(msg);
     if(S.skillLv<=1){const _ja=S.lang==='ja';var _phMsg=S.phase===1?(_ja?'✅ Phase 1完了！あと2ステップ':'✅ Phase 1 done! 2 more steps'):S.phase===2?(_ja?'✅ Phase 2完了！あと1ステップ':'✅ Phase 2 done! 1 more step'):(_ja?'✅ 最終Phase完了！':'✅ Final phase done!');toast(_phMsg);}
-    S.phase++;S.step=0;save();
+    _foldPhase(S.phase);S.phase++;S.step=0;save();
     setTimeout(()=>showQ(),400);
   } else {
     handleSkipped();
