@@ -356,6 +356,10 @@ function buildFileTree(){
     files.push({name:'.env.example',path:'.env.example'});
     files.push({name:'.gitattributes',path:'.gitattributes'});
     files.push({name:'.editorconfig',path:'.editorconfig'});
+    files.push({folder:true,name:'.security'});
+    files.push({name:'  build-manifest.json',path:'.security/build-manifest.json'});
+    files.push({name:'  SECURITY_CHECKLIST.md',path:'.security/SECURITY_CHECKLIST.md'});
+    files.push({name:'.gitleaks.toml',path:'.gitleaks.toml'});
     files.push({name:'docs/64_cross_platform_guide.md',path:'docs/64_cross_platform_guide.md'});
   } else if(pillar===2){ // MCP
     files.push({folder:true,name:'.mcp'});

@@ -84,9 +84,9 @@ describe('Snapshot A: LMS/Supabase/Stripe', () => {
     ai_auto: 'マルチAgent協調'
   }, 'LMS');
 
-  test('file count in range 129-160 (ADR+1, P21-P25 each add +4 docs, total +21)', () => {
+  test('file count in range 132-163 (ADR+1, SecManifest+3, P21-P25 each add +4 docs)', () => {
     const count = Object.keys(files).length;
-    assert.ok(count >= 129 && count <= 160, `Expected 129-160 files (ADR+1, P21-P25 each +4 docs), got ${count}`);
+    assert.ok(count >= 132 && count <= 163, `Expected 132-163 files (ADR+1, SecManifest+3, P21-P25 +20), got ${count}`);
   });
 
   test('total tokens in range 12000-90000 (P21-P25 each add ~4-6K tokens)', () => {
