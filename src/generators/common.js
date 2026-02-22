@@ -2851,6 +2851,290 @@ ${G?'© 2026 エンジニアリングのタネ制作委員会 ｜ 作成者：�
   S.files['LICENSE']=`MIT License\n\nCopyright (c) ${new Date().getFullYear()} ${pn}\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the "Software"), to deal\nin the Software without restriction, including without limitation the rights\n
 to use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n
 \nTHE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.`;
+
+  S.files['docs/00_architecture_decision_records.md']=genADR(a,pn);
+}
+
+// ── ADR: Architecture Decision Records ──
+function genADR(a,pn){
+  const G=S.genLang==='ja';
+  const fe=a.frontend||'React + Next.js';
+  const be=a.backend||'Node.js + Express';
+  const db=a.database||'PostgreSQL';
+  const dep=a.deploy||'Vercel';
+  const auth=a.auth||'';
+  const orm=resolveORM(a);
+  const mob=a.mobile||'';
+  const pay=a.payment||'';
+  const ai=a.ai_auto||'';
+  const now=new Date().toISOString().slice(0,10);
+  const domain=detectDomain(a.purpose||'');
+
+  // ── ADR helper: infer rationale and alternatives from stack ──
+  function _feRationale(){
+    if(G){
+      if(fe.includes('Next.js')) return ['SSR/SSGによるSEO対応が可能','App RouterによるRSC(React Server Components)でパフォーマンス最適化','Vercelとのネイティブ統合','TypeScript・ESLint標準サポート'];
+      if(fe.includes('Nuxt')) return ['Vue.jsエコシステムとのシームレスな統合','ファイルベースルーティング','Nitroサーバーエンジンによる高速SSR','Vue開発者チームへの親和性'];
+      if(fe.includes('Svelte')) return ['コンパイル時最適化による超軽量バンドル','仮想DOMなしで高速な実行','SvelteKitのフルスタック対応','学習コストが低い'];
+      if(fe.includes('Astro')) return ['Islands Architectureでゼロ-JS・部分Hydration','静的コンテンツ生成に最適','任意のUIフレームワーク混在可能','Lighthouse 100点を狙える'];
+      if(fe.includes('Angular')) return ['エンタープライズグレードの型安全設計','RxJS+DIコンテナの豊富なエコシステム','単一オピニオン・大チームに適切','Google公式サポート'];
+      return ['シンプルなSPA構成','Viteによる高速HMR','軽量バンドル'];
+    } else {
+      if(fe.includes('Next.js')) return ['SSR/SSG for SEO-critical pages','React Server Components (App Router) for performance','Native Vercel integration','TypeScript + ESLint built-in'];
+      if(fe.includes('Nuxt')) return ['Seamless Vue.js ecosystem integration','File-based routing','Nitro server engine for fast SSR','Vue team familiarity'];
+      if(fe.includes('Svelte')) return ['Compiled output = minimal bundle, no virtual DOM','SvelteKit full-stack support','Low learning curve','Excellent performance'];
+      if(fe.includes('Astro')) return ['Islands Architecture: zero-JS by default','Optimal for static/content-heavy sites','Mix any UI framework','100-score Lighthouse potential'];
+      if(fe.includes('Angular')) return ['Enterprise-grade, strongly-typed design','RxJS + DI container ecosystem','Opinionated structure for large teams','Google-backed'];
+      return ['Simple SPA setup','Vite fast HMR','Minimal bundle'];
+    }
+  }
+  function _feAlts(){
+    const chosen=fe.toLowerCase();
+    const all=[{k:'Next.js',label:'React + Next.js'},{k:'nuxt',label:'Vue + Nuxt'},{k:'svelte',label:'SvelteKit'},{k:'astro',label:'Astro'},{k:'angular',label:'Angular'}];
+    return all.filter(x=>!chosen.includes(x.k)).slice(0,3).map(x=>x.label);
+  }
+  function _beRationale(){
+    if(G){
+      if(be.includes('Supabase')) return ['認証・DB・ストレージ・Edge Functionsを単一プラットフォームで提供','オープンソース(PostgreSQLベース)で移行リスクが低い','Row Level Security(RLS)でDB直接アクセスを安全に実現','Vercel等との1クリック統合'];
+      if(be.includes('Firebase')) return ['Google CloudのマネージドBaaS','Firestore Realtime/Offlineサポート','Firebase Auth・Analytics・Hostingの垂直統合','FlutterやAndroidとの親和性が高い'];
+      if(be.includes('NestJS')) return ['TypeScript-firstでモジュール構造が厳格','DIコンテナでテスタビリティが高い','RESTとGraphQLの両対応','エンタープライズ向けの拡張性'];
+      if(be.includes('Express')) return ['Node.jsデファクト標準','軽量でミドルウェアエコシステムが豊富','学習コストが最低','柔軟なルーティング設計'];
+      if(be.includes('FastAPI')) return ['Python最速のASGIフレームワーク','Pydanticによる型安全','自動OpenAPI/Swaggerドキュメント生成','ML/AIライブラリとの親和性'];
+      if(be.includes('Django')) return ['フルスタックPythonフレームワーク','Django ORMでDB操作が容易','Django Admin即時利用可能','バッテリー内蔵で開発速度が高い'];
+      if(be.includes('Hono')) return ['超軽量エッジファーストフレームワーク','Cloudflare Workers最適化','ゼロ依存で起動時間ほぼゼロ','Web標準API準拠'];
+      return ['選択したバックエンドがプロジェクト要件に最適'];
+    } else {
+      if(be.includes('Supabase')) return ['Auth, DB, Storage, Edge Functions on one platform','Open-source (PostgreSQL-based), low vendor lock-in','Row Level Security enables safe direct DB access','1-click integration with Vercel'];
+      if(be.includes('Firebase')) return ['Google-managed BaaS','Firestore real-time & offline support','Vertical integration: Auth, Analytics, Hosting','High affinity with Flutter/Android'];
+      if(be.includes('NestJS')) return ['TypeScript-first strict module architecture','DI container for high testability','REST + GraphQL dual support','Enterprise-scale extensibility'];
+      if(be.includes('Express')) return ['De-facto Node.js standard','Lightweight with rich middleware ecosystem','Lowest learning curve','Flexible routing design'];
+      if(be.includes('FastAPI')) return ['Fastest Python ASGI framework','Type-safe via Pydantic','Auto-generates OpenAPI/Swagger docs','Native compatibility with ML/AI libraries'];
+      if(be.includes('Django')) return ['Full-stack Python framework','Django ORM simplifies DB operations','Django Admin out of the box','Batteries-included for fast development'];
+      if(be.includes('Hono')) return ['Ultra-lightweight edge-first framework','Optimized for Cloudflare Workers','Zero dependencies, near-zero startup','Web standard API compliant'];
+      return ['Chosen backend best fits project requirements'];
+    }
+  }
+  function _dbRationale(){
+    if(G){
+      if(db.includes('Supabase')||db.includes('Neon')||db.includes('PostgreSQL')) return ['ACID準拠で金融・医療データに適切','JSONBカラムでスキーマ柔軟性と構造化の両立','PostGIS拡張で地理情報対応','全文検索・パーティショニングなど豊富な機能'];
+      if(db.includes('MongoDB')) return ['スキーマレスでプロトタイピングが高速','水平スケールが容易','JSONドキュメントとの親和性','アグリゲーションパイプラインが強力'];
+      if(db.includes('Firestore')) return ['Firebaseエコシステムとネイティブ統合','リアルタイムリスナーが組み込み','オフライン同期サポート','SDKが全プラットフォームに対応'];
+      if(db.includes('MySQL')) return ['歴史的な実績と広大なホスティング選択肢','読み取り多いワークロードに最適','PlanetScale等のマネージドサービスが充実'];
+      if(db.includes('SQLite')) return ['ゼロ設定・サーバー不要','テスト・プロトタイプに最適','組み込み/デスクトップアプリに最適'];
+      return ['選択したDBがスタックに最適'];
+    } else {
+      if(db.includes('Supabase')||db.includes('Neon')||db.includes('PostgreSQL')) return ['ACID compliance for financial/medical data','JSONB columns balance schema flexibility and structure','PostGIS extension for geospatial','Rich features: FTS, partitioning, window functions'];
+      if(db.includes('MongoDB')) return ['Schema-less for fast prototyping','Horizontal scaling','Native JSON document storage','Powerful aggregation pipeline'];
+      if(db.includes('Firestore')) return ['Native Firebase ecosystem integration','Built-in real-time listeners','Offline sync support','SDK for every platform'];
+      if(db.includes('MySQL')) return ['Proven track record and broad hosting options','Optimized for read-heavy workloads','Rich managed services (PlanetScale, etc.)'];
+      if(db.includes('SQLite')) return ['Zero-config, no server required','Ideal for testing/prototyping','Best for embedded/desktop apps'];
+      return ['Chosen DB is optimal for this stack'];
+    }
+  }
+  function _depRationale(){
+    if(G){
+      if(dep.includes('Vercel')) return ['Next.js等のフロントエンドフレームワークとのネイティブ統合','ゼロコンフィグデプロイ（GitプッシュでCD自動化）','エッジネットワーク76拠点でグローバル低レイテンシー','プレビューデプロイで非同期コードレビュー可能'];
+      if(dep.includes('Railway')) return ['フルスタックアプリのシンプルなデプロイ','永続ストレージ・データベースのサポート','Dockerコンテナのネイティブサポート','コスト効率が良いスタートアッププライシング'];
+      if(dep.includes('Fly.io')) return ['Dockerコンテナをグローバルに分散','ステートフルアプリ（DB常駐）対応','WireGuard VPNでプライベートネットワーク','高いカスタマイズ性'];
+      if(dep.includes('AWS')||dep.includes('GCP')||dep.includes('Azure')) return ['エンタープライズSLAとコンプライアンス対応','フルカスタマイズ可能なインフラ','豊富なマネージドサービス群','グローバルリージョン展開'];
+      if(dep.includes('Cloudflare')) return ['エッジでのV8実行（低レイテンシー）','無制限リクエスト・グローバルCDN統合','KV/R2/D1等のエッジストレージ','DDoS・セキュリティ保護が組み込み'];
+      return ['選択したデプロイ先がプロジェクトに最適'];
+    } else {
+      if(dep.includes('Vercel')) return ['Native integration with Next.js and frontend frameworks','Zero-config CD (auto-deploy on git push)','76 edge locations for global low latency','Preview deployments enable async code review'];
+      if(dep.includes('Railway')) return ['Simple deployment for full-stack apps','Persistent storage and database support','Native Docker container support','Cost-effective startup pricing'];
+      if(dep.includes('Fly.io')) return ['Distributes Docker containers globally','Stateful app (embedded DB) support','Private network via WireGuard VPN','High customizability'];
+      if(dep.includes('AWS')||dep.includes('GCP')||dep.includes('Azure')) return ['Enterprise SLA and compliance support','Fully customizable infrastructure','Rich managed service catalog','Global region expansion'];
+      if(dep.includes('Cloudflare')) return ['V8 execution at edge (ultra-low latency)','Unlimited requests + global CDN','Edge storage: KV/R2/D1','Built-in DDoS and security protection'];
+      return ['Chosen deployment platform is optimal for this project'];
+    }
+  }
+
+  function _adrBlock(num,title,status,context,decision,rationale,alts,consequences){
+    const sl=G?'ステータス':'Status';
+    const cl=G?'コンテキスト':'Context';
+    const dl=G?'決定':'Decision';
+    const rl=G?'選択理由':'Rationale';
+    const al=G?'検討した代替案':'Considered Alternatives';
+    const col=G?'結果':'Consequences';
+    const positive=G?'✅ ポジティブ':'✅ Positive';
+    const negative=G?'⚠️ トレードオフ':'⚠️ Trade-offs';
+    const pos=consequences.filter(c=>!c.startsWith('-'));
+    const neg=consequences.filter(c=>c.startsWith('-')).map(c=>c.slice(1).trim());
+    let t='## ADR-'+String(num).padStart(3,'0')+': '+title+'\n\n';
+    t+='| | |\n|---|---|\n';
+    t+='| **'+sl+'** | '+status+' |\n';
+    t+='| **'+dl+'** | '+decision+' |\n\n';
+    t+='### '+cl+'\n'+context+'\n\n';
+    t+='### '+rl+'\n'+rationale.map(r=>'- '+r).join('\n')+'\n\n';
+    if(alts.length){t+='### '+al+'\n'+alts.map(x=>'- ~~'+x+'~~').join('\n')+'\n\n';}
+    t+='### '+col+'\n';
+    if(pos.length) t+=positive+'\n'+pos.map(p=>'- '+p).join('\n')+'\n';
+    if(neg.length) t+='\n'+negative+'\n'+neg.map(n=>'- '+n).join('\n')+'\n';
+    t+='\n---\n\n';
+    return t;
+  }
+
+  let doc='';
+  const h=G?'# アーキテクチャ決定記録 (ADR)\n\n':'# Architecture Decision Records (ADR)\n\n';
+  const sub=G
+    ?'> このドキュメントはDevForgeが自動生成したアーキテクチャ決定記録です。\n> 各ADRはウィザードの回答に基づき、選択理由・代替案・トレードオフを記録しています。\n\n'
+    :'> Auto-generated by DevForge. Each ADR captures the decision, rationale, alternatives, and trade-offs based on wizard answers.\n\n';
+  doc+=h+sub;
+  doc+=(G?'**プロジェクト**: ':'**Project**: ')+pn+'\n';
+  doc+=(G?'**作成日**: ':'**Date**: ')+now+'\n';
+  doc+=(G?'**ドメイン**: ':'**Domain**: ')+domain+'\n\n';
+  doc+='---\n\n';
+
+  let n=1;
+
+  // ADR-001: Frontend
+  doc+=_adrBlock(n++,
+    G?'フロントエンドフレームワーク選定':'Frontend Framework Selection',
+    G?'✅ 承認済':'✅ Accepted',
+    G?'プロジェクト「'+pn+'」はWebフロントエンドが必要であり、開発効率・SEO・パフォーマンス・エコシステムを考慮してフレームワークを選定した。'
+     :'Project "'+pn+'" requires a web frontend. Framework selected based on dev efficiency, SEO, performance, and ecosystem.',
+    fe,_feRationale(),_feAlts(),
+    G?['採用技術のエコシステムを最大限活用できる','チームの既存スキルと合致','CI/CDとの統合がスムーズ','-採用外フレームワーク経験者はキャッチアップが必要']
+     :['Maximizes ecosystem benefits','Aligns with team skills','Smooth CI/CD integration','-Non-adopters may need ramp-up']
+  );
+
+  // ADR-002: Backend
+  const beAlts=(()=>{
+    const all=['Supabase','Firebase','Node.js + Express','Node.js + Hono','NestJS','Python + FastAPI','Python + Django','Convex'];
+    return all.filter(x=>!be.includes(x.split(' ')[0])&&!be.includes(x.split('+')[0].trim())).slice(0,3);
+  })();
+  doc+=_adrBlock(n++,
+    G?'バックエンド/BaaS選定':'Backend / BaaS Selection',
+    G?'✅ 承認済':'✅ Accepted',
+    G?'APIサーバーまたはBaaSを選定した。要件: '+a.purpose
+     :'API server or BaaS selected. Project purpose: '+a.purpose,
+    be,_beRationale(),beAlts,
+    G?['バックエンドの一貫したアーキテクチャが維持できる','チームの学習コストが最小化される','-選定外技術は生成コードに含まれない','-将来のマイグレーションにはコストが発生する可能性']
+     :['Consistent backend architecture','Minimizes team learning cost','-Alternative tech excluded from generated code','-Future migration may incur cost']
+  );
+
+  // ADR-003: Database
+  const dbAlts=(()=>{
+    const all=['PostgreSQL','MySQL','MongoDB','SQLite','Firestore','Redis'];
+    return all.filter(x=>!db.includes(x)).slice(0,3);
+  })();
+  doc+=_adrBlock(n++,
+    G?'データベース選定':'Database Selection',
+    G?'✅ 承認済':'✅ Accepted',
+    G?'永続化ストレージの選定。エンティティ: '+(a.data_entities||G?'未指定':'not specified')
+     :'Persistent storage selection. Entities: '+(a.data_entities||'not specified'),
+    db,_dbRationale(),dbAlts,
+    G?['スキーマ設計がドキュメントと一貫','マイグレーション戦略が明確','-選定外DBへの後からの変更は大規模なリファクタリングを要する']
+     :['Schema design matches documentation','Clear migration strategy','-Switching to a different DB later requires major refactoring']
+  );
+
+  // ADR-004: Deploy
+  const depAlts=(()=>{
+    const all=['Vercel','Railway','Fly.io','AWS (EC2/ECS)','Firebase Hosting','Cloudflare Workers'];
+    return all.filter(x=>!dep.includes(x.split(' ')[0])&&!dep.includes(x.split('(')[0].trim())).slice(0,3);
+  })();
+  doc+=_adrBlock(n++,
+    G?'デプロイプラットフォーム選定':'Deployment Platform Selection',
+    G?'✅ 承認済':'✅ Accepted',
+    G?'CI/CDパイプラインと本番環境のホスティング先を選定した。'
+     :'Production hosting and CD pipeline target selected.',
+    dep,_depRationale(),depAlts,
+    G?['ゼロダウンタイムデプロイが可能','Gitベースのワークフローと統合済み','-プラットフォームへの依存が発生する（ベンダーロックイン）','-無料プランには制約あり（本番移行時に確認要）']
+     :['Zero-downtime deployments possible','Integrated with Git-based workflow','-Platform lock-in occurs','-Free plan has constraints (verify before production)']
+  );
+
+  // ADR-005: Auth (if applicable)
+  if(auth&&!isNone(auth)){
+    const authR=resolveAuth(a);
+    const authAlts=['Supabase Auth','Firebase Auth','Auth.js/NextAuth','Custom JWT','Clerk'].filter(x=>!auth.includes(x.split('/')[0])&&!auth.includes(x.split(' ')[0])).slice(0,3);
+    const authRationale=G
+      ?['シングルサインオン(SSO)基盤として機能','セキュリティパッチの自動適用','OAuth2/OIDC標準準拠','トークン管理の自前実装を排除できる']
+      :['Serves as SSO foundation','Automatic security patch application','OAuth2/OIDC standard compliant','Eliminates custom token management'];
+    doc+=_adrBlock(n++,
+      G?'認証方式選定':'Authentication Strategy',
+      G?'✅ 承認済':'✅ Accepted',
+      G?'ユーザー認証の実装方式を選定した。SoT(Source of Truth): '+authR.sot
+       :'User authentication implementation selected. SoT: '+authR.sot,
+      auth,authRationale,authAlts,
+      G?['認証ロジックの標準化によりセキュリティリスクを低減','ソーシャルログイン追加が容易','-サービスのAPI変更に追随する必要がある']
+       :['Standardized auth reduces security risk','Easy to add social login','-Must track service API changes']
+    );
+  }
+
+  // ADR-006: ORM (if not BaaS)
+  if(!orm.isBaaS){
+    const ormAlts=['Prisma','Drizzle','TypeORM','SQLAlchemy','Kysely'].filter(x=>!orm.name.includes(x)).slice(0,3);
+    const ormRationale=G
+      ?['型安全なクエリビルダーでランタイムエラーを削減','マイグレーション管理が一元化','IDEオートコンプリートによる開発効率向上','N+1問題の検出支援']
+      :['Type-safe query builder reduces runtime errors','Centralized migration management','IDE auto-complete boosts efficiency','Helps detect N+1 query issues'];
+    doc+=_adrBlock(n++,
+      G?'ORM/データアクセス層選定':'ORM / Data Access Layer Selection',
+      G?'✅ 承認済':'✅ Accepted',
+      G?'データベース操作の抽象化層を選定した。'
+       :'Data access abstraction layer selected.',
+      orm.name,ormRationale,ormAlts,
+      G?['スキーマ変更がコードとDB間で同期される','テスト時のモック化が容易','-ORM固有のクエリDSLの学習が必要','-複雑なクエリでは生SQLより遅くなる場合あり']
+       :['Schema changes synchronized between code and DB','Easy to mock in tests','-ORM-specific DSL requires learning','-Complex queries can be slower than raw SQL']
+    );
+  }
+
+  // ADR-007: Mobile (if applicable)
+  if(!isNone(mob)){
+    const mobAlts=['Expo (Managed)','Flutter','React Native (Bare)','PWA'].filter(x=>!mob.includes(x.split(' ')[0])).slice(0,3);
+    const mobRationale=G
+      ?['単一コードベースでiOS/Android両対応','Webエンジニアのスキルを活用','ネイティブAPIへのアクセスが可能','CI/CD・OTAアップデートが効率的']
+      :['Single codebase for iOS and Android','Leverages web developer skills','Access to native APIs','Efficient CI/CD and OTA updates'];
+    doc+=_adrBlock(n++,
+      G?'モバイル戦略選定':'Mobile Strategy Selection',
+      G?'✅ 承認済':'✅ Accepted',
+      G?'モバイルアプリケーションの実装戦略を選定した。'
+       :'Mobile application implementation strategy selected.',
+      mob,mobRationale,mobAlts,
+      G?['ネイティブアプリとしてApp Store/Play Storeに公開可能','オフライン対応が実現可能','-ネイティブ専用機能にはブリッジが必要になる場合あり','-Webとは別ビルドパイプラインが必要']
+       :['Can publish to App Store / Play Store','Offline support achievable','-Native-only features may need bridges','-Separate build pipeline from web']
+    );
+  }
+
+  // ADR-008: Payment (if applicable)
+  if(!isNone(pay)){
+    const payAlts=['Stripe','Saleor','LemonSqueezy','Square'].filter(x=>!pay.includes(x)).slice(0,3);
+    const payRationale=G
+      ?['PCI-DSS準拠が不要（トークン化で処理）','Webhook連携で非同期決済フロー','テストモードで本番前の完全検証が可能','国際決済・通貨対応']
+      :['No PCI-DSS scope (tokenization)','Async payment flow via webhooks','Complete pre-production testing in test mode','International payments and currencies'];
+    doc+=_adrBlock(n++,
+      G?'決済システム選定':'Payment System Selection',
+      G?'✅ 承認済':'✅ Accepted',
+      G?'決済・課金システムの実装方式を選定した。'
+       :'Payment and billing system implementation selected.',
+      pay,payRationale,payAlts,
+      G?['決済フローの実装工数を大幅削減','チャージバック・不正対策が標準提供','-サービス手数料が発生する（約2.9%+30¢/トランザクション）','-Webhookの冪等性・リトライ処理の実装が必要']
+       :['Dramatically reduces payment implementation effort','Chargeback/fraud protection built-in','-Service fees apply (~2.9%+30¢/transaction)','-Must implement webhook idempotency and retry logic']
+    );
+  }
+
+  // ADR-009: AI Integration (if applicable)
+  if(!isNone(ai)){
+    const aiAlts=['OpenAI GPT-4','Claude API','Gemini API','Ollama (local)'].filter(x=>!ai.includes(x.split(' ')[0])&&!ai.includes('Claude')!==x.includes('Claude')).slice(0,3);
+    const aiRationale=G
+      ?['自然言語インターフェースでUXを劇的に改善','既存ワークフローのAI拡張が可能','プロンプトエンジニアリングで機能調整が容易','API経由で最新モデルを利用可能']
+      :['Natural language interface dramatically improves UX','AI-augment existing workflows','Fine-tune behavior via prompt engineering','Access latest models via API'];
+    doc+=_adrBlock(n++,
+      G?'AI/LLM統合選定':'AI / LLM Integration Selection',
+      G?'✅ 承認済':'✅ Accepted',
+      G?'AI・生成AI機能の統合方式を選定した。'
+       :'AI and generative AI feature integration selected.',
+      ai,aiRationale,aiAlts,
+      G?['ユーザー体験の差別化要因になる','プロンプトベースで機能拡張が容易','-APIコスト管理が必要（レート制限・トークン上限）','-LLM出力の非決定性によるE2Eテスト困難']
+       :['Creates UX differentiation','Easy feature extension via prompts','-API cost management needed (rate limits, token budgets)','-Non-deterministic LLM output makes E2E testing difficult']
+    );
+  }
+
+  // Footer
+  doc+=G
+    ?'## ADR管理ガイドライン\n\n- 新規アーキテクチャ決定は本ファイルに追記してください\n- ステータス: `✅ 承認済` / `🔄 検討中` / `❌ 却下` / `⬜ 廃止`\n- 参考: [ADR GitHub](https://adr.github.io/) / [MADR](https://adr.github.io/madr/)\n\n---\n*Generated by DevForge v9 — '+now+'*\n'
+    :'## ADR Management Guidelines\n\n- Add new architectural decisions to this file\n- Status: `✅ Accepted` / `🔄 Proposed` / `❌ Rejected` / `⬜ Deprecated`\n- Reference: [ADR GitHub](https://adr.github.io/) / [MADR](https://adr.github.io/madr/)\n\n---\n*Generated by DevForge v9 — '+now+'*\n';
+
+  return doc;
 }
 
 // ═══ Pillar 11: Implementation Intelligence Data Structures ═══

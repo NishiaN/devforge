@@ -461,7 +461,8 @@ function buildFileTree(){
   files.push({name:'  ci.yml',path:'.github/workflows/ci.yml'});
   files.push({name:'───────────',path:''});
   files.push({folder:true,name:'docs'});
-  ['01_project_overview','02_requirements','03_architecture','04_er_diagram',
+  ['00_architecture_decision_records',
+   '01_project_overview','02_requirements','03_architecture','04_er_diagram',
    '05_api_design','06_screen_design','07_test_cases','08_security',
    '09_release_checklist','10_gantt','11_wbs','12_driven_dev','13_glossary',
    '14_risk','15_meeting','16_review','17_monitoring',

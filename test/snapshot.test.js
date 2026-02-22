@@ -84,9 +84,9 @@ describe('Snapshot A: LMS/Supabase/Stripe', () => {
     ai_auto: 'マルチAgent協調'
   }, 'LMS');
 
-  test('file count in range 128-159 (P21-P25 each add +4 docs, total +20)', () => {
+  test('file count in range 129-160 (ADR+1, P21-P25 each add +4 docs, total +21)', () => {
     const count = Object.keys(files).length;
-    assert.ok(count >= 128 && count <= 159, `Expected 128-159 files (P21-P25 each +4 docs), got ${count}`);
+    assert.ok(count >= 129 && count <= 160, `Expected 129-160 files (ADR+1, P21-P25 each +4 docs), got ${count}`);
   });
 
   test('total tokens in range 12000-90000 (P21-P25 each add ~4-6K tokens)', () => {
@@ -99,6 +99,15 @@ describe('Snapshot A: LMS/Supabase/Stripe', () => {
     ['constitution.md','specification.md','technical-plan.md','tasks.md','verification.md'].forEach(f => {
       assert.ok(files['.spec/' + f], `.spec/${f} missing`);
     });
+  });
+
+  test('docs/00 ADR exists with required sections', () => {
+    const adr = files['docs/00_architecture_decision_records.md'];
+    assert.ok(adr, 'docs/00_architecture_decision_records.md missing');
+    assert.ok(adr.includes('ADR-001') || adr.includes('ADR-0'), 'ADR entries missing');
+    assert.ok(adr.includes('ADR-002'), 'ADR-002 missing');
+    assert.ok(adr.includes('ADR-003'), 'ADR-003 missing');
+    assert.ok(adr.includes('ADR-004'), 'ADR-004 missing');
   });
 
   test('AI_BRIEF.md exists and < 1400 tokens', () => {
