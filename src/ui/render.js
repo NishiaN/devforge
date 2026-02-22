@@ -58,7 +58,8 @@ function renderChips(zone,q,multi,onSubmit,withVoice){
   const _ja=S.lang==='ja';
   const sel=new Set();
   var _preAns=(S.answers&&S.answers[q.id])?String(S.answers[q.id]):'';
-  if(multi&&_preAns){_preAns.split(',').map(v=>v.trim()).filter(Boolean).forEach(v=>sel.add(v));}
+  // Strip [P0]/[P1]/[P2] prefixes from saved sortable answers before populating sel
+  if(multi&&_preAns){_preAns.split(',').map(v=>v.trim().replace(/^(\[P\d+\]\s*)+/,'')).filter(Boolean).forEach(v=>sel.add(v));}
   const cz=document.createElement('div');cz.className='czone';
   const lb=document.createElement('div');lb.className='czlabel';lb.textContent=_ja?(multi?'選択してください（複数可・自由入力併用）':'選択するか下に入力'):(multi?'Select multiple or type below':'Select or type below');
   cz.appendChild(lb);
@@ -80,11 +81,27 @@ function renderChips(zone,q,multi,onSubmit,withVoice){
       if(multi){
         if(sel.has(ch)){sel.delete(ch);c.classList.remove('on');c.setAttribute('aria-checked','false');}
         else{sel.add(ch);c.classList.add('on');c.setAttribute('aria-checked','true');}
+        updCount();
       }else{onSubmit(ch);}
     };
     c.onkeydown=(e)=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();c.click();}};
     gr.appendChild(c);
   });
+  // sel内でq.chipsにマッチしなかった項目（プリセット由来など）を可視チップとして追加
+  if(multi){
+    const chipSet=new Set(q.chips||[]);
+    sel.forEach(v=>{
+      if(!chipSet.has(v)){
+        const c=document.createElement('div');c.className='chip on';
+        c.setAttribute('tabindex','0');c.setAttribute('role','checkbox');c.setAttribute('aria-checked','true');
+        const ck=document.createElement('span');ck.className='ck';ck.textContent='✓';ck.setAttribute('aria-hidden','true');c.appendChild(ck);
+        c.appendChild(document.createTextNode(v));
+        c.onclick=()=>{if(sel.has(v)){sel.delete(v);c.classList.remove('on');c.setAttribute('aria-checked','false');}else{sel.add(v);c.classList.add('on');c.setAttribute('aria-checked','true');}updCount();};
+        c.onkeydown=(e)=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();c.click();}};
+        gr.appendChild(c);
+      }
+    });
+  }
   cz.appendChild(gr);zone.appendChild(cz);
   const ft=document.createElement('div');ft.className='cfoot';
   const inp=document.createElement('input');inp.className='cadd';inp.placeholder=q.placeholder||(_ja?'自由入力…':'Type here…');
@@ -93,20 +110,25 @@ function renderChips(zone,q,multi,onSubmit,withVoice){
   if(multi){
     inp.addEventListener('keypress',e=>{
       if(e.key==='Enter'&&inp.value.trim()){
-        const v=inp.value.trim();sel.add(v);
+        const v=inp.value.trim();
+        if(sel.has(v)){inp.value='';return;}
+        sel.add(v);
         const c=document.createElement('div');c.className='chip on';
         const ck=document.createElement('span');ck.className='ck';ck.textContent='✓';c.appendChild(ck);
-        c.appendChild(document.createTextNode(v));c.onclick=()=>{sel.delete(v);c.remove();};
-        gr.appendChild(c);inp.value='';
+        c.appendChild(document.createTextNode(v));c.onclick=()=>{sel.delete(v);c.remove();updCount();};
+        gr.appendChild(c);inp.value='';updCount();
       }
     });
+    const countBadge=document.createElement('span');countBadge.className='chip-count-badge';
+    function updCount(){countBadge.textContent=sel.size?(_ja?sel.size+'件選択中':sel.size+' selected'):'';}
+    updCount();
     const btn=document.createElement('button');btn.className='btn btn-p btn-sm';btn.textContent=t('confirm');
     btn.onclick=()=>{if(inp.value.trim())sel.add(inp.value.trim());if(!sel.size){toast(t('selectMin'));return;}
       const items=Array.from(sel);
-      if(q.sortable&&items.length>1){renderDnD(zone,items,onSubmit);}
+      if(q.sortable&&items.length>1){renderDnD(zone,items,onSubmit,function(){renderChips(zone,q,multi,onSubmit,withVoice);});}
       else{onSubmit(items.join(', '));}
     };
-    ft.appendChild(inp);ft.appendChild(btn);
+    ft.appendChild(countBadge);ft.appendChild(inp);ft.appendChild(btn);
     if(withVoice&&voiceRec){const vb=document.createElement('button');vb.className='voice-btn';vb.textContent='🎙️';vb.title=_ja?'音声入力':'Voice Input';vb.setAttribute('aria-label',_ja?'音声入力':'Voice Input');vb.onclick=()=>toggleVoice(vb);ft.appendChild(vb);}
   } else {
     inp.addEventListener('keypress',e=>{if(e.key==='Enter'&&inp.value.trim())onSubmit(inp.value.trim());});
@@ -118,8 +140,34 @@ function renderChips(zone,q,multi,onSubmit,withVoice){
   zone.appendChild(ft);
 }
 
-/* Tech question IDs where first option gets a "⭐ おすすめ" badge */
+/* Tech question IDs where "⭐ おすすめ" badge is shown */
 const _REC_BADGE_QS=new Set(['frontend','css_fw','backend','database','orm','deploy','mobile','auth']);
+
+/* Returns the recommended option index based on prior answers */
+function _getRecIdx(qId,options){
+  if(!options||!options.length)return 0;
+  var a=S.answers;var fe=a.frontend||'';var be=a.backend||'';
+  var labels=options.map(function(o){return typeof o==='string'?o:o.label;});
+  function findIdx(rx){for(var i=0;i<labels.length;i++){if(rx.test(labels[i]))return i;}return -1;}
+  if(qId==='database'){
+    if(/Supabase/i.test(be)){var si=findIdx(/Supabase/i);if(si>=0)return si;}
+    if(/Firebase/i.test(be)){var fi=findIdx(/Firebase/i);if(fi>=0)return fi;}
+  }
+  if(qId==='deploy'){
+    if(/Firebase/i.test(be)){var fhi=findIdx(/Firebase/i);if(fhi>=0)return fhi;}
+  }
+  if(qId==='css_fw'){
+    if(/React/i.test(fe)){var shi=findIdx(/shadcn/i);if(shi>=0)return shi;}
+  }
+  if(qId==='mobile'){
+    if(/React/i.test(fe)){var exi=findIdx(/Expo/i);if(exi>=0)return exi;}
+  }
+  if(qId==='orm'){
+    if(/NestJS/i.test(be)){var ti=findIdx(/TypeORM/i);if(ti>=0)return ti;}
+    if(/Python|FastAPI|Django/i.test(be)){var ai=findIdx(/SQLAlchemy/i);if(ai>=0)return ai;}
+  }
+  return 0;
+}
 
 function renderOpts(zone,q,onSubmit){
   const _ja=S.lang==='ja';
@@ -127,6 +175,7 @@ function renderOpts(zone,q,onSubmit){
   cards.setAttribute('role','listbox');
   cards.setAttribute('aria-label',_ja?'選択肢':'Options');
   const showBadge=_REC_BADGE_QS.has(q.id);
+  const _recIdx=showBadge?_getRecIdx(q.id,q.options):0;
   (q.options||[]).forEach((o,idx)=>{
     const c=document.createElement('div');c.className='ocard';
     c.setAttribute('tabindex','0');
@@ -135,8 +184,8 @@ function renderOpts(zone,q,onSubmit){
     const h=document.createElement('h5');
     const label=typeof o==='string'?o:o.label;
     h.textContent=label;
-    // ⭐ Recommended badge on first option for tech questions (Beginner/Intermediate/Lower Advanced)
-    if(showBadge&&idx===0&&S.skillLv<4){
+    // ⭐ Recommended badge — dynamically positioned based on prior answers
+    if(showBadge&&idx===_recIdx&&S.skillLv<4){
       const badge=document.createElement('span');badge.className='ocard-rec-badge';
       badge.textContent=_ja?'⭐ おすすめ':'⭐ Recommended';
       h.appendChild(badge);
@@ -219,7 +268,7 @@ function showTechBrowser(qId, onSelect){
   setTimeout(()=>search.focus(),50);
 }
 
-function renderDnD(zone,items,onSubmit){
+function renderDnD(zone,items,onSubmit,onBack){
   const _ja=S.lang==='ja';
   zone.innerHTML='';
   const wrap=document.createElement('div');wrap.style.cssText='padding:10px 20px;';
@@ -228,7 +277,7 @@ function renderDnD(zone,items,onSubmit){
 
   // Keyboard hint (HCD: A アクセシビリティ ④身体負荷)
   const hint=document.createElement('div');hint.className='dnd-hint';
-  hint.textContent=_ja?'ドラッグまたは↑↓キーで並び替え':'Drag or use ↑↓ keys to reorder';
+  hint.textContent=_ja?'ドラッグまたは↑↓キーで並び替え ・ ×ボタンで項目を削除':'Drag or ↑↓ to reorder · Click × to remove items';
   wrap.appendChild(hint);
 
   const list=document.createElement('ul');list.className='dnd-list';list.setAttribute('role','listbox');
@@ -244,7 +293,9 @@ function renderDnD(zone,items,onSubmit){
     const grip=document.createElement('span');grip.className='dnd-grip';grip.textContent='⠿';grip.setAttribute('aria-hidden','true');
     const label=document.createElement('span');label.className='dnd-label';label.textContent=item;
     const pri=document.createElement('span');pri.className='dnd-priority';
-    li.appendChild(grip);li.appendChild(label);li.appendChild(pri);
+    const del=document.createElement('button');del.className='dnd-del';del.textContent='×';del.setAttribute('aria-label',(_ja?'削除: ':'Delete: ')+item);
+    del.onclick=(e)=>{e.stopPropagation();li.remove();const rem=list.querySelectorAll('.dnd-item').length;if(!rem){if(onBack){onBack();}else{zone.innerHTML='';toast(_ja?'すべての項目を削除しました。チップから再選択してください':'All items deleted. Please re-select from chips.');}return;}updPri();};
+    li.appendChild(grip);li.appendChild(label);li.appendChild(pri);li.appendChild(del);
     li.addEventListener('dragstart',e=>{dragItem=li;li.style.opacity='0.4';e.dataTransfer.effectAllowed='move';});
     li.addEventListener('dragend',()=>{dragItem=null;li.style.opacity='1';list.querySelectorAll('.dnd-item').forEach(el=>el.classList.remove('drag-over'));updPri();});
     li.addEventListener('dragover',e=>{e.preventDefault();e.dataTransfer.dropEffect='move';li.classList.add('drag-over');});
@@ -289,6 +340,13 @@ function renderDnD(zone,items,onSubmit){
   }
   updPri();
   const ft=document.createElement('div');ft.style.cssText='padding:6px 20px 12px;display:flex;gap:6px;justify-content:flex-end;';
+  if(onBack){
+    const backBtn=document.createElement('button');
+    backBtn.className='btn btn-g btn-sm';
+    backBtn.textContent=_ja?'← 選び直す':'← Re-select';
+    backBtn.onclick=()=>onBack();
+    ft.appendChild(backBtn);
+  }
   const btn=document.createElement('button');btn.className='btn btn-p btn-sm';btn.textContent=t('sortConfirm');
   btn.onclick=()=>{
     const ordered=Array.from(list.querySelectorAll('.dnd-label')).map(el=>el.textContent);

@@ -47,6 +47,7 @@ let _presetCatFilter='all';
 var _presetMode='standard';   // 'standard' | 'field'
 var _fieldScale='small';      // 'solo'|'small'|'medium'|'large'
 var _fieldCatFilter='all';    // field category key or 'all'
+var _presetSearchQuery='';
 
 function _renderFieldChips(){
   const _ja=S.lang==='ja';const _en=!_ja;
@@ -56,6 +57,7 @@ function _renderFieldChips(){
   Object.entries(PR_FIELD).forEach(function([k,v]){
     if(!v||!v.name)return;
     if(_fieldCatFilter!=='all'&&v.field!==_fieldCatFilter)return;
+    if(_presetSearchQuery&&_scorePreset(v,k,_presetSearchQuery,true)<=0)return;
     const c=document.createElement('span');c.className='prchip';
     c.textContent=(v.icon||'')+(v.icon?' ':'')+(_en&&v.nameEn?v.nameEn:v.name);
     if(S.preset===('field:'+k))c.classList.add('on');
@@ -127,7 +129,7 @@ function applyThemeOverlay(themeKey){
   var ov=THEME_OVERLAYS[themeKey];if(!ov)return;
   var _en=S.genLang==='en';
   // features: append (deduplicate)
-  var curF=(S.answers.mvp_features||'').split(',').map(function(s){return s.trim();}).filter(Boolean);
+  var curF=(S.answers.mvp_features||'').split(',').map(function(s){return s.trim().replace(/^\[P\d+\]\s*/,'');}).filter(Boolean);
   var addF=_en?ov.addFeaturesEn:ov.addFeatures;
   if(Array.isArray(addF))addF.forEach(function(f){if(!curF.includes(f))curF.push(f);});
   S.answers.mvp_features=curF.join(', ');
@@ -138,7 +140,7 @@ function applyThemeOverlay(themeKey){
     S.answers.data_entities=curE.join(', ');
   }
   // screens: append
-  var curS=(S.answers.screens||'').split(',').map(function(s){return s.trim();}).filter(Boolean);
+  var curS=(S.answers.screens||'').split(',').map(function(s){return s.trim().replace(/^\[P\d+\]\s*/,'');}).filter(Boolean);
   var addS=_en?ov.addScreensEn:ov.addScreens;
   if(Array.isArray(addS))addS.forEach(function(s){if(!curS.includes(s))curS.push(s);});
   S.answers.screens=curS.join(', ');
@@ -180,6 +182,7 @@ function _renderPresetChips(){
     if(S.skillLv<=1&&!_beginnerPresets.has(k))return;
     const cat=PRESET_CAT_MAP[k]||'saas_ai';
     if(_presetCatFilter!=='all'&&cat!==_presetCatFilter)return;
+    if(_presetSearchQuery&&_scorePreset(v,k,_presetSearchQuery,false)<=0)return;
     const c=document.createElement('span');c.className='prchip';
     c.textContent=(v.icon||'')+(v.icon?' ':'')+(_en&&v.nameEn?v.nameEn:v.name);
     if(S.preset===k)c.classList.add('on');
@@ -270,6 +273,9 @@ function _pickSuggested(key,isField){
   else{pickPreset(key,null);}
   var box=$('presetSuggestBox');if(box){box.innerHTML='';box.style.display='none';}
   var sin=$('presetSuggestIn');if(sin)sin.value='';
+  _presetSearchQuery='';
+  var sugClr=document.querySelector('.preset-suggest-clear');if(sugClr)sugClr.style.display='none';
+  if(_presetMode==='field')_renderFieldChips();else _renderPresetChips();
   var pName='';
   if(!isField&&PR[key]){pName=_ja&&PR[key].name?PR[key].name:(PR[key].nameEn||PR[key].name||'');}
   else if(isField&&typeof PR_FIELD!=='undefined'&&PR_FIELD[key]){pName=(!_ja&&PR_FIELD[key].nameEn?PR_FIELD[key].nameEn:PR_FIELD[key].name)||'';}
@@ -295,12 +301,26 @@ function initPresets(){
   suggestIn.placeholder=_ja?'🔍 何を作りたい？ 例: 農業IoT / 教育チューター / 医療カルテ':'🔍 What to build? e.g., farm IoT / tutoring / medical records';
   suggestIn.setAttribute('aria-label',_ja?'プリセット検索':'Search presets');
   var suggestBox=document.createElement('div');suggestBox.className='preset-suggest-box';suggestBox.id='presetSuggestBox';
-  suggestWrap.appendChild(suggestIn);suggestWrap.appendChild(suggestBox);
+  suggestWrap.appendChild(suggestIn);
+  var suggestClear=document.createElement('button');suggestClear.className='preset-suggest-clear';
+  suggestClear.textContent='×';suggestClear.style.display='none';
+  suggestClear.setAttribute('aria-label',_ja?'検索クリア':'Clear search');
+  suggestClear.onclick=function(){
+    suggestIn.value='';_presetSearchQuery='';suggestClear.style.display='none';
+    var box=$('presetSuggestBox');if(box){box.innerHTML='';box.style.display='none';}
+    if(_presetMode==='field')_renderFieldChips();else _renderPresetChips();suggestIn.focus();
+  };
+  suggestWrap.appendChild(suggestClear);suggestWrap.appendChild(suggestBox);
   row.appendChild(suggestWrap);
   var _suggestTimer=null;
   suggestIn.addEventListener('input',function(){
     clearTimeout(_suggestTimer);
-    _suggestTimer=setTimeout(function(){_suggestPresets(suggestIn.value);},300);
+    var q=suggestIn.value.trim();_presetSearchQuery=q;
+    suggestClear.style.display=q?'block':'none';
+    _suggestTimer=setTimeout(function(){
+      _suggestPresets(suggestIn.value);
+      if(_presetMode==='field')_renderFieldChips();else _renderPresetChips();
+    },300);
   });
 
   // ── Mode Toggle (📦 標準 | 🎓 分野別) — hidden for Lv0-1 ──

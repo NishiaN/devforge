@@ -23,11 +23,11 @@ function toggleSidebar(){
 }
 
 function switchSidebarTab(tab){
-  const spEl=$('sbProgress');
-  const sfEl=$('sbFiles');
+  const spEl=$('sbProgress');const sfEl=$('sbFiles');const ssEl=$('sbSummary');
   document.querySelectorAll('.sb-tab').forEach(t=>{t.classList.toggle('on',t.dataset.tab===tab);t.setAttribute('aria-selected',String(t.dataset.tab===tab));});
   if(spEl)spEl.style.display=tab==='progress'?'':'none';
   if(sfEl){sfEl.style.display=tab==='files'?'':'none';if(tab==='files')renderSidebarFiles();}
+  if(ssEl){ssEl.style.display=tab==='summary'?'':'none';if(tab==='summary')renderSidebarSummary();}
 }
 
 function renderSidebarFiles(){
@@ -115,10 +115,45 @@ function filterSidebarTree(q){
   });
 }
 
+function goToQ(phase,step){
+  S.phase=phase;S.step=step;save();
+  if(typeof showQ==='function')showQ();
+  if(typeof updProgress==='function')updProgress();
+}
+
+function renderSidebarSummary(){
+  const el=$('sbSummary');if(!el)return;
+  const _ja=S.lang==='ja';
+  if(typeof getQ!=='function'||typeof isQActive!=='function'){el.innerHTML='<p class="sb-empty">'+(_ja?'質問データ未読込':'Questions not loaded')+'</p>';return;}
+  const qs=getQ();let h='';
+  for(let p=1;p<=3;p++){
+    const ph=qs[p];if(!ph)continue;
+    const phLabel=_ja?['','Phase 1','Phase 2','Phase 3'][p]:['','Phase 1','Phase 2','Phase 3'][p];
+    h+='<div class="sb-sum-title">'+phLabel+'</div><ul class="sb-sum-list">';
+    ph.questions.forEach(function(q,si){
+      if(!isQActive(q))return;
+      const ans=S.answers[q.id]||'';
+      const answered=!!ans;
+      const qLabel=(_ja&&q.label)?q.label:(q.labelEn||q.label||q.id);
+      const shortAns=answered?String(ans).replace(/\[P\d+\]\s*/g,'').split(',')[0].trim().slice(0,20):'';
+      const isNow=(S.phase===p&&S.step===si);
+      h+='<li class="sb-sum-item'+(answered?' answered':'')+(isNow?' current':'')+'" tabindex="0" role="button" onclick="goToQ('+p+','+si+')" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();goToQ('+p+','+si+')}">'
+        +'<span class="sb-sum-mark">'+(answered?'✅':'➖')+'</span>'
+        +'<span class="sb-sum-q">'+esc(qLabel)+'</span>'
+        +(shortAns?'<span class="sb-sum-ans" title="'+escAttr(String(ans))+'">'+esc(shortAns)+'</span>':'')
+        +'</li>';
+    });
+    h+='</ul>';
+  }
+  if(!h)h='<p class="sb-empty">'+(_ja?'質問未表示':'No questions')+'</p>';
+  el.innerHTML=h;
+}
+
 function updateSidebarLabels(){
   const _ja=S.lang==='ja';
   const sfEl=$('sbFiles');
   if(sfEl&&sfEl.style.display!=='none')renderSidebarFiles();
+  const ssEl=$('sbSummary');if(ssEl&&ssEl.style.display!=='none')renderSidebarSummary();
   // Update toggle button tooltip
   const tog=$('sbToggle');
   if(tog)tog.title=_ja?'サイドバー切替 (Ctrl+B)':'Toggle Sidebar (Ctrl+B)';

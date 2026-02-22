@@ -98,6 +98,7 @@
           <div class="sb-tabs" role="tablist" aria-label="Sidebar tabs">
             <button class="sb-tab on" data-tab="progress" onclick="switchSidebarTab('progress')" role="tab" aria-selected="true" aria-label="Progress">📋</button>
             <button class="sb-tab" data-tab="files" onclick="switchSidebarTab('files')" role="tab" aria-selected="false" aria-label="Files">📁</button>
+            <button class="sb-tab" data-tab="summary" onclick="switchSidebarTab('summary')" role="tab" aria-selected="false" aria-label="Summary">📝</button>
           </div>
           <div class="sb-section sb-progress" id="sbProgress">
             <div class="pd-title" id="pdTitle">Progress</div>
@@ -107,12 +108,14 @@
             <div class="sb-pillar-grid" id="sbPillarGrid"></div>
           </div>
           <div class="sb-section sb-files" id="sbFiles" style="display:none"></div>
+          <div class="sb-section sb-summary" id="sbSummary" style="display:none"></div>
         </div>
       </aside>
       <div class="sb-iconbar" id="sbIconbar" style="display:none" aria-hidden="true">
         <button class="sb-icon-btn" onclick="toggleSidebar()" title="サイドバーを開く" aria-label="Open sidebar">▶</button>
         <button class="sb-icon-btn" onclick="toggleSidebar();switchSidebarTab('progress')" title="進捗" aria-label="Progress">📋</button>
         <button class="sb-icon-btn" onclick="toggleSidebar();switchSidebarTab('files')" title="ファイル" aria-label="Files">📁</button>
+        <button class="sb-icon-btn" onclick="toggleSidebar();switchSidebarTab('summary')" title="回答一覧" aria-label="Summary">📝</button>
       </div>
       <div class="ws">
         <div class="panel-c" id="panC">
