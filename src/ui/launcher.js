@@ -554,9 +554,13 @@ function showAILauncher(){
     if(!t)return;
     const cat=LAUNCH_CAT_MAP[key]||'implement';
     const _lHide=S.skillLv<=1&&!_LAUNCH_BEGINNER.has(key);
-    h+=`<div class="launch-tpl${_lHide?' launch-tpl-hidden':''}" onclick="selectLaunchTemplate('${key}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();selectLaunchTemplate('${key}');}" tabindex="0" role="button" aria-label="${escAttr(t.label)}" data-lcat="${cat}"${_lHide?' style="display:none"':''}>
+    const _sc=TEMPLATE_SCOPE[key];
+    const _scDocs=_sc?_sc.docs||[]:[];
+    const _scLabels=_scDocs.slice(0,2).map(g=>DOC_GROUPS[g]?(_ja?DOC_GROUPS[g].ja:DOC_GROUPS[g].en):g);
+    const _scTag=_scLabels.length?`<small class="launch-tpl-scope">${_scLabels.join(' · ')}${_scDocs.length>2?' +'+(_scDocs.length-2):''}</small>`:'';
+    h+=`<div class="launch-tpl${_lHide?' launch-tpl-hidden':''}" onclick="selectLaunchTemplate('${key}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();selectLaunchTemplate('${key}');}" tabindex="0" role="button" aria-label="${escAttr(t.label)}" data-lcat="${cat}" data-tkey="${key}"${_lHide?' style="display:none"':''}>
       <div class="launch-tpl-icon" aria-hidden="true">${t.icon}</div>
-      <div class="launch-tpl-info"><strong>${t.label}</strong><span>${t.desc}</span></div>
+      <div class="launch-tpl-info"><strong>${t.label}</strong><span>${t.desc}</span>${_scTag}</div>
       ${AI_REC[key]?'<span class="launch-airec" title="'+(_ja?'推奨AI':'Recommended AI')+'">'+AI_REC[key]+'</span>':''}
     </div>`;
   });
@@ -653,6 +657,11 @@ function selectLaunchTemplate(key){
   const a=S.answers;const pn=S.projectName||'Project';
   const ctx='Project: '+pn+'\nStack: '+(a.frontend||'N/A')+' + '+(a.backend||'N/A')+' + '+(a.database||'N/A')+'\nAuth: '+(a.auth||'N/A')+'\nEntities: '+(a.data_entities||'N/A');
   const full='# System\n'+t.sys+'\n\n# Context\n'+ctx+'\n\n# Task\n'+t.prompt+'\n\n# Output Format\n'+t.fmt+'\n\n---\n\n'+content;
+
+  // Mark active template card
+  document.querySelectorAll('#launchTplList .launch-tpl').forEach(el=>el.classList.remove('launch-tpl-active'));
+  const activeCard=document.querySelector(`#launchTplList .launch-tpl[data-tkey="${key}"]`);
+  if(activeCard)activeCard.classList.add('launch-tpl-active');
 
   const out=$('launchOutput');out.style.display='block';
   $('launchOutputTitle').textContent=`${t.icon} ${t.label}`;
