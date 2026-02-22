@@ -1,7 +1,7 @@
 /* ── Pillar ⑧ AI Prompt Launcher ── */
 /* ── Doc group definitions for docs/ semantic grouping ── */
 const DOC_GROUPS={
-  core:{ja:'基盤',en:'Foundation',nums:[0,1,2,3,4]},
+  core:{ja:'基盤',en:'Foundation',nums:[0,1,2,3,4,82]},
   api:{ja:'API・統合',en:'API & Integration',nums:[5,83,84,85,86]},
   ui:{ja:'UI・デザイン',en:'UI & Design',nums:[6,26,27,57,63,81]},
   test:{ja:'テスト・QA',en:'Testing & QA',nums:[7,28,32,33,34,36,37,91,92,93,94]},
@@ -14,7 +14,7 @@ const DOC_GROUPS={
   strategy:{ja:'戦略・成長',en:'Strategy & Growth',nums:[29,30,38,41,48,49,50,51,52,56,58,59]},
   prompt:{ja:'プロンプト・AI',en:'Prompt & AI',nums:[65,66,67,68,69,70,71,72,95,96,97,98]},
   enterprise:{ja:'エンタープライズ',en:'Enterprise & CI/CD',nums:[73,74,75,76,77,78,79,80]},
-  db:{ja:'データベース',en:'Database',nums:[87,88,89,90]},
+  db:{ja:'データベース',en:'Database',nums:[18,87,88,89,90]},
   methodology:{ja:'方法論・UX',en:'Methodology & UX',nums:[60,61,62]},
 };
 const _DOC_NUM_MAP={};
