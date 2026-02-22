@@ -1,11 +1,11 @@
 # DevForge v9.6.0
 
 You are working on DevForge v9.6.0, an AI-driven development platform and spec generator.
-62 JS modules in src/ build into a single devforge-v9.html (~2634KB / 3000KB limit).
+62 JS modules in src/ build into a single devforge-v9.html (~2703KB / 3000KB limit).
 
 ## Essential Commands
 - Build: `node build.js` (produces devforge-v9.html)
-- Test: `npm test` (1059 tests, all passing)
+- Test: `npm test` (1065 tests, all passing)
 - Dev: `npm run dev` (build + live-server on port 3000)
 - Always run tests before committing
 
