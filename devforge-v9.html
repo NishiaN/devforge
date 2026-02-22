@@ -25451,6 +25451,12 @@ const scope=TEMPLATE_SCOPE[key];
 if(scope){
 const panel=$('launchDgPanel');
 if(panel){
+// Auto-expand if collapsed so user sees the scope change
+if(panel.style.display==='none'){
+panel.style.display='';
+const tb=document.querySelector('.launch-dg-toggle');
+if(tb)tb.textContent='▼';
+}
 const scopeSet=new Set(scope.docs||[]);
 panel.querySelectorAll('input[data-dg]').forEach(c=>{c.checked=scopeSet.has(c.dataset.dg);});
 updateDocGroupState();
