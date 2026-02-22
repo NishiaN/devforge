@@ -25570,10 +25570,12 @@ function filterLaunchCat(catKey){
 document.querySelectorAll('.launch-cat-btn').forEach(b=>{
 b.classList.toggle('active',b.dataset.lcat===catKey);
 });
-// Show/hide template items
+// Show/hide template items; clear active class if card becomes hidden
 document.querySelectorAll('#launchTplList .launch-tpl').forEach(el=>{
 const ec=el.dataset.lcat||'implement';
-el.style.display=(catKey==='all'||ec===catKey)?'':'none';
+const visible=catKey==='all'||ec===catKey;
+el.style.display=visible?'':'none';
+if(!visible)el.classList.remove('launch-tpl-active');
 });
 // Show/hide recommended row based on "all" selection
 const recRow=$('launchRecRow');
