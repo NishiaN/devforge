@@ -11,6 +11,7 @@ const FIELD_CATS_EN = h.FIELD_CATS_EN;
 const PR = h.PR;
 const FIELD_CAT_DEFAULTS = h.FIELD_CAT_DEFAULTS;
 const THEME_OVERLAYS = h.THEME_OVERLAYS;
+const DOMAIN_TOOLS_DB = h.DOMAIN_TOOLS_DB;
 
 describe('Field Presets (PR_FIELD)', () => {
   const fieldKeys = Object.keys(PR_FIELD);
@@ -22,13 +23,16 @@ describe('Field Presets (PR_FIELD)', () => {
     // Phase L: 14 new categories
     'gaming','video','live_event','publishing','gambling',
     'podcast','music_biz','housing','food','mental_health',
-    'fashion','shopping','pet','car_life'
+    'fashion','shopping','pet','car_life',
+    // v2.4: 10 new categories
+    'civil_eng','braintech','digital_legacy','data_sovereignty',
+    'space_data','climate_resilience','ai_avatar','civic_tech','childcare','nomad_life'
   ]);
   const VALID_SCALES = ['solo','small','medium','large'];
   const META_DIMS = ['revenue','regulation','apiDep','agentLv','multimodal','onDevice'];
 
-  it('PR_FIELD has 138 entries', () => {
-    assert.equal(fieldKeys.length, 138);
+  it('PR_FIELD has 178 entries', () => {
+    assert.equal(fieldKeys.length, 178);
   });
 
   it('every field preset has bilingual name and icon', () => {
@@ -114,8 +118,8 @@ describe('_SCALE_DEFAULTS', () => {
 });
 
 describe('FIELD_CAT_MAP', () => {
-  it('covers all 138 field presets', () => {
-    assert.equal(Object.keys(FIELD_CAT_MAP).length, 138);
+  it('covers all 178 field presets', () => {
+    assert.equal(Object.keys(FIELD_CAT_MAP).length, 178);
   });
 
   it('all FIELD_CAT_MAP values match PR_FIELD[key].field', () => {
@@ -131,8 +135,8 @@ describe('FIELD_CAT_MAP', () => {
 });
 
 describe('FIELD_TREND', () => {
-  it('has 34 field category entries', () => {
-    assert.equal(Object.keys(FIELD_TREND).length, 34);
+  it('has 44 field category entries', () => {
+    assert.equal(Object.keys(FIELD_TREND).length, 44);
   });
 
   it('all trend values are integers 1-5', () => {
@@ -146,12 +150,12 @@ describe('FIELD_TREND', () => {
 });
 
 describe('FIELD_CATS_JA / FIELD_CATS_EN', () => {
-  it('FIELD_CATS_JA has 35 buttons (all + 34 fields)', () => {
-    assert.equal(FIELD_CATS_JA.length, 35);
+  it('FIELD_CATS_JA has 45 buttons (all + 44 fields)', () => {
+    assert.equal(FIELD_CATS_JA.length, 45);
   });
 
-  it('FIELD_CATS_EN has 35 buttons (all + 34 fields)', () => {
-    assert.equal(FIELD_CATS_EN.length, 35);
+  it('FIELD_CATS_EN has 45 buttons (all + 44 fields)', () => {
+    assert.equal(FIELD_CATS_EN.length, 45);
   });
 
   it('both start with an all category', () => {
@@ -176,13 +180,16 @@ describe('FIELD_CAT_DEFAULTS (Layer 2)', () => {
     // Phase L: 14 new categories
     'gaming','video','live_event','publishing','gambling',
     'podcast','music_biz','housing','food','mental_health',
-    'fashion','shopping','pet','car_life'
+    'fashion','shopping','pet','car_life',
+    // v2.4: 10 new categories
+    'civil_eng','braintech','digital_legacy','data_sovereignty',
+    'space_data','climate_resilience','ai_avatar','civic_tech','childcare','nomad_life'
   ];
   const VALID_PAYMENT = new Set(['none','stripe','stripe_billing','ec_build']);
   const VALID_MOBILE = new Set(['none','Expo (React Native)','Flutter','PWA']);
 
-  it('covers all 34 field categories', () => {
-    assert.equal(Object.keys(FIELD_CAT_DEFAULTS).length, 34);
+  it('covers all 44 field categories', () => {
+    assert.equal(Object.keys(FIELD_CAT_DEFAULTS).length, 44);
     for (const f of VALID_FIELDS) {
       assert.ok(FIELD_CAT_DEFAULTS[f], `Missing category: ${f}`);
     }
@@ -477,6 +484,74 @@ describe('THEME_OVERLAYS', () => {
     for (const theme of EXPECTED_THEMES) {
       assert.equal(typeof THEME_OVERLAYS[theme].metaOverride, 'object',
         `${theme}.metaOverride should be object`);
+    }
+  });
+});
+
+describe('v2.4: 10 new domain categories', () => {
+  const NEW_CATS = ['civil_eng','braintech','digital_legacy','data_sovereignty',
+    'space_data','climate_resilience','ai_avatar','civic_tech','childcare','nomad_life'];
+  const NEW_CAT_KEYS = {
+    civil_eng:['civil_ground','civil_survey','civil_design','civil_construct'],
+    braintech:['bt_cogperf','bt_bci_ui','bt_neuro_detect','bt_learn_boost'],
+    digital_legacy:['dl_will','dl_memorial','dl_estate','dl_endnote'],
+    data_sovereignty:['ds_vault','ds_consent','ds_selfai','ds_forget'],
+    space_data:['sp_satellite','sp_weather','sp_travel','sp_gnss'],
+    climate_resilience:['cr_riskmap','cr_disaster','cr_carbon','cr_energy'],
+    ai_avatar:['av_agent','av_identity','av_influencer','av_presence'],
+    civic_tech:['ct_admin','ct_civic','ct_law','ct_grant'],
+    childcare:['cc_develop','cc_postnatal','cc_finance','cc_match'],
+    nomad_life:['nm_cost','nm_tax','nm_community','nm_visa']
+  };
+
+  it('all 10 new categories exist in FIELD_CAT_DEFAULTS', () => {
+    for (const cat of NEW_CATS) {
+      assert.ok(FIELD_CAT_DEFAULTS[cat], `Missing new category: ${cat}`);
+    }
+  });
+
+  it('each new category has exactly 4 presets in PR_FIELD', () => {
+    for (const [cat, keys] of Object.entries(NEW_CAT_KEYS)) {
+      for (const k of keys) {
+        assert.ok(PR_FIELD[k], `Missing preset: ${k} (category: ${cat})`);
+        assert.equal(PR_FIELD[k].field, cat, `${k}.field should be ${cat}`);
+      }
+    }
+  });
+
+  it('new presets have valid bilingual names', () => {
+    for (const keys of Object.values(NEW_CAT_KEYS)) {
+      for (const k of keys) {
+        const p = PR_FIELD[k];
+        assert.ok(p.name, `${k} missing name`);
+        assert.ok(p.nameEn, `${k} missing nameEn`);
+      }
+    }
+  });
+
+  it('FIELD_CATS_JA/EN include all 10 new categories', () => {
+    for (const cat of NEW_CATS) {
+      assert.ok(FIELD_CATS_JA.some(c => c.key === cat), `FIELD_CATS_JA missing: ${cat}`);
+      assert.ok(FIELD_CATS_EN.some(c => c.key === cat), `FIELD_CATS_EN missing: ${cat}`);
+    }
+  });
+
+  it('FIELD_TREND includes all 10 new categories with valid scores', () => {
+    for (const cat of NEW_CATS) {
+      assert.ok(cat in FIELD_TREND, `FIELD_TREND missing: ${cat}`);
+      const stars = FIELD_TREND[cat];
+      assert.ok(Number.isInteger(stars) && stars >= 1 && stars <= 5,
+        `FIELD_TREND.${cat}=${stars} is not 1-5`);
+    }
+  });
+
+  it('DOMAIN_TOOLS_DB exists with 10 domain entries', () => {
+    assert.ok(typeof DOMAIN_TOOLS_DB === 'object', 'DOMAIN_TOOLS_DB not defined');
+    assert.equal(Object.keys(DOMAIN_TOOLS_DB).length, 10);
+    for (const cat of NEW_CATS) {
+      assert.ok(DOMAIN_TOOLS_DB[cat], `DOMAIN_TOOLS_DB missing: ${cat}`);
+      assert.ok(Array.isArray(DOMAIN_TOOLS_DB[cat].solo), `${cat}.solo not array`);
+      assert.ok(Array.isArray(DOMAIN_TOOLS_DB[cat].large), `${cat}.large not array`);
     }
   });
 });

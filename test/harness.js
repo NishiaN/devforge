@@ -57,6 +57,7 @@ loadModule('data/techdb.js');
 loadModule('data/helpdata.js');
 loadModule('data/presets.js');
 loadModule('data/presets-ext.js');
+loadModule('data/presets-ext2.js');
 
 module.exports = {
   sandbox,
@@ -76,6 +77,7 @@ module.exports = {
   get _SCALE_DEFAULTS(){return sandbox._SCALE_DEFAULTS;},
   get FIELD_CAT_DEFAULTS(){return sandbox.FIELD_CAT_DEFAULTS;},
   get THEME_OVERLAYS(){return sandbox.THEME_OVERLAYS;},
+  get DOMAIN_TOOLS_DB(){return sandbox.DOMAIN_TOOLS_DB;},
   get _PD(){return sandbox._PD;},
   get REQ_LABELS(){return sandbox.REQ_LABELS;},
   esc:(...a)=>sandbox.esc(...a),

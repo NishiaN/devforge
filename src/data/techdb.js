@@ -367,6 +367,26 @@ const TECH_DB=[
 {name:'axe-core',cat:'test',sub:'a11y',req:'optional',level:'int',price:'free-oss'},
 {name:'Open Food Facts API',cat:'back',sub:'food',req:'optional',level:'int',price:'free-oss'},
 {name:'CoinGecko API',cat:'back',sub:'crypto',req:'optional',level:'int',price:'free-tier'},
+// ── GIS & Surveying (6) ──
+{name:'QGIS',cat:'specialist',sub:'gis',req:'recommended',level:'pro',price:'free-oss'},
+{name:'ArcGIS / Esri',cat:'specialist',sub:'gis',req:'top1',level:'pro',price:'paid'},
+{name:'OpenDroneMap',cat:'specialist',sub:'survey',req:'recommended',level:'pro',price:'free-oss'},
+{name:'LAStools',cat:'specialist',sub:'survey',req:'recommended',level:'pro',price:'paid'},
+{name:'CloudCompare',cat:'specialist',sub:'survey',req:'recommended',level:'pro',price:'free-oss'},
+{name:'DJI Terra',cat:'specialist',sub:'survey',req:'recommended',level:'pro',price:'paid'},
+// ── Civil Engineering (2) ──
+{name:'Autodesk Civil 3D',cat:'specialist',sub:'civeng',req:'top1',level:'pro',price:'paid'},
+{name:'Bentley iTwin',cat:'specialist',sub:'civeng',req:'recommended',level:'pro',price:'paid'},
+// ── ML Vision (2) ──
+{name:'YOLOv8',cat:'specialist',sub:'ml_vision',req:'top1',level:'int',price:'free-oss'},
+{name:'Azure Video Analyzer',cat:'specialist',sub:'ml_vision',req:'recommended',level:'pro',price:'pay-as-you-go'},
+// ── BI & Reporting (3) ──
+{name:'Power BI',cat:'specialist',sub:'analytics',req:'recommended',level:'int',price:'free-tier'},
+{name:'ReportLab',cat:'specialist',sub:'reporting',req:'recommended',level:'int',price:'free-oss'},
+{name:'kintone',cat:'specialist',sub:'platform',req:'recommended',level:'int',price:'paid'},
+// ── Cloud Data Platforms (2) ──
+{name:'Azure Synapse',cat:'specialist',sub:'data_platform',req:'recommended',level:'pro',price:'usage'},
+{name:'Databricks',cat:'specialist',sub:'data_platform',req:'recommended',level:'pro',price:'free-tier'},
 ];
 const _TECH_COUNT=TECH_DB.length;
 
