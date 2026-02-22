@@ -99,7 +99,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:1
 .sb-tab{flex:1;padding:5px 0;border:none;border-radius:6px;background:none;cursor:pointer;font-size:14px;color:var(--text-3);transition:all 0.15s;}
 .sb-tab.on{background:var(--bg-3);color:var(--accent);}
 .sb-tab:hover:not(.on){background:var(--bg-3);}
-.sb-section{display:flex;flex-direction:column;flex:1;overflow:hidden;padding:8px;}
+.sb-section{display:flex;flex-direction:column;flex:1;overflow-y:auto;padding:8px;}
 .sb-summary{overflow-y:auto;padding:6px 8px;}
 .sb-sum-title{font-size:11px;font-weight:700;color:var(--text-3);padding:4px 4px 6px;letter-spacing:.3px;}
 .sb-sum-list{list-style:none;margin:0 0 4px;padding:0 0 0 8px;}
@@ -111,6 +111,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:1
 .sb-sum-q{font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .sb-sum-ans{margin-left:auto;font-size:9px;color:var(--text-3);max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .sb-progress{gap:6px;}
+#sbPills{overflow-y:auto;flex-shrink:1;min-height:0;max-height:35vh;}
 .sb-files{overflow-y:auto;padding:6px 6px;}
 .sb-file-search{margin-bottom:6px;}
 .sb-file-search input{width:100%;box-sizing:border-box;padding:5px 8px;font-size:11px;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg-3);color:var(--text);font-family:var(--sans);outline:none;}
@@ -673,7 +674,7 @@ details[open]>.dash-adv-toggle::before{content:'▼ ';}
 .chip.on .ck{border-color:var(--accent);background:var(--accent);color:#fff;}
 .czone{padding:10px 20px;}
 .czlabel{font-size:11px;color:var(--text-3);margin-bottom:8px;font-weight:500;}
-.cgrid{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;}
+.cgrid{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;max-height:32vh;overflow-y:auto;}
 .cfoot{padding:6px 20px 12px;display:flex;gap:6px;align-items:center;}
 .chip-count-badge{font-size:11px;color:var(--text-3);white-space:nowrap;flex-shrink:0;}
 .cfoot input.cadd{flex:1;padding:8px 14px;border-radius:20px;border:1.5px solid var(--border);background:var(--bg-3);color:var(--text);font-size:12px;outline:none;}
@@ -697,7 +698,7 @@ details[open]>.dash-adv-toggle::before{content:'▼ ';}
 .skip-btn:hover{background:var(--bg-3);color:var(--text-2);}
 /* DnD Keyboard Accessibility (HCD: A アクセシビリティ ④身体負荷) */
 .dnd-hint{font-size:11px;color:var(--text-3);margin-bottom:8px;font-style:italic;}
-.dnd-list{list-style:none;padding:0;margin:0 0 8px;}
+.dnd-list{list-style:none;padding:0;margin:0 0 8px;max-height:40vh;overflow-y:auto;}
 .dnd-item{display:flex;align-items:center;gap:8px;padding:8px 12px;margin:3px 0;border-radius:7px;border:1.5px solid var(--border);background:var(--bg-3);cursor:grab;transition:all 0.12s;user-select:none;font-size:12px;color:var(--text);}
 .dnd-item:active{cursor:grabbing;background:var(--bg-4);border-color:var(--accent);box-shadow:0 4px 12px rgba(0,0,0,0.3);}
 .dnd-item:focus{outline:2px solid var(--accent);outline-offset:2px;border-color:var(--accent);}
