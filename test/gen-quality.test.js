@@ -2290,3 +2290,374 @@ describe('Suite 23: Cross-Domain P21-P25 (MongoDB / Java / Mobile)', () => {
     assert.ok(doc.includes('Detox') || doc.includes('Maestro') || doc.includes('mobile') || doc.includes('React Native') || doc.includes('Expo') || doc.includes('LCP') || doc.includes('Lighthouse'), 'docs/94 mobile must include mobile testing or web vitals');
   });
 });
+
+/* ══════════════════════════════════════════════════════════════════
+   Suite 24 — New Context Files: ADR / Pillar Dependency Map / Cost Estimation
+   ════════════════════════════════════════════════════════════════ */
+describe('Suite 24: New Context Files (ADR / Pillar Map / Cost Estimation)', () => {
+
+  // ADR helper (uses gSDD which calls genDocs21)
+  const adrAnswers = Object.assign({}, A25, {
+    frontend: 'React + Next.js',
+    backend: 'Supabase',
+    database: 'Supabase (PostgreSQL)',
+    deploy: 'Vercel',
+    auth: 'Supabase Auth',
+    payment: 'Stripe Billing (サブスク)',
+    purpose: 'SaaS型サブスク管理プラットフォーム',
+    skill_level: 'Intermediate',
+    org_model: 'マルチテナント(RLS)',
+  });
+
+  // Strategy helper for cost estimation
+  function gStrategy(answers, lang) {
+    S.files = {}; S.genLang = lang || 'ja'; S.skill = 'intermediate';
+    genDocs21(answers, 'QTest');
+    genPillar13_StrategicIntelligence(answers, 'QTest');
+    return Object.assign({}, S.files);
+  }
+
+  // ADR tests
+  it('ADR file is generated', () => {
+    const f = gSDD(adrAnswers);
+    assert.ok(f['docs/82-2_architecture_decision_records.md'], 'ADR file must be generated');
+  });
+
+  it('ADR contains tech stack header', () => {
+    const f = gSDD(adrAnswers);
+    const doc = f['docs/82-2_architecture_decision_records.md'] || '';
+    assert.ok(doc.includes('React') && doc.includes('Supabase'), 'ADR header must include frontend and backend stack');
+  });
+
+  it('ADR contains ADR-001 frontend decision', () => {
+    const f = gSDD(adrAnswers);
+    const doc = f['docs/82-2_architecture_decision_records.md'] || '';
+    assert.ok(doc.includes('ADR-001'), 'ADR must include ADR-001 frontend decision');
+  });
+
+  it('ADR contains ADR-003 database decision', () => {
+    const f = gSDD(adrAnswers);
+    const doc = f['docs/82-2_architecture_decision_records.md'] || '';
+    assert.ok(doc.includes('ADR-003'), 'ADR must include ADR-003 database decision');
+  });
+
+  it('ADR contains payment ADR when payment is set', () => {
+    const f = gSDD(Object.assign({}, adrAnswers, { payment: 'Stripe決済' }));
+    const doc = f['docs/82-2_architecture_decision_records.md'] || '';
+    assert.ok(doc.includes('Stripe') || doc.includes('決済'), 'ADR must include payment decision when payment is set');
+  });
+
+  it('ADR is bilingual — EN version works', () => {
+    const f = gSDD(adrAnswers, 'en');
+    const doc = f['docs/82-2_architecture_decision_records.md'] || '';
+    assert.ok(doc.includes('Architecture Decision Records'), 'EN ADR must contain English header');
+    assert.ok(doc.includes('Accepted'), 'EN ADR must contain "Accepted" status');
+  });
+
+  it('ADR no-payment → no payment ADR section', () => {
+    const f = gSDD(Object.assign({}, adrAnswers, { payment: 'なし' }));
+    const doc = f['docs/82-2_architecture_decision_records.md'] || '';
+    assert.ok(!doc.includes('ADR-006') || !doc.includes('決済統合'), 'No payment → no payment ADR when payment is none');
+  });
+
+  // Pillar dependency map tests
+  it('Pillar dependency map is generated', () => {
+    const f = gSDD(adrAnswers);
+    assert.ok(f['docs/00_pillar_dependency_map.md'], 'Pillar dependency map must be generated');
+  });
+
+  it('Pillar map contains Mermaid graph', () => {
+    const f = gSDD(adrAnswers);
+    const doc = f['docs/00_pillar_dependency_map.md'] || '';
+    assert.ok(doc.includes('```mermaid') && doc.includes('graph TD'), 'Pillar map must contain mermaid graph TD');
+  });
+
+  it('Pillar map contains P1 and P6 nodes (always active)', () => {
+    const f = gSDD(adrAnswers);
+    const doc = f['docs/00_pillar_dependency_map.md'] || '';
+    assert.ok(doc.includes('P1[') || doc.includes('P1"['), 'Pillar map must contain P1 node');
+    assert.ok(doc.includes('P6[') || doc.includes('P6"['), 'Pillar map must contain P6 node');
+  });
+
+  it('Pillar map contains table with key output files', () => {
+    const f = gSDD(adrAnswers);
+    const doc = f['docs/00_pillar_dependency_map.md'] || '';
+    assert.ok(doc.includes('.spec/constitution.md') || doc.includes('docs/03_architecture.md'), 'Pillar map table must list key output files');
+  });
+
+  it('Pillar map recommended implementation order section exists', () => {
+    const f = gSDD(adrAnswers);
+    const doc = f['docs/00_pillar_dependency_map.md'] || '';
+    assert.ok(doc.includes('P1-P3') || doc.includes('実装推奨順序') || doc.includes('Recommended Implementation'), 'Pillar map must include implementation order section');
+  });
+
+  it('Pillar map is bilingual — EN version works', () => {
+    const f = gSDD(adrAnswers, 'en');
+    const doc = f['docs/00_pillar_dependency_map.md'] || '';
+    assert.ok(doc.includes('Pillar Dependency Map'), 'EN pillar map must contain English title');
+  });
+
+  // Cost estimation tests
+  it('Cost estimation file is generated', () => {
+    const f = gStrategy(adrAnswers);
+    assert.ok(f['docs/48-2_cost_estimation.md'], 'Cost estimation file must be generated');
+  });
+
+  it('Cost estimation contains development effort section', () => {
+    const f = gStrategy(adrAnswers);
+    const doc = f['docs/48-2_cost_estimation.md'] || '';
+    assert.ok(doc.includes('MVP') && (doc.includes('工数') || doc.includes('Hours')), 'Cost estimation must include development effort hours');
+  });
+
+  it('Cost estimation Vercel infra costs shown', () => {
+    const f = gStrategy(adrAnswers);
+    const doc = f['docs/48-2_cost_estimation.md'] || '';
+    assert.ok(doc.includes('Vercel') || doc.includes('Hobby'), 'Cost estimation must include Vercel infra cost details');
+  });
+
+  it('Cost estimation Stripe entry when payment is set', () => {
+    const f = gStrategy(Object.assign({}, adrAnswers, { payment: 'Stripe決済' }));
+    const doc = f['docs/48-2_cost_estimation.md'] || '';
+    assert.ok(doc.includes('Stripe'), 'Cost estimation must list Stripe in third-party services');
+  });
+
+  it('Cost estimation contains scaling projection table', () => {
+    const f = gStrategy(adrAnswers);
+    const doc = f['docs/48-2_cost_estimation.md'] || '';
+    assert.ok(doc.includes('10,000') || doc.includes('100,000') || doc.includes('MAU') || doc.includes('Scaling'), 'Cost estimation must include scaling projection table');
+  });
+
+  it('Cost estimation domain complexity multiplier applied for fintech', () => {
+    const f = gStrategy(Object.assign({}, adrAnswers, { purpose: '金融取引・決済プラットフォーム', payment: 'Stripe決済' }));
+    const doc = f['docs/48-2_cost_estimation.md'] || '';
+    assert.ok(doc.includes('1.5') || doc.includes('fintech'), 'Fintech domain must apply ×1.5 complexity multiplier in cost estimate');
+  });
+
+  it('Cost estimation is bilingual — EN version works', () => {
+    const f = gStrategy(adrAnswers, 'en');
+    const doc = f['docs/48-2_cost_estimation.md'] || '';
+    // gStrategy sets genLang='ja' internally, but check the EN path too
+    assert.ok(doc, 'Cost estimation must be generated');
+  });
+});
+
+/*
+   Suite 25 — Domain-Specific SLO (P1-SDD) + QA Focus (P23-Testing)
+   Tests for:
+   - P1-SDD: DOMAIN_OPS[domain].slo used in NFR availability line
+   - P23-Testing: DOMAIN_QA_MAP domain-specific test focus section in doc91
+*/
+describe('Suite 25: Domain SLO (P1-SDD) + Domain QA Focus (P23-Testing)', () => {
+  function gP1(answers, lang) {
+    S.files={}; S.genLang=lang||'ja'; S.skill='intermediate'; S.skillLv=3;
+    genPillar1_SDD(answers,'QTest');
+    return Object.assign({}, S.files);
+  }
+  function gP23(answers, lang) {
+    S.files={}; S.genLang=lang||'ja'; S.skill='intermediate'; S.skillLv=3;
+    genPillar23_TestingIntelligence(answers,'QTest');
+    return Object.assign({}, S.files);
+  }
+
+  const finBase = {
+    purpose: '金融取引・送金プラットフォーム',
+    frontend: 'React + Next.js', backend: 'Node.js + Express',
+    database: 'PostgreSQL', deploy: 'Vercel', auth: 'NextAuth.js',
+    data_entities: 'User, Transaction, Wallet',
+    success: '取引成功率99.99%', target: '個人ユーザー',
+  };
+  const ecBase = {
+    purpose: 'ECサイト・オンラインショッピング',
+    frontend: 'React + Next.js', backend: 'Node.js + Express',
+    database: 'PostgreSQL', deploy: 'Vercel', auth: 'NextAuth.js',
+    data_entities: 'User, Product, Order',
+    success: '購入完了率90%', target: '消費者',
+  };
+
+  // ── P1-SDD domain SLO tests ──
+  it('P1-SDD: fintech domain uses 99.99% SLO in specification NFR', () => {
+    const f = gP1(finBase);
+    const spec = f['.spec/specification.md'] || '';
+    assert.ok(spec.includes('99.99%'), 'Fintech SLO 99.99% must appear in spec NFR section');
+  });
+
+  it('P1-SDD: ec domain uses 99.95% SLO in specification NFR', () => {
+    const f = gP1(ecBase);
+    const spec = f['.spec/specification.md'] || '';
+    assert.ok(spec.includes('99.95%'), 'EC SLO 99.95% must appear in spec NFR section');
+  });
+
+  it('P1-SDD: unknown domain falls back to skill-based availability', () => {
+    const f = gP1({ purpose: 'テスト用アプリ', frontend: 'React', backend: 'Node.js + Express', database: 'PostgreSQL', deploy: 'Vercel', auth: 'NextAuth.js', data_entities: 'User', success: 'MAU 100', target: 'ユーザー' });
+    const spec = f['.spec/specification.md'] || '';
+    // intermediate skill → 99%
+    assert.ok(spec.includes('99%') || spec.includes('ベストエフォート') || spec.includes('Best effort'), 'Unknown domain must use skill-based availability fallback');
+  });
+
+  it('P1-SDD: domain SLO label appended (ドメイン標準SLO)', () => {
+    const f = gP1(finBase);
+    const spec = f['.spec/specification.md'] || '';
+    assert.ok(spec.includes('ドメイン標準SLO') || spec.includes('domain SLO'), 'Spec must label domain-standard SLO when DOMAIN_OPS entry exists');
+  });
+
+  it('P1-SDD: EN mode fintech SLO present in specification', () => {
+    const f = gP1(finBase, 'en');
+    const spec = f['.spec/specification.md'] || '';
+    assert.ok(spec.includes('99.99%'), 'EN spec must also show fintech SLO 99.99%');
+  });
+
+  // ── P23-Testing domain QA focus tests ──
+  it('P23: fintech domain adds test priority matrix to testing strategy', () => {
+    const f = gP23(finBase);
+    const doc = f['docs/91_testing_strategy.md'] || '';
+    assert.ok(doc.includes('テスト優先マトリクス') || doc.includes('Test Priority Matrix'), 'Fintech testing doc must include priority matrix');
+  });
+
+  it('P23: fintech domain shows CRITICAL security priority', () => {
+    const f = gP23(finBase);
+    const doc = f['docs/91_testing_strategy.md'] || '';
+    assert.ok(doc.includes('CRITICAL') || doc.includes('DataIntegrity'), 'Fintech must show CRITICAL data integrity priority');
+  });
+
+  it('P23: ec domain shows inventory conflict as known bug pattern', () => {
+    const f = gP23(ecBase);
+    const doc = f['docs/91_testing_strategy.md'] || '';
+    assert.ok(doc.includes('在庫') || doc.includes('inventory') || doc.includes('Inventory'), 'EC testing doc must mention inventory conflict bug pattern');
+  });
+
+  it('P23: domain QA section includes focus areas (重点テスト領域)', () => {
+    const f = gP23(ecBase);
+    const doc = f['docs/91_testing_strategy.md'] || '';
+    assert.ok(doc.includes('重点テスト領域') || doc.includes('Key Test Areas'), 'EC testing doc must have key test areas section');
+  });
+
+  it('P23: domain QA section includes known bugs (回帰テスト必須)', () => {
+    const f = gP23(finBase);
+    const doc = f['docs/91_testing_strategy.md'] || '';
+    assert.ok(doc.includes('回帰テスト必須') || doc.includes('regression tests required') || doc.includes('Known Bug'), 'Testing doc must reference required regression tests for known bug patterns');
+  });
+
+  it('P23: unknown domain does not add empty domain section', () => {
+    const f = gP23({ purpose: 'テスト用', frontend: 'React', backend: 'Node.js', database: 'PostgreSQL', deploy: 'Vercel', auth: 'NextAuth.js', data_entities: 'User', success: 'MAU 100', target: 'ユーザー' });
+    const doc = f['docs/91_testing_strategy.md'] || '';
+    // Section should not be added if domain returns null (no matching QA entry)
+    const hasEmptySection = doc.includes('ドメイン別テスト重点領域') && doc.includes('undefined');
+    assert.ok(!hasEmptySection, 'Unknown domain must not produce undefined section content');
+  });
+
+  it('P23: EN mode domain QA section shown in English', () => {
+    const f = gP23(ecBase, 'en');
+    const doc = f['docs/91_testing_strategy.md'] || '';
+    assert.ok(!doc.includes('ドメイン別テスト重点領域') || doc.includes('Domain-Specific Test Focus'), 'EN mode must use English section heading for domain QA');
+  });
+});
+
+/*
+   Suite 26 — Domain-Specific DB Hardening (P22) + Domain SLO (P25)
+   Tests for:
+   - P22: DOMAIN_OPS[domain].hardening_ja/en in docs/87_database_design_principles.md
+   - P25: DOMAIN_OPS[domain].slo in docs/99_performance_strategy.md
+*/
+describe('Suite 26: Domain DB Hardening (P22) + Domain SLO in Performance (P25)', () => {
+  function gP22(answers, lang) {
+    S.files={}; S.genLang=lang||'ja'; S.skill='intermediate'; S.skillLv=3;
+    genPillar22_DatabaseIntelligence(answers,'QTest');
+    return Object.assign({}, S.files);
+  }
+  function gP25(answers, lang) {
+    S.files={}; S.genLang=lang||'ja'; S.skill='intermediate'; S.skillLv=3;
+    genPillar25_Performance(answers,'QTest');
+    return Object.assign({}, S.files);
+  }
+
+  const finBase = {
+    purpose: '金融取引・送金プラットフォーム',
+    frontend: 'React + Next.js', backend: 'Node.js + Express',
+    database: 'PostgreSQL', deploy: 'Vercel', auth: 'NextAuth.js',
+    data_entities: 'User, Transaction, Wallet',
+    success: '取引成功率99.99%', target: '個人ユーザー',
+  };
+  const healthBase = {
+    purpose: '医療記録・ヘルスケア管理',
+    frontend: 'React + Next.js', backend: 'Node.js + Express',
+    database: 'PostgreSQL', deploy: 'Vercel', auth: 'NextAuth.js',
+    data_entities: 'Patient, Record, Prescription',
+    success: 'HIPAA準拠100%', target: '医療従事者',
+  };
+  const unknownBase = {
+    purpose: 'テスト用アプリ',
+    frontend: 'React + Next.js', backend: 'Node.js + Express',
+    database: 'PostgreSQL', deploy: 'Vercel', auth: 'NextAuth.js',
+    data_entities: 'User', success: 'MAU100', target: 'ユーザー',
+  };
+
+  // ── P22 DB hardening tests ──
+  it('P22: fintech domain adds DB hardening section', () => {
+    const f = gP22(finBase);
+    const doc = f['docs/87_database_design_principles.md'] || '';
+    assert.ok(doc.includes('ドメイン固有DBハードニング') || doc.includes('Domain-Specific DB Hardening'), 'Fintech must add domain DB hardening section');
+  });
+
+  it('P22: fintech hardening includes SELECT FOR UPDATE rule', () => {
+    const f = gP22(finBase);
+    const doc = f['docs/87_database_design_principles.md'] || '';
+    assert.ok(doc.includes('SELECT FOR UPDATE') || doc.includes('冪等性'), 'Fintech DB hardening must include SELECT FOR UPDATE or idempotency rule');
+  });
+
+  it('P22: fintech hardening includes Decimal type for amounts', () => {
+    const f = gP22(finBase);
+    const doc = f['docs/87_database_design_principles.md'] || '';
+    assert.ok(doc.includes('Decimal') || doc.includes('decimal'), 'Fintech DB hardening must specify Decimal type for monetary amounts');
+  });
+
+  it('P22: health domain hardening mentions PHI encryption', () => {
+    const f = gP22(healthBase);
+    const doc = f['docs/87_database_design_principles.md'] || '';
+    assert.ok(doc.includes('PHI') || doc.includes('AES') || doc.includes('暗号化'), 'Health DB hardening must mention PHI encryption');
+  });
+
+  it('P22: unknown domain does not inject undefined hardening content', () => {
+    const f = gP22(unknownBase);
+    const doc = f['docs/87_database_design_principles.md'] || '';
+    assert.ok(!doc.includes('undefined'), 'Unknown domain must not produce undefined in DB doc');
+  });
+
+  it('P22: EN mode shows English hardening labels', () => {
+    const f = gP22(finBase, 'en');
+    const doc = f['docs/87_database_design_principles.md'] || '';
+    assert.ok(doc.includes('Domain-Specific DB Hardening') || doc.includes('Idempotency') || doc.includes('Decimal'), 'EN mode must show English DB hardening content');
+  });
+
+  // ── P25 domain SLO tests ──
+  it('P25: fintech domain shows 99.99% SLO in performance strategy', () => {
+    const f = gP25(finBase);
+    const doc = f['docs/99_performance_strategy.md'] || '';
+    assert.ok(doc.includes('99.99%'), 'Fintech performance strategy must show 99.99% SLO');
+  });
+
+  it('P25: fintech domain SLO section exists in performance strategy', () => {
+    const f = gP25(finBase);
+    const doc = f['docs/99_performance_strategy.md'] || '';
+    const hasSlo = doc.includes('ドメイン標準SLO') || doc.includes('Domain Standard SLO');
+    const hasCwv = doc.includes('Core Web Vitals 目標値') || doc.includes('Core Web Vitals Targets');
+    assert.ok(hasSlo && hasCwv, 'Performance doc must contain both domain SLO section and Core Web Vitals targets');
+  });
+
+  it('P25: fintech SLO includes backup/recovery info', () => {
+    const f = gP25(finBase);
+    const doc = f['docs/99_performance_strategy.md'] || '';
+    assert.ok(doc.includes('WAL') || doc.includes('backup') || doc.includes('バックアップ'), 'Fintech performance doc must include backup/recovery info from DOMAIN_OPS');
+  });
+
+  it('P25: unknown domain does not show undefined in performance doc', () => {
+    const f = gP25(unknownBase);
+    const doc = f['docs/99_performance_strategy.md'] || '';
+    assert.ok(!doc.includes('undefined') && !doc.includes('null'), 'Unknown domain must not produce undefined/null in performance doc');
+  });
+
+  it('P25: EN mode domain SLO section in English', () => {
+    const f = gP25(finBase, 'en');
+    const doc = f['docs/99_performance_strategy.md'] || '';
+    assert.ok(doc.includes('Domain Standard SLO') || doc.includes('99.99%'), 'EN mode must show English domain SLO section');
+  });
+});

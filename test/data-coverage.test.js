@@ -703,3 +703,71 @@ test('inferER: generates Organization relationships when entities present', () =
     globalThis.S = S_backup;
   }
 });
+
+// ═══ DOMAIN_IMPL_PATTERN Coverage Tests ═══
+
+test('DOMAIN_IMPL_PATTERN: all 32 domains have entries', () => {
+  const domains32 = [
+    'education','ec','saas','fintech','health','marketplace',
+    'community','content','analytics','booking','iot','realestate',
+    'legal','hr','portfolio','tool','ai','automation','event','gamify',
+    'collab','devtool','creator','newsletter',
+    'manufacturing','logistics','agriculture','energy','media','government','travel','insurance'
+  ];
+  const missing = [];
+  domains32.forEach(d => {
+    if (!DOMAIN_IMPL_PATTERN[d]) missing.push(d);
+  });
+  assert.equal(missing.length, 0, 'Missing DOMAIN_IMPL_PATTERN entries: ' + missing.join(', '));
+});
+
+test('DOMAIN_IMPL_PATTERN: each entry has bilingual impl arrays', () => {
+  const incomplete = [];
+  Object.entries(DOMAIN_IMPL_PATTERN).forEach(([domain, pat]) => {
+    if (domain === '_default') return;
+    if (!pat.impl_ja || pat.impl_ja.length === 0) incomplete.push(domain + ':impl_ja empty');
+    if (!pat.impl_en || pat.impl_en.length === 0) incomplete.push(domain + ':impl_en empty');
+  });
+  assert.equal(incomplete.length, 0, 'Incomplete DOMAIN_IMPL_PATTERN: ' + incomplete.join(', '));
+});
+
+test('DOMAIN_IMPL_PATTERN: new 8 domains have guard_ja/guard_en', () => {
+  const newDomains = ['agriculture','energy','government','travel','media','logistics','manufacturing','insurance'];
+  const missing = [];
+  newDomains.forEach(d => {
+    const pat = DOMAIN_IMPL_PATTERN[d];
+    if (!pat) { missing.push(d + ':missing'); return; }
+    if (!pat.guard_ja || pat.guard_ja.length === 0) missing.push(d + ':guard_ja empty');
+    if (!pat.guard_en || pat.guard_en.length === 0) missing.push(d + ':guard_en empty');
+  });
+  assert.equal(missing.length, 0, 'New domains missing guardrails: ' + missing.join(', '));
+});
+
+test('DOMAIN_IMPL_PATTERN: pseudo code exists for critical domains', () => {
+  const criticalDomains = ['fintech','health','manufacturing','logistics'];
+  const missing = [];
+  criticalDomains.forEach(d => {
+    const pat = DOMAIN_IMPL_PATTERN[d];
+    if (!pat) { missing.push(d + ':missing'); return; }
+    if (!pat.pseudo || pat.pseudo.length < 10) missing.push(d + ':pseudo too short (<10 chars)');
+  });
+  assert.equal(missing.length, 0, 'Critical domains missing pseudo code: ' + missing.join(', '));
+});
+
+// ═══ SUCCESS_METRICS KPI Coverage Tests (32 domains) ═══
+
+test('SUCCESS_METRICS kpis: all 32 domains have domain-specific KPIs', () => {
+  const p1code = fs.readFileSync('src/generators/p1-sdd.js', 'utf-8');
+  const kpiDomains = ['health','fintech','iot','realestate','legal','hr','portfolio','tool',
+    'ai','automation','event','gamify','collab','devtool','creator','newsletter',
+    'manufacturing','logistics','agriculture','energy','media','government','travel','insurance',
+    'education','ec','community','saas','content','analytics','booking','marketplace'];
+  const missing = [];
+  kpiDomains.forEach(d => {
+    // Bare key (no quotes) is the actual syntax in p1-sdd.js
+    if (!p1code.includes(d + ':')) {
+      missing.push(d);
+    }
+  });
+  assert.equal(missing.length, 0, 'Missing KPI entries in p1-sdd.js: ' + missing.join(', '));
+});

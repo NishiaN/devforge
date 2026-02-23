@@ -11,9 +11,11 @@ function genPillar1_SDD(a,pn){
   const sched=buildSchedule(a);
 
   // B4: scope_out auto-adjustment + G3: domain inference
+  const domain=detectDomain(a.purpose||'');
+  const _domOps=typeof DOMAIN_OPS!=='undefined'?(DOMAIN_OPS[domain]||null):null;
+  const _availTarget=_domOps?_domOps.slo:(S.skill==='pro'?'99.9%':S.skill==='intermediate'?'99%':(G?'ベストエフォート（PaaS依存）':'Best effort (PaaS-dependent)'));
   let scopeOut=a.scope_out || (()=>{
-    const domain=detectDomain(a.purpose||'');
-    const defaults={
+    const _d={
       education: G?'ネイティブアプリ, 動画配信インフラ, 決済以外の金融機能':'Native apps, Video streaming infrastructure, Non-payment financial features',
       ec: G?'ネイティブアプリ, 実店舗POS連携, 会計ソフト連携, 物流管理':'Native apps, POS integration, Accounting software, Logistics management',
       community: G?'ネイティブアプリ, 動画配信, リアルタイムビデオ通話, メール配信':'Native apps, Video streaming, Real-time video calls, Email delivery',
@@ -23,7 +25,7 @@ function genPillar1_SDD(a,pn){
       booking: G?'ネイティブアプリ, 決済代行, カレンダー同期(外部API)':'Native apps, Payment processing, Calendar sync (external API)',
       marketplace: G?'ネイティブアプリ, 物流管理, エスクロー決済':'Native apps, Logistics management, Escrow payments',
     };
-    return defaults[domain] || (G?'ネイティブアプリ, モバイルアプリ':'Native apps, Mobile apps');
+    return _d[domain] || (G?'ネイティブアプリ, モバイルアプリ':'Native apps, Mobile apps');
   })();
   if(a.mobile&&!isNone(a.mobile)&&!String(a.mobile).includes('PWA')){
     scopeOut=scopeOut.replace(/ネイティブアプリ/g,G?'ストア配布用ネイティブビルド（Expo Web UIは対象内）':'Native app store builds (Expo Web UI is in scope)');
@@ -156,7 +158,7 @@ function genPillar1_SDD(a,pn){
     (G?'エンティティ':'Entities')+': '+(a.data_entities||(G?'（未定義）':'(Undefined)')),'```','',
     G?'## 2. 非機能要件':'## 2. Non-functional Requirements',
     '- '+(G?'レスポンスタイム':'Response Time')+': '+(S.skill==='pro'?'< 200ms (p95)':S.skill==='intermediate'?'< 500ms (p95)':'< 1000ms (p95)'),
-    '- '+(G?'可用性':'Availability')+': '+(S.skill==='pro'?'99.9%':S.skill==='intermediate'?'99%':(G?'ベストエフォート（PaaS依存）':'Best effort (PaaS-dependent)')),
+    '- '+(G?'可用性':'Availability')+': '+_availTarget+(_domOps&&_domOps.slo?' ('+(G?'ドメイン標準SLO':'domain SLO')+')':''),
     '- '+(G?'同時接続':'Concurrent Users')+': '+(S.skill==='pro'?'1000+':S.skill==='intermediate'?'〜200':'〜50'),
     '- '+(G?'モバイル対応':'Mobile')+': '+(hasMob?'✅ '+a.mobile:(G?'レスポンシブWebのみ':'Responsive Web only')),'',
     G?'## 3. 技術スタック':'## 3. Tech Stack',

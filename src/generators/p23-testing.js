@@ -154,6 +154,29 @@ function gen91(a,pn,G,feType,beType){
   );
   doc+='```\n\n';
 
+  // Domain-specific test focus (DOMAIN_QA_MAP)
+  var domainQ=detectDomain(a.purpose||'');
+  var dqa=typeof DOMAIN_QA_MAP!=='undefined'?(DOMAIN_QA_MAP[domainQ]||null):null;
+  if(dqa){
+    doc+='## '+(G?'ドメイン別テスト重点領域 ('+domainQ+')':'Domain-Specific Test Focus ('+domainQ+')')+'\n\n';
+    doc+='### '+(G?'テスト優先マトリクス':'Test Priority Matrix')+'\n\n';
+    var prioItems=dqa.priority.split('|');
+    doc+='| '+(G?'品質特性':'Quality Attribute')+' | '+(G?'優先度':'Priority')+' |\n|------|------|\n';
+    prioItems.forEach(function(p){
+      var parts=p.split(':');
+      if(parts.length===2) doc+='| '+parts[0]+' | '+parts[1]+' |\n';
+    });
+    doc+='\n';
+    doc+='### '+(G?'重点テスト領域':'Key Test Areas')+'\n\n';
+    var focuses=G?dqa.focus_ja:dqa.focus_en;
+    focuses.forEach(function(f){doc+='- ✅ '+f+'\n';});
+    doc+='\n';
+    doc+='### '+(G?'既知バグパターン（回帰テスト必須）':'Known Bug Patterns (regression tests required)')+'\n\n';
+    var bugs=G?dqa.bugs_ja:dqa.bugs_en;
+    bugs.forEach(function(b){doc+='- ⚠️ '+b+'\n';});
+    doc+='\n';
+  }
+
   S.files['docs/91_testing_strategy.md']=doc;
 }
 

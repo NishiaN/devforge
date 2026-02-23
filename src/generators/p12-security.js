@@ -793,6 +793,16 @@ function genPillar12_SecurityIntelligence(a,pn){
   });
   doc44+='\n';
 
+  // Domain-specific implementation guardrails from DOMAIN_IMPL_PATTERN
+  const implPat=typeof DOMAIN_IMPL_PATTERN!=='undefined'?(DOMAIN_IMPL_PATTERN[domain]||DOMAIN_IMPL_PATTERN._default):null;
+  if(implPat&&implPat.guard_ja&&implPat.guard_ja.length>0){
+    doc44+='## '+(G?'ドメイン固有セキュリティガードレール ('+domain+')':'Domain-Specific Security Guardrails ('+domain+')')+'\n\n';
+    doc44+=(G?'このドメインで特に注意すべき実装上のセキュリティ上の問題点：\n\n':'Implementation security issues requiring special attention in this domain:\n\n');
+    const guards=G?implPat.guard_ja:implPat.guard_en;
+    guards.forEach(g=>{ doc44+='- ⚠️ **'+g+'**\n'; });
+    doc44+='\n'+(G?'> これらのガードレールは `docs/39_implementation_playbook.md` の実装パターンと連携して確認してください。\n\n':'> Verify these guardrails in conjunction with implementation patterns in `docs/39_implementation_playbook.md`.\n\n');
+  }
+
   doc44+=(G?'## 📚 関連ドキュメント\n\n':'## 📚 Related Documents\n\n');
   doc44+='- [Security Intelligence](./43_security_intelligence.md)\n';
   doc44+='- [Security Testing](./47_security_testing.md)\n';

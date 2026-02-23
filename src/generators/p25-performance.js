@@ -103,6 +103,19 @@ function gen99(a,pn){
   let doc='# '+pn+' — '+(G?'パフォーマンス戦略書':'Performance Strategy')+'\n';
   doc+='> '+(G?'Core Web Vitals・バンドル最適化・レスポンスタイム設計':'Core Web Vitals · Bundle Optimization · Response Time Design')+'\n\n';
 
+  // Domain SLO context
+  const _p25dom=typeof detectDomain==='function'?detectDomain(a.purpose||''):null;
+  const _p25ops=typeof DOMAIN_OPS!=='undefined'&&_p25dom?(DOMAIN_OPS[_p25dom]||null):null;
+  if(_p25ops&&_p25ops.slo){
+    doc+='## '+(G?'ドメイン標準SLO ('+_p25dom+')':'Domain Standard SLO ('+_p25dom+')')+'\n\n';
+    doc+='| '+(G?'指標':'Metric')+' | '+(G?'目標値':'Target')+' |\n|------|------|\n';
+    doc+='| Availability (SLO) | **'+_p25ops.slo+'** |\n';
+    if(_p25ops.backup_ja&&_p25ops.backup_ja.length>0){
+      doc+='| '+(G?'バックアップ/リカバリ':'Backup/Recovery')+' | '+(G?_p25ops.backup_ja[0]:_p25ops.backup_en[0])+' |\n';
+    }
+    doc+='\n> '+(G?'このドメインのSLOに基づき、以下の Core Web Vitals 目標値・監視閾値を設定してください。':'Set Core Web Vitals targets and alert thresholds based on the SLO above for this domain.')+'\n\n';
+  }
+
   doc+='## '+(G?'Core Web Vitals 目標値':'Core Web Vitals Targets')+'\n\n';
   doc+='| Metric | '+(G?'指標名':'Description')+' | 🟢 Good | 🟡 NI | 🔴 Poor | '+(G?'改善ポイント':'Optimization Tip')+'|\n';
   doc+='|--------|'+(G?'------':'-------')+'|---------|-------|---------|------|\n';
