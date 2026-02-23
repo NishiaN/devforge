@@ -239,6 +239,12 @@ function genPillar11_ImplIntelligence(a,pn){
     logistics:{ja:'配送状態不整合 → ステートマシンによる遷移チェック強化',en:'Delivery state inconsistency → Strengthen state machine transition checks'},
     media:{ja:'コンテンツ無断アクセス → DRMトークン有効期限 + サーバーサイド検証',en:'Unauthorized content access → DRM token expiry + server-side validation'},
     event:{ja:'チケット二重発行 → 購入IDユニーク制約 + 在庫アトミック更新',en:'Duplicate ticket issuance → Unique purchase ID constraint + atomic stock update'},
+    agriculture:{ja:'センサー異常値蓄積 → 入力レンジバリデーション + 外れ値フィルタ追加',en:'Sensor outlier accumulation → Add input range validation + outlier filter'},
+    energy:{ja:'電力データ二重計上 → メーター読取冪等性キー + 重複チェック強化',en:'Power data double-count → Meter reading idempotency key + duplicate check'},
+    devtool:{ja:'APIキー漏洩 → ハッシュ保存(bcrypt) + スコープ最小権限確認',en:'API key leak → Hash storage (bcrypt) + verify minimum scope permissions'},
+    portfolio:{ja:'スパム問い合わせ急増 → reCAPTCHA + 送信レート制限追加',en:'Spam contact surge → Add reCAPTCHA + submission rate limiting'},
+    tool:{ja:'ユーザー入力による処理クラッシュ → 入力バリデーション強化 + サンドボックス実行',en:'User input crash → Strengthen input validation + sandbox execution'},
+    content:{ja:'下書き誤公開 → 公開ステータスFSM確認 + 権限チェック強化',en:'Draft accidentally published → Verify publish status FSM + strengthen permission check'},
     _default:{ja:'データ不整合 → トランザクション漏れ確認',en:'Data inconsistency → Check missing transactions'}
   };
   const errMsg=domainErrors[domain]||domainErrors._default;

@@ -4098,3 +4098,54 @@ describe('Suite 45: P5 Quality INDUSTRY_TEST_MATRIX new domain entries', () => {
     assert.ok(doc.includes('GDPR') || doc.includes('スパム') || doc.includes('Spam') || doc.includes('配信'), 'Newsletter must show GDPR and spam test focus');
   });
 });
+
+// ── Suite 46: P4/P11 domain gap completions ───────────────────────────────
+describe('Suite 46: P4 domainSkillsMap + P11 domainErrors gap fills', () => {
+  it('P4: portfolio domain shows SEO and contact form AI skills', () => {
+    const f = gP4(Object.assign({}, A25, { purpose:'portfolio linkbio personal website' }));
+    const doc = f['skills/catalog.md'] || '';
+    assert.ok(doc.includes('SEO') || doc.includes('問い合わせ') || doc.includes('contact') || doc.includes('Core Web'), 'Portfolio must show SEO/contact AI skills in catalog');
+  });
+
+  it('P4: tool domain shows UX and docs AI skills', () => {
+    const f = gP4(Object.assign({}, A25, { purpose:'business tool PWA offline application' }));
+    const doc = f['skills/catalog.md'] || '';
+    assert.ok(doc.includes('UX') || doc.includes('ドキュメント') || doc.includes('Docs') || doc.includes('タスク完了'), 'Tool must show UX/docs AI skills in catalog');
+  });
+
+  it('P11: agriculture domain shows sensor outlier error pattern', () => {
+    const f = gP11(Object.assign({}, A25, { purpose:'agriculture smart farming crop management' }));
+    const doc = f['docs/40_ai_dev_runbook.md'] || '';
+    assert.ok(doc.includes('センサー') || doc.includes('Sensor') || doc.includes('外れ値') || doc.includes('outlier'), 'Agriculture must show sensor outlier error pattern');
+  });
+
+  it('P11: energy domain shows power double-count error pattern', () => {
+    const f = gP11(Object.assign({}, A25, { purpose:'energy power management system' }));
+    const doc = f['docs/40_ai_dev_runbook.md'] || '';
+    assert.ok(doc.includes('二重計上') || doc.includes('double-count') || doc.includes('冪等性') || doc.includes('idempotency'), 'Energy must show power double-count error pattern');
+  });
+
+  it('P11: devtool domain shows API key hash storage error pattern', () => {
+    const f = gP11(Object.assign({}, A25, { purpose:'devtool SDK API management platform' }));
+    const doc = f['docs/40_ai_dev_runbook.md'] || '';
+    assert.ok(doc.includes('APIキー') || doc.includes('API key') || doc.includes('bcrypt') || doc.includes('ハッシュ'), 'Devtool must show API key leak error pattern');
+  });
+
+  it('P11: portfolio domain shows spam reCAPTCHA error pattern', () => {
+    const f = gP11(Object.assign({}, A25, { purpose:'portfolio linkbio personal website' }));
+    const doc = f['docs/40_ai_dev_runbook.md'] || '';
+    assert.ok(doc.includes('スパム') || doc.includes('spam') || doc.includes('reCAPTCHA') || doc.includes('レート制限'), 'Portfolio must show spam/reCAPTCHA error pattern');
+  });
+
+  it('P11: tool domain shows input validation crash error pattern', () => {
+    const f = gP11(Object.assign({}, A25, { purpose:'business tool PWA offline application' }));
+    const doc = f['docs/40_ai_dev_runbook.md'] || '';
+    assert.ok(doc.includes('クラッシュ') || doc.includes('crash') || doc.includes('バリデーション') || doc.includes('validation') || doc.includes('サンドボックス'), 'Tool must show input validation/crash error pattern');
+  });
+
+  it('P11: content domain shows draft accidentally published error pattern', () => {
+    const f = gP11(Object.assign({}, A25, { purpose:'content knowledge base blog platform' }));
+    const doc = f['docs/40_ai_dev_runbook.md'] || '';
+    assert.ok(doc.includes('誤公開') || doc.includes('accidentally published') || doc.includes('下書き') || doc.includes('draft') || doc.includes('FSM'), 'Content must show draft publish error pattern');
+  });
+});

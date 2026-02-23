@@ -386,7 +386,9 @@ CLAUDE.md        → ${G?'Claude Code用ルール':'Claude Code rules'}
       logistics:['0:配送設計:Delivery Design:配送フロー設計:Design delivery flow:遅延0:0 delays','1:追跡システム:Tracking:荷物追跡システム:Package tracking system:可視性100%:100% visibility','2:ルート最適化:Route Opt:配送ルート最適化:Optimize delivery routes:コスト削減:Cost reduced'],
       agriculture:['0:栽培管理:Crop Mgmt:作物データ管理:Manage crop data:記録100%:100% recorded','1:センサー分析:Sensor Analysis:農場センサー分析:Farm sensor analysis:異常検知:Anomaly detected','2:収穫予測:Harvest Forecast:収穫量予測モデル:Crop yield prediction:精度85%+:≥85% accuracy'],
       energy:['0:消費設計:Energy Design:エネルギー消費設計:Design energy consumption:最適化10%+:≥10% optimized','1:監視システム:Monitoring:エネルギー監視:Energy monitoring:リアルタイム:Realtime','2:節約分析:Savings Analysis:節約効果分析:Analyze savings:可視化:Visualized'],
-      media:['0:コンテンツ設計:Content Design:メディアコンテンツ設計:Design media content:DRM準拠:DRM compliant','1:配信最適化:Streaming Opt:CDN・ストリーミング最適化:Optimize CDN & streaming:バッファリング3%↓:≤3% buffering','2:アクセス制御:Access Control:コンテンツアクセス制御:Content access control:不正アクセス0:0 unauthorized']
+      media:['0:コンテンツ設計:Content Design:メディアコンテンツ設計:Design media content:DRM準拠:DRM compliant','1:配信最適化:Streaming Opt:CDN・ストリーミング最適化:Optimize CDN & streaming:バッファリング3%↓:≤3% buffering','2:アクセス制御:Access Control:コンテンツアクセス制御:Content access control:不正アクセス0:0 unauthorized'],
+      portfolio:['0:SEO最適化:SEO Opt:ポートフォリオSEO最適化:Portfolio SEO optimize:Core Web Vitals合格:Pass CWV','1:問い合わせ設計:Contact Design:問い合わせフォーム設計:Design contact form:到達100%:100% delivery'],
+      tool:['0:UX設計:UX Design:ツールUX設計:Design tool UX:タスク完了率95%+:≥95% task completion','1:ドキュメント:Docs:使い方ドキュメント生成:Generate usage docs:網羅性90%+:≥90% coverage']
     };
 
     const domainSkills=domainSkillsMap[domain]||[];
