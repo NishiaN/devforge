@@ -2984,3 +2984,96 @@ describe('Suite 30: P12 Compliance Matrix Domain Quick Reference', () => {
     assert.ok(doc.includes('Domain Compliance Quick Reference') || doc.includes('FSA') || doc.includes('PCI'), 'EN mode must show English domain compliance reference');
   });
 });
+
+/*
+ ─────────────────────────────────────────────────────────────────────────────
+   Suite 31 — P7 Roadmap: DOMAIN_TOOLS_DB specialist field tools in RESOURCES.md
+ ─────────────────────────────────────────────────────────────────────────────
+*/
+/* Minimal DOMAIN_TOOLS_DB (full version in src/data/presets-ext2.js) */
+var DOMAIN_TOOLS_DB = {
+  civil_eng: {
+    solo: ['OpenAI API','Python (NumPy/SciPy)','ReportLab','QGIS','OpenDroneMap'],
+    small: ['QGIS','Python','Streamlit','DJI Terra','LAStools'],
+    medium: ['ArcGIS','TensorFlow','FastAPI','Autodesk Civil 3D','Azure'],
+    large: ['Azure Synapse','Databricks','ArcGIS Enterprise','Bentley iTwin','Power BI']
+  },
+  braintech: {
+    solo: ['Python (MNE)','FastAPI','Streamlit','SQLite'],
+    small: ['Supabase','MNE-Python','BrainFlow','wearable API'],
+    medium: ['Databricks','PyTorch','MONAI','DICOM/PACS'],
+    large: ['Azure Synapse','NVIDIA Clara','Databricks','NestJS']
+  }
+};
+
+function gP7(answers, lang) {
+  S.files={}; S.genLang=lang||'ja'; S.skill='intermediate';
+  genPillar7_Roadmap(answers, 'TestProject');
+  return S.files;
+}
+
+const civilBase = {
+  purpose:'土木調査AIシステム', purposeEn:'Civil Survey AI System',
+  frontend:'React + Next.js', backend:'Node.js + Express',
+  orm:'Prisma', skill_level:'Intermediate', learning_goal:'6ヶ月標準',
+  dev_methods:'TDD',
+};
+
+describe('Suite 31: P7 Roadmap RESOURCES.md — DOMAIN_TOOLS_DB Specialist Tools', () => {
+  it('P7: civil_ground preset shows domain tools section header (JA)', () => {
+    S.preset = 'field:civil_ground';
+    const f = gP7(civilBase); S.preset = 'custom';
+    const doc = f['roadmap/RESOURCES.md'] || '';
+    assert.ok(doc.includes('ドメイン固有ツール推奨表') || doc.includes('Domain-Specific Tools'), 'Must include domain tools section header for civil_ground preset');
+  });
+
+  it('P7: civil_ground preset shows scale tiers (Solo and Medium rows)', () => {
+    S.preset = 'field:civil_ground';
+    const f = gP7(civilBase); S.preset = 'custom';
+    const doc = f['roadmap/RESOURCES.md'] || '';
+    assert.ok(doc.includes('Solo') && (doc.includes('Medium') || doc.includes('Small')), 'Domain tools table must include Solo and at least one other scale row');
+  });
+
+  it('P7: civil_ground preset includes civil_eng domain tools', () => {
+    S.preset = 'field:civil_ground';
+    const f = gP7(civilBase); S.preset = 'custom';
+    const doc = f['roadmap/RESOURCES.md'] || '';
+    assert.ok(doc.includes('QGIS') || doc.includes('ArcGIS') || doc.includes('Databricks'), 'Domain tools table must list civil_eng tools');
+  });
+
+  it('P7: braintech preset (bt_cogperf) shows braintech domain tools', () => {
+    S.preset = 'field:bt_cogperf';
+    const f = gP7({...civilBase, purpose:'BCI認知最適化プラットフォーム'}); S.preset = 'custom';
+    const doc = f['roadmap/RESOURCES.md'] || '';
+    assert.ok(doc.includes('braintech') || doc.includes('MNE') || doc.includes('MONAI') || doc.includes('PyTorch'), 'Braintech preset must show braintech-domain tools');
+  });
+
+  it('P7: custom preset does NOT inject domain tools section', () => {
+    S.preset = 'custom';
+    const f = gP7(civilBase);
+    const doc = f['roadmap/RESOURCES.md'] || '';
+    assert.ok(!doc.includes('ドメイン固有ツール推奨表') && !doc.includes('Domain-Specific Tools ('), 'Custom preset must NOT inject domain tools section');
+  });
+
+  it('P7: EN mode shows English domain tools header', () => {
+    S.preset = 'field:civil_ground';
+    const f = gP7(civilBase, 'en'); S.preset = 'custom';
+    const doc = f['roadmap/RESOURCES.md'] || '';
+    assert.ok(doc.includes('Domain-Specific Tools'), 'EN mode must show English section header');
+  });
+
+  it('P7: domain tools section is present and table has pipe separators', () => {
+    S.preset = 'field:civil_ground';
+    const f = gP7(civilBase); S.preset = 'custom';
+    const doc = f['roadmap/RESOURCES.md'] || '';
+    const hasSec = doc.includes('ドメイン固有ツール推奨表') || doc.includes('Domain-Specific Tools (');
+    assert.ok(hasSec && doc.includes('|---'), 'Domain tools must include a markdown table');
+  });
+
+  it('P7: RESOURCES.md still contains official docs section alongside domain tools', () => {
+    S.preset = 'field:civil_ground';
+    const f = gP7(civilBase); S.preset = 'custom';
+    const doc = f['roadmap/RESOURCES.md'] || '';
+    assert.ok(doc.includes('TypeScript') || doc.includes('Tailwind'), 'Official docs section must remain present when domain tools section is injected');
+  });
+});
