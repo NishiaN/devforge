@@ -452,6 +452,17 @@ function gen72(G, domain, meth, matLv, a, pn) {
   });
   d += '\n';
 
+  // Domain-specific prompt context notes from DOMAIN_IMPL_PATTERN
+  var _g72pat = typeof DOMAIN_IMPL_PATTERN !== 'undefined' ? (DOMAIN_IMPL_PATTERN[domain] || null) : null;
+  if(_g72pat && _g72pat.impl_ja && _g72pat.impl_ja.length > 0) {
+    d += G ? '### 💡 ドメイン固有プロンプト文脈ノート (' + domain + ')\n\n' : '### 💡 Domain-Specific Prompt Context Notes (' + domain + ')\n\n';
+    d += G ? '> P2-IMPLEMENT テンプレートのContextブロックに含めるべき業種固有知識:\n\n' :
+             '> Domain-specific knowledge to include in the Context block of P2-IMPLEMENT template:\n\n';
+    var _g72impl = G ? _g72pat.impl_ja : _g72pat.impl_en;
+    _g72impl.forEach(function(imp){ d += '- ' + imp + '\n'; });
+    d += '\n';
+  }
+
   // Version history format
   d += G ? '## 📝 バージョン履歴フォーマット\n\n' : '## 📝 Version History Format\n\n';
   d += G ? '```markdown\n## CHANGELOG — {Template-ID}\n\n### v1.1.0 — {date}\n- **改善**: Instructionsブロックに禁止事項5条を追加 (+0.5 CRITERIA)\n- **測定**: 成功率 72% → 85% (+13%)\n- **理由**: テスト5件中3件でルール違反が検出されたため\n\n### v1.0.0 — {date}\n- **初回**: 基本テンプレート作成\n- **CRITERIA**: Context=4, Instructions=4, ExecRules=3, Total=3.8\n```\n\n' :

@@ -3183,3 +3183,78 @@ describe('Suite 33: P16 Industry Deep Dive gen62 — DOMAIN_PLAYBOOK Fallback', 
     );
   });
 });
+
+/*
+ ─────────────────────────────────────────────────────────────────────────────
+   Suite 34 — P19 Enterprise Architecture + P18 Prompt Registry domain context
+ ─────────────────────────────────────────────────────────────────────────────
+*/
+function gP19(answers, lang) {
+  S.files={}; S.genLang=lang||'ja'; S.skill='intermediate';
+  genPillar19_EnterpriseSaaS(answers,'QTest');
+  return S.files;
+}
+function gP18(answers, lang) {
+  S.files={}; S.genLang=lang||'ja'; S.skill='intermediate';
+  genPillar18_PromptOps(answers,'QTest');
+  return S.files;
+}
+
+const finBase19 = Object.assign({}, A25, { purpose:'fintech payment platform', org_model:'マルチテナント(RLS)' });
+const healthBase19 = Object.assign({}, A25, { purpose:'health medical platform', org_model:'マルチテナント(RLS)' });
+
+describe('Suite 34: P19 Enterprise Arch Domain Hardening + P18 Prompt Registry Domain Context', () => {
+  it('P19: fintech domain shows domain-specific enterprise requirements in gen73', () => {
+    const f = gP19(finBase19);
+    const doc = f['docs/73_enterprise_architecture.md'] || '';
+    assert.ok(
+      doc.includes('fintech') || doc.includes('ドメイン固有エンタープライズ') || doc.includes('Domain-Specific Enterprise'),
+      'Fintech domain must show domain-specific enterprise requirements section'
+    );
+  });
+
+  it('P19: fintech enterprise doc includes hardening rules', () => {
+    const f = gP19(finBase19);
+    const doc = f['docs/73_enterprise_architecture.md'] || '';
+    assert.ok(doc.includes('✅') || doc.includes('🔒'), 'Enterprise doc must include hardening or BCP checkmarks');
+  });
+
+  it('P19: health domain shows domain-specific enterprise requirements', () => {
+    const f = gP19(healthBase19);
+    const doc = f['docs/73_enterprise_architecture.md'] || '';
+    assert.ok(
+      doc.includes('health') || doc.includes('ドメイン固有エンタープライズ') || doc.includes('Domain-Specific Enterprise'),
+      'Health domain enterprise doc must show domain-specific requirements'
+    );
+  });
+
+  it('P19: enterprise architecture always contains tenant isolation strategy', () => {
+    const f = gP19(finBase19);
+    const doc = f['docs/73_enterprise_architecture.md'] || '';
+    assert.ok(doc.includes('RLS') || doc.includes('テナント分離') || doc.includes('Tenant Isolation'), 'Enterprise arch must always show tenant isolation section');
+  });
+
+  it('P18: fintech domain prompt registry shows domain implementation notes', () => {
+    const f = gP18(finBase19);
+    const doc = f['docs/72_prompt_registry.md'] || '';
+    assert.ok(
+      doc.includes('fintech') || doc.includes('FINTECH') || doc.includes('ドメイン固有プロンプト') || doc.includes('Domain-Specific Prompt'),
+      'Fintech prompt registry must show fintech-specific content'
+    );
+  });
+
+  it('P18: education domain shows DOMAIN_IMPL_PATTERN context notes', () => {
+    const f = gP18(educBase);
+    const doc = f['docs/72_prompt_registry.md'] || '';
+    assert.ok(
+      doc.includes('education') || doc.includes('EDU') || doc.includes('ドメイン固有プロンプト') || doc.includes('Domain-Specific Prompt'),
+      'Education prompt registry must show education-specific content'
+    );
+  });
+
+  it('P18: EN mode shows English domain prompt context notes', () => {
+    const f = gP18(finBase19, 'en');
+    const doc = f['docs/72_prompt_registry.md'] || '';
+    assert.ok(doc.includes('Domain-Specific Prompt') || doc.includes('FINTECH') || doc.includes('P2-IMPLEMENT'), 'EN mode prompt registry must show English domain context');
+  });
+});

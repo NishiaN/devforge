@@ -291,6 +291,20 @@ function gen73(G, domain, orgModel, isMultiTenant, a, pn) {
   d += '  style DB fill:#ef4444,color:#fff\n';
   d += '```\n';
 
+  // Domain-specific enterprise hardening from DOMAIN_OPS
+  var _g73ops = typeof DOMAIN_OPS !== 'undefined' ? (DOMAIN_OPS[domain] || null) : null;
+  if(_g73ops && _g73ops.hardening_ja && _g73ops.hardening_ja.length > 0) {
+    d += '\n## ' + (G ? 'ドメイン固有エンタープライズ要件 (' + domain + ')' : 'Domain-Specific Enterprise Requirements (' + domain + ')') + '\n\n';
+    var _g73h = G ? _g73ops.hardening_ja : _g73ops.hardening_en;
+    _g73h.forEach(function(h){ d += '- ✅ ' + h + '\n'; });
+    if(_g73ops.backup_ja && _g73ops.backup_ja.length > 0) {
+      d += '\n### ' + (G ? 'エンタープライズ BCP 要件' : 'Enterprise BCP Requirements') + '\n\n';
+      var _g73b = G ? _g73ops.backup_ja : _g73ops.backup_en;
+      _g73b.forEach(function(b){ d += '- 🔒 ' + b + '\n'; });
+    }
+    d += '\n';
+  }
+
   return d;
 }
 
