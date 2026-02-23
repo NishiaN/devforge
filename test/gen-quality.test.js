@@ -3077,3 +3077,51 @@ describe('Suite 31: P7 Roadmap RESOURCES.md — DOMAIN_TOOLS_DB Specialist Tools
     assert.ok(doc.includes('TypeScript') || doc.includes('Tailwind'), 'Official docs section must remain present when domain tools section is injected');
   });
 });
+
+/*
+ ─────────────────────────────────────────────────────────────────────────────
+   Suite 32 — P20 Quality Gate Matrix: DOMAIN_QA_MAP in non-fintech/health/ec domains
+ ─────────────────────────────────────────────────────────────────────────────
+*/
+const educBase = Object.assign({}, A25, { purpose:'オンライン学習管理プラットフォーム', purposeEn:'Online LMS Platform' });
+const logisBase = Object.assign({}, A25, { purpose:'物流配送管理システム', purposeEn:'Logistics Delivery System' });
+
+describe('Suite 32: P20 Quality Gate Matrix — DOMAIN_QA_MAP for Generic Domains', () => {
+  it('P20: education domain shows DOMAIN_QA_MAP focus areas in quality gate', () => {
+    const f = gP20(educBase);
+    const doc = f['docs/79_quality_gate_matrix.md'] || '';
+    assert.ok(doc.includes('education') || doc.includes('テスト重点') || doc.includes('Test Focus'), 'Education domain must show domain-specific focus in quality gate');
+  });
+
+  it('P20: education domain includes regression test scenarios in quality gate', () => {
+    const f = gP20(educBase);
+    const doc = f['docs/79_quality_gate_matrix.md'] || '';
+    const hasQA = doc.includes('DOMAIN_QA_MAP') || doc.includes('回帰テスト') || doc.includes('Regression');
+    assert.ok(hasQA, 'Education domain quality gate must include DOMAIN_QA_MAP regression scenarios');
+  });
+
+  it('P20: logistics domain shows domain-specific quality gate content', () => {
+    const f = gP20(logisBase);
+    const doc = f['docs/79_quality_gate_matrix.md'] || '';
+    assert.ok(doc.includes('logistics') || doc.includes('テスト重点') || doc.includes('Test Focus'), 'Logistics domain must show domain-specific focus or standard gate');
+  });
+
+  it('P20: fintech domain still shows hardcoded fintech quality gate (not replaced)', () => {
+    const finBase2 = Object.assign({}, A25, { purpose:'fintech payment platform' });
+    const f = gP20(finBase2);
+    const doc = f['docs/79_quality_gate_matrix.md'] || '';
+    assert.ok(doc.includes('PCI') || doc.includes('Fintech') || doc.includes('fintech'), 'Fintech domain must still show fintech-specific quality gate');
+  });
+
+  it('P20: quality gate matrix always contains the pipeline stage table', () => {
+    const f = gP20(educBase);
+    const doc = f['docs/79_quality_gate_matrix.md'] || '';
+    assert.ok(doc.includes('Lint') && doc.includes('Test'), 'Quality gate matrix must always contain the standard pipeline stage table');
+  });
+
+  it('P20: EN mode shows English domain quality gate labels', () => {
+    const f = gP20(educBase, 'en');
+    const doc = f['docs/79_quality_gate_matrix.md'] || '';
+    assert.ok(doc.includes('Test Focus') || doc.includes('education') || doc.includes('Regression'), 'EN mode must show English labels in domain quality gate section');
+  });
+});

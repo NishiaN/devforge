@@ -490,8 +490,24 @@ function gen79(G, domain, dtCfg, a, pn) {
     doc += '| ' + (G ? '決済E2E' : 'Payment E2E') + ' | ' + (G ? 'Stripe testモードで全決済フロー成功' : 'All payment flows succeed in Stripe test mode') + ' | Playwright + Stripe CLI |\n';
     doc += '| ' + (G ? '在庫整合性' : 'Inventory Check') + ' | ' + (G ? '在庫数が負にならない（同時購入シナリオ）' : 'Stock never goes negative (concurrent purchase scenario)') + ' | k6 custom scenario |\n\n';
   } else {
-    doc += '### 🌐 ' + domain + '\n\n';
-    doc += (G ? '標準品質ゲートを適用。ドメイン固有の追加ゲートは必要に応じて設定してください。' : 'Apply standard quality gates. Add domain-specific gates as needed.') + '\n\n';
+    var _gen79dqa = typeof DOMAIN_QA_MAP !== 'undefined' ? (DOMAIN_QA_MAP[domain] || null) : null;
+    if(_gen79dqa && _gen79dqa.focus_ja && _gen79dqa.focus_ja.length > 0) {
+      doc += '### ' + (G ? domain + ' テスト重点領域' : domain + ' Test Focus Areas') + '\n\n';
+      doc += '| ' + (G ? 'ゲート' : 'Gate') + ' | ' + (G ? '条件' : 'Condition') + ' | ' + (G ? 'ツール' : 'Tool') + ' |\n';
+      doc += '|---|---|---|\n';
+      var _g79focus = G ? _gen79dqa.focus_ja : _gen79dqa.focus_en;
+      _g79focus.forEach(function(f){doc += '| '+f+' | '+(G?'✅ 確認済':'✅ Verified')+' | '+(G?'カスタムE2E':'Custom E2E')+' |\n';});
+      doc += '\n';
+      if(_gen79dqa.bugs_ja && _gen79dqa.bugs_ja.length > 0) {
+        doc += '#### ' + (G ? '回帰テスト必須シナリオ (DOMAIN_QA_MAP)' : 'Required Regression Test Scenarios (DOMAIN_QA_MAP)') + '\n\n';
+        var _g79bugs = G ? _gen79dqa.bugs_ja : _gen79dqa.bugs_en;
+        _g79bugs.forEach(function(b){doc += '- 🔴 '+b+'\n';});
+        doc += '\n';
+      }
+    } else {
+      doc += '### 🌐 ' + domain + '\n\n';
+      doc += (G ? '標準品質ゲートを適用。ドメイン固有の追加ゲートは必要に応じて設定してください。' : 'Apply standard quality gates. Add domain-specific gates as needed.') + '\n\n';
+    }
   }
 
   doc += '## ' + (G ? '品質ゲートMermaid' : 'Quality Gate Flow (Mermaid)') + '\n\n';
