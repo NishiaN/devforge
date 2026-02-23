@@ -857,6 +857,20 @@ function genPillar12_SecurityIntelligence(a,pn){
   doc45+=_chk(G?'同意撤回機能 (プライバシーページから)':'Allow consent withdrawal (via privacy page)')+'\n';
   doc45+=_chk(G?'オプトイン後にのみスクリプト読み込み':'Load tracking scripts only after opt-in')+'\n\n';
 
+  // Domain-specific compliance quick reference from DOMAIN_PLAYBOOK
+  const _compPB=typeof DOMAIN_PLAYBOOK!=='undefined'?(DOMAIN_PLAYBOOK[domain]||DOMAIN_PLAYBOOK._default||null):null;
+  if(_compPB&&_compPB.compliance_ja&&_compPB.compliance_ja.length>0){
+    doc45+='## '+(G?'ドメイン別コンプライアンス早見表 ('+domain+')':'Domain Compliance Quick Reference ('+domain+')')+'\n\n';
+    const _cr=G?_compPB.compliance_ja:_compPB.compliance_en;
+    _cr.forEach(c=>{
+      const parts=c.split(':');
+      const label=parts[0].trim();
+      const detail=parts.slice(1).join(':').trim();
+      doc45+='- **'+label+'**'+(detail?': '+detail:'')+'\n';
+    });
+    doc45+='\n';
+  }
+
   doc45+=(G?'## 📚 関連ドキュメント\n\n':'## 📚 Related Documents\n\n');
   doc45+='- [Security Intelligence](./43_security_intelligence.md)\n';
   doc45+='- [Incident Response](./34_incident_response.md)\n';

@@ -2916,3 +2916,71 @@ describe('Suite 29: Domain AI Safety Guardrails (P24)', () => {
     assert.ok(!doc.includes('undefined'), 'Unknown domain must not produce undefined in AI safety doc');
   });
 });
+
+/*
+   Suite 30 — P12 Compliance Matrix: Domain Quick Reference (DOMAIN_PLAYBOOK)
+   Tests for:
+   - P12: DOMAIN_PLAYBOOK[domain].compliance_ja/en → docs/45_compliance_matrix.md
+*/
+describe('Suite 30: P12 Compliance Matrix Domain Quick Reference', () => {
+  function gP12(answers, lang) {
+    S.files={}; S.genLang=lang||'ja'; S.skill='intermediate'; S.skillLv=3;
+    genPillar12_SecurityIntelligence(answers,'QTest');
+    return Object.assign({}, S.files);
+  }
+
+  const finBase = {
+    purpose: '金融取引・送金プラットフォーム',
+    frontend: 'React + Next.js', backend: 'Node.js + Express',
+    database: 'PostgreSQL', deploy: 'Vercel', auth: 'NextAuth.js',
+    data_entities: 'User, Transaction', success: '取引成功率99%', target: '個人ユーザー',
+  };
+  const healthBase = {
+    purpose: '医療記録・ヘルスケア管理',
+    frontend: 'React + Next.js', backend: 'Supabase',
+    database: 'PostgreSQL', deploy: 'Vercel', auth: 'Supabase Auth',
+    data_entities: 'Patient, Record', success: 'HIPAA準拠100%', target: '医療従事者',
+  };
+  const saasBase = {
+    purpose: 'SaaSプロジェクト管理ツール',
+    frontend: 'React + Next.js', backend: 'Node.js + Express',
+    database: 'PostgreSQL', deploy: 'Vercel', auth: 'NextAuth.js',
+    data_entities: 'User, Team, Project', success: 'MRR $10k', target: '企業',
+  };
+
+  it('P12: fintech compliance matrix includes domain quick reference', () => {
+    const f = gP12(finBase);
+    const doc = f['docs/45_compliance_matrix.md'] || '';
+    assert.ok(doc.includes('ドメイン別コンプライアンス早見表') || doc.includes('Domain Compliance Quick Reference'), 'Fintech compliance matrix must have domain quick reference section');
+  });
+
+  it('P12: fintech compliance mentions FSA/金融庁 or PCI DSS', () => {
+    const f = gP12(finBase);
+    const doc = f['docs/45_compliance_matrix.md'] || '';
+    assert.ok(doc.includes('金融庁') || doc.includes('FSA') || doc.includes('PCI') || doc.includes('AML'), 'Fintech compliance quick reference must mention FSA or PCI DSS');
+  });
+
+  it('P12: health compliance mentions HIPAA', () => {
+    const f = gP12(healthBase);
+    const doc = f['docs/45_compliance_matrix.md'] || '';
+    assert.ok(doc.includes('HIPAA') || doc.includes('PHI') || doc.includes('医療'), 'Health compliance quick reference must mention HIPAA');
+  });
+
+  it('P12: saas compliance mentions SOC 2 or GDPR', () => {
+    const f = gP12(saasBase);
+    const doc = f['docs/45_compliance_matrix.md'] || '';
+    assert.ok(doc.includes('SOC 2') || doc.includes('SOC2') || doc.includes('GDPR') || doc.includes('CCPA'), 'SaaS compliance quick reference must mention SOC 2 or GDPR');
+  });
+
+  it('P12: compliance matrix still shows applicable frameworks', () => {
+    const f = gP12(finBase);
+    const doc = f['docs/45_compliance_matrix.md'] || '';
+    assert.ok(doc.includes('Applicable Frameworks') || doc.includes('適用フレームワーク'), 'Compliance matrix must still show applicable frameworks section');
+  });
+
+  it('P12: EN mode shows English compliance quick reference', () => {
+    const f = gP12(finBase, 'en');
+    const doc = f['docs/45_compliance_matrix.md'] || '';
+    assert.ok(doc.includes('Domain Compliance Quick Reference') || doc.includes('FSA') || doc.includes('PCI'), 'EN mode must show English domain compliance reference');
+  });
+});
