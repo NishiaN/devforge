@@ -4544,6 +4544,33 @@ describe('Suite 54: P14 Ops final 5 domains (portfolio/tool/manufacturing/agricu
   });
 });
 
+// ── Suite 56: P19 enterprise workflow customizations batch 2 ─────────────────
+describe('Suite 56: P19 enterprise workflow customizations (analytics/automation/logistics/tool)', () => {
+  it('P19: analytics domain shows dashboard publish and data access approval workflows', () => {
+    const f = gP19(Object.assign({}, A25, { purpose:'analytics data dashboard business intelligence platform', org_model:'マルチテナント(RLS)' }));
+    const doc = f['docs/74_workflow_engine.md'] || '';
+    assert.ok(doc.includes('ダッシュボード公開') || doc.includes('Dashboard publish') || doc.includes('データアクセス') || doc.includes('Data access'), 'Analytics enterprise must show dashboard publish/data access approval workflows');
+  });
+
+  it('P19: automation domain shows workflow template and API connection approval', () => {
+    const f = gP19(Object.assign({}, A25, { purpose:'automation workflow process management platform', org_model:'マルチテナント(RLS)' }));
+    const doc = f['docs/74_workflow_engine.md'] || '';
+    assert.ok(doc.includes('ワークフローテンプレート') || doc.includes('Workflow template') || doc.includes('外部API') || doc.includes('External API'), 'Automation enterprise must show workflow template/API connection approval');
+  });
+
+  it('P19: logistics domain shows route change and escalation approval workflows', () => {
+    const f = gP19(Object.assign({}, A25, { purpose:'logistics delivery fleet tracking platform', org_model:'マルチテナント(RLS)' }));
+    const doc = f['docs/74_workflow_engine.md'] || '';
+    assert.ok(doc.includes('配送ルート') || doc.includes('Delivery route') || doc.includes('特急配送') || doc.includes('Express shipping'), 'Logistics enterprise must show route change/escalation approval workflows');
+  });
+
+  it('P19: tool domain shows API key issuance and rate limit raise approval workflows', () => {
+    const f = gP19(Object.assign({}, A25, { purpose:'tool API key management platform', org_model:'マルチテナント(RLS)' }));
+    const doc = f['docs/74_workflow_engine.md'] || '';
+    assert.ok(doc.includes('APIキー発行') || doc.includes('API key issuance') || doc.includes('レート制限') || doc.includes('Rate limit'), 'Tool enterprise must show API key/rate limit approval workflows');
+  });
+});
+
 // ── Suite 55: P5 Quality Intelligence industryMap 32/32 domain coverage ──────
 describe('Suite 55: P5 Quality Intelligence industryMap 32/32 domains (manufacturing/agriculture/energy/travel/government/logistics/media)', () => {
   it('P5: manufacturing domain uses manufacturing QA matrix (not saas default)', () => {

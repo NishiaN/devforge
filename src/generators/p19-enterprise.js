@@ -411,7 +411,15 @@ function gen74(G, domain, orgModel, isMultiTenant, a, pn) {
     government: G ? ['申請審査・承認ワークフロー', 'アクセシビリティ例外申請', '個人情報開示審査'] :
                     ['Application review & approval workflow', 'Accessibility exception request', 'Personal data disclosure review'],
     booking: G ? ['キャンセルポリシー例外承認', '大口予約確定フロー', 'オーバーブッキング調整'] :
-                  ['Cancellation policy exception approval', 'Large booking confirmation flow', 'Overbooking adjustment']
+                  ['Cancellation policy exception approval', 'Large booking confirmation flow', 'Overbooking adjustment'],
+    analytics: G ? ['ダッシュボード公開承認ワークフロー', 'データアクセス権限申請', 'カスタムレポート公開レビュー'] :
+                   ['Dashboard publish approval workflow', 'Data access permission request', 'Custom report publish review'],
+    automation: G ? ['ワークフローテンプレート承認フロー', '外部API接続申請', '自動化ルール有効化承認'] :
+                    ['Workflow template approval flow', 'External API connection request', 'Automation rule activation approval'],
+    logistics: G ? ['配送ルート変更承認', '特急配送エスカレーション', '倉庫キャパシティ超過申請'] :
+                   ['Delivery route change approval', 'Express shipping escalation', 'Warehouse capacity overflow request'],
+    tool: G ? ['APIキー発行承認ワークフロー', 'レート制限引き上げ申請', 'Webhook エンドポイント登録承認'] :
+              ['API key issuance approval workflow', 'Rate limit raise request', 'Webhook endpoint registration approval']
   };
   var domCustom = customizations[domain] || (G ? ['承認ワークフロー', 'オンボーディング自動化', '状態変更通知'] :
                                                   ['Approval workflow', 'Onboarding automation', 'State change notifications']);
