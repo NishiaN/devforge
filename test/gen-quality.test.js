@@ -3871,3 +3871,80 @@ describe('Suite 42: P9 Sequence Diagrams DOMAIN_SEQ_FLOWS Expansion', () => {
     assert.ok(doc.includes('コミュニティ投稿') || doc.includes('Community Post') || doc.includes('モデレーション') || doc.includes('moderation'), 'Community must show post/moderation sequence flow');
   });
 });
+
+/*
+ ─────────────────────────────────────────────────────────────────────────────
+  Suite 43 — P14 Ops Intelligence: SLI/Rate-Limit/Threshold Domain Expansion
+  Verifies docs/53_ops_runbook.md and docs/54_ops_checklist.md show
+  domain-specific SLI targets, rate limits, and alert thresholds for the
+  newly added domains (saas, booking, community, iot, marketplace, travel,
+  government, insurance, ai) beyond the original 4 (fintech, health, education, ec)
+ ─────────────────────────────────────────────────────────────────────────────
+*/
+function gP14(answers, lang) {
+  S.files={}; S.genLang=lang||'ja'; S.skill='intermediate';
+  genPillar14_OpsIntelligence(answers,'QTest');
+  return S.files;
+}
+
+describe('Suite 43: P14 Ops Intelligence Domain SLI/Rate-Limit Expansion', () => {
+  it('P14: saas domain shows tenant isolation SLI in ops runbook', () => {
+    const f = gP14(Object.assign({}, A25, { purpose:'SaaS subscription platform' }));
+    const doc = f['docs/53_ops_runbook.md'] || '';
+    assert.ok(doc.includes('テナント分離') || doc.includes('Tenant Isolation') || doc.includes('サブスク更新') || doc.includes('Subscription Renewal'), 'SaaS must show tenant isolation SLI');
+  });
+
+  it('P14: booking domain shows double booking prevention SLI', () => {
+    const f = gP14(Object.assign({}, A25, { purpose:'restaurant booking system' }));
+    const doc = f['docs/53_ops_runbook.md'] || '';
+    assert.ok(doc.includes('ダブルブッキング') || doc.includes('Double Booking') || doc.includes('予約確定時間') || doc.includes('Booking Confirm'), 'Booking must show double booking prevention SLI');
+  });
+
+  it('P14: community domain shows moderation response time SLI', () => {
+    const f = gP14(Object.assign({}, A25, { purpose:'online community platform' }));
+    const doc = f['docs/53_ops_runbook.md'] || '';
+    assert.ok(doc.includes('モデレーション応答') || doc.includes('Moderation Response') || doc.includes('WebSocket接続') || doc.includes('WebSocket Connect'), 'Community must show moderation response SLI');
+  });
+
+  it('P14: iot domain shows sensor data reception SLI', () => {
+    const f = gP14(Object.assign({}, A25, { purpose:'IoT device management platform' }));
+    const doc = f['docs/53_ops_runbook.md'] || '';
+    assert.ok(doc.includes('センサーデータ受信') || doc.includes('Sensor Data Reception') || doc.includes('MQTT') || doc.includes('デバイス接続率'), 'IoT must show sensor data reception SLI');
+  });
+
+  it('P14: travel domain shows double booking SLI in ops runbook', () => {
+    const f = gP14(Object.assign({}, A25, { purpose:'travel booking platform' }));
+    const doc = f['docs/53_ops_runbook.md'] || '';
+    assert.ok(doc.includes('ダブルブッキング') || doc.includes('Double Booking') || doc.includes('OTA在庫') || doc.includes('OTA Inventory'), 'Travel must show double booking rate SLI');
+  });
+
+  it('P14: government domain shows application processing time SLI', () => {
+    const f = gP14(Object.assign({}, A25, { purpose:'government civic service portal' }));
+    const doc = f['docs/53_ops_runbook.md'] || '';
+    assert.ok(doc.includes('申請処理時間') || doc.includes('Application Processing') || doc.includes('個人情報アクセス') || doc.includes('Personal Data Access'), 'Government must show processing time SLI');
+  });
+
+  it('P14: ai domain shows token overuse rate SLI', () => {
+    const f = gP14(Object.assign({}, A25, { purpose:'AI chatbot assistant platform' }));
+    const doc = f['docs/53_ops_runbook.md'] || '';
+    assert.ok(doc.includes('トークン使用量') || doc.includes('Token Overuse') || doc.includes('Hallucination') || doc.includes('幻覚'), 'AI must show token overuse SLI');
+  });
+
+  it('P14: iot domain shows sensor alert threshold in checklist', () => {
+    const f = gP14(Object.assign({}, A25, { purpose:'IoT device management platform' }));
+    const doc = f['docs/54_ops_checklist.md'] || '';
+    assert.ok(doc.includes('センサー欠損') || doc.includes('Sensor Data Loss') || doc.includes('デバイスオフライン') || doc.includes('Device Offline'), 'IoT must show sensor alert thresholds in checklist');
+  });
+
+  it('P14: saas domain shows tenant isolation threshold in checklist', () => {
+    const f = gP14(Object.assign({}, A25, { purpose:'SaaS subscription platform' }));
+    const doc = f['docs/54_ops_checklist.md'] || '';
+    assert.ok(doc.includes('テナント分離') || doc.includes('Tenant Isolation') || doc.includes('Kill Switch') || doc.includes('チャーン'), 'SaaS must show tenant isolation threshold in checklist');
+  });
+
+  it('P14: booking domain shows double booking threshold in checklist', () => {
+    const f = gP14(Object.assign({}, A25, { purpose:'restaurant booking system' }));
+    const doc = f['docs/54_ops_checklist.md'] || '';
+    assert.ok(doc.includes('ダブルブッキング') || doc.includes('Double Booking') || doc.includes('予約失敗') || doc.includes('Booking Failure'), 'Booking must show double booking threshold in checklist');
+  });
+});

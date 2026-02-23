@@ -14354,6 +14354,51 @@ ec: [
 { metric: G ? 'カート処理時間' : 'Cart Processing Time', target: '<500ms', method: G ? 'APMトレース' : 'APM traces' },
 { metric: G ? '在庫同期精度' : 'Inventory Sync Accuracy', target: '99.9%', method: G ? '差分検証ジョブ' : 'Diff verification job' }
 ],
+saas: [
+{ metric: G ? 'テナント分離エラー率' : 'Tenant Isolation Error Rate', target: '0%', method: G ? 'RLSポリシー監査' : 'RLS policy audit' },
+{ metric: G ? 'サブスク更新成功率' : 'Subscription Renewal Success', target: '99.5%', method: G ? 'Stripe Webhookログ' : 'Stripe webhook logs' },
+{ metric: G ? 'API応答時間 (P99)' : 'API Response Time (P99)', target: '<500ms', method: G ? 'APMトレース' : 'APM traces' }
+],
+booking: [
+{ metric: G ? 'ダブルブッキング発生率' : 'Double Booking Rate', target: '0%', method: G ? 'トランザクションログ分析' : 'Transaction log analysis' },
+{ metric: G ? '予約確定時間 (P95)' : 'Booking Confirm Time (P95)', target: '<2s', method: G ? 'APMトレース' : 'APM traces' },
+{ metric: G ? 'キャンセル返金成功率' : 'Cancellation Refund Success', target: '99.9%', method: G ? 'Stripe返金ログ' : 'Stripe refund logs' }
+],
+community: [
+{ metric: G ? 'モデレーション応答時間' : 'Moderation Response Time', target: '<5min', method: G ? 'モデレーションキュー監視' : 'Moderation queue monitoring' },
+{ metric: G ? '不適切コンテンツ検出率' : 'Inappropriate Content Detection', target: '>95%', method: G ? 'AI分類精度検証' : 'AI classification accuracy validation' },
+{ metric: G ? 'WebSocket接続成功率' : 'WebSocket Connect Success', target: '99%', method: G ? 'リアルタイム接続ログ' : 'Realtime connection logs' }
+],
+iot: [
+{ metric: G ? 'センサーデータ受信率' : 'Sensor Data Reception Rate', target: '99.5%', method: G ? 'MQTT受信ログ' : 'MQTT receive logs' },
+{ metric: G ? 'アラート応答時間' : 'Alert Response Time', target: '<30s', method: G ? 'アラートトリガーログ' : 'Alert trigger logs' },
+{ metric: G ? 'デバイス接続率' : 'Device Connection Rate', target: '95%', method: G ? 'デバイス接続ステータス' : 'Device connection status' }
+],
+marketplace: [
+{ metric: G ? 'エスクロー処理成功率' : 'Escrow Processing Success', target: '99.9%', method: G ? 'トランザクションログ' : 'Transaction logs' },
+{ metric: G ? '検索応答時間 (P95)' : 'Search Response Time (P95)', target: '<500ms', method: G ? 'APMトレース' : 'APM traces' },
+{ metric: G ? '出品者/購入者トラスト維持率' : 'Trust Score Maintenance', target: '>4.0/5.0', method: G ? 'レビュー集計' : 'Review aggregation' }
+],
+travel: [
+{ metric: G ? 'ダブルブッキング率' : 'Double Booking Rate', target: '0%', method: G ? '在庫ロックトランザクション' : 'Inventory lock transactions' },
+{ metric: G ? 'OTA在庫同期時間' : 'OTA Inventory Sync Time', target: '<5min', method: G ? '同期ジョブログ' : 'Sync job logs' },
+{ metric: G ? '決済成功率' : 'Payment Success Rate', target: '99%', method: G ? 'Stripe Webhookログ' : 'Stripe webhook logs' }
+],
+government: [
+{ metric: G ? '申請処理時間' : 'Application Processing Time', target: G ? '標準処理期間内' : 'Within standard period', method: G ? 'ワークフローログ' : 'Workflow logs' },
+{ metric: G ? 'システム可用性' : 'System Availability', target: '99.9%', method: G ? 'ヘルスチェック' : 'Health check' },
+{ metric: G ? '個人情報アクセス監査率' : 'Personal Data Access Audit', target: '100%', method: G ? '監査ログ完全性チェック' : 'Audit log completeness check' }
+],
+insurance: [
+{ metric: G ? '請求審査時間 (中央値)' : 'Claim Review Time (Median)', target: G ? '7営業日' : '7 business days', method: G ? 'ワークフローログ' : 'Workflow logs' },
+{ metric: G ? '見積計算精度' : 'Quote Calculation Accuracy', target: '99.99%', method: G ? 'テストケース回帰' : 'Test case regression' },
+{ metric: G ? '監査ログ完全性' : 'Audit Log Completeness', target: '100%', method: G ? '監査証跡検証' : 'Audit trail validation' }
+],
+ai: [
+{ metric: G ? 'API応答時間 (P90)' : 'API Response Time (P90)', target: '<5s', method: G ? 'APMトレース+LLMログ' : 'APM traces + LLM logs' },
+{ metric: G ? 'トークン使用量超過率' : 'Token Overuse Rate', target: '<1%', method: G ? 'APIコストモニタリング' : 'API cost monitoring' },
+{ metric: G ? 'Hallucination検出率' : 'Hallucination Detection Rate', target: '<2%', method: G ? 'ユーザーフィードバック分析' : 'User feedback analysis' }
+],
 _default: [
 { metric: G ? 'アップタイム' : 'Uptime', target: ops.slo, method: G ? 'ヘルスチェックエンドポイント' : 'Health check endpoint' },
 { metric: G ? 'API応答時間 (P95)' : 'API Response Time (P95)', target: '<1s', method: G ? 'APM' : 'APM' },
@@ -14499,6 +14544,11 @@ health: { api: '60 req/min/user', diagnostic: '5 req/min/user', alert: '3 failed
 education: { api: '120 req/min/user', quiz: '10 submit/min', alert: '連続失敗5回 → カンニング検知' },
 ec: { api: '100 req/min/user', checkout: '3 attempt/min', alert: '10 failed → 不正検知' },
 saas: { api: '100 req/min/user', signup: '5/hour/IP', alert: 'rate limit超過 → スロットリング' },
+booking: { api: '60 req/min/user', booking: '3 attempt/min', alert: '競合検出 → ロック + リトライ' },
+iot: { api: '1000 msg/min/device', command: '10 cmd/min/device', alert: 'burst>200% → デバイス一時停止' },
+marketplace: { api: '60 req/min/user', bid: '5 bid/min', alert: '入札異常 → 手動確認' },
+travel: { api: '100 req/min/user', booking: '5 attempt/min', alert: '在庫競合 → ロック延長' },
+ai: { api: '20 req/min/user', tokens: '100k tokens/day', alert: 'コスト閾値超過 → 一時制限' },
 _default: { api: '60 req/min/user', write: '30 req/min/user', alert: '閾値80% → アラート' }
 };
 const limits = rateLimits[domain] || rateLimits._default;
@@ -14679,6 +14729,31 @@ education: [
 { metric: G ? 'エラー率' : 'Error Rate', warn: '1%', crit: '3%', action: G ? '調査' : 'Investigate' },
 { metric: G ? '進捗保存失敗' : 'Progress Save Fail', warn: '0.5%', crit: '1%', action: G ? 'バックアップ確認' : 'Check Backup' },
 { metric: G ? 'CDN遅延' : 'CDN Latency', warn: '2s', crit: '5s', action: G ? 'CDN確認' : 'Check CDN' }
+],
+health: [
+{ metric: G ? 'データ暗号化エラー率' : 'Data Encryption Error Rate', warn: '0%', crit: '0%', action: G ? '即時調査+通知' : 'Immediate investigate+notify' },
+{ metric: G ? 'アップタイム' : 'Uptime', warn: '99.9%', crit: '99%', action: G ? 'インシデント宣言' : 'Declare incident' },
+{ metric: G ? 'PHIアクセス異常' : 'PHI Access Anomaly', warn: '任意', crit: '任意', action: G ? 'ゼロトレランス調査' : 'Zero tolerance investigation' }
+],
+ec: [
+{ metric: G ? '決済失敗率' : 'Payment Failure Rate', warn: '1%', crit: '3%', action: G ? '決済プロバイダ確認' : 'Check payment provider' },
+{ metric: G ? '在庫不整合率' : 'Inventory Mismatch Rate', warn: '0.1%', crit: '0.5%', action: G ? '在庫同期ジョブ再実行' : 'Re-run inventory sync job' },
+{ metric: G ? 'カゴ落ち率急増' : 'Cart Abandon Rate Spike', warn: '+10%', crit: '+25%', action: G ? 'UX/決済フロー確認' : 'Check UX/checkout flow' }
+],
+saas: [
+{ metric: G ? 'テナント分離エラー' : 'Tenant Isolation Error', warn: '0', crit: '0', action: G ? '即時調査+Kill Switch' : 'Immediate investigate+Kill Switch' },
+{ metric: G ? 'チャーン率' : 'Churn Rate', warn: '5%', crit: '10%', action: G ? 'CS即時対応' : 'CS immediate action' },
+{ metric: G ? 'API P99遅延' : 'API P99 Latency', warn: '1s', crit: '3s', action: G ? 'スケールアウト' : 'Scale out' }
+],
+booking: [
+{ metric: G ? 'ダブルブッキング検出' : 'Double Booking Detected', warn: '0', crit: '0', action: G ? '即時ロック+顧客対応' : 'Immediate lock+customer action' },
+{ metric: G ? '予約失敗率' : 'Booking Failure Rate', warn: '1%', crit: '3%', action: G ? '在庫ロック確認' : 'Check inventory lock' },
+{ metric: G ? 'メール未到達率' : 'Email Non-Delivery Rate', warn: '2%', crit: '5%', action: G ? 'メール設定確認' : 'Check email configuration' }
+],
+iot: [
+{ metric: G ? 'センサー欠損率' : 'Sensor Data Loss Rate', warn: '1%', crit: '5%', action: G ? 'デバイス接続確認' : 'Check device connection' },
+{ metric: G ? 'アラート遅延' : 'Alert Delay', warn: '30s', crit: '60s', action: G ? 'メッセージキュー確認' : 'Check message queue' },
+{ metric: G ? 'デバイスオフライン率' : 'Device Offline Rate', warn: '5%', crit: '15%', action: G ? 'ネットワーク/電源確認' : 'Check network/power' }
 ],
 _default: [
 { metric: G ? 'エラー率' : 'Error Rate', warn: '1%', crit: '5%', action: G ? '調査' : 'Investigate' },
