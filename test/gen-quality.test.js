@@ -3730,3 +3730,86 @@ describe('Suite 40: P13 Strategy Hidden Cost Domain Expansion', () => {
     assert.ok(doc.includes('ISMAP') || doc.includes('JPKI') || doc.includes('government') || doc.includes('行政'), 'Government must show government-specific industry blueprint');
   });
 });
+
+/*
+ ─────────────────────────────────────────────────────────────────────────────
+  Suite 41 — P9 Design System DOMAIN_VISUAL Full Coverage (14→32)
+  Verifies docs/26_design_system.md shows domain-specific visual strategy for
+  the 18 newly added DOMAIN_VISUAL domains: marketplace, content, portfolio,
+  tool, iot, realestate, legal, hr, automation, event, devtool, newsletter,
+  manufacturing, logistics, agriculture, energy, government, insurance
+ ─────────────────────────────────────────────────────────────────────────────
+*/
+describe('Suite 41: P9 Design System DOMAIN_VISUAL Full Coverage', () => {
+  it('P9: marketplace domain shows price badge/filter sidebar visual strategy', () => {
+    const f = gP9(Object.assign({}, A25, { purpose:'marketplace platform' }));
+    const doc = f['docs/26_design_system.md'] || '';
+    assert.ok(doc.includes('価格バッジ') || doc.includes('Price badge') || doc.includes('フィルターサイドバー') || doc.includes('Filter sidebar'), 'Marketplace must show price/filter visual strategy');
+  });
+
+  it('P9: content domain shows reading progress visual strategy', () => {
+    const f = gP9(Object.assign({}, A25, { purpose:'content publishing platform' }));
+    const doc = f['docs/26_design_system.md'] || '';
+    assert.ok(doc.includes('読書進捗') || doc.includes('Reading progress') || doc.includes('リーダーモード') || doc.includes('Reading mode'), 'Content must show reading progress visual strategy');
+  });
+
+  it('P9: portfolio domain shows masonry grid visual strategy', () => {
+    const f = gP9(Object.assign({}, A25, { purpose:'freelancer portfolio website' }));
+    const doc = f['docs/26_design_system.md'] || '';
+    assert.ok(doc.includes('メイソングリッド') || doc.includes('Masonry grid') || doc.includes('パララックス') || doc.includes('parallax'), 'Portfolio must show masonry grid visual strategy');
+  });
+
+  it('P9: tool domain shows compact toolbar visual strategy', () => {
+    const f = gP9(Object.assign({}, A25, { purpose:'developer productivity tool' }));
+    const doc = f['docs/26_design_system.md'] || '';
+    assert.ok(doc.includes('コンパクトツールバー') || doc.includes('Compact toolbar') || doc.includes('即時フィードバック') || doc.includes('Instant feedback'), 'Tool must show compact toolbar visual strategy');
+  });
+
+  it('P9: iot domain shows sensor gauge visual strategy', () => {
+    const f = gP9(Object.assign({}, A25, { purpose:'IoT device monitoring platform' }));
+    const doc = f['docs/26_design_system.md'] || '';
+    assert.ok(doc.includes('センサーゲージ') || doc.includes('Sensor gauge') || doc.includes('ダークモニタリング') || doc.includes('Dark monitoring'), 'IoT must show sensor gauge visual strategy');
+  });
+
+  it('P9: realestate domain shows VR tour / photo grid visual strategy', () => {
+    const f = gP9(Object.assign({}, A25, { purpose:'real estate property listing platform' }));
+    const doc = f['docs/26_design_system.md'] || '';
+    assert.ok(doc.includes('VRツアー') || doc.includes('VR tour') || doc.includes('写真グリッド') || doc.includes('Photo grid'), 'RealEstate must show VR tour/photo grid visual strategy');
+  });
+
+  it('P9: legal domain shows document viewer visual strategy', () => {
+    const f = gP9(Object.assign({}, A25, { purpose:'legal document management system' }));
+    const doc = f['docs/26_design_system.md'] || '';
+    assert.ok(doc.includes('ドキュメントビューア') || doc.includes('Document viewer') || doc.includes('プロフェッショナルセリフ') || doc.includes('Professional serif'), 'Legal must show document viewer visual strategy');
+  });
+
+  it('P9: hr domain shows profile cards / kanban visual strategy', () => {
+    const f = gP9(Object.assign({}, A25, { purpose:'HR recruitment management platform' }));
+    const doc = f['docs/26_design_system.md'] || '';
+    assert.ok(doc.includes('プロフィールカード') || doc.includes('Profile cards') || doc.includes('カンバン') || doc.includes('Kanban'), 'HR must show profile cards/kanban visual strategy');
+  });
+
+  it('P9: automation domain shows flow diagram visual strategy', () => {
+    const f = gP9(Object.assign({}, A25, { purpose:'workflow automation platform' }));
+    const doc = f['docs/26_design_system.md'] || '';
+    assert.ok(doc.includes('フロー図') || doc.includes('Flow diagram') || doc.includes('ノードベース') || doc.includes('Node-based'), 'Automation must show flow diagram visual strategy');
+  });
+
+  it('P9: event domain shows countdown timer visual strategy', () => {
+    const f = gP9(Object.assign({}, A25, { purpose:'event management system' }));
+    const doc = f['docs/26_design_system.md'] || '';
+    assert.ok(doc.includes('カウントダウン') || doc.includes('Countdown') || doc.includes('座席マップ') || doc.includes('seat map'), 'Event must show countdown/seat map visual strategy');
+  });
+
+  it('P9: devtool domain shows code syntax highlight visual strategy', () => {
+    const f = gP9(Object.assign({}, A25, { purpose:'devtool SDK API platform' }));
+    const doc = f['docs/26_design_system.md'] || '';
+    assert.ok(doc.includes('コード構文') || doc.includes('Code syntax') || doc.includes('ダークモノスペース') || doc.includes('Dark monospace'), 'DevTool must show code syntax visual strategy');
+  });
+
+  it('P9: government domain shows multi-step form visual strategy', () => {
+    const f = gP9(Object.assign({}, A25, { purpose:'government e-services portal' }));
+    const doc = f['docs/26_design_system.md'] || '';
+    assert.ok(doc.includes('多段階フォーム') || doc.includes('Multi-step form') || doc.includes('A11y') || doc.includes('accessibility'), 'Government must show multi-step form/a11y visual strategy');
+  });
+});
