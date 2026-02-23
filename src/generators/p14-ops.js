@@ -189,6 +189,46 @@ function genPillar14_OpsIntelligence(a, pn) {
       { metric: G ? 'ステップ実行遅延 (P95)' : 'Step Execution Latency (P95)', target: '<10s', method: G ? 'APMトレース' : 'APM traces' },
       { metric: G ? 'デッドレター率' : 'Dead Letter Rate', target: '<0.1%', method: G ? 'キューモニタリング' : 'Queue monitoring' }
     ],
+    creator: [
+      { metric: G ? '収益化成功率' : 'Monetization Success Rate', target: '>99%', method: G ? 'Stripe Webhookログ' : 'Stripe webhook logs' },
+      { metric: G ? 'コンテンツ配信成功率' : 'Content Delivery Success', target: '99.9%', method: G ? 'CDN/ストレージログ' : 'CDN/storage logs' },
+      { metric: G ? 'ペイアウト処理成功率' : 'Payout Processing Success', target: '100%', method: G ? '決済処理ログ' : 'Payment processing logs' }
+    ],
+    gamify: [
+      { metric: G ? 'ポイント付与精度' : 'Point Award Accuracy', target: '100%', method: G ? 'トランザクションログ整合性' : 'Transaction log integrity' },
+      { metric: G ? 'ランキング更新遅延' : 'Leaderboard Update Latency', target: '<1s', method: G ? 'Redisスコアボードログ' : 'Redis scoreboard logs' },
+      { metric: G ? 'バッジ付与エラー率' : 'Badge Award Error Rate', target: '<0.1%', method: G ? 'バッジイベントログ' : 'Badge event logs' }
+    ],
+    media: [
+      { metric: G ? 'ストリーミング開始時間' : 'Streaming Start Time', target: '<3s', method: G ? 'CDNパフォーマンスログ' : 'CDN performance logs' },
+      { metric: G ? 'バッファリング率' : 'Buffering Rate', target: '<1%', method: G ? 'プレイヤーエラーログ' : 'Player error logs' },
+      { metric: G ? 'コンテンツ配信成功率' : 'Content Delivery Success', target: '99.9%', method: G ? 'CDN/DRMログ' : 'CDN/DRM logs' }
+    ],
+    content: [
+      { metric: G ? '公開成功率' : 'Publish Success Rate', target: '99.9%', method: G ? 'CMS操作ログ' : 'CMS operation logs' },
+      { metric: G ? '全文検索応答時間' : 'Full-text Search Response', target: '<500ms', method: G ? 'Elasticsearchログ' : 'Elasticsearch logs' },
+      { metric: G ? '下書き自動保存率' : 'Draft Auto-save Rate', target: '>99%', method: G ? '保存エラーログ' : 'Save error logs' }
+    ],
+    realestate: [
+      { metric: G ? '物件掲載成功率' : 'Listing Success Rate', target: '99.9%', method: G ? 'DB操作ログ' : 'DB operation logs' },
+      { metric: G ? '内見予約確定時間' : 'Viewing Booking Confirm Time', target: '<2s', method: G ? 'APMトレース' : 'APM traces' },
+      { metric: G ? '画像配信成功率' : 'Image Delivery Success', target: '>99.5%', method: G ? 'CDNログ' : 'CDN logs' }
+    ],
+    legal: [
+      { metric: G ? '電子署名完了率' : 'E-signature Completion Rate', target: '>95%', method: G ? 'eSign API ログ' : 'eSign API logs' },
+      { metric: G ? '文書検索応答時間' : 'Document Search Response', target: '<1s', method: G ? 'APMトレース' : 'APM traces' },
+      { metric: G ? 'バージョン管理整合性' : 'Version Control Integrity', target: '100%', method: G ? '文書バージョンログ' : 'Document version logs' }
+    ],
+    event: [
+      { metric: G ? 'チケット重複発行率' : 'Duplicate Ticket Rate', target: '0%', method: G ? 'トランザクションログ' : 'Transaction logs' },
+      { metric: G ? 'チェックイン処理時間' : 'Check-in Processing Time', target: '<3s', method: G ? 'QRスキャンログ' : 'QR scan logs' },
+      { metric: G ? 'チケット販売成功率' : 'Ticket Sale Success Rate', target: '>99%', method: G ? 'Stripe Webhookログ' : 'Stripe webhook logs' }
+    ],
+    devtool: [
+      { metric: G ? 'API応答時間 (P99)' : 'API Response Time (P99)', target: '<500ms', method: G ? 'APMトレース' : 'APM traces' },
+      { metric: G ? 'Webhook配信成功率' : 'Webhook Delivery Success', target: '>99.5%', method: G ? 'Webhook配信ログ' : 'Webhook delivery logs' },
+      { metric: G ? 'SDK利用成功率' : 'SDK Usage Success Rate', target: '>99.9%', method: G ? 'APIエラーログ' : 'API error logs' }
+    ],
     _default: [
       { metric: G ? 'アップタイム' : 'Uptime', target: ops.slo, method: G ? 'ヘルスチェックエンドポイント' : 'Health check endpoint' },
       { metric: G ? 'API応答時間 (P95)' : 'API Response Time (P95)', target: '<1s', method: G ? 'APM' : 'APM' },
@@ -352,6 +392,14 @@ function genPillar14_OpsIntelligence(a, pn) {
     logistics: { api: '200 req/min/driver', tracking: '1 update/30s', alert: '追跡遅延>5min → 警告' },
     newsletter: { api: '100 req/min', send: '10k emails/hour', alert: 'バウンス率>5% → 一時停止' },
     automation: { api: '100 req/min/user', workflow: '20 exec/min', alert: 'デッドレター>1% → 調査' },
+    creator: { api: '60 req/min/user', upload: '10 upload/hour', alert: '収益化エラー → 即時アラート' },
+    gamify: { api: '300 req/min/user', point: '100 award/min', alert: '不正ポイント検出 → 一時凍結' },
+    media: { api: '100 req/min/user', stream: '10 stream/user', alert: 'バッファリング>5% → CDN確認' },
+    content: { api: '60 req/min/user', publish: '10 publish/hour', alert: '公開エラー → 即時通知' },
+    realestate: { api: '60 req/min/user', listing: '20 listing/day', alert: '重複物件検出 → モデレーション' },
+    legal: { api: '60 req/min/user', esign: '5 sign/hour', alert: '署名エラー → 手動確認' },
+    event: { api: '200 req/min/user', ticket: '5 purchase/min', alert: '重複チケット → 即時調査' },
+    devtool: { api: '1000 req/min', webhook: '100 events/min', alert: 'エラー率>1% → 調査' },
     _default: { api: '60 req/min/user', write: '30 req/min/user', alert: '閾値80% → アラート' }
   };
 
@@ -625,6 +673,46 @@ function genPillar14_OpsIntelligence(a, pn) {
       { metric: G ? 'ワークフロー失敗率' : 'Workflow Failure Rate', warn: '0.5%', crit: '2%', action: G ? 'リトライ設定確認' : 'Check retry config' },
       { metric: G ? 'デッドレター率' : 'Dead Letter Rate', warn: '0.1%', crit: '0.5%', action: G ? 'キュー調査' : 'Investigate queue' },
       { metric: G ? 'ステップ実行遅延' : 'Step Execution Delay', warn: '10s', crit: '60s', action: G ? 'ワーカースケールアウト' : 'Scale out workers' }
+    ],
+    creator: [
+      { metric: G ? '収益化エラー率' : 'Monetization Error Rate', warn: '0.1%', crit: '0.5%', action: G ? '決済プロバイダ確認' : 'Check payment provider' },
+      { metric: G ? 'コンテンツ配信遅延' : 'Content Delivery Latency', warn: '3s', crit: '10s', action: G ? 'CDN確認' : 'Check CDN' },
+      { metric: G ? 'エラー率' : 'Error Rate', warn: '1%', crit: '3%', action: G ? '調査' : 'Investigate' }
+    ],
+    gamify: [
+      { metric: G ? 'ポイント付与エラー率' : 'Point Award Error Rate', warn: '0%', crit: '0%', action: G ? '即時調査+不正チェック' : 'Immediate investigate+fraud check' },
+      { metric: G ? 'ランキング更新遅延' : 'Leaderboard Update Delay', warn: '1s', crit: '5s', action: G ? 'Redis確認' : 'Check Redis' },
+      { metric: G ? 'エラー率' : 'Error Rate', warn: '1%', crit: '3%', action: G ? '調査' : 'Investigate' }
+    ],
+    media: [
+      { metric: G ? 'ストリーミング開始遅延' : 'Streaming Start Delay', warn: '3s', crit: '10s', action: G ? 'CDN/エンコード確認' : 'Check CDN/encoding' },
+      { metric: G ? 'バッファリング率' : 'Buffering Rate', warn: '1%', crit: '5%', action: G ? 'ビットレート調整' : 'Adjust bitrate' },
+      { metric: G ? 'エラー率' : 'Error Rate', warn: '1%', crit: '3%', action: G ? '調査' : 'Investigate' }
+    ],
+    content: [
+      { metric: G ? '公開エラー率' : 'Publish Error Rate', warn: '0.1%', crit: '0.5%', action: G ? 'CMS/DBステータス確認' : 'Check CMS/DB status' },
+      { metric: G ? '検索応答遅延' : 'Search Response Delay', warn: '500ms', crit: '2s', action: G ? 'Elasticsearch最適化' : 'Optimize Elasticsearch' },
+      { metric: G ? 'エラー率' : 'Error Rate', warn: '1%', crit: '3%', action: G ? '調査' : 'Investigate' }
+    ],
+    realestate: [
+      { metric: G ? '掲載エラー率' : 'Listing Error Rate', warn: '0.5%', crit: '2%', action: G ? 'DB/バリデーション確認' : 'Check DB/validation' },
+      { metric: G ? '画像配信遅延' : 'Image Delivery Latency', warn: '3s', crit: '10s', action: G ? 'CDN確認' : 'Check CDN' },
+      { metric: G ? 'エラー率' : 'Error Rate', warn: '1%', crit: '3%', action: G ? '調査' : 'Investigate' }
+    ],
+    legal: [
+      { metric: G ? 'eSignエラー率' : 'eSign Error Rate', warn: '0.1%', crit: '0.5%', action: G ? 'eSign API確認' : 'Check eSign API' },
+      { metric: G ? '文書検索遅延' : 'Document Search Delay', warn: '1s', crit: '5s', action: G ? 'インデックス確認' : 'Check index' },
+      { metric: G ? 'エラー率' : 'Error Rate', warn: '1%', crit: '3%', action: G ? '調査' : 'Investigate' }
+    ],
+    event: [
+      { metric: G ? '重複チケット検出' : 'Duplicate Ticket Detected', warn: '0', crit: '0', action: G ? '即時調査+キャンセル処理' : 'Immediate investigate+cancel' },
+      { metric: G ? 'チェックイン遅延' : 'Check-in Delay', warn: '3s', crit: '10s', action: G ? 'QRシステム確認' : 'Check QR system' },
+      { metric: G ? 'エラー率' : 'Error Rate', warn: '1%', crit: '3%', action: G ? '調査' : 'Investigate' }
+    ],
+    devtool: [
+      { metric: G ? 'APIエラー率' : 'API Error Rate', warn: '0.5%', crit: '2%', action: G ? 'エンドポイント調査' : 'Investigate endpoint' },
+      { metric: G ? 'Webhook配信失敗率' : 'Webhook Delivery Failure', warn: '0.5%', crit: '2%', action: G ? 'Webhookキュー確認' : 'Check webhook queue' },
+      { metric: G ? 'API遅延 (P99)' : 'API Latency (P99)', warn: '500ms', crit: '2s', action: G ? 'スケールアウト' : 'Scale out' }
     ],
     _default: [
       { metric: G ? 'エラー率' : 'Error Rate', warn: '1%', crit: '5%', action: G ? '調査' : 'Investigate' },

@@ -4449,3 +4449,54 @@ describe('Suite 52: P14 Ops Intelligence SLI expansion (analytics/collab/hr/logi
     assert.ok(doc.includes('リアルタイム同期遅延') || doc.includes('Sync Latency') || doc.includes('競合解決エラー') || doc.includes('Conflict Resolution Error'), 'Collab must show sync latency threshold in checklist');
   });
 });
+
+// ── Suite 53: P14 Ops SLI expansion batch 3 (creator/gamify/media/content/realestate/legal/event/devtool) ──
+describe('Suite 53: P14 Ops SLI expansion batch 3 (creator/gamify/media/content/realestate/legal/event/devtool)', () => {
+  it('P14: creator domain shows monetization success SLI in runbook', () => {
+    const f = gP14(Object.assign({}, A25, { purpose:'creator fan payout monetization platform' }));
+    const doc = f['docs/53_ops_runbook.md'] || '';
+    assert.ok(doc.includes('収益化成功率') || doc.includes('Monetization Success') || doc.includes('ペイアウト') || doc.includes('Payout'), 'Creator must show monetization SLI');
+  });
+
+  it('P14: gamify domain shows point accuracy SLI in runbook', () => {
+    const f = gP14(Object.assign({}, A25, { purpose:'gamification loyalty points rewards platform' }));
+    const doc = f['docs/53_ops_runbook.md'] || '';
+    assert.ok(doc.includes('ポイント付与精度') || doc.includes('Point Award Accuracy') || doc.includes('ランキング更新') || doc.includes('Leaderboard'), 'Gamify must show point accuracy SLI');
+  });
+
+  it('P14: media domain shows streaming start time SLI in runbook', () => {
+    const f = gP14(Object.assign({}, A25, { purpose:'streaming media video on demand platform' }));
+    const doc = f['docs/53_ops_runbook.md'] || '';
+    assert.ok(doc.includes('ストリーミング開始時間') || doc.includes('Streaming Start Time') || doc.includes('バッファリング') || doc.includes('Buffering'), 'Media must show streaming SLI');
+  });
+
+  it('P14: content domain shows publish success SLI in runbook', () => {
+    const f = gP14(Object.assign({}, A25, { purpose:'blog CMS content management publishing platform' }));
+    const doc = f['docs/53_ops_runbook.md'] || '';
+    assert.ok(doc.includes('公開成功率') || doc.includes('Publish Success') || doc.includes('全文検索応答') || doc.includes('Full-text Search'), 'Content must show publish SLI');
+  });
+
+  it('P14: realestate domain shows listing success SLI in runbook', () => {
+    const f = gP14(Object.assign({}, A25, { purpose:'real estate property listing management platform' }));
+    const doc = f['docs/53_ops_runbook.md'] || '';
+    assert.ok(doc.includes('物件掲載成功率') || doc.includes('Listing Success') || doc.includes('内見予約確定') || doc.includes('Viewing Booking'), 'Real estate must show listing SLI');
+  });
+
+  it('P14: legal domain shows e-signature completion SLI in runbook', () => {
+    const f = gP14(Object.assign({}, A25, { purpose:'legal contract document management platform' }));
+    const doc = f['docs/53_ops_runbook.md'] || '';
+    assert.ok(doc.includes('電子署名完了率') || doc.includes('E-signature Completion') || doc.includes('文書検索応答') || doc.includes('Document Search'), 'Legal must show e-signature SLI');
+  });
+
+  it('P14: event domain shows duplicate ticket SLI in runbook', () => {
+    const f = gP14(Object.assign({}, A25, { purpose:'conference event management ticketing platform' }));
+    const doc = f['docs/53_ops_runbook.md'] || '';
+    assert.ok(doc.includes('チケット重複発行率') || doc.includes('Duplicate Ticket Rate') || doc.includes('チェックイン処理') || doc.includes('Check-in Processing'), 'Event must show ticket SLI');
+  });
+
+  it('P14: devtool domain shows API response time SLI in runbook', () => {
+    const f = gP14(Object.assign({}, A25, { purpose:'devtool code analysis API platform' }));
+    const doc = f['docs/53_ops_runbook.md'] || '';
+    assert.ok(doc.includes('API応答時間 (P99)') || doc.includes('API Response Time (P99)') || doc.includes('Webhook配信成功率') || doc.includes('Webhook Delivery'), 'Devtool must show API response SLI');
+  });
+});
