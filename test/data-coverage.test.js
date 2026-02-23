@@ -771,3 +771,72 @@ test('SUCCESS_METRICS kpis: all 32 domains have domain-specific KPIs', () => {
   });
   assert.equal(missing.length, 0, 'Missing KPI entries in p1-sdd.js: ' + missing.join(', '));
 });
+
+// ═══ DOMAIN_QA_MAP Coverage Tests ═══
+
+test('DOMAIN_QA_MAP: all 32 domains have entries', () => {
+  const expectedDomains = ['education','ec','saas','community','booking','fintech','iot',
+    'realestate','content','hr','analytics','health','marketplace','legal','tool','portfolio',
+    'ai','automation','event','gamify','collab','devtool','creator','newsletter',
+    'manufacturing','logistics','agriculture','energy','media','government','travel','insurance'];
+  const missing = expectedDomains.filter(d => !DOMAIN_QA_MAP[d]);
+  assert.equal(missing.length, 0, 'DOMAIN_QA_MAP missing domains: ' + missing.join(', '));
+});
+
+test('DOMAIN_QA_MAP: all entries have focus_ja/focus_en arrays', () => {
+  const incomplete = [];
+  Object.entries(DOMAIN_QA_MAP).forEach(([domain, qa]) => {
+    if (!qa.focus_ja || qa.focus_ja.length === 0) incomplete.push(domain + ':focus_ja empty');
+    if (!qa.focus_en || qa.focus_en.length === 0) incomplete.push(domain + ':focus_en empty');
+  });
+  assert.equal(incomplete.length, 0, 'DOMAIN_QA_MAP incomplete: ' + incomplete.join(', '));
+});
+
+test('DOMAIN_QA_MAP: all entries have priority matrix string', () => {
+  const incomplete = [];
+  Object.entries(DOMAIN_QA_MAP).forEach(([domain, qa]) => {
+    if (!qa.priority || !qa.priority.includes(':')) incomplete.push(domain + ':priority malformed');
+  });
+  assert.equal(incomplete.length, 0, 'DOMAIN_QA_MAP priority missing: ' + incomplete.join(', '));
+});
+
+// ═══ DOMAIN_OPS Coverage Tests ═══
+
+test('DOMAIN_OPS: all 32 domains have entries (plus _default)', () => {
+  const expectedDomains = ['education','ec','saas','community','booking','fintech','iot',
+    'realestate','content','hr','analytics','health','marketplace','legal','tool','portfolio',
+    'ai','automation','event','gamify','collab','devtool','creator','newsletter',
+    'manufacturing','logistics','agriculture','energy','media','government','travel','insurance'];
+  const missing = expectedDomains.filter(d => !DOMAIN_OPS[d]);
+  assert.ok(DOMAIN_OPS._default, 'DOMAIN_OPS must have _default entry');
+  assert.equal(missing.length, 0, 'DOMAIN_OPS missing domains: ' + missing.join(', '));
+});
+
+test('DOMAIN_OPS: all entries have valid SLO percentage strings', () => {
+  const invalid = [];
+  Object.entries(DOMAIN_OPS).forEach(([domain, ops]) => {
+    if (domain === '_default') return;
+    if (!ops.slo || !/\d+(\.\d+)?%/.test(ops.slo)) invalid.push(domain + ':slo=' + ops.slo);
+  });
+  assert.equal(invalid.length, 0, 'DOMAIN_OPS invalid SLO: ' + invalid.join(', '));
+});
+
+test('DOMAIN_OPS: all entries have hardening rules (ja+en)', () => {
+  const incomplete = [];
+  Object.entries(DOMAIN_OPS).forEach(([domain, ops]) => {
+    if (domain === '_default') return;
+    if (!ops.hardening_ja || ops.hardening_ja.length === 0) incomplete.push(domain + ':hardening_ja empty');
+    if (!ops.hardening_en || ops.hardening_en.length === 0) incomplete.push(domain + ':hardening_en empty');
+  });
+  assert.equal(incomplete.length, 0, 'DOMAIN_OPS hardening missing: ' + incomplete.join(', '));
+});
+
+test('DOMAIN_OPS: critical domains have fintech-grade SLO (99.9%+)', () => {
+  const criticalDomains = ['fintech', 'health'];
+  criticalDomains.forEach(d => {
+    const ops = DOMAIN_OPS[d];
+    assert.ok(ops, d + ' must have DOMAIN_OPS entry');
+    const sloNum = parseFloat(ops.slo);
+    assert.ok(sloNum >= 99.9, d + ' SLO must be ≥99.9%, got: ' + ops.slo);
+  });
+});
