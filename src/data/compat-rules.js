@@ -1,4 +1,4 @@
-/* ═══ STACK COMPATIBILITY & SEMANTIC CONSISTENCY RULES — 108 rules (ERROR×15 + WARN×65 + INFO×28) ═══ */
+/* ═══ STACK COMPATIBILITY & SEMANTIC CONSISTENCY RULES — 112 rules (ERROR×15 + WARN×69 + INFO×28) ═══ */
 const COMPAT_RULES=[
   // ── FE ↔ Mobile (2 ERROR) ──
   {id:'fe-mob-expo',p:['frontend','mobile'],lv:'error',
@@ -367,6 +367,49 @@ const COMPAT_RULES=[
    en:'Fintech domain without an audit log entity (AuditLog/TransactionLog). Financial regulations (PCI-DSS/SOX/FISC) require complete immutable audit trails for all financial operations',
    why_ja:'PCI-DSS Requirement 10では、カード会員データ環境の全アクセスログを最低12ヶ月保持することが義務付けられています。AuditLogエンティティは誰がいつ何をしたかを記録し、不正検知・コンプライアンス証明・インシデント調査を可能にします。後から追加する場合、既存トランザクションのログが欠落し監査に合格できません。',
    why_en:'PCI-DSS Requirement 10 mandates retaining full access logs for cardholder data environments for at least 12 months. An AuditLog entity records who did what when, enabling fraud detection, compliance proof, and incident investigation. Adding it later means existing transactions have no logs, making audits impossible to pass.'},
+  // ── Domain ↔ Payment/Realtime (4 WARN) ──
+  {id:'dom-booking-nopay',p:['purpose','payment'],lv:'warn',
+   t:a=>{
+     const dom=detectDomain(a.purpose||'');
+     const hasPay=a.payment&&!inc(a.payment,'なし')&&!inc(a.payment,'None')&&a.payment!=='none';
+     return dom==='booking'&&!hasPay;
+   },
+   ja:'予約ドメインで決済が未設定です。無断キャンセル防止のためデポジット・事前決済（Stripe等）の導入を推奨します',
+   en:'Booking domain without payment. Add deposit/prepayment (Stripe etc.) to prevent no-shows and secure reservations',
+   why_ja:'予約システムで決済がないと、ユーザーは無制限に予約を作成・放棄できます。飲食店や宿泊施設では無断キャンセルが深刻な損失になります。Stripeのデポジット機能（Payment Intents + capture_method:manual）で「仮押さえ→来店確認後に確定」というフローを実現でき、キャンセル時のみ解放することでノーショー率を大幅に削減できます。',
+   why_en:'Without payment in a booking system, users can create and abandon unlimited reservations. No-shows are a serious revenue loss for restaurants and hotels. Stripe\'s deposit flow (Payment Intents + capture_method:manual) enables "hold → confirm on arrival → capture," releasing the hold only on cancellation, dramatically reducing no-show rates.',
+   fix:{f:'payment',s:'Stripe決済'}},
+  {id:'dom-marketplace-nopay',p:['purpose','payment'],lv:'warn',
+   t:a=>{
+     const dom=detectDomain(a.purpose||'');
+     const hasPay=a.payment&&!inc(a.payment,'なし')&&!inc(a.payment,'None')&&a.payment!=='none';
+     return dom==='marketplace'&&!hasPay;
+   },
+   ja:'マーケットプレイスドメインで決済が未設定です。出品者への送金・手数料徴収にはStripe Connect等のプラットフォーム決済が必須です',
+   en:'Marketplace domain without payment. Platform payments with seller payouts (Stripe Connect) are essential for marketplace transactions',
+   why_ja:'マーケットプレイスは買い手→プラットフォーム（手数料控除）→出品者という資金フローが核心です。通常のStripe決済では売り手への送金（Payout）機能がありません。Stripe Connectの「Connected Account」で出品者のKYC・銀行口座登録・自動分配を管理し、プラットフォーム手数料を自動控除できます。PayPal Marketplacesも同様の機能を提供します。',
+   why_en:'The marketplace core is a funds flow: buyer → platform (minus commission) → seller. Standard Stripe payments lack seller payout functionality. Stripe Connect\'s "Connected Accounts" manage seller KYC, bank account registration, and automatic splits, deducting platform commissions automatically. PayPal Marketplaces offers similar functionality.',
+   fix:{f:'payment',s:'Stripe決済 (Connect)'}},
+  {id:'dom-collab-static',p:['purpose','backend'],lv:'warn',
+   t:a=>{
+     const dom=detectDomain(a.purpose||'');
+     return dom==='collab'&&isStaticBE(a);
+   },
+   ja:'コラボレーションドメインで静的バックエンドが選択されています。共同編集・リアルタイム同期にはサーバーサイドが必要です。Supabase Realtime/Firebase/Convexを推奨します',
+   en:'Collaboration domain with a static backend. Real-time sync and co-editing require a server-side backend. Supabase Realtime, Firebase, or Convex recommended',
+   why_ja:'共同編集ツール（Google Docsスタイル）は複数ユーザーの変更をリアルタイムで全員に配信するサーバーが必須です。静的サイトにはWebSocket/SSEサーバーが存在せず、ブラウザ間の変更を仲介できません。SupabaseのRealtime（PostgreSQL変更監視）やFirebase Realtime Databaseは数行のコードでリアルタイム同期を実現します。高度な同時編集にはYjs+WebSocket（Hocuspocus）の組み合わせが標準です。',
+   why_en:'Collaborative editing tools (Google Docs style) require a server to broadcast changes between multiple users in real time. Static sites have no WebSocket/SSE server to mediate browser-to-browser updates. Supabase Realtime (PostgreSQL change streaming) and Firebase Realtime Database achieve real-time sync in a few lines. For advanced concurrent editing, Yjs + WebSocket (Hocuspocus) is the standard combination.',
+   fix:{f:'backend',s:'Supabase'}},
+  {id:'dom-gamify-static',p:['purpose','backend'],lv:'warn',
+   t:a=>{
+     const dom=detectDomain(a.purpose||'');
+     return dom==='gamify'&&isStaticBE(a);
+   },
+   ja:'ゲーミフィケーションドメインで静的バックエンドが選択されています。リーダーボード・ポイント管理・バッジ付与にはサーバーサイドが必要です。Firebase/Supabaseを推奨します',
+   en:'Gamification domain with a static backend. Leaderboards, point tracking, and badge assignment require server-side persistence. Firebase or Supabase recommended',
+   why_ja:'ゲーミフィケーションの核心機能（ポイント付与・ランキング集計・バッジ解除・チャレンジ管理）は全て永続的なデータストアが必要です。静的サイトはローカルストレージのみで、マルチユーザー競争・不正防止・リーダーボードを実現できません。Firebaseはリアルタイムリーダーボード更新に優れており、Cloud Functionsでポイントバリデーションやバッジロジックのサーバーサイド処理も可能です。',
+   why_en:'Core gamification features (point awarding, ranking aggregation, badge unlocking, challenge management) all require persistent data storage. Static sites are limited to localStorage — they cannot support multi-user competition, cheat prevention, or leaderboards. Firebase excels at real-time leaderboard updates, and Cloud Functions handle server-side point validation and badge logic.',
+   fix:{f:'backend',s:'Firebase'}},
   // ── AI Auto ↔ Tools (1 WARN) ──
   {id:'ai-auto-notools',p:['ai_auto','ai_tools'],lv:'warn',
    t:a=>{

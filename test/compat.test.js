@@ -1,4 +1,4 @@
-// Compat rules functional test (108 rules: 15 ERROR + 65 WARN + 28 INFO)
+// Compat rules functional test (112 rules: 15 ERROR + 69 WARN + 28 INFO)
 const assert=require('node:assert/strict');
 const S={lang:'ja',skill:'pro'};
 eval(require('fs').readFileSync('src/data/compat-rules.js','utf-8'));
@@ -82,6 +82,15 @@ const tests=[
   {name:'Community+Auth=OK',a:{purpose:'community forum platform',auth:'Supabase Auth'},expect:'none',id:'dom-community-noauth'},
   {name:'Fintech+NoAudit=WARN',a:{purpose:'fintech payment platform',data_entities:'User, Account, Transaction'},expect:'warn',id:'dom-fintech-noaudit'},
   {name:'Fintech+AuditLog=OK',a:{purpose:'fintech payment platform',data_entities:'User, Account, Transaction, AuditLog'},expect:'none',id:'dom-fintech-noaudit'},
+  // Domain ↔ Payment/Realtime rules
+  {name:'Booking+NoPay=WARN',a:{purpose:'restaurant booking system',payment:'なし'},expect:'warn',id:'dom-booking-nopay'},
+  {name:'Booking+Stripe=OK',a:{purpose:'restaurant booking system',payment:'Stripe決済'},expect:'none',id:'dom-booking-nopay'},
+  {name:'Marketplace+NoPay=WARN',a:{purpose:'marketplace platform',payment:'なし'},expect:'warn',id:'dom-marketplace-nopay'},
+  {name:'Marketplace+Stripe=OK',a:{purpose:'marketplace platform',payment:'Stripe決済'},expect:'none',id:'dom-marketplace-nopay'},
+  {name:'Collab+Static=WARN',a:{purpose:'collaboration tool',backend:'なし（静的サイト）'},expect:'warn',id:'dom-collab-static'},
+  {name:'Collab+Supabase=OK',a:{purpose:'collaboration tool',backend:'Supabase'},expect:'none',id:'dom-collab-static'},
+  {name:'Gamify+Static=WARN',a:{purpose:'gamification platform',backend:'なし（静的サイト）'},expect:'warn',id:'dom-gamify-static'},
+  {name:'Gamify+Firebase=OK',a:{purpose:'gamification platform',backend:'Firebase'},expect:'none',id:'dom-gamify-static'},
   // Cloudflare Workers compatibility
   {name:'Django+CF=ERROR',a:{backend:'Python + Django',deploy:'Cloudflare Workers'},expect:'error',id:'be-dep-heavy-cf'},
   {name:'Spring+CF=ERROR',a:{backend:'Java + Spring Boot',deploy:'Cloudflare Workers'},expect:'error',id:'be-dep-heavy-cf'},
