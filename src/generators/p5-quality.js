@@ -9,11 +9,11 @@ function genPillar5_QualityIntelligence(a,pn){
   // Infer industry from domain or default to saas
   const industryMap={
     fintech:'fintech',health:'health',ec:'ec',saas:'saas',community:'social',
-    education:'education',gamify:'gaming',iot:'iot',booking:'travel',
+    education:'education',gamify:'gaming',iot:'iot',booking:'booking',
     realestate:'realestate',content:'media',hr:'hr',analytics:'marketing',
-    marketplace:'ec',business:'saas',legal:'government',portfolio:'media',
-    tool:'saas',ai:'saas',automation:'saas',event:'travel',collab:'saas',
-    devtool:'saas',creator:'media',newsletter:'media'
+    marketplace:'marketplace',business:'saas',legal:'government',portfolio:'media',
+    tool:'saas',ai:'ai',automation:'automation',event:'travel',collab:'collab',
+    devtool:'devtool',creator:'media',newsletter:'newsletter',insurance:'insurance'
   };
   const industry=industryMap[domain]||'saas';
   const tm=INDUSTRY_TEST_MATRIX[industry]||INDUSTRY_TEST_MATRIX.saas;

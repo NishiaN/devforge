@@ -4041,3 +4041,60 @@ describe('Suite 44: P9 DesignSystem DOMAIN_SEQ_FLOWS full coverage (15 new domai
     assert.ok(doc.includes('集計') || doc.includes('aggregate') || doc.includes('キャッシュ') || doc.includes('cache') || doc.includes('可視化'), 'Analytics must show dashboard aggregation flow');
   });
 });
+
+// ── Suite 45: P5 Quality INDUSTRY_TEST_MATRIX 8 new domains ───────────────
+describe('Suite 45: P5 Quality INDUSTRY_TEST_MATRIX new domain entries', () => {
+  it('P5: ai domain shows hallucination/prompt injection test focus', () => {
+    const f = gP5(Object.assign({}, A25, { purpose:'AI chatbot FAQ assistant platform' }));
+    const doc = f['docs/32_qa_blueprint.md'] || '';
+    assert.ok(doc.includes('幻覚') || doc.includes('Hallucination') || doc.includes('プロンプトインジェクション') || doc.includes('Prompt injection'), 'AI domain must show hallucination/injection test focus');
+  });
+
+  it('P5: ai domain shows promptfoo or langsmith in tools', () => {
+    const f = gP5(Object.assign({}, A25, { purpose:'AI chatbot FAQ assistant platform' }));
+    const doc = f['docs/32_qa_blueprint.md'] || '';
+    assert.ok(doc.includes('Promptfoo') || doc.includes('LangSmith') || doc.includes('プロンプト'), 'AI domain must show AI-specific test tools');
+  });
+
+  it('P5: booking domain shows double booking prevention test focus', () => {
+    const f = gP5(Object.assign({}, A25, { purpose:'restaurant booking schedule platform' }));
+    const doc = f['docs/32_qa_blueprint.md'] || '';
+    assert.ok(doc.includes('ダブルブッキング') || doc.includes('Double booking') || doc.includes('在庫ロック') || doc.includes('Inventory locking'), 'Booking must show double booking prevention test focus');
+  });
+
+  it('P5: marketplace domain shows escrow and fraud detection test focus', () => {
+    const f = gP5(Object.assign({}, A25, { purpose:'marketplace buy sell platform' }));
+    const doc = f['docs/32_qa_blueprint.md'] || '';
+    assert.ok(doc.includes('エスクロー') || doc.includes('Escrow') || doc.includes('不正出品') || doc.includes('Fraud'), 'Marketplace must show escrow and fraud test focus');
+  });
+
+  it('P5: insurance domain shows actuarial accuracy and fraud detection', () => {
+    const f = gP5(Object.assign({}, A25, { purpose:'insurance claim management platform' }));
+    const doc = f['docs/32_qa_blueprint.md'] || '';
+    assert.ok(doc.includes('アクチュアリー') || doc.includes('Actuarial') || doc.includes('不正請求') || doc.includes('Fraud detection'), 'Insurance must show actuarial and fraud test focus');
+  });
+
+  it('P5: collab domain shows CRDT/OT sync test focus', () => {
+    const f = gP5(Object.assign({}, A25, { purpose:'real-time collaboration editing platform' }));
+    const doc = f['docs/32_qa_blueprint.md'] || '';
+    assert.ok(doc.includes('CRDT') || doc.includes('OT') || doc.includes('同期') || doc.includes('Concurrent'), 'Collab must show CRDT/OT sync test focus');
+  });
+
+  it('P5: automation domain shows infinite loop and idempotency test focus', () => {
+    const f = gP5(Object.assign({}, A25, { purpose:'automation workflow RPA platform' }));
+    const doc = f['docs/32_qa_blueprint.md'] || '';
+    assert.ok(doc.includes('無限ループ') || doc.includes('Infinite loop') || doc.includes('冪等性') || doc.includes('Idempotency'), 'Automation must show infinite loop/idempotency test focus');
+  });
+
+  it('P5: devtool domain shows API contract and breaking change test focus', () => {
+    const f = gP5(Object.assign({}, A25, { purpose:'devtool SDK API management platform' }));
+    const doc = f['docs/32_qa_blueprint.md'] || '';
+    assert.ok(doc.includes('コントラクト') || doc.includes('Contract') || doc.includes('ブレーキング') || doc.includes('breaking') || doc.includes('Pact'), 'Devtool must show API contract test focus');
+  });
+
+  it('P5: newsletter domain shows GDPR and spam avoidance test focus', () => {
+    const f = gP5(Object.assign({}, A25, { purpose:'newsletter email marketing platform' }));
+    const doc = f['docs/32_qa_blueprint.md'] || '';
+    assert.ok(doc.includes('GDPR') || doc.includes('スパム') || doc.includes('Spam') || doc.includes('配信'), 'Newsletter must show GDPR and spam test focus');
+  });
+});
