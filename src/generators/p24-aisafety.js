@@ -165,6 +165,24 @@ function gen95(a,pn){
     '## ヒューマン・イン・ザ・ループ (HITL)\n\n高リスクなAI判断には必ず人間レビューを組み込んでください:\n\n- ✅ **自動承認**: 信頼度 ≥ 99% かつ低リスク判断\n- ⚠️ **人間レビュー**: 信頼度 < 99% またはユーザーフラグあり\n- 🚨 **即時エスカレーション**: 有害コンテンツ検知 / 法的リスク / 金融上限超過\n':
     '## Human-in-the-Loop (HITL)\n\nAlways embed human review for high-risk AI decisions:\n\n- ✅ **Auto-approve**: Confidence ≥ 99% and low-risk judgment\n- ⚠️ **Human review**: Confidence < 99% or user-flagged\n- 🚨 **Immediate escalation**: Harmful content / legal risk / financial limit exceeded\n';
 
+  // Domain-specific AI safety guardrails
+  var _ai95dom=typeof detectDomain==='function'?detectDomain(a.purpose||''):null;
+  var _ai95pat=typeof DOMAIN_IMPL_PATTERN!=='undefined'&&_ai95dom?(DOMAIN_IMPL_PATTERN[_ai95dom]||null):null;
+  var _ai95ops=typeof DOMAIN_OPS!=='undefined'&&_ai95dom?(DOMAIN_OPS[_ai95dom]||null):null;
+  if(_ai95pat&&_ai95pat.guard_ja&&_ai95pat.guard_ja.length>0){
+    doc+='\n## '+(G?'ドメイン固有AIリスクガードレール ('+_ai95dom+')':'Domain-Specific AI Risk Guardrails ('+_ai95dom+')')+'\n\n';
+    doc+=(G?'このドメインでAIが**絶対に許可してはならない**操作:\n\n':'Operations this domain\'s AI must **never** allow:\n\n');
+    var _g95=G?_ai95pat.guard_ja:_ai95pat.guard_en;
+    _g95.forEach(function(g){doc+='- 🚫 '+g+'\n';});
+    doc+='\n';
+    if(_ai95ops&&_ai95ops.hardening_ja&&_ai95ops.hardening_ja.length>0){
+      doc+=(G?'AIが出力する判断・推奨事項に適用する実装ハードニング:\n\n':'Implementation hardening rules applied to AI-generated decisions/recommendations:\n\n');
+      var _h95=G?_ai95ops.hardening_ja:_ai95ops.hardening_en;
+      _h95.forEach(function(h){doc+='- ✅ '+h+'\n';});
+      doc+='\n';
+    }
+  }
+
   S.files['docs/95_ai_safety_framework.md']=doc;
 }
 

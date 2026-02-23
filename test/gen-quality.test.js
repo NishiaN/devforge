@@ -2832,3 +2832,87 @@ describe('Suite 28: Domain API Test Scenarios (P21) + Domain Backup Requirements
     assert.ok(doc.includes('Domain-Specific Backup Requirements') || doc.includes('WAL') || doc.includes('PITR'), 'EN mode must show English domain backup requirements');
   });
 });
+
+/*
+   Suite 29 — Domain-Specific AI Safety Guardrails (P24)
+   Tests for:
+   - P24: DOMAIN_IMPL_PATTERN[domain].guard + DOMAIN_OPS[domain].hardening
+          → docs/95_ai_safety_framework.md domain section
+*/
+describe('Suite 29: Domain AI Safety Guardrails (P24)', () => {
+  function gP24(answers, lang) {
+    S.files={}; S.genLang=lang||'ja'; S.skill='intermediate'; S.skillLv=3;
+    genPillar24_AISafety(answers,'QTest');
+    return Object.assign({}, S.files);
+  }
+
+  const finBase = {
+    purpose: '金融取引・送金プラットフォーム',
+    frontend: 'React + Next.js', backend: 'Node.js + Express',
+    database: 'PostgreSQL', deploy: 'Vercel', auth: 'NextAuth.js',
+    data_entities: 'User, Transaction, Wallet', ai_tools: 'ChatGPT API',
+    success: '取引成功率99%', target: '個人ユーザー',
+  };
+  const healthBase = {
+    purpose: '医療記録・ヘルスケア管理',
+    frontend: 'React + Next.js', backend: 'Node.js + Express',
+    database: 'PostgreSQL', deploy: 'Vercel', auth: 'NextAuth.js',
+    data_entities: 'Patient, Record', ai_tools: 'Claude API',
+    success: 'HIPAA準拠100%', target: '医療従事者',
+  };
+  const ecBase = {
+    purpose: 'ECサイト・オンラインショッピング',
+    frontend: 'React + Next.js', backend: 'Node.js + Express',
+    database: 'PostgreSQL', deploy: 'Vercel', auth: 'NextAuth.js',
+    data_entities: 'User, Product, Order', ai_tools: 'なし',
+    success: '購入率90%', target: '消費者',
+  };
+
+  it('P24: fintech domain adds domain AI guardrail section', () => {
+    const f = gP24(finBase);
+    const doc = f['docs/95_ai_safety_framework.md'] || '';
+    assert.ok(doc.includes('ドメイン固有AIリスクガードレール') || doc.includes('Domain-Specific AI Risk Guardrails'), 'Fintech must add domain AI guardrail section to safety framework');
+  });
+
+  it('P24: fintech AI guardrails include balance/transfer protection', () => {
+    const f = gP24(finBase);
+    const doc = f['docs/95_ai_safety_framework.md'] || '';
+    assert.ok(doc.includes('残高') || doc.includes('送金') || doc.includes('balance') || doc.includes('transfer'), 'Fintech AI safety must mention balance/transfer protection guardrails');
+  });
+
+  it('P24: fintech AI guardrails include hardening rules (冪等性)', () => {
+    const f = gP24(finBase);
+    const doc = f['docs/95_ai_safety_framework.md'] || '';
+    assert.ok(doc.includes('冪等') || doc.includes('Idempotency') || doc.includes('監査') || doc.includes('Audit'), 'Fintech AI safety must include hardening rules from DOMAIN_OPS');
+  });
+
+  it('P24: health domain AI guardrails mention consent', () => {
+    const f = gP24(healthBase);
+    const doc = f['docs/95_ai_safety_framework.md'] || '';
+    assert.ok(doc.includes('同意') || doc.includes('consent') || doc.includes('暗号化') || doc.includes('encrypt'), 'Health domain AI safety must mention consent or encryption guardrails');
+  });
+
+  it('P24: ec domain adds AI guardrails about inventory', () => {
+    const f = gP24(ecBase);
+    const doc = f['docs/95_ai_safety_framework.md'] || '';
+    assert.ok(doc.includes('在庫') || doc.includes('inventory') || doc.includes('Inventory') || doc.includes('stock'), 'EC AI safety must mention inventory protection guardrails');
+  });
+
+  it('P24: HITL section still present with domain guardrails', () => {
+    const f = gP24(finBase);
+    const doc = f['docs/95_ai_safety_framework.md'] || '';
+    assert.ok(doc.includes('Human-in-the-Loop') || doc.includes('HITL') || doc.includes('ヒューマン'), 'AI safety doc must still contain HITL section even with domain guardrails');
+  });
+
+  it('P24: EN mode shows English AI guardrail labels', () => {
+    const f = gP24(finBase, 'en');
+    const doc = f['docs/95_ai_safety_framework.md'] || '';
+    assert.ok(doc.includes('Domain-Specific AI Risk Guardrails') || doc.includes('Idempotency') || doc.includes('balance'), 'EN mode must show English domain AI guardrails');
+  });
+
+  it('P24: unknown domain does not add undefined content', () => {
+    const f = gP24({ purpose: 'テスト用アプリ', frontend: 'React', backend: 'Node.js + Express', database: 'PostgreSQL', deploy: 'Vercel', auth: 'NextAuth.js', data_entities: 'User', ai_tools: 'なし', success: 'MAU', target: 'ユーザー' });
+    const doc = f['docs/95_ai_safety_framework.md'] || '';
+    assert.ok(!doc.includes('undefined'), 'Unknown domain must not produce undefined in AI safety doc');
+  });
+});
