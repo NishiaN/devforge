@@ -3429,3 +3429,87 @@ describe('Suite 36: P4 AI Rules + P5 Quality Intelligence Domain Expansion', () 
     assert.ok(doc.includes('コンテンツ配信全停止') || doc.includes('Content delivery halted') || doc.includes('DRM'), 'Media incident response must show content delivery S1 example');
   });
 });
+
+/*
+ ─────────────────────────────────────────────────────────────────────────────
+  Suite 37 — P11 Impl Intelligence + P15 Future/Market Domain Expansion
+  Verifies:
+    - docs/40_ai_dev_runbook.md shows domain-specific error messages for
+      newly added domains (saas, booking, collab, travel, government, insurance)
+    - docs/56_market_positioning.md shows domain-specific TAM for newly added
+      domains (community, travel, ai, creator, government)
+ ─────────────────────────────────────────────────────────────────────────────
+*/
+function gP11(answers, lang) {
+  S.files={}; S.genLang=lang||'ja'; S.skill='intermediate';
+  genPillar11_ImplIntelligence(answers,'QTest');
+  return S.files;
+}
+
+describe('Suite 37: P11 Impl Intelligence + P15 Future/Market Domain Expansion', () => {
+  it('P11: saas domain shows RLS tenant error in runbook', () => {
+    const f = gP11(Object.assign({}, A25, { purpose:'SaaS subscription platform' }));
+    const doc = f['docs/40_ai_dev_runbook.md'] || '';
+    assert.ok(doc.includes('RLS') || doc.includes('テナント'), 'SaaS runbook must show RLS/tenant error message');
+  });
+
+  it('P11: booking domain shows duplicate booking error in runbook', () => {
+    const f = gP11(Object.assign({}, A25, { purpose:'restaurant booking system' }));
+    const doc = f['docs/40_ai_dev_runbook.md'] || '';
+    assert.ok(doc.includes('重複予約') || doc.includes('Duplicate booking') || doc.includes('ロック'), 'Booking runbook must show duplicate booking error message');
+  });
+
+  it('P11: collab domain shows CRDT data loss error in runbook', () => {
+    const f = gP11(Object.assign({}, A25, { purpose:'collaboration platform' }));
+    const doc = f['docs/40_ai_dev_runbook.md'] || '';
+    assert.ok(doc.includes('CRDT') || doc.includes('OT') || doc.includes('データ消失'), 'Collab runbook must show OT/CRDT conflict error message');
+  });
+
+  it('P11: travel domain shows overbooking error in runbook', () => {
+    const f = gP11(Object.assign({}, A25, { purpose:'travel booking platform' }));
+    const doc = f['docs/40_ai_dev_runbook.md'] || '';
+    assert.ok(doc.includes('過剰予約') || doc.includes('Overbooking'), 'Travel runbook must show overbooking error message');
+  });
+
+  it('P11: government domain shows personal data access error in runbook', () => {
+    const f = gP11(Object.assign({}, A25, { purpose:'government civic service platform' }));
+    const doc = f['docs/40_ai_dev_runbook.md'] || '';
+    assert.ok(doc.includes('個人情報不正参照') || doc.includes('Unauthorized personal data') || doc.includes('アクセスログ'), 'Government runbook must show personal data access error message');
+  });
+
+  it('P11: insurance domain shows claim calculation error in runbook', () => {
+    const f = gP11(Object.assign({}, A25, { purpose:'insurance claims management platform' }));
+    const doc = f['docs/40_ai_dev_runbook.md'] || '';
+    assert.ok(doc.includes('クレーム') || doc.includes('Claim amount') || doc.includes('保険証券'), 'Insurance runbook must show claim calculation error message');
+  });
+
+  it('P15: community domain shows TAM in market positioning', () => {
+    const f = gFuture15(Object.assign({}, A25, { purpose:'community forum platform' }));
+    const doc = f['docs/56_market_positioning.md'] || '';
+    assert.ok(doc.includes('$7B') || doc.includes('Community platform') || doc.includes('コミュニティプラットフォーム'), 'Community market positioning must show TAM');
+  });
+
+  it('P15: travel domain shows TAM in market positioning', () => {
+    const f = gFuture15(Object.assign({}, A25, { purpose:'travel booking platform' }));
+    const doc = f['docs/56_market_positioning.md'] || '';
+    assert.ok(doc.includes('$1T') || doc.includes('Travel tech') || doc.includes('旅行テック'), 'Travel market positioning must show TAM');
+  });
+
+  it('P15: ai domain shows TAM in market positioning', () => {
+    const f = gFuture15(Object.assign({}, A25, { purpose:'AI chatbot agent platform' }));
+    const doc = f['docs/56_market_positioning.md'] || '';
+    assert.ok(doc.includes('$400B') || doc.includes('AI platform') || doc.includes('AIプラットフォーム'), 'AI market positioning must show TAM');
+  });
+
+  it('P15: creator domain shows TAM in market positioning', () => {
+    const f = gFuture15(Object.assign({}, A25, { purpose:'creator content platform' }));
+    const doc = f['docs/56_market_positioning.md'] || '';
+    assert.ok(doc.includes('$250B') || doc.includes('Creator economy') || doc.includes('クリエイターエコノミー'), 'Creator market positioning must show TAM');
+  });
+
+  it('P15: government domain shows GovTech TAM in market positioning (EN)', () => {
+    const f = gFuture15(Object.assign({}, A25, { purpose:'government civic service platform' }), 'en');
+    const doc = f['docs/56_market_positioning.md'] || '';
+    assert.ok(doc.includes('GovTech') || doc.includes('$600B'), 'Government market positioning must show GovTech TAM (EN)');
+  });
+});
