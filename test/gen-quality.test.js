@@ -2661,3 +2661,174 @@ describe('Suite 26: Domain DB Hardening (P22) + Domain SLO in Performance (P25)'
     assert.ok(doc.includes('Domain Standard SLO') || doc.includes('99.99%'), 'EN mode must show English domain SLO section');
   });
 });
+
+/*
+   Suite 27 — Domain API Implementation Patterns (P21)
+   Tests for:
+   - P21: DOMAIN_IMPL_PATTERN[domain].impl_ja/en in docs/83_api_design_principles.md
+   - P21: DOMAIN_IMPL_PATTERN[domain].pseudo in docs/83_api_design_principles.md
+*/
+describe('Suite 27: Domain API Implementation Patterns (P21)', () => {
+  function gP21(answers, lang) {
+    S.files={}; S.genLang=lang||'ja'; S.skill='intermediate'; S.skillLv=3;
+    genPillar21_APIIntelligence(answers,'QTest');
+    return Object.assign({}, S.files);
+  }
+
+  const ecBase = {
+    purpose: 'ECサイト・オンラインショッピング',
+    frontend: 'React + Next.js', backend: 'Node.js + Express',
+    database: 'PostgreSQL', deploy: 'Vercel', auth: 'NextAuth.js',
+    data_entities: 'User, Product, Order', success: '購入率90%', target: '消費者',
+  };
+  const finBase = {
+    purpose: '金融取引・送金プラットフォーム',
+    frontend: 'React + Next.js', backend: 'Node.js + Express',
+    database: 'PostgreSQL', deploy: 'Vercel', auth: 'NextAuth.js',
+    data_entities: 'User, Transaction, Wallet', success: '取引成功率99%', target: '個人ユーザー',
+  };
+  const commBase = {
+    purpose: 'コミュニティフォーラム・掲示板',
+    frontend: 'React + Next.js', backend: 'Node.js + Express',
+    database: 'PostgreSQL', deploy: 'Vercel', auth: 'NextAuth.js',
+    data_entities: 'User, Post, Comment', success: 'MAU1000', target: 'ユーザー',
+  };
+
+  it('P21: ec domain adds implementation patterns section', () => {
+    const f = gP21(ecBase);
+    const doc = f['docs/83_api_design_principles.md'] || '';
+    assert.ok(doc.includes('ドメイン固有API実装パターン') || doc.includes('Domain-Specific API Patterns'), 'EC domain must add API implementation patterns section');
+  });
+
+  it('P21: ec domain shows inventory-specific impl notes', () => {
+    const f = gP21(ecBase);
+    const doc = f['docs/83_api_design_principles.md'] || '';
+    assert.ok(doc.includes('在庫') || doc.includes('inventory') || doc.includes('冪等'), 'EC API patterns must mention inventory or idempotency');
+  });
+
+  it('P21: ec domain includes pseudo-code for core operation', () => {
+    const f = gP21(ecBase);
+    const doc = f['docs/83_api_design_principles.md'] || '';
+    assert.ok(doc.includes('function reserveInventory') || doc.includes('```javascript'), 'EC API doc must include domain pseudo-code');
+  });
+
+  it('P21: fintech domain shows transaction-specific impl notes', () => {
+    const f = gP21(finBase);
+    const doc = f['docs/83_api_design_principles.md'] || '';
+    assert.ok(doc.includes('トランザクション') || doc.includes('transaction') || doc.includes('idempotency') || doc.includes('冪等'), 'Fintech API patterns must mention transaction or idempotency');
+  });
+
+  it('P21: community domain shows moderation-specific patterns', () => {
+    const f = gP21(commBase);
+    const doc = f['docs/83_api_design_principles.md'] || '';
+    assert.ok(doc.includes('モデレーション') || doc.includes('moderation') || doc.includes('スパム') || doc.includes('spam'), 'Community API patterns must mention moderation or spam');
+  });
+
+  it('P21: unknown domain does not inject undefined content', () => {
+    const f = gP21({ purpose: 'テスト用アプリ', frontend: 'React', backend: 'Node.js + Express', database: 'PostgreSQL', deploy: 'Vercel', auth: 'NextAuth.js', data_entities: 'User', success: 'MAU', target: 'ユーザー' });
+    const doc = f['docs/83_api_design_principles.md'] || '';
+    assert.ok(!doc.includes('undefined'), 'Unknown domain must not produce undefined in API doc');
+  });
+
+  it('P21: EN mode shows English implementation notes', () => {
+    const f = gP21(ecBase, 'en');
+    const doc = f['docs/83_api_design_principles.md'] || '';
+    assert.ok(doc.includes('Domain-Specific API Patterns') || doc.includes('inventory') || doc.includes('Inventory'), 'EN mode must show English API domain patterns');
+  });
+
+  it('P21: core API structure (REST principles) still present with domain section', () => {
+    const f = gP21(finBase);
+    const doc = f['docs/83_api_design_principles.md'] || '';
+    assert.ok(doc.includes('REST') || doc.includes('API') || doc.includes('versioning') || doc.includes('バージョニング'), 'API design doc must still contain core REST principles even with domain section');
+  });
+});
+
+/*
+   Suite 28 — Domain API Test Scenarios (P21-gen86) + Domain Backup Requirements (P22-gen90)
+   Tests for:
+   - P21-gen86: DOMAIN_QA_MAP → docs/86_api_testing_strategy.md
+   - P22-gen90: DOMAIN_OPS.backup_ja/en → docs/90_backup_disaster_recovery.md
+*/
+describe('Suite 28: Domain API Test Scenarios (P21) + Domain Backup Requirements (P22)', () => {
+  function gP21full(answers, lang) {
+    S.files={}; S.genLang=lang||'ja'; S.skill='intermediate'; S.skillLv=3;
+    genPillar21_APIIntelligence(answers,'QTest');
+    return Object.assign({}, S.files);
+  }
+  function gP22full(answers, lang) {
+    S.files={}; S.genLang=lang||'ja'; S.skill='intermediate'; S.skillLv=3;
+    genPillar22_DatabaseIntelligence(answers,'QTest');
+    return Object.assign({}, S.files);
+  }
+
+  const ecBase = {
+    purpose: 'ECサイト・オンラインショッピング',
+    frontend: 'React + Next.js', backend: 'Node.js + Express',
+    database: 'PostgreSQL', deploy: 'Vercel', auth: 'NextAuth.js',
+    data_entities: 'User, Product, Order', success: '購入率90%', target: '消費者',
+  };
+  const finBase = {
+    purpose: '金融取引・送金プラットフォーム',
+    frontend: 'React + Next.js', backend: 'Node.js + Express',
+    database: 'PostgreSQL', deploy: 'Vercel', auth: 'NextAuth.js',
+    data_entities: 'User, Transaction, Wallet', success: '取引成功率99%', target: '個人ユーザー',
+  };
+
+  // ── P21 API test scenarios ──
+  it('P21: ec domain adds domain test scenarios to API testing doc', () => {
+    const f = gP21full(ecBase);
+    const doc = f['docs/86_api_testing_strategy.md'] || '';
+    assert.ok(doc.includes('ドメイン固有テストシナリオ') || doc.includes('Domain-Specific Test Scenarios'), 'EC must add domain-specific test scenarios to API testing doc');
+  });
+
+  it('P21: ec domain test scenarios include inventory focus', () => {
+    const f = gP21full(ecBase);
+    const doc = f['docs/86_api_testing_strategy.md'] || '';
+    assert.ok(doc.includes('在庫') || doc.includes('inventory') || doc.includes('Inventory'), 'EC API test scenarios must mention inventory testing');
+  });
+
+  it('P21: ec domain includes regression bug scenarios', () => {
+    const f = gP21full(ecBase);
+    const doc = f['docs/86_api_testing_strategy.md'] || '';
+    assert.ok(doc.includes('回帰必須バグシナリオ') || doc.includes('Regression-Required Bug Scenarios'), 'EC must include regression bug scenarios section');
+  });
+
+  it('P21: fintech API test scenarios include CRITICAL priority note', () => {
+    const f = gP21full(finBase);
+    const doc = f['docs/86_api_testing_strategy.md'] || '';
+    // fintech DOMAIN_QA_MAP priority: Security:CRITICAL|DataIntegrity:CRITICAL
+    assert.ok(doc.includes('ACID') || doc.includes('二重') || doc.includes('Double') || doc.includes('監査') || doc.includes('PCI'), 'Fintech API test scenarios must include transaction integrity or audit-related tests');
+  });
+
+  it('P21: EN mode API test scenarios in English', () => {
+    const f = gP21full(ecBase, 'en');
+    const doc = f['docs/86_api_testing_strategy.md'] || '';
+    assert.ok(doc.includes('Domain-Specific Test Scenarios') || doc.includes('inventory') || doc.includes('Inventory'), 'EN mode must show English API test scenarios');
+  });
+
+  // ── P22 domain backup requirements ──
+  it('P22: fintech domain adds specific backup requirements to DR doc', () => {
+    const f = gP22full(finBase);
+    const doc = f['docs/90_backup_disaster_recovery.md'] || '';
+    assert.ok(doc.includes('ドメイン標準バックアップ要件') || doc.includes('Domain-Specific Backup Requirements'), 'Fintech must add domain backup requirements section to DR doc');
+  });
+
+  it('P22: fintech backup requirements include WAL/PITR', () => {
+    const f = gP22full(finBase);
+    const doc = f['docs/90_backup_disaster_recovery.md'] || '';
+    assert.ok(doc.includes('WAL') || doc.includes('PITR'), 'Fintech DR doc must include WAL or PITR backup requirement');
+  });
+
+  it('P22: ec domain backup doc includes time-series backup info', () => {
+    const f = gP22full(ecBase);
+    const doc = f['docs/90_backup_disaster_recovery.md'] || '';
+    // ec domain has 'Hourly time-series backup' in backup_en
+    assert.ok(doc.includes('時系列') || doc.includes('time-series') || doc.includes('Hourly') || doc.includes('毎時'), 'EC DR doc must include time-series/hourly backup requirement');
+  });
+
+  it('P22: EN mode shows English backup requirements', () => {
+    const f = gP22full(finBase, 'en');
+    const doc = f['docs/90_backup_disaster_recovery.md'] || '';
+    assert.ok(doc.includes('Domain-Specific Backup Requirements') || doc.includes('WAL') || doc.includes('PITR'), 'EN mode must show English domain backup requirements');
+  });
+});
