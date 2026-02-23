@@ -749,9 +749,9 @@ describe('Snapshot B: Blog/Vite/Netlify', () => {
     dev_methods: 'TDD', ai_tools: 'Cursor', orm: ''
   }, 'Blog');
 
-  test('file count in range 119-149 (P21-P25 each add +4 docs, total +20)', () => {
+  test('file count in range 122-152 (P21-P25 each add +4 docs, total +20; +3 ADR/pillar-map/cost-est)', () => {
     const count = Object.keys(files).length;
-    assert.ok(count >= 119 && count <= 149, `Expected 119-149 files (P21-P25 each +4 docs), got ${count}`);
+    assert.ok(count >= 122 && count <= 152, `Expected 122-152 files (P21-P25 each +4 docs, +3 new context docs), got ${count}`);
   });
 
   test('no Stripe content when payment absent', () => {

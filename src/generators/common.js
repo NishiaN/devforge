@@ -3339,6 +3339,62 @@ const DOMAIN_IMPL_PATTERN={
     ['購読解除の無視','配信レート超過','開封率の不正操作'],
     ['Prevent ignoring unsubscription','Prevent sending rate excess','Prevent open rate manipulation']
   ),
+  agriculture:_dip(
+    ['センサーデータは異常値フィルタリング後にタイムシリーズDB保存','収穫記録は監査対象のため論理削除のみ（物理削除禁止）','農薬・施肥ロットとフィールドを複合インデックスで高速検索'],
+    ['Filter sensor anomalies before storing in time-series DB','Harvest records are auditable — logical delete only','Composite index on pesticide lot + field_id for fast lookups'],
+    'async function recordHarvest(fieldId,yieldKg,lotId){\n  await db.transaction(async()=>{\n    await db.insert("INSERT INTO harvest_records (field_id,yield_kg,lot_id,recorded_at) VALUES (?,?,?,NOW())",[fieldId,yieldKg,lotId]);\n    await db.execute("INSERT INTO traceability_logs (field_id,lot_id,action) VALUES (?,?,\'HARVEST\')",[fieldId,lotId]);\n    await triggerYieldModel(fieldId);\n  });\n}',
+    ['センサー断絶時にDBへの書き込みが停止しないようオフラインキューを実装','気象データとセンサーデータの時刻ずれによる集計ミス','農薬散布記録の不正削除（法的トレーサビリティ違反）'],
+    ['Implement offline queue to prevent write stops during sensor disconnect','Aggregation errors from timestamp drift between weather and sensor data','Prevent unauthorized deletion of pesticide records (regulatory violation)']
+  ),
+  energy:_dip(
+    ['スマートメーターデータは5分間隔でバッチ集計後にOLAP転送','ピーク需要イベントはリアルタイムアラートキューで通知','請求計算はサーバーサイドのみ（クライアント改ざん防止）'],
+    ['Batch smart meter data every 5min then transfer to OLAP','Send peak demand events via real-time alert queue','Billing calculations server-side only (prevent client tampering)'],
+    'function processMeterReading(meterId,kwh,timestamp){\n  const reading={meterId,kwh,timestamp,quality:"validated"};\n  meterBuffer.push(reading);\n  if(meterBuffer.length>=1000){\n    db.batchInsert("INSERT INTO meter_readings (meter_id,kwh,timestamp,quality) VALUES ?",[meterBuffer]);\n    meterBuffer=[];\n  }\n  if(kwh>PEAK_THRESHOLD) alertQueue.push({type:"PEAK_DEMAND",meterId,kwh});\n}',
+    ['メーター読取値の二重計上（バッチ処理の冪等性欠如）','ピーク需要アラートの遅延による違約金発生','請求金額の小数点誤差による大量クレーム'],
+    ['Double-counting meter readings (lack of batch idempotency)','Violation charges from delayed peak demand alerts','Mass complaints from decimal rounding errors in billing']
+  ),
+  government:_dip(
+    ['申請データは提出後イミュータブル（変更は新バージョン作成）','審査ワークフローはステートマシンで役職別権限チェック','個人情報は暗号化カラム+アクセスログ必須'],
+    ['Application data immutable after submission (changes create new versions)','Review workflow as state machine with role-based permission checks','Personal data requires encrypted columns + mandatory access logs'],
+    'function submitApplication(userId,formData){\n  const appId=db.insert("INSERT INTO applications (user_id,form_data,status,submitted_at) VALUES (?,encrypt(?),\'submitted\',NOW())",[userId,JSON.stringify(formData)]);\n  db.execute("INSERT INTO access_logs (user_id,resource_type,resource_id,action) VALUES (?,\'application\',?,\'SUBMIT\')",[userId,appId]);\n  workflowEngine.start({appId,workflow:"REVIEW_PROCESS"});\n  return appId;\n}',
+    ['審査ステータスの不正巻き戻し（承認済みを未審査に変更）','個人情報への不適切なアクセス（内部不正）','同一申請の二重受付による混乱'],
+    ['Unauthorized reversal of review status (approved back to pending)','Inappropriate access to personal data (internal misconduct)','Confusion from duplicate application submission']
+  ),
+  travel:_dip(
+    ['宿泊・座席在庫はOCC(楽観的ロック)で排他制御','キャンセルポリシーはステータス遷移マシンで期間別料率管理','価格最適化はサーバーサイドのみ（フロント表示価格とDB価格の一致必須）'],
+    ['Control room/seat inventory with OCC (optimistic concurrency control)','Manage cancellation policy rates by period with status transition machine','Price optimization server-side only (frontend price must match DB)'],
+    'function bookRoom(userId,roomId,checkIn,checkOut,priceAtBooking){\n  const room=db.query("SELECT * FROM rooms WHERE id=? FOR UPDATE",[roomId]);\n  const serverPrice=calculatePrice(roomId,checkIn,checkOut);\n  if(Math.abs(serverPrice-priceAtBooking)>1) throw new Error("Price changed");\n  db.execute("INSERT INTO bookings (user_id,room_id,check_in,check_out,price) VALUES (?,?,?,?,?)",[userId,roomId,checkIn,checkOut,serverPrice]);\n  db.execute("UPDATE rooms SET status=\'booked\' WHERE id=?",[roomId]);\n}',
+    ['ダブルブッキング（並行リクエストによる在庫過剰確保）','フロント表示価格とDB価格の乖離によるオーバーチャージ','チェックイン日超過後もキャンセル料なしで取消される'],
+    ['Double booking from concurrent requests over-allocating inventory','Overcharging due to frontend-DB price discrepancy','Cancellations without penalty after check-in date']
+  ),
+  media:_dip(
+    ['コンテンツ配信はCDN署名付きURL+再生制限トークン','視聴ログはバッチ収集→集計→レコメンドエンジン更新の非同期パイプライン','DRM保護コンテンツはサーバーサイドで暗号化キー生成'],
+    ['Content delivery via CDN signed URLs + play-limited tokens','Viewing logs use async pipeline: batch collect → aggregate → recommendation update','Server-side encryption key generation for DRM-protected content'],
+    'function getStreamUrl(userId,contentId){\n  if(!hasEntitlement(userId,contentId)) throw new Error("No entitlement");\n  const token=signToken({userId,contentId,exp:Date.now()+3600000});\n  const cdnUrl=cdn.signUrl(`/content/${contentId}/stream`,{token,expires:3600});\n  db.execute("INSERT INTO view_events (user_id,content_id,started_at) VALUES (?,?,NOW())",[userId,contentId]);\n  return cdnUrl;\n}',
+    ['DRMトークン漏洩による無制限再生','視聴ログの消失によるレコメンド精度低下','コンテンツURL有効期限切れで再生不能（キャッシュが古いURLを保持）'],
+    ['Unlimited playback from DRM token leakage','Recommendation accuracy degradation from viewing log loss','Playback failure from expired CDN URLs cached by client']
+  ),
+  logistics:_dip(
+    ['配送ステータスはイミュータブルイベントログで追跡','ルート最適化はスケジュール時に一括計算（都度計算は禁止）','配送証明（POD）は写真+GPS+タイムスタンプのトリプル検証'],
+    ['Track delivery status with immutable event log','Route optimization calculated at schedule time (no per-request calculation)','Proof-of-delivery (POD) requires photo + GPS + timestamp triple verification'],
+    'function updateDeliveryStatus(shipmentId,status,gpsLat,gpsLon,photoUrl){\n  const prev=db.query("SELECT status FROM shipment_events WHERE shipment_id=? ORDER BY occurred_at DESC LIMIT 1",[shipmentId]);\n  if(!isValidTransition(prev.status,status)) throw new Error("Invalid transition: "+prev.status+"->"+status);\n  db.execute("INSERT INTO shipment_events (shipment_id,status,gps_lat,gps_lon,photo_url,occurred_at) VALUES (?,?,?,?,?,NOW())",[shipmentId,status,gpsLat,gpsLon,photoUrl]);\n}',
+    ['配送ステータスの不正巻き戻し（delivered→in_transitへの変更）','GPS精度不足による誤配達判定','写真なしPODによる配達完了の不正申告'],
+    ['Unauthorized status reversal (delivered→in_transit)','False delivery confirmation from GPS inaccuracy','Fraudulent delivery completion without POD photo']
+  ),
+  manufacturing:_dip(
+    ['生産ラインのOEE計測は設備稼働・パフォーマンス・品質の3要素をリアルタイム計算','品質検査はNG品のシリアル番号追跡（トレーサビリティ必須）','計画変更は承認ワークフロー必須（口頭指示によるシステム外変更禁止）'],
+    ['OEE measurement calculates availability/performance/quality in real-time','Quality inspection tracks serial numbers of NG items (traceability mandatory)','Production plan changes require approval workflow (verbal-only changes outside system forbidden)'],
+    'function recordQualityCheck(productId,lineId,result,defectCode){\n  db.execute("INSERT INTO quality_checks (product_id,line_id,result,defect_code,inspected_at) VALUES (?,?,?,?,NOW())",[productId,lineId,result,defectCode]);\n  if(result==="NG"){\n    db.execute("UPDATE products SET status=\'quarantine\' WHERE serial_number=?",[productId]);\n    db.execute("INSERT INTO defect_logs (product_id,defect_code,action,logged_at) VALUES (?,?,\'QUARANTINE\',NOW())",[productId,defectCode]);\n    alertLine(lineId,{type:"NG_DETECTED",productId,defectCode});\n  }\n}',
+    ['NG品の出荷漏れ（隔離フラグ未チェック）','OEE計算の分母誤り（計画外停止時間の算入ミス）','生産計画変更のシステム外反映によるデータ乖離'],
+    ['NG items shipped due to missing quarantine flag check','OEE calculation errors from incorrect denominator (planned downtime misclassification)','Data discrepancy from production plan changes made outside system']
+  ),
+  insurance:_dip(
+    ['引受審査スコアはサーバーサイドのみ計算（クライアント改ざん防止）','保険金請求はワークフロー+承認者多段階チェック','保険契約はバージョン管理+変更履歴イミュータブル'],
+    ['Underwriting score calculation server-side only (prevent client tampering)','Insurance claims use workflow + multi-stage approver checks','Insurance policies version-controlled with immutable change history'],
+    'function submitClaim(policyId,claimData,evidenceUrls){\n  const policy=db.query("SELECT * FROM policies WHERE id=? AND status=\'active\'",[policyId]);\n  if(!policy) throw new Error("Policy not active");\n  const claimId=db.insert("INSERT INTO claims (policy_id,data,evidence_urls,status,submitted_at) VALUES (?,?,?,\'pending\',NOW())",[policyId,JSON.stringify(claimData),JSON.stringify(evidenceUrls)]);\n  workflowEngine.start({claimId,workflow:"CLAIM_REVIEW",requiredApprovers:getApprovers(policy.type,claimData.amount)});\n  return claimId;\n}',
+    ['不正請求（証拠書類の改ざん・重複請求）','引受スコアのクライアント操作による不正契約','承認ワークフロースキップによる高額支払の不正実行'],
+    ['Fraudulent claims (evidence tampering or duplicate claims)','Unauthorized policy underwriting via client-side score manipulation','High-value fraudulent payments from approval workflow bypass']
+  ),
   _default:_dip(
     ['データ整合性はトランザクション','エラーハンドリングは必須','ログ記録は全操作'],
     ['Ensure data integrity with transactions','Error handling is mandatory','Log all operations'],

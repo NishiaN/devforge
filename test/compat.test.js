@@ -1,4 +1,4 @@
-// Compat rules functional test (94 rules: 13 ERROR + 56 WARN + 25 INFO)
+// Compat rules functional test (104 rules: 15 ERROR + 61 WARN + 28 INFO)
 const assert=require('node:assert/strict');
 const S={lang:'ja',skill:'pro'};
 eval(require('fs').readFileSync('src/data/compat-rules.js','utf-8'));
@@ -179,6 +179,47 @@ const tests=[
   {name:'GraphQL+depth=noWARN',a:{backend:'Express.js + Node.js + GraphQL',mvp_features:'depth-limitクエリ制限'},expect:'none',id:'api-graphql-depth-limit'},
   {name:'PG+noMigration=INFO',a:{database:'PostgreSQL (Neon)',orm:'なし（BaaS利用）'},expect:'info',id:'db-migration-tool'},
   {name:'PG+Prisma=noMigrationINFO',a:{database:'PostgreSQL (Neon)',orm:'Prisma ORM'},expect:'none',id:'db-migration-tool'},
+  // ── Semantic / Runtime Compatibility (10 new rules) ──
+  // be-firebase-prisma (ERROR)
+  {name:'Firebase+Prisma=ERROR',a:{backend:'Firebase',orm:'Prisma'},expect:'error',id:'be-firebase-prisma'},
+  {name:'Firebase+FirebaseSDK=noERROR',a:{backend:'Firebase',orm:'Firebase Admin SDK'},expect:'none',id:'be-firebase-prisma'},
+  {name:'Supabase+Prisma=noFirebasePrismaERROR',a:{backend:'Supabase',orm:'Prisma'},expect:'none',id:'be-firebase-prisma'},
+  // mt-supabase-no-rls (ERROR)
+  {name:'Supabase+B2B+noRLS=ERROR',a:{backend:'Supabase',org_model:'B2B company management',mvp_features:'認証, ダッシュボード'},expect:'error',id:'mt-supabase-no-rls'},
+  {name:'Supabase+team+RLS=noERROR',a:{backend:'Supabase',org_model:'team collaboration',mvp_features:'RLS policy, 認証'},expect:'none',id:'mt-supabase-no-rls'},
+  {name:'Firebase+B2B=noRLSERROR',a:{backend:'Firebase',org_model:'B2B enterprise'},expect:'none',id:'mt-supabase-no-rls'},
+  // deploy-sqlite-vercel (WARN)
+  {name:'SQLite+Vercel=deployWARN',a:{database:'SQLite',deploy:'Vercel'},expect:'warn',id:'deploy-sqlite-vercel'},
+  {name:'SQLite+Railway=noDeployWARN',a:{database:'SQLite',deploy:'Railway'},expect:'none',id:'deploy-sqlite-vercel'},
+  {name:'PostgreSQL+Vercel=noSQLiteWARN',a:{database:'PostgreSQL',deploy:'Vercel'},expect:'none',id:'deploy-sqlite-vercel'},
+  // db-pg-vercel-nopool (WARN)
+  {name:'PG+Vercel+noPool(new)=WARN',a:{deploy:'Vercel',database:'PostgreSQL'},expect:'warn',id:'db-pg-vercel-nopool'},
+  {name:'Neon+Vercel=noPoolWARN',a:{deploy:'Vercel',database:'Neon (PostgreSQL)'},expect:'none',id:'db-pg-vercel-nopool'},
+  {name:'Railway+PG=noPoolNewWARN',a:{deploy:'Railway',database:'PostgreSQL'},expect:'none',id:'db-pg-vercel-nopool'},
+  // be-nestjs-beginner (WARN)
+  {name:'NestJS+Beginner=WARN',a:{backend:'Node.js + NestJS',skill_level:'Beginner'},expect:'warn',id:'be-nestjs-beginner'},
+  {name:'NestJS+Pro=noBeginnerWARN',a:{backend:'Node.js + NestJS',skill_level:'Professional'},expect:'none',id:'be-nestjs-beginner'},
+  {name:'Express+Beginner=noNestWARN',a:{backend:'Node.js + Express',skill_level:'Beginner'},expect:'none',id:'be-nestjs-beginner'},
+  // orm-sqlalchemy-vercel (WARN)
+  {name:'SQLAlchemy+Vercel=WARN',a:{orm:'SQLAlchemy (Python)',deploy:'Vercel'},expect:'warn',id:'orm-sqlalchemy-vercel'},
+  {name:'SQLAlchemy+Railway=noVercelWARN',a:{orm:'SQLAlchemy (Python)',deploy:'Railway'},expect:'none',id:'orm-sqlalchemy-vercel'},
+  {name:'Prisma+Vercel=noSQLAlchemyWARN',a:{orm:'Prisma',deploy:'Vercel'},expect:'none',id:'orm-sqlalchemy-vercel'},
+  // pay-stripe-static-be (WARN)
+  {name:'Stripe+Static=WebhookWARN',a:{payment:'Stripe決済',backend:'なし（静的サイト）'},expect:'warn',id:'pay-stripe-static-be'},
+  {name:'Stripe+Express=noWebhookWARN',a:{payment:'Stripe決済',backend:'Node.js + Express'},expect:'none',id:'pay-stripe-static-be'},
+  {name:'Stripe+None=noWebhookWARN',a:{payment:'なし',backend:'なし（静的サイト）'},expect:'none',id:'pay-stripe-static-be'},
+  // fe-nextjs-realtime-naked (INFO)
+  {name:'Next+Realtime+noPusher=INFO',a:{frontend:'React + Next.js',mvp_features:'リアルタイムチャット, 通知機能'},expect:'info',id:'fe-nextjs-realtime-naked'},
+  {name:'Next+Realtime+Pusher=noINFO',a:{frontend:'React + Next.js',mvp_features:'リアルタイムチャット, Pusher統合'},expect:'none',id:'fe-nextjs-realtime-naked'},
+  {name:'Next+NoRealtime=noRealtimeINFO',a:{frontend:'React + Next.js',mvp_features:'認証, ダッシュボード'},expect:'none',id:'fe-nextjs-realtime-naked'},
+  // auth-baas-custom-jwt (INFO)
+  {name:'Firebase+CustomJWT=INFO',a:{backend:'Firebase',auth:'JWT (jose)'},expect:'info',id:'auth-baas-custom-jwt'},
+  {name:'Supabase+CustomJWT=INFO',a:{backend:'Supabase',auth:'JWT (custom)'},expect:'info',id:'auth-baas-custom-jwt'},
+  {name:'Firebase+FirebaseAuth=noJWTINFO',a:{backend:'Firebase',auth:'Firebase Auth'},expect:'none',id:'auth-baas-custom-jwt'},
+  // deploy-cloudflare-node-orm (INFO)
+  {name:'CF+Prisma=EdgeINFO',a:{orm:'Prisma',deploy:'Cloudflare Workers'},expect:'info',id:'deploy-cloudflare-node-orm'},
+  {name:'CF+SQLAlchemy=EdgeINFO',a:{orm:'SQLAlchemy (Python)',deploy:'Cloudflare Workers'},expect:'info',id:'deploy-cloudflare-node-orm'},
+  {name:'CF+Drizzle=noEdgeINFO',a:{orm:'Drizzle ORM',deploy:'Cloudflare Workers'},expect:'none',id:'deploy-cloudflare-node-orm'},
 ];
 
 let pass=0,fail=0;

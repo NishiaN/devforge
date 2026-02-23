@@ -622,6 +622,166 @@ _(${G?'追記してください':'Add entries here'})_`],
     '          subject-path: \'dist/**\'',
     ''
   ].join('\n');
+
+  // ── ADR (Architecture Decision Records) ──
+  const isBaaS=inc2(be,'Firebase')||inc2(be,'Supabase')||inc2(be,'Convex');
+  function inc2(v,k){return v&&typeof v==='string'&&v.indexOf(k)!==-1;}
+  const ormName=resolveORM(a).name;
+  const deployName=a.deploy||'Vercel';
+  const authName=resolveAuth(a).provider||a.auth||'JWT';
+  const domainName=typeof detectDomain==='function'?detectDomain(a.purpose||''):'saas';
+  const adrDate=date;
+
+  const mkAdr=(num,title,status,ctx,decision,consequences,alternatives)=>{
+    const numStr=String(num).padStart(3,'0');
+    return '## ADR-'+numStr+': '+title+'\n\n**'+(G?'ステータス':'Status')+':** '+status+'  \n**'+(G?'決定日':'Date')+':** '+adrDate+'\n\n### '+(G?'コンテキスト':'Context')+'\n'+ctx+'\n\n### '+(G?'決定':'Decision')+'\n'+decision+'\n\n### '+(G?'結果':'Consequences')+'\n'+consequences+'\n\n### '+(G?'検討した代替案':'Alternatives Considered')+'\n'+alternatives+'\n\n---\n';
+  };
+
+  // ADR-001: Frontend
+  const feAlt=fe.includes('Next')?G?'- Vue 3 + Nuxt (より学習コスト低)\n- SvelteKit (バンドルサイズ小)\n- Astro (コンテンツ重視の場合)':'- Vue 3 + Nuxt (lower learning curve)\n- SvelteKit (smaller bundle)\n- Astro (content-focused sites)':G?'- React + Next.js (SSR/SSGが必要な場合)\n- SvelteKit (軽量フレームワーク)\n- Astro (静的コンテンツ重視)':'- React + Next.js (when SSR/SSG needed)\n- SvelteKit (lightweight)\n- Astro (static content focus)';
+  const feCtx=G?'プロジェクト「'+pn+'」では'+domainName+'ドメインのWebアプリケーションを構築するため、フロントエンドフレームワークの選定が必要でした。ターゲットユーザーへの体験を最適化するフレームワークを選定しました。':'Project "'+pn+'" requires a frontend framework for a '+domainName+'-domain web application. The framework was selected to optimize experience for target users.';
+  const feDecision=G?'**'+fe+'** を採用します。\n\n選定理由:\n- '+(fe.includes('Next')?'SSR/SSGによるSEO最適化とパフォーマンス':'SPA高速レンダリング')+'\n- '+(fe.includes('React')||fe.includes('Next')?'豊富なエコシステムと求人市場':fe.includes('Vue')?'なだらかな学習曲線':'先進的なコンパイラ最適化'):'Adopt **'+fe+'**.\n\nReasons:\n- '+(fe.includes('Next')?'SSR/SSG for SEO optimization and performance':'SPA fast rendering')+'\n- '+(fe.includes('React')||fe.includes('Next')?'Rich ecosystem and job market':fe.includes('Vue')?'Gentle learning curve':'Advanced compiler optimization');
+  const feConseq=G?'- '+(fe.includes('Next')?'Next.js APIルートでBFFパターンが可能になる':'Viteによる高速HMR開発体験')+'\n- TypeScriptとの統合が標準的に提供される':'- '+(fe.includes('Next')?'Next.js API routes enable BFF pattern':'Fast HMR development via Vite')+'\n- TypeScript integration provided out of the box';
+
+  // ADR-002: Backend Architecture
+  const beCtx=G?'バックエンドアーキテクチャの選定は、チームスキル（'+(a.skill_level||'Intermediate')+'）・開発速度・スケーラビリティ要件を考慮して決定しました。':'Backend architecture selection considered team skill ('+( a.skill_level||'Intermediate')+'), development speed, and scalability requirements.';
+  const beDecision=G?'**'+be+'** を採用します（アーキテクチャパターン: '+arch.pattern+'）。\n\n選定理由:\n- '+(isBaaS?'BaaSにより認証・DB・リアルタイム機能を素早く実装可能':'カスタムビジネスロジックの柔軟な実装'):'Adopt **'+be+'** (architecture pattern: '+arch.pattern+').\n\nReasons:\n- '+(isBaaS?'BaaS enables fast implementation of auth, DB, and realtime':'Flexible custom business logic implementation');
+  const beAlt=isBaaS?G?'- Node.js + Express（カスタムロジック重視の場合）\n- Node.js + NestJS（エンタープライズ規模の場合）\n- Python + FastAPI（AI機能が中心の場合）':'- Node.js + Express (custom logic focus)\n- Node.js + NestJS (enterprise scale)\n- Python + FastAPI (AI-centric)':G?'- Firebase/Supabase（BaaS、高速MVP構築）\n- Python + FastAPI（AI/ML統合重視）':'- Firebase/Supabase (BaaS, fast MVP)\n- Python + FastAPI (AI/ML integration)';
+  const beConseq=G?'- '+(isBaaS?'認証・リアルタイム・ストレージが即座に利用可能':'カスタムAPIエンドポイントの完全制御が可能')+'\n- ORM: '+ormName+' との統合が必要':'- '+(isBaaS?'Auth, realtime, and storage available immediately':'Full control over custom API endpoints')+'\n- Integration with ORM: '+ormName+' required';
+
+  // ADR-003: Database
+  const adrDb=a.database||'PostgreSQL';
+  const dbCtx=G?domainName+'ドメインのデータ特性（エンティティ: '+(a.data_entities||'User, Item')+'）に最適なデータベースを選定しました。':'Selected the optimal database for '+domainName+'-domain data characteristics (entities: '+(a.data_entities||'User, Item')+').';
+  const isNoSQL=inc2(adrDb,'Firestore')||inc2(adrDb,'MongoDB');
+  const dbDecision=G?'**'+adrDb+'** を採用します。\n\n選定理由:\n- '+(isNoSQL?'スキーマレスで柔軟なドキュメント構造が要件に合致':'ACID準拠のトランザクション整合性を確保')+'\n- '+(inc2(adrDb,'Neon')||inc2(adrDb,'Supabase')?'サーバーレス・スケーリングが自動化される':'マネージドサービスで運用負荷を軽減'):'Adopt **'+adrDb+'**.\n\nReasons:\n- '+(isNoSQL?'Schema-less flexible document structure fits requirements':'ACID-compliant transaction integrity ensured')+'\n- '+(inc2(adrDb,'Neon')||inc2(adrDb,'Supabase')?'Serverless scaling automated':'Managed service reduces operational overhead');
+  const dbAlt=isNoSQL?G?'- PostgreSQL（リレーショナル・ACID準拠）\n- MySQL（広いホスティング互換性）':'- PostgreSQL (relational, ACID compliant)\n- MySQL (broad hosting compatibility)':G?'- MongoDB（スキーマレス・柔軟なドキュメント）\n- MySQL（幅広いホスティング対応）\n- SQLite（ローカル開発・小規模）':'- MongoDB (schema-less, flexible docs)\n- MySQL (broad hosting support)\n- SQLite (local dev, small scale)';
+  const dbConseq=G?'- マイグレーション管理: '+ormName+' のマイグレーション機能を使用\n- '+(isNoSQL?'スキーマバリデーションはアプリ層で実施':'インデックス設計でクエリパフォーマンスを担保'):'- Migration management: use '+ormName+' migration features\n- '+(isNoSQL?'Schema validation handled at application layer':'Index design ensures query performance');
+
+  // ADR-004: Authentication
+  const authCtx=G?'セキュアなユーザー認証の実装方針を決定しました。'+(hasPay?'決済機能があるため認証セキュリティは特に重要です。':'')+(domainName==='health'||domainName==='fintech'||domainName==='legal'?'規制ドメインのため高セキュリティ認証が必要です。':''):'Defined the user authentication implementation approach. '+(hasPay?'Payment features make authentication security especially critical.':'')+(domainName==='health'||domainName==='fintech'||domainName==='legal'?'Regulated domain requires high-security authentication.':'');
+  const authDecision=G?'**'+authName+'** を採用します。\n\n選定理由:\n- '+(inc2(authName,'Supabase')?'Supabase AuthはRLS・JWT・OAuth・MFAを統合提供':inc2(authName,'Firebase')?'Firebase AuthはGoogle/Apple/Emailをワンストップ提供':'カスタム要件に合わせた完全制御が可能'):'Adopt **'+authName+'**.\n\nReasons:\n- '+(inc2(authName,'Supabase')?'Supabase Auth provides integrated RLS, JWT, OAuth, and MFA':inc2(authName,'Firebase')?'Firebase Auth provides one-stop Google/Apple/Email':'Full control for custom requirements');
+  const authAlt=G?'- '+(inc2(authName,'Supabase')?'Firebase Auth（Googleエコシステム統合）':'Supabase Auth（PostgreSQL統合が容易）')+'\n- Auth.js / NextAuth.js（Next.js特化）\n- Clerk（フルマネージド認証UI）':'- '+(inc2(authName,'Supabase')?'Firebase Auth (Google ecosystem integration)':'Supabase Auth (easy PostgreSQL integration)')+'\n- Auth.js / NextAuth.js (Next.js-specific)\n- Clerk (fully managed auth UI)';
+  const authConseq=G?'- セッション管理: '+(isBaaS?'BaaS SDKが自動的にセッションを管理':'JWTのrefreshトークンローテーションを実装')+'\n- '+(isBaaS?'RLSポリシーとauth.uid()を連携させてデータアクセス制御':'カスタムミドルウェアでAPIルートを保護'):'- Session management: '+(isBaaS?'BaaS SDK automatically manages sessions':'Implement JWT refresh token rotation')+'\n- '+(isBaaS?'Integrate RLS policies with auth.uid() for data access control':'Protect API routes with custom middleware');
+
+  // ADR-005: Deployment
+  const depCtx=G?'デプロイ戦略はチームのDevOps習熟度・コスト・スケーラビリティ要件に基づき決定しました。':'Deployment strategy decided based on team DevOps proficiency, cost, and scalability requirements.';
+  const depDecision=G?'**'+deployName+'** を採用します。\n\n選定理由:\n- '+(inc2(deployName,'Vercel')?'ゼロコンフィグデプロイとEdge Networkによる高速配信':inc2(deployName,'Firebase')?'Firebase全サービスとの統一管理':inc2(deployName,'Railway')?'Dockerfile対応のフルスタックデプロイ':'コンテナベースの柔軟なデプロイ')+'':'Adopt **'+deployName+'**.\n\nReasons:\n- '+(inc2(deployName,'Vercel')?'Zero-config deployment and Edge Network fast delivery':inc2(deployName,'Firebase')?'Unified management with all Firebase services':inc2(deployName,'Railway')?'Full-stack deployment with Dockerfile support':'Flexible container-based deployment');
+  const depAlt=G?'- '+(inc2(deployName,'Vercel')?'Railway（Python/フルスタック対応）':'Vercel（フロントエンド最適化）')+'\n- AWS / GCP / Azure（エンタープライズ・完全制御）\n- Fly.io（グローバルエッジ・コンテナ）':'- '+(inc2(deployName,'Vercel')?'Railway (Python/full-stack support)':'Vercel (frontend optimized)')+'\n- AWS / GCP / Azure (enterprise, full control)\n- Fly.io (global edge, containers)';
+  const depConseq=G?'- CI/CD: .github/workflows/ci.yml で自動テスト・デプロイを設定済み\n- 環境変数管理: '+deployName+'の環境変数機能でシークレットを安全に管理':'- CI/CD: .github/workflows/ci.yml configured for automated test and deployment\n- Environment variable management: manage secrets safely via '+deployName+' env vars';
+
+  const adrHead=G?'# '+pn+' — アーキテクチャ決定記録 (ADR)\n\n> **生成日**: '+adrDate+'  \n> **スタック**: '+fe+' + '+be+' + '+adrDb+' + '+deployName+'  \n> **ドメイン**: '+domainName+'\n\nこのドキュメントはウィザード入力から自動生成されたADR（Architecture Decision Record）集です。各決定の背景・理由・代替案を記録し、将来の意思決定に活用してください。\n\n---\n\n':'# '+pn+' — Architecture Decision Records (ADR)\n\n> **Generated**: '+adrDate+'  \n> **Stack**: '+fe+' + '+be+' + '+adrDb+' + '+deployName+'  \n> **Domain**: '+domainName+'\n\nAuto-generated ADRs from wizard inputs. Use to understand the context, rationale, and alternatives for each architectural decision.\n\n---\n\n';
+
+  let adrDoc=adrHead;
+  adrDoc+=mkAdr(1,G?'フロントエンドフレームワーク選定: '+fe:'Frontend Framework Selection: '+fe,G?'採択済み':'Accepted',feCtx,feDecision,feConseq,feAlt);
+  adrDoc+=mkAdr(2,G?'バックエンドアーキテクチャ選定: '+be:'Backend Architecture Selection: '+be,G?'採択済み':'Accepted',beCtx,beDecision,beConseq,beAlt);
+  adrDoc+=mkAdr(3,G?'データベース選定: '+adrDb:'Database Selection: '+adrDb,G?'採択済み':'Accepted',dbCtx,dbDecision,dbConseq,dbAlt);
+  adrDoc+=mkAdr(4,G?'認証戦略: '+authName:'Authentication Strategy: '+authName,G?'採択済み':'Accepted',authCtx,authDecision,authConseq,authAlt);
+  adrDoc+=mkAdr(5,G?'デプロイプラットフォーム: '+deployName:'Deployment Platform: '+deployName,G?'採択済み':'Accepted',depCtx,depDecision,depConseq,depAlt);
+
+  if(ormName&&ormName!=='N/A'&&!isBaaS){
+    const ormCtx=G?adrDb+'へのデータアクセス層をどう実装するか、型安全性・マイグレーション管理・クエリパフォーマンスを考慮して選定しました。':'Selected ORM considering type safety, migration management, and query performance for '+adrDb+' data access.';
+    const ormDec=G?'**'+ormName+'** を採用します。\n\n選定理由:\n- '+(inc2(ormName,'Prisma')?'スキーマファーストで型安全・自動補完が強力':inc2(ormName,'Drizzle')?'軽量・型安全・SQLに近い記法':inc2(ormName,'TypeORM')?'デコレーターベースでNestJSと相性最良':inc2(ormName,'SQLAlchemy')?'Pythonエコシステムとの完全統合':'クエリビルダーとして型安全なSQL構築'):'Adopt **'+ormName+'**.\n\nReasons:\n- '+(inc2(ormName,'Prisma')?'Schema-first, strong type safety and auto-completion':inc2(ormName,'Drizzle')?'Lightweight, type-safe, SQL-like syntax':inc2(ormName,'TypeORM')?'Decorator-based, excellent NestJS compatibility':inc2(ormName,'SQLAlchemy')?'Full Python ecosystem integration':'Type-safe SQL construction as query builder');
+    const ormAlt=G?'- '+(inc2(ormName,'Prisma')?'Drizzle ORM（より軽量・Edgeランタイム対応）':'Prisma（スキーマ自動生成・型安全）')+'\n- 生SQL（複雑なクエリの最適化が必要な場合）\n- Knex.js（低レベルクエリビルダー）':'- '+(inc2(ormName,'Prisma')?'Drizzle ORM (lighter, Edge runtime compatible)':'Prisma (schema auto-generation, type-safe)')+'\n- Raw SQL (when complex query optimization needed)\n- Knex.js (low-level query builder)';
+    const ormConseq=G?'- マイグレーションファイルは `migrations/` ディレクトリで管理\n- N+1問題に注意: includeを使った事前読み込みを標準化':'- Migration files managed in `migrations/` directory\n- Watch for N+1: standardize eager loading with include';
+    adrDoc+=mkAdr(6,G?'ORM選定: '+ormName:'ORM Selection: '+ormName,G?'採択済み':'Accepted',ormCtx,ormDec,ormConseq,ormAlt);
+  }
+
+  if(hasPay){
+    const adrIdx=ormName&&ormName!=='N/A'&&!isBaaS?7:6;
+    const payCtx=G?domainName+'ドメインでの決済機能実装にあたり、PCI-DSS準拠・グローバル対応・開発容易性を考慮して選定しました。':'Selected payment integration for '+domainName+'-domain considering PCI-DSS compliance, global support, and developer experience.';
+    const payDec=G?'**'+(a.payment||'Stripe')+'** を採用します。\n\n選定理由:\n- '+(inc2(a.payment||'','Stripe')?'業界標準のPCI-DSS Level 1準拠・140+通貨対応':'マルチゲートウェイ対応で柔軟な決済フロー'):'Adopt **'+(a.payment||'Stripe')+'**.\n\nReasons:\n- '+(inc2(a.payment||'','Stripe')?'Industry-standard PCI-DSS Level 1 compliance, 140+ currencies':'Multi-gateway support for flexible payment flows');
+    const payConseq=G?'- **Webhook処理必須**: `/api/webhook`エンドポイントで`payment_intent.succeeded`を処理\n- カード情報はアプリサーバーを経由させない（PCI-DSS要件）':'- **Webhook mandatory**: process `payment_intent.succeeded` at `/api/webhook` endpoint\n- Card data must not pass through app server (PCI-DSS requirement)';
+    const payAlt=G?'- PAY.JP（日本市場特化）\n- Square（実店舗連携が必要な場合）\n- PayPal（グローバルユーザー基盤）':'- PAY.JP (Japan market-specific)\n- Square (physical store integration)\n- PayPal (global user base)';
+    adrDoc+=mkAdr(adrIdx,G?'決済統合: '+(a.payment||'Stripe'):'Payment Integration: '+(a.payment||'Stripe'),G?'採択済み':'Accepted',payCtx,payDec,payConseq,payAlt);
+  }
+
+  S.files['docs/82-2_architecture_decision_records.md']=adrDoc;
+
+  // ── Cross-Pillar Dependency Map ──
+  const cpDomain=domainName;
+  const cpFe=fe;const cpBe=be;const cpDb=adrDb;const cpDeploy=deployName;
+  const cpOrm=ormName;const cpAuth=authName;
+
+  // Build pillar activation list based on answers
+  const cpPillars=[
+    {n:1, label:G?'SDD仕様書':'SDD Spec', file:'docs/51_specification.md', deps:[], always:true},
+    {n:2, label:G?'タスク管理':'Task Plan', file:'.spec/tasks.md', deps:[1], always:true},
+    {n:3, label:G?'テクノロジー':'Tech Stack', file:'docs/03_architecture.md', deps:[1], always:true},
+    {n:4, label:G?'UI/UX設計':'UI/UX Design', file:'docs/05_ui_design.md', deps:[1,3], always:true},
+    {n:5, label:G?'API設計':'API Design', file:'docs/21_api_overview.md', deps:[3], active:!isBaaS||inc2(cpFe,'Next')},
+    {n:6, label:G?'DB設計':'DB Schema', file:'docs/31_db_design.md', deps:[3,5], always:true},
+    {n:7, label:G?'ロードマップ':'Roadmap', file:'docs/roadmap/ROADMAP.md', deps:[1,2], always:true},
+    {n:8, label:G?'認証・認可':'Auth & RBAC', file:'docs/43_security_checklist.md', deps:[3,6], active:!!(cpAuth&&cpAuth!=='なし')},
+    {n:9, label:G?'決済':'Payment', file:'docs/payment_flow.md', deps:[5,8], active:hasPay},
+    {n:10, label:G?'リバースフロー':'Reverse Flow', file:'docs/reverse_flow.md', deps:[1,7], always:true},
+    {n:11, label:G?'エラー処理':'Error Handling', file:'docs/55_error_handling.md', deps:[5], always:true},
+    {n:12, label:G?'国際化':'i18n/l10n', file:'docs/i18n.md', deps:[4], active:/i18n|国際化|多言語/i.test(a.mvp_features||'')},
+    {n:13, label:G?'ビジネス戦略':'Business', file:'docs/41_business_model.md', deps:[1], active:hasPay||cpDomain==='saas'||cpDomain==='ec'},
+    {n:14, label:G?'OpsDevOps':'Ops/DevOps', file:'docs/71_devops.md', deps:[3,7], always:true},
+    {n:15, label:G?'将来設計':'Future Design', file:'docs/81_future_design.md', deps:[1,7,13], always:true},
+    {n:16, label:G?'アーキテクチャ品質':'Arch Quality', file:'docs/82_architecture_integrity_check.md', deps:[3,5,6,8], always:true},
+    {n:17, label:G?'Promptゲノム':'Prompt Genome', file:'AI_BRIEF.md', deps:[1,3], always:true},
+    {n:18, label:G?'Promptオペレーション':'Prompt Ops', file:'.claude/CLAUDE.md', deps:[17], always:true},
+    {n:19, label:G?'エンタープライズ':'Enterprise', file:'docs/enterprise_overview.md', deps:[8,13], active:cpDomain==='saas'||cpDomain==='fintech'||cpDomain==='health'||cpDomain==='hr'||cpDomain==='legal'},
+    {n:20, label:'CI/CD', file:'.github/workflows/ci.yml', deps:[14], always:true},
+    {n:21, label:G?'API品質':'API Quality', file:'docs/22_api_versioning.md', deps:[5], active:!isBaaS},
+    {n:22, label:G?'データベース最適化':'DB Optimization', file:'docs/33_migration_strategy.md', deps:[6], always:true},
+    {n:23, label:G?'テスト戦略':'Testing', file:'docs/91_test_strategy.md', deps:[5,6], always:true},
+    {n:24, label:G?'AI安全性':'AI Safety', file:'docs/ai_safety.md', deps:[3,8], active:!!(a.ai_auto&&!/なし|None|none/.test(a.ai_auto))},
+    {n:25, label:G?'パフォーマンス':'Performance', file:'docs/94_performance_budget.md', deps:[3,22,23], always:true},
+  ];
+
+  const activePillars=cpPillars.filter(p=>p.always||p.active);
+  const activeNums=new Set(activePillars.map(p=>p.n));
+
+  // Mermaid graph
+  let mmdLines=['graph TD'];
+  activePillars.forEach(p=>{
+    mmdLines.push('  P'+p.n+'["P'+p.n+': '+p.label+'"]');
+  });
+  mmdLines.push('');
+  activePillars.forEach(p=>{
+    p.deps.filter(d=>activeNums.has(d)).forEach(d=>{
+      mmdLines.push('  P'+d+' --> P'+p.n);
+    });
+  });
+  // Style critical path
+  mmdLines.push('');
+  mmdLines.push('  style P1 fill:#4f46e5,color:#fff');
+  mmdLines.push('  style P3 fill:#4f46e5,color:#fff');
+  mmdLines.push('  style P6 fill:#4f46e5,color:#fff');
+  if(activeNums.has(8)) mmdLines.push('  style P8 fill:#dc2626,color:#fff');
+  if(activeNums.has(16)) mmdLines.push('  style P16 fill:#16a34a,color:#fff');
+  if(activeNums.has(20)) mmdLines.push('  style P20 fill:#ca8a04,color:#fff');
+
+  // Table of active pillars with key outputs
+  const tableRows=activePillars.map(p=>'| P'+p.n+' | '+p.label+' | `'+p.file+'` | '+(p.deps.filter(d=>activeNums.has(d)).map(d=>'P'+d).join(', ')||'—')+' |').join('\n');
+
+  // Domain-specific integration notes
+  const domainNotes={
+    fintech:G?'- P8（認証）とP22（DB最適化）はAudit Logと統合必須\n- P9（決済）はP8なしに実装不可（PCI-DSS要件）\n- P19（エンタープライズ）でSOC2/GDPR対応文書を生成':'- P8 (Auth) and P22 (DB) must integrate with Audit Log\n- P9 (Payment) cannot be implemented without P8 (PCI-DSS)\n- P19 (Enterprise) generates SOC2/GDPR compliance docs',
+    health:G?'- P8（認証）はMFA必須（HIPAA要件）\n- P22（DB最適化）はPHIの暗号化・論理削除ポリシーを含む\n- P24（AI安全性）は医療AIガードレールを生成':'- P8 (Auth) requires MFA (HIPAA requirement)\n- P22 (DB) includes PHI encryption and logical delete policies\n- P24 (AI Safety) generates medical AI guardrails',
+    ec:G?'- P9（決済）はP6（DB設計）のOrderスキーマと密接に連携\n- P13（ビジネス戦略）でLTV/CAC分析フレームワークを生成\n- P4（UI/UX）はショッピングカートUXフローを含む':'- P9 (Payment) tightly integrates with P6 (DB) Order schema\n- P13 (Business) generates LTV/CAC analysis framework\n- P4 (UI/UX) includes shopping cart UX flows',
+    saas:G?'- P19（エンタープライズ）でマルチテナントアーキテクチャを設計\n- P8（認証）はRBACとorganizationスコープを含む\n- P13（ビジネス戦略）でSaaSメトリクス（MRR/ARR/churn）を設計':'- P19 (Enterprise) designs multi-tenant architecture\n- P8 (Auth) includes RBAC and organization scope\n- P13 (Business) designs SaaS metrics (MRR/ARR/churn)',
+    _default:G?'- P1（SDD）→P3（技術スタック）→P6（DB）の順序が基本依存チェーン\n- P16（アーキテクチャ品質）は全技術選定の整合性スコアを算出\n- P20（CI/CD）は全ピラーの出力をパイプラインに統合':'- P1 (SDD) → P3 (Tech) → P6 (DB) is the core dependency chain\n- P16 (Arch Quality) calculates consistency score across all technical choices\n- P20 (CI/CD) integrates all pillar outputs into the pipeline',
+  };
+  const domNote=(domainNotes[cpDomain]||domainNotes['_default']);
+
+  S.files['docs/00_pillar_dependency_map.md']=
+    '# '+(G?'ピラー依存マップ':'Pillar Dependency Map')+' — '+pn+'\n\n'
+    +'> **'+( G?'生成日':'Generated')+'**: '+adrDate+'  \n'
+    +'> **'+(G?'ドメイン':'Domain')+'**: '+cpDomain+' | **Stack**: '+cpFe+' + '+cpBe+' + '+cpDb+'\n\n'
+    +(G?'このドキュメントは25ピラー間の依存関係と生成順序を示します。実装前に依存ピラーが完了していることを確認してください。\n\n':'This document shows dependencies and generation order across 25 pillars. Verify dependent pillars are complete before implementation.\n\n')
+    +'## '+(G?'依存グラフ (Mermaid)':'Dependency Graph (Mermaid)')+'\n\n'
+    +'```mermaid\n'+mmdLines.join('\n')+'\n```\n\n'
+    +'## '+(G?'アクティブピラー一覧':'Active Pillar List')+'\n\n'
+    +'| Pillar | '+(G?'名称':'Name')+' | '+(G?'主要出力ファイル':'Key Output File')+' | '+(G?'依存ピラー':'Depends On')+' |\n'
+    +'|--------|'+(G?'------':'------')+'|'+(G?'-------------------':'-------------------')+'|'+(G?'-------------':'-------------')+'|\n'
+    +tableRows+'\n\n'
+    +'## '+(G?'ドメイン固有の統合注意点':'Domain-Specific Integration Notes')+'\n\n'
+    +domNote+'\n\n'
+    +'## '+(G?'実装推奨順序':'Recommended Implementation Order')+'\n\n'
+    +(G?'1. **P1-P3**: 仕様・タスク・アーキテクチャを確定（変更コスト最大）\n2. **P6**: DBスキーマ確定（後変更はマイグレーション必要）\n3. **P8**: 認証実装（全APIが依存）\n4. **P5/P21**: API設計・実装\n5. **P14/P20**: DevOps・CI/CD整備\n6. **P23/P25**: テスト・パフォーマンス検証':'1. **P1-P3**: Finalize spec, tasks, architecture (highest change cost)\n2. **P6**: Finalize DB schema (later changes require migrations)\n3. **P8**: Implement auth (all APIs depend on this)\n4. **P5/P21**: API design and implementation\n5. **P14/P20**: DevOps and CI/CD setup\n6. **P23/P25**: Testing and performance verification');
 }
 
 

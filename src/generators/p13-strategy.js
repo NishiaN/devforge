@@ -1012,4 +1012,105 @@ function genPillar13_StrategicIntelligence(a, pn) {
   doc52 += '- [Compliance Matrix](./45_compliance_matrix.md)\n';
 
   S.files['docs/52_advanced_scenarios.md'] = doc52;
+
+  // ── DOC 48-2: Cost Estimation Template ──
+  const ceDate=new Date().toISOString().split('T')[0];
+  const ceOrm=resolveORM(a).name||'Prisma';
+  const ceIsBaaS=/(Firebase|Supabase|Convex)/i.test(backend);
+  const ceHasPay=a.payment&&!/なし|None|none/.test(a.payment);
+  const ceSkill=a.skill_level||'Intermediate';
+  const ceDeploy=deploy;
+
+  // Infrastructure cost estimates per service
+  const infraCosts={
+    'Vercel':{free:G?'Hobby: $0/月（個人プロジェクト）':'Hobby: $0/mo (personal)', pro:G?'Pro: $20/月・ユーザー（商用必須）':'Pro: $20/mo/user (commercial required)', note:G?'帯域超過: $0.15/GB':'Bandwidth overage: $0.15/GB'},
+    'Firebase':{free:G?'Spark: $0/月（Firestore 1GB + 50K reads/日）':'Spark: $0/mo (Firestore 1GB + 50K reads/day)', pro:G?'Blaze: 従量課金 (~$25-100/月MVP規模)':'Blaze: Pay-as-you-go (~$25-100/mo at MVP scale)', note:G?'Firestore read: $0.06/10万回':'Firestore read: $0.06/100K reads'},
+    'Supabase':{free:G?'Free: $0/月（2プロジェクト・500MB DB）':'Free: $0/mo (2 projects, 500MB DB)', pro:G?'Pro: $25/月（8GB DB・無制限API）':'Pro: $25/mo (8GB DB, unlimited API)', note:G?'DB超過: $0.125/GB/月':'DB overage: $0.125/GB/mo'},
+    'Railway':{free:G?'Trial: $5 credit無料':'Trial: $5 credit free', pro:G?'Hobby: $5/月（Starter plan）':'Hobby: $5/mo (Starter plan)', note:G?'使用量課金 ~$0.000463/vCPU/秒':'Usage-based ~$0.000463/vCPU/sec'},
+    'Netlify':{free:G?'Free: $0/月（100GB帯域・300ビルド分）':'Free: $0/mo (100GB bandwidth, 300 build mins)', pro:G?'Pro: $19/月':'Pro: $19/mo', note:G?'Functions: $25/月125K呼び出し後':'Functions: $25/mo after 125K invocations'},
+  };
+  const ceInfra=infraCosts[Object.keys(infraCosts).find(k=>ceDeploy.includes(k))||'Vercel'];
+
+  // Development hours estimate by skill level
+  const devHours={
+    Beginner:{mvp:320,full:640,hourly:G?'3,000〜5,000円':'$20-35'},
+    Intermediate:{mvp:160,full:320,hourly:G?'5,000〜10,000円':'$50-80'},
+    Professional:{mvp:80,full:160,hourly:G?'10,000〜20,000円':'$100-150'},
+  };
+  const skillKey=ceSkill.includes('Beginner')?'Beginner':ceSkill.includes('Pro')?'Professional':'Intermediate';
+  const hours=devHours[skillKey];
+
+  // Domain complexity multiplier
+  const complexMult={fintech:1.5,health:1.4,legal:1.3,government:1.4,insurance:1.4,manufacturing:1.2,energy:1.2,logistics:1.2,ec:1.1,saas:1.1,_default:1.0};
+  const mult=complexMult[domain]||complexMult._default;
+  const mvpH=Math.round(hours.mvp*mult);
+  const fullH=Math.round(hours.full*mult);
+
+  // Third-party service costs
+  const thirdParty=[];
+  if(ceHasPay) thirdParty.push({svc:'Stripe',cost:G?'手数料 3.6% + ¥40/件（日本）':'2.9% + $0.30/transaction (US)',note:G?'Webhook専用エンドポイント必須':'Requires dedicated webhook endpoint'});
+  if(ceIsBaaS&&/(Supabase)/i.test(backend)) thirdParty.push({svc:'Supabase Auth',cost:G?'Free tier: 50,000 MAU':'Free tier: 50,000 MAU',note:G?'Pro以上でSSO/MFA追加':'SSO/MFA available on Pro+'});
+  if(/Sendgrid|Resend|nodemailer|メール/i.test(a.mvp_features||'')) thirdParty.push({svc:G?'メール送信（Resend推奨）':'Email (Resend recommended)',cost:G?'Free: 3,000通/月':'Free: 3,000/mo',note:G?'Pro: $20/月 100万通':'Pro: $20/mo 1M emails'});
+  if(/Sentry|エラー監視|monitoring/i.test(a.mvp_features||'')) thirdParty.push({svc:'Sentry',cost:G?'Free: 5,000エラー/月':'Free: 5,000 errors/mo',note:G?'Team: $26/月':'Team: $26/mo'});
+  if(/(upload|ストレージ|S3|Cloudinary)/i.test(a.mvp_features||'')) thirdParty.push({svc:G?'ファイルストレージ（Cloudflare R2推奨）':'File Storage (Cloudflare R2 recommended)',cost:G?'R2: 10GB無料、超過$0.015/GB':'R2: 10GB free, $0.015/GB after',note:G?'Egress無料（主要クラウドと差別化）':'Free egress (vs. AWS S3 pricing)'});
+  if(/(Pusher|Ably|リアルタイム|realtime)/i.test(a.mvp_features||'')) thirdParty.push({svc:'Pusher / Ably',cost:G?'Free: 200 concurrent connections':'Free: 200 concurrent connections',note:G?'Starter: $49/月':'Starter: $49/mo'});
+
+  const thirdPartyTable=thirdParty.length>0
+    ?'| '+( G?'サービス':'Service')+' | '+(G?'コスト':'Cost')+' | '+(G?'備考':'Notes')+' |\n|---|----|----|\n'
+      +thirdParty.map(t=>'| '+t.svc+' | '+t.cost+' | '+t.note+' |').join('\n')+'\n'
+    :(G?'*選択されたスタックに追加サービスなし*':'*No additional services in selected stack*');
+
+  // Hidden cost warnings
+  const hiddenCosts=[];
+  if(domain==='fintech'||domain==='health') hiddenCosts.push(G?'**セキュリティ監査**: ペネトレーションテスト $5,000〜$20,000/回（年1回推奨）':'**Security audit**: Penetration testing $5,000-$20,000/engagement (annual recommended)');
+  if(ceHasPay) hiddenCosts.push(G?'**PCI DSS準拠**: SAQ作成・スキャン $500〜$2,000/年':'**PCI DSS compliance**: SAQ + scan $500-$2,000/year');
+  hiddenCosts.push(G?'**ドメイン・SSL**: $15〜$50/年（Let\'s Encrypt + Cloudflare推奨）':'**Domain + SSL**: $15-$50/year (Let\'s Encrypt + Cloudflare recommended)');
+  if(!ceIsBaaS) hiddenCosts.push(G?'**DB管理・バックアップ**: DBスナップショット保持コスト $10〜$30/月':'**DB mgmt + backups**: Snapshot retention $10-$30/mo');
+  hiddenCosts.push(G?'**監視・アラート**: Sentry（Free〜）+ Uptime Robot（Free〜）':'**Monitoring + alerts**: Sentry (Free+) + Uptime Robot (Free+)');
+  if(mult>1.1) hiddenCosts.push(G?'**規制対応コスト（'+domain+' ドメイン）**: 法務確認・コンプライアンス文書作成 $1,000〜$5,000':'**Regulatory compliance ('+domain+' domain)**: Legal review + compliance docs $1,000-$5,000');
+
+  let docCost='# '+(G?'コスト見積もり':'Cost Estimation')+' — '+pn+'\n\n';
+  docCost+='> **'+(G?'生成日':'Generated')+'**: '+ceDate+'  \n';
+  docCost+='> **'+(G?'スキルレベル':'Skill Level')+'**: '+ceSkill+' | **'+(G?'ドメイン':'Domain')+'**: '+domain+' | **Deploy**: '+ceDeploy+'\n\n';
+  docCost+='---\n\n';
+  docCost+='## '+(G?'1. 開発工数見積もり':'1. Development Effort Estimate')+'\n\n';
+  docCost+='| '+(G?'フェーズ':'Phase')+' | '+(G?'工数（時間）':'Hours')+' | '+(G?'想定単価':'Rate')+' | '+(G?'概算コスト（円）':'Estimated Cost')+' |\n';
+  docCost+='|------|------|------|------|\n';
+  docCost+='| MVP'+(G?' (コア機能のみ)':' (core features only)')+' | '+mvpH+'h | '+hours.hourly+' | '+(G?mvpH*5000+'〜'+mvpH*10000+'円':'$'+(mvpH*50)+'–$'+(mvpH*100))+' |\n';
+  docCost+='| '+(G?'フル機能リリース':'Full feature release')+' | '+fullH+'h | '+hours.hourly+' | '+(G?fullH*5000+'〜'+fullH*10000+'円':'$'+(fullH*50)+'–$'+(fullH*100))+' |\n';
+  docCost+='\n> '+(G?'※ドメイン複雑度係数 ×'+mult+' を適用（'+domain+'ドメイン）':'*Domain complexity multiplier ×'+mult+' applied ('+domain+' domain)*')+'\n\n';
+  docCost+='## '+(G?'2. インフラコスト（月額）':'2. Infrastructure Cost (Monthly)')+'\n\n';
+  docCost+='| '+(G?'プラン':'Plan')+' | '+(G?'コスト':'Cost')+' | '+(G?'備考':'Notes')+' |\n';
+  docCost+='|------|------|------|\n';
+  if(ceInfra){
+    docCost+='| Free / Dev | '+ceInfra.free+' | '+ceInfra.note+' |\n';
+    docCost+='| '+(G?'本番推奨':'Production')+' | '+ceInfra.pro+' | — |\n';
+  }
+  docCost+='\n';
+  docCost+='## '+(G?'3. サードパーティサービス':'3. Third-Party Services')+'\n\n';
+  docCost+=thirdPartyTable+'\n\n';
+  docCost+='## '+(G?'4. 見落としがちな隠れコスト':'4. Hidden Costs Often Overlooked')+'\n\n';
+  hiddenCosts.forEach(c=>{docCost+='- '+c+'\n';});
+  docCost+='\n';
+  docCost+='## '+(G?'5. MVP達成予算サマリー':'5. MVP Budget Summary')+'\n\n';
+  docCost+='| '+(G?'費目':'Item')+' | '+(G?'最小':'Min')+' | '+(G?'最大':'Max')+' |\n';
+  docCost+='|------|------|------|\n';
+  docCost+='| '+(G?'開発工数（MVP）':'Development (MVP)')+' | '+(G?mvpH*3000+'円':'$'+(mvpH*20))+' | '+(G?mvpH*10000+'円':'$'+(mvpH*100))+' |\n';
+  docCost+='| '+(G?'インフラ（初年度）':'Infrastructure (year 1)')+' | '+(G?'$0〜$300':'$0–$300')+' | '+(G?'$600〜$1,200':'$600–$1,200')+' |\n';
+  docCost+='| '+(G?'サードパーティ（初年度）':'Third-party (year 1)')+' | '+(G?'$0〜$120':'$0–$120')+' | '+(G?'$600〜$1,200':'$600–$1,200')+' |\n';
+  docCost+='| **'+(G?'合計（目安）':'Total (estimate)')+'** | **'+(G?mvpH*3000+'円 +$0':'$'+(mvpH*20+0))+'** | **'+(G?mvpH*10000+'円 +$2,400':'$'+(mvpH*100+2400))+'** |\n';
+  docCost+='\n## '+(G?'6. スケーリングコスト予測':'6. Scaling Cost Projection')+'\n\n';
+  docCost+='| '+(G?'月間アクティブユーザー':'Monthly Active Users')+' | '+(G?'推定月額インフラ費':'Est. Monthly Infra')+' | '+(G?'主なスケーリング要因':'Main Scaling Factor')+' |\n';
+  docCost+='|------|------|------|\n';
+  docCost+='| ~1,000 | $0〜$25 | '+(G?'Free tier内':'Within free tier')+' |\n';
+  docCost+='| ~10,000 | $25〜$100 | '+(G?'DB・帯域コスト増':'DB + bandwidth growth')+' |\n';
+  docCost+='| ~100,000 | $200〜$500 | '+(G?'CDN・DBスケールアップ':'CDN + DB scale-up')+' |\n';
+  docCost+='| ~1,000,000 | $1,000〜$5,000 | '+(G?'マルチリージョン・専用DB':'Multi-region + dedicated DB')+' |\n';
+  docCost+='\n## '+(G?'📚 関連ドキュメント':'📚 Related Documents')+'\n\n';
+  docCost+='- [Industry Blueprint](./48_industry_blueprint.md)\n';
+  docCost+='- [Tech Radar](./49_tech_radar.md)\n';
+  docCost+='- [Architecture Design](../docs/03_architecture.md)\n';
+  docCost+='- [ADR](./82-2_architecture_decision_records.md)\n';
+
+  S.files['docs/48-2_cost_estimation.md']=docCost;
 }
