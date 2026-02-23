@@ -3813,3 +3813,61 @@ describe('Suite 41: P9 Design System DOMAIN_VISUAL Full Coverage', () => {
     assert.ok(doc.includes('多段階フォーム') || doc.includes('Multi-step form') || doc.includes('A11y') || doc.includes('accessibility'), 'Government must show multi-step form/a11y visual strategy');
   });
 });
+
+/*
+ ─────────────────────────────────────────────────────────────────────────────
+  Suite 42 — P9 Sequence Diagrams: DOMAIN_SEQ_FLOWS 9→19 domains
+  Verifies docs/27_sequence_diagrams.md shows domain-specific sequence flows
+  for newly added domains: ai, travel, marketplace, insurance, iot, event,
+  automation, community (+ existing 9 unchanged)
+ ─────────────────────────────────────────────────────────────────────────────
+*/
+describe('Suite 42: P9 Sequence Diagrams DOMAIN_SEQ_FLOWS Expansion', () => {
+  it('P9: ai domain shows AI chat/streaming sequence flow', () => {
+    const f = gP9(Object.assign({}, A25, { purpose:'AI chatbot assistant platform' }));
+    const doc = f['docs/27_sequence_diagrams.md'] || '';
+    assert.ok(doc.includes('AI会話') || doc.includes('AI Chat') || doc.includes('RAG') || doc.includes('LLM'), 'AI must show chat/streaming sequence flow');
+  });
+
+  it('P9: travel domain shows booking sequence flow', () => {
+    const f = gP9(Object.assign({}, A25, { purpose:'travel booking platform' }));
+    const doc = f['docs/27_sequence_diagrams.md'] || '';
+    assert.ok(doc.includes('旅行予約') || doc.includes('Travel Booking') || doc.includes('OTA') || doc.includes('バウチャー'), 'Travel must show booking sequence flow');
+  });
+
+  it('P9: marketplace domain shows deal/escrow sequence flow', () => {
+    const f = gP9(Object.assign({}, A25, { purpose:'marketplace platform' }));
+    const doc = f['docs/27_sequence_diagrams.md'] || '';
+    assert.ok(doc.includes('商品取引') || doc.includes('Marketplace Deal') || doc.includes('エスクロー') || doc.includes('escrow'), 'Marketplace must show deal/escrow sequence flow');
+  });
+
+  it('P9: insurance domain shows claim processing sequence flow', () => {
+    const f = gP9(Object.assign({}, A25, { purpose:'insurance claims management platform' }));
+    const doc = f['docs/27_sequence_diagrams.md'] || '';
+    assert.ok(doc.includes('保険請求') || doc.includes('Insurance Claim') || doc.includes('査定') || doc.includes('assessment'), 'Insurance must show claim processing sequence flow');
+  });
+
+  it('P9: iot domain shows sensor data sequence flow', () => {
+    const f = gP9(Object.assign({}, A25, { purpose:'IoT device management platform' }));
+    const doc = f['docs/27_sequence_diagrams.md'] || '';
+    assert.ok(doc.includes('センサーデータ') || doc.includes('Sensor Data') || doc.includes('MQTT') || doc.includes('閾値'), 'IoT must show sensor data sequence flow');
+  });
+
+  it('P9: event domain shows ticket purchase sequence flow', () => {
+    const f = gP9(Object.assign({}, A25, { purpose:'event management system' }));
+    const doc = f['docs/27_sequence_diagrams.md'] || '';
+    assert.ok(doc.includes('チケット購入') || doc.includes('Ticket Purchase') || doc.includes('QR') || doc.includes('座席'), 'Event must show ticket purchase sequence flow');
+  });
+
+  it('P9: automation domain shows workflow execution sequence flow', () => {
+    const f = gP9(Object.assign({}, A25, { purpose:'workflow automation platform' }));
+    const doc = f['docs/27_sequence_diagrams.md'] || '';
+    assert.ok(doc.includes('ワークフロー実行') || doc.includes('Workflow Execution') || doc.includes('トリガー') || doc.includes('trigger'), 'Automation must show workflow execution sequence flow');
+  });
+
+  it('P9: community domain shows post/moderation sequence flow', () => {
+    const f = gP9(Object.assign({}, A25, { purpose:'online community platform' }));
+    const doc = f['docs/27_sequence_diagrams.md'] || '';
+    assert.ok(doc.includes('コミュニティ投稿') || doc.includes('Community Post') || doc.includes('モデレーション') || doc.includes('moderation'), 'Community must show post/moderation sequence flow');
+  });
+});
