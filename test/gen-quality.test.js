@@ -4500,3 +4500,46 @@ describe('Suite 53: P14 Ops SLI expansion batch 3 (creator/gamify/media/content/
     assert.ok(doc.includes('API応答時間 (P99)') || doc.includes('API Response Time (P99)') || doc.includes('Webhook配信成功率') || doc.includes('Webhook Delivery'), 'Devtool must show API response SLI');
   });
 });
+
+// ── Suite 54: P14 Ops SLI/rateLimits/thresholds final 5 domains ─────────────
+describe('Suite 54: P14 Ops final 5 domains (portfolio/tool/manufacturing/agriculture/energy)', () => {
+  it('P14: portfolio domain shows page load SLI in runbook', () => {
+    const f = gP14(Object.assign({}, A25, { purpose:'personal portfolio resume showcase site' }));
+    const runbook = f['docs/53_ops_runbook.md'] || '';
+    const checklist = f['docs/54_ops_checklist.md'] || '';
+    assert.ok(runbook.includes('ページ読み込み時間') || runbook.includes('Page Load Time') || runbook.includes('お問い合わせ送信') || runbook.includes('Contact Form'), 'Portfolio must show page load SLI');
+    assert.ok(checklist.includes('ページ読み込み時間') || checklist.includes('Page Load Time') || checklist.includes('フォームエラー率') || checklist.includes('Form Error Rate'), 'Portfolio must show page load threshold');
+  });
+
+  it('P14: tool domain shows execution success SLI in runbook', () => {
+    const f = gP14(Object.assign({}, A25, { purpose:'online tool utility generator platform' }));
+    const runbook = f['docs/53_ops_runbook.md'] || '';
+    const checklist = f['docs/54_ops_checklist.md'] || '';
+    assert.ok(runbook.includes('ツール実行成功率') || runbook.includes('Tool Execution Success') || runbook.includes('APIキー認証') || runbook.includes('API Key Auth'), 'Tool must show execution SLI');
+    assert.ok(checklist.includes('ツール実行エラー率') || checklist.includes('Tool Execution Error') || checklist.includes('APIキー不正') || checklist.includes('API Key Abuse'), 'Tool must show execution threshold');
+  });
+
+  it('P14: manufacturing domain shows production uptime SLI in runbook', () => {
+    const f = gP14(Object.assign({}, A25, { purpose:'manufacturing factory production management system' }));
+    const runbook = f['docs/53_ops_runbook.md'] || '';
+    const checklist = f['docs/54_ops_checklist.md'] || '';
+    assert.ok(runbook.includes('生産ライン稼働率') || runbook.includes('Production Line Uptime') || runbook.includes('不良品検出精度') || runbook.includes('Defect Detection'), 'Manufacturing must show production uptime SLI');
+    assert.ok(checklist.includes('生産ライン停止時間') || checklist.includes('Production Line Downtime') || checklist.includes('不良品率') || checklist.includes('Defect Rate'), 'Manufacturing must show downtime threshold');
+  });
+
+  it('P14: agriculture domain shows sensor accuracy SLI in runbook', () => {
+    const f = gP14(Object.assign({}, A25, { purpose:'agriculture crop farming management platform' }));
+    const runbook = f['docs/53_ops_runbook.md'] || '';
+    const checklist = f['docs/54_ops_checklist.md'] || '';
+    assert.ok(runbook.includes('センサーデータ精度') || runbook.includes('Sensor Data Accuracy') || runbook.includes('灌漑コマンド') || runbook.includes('Irrigation Command'), 'Agriculture must show sensor accuracy SLI');
+    assert.ok(checklist.includes('センサー欠損率') || checklist.includes('Sensor Data Loss') || checklist.includes('灌漑コマンド失敗') || checklist.includes('Irrigation Command Failure'), 'Agriculture must show sensor threshold');
+  });
+
+  it('P14: energy domain shows meter reading accuracy SLI in runbook', () => {
+    const f = gP14(Object.assign({}, A25, { purpose:'energy electricity power grid management platform' }));
+    const runbook = f['docs/53_ops_runbook.md'] || '';
+    const checklist = f['docs/54_ops_checklist.md'] || '';
+    assert.ok(runbook.includes('電力メーター読取精度') || runbook.includes('Meter Reading Accuracy') || runbook.includes('グリッド状態監視') || runbook.includes('Grid Monitoring Uptime'), 'Energy must show meter reading SLI');
+    assert.ok(checklist.includes('メーター読取エラー率') || checklist.includes('Meter Reading Error') || checklist.includes('異常消費検出') || checklist.includes('Anomaly Consumption'), 'Energy must show meter threshold');
+  });
+});

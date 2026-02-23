@@ -229,6 +229,31 @@ function genPillar14_OpsIntelligence(a, pn) {
       { metric: G ? 'Webhook配信成功率' : 'Webhook Delivery Success', target: '>99.5%', method: G ? 'Webhook配信ログ' : 'Webhook delivery logs' },
       { metric: G ? 'SDK利用成功率' : 'SDK Usage Success Rate', target: '>99.9%', method: G ? 'APIエラーログ' : 'API error logs' }
     ],
+    portfolio: [
+      { metric: G ? 'ページ読み込み時間 (P95)' : 'Page Load Time (P95)', target: '<2s', method: G ? 'Core Web Vitals' : 'Core Web Vitals' },
+      { metric: G ? 'お問い合わせ送信成功率' : 'Contact Form Success Rate', target: '>99%', method: G ? 'フォームエラーログ' : 'Form error logs' },
+      { metric: G ? 'SEOクロール成功率' : 'SEO Crawl Success Rate', target: '100%', method: G ? 'Search Console' : 'Search Console' }
+    ],
+    tool: [
+      { metric: G ? 'ツール実行成功率' : 'Tool Execution Success Rate', target: '>99%', method: G ? 'ジョブ実行ログ' : 'Job execution logs' },
+      { metric: G ? 'API応答時間 (P95)' : 'API Response Time (P95)', target: '<1s', method: G ? 'APMトレース' : 'APM traces' },
+      { metric: G ? 'APIキー認証成功率' : 'API Key Auth Success Rate', target: '>99.9%', method: G ? '認証ログ' : 'Auth logs' }
+    ],
+    manufacturing: [
+      { metric: G ? '生産ライン稼働率' : 'Production Line Uptime', target: '>99.5%', method: G ? '機器センサーログ' : 'Equipment sensor logs' },
+      { metric: G ? '不良品検出精度' : 'Defect Detection Accuracy', target: '>99%', method: G ? '品質検査ログ' : 'Quality inspection logs' },
+      { metric: G ? 'センサーデータ受信成功率' : 'Sensor Data Receive Rate', target: '>99.9%', method: G ? 'IoTゲートウェイログ' : 'IoT gateway logs' }
+    ],
+    agriculture: [
+      { metric: G ? 'センサーデータ精度' : 'Sensor Data Accuracy', target: '>98%', method: G ? 'フィールドセンサーログ' : 'Field sensor logs' },
+      { metric: G ? '灌漑コマンド実行成功率' : 'Irrigation Command Success Rate', target: '>99%', method: G ? 'アクチュエーターログ' : 'Actuator logs' },
+      { metric: G ? '気象アラート配信遅延' : 'Weather Alert Delivery Delay', target: '<1min', method: G ? '通知配信ログ' : 'Notification delivery logs' }
+    ],
+    energy: [
+      { metric: G ? '電力メーター読取精度' : 'Meter Reading Accuracy', target: '>99.9%', method: G ? 'メーターデータログ' : 'Meter data logs' },
+      { metric: G ? 'グリッド状態監視稼働率' : 'Grid Monitoring Uptime', target: '>99.9%', method: G ? 'SCADAシステムログ' : 'SCADA system logs' },
+      { metric: G ? '異常消費アラート配信時間' : 'Anomaly Alert Delivery Time', target: '<5min', method: G ? 'アラートパイプラインログ' : 'Alert pipeline logs' }
+    ],
     _default: [
       { metric: G ? 'アップタイム' : 'Uptime', target: ops.slo, method: G ? 'ヘルスチェックエンドポイント' : 'Health check endpoint' },
       { metric: G ? 'API応答時間 (P95)' : 'API Response Time (P95)', target: '<1s', method: G ? 'APM' : 'APM' },
@@ -400,6 +425,11 @@ function genPillar14_OpsIntelligence(a, pn) {
     legal: { api: '60 req/min/user', esign: '5 sign/hour', alert: '署名エラー → 手動確認' },
     event: { api: '200 req/min/user', ticket: '5 purchase/min', alert: '重複チケット → 即時調査' },
     devtool: { api: '1000 req/min', webhook: '100 events/min', alert: 'エラー率>1% → 調査' },
+    portfolio: { api: '60 req/min/user', form: '3 submit/hour', alert: 'スパム検知 → CAPTCHA強化' },
+    tool: { api: '200 req/min/user', exec: '20 exec/min', alert: 'CPU超過 → キューイング' },
+    manufacturing: { api: '500 req/min/line', sensor: '1 update/sec/device', alert: 'センサー欠損>1% → 警告' },
+    agriculture: { api: '200 req/min', sensor: '1 update/5min/device', alert: '灌漑コマンド失敗 → 手動確認' },
+    energy: { api: '300 req/min', meter: '1 read/15min/meter', alert: '異常消費検出 → 即時アラート' },
     _default: { api: '60 req/min/user', write: '30 req/min/user', alert: '閾値80% → アラート' }
   };
 
@@ -713,6 +743,31 @@ function genPillar14_OpsIntelligence(a, pn) {
       { metric: G ? 'APIエラー率' : 'API Error Rate', warn: '0.5%', crit: '2%', action: G ? 'エンドポイント調査' : 'Investigate endpoint' },
       { metric: G ? 'Webhook配信失敗率' : 'Webhook Delivery Failure', warn: '0.5%', crit: '2%', action: G ? 'Webhookキュー確認' : 'Check webhook queue' },
       { metric: G ? 'API遅延 (P99)' : 'API Latency (P99)', warn: '500ms', crit: '2s', action: G ? 'スケールアウト' : 'Scale out' }
+    ],
+    portfolio: [
+      { metric: G ? 'ページ読み込み時間' : 'Page Load Time', warn: '2s', crit: '5s', action: G ? 'CDN/画像最適化' : 'Optimize CDN/images' },
+      { metric: G ? 'フォームエラー率' : 'Form Error Rate', warn: '1%', crit: '5%', action: G ? 'フォームバリデーション確認' : 'Check form validation' },
+      { metric: G ? 'エラー率' : 'Error Rate', warn: '1%', crit: '3%', action: G ? '調査' : 'Investigate' }
+    ],
+    tool: [
+      { metric: G ? 'ツール実行エラー率' : 'Tool Execution Error Rate', warn: '1%', crit: '3%', action: G ? 'ジョブキュー確認' : 'Check job queue' },
+      { metric: G ? 'API遅延 (P95)' : 'API Latency (P95)', warn: '1s', crit: '3s', action: G ? 'スケールアウト' : 'Scale out' },
+      { metric: G ? 'APIキー不正使用疑い' : 'API Key Abuse Detected', warn: '任意', crit: '任意', action: G ? '即時無効化+調査' : 'Immediate revoke+investigate' }
+    ],
+    manufacturing: [
+      { metric: G ? '生産ライン停止時間' : 'Production Line Downtime', warn: '1min', crit: '5min', action: G ? '現場確認+緊急対応' : 'On-site check+emergency response' },
+      { metric: G ? '不良品率' : 'Defect Rate', warn: '0.5%', crit: '2%', action: G ? '品質ラインレビュー' : 'Review quality line' },
+      { metric: G ? 'センサー欠損率' : 'Sensor Data Loss Rate', warn: '1%', crit: '5%', action: G ? 'IoTゲートウェイ確認' : 'Check IoT gateway' }
+    ],
+    agriculture: [
+      { metric: G ? 'センサー欠損率' : 'Sensor Data Loss Rate', warn: '2%', crit: '10%', action: G ? 'フィールドデバイス確認' : 'Check field devices' },
+      { metric: G ? '灌漑コマンド失敗率' : 'Irrigation Command Failure', warn: '1%', crit: '5%', action: G ? 'アクチュエーター確認' : 'Check actuator' },
+      { metric: G ? 'エラー率' : 'Error Rate', warn: '1%', crit: '3%', action: G ? '調査' : 'Investigate' }
+    ],
+    energy: [
+      { metric: G ? 'メーター読取エラー率' : 'Meter Reading Error Rate', warn: '0.1%', crit: '0.5%', action: G ? 'メーター通信確認' : 'Check meter communication' },
+      { metric: G ? '異常消費検出' : 'Anomaly Consumption Detected', warn: '+20%', crit: '+50%', action: G ? '顧客通知+調査' : 'Notify customer+investigate' },
+      { metric: G ? 'グリッド監視遅延' : 'Grid Monitoring Delay', warn: '1min', crit: '5min', action: G ? 'SCADAシステム確認' : 'Check SCADA system' }
     ],
     _default: [
       { metric: G ? 'エラー率' : 'Error Rate', warn: '1%', crit: '5%', action: G ? '調査' : 'Investigate' },
