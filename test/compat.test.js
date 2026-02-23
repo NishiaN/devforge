@@ -1,4 +1,4 @@
-// Compat rules functional test (115 rules: 15 ERROR + 71 WARN + 29 INFO)
+// Compat rules functional test (118 rules: 15 ERROR + 73 WARN + 30 INFO)
 const assert=require('node:assert/strict');
 const S={lang:'ja',skill:'pro'};
 eval(require('fs').readFileSync('src/data/compat-rules.js','utf-8'));
@@ -98,6 +98,12 @@ const tests=[
   {name:'Creator+Stripe=OK',a:{purpose:'creator content platform',payment:'Stripe決済'},expect:'none',id:'dom-creator-nopay'},
   {name:'Newsletter+NoEmail=INFO',a:{purpose:'newsletter platform',mvp_features:'認証, 購読管理'},expect:'info',id:'dom-newsletter-noemail'},
   {name:'Newsletter+Resend=OK',a:{purpose:'newsletter platform',mvp_features:'認証, 購読管理, Resend'},expect:'none',id:'dom-newsletter-noemail'},
+  {name:'Government+NoAuth=WARN',a:{purpose:'government civic service platform',auth:'なし'},expect:'warn',id:'dom-government-noauth'},
+  {name:'Government+Auth=OK',a:{purpose:'government civic service platform',auth:'Supabase Auth'},expect:'none',id:'dom-government-noauth'},
+  {name:'Insurance+NoAudit=WARN',a:{purpose:'insurance claims management platform',data_entities:'User, Policy, Claim, Payment'},expect:'warn',id:'dom-insurance-noaudit'},
+  {name:'Insurance+AuditLog=OK',a:{purpose:'insurance claims management platform',data_entities:'User, Policy, Claim, Payment, AuditLog'},expect:'none',id:'dom-insurance-noaudit'},
+  {name:'Media+NoCDN=INFO',a:{purpose:'media streaming platform',mvp_features:'動画アップロード, 再生機能'},expect:'info',id:'dom-media-nocdn'},
+  {name:'Media+CDN=OK',a:{purpose:'media streaming platform',mvp_features:'動画アップロード, Cloudflare CDN, 再生機能'},expect:'none',id:'dom-media-nocdn'},
   // Cloudflare Workers compatibility
   {name:'Django+CF=ERROR',a:{backend:'Python + Django',deploy:'Cloudflare Workers'},expect:'error',id:'be-dep-heavy-cf'},
   {name:'Spring+CF=ERROR',a:{backend:'Java + Spring Boot',deploy:'Cloudflare Workers'},expect:'error',id:'be-dep-heavy-cf'},

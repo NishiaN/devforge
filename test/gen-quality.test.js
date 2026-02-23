@@ -3513,3 +3513,67 @@ describe('Suite 37: P11 Impl Intelligence + P15 Future/Market Domain Expansion',
     assert.ok(doc.includes('GovTech') || doc.includes('$600B'), 'Government market positioning must show GovTech TAM (EN)');
   });
 });
+
+/*
+ ─────────────────────────────────────────────────────────────────────────────
+  Suite 38 — P10 Revenue Model Domain Expansion (8 → 30 domains)
+  Verifies docs/38_business_model.md (when payment is set) shows domain-
+  specific revenue model (model/tiers/primary) for newly added domains:
+  health, iot, collab, creator, travel, government, insurance, media, ai
+ ─────────────────────────────────────────────────────────────────────────────
+*/
+function gP10(answers, lang) {
+  S.files={}; S.genLang=lang||'ja'; S.skill='intermediate';
+  genPillar10_ReverseEngineering(answers,'QTest');
+  return S.files;
+}
+
+describe('Suite 38: P10 Business Model Revenue Domain Expansion', () => {
+  it('P10: health domain shows health/insurance revenue model', () => {
+    const f = gP10(Object.assign({}, A25, { purpose:'digital health wellness platform', payment:'Stripe Billing (サブスク)' }));
+    const doc = f['docs/38_business_model.md'] || '';
+    assert.ok(doc.includes('フリーミアム') || doc.includes('Freemium') || doc.includes('保険'), 'Health business model must show freemium/insurance revenue model');
+  });
+
+  it('P10: iot domain shows hardware+SaaS revenue model', () => {
+    const f = gP10(Object.assign({}, A25, { purpose:'IoT device management platform', payment:'Stripe Billing (サブスク)' }));
+    const doc = f['docs/38_business_model.md'] || '';
+    assert.ok(doc.includes('ハードウェア') || doc.includes('Hardware') || doc.includes('デバイス'), 'IoT business model must show hardware+SaaS revenue model');
+  });
+
+  it('P10: collab domain shows per-seat subscription model', () => {
+    const f = gP10(Object.assign({}, A25, { purpose:'collaboration platform', payment:'Stripe Billing (サブスク)' }));
+    const doc = f['docs/38_business_model.md'] || '';
+    assert.ok(doc.includes('ユーザー数') || doc.includes('Per-seat') || doc.includes('席数'), 'Collab business model must show per-seat SaaS model');
+  });
+
+  it('P10: creator domain shows revenue share model', () => {
+    const f = gP10(Object.assign({}, A25, { purpose:'creator content platform', payment:'Stripe決済 (Connect)' }));
+    const doc = f['docs/38_business_model.md'] || '';
+    assert.ok(doc.includes('収益分配') || doc.includes('Revenue share') || doc.includes('収益シェア'), 'Creator business model must show revenue sharing model');
+  });
+
+  it('P10: travel domain shows booking commission model', () => {
+    const f = gP10(Object.assign({}, A25, { purpose:'travel booking platform', payment:'Stripe Billing (サブスク)' }));
+    const doc = f['docs/38_business_model.md'] || '';
+    assert.ok(doc.includes('予約手数料') || doc.includes('Booking commission'), 'Travel business model must show booking commission model');
+  });
+
+  it('P10: government domain shows B2G license model', () => {
+    const f = gP10(Object.assign({}, A25, { purpose:'government civic service platform', payment:'Stripe Billing (サブスク)' }));
+    const doc = f['docs/38_business_model.md'] || '';
+    assert.ok(doc.includes('B2G') || doc.includes('ライセンス') || doc.includes('License'), 'Government business model must show B2G license model');
+  });
+
+  it('P10: insurance domain shows premium collection model', () => {
+    const f = gP10(Object.assign({}, A25, { purpose:'insurance claims management platform', payment:'Stripe Billing (サブスク)' }));
+    const doc = f['docs/38_business_model.md'] || '';
+    assert.ok(doc.includes('保険料') || doc.includes('Premium') || doc.includes('引受'), 'Insurance business model must show premium/underwriting model');
+  });
+
+  it('P10: ai domain shows API usage pricing model', () => {
+    const f = gP10(Object.assign({}, A25, { purpose:'AI chatbot agent platform', payment:'Stripe Billing (サブスク)' }));
+    const doc = f['docs/38_business_model.md'] || '';
+    assert.ok(doc.includes('API課金') || doc.includes('API usage') || doc.includes('トークン'), 'AI business model must show API usage pricing model');
+  });
+});

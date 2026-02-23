@@ -683,7 +683,29 @@ function _genDoc38(G, domain, rf, a, pn) {
     fintech:{model:G?'取引手数料 + サブスク':'Transaction fees + Subscription',tiers:G?'無料取引(上限あり) / Pro (¥980/月 無制限)':'Free trades (limited) / Pro ($10/mo unlimited)',primary:G?'取引量 + 有料会員':'Transaction volume + Paid members'},
     booking:{model:G?'予約手数料':'Booking fees',tiers:G?'予約1件あたり10% or 月額サブスク':'10% per booking or Monthly subscription',primary:G?'予約成立時の手数料':'Commission on booking'},
     content:{model:G?'広告 + サブスク':'Ads + Subscription',tiers:G?'無料(広告表示) / プレミアム(¥480/月 広告なし)':'Free (with ads) / Premium ($5/mo ad-free)',primary:G?'広告収益 + 有料会員':'Ad revenue + Paid members'},
-    community:{model:G?'フリーミアム':'Freemium',tiers:G?'基本無料 / プレミアム機能(¥500/月)':'Free basic / Premium features ($5/mo)',primary:G?'有料会員 + 広告':'Paid members + Ads'}
+    community:{model:G?'フリーミアム':'Freemium',tiers:G?'基本無料 / プレミアム機能(¥500/月)':'Free basic / Premium features ($5/mo)',primary:G?'有料会員 + 広告':'Paid members + Ads'},
+    health:{model:G?'フリーミアム + 保険連携':'Freemium + Insurance',tiers:G?'無料(基本記録) / プレミアム(¥1,200/月) / 保険プラン':'Free (basic) / Premium ($12/mo) / Insurance plan',primary:G?'有料サブスク + 保険会社パートナー':'Paid subscription + Insurance partnerships'},
+    iot:{model:G?'ハードウェア + SaaS':'Hardware + SaaS',tiers:G?'デバイス販売 + クラウド(¥800/台/月)':'Device sale + Cloud ($8/device/mo)',primary:G?'デバイス定期課金 + データ分析':'Recurring device subscriptions + Data analytics'},
+    realestate:{model:G?'掲載料 + 成功報酬':'Listing + Commission',tiers:G?'掲載無料 / 成約時3% or プレミアム掲載(¥9,800/月)':'Free listing / 3% on close or Premium ($100/mo)',primary:G?'成約手数料 + 広告掲載':'Transaction commission + Featured listings'},
+    legal:{model:G?'文書単位 + サブスク':'Per-document + Subscription',tiers:G?'1文書¥2,000 / 月額プラン(¥5,000/月) / Enterprise':'$20/doc / Monthly ($50/mo) / Enterprise',primary:G?'文書処理手数料 + Enterpriseライセンス':'Document fees + Enterprise licenses'},
+    hr:{model:G?'人数課金SaaS':'Per-seat SaaS',tiers:G?'¥1,500/人/月（最低5人） / Enterprise（要見積）':'$15/user/mo (min 5 users) / Enterprise (custom)',primary:G?'従業員1人あたり月額':'Per-employee monthly fee'},
+    analytics:{model:G?'サブスク + クエリ量課金':'Subscription + Usage',tiers:G?'無料(月1,000クエリ) / Pro(¥4,800/月) / Enterprise':'Free (1K queries/mo) / Pro ($50/mo) / Enterprise',primary:G?'クエリ量 + 月次サブスク':'Query volume + Monthly subscription'},
+    event:{model:G?'チケット手数料':'Ticketing fee',tiers:G?'チケット1枚あたり6% + 主催者向けプラン(¥3,000/月)':'6% per ticket + Organizer plan ($30/mo)',primary:G?'チケット成立時の手数料':'Commission per ticket sold'},
+    gamify:{model:G?'フリーミアム + アプリ内課金':'Freemium + IAP',tiers:G?'無料プレイ / 仮想通貨パック / Battle Pass(¥980/月)':'Free play / Currency packs / Battle Pass ($10/mo)',primary:G?'アプリ内課金 + サブスク':'In-app purchases + Subscriptions'},
+    collab:{model:G?'ユーザー数課金SaaS':'Per-seat SaaS',tiers:G?'無料(3ユーザー) / Pro(¥800/ユーザー/月) / Enterprise':'Free (3 users) / Pro ($8/user/mo) / Enterprise',primary:G?'席数ベース月額':'Per-seat monthly fee'},
+    creator:{model:G?'収益分配 + プレミアムツール':'Revenue share + Tools',tiers:G?'無料(売上20%) / Pro(¥1,500/月 + 売上10%)':'Free (20% rev share) / Pro ($15/mo + 10%)',primary:G?'収益シェア + ツール課金':'Revenue share + Tool subscriptions'},
+    newsletter:{model:G?'有料購読 + スポンサー':'Paid subscription + Sponsorship',tiers:G?'無料読者 / プレミアム(¥500/月) / スポンサー枠':'Free reader / Premium ($5/mo) / Sponsorship slots',primary:G?'有料購読 + スポンサー収益':'Paid subscriptions + Sponsorships'},
+    travel:{model:G?'予約手数料 + 掲載広告':'Booking commission + Ads',tiers:G?'予約成立時10% + プレミアム掲載(¥5,000/月)':'10% on booking + Premium listing ($50/mo)',primary:G?'予約成立手数料':'Booking commission'},
+    government:{model:G?'B2G ライセンス契約':'B2G License',tiers:G?'年間ライセンス(自治体規模別) / SaaS月額':'Annual license (by org size) / Monthly SaaS',primary:G?'自治体向け年間ライセンス':'Annual government contracts'},
+    manufacturing:{model:G?'SaaS + 導入コンサル':'SaaS + Consulting',tiers:G?'¥2,000/ユーザー/月 + 導入支援費':'$20/user/mo + Implementation fee',primary:G?'Enterpriseユーザー課金':'Enterprise per-user subscription'},
+    logistics:{model:G?'配送量課金 + SaaS':'Volume + SaaS',tiers:G?'配送1件あたり¥100 or 月額プラン(¥8,000/月)':'$1/shipment or Monthly plan ($80/mo)',primary:G?'配送取扱量 + プラットフォーム利用料':'Shipment volume + Platform fee'},
+    agriculture:{model:G?'農場サブスク + センサー課金':'Farm subscription + Sensors',tiers:G?'¥3,000/月(10ha以下) / ¥8,000/月(大規模) / センサー課金':'$30/mo (small) / $80/mo (large) + sensors',primary:G?'農場単位サブスク':'Per-farm annual subscription'},
+    energy:{model:G?'SaaS + 節約シェア':'SaaS + Gain sharing',tiers:G?'プラットフォーム(¥2,000/月) + 節約効果の10%':'Platform ($20/mo) + 10% of energy savings',primary:G?'サブスク + 成果報酬':'Subscription + Performance-based fee'},
+    automation:{model:G?'タスク実行量課金':'Task execution pricing',tiers:G?'無料(月100タスク) / Pro(¥2,000/月 無制限) / Enterprise':'Free (100 tasks/mo) / Pro ($20/mo unlimited) / Enterprise',primary:G?'タスク実行量 + 月次サブスク':'Task volume + Monthly subscription'},
+    ai:{model:G?'API課金 + サブスク':'API usage + Subscription',tiers:G?'従量制(¥0.002/トークン) / 月額プラン(¥3,000/月)':'Pay-per-token ($0.002/1K) / Monthly ($30/mo)',primary:G?'API使用量課金':'API usage fees'},
+    devtool:{model:G?'開発者フリーミアム':'Developer Freemium',tiers:G?'無料(個人) / Pro(¥1,500/開発者/月) / Enterprise':'Free (personal) / Pro ($15/dev/mo) / Enterprise',primary:G?'開発者席数サブスク':'Per-developer subscription'},
+    media:{model:G?'広告 + 有料サブスク':'Ads + Subscription',tiers:G?'無料(広告あり) / プレミアム(¥980/月 広告なし)':'Free (with ads) / Premium ($10/mo ad-free)',primary:G?'広告収益 + プレミアム会員':'Ad revenue + Premium subscriptions'},
+    insurance:{model:G?'保険料 + プラットフォーム手数料':'Premium + Platform fee',tiers:G?'保険料の5〜15%のプラットフォーム手数料':'5-15% platform fee on insurance premium',primary:G?'プレミアム収集 + 引受手数料':'Premium collection + Underwriting fee'}
   };
   const revModel=revenueModels[domain]||{model:G?'サブスクリプション':'Subscription',tiers:G?'Free / Pro / Enterprise':'Free / Pro / Enterprise',primary:G?'月次定期課金':'Monthly recurring revenue'};
 

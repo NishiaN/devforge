@@ -1,4 +1,4 @@
-/* ═══ STACK COMPATIBILITY & SEMANTIC CONSISTENCY RULES — 115 rules (ERROR×15 + WARN×71 + INFO×29) ═══ */
+/* ═══ STACK COMPATIBILITY & SEMANTIC CONSISTENCY RULES — 118 rules (ERROR×15 + WARN×73 + INFO×30) ═══ */
 const COMPAT_RULES=[
   // ── FE ↔ Mobile (2 ERROR) ──
   {id:'fe-mob-expo',p:['frontend','mobile'],lv:'error',
@@ -443,6 +443,37 @@ const COMPAT_RULES=[
    en:'Newsletter domain without an email delivery service in mvp_features. Add Resend, SendGrid, or MailerSend for reliable bulk email delivery',
    why_ja:'自前SMTPでのメール大量配信はIPレピュテーション問題・スパムフォルダへの振り分け・バウンス管理が複雑です。Resend（React Email連携・開発者向け）、SendGrid（無料枠100通/日・大量配信実績）、MailerSend（直感的なAPI・コスト安）が主要選択肢です。メール開封率・クリック率の分析、配信停止（unsubscribe）管理、バウンス自動処理もAPIで提供されます。',
    why_en:'Bulk email via self-hosted SMTP struggles with IP reputation, spam folder placement, and complex bounce management. Resend (React Email integration, developer-friendly), SendGrid (100 free emails/day, proven at scale), and MailerSend (intuitive API, cost-effective) are the main options. Email open rates, click tracking, unsubscribe management, and automatic bounce handling are all provided via API.'},
+  {id:'dom-government-noauth',p:['purpose','auth'],lv:'warn',
+   t:a=>{
+     const dom=detectDomain(a.purpose||'');
+     const noAuth=inc(a.auth,'なし')||inc(a.auth,'None')||a.auth==='none';
+     return dom==='government'&&noAuth;
+   },
+   ja:'行政・政府ドメインで認証が未設定です。住民個人情報を扱う行政システムは認証必須です。Supabase Auth/Keycloakを推奨します',
+   en:'Government domain without authentication. Government systems handling citizen data require authentication. Supabase Auth or Keycloak recommended',
+   why_ja:'行政システムは住民の個人情報（氏名・住所・マイナンバー等）を扱います。認証なしでは誰でもデータにアクセスでき、個人情報保護法・マイナンバー法・各地方条例違反になります。Supabase AuthはRLSと組み合わせて役職ベースのアクセス制御が可能です。より厳格なケースではKeycloak（OpenID Connect/SAML対応）が政府標準として採用されています。',
+   why_en:'Government systems handle citizen personal data (name, address, national ID, etc.). Without authentication, anyone can access data — violating privacy law, data protection regulations, and government security standards. Supabase Auth combined with RLS enables role-based access control. For stricter requirements, Keycloak (OpenID Connect/SAML) is adopted as a government authentication standard.',
+   fix:{f:'auth',s:'Supabase Auth'}},
+  {id:'dom-insurance-noaudit',p:['purpose','data_entities'],lv:'warn',
+   t:a=>{
+     const dom=detectDomain(a.purpose||'');
+     const hasAudit=/(AuditLog|TransactionLog|EventLog|AuditTrail|ClaimLog)/i.test(a.data_entities||'');
+     return dom==='insurance'&&!hasAudit;
+   },
+   ja:'保険ドメインですが、AuditLog/ClaimLog等の監査エンティティが見当たりません。保険規制（IAIS基準・各国監督当局）は操作ログの保存を要求します',
+   en:'Insurance domain without AuditLog/ClaimLog entity. Insurance regulations (IAIS standards, national supervisory authorities) require operation log retention',
+   why_ja:'保険業界は金融庁・IAISのガイドラインにより、全ての保険証券変更・クレーム処理・保険料計算の操作ログを義務付けています。AuditLogがないと、クレーム不正・証券改ざんの追跡が不可能になります。PostgreSQLのトリガー+AuditLogテーブルで全DML操作を自動記録し、誰が・いつ・何を変更したかをイミュータブルに保存することを推奨します。',
+   why_en:'The insurance industry is required by financial regulators and IAIS guidelines to maintain operation logs for all policy changes, claims processing, and premium calculations. Without AuditLog, detecting claim fraud or policy tampering becomes impossible. Use PostgreSQL triggers + AuditLog table to automatically record all DML operations, immutably storing who changed what and when.'},
+  {id:'dom-media-nocdn',p:['purpose','mvp_features'],lv:'info',
+   t:a=>{
+     const dom=detectDomain(a.purpose||'');
+     const hasCDN=/(CDN|CloudFront|Cloudflare|Fastly|Akamai|R2|S3|bunny|配信最適化|ストリーミング最適化)/i.test(a.mvp_features||'');
+     return dom==='media'&&!hasCDN;
+   },
+   ja:'メディア・ストリーミングドメインですが、mvp_featuresにCDN/配信最適化の記述がありません。大容量コンテンツ配信にはCDN必須です',
+   en:'Media/streaming domain without CDN in mvp_features. CDN is essential for large-scale content delivery',
+   why_ja:'動画・音声・画像の大容量コンテンツをオリジンサーバーから直接配信すると、サーバー費用が膨大になりレイテンシも悪化します。Cloudflare R2（egress無料）+ Cloudflare CDN、AWS S3 + CloudFront（99.9% SLA）、Bunny.net（コスト最安）が主要選択肢です。HLS/DASHによるアダプティブビットレートストリーミングでモバイル回線でも高品質配信が可能です。',
+   why_en:'Serving large video/audio/image content directly from the origin server results in massive bandwidth costs and poor latency. Main options: Cloudflare R2 (free egress) + Cloudflare CDN, AWS S3 + CloudFront (99.9% SLA), Bunny.net (lowest cost). HLS/DASH adaptive bitrate streaming enables high-quality delivery even on mobile networks.'},
   // ── AI Auto ↔ Tools (1 WARN) ──
   {id:'ai-auto-notools',p:['ai_auto','ai_tools'],lv:'warn',
    t:a=>{
