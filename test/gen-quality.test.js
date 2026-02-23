@@ -4290,3 +4290,42 @@ describe('Suite 49: P3 _domainTools portfolio/tool + P18 PromptOps template cata
     assert.ok(doc.includes('IOT-P') || doc.includes('DEVICE') || doc.includes('デバイス') || doc.includes('センサー'), 'IoT must show device/sensor template IDs');
   });
 });
+
+// ── Suite 50: P18 PromptOps template catalogs batch 3 ───────────────────────
+describe('Suite 50: P18 PromptOps template catalogs batch 3 (creator/gamify/media/content/realestate/legal)', () => {
+  it('P18: creator domain shows monetization and payout template IDs', () => {
+    const f = gP18(Object.assign({}, A25, { purpose:'creator fan payout monetization platform' }));
+    const doc = f['docs/72_prompt_registry.md'] || '';
+    assert.ok(doc.includes('CRT-P') || doc.includes('MONETIZE') || doc.includes('収益化') || doc.includes('PAYOUT'), 'Creator must show monetization/payout template IDs');
+  });
+
+  it('P18: gamify domain shows points fraud prevention and leaderboard template IDs', () => {
+    const f = gP18(Object.assign({}, A25, { purpose:'gamification loyalty points rewards platform' }));
+    const doc = f['docs/72_prompt_registry.md'] || '';
+    assert.ok(doc.includes('GMF-P') || doc.includes('POINT') || doc.includes('ポイント') || doc.includes('LEADERBOARD'), 'Gamify must show points/leaderboard template IDs');
+  });
+
+  it('P18: media domain shows streaming and DRM template IDs', () => {
+    const f = gP18(Object.assign({}, A25, { purpose:'streaming media video on demand platform' }));
+    const doc = f['docs/72_prompt_registry.md'] || '';
+    assert.ok(doc.includes('MEDIA-P') || doc.includes('STREAM') || doc.includes('ストリーミング') || doc.includes('DRM'), 'Media must show streaming/DRM template IDs');
+  });
+
+  it('P18: content domain shows CMS and full-text search template IDs', () => {
+    const f = gP18(Object.assign({}, A25, { purpose:'blog CMS content management publishing platform' }));
+    const doc = f['docs/72_prompt_registry.md'] || '';
+    assert.ok(doc.includes('CONT-P') || doc.includes('CMS') || doc.includes('SEARCH') || doc.includes('全文検索'), 'Content must show CMS/search template IDs');
+  });
+
+  it('P18: realestate domain shows listing and contract template IDs', () => {
+    const f = gP18(Object.assign({}, A25, { purpose:'real estate property listing management platform' }));
+    const doc = f['docs/72_prompt_registry.md'] || '';
+    assert.ok(doc.includes('RE-P') || doc.includes('LISTING') || doc.includes('CONTRACT') || doc.includes('物件'), 'Real estate must show listing/contract template IDs');
+  });
+
+  it('P18: legal domain shows contract review and e-signature template IDs', () => {
+    const f = gP18(Object.assign({}, A25, { purpose:'legal contract document management platform' }));
+    const doc = f['docs/72_prompt_registry.md'] || '';
+    assert.ok(doc.includes('LEGAL-P') || doc.includes('REVIEW') || doc.includes('ESIGN') || doc.includes('契約書'), 'Legal must show contract review/e-sign template IDs');
+  });
+});

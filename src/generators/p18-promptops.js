@@ -609,6 +609,90 @@ function gen72(G, domain, meth, matLv, a, pn) {
       {id:'IOT-P4-UPDATE-v1.0.0',use:'OTA update implementation',ctx:4,inst:5,er:5,total:'4.6'},
       {id:'IOT-P5-OFFLINE-v1.0.0',use:'Offline operation & reconnection handling',ctx:5,inst:5,er:4,total:'4.7'}
     ];
+  } else if (domain === 'creator') {
+    domainTemplates = G ? [
+      {id:'CRT-P1-MONETIZE-v1.0.0',use:'収益化・サブスク設計',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'CRT-P2-CONTENT-v1.0.0',use:'コンテンツ管理・DRM設計',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'CRT-P3-PAYOUT-v1.0.0',use:'クリエイターペイアウト実装',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'CRT-P4-ENGAGE-v1.0.0',use:'ファンエンゲージメント機能',ctx:4,inst:4,er:4,total:'4.2'},
+      {id:'CRT-P5-ANALYTICS-v1.0.0',use:'収益・視聴統計分析',ctx:4,inst:5,er:4,total:'4.5'}
+    ]:[
+      {id:'CRT-P1-MONETIZE-v1.0.0',use:'Monetization & subscription design',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'CRT-P2-CONTENT-v1.0.0',use:'Content management & DRM design',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'CRT-P3-PAYOUT-v1.0.0',use:'Creator payout implementation',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'CRT-P4-ENGAGE-v1.0.0',use:'Fan engagement features',ctx:4,inst:4,er:4,total:'4.2'},
+      {id:'CRT-P5-ANALYTICS-v1.0.0',use:'Revenue & view analytics',ctx:4,inst:5,er:4,total:'4.5'}
+    ];
+  } else if (domain === 'gamify') {
+    domainTemplates = G ? [
+      {id:'GMF-P1-POINT-v1.0.0',use:'ポイント・不正防止設計',ctx:5,inst:5,er:5,total:'4.9'},
+      {id:'GMF-P2-LEADERBOARD-v1.0.0',use:'リアルタイムランキング実装',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'GMF-P3-BADGE-v1.0.0',use:'バッジ・実績システム設計',ctx:4,inst:5,er:4,total:'4.5'},
+      {id:'GMF-P4-STREAK-v1.0.0',use:'ストリーク・習慣化機能',ctx:4,inst:4,er:4,total:'4.2'},
+      {id:'GMF-P5-BALANCE-v1.0.0',use:'ゲームバランス調整設計',ctx:5,inst:5,er:4,total:'4.7'}
+    ]:[
+      {id:'GMF-P1-POINT-v1.0.0',use:'Points & anti-fraud design',ctx:5,inst:5,er:5,total:'4.9'},
+      {id:'GMF-P2-LEADERBOARD-v1.0.0',use:'Real-time leaderboard implementation',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'GMF-P3-BADGE-v1.0.0',use:'Badge & achievement system design',ctx:4,inst:5,er:4,total:'4.5'},
+      {id:'GMF-P4-STREAK-v1.0.0',use:'Streak & habit-forming features',ctx:4,inst:4,er:4,total:'4.2'},
+      {id:'GMF-P5-BALANCE-v1.0.0',use:'Game balance tuning design',ctx:5,inst:5,er:4,total:'4.7'}
+    ];
+  } else if (domain === 'media') {
+    domainTemplates = G ? [
+      {id:'MEDIA-P1-STREAM-v1.0.0',use:'ストリーミング配信設計',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'MEDIA-P2-CDN-v1.0.0',use:'CDN最適化・コンテンツ配信',ctx:5,inst:5,er:4,total:'4.7'},
+      {id:'MEDIA-P3-DRM-v1.0.0',use:'DRM・コンテンツ保護設計',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'MEDIA-P4-RECOMMEND-v1.0.0',use:'コンテンツレコメンド設計',ctx:5,inst:5,er:4,total:'4.7'},
+      {id:'MEDIA-P5-TRANSCODE-v1.0.0',use:'動画トランスコード実装',ctx:4,inst:5,er:4,total:'4.5'}
+    ]:[
+      {id:'MEDIA-P1-STREAM-v1.0.0',use:'Streaming delivery design',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'MEDIA-P2-CDN-v1.0.0',use:'CDN optimization & content delivery',ctx:5,inst:5,er:4,total:'4.7'},
+      {id:'MEDIA-P3-DRM-v1.0.0',use:'DRM & content protection design',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'MEDIA-P4-RECOMMEND-v1.0.0',use:'Content recommendation design',ctx:5,inst:5,er:4,total:'4.7'},
+      {id:'MEDIA-P5-TRANSCODE-v1.0.0',use:'Video transcoding implementation',ctx:4,inst:5,er:4,total:'4.5'}
+    ];
+  } else if (domain === 'content') {
+    domainTemplates = G ? [
+      {id:'CONT-P1-CMS-v1.0.0',use:'CMS設計・ヘッドレス構成',ctx:5,inst:5,er:4,total:'4.7'},
+      {id:'CONT-P2-SEARCH-v1.0.0',use:'全文検索・タグ設計',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'CONT-P3-WORKFLOW-v1.0.0',use:'コンテンツワークフロー管理',ctx:4,inst:5,er:4,total:'4.5'},
+      {id:'CONT-P4-SEO-v1.0.0',use:'SEO・メタタグ最適化',ctx:4,inst:4,er:4,total:'4.2'},
+      {id:'CONT-P5-VERSION-v1.0.0',use:'バージョン管理・下書き設計',ctx:4,inst:5,er:4,total:'4.5'}
+    ]:[
+      {id:'CONT-P1-CMS-v1.0.0',use:'CMS design & headless configuration',ctx:5,inst:5,er:4,total:'4.7'},
+      {id:'CONT-P2-SEARCH-v1.0.0',use:'Full-text search & tag design',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'CONT-P3-WORKFLOW-v1.0.0',use:'Content workflow management',ctx:4,inst:5,er:4,total:'4.5'},
+      {id:'CONT-P4-SEO-v1.0.0',use:'SEO & meta tag optimization',ctx:4,inst:4,er:4,total:'4.2'},
+      {id:'CONT-P5-VERSION-v1.0.0',use:'Version control & draft design',ctx:4,inst:5,er:4,total:'4.5'}
+    ];
+  } else if (domain === 'realestate') {
+    domainTemplates = G ? [
+      {id:'RE-P1-LISTING-v1.0.0',use:'物件掲載・検索設計',ctx:5,inst:5,er:4,total:'4.7'},
+      {id:'RE-P2-CONTRACT-v1.0.0',use:'契約・更新管理フロー',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'RE-P3-VIEWING-v1.0.0',use:'内見予約システム設計',ctx:4,inst:5,er:4,total:'4.5'},
+      {id:'RE-P4-PAYMENT-v1.0.0',use:'賃貸・決済フロー実装',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'RE-P5-REPORT-v1.0.0',use:'収益・修繕レポート設計',ctx:4,inst:4,er:4,total:'4.2'}
+    ]:[
+      {id:'RE-P1-LISTING-v1.0.0',use:'Property listing & search design',ctx:5,inst:5,er:4,total:'4.7'},
+      {id:'RE-P2-CONTRACT-v1.0.0',use:'Contract & renewal management flow',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'RE-P3-VIEWING-v1.0.0',use:'Property viewing booking system',ctx:4,inst:5,er:4,total:'4.5'},
+      {id:'RE-P4-PAYMENT-v1.0.0',use:'Rental payment flow implementation',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'RE-P5-REPORT-v1.0.0',use:'Revenue & maintenance report design',ctx:4,inst:4,er:4,total:'4.2'}
+    ];
+  } else if (domain === 'legal') {
+    domainTemplates = G ? [
+      {id:'LEGAL-P1-REVIEW-v1.0.0',use:'契約書レビュー設計',ctx:5,inst:5,er:5,total:'4.9'},
+      {id:'LEGAL-P2-ESIGN-v1.0.0',use:'電子署名連携実装',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'LEGAL-P3-CASE-v1.0.0',use:'案件管理ワークフロー',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'LEGAL-P4-SEARCH-v1.0.0',use:'法令・判例検索設計',ctx:5,inst:5,er:5,total:'4.9'},
+      {id:'LEGAL-P5-BILLING-v1.0.0',use:'タイムビリング・請求設計',ctx:4,inst:5,er:5,total:'4.6'}
+    ]:[
+      {id:'LEGAL-P1-REVIEW-v1.0.0',use:'Contract review design',ctx:5,inst:5,er:5,total:'4.9'},
+      {id:'LEGAL-P2-ESIGN-v1.0.0',use:'E-signature integration implementation',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'LEGAL-P3-CASE-v1.0.0',use:'Case management workflow',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'LEGAL-P4-SEARCH-v1.0.0',use:'Legal & case law search design',ctx:5,inst:5,er:5,total:'4.9'},
+      {id:'LEGAL-P5-BILLING-v1.0.0',use:'Time billing & invoicing design',ctx:4,inst:5,er:5,total:'4.6'}
+    ];
   } else {
     // Generic domain templates
     var domUpper = domain.substring(0, 4).toUpperCase();
