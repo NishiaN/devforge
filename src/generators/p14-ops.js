@@ -159,6 +159,36 @@ function genPillar14_OpsIntelligence(a, pn) {
       { metric: G ? 'トークン使用量超過率' : 'Token Overuse Rate', target: '<1%', method: G ? 'APIコストモニタリング' : 'API cost monitoring' },
       { metric: G ? 'Hallucination検出率' : 'Hallucination Detection Rate', target: '<2%', method: G ? 'ユーザーフィードバック分析' : 'User feedback analysis' }
     ],
+    analytics: [
+      { metric: G ? 'ダッシュボード応答時間 (P95)' : 'Dashboard Response Time (P95)', target: '<3s', method: G ? 'APMトレース' : 'APM traces' },
+      { metric: G ? 'データ鮮度 (Data Freshness)' : 'Data Freshness', target: '<1min', method: G ? 'データパイプラインログ' : 'Data pipeline logs' },
+      { metric: G ? 'レポート生成成功率' : 'Report Generation Success', target: '99.9%', method: G ? 'ジョブ実行ログ' : 'Job execution logs' }
+    ],
+    collab: [
+      { metric: G ? 'リアルタイム同期遅延' : 'Real-time Sync Latency', target: '<200ms', method: G ? 'WebSocketメッセージログ' : 'WebSocket message logs' },
+      { metric: G ? '競合解決成功率' : 'Conflict Resolution Success', target: '100%', method: G ? 'CRDT操作ログ' : 'CRDT operation logs' },
+      { metric: G ? 'データ損失ゼロ' : 'Zero Data Loss', target: '0 events', method: G ? '操作ログ完全性チェック' : 'Operation log completeness check' }
+    ],
+    hr: [
+      { metric: G ? '採用フロー完了率' : 'Hiring Flow Completion Rate', target: '>90%', method: G ? 'ATS操作ログ' : 'ATS operation logs' },
+      { metric: G ? '給与計算精度' : 'Payroll Calculation Accuracy', target: '100%', method: G ? '給与テスト回帰スイート' : 'Payroll test regression suite' },
+      { metric: G ? 'API応答時間 (P95)' : 'API Response Time (P95)', target: '<500ms', method: G ? 'APMトレース' : 'APM traces' }
+    ],
+    logistics: [
+      { metric: G ? 'リアルタイム追跡更新頻度' : 'Real-time Tracking Update Rate', target: '>1/min', method: G ? 'GPSデータ受信ログ' : 'GPS data receive logs' },
+      { metric: G ? 'オンタイム配送率' : 'On-time Delivery Rate', target: '>98%', method: G ? '配送完了ログ' : 'Delivery completion logs' },
+      { metric: G ? 'ルート最適化実行時間' : 'Route Optimization Time', target: '<5s', method: G ? 'アルゴリズム実行ログ' : 'Algorithm execution logs' }
+    ],
+    newsletter: [
+      { metric: G ? 'メール配信成功率' : 'Email Delivery Success Rate', target: '>98%', method: G ? 'SES/SendGrid配信ログ' : 'SES/SendGrid delivery logs' },
+      { metric: G ? 'バウンス率' : 'Bounce Rate', target: '<2%', method: G ? 'バウンス追跡ログ' : 'Bounce tracking logs' },
+      { metric: G ? '配信遅延 (P95)' : 'Delivery Latency (P95)', target: '<30s', method: G ? '送信キューモニタリング' : 'Send queue monitoring' }
+    ],
+    automation: [
+      { metric: G ? 'ワークフロー実行成功率' : 'Workflow Execution Success Rate', target: '>99%', method: G ? 'ジョブ実行ログ' : 'Job execution logs' },
+      { metric: G ? 'ステップ実行遅延 (P95)' : 'Step Execution Latency (P95)', target: '<10s', method: G ? 'APMトレース' : 'APM traces' },
+      { metric: G ? 'デッドレター率' : 'Dead Letter Rate', target: '<0.1%', method: G ? 'キューモニタリング' : 'Queue monitoring' }
+    ],
     _default: [
       { metric: G ? 'アップタイム' : 'Uptime', target: ops.slo, method: G ? 'ヘルスチェックエンドポイント' : 'Health check endpoint' },
       { metric: G ? 'API応答時間 (P95)' : 'API Response Time (P95)', target: '<1s', method: G ? 'APM' : 'APM' },
@@ -316,6 +346,12 @@ function genPillar14_OpsIntelligence(a, pn) {
     marketplace: { api: '60 req/min/user', bid: '5 bid/min', alert: '入札異常 → 手動確認' },
     travel: { api: '100 req/min/user', booking: '5 attempt/min', alert: '在庫競合 → ロック延長' },
     ai: { api: '20 req/min/user', tokens: '100k tokens/day', alert: 'コスト閾値超過 → 一時制限' },
+    analytics: { api: '60 req/min/user', export: '5 export/min', alert: '大規模クエリ → キューイング' },
+    collab: { api: '300 req/min/user', ws: '100 msg/s/room', alert: '同期遅延>500ms → セッション再確立' },
+    hr: { api: '60 req/min/user', payroll: '3 calc/min', alert: '給与計算エラー → 即時アラート' },
+    logistics: { api: '200 req/min/driver', tracking: '1 update/30s', alert: '追跡遅延>5min → 警告' },
+    newsletter: { api: '100 req/min', send: '10k emails/hour', alert: 'バウンス率>5% → 一時停止' },
+    automation: { api: '100 req/min/user', workflow: '20 exec/min', alert: 'デッドレター>1% → 調査' },
     _default: { api: '60 req/min/user', write: '30 req/min/user', alert: '閾値80% → アラート' }
   };
 
@@ -534,6 +570,61 @@ function genPillar14_OpsIntelligence(a, pn) {
       { metric: G ? 'センサー欠損率' : 'Sensor Data Loss Rate', warn: '1%', crit: '5%', action: G ? 'デバイス接続確認' : 'Check device connection' },
       { metric: G ? 'アラート遅延' : 'Alert Delay', warn: '30s', crit: '60s', action: G ? 'メッセージキュー確認' : 'Check message queue' },
       { metric: G ? 'デバイスオフライン率' : 'Device Offline Rate', warn: '5%', crit: '15%', action: G ? 'ネットワーク/電源確認' : 'Check network/power' }
+    ],
+    marketplace: [
+      { metric: G ? 'エスクロー処理失敗率' : 'Escrow Failure Rate', warn: '0.1%', crit: '0.5%', action: G ? '決済プロバイダ確認' : 'Check payment provider' },
+      { metric: G ? '検索P95遅延' : 'Search P95 Latency', warn: '500ms', crit: '2s', action: G ? 'Elasticsearch確認' : 'Check Elasticsearch' },
+      { metric: G ? '不正スコア超過' : 'Fraud Score Exceeded', warn: '1%', crit: '3%', action: G ? '手動レビューキュー確認' : 'Check manual review queue' }
+    ],
+    travel: [
+      { metric: G ? 'ダブルブッキング検出' : 'Double Booking Detected', warn: '0', crit: '0', action: G ? '即時ロック + 顧客連絡' : 'Immediate lock + contact customer' },
+      { metric: G ? '在庫同期遅延' : 'Inventory Sync Delay', warn: '5min', crit: '15min', action: G ? '同期ジョブ確認' : 'Check sync job' },
+      { metric: G ? '決済失敗率' : 'Payment Failure Rate', warn: '1%', crit: '3%', action: G ? '決済プロバイダ確認' : 'Check payment provider' }
+    ],
+    government: [
+      { metric: G ? '申請処理SLA違反' : 'Application SLA Breach', warn: '5%', crit: '10%', action: G ? 'ワークフロー再割当て' : 'Reassign workflow' },
+      { metric: G ? 'アクセシビリティエラー' : 'Accessibility Error', warn: '1件', crit: '3件', action: G ? '即時修正' : 'Immediate fix' },
+      { metric: G ? '個人情報アクセス異常' : 'Personal Data Access Anomaly', warn: '任意', crit: '任意', action: G ? 'ゼロトレランス調査' : 'Zero tolerance investigation' }
+    ],
+    insurance: [
+      { metric: G ? '請求処理SLA違反' : 'Claim SLA Breach', warn: '2%', crit: '5%', action: G ? 'エスカレーション' : 'Escalation' },
+      { metric: G ? '見積計算エラー率' : 'Quote Calculation Error Rate', warn: '0%', crit: '0%', action: G ? '即時調査' : 'Immediate investigation' },
+      { metric: G ? '監査ログ欠損' : 'Audit Log Missing', warn: '0', crit: '0', action: G ? 'ログシステム確認' : 'Check logging system' }
+    ],
+    community: [
+      { metric: G ? 'モデレーション遅延' : 'Moderation Delay', warn: '10min', crit: '30min', action: G ? 'モデレーターアサイン' : 'Assign moderator' },
+      { metric: G ? '不正コンテンツ見逃し率' : 'Missed Harmful Content Rate', warn: '0.5%', crit: '1%', action: G ? 'AI分類モデル再訓練' : 'Retrain AI classification model' },
+      { metric: G ? 'WebSocket接続失敗率' : 'WebSocket Failure Rate', warn: '2%', crit: '5%', action: G ? 'リアルタイム基盤確認' : 'Check realtime infrastructure' }
+    ],
+    analytics: [
+      { metric: G ? 'ダッシュボード応答P95' : 'Dashboard P95 Response', warn: '3s', crit: '10s', action: G ? 'クエリ最適化' : 'Optimize query' },
+      { metric: G ? 'データ鮮度遅延' : 'Data Freshness Delay', warn: '5min', crit: '30min', action: G ? 'パイプライン確認' : 'Check pipeline' },
+      { metric: G ? 'レポート生成失敗率' : 'Report Failure Rate', warn: '0.5%', crit: '2%', action: G ? 'ジョブ再実行' : 'Re-run job' }
+    ],
+    collab: [
+      { metric: G ? 'リアルタイム同期遅延' : 'Sync Latency', warn: '500ms', crit: '2s', action: G ? 'WebSocket再接続' : 'WebSocket reconnect' },
+      { metric: G ? '競合解決エラー' : 'Conflict Resolution Error', warn: '0', crit: '0', action: G ? '即時調査+ログ確認' : 'Immediate investigate+check logs' },
+      { metric: G ? 'エラー率' : 'Error Rate', warn: '1%', crit: '3%', action: G ? '調査' : 'Investigate' }
+    ],
+    hr: [
+      { metric: G ? '給与計算エラー率' : 'Payroll Calculation Error Rate', warn: '0%', crit: '0%', action: G ? '即時調査+修正' : 'Immediate investigate+fix' },
+      { metric: G ? 'API遅延 (P95)' : 'API Latency (P95)', warn: '500ms', crit: '2s', action: G ? 'スケールアウト' : 'Scale out' },
+      { metric: G ? '採用フロー失敗率' : 'Hiring Flow Failure Rate', warn: '2%', crit: '5%', action: G ? 'ワークフロー確認' : 'Check workflow' }
+    ],
+    logistics: [
+      { metric: G ? '追跡更新遅延' : 'Tracking Update Delay', warn: '5min', crit: '15min', action: G ? 'GPSデバイス確認' : 'Check GPS device' },
+      { metric: G ? '配送失敗率' : 'Delivery Failure Rate', warn: '1%', crit: '3%', action: G ? 'ルート再最適化' : 'Re-optimize route' },
+      { metric: G ? 'ルート計算時間' : 'Route Calculation Time', warn: '5s', crit: '30s', action: G ? 'アルゴリズム確認' : 'Check algorithm' }
+    ],
+    newsletter: [
+      { metric: G ? 'バウンス率' : 'Bounce Rate', warn: '2%', crit: '5%', action: G ? 'リスト清浄化' : 'Clean list' },
+      { metric: G ? '配信失敗率' : 'Delivery Failure Rate', warn: '1%', crit: '3%', action: G ? 'SES/SendGrid確認' : 'Check SES/SendGrid' },
+      { metric: G ? '配信遅延 (P95)' : 'Delivery Latency (P95)', warn: '60s', crit: '5min', action: G ? '送信キュー確認' : 'Check send queue' }
+    ],
+    automation: [
+      { metric: G ? 'ワークフロー失敗率' : 'Workflow Failure Rate', warn: '0.5%', crit: '2%', action: G ? 'リトライ設定確認' : 'Check retry config' },
+      { metric: G ? 'デッドレター率' : 'Dead Letter Rate', warn: '0.1%', crit: '0.5%', action: G ? 'キュー調査' : 'Investigate queue' },
+      { metric: G ? 'ステップ実行遅延' : 'Step Execution Delay', warn: '10s', crit: '60s', action: G ? 'ワーカースケールアウト' : 'Scale out workers' }
     ],
     _default: [
       { metric: G ? 'エラー率' : 'Error Rate', warn: '1%', crit: '5%', action: G ? '調査' : 'Investigate' },

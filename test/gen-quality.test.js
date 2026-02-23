@@ -4398,3 +4398,54 @@ describe('Suite 51: P18 PromptOps template catalogs batch 4 (automation/event/de
     assert.ok(doc.includes('TOOL-P') || doc.includes('UX') || doc.includes('ツール') || doc.includes('DOCS'), 'Tool must show API/UX template IDs');
   });
 });
+
+// ── Suite 52: P14 Ops Intelligence SLI expansion (6 new domains) ────────────
+describe('Suite 52: P14 Ops Intelligence SLI expansion (analytics/collab/hr/logistics/newsletter/automation)', () => {
+  it('P14: analytics domain shows dashboard response time SLI in runbook', () => {
+    const f = gP14(Object.assign({}, A25, { purpose:'analytics dashboard reporting platform' }));
+    const doc = f['docs/53_ops_runbook.md'] || '';
+    assert.ok(doc.includes('ダッシュボード応答') || doc.includes('Dashboard Response') || doc.includes('データ鮮度') || doc.includes('Data Freshness'), 'Analytics must show dashboard response SLI');
+  });
+
+  it('P14: collab domain shows real-time sync latency SLI in runbook', () => {
+    const f = gP14(Object.assign({}, A25, { purpose:'collaborative document editor platform' }));
+    const doc = f['docs/53_ops_runbook.md'] || '';
+    assert.ok(doc.includes('リアルタイム同期') || doc.includes('Real-time Sync') || doc.includes('競合解決') || doc.includes('Conflict Resolution'), 'Collab must show real-time sync SLI');
+  });
+
+  it('P14: hr domain shows payroll accuracy SLI in runbook', () => {
+    const f = gP14(Object.assign({}, A25, { purpose:'HR human resources management platform' }));
+    const doc = f['docs/53_ops_runbook.md'] || '';
+    assert.ok(doc.includes('給与計算精度') || doc.includes('Payroll Calculation Accuracy') || doc.includes('採用フロー') || doc.includes('Hiring Flow'), 'HR must show payroll accuracy SLI');
+  });
+
+  it('P14: logistics domain shows on-time delivery SLI in runbook', () => {
+    const f = gP14(Object.assign({}, A25, { purpose:'logistics delivery tracking platform' }));
+    const doc = f['docs/53_ops_runbook.md'] || '';
+    assert.ok(doc.includes('オンタイム配送') || doc.includes('On-time Delivery') || doc.includes('リアルタイム追跡') || doc.includes('Real-time Tracking'), 'Logistics must show delivery SLI');
+  });
+
+  it('P14: newsletter domain shows email delivery success SLI in runbook', () => {
+    const f = gP14(Object.assign({}, A25, { purpose:'email newsletter subscriber management platform' }));
+    const doc = f['docs/53_ops_runbook.md'] || '';
+    assert.ok(doc.includes('メール配信成功') || doc.includes('Email Delivery') || doc.includes('バウンス率') || doc.includes('Bounce Rate'), 'Newsletter must show email delivery SLI');
+  });
+
+  it('P14: automation domain shows workflow execution success SLI in runbook', () => {
+    const f = gP14(Object.assign({}, A25, { purpose:'workflow automation process management platform' }));
+    const doc = f['docs/53_ops_runbook.md'] || '';
+    assert.ok(doc.includes('ワークフロー実行成功') || doc.includes('Workflow Execution Success') || doc.includes('デッドレター') || doc.includes('Dead Letter'), 'Automation must show workflow execution SLI');
+  });
+
+  it('P14: analytics domain shows dashboard threshold in checklist', () => {
+    const f = gP14(Object.assign({}, A25, { purpose:'analytics dashboard reporting platform' }));
+    const doc = f['docs/54_ops_checklist.md'] || '';
+    assert.ok(doc.includes('ダッシュボード応答P95') || doc.includes('Dashboard P95') || doc.includes('データ鮮度遅延') || doc.includes('Data Freshness'), 'Analytics must show dashboard thresholds in checklist');
+  });
+
+  it('P14: collab domain shows sync latency threshold in checklist', () => {
+    const f = gP14(Object.assign({}, A25, { purpose:'collaborative document editor platform' }));
+    const doc = f['docs/54_ops_checklist.md'] || '';
+    assert.ok(doc.includes('リアルタイム同期遅延') || doc.includes('Sync Latency') || doc.includes('競合解決エラー') || doc.includes('Conflict Resolution Error'), 'Collab must show sync latency threshold in checklist');
+  });
+});
