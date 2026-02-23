@@ -3258,3 +3258,174 @@ describe('Suite 34: P19 Enterprise Arch Domain Hardening + P18 Prompt Registry D
     assert.ok(doc.includes('Domain-Specific Prompt') || doc.includes('FINTECH') || doc.includes('P2-IMPLEMENT'), 'EN mode prompt registry must show English domain context');
   });
 });
+
+/*
+ ─────────────────────────────────────────────────────────────────────────────
+  Suite 35 — P3 MCP Domain Expansion (18 newly added domains)
+  Verifies _domainFocus and _domainTools produce correct output for domains
+  added in v9.6.x: gamify, collab, creator, newsletter, travel, government,
+  booking — covering both .mcp/project-context.md and .mcp/tools-manifest.json
+ ─────────────────────────────────────────────────────────────────────────────
+*/
+function gP3(answers, lang) {
+  S.files={}; S.genLang=lang||'ja'; S.skill='intermediate';
+  genPillar3_MCP(answers,'QTest');
+  return S.files;
+}
+
+describe('Suite 35: P3 MCP Domain Expansion (newly added domains)', () => {
+  it('P3: gamify domain shows leaderboard focus in project-context.md (JA)', () => {
+    const f = gP3(Object.assign({}, A25, { purpose:'gamification platform' }));
+    const doc = f['.mcp/project-context.md'] || '';
+    assert.ok(doc.includes('リアルタイムランキング'), 'Gamify project-context must show real-time leaderboard focus (JA)');
+  });
+
+  it('P3: gamify domain shows leaderboard focus in project-context.md (EN)', () => {
+    const f = gP3(Object.assign({}, A25, { purpose:'gamification platform' }), 'en');
+    const doc = f['.mcp/project-context.md'] || '';
+    assert.ok(doc.includes('Real-time leaderboard') || doc.includes('leaderboard'), 'Gamify project-context must show real-time leaderboard focus (EN)');
+  });
+
+  it('P3: collab domain shows CRDT conflict resolution in project-context.md', () => {
+    const f = gP3(Object.assign({}, A25, { purpose:'collaboration platform' }));
+    const doc = f['.mcp/project-context.md'] || '';
+    assert.ok(doc.includes('OT/CRDT') || doc.includes('CRDT'), 'Collab project-context must show OT/CRDT conflict resolution');
+  });
+
+  it('P3: creator domain shows payouts focus in project-context.md', () => {
+    const f = gP3(Object.assign({}, A25, { purpose:'creator content platform' }));
+    const doc = f['.mcp/project-context.md'] || '';
+    assert.ok(doc.includes('クリエイターペイアウト') || doc.includes('ペイアウト'), 'Creator project-context must show creator payout focus');
+  });
+
+  it('P3: newsletter domain shows bounce management focus in project-context.md', () => {
+    const f = gP3(Object.assign({}, A25, { purpose:'newsletter platform' }));
+    const doc = f['.mcp/project-context.md'] || '';
+    assert.ok(doc.includes('バウンス'), 'Newsletter project-context must show bounce management focus');
+  });
+
+  it('P3: travel domain shows cancellation policy focus in project-context.md', () => {
+    const f = gP3(Object.assign({}, A25, { purpose:'travel booking platform' }));
+    const doc = f['.mcp/project-context.md'] || '';
+    assert.ok(doc.includes('キャンセルポリシー'), 'Travel project-context must show cancellation policy focus');
+  });
+
+  it('P3: government domain shows citizen data protection in project-context.md', () => {
+    const f = gP3(Object.assign({}, A25, { purpose:'government civic service platform' }));
+    const doc = f['.mcp/project-context.md'] || '';
+    assert.ok(doc.includes('住民データ保護') || doc.includes('住民'), 'Government project-context must show citizen data protection');
+  });
+
+  it('P3: booking domain shows booking conflict tool in tools-manifest.json', () => {
+    const f = gP3(Object.assign({}, A25, { purpose:'restaurant booking system' }));
+    const manifest = f['.mcp/tools-manifest.json'] || '';
+    assert.ok(manifest.includes('予約競合') || manifest.includes('postgres'), 'Booking tools-manifest must include booking conflict tool recommendation');
+  });
+
+  it('P3: creator domain shows stripe payment tool in tools-manifest.json', () => {
+    const f = gP3(Object.assign({}, A25, { purpose:'creator content platform' }));
+    const manifest = f['.mcp/tools-manifest.json'] || '';
+    assert.ok(manifest.includes('stripe'), 'Creator tools-manifest must include stripe payment tool');
+  });
+
+  it('P3: gamify domain shows postgres ranking tool in tools-manifest.json', () => {
+    const f = gP3(Object.assign({}, A25, { purpose:'gamification platform' }));
+    const manifest = f['.mcp/tools-manifest.json'] || '';
+    assert.ok(manifest.includes('ポイント・ランキング') || manifest.includes('postgres'), 'Gamify tools-manifest must include postgres point & ranking tool');
+  });
+
+  it('P3: government domain shows playwright e2e tool in tools-manifest.json', () => {
+    const f = gP3(Object.assign({}, A25, { purpose:'government civic service platform' }));
+    const manifest = f['.mcp/tools-manifest.json'] || '';
+    assert.ok(manifest.includes('電子申請') || manifest.includes('playwright'), 'Government tools-manifest must include playwright e2e tool');
+  });
+});
+
+/*
+ ─────────────────────────────────────────────────────────────────────────────
+  Suite 36 — P4 AI Rules + P5 Quality Intelligence Domain Expansion
+  Verifies:
+    - skills/catalog.md shows domain-specific AI skills for newly added domains
+      (travel, government, insurance, manufacturing, logistics, media)
+    - skills/factory.md shows domain-specific thinking axis for those domains
+    - docs/34_incident_response.md shows domain-specific severity examples
+ ─────────────────────────────────────────────────────────────────────────────
+*/
+function gP4(answers, lang) {
+  S.files={}; S.genLang=lang||'ja'; S.skill='intermediate';
+  genPillar4_AIRules(answers,'QTest');
+  return S.files;
+}
+function gP5(answers, lang) {
+  S.files={}; S.genLang=lang||'ja'; S.skill='intermediate';
+  genPillar5_QualityIntelligence(answers,'QTest');
+  return S.files;
+}
+
+describe('Suite 36: P4 AI Rules + P5 Quality Intelligence Domain Expansion', () => {
+  it('P4: travel domain shows availability/cancellation skills in catalog.md', () => {
+    const f = gP4(Object.assign({}, A25, { purpose:'travel booking platform' }));
+    const doc = f['skills/catalog.md'] || '';
+    assert.ok(doc.includes('在庫管理') || doc.includes('Availability') || doc.includes('キャンセル'), 'Travel skills/catalog.md must show availability or cancellation skills');
+  });
+
+  it('P4: government domain shows privacy/application skills in catalog.md', () => {
+    const f = gP4(Object.assign({}, A25, { purpose:'government civic service platform' }));
+    const doc = f['skills/catalog.md'] || '';
+    assert.ok(doc.includes('申請設計') || doc.includes('Application Design') || doc.includes('個人情報'), 'Government skills/catalog.md must show application design or privacy skills');
+  });
+
+  it('P4: insurance domain shows claims processing skill in catalog.md', () => {
+    const f = gP4(Object.assign({}, A25, { purpose:'insurance claims management platform' }));
+    const doc = f['skills/catalog.md'] || '';
+    assert.ok(doc.includes('クレーム') || doc.includes('Claims') || doc.includes('証券'), 'Insurance skills/catalog.md must show claims or policy skills');
+  });
+
+  it('P4: media domain shows streaming/CDN optimization skill in catalog.md', () => {
+    const f = gP4(Object.assign({}, A25, { purpose:'media streaming platform' }));
+    const doc = f['skills/catalog.md'] || '';
+    assert.ok(doc.includes('配信最適化') || doc.includes('Streaming Opt') || doc.includes('DRM'), 'Media skills/catalog.md must show streaming or DRM skills');
+  });
+
+  it('P4: travel domain shows correct thinking axis in factory.md', () => {
+    const f = gP4(Object.assign({}, A25, { purpose:'travel booking platform' }));
+    const doc = f['skills/factory.md'] || '';
+    assert.ok(doc.includes('快適な旅') || doc.includes('Great travel'), 'Travel skills/factory.md must show travel-specific thinking axis');
+  });
+
+  it('P4: government domain shows citizen-focused thinking axis in factory.md', () => {
+    const f = gP4(Object.assign({}, A25, { purpose:'government civic service platform' }));
+    const doc = f['skills/factory.md'] || '';
+    assert.ok(doc.includes('市民') || doc.includes('citizens') || doc.includes('government'), 'Government skills/factory.md must show citizen-focused thinking axis');
+  });
+
+  it('P4: manufacturing domain shows quality thinking axis in factory.md', () => {
+    const f = gP4(Object.assign({}, A25, { purpose:'manufacturing quality control system' }));
+    const doc = f['skills/factory.md'] || '';
+    assert.ok(doc.includes('品質を維持') || doc.includes('Quality maintained') || doc.includes('manufacturing'), 'Manufacturing skills/factory.md must show quality-focused thinking axis');
+  });
+
+  it('P5: travel domain shows booking system S1 incident example', () => {
+    const f = gP5(Object.assign({}, A25, { purpose:'travel booking platform' }));
+    const doc = f['docs/34_incident_response.md'] || '';
+    assert.ok(doc.includes('予約システム停止') || doc.includes('Booking system down'), 'Travel incident response must show booking system S1 example');
+  });
+
+  it('P5: government domain shows personal data S1 incident example', () => {
+    const f = gP5(Object.assign({}, A25, { purpose:'government civic service platform' }));
+    const doc = f['docs/34_incident_response.md'] || '';
+    assert.ok(doc.includes('個人情報漏洩') || doc.includes('Personal data breach') || doc.includes('申請データ'), 'Government incident response must show personal data breach S1 example');
+  });
+
+  it('P5: insurance domain shows policy data S1 incident example', () => {
+    const f = gP5(Object.assign({}, A25, { purpose:'insurance claims management platform' }));
+    const doc = f['docs/34_incident_response.md'] || '';
+    assert.ok(doc.includes('保険証券') || doc.includes('Policy data') || doc.includes('クレーム処理停止'), 'Insurance incident response must show policy data S1 example');
+  });
+
+  it('P5: media domain shows content delivery S1 incident example', () => {
+    const f = gP5(Object.assign({}, A25, { purpose:'media streaming platform' }));
+    const doc = f['docs/34_incident_response.md'] || '';
+    assert.ok(doc.includes('コンテンツ配信全停止') || doc.includes('Content delivery halted') || doc.includes('DRM'), 'Media incident response must show content delivery S1 example');
+  });
+});

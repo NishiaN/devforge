@@ -378,7 +378,15 @@ CLAUDE.md        → ${G?'Claude Code用ルール':'Claude Code rules'}
       collab:['0:同期設計:Sync Design:リアルタイム同期設計:Design realtime sync:遅延200ms↓:≤200ms latency','1:競合解決:Conflict Resolve:競合解決アルゴリズム:Conflict resolution:損失0:0 data loss','2:バージョン管理:Versioning:変更履歴管理:Manage change history:追跡100%:100% tracked'],
       devtool:['0:API設計:API Design:開発者API設計:Design developer API:DX評価4.5+:≥4.5 DX','1:SDK構築:SDK Build:SDK・サンプル構築:Build SDK & samples:カバレッジ80%+:≥80% coverage','2:ドキュメント:Docs:ドキュメント生成:Generate docs:網羅性95%+:≥95% completeness'],
       creator:['0:収益化設計:Monetization:収益化戦略設計:Design monetization:収益源3+:≥3 revenue streams','1:ファン管理:Fan Mgmt:ファンコミュニティ管理:Manage fan community:エンゲージ8%+:≥8% engagement','2:分析:Analytics:クリエイター分析:Creator analytics:インサイト可視化:Insights vis'],
-      newsletter:['0:コンテンツ戦略:Content Strategy:配信コンテンツ戦略:Delivery content strategy:開封率25%+:≥25% open rate','1:セグメント設計:Segment Design:セグメント配信設計:Design segment delivery:精度95%+:≥95% accuracy','2:A/Bテスト:A/B Test:A/Bテスト設計:Design A/B test:統計的有意性:Statistical significance']
+      newsletter:['0:コンテンツ戦略:Content Strategy:配信コンテンツ戦略:Delivery content strategy:開封率25%+:≥25% open rate','1:セグメント設計:Segment Design:セグメント配信設計:Design segment delivery:精度95%+:≥95% accuracy','2:A/Bテスト:A/B Test:A/Bテスト設計:Design A/B test:統計的有意性:Statistical significance'],
+      travel:['0:旅程設計:Trip Design:旅程・予約フロー設計:Design trip & booking flow:重複予約0:0 overbooking','1:在庫管理:Availability:空き室・在庫管理:Manage availability & inventory:過剰予約0:0 oversell','2:キャンセル処理:Cancellation:キャンセルポリシー実装:Implement cancellation policy:返金正確:Accurate refunds'],
+      government:['0:申請設計:Application Design:電子申請フロー設計:Design e-application flow:アクセシビリティ準拠:A11y compliant','1:審査フロー:Review Flow:審査ワークフロー設計:Design review workflow:漏れ0:0 gaps','2:個人情報保護:Privacy:個人情報保護設計:Design privacy protection:暗号化100%:100% encrypted'],
+      insurance:['0:証券設計:Policy Design:保険証券設計:Design insurance policy:必須項目100%:100% fields complete','1:クレーム処理:Claims:クレーム処理ワークフロー:Claims processing workflow:SLA準拠:SLA compliant','2:リスク評価:Risk Assess:リスク評価ロジック:Risk assessment logic:精度95%+:≥95% accuracy'],
+      manufacturing:['0:生産設計:Production Design:生産フロー設計:Design production flow:効率最大化:Maximize efficiency','1:品質管理:Quality Control:品質検査記録:Quality inspection records:不良品0:0 defects','2:在庫最適化:Inventory Opt:在庫最適化ロジック:Inventory optimization:欠品0:0 stockouts'],
+      logistics:['0:配送設計:Delivery Design:配送フロー設計:Design delivery flow:遅延0:0 delays','1:追跡システム:Tracking:荷物追跡システム:Package tracking system:可視性100%:100% visibility','2:ルート最適化:Route Opt:配送ルート最適化:Optimize delivery routes:コスト削減:Cost reduced'],
+      agriculture:['0:栽培管理:Crop Mgmt:作物データ管理:Manage crop data:記録100%:100% recorded','1:センサー分析:Sensor Analysis:農場センサー分析:Farm sensor analysis:異常検知:Anomaly detected','2:収穫予測:Harvest Forecast:収穫量予測モデル:Crop yield prediction:精度85%+:≥85% accuracy'],
+      energy:['0:消費設計:Energy Design:エネルギー消費設計:Design energy consumption:最適化10%+:≥10% optimized','1:監視システム:Monitoring:エネルギー監視:Energy monitoring:リアルタイム:Realtime','2:節約分析:Savings Analysis:節約効果分析:Analyze savings:可視化:Visualized'],
+      media:['0:コンテンツ設計:Content Design:メディアコンテンツ設計:Design media content:DRM準拠:DRM compliant','1:配信最適化:Streaming Opt:CDN・ストリーミング最適化:Optimize CDN & streaming:バッファリング3%↓:≤3% buffering','2:アクセス制御:Access Control:コンテンツアクセス制御:Content access control:不正アクセス0:0 unauthorized']
     };
 
     const domainSkills=domainSkillsMap[domain]||[];
@@ -509,7 +517,15 @@ CLAUDE.md        → ${G?'Claude Code用ルール':'Claude Code rules'}
       collab:G?'同期できるか?':'Synced?',
       devtool:G?'使いやすいか?':'Developer-friendly?',
       creator:G?'収益化できるか?':'Monetizable?',
-      newsletter:G?'開封されるか?':'Opened?'
+      newsletter:G?'開封されるか?':'Opened?',
+      travel:G?'快適な旅を実現できるか?':'Great travel experience?',
+      government:G?'市民に安全に届くか?':'Safely reaches citizens?',
+      insurance:G?'正確に保障できるか?':'Accurately covered?',
+      manufacturing:G?'品質を維持できるか?':'Quality maintained?',
+      logistics:G?'確実に届くか?':'Reliably delivered?',
+      agriculture:G?'収穫を最大化できるか?':'Harvest maximized?',
+      energy:G?'効率化できるか?':'Energy-efficient?',
+      media:G?'視聴体験を最大化できるか?':'Viewing experience maximized?'
     };
     const axis=thinkingAxis[domain]||(G?'目標達成できるか?':'Goal-achievable?');
 

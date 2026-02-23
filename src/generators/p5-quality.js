@@ -290,7 +290,18 @@ function genPillar5_QualityIntelligence(a,pn){
     iot:G?'全デバイス接続断':'All devices disconnected',
     realestate:G?'契約データ消失':'Contract data loss',
     legal:G?'機密情報漏洩':'Confidential data breach',
-    hr:G?'給与データ漏洩':'Payroll data breach'
+    hr:G?'給与データ漏洩':'Payroll data breach',
+    travel:G?'予約システム停止・重複予約大量発生':'Booking system down, mass duplicate reservations',
+    government:G?'個人情報漏洩・申請データ消失':'Personal data breach, application data loss',
+    insurance:G?'保険証券データ消失・クレーム処理停止':'Policy data loss, claims processing halted',
+    manufacturing:G?'生産管理システム全停止':'Production management system down',
+    logistics:G?'配送追跡停止・荷物紛失データ':'Tracking system down, parcel loss data',
+    media:G?'コンテンツ配信全停止・DRM漏洩':'Content delivery halted, DRM breach',
+    gamify:G?'ポイントデータ不整合・ランキング消失':'Point data corruption, leaderboard lost',
+    collab:G?'ドキュメントデータ消失・バージョン破損':'Document data loss, version corruption',
+    creator:G?'収益データ消失・支払い停止':'Revenue data loss, payment halted',
+    analytics:G?'集計データ消失・ダッシュボード停止':'Aggregated data loss, dashboard down',
+    event:G?'チケット二重販売・決済停止':'Duplicate ticket sales, payment halted'
   }[domain]||(G?'サービス全停止':'Complete service down');
 
   const s2Ex={
@@ -301,13 +312,41 @@ function genPillar5_QualityIntelligence(a,pn){
     saas:G?'主要機能停止':'Core feature down',
     community:G?'投稿機能停止':'Post feature down',
     booking:G?'通知送信失敗':'Notification delivery failure',
-    iot:G?'一部デバイス障害':'Partial device failures'
+    iot:G?'一部デバイス障害':'Partial device failures',
+    fintech:G?'一部取引遅延':'Partial transaction delays',
+    realestate:G?'内見予約機能停止':'Viewing booking feature down',
+    legal:G?'文書検索機能障害':'Document search malfunction',
+    hr:G?'勤怠記録機能停止':'Attendance recording down',
+    marketplace:G?'商品検索停止':'Product search down',
+    travel:G?'空き室検索停止':'Availability search down',
+    government:G?'申請受付機能停止':'Application submission down',
+    insurance:G?'見積もり機能障害':'Quote generation failure',
+    manufacturing:G?'品質記録機能停止':'Quality record entry down',
+    logistics:G?'配送ルート計算障害':'Route calculation failure',
+    media:G?'ストリーミング品質劣化':'Streaming quality degraded',
+    gamify:G?'ポイント付与遅延':'Point reward delays',
+    collab:G?'リアルタイム同期停止':'Real-time sync halted',
+    creator:G?'コンテンツ配信停止':'Content delivery down',
+    event:G?'チケット予約機能停止':'Ticket booking down'
   }[domain]||(G?'主要機能停止':'Core feature down');
 
   const s3Ex={
     ec:G?'検索精度低下':'Search accuracy degraded',
     saas:G?'パフォーマンス低下':'Performance degradation',
-    education:G?'レスポンス遅延':'Response delays'
+    education:G?'レスポンス遅延':'Response delays',
+    health:G?'グラフ表示遅延':'Chart rendering slow',
+    fintech:G?'レポート生成遅延':'Report generation delays',
+    booking:G?'カレンダー表示遅延':'Calendar rendering slow',
+    community:G?'フィード読み込み遅延':'Feed loading slow',
+    marketplace:G?'商品一覧表示遅延':'Product listing slow',
+    iot:G?'センサーデータ遅延':'Sensor data delay',
+    travel:G?'検索結果表示遅延':'Search results slow',
+    government:G?'申請フォーム表示遅延':'Application form slow',
+    insurance:G?'証券一覧表示遅延':'Policy list slow',
+    manufacturing:G?'生産レポート表示遅延':'Production report slow',
+    collab:G?'ドキュメント読み込み遅延':'Document loading slow',
+    gamify:G?'ランキング更新遅延':'Leaderboard update slow',
+    media:G?'メタデータ取得遅延':'Metadata fetch slow'
   }[domain]||(G?'性能劣化':'Performance degradation');
 
   const s4Ex=G?'軽微なUI不具合':'Minor UI glitch';
