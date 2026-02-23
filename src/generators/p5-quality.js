@@ -11,9 +11,11 @@ function genPillar5_QualityIntelligence(a,pn){
     fintech:'fintech',health:'health',ec:'ec',saas:'saas',community:'social',
     education:'education',gamify:'gaming',iot:'iot',booking:'booking',
     realestate:'realestate',content:'media',hr:'hr',analytics:'marketing',
-    marketplace:'marketplace',business:'saas',legal:'government',portfolio:'media',
+    marketplace:'marketplace',legal:'government',portfolio:'media',
     tool:'saas',ai:'ai',automation:'automation',event:'travel',collab:'collab',
-    devtool:'devtool',creator:'media',newsletter:'newsletter',insurance:'insurance'
+    devtool:'devtool',creator:'media',newsletter:'newsletter',insurance:'insurance',
+    travel:'travel',government:'government',logistics:'logistics',media:'media',
+    manufacturing:'manufacturing',agriculture:'agriculture',energy:'energy'
   };
   const industry=industryMap[domain]||'saas';
   const tm=INDUSTRY_TEST_MATRIX[industry]||INDUSTRY_TEST_MATRIX.saas;
@@ -301,7 +303,9 @@ function genPillar5_QualityIntelligence(a,pn){
     collab:G?'ドキュメントデータ消失・バージョン破損':'Document data loss, version corruption',
     creator:G?'収益データ消失・支払い停止':'Revenue data loss, payment halted',
     analytics:G?'集計データ消失・ダッシュボード停止':'Aggregated data loss, dashboard down',
-    event:G?'チケット二重販売・決済停止':'Duplicate ticket sales, payment halted'
+    event:G?'チケット二重販売・決済停止':'Duplicate ticket sales, payment halted',
+    agriculture:G?'センサー全断・灌漑システム停止':'All sensors down, irrigation system halted',
+    energy:G?'メーター読取停止・請求システム停止':'Meter reading halted, billing system down'
   }[domain]||(G?'サービス全停止':'Complete service down');
 
   const s2Ex={
@@ -327,7 +331,9 @@ function genPillar5_QualityIntelligence(a,pn){
     gamify:G?'ポイント付与遅延':'Point reward delays',
     collab:G?'リアルタイム同期停止':'Real-time sync halted',
     creator:G?'コンテンツ配信停止':'Content delivery down',
-    event:G?'チケット予約機能停止':'Ticket booking down'
+    event:G?'チケット予約機能停止':'Ticket booking down',
+    agriculture:G?'灌漑コマンド送信不可':'Irrigation command delivery failure',
+    energy:G?'異常消費アラート未配信':'Anomaly alert not delivered'
   }[domain]||(G?'主要機能停止':'Core feature down');
 
   const s3Ex={

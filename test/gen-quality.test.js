@@ -4543,3 +4543,36 @@ describe('Suite 54: P14 Ops final 5 domains (portfolio/tool/manufacturing/agricu
     assert.ok(checklist.includes('メーター読取エラー率') || checklist.includes('Meter Reading Error') || checklist.includes('異常消費検出') || checklist.includes('Anomaly Consumption'), 'Energy must show meter threshold');
   });
 });
+
+// ── Suite 55: P5 Quality Intelligence industryMap 32/32 domain coverage ──────
+describe('Suite 55: P5 Quality Intelligence industryMap 32/32 domains (manufacturing/agriculture/energy/travel/government/logistics/media)', () => {
+  it('P5: manufacturing domain uses manufacturing QA matrix (not saas default)', () => {
+    const f = gP5(Object.assign({}, A25, { purpose:'manufacturing factory production management system' }));
+    const doc = f['docs/32_qa_blueprint.md'] || '';
+    assert.ok(doc.includes('manufacturing') || doc.includes('生産スケジューリング') || doc.includes('Production scheduling') || doc.includes('品質管理') || doc.includes('Quality control'), 'Manufacturing must use manufacturing QA matrix');
+  });
+
+  it('P5: agriculture domain uses agriculture QA matrix (not saas default)', () => {
+    const f = gP5(Object.assign({}, A25, { purpose:'agriculture crop farming management platform' }));
+    const doc = f['docs/32_qa_blueprint.md'] || '';
+    assert.ok(doc.includes('agriculture') || doc.includes('作物モニタリング') || doc.includes('Crop monitoring') || doc.includes('センサー精度') || doc.includes('Sensor accuracy'), 'Agriculture must use agriculture QA matrix');
+  });
+
+  it('P5: energy domain uses energy QA matrix (not saas default)', () => {
+    const f = gP5(Object.assign({}, A25, { purpose:'energy electricity power grid management platform' }));
+    const doc = f['docs/32_qa_blueprint.md'] || '';
+    assert.ok(doc.includes('energy') || doc.includes('メーター読取') || doc.includes('Meter reading') || doc.includes('異常検知') || doc.includes('Anomaly detection'), 'Energy must use energy QA matrix');
+  });
+
+  it('P5: logistics domain uses logistics QA matrix (not saas default)', () => {
+    const f = gP5(Object.assign({}, A25, { purpose:'logistics delivery shipping management platform' }));
+    const doc = f['docs/32_qa_blueprint.md'] || '';
+    assert.ok(doc.includes('logistics') || doc.includes('配送追跡') || doc.includes('Shipment tracking') || doc.includes('ルート最適化') || doc.includes('Route optimization'), 'Logistics must use logistics QA matrix');
+  });
+
+  it('P5: government domain uses government QA matrix (not saas default)', () => {
+    const f = gP5(Object.assign({}, A25, { purpose:'government civic service digital platform' }));
+    const doc = f['docs/32_qa_blueprint.md'] || '';
+    assert.ok(doc.includes('government') || doc.includes('申請受付') || doc.includes('Application intake') || doc.includes('アクセシビリティ') || doc.includes('Accessibility'), 'Government must use government QA matrix');
+  });
+});
