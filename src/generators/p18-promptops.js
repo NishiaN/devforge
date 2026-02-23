@@ -427,6 +427,104 @@ function gen72(G, domain, meth, matLv, a, pn) {
       {id: 'EDU-P4-PROGRESS-v1.0.0', use: 'Progress tracking', ctx: 4, inst: 4, er: 4, total: '4.2'},
       {id: 'EDU-P5-ENGAGEMENT-v1.0.0', use: 'Engagement improvement', ctx: 5, inst: 4, er: 3, total: '4.1'}
     ];
+  } else if (domain === 'health') {
+    domainTemplates = G ? [
+      {id:'HEALTH-P1-PHI-DESIGN-v1.0.0',use:'PHI設計・暗号化',ctx:5,inst:5,er:5,total:'4.9'},
+      {id:'HEALTH-P2-APPOINTMENT-v1.0.0',use:'予約フロー実装',ctx:5,inst:5,er:4,total:'4.7'},
+      {id:'HEALTH-P3-COMPLIANCE-v1.0.0',use:'HIPAA準拠チェック',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'HEALTH-P4-AUDIT-v1.0.0',use:'アクセス監査ログ設計',ctx:4,inst:5,er:5,total:'4.6'},
+      {id:'HEALTH-P5-INTEROP-v1.0.0',use:'電子カルテ連携',ctx:4,inst:4,er:4,total:'4.3'}
+    ]:[
+      {id:'HEALTH-P1-PHI-DESIGN-v1.0.0',use:'PHI design & encryption',ctx:5,inst:5,er:5,total:'4.9'},
+      {id:'HEALTH-P2-APPOINTMENT-v1.0.0',use:'Appointment flow implementation',ctx:5,inst:5,er:4,total:'4.7'},
+      {id:'HEALTH-P3-COMPLIANCE-v1.0.0',use:'HIPAA compliance check',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'HEALTH-P4-AUDIT-v1.0.0',use:'Access audit log design',ctx:4,inst:5,er:5,total:'4.6'},
+      {id:'HEALTH-P5-INTEROP-v1.0.0',use:'EHR integration',ctx:4,inst:4,er:4,total:'4.3'}
+    ];
+  } else if (domain === 'saas') {
+    domainTemplates = G ? [
+      {id:'SAAS-P1-ONBOARD-v1.0.0',use:'オンボーディング設計',ctx:5,inst:5,er:4,total:'4.7'},
+      {id:'SAAS-P2-MULTITENANT-v1.1.0',use:'マルチテナント実装',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'SAAS-P3-BILLING-v1.0.0',use:'課金・プラン設計',ctx:4,inst:5,er:5,total:'4.6'},
+      {id:'SAAS-P4-CHURN-v1.0.0',use:'チャーン予測・対策',ctx:5,inst:4,er:4,total:'4.4'},
+      {id:'SAAS-P5-SCALE-v1.0.0',use:'スケーリング戦略',ctx:4,inst:5,er:4,total:'4.4'}
+    ]:[
+      {id:'SAAS-P1-ONBOARD-v1.0.0',use:'Onboarding design',ctx:5,inst:5,er:4,total:'4.7'},
+      {id:'SAAS-P2-MULTITENANT-v1.1.0',use:'Multi-tenant implementation',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'SAAS-P3-BILLING-v1.0.0',use:'Billing & plan design',ctx:4,inst:5,er:5,total:'4.6'},
+      {id:'SAAS-P4-CHURN-v1.0.0',use:'Churn prediction & prevention',ctx:5,inst:4,er:4,total:'4.4'},
+      {id:'SAAS-P5-SCALE-v1.0.0',use:'Scaling strategy',ctx:4,inst:5,er:4,total:'4.4'}
+    ];
+  } else if (domain === 'ai') {
+    domainTemplates = G ? [
+      {id:'AI-P1-PROMPT-DESIGN-v1.0.0',use:'プロンプト設計・最適化',ctx:5,inst:5,er:5,total:'4.9'},
+      {id:'AI-P2-RAG-IMPL-v1.1.0',use:'RAGシステム実装',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'AI-P3-HALLUCINATION-v1.0.0',use:'幻覚検知・対策',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'AI-P4-EVAL-v1.0.0',use:'AI応答品質評価',ctx:4,inst:5,er:4,total:'4.5'},
+      {id:'AI-P5-SAFETY-v1.0.0',use:'AIセーフティ設計',ctx:5,inst:5,er:5,total:'4.8'}
+    ]:[
+      {id:'AI-P1-PROMPT-DESIGN-v1.0.0',use:'Prompt design & optimization',ctx:5,inst:5,er:5,total:'4.9'},
+      {id:'AI-P2-RAG-IMPL-v1.1.0',use:'RAG system implementation',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'AI-P3-HALLUCINATION-v1.0.0',use:'Hallucination detection & prevention',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'AI-P4-EVAL-v1.0.0',use:'AI response quality evaluation',ctx:4,inst:5,er:4,total:'4.5'},
+      {id:'AI-P5-SAFETY-v1.0.0',use:'AI safety design',ctx:5,inst:5,er:5,total:'4.8'}
+    ];
+  } else if (domain === 'ec') {
+    domainTemplates = G ? [
+      {id:'EC-P1-CART-DESIGN-v1.0.0',use:'カート・決済設計',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'EC-P2-INVENTORY-v1.0.0',use:'在庫管理実装',ctx:5,inst:5,er:4,total:'4.7'},
+      {id:'EC-P3-RECOMMEND-v1.0.0',use:'レコメンドエンジン',ctx:4,inst:5,er:4,total:'4.4'},
+      {id:'EC-P4-SEO-v1.0.0',use:'SEO・商品ページ最適化',ctx:4,inst:4,er:4,total:'4.2'},
+      {id:'EC-P5-ABANDON-v1.0.0',use:'カゴ落ち対策',ctx:5,inst:4,er:4,total:'4.4'}
+    ]:[
+      {id:'EC-P1-CART-DESIGN-v1.0.0',use:'Cart & checkout design',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'EC-P2-INVENTORY-v1.0.0',use:'Inventory management implementation',ctx:5,inst:5,er:4,total:'4.7'},
+      {id:'EC-P3-RECOMMEND-v1.0.0',use:'Recommendation engine',ctx:4,inst:5,er:4,total:'4.4'},
+      {id:'EC-P4-SEO-v1.0.0',use:'SEO & product page optimization',ctx:4,inst:4,er:4,total:'4.2'},
+      {id:'EC-P5-ABANDON-v1.0.0',use:'Cart abandonment prevention',ctx:5,inst:4,er:4,total:'4.4'}
+    ];
+  } else if (domain === 'marketplace') {
+    domainTemplates = G ? [
+      {id:'MKT-P1-ESCROW-v1.0.0',use:'エスクロー決済設計',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'MKT-P2-MATCHING-v1.0.0',use:'マッチングアルゴリズム',ctx:5,inst:5,er:4,total:'4.7'},
+      {id:'MKT-P3-FRAUD-v1.0.0',use:'不正検知システム',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'MKT-P4-REVIEW-v1.0.0',use:'評価システム設計',ctx:4,inst:4,er:4,total:'4.3'},
+      {id:'MKT-P5-DISPUTE-v1.0.0',use:'紛争解決フロー',ctx:4,inst:5,er:4,total:'4.5'}
+    ]:[
+      {id:'MKT-P1-ESCROW-v1.0.0',use:'Escrow payment design',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'MKT-P2-MATCHING-v1.0.0',use:'Matching algorithm',ctx:5,inst:5,er:4,total:'4.7'},
+      {id:'MKT-P3-FRAUD-v1.0.0',use:'Fraud detection system',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'MKT-P4-REVIEW-v1.0.0',use:'Review system design',ctx:4,inst:4,er:4,total:'4.3'},
+      {id:'MKT-P5-DISPUTE-v1.0.0',use:'Dispute resolution flow',ctx:4,inst:5,er:4,total:'4.5'}
+    ];
+  } else if (domain === 'government') {
+    domainTemplates = G ? [
+      {id:'GOV-P1-A11Y-v1.0.0',use:'アクセシビリティ設計(JIS X 8341)',ctx:5,inst:5,er:5,total:'4.9'},
+      {id:'GOV-P2-EAPP-v1.0.0',use:'電子申請フロー実装',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'GOV-P3-AUDIT-v1.0.0',use:'監査証跡設計',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'GOV-P4-SECURITY-v1.0.0',use:'行政セキュリティ要件',ctx:5,inst:5,er:5,total:'4.9'},
+      {id:'GOV-P5-PRIVACY-v1.0.0',use:'個人情報保護設計',ctx:5,inst:5,er:5,total:'4.9'}
+    ]:[
+      {id:'GOV-P1-A11Y-v1.0.0',use:'Accessibility design (WCAG 2.2)',ctx:5,inst:5,er:5,total:'4.9'},
+      {id:'GOV-P2-EAPP-v1.0.0',use:'E-application flow implementation',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'GOV-P3-AUDIT-v1.0.0',use:'Audit trail design',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'GOV-P4-SECURITY-v1.0.0',use:'Government security requirements',ctx:5,inst:5,er:5,total:'4.9'},
+      {id:'GOV-P5-PRIVACY-v1.0.0',use:'Privacy protection design',ctx:5,inst:5,er:5,total:'4.9'}
+    ];
+  } else if (domain === 'insurance') {
+    domainTemplates = G ? [
+      {id:'INS-P1-QUOTE-v1.0.0',use:'見積算出ロジック設計',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'INS-P2-CLAIMS-v1.0.0',use:'クレーム処理フロー',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'INS-P3-FRAUD-v1.0.0',use:'不正請求検知',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'INS-P4-ACTUARIAL-v1.0.0',use:'保険数理ロジック実装',ctx:4,inst:5,er:5,total:'4.6'},
+      {id:'INS-P5-COMPLIANCE-v1.0.0',use:'保険業法コンプライアンス',ctx:5,inst:5,er:5,total:'4.9'}
+    ]:[
+      {id:'INS-P1-QUOTE-v1.0.0',use:'Quote calculation logic design',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'INS-P2-CLAIMS-v1.0.0',use:'Claims processing flow',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'INS-P3-FRAUD-v1.0.0',use:'Fraudulent claims detection',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'INS-P4-ACTUARIAL-v1.0.0',use:'Actuarial logic implementation',ctx:4,inst:5,er:5,total:'4.6'},
+      {id:'INS-P5-COMPLIANCE-v1.0.0',use:'Insurance regulation compliance',ctx:5,inst:5,er:5,total:'4.9'}
+    ];
   } else {
     // Generic domain templates
     var domUpper = domain.substring(0, 4).toUpperCase();

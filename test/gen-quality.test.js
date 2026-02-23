@@ -4149,3 +4149,48 @@ describe('Suite 46: P4 domainSkillsMap + P11 domainErrors gap fills', () => {
     assert.ok(doc.includes('誤公開') || doc.includes('accidentally published') || doc.includes('下書き') || doc.includes('draft') || doc.includes('FSM'), 'Content must show draft publish error pattern');
   });
 });
+
+// ── Suite 47: P18 domain-specific template catalogs ───────────────────────
+describe('Suite 47: P18 PromptOps domain-specific template catalogs', () => {
+  it('P18: health domain shows PHI and HIPAA template IDs', () => {
+    const f = gP18(Object.assign({}, A25, { purpose:'medical healthcare clinic platform' }));
+    const doc = f['docs/72_prompt_registry.md'] || '';
+    assert.ok(doc.includes('HEALTH') || doc.includes('PHI') || doc.includes('HIPAA'), 'Health must show PHI/HIPAA template IDs');
+  });
+
+  it('P18: saas domain shows multi-tenant and churn template IDs', () => {
+    const f = gP18(Object.assign({}, A25, { purpose:'SaaS subscription management platform' }));
+    const doc = f['docs/72_prompt_registry.md'] || '';
+    assert.ok(doc.includes('SAAS') || doc.includes('MULTITENANT') || doc.includes('CHURN') || doc.includes('マルチテナント'), 'SaaS must show multi-tenant template IDs');
+  });
+
+  it('P18: ai domain shows RAG and hallucination detection template IDs', () => {
+    const f = gP18(Object.assign({}, A25, { purpose:'AI chatbot FAQ assistant platform' }));
+    const doc = f['docs/72_prompt_registry.md'] || '';
+    assert.ok(doc.includes('AI-P') || doc.includes('RAG') || doc.includes('HALLUCINATION') || doc.includes('幻覚'), 'AI must show RAG/hallucination template IDs');
+  });
+
+  it('P18: ec domain shows cart and inventory template IDs', () => {
+    const f = gP18(Object.assign({}, A25, { purpose:'ecommerce online shop platform' }));
+    const doc = f['docs/72_prompt_registry.md'] || '';
+    assert.ok(doc.includes('EC-P') || doc.includes('CART') || doc.includes('INVENTORY') || doc.includes('カート'), 'EC must show cart/inventory template IDs');
+  });
+
+  it('P18: marketplace domain shows escrow and fraud template IDs', () => {
+    const f = gP18(Object.assign({}, A25, { purpose:'marketplace buy sell trading platform' }));
+    const doc = f['docs/72_prompt_registry.md'] || '';
+    assert.ok(doc.includes('MKT-P') || doc.includes('ESCROW') || doc.includes('FRAUD') || doc.includes('エスクロー'), 'Marketplace must show escrow/fraud template IDs');
+  });
+
+  it('P18: government domain shows accessibility and audit template IDs', () => {
+    const f = gP18(Object.assign({}, A25, { purpose:'government civic service portal' }));
+    const doc = f['docs/72_prompt_registry.md'] || '';
+    assert.ok(doc.includes('GOV-P') || doc.includes('A11Y') || doc.includes('AUDIT') || doc.includes('アクセシビリティ'), 'Government must show accessibility/audit template IDs');
+  });
+
+  it('P18: insurance domain shows claims and actuarial template IDs', () => {
+    const f = gP18(Object.assign({}, A25, { purpose:'insurance claims management platform' }));
+    const doc = f['docs/72_prompt_registry.md'] || '';
+    assert.ok(doc.includes('INS-P') || doc.includes('CLAIMS') || doc.includes('ACTUARIAL') || doc.includes('クレーム'), 'Insurance must show claims/actuarial template IDs');
+  });
+});
