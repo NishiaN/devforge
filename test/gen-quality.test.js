@@ -4194,3 +4194,48 @@ describe('Suite 47: P18 PromptOps domain-specific template catalogs', () => {
     assert.ok(doc.includes('INS-P') || doc.includes('CLAIMS') || doc.includes('ACTUARIAL') || doc.includes('クレーム'), 'Insurance must show claims/actuarial template IDs');
   });
 });
+
+// ── Suite 48: P19 enterprise workflow customizations (new domains) ──────────
+describe('Suite 48: P19 enterprise workflow customizations (health/saas/marketplace/insurance/hr/government/booking)', () => {
+  it('P19: health domain shows PHI audit and prescription approval workflows', () => {
+    const f = gP19(Object.assign({}, A25, { purpose:'health medical clinic platform', org_model:'マルチテナント(RLS)' }));
+    const doc = f['docs/74_workflow_engine.md'] || '';
+    assert.ok(doc.includes('PHI') || doc.includes('診断') || doc.includes('Diagnosis') || doc.includes('処方'), 'Health enterprise must show PHI/prescription approval workflow');
+  });
+
+  it('P19: saas domain shows plan change and tenant deletion approval workflows', () => {
+    const f = gP19(Object.assign({}, A25, { purpose:'SaaS subscription management platform', org_model:'マルチテナント(RLS)' }));
+    const doc = f['docs/74_workflow_engine.md'] || '';
+    assert.ok(doc.includes('プラン変更') || doc.includes('Plan change') || doc.includes('テナント') || doc.includes('Tenant'), 'SaaS enterprise must show plan change/tenant approval workflows');
+  });
+
+  it('P19: marketplace domain shows seller verification and dispute escalation workflows', () => {
+    const f = gP19(Object.assign({}, A25, { purpose:'marketplace buy sell trading platform', org_model:'マルチテナント(RLS)' }));
+    const doc = f['docs/74_workflow_engine.md'] || '';
+    assert.ok(doc.includes('出品者') || doc.includes('Seller') || doc.includes('紛争') || doc.includes('Dispute'), 'Marketplace enterprise must show seller/dispute workflows');
+  });
+
+  it('P19: insurance domain shows claim assessment and actuarial review workflows', () => {
+    const f = gP19(Object.assign({}, A25, { purpose:'insurance claims management platform', org_model:'マルチテナント(RLS)' }));
+    const doc = f['docs/74_workflow_engine.md'] || '';
+    assert.ok(doc.includes('クレーム') || doc.includes('Claim') || doc.includes('アクチュアリー') || doc.includes('Actuarial'), 'Insurance enterprise must show claims/actuarial approval workflows');
+  });
+
+  it('P19: hr domain shows offer approval and salary change chain workflows', () => {
+    const f = gP19(Object.assign({}, A25, { purpose:'HR human resources management platform', org_model:'マルチテナント(RLS)' }));
+    const doc = f['docs/74_workflow_engine.md'] || '';
+    assert.ok(doc.includes('採用オファー') || doc.includes('Offer letter') || doc.includes('給与') || doc.includes('Salary'), 'HR enterprise must show offer/salary approval workflows');
+  });
+
+  it('P19: government domain shows application review and accessibility exception workflows', () => {
+    const f = gP19(Object.assign({}, A25, { purpose:'government civic service portal', org_model:'マルチテナント(RLS)' }));
+    const doc = f['docs/74_workflow_engine.md'] || '';
+    assert.ok(doc.includes('申請審査') || doc.includes('Application review') || doc.includes('アクセシビリティ') || doc.includes('Accessibility'), 'Government enterprise must show application review/accessibility workflows');
+  });
+
+  it('P19: booking domain shows cancellation exception and overbooking adjustment workflows', () => {
+    const f = gP19(Object.assign({}, A25, { purpose:'restaurant table booking reservation platform', org_model:'マルチテナント(RLS)' }));
+    const doc = f['docs/74_workflow_engine.md'] || '';
+    assert.ok(doc.includes('キャンセルポリシー') || doc.includes('Cancellation policy') || doc.includes('オーバーブッキング') || doc.includes('Overbooking'), 'Booking enterprise must show cancellation/overbooking adjustment workflows');
+  });
+});

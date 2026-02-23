@@ -390,10 +390,6 @@ function gen74(G, domain, orgModel, isMultiTenant, a, pn) {
   d += G ? '## 🎯 ' + domain + 'ドメイン固有のワークフロー最適化\n\n' :
            '## 🎯 ' + domain + ' Domain Workflow Customization\n\n';
   var customizations = {
-    saas: G ? ['プランアップグレード承認フロー', 'サブスクキャンセル確認フロー', 'カスタム機能リクエスト管理'] :
-               ['Plan upgrade approval flow', 'Subscription cancellation confirmation', 'Custom feature request management'],
-    hr: G ? ['採用承認ステップ', 'オファー承認チェーン', '入社チェックリスト自動化'] :
-            ['Hiring approval steps', 'Offer approval chain', 'Onboarding checklist automation'],
     fintech: G ? ['送金承認ワークフロー (金額閾値)', 'コンプライアンスレビュー', 'KYC/AML承認プロセス'] :
                  ['Transfer approval (amount threshold)', 'Compliance review', 'KYC/AML approval process'],
     legal: G ? ['契約書レビューチェーン', 'eSign統合 (DocuSign)', '条項交渉ステップ'] :
@@ -401,7 +397,21 @@ function gen74(G, domain, orgModel, isMultiTenant, a, pn) {
     ec: G ? ['返金承認フロー', '大口注文承認', '在庫アラート承認'] :
             ['Refund approval flow', 'Large order approval', 'Inventory alert approval'],
     collab: G ? ['コンテンツ公開承認', 'メンバー招待承認', 'ワークスペース作成申請'] :
-                ['Content publish approval', 'Member invite approval', 'Workspace creation request']
+                ['Content publish approval', 'Member invite approval', 'Workspace creation request'],
+    health: G ? ['診断・処方承認ワークフロー', 'PHIアクセス監査証跡', '緊急連絡プロトコル'] :
+                ['Diagnosis/prescription approval', 'PHI access audit trail', 'Emergency contact protocol'],
+    saas: G ? ['プラン変更承認 (大口)', 'テナント削除確認フロー', 'API制限引き上げ申請'] :
+              ['Plan change approval (enterprise)', 'Tenant deletion confirmation', 'API quota raise request'],
+    marketplace: G ? ['出品者審査ワークフロー', '紛争エスカレーション', 'GMV上限緩和申請'] :
+                     ['Seller verification workflow', 'Dispute escalation', 'GMV limit raise request'],
+    insurance: G ? ['クレーム査定承認チェーン', 'アクチュアリーレビュー', '高額支払承認 (閾値超)'] :
+                   ['Claim assessment approval chain', 'Actuarial review', 'High-value payment approval (over threshold)'],
+    hr: G ? ['採用オファー承認フロー', '給与変更承認チェーン', '退職手続きワークフロー'] :
+           ['Offer letter approval flow', 'Salary change approval chain', 'Offboarding workflow'],
+    government: G ? ['申請審査・承認ワークフロー', 'アクセシビリティ例外申請', '個人情報開示審査'] :
+                    ['Application review & approval workflow', 'Accessibility exception request', 'Personal data disclosure review'],
+    booking: G ? ['キャンセルポリシー例外承認', '大口予約確定フロー', 'オーバーブッキング調整'] :
+                  ['Cancellation policy exception approval', 'Large booking confirmation flow', 'Overbooking adjustment']
   };
   var domCustom = customizations[domain] || (G ? ['承認ワークフロー', 'オンボーディング自動化', '状態変更通知'] :
                                                   ['Approval workflow', 'Onboarding automation', 'State change notifications']);
