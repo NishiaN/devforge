@@ -205,7 +205,23 @@ function _domainFocus(domain,G){
     content:G?'- 全文検索\n- バージョン履歴\n- アクセス権限':'- Full-text search\n- Version history\n- Access control',
     analytics:G?'- KPI集計\n- グラフ表示\n- リアルタイム更新':'- KPI aggregation\n- Chart display\n- Real-time updates',
     portfolio:G?'- SEO最適化\n- レスポンシブデザイン\n- お問い合わせフォーム':'- SEO optimization\n- Responsive design\n- Contact form',
-    tool:G?'- APIキー管理\n- 使用量モニタリング\n- レート制限':'- API key management\n- Usage monitoring\n- Rate limiting'
+    tool:G?'- APIキー管理\n- 使用量モニタリング\n- レート制限':'- API key management\n- Usage monitoring\n- Rate limiting',
+    event:G?'- チケット重複防止\n- キャパシティ管理\n- キャンセル・返金処理':'- Duplicate ticket prevention\n- Capacity management\n- Cancellation & refund handling',
+    creator:G?'- サブスク管理\n- コンテンツアクセス制御\n- クリエイターペイアウト':'- Subscription management\n- Content access control\n- Creator payouts',
+    newsletter:G?'- 配信レート制限\n- バウンス・スパム管理\n- 開封率・クリック追跡':'- Delivery rate limiting\n- Bounce & spam management\n- Open/click tracking',
+    gamify:G?'- ポイント不正防止\n- リアルタイムランキング更新\n- バッジアンロック検証':'- Point fraud prevention\n- Real-time leaderboard updates\n- Badge unlock validation',
+    collab:G?'- OT/CRDT競合解決\n- バージョン管理\n- 権限管理':'- OT/CRDT conflict resolution\n- Version management\n- Permission management',
+    devtool:G?'- APIキー発行・失効\n- Webhookシグネチャ検証\n- 使用量課金':'- API key issuance & revocation\n- Webhook signature verification\n- Usage-based billing',
+    travel:G?'- 在庫・空き室管理\n- 複数通貨対応\n- キャンセルポリシー':'- Inventory & availability management\n- Multi-currency support\n- Cancellation policies',
+    insurance:G?'- 保険証券管理\n- クレーム処理ワークフロー\n- コンプライアンス準拠':'- Policy management\n- Claims processing workflow\n- Regulatory compliance',
+    media:G?'- CDN最適化\n- コンテンツ保護(DRM)\n- ストリーミング品質':'- CDN optimization\n- Content protection (DRM)\n- Streaming quality',
+    government:G?'- セキュリティ審査・認定\n- 電子申請フォーム\n- 住民データ保護':'- Security certification\n- Electronic application forms\n- Citizen data protection',
+    manufacturing:G?'- MES連携\n- 品質管理・検査記録\n- サプライチェーン可視化':'- MES integration\n- Quality control & inspection logs\n- Supply chain visibility',
+    logistics:G?'- リアルタイム追跡\n- ルート最適化\n- 配送ステータス管理':'- Real-time tracking\n- Route optimization\n- Delivery status management',
+    agriculture:G?'- センサーデータ収集\n- 収穫予測\n- 農薬・肥料記録':'- Sensor data collection\n- Harvest forecasting\n- Pesticide & fertilizer records',
+    energy:G?'- リアルタイム電力モニタリング\n- ピーク需要管理\n- スマートグリッド連携':'- Real-time power monitoring\n- Peak demand management\n- Smart grid integration',
+    automation:G?'- ワークフロー実行保証\n- エラー・リトライ管理\n- ステータス追跡':'- Workflow execution guarantee\n- Error & retry management\n- Status tracking',
+    ai:G?'- プロンプトインジェクション対策\n- トークンコスト管理\n- 出力モデレーション':'- Prompt injection prevention\n- Token cost management\n- Output moderation'
   };
   return focuses[domain]||'';
 }
@@ -226,7 +242,23 @@ function _domainTools(domain,G){
     collab:G?['docker — リアルタイム同期テスト']:['docker — Real-time sync tests'],
     devtool:G?['postgres — Webhook配信ログ']:['postgres — Webhook delivery logs'],
     creator:G?['stripe — サブスク決済テスト']:['stripe — Subscription payment tests'],
-    newsletter:G?['postgres — 配信統計分析']:['postgres — Send analytics']
+    newsletter:G?['postgres — 配信統計分析']:['postgres — Send analytics'],
+    community:G?['playwright — モデレーション・通報フローテスト']:['playwright — Moderation & reporting flow tests'],
+    booking:G?['postgres — 予約競合・重複テスト']:['postgres — Booking conflict & duplicate tests'],
+    marketplace:G?['stripe — 二者間決済テスト']:['stripe — Two-sided payment tests'],
+    realestate:G?['postgres — 契約・更新スケジュールクエリ']:['postgres — Contract & renewal schedule queries'],
+    legal:G?['playwright — 電子署名・承認フローテスト']:['playwright — E-signature & approval flow tests'],
+    hr:G?['postgres — 採用フロー・評価スコアクエリ']:['postgres — Hiring flow & evaluation score queries'],
+    content:G?['playwright — 全文検索・アクセス権テスト']:['playwright — Full-text search & access control tests'],
+    analytics:G?['postgres — KPI集計・ダッシュボードクエリ']:['postgres — KPI aggregation & dashboard queries'],
+    travel:G?['postgres — 空き室・在庫競合テスト']:['postgres — Availability & inventory conflict tests'],
+    insurance:G?['postgres — 保険証券・クレーム処理クエリ']:['postgres — Policy & claims processing queries'],
+    media:G?['playwright — ストリーミング・コンテンツアクセステスト']:['playwright — Streaming & content access tests'],
+    government:G?['playwright — 電子申請フォームE2Eテスト']:['playwright — Electronic application form E2E tests'],
+    manufacturing:G?['postgres — 生産記録・品質管理クエリ']:['postgres — Production records & quality management queries'],
+    logistics:G?['postgres — 配送追跡・ルート最適化クエリ']:['postgres — Delivery tracking & route optimization queries'],
+    agriculture:G?['docker — センサーデータシミュレーション']:['docker — Sensor data simulation'],
+    energy:G?['postgres — 電力データ集計・ピーク需要クエリ']:['postgres — Power data aggregation & peak demand queries']
   };
   return tools[domain]||[];
 }
