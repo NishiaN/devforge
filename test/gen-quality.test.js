@@ -3948,3 +3948,96 @@ describe('Suite 43: P14 Ops Intelligence Domain SLI/Rate-Limit Expansion', () =>
     assert.ok(doc.includes('ダブルブッキング') || doc.includes('Double Booking') || doc.includes('予約失敗') || doc.includes('Booking Failure'), 'Booking must show double booking threshold in checklist');
   });
 });
+
+// ── Suite 44: P9 DOMAIN_SEQ_FLOWS remaining 15 domains ─────────────────────
+describe('Suite 44: P9 DesignSystem DOMAIN_SEQ_FLOWS full coverage (15 new domains)', () => {
+  it('P9: newsletter domain shows bulk send in sequence flow', () => {
+    const f = gP9(Object.assign({}, A25, { purpose:'newsletter email marketing platform' }));
+    const doc = f['docs/27_sequence_diagrams.md'] || '';
+    assert.ok(doc.includes('SES') || doc.includes('SendGrid') || doc.includes('一括送信') || doc.includes('Bulk send'), 'Newsletter must show email bulk send in sequence flow');
+  });
+
+  it('P9: content domain shows CDN delivery in sequence flow', () => {
+    const f = gP9(Object.assign({}, A25, { purpose:'content knowledge base blog platform' }));
+    const doc = f['docs/27_sequence_diagrams.md'] || '';
+    assert.ok(doc.includes('CDN') || doc.includes('SEO') || doc.includes('コンテンツ公開') || doc.includes('Content Publish'), 'Content must show CDN delivery in sequence flow');
+  });
+
+  it('P9: portfolio domain shows contact form in sequence flow', () => {
+    const f = gP9(Object.assign({}, A25, { purpose:'portfolio linkbio personal website' }));
+    const doc = f['docs/27_sequence_diagrams.md'] || '';
+    assert.ok(doc.includes('コンタクト') || doc.includes('contact') || doc.includes('プロジェクト') || doc.includes('project'), 'Portfolio must show contact/project in sequence flow');
+  });
+
+  it('P9: tool domain shows tool execution result in sequence flow', () => {
+    const f = gP9(Object.assign({}, A25, { purpose:'business tool PWA offline application' }));
+    const doc = f['docs/27_sequence_diagrams.md'] || '';
+    assert.ok(doc.includes('処理実行') || doc.includes('Execute') || doc.includes('パラメータ') || doc.includes('parameter'), 'Tool must show execution flow');
+  });
+
+  it('P9: realestate domain shows viewing schedule in sequence flow', () => {
+    const f = gP9(Object.assign({}, A25, { purpose:'real estate property management platform' }));
+    const doc = f['docs/27_sequence_diagrams.md'] || '';
+    assert.ok(doc.includes('内見') || doc.includes('viewing') || doc.includes('物件') || doc.includes('property') || doc.includes('契約'), 'Real estate must show property viewing flow');
+  });
+
+  it('P9: legal domain shows e-signature in sequence flow', () => {
+    const f = gP9(Object.assign({}, A25, { purpose:'legal contract management compliance system' }));
+    const doc = f['docs/27_sequence_diagrams.md'] || '';
+    assert.ok(doc.includes('署名') || doc.includes('signature') || doc.includes('契約書') || doc.includes('contract'), 'Legal must show e-signature flow');
+  });
+
+  it('P9: hr domain shows job posting and offer letter in sequence flow', () => {
+    const f = gP9(Object.assign({}, A25, { purpose:'HR recruitment hiring management system' }));
+    const doc = f['docs/27_sequence_diagrams.md'] || '';
+    assert.ok(doc.includes('求人') || doc.includes('job') || doc.includes('オファー') || doc.includes('offer') || doc.includes('採用'), 'HR must show hiring flow');
+  });
+
+  it('P9: devtool domain shows API key generation in sequence flow', () => {
+    const f = gP9(Object.assign({}, A25, { purpose:'devtool SDK API management platform' }));
+    const doc = f['docs/27_sequence_diagrams.md'] || '';
+    assert.ok(doc.includes('APIキー') || doc.includes('API key') || doc.includes('スコープ') || doc.includes('scope'), 'Devtool must show API key flow');
+  });
+
+  it('P9: manufacturing domain shows production order flow', () => {
+    const f = gP9(Object.assign({}, A25, { purpose:'manufacturing smart factory production management' }));
+    const doc = f['docs/27_sequence_diagrams.md'] || '';
+    assert.ok(doc.includes('生産') || doc.includes('production') || doc.includes('品質') || doc.includes('QC') || doc.includes('製造'), 'Manufacturing must show production order flow');
+  });
+
+  it('P9: logistics domain shows shipment tracking in sequence flow', () => {
+    const f = gP9(Object.assign({}, A25, { purpose:'logistics delivery warehouse tracking system' }));
+    const doc = f['docs/27_sequence_diagrams.md'] || '';
+    assert.ok(doc.includes('追跡') || doc.includes('tracking') || doc.includes('配送') || doc.includes('delivery') || doc.includes('出荷'), 'Logistics must show shipment tracking flow');
+  });
+
+  it('P9: agriculture domain shows sensor crop monitoring in sequence flow', () => {
+    const f = gP9(Object.assign({}, A25, { purpose:'agriculture smart farming crop management' }));
+    const doc = f['docs/27_sequence_diagrams.md'] || '';
+    assert.ok(doc.includes('センサー') || doc.includes('sensor') || doc.includes('作物') || doc.includes('crop') || doc.includes('灌漑'), 'Agriculture must show crop monitoring flow');
+  });
+
+  it('P9: energy domain shows power optimization in sequence flow', () => {
+    const f = gP9(Object.assign({}, A25, { purpose:'energy power management system' }));
+    const doc = f['docs/27_sequence_diagrams.md'] || '';
+    assert.ok(doc.includes('消費量') || doc.includes('consumption') || doc.includes('最適化') || doc.includes('optimization') || doc.includes('ピーク'), 'Energy must show power management flow');
+  });
+
+  it('P9: media domain shows adaptive streaming in sequence flow', () => {
+    const f = gP9(Object.assign({}, A25, { purpose:'media streaming broadcasting platform' }));
+    const doc = f['docs/27_sequence_diagrams.md'] || '';
+    assert.ok(doc.includes('ストリーム') || doc.includes('stream') || doc.includes('CDN') || doc.includes('視聴'), 'Media must show streaming flow');
+  });
+
+  it('P9: government domain shows civic application flow in sequence diagram', () => {
+    const f = gP9(Object.assign({}, A25, { purpose:'government municipal civic service system' }));
+    const doc = f['docs/27_sequence_diagrams.md'] || '';
+    assert.ok(doc.includes('申請') || doc.includes('application') || doc.includes('マイナンバー') || doc.includes('MyNumber') || doc.includes('審査'), 'Government must show civic application flow');
+  });
+
+  it('P9: analytics domain shows dashboard aggregation in sequence flow', () => {
+    const f = gP9(Object.assign({}, A25, { purpose:'analytics dashboard visualization platform' }));
+    const doc = f['docs/27_sequence_diagrams.md'] || '';
+    assert.ok(doc.includes('集計') || doc.includes('aggregate') || doc.includes('キャッシュ') || doc.includes('cache') || doc.includes('可視化'), 'Analytics must show dashboard aggregation flow');
+  });
+});
