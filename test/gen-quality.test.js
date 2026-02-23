@@ -4329,3 +4329,72 @@ describe('Suite 50: P18 PromptOps template catalogs batch 3 (creator/gamify/medi
     assert.ok(doc.includes('LEGAL-P') || doc.includes('REVIEW') || doc.includes('ESIGN') || doc.includes('契約書'), 'Legal must show contract review/e-sign template IDs');
   });
 });
+
+// ── Suite 51: P18 PromptOps template catalogs batch 4 (final) ───────────────
+describe('Suite 51: P18 PromptOps template catalogs batch 4 (automation/event/devtool/newsletter/manufacturing/logistics/agriculture/energy/travel/portfolio/tool)', () => {
+  it('P18: automation domain shows trigger and retry template IDs', () => {
+    const f = gP18(Object.assign({}, A25, { purpose:'workflow automation process management platform' }));
+    const doc = f['docs/72_prompt_registry.md'] || '';
+    assert.ok(doc.includes('AUTO-P') || doc.includes('TRIGGER') || doc.includes('トリガー') || doc.includes('RETRY'), 'Automation must show trigger/retry template IDs');
+  });
+
+  it('P18: event domain shows ticket and capacity template IDs', () => {
+    const f = gP18(Object.assign({}, A25, { purpose:'conference event management ticketing platform' }));
+    const doc = f['docs/72_prompt_registry.md'] || '';
+    assert.ok(doc.includes('EVT-P') || doc.includes('TICKET') || doc.includes('チケット') || doc.includes('CAPACITY'), 'Event must show ticket/capacity template IDs');
+  });
+
+  it('P18: devtool domain shows API key and webhook template IDs', () => {
+    const f = gP18(Object.assign({}, A25, { purpose:'devtool code analysis API platform' }));
+    const doc = f['docs/72_prompt_registry.md'] || '';
+    assert.ok(doc.includes('DEVT-P') || doc.includes('WEBHOOK') || doc.includes('APIキー') || doc.includes('SDK'), 'Devtool must show API key/webhook template IDs');
+  });
+
+  it('P18: newsletter domain shows email send and unsubscribe template IDs', () => {
+    const f = gP18(Object.assign({}, A25, { purpose:'email newsletter subscriber management platform' }));
+    const doc = f['docs/72_prompt_registry.md'] || '';
+    assert.ok(doc.includes('NEWS-P') || doc.includes('SEND') || doc.includes('BOUNCE') || doc.includes('配信'), 'Newsletter must show send/bounce template IDs');
+  });
+
+  it('P18: manufacturing domain shows MES and quality control template IDs', () => {
+    const f = gP18(Object.assign({}, A25, { purpose:'manufacturing production quality management platform' }));
+    const doc = f['docs/72_prompt_registry.md'] || '';
+    assert.ok(doc.includes('MFG-P') || doc.includes('MES') || doc.includes('QC') || doc.includes('品質管理'), 'Manufacturing must show MES/QC template IDs');
+  });
+
+  it('P18: logistics domain shows tracking and route optimization template IDs', () => {
+    const f = gP18(Object.assign({}, A25, { purpose:'logistics delivery tracking route management platform' }));
+    const doc = f['docs/72_prompt_registry.md'] || '';
+    assert.ok(doc.includes('LOGI-P') || doc.includes('TRACK') || doc.includes('ROUTE') || doc.includes('追跡'), 'Logistics must show tracking/route template IDs');
+  });
+
+  it('P18: agriculture domain shows sensor and harvest forecast template IDs', () => {
+    const f = gP18(Object.assign({}, A25, { purpose:'agriculture farm sensor IoT monitoring platform' }));
+    const doc = f['docs/72_prompt_registry.md'] || '';
+    assert.ok(doc.includes('AGRI-P') || doc.includes('SENSOR') || doc.includes('センサー') || doc.includes('FORECAST'), 'Agriculture must show sensor/forecast template IDs');
+  });
+
+  it('P18: energy domain shows power monitoring and billing template IDs', () => {
+    const f = gP18(Object.assign({}, A25, { purpose:'energy power monitoring smart grid platform' }));
+    const doc = f['docs/72_prompt_registry.md'] || '';
+    assert.ok(doc.includes('ENRG-P') || doc.includes('MONITOR') || doc.includes('BILLING') || doc.includes('電力'), 'Energy must show monitoring/billing template IDs');
+  });
+
+  it('P18: travel domain shows inventory search and booking template IDs', () => {
+    const f = gP18(Object.assign({}, A25, { purpose:'travel accommodation booking vacation platform' }));
+    const doc = f['docs/72_prompt_registry.md'] || '';
+    assert.ok(doc.includes('TRVL-P') || doc.includes('SEARCH') || doc.includes('CANCEL') || doc.includes('在庫'), 'Travel must show search/cancel template IDs');
+  });
+
+  it('P18: portfolio domain shows SEO and contact form template IDs', () => {
+    const f = gP18(Object.assign({}, A25, { purpose:'portfolio website showcase designer platform' }));
+    const doc = f['docs/72_prompt_registry.md'] || '';
+    assert.ok(doc.includes('PORT-P') || doc.includes('SEO') || doc.includes('CONTACT') || doc.includes('ポートフォリオ'), 'Portfolio must show SEO/contact template IDs');
+  });
+
+  it('P18: tool domain shows API key management and UX template IDs', () => {
+    const f = gP18(Object.assign({}, A25, { purpose:'developer utility productivity tool platform' }));
+    const doc = f['docs/72_prompt_registry.md'] || '';
+    assert.ok(doc.includes('TOOL-P') || doc.includes('UX') || doc.includes('ツール') || doc.includes('DOCS'), 'Tool must show API/UX template IDs');
+  });
+});

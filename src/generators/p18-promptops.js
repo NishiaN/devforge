@@ -693,6 +693,160 @@ function gen72(G, domain, meth, matLv, a, pn) {
       {id:'LEGAL-P4-SEARCH-v1.0.0',use:'Legal & case law search design',ctx:5,inst:5,er:5,total:'4.9'},
       {id:'LEGAL-P5-BILLING-v1.0.0',use:'Time billing & invoicing design',ctx:4,inst:5,er:5,total:'4.6'}
     ];
+  } else if (domain === 'automation') {
+    domainTemplates = G ? [
+      {id:'AUTO-P1-TRIGGER-v1.0.0',use:'トリガー・条件設計',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'AUTO-P2-STEP-v1.0.0',use:'ステップ実行エンジン実装',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'AUTO-P3-RETRY-v1.0.0',use:'エラーリトライ・冪等性設計',ctx:5,inst:5,er:5,total:'4.9'},
+      {id:'AUTO-P4-MONITOR-v1.0.0',use:'ワークフロー監視・ログ設計',ctx:4,inst:5,er:4,total:'4.5'},
+      {id:'AUTO-P5-SCALE-v1.0.0',use:'並列実行・スケール設計',ctx:5,inst:5,er:4,total:'4.7'}
+    ]:[
+      {id:'AUTO-P1-TRIGGER-v1.0.0',use:'Trigger & condition design',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'AUTO-P2-STEP-v1.0.0',use:'Step execution engine implementation',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'AUTO-P3-RETRY-v1.0.0',use:'Error retry & idempotency design',ctx:5,inst:5,er:5,total:'4.9'},
+      {id:'AUTO-P4-MONITOR-v1.0.0',use:'Workflow monitoring & log design',ctx:4,inst:5,er:4,total:'4.5'},
+      {id:'AUTO-P5-SCALE-v1.0.0',use:'Parallel execution & scale design',ctx:5,inst:5,er:4,total:'4.7'}
+    ];
+  } else if (domain === 'event') {
+    domainTemplates = G ? [
+      {id:'EVT-P1-TICKET-v1.0.0',use:'チケット発行・重複防止',ctx:5,inst:5,er:5,total:'4.9'},
+      {id:'EVT-P2-CAPACITY-v1.0.0',use:'キャパシティ管理設計',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'EVT-P3-CHECKIN-v1.0.0',use:'QRコードチェックイン実装',ctx:4,inst:5,er:4,total:'4.5'},
+      {id:'EVT-P4-REFUND-v1.0.0',use:'キャンセル・返金処理設計',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'EVT-P5-LIVE-v1.0.0',use:'ライブ配信連携実装',ctx:4,inst:4,er:4,total:'4.2'}
+    ]:[
+      {id:'EVT-P1-TICKET-v1.0.0',use:'Ticket issuance & duplicate prevention',ctx:5,inst:5,er:5,total:'4.9'},
+      {id:'EVT-P2-CAPACITY-v1.0.0',use:'Capacity management design',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'EVT-P3-CHECKIN-v1.0.0',use:'QR code check-in implementation',ctx:4,inst:5,er:4,total:'4.5'},
+      {id:'EVT-P4-REFUND-v1.0.0',use:'Cancellation & refund handling design',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'EVT-P5-LIVE-v1.0.0',use:'Live streaming integration',ctx:4,inst:4,er:4,total:'4.2'}
+    ];
+  } else if (domain === 'devtool') {
+    domainTemplates = G ? [
+      {id:'DEVT-P1-API-v1.0.0',use:'APIキー発行・スコープ設計',ctx:5,inst:5,er:5,total:'4.9'},
+      {id:'DEVT-P2-WEBHOOK-v1.0.0',use:'Webhookシグネチャ・配信設計',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'DEVT-P3-SDK-v1.0.0',use:'SDK設計・ドキュメント生成',ctx:5,inst:5,er:4,total:'4.7'},
+      {id:'DEVT-P4-RATELIMIT-v1.0.0',use:'レート制限・使用量課金設計',ctx:4,inst:5,er:5,total:'4.6'},
+      {id:'DEVT-P5-DEBUG-v1.0.0',use:'デバッグ・ログ・トレース設計',ctx:4,inst:5,er:4,total:'4.5'}
+    ]:[
+      {id:'DEVT-P1-API-v1.0.0',use:'API key issuance & scope design',ctx:5,inst:5,er:5,total:'4.9'},
+      {id:'DEVT-P2-WEBHOOK-v1.0.0',use:'Webhook signature & delivery design',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'DEVT-P3-SDK-v1.0.0',use:'SDK design & doc generation',ctx:5,inst:5,er:4,total:'4.7'},
+      {id:'DEVT-P4-RATELIMIT-v1.0.0',use:'Rate limiting & usage billing design',ctx:4,inst:5,er:5,total:'4.6'},
+      {id:'DEVT-P5-DEBUG-v1.0.0',use:'Debug, logging & trace design',ctx:4,inst:5,er:4,total:'4.5'}
+    ];
+  } else if (domain === 'newsletter') {
+    domainTemplates = G ? [
+      {id:'NEWS-P1-SEND-v1.0.0',use:'メール配信・レート制限設計',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'NEWS-P2-SEGMENT-v1.0.0',use:'セグメント配信設計',ctx:5,inst:5,er:4,total:'4.7'},
+      {id:'NEWS-P3-TRACK-v1.0.0',use:'開封率・CTR追跡実装',ctx:4,inst:5,er:4,total:'4.5'},
+      {id:'NEWS-P4-BOUNCE-v1.0.0',use:'バウンス・スパム対策設計',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'NEWS-P5-UNSUB-v1.0.0',use:'配信停止・コンプライアンス設計',ctx:5,inst:5,er:5,total:'4.9'}
+    ]:[
+      {id:'NEWS-P1-SEND-v1.0.0',use:'Email send & rate limit design',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'NEWS-P2-SEGMENT-v1.0.0',use:'Segment delivery design',ctx:5,inst:5,er:4,total:'4.7'},
+      {id:'NEWS-P3-TRACK-v1.0.0',use:'Open rate & CTR tracking implementation',ctx:4,inst:5,er:4,total:'4.5'},
+      {id:'NEWS-P4-BOUNCE-v1.0.0',use:'Bounce & spam prevention design',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'NEWS-P5-UNSUB-v1.0.0',use:'Unsubscribe & CAN-SPAM compliance design',ctx:5,inst:5,er:5,total:'4.9'}
+    ];
+  } else if (domain === 'manufacturing') {
+    domainTemplates = G ? [
+      {id:'MFG-P1-MES-v1.0.0',use:'MES連携・生産管理設計',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'MFG-P2-QC-v1.0.0',use:'品質管理・検査記録設計',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'MFG-P3-SUPPLY-v1.0.0',use:'サプライチェーン可視化実装',ctx:5,inst:5,er:4,total:'4.7'},
+      {id:'MFG-P4-OEE-v1.0.0',use:'OEE計測・設備効率化設計',ctx:4,inst:5,er:4,total:'4.5'},
+      {id:'MFG-P5-TRACE-v1.0.0',use:'トレーサビリティ・ロット管理',ctx:5,inst:5,er:5,total:'4.8'}
+    ]:[
+      {id:'MFG-P1-MES-v1.0.0',use:'MES integration & production management design',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'MFG-P2-QC-v1.0.0',use:'Quality control & inspection records design',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'MFG-P3-SUPPLY-v1.0.0',use:'Supply chain visibility implementation',ctx:5,inst:5,er:4,total:'4.7'},
+      {id:'MFG-P4-OEE-v1.0.0',use:'OEE measurement & equipment efficiency design',ctx:4,inst:5,er:4,total:'4.5'},
+      {id:'MFG-P5-TRACE-v1.0.0',use:'Traceability & lot management',ctx:5,inst:5,er:5,total:'4.8'}
+    ];
+  } else if (domain === 'logistics') {
+    domainTemplates = G ? [
+      {id:'LOGI-P1-TRACK-v1.0.0',use:'リアルタイム追跡設計',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'LOGI-P2-ROUTE-v1.0.0',use:'ルート最適化アルゴリズム',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'LOGI-P3-STATUS-v1.0.0',use:'配送ステータス管理設計',ctx:5,inst:5,er:4,total:'4.7'},
+      {id:'LOGI-P4-POD-v1.0.0',use:'配送証明(POD)設計',ctx:4,inst:5,er:5,total:'4.6'},
+      {id:'LOGI-P5-RETURN-v1.0.0',use:'返品・逆物流フロー設計',ctx:4,inst:5,er:4,total:'4.5'}
+    ]:[
+      {id:'LOGI-P1-TRACK-v1.0.0',use:'Real-time tracking design',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'LOGI-P2-ROUTE-v1.0.0',use:'Route optimization algorithm',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'LOGI-P3-STATUS-v1.0.0',use:'Delivery status management design',ctx:5,inst:5,er:4,total:'4.7'},
+      {id:'LOGI-P4-POD-v1.0.0',use:'Proof of delivery (POD) design',ctx:4,inst:5,er:5,total:'4.6'},
+      {id:'LOGI-P5-RETURN-v1.0.0',use:'Returns & reverse logistics flow design',ctx:4,inst:5,er:4,total:'4.5'}
+    ];
+  } else if (domain === 'agriculture') {
+    domainTemplates = G ? [
+      {id:'AGRI-P1-SENSOR-v1.0.0',use:'センサーデータ収集・処理設計',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'AGRI-P2-FORECAST-v1.0.0',use:'収穫予測・気象データ連携',ctx:5,inst:5,er:4,total:'4.7'},
+      {id:'AGRI-P3-RECORD-v1.0.0',use:'農薬・肥料記録管理設計',ctx:4,inst:5,er:5,total:'4.6'},
+      {id:'AGRI-P4-TRACE-v1.0.0',use:'農産物トレーサビリティ設計',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'AGRI-P5-IOT-v1.0.0',use:'農業IoT・自動化設計',ctx:5,inst:5,er:4,total:'4.7'}
+    ]:[
+      {id:'AGRI-P1-SENSOR-v1.0.0',use:'Sensor data collection & processing design',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'AGRI-P2-FORECAST-v1.0.0',use:'Harvest forecasting & weather data integration',ctx:5,inst:5,er:4,total:'4.7'},
+      {id:'AGRI-P3-RECORD-v1.0.0',use:'Pesticide & fertilizer record management design',ctx:4,inst:5,er:5,total:'4.6'},
+      {id:'AGRI-P4-TRACE-v1.0.0',use:'Agricultural product traceability design',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'AGRI-P5-IOT-v1.0.0',use:'Farm IoT & automation design',ctx:5,inst:5,er:4,total:'4.7'}
+    ];
+  } else if (domain === 'energy') {
+    domainTemplates = G ? [
+      {id:'ENRG-P1-MONITOR-v1.0.0',use:'電力モニタリング設計',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'ENRG-P2-PEAK-v1.0.0',use:'ピーク需要管理設計',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'ENRG-P3-BILLING-v1.0.0',use:'電力請求・計量設計',ctx:5,inst:5,er:5,total:'4.9'},
+      {id:'ENRG-P4-GRID-v1.0.0',use:'スマートグリッド連携実装',ctx:5,inst:5,er:4,total:'4.7'},
+      {id:'ENRG-P5-RENEW-v1.0.0',use:'再生可能エネルギー管理',ctx:4,inst:5,er:4,total:'4.5'}
+    ]:[
+      {id:'ENRG-P1-MONITOR-v1.0.0',use:'Power monitoring design',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'ENRG-P2-PEAK-v1.0.0',use:'Peak demand management design',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'ENRG-P3-BILLING-v1.0.0',use:'Power billing & metering design',ctx:5,inst:5,er:5,total:'4.9'},
+      {id:'ENRG-P4-GRID-v1.0.0',use:'Smart grid integration implementation',ctx:5,inst:5,er:4,total:'4.7'},
+      {id:'ENRG-P5-RENEW-v1.0.0',use:'Renewable energy management',ctx:4,inst:5,er:4,total:'4.5'}
+    ];
+  } else if (domain === 'travel') {
+    domainTemplates = G ? [
+      {id:'TRVL-P1-SEARCH-v1.0.0',use:'在庫・空き室検索設計',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'TRVL-P2-BOOK-v1.0.0',use:'予約フロー・決済実装',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'TRVL-P3-MULTI-v1.0.0',use:'複数通貨・多言語対応設計',ctx:4,inst:5,er:4,total:'4.5'},
+      {id:'TRVL-P4-CANCEL-v1.0.0',use:'キャンセルポリシー管理設計',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'TRVL-P5-REVIEW-v1.0.0',use:'レビュー・評価システム設計',ctx:4,inst:4,er:4,total:'4.2'}
+    ]:[
+      {id:'TRVL-P1-SEARCH-v1.0.0',use:'Inventory & availability search design',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'TRVL-P2-BOOK-v1.0.0',use:'Booking flow & payment implementation',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'TRVL-P3-MULTI-v1.0.0',use:'Multi-currency & multilingual design',ctx:4,inst:5,er:4,total:'4.5'},
+      {id:'TRVL-P4-CANCEL-v1.0.0',use:'Cancellation policy management design',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'TRVL-P5-REVIEW-v1.0.0',use:'Review & rating system design',ctx:4,inst:4,er:4,total:'4.2'}
+    ];
+  } else if (domain === 'portfolio') {
+    domainTemplates = G ? [
+      {id:'PORT-P1-SEO-v1.0.0',use:'SEO・Core Web Vitals最適化',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'PORT-P2-DESIGN-v1.0.0',use:'レスポンシブデザイン実装',ctx:4,inst:5,er:4,total:'4.5'},
+      {id:'PORT-P3-CONTACT-v1.0.0',use:'問い合わせフォーム設計',ctx:4,inst:5,er:5,total:'4.6'},
+      {id:'PORT-P4-PERF-v1.0.0',use:'パフォーマンス最適化設計',ctx:5,inst:5,er:4,total:'4.7'},
+      {id:'PORT-P5-DEPLOY-v1.0.0',use:'静的サイトデプロイ設計',ctx:4,inst:4,er:4,total:'4.2'}
+    ]:[
+      {id:'PORT-P1-SEO-v1.0.0',use:'SEO & Core Web Vitals optimization',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'PORT-P2-DESIGN-v1.0.0',use:'Responsive design implementation',ctx:4,inst:5,er:4,total:'4.5'},
+      {id:'PORT-P3-CONTACT-v1.0.0',use:'Contact form design',ctx:4,inst:5,er:5,total:'4.6'},
+      {id:'PORT-P4-PERF-v1.0.0',use:'Performance optimization design',ctx:5,inst:5,er:4,total:'4.7'},
+      {id:'PORT-P5-DEPLOY-v1.0.0',use:'Static site deployment design',ctx:4,inst:4,er:4,total:'4.2'}
+    ];
+  } else if (domain === 'tool') {
+    domainTemplates = G ? [
+      {id:'TOOL-P1-API-v1.0.0',use:'APIキー管理・レート制限設計',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'TOOL-P2-UX-v1.0.0',use:'ツールUX・タスク完了フロー',ctx:5,inst:5,er:4,total:'4.7'},
+      {id:'TOOL-P3-DOCS-v1.0.0',use:'ドキュメント・使い方ガイド生成',ctx:4,inst:5,er:4,total:'4.5'},
+      {id:'TOOL-P4-MONITOR-v1.0.0',use:'使用量モニタリング設計',ctx:4,inst:5,er:4,total:'4.5'},
+      {id:'TOOL-P5-INTEG-v1.0.0',use:'外部サービス連携設計',ctx:5,inst:5,er:4,total:'4.7'}
+    ]:[
+      {id:'TOOL-P1-API-v1.0.0',use:'API key management & rate limit design',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'TOOL-P2-UX-v1.0.0',use:'Tool UX & task completion flow',ctx:5,inst:5,er:4,total:'4.7'},
+      {id:'TOOL-P3-DOCS-v1.0.0',use:'Documentation & usage guide generation',ctx:4,inst:5,er:4,total:'4.5'},
+      {id:'TOOL-P4-MONITOR-v1.0.0',use:'Usage monitoring design',ctx:4,inst:5,er:4,total:'4.5'},
+      {id:'TOOL-P5-INTEG-v1.0.0',use:'External service integration design',ctx:5,inst:5,er:4,total:'4.7'}
+    ];
   } else {
     // Generic domain templates
     var domUpper = domain.substring(0, 4).toUpperCase();
