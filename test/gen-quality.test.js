@@ -3577,3 +3577,80 @@ describe('Suite 38: P10 Business Model Revenue Domain Expansion', () => {
     assert.ok(doc.includes('API課金') || doc.includes('API usage') || doc.includes('トークン'), 'AI business model must show API usage pricing model');
   });
 });
+
+/*
+ ─────────────────────────────────────────────────────────────────────────────
+  Suite 39 — P9 Design System Domain Expansion
+  Verifies docs/26_design_system.md shows domain-specific color tokens and
+  visual strategy for newly added domains (gamify, collab, creator, travel,
+  government, ai, media, analytics, event) and docs/27_sequence_diagrams.md
+  shows domain-specific sequence flows (gamify, collab, creator)
+ ─────────────────────────────────────────────────────────────────────────────
+*/
+function gP9(answers, lang) {
+  S.files={}; S.genLang=lang||'ja'; S.skill='intermediate';
+  genPillar9_DesignSystem(answers,'QTest');
+  return S.files;
+}
+
+describe('Suite 39: P9 Design System Domain Expansion', () => {
+  it('P9: gamify domain shows purple/achievement color token in design system', () => {
+    const f = gP9(Object.assign({}, A25, { purpose:'gamification platform' }));
+    const doc = f['docs/26_design_system.md'] || '';
+    assert.ok(doc.includes('#8B5CF6') || doc.includes('エキサイティング') || doc.includes('Exciting'), 'Gamify design system must show purple/achievement color tokens');
+  });
+
+  it('P9: travel domain shows sky-blue/adventure color token in design system', () => {
+    const f = gP9(Object.assign({}, A25, { purpose:'travel booking platform' }));
+    const doc = f['docs/26_design_system.md'] || '';
+    assert.ok(doc.includes('#0EA5E9') || doc.includes('冒険') || doc.includes('adventurous'), 'Travel design system must show sky-blue/adventure color tokens');
+  });
+
+  it('P9: government domain shows navy/authoritative color token in design system', () => {
+    const f = gP9(Object.assign({}, A25, { purpose:'government civic service platform' }));
+    const doc = f['docs/26_design_system.md'] || '';
+    assert.ok(doc.includes('#1E3A5F') || doc.includes('#1D4ED8') || doc.includes('権威') || doc.includes('authoritative'), 'Government design system must show navy/authoritative color tokens');
+  });
+
+  it('P9: ai domain shows blue/purple intelligent color token in design system', () => {
+    const f = gP9(Object.assign({}, A25, { purpose:'AI chatbot agent platform' }));
+    const doc = f['docs/26_design_system.md'] || '';
+    assert.ok(doc.includes('#1E40AF') || doc.includes('#7C3AED') || doc.includes('知性') || doc.includes('Intelligent'), 'AI design system must show blue/purple intelligent color tokens');
+  });
+
+  it('P9: media domain shows dark/high-contrast color token in design system', () => {
+    const f = gP9(Object.assign({}, A25, { purpose:'media streaming platform' }));
+    const doc = f['docs/26_design_system.md'] || '';
+    assert.ok(doc.includes('#111827') || doc.includes('エンタメ') || doc.includes('entertainment'), 'Media design system must show dark/high-contrast color tokens');
+  });
+
+  it('P9: gamify domain shows confetti/leaderboard visual strategy', () => {
+    const f = gP9(Object.assign({}, A25, { purpose:'gamification platform' }));
+    const doc = f['docs/26_design_system.md'] || '';
+    assert.ok(doc.includes('コンフェティ') || doc.includes('Confetti') || doc.includes('ランキング') || doc.includes('leaderboard'), 'Gamify design system must show confetti/leaderboard visual strategy');
+  });
+
+  it('P9: collab domain shows realtime cursor visual strategy', () => {
+    const f = gP9(Object.assign({}, A25, { purpose:'collaboration platform' }));
+    const doc = f['docs/26_design_system.md'] || '';
+    assert.ok(doc.includes('リアルタイムカーソル') || doc.includes('Realtime cursors') || doc.includes('presence'), 'Collab design system must show realtime cursor visual strategy');
+  });
+
+  it('P9: gamify domain shows point award sequence flow in diagram', () => {
+    const f = gP9(Object.assign({}, A25, { purpose:'gamification platform' }));
+    const doc = f['docs/27_sequence_diagrams.md'] || '';
+    assert.ok(doc.includes('ポイント付与') || doc.includes('Point Award') || doc.includes('badge'), 'Gamify sequence diagram must show point award flow');
+  });
+
+  it('P9: collab domain shows co-edit sequence flow in diagram', () => {
+    const f = gP9(Object.assign({}, A25, { purpose:'collaboration platform' }));
+    const doc = f['docs/27_sequence_diagrams.md'] || '';
+    assert.ok(doc.includes('共同編集') || doc.includes('Co-Edit') || doc.includes('CRDT'), 'Collab sequence diagram must show co-edit flow');
+  });
+
+  it('P9: creator domain shows content publish sequence flow in diagram', () => {
+    const f = gP9(Object.assign({}, A25, { purpose:'creator content platform' }));
+    const doc = f['docs/27_sequence_diagrams.md'] || '';
+    assert.ok(doc.includes('コンテンツ投稿') || doc.includes('Content Publish') || doc.includes('CDN'), 'Creator sequence diagram must show content publish flow');
+  });
+});

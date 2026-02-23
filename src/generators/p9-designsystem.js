@@ -17,6 +17,23 @@ const DOMAIN_COLORS={
   legal:_dc('#1F2937','#4B5563','#1E40AF','#1E40AF','権威・厳格・信頼','Authority, rigor, trust'),
   hr:_dc('#7C3AED','#3B82F6','#10B981','#7C3AED','人間性・成長・調和','Humane, growth, harmony'),
   portfolio:_dc('#1E293B','#0EA5E9','#F59E0B','#0EA5E9','シンプル・洗練・個性','Simple, refined, personality'),
+  analytics:_dc('#1E293B','#6366F1','#0EA5E9','#6366F1','データ・分析・洞察','Data-driven, analytical, insightful'),
+  gamify:_dc('#8B5CF6','#F59E0B','#EF4444','#8B5CF6','エキサイティング・競争・達成感','Exciting, competitive, achievement'),
+  collab:_dc('#0EA5E9','#10B981','#6366F1','#0EA5E9','協働・信頼・生産性','Collaborative, trustworthy, productive'),
+  creator:_dc('#EC4899','#8B5CF6','#F59E0B','#EC4899','個性・表現・情熱','Individual, expressive, passionate'),
+  newsletter:_dc('#1E293B','#0EA5E9','#F59E0B','#0EA5E9','情報・信頼・権威','Informative, trustworthy, authoritative'),
+  travel:_dc('#0EA5E9','#10B981','#F97316','#0EA5E9','自由・冒険・ワクワク感','Free, adventurous, exciting'),
+  government:_dc('#1E3A5F','#4B5563','#1D4ED8','#1D4ED8','信頼性・公正・権威','Trustworthy, fair, authoritative'),
+  manufacturing:_dc('#374151','#D97706','#6B7280','#D97706','堅牢性・効率・精密','Robust, efficient, precise'),
+  logistics:_dc('#F97316','#1E293B','#0EA5E9','#F97316','速さ・確実性・効率','Fast, reliable, efficient'),
+  agriculture:_dc('#16A34A','#92400E','#F59E0B','#16A34A','自然・成長・豊かさ','Natural, growth, abundance'),
+  energy:_dc('#EAB308','#0F172A','#22C55E','#EAB308','活力・持続可能性・革新','Energetic, sustainable, innovative'),
+  automation:_dc('#6366F1','#0EA5E9','#10B981','#6366F1','効率・革新・精密','Efficient, innovative, precise'),
+  ai:_dc('#1E40AF','#7C3AED','#06B6D4','#7C3AED','知性・革新・無限の可能性','Intelligent, innovative, limitless'),
+  devtool:_dc('#1F2937','#0EA5E9','#10B981','#0EA5E9','シンプル・効率・技術的精度','Simple, efficient, technical precision'),
+  media:_dc('#111827','#EF4444','#F59E0B','#EF4444','情熱・エンタメ・インパクト','Passionate, entertainment, impact'),
+  insurance:_dc('#1E3A5F','#059669','#0EA5E9','#059669','安心・信頼・保護','Security, trustworthy, protection'),
+  event:_dc('#EC4899','#F97316','#EAB308','#EC4899','祝祭感・興奮・共同体','Festive, exciting, community'),
   _default:_dc('#0EA5E9','#6366F1','#F59E0B','#0EA5E9','汎用・バランス・信頼','General, balanced, trustworthy')
 };
 
@@ -29,6 +46,14 @@ const DOMAIN_VISUAL={
   health:_dvs('カレンダー,タイムラインUI,バイタルグラフ','Calendar,timeline UI,vital graphs','カード型,タブ切替,清潔な余白','Card-based,tab switching,clean whitespace','ソフトシャドウ,グリーン系アクセント,アイコン多用','Soft shadows,green accents,heavy icon use'),
   saas:_dvs('オンボーディングステッパー,ツールチップ,トースト','Onboarding stepper,tooltip,toast','フルスクリーンダッシュボード,コマンドパレット','Full dashboard,command palette','ニューモーフィズム,マイクロアニメ,パララックスHero','Neumorphism,micro-animations,parallax hero'),
   booking:_dvs('日付ピッカー,可用性マップ,リアルタイム更新','Date picker,availability map,realtime updates','スプリットレイアウト(検索+結果)','Split layout(search+results)','スクロール連動マップ,フェードイン,ホバーエフェクト','Scroll-linked map,fade-in,hover effects'),
+  gamify:_dvs('コンフェティ,ポイントカウントアップ,バッジアンロック','Confetti,point count-up,badge unlock','ランキングボード,チャレンジカード','Leaderboard,challenge cards','グロー効果,パルスアニメ,ホログラムバッジ','Glow effects,pulse animations,hologram badges'),
+  collab:_dvs('リアルタイムカーソル,プレゼンス表示,変更ハイライト','Realtime cursors,presence indicator,change highlights','分割エディタ,コメントスレッド','Split editor,comment threads','カラーアバター,スムーズ共同編集トランジション','Color avatars,smooth co-edit transitions'),
+  creator:_dvs('コンテンツプレビュー,いいね!アニメ,フォロワーカウント','Content preview,like animation,follower count','全幅コンテンツ,プロフィールヒーロー','Full-width content,profile hero','ダークモード標準,グラデーションアクセント','Dark mode default,gradient accents'),
+  travel:_dvs('全幅ヒーロー画像,マップ連動,日付カレンダー','Full-bleed hero image,map integration,date calendar','検索優先レイアウト,結果グリッド','Search-first layout,results grid','パノラマ写真,フェードイン,インタラクティブマップ','Panoramic photos,fade-in,interactive map'),
+  analytics:_dvs('チャートアニメ,数値ロールアップ,フィルタ連動','Chart animations,number rollup,filter sync','ダッシュボードグリッド,ウィジェット型','Dashboard grid,widget-based','データビジュアライゼーション,インタラクティブグラフ','Data visualization,interactive graphs'),
+  ai:_dvs('ストリーミングテキスト,思考インジケータ,AIバッジ','Streaming text,thinking indicator,AI badge','チャットインターフェース,コンテキストパネル','Chat interface,context panel','グラデーションアニメ,タイピング効果,パルスアバター','Gradient animations,typing effect,pulse avatar'),
+  media:_dvs('全幅サムネイル,再生ボタンオーバーレイ,プログレスバー','Full-width thumbnail,play overlay,progress bar','コンテンツグリッド,オートプレイ','Content grid,autoplay','シネマティックビュー,暗め背景,コントラスト強調','Cinematic view,dark backgrounds,high contrast'),
+  community:_dvs('アクティビティフィード,リアクション,スレッド返信','Activity feed,reactions,thread replies','インフィニットスクロール,サイドバーメンバー','Infinite scroll,sidebar members','カラフルアバター,エモジリアクション,ホバーカード','Colorful avatars,emoji reactions,hover cards'),
   _default:_dvs('スクロール連動フェードイン,ホバーエフェクト','Scroll-linked fade-in,hover effects','レスポンシブグリッド,スティッキーヘッダー','Responsive grid,sticky header','パララックス,スムーズスクロール,マイクロアニメ','Parallax,smooth scroll,micro-animations')
 };
 
@@ -40,7 +65,10 @@ const DOMAIN_SEQ_FLOWS={
   booking:_dsf('予約フロー','Booking Flow',[['U','C','空き枠検索','Search slots'],['C','API','空き確認','Check availability'],['U','C','予約情報入力','Enter booking info'],['C','API','予約確定+枠ロック','Confirm+lock slot'],['API','C','確認メール送信','Send confirmation']]),
   health:_dsf('診療予約','Appointment Flow',[['U','C','医師・日時選択','Select doctor+time'],['C','API','空き確認','Check availability'],['U','C','症状入力','Enter symptoms'],['C','API','予約確定','Confirm appointment'],['API','C','リマインド送信','Send reminder']]),
   fintech:_dsf('送金フロー','Transfer Flow',[['U','C','送金先・金額入力','Enter recipient+amount'],['C','API','残高確認+凍結','Check balance+hold'],['API','API','KYCチェック','KYC verification'],['API','C','送金実行','Execute transfer'],['API','C','通知送信','Send notification']]),
-  saas:_dsf('オンボーディング','Onboarding Flow',[['U','C','サインアップ','Sign up'],['C','API','Workspace作成','Create workspace'],['C','U','初期設定ウィザード','Setup wizard'],['U','C','チーム招待','Invite team'],['C','API','メンバー追加+権限設定','Add members+set roles']])
+  saas:_dsf('オンボーディング','Onboarding Flow',[['U','C','サインアップ','Sign up'],['C','API','Workspace作成','Create workspace'],['C','U','初期設定ウィザード','Setup wizard'],['U','C','チーム招待','Invite team'],['C','API','メンバー追加+権限設定','Add members+set roles']]),
+  gamify:_dsf('ポイント付与フロー','Point Award Flow',[['U','C','アクション実行','Perform action'],['C','API','ポイント付与API','Award points API'],['API','API','不正チェック','Fraud check'],['API','API','ポイント加算+履歴記録','Add points+log history'],['API','C','バッジ判定','Check badge unlock'],['C','U','ポイント/バッジ通知','Notify points/badge']]),
+  collab:_dsf('共同編集フロー','Co-Edit Flow',[['U','C','ドキュメント編集','Edit document'],['C','WS','変更送信(OT/CRDT)','Send change (OT/CRDT)'],['WS','API','変更保存+バージョン記録','Save+version history'],['WS','C2','変更ブロードキャスト','Broadcast to others'],['C2','U2','リアルタイム反映','Realtime update']]),
+  creator:_dsf('コンテンツ投稿フロー','Content Publish Flow',[['U','C','コンテンツ作成','Create content'],['C','API','メディアアップロード','Upload media'],['API','CDN','CDN配置','Place on CDN'],['U','C','公開設定+価格設定','Set publish+pricing'],['C','API','コンテンツ公開','Publish content'],['API','C','ファン通知送信','Notify followers']])
 };
 
 function genPillar9_DesignSystem(a,pn){
