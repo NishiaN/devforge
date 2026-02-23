@@ -3125,3 +3125,61 @@ describe('Suite 32: P20 Quality Gate Matrix — DOMAIN_QA_MAP for Generic Domain
     assert.ok(doc.includes('Test Focus') || doc.includes('education') || doc.includes('Regression'), 'EN mode must show English labels in domain quality gate section');
   });
 });
+
+/*
+ ─────────────────────────────────────────────────────────────────────────────
+   Suite 33 — P16 Industry Deep Dive: DOMAIN_PLAYBOOK fallback for unstratified domains
+ ─────────────────────────────────────────────────────────────────────────────
+*/
+function gP16(answers, lang) {
+  S.files={}; S.genLang=lang||'ja'; S.skill='intermediate';
+  genPillar16_DevIQ(answers,'QTest');
+  return S.files;
+}
+
+const gamingBase = Object.assign({}, A25, { purpose:'gaming platform online multiplayer', purposeEn:'Gaming Platform' });
+const saasBase16 = Object.assign({}, A25, { purpose:'saas subscription management platform', purposeEn:'SaaS Platform' });
+
+describe('Suite 33: P16 Industry Deep Dive gen62 — DOMAIN_PLAYBOOK Fallback', () => {
+  it('P16: gaming domain (no INDUSTRY_STRATEGY) shows DOMAIN_PLAYBOOK guidance', () => {
+    const f = gP16(gamingBase);
+    const doc = f['docs/62_industry_deep_dive.md'] || '';
+    assert.ok(
+      doc.includes('DOMAIN_PLAYBOOK') || doc.includes('ドメイン実装ガイダンス') || doc.includes('Domain Implementation'),
+      'Gaming domain without INDUSTRY_STRATEGY must show DOMAIN_PLAYBOOK fallback guidance'
+    );
+  });
+
+  it('P16: gaming domain shows predicted bug prevention section', () => {
+    const f = gP16(gamingBase);
+    const doc = f['docs/62_industry_deep_dive.md'] || '';
+    assert.ok(
+      doc.includes('🐛') || doc.includes('予測バグ') || doc.includes('Predicted Bug') || doc.includes('Prevention'),
+      'Gaming domain must show predicted bug/prevention section from DOMAIN_PLAYBOOK'
+    );
+  });
+
+  it('P16: saas domain shows DOMAIN_PLAYBOOK guidance (has specific entry)', () => {
+    const f = gP16(saasBase16);
+    const doc = f['docs/62_industry_deep_dive.md'] || '';
+    assert.ok(doc.includes('saas') || doc.includes('SaaS') || doc.length > 200, 'SaaS domain must generate meaningful industry deep dive content');
+  });
+
+  it('P16: education domain uses INDUSTRY_STRATEGY (has defined strategy)', () => {
+    const f = gP16(educBase);
+    const doc = f['docs/62_industry_deep_dive.md'] || '';
+    assert.ok(
+      doc.includes('Compliance') || doc.includes('コンプライアンス') || doc.includes('Regulations') || doc.includes('規制'),
+      'Education domain with INDUSTRY_STRATEGY must show compliance/regulations section'
+    );
+  });
+
+  it('P16: EN mode shows English domain guidance for gaming domain', () => {
+    const f = gP16(gamingBase, 'en');
+    const doc = f['docs/62_industry_deep_dive.md'] || '';
+    assert.ok(
+      doc.includes('Domain Implementation') || doc.includes('Predicted Bug') || doc.includes('gaming'),
+      'EN mode gaming domain must show English guidance'
+    );
+  });
+});

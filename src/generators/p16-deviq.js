@@ -823,8 +823,30 @@ function gen62(G, domain, indStrategy, a, pn) {
   doc += G ? '> **ドメイン**: ' + domain + '\n\n' : '> **Domain**: ' + domain + '\n\n';
 
   if (!indStrategy) {
-    doc += G ? '**注意**: このドメインに対応する業界特化戦略はまだ定義されていません。\n\n' : '**Note**: Industry-specific strategy for this domain is not yet defined.\n\n';
-    doc += G ? '汎用的なベストプラクティスに従ってください。\n' : 'Follow general best practices.\n';
+    var _g62pb = typeof DOMAIN_PLAYBOOK !== 'undefined' ? (DOMAIN_PLAYBOOK[domain] || DOMAIN_PLAYBOOK._default || null) : null;
+    if(_g62pb && _g62pb.impl_ja && _g62pb.impl_ja.length > 0) {
+      doc += G ? '## ドメイン実装ガイダンス (DOMAIN_PLAYBOOK)\n\n' : '## Domain Implementation Guidance (DOMAIN_PLAYBOOK)\n\n';
+      var _g62impl = G ? _g62pb.impl_ja : _g62pb.impl_en;
+      _g62impl.forEach(function(imp){ doc += '- ' + imp + '\n'; });
+      doc += '\n';
+      if(_g62pb.prevent_ja && _g62pb.prevent_ja.length > 0) {
+        doc += G ? '## 🐛 予測バグ TOP3 と予防策\n\n' : '## 🐛 Predicted Bug TOP3 & Prevention\n\n';
+        var _g62prev = G ? _g62pb.prevent_ja : _g62pb.prevent_en;
+        _g62prev.forEach(function(p){
+          var parts=p.split('|');var bug=parts[0].trim();var fix=parts[1]?parts[1].trim():(G?'ベストプラクティス準拠':'Follow best practices');
+          doc += '### 🐛 ' + bug + '\n' + fix + '\n\n';
+        });
+      }
+      if(_g62pb.compliance_ja && _g62pb.compliance_ja.length > 0) {
+        doc += G ? '## 📋 コンプライアンス早見表\n\n' : '## 📋 Compliance Quick Reference\n\n';
+        var _g62comp = G ? _g62pb.compliance_ja : _g62pb.compliance_en;
+        _g62comp.forEach(function(c){ doc += '- ✅ ' + c + '\n'; });
+        doc += '\n';
+      }
+    } else {
+      doc += G ? '**注意**: このドメインに対応する業界特化戦略はまだ定義されていません。\n\n' : '**Note**: Industry-specific strategy for this domain is not yet defined.\n\n';
+      doc += G ? '汎用的なベストプラクティスに従ってください。\n' : 'Follow general best practices.\n';
+    }
     return doc;
   }
 
