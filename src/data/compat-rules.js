@@ -1,4 +1,4 @@
-/* ═══ STACK COMPATIBILITY & SEMANTIC CONSISTENCY RULES — 112 rules (ERROR×15 + WARN×69 + INFO×28) ═══ */
+/* ═══ STACK COMPATIBILITY & SEMANTIC CONSISTENCY RULES — 115 rules (ERROR×15 + WARN×71 + INFO×29) ═══ */
 const COMPAT_RULES=[
   // ── FE ↔ Mobile (2 ERROR) ──
   {id:'fe-mob-expo',p:['frontend','mobile'],lv:'error',
@@ -410,6 +410,39 @@ const COMPAT_RULES=[
    why_ja:'ゲーミフィケーションの核心機能（ポイント付与・ランキング集計・バッジ解除・チャレンジ管理）は全て永続的なデータストアが必要です。静的サイトはローカルストレージのみで、マルチユーザー競争・不正防止・リーダーボードを実現できません。Firebaseはリアルタイムリーダーボード更新に優れており、Cloud Functionsでポイントバリデーションやバッジロジックのサーバーサイド処理も可能です。',
    why_en:'Core gamification features (point awarding, ranking aggregation, badge unlocking, challenge management) all require persistent data storage. Static sites are limited to localStorage — they cannot support multi-user competition, cheat prevention, or leaderboards. Firebase excels at real-time leaderboard updates, and Cloud Functions handle server-side point validation and badge logic.',
    fix:{f:'backend',s:'Firebase'}},
+  // ── Domain ↔ Monetization/Service (2 WARN + 1 INFO) ──
+  {id:'dom-event-nopay',p:['purpose','payment'],lv:'warn',
+   t:a=>{
+     const dom=detectDomain(a.purpose||'');
+     const hasPay=a.payment&&!inc(a.payment,'なし')&&!inc(a.payment,'None')&&a.payment!=='none';
+     return dom==='event'&&!hasPay;
+   },
+   ja:'イベントドメインで決済が未設定です。チケット販売・参加費徴収のためStripe等の決済統合を推奨します',
+   en:'Event domain without payment. Integrate Stripe or similar for ticket sales and registration fees',
+   why_ja:'イベント管理システムの収益化はチケット販売・参加費徴収が中心です。決済なしでは、参加者管理・キャンセル払い戻し・早期割引・定員管理のドキュメントが生成されません。Stripeの`Payment Intents`でシンプルなチケット決済、`PaymentLinks`でノーコードチケット販売が実現できます。返金・部分返金の自動化にはStripe Refundsも活用してください。',
+   why_en:'Event management system revenue comes primarily from ticket sales and registration fees. Without payment, docs for attendee management, cancellation refunds, early-bird discounts, and capacity management are not generated. Stripe `Payment Intents` handles simple ticket payments; `PaymentLinks` enables no-code ticket sales. Use Stripe Refunds for automated full/partial refund flows.',
+   fix:{f:'payment',s:'Stripe決済'}},
+  {id:'dom-creator-nopay',p:['purpose','payment'],lv:'warn',
+   t:a=>{
+     const dom=detectDomain(a.purpose||'');
+     const hasPay=a.payment&&!inc(a.payment,'なし')&&!inc(a.payment,'None')&&a.payment!=='none';
+     return dom==='creator'&&!hasPay;
+   },
+   ja:'クリエイタードメインで決済が未設定です。コンテンツ販売・投げ銭・サブスク収益化のためStripe Connect等のプラットフォーム決済を推奨します',
+   en:'Creator domain without payment. Stripe Connect or similar platform payments are essential for content sales, tips, and subscription monetization',
+   why_ja:'クリエイタープラットフォームの核心はクリエイターへの収益分配です。単純なStripe決済ではプラットフォーム手数料控除・複数クリエイターへの送金が困難です。Stripe Connectの「Express Account」でKYC・銀行口座登録・自動分配を管理し、`transfer_group`で投げ銭の即時送金・月次まとめ払いを選択できます。ファン→プラットフォーム（手数料控除）→クリエイターの資金フローが核心です。',
+   why_en:'The core of a creator platform is revenue distribution to creators. Standard Stripe payments make it difficult to deduct platform fees and send money to multiple creators. Stripe Connect "Express Accounts" manage KYC, bank account registration, and automatic splits; `transfer_group` supports instant tip transfers or monthly batched payouts. The funds flow: fan → platform (minus fee) → creator is central.',
+   fix:{f:'payment',s:'Stripe決済 (Connect)'}},
+  {id:'dom-newsletter-noemail',p:['purpose','mvp_features'],lv:'info',
+   t:a=>{
+     const dom=detectDomain(a.purpose||'');
+     const hasEmail=/(Resend|SendGrid|MailerSend|Postmark|SES|SMTP|nodemailer|メール配信|email.?service|mail.?service)/i.test(a.mvp_features||'');
+     return dom==='newsletter'&&!hasEmail;
+   },
+   ja:'ニュースレタードメインですが、mvp_featuresにメール配信サービス（Resend/SendGrid/MailerSend）の記述がありません',
+   en:'Newsletter domain without an email delivery service in mvp_features. Add Resend, SendGrid, or MailerSend for reliable bulk email delivery',
+   why_ja:'自前SMTPでのメール大量配信はIPレピュテーション問題・スパムフォルダへの振り分け・バウンス管理が複雑です。Resend（React Email連携・開発者向け）、SendGrid（無料枠100通/日・大量配信実績）、MailerSend（直感的なAPI・コスト安）が主要選択肢です。メール開封率・クリック率の分析、配信停止（unsubscribe）管理、バウンス自動処理もAPIで提供されます。',
+   why_en:'Bulk email via self-hosted SMTP struggles with IP reputation, spam folder placement, and complex bounce management. Resend (React Email integration, developer-friendly), SendGrid (100 free emails/day, proven at scale), and MailerSend (intuitive API, cost-effective) are the main options. Email open rates, click tracking, unsubscribe management, and automatic bounce handling are all provided via API.'},
   // ── AI Auto ↔ Tools (1 WARN) ──
   {id:'ai-auto-notools',p:['ai_auto','ai_tools'],lv:'warn',
    t:a=>{
@@ -955,7 +988,9 @@ const SYNERGY_DOMAIN={'fintech|Supabase':15,'fintech|PostgreSQL':12,'fintech|Str
   'media|Supabase':14,'media|Stripe':12,'media|Firebase':10,
   'government|PostgreSQL':12,'government|Supabase':10,
   'travel|Stripe':16,'travel|Supabase':14,
-  'insurance|PostgreSQL':12,'insurance|Supabase':10,'insurance|Stripe':12};
+  'insurance|PostgreSQL':12,'insurance|Supabase':10,'insurance|Stripe':12,
+  'booking|Stripe':18,'booking|Supabase':14,'booking|Firebase':10,
+  'marketplace|Supabase':12,'marketplace|Firebase':8};
 
 function calcSynergy(a){
   if(!a||!a.frontend||!a.backend)return{overall:60,d1:60,d2:60,d3:60,d4:60,d5:60,domain:null};

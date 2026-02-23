@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 # DevForge v9.6.0
 
-**AI Development OS** — 62 JS modules in `src/` → single `devforge-v9.html` (~2788KB / 3000KB limit).
+**AI Development OS** — 62 JS modules in `src/` → single `devforge-v9.html` (~2792KB / 3000KB limit).
 Generates **178+ files** across **25 pillars** from a wizard-driven Q&A session.
 
 ## Documentation Map
@@ -18,7 +18,7 @@ Generates **178+ files** across **25 pillars** from a wizard-driven Q&A session.
 ## Build & Test
 
 ```bash
-node build.js                          # → devforge-v9.html (~2788KB, limit 3000KB)
+node build.js                          # → devforge-v9.html (~2792KB, limit 3000KB)
 node build.js --no-minify              # debug (skip minification)
 node build.js --report                 # build + size breakdown by module
 npm test                               # 1177 tests, all passing
@@ -44,7 +44,7 @@ Never reorder without checking dependencies.
 | Category | Purpose |
 |----------|---------|
 | `core/` | State (`S`), i18n (`t()`), keyboard events, wizard tour, app init |
-| `data/` | 48 standard presets (`PR`/`_mp()`), 138 field presets (`PR_FIELD`/`_fpd()`), questions, techdb (323 entries), compat-rules (112 rules), gen-templates (bilingual GT dict), helpdata |
+| `data/` | 48 standard presets (`PR`/`_mp()`), 138 field presets (`PR_FIELD`/`_fpd()`), questions, techdb (323 entries), compat-rules (115 rules), gen-templates (bilingual GT dict), helpdata |
 | `generators/` | `index.js` orchestrator + `p1`–`p25` pillars + `docs.js` + `common.js` |
 | `ui/` | wizard, render, presets, preview, sidebar, editor, diff, export, explorer, dashboard, launcher, templates, qbar, cmdpalette, help, voice |
 | `styles/all.css` | Theme (dark/light), responsive; CSS custom properties only |
@@ -150,7 +150,7 @@ Full 6-step process in `docs/CLAUDE-REFERENCE.md`. Key steps often missed:
 
 ## Adding Compat Rules
 
-File: `src/data/compat-rules.js` — currently 112 rules (15 error + 69 warn + 28 info). All rules have `why_ja`/`why_en`.
+File: `src/data/compat-rules.js` — currently 115 rules (15 error + 71 warn + 29 info). All rules have `why_ja`/`why_en`.
 Structure: `{id, p:['field1','field2'], lv:'error'|'warn'|'info', t:conditionFn, ja, en, fix, fixFn, why_ja, why_en}`
 `why_ja`/`why_en`: When set, shows "▶ なぜ？" expandable card in wizard alerts.
 After adding: update header comment totals, add tests to `test/compat.test.js`, update CLAUDE.md rule count.

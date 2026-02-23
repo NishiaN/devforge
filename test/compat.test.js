@@ -1,4 +1,4 @@
-// Compat rules functional test (112 rules: 15 ERROR + 69 WARN + 28 INFO)
+// Compat rules functional test (115 rules: 15 ERROR + 71 WARN + 29 INFO)
 const assert=require('node:assert/strict');
 const S={lang:'ja',skill:'pro'};
 eval(require('fs').readFileSync('src/data/compat-rules.js','utf-8'));
@@ -91,6 +91,13 @@ const tests=[
   {name:'Collab+Supabase=OK',a:{purpose:'collaboration tool',backend:'Supabase'},expect:'none',id:'dom-collab-static'},
   {name:'Gamify+Static=WARN',a:{purpose:'gamification platform',backend:'なし（静的サイト）'},expect:'warn',id:'dom-gamify-static'},
   {name:'Gamify+Firebase=OK',a:{purpose:'gamification platform',backend:'Firebase'},expect:'none',id:'dom-gamify-static'},
+  // Domain ↔ Monetization/Service rules
+  {name:'Event+NoPay=WARN',a:{purpose:'event management platform',payment:'なし'},expect:'warn',id:'dom-event-nopay'},
+  {name:'Event+Stripe=OK',a:{purpose:'event management platform',payment:'Stripe決済'},expect:'none',id:'dom-event-nopay'},
+  {name:'Creator+NoPay=WARN',a:{purpose:'creator content platform',payment:'なし'},expect:'warn',id:'dom-creator-nopay'},
+  {name:'Creator+Stripe=OK',a:{purpose:'creator content platform',payment:'Stripe決済'},expect:'none',id:'dom-creator-nopay'},
+  {name:'Newsletter+NoEmail=INFO',a:{purpose:'newsletter platform',mvp_features:'認証, 購読管理'},expect:'info',id:'dom-newsletter-noemail'},
+  {name:'Newsletter+Resend=OK',a:{purpose:'newsletter platform',mvp_features:'認証, 購読管理, Resend'},expect:'none',id:'dom-newsletter-noemail'},
   // Cloudflare Workers compatibility
   {name:'Django+CF=ERROR',a:{backend:'Python + Django',deploy:'Cloudflare Workers'},expect:'error',id:'be-dep-heavy-cf'},
   {name:'Spring+CF=ERROR',a:{backend:'Java + Spring Boot',deploy:'Cloudflare Workers'},expect:'error',id:'be-dep-heavy-cf'},
