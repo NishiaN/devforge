@@ -1,4 +1,4 @@
-/* ═══ STACK COMPATIBILITY & SEMANTIC CONSISTENCY RULES — 104 rules (ERROR×15 + WARN×61 + INFO×28) ═══ */
+/* ═══ STACK COMPATIBILITY & SEMANTIC CONSISTENCY RULES — 108 rules (ERROR×15 + WARN×65 + INFO×28) ═══ */
 const COMPAT_RULES=[
   // ── FE ↔ Mobile (2 ERROR) ──
   {id:'fe-mob-expo',p:['frontend','mobile'],lv:'error',
@@ -325,6 +325,48 @@ const COMPAT_RULES=[
    en:'EC domain without payment. Consider Stripe or other payment methods',
    why_ja:'ECプロジェクトで決済を未設定のままにすると、生成されるdocs/13_payment.md・docs/45_compliance_matrix.mdにPCI-DSS要件・決済フロー・返金処理が含まれません。後から決済を追加する場合、DBスキーマ（Order/Transaction）・認証要件・Webhookエンドポイントの大規模な改修が必要になります。初期設計段階での選択が最もコストが低いです。',
    why_en:'Leaving payment unset in an EC project means generated docs (docs/13_payment.md, docs/45_compliance_matrix.md) will lack PCI-DSS requirements, payment flows, and refund handling. Adding payment later requires major rework of DB schema (Order/Transaction), auth requirements, and webhook endpoints. Selecting it at design time has the lowest cost.'},
+  // ── Domain ↔ Backend/Infra (4 WARN) ──
+  {id:'dom-health-firebase',p:['purpose','backend'],lv:'warn',
+   t:a=>{
+     const dom=detectDomain(a.purpose||'');
+     return dom==='health'&&inc(a.backend,'Firebase');
+   },
+   ja:'医療ドメインでFirebaseを使用しています。FirebaseのデフォルトではHIPAAのBAA（業務提携契約）が自動適用されません。Supabase（PostgreSQL+RLS）またはカスタムバックエンドを推奨します',
+   en:'Healthcare domain using Firebase. Firebase does not automatically provide a HIPAA Business Associate Agreement (BAA). Consider Supabase (PostgreSQL + RLS) or a custom HIPAA-compliant backend',
+   why_ja:'HIPAA準拠には「ビジネスアソシエイト契約（BAA）」が必要ですが、FirebaseのBAAはGoogle Cloud Blazeプランで明示的に申請が必要で、Realtime Databaseは適用対象外の場合があります。Supabaseはrow-level security（RLS）によるテナント分離をデフォルトで提供し、医療システムのアクセス制御に適しています。PHI（患者健康情報）の取り扱いは法的に厳格な管理が求められます。',
+   why_en:'HIPAA compliance requires a Business Associate Agreement (BAA). Firebase\'s BAA requires explicit activation on the Google Cloud Blaze plan, and Realtime Database may not qualify. Supabase provides row-level security (RLS) for tenant isolation by default, well-suited for healthcare access control. Protected Health Information (PHI) is subject to strict legal data handling requirements.',
+   fix:{f:'backend',s:'Supabase'}},
+  {id:'dom-iot-static',p:['purpose','backend'],lv:'warn',
+   t:a=>{
+     const dom=detectDomain(a.purpose||'');
+     return dom==='iot'&&isStaticBE(a);
+   },
+   ja:'IoTドメインで静的バックエンドが選択されています。センサーデータ収集・デバイス制御にはリアルタイム対応のバックエンドが必要です。Firebase Realtime DB/Supabaseを推奨します',
+   en:'IoT domain with a static backend selected. Sensor data ingestion and device management require a real-time backend. Firebase Realtime DB or Supabase recommended',
+   why_ja:'IoTシステムでは、センサーデバイスが常時データを送信し、バックエンドはMQTT/WebSocket/REST APIでデータを受信・処理・蓄積する必要があります。静的サイトにはサーバーサイドの処理が存在せず、デバイスからのデータを受け取る手段がありません。Firebase Realtime DatabaseはIoTデバイスとのリアルタイム同期に優れており、Firebase Cloud Functionsでデータ加工・アラート配信も可能です。',
+   why_en:'IoT systems require sensors constantly transmitting data, with the backend receiving, processing, and storing it via MQTT/WebSocket/REST API. Static sites have no server-side processing and cannot receive device data. Firebase Realtime Database excels at realtime sync with IoT devices, and Firebase Cloud Functions handle data processing and alert delivery.',
+   fix:{f:'backend',s:'Firebase'}},
+  {id:'dom-community-noauth',p:['purpose','auth'],lv:'warn',
+   t:a=>{
+     const dom=detectDomain(a.purpose||'');
+     const noAuth=inc(a.auth,'なし')||inc(a.auth,'None')||a.auth==='none';
+     return dom==='community'&&noAuth;
+   },
+   ja:'コミュニティドメインで認証が未設定です。コミュニティプラットフォームではユーザーID・投稿所有者・モデレーション機能のために認証が必須です',
+   en:'Community domain without authentication. Community platforms require user identity for post ownership, social features, and content moderation',
+   why_ja:'コミュニティプラットフォームの基本機能（投稿・フォロー・いいね・通報・モデレーション）は全てユーザーIDに依存します。認証なしでは投稿の帰属が不明確になり、スパム・荒らし対策も不可能です。Firebase AuthまたはSupabase Authは数分で実装でき、ソーシャルログイン（Google/GitHub）も標準装備しています。',
+   why_en:'Core community features (posting, following, likes, reporting, moderation) all depend on user identity. Without authentication, post ownership is unknown and spam/troll prevention is impossible. Firebase Auth or Supabase Auth can be implemented in minutes and include social login (Google/GitHub) out of the box.',
+   fix:{f:'auth',s:'Supabase Auth'}},
+  {id:'dom-fintech-noaudit',p:['purpose','data_entities'],lv:'warn',
+   t:a=>{
+     const dom=detectDomain(a.purpose||'');
+     const hasAudit=/(AuditLog|TransactionLog|EventLog|AuditTrail)/i.test(a.data_entities||'');
+     return dom==='fintech'&&!hasAudit;
+   },
+   ja:'フィンテックドメインですが、data_entitiesに監査ログエンティティ（AuditLog/TransactionLog）が見当たりません。金融規制（PCI-DSS/FISC/SOX）では取引操作の完全な監査証跡が必須です',
+   en:'Fintech domain without an audit log entity (AuditLog/TransactionLog). Financial regulations (PCI-DSS/SOX/FISC) require complete immutable audit trails for all financial operations',
+   why_ja:'PCI-DSS Requirement 10では、カード会員データ環境の全アクセスログを最低12ヶ月保持することが義務付けられています。AuditLogエンティティは誰がいつ何をしたかを記録し、不正検知・コンプライアンス証明・インシデント調査を可能にします。後から追加する場合、既存トランザクションのログが欠落し監査に合格できません。',
+   why_en:'PCI-DSS Requirement 10 mandates retaining full access logs for cardholder data environments for at least 12 months. An AuditLog entity records who did what when, enabling fraud detection, compliance proof, and incident investigation. Adding it later means existing transactions have no logs, making audits impossible to pass.'},
   // ── AI Auto ↔ Tools (1 WARN) ──
   {id:'ai-auto-notools',p:['ai_auto','ai_tools'],lv:'warn',
    t:a=>{

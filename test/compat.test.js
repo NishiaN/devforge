@@ -1,4 +1,4 @@
-// Compat rules functional test (104 rules: 15 ERROR + 61 WARN + 28 INFO)
+// Compat rules functional test (108 rules: 15 ERROR + 65 WARN + 28 INFO)
 const assert=require('node:assert/strict');
 const S={lang:'ja',skill:'pro'};
 eval(require('fs').readFileSync('src/data/compat-rules.js','utf-8'));
@@ -73,6 +73,15 @@ const tests=[
   {name:'Sensitive+NoAuth=WARN',a:{data_entities:'Patient, MedicalRecord',auth:'なし'},expect:'warn',id:'dom-sec-sensitive-noauth'},
   {name:'Transaction+NoAuth=WARN',a:{data_entities:'User, Transaction, Payment',auth:'なし'},expect:'warn',id:'dom-sec-sensitive-noauth'},
   {name:'Sensitive+Auth=OK',a:{data_entities:'Patient, MedicalRecord',auth:'Supabase Auth'},expect:'none'},
+  // Domain ↔ Backend/Infra rules
+  {name:'Health+Firebase=WARN',a:{purpose:'medical records system',backend:'Firebase'},expect:'warn',id:'dom-health-firebase'},
+  {name:'Health+Supabase=noFirebaseWARN',a:{purpose:'medical records system',backend:'Supabase'},expect:'none',id:'dom-health-firebase'},
+  {name:'IoT+Static=WARN',a:{purpose:'IoT device management platform',backend:'なし（静的サイト）'},expect:'warn',id:'dom-iot-static'},
+  {name:'IoT+Firebase=noStaticWARN',a:{purpose:'IoT device management platform',backend:'Firebase'},expect:'none',id:'dom-iot-static'},
+  {name:'Community+NoAuth=WARN',a:{purpose:'community forum platform',auth:'なし'},expect:'warn',id:'dom-community-noauth'},
+  {name:'Community+Auth=OK',a:{purpose:'community forum platform',auth:'Supabase Auth'},expect:'none',id:'dom-community-noauth'},
+  {name:'Fintech+NoAudit=WARN',a:{purpose:'fintech payment platform',data_entities:'User, Account, Transaction'},expect:'warn',id:'dom-fintech-noaudit'},
+  {name:'Fintech+AuditLog=OK',a:{purpose:'fintech payment platform',data_entities:'User, Account, Transaction, AuditLog'},expect:'none',id:'dom-fintech-noaudit'},
   // Cloudflare Workers compatibility
   {name:'Django+CF=ERROR',a:{backend:'Python + Django',deploy:'Cloudflare Workers'},expect:'error',id:'be-dep-heavy-cf'},
   {name:'Spring+CF=ERROR',a:{backend:'Java + Spring Boot',deploy:'Cloudflare Workers'},expect:'error',id:'be-dep-heavy-cf'},
