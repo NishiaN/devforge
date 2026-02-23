@@ -3654,3 +3654,79 @@ describe('Suite 39: P9 Design System Domain Expansion', () => {
     assert.ok(doc.includes('コンテンツ投稿') || doc.includes('Content Publish') || doc.includes('CDN'), 'Creator sequence diagram must show content publish flow');
   });
 });
+
+/*
+ ─────────────────────────────────────────────────────────────────────────────
+  Suite 40 — P13 Strategy: Hidden Cost Domain Expansion
+  Verifies docs/48-2_cost_estimation.md shows domain-specific hidden cost
+  warnings for newly expanded domains (government, insurance, legal) in
+  addition to the original fintech/health domains.
+ ─────────────────────────────────────────────────────────────────────────────
+*/
+function gP13(answers, lang) {
+  S.files={}; S.genLang=lang||'ja'; S.skill='intermediate';
+  genPillar13_StrategicIntelligence(answers,'QTest');
+  return S.files;
+}
+
+describe('Suite 40: P13 Strategy Hidden Cost Domain Expansion', () => {
+  it('P13: fintech domain shows security audit hidden cost (regression)', () => {
+    const f = gP13(Object.assign({}, A25, { purpose:'fintech payment platform' }));
+    const doc = f['docs/48-2_cost_estimation.md'] || '';
+    assert.ok(doc.includes('Security audit') || doc.includes('セキュリティ監査'), 'Fintech must show security audit hidden cost');
+  });
+
+  it('P13: health domain shows security audit hidden cost (regression)', () => {
+    const f = gP13(Object.assign({}, A25, { purpose:'digital health wellness platform' }));
+    const doc = f['docs/48-2_cost_estimation.md'] || '';
+    assert.ok(doc.includes('Security audit') || doc.includes('セキュリティ監査'), 'Health must show security audit hidden cost');
+  });
+
+  it('P13: government domain shows security audit hidden cost', () => {
+    const f = gP13(Object.assign({}, A25, { purpose:'government civic service portal' }));
+    const doc = f['docs/48-2_cost_estimation.md'] || '';
+    assert.ok(doc.includes('Security audit') || doc.includes('セキュリティ監査'), 'Government must show security audit hidden cost');
+  });
+
+  it('P13: government domain shows accessibility audit hidden cost', () => {
+    const f = gP13(Object.assign({}, A25, { purpose:'government civic service portal' }));
+    const doc = f['docs/48-2_cost_estimation.md'] || '';
+    assert.ok(doc.includes('Accessibility audit') || doc.includes('アクセシビリティ診断'), 'Government must show accessibility audit hidden cost');
+  });
+
+  it('P13: insurance domain shows security audit hidden cost', () => {
+    const f = gP13(Object.assign({}, A25, { purpose:'insurance claims management platform' }));
+    const doc = f['docs/48-2_cost_estimation.md'] || '';
+    assert.ok(doc.includes('Security audit') || doc.includes('セキュリティ監査'), 'Insurance must show security audit hidden cost');
+  });
+
+  it('P13: insurance domain shows actuarial review hidden cost', () => {
+    const f = gP13(Object.assign({}, A25, { purpose:'insurance claims management platform' }));
+    const doc = f['docs/48-2_cost_estimation.md'] || '';
+    assert.ok(doc.includes('Actuarial review') || doc.includes('保険数理'), 'Insurance must show actuarial review hidden cost');
+  });
+
+  it('P13: legal domain shows security audit hidden cost', () => {
+    const f = gP13(Object.assign({}, A25, { purpose:'legal document management platform' }));
+    const doc = f['docs/48-2_cost_estimation.md'] || '';
+    assert.ok(doc.includes('Security audit') || doc.includes('セキュリティ監査'), 'Legal must show security audit hidden cost');
+  });
+
+  it('P13: legal domain shows eDiscovery tooling hidden cost', () => {
+    const f = gP13(Object.assign({}, A25, { purpose:'legal document management platform' }));
+    const doc = f['docs/48-2_cost_estimation.md'] || '';
+    assert.ok(doc.includes('eDiscovery') || doc.includes('リーガルホールド'), 'Legal must show eDiscovery/legal hold hidden cost');
+  });
+
+  it('P13: default domain does NOT show security audit hidden cost', () => {
+    const f = gP13(Object.assign({}, A25, { purpose:'todo list app' }));
+    const doc = f['docs/48-2_cost_estimation.md'] || '';
+    assert.ok(!doc.includes('Security audit') && !doc.includes('セキュリティ監査'), 'Default domain must NOT show security audit cost');
+  });
+
+  it('P13: government domain shows industry blueprint with ISMAP reference', () => {
+    const f = gP13(Object.assign({}, A25, { purpose:'government civic service portal' }));
+    const doc = f['docs/48_industry_blueprint.md'] || '';
+    assert.ok(doc.includes('ISMAP') || doc.includes('JPKI') || doc.includes('government') || doc.includes('行政'), 'Government must show government-specific industry blueprint');
+  });
+});

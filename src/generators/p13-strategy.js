@@ -1062,7 +1062,10 @@ function genPillar13_StrategicIntelligence(a, pn) {
 
   // Hidden cost warnings
   const hiddenCosts=[];
-  if(domain==='fintech'||domain==='health') hiddenCosts.push(G?'**セキュリティ監査**: ペネトレーションテスト $5,000〜$20,000/回（年1回推奨）':'**Security audit**: Penetration testing $5,000-$20,000/engagement (annual recommended)');
+  if(domain==='fintech'||domain==='health'||domain==='government'||domain==='insurance'||domain==='legal') hiddenCosts.push(G?'**セキュリティ監査**: ペネトレーションテスト $5,000〜$20,000/回（年1回推奨）':'**Security audit**: Penetration testing $5,000-$20,000/engagement (annual recommended)');
+  if(domain==='government') hiddenCosts.push(G?'**アクセシビリティ診断（JIS X 8341/WCAG 2.2）**: 専門機関評価 $3,000〜$10,000/回':'**Accessibility audit (WCAG 2.2/JIS X 8341)**: Professional assessment $3,000-$10,000/engagement');
+  if(domain==='insurance') hiddenCosts.push(G?'**保険数理・リスク評価（アクチュアリー）**: 年次報告書作成 $5,000〜$20,000/年':'**Actuarial review**: Annual report preparation $5,000-$20,000/year');
+  if(domain==='legal') hiddenCosts.push(G?'**リーガルホールド・eDiscovery対応**: 法的保存ツール導入・維持 $2,000〜$8,000/年':'**Legal hold/eDiscovery tooling**: Tool adoption & maintenance $2,000-$8,000/year');
   if(ceHasPay) hiddenCosts.push(G?'**PCI DSS準拠**: SAQ作成・スキャン $500〜$2,000/年':'**PCI DSS compliance**: SAQ + scan $500-$2,000/year');
   hiddenCosts.push(G?'**ドメイン・SSL**: $15〜$50/年（Let\'s Encrypt + Cloudflare推奨）':'**Domain + SSL**: $15-$50/year (Let\'s Encrypt + Cloudflare recommended)');
   if(!ceIsBaaS) hiddenCosts.push(G?'**DB管理・バックアップ**: DBスナップショット保持コスト $10〜$30/月':'**DB mgmt + backups**: Snapshot retention $10-$30/mo');
