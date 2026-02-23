@@ -4239,3 +4239,54 @@ describe('Suite 48: P19 enterprise workflow customizations (health/saas/marketpl
     assert.ok(doc.includes('キャンセルポリシー') || doc.includes('Cancellation policy') || doc.includes('オーバーブッキング') || doc.includes('Overbooking'), 'Booking enterprise must show cancellation/overbooking adjustment workflows');
   });
 });
+
+// ── Suite 49: P3 _domainTools gap fills + P18 template catalogs batch 2 ────
+describe('Suite 49: P3 _domainTools portfolio/tool + P18 PromptOps template catalogs batch 2', () => {
+  it('P3: portfolio domain has domain-specific MCP tool recommendation', () => {
+    const f = gP3(Object.assign({}, A25, { purpose:'portfolio website showcase' }));
+    const manifest = f['.mcp/tools-manifest.json'] || '';
+    assert.ok(manifest.includes('playwright') || manifest.includes('portfolio'), 'Portfolio domain must have domain-specific MCP tool (playwright)');
+  });
+
+  it('P3: tool domain has domain-specific MCP tool recommendation', () => {
+    const f = gP3(Object.assign({}, A25, { purpose:'developer utility tool platform' }));
+    const manifest = f['.mcp/tools-manifest.json'] || '';
+    assert.ok(manifest.includes('playwright') || manifest.includes('tool'), 'Tool domain must have domain-specific MCP tool (playwright)');
+  });
+
+  it('P18: booking domain shows availability and conflict template IDs', () => {
+    const f = gP18(Object.assign({}, A25, { purpose:'restaurant table booking reservation platform' }));
+    const doc = f['docs/72_prompt_registry.md'] || '';
+    assert.ok(doc.includes('BKG-P') || doc.includes('AVAILABILITY') || doc.includes('空き枠') || doc.includes('CONFLICT'), 'Booking must show availability/conflict template IDs');
+  });
+
+  it('P18: collab domain shows OT/CRDT sync and conflict resolution template IDs', () => {
+    const f = gP18(Object.assign({}, A25, { purpose:'collaborative document editor platform' }));
+    const doc = f['docs/72_prompt_registry.md'] || '';
+    assert.ok(doc.includes('COLLAB-P') || doc.includes('SYNC') || doc.includes('同期') || doc.includes('CONFLICT'), 'Collab must show sync/conflict template IDs');
+  });
+
+  it('P18: hr domain shows recruiting and payroll template IDs', () => {
+    const f = gP18(Object.assign({}, A25, { purpose:'HR human resources management platform' }));
+    const doc = f['docs/72_prompt_registry.md'] || '';
+    assert.ok(doc.includes('HR-P') || doc.includes('RECRUIT') || doc.includes('採用') || doc.includes('PAYROLL'), 'HR must show recruiting/payroll template IDs');
+  });
+
+  it('P18: analytics domain shows dashboard and KPI template IDs', () => {
+    const f = gP18(Object.assign({}, A25, { purpose:'analytics dashboard reporting platform' }));
+    const doc = f['docs/72_prompt_registry.md'] || '';
+    assert.ok(doc.includes('ANLYT-P') || doc.includes('DASHBOARD') || doc.includes('ダッシュボード') || doc.includes('KPI'), 'Analytics must show dashboard/KPI template IDs');
+  });
+
+  it('P18: community domain shows moderation and spam template IDs', () => {
+    const f = gP18(Object.assign({}, A25, { purpose:'online community social forum platform' }));
+    const doc = f['docs/72_prompt_registry.md'] || '';
+    assert.ok(doc.includes('COMM-P') || doc.includes('MODERATE') || doc.includes('モデレーション') || doc.includes('SPAM'), 'Community must show moderation/spam template IDs');
+  });
+
+  it('P18: iot domain shows device auth and sensor data template IDs', () => {
+    const f = gP18(Object.assign({}, A25, { purpose:'IoT smart sensor monitoring platform' }));
+    const doc = f['docs/72_prompt_registry.md'] || '';
+    assert.ok(doc.includes('IOT-P') || doc.includes('DEVICE') || doc.includes('デバイス') || doc.includes('センサー'), 'IoT must show device/sensor template IDs');
+  });
+});

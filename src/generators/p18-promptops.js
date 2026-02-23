@@ -525,6 +525,90 @@ function gen72(G, domain, meth, matLv, a, pn) {
       {id:'INS-P4-ACTUARIAL-v1.0.0',use:'Actuarial logic implementation',ctx:4,inst:5,er:5,total:'4.6'},
       {id:'INS-P5-COMPLIANCE-v1.0.0',use:'Insurance regulation compliance',ctx:5,inst:5,er:5,total:'4.9'}
     ];
+  } else if (domain === 'booking') {
+    domainTemplates = G ? [
+      {id:'BKG-P1-AVAILABILITY-v1.0.0',use:'空き枠管理・競合制御',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'BKG-P2-PAYMENT-v1.0.0',use:'予約決済フロー実装',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'BKG-P3-CONFLICT-v1.0.0',use:'二重予約防止設計',ctx:5,inst:5,er:5,total:'4.9'},
+      {id:'BKG-P4-REMINDER-v1.0.0',use:'リマインダー通知設計',ctx:4,inst:4,er:4,total:'4.2'},
+      {id:'BKG-P5-CANCEL-v1.0.0',use:'キャンセルポリシー実装',ctx:4,inst:5,er:4,total:'4.4'}
+    ]:[
+      {id:'BKG-P1-AVAILABILITY-v1.0.0',use:'Availability management & conflict control',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'BKG-P2-PAYMENT-v1.0.0',use:'Booking payment flow implementation',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'BKG-P3-CONFLICT-v1.0.0',use:'Double-booking prevention design',ctx:5,inst:5,er:5,total:'4.9'},
+      {id:'BKG-P4-REMINDER-v1.0.0',use:'Reminder notification design',ctx:4,inst:4,er:4,total:'4.2'},
+      {id:'BKG-P5-CANCEL-v1.0.0',use:'Cancellation policy implementation',ctx:4,inst:5,er:4,total:'4.4'}
+    ];
+  } else if (domain === 'collab') {
+    domainTemplates = G ? [
+      {id:'COLLAB-P1-SYNC-v1.0.0',use:'リアルタイム同期設計(OT/CRDT)',ctx:5,inst:5,er:5,total:'4.9'},
+      {id:'COLLAB-P2-CONFLICT-v1.0.0',use:'競合解決ロジック実装',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'COLLAB-P3-PERMISSION-v1.0.0',use:'権限管理・RBAc設計',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'COLLAB-P4-VERSION-v1.0.0',use:'バージョン履歴管理',ctx:4,inst:5,er:4,total:'4.5'},
+      {id:'COLLAB-P5-PRESENCE-v1.0.0',use:'プレゼンス機能実装',ctx:4,inst:4,er:4,total:'4.2'}
+    ]:[
+      {id:'COLLAB-P1-SYNC-v1.0.0',use:'Real-time sync design (OT/CRDT)',ctx:5,inst:5,er:5,total:'4.9'},
+      {id:'COLLAB-P2-CONFLICT-v1.0.0',use:'Conflict resolution logic implementation',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'COLLAB-P3-PERMISSION-v1.0.0',use:'Permission management & RBAC design',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'COLLAB-P4-VERSION-v1.0.0',use:'Version history management',ctx:4,inst:5,er:4,total:'4.5'},
+      {id:'COLLAB-P5-PRESENCE-v1.0.0',use:'Presence feature implementation',ctx:4,inst:4,er:4,total:'4.2'}
+    ];
+  } else if (domain === 'hr') {
+    domainTemplates = G ? [
+      {id:'HR-P1-RECRUIT-v1.0.0',use:'採用フロー・ATS設計',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'HR-P2-ONBOARD-v1.0.0',use:'オンボーディング自動化',ctx:5,inst:5,er:4,total:'4.7'},
+      {id:'HR-P3-EVAL-v1.0.0',use:'人事評価システム設計',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'HR-P4-PAYROLL-v1.0.0',use:'給与計算ロジック実装',ctx:5,inst:5,er:5,total:'4.9'},
+      {id:'HR-P5-OFFBOARD-v1.0.0',use:'退職手続きワークフロー',ctx:4,inst:5,er:4,total:'4.5'}
+    ]:[
+      {id:'HR-P1-RECRUIT-v1.0.0',use:'Recruiting flow & ATS design',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'HR-P2-ONBOARD-v1.0.0',use:'Onboarding automation',ctx:5,inst:5,er:4,total:'4.7'},
+      {id:'HR-P3-EVAL-v1.0.0',use:'Performance evaluation system design',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'HR-P4-PAYROLL-v1.0.0',use:'Payroll calculation logic implementation',ctx:5,inst:5,er:5,total:'4.9'},
+      {id:'HR-P5-OFFBOARD-v1.0.0',use:'Offboarding workflow',ctx:4,inst:5,er:4,total:'4.5'}
+    ];
+  } else if (domain === 'analytics') {
+    domainTemplates = G ? [
+      {id:'ANLYT-P1-DASHBOARD-v1.0.0',use:'ダッシュボード設計・最適化',ctx:5,inst:5,er:4,total:'4.7'},
+      {id:'ANLYT-P2-KPI-v1.0.0',use:'KPI集計ロジック実装',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'ANLYT-P3-REALTIME-v1.0.0',use:'リアルタイムデータ処理',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'ANLYT-P4-REPORT-v1.0.0',use:'レポート自動生成設計',ctx:4,inst:5,er:4,total:'4.5'},
+      {id:'ANLYT-P5-PREDICT-v1.0.0',use:'予測分析・MLパイプライン',ctx:5,inst:5,er:4,total:'4.7'}
+    ]:[
+      {id:'ANLYT-P1-DASHBOARD-v1.0.0',use:'Dashboard design & optimization',ctx:5,inst:5,er:4,total:'4.7'},
+      {id:'ANLYT-P2-KPI-v1.0.0',use:'KPI aggregation logic implementation',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'ANLYT-P3-REALTIME-v1.0.0',use:'Real-time data processing',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'ANLYT-P4-REPORT-v1.0.0',use:'Automated report generation design',ctx:4,inst:5,er:4,total:'4.5'},
+      {id:'ANLYT-P5-PREDICT-v1.0.0',use:'Predictive analytics & ML pipeline',ctx:5,inst:5,er:4,total:'4.7'}
+    ];
+  } else if (domain === 'community') {
+    domainTemplates = G ? [
+      {id:'COMM-P1-MODERATE-v1.0.0',use:'モデレーション・通報設計',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'COMM-P2-ENGAGE-v1.0.0',use:'エンゲージメント機能実装',ctx:5,inst:5,er:4,total:'4.7'},
+      {id:'COMM-P3-SPAM-v1.0.0',use:'スパム・不正アカウント対策',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'COMM-P4-NOTIFY-v1.0.0',use:'通知システム設計',ctx:4,inst:5,er:4,total:'4.5'},
+      {id:'COMM-P5-GROWTH-v1.0.0',use:'コミュニティ成長戦略',ctx:5,inst:4,er:3,total:'4.1'}
+    ]:[
+      {id:'COMM-P1-MODERATE-v1.0.0',use:'Moderation & reporting design',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'COMM-P2-ENGAGE-v1.0.0',use:'Engagement feature implementation',ctx:5,inst:5,er:4,total:'4.7'},
+      {id:'COMM-P3-SPAM-v1.0.0',use:'Spam & fake account prevention',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'COMM-P4-NOTIFY-v1.0.0',use:'Notification system design',ctx:4,inst:5,er:4,total:'4.5'},
+      {id:'COMM-P5-GROWTH-v1.0.0',use:'Community growth strategy',ctx:5,inst:4,er:3,total:'4.1'}
+    ];
+  } else if (domain === 'iot') {
+    domainTemplates = G ? [
+      {id:'IOT-P1-DEVICE-v1.0.0',use:'デバイス認証・管理設計',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'IOT-P2-DATA-v1.0.0',use:'センサーデータ収集・処理',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'IOT-P3-ALERT-v1.0.0',use:'異常検知・アラート設計',ctx:5,inst:5,er:5,total:'4.9'},
+      {id:'IOT-P4-UPDATE-v1.0.0',use:'OTAアップデート実装',ctx:4,inst:5,er:5,total:'4.6'},
+      {id:'IOT-P5-OFFLINE-v1.0.0',use:'オフライン動作・再接続処理',ctx:5,inst:5,er:4,total:'4.7'}
+    ]:[
+      {id:'IOT-P1-DEVICE-v1.0.0',use:'Device authentication & management design',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'IOT-P2-DATA-v1.0.0',use:'Sensor data collection & processing',ctx:5,inst:5,er:5,total:'4.8'},
+      {id:'IOT-P3-ALERT-v1.0.0',use:'Anomaly detection & alert design',ctx:5,inst:5,er:5,total:'4.9'},
+      {id:'IOT-P4-UPDATE-v1.0.0',use:'OTA update implementation',ctx:4,inst:5,er:5,total:'4.6'},
+      {id:'IOT-P5-OFFLINE-v1.0.0',use:'Offline operation & reconnection handling',ctx:5,inst:5,er:4,total:'4.7'}
+    ];
   } else {
     // Generic domain templates
     var domUpper = domain.substring(0, 4).toUpperCase();

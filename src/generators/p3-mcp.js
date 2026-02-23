@@ -258,7 +258,9 @@ function _domainTools(domain,G){
     manufacturing:G?['postgres — 生産記録・品質管理クエリ']:['postgres — Production records & quality management queries'],
     logistics:G?['postgres — 配送追跡・ルート最適化クエリ']:['postgres — Delivery tracking & route optimization queries'],
     agriculture:G?['docker — センサーデータシミュレーション']:['docker — Sensor data simulation'],
-    energy:G?['postgres — 電力データ集計・ピーク需要クエリ']:['postgres — Power data aggregation & peak demand queries']
+    energy:G?['postgres — 電力データ集計・ピーク需要クエリ']:['postgres — Power data aggregation & peak demand queries'],
+    portfolio:G?['playwright — ポートフォリオ・問い合わせフォームE2Eテスト']:['playwright — Portfolio & contact form E2E tests'],
+    tool:G?['playwright — ツール機能・APIキーE2Eテスト']:['playwright — Tool features & API key E2E tests']
   };
   return tools[domain]||[];
 }
