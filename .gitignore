@@ -8,6 +8,9 @@ coverage/
 # Built output is now tracked for GitHub Pages deployment
 # devforge-v9.html
 
+# Generated output (local dev only)
+output/
+
 # Temporary test/debug files
 .test-*.js
 .tmp-*.js
