@@ -899,12 +899,14 @@ function detectDomain(purpose){
     // ── 8 new domains (before content to avoid collision) ──
     [/製造|工場|生産管理|ファクトリー|manufacturing|factory|production.?management|smart.*factory/i,'manufacturing'],
     [/物流|配送|倉庫|logistics|delivery|warehouse|tracking/i,'logistics'],
-    [/農業|スマート農業|agriculture|farming|crop.?management/i,'agriculture'],
+    [/農業|スマート農業|agriculture|farming|crop.?management|畜産|livestock|牧場/i,'agriculture'],
     [/エネルギー|電力|energy|power.?management|再生可能/i,'energy'],
     [/メディア|放送|配信|ストリーミング|media|streaming|broadcasting/i,'media'],
     [/自治体|行政|申請管理|government|municipal|civic|public.?service/i,'government'],
     [/旅行|ツアー|travel|tour|宿泊予約|hotel.?booking/i,'travel'],
     [/保険|insurance|保険テック|insurtech|契約管理|claim.?management/i,'insurance'],
+    // ── high-priority medical terms (before analytics/booking/iot/automation) ──
+    [/認知症|リハビリ|遠隔診療|telehealth|telemedicine|動物病院|獣医|栄養管理/i,'health'],
     // ── content pattern (media/メディア removed to prevent collision) ──
     [/コンテンツ|content|ブログ|blog|knowledge.?base|ナレッジベース/i,'content'],
     [/分析|analytics|可視化|ダッシュボード/i,'analytics'],
