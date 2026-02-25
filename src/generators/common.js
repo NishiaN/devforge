@@ -918,7 +918,7 @@ function detectDomain(purpose){
     [/法務|契約|legal|contract.?mgmt|contract.?management|コンプライアンス/i,'legal'],
     [/人事|HR|採用|recruit|hiring/i,'hr'],
     [/金融|fintech|銀行|bank|決済管理|construction.?pay|工事代金/i,'fintech'],
-    [/医療|ヘルスケア|health|medical|clinic|病院|patient|患者|veterinary|動物病院|ペット/i,'health'],
+    [/医療|ヘルスケア|health|medical|clinic|病院|patient|患者|veterinary|動物病院|ペット|健康|フィットネス|ウェルネス|wellness|fitness/i,'health'],
     [/ポートフォリオ|portfolio|link.?in.?bio|linkbio/i,'portfolio'],
     [/pwa|progressive.?web|オフライン|offline/i,'tool'],
     // Generic patterns last (lower priority)
