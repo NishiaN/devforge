@@ -189,14 +189,21 @@ describe('Phase N-7: orm from backend type', () => {
 
 /* ── N-8: scope_out inference ── */
 describe('Phase N-8: scope_out from preset config', () => {
-  it('payment=none → scope_out includes 決済機能', () => {
-    resetS({ backend: 'Supabase', payment: undefined });
+  it('payment=\'none\' → scope_out includes 決済機能', () => {
+    resetS({ backend: 'Supabase', payment: 'none' });
     applyUPP(false);
     assert.ok(h.sandbox.S.answers.scope_out.includes('決済機能'));
   });
 
-  it('mobile=none → scope_out includes ネイティブアプリ', () => {
-    resetS({ backend: 'Supabase', mobile: undefined });
+  it('payment=undefined → 決済機能 NOT in scope_out', () => {
+    resetS({ backend: 'Supabase', payment: undefined });
+    applyUPP(false);
+    const so = h.sandbox.S.answers.scope_out || '';
+    assert.ok(!so.includes('決済機能'), 'payment=undefined should not put 決済機能 in scope_out');
+  });
+
+  it('mobile=\'none\' → scope_out includes ネイティブアプリ', () => {
+    resetS({ backend: 'Supabase', mobile: 'none' });
     applyUPP(false);
     assert.ok(h.sandbox.S.answers.scope_out.includes('ネイティブアプリ'));
   });
@@ -209,7 +216,7 @@ describe('Phase N-8: scope_out from preset config', () => {
   });
 
   it('EN mode → scope_out uses English chip labels', () => {
-    resetS({ backend: 'Supabase', payment: undefined });
+    resetS({ backend: 'Supabase', payment: 'none' });
     h.sandbox.S.lang = 'en';
     applyUPP(true);
     assert.ok(h.sandbox.S.answers.scope_out.includes('Payments'));

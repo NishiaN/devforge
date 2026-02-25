@@ -709,9 +709,9 @@ function _applyUniversalPostProcess(_en){
   if(!S.answers.scope_out){
     var _so=[];var _soE=[];
     var _pa=S.answers.payment||'';var _mo=S.answers.mobile||'';var _aa=S.answers.ai_auto||'';
-    if(!_pa||/none|なし/i.test(_pa)){_so.push('決済機能');_soE.push('Payments');}
-    if(!_mo||/none|なし/i.test(_mo)){_so.push('ネイティブアプリ');_soE.push('Native app');}
-    if(!_aa||/none|なし/i.test(_aa)){_so.push('AI機能');_soE.push('AI features');}
+    if(_pa&&/none|なし/i.test(_pa)){_so.push('決済機能');_soE.push('Payments');}
+    if(_mo&&/none|なし/i.test(_mo)){_so.push('ネイティブアプリ');_soE.push('Native app');}
+    if(_aa&&/none|なし/i.test(_aa)){_so.push('AI機能');_soE.push('AI features');}
     if(_so.length>0){S.answers.scope_out=_en?_soE.join(', '):_so.join(', ');}
   }
   // N-9: future_features from preset config (out-of-scope items become future features)
