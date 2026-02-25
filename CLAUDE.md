@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 # DevForge v9.6.0
 
-**AI Development OS** — 63 JS modules in `src/` → single `devforge-v9.html` (~3088KB / 3500KB limit).
+**AI Development OS** — 63 JS modules in `src/` → single `devforge-v9.html` (~3091KB / 3500KB limit).
 Generates **178+ files** across **25 pillars** from a wizard-driven Q&A session.
 
 ## Documentation Map
@@ -18,10 +18,10 @@ Generates **178+ files** across **25 pillars** from a wizard-driven Q&A session.
 ## Build & Test
 
 ```bash
-node build.js                          # → devforge-v9.html (~2912KB, limit 3500KB)
+node build.js                          # → devforge-v9.html (~3091KB, limit 3500KB)
 node build.js --no-minify              # debug (skip minification)
 node build.js --report                 # build + size breakdown by module
-npm test                               # 1369 tests, all passing
+npm test                               # 1370 tests, all passing
 node --test test/gen-quality.test.js   # single test file
 npm run dev                            # build + live-server :3000
 npm run check                          # syntax-check extracted JS
@@ -120,6 +120,16 @@ Key helpers (all globally scoped): `save()`, `esc(s)`, `escAttr(s)`, `_jp(s,d)`,
 
 Field presets use a 4-layer merge: `_SCALE_DEFAULTS[scale]` → `FIELD_CAT_DEFAULTS[field]` → direct preset fields → meta inference.
 
+**N-8 `scope_out` condition**: only explicitly-set `'none'`/`'なし'` values add to scope_out — empty/unset does NOT. (`_pa&&/none|なし/i.test(_pa)`, not `!_pa||...`)
+
+**PR key ≠ UI display name** — standard preset keys differ from their UI labels. Key examples:
+`lms` (教育), `insurance_mgmt` (保険), `legal_docs` (法務), `gov_portal` (行政), `agri` (農業)
+Always look up actual keys via `Object.keys(PR)` when writing test scripts.
+
+**`detectDomain(purpose)`** — first-match priority array in `src/generators/common.js`. Order matters:
+high-priority biotech/welfare → manufacturing-HRMS → education → EC → ... → domain-specific (manufacturing/logistics/agri/energy/gov/travel/insurance) → high-priority health → high-priority fintech → IoT → realestate → content → analytics → booking → ai → automation → ... → generic tool.
+When adding patterns, place unambiguous domain keywords BEFORE the generic patterns they would otherwise hit.
+
 ## Adding Standard Presets
 
 ```javascript
@@ -167,7 +177,7 @@ After adding: update header comment totals, add tests to `test/compat.test.js`, 
 | Preset matching | phase-n (N-1〜N-9 + G-1〜G-7, 68 tests) | ~68 |
 | Other | i18n, state, techdb, utils, complexity, mermaid, help-hints | ~46 |
 
-**Total: 1369 tests** | Test harness pattern: `eval(fs.readFileSync(...))` to load src files; global `S` mock at top.
+**Total: 1370 tests** | Test harness pattern: `eval(fs.readFileSync(...))` to load src files; global `S` mock at top.
 
 **When adding domains**, update: `test/data-coverage.test.js` (4 arrays), `test/gen-coherence.test.js`, `test/ops.test.js`.
 
