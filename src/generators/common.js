@@ -732,6 +732,95 @@ const ENTITY_COLUMNS={
   ModelDeployment:[_U,'model_name:VARCHAR(255):NOT NULL:モデル名:Model name','model_version:VARCHAR(50):NOT NULL:バージョン:Model version','device_id:UUID:FK(DeviceProfile):デバイスID:Device ID','runtime:VARCHAR(50)::ランタイム:Runtime','quantization:VARCHAR(50)::量子化:Quantization','deployed_at:TIMESTAMP:DEFAULT NOW:デプロイ日時:Deployed at',_SA,'latency_ms:INT::レイテンシms:Latency ms'],
   InferenceLog:[_U,'deployment_id:UUID:FK(ModelDeployment) NOT NULL:デプロイID:Deployment ID','input_tokens:INT::入力トークン:Input tokens','output_tokens:INT::出力トークン:Output tokens','latency_ms:INT::レイテンシms:Latency ms','power_mw:DECIMAL(8,2)::消費電力mW:Power mW','logged_at:TIMESTAMP:DEFAULT NOW:ログ日時:Logged at'],
   EdgeConfig:[_U,'device_id:UUID:FK(DeviceProfile) NOT NULL:デバイスID:Device ID','config_name:VARCHAR(100):NOT NULL:設定名:Config name','sync_interval_sec:INT:DEFAULT 300:同期間隔(秒):Sync interval','offline_ttl_sec:INT:DEFAULT 86400:オフラインTTL(秒):Offline TTL','models:JSONB::モデルリスト:Models',_IA,'last_push:TIMESTAMP::最終プッシュ:Last push'],
+  // ── Legal Document Management ──
+  LegalDocument:[_U,_T,'doc_type:VARCHAR(50):NOT NULL:文書種別:Document type',_D,'version:VARCHAR(20):DEFAULT \'1.0\':バージョン:Version',_SD,'signed_at:TIMESTAMP::署名日時:Signed at','expires_at:TIMESTAMP::有効期限:Expires at'],
+  Precedent:[_T,'court:VARCHAR(255)::裁判所:Court','decision_date:DATE::判決日:Decision date','summary:TEXT::要旨:Summary',_CAT,'citations:JSONB::引用:Citations'],
+  CaseFile:[_U,_T,_D,'matter_type:VARCHAR(50)::案件種別:Matter type',_SP,'opened_at:TIMESTAMP:DEFAULT NOW:開案日:Opened at','closed_at:TIMESTAMP::終了日:Closed at'],
+  LegalClause:['document_id:UUID:FK(LegalDocument) NOT NULL:文書ID:Document ID','clause_type:VARCHAR(50):NOT NULL:条項種別:Clause type',_C,_SO],
+  LegalAlert:[_U,'document_id:UUID:FK(LegalDocument) NOT NULL:文書ID:Document ID','alert_type:VARCHAR(50):NOT NULL:アラート種別:Alert type','due_date:DATE:NOT NULL:期日:Due date','triggered_at:TIMESTAMP::発火日時:Triggered at'],
+  // ── Real Estate Portal ──
+  PropertyListing:[_T,_D,'price:DECIMAL(14,2):NOT NULL:価格:Price','area_sqm:DECIMAL(8,2)::面積(㎡):Area sqm','rooms:INT::部屋数:Rooms','property_type:VARCHAR(50):NOT NULL:物件種別:Property type',_SA,'address:TEXT:NOT NULL:住所:Address','agent_id:UUID:FK(RealEstateAgent):担当エージェントID:Agent ID'],
+  ViewingRequest:[_U,'listing_id:UUID:FK(PropertyListing) NOT NULL:物件ID:Listing ID','scheduled_at:TIMESTAMP:NOT NULL:内見日時:Scheduled at',_SP,_N],
+  Favorite:[_U,'listing_id:UUID:FK(PropertyListing) NOT NULL:物件ID:Listing ID','created_at:TIMESTAMP:DEFAULT NOW:お気に入り日時:Favorited at'],
+  PropertyImage:['listing_id:UUID:FK(PropertyListing) NOT NULL:物件ID:Listing ID','url:TEXT:NOT NULL:画像URL:Image URL','is_primary:BOOLEAN:DEFAULT false:メイン画像:Primary',_SO],
+  // ── Subscription Box ──
+  SubBoxPlan:[_T,_D,_PR,'frequency:VARCHAR(20):DEFAULT \'monthly\':配送頻度:Frequency','theme:VARCHAR(100)::テーマ:Theme',_IA],
+  DeliverySchedule:[_U,'plan_id:UUID:FK(SubBoxPlan) NOT NULL:プランID:Plan ID','next_delivery_at:DATE:NOT NULL:次回配送日:Next delivery',_SA],
+  CuratedBox:['schedule_id:UUID:FK(DeliverySchedule) NOT NULL:スケジュールID:Schedule ID','theme:VARCHAR(100)::テーマ:Theme','curated_at:TIMESTAMP:DEFAULT NOW:キュレーション日時:Curated at'],
+  BoxItem:['box_id:UUID:FK(CuratedBox) NOT NULL:ボックスID:Box ID','product_name:VARCHAR(255):NOT NULL:商品名:Product name','brand:VARCHAR(100)::ブランド:Brand','quantity:INT:DEFAULT 1:数量:Quantity','value:DECIMAL(10,2)::価値:Value'],
+  UnboxingReview:[_U,'box_id:UUID:FK(CuratedBox) NOT NULL:ボックスID:Box ID','rating:INT:NOT NULL:評価:Rating',_C,'published_at:TIMESTAMP:DEFAULT NOW:投稿日時:Published at'],
+  // ── Freelance Platform ──
+  FreelancerProfile:[_U,'headline:VARCHAR(255)::キャッチコピー:Headline','bio:TEXT::自己紹介:Bio','skills:JSONB::スキル:Skills','hourly_rate:DECIMAL(10,2)::時給:Hourly rate','portfolio_url:TEXT::ポートフォリオURL:Portfolio URL','availability:VARCHAR(30):DEFAULT \'available\':稼働状況:Availability'],
+  ProjectPost:[_U,_T,_D,'budget_min:DECIMAL(10,2)::予算下限:Budget min','budget_max:DECIMAL(10,2)::予算上限:Budget max','deadline:DATE::納期:Deadline',_SD],
+  Proposal:['freelancer_id:UUID:FK(User) NOT NULL:フリーランサーID:Freelancer ID','project_id:UUID:FK(ProjectPost) NOT NULL:案件ID:Project ID','cover_letter:TEXT::カバーレター:Cover letter','bid_amount:DECIMAL(10,2):NOT NULL:提案金額:Bid amount','estimated_days:INT::見積日数:Estimated days',_SP],
+  FreelanceContract:['project_id:UUID:FK(ProjectPost) NOT NULL:案件ID:Project ID','freelancer_id:UUID:FK(User) NOT NULL:フリーランサーID:Freelancer ID','client_id:UUID:FK(User) NOT NULL:クライアントID:Client ID','amount:DECIMAL(10,2):NOT NULL:契約金額:Amount','start_date:DATE::開始日:Start date','end_date:DATE::終了日:End date',_SA],
+  FreelanceReview:['reviewer_id:UUID:FK(User) NOT NULL:レビュアーID:Reviewer ID','reviewee_id:UUID:FK(User) NOT NULL:被レビュアーID:Reviewee ID','contract_id:UUID:FK(FreelanceContract) NOT NULL:契約ID:Contract ID','rating:INT:NOT NULL:評価:Rating','comment:TEXT::コメント:Comment','published_at:TIMESTAMP:DEFAULT NOW:投稿日時:Published at'],
+  // ── Podcast Platform ──
+  PodcastShow:[_U,_T,_D,'category:VARCHAR(100)::カテゴリ:Category','rss_url:TEXT::RSSフィードURL:RSS URL','thumbnail_url:TEXT::サムネイルURL:Thumbnail URL',_SA],
+  PodcastEpisode:['show_id:UUID:FK(PodcastShow) NOT NULL:番組ID:Show ID',_T,_D,'audio_url:TEXT:NOT NULL:音声URL:Audio URL',_DUR,'episode_number:INT:NOT NULL:エピソード番号:Episode number','published_at:TIMESTAMP::公開日時:Published at'],
+  PodcastListener:[_U,'show_id:UUID:FK(PodcastShow) NOT NULL:番組ID:Show ID','subscribed_at:TIMESTAMP:DEFAULT NOW:購読日時:Subscribed at','last_listened_at:TIMESTAMP::最終試聴日時:Last listened at'],
+  PodcastSub:[_U,'tier:VARCHAR(30):DEFAULT \'basic\':プランティア:Tier','started_at:TIMESTAMP:DEFAULT NOW:開始日時:Started at',_SA],
+  Sponsorship:['show_id:UUID:FK(PodcastShow) NOT NULL:番組ID:Show ID','sponsor_name:VARCHAR(255):NOT NULL:スポンサー名:Sponsor name','amount:DECIMAL(10,2):NOT NULL:金額:Amount','start_date:DATE:NOT NULL:開始日:Start date','end_date:DATE:NOT NULL:終了日:End date','ad_script:TEXT::広告原稿:Ad script'],
+  // ── Delivery Tracker ──
+  DeliveryOrder:['customer_id:UUID:FK(User) NOT NULL:顧客ID:Customer ID','courier_id:UUID:FK(Courier):配達員ID:Courier ID','address:TEXT:NOT NULL:配送先:Delivery address','items:JSONB:NOT NULL:注文品目:Items',_SP,'placed_at:TIMESTAMP:DEFAULT NOW:注文日時:Placed at','delivered_at:TIMESTAMP::配達完了日時:Delivered at'],
+  Courier:[_U,'vehicle_type:VARCHAR(30):NOT NULL:乗り物種別:Vehicle type','zone_id:UUID:FK(DeliveryZone):担当ゾーンID:Zone ID','is_available:BOOLEAN:DEFAULT true:稼働中:Available','rating:DECIMAL(3,2):DEFAULT 5.0:評価:Rating'],
+  DeliveryZone:['name:VARCHAR(100):NOT NULL:ゾーン名:Zone name','polygon:JSONB:NOT NULL:エリア境界:Polygon','max_distance_km:DECIMAL(6,2)::最大距離km:Max distance km'],
+  TrackingEvent:['order_id:UUID:FK(DeliveryOrder) NOT NULL:注文ID:Order ID','event_type:VARCHAR(50):NOT NULL:イベント種別:Event type','lat:DECIMAL(10,7)::緯度:Latitude','lng:DECIMAL(10,7)::経度:Longitude','recorded_at:TIMESTAMP:DEFAULT NOW:記録日時:Recorded at'],
+  DeliveryRating:['order_id:UUID:FK(DeliveryOrder) NOT NULL:注文ID:Order ID','customer_id:UUID:FK(User) NOT NULL:顧客ID:Customer ID','rating:INT:NOT NULL:評価:Rating','comment:TEXT::コメント:Comment'],
+  // ── Disaster Info ──
+  DisasterAlert:[_T,'disaster_type:VARCHAR(50):NOT NULL:災害種別:Disaster type','severity:VARCHAR(20):NOT NULL:深刻度:Severity','area:TEXT:NOT NULL:対象エリア:Area',_MSG,'issued_by:VARCHAR(255)::発令機関:Issued by','issued_at:TIMESTAMP:NOT NULL:発令日時:Issued at','expires_at:TIMESTAMP::失効日時:Expires at'],
+  EvacuationOrder:['alert_id:UUID:FK(DisasterAlert) NOT NULL:アラートID:Alert ID','area:TEXT:NOT NULL:避難対象エリア:Area','order_level:VARCHAR(20):NOT NULL:避難区分:Order level','issued_at:TIMESTAMP:DEFAULT NOW:発令日時:Issued at','lifted_at:TIMESTAMP::解除日時:Lifted at'],
+  Shelter:['name:VARCHAR(255):NOT NULL:施設名:Shelter name',_ADDR,'capacity:INT:NOT NULL:収容定員:Capacity','current_occupancy:INT:DEFAULT 0:現在収容数:Current occupancy',_SA,'lat:DECIMAL(10,7)::緯度:Latitude','lng:DECIMAL(10,7)::経度:Longitude'],
+  SafetyCheck:[_U,'alert_id:UUID:FK(DisasterAlert) NOT NULL:アラートID:Alert ID','safety_status:VARCHAR(20):NOT NULL:安否状態:Safety status','checked_at:TIMESTAMP:DEFAULT NOW:確認日時:Checked at','location:TEXT::現在地:Current location'],
+  EmergencyBroadcast:['alert_id:UUID:FK(DisasterAlert) NOT NULL:アラートID:Alert ID','channel:VARCHAR(50):NOT NULL:配信チャンネル:Channel',_MSG,'broadcast_at:TIMESTAMP:DEFAULT NOW:配信日時:Broadcast at','languages:JSONB::対応言語:Languages'],
+  // ── Solar Monitor ──
+  SolarPanel:[_U,'panel_model:VARCHAR(100)::パネルモデル:Panel model','capacity_kw:DECIMAL(8,3):NOT NULL:容量(kW):Capacity kW','installed_at:DATE::設置日:Installed at','panel_location:TEXT::設置場所:Location','inverter_model:VARCHAR(100)::インバーターモデル:Inverter model'],
+  PowerGeneration:['panel_id:UUID:FK(SolarPanel) NOT NULL:パネルID:Panel ID','generated_kwh:DECIMAL(10,3):NOT NULL:発電量kWh:Generated kWh','consumed_kwh:DECIMAL(10,3)::消費電力kWh:Consumed kWh','fed_in_kwh:DECIMAL(10,3)::売電量kWh:Fed-in kWh','recorded_at:TIMESTAMP:DEFAULT NOW:記録日時:Recorded at'],
+  EnergyBalance:[_U,'period:VARCHAR(7):NOT NULL:対象月(YYYY-MM):Period','total_generated:DECIMAL(10,3)::総発電量kWh:Total generated','total_consumed:DECIMAL(10,3)::総消費量kWh:Total consumed','net_fed_in:DECIMAL(10,3)::売電量kWh:Net fed-in','revenue:DECIMAL(10,2)::売電収益:Revenue'],
+  SolarAlert:['panel_id:UUID:FK(SolarPanel) NOT NULL:パネルID:Panel ID','alert_type:VARCHAR(50):NOT NULL:アラート種別:Alert type',_MSG,'threshold:DECIMAL(10,3)::閾値:Threshold','triggered_at:TIMESTAMP:DEFAULT NOW:発生日時:Triggered at','resolved_at:TIMESTAMP::解消日時:Resolved at'],
+  MaintenanceLog:['panel_id:UUID:FK(SolarPanel) NOT NULL:パネルID:Panel ID','performed_by:VARCHAR(255)::実施者:Performed by','work_description:TEXT::作業内容:Work description','cost:DECIMAL(10,2)::費用:Cost','performed_at:DATE:NOT NULL:実施日:Performed at','next_due_at:DATE::次回予定日:Next due at'],
+  // ── Farm Direct Sales ──
+  FarmerProfile:[_U,'farm_name:VARCHAR(255):NOT NULL:農場名:Farm name','farm_location:TEXT::農場所在地:Location','bio:TEXT::農家紹介:Bio','certifications:JSONB::認証:Certifications','profile_image:TEXT::プロフィール画像:Profile image'],
+  FarmProduct:[_U,_T,_D,_PR,'unit:VARCHAR(30):NOT NULL:単位:Unit','stock:INT:DEFAULT 0:在庫:Stock','harvest_date:DATE::収穫日:Harvest date','is_organic:BOOLEAN:DEFAULT false:有機農産物:Organic'],
+  DirectOrder:['customer_id:UUID:FK(User) NOT NULL:顧客ID:Customer ID','farmer_id:UUID:FK(User) NOT NULL:農家ID:Farmer ID','items:JSONB:NOT NULL:注文品目:Items','total:DECIMAL(10,2):NOT NULL:合計:Total',_SP,'delivery_date:DATE::配送日:Delivery date'],
+  FarmSubscription:['customer_id:UUID:FK(User) NOT NULL:顧客ID:Customer ID','farmer_id:UUID:FK(User) NOT NULL:農家ID:Farmer ID','plan:JSONB:NOT NULL:プラン内容:Plan',_SA,'started_at:TIMESTAMP:DEFAULT NOW:開始日時:Started at','next_delivery:DATE::次回配送日:Next delivery'],
+  ProducerReview:['customer_id:UUID:FK(User) NOT NULL:顧客ID:Customer ID','farmer_id:UUID:FK(User) NOT NULL:農家ID:Farmer ID','order_id:UUID:FK(DirectOrder) NOT NULL:注文ID:Order ID','rating:INT:NOT NULL:評価:Rating','comment:TEXT::コメント:Comment','published_at:TIMESTAMP:DEFAULT NOW:投稿日時:Published at'],
+  // ── Team Chat ──
+  Channel:['workspace_id:UUID:NOT NULL:ワークスペースID:Workspace ID','name:VARCHAR(100):NOT NULL:チャンネル名:Channel name',_D,'is_private:BOOLEAN:DEFAULT false:プライベート:Private','is_archived:BOOLEAN:DEFAULT false:アーカイブ:Archived','created_by:UUID:FK(User) NOT NULL:作成者ID:Created by'],
+  ChatMessage:['channel_id:UUID:FK(Channel) NOT NULL:チャンネルID:Channel ID',_U,'content:TEXT:NOT NULL:メッセージ本文:Content','message_type:VARCHAR(20):DEFAULT \'text\':メッセージ種別:Message type','thread_id:UUID:FK(Thread):スレッドID:Thread ID','created_at:TIMESTAMP:DEFAULT NOW:投稿日時:Created at','edited_at:TIMESTAMP::編集日時:Edited at'],
+  Thread:['channel_id:UUID:FK(Channel) NOT NULL:チャンネルID:Channel ID','parent_message_id:UUID:FK(ChatMessage) NOT NULL:親メッセージID:Parent message ID','reply_count:INT:DEFAULT 0:返信数:Reply count','last_reply_at:TIMESTAMP::最終返信日時:Last reply at'],
+  MessageReaction:['message_id:UUID:FK(ChatMessage) NOT NULL:メッセージID:Message ID',_U,'emoji:VARCHAR(20):NOT NULL:リアクション絵文字:Emoji','reacted_at:TIMESTAMP:DEFAULT NOW:リアクション日時:Reacted at'],
+  ChannelMember:['channel_id:UUID:FK(Channel) NOT NULL:チャンネルID:Channel ID',_U,'role:VARCHAR(20):DEFAULT \'member\':役割:Role','joined_at:TIMESTAMP:DEFAULT NOW:参加日時:Joined at','last_read_at:TIMESTAMP::最終既読日時:Last read at'],
+  // ── Membership Site ──
+  MembershipTier:[_T,'name_en:VARCHAR(255):NOT NULL:英語名:Name (en)','price_monthly:DECIMAL(10,2)::月額:Monthly price','price_annual:DECIMAL(10,2)::年額:Annual price','benefits:JSONB::特典:Benefits',_SO,_IA],
+  MemberAccount:[_U,'tier_id:UUID:FK(MembershipTier) NOT NULL:プランID:Tier ID','started_at:TIMESTAMP:DEFAULT NOW:開始日時:Started at','expires_at:TIMESTAMP::有効期限:Expires at',_SA],
+  ExclusiveContent:[_T,_D,'content_type:VARCHAR(50):NOT NULL:コンテンツ種別:Content type','content_url:TEXT::コンテンツURL:Content URL','tier_ids:JSONB:NOT NULL:対象プランIDs:Tier IDs','published_at:TIMESTAMP::公開日時:Published at',_IA],
+  MemberBenefit:['tier_id:UUID:FK(MembershipTier) NOT NULL:プランID:Tier ID','benefit_name:VARCHAR(255):NOT NULL:特典名:Benefit name','benefit_type:VARCHAR(50)::特典種別:Benefit type',_D,_SO],
+  MemberEvent:[_T,_D,'scheduled_at:TIMESTAMP:NOT NULL:開催日時:Scheduled at','tier_ids:JSONB:NOT NULL:対象プランIDs:Tier IDs','max_capacity:INT::定員:Max capacity','registered_count:INT:DEFAULT 0:登録者数:Registered count'],
+  // ── Insurance Claims Portal ──
+  ClaimCase:[_U,'policy_number:VARCHAR(100):NOT NULL:証券番号:Policy number','claim_type:VARCHAR(50):NOT NULL:請求種別:Claim type',_D,'amount:DECIMAL(12,2)::請求金額:Amount',_SP,'filed_at:TIMESTAMP:DEFAULT NOW:申請日時:Filed at','resolved_at:TIMESTAMP::解決日時:Resolved at'],
+  ClaimDocument:['claim_id:UUID:FK(ClaimCase) NOT NULL:請求ID:Claim ID','doc_type:VARCHAR(50):NOT NULL:書類種別:Document type','file_url:TEXT:NOT NULL:ファイルURL:File URL','uploaded_at:TIMESTAMP:DEFAULT NOW:アップロード日時:Uploaded at','verified:BOOLEAN:DEFAULT false:確認済み:Verified'],
+  ClaimAdjuster:[_U,'claim_id:UUID:FK(ClaimCase) NOT NULL:請求ID:Claim ID','assigned_at:TIMESTAMP:DEFAULT NOW:担当日時:Assigned at',_N],
+  ClaimPayment:['claim_id:UUID:FK(ClaimCase) NOT NULL:請求ID:Claim ID','amount:DECIMAL(12,2):NOT NULL:支払金額:Amount','payment_method:VARCHAR(50)::支払方法:Payment method','processed_at:TIMESTAMP:DEFAULT NOW:処理日時:Processed at','reference_number:VARCHAR(100)::参照番号:Reference number'],
+  PolicySummary:[_U,'policy_number:VARCHAR(100):UNIQUE NOT NULL:証券番号:Policy number','policy_type:VARCHAR(50):NOT NULL:保険種別:Policy type','coverage_amount:DECIMAL(14,2)::保証額:Coverage amount','premium:DECIMAL(10,2)::保険料:Premium','policy_start:DATE::開始日:Start date','policy_end:DATE::終了日:End date'],
+  // ── Email Marketing ──
+  EmailCampaign:[_T,_SUBJ,'from_email:VARCHAR(255):NOT NULL:送信元メール:From email',_SD,'sent_count:INT:DEFAULT 0:送信数:Sent count','open_count:INT:DEFAULT 0:開封数:Open count','click_count:INT:DEFAULT 0:クリック数:Click count','scheduled_at:TIMESTAMP::配信予定日時:Scheduled at','sent_at:TIMESTAMP::配信日時:Sent at'],
+  EmailTemplate:['name:VARCHAR(255):NOT NULL:テンプレート名:Template name',_SUBJ,'html_body:TEXT:NOT NULL:HTML本文:HTML body','text_body:TEXT::テキスト本文:Text body',_CAT,_IA],
+  ContactSegment:['name:VARCHAR(255):NOT NULL:セグメント名:Segment name',_D,'filter_rules:JSONB:NOT NULL:フィルタルール:Filter rules','member_count:INT:DEFAULT 0:対象者数:Member count','created_by:UUID:FK(User) NOT NULL:作成者ID:Created by'],
+  AutomationRule:['name:VARCHAR(255):NOT NULL:ルール名:Rule name','trigger_event:VARCHAR(100):NOT NULL:トリガーイベント:Trigger event','conditions:JSONB::条件:Conditions','actions:JSONB:NOT NULL:アクション:Actions',_IA,'created_by:UUID:FK(User) NOT NULL:作成者ID:Created by'],
+  CampaignMetric:['campaign_id:UUID:FK(EmailCampaign) NOT NULL:キャンペーンID:Campaign ID','open_rate:DECIMAL(5,2)::開封率(%):Open rate','click_rate:DECIMAL(5,2)::クリック率(%):Click rate','bounce_rate:DECIMAL(5,2)::バウンス率(%):Bounce rate','unsubscribe_rate:DECIMAL(5,2)::配信解除率(%):Unsubscribe rate','recorded_at:TIMESTAMP:DEFAULT NOW:記録日時:Recorded at'],
+  // ── Task Management ──
+  TaskList:[_U,'name:VARCHAR(255):NOT NULL:リスト名:List name',_D,'color:VARCHAR(7)::カラーコード:Color','is_shared:BOOLEAN:DEFAULT false:共有:Shared',_SO],
+  TaskItem:['list_id:UUID:FK(TaskList) NOT NULL:リストID:List ID',_T,_D,'task_status:VARCHAR(20):DEFAULT \'todo\':ステータス:Status','priority:VARCHAR(20):DEFAULT \'normal\':優先度:Priority','due_date:DATE::期日:Due date','assigned_to:UUID:FK(User):担当者ID:Assigned to',_SO],
+  TaskTag:['name:VARCHAR(50):NOT NULL:タグ名:Tag name','color:VARCHAR(7)::カラーコード:Color',_U],
+  TaskAssignment:['task_id:UUID:FK(TaskItem) NOT NULL:タスクID:Task ID',_U,'assigned_at:TIMESTAMP:DEFAULT NOW:担当日時:Assigned at','role:VARCHAR(30):DEFAULT \'assignee\':役割:Role'],
+  TaskComment:['task_id:UUID:FK(TaskItem) NOT NULL:タスクID:Task ID',_U,'content:TEXT:NOT NULL:コメント本文:Content','created_at:TIMESTAMP:DEFAULT NOW:投稿日時:Created at','edited_at:TIMESTAMP::編集日時:Edited at'],
+  // ── Quiz App ──
+  QuizSet:[_T,_D,_CAT,'difficulty:VARCHAR(20):DEFAULT \'normal\':難易度:Difficulty','created_by:UUID:FK(User) NOT NULL:作成者ID:Created by','is_public:BOOLEAN:DEFAULT false:公開:Public','question_count:INT:DEFAULT 0:問題数:Question count'],
+  QuizItem:['set_id:UUID:FK(QuizSet) NOT NULL:クイズセットID:Quiz set ID','question:TEXT:NOT NULL:問題文:Question','question_type:VARCHAR(30):DEFAULT \'single\':問題種別:Question type','options:JSONB::選択肢:Options','correct_answer:TEXT:NOT NULL:正解:Correct answer','explanation:TEXT::解説:Explanation','points:INT:DEFAULT 1:配点:Points',_SO],
+  QuizAttempt:[_U,'set_id:UUID:FK(QuizSet) NOT NULL:クイズセットID:Quiz set ID','score:INT:DEFAULT 0:得点:Score','total_points:INT:DEFAULT 0:満点:Total points','started_at:TIMESTAMP:DEFAULT NOW:開始日時:Started at','completed_at:TIMESTAMP::完了日時:Completed at'],
+  QuizScore:[_U,'set_id:UUID:FK(QuizSet) NOT NULL:クイズセットID:Quiz set ID','best_score:INT:DEFAULT 0:最高得点:Best score','attempt_count:INT:DEFAULT 0:挑戦回数:Attempt count','last_attempted_at:TIMESTAMP::最終挑戦日時:Last attempted at'],
+  QuizBadge:[_U,'badge_type:VARCHAR(50):NOT NULL:バッジ種別:Badge type',_T,_D,'earned_at:TIMESTAMP:DEFAULT NOW:取得日時:Earned at','set_id:UUID:FK(QuizSet):クイズセットID:Quiz set ID'],
 };
 
 // ═══ Entity REST method restrictions ═══
