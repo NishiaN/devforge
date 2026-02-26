@@ -7380,3 +7380,432 @@ describe('Suite 78: P21 API — health domain QA, OpenAPI EN, no-undefined edge 
     });
   });
 });
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 79 — P25 Performance: frontend/deploy/mobile/ORM-specific
+   Tests stack-specific content not covered in Suite 20/21:
+   Astro/Vue/Svelte bundles, Cloudflare cache, Next.js ISR,
+   mobile cache (MMKV), MongoDB perf, TypeORM QueryBuilder,
+   Vercel SpeedInsights
+   ════════════════════════════════════════════════════════════════ */
+describe('Suite 79: P25 Performance — frontend/deploy/mobile/ORM-specific patterns', () => {
+
+  const s79_astro = Object.assign({}, A25, {
+    purpose: 'コンテンツ駆動の静的ブログ・ドキュメントサイト',
+    frontend: 'Astro',
+    backend: 'Node.js + Express',
+    database: 'PostgreSQL (Neon)',
+    deploy: 'Vercel',
+    orm: 'Prisma ORM',
+    mobile: 'なし',
+  });
+
+  const s79_vue = Object.assign({}, A25, {
+    purpose: '管理者向けデータ可視化・ダッシュボードツール',
+    frontend: 'Vue 3 + Vite',
+    backend: 'Node.js + Express',
+    database: 'PostgreSQL (Neon)',
+    deploy: 'Railway',
+    orm: 'Prisma ORM',
+    mobile: 'なし',
+  });
+
+  const s79_svelte = Object.assign({}, A25, {
+    purpose: '高速なUIを提供するシングルページアプリケーション',
+    frontend: 'SvelteKit',
+    backend: 'Node.js + Express',
+    database: 'PostgreSQL (Neon)',
+    deploy: 'Railway',
+    orm: 'Prisma ORM',
+    mobile: 'なし',
+  });
+
+  const s79_cf = Object.assign({}, A25, {
+    purpose: 'エッジコンピューティングを活用したグローバルAPIサービス',
+    frontend: 'React + Vite',
+    backend: 'Node.js + Hono',
+    database: 'Neon (PostgreSQL)',
+    deploy: 'Cloudflare Workers',
+    orm: 'Drizzle ORM',
+    mobile: 'なし',
+  });
+
+  const s79_nextjs = Object.assign({}, A25, {
+    purpose: 'ユーザー向けコンテンツ配信プラットフォーム',
+    frontend: 'React + Next.js',
+    backend: 'Node.js + Express',
+    database: 'PostgreSQL (Neon)',
+    deploy: 'Vercel',
+    orm: 'Prisma ORM',
+    mobile: 'なし',
+  });
+
+  const s79_mobile = Object.assign({}, A25, {
+    purpose: 'モバイル対応のタスク・プロジェクト管理アプリ',
+    frontend: 'React + Next.js',
+    backend: 'Node.js + Express',
+    database: 'PostgreSQL (Neon)',
+    deploy: 'Vercel',
+    orm: 'Prisma ORM',
+    mobile: 'Expo (React Native)',
+  });
+
+  const s79_mongo = Object.assign({}, A25, {
+    purpose: 'ソーシャルコンテンツ投稿とコミュニティ管理プラットフォーム',
+    frontend: 'React + Vite',
+    backend: 'Node.js + Express',
+    database: 'MongoDB',
+    deploy: 'Railway',
+    orm: 'Mongoose',
+    mobile: 'なし',
+  });
+
+  const s79_typeorm = Object.assign({}, A25, {
+    purpose: '法人向けシステムのバックエンドAPIサービス',
+    frontend: 'React + Next.js',
+    backend: 'Node.js + NestJS',
+    database: 'PostgreSQL (Railway)',
+    deploy: 'Railway',
+    orm: 'TypeORM',
+    mobile: 'なし',
+  });
+
+  // ── Frontend-specific bundle tools ──
+  it('docs/99 Astro frontend: contains "astro-compress" or "Islands" optimization', () => {
+    const f = gPerf(s79_astro);
+    const doc = f['docs/99_performance_strategy.md'] || '';
+    assert.ok(
+      doc.includes('astro-compress') || doc.includes('Islands') || doc.includes('astro'),
+      'docs/99 Astro must include Astro-specific bundle optimization'
+    );
+  });
+
+  it('docs/99 Vue frontend: contains Vue-specific optimization (defineAsyncComponent or rollup)', () => {
+    const f = gPerf(s79_vue);
+    const doc = f['docs/99_performance_strategy.md'] || '';
+    assert.ok(
+      doc.includes('defineAsyncComponent') || doc.includes('rollup') || doc.includes('Vue'),
+      'docs/99 Vue must include Vue-specific bundle optimization'
+    );
+  });
+
+  it('docs/99 Svelte frontend: contains Svelte minimal JS reference', () => {
+    const f = gPerf(s79_svelte);
+    const doc = f['docs/99_performance_strategy.md'] || '';
+    assert.ok(
+      doc.includes('Svelte') || doc.includes('80KB') || doc.includes('minimal'),
+      'docs/99 Svelte must include Svelte-specific bundle note'
+    );
+  });
+
+  // ── Deploy-specific cache content ──
+  it('docs/101 Cloudflare: contains Cloudflare cache rules section', () => {
+    const f = gPerf(s79_cf);
+    const doc = f['docs/101_cache_strategy.md'] || '';
+    assert.ok(
+      doc.includes('Cloudflare') || doc.includes('Page Rules') || doc.includes('Cache Everything'),
+      'docs/101 Cloudflare deploy must include Cloudflare cache rules'
+    );
+  });
+
+  it('docs/101 Next.js: contains ISR revalidation pattern', () => {
+    const f = gPerf(s79_nextjs);
+    const doc = f['docs/101_cache_strategy.md'] || '';
+    assert.ok(
+      doc.includes('revalidatePath') || doc.includes('revalidateTag') || doc.includes('revalidate'),
+      'docs/101 Next.js must include ISR revalidation pattern'
+    );
+  });
+
+  it('docs/101 mobile: contains MMKV mobile cache strategy', () => {
+    const f = gPerf(s79_mobile);
+    const doc = f['docs/101_cache_strategy.md'] || '';
+    assert.ok(
+      doc.includes('MMKV') || doc.includes('expo-image') || doc.includes('offlineFirst'),
+      'docs/101 with mobile must include mobile cache strategy (MMKV/expo-image)'
+    );
+  });
+
+  // ── ORM/DB-specific content ──
+  it('docs/100 MongoDB: contains populate or aggregate pattern', () => {
+    const f = gPerf(s79_mongo);
+    const doc = f['docs/100_database_performance.md'] || '';
+    assert.ok(
+      doc.includes('populate') || doc.includes('aggregate') || doc.includes('MongoDB'),
+      'docs/100 MongoDB must include MongoDB-specific N+1 / index pattern'
+    );
+  });
+
+  it('docs/100 TypeORM: contains QueryBuilder with cache', () => {
+    const f = gPerf(s79_typeorm);
+    const doc = f['docs/100_database_performance.md'] || '';
+    assert.ok(
+      doc.includes('QueryBuilder') || doc.includes('.cache(') || doc.includes('TypeORM'),
+      'docs/100 TypeORM must include QueryBuilder performance tips'
+    );
+  });
+
+  it('docs/102 Vercel deploy: contains SpeedInsights or Vercel Analytics setup', () => {
+    const f = gPerf(s79_nextjs);
+    const doc = f['docs/102_performance_monitoring.md'] || '';
+    assert.ok(
+      doc.includes('SpeedInsights') || doc.includes('Analytics') || doc.includes('@vercel/analytics'),
+      'docs/102 Vercel must include Vercel Analytics / SpeedInsights setup'
+    );
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 80 — P22/P23 domain patterns: saas, education, ec, ai
+   Tests DB hardening (docs/87) and test focus (docs/91)
+   for domains not covered in Suite 25/26 (which only cover fintech/health/ec)
+   ════════════════════════════════════════════════════════════════ */
+describe('Suite 80: P22/P23 domain patterns — saas, education, ec, ai domains', () => {
+
+  function gP22(answers, lang) {
+    S.files={}; S.genLang=lang||'ja'; S.skill='intermediate';
+    genPillar22_DatabaseIntelligence(answers,'QTest');
+    return Object.assign({}, S.files);
+  }
+  function gP23(answers, lang) {
+    S.files={}; S.genLang=lang||'ja'; S.skill='intermediate';
+    genPillar23_TestingIntelligence(answers,'QTest');
+    return Object.assign({}, S.files);
+  }
+
+  const s80_saas = Object.assign({}, A25, {
+    purpose: 'チームのサブスクリプション管理・課題追跡・スプリント計画ツール',
+    backend: 'Node.js + NestJS',
+    database: 'PostgreSQL (Neon)',
+    deploy: 'Vercel',
+    orm: 'Prisma ORM',
+    payment: 'Stripe',
+    mobile: 'なし',
+  });
+
+  const s80_education = Object.assign({}, A25, {
+    purpose: 'プログラミング学習と資格取得をサポートするe-Learningプラットフォーム',
+    backend: 'Node.js + Express',
+    database: 'PostgreSQL (Neon)',
+    deploy: 'Vercel',
+    orm: 'Prisma ORM',
+    mobile: 'なし',
+  });
+
+  const s80_ec = Object.assign({}, A25, {
+    purpose: '食料品・日用品のオンラインショッピングと配達を管理するECプラットフォーム',
+    backend: 'Node.js + Express',
+    database: 'PostgreSQL (Neon)',
+    deploy: 'Railway',
+    orm: 'Prisma ORM',
+    payment: 'Stripe',
+    mobile: 'なし',
+  });
+
+  const s80_ai = Object.assign({}, A25, {
+    purpose: 'AIチャットボット・会話型インターフェース開発プラットフォーム',
+    backend: 'Node.js + Express',
+    database: 'PostgreSQL (Neon)',
+    deploy: 'Railway',
+    orm: 'Prisma ORM',
+    mobile: 'なし',
+  });
+
+  // ── P22 docs/87 DB Hardening ──
+  it('docs/87 saas: contains "Domain-Specific DB Hardening (saas)"', () => {
+    const f = gP22(s80_saas);
+    const doc = f['docs/87_database_design_principles.md'] || '';
+    assert.ok(
+      doc.includes('Domain-Specific DB Hardening (saas)') || doc.includes('ドメイン固有DBハードニングルール (saas)'),
+      'docs/87 saas must include domain-specific DB hardening section'
+    );
+  });
+
+  it('docs/87 saas EN: contains "RLS mandatory" in English', () => {
+    const f = gP22(s80_saas, 'en');
+    const doc = f['docs/87_database_design_principles.md'] || '';
+    assert.ok(
+      doc.includes('RLS mandatory') || doc.includes('tenant_id') || doc.includes('Rate limit'),
+      'docs/87 saas EN must include RLS mandatory or rate limit hardening rule'
+    );
+  });
+
+  it('docs/87 education: contains "Domain-Specific DB Hardening (education)"', () => {
+    const f = gP22(s80_education);
+    const doc = f['docs/87_database_design_principles.md'] || '';
+    assert.ok(
+      doc.includes('Domain-Specific DB Hardening (education)') || doc.includes('ドメイン固有DBハードニングルール (education)'),
+      'docs/87 education must include domain-specific DB hardening section'
+    );
+  });
+
+  it('docs/87 education EN: contains "Parental consent" or "Auto-save"', () => {
+    const f = gP22(s80_education, 'en');
+    const doc = f['docs/87_database_design_principles.md'] || '';
+    assert.ok(
+      doc.includes('Parental consent') || doc.includes('Auto-save') || doc.includes('IndexedDB'),
+      'docs/87 education EN must include education-specific hardening rules'
+    );
+  });
+
+  // ── P23 docs/91 Domain Test Focus ──
+  it('docs/91 saas: contains "Domain-Specific Test Focus (saas)"', () => {
+    const f = gP23(s80_saas);
+    const doc = f['docs/91_testing_strategy.md'] || '';
+    assert.ok(
+      doc.includes('Domain-Specific Test Focus (saas)') || doc.includes('ドメイン別テスト重点領域 (saas)'),
+      'docs/91 saas must include domain-specific test focus section'
+    );
+  });
+
+  it('docs/91 saas: contains cross-tenant leakage or tenant bug pattern', () => {
+    const f = gP23(s80_saas);
+    const doc = f['docs/91_testing_strategy.md'] || '';
+    assert.ok(
+      doc.includes('テナント') || doc.includes('tenant') || doc.includes('Cross-tenant') || doc.includes('Rate limit'),
+      'docs/91 saas must include tenant-related bug pattern'
+    );
+  });
+
+  it('docs/91 ai: contains "Domain-Specific Test Focus (ai)"', () => {
+    const f = gP23(s80_ai);
+    const doc = f['docs/91_testing_strategy.md'] || '';
+    assert.ok(
+      doc.includes('Domain-Specific Test Focus (ai)') || doc.includes('ドメイン別テスト重点領域 (ai)'),
+      'docs/91 ai must include domain-specific test focus section'
+    );
+  });
+
+  it('docs/91 ai: contains prompt injection or token management QA content', () => {
+    const f = gP23(s80_ai);
+    const doc = f['docs/91_testing_strategy.md'] || '';
+    assert.ok(
+      doc.includes('プロンプトインジェクション') || doc.includes('Prompt injection') || doc.includes('トークン') || doc.includes('Token'),
+      'docs/91 ai must include AI-specific test scenarios (prompt injection/token management)'
+    );
+  });
+
+  it('docs/91 ec: contains inventory conflict or cart bug pattern', () => {
+    const f = gP23(s80_ec);
+    const doc = f['docs/91_testing_strategy.md'] || '';
+    assert.ok(
+      doc.includes('在庫') || doc.includes('Inventory') || doc.includes('cart') || doc.includes('カート'),
+      'docs/91 ec must include inventory/cart-related test scenarios'
+    );
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 81 — P25 EN bilingual depth + Supabase/Kysely/docs/100
+   Tests specific English heading names in docs/99-102,
+   Supabase-specific content in docs/100, Kysely compiled queries,
+   and docs/99-102 prose undefined-free for edge stacks
+   ════════════════════════════════════════════════════════════════ */
+describe('Suite 81: P25 EN bilingual depth + Supabase/Kysely DB performance', () => {
+
+  const s81_node = Object.assign({}, A25, {
+    purpose: '在庫・受発注・出荷を管理するサプライチェーン管理システム',
+    frontend: 'React + Next.js',
+    backend: 'Node.js + Express',
+    database: 'PostgreSQL (Neon)',
+    deploy: 'Railway',
+    orm: 'Prisma ORM',
+    mobile: 'なし',
+  });
+
+  const s81_supabase = Object.assign({}, A25, {
+    purpose: 'チームのドキュメント共有・コラボレーションツール',
+    frontend: 'React + Next.js',
+    backend: 'Supabase',
+    database: 'Supabase (PostgreSQL)',
+    auth: 'Supabase Auth',
+    deploy: 'Vercel',
+    orm: '',
+    mobile: 'なし',
+  });
+
+  const s81_kysely = Object.assign({}, A25, {
+    purpose: '軽量APIとクエリ最適化を重視したバックエンドサービス',
+    frontend: 'React + Vite',
+    backend: 'Node.js + Express',
+    database: 'PostgreSQL (Neon)',
+    deploy: 'Railway',
+    orm: 'Kysely',
+    mobile: 'なし',
+  });
+
+  const s81_cf = Object.assign({}, A25, {
+    purpose: 'グローバルエッジAPIサービス',
+    frontend: 'React + Vite',
+    backend: 'Node.js + Hono',
+    database: 'Neon (PostgreSQL)',
+    deploy: 'Cloudflare Workers',
+    orm: 'Drizzle ORM',
+    mobile: 'なし',
+  });
+
+  // ── EN bilingual heading tests ──
+  it('docs/99 EN: contains "Core Web Vitals Targets" heading', () => {
+    const f = gPerf(s81_node, 'en');
+    const doc = f['docs/99_performance_strategy.md'] || '';
+    assert.ok(doc.includes('Core Web Vitals Targets'), 'docs/99 EN must have "Core Web Vitals Targets" heading');
+  });
+
+  it('docs/99 EN: contains "Backend Response Time Targets" heading', () => {
+    const f = gPerf(s81_node, 'en');
+    const doc = f['docs/99_performance_strategy.md'] || '';
+    assert.ok(doc.includes('Backend Response Time Targets'), 'docs/99 EN must have "Backend Response Time Targets" heading');
+  });
+
+  it('docs/100 EN: contains "Index Design" section heading', () => {
+    const f = gPerf(s81_node, 'en');
+    const doc = f['docs/100_database_performance.md'] || '';
+    assert.ok(doc.includes('Index Design'), 'docs/100 EN must have "Index Design" section');
+  });
+
+  it('docs/100 EN: contains "N+1 Problem" section heading', () => {
+    const f = gPerf(s81_node, 'en');
+    const doc = f['docs/100_database_performance.md'] || '';
+    assert.ok(doc.includes('N+1 Problem'), 'docs/100 EN must have "N+1 Problem" section');
+  });
+
+  it('docs/101 EN: contains "CDN Edge Cache" section heading', () => {
+    const f = gPerf(s81_node, 'en');
+    const doc = f['docs/101_cache_strategy.md'] || '';
+    assert.ok(doc.includes('CDN Edge Cache'), 'docs/101 EN must have "CDN Edge Cache" section');
+  });
+
+  it('docs/101 EN: contains "Application Cache" section heading', () => {
+    const f = gPerf(s81_node, 'en');
+    const doc = f['docs/101_cache_strategy.md'] || '';
+    assert.ok(doc.includes('Application Cache'), 'docs/101 EN must have "Application Cache" section');
+  });
+
+  // ── Supabase/Kysely DB specifics ──
+  it('docs/100 Supabase: contains pg_stat_statements section', () => {
+    const f = gPerf(s81_supabase);
+    const doc = f['docs/100_database_performance.md'] || '';
+    assert.ok(
+      doc.includes('pg_stat_statements') || doc.includes('Supabase') || doc.includes('Query Performance'),
+      'docs/100 Supabase must include pg_stat_statements or Supabase Query Performance section'
+    );
+  });
+
+  it('docs/100 Kysely: contains compiled queries pattern', () => {
+    const f = gPerf(s81_kysely);
+    const doc = f['docs/100_database_performance.md'] || '';
+    assert.ok(
+      doc.includes('compile') || doc.includes('Kysely') || doc.includes('compiled'),
+      'docs/100 Kysely must include compiled queries performance tip'
+    );
+  });
+
+  it('docs/99-102: no undefined in prose for Cloudflare+Drizzle stack', () => {
+    const f = gPerf(s81_cf);
+    ['docs/99_performance_strategy.md','docs/100_database_performance.md',
+     'docs/101_cache_strategy.md','docs/102_performance_monitoring.md'].forEach(key => {
+      const prose = (f[key] || '').replace(/```[\s\S]*?```/g, '');
+      assert.ok(!prose.includes('undefined'), key + ' Cloudflare+Drizzle prose must not contain undefined');
+    });
+  });
+});
