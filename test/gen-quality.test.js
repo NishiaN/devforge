@@ -6691,3 +6691,321 @@ describe('Suite 72: P24 AI Safety — risk categories, guardrail layers, eval me
     assert.ok(f['docs/96_ai_guardrail_implementation.md'], 'docs/96 must still be generated');
   });
 });
+
+// ─────────────────────────────────────────────
+//   Suite 73 — P22 Database EN bilingual
+// ─────────────────────────────────────────────
+describe('Suite 73: P22 Database Intelligence — English mode bilingual coverage', () => {
+  const s73_prisma = Object.assign({}, A25, {
+    backend: 'Express.js + Node.js',
+    database: 'PostgreSQL (Neon)',
+    orm: 'Prisma ORM',
+  });
+  const s73_py = Object.assign({}, A25, {
+    backend: 'Python / FastAPI',
+    database: 'PostgreSQL (Neon)',
+    orm: 'SQLAlchemy',
+  });
+  const s73_drizzle = Object.assign({}, A25, {
+    backend: 'Express.js + Node.js',
+    database: 'PostgreSQL (Neon)',
+    orm: 'Drizzle ORM',
+  });
+  const s73_mongo = Object.assign({}, A25, {
+    backend: 'Express.js + Node.js',
+    database: 'MongoDB',
+    orm: '',
+  });
+
+  it('gDB EN: all 4 docs/87-90 generated in English mode', () => {
+    const f = gDB(s73_prisma, 'en');
+    assert.ok(f['docs/87_database_design_principles.md'], 'docs/87 EN required');
+    assert.ok(f['docs/88_query_optimization_guide.md'], 'docs/88 EN required');
+    assert.ok(f['docs/89_migration_strategy.md'], 'docs/89 EN required');
+    assert.ok(f['docs/90_backup_disaster_recovery.md'], 'docs/90 EN required');
+  });
+
+  it('gDB EN: docs/87 uses English headings (Database Design Principles)', () => {
+    const f = gDB(s73_prisma, 'en');
+    const doc = f['docs/87_database_design_principles.md'] || '';
+    assert.ok(doc.includes('Database Design Principles'), 'docs/87 EN must have English title');
+    assert.ok(doc.includes('Soft Delete') || doc.includes('deleted_at'), 'docs/87 EN must have soft delete');
+    assert.ok(!doc.includes('データベース設計原則'), 'docs/87 EN must not have Japanese heading');
+  });
+
+  it('gDB EN: docs/87 MongoDB uses English embed-vs-reference guidance', () => {
+    const f = gDB(s73_mongo, 'en');
+    const doc = f['docs/87_database_design_principles.md'] || '';
+    assert.ok(doc.includes('embed') || doc.includes('Embed'), 'docs/87 EN MongoDB must have embed guidance');
+    assert.ok(doc.includes('16MB') || doc.includes('Document Size'), 'docs/87 EN MongoDB must have document size limit');
+  });
+
+  it('gDB EN: docs/88 uses English headings and N+1 section', () => {
+    const f = gDB(s73_prisma, 'en');
+    const doc = f['docs/88_query_optimization_guide.md'] || '';
+    assert.ok(doc.includes('Query Optimization Guide'), 'docs/88 EN must have English title');
+    assert.ok(doc.includes('N+1'), 'docs/88 EN must have N+1 section');
+    assert.ok(doc.includes('EXPLAIN'), 'docs/88 EN must have EXPLAIN ANALYZE');
+  });
+
+  it('gDB EN: docs/88 Python has English joinedload / selectinload guidance', () => {
+    const f = gDB(s73_py, 'en');
+    const doc = f['docs/88_query_optimization_guide.md'] || '';
+    assert.ok(doc.includes('joinedload') || doc.includes('selectinload'), 'docs/88 EN Python must show eager loading');
+  });
+
+  it('gDB EN: docs/89 uses English heading and Expand-Contract pattern', () => {
+    const f = gDB(s73_prisma, 'en');
+    const doc = f['docs/89_migration_strategy.md'] || '';
+    assert.ok(doc.includes('Migration Strategy'), 'docs/89 EN must have English title');
+    assert.ok(doc.includes('Expand-Contract'), 'docs/89 EN must have Expand-Contract pattern');
+    assert.ok(doc.includes('Zero-Downtime'), 'docs/89 EN must mention zero-downtime');
+  });
+
+  it('gDB EN: docs/90 uses English headings and has RTO / RPO targets', () => {
+    const f = gDB(s73_prisma, 'en');
+    const doc = f['docs/90_backup_disaster_recovery.md'] || '';
+    assert.ok(doc.includes('Backup & Disaster Recovery') || doc.includes('Backup'), 'docs/90 EN must have English title');
+    assert.ok(doc.includes('RTO') && doc.includes('RPO'), 'docs/90 EN must have RTO/RPO');
+    assert.ok(doc.includes('Recovery Time Objective'), 'docs/90 EN must spell out RTO definition');
+  });
+
+  it('gDB EN: bilingual parity — EN docs are as long as JA docs (within 30%)', () => {
+    const fJa = gDB(s73_prisma, 'ja');
+    const fEn = gDB(s73_prisma, 'en');
+    ['docs/87_database_design_principles.md','docs/88_query_optimization_guide.md',
+     'docs/89_migration_strategy.md','docs/90_backup_disaster_recovery.md'].forEach(key => {
+      const ja = (fJa[key] || '').length;
+      const en = (fEn[key] || '').length;
+      assert.ok(en > 400, key + ' EN must have substantial content');
+      assert.ok(en > ja * 0.5, key + ' EN should be at least 50% the length of JA');
+    });
+  });
+
+  it('gDB EN: docs/87-90 prose contains no undefined (Drizzle + EN)', () => {
+    const f = gDB(s73_drizzle, 'en');
+    ['docs/87_database_design_principles.md','docs/88_query_optimization_guide.md',
+     'docs/89_migration_strategy.md','docs/90_backup_disaster_recovery.md'].forEach(key => {
+      const prose = (f[key] || '').replace(/```[\s\S]*?```/g, '');
+      assert.ok(!prose.includes('undefined'), key + ' EN prose must not contain undefined');
+    });
+  });
+});
+
+// ─────────────────────────────────────────────
+//   Suite 74 — P24 AI Safety EN bilingual + domain guardrails
+// ─────────────────────────────────────────────
+describe('Suite 74: P24 AI Safety — English mode + domain-specific guardrails (fintech, health, legal)', () => {
+  const s74_ai = Object.assign({}, A25, {
+    ai_auto: 'マルチAIエージェント活用',
+    backend: 'Next.js (App Router) + tRPC',
+  });
+  const s74_fintech = Object.assign({}, A25, {
+    purpose: '銀行API連携による家計簿・資産管理プラットフォーム',
+    ai_auto: 'マルチAIエージェント活用',
+    backend: 'NestJS + TypeORM',
+    database: 'PostgreSQL (Neon)',
+  });
+  const s74_health = Object.assign({}, A25, {
+    purpose: '患者の健康データと医療記録を管理するヘルスケアプラットフォーム',
+    ai_auto: 'マルチAIエージェント活用',
+    backend: 'Python / FastAPI',
+  });
+  const s74_legal = Object.assign({}, A25, {
+    purpose: '弁護士向け契約書レビューと法務相談管理システム',
+    ai_auto: 'Claude APIを活用した自律エージェント',
+    backend: 'Next.js (App Router) + tRPC',
+  });
+
+  it('gAISafety EN: all 4 docs/95-98 generated in English mode', () => {
+    const f = gAISafety(s74_ai, 'en');
+    assert.ok(f['docs/95_ai_safety_framework.md'], 'docs/95 EN required');
+    assert.ok(f['docs/96_ai_guardrail_implementation.md'], 'docs/96 EN required');
+    assert.ok(f['docs/97_ai_model_evaluation.md'], 'docs/97 EN required');
+    assert.ok(f['docs/98_prompt_injection_defense.md'], 'docs/98 EN required');
+  });
+
+  it('gAISafety EN: docs/95 uses English headings and risk category names', () => {
+    const f = gAISafety(s74_ai, 'en');
+    const doc = f['docs/95_ai_safety_framework.md'] || '';
+    assert.ok(doc.includes('AI Safety Framework'), 'docs/95 EN must have English title');
+    assert.ok(doc.includes('Hallucination'), 'docs/95 EN must show Hallucination (not ハルシネーション)');
+    assert.ok(doc.includes('Prompt Injection'), 'docs/95 EN must show Prompt Injection');
+    assert.ok(!doc.includes('AIリスクカテゴリ'), 'docs/95 EN must not have Japanese section heading');
+  });
+
+  it('gAISafety EN: docs/95 compliance table in English', () => {
+    const f = gAISafety(s74_ai, 'en');
+    const doc = f['docs/95_ai_safety_framework.md'] || '';
+    assert.ok(doc.includes('EU AI Act'), 'docs/95 EN must have EU AI Act');
+    assert.ok(doc.includes('High-risk AI') || doc.includes('conformity assessment'), 'docs/95 EN must have English compliance description');
+  });
+
+  it('gAISafety EN: docs/96 Layer labels in English', () => {
+    const f = gAISafety(s74_ai, 'en');
+    const doc = f['docs/96_ai_guardrail_implementation.md'] || '';
+    assert.ok(doc.includes('Input Validation Layer'), 'docs/96 EN must have English layer name');
+    assert.ok(doc.includes('Audit & Logging Layer'), 'docs/96 EN must have audit layer in English');
+  });
+
+  it('gAISafety: fintech domain docs/95 has domain-specific guardrails (negative balance prevention)', () => {
+    const f = gAISafety(s74_fintech);
+    const doc = f['docs/95_ai_safety_framework.md'] || '';
+    assert.ok(
+      doc.includes('残高マイナス') || doc.includes('Prevent negative balance'),
+      'fintech docs/95 must have negative balance guardrail'
+    );
+  });
+
+  it('gAISafety: health domain docs/95 has domain-specific guardrails (consent access prevention)', () => {
+    const f = gAISafety(s74_health);
+    const doc = f['docs/95_ai_safety_framework.md'] || '';
+    assert.ok(
+      doc.includes('同意なしアクセス') || doc.includes('Prevent access without consent'),
+      'health docs/95 must have consent guardrail'
+    );
+  });
+
+  it('gAISafety: legal domain docs/95 has domain-specific guardrails (contract tampering prevention)', () => {
+    const f = gAISafety(s74_legal);
+    const doc = f['docs/95_ai_safety_framework.md'] || '';
+    assert.ok(
+      doc.includes('不正変更') || doc.includes('Prevent unauthorized contract'),
+      'legal docs/95 must have contract tampering guardrail'
+    );
+  });
+
+  it('gAISafety EN: docs/98 injection defense uses English pattern names', () => {
+    const f = gAISafety(s74_ai, 'en');
+    const doc = f['docs/98_prompt_injection_defense.md'] || '';
+    assert.ok(doc.includes('Input sanitization'), 'docs/98 EN must have English pattern name');
+    assert.ok(doc.includes('Privilege separation') || doc.includes('privilege separation'), 'docs/98 EN must have privilege separation in English');
+    assert.ok(doc.includes('Prompt Injection Defense'), 'docs/98 EN must have English title');
+  });
+
+  it('gAISafety EN: bilingual parity — EN docs/95 substantial length', () => {
+    const fJa = gAISafety(s74_ai, 'ja');
+    const fEn = gAISafety(s74_ai, 'en');
+    const ja = (fJa['docs/95_ai_safety_framework.md'] || '').length;
+    const en = (fEn['docs/95_ai_safety_framework.md'] || '').length;
+    assert.ok(en > 800, 'docs/95 EN must be substantial');
+    assert.ok(en > ja * 0.6, 'docs/95 EN should be at least 60% the length of JA');
+  });
+});
+
+// ─────────────────────────────────────────────
+//   Suite 75 — P21-P25 multi-pillar smoke test
+// ─────────────────────────────────────────────
+describe('Suite 75: P21–P25 multi-pillar smoke — all docs/83-102 generated from one answer set', () => {
+  const s75_full = Object.assign({}, A25, {
+    backend: 'Express.js + Node.js',
+    database: 'PostgreSQL (Neon)',
+    orm: 'Prisma ORM',
+    ai_auto: 'マルチAIエージェント活用',
+  });
+  const s75_py = Object.assign({}, A25, {
+    backend: 'Python / FastAPI',
+    database: 'PostgreSQL (Neon)',
+    orm: 'SQLAlchemy',
+    ai_auto: 'Claude APIを活用した自律エージェント',
+  });
+
+  const ALL_P21_P25 = [
+    'docs/83_api_design_principles.md',
+    'docs/84_openapi_specification.md',
+    'docs/85_api_security_checklist.md',
+    'docs/86_api_testing_strategy.md',
+    'docs/87_database_design_principles.md',
+    'docs/88_query_optimization_guide.md',
+    'docs/89_migration_strategy.md',
+    'docs/90_backup_disaster_recovery.md',
+    'docs/91_testing_strategy.md',
+    'docs/92_coverage_design.md',
+    'docs/93_e2e_test_architecture.md',
+    'docs/94_performance_testing.md',
+    'docs/95_ai_safety_framework.md',
+    'docs/96_ai_guardrail_implementation.md',
+    'docs/97_ai_model_evaluation.md',
+    'docs/98_prompt_injection_defense.md',
+    'docs/99_performance_strategy.md',
+    'docs/100_database_performance.md',
+    'docs/101_cache_strategy.md',
+    'docs/102_performance_monitoring.md',
+  ];
+
+  function runAll(answers, lang) {
+    S.files={}; S.genLang=lang||'ja'; S.skill='intermediate';
+    genPillar21_APIIntelligence(answers,'QTest');
+    genPillar22_DatabaseIntelligence(answers,'QTest');
+    genPillar23_TestingIntelligence(answers,'QTest');
+    genPillar24_AISafety(answers,'QTest');
+    genPillar25_Performance(answers,'QTest');
+    return Object.assign({},S.files);
+  }
+
+  it('smoke: Express+Prisma generates all 20 docs (83-102)', () => {
+    const f = runAll(s75_full);
+    ALL_P21_P25.forEach(key => {
+      assert.ok(f[key], key + ' must be generated');
+    });
+  });
+
+  it('smoke: Python+SQLAlchemy generates all 20 docs (83-102)', () => {
+    const f = runAll(s75_py);
+    ALL_P21_P25.forEach(key => {
+      assert.ok(f[key], key + ' must be generated');
+    });
+  });
+
+  it('smoke: no file among docs/83-102 is empty (> 200 chars each)', () => {
+    const f = runAll(s75_full);
+    ALL_P21_P25.forEach(key => {
+      assert.ok((f[key] || '').length > 200, key + ' must not be empty');
+    });
+  });
+
+  it('smoke EN: all 20 docs generated in English mode', () => {
+    const f = runAll(s75_full, 'en');
+    ALL_P21_P25.forEach(key => {
+      assert.ok(f[key], key + ' must be generated in EN mode');
+    });
+  });
+
+  it('smoke EN: no docs/83-102 file is empty in English mode', () => {
+    const f = runAll(s75_full, 'en');
+    ALL_P21_P25.forEach(key => {
+      assert.ok((f[key] || '').length > 200, key + ' EN must not be empty');
+    });
+  });
+
+  it('smoke: docs/83-102 prose has no undefined (Express+Prisma)', () => {
+    const f = runAll(s75_full);
+    ALL_P21_P25.forEach(key => {
+      const prose = (f[key] || '').replace(/```[\s\S]*?```/g, '');
+      assert.ok(!prose.includes('undefined'), key + ' prose must not contain undefined');
+    });
+  });
+
+  it('smoke: docs/83-102 prose has no undefined (Python+SQLAlchemy)', () => {
+    const f = runAll(s75_py);
+    ALL_P21_P25.forEach(key => {
+      const prose = (f[key] || '').replace(/```[\s\S]*?```/g, '');
+      assert.ok(!prose.includes('undefined'), key + ' prose must not contain undefined');
+    });
+  });
+
+  it('smoke EN: docs/83-102 prose has no undefined in English mode', () => {
+    const f = runAll(s75_full, 'en');
+    ALL_P21_P25.forEach(key => {
+      const prose = (f[key] || '').replace(/```[\s\S]*?```/g, '');
+      assert.ok(!prose.includes('undefined'), key + ' EN prose must not contain undefined');
+    });
+  });
+
+  it('smoke: Python+SQLAlchemy EN mode — all 20 docs present and non-empty', () => {
+    const f = runAll(s75_py, 'en');
+    ALL_P21_P25.forEach(key => {
+      assert.ok((f[key] || '').length > 200, key + ' Python EN must not be empty');
+    });
+  });
+});
