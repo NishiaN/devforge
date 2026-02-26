@@ -18,7 +18,7 @@
  *   Domain   detectDomain     → .spec/constitution.md §3 fallback KPI
  *   E2E      full generation  → file count, token richness, bilingual parity
  *
- * Suites 1-98: 1030 tests total
+ * Suites 1-98: 1033 tests total
  */
 
 const { describe, it } = require('node:test');
@@ -9813,7 +9813,7 @@ describe('Suite 97: P26 Observability depth — docs/103-106', () => {
 
 /* ════════════════════════════════════════════════════════════════
    Suite 98 — P26 Observability backend/ORM depth
-   Kysely, TypeORM, Drizzle, Java/Spring, Vercel deploy,
+   Kysely, TypeORM, Drizzle, Java/Spring, Vercel deploy, Cloudflare Workers,
    no-ORM, fintech domain (フィンテック), bilingual ORM parity
    ════════════════════════════════════════════════════════════════ */
 
@@ -9864,6 +9864,14 @@ const obsNoORM = {
   auth: 'JWT',
   mvp_features: 'ユーザー管理, データAPI, 認証',
   data_entities: 'User, Session, Log',
+};
+const obsCloudflare = {
+  purpose: 'グローバルEdge APIゲートウェイ・レート制限サービス',
+  frontend: 'React + Next.js', backend: 'Node.js + Hono (Cloudflare Workers)',
+  database: 'PostgreSQL', deploy: 'Cloudflare Pages', orm: 'Drizzle',
+  auth: 'JWT',
+  mvp_features: 'APIゲートウェイ, レート制限, 認証',
+  data_entities: 'User, ApiKey, RateLimit, RequestLog',
 };
 
 describe('Suite 98: P26 Observability — backend/ORM depth', () => {
@@ -10003,5 +10011,32 @@ describe('Suite 98: P26 Observability — backend/ORM depth', () => {
     const doc = f['docs/104_structured_logging.md'] || '';
     assert.ok(doc.includes('SLF4J'), 'docs/104 EN Java must include SLF4J');
     assert.ok(doc.includes('REDACTED'), 'docs/104 EN Java must include REDACTED masking');
+  });
+
+  // ── Cloudflare Workers ───────────────────────────────────────────
+  it('gObs Cloudflare: docs/103 uses Cloudflare stack (Logpush / Grafana Cloud)', () => {
+    const f = gObs(obsCloudflare);
+    const doc = f['docs/103_observability_architecture.md'] || '';
+    assert.ok(doc.includes('Cloudflare Logpush'), 'docs/103 Cloudflare must include Logpush');
+    assert.ok(doc.includes('Grafana Cloud'), 'docs/103 Cloudflare must reference Grafana Cloud');
+    assert.ok(!doc.includes('OpenTelemetry Collector (Docker)'), 'docs/103 Cloudflare must not show Docker collector');
+    assert.ok(!doc.includes('AWS ADOT'), 'docs/103 Cloudflare must not show AWS ADOT');
+  });
+
+  it('gObs Cloudflare: docs/106 uses edge-compatible OTel (not sdk-node)', () => {
+    const f = gObs(obsCloudflare);
+    const doc = f['docs/106_distributed_tracing.md'] || '';
+    assert.ok(doc.includes('@opentelemetry/api (edge-compatible)') || doc.includes('otel-cf-workers'), 'docs/106 Cloudflare must use edge-compatible OTel');
+    assert.ok(!doc.includes('@opentelemetry/sdk-node'), 'docs/106 Cloudflare must not use Node.js SDK');
+    assert.ok(!doc.includes('java -javaagent'), 'docs/106 Cloudflare must not show Java agent');
+  });
+
+  it('gObs Cloudflare: docs/104 has Drizzle logQuery + no Node/Python contamination', () => {
+    const f = gObs(obsCloudflare);
+    const doc = f['docs/104_structured_logging.md'] || '';
+    assert.ok(doc.includes('Drizzle') || doc.includes('drizzle'), 'docs/104 Cloudflare/Drizzle must mention Drizzle');
+    assert.ok(doc.includes('logQuery'), 'docs/104 Cloudflare/Drizzle must include logQuery');
+    assert.ok(!doc.includes('structlog'), 'docs/104 Cloudflare must not include Python structlog');
+    assert.ok(!doc.includes('SLF4J'), 'docs/104 Cloudflare must not include Java SLF4J');
   });
 });
