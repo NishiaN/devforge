@@ -806,6 +806,10 @@ const COMPAT_RULES=[
   {id:'ai-guardrail-missing',p:['ai_auto','mvp_features'],lv:'warn',
    t:a=>{
      if(!a.ai_auto||/なし|None/i.test(a.ai_auto))return false;
+     // UPP G-5 defaults ('マルチAgent協調' / 'Vibe Coding入門') represent dev tooling, not LLM product features
+     if(/^(マルチAgent協調|Vibe\s?Coding入門)$/.test(a.ai_auto))return false;
+     const scale=a.scale||'medium';
+     if(scale==='solo')return false;
      return !/(guardrail|ガードレール|安全|safety|filter|フィルタ|sanitize|moderate|モデレート|validation|検証)/i.test(a.mvp_features||'');
    },
    ja:'AI機能が有効ですが、mvp_featuresにガードレール/安全フィルタの記述がありません。入力検証・出力モデレーション・レート制限を実装してください (docs/96参照)',
