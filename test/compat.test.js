@@ -1,4 +1,4 @@
-// Compat rules functional test (152 rules: 26 ERROR + 94 WARN + 32 INFO)
+// Compat rules functional test (157 rules: 29 ERROR + 96 WARN + 32 INFO)
 const assert=require('node:assert/strict');
 const S={lang:'ja',skill:'pro'};
 eval(require('fs').readFileSync('src/data/compat-rules.js','utf-8'));
@@ -361,6 +361,21 @@ const tests=[
   // auth-cognito-supabase (WARN)
   {name:'Cognito+SupabaseDB=WARN',a:{auth:'AWS Cognito',database:'Supabase (PostgreSQL)'},expect:'warn',id:'auth-cognito-supabase'},
   {name:'SupabaseAuth+SupabaseDB=noCognitoWARN',a:{auth:'Supabase Auth',database:'Supabase (PostgreSQL)'},expect:'none',id:'auth-cognito-supabase'},
+  // be-dep-spring-vercel (ERROR) — Spring Boot + Vercel
+  {name:'SpringBoot+Vercel=ERROR',a:{backend:'Spring Boot (Java)',deploy:'Vercel'},expect:'error',id:'be-dep-spring-vercel'},
+  {name:'SpringBoot+Railway=noSpringVercelERROR',a:{backend:'Spring Boot (Java)',deploy:'Railway'},expect:'none',id:'be-dep-spring-vercel'},
+  // be-dep-bun-vercel (ERROR) — Bun + Vercel
+  {name:'Bun+Vercel=ERROR',a:{backend:'Bun + Hono',deploy:'Vercel'},expect:'error',id:'be-dep-bun-vercel'},
+  {name:'Node+Vercel=noBunVercelERROR',a:{backend:'Node.js + Express',deploy:'Vercel'},expect:'none',id:'be-dep-bun-vercel'},
+  // orm-mongoose-fs (ERROR) — Mongoose + Firestore
+  {name:'Mongoose+Firestore=ERROR',a:{orm:'Mongoose',database:'Firestore'},expect:'error',id:'orm-mongoose-fs'},
+  {name:'Mongoose+MongoDB=noMongooseFsERROR',a:{orm:'Mongoose',database:'MongoDB'},expect:'none',id:'orm-mongoose-fs'},
+  // auth-nextauth-supabase-rls (WARN) — NextAuth + Supabase
+  {name:'NextAuth+SupabaseDB=WARN',a:{auth:'NextAuth (Auth.js)',database:'Supabase (PostgreSQL)'},expect:'warn',id:'auth-nextauth-supabase-rls'},
+  {name:'SupabaseAuth+SupabaseDB=noNextAuthRlsWARN',a:{auth:'Supabase Auth',database:'Supabase (PostgreSQL)'},expect:'none',id:'auth-nextauth-supabase-rls'},
+  // auth-clerk-firebase (WARN) — Clerk + Firebase/Firestore
+  {name:'Clerk+Firebase=WARN',a:{auth:'Clerk',backend:'Firebase'},expect:'warn',id:'auth-clerk-firebase'},
+  {name:'FirebaseAuth+Firebase=noClerkFbWARN',a:{auth:'Firebase Auth',backend:'Firebase'},expect:'none',id:'auth-clerk-firebase'},
 ];
 
 let pass=0,fail=0;
