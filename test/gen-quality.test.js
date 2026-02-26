@@ -6427,3 +6427,267 @@ describe('Suite 69: presets-ext3 P25 EN bilingual + P23 EN — remaining presets
     assert.ok(!doc.includes('undefined'), 'freelance_platform EN docs/91 must not contain undefined');
   });
 });
+
+// ─────────────────────────────────────────────
+//   Suite 70 — P22 Database Intelligence
+// ─────────────────────────────────────────────
+describe('Suite 70: P22 Database Intelligence — ORM, migration, backup comprehensive coverage', () => {
+  const s70_prisma = Object.assign({}, A25, {
+    backend: 'Express.js + Node.js',
+    database: 'PostgreSQL (Neon)',
+    orm: 'Prisma ORM',
+  });
+  const s70_py = Object.assign({}, A25, {
+    backend: 'Python / FastAPI',
+    database: 'PostgreSQL (Neon)',
+    orm: 'SQLAlchemy',
+  });
+  const s70_drizzle = Object.assign({}, A25, {
+    backend: 'Express.js + Node.js',
+    database: 'PostgreSQL (Neon)',
+    orm: 'Drizzle ORM',
+  });
+  const s70_mongo = Object.assign({}, A25, {
+    backend: 'Express.js + Node.js',
+    database: 'MongoDB',
+    orm: '',
+  });
+
+  it('gDB: Prisma+PostgreSQL generates all 4 docs (87-90)', () => {
+    const f = gDB(s70_prisma);
+    assert.ok(f['docs/87_database_design_principles.md'], 'docs/87 required');
+    assert.ok(f['docs/88_query_optimization_guide.md'], 'docs/88 required');
+    assert.ok(f['docs/89_migration_strategy.md'], 'docs/89 required');
+    assert.ok(f['docs/90_backup_disaster_recovery.md'], 'docs/90 required');
+  });
+
+  it('gDB: docs/87 PostgreSQL has soft-delete, UUID, 3NF principles', () => {
+    const f = gDB(s70_prisma);
+    const doc = f['docs/87_database_design_principles.md'] || '';
+    assert.ok(doc.includes('Soft Delete') || doc.includes('deleted_at'), 'docs/87 must have soft delete');
+    assert.ok(doc.includes('UUID'), 'docs/87 must have UUID key convention');
+    assert.ok(doc.includes('3NF') || doc.includes('正規化'), 'docs/87 must mention normalization');
+  });
+
+  it('gDB: docs/87 MongoDB has embed-vs-reference and document size guidance', () => {
+    const f = gDB(s70_mongo);
+    const doc = f['docs/87_database_design_principles.md'] || '';
+    assert.ok(doc.includes('Embed') || doc.includes('Reference'), 'docs/87 MongoDB must have embed-vs-reference');
+    assert.ok(doc.includes('Document Size') || doc.includes('16MB'), 'docs/87 MongoDB must have document size limit');
+  });
+
+  it('gDB: docs/88 has N+1 section and EXPLAIN ANALYZE for Prisma', () => {
+    const f = gDB(s70_prisma);
+    const doc = f['docs/88_query_optimization_guide.md'] || '';
+    assert.ok(doc.includes('N+1'), 'docs/88 must have N+1 problem section');
+    assert.ok(doc.includes('EXPLAIN'), 'docs/88 Prisma must include EXPLAIN ANALYZE');
+    assert.ok(doc.includes('include'), 'docs/88 Prisma must show include pattern');
+  });
+
+  it('gDB: docs/88 Python/SQLAlchemy has joinedload or selectinload', () => {
+    const f = gDB(s70_py);
+    const doc = f['docs/88_query_optimization_guide.md'] || '';
+    assert.ok(doc.includes('joinedload') || doc.includes('selectinload'), 'docs/88 Python must show eager loading');
+  });
+
+  it('gDB: docs/88 Drizzle has with() or leftJoin pattern', () => {
+    const f = gDB(s70_drizzle);
+    const doc = f['docs/88_query_optimization_guide.md'] || '';
+    assert.ok(doc.includes('.with(') || doc.includes('leftJoin'), 'docs/88 Drizzle must show relation loading');
+  });
+
+  it('gDB: docs/89 has Expand-Contract pattern', () => {
+    const f = gDB(s70_prisma);
+    const doc = f['docs/89_migration_strategy.md'] || '';
+    assert.ok(doc.includes('Expand-Contract') || doc.includes('エクスパンド'), 'docs/89 must show expand-contract pattern');
+  });
+
+  it('gDB: docs/89 Python uses alembic; Prisma uses prisma migrate', () => {
+    const fPy = gDB(s70_py);
+    const fPrisma = gDB(s70_prisma);
+    assert.ok((fPy['docs/89_migration_strategy.md'] || '').includes('alembic'), 'Python docs/89 must reference alembic');
+    assert.ok((fPrisma['docs/89_migration_strategy.md'] || '').includes('prisma migrate'), 'Prisma docs/89 must reference prisma migrate');
+  });
+
+  it('gDB: docs/90 has RTO and RPO targets', () => {
+    const f = gDB(s70_prisma);
+    const doc = f['docs/90_backup_disaster_recovery.md'] || '';
+    assert.ok(doc.includes('RTO'), 'docs/90 must have RTO');
+    assert.ok(doc.includes('RPO'), 'docs/90 must have RPO');
+  });
+});
+
+// ─────────────────────────────────────────────
+//   Suite 71 — P23 Testing Intelligence
+// ─────────────────────────────────────────────
+describe('Suite 71: P23 Testing Intelligence — frameworks, coverage, E2E, performance testing', () => {
+  const s71_nextjs = Object.assign({}, A25, {
+    backend: 'Next.js (App Router) + tRPC',
+    orm: 'Prisma ORM',
+  });
+  const s71_py = Object.assign({}, A25, {
+    backend: 'Python / FastAPI',
+    orm: 'SQLAlchemy',
+  });
+  const s71_express = Object.assign({}, A25, {
+    backend: 'Express.js + Node.js',
+    orm: 'Drizzle ORM',
+  });
+
+  it('gTest: Next.js generates all 4 docs (91-94)', () => {
+    const f = gTest(s71_nextjs);
+    assert.ok(f['docs/91_testing_strategy.md'], 'docs/91 required');
+    assert.ok(f['docs/92_coverage_design.md'], 'docs/92 required');
+    assert.ok(f['docs/93_e2e_test_architecture.md'], 'docs/93 required');
+    assert.ok(f['docs/94_performance_testing.md'], 'docs/94 required');
+  });
+
+  it('gTest: docs/91 has test pyramid with 70% / 20% / 10% ratios', () => {
+    const f = gTest(s71_nextjs);
+    const doc = f['docs/91_testing_strategy.md'] || '';
+    assert.ok(doc.includes('70%'), 'docs/91 must show 70% unit test ratio');
+    assert.ok(doc.includes('20%'), 'docs/91 must show 20% integration ratio');
+    assert.ok(doc.includes('10%'), 'docs/91 must show 10% E2E ratio');
+  });
+
+  it('gTest: docs/91 Next.js recommends Jest or Vitest', () => {
+    const f = gTest(s71_nextjs);
+    const doc = f['docs/91_testing_strategy.md'] || '';
+    assert.ok(doc.includes('Jest') || doc.includes('Vitest'), 'Next.js must recommend Jest/Vitest');
+  });
+
+  it('gTest: docs/91 Python has pytest + asyncio', () => {
+    const f = gTest(s71_py);
+    const doc = f['docs/91_testing_strategy.md'] || '';
+    assert.ok(doc.includes('pytest'), 'Python must recommend pytest');
+    assert.ok(doc.includes('asyncio') || doc.includes('async'), 'Python FastAPI must cover async testing');
+  });
+
+  it('gTest: docs/92 Node.js has v8 coverage provider and 80% threshold', () => {
+    const f = gTest(s71_express);
+    const doc = f['docs/92_coverage_design.md'] || '';
+    assert.ok(doc.includes('v8') || doc.includes('coverageThresholds'), 'docs/92 Node must show coverage config');
+    assert.ok(doc.includes('80'), 'docs/92 must show 80% coverage threshold');
+  });
+
+  it('gTest: docs/92 Python has --cov-fail-under=80', () => {
+    const f = gTest(s71_py);
+    const doc = f['docs/92_coverage_design.md'] || '';
+    assert.ok(doc.includes('cov-fail-under'), 'Python docs/92 must set fail-under threshold');
+  });
+
+  it('gTest: docs/93 has Playwright and Page Object Model', () => {
+    const f = gTest(s71_nextjs);
+    const doc = f['docs/93_e2e_test_architecture.md'] || '';
+    assert.ok(doc.includes('Playwright'), 'docs/93 must recommend Playwright');
+    assert.ok(doc.includes('Page Object') || doc.includes('POM'), 'docs/93 must have Page Object Model');
+  });
+
+  it('gTest: docs/94 Express has k6 load test', () => {
+    const f = gTest(s71_express);
+    const doc = f['docs/94_performance_testing.md'] || '';
+    assert.ok(doc.includes('k6'), 'docs/94 non-BaaS must include k6 load testing');
+  });
+
+  it('gTest: bilingual parity — ja and en both have substantial docs/91', () => {
+    const fJa = gTest(s71_nextjs, 'ja');
+    const fEn = gTest(s71_nextjs, 'en');
+    assert.ok((fJa['docs/91_testing_strategy.md'] || '').length > 800, 'Japanese docs/91 must be substantial');
+    assert.ok((fEn['docs/91_testing_strategy.md'] || '').length > 800, 'English docs/91 must be substantial');
+  });
+
+  it('gTest: docs/91-94 prose (outside code fences) contains no undefined across stacks', () => {
+    [s71_nextjs, s71_py, s71_express].forEach(ans => {
+      const f = gTest(ans);
+      ['docs/91_testing_strategy.md','docs/92_coverage_design.md',
+       'docs/93_e2e_test_architecture.md','docs/94_performance_testing.md'].forEach(key => {
+        // Strip code fences before checking — code like `workers: process.env.CI ? 2 : undefined` is legit
+        const prose = (f[key] || '').replace(/```[\s\S]*?```/g, '');
+        assert.ok(!prose.includes('undefined'), key + ' prose must not contain undefined');
+      });
+    });
+  });
+});
+
+// ─────────────────────────────────────────────
+//   Suite 72 — P24 AI Safety Intelligence
+// ─────────────────────────────────────────────
+describe('Suite 72: P24 AI Safety — risk categories, guardrail layers, eval metrics, injection defense', () => {
+  const s72_ai = Object.assign({}, A25, {
+    ai_auto: 'マルチAIエージェント活用',
+    backend: 'Next.js (App Router) + tRPC',
+  });
+  const s72_noai = Object.assign({}, A25, {
+    ai_auto: 'なし',
+    backend: 'Express.js + Node.js',
+  });
+
+  it('gAISafety: generates all 4 docs (95-98)', () => {
+    const f = gAISafety(s72_ai);
+    assert.ok(f['docs/95_ai_safety_framework.md'], 'docs/95 required');
+    assert.ok(f['docs/96_ai_guardrail_implementation.md'], 'docs/96 required');
+    assert.ok(f['docs/97_ai_model_evaluation.md'], 'docs/97 required');
+    assert.ok(f['docs/98_prompt_injection_defense.md'], 'docs/98 required');
+  });
+
+  it('gAISafety: docs/95 lists all 6 risk categories (ja or en)', () => {
+    const f = gAISafety(s72_ai);
+    const doc = f['docs/95_ai_safety_framework.md'] || '';
+    // AI_RISK_CATEGORIES output ja names in genLang:'ja' mode
+    [['Hallucination','ハルシネーション'],['Prompt Injection','プロンプトインジェクション'],
+     ['Data Leakage','データ漏洩'],['Bias','バイアス'],['Overreliance','過信'],['Jailbreak','ジェイルブレイク']
+    ].forEach(([en,ja]) => {
+      assert.ok(doc.includes(en) || doc.includes(ja), 'docs/95 must list risk: ' + en);
+    });
+  });
+
+  it('gAISafety: docs/95 compliance table has EU AI Act, NIST AI RMF, ISO/IEC 42001', () => {
+    const f = gAISafety(s72_ai);
+    const doc = f['docs/95_ai_safety_framework.md'] || '';
+    assert.ok(doc.includes('EU AI Act'), 'docs/95 must have EU AI Act');
+    assert.ok(doc.includes('NIST'), 'docs/95 must have NIST AI RMF');
+    assert.ok(doc.includes('ISO'), 'docs/95 must have ISO/IEC 42001');
+  });
+
+  it('gAISafety: docs/95 has Human-in-the-Loop / HITL section', () => {
+    const f = gAISafety(s72_ai);
+    const doc = f['docs/95_ai_safety_framework.md'] || '';
+    assert.ok(doc.includes('Human-in-the-Loop') || doc.includes('HITL'), 'docs/95 must have HITL section');
+  });
+
+  it('gAISafety: docs/96 has all 4 guardrail layers (Layer 1-4) with Input Validation label', () => {
+    const f = gAISafety(s72_ai);
+    const doc = f['docs/96_ai_guardrail_implementation.md'] || '';
+    assert.ok(doc.includes('Layer 1'), 'docs/96 must have Layer 1');
+    assert.ok(doc.includes('Layer 4'), 'docs/96 must have Layer 4');
+    assert.ok(doc.includes('Input Validation') || doc.includes('入力検証'), 'docs/96 must label input validation layer');
+  });
+
+  it('gAISafety: docs/96 has sanitizeUserInput implementation', () => {
+    const f = gAISafety(s72_ai);
+    const doc = f['docs/96_ai_guardrail_implementation.md'] || '';
+    assert.ok(doc.includes('sanitizeUserInput'), 'docs/96 must have sanitizeUserInput function');
+  });
+
+  it('gAISafety: docs/97 has Accuracy, Hallucination Rate, Toxicity metrics', () => {
+    const f = gAISafety(s72_ai);
+    const doc = f['docs/97_ai_model_evaluation.md'] || '';
+    assert.ok(doc.includes('Accuracy') || doc.includes('正確性'), 'docs/97 must have accuracy metric');
+    assert.ok(doc.includes('Hallucination Rate') || doc.includes('ハルシネーション率'), 'docs/97 must have hallucination metric');
+    assert.ok(doc.includes('Toxicity') || doc.includes('有害性'), 'docs/97 must have toxicity metric');
+  });
+
+  it('gAISafety: docs/98 has sanitize pattern, structured output, and privilege separation', () => {
+    const f = gAISafety(s72_ai);
+    const doc = f['docs/98_prompt_injection_defense.md'] || '';
+    assert.ok(doc.includes('sanitize') || doc.includes('サニタイズ'), 'docs/98 must have input sanitization');
+    assert.ok(doc.includes('json_object') || doc.includes('構造化') || doc.includes('structured'), 'docs/98 must have structured output pattern');
+    assert.ok(doc.includes('privilege') || doc.includes('権限'), 'docs/98 must have privilege separation');
+  });
+
+  it('gAISafety: no-AI project generates docs/95-98 (future-proof)', () => {
+    const f = gAISafety(s72_noai);
+    assert.ok((f['docs/95_ai_safety_framework.md'] || '').length > 300, 'docs/95 must exist even when ai_auto=none');
+    assert.ok(f['docs/96_ai_guardrail_implementation.md'], 'docs/96 must still be generated');
+  });
+});
