@@ -23102,6 +23102,10 @@ ec:[{name:'cart_abandonment_rate',ja:'カート放棄率',threshold:'<70%'},{nam
 saas:[{name:'active_tenants_total',ja:'アクティブテナント数',threshold:'Monitor growth'},{name:'api_quota_used_ratio',ja:'APIクォータ使用率',threshold:'Alert >80%'}],
 education:[{name:'course_completion_rate',ja:'コース完了率',threshold:'>60%'},{name:'active_learners_total',ja:'アクティブ学習者数',threshold:'Monitor growth'}],
 logistics:[{name:'delivery_on_time_rate',ja:'定時配送率',threshold:'>95%'},{name:'route_optimization_savings',ja:'ルート最適化削減率',threshold:'Monitor'}],
+analytics:[{name:'pipeline_success_rate',ja:'パイプライン成功率',threshold:'>99%'},{name:'data_freshness_seconds',ja:'データ鮮度（秒）',threshold:'Alert >300s'}],
+manufacturing:[{name:'oee_ratio',ja:'設備総合効率 (OEE)',threshold:'>85%'},{name:'defect_rate',ja:'不良率',threshold:'<1%'}],
+iot:[{name:'device_heartbeat_total',ja:'デバイス死活監視',threshold:'Alert on missing 2+ beats'},{name:'sensor_error_rate',ja:'センサーエラー率',threshold:'<0.1%'}],
+booking:[{name:'booking_conversion_rate',ja:'予約コンバージョン率',threshold:'>15%'},{name:'cancellation_rate',ja:'キャンセル率',threshold:'<20%'}],
 };
 var dm=domainMetrics[domain]||(domainMetrics.saas);
 doc+='## '+(G?'ドメイン固有ビジネスメトリクス'+(domain?' ('+domain+')':''):'Domain Business Metrics'+(domain?' ('+domain+')':''))+'\n\n';
