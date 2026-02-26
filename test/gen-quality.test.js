@@ -6104,3 +6104,326 @@ describe('Suite 66: presets-ext3 P25 Performance + bilingual P23/P25 coverage', 
     assert.ok(!doc.includes('undefined'), 'quiz_app EN docs/101 must not contain undefined');
   });
 });
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 67 — presets-ext3 P25 Performance (remaining 10 presets)
+   Covers the 10 ext3 presets not tested in Suite 66:
+   disaster_info, delivery_tracker, and the 8 Stripe-enabled presets
+   ════════════════════════════════════════════════════════════════ */
+describe('Suite 67: presets-ext3 P25 Performance — remaining 10 presets', () => {
+
+  const mkA67 = (purpose, entities, extra) => Object.assign({}, A25, {purpose, data_entities: entities}, extra||{});
+
+  const s67_disaster = Object.assign({}, A25, {
+    purpose:'リアルタイム防災情報・避難指示・シェルター情報・安否確認を提供する防災ポータル',
+    backend:'Node.js + NestJS', frontend:'React + Next.js',
+    database:'PostgreSQL (Railway)', deploy:'Railway', orm:'TypeORM',
+    auth:'JWT', payment:'',
+    data_entities:'User, DisasterAlert, EvacuationOrder, Shelter, SafetyCheck, EmergencyBroadcast',
+  });
+  const s67_delivery = Object.assign({}, A25, {
+    purpose:'ラストマイル配達の注文・配達員・リアルタイム追跡を管理するデリバリーシステム',
+    backend:'Node.js + Express', frontend:'React + Next.js',
+    database:'PostgreSQL (Neon)', deploy:'Railway', orm:'Prisma',
+    auth:'NextAuth.js', payment:'stripe', mobile:'Expo (React Native)',
+    data_entities:'User, DeliveryOrder, Courier, DeliveryZone, TrackingEvent, DeliveryRating',
+  });
+
+  it('P25: disaster_info (NestJS+Railway) → docs/99 has performance content; no undefined', () => {
+    const f = gPerf(s67_disaster);
+    const doc = f['docs/99_performance_strategy.md'] || '';
+    assert.ok(doc.length > 200, 'disaster_info docs/99 must have performance content');
+    assert.ok(!doc.includes('undefined'), 'disaster_info docs/99 must not contain undefined');
+  });
+
+  it('P25: disaster_info → docs/102 performance monitoring has content', () => {
+    const f = gPerf(s67_disaster);
+    const doc = f['docs/102_performance_monitoring.md'] || '';
+    assert.ok(doc.length > 100, 'disaster_info docs/102 must have monitoring content');
+  });
+
+  it('P25: delivery_tracker (Express+Expo+Stripe) → docs/99 has performance content; no undefined', () => {
+    const f = gPerf(s67_delivery);
+    const doc = f['docs/99_performance_strategy.md'] || '';
+    assert.ok(doc.length > 200, 'delivery_tracker docs/99 must have performance content');
+    assert.ok(!doc.includes('undefined'), 'delivery_tracker docs/99 must not contain undefined');
+  });
+
+  it('P25: delivery_tracker → docs/100 DB performance has content; no undefined', () => {
+    const f = gPerf(s67_delivery);
+    const doc = f['docs/100_database_performance.md'] || '';
+    assert.ok(doc.length > 100, 'delivery_tracker docs/100 must have DB performance content');
+    assert.ok(!doc.includes('undefined'), 'delivery_tracker docs/100 must not contain undefined');
+  });
+
+  it('P25: freelance_platform (Stripe) → docs/99 has performance content; no undefined', () => {
+    const f = gPerf(mkA67(
+      'スキルを持つフリーランサーと発注企業をマッチングするスキルマーケットプレイス',
+      'User, FreelancerProfile, ProjectPost, Proposal, FreelanceContract, FreelanceReview', {payment:'stripe'}));
+    const doc = f['docs/99_performance_strategy.md'] || '';
+    assert.ok(doc.length > 200, 'freelance_platform docs/99 must have performance content');
+    assert.ok(!doc.includes('undefined'), 'freelance_platform docs/99 must not contain undefined');
+  });
+
+  it('P25: subscription_box (Stripe) → docs/101 cache strategy has content', () => {
+    const f = gPerf(mkA67(
+      '毎月キュレーションされた商品を定期配送するサブスクリプションボックスEC',
+      'User, SubBoxPlan, DeliverySchedule, CuratedBox, BoxItem, UnboxingReview', {payment:'stripe'}));
+    const doc = f['docs/101_cache_strategy.md'] || '';
+    assert.ok(doc.length > 100, 'subscription_box docs/101 cache strategy must have content');
+  });
+
+  it('P25: podcast_platform (Stripe) → docs/99 has CDN or キャッシュ content', () => {
+    const f = gPerf(mkA67(
+      'ポッドキャストの録音・配信・マネタイズを一元管理する音声配信プラットフォーム',
+      'User, PodcastShow, PodcastEpisode, PodcastListener, PodcastSub, Sponsorship', {payment:'stripe'}));
+    const doc = f['docs/99_performance_strategy.md'] || '';
+    assert.ok(doc.length > 200, 'podcast_platform docs/99 must have performance content');
+    assert.ok(doc.includes('CDN') || doc.includes('キャッシュ') || doc.includes('Cache'), 'podcast_platform docs/99 must include CDN or cache strategy');
+  });
+
+  it('P25: farm_direct (Stripe) → docs/99 and docs/100 have content; no undefined', () => {
+    const f = gPerf(mkA67(
+      '農家が消費者に直接農産物を販売する産直ECプラットフォーム',
+      'User, FarmerProfile, FarmProduct, DirectOrder, FarmSubscription, ProducerReview', {payment:'stripe'}));
+    const d99 = f['docs/99_performance_strategy.md'] || '';
+    assert.ok(d99.length > 200, 'farm_direct docs/99 must have performance content');
+    assert.ok(!d99.includes('undefined'), 'farm_direct docs/99 must not contain undefined');
+  });
+
+  it('P25: team_chat (Stripe) → docs/99 has content; docs/101 cache strategy has content', () => {
+    const f = gPerf(mkA67(
+      'リアルタイムチャット・チャンネル・DMでチームのコラボレーションを促進するメッセージングツール',
+      'User, Channel, ChatMessage, Thread, MessageReaction, ChannelMember', {payment:'stripe'}));
+    const d99 = f['docs/99_performance_strategy.md'] || '';
+    assert.ok(d99.length > 200, 'team_chat docs/99 must have performance content');
+    assert.ok(!d99.includes('undefined'), 'team_chat docs/99 must not contain undefined');
+  });
+
+  it('P25: membership_site (Stripe) → docs/99 has content; no undefined', () => {
+    const f = gPerf(mkA67(
+      'プレミアムコンテンツ・特典を月額/年額会員限定で提供する会員制プラットフォーム',
+      'User, MembershipTier, MemberAccount, ExclusiveContent, MemberBenefit, MemberEvent', {payment:'stripe'}));
+    const doc = f['docs/99_performance_strategy.md'] || '';
+    assert.ok(doc.length > 200, 'membership_site docs/99 must have performance content');
+    assert.ok(!doc.includes('undefined'), 'membership_site docs/99 must not contain undefined');
+  });
+
+  it('P25: email_marketing (Stripe) → docs/99 and docs/102 monitoring have content', () => {
+    const f = gPerf(mkA67(
+      'セグメント配信・自動化シーケンス・A/Bテストを備えたメールマーケティング自動化プラットフォーム',
+      'User, EmailCampaign, EmailTemplate, ContactSegment, AutomationRule, CampaignMetric', {payment:'stripe'}));
+    assert.ok((f['docs/99_performance_strategy.md']||'').length > 200, 'email_marketing docs/99 must have performance content');
+    assert.ok((f['docs/102_performance_monitoring.md']||'').length > 100, 'email_marketing docs/102 must have monitoring content');
+  });
+
+  it('P25: real_estate_portal (Stripe) → docs/99 has content; docs/100 DB performance has content', () => {
+    const f = gPerf(mkA67(
+      '物件検索・問い合わせ・内見予約を提供する消費者向け不動産ポータル',
+      'User, PropertyListing, ViewingRequest, RealEstateAgent, Favorite, PropertyImage', {payment:'stripe'}));
+    assert.ok((f['docs/99_performance_strategy.md']||'').length > 200, 'real_estate_portal docs/99 must have performance content');
+    assert.ok((f['docs/100_database_performance.md']||'').length > 100, 'real_estate_portal docs/100 must have DB performance content');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 68 — presets-ext3 P21 API Intelligence
+   Verifies docs/83_api_design_principles.md adapts to NestJS,
+   Express+Prisma, Firebase, and Supabase stacks from ext3
+   ════════════════════════════════════════════════════════════════ */
+describe('Suite 68: presets-ext3 P21 API Intelligence — stack-specific API design docs', () => {
+
+  const s68_nestjs = Object.assign({}, A25, {
+    purpose:'法務文書の作成・管理・電子署名・期限アラートを一元化する法務プラットフォーム',
+    backend:'Node.js + NestJS', frontend:'React + Next.js',
+    database:'PostgreSQL (Railway)', deploy:'Railway', orm:'TypeORM',
+    auth:'JWT', payment:'',
+    data_entities:'User, LegalDocument, Precedent, CaseFile, LegalClause, LegalAlert, AuditLog',
+  });
+  const s68_express = Object.assign({}, A25, {
+    purpose:'家庭・中小規模の太陽光発電の発電量・売電・消費電力をリアルタイムモニタリング',
+    backend:'Node.js + Express', frontend:'React (Vite SPA)',
+    database:'PostgreSQL (Railway)', deploy:'Railway', orm:'Prisma',
+    auth:'JWT', payment:'',
+    data_entities:'User, SolarPanel, PowerGeneration, EnergyBalance, SolarAlert, MaintenanceLog',
+  });
+  const s68_firebase = Object.assign({}, A25, {
+    purpose:'教育・資格取得・トレーニング向けのインタラクティブクイズ学習プラットフォーム',
+    backend:'Firebase', frontend:'React (Vite SPA)',
+    database:'Firestore', auth:'Firebase Auth', deploy:'Firebase Hosting', orm:'',
+    payment:'', data_entities:'User, QuizSet, QuizItem, QuizAttempt, QuizScore, QuizBadge',
+  });
+  const s68_supabase = Object.assign({}, A25, {
+    purpose:'個人・チームのタスク管理・期限追跡・優先度管理・進捗可視化ツール',
+    backend:'Supabase', frontend:'React (Vite SPA)',
+    database:'Supabase (PostgreSQL)', auth:'Supabase Auth', deploy:'Vercel', orm:'',
+    payment:'', data_entities:'User, TaskList, TaskItem, TaskTag, TaskAssignment, TaskComment',
+  });
+
+  it('P21: legal_docs (NestJS+TypeORM) → docs/83 has NestJS or REST API patterns', () => {
+    const f = gAPI(s68_nestjs);
+    const doc = f['docs/83_api_design_principles.md'] || '';
+    assert.ok(doc.length > 200, 'legal_docs docs/83 must have substantive API design content');
+    assert.ok(doc.includes('NestJS') || doc.includes('Controller') || doc.includes('/api/v1/'), 'legal_docs docs/83 must reference NestJS or REST patterns');
+  });
+
+  it('P21: solar_monitor (Express+Prisma) → docs/83 has REST API content; no undefined', () => {
+    const f = gAPI(s68_express);
+    const doc = f['docs/83_api_design_principles.md'] || '';
+    assert.ok(doc.length > 200, 'solar_monitor docs/83 must have API design content');
+    assert.ok(!doc.includes('undefined'), 'solar_monitor docs/83 must not contain undefined');
+  });
+
+  it('P21: quiz_app (Firebase) → docs/83 references Firebase or BaaS client approach', () => {
+    const f = gAPI(s68_firebase);
+    const doc = f['docs/83_api_design_principles.md'] || '';
+    assert.ok(doc.length > 200, 'quiz_app docs/83 must have API design content');
+    assert.ok(doc.includes('Firebase') || doc.includes('BaaS') || doc.includes('SDK'), 'quiz_app docs/83 must reference Firebase or BaaS approach');
+  });
+
+  it('P21: task_mgmt (Supabase) → docs/83 references Supabase or BaaS client approach', () => {
+    const f = gAPI(s68_supabase);
+    const doc = f['docs/83_api_design_principles.md'] || '';
+    assert.ok(doc.length > 200, 'task_mgmt docs/83 must have API design content');
+    assert.ok(doc.includes('Supabase') || doc.includes('BaaS'), 'task_mgmt docs/83 must reference Supabase or BaaS approach');
+  });
+
+  it('P21 EN: legal_docs (NestJS) → docs/83 English mode has API content; no undefined', () => {
+    const f = gAPI(s68_nestjs, 'en');
+    const doc = f['docs/83_api_design_principles.md'] || '';
+    assert.ok(doc.length > 200, 'legal_docs EN docs/83 must have substantive content');
+    assert.ok(doc.includes('API') || doc.includes('Controller') || doc.includes('Resource'), 'legal_docs EN docs/83 must have English API content');
+    assert.ok(!doc.includes('undefined'), 'legal_docs EN docs/83 must not contain undefined');
+  });
+
+  it('P21 EN: quiz_app (Firebase) → docs/83 English mode references Firebase; no undefined', () => {
+    const f = gAPI(s68_firebase, 'en');
+    const doc = f['docs/83_api_design_principles.md'] || '';
+    assert.ok(doc.length > 200, 'quiz_app EN docs/83 must have API design content');
+    assert.ok(doc.includes('Firebase') || doc.includes('BaaS'), 'quiz_app EN docs/83 must reference Firebase');
+    assert.ok(!doc.includes('undefined'), 'quiz_app EN docs/83 must not contain undefined');
+  });
+
+  it('P21: claims_portal (NestJS+TypeORM) → docs/83 has API design content; no undefined', () => {
+    const f = gAPI(Object.assign({}, A25, {
+      purpose:'保険契約者が保険金請求・書類提出・審査状況確認を行えるセルフサービスポータル',
+      backend:'Node.js + NestJS', frontend:'React + Next.js',
+      database:'PostgreSQL (Railway)', deploy:'Railway', orm:'TypeORM',
+      auth:'JWT', payment:'',
+      data_entities:'User, ClaimCase, ClaimDocument, ClaimAdjuster, ClaimPayment, PolicySummary, AuditLog',
+    }));
+    const doc = f['docs/83_api_design_principles.md'] || '';
+    assert.ok(doc.length > 200, 'claims_portal docs/83 must have API design content');
+    assert.ok(!doc.includes('undefined'), 'claims_portal docs/83 must not contain undefined');
+  });
+
+  it('P21: delivery_tracker (Express+Prisma+Expo) → docs/83 has API content; no undefined', () => {
+    const f = gAPI(Object.assign({}, A25, {
+      purpose:'ラストマイル配達の注文・配達員・リアルタイム追跡を管理するデリバリーシステム',
+      backend:'Node.js + Express', frontend:'React + Next.js',
+      database:'PostgreSQL (Neon)', deploy:'Railway', orm:'Prisma',
+      auth:'NextAuth.js', payment:'stripe', mobile:'Expo (React Native)',
+      data_entities:'User, DeliveryOrder, Courier, DeliveryZone, TrackingEvent, DeliveryRating',
+    }));
+    const doc = f['docs/83_api_design_principles.md'] || '';
+    assert.ok(doc.length > 200, 'delivery_tracker docs/83 must have API design content');
+    assert.ok(!doc.includes('undefined'), 'delivery_tracker docs/83 must not contain undefined');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 69 — presets-ext3 P25 EN bilingual + P23 EN
+   Covers the remaining 10 presets not in Suite 66's bilingual tests:
+   disaster_info, delivery_tracker, and the 8 Stripe-enabled presets
+   ════════════════════════════════════════════════════════════════ */
+describe('Suite 69: presets-ext3 P25 EN bilingual + P23 EN — remaining presets', () => {
+
+  const mkEn69 = (purpose, entities, extra) => Object.assign({}, A25, {purpose, data_entities: entities}, extra||{});
+
+  const s69_disaster = Object.assign({}, A25, {
+    purpose:'リアルタイム防災情報・避難指示・シェルター情報・安否確認を提供する防災ポータル',
+    backend:'Node.js + NestJS', frontend:'React + Next.js',
+    database:'PostgreSQL (Railway)', deploy:'Railway', orm:'TypeORM',
+    auth:'JWT', payment:'',
+    data_entities:'User, DisasterAlert, EvacuationOrder, Shelter, SafetyCheck, EmergencyBroadcast',
+  });
+  const s69_delivery = Object.assign({}, A25, {
+    purpose:'ラストマイル配達の注文・配達員・リアルタイム追跡を管理するデリバリーシステム',
+    backend:'Node.js + Express', frontend:'React + Next.js',
+    database:'PostgreSQL (Neon)', deploy:'Railway', orm:'Prisma',
+    auth:'NextAuth.js', payment:'stripe', mobile:'Expo (React Native)',
+    data_entities:'User, DeliveryOrder, Courier, DeliveryZone, TrackingEvent, DeliveryRating',
+  });
+
+  // ── P25 EN bilingual ──
+  it('P25 EN: disaster_info (NestJS) → docs/99 English mode has Performance content; no undefined', () => {
+    const f = gPerf(s69_disaster, 'en');
+    const doc = f['docs/99_performance_strategy.md'] || '';
+    assert.ok(doc.length > 200, 'disaster_info EN docs/99 must have performance content');
+    assert.ok(doc.includes('Performance') || doc.includes('Cache') || doc.includes('CDN'), 'disaster_info EN docs/99 must have English performance content');
+    assert.ok(!doc.includes('undefined'), 'disaster_info EN docs/99 must not contain undefined');
+  });
+
+  it('P25 EN: delivery_tracker (Express+Expo) → docs/99 English mode has content; no undefined', () => {
+    const f = gPerf(s69_delivery, 'en');
+    const doc = f['docs/99_performance_strategy.md'] || '';
+    assert.ok(doc.length > 200, 'delivery_tracker EN docs/99 must have content');
+    assert.ok(!doc.includes('undefined'), 'delivery_tracker EN docs/99 must not contain undefined');
+  });
+
+  it('P25 EN: freelance_platform (Stripe) → docs/99 English mode has content; no undefined', () => {
+    const f = gPerf(mkEn69(
+      'スキルを持つフリーランサーと発注企業をマッチングするスキルマーケットプレイス',
+      'User, FreelancerProfile, ProjectPost, Proposal, FreelanceContract, FreelanceReview',
+      {payment:'stripe'}), 'en');
+    const doc = f['docs/99_performance_strategy.md'] || '';
+    assert.ok(doc.length > 200, 'freelance_platform EN docs/99 must have content');
+    assert.ok(!doc.includes('undefined'), 'freelance_platform EN docs/99 must not contain undefined');
+  });
+
+  it('P25 EN: team_chat (Stripe) → docs/101 English cache strategy has content; no undefined', () => {
+    const f = gPerf(mkEn69(
+      'リアルタイムチャット・チャンネル・DMでチームのコラボレーションを促進するメッセージングツール',
+      'User, Channel, ChatMessage, Thread, MessageReaction, ChannelMember',
+      {payment:'stripe'}), 'en');
+    const doc = f['docs/101_cache_strategy.md'] || '';
+    assert.ok(doc.length > 100, 'team_chat EN docs/101 must have cache strategy content');
+    assert.ok(!doc.includes('undefined'), 'team_chat EN docs/101 must not contain undefined');
+  });
+
+  it('P25 EN: real_estate_portal (Stripe) → docs/99 English mode has content; no undefined', () => {
+    const f = gPerf(mkEn69(
+      '物件検索・問い合わせ・内見予約を提供する消費者向け不動産ポータル',
+      'User, PropertyListing, ViewingRequest, RealEstateAgent, Favorite, PropertyImage',
+      {payment:'stripe'}), 'en');
+    const doc = f['docs/99_performance_strategy.md'] || '';
+    assert.ok(doc.length > 200, 'real_estate_portal EN docs/99 must have content');
+    assert.ok(!doc.includes('undefined'), 'real_estate_portal EN docs/99 must not contain undefined');
+  });
+
+  // ── P23 EN bilingual ──
+  it('P23 EN: disaster_info (NestJS) → docs/91 English mode has testing content; no undefined', () => {
+    const f = gTest(s69_disaster, 'en');
+    const doc = f['docs/91_testing_strategy.md'] || '';
+    assert.ok(doc.length > 200, 'disaster_info EN docs/91 must have testing content');
+    assert.ok(doc.includes('Testing') || doc.includes('Supertest') || doc.includes('Jest'), 'disaster_info EN docs/91 must have English testing content');
+    assert.ok(!doc.includes('undefined'), 'disaster_info EN docs/91 must not contain undefined');
+  });
+
+  it('P23 EN: delivery_tracker (Express+Expo) → docs/91 English mode has testing content; no undefined', () => {
+    const f = gTest(s69_delivery, 'en');
+    const doc = f['docs/91_testing_strategy.md'] || '';
+    assert.ok(doc.length > 200, 'delivery_tracker EN docs/91 must have testing content');
+    assert.ok(!doc.includes('undefined'), 'delivery_tracker EN docs/91 must not contain undefined');
+  });
+
+  it('P23 EN: freelance_platform (Stripe/A25) → docs/91 English mode has content; no undefined', () => {
+    const f = gTest(mkEn69(
+      'スキルを持つフリーランサーと発注企業をマッチングするスキルマーケットプレイス',
+      'User, FreelancerProfile, ProjectPost, Proposal, FreelanceContract, FreelanceReview',
+      {payment:'stripe'}), 'en');
+    const doc = f['docs/91_testing_strategy.md'] || '';
+    assert.ok(doc.length > 200, 'freelance_platform EN docs/91 must have testing content');
+    assert.ok(!doc.includes('undefined'), 'freelance_platform EN docs/91 must not contain undefined');
+  });
+});
