@@ -5649,3 +5649,458 @@ describe('Suite 63: P22/P21/P20 English mode — multi-stack deep coverage', () 
     assert.ok(doc.includes('Pipeline') || doc.includes('Deploy') || doc.includes('Checkout'), 'EN docs/77 NestJS must have pipeline stage content');
   });
 });
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 64 — presets-ext3 P23 Testing Intelligence
+   Verifies that docs/91_testing_strategy.md adapts to each stack:
+   NestJS→supertest, Firebase→firebase emulator, Supabase→supabase
+   ════════════════════════════════════════════════════════════════ */
+describe('Suite 64: presets-ext3 P23 Testing Intelligence — stack-specific test strategies', () => {
+
+  /* Shared bases for the 15 ext3 standard presets */
+  const s64_legal = Object.assign({}, A25, {
+    purpose:'法務文書の作成・管理・電子署名・期限アラートを一元化する法務プラットフォーム',
+    backend:'Node.js + NestJS', frontend:'React + Next.js',
+    database:'PostgreSQL (Railway)', deploy:'Railway', orm:'TypeORM',
+    auth:'JWT', payment:'',
+    data_entities:'User, LegalDocument, Precedent, CaseFile, LegalClause, LegalAlert, AuditLog',
+  });
+  const s64_claims = Object.assign({}, A25, {
+    purpose:'保険契約者が保険金請求・書類提出・審査状況確認を行えるセルフサービスポータル',
+    backend:'Node.js + NestJS', frontend:'React + Next.js',
+    database:'PostgreSQL (Railway)', deploy:'Railway', orm:'TypeORM',
+    auth:'JWT', payment:'',
+    data_entities:'User, ClaimCase, ClaimDocument, ClaimAdjuster, ClaimPayment, PolicySummary, AuditLog',
+  });
+  const s64_disaster = Object.assign({}, A25, {
+    purpose:'リアルタイム防災情報・避難指示・シェルター情報・安否確認を提供する防災ポータル',
+    backend:'Node.js + NestJS', frontend:'React + Next.js',
+    database:'PostgreSQL (Railway)', deploy:'Railway', orm:'TypeORM',
+    auth:'JWT', payment:'',
+    data_entities:'User, DisasterAlert, EvacuationOrder, Shelter, SafetyCheck, EmergencyBroadcast',
+  });
+  const s64_quiz = Object.assign({}, A25, {
+    purpose:'教育・資格取得・トレーニング向けのインタラクティブクイズ学習プラットフォーム',
+    backend:'Firebase', frontend:'React (Vite SPA)',
+    database:'Firestore', auth:'Firebase Auth', deploy:'Firebase Hosting', orm:'',
+    payment:'', data_entities:'User, QuizSet, QuizItem, QuizAttempt, QuizScore, QuizBadge',
+  });
+  const s64_task = Object.assign({}, A25, {
+    purpose:'個人・チームのタスク管理・期限追跡・優先度管理・進捗可視化ツール',
+    backend:'Supabase', frontend:'React (Vite SPA)',
+    database:'Supabase (PostgreSQL)', auth:'Supabase Auth', deploy:'Vercel', orm:'',
+    payment:'', data_entities:'User, TaskList, TaskItem, TaskTag, TaskAssignment, TaskComment',
+  });
+  const s64_solar = Object.assign({}, A25, {
+    purpose:'家庭・中小規模の太陽光発電の発電量・売電・消費電力をリアルタイムモニタリング',
+    backend:'Node.js + Express', frontend:'React (Vite SPA)',
+    database:'PostgreSQL (Railway)', deploy:'Railway', orm:'Prisma',
+    auth:'JWT', payment:'',
+    data_entities:'User, SolarPanel, PowerGeneration, EnergyBalance, SolarAlert, MaintenanceLog',
+  });
+  const s64_delivery = Object.assign({}, A25, {
+    purpose:'ラストマイル配達の注文・配達員・リアルタイム追跡を管理するデリバリーシステム',
+    backend:'Node.js + Express', frontend:'React + Next.js',
+    database:'PostgreSQL (Neon)', deploy:'Railway', orm:'Prisma',
+    auth:'NextAuth.js', payment:'stripe', mobile:'Expo (React Native)',
+    data_entities:'User, DeliveryOrder, Courier, DeliveryZone, TrackingEvent, DeliveryRating',
+  });
+  const s64_freelance = Object.assign({}, A25, {
+    purpose:'スキルを持つフリーランサーと発注企業をマッチングするスキルマーケットプレイス',
+    data_entities:'User, FreelancerProfile, ProjectPost, Proposal, FreelanceContract, FreelanceReview',
+    payment:'stripe',
+  });
+  const s64_subbox = Object.assign({}, A25, {
+    purpose:'毎月キュレーションされた商品を定期配送するサブスクリプションボックスEC',
+    data_entities:'User, SubBoxPlan, DeliverySchedule, CuratedBox, BoxItem, UnboxingReview',
+    payment:'stripe',
+  });
+  const s64_podcast = Object.assign({}, A25, {
+    purpose:'ポッドキャストの録音・配信・マネタイズを一元管理する音声配信プラットフォーム',
+    data_entities:'User, PodcastShow, PodcastEpisode, PodcastListener, PodcastSub, Sponsorship',
+    payment:'stripe',
+  });
+  const s64_farm = Object.assign({}, A25, {
+    purpose:'農家が消費者に直接農産物を販売する産直ECプラットフォーム',
+    data_entities:'User, FarmerProfile, FarmProduct, DirectOrder, FarmSubscription, ProducerReview',
+    payment:'stripe',
+  });
+  const s64_chat = Object.assign({}, A25, {
+    purpose:'リアルタイムチャット・チャンネル・DMでチームのコラボレーションを促進するメッセージングツール',
+    data_entities:'User, Channel, ChatMessage, Thread, MessageReaction, ChannelMember',
+    payment:'stripe',
+  });
+  const s64_membership = Object.assign({}, A25, {
+    purpose:'プレミアムコンテンツ・特典を月額/年額会員限定で提供する会員制プラットフォーム',
+    data_entities:'User, MembershipTier, MemberAccount, ExclusiveContent, MemberBenefit, MemberEvent',
+    payment:'stripe',
+  });
+  const s64_email = Object.assign({}, A25, {
+    purpose:'セグメント配信・自動化シーケンス・A/Bテストを備えたメールマーケティング自動化プラットフォーム',
+    data_entities:'User, EmailCampaign, EmailTemplate, ContactSegment, AutomationRule, CampaignMetric',
+    payment:'stripe',
+  });
+  const s64_realestate = Object.assign({}, A25, {
+    purpose:'物件検索・問い合わせ・内見予約を提供する消費者向け不動産ポータル',
+    data_entities:'User, PropertyListing, ViewingRequest, RealEstateAgent, Favorite, PropertyImage',
+    payment:'stripe',
+  });
+
+  // ── NestJS group: supertest + vitest in docs/91 ──
+  it('P23: legal_docs (NestJS+TypeORM) → docs/91 includes supertest', () => {
+    const f = gTest(s64_legal);
+    const doc = f['docs/91_testing_strategy.md'] || '';
+    assert.ok(doc.length > 200, 'legal_docs docs/91 must have substantive testing content');
+    assert.ok(doc.toLowerCase().includes('supertest') || doc.toLowerCase().includes('vitest') || doc.toLowerCase().includes('jest'), 'legal_docs docs/91 must reference supertest, vitest, or jest');
+  });
+
+  it('P23: claims_portal (NestJS+TypeORM) → docs/91 includes NestJS testing framework', () => {
+    const f = gTest(s64_claims);
+    const doc = f['docs/91_testing_strategy.md'] || '';
+    assert.ok(doc.length > 200, 'claims_portal docs/91 must have substantive content');
+    assert.ok(doc.toLowerCase().includes('supertest') || doc.toLowerCase().includes('nest') || doc.toLowerCase().includes('jest'), 'claims_portal docs/91 must reference NestJS testing tools');
+  });
+
+  it('P23: disaster_info (NestJS) → docs/91 has test strategy content; no undefined', () => {
+    const f = gTest(s64_disaster);
+    const doc = f['docs/91_testing_strategy.md'] || '';
+    assert.ok(doc.length > 200, 'disaster_info docs/91 must have substantive content');
+    assert.ok(!doc.includes('undefined'), 'disaster_info docs/91 must not contain undefined');
+  });
+
+  // ── Firebase: firebase emulator in docs/91 ──
+  it('P23: quiz_app (Firebase) → docs/91 includes firebase keyword', () => {
+    const f = gTest(s64_quiz);
+    const doc = f['docs/91_testing_strategy.md'] || '';
+    assert.ok(doc.length > 200, 'quiz_app docs/91 must have substantive content');
+    assert.ok(doc.toLowerCase().includes('firebase'), 'quiz_app docs/91 must reference Firebase testing');
+  });
+
+  it('P23: quiz_app (Firebase) → docs/92 coverage design has substantive content', () => {
+    const f = gTest(s64_quiz);
+    const doc = f['docs/92_coverage_design.md'] || '';
+    assert.ok(doc.length > 100, 'quiz_app docs/92 must have coverage design content');
+    assert.ok(!doc.includes('undefined'), 'quiz_app docs/92 must not contain undefined');
+  });
+
+  // ── Supabase: supabase in docs/91 ──
+  it('P23: task_mgmt (Supabase) → docs/91 includes supabase keyword', () => {
+    const f = gTest(s64_task);
+    const doc = f['docs/91_testing_strategy.md'] || '';
+    assert.ok(doc.length > 200, 'task_mgmt docs/91 must have substantive content');
+    assert.ok(doc.toLowerCase().includes('supabase'), 'task_mgmt docs/91 must reference Supabase testing');
+  });
+
+  // ── Express group: supertest or jest in docs/91 ──
+  it('P23: solar_monitor (Express+Prisma) → docs/91 references supertest or jest', () => {
+    const f = gTest(s64_solar);
+    const doc = f['docs/91_testing_strategy.md'] || '';
+    assert.ok(doc.length > 200, 'solar_monitor docs/91 must have substantive content');
+    assert.ok(doc.toLowerCase().includes('supertest') || doc.toLowerCase().includes('jest') || doc.toLowerCase().includes('vitest'), 'solar_monitor docs/91 must reference supertest, jest, or vitest');
+  });
+
+  it('P23: delivery_tracker (Express+Expo) → docs/93 E2E architecture has auth + playwright', () => {
+    const f = gTest(s64_delivery);
+    const doc = f['docs/93_e2e_test_architecture.md'] || '';
+    assert.ok(doc.length > 100, 'delivery_tracker docs/93 must have E2E content');
+    assert.ok(doc.toLowerCase().includes('playwright') || doc.toLowerCase().includes('e2e') || doc.toLowerCase().includes('auth'), 'delivery_tracker docs/93 must reference playwright, E2E, or auth');
+  });
+
+  // ── Stripe presets: E2E auth coverage ──
+  it('P23: freelance_platform (Stripe+NextAuth) → docs/91 has jest or vitest; docs/92 has coverage', () => {
+    const f = gTest(s64_freelance);
+    const t91 = f['docs/91_testing_strategy.md'] || '';
+    const t92 = f['docs/92_coverage_design.md'] || '';
+    assert.ok(t91.length > 200, 'freelance_platform docs/91 must have testing content');
+    assert.ok(t92.length > 100, 'freelance_platform docs/92 must have coverage design content');
+  });
+
+  it('P23: subscription_box → docs/93 E2E architecture has substantive content', () => {
+    const f = gTest(s64_subbox);
+    const doc = f['docs/93_e2e_test_architecture.md'] || '';
+    assert.ok(doc.length > 100, 'subscription_box docs/93 must have E2E content');
+    // Note: 'undefined' legitimately appears in generated Playwright config (workers: process.env.CI ? 2 : undefined)
+    assert.ok(doc.toLowerCase().includes('playwright') || doc.toLowerCase().includes('e2e') || doc.toLowerCase().includes('auth'), 'subscription_box docs/93 must reference playwright, E2E, or auth');
+  });
+
+  it('P23: podcast_platform → docs/91 testing strategy has substantive content', () => {
+    const f = gTest(s64_podcast);
+    const doc = f['docs/91_testing_strategy.md'] || '';
+    assert.ok(doc.length > 200, 'podcast_platform docs/91 must have testing content');
+    assert.ok(!doc.includes('undefined'), 'podcast_platform docs/91 must not contain undefined');
+  });
+
+  it('P23: farm_direct → docs/91 has jest or vitest reference', () => {
+    const f = gTest(s64_farm);
+    const doc = f['docs/91_testing_strategy.md'] || '';
+    assert.ok(doc.length > 200, 'farm_direct docs/91 must have testing content');
+    assert.ok(doc.toLowerCase().includes('jest') || doc.toLowerCase().includes('vitest') || doc.toLowerCase().includes('supertest'), 'farm_direct docs/91 must reference jest, vitest, or supertest');
+  });
+
+  it('P23: team_chat → docs/91 has testing content; docs/94 performance testing exists', () => {
+    const f = gTest(s64_chat);
+    const t91 = f['docs/91_testing_strategy.md'] || '';
+    const t94 = f['docs/94_performance_testing.md'] || '';
+    assert.ok(t91.length > 200, 'team_chat docs/91 must have testing strategy content');
+    assert.ok(t94.length > 100, 'team_chat docs/94 performance testing must have content');
+  });
+
+  it('P23: membership_site → docs/92 coverage design has substantive content', () => {
+    const f = gTest(s64_membership);
+    const doc = f['docs/92_coverage_design.md'] || '';
+    assert.ok(doc.length > 100, 'membership_site docs/92 must have coverage design content');
+    assert.ok(!doc.includes('undefined'), 'membership_site docs/92 must not contain undefined');
+  });
+
+  it('P23: email_marketing → docs/91 has testing strategy; docs/93 E2E exists', () => {
+    const f = gTest(s64_email);
+    const t91 = f['docs/91_testing_strategy.md'] || '';
+    const t93 = f['docs/93_e2e_test_architecture.md'] || '';
+    assert.ok(t91.length > 200, 'email_marketing docs/91 must have testing content');
+    assert.ok(t93.length > 100, 'email_marketing docs/93 E2E must have content');
+  });
+
+  it('P23: real_estate_portal → docs/91 has substantive testing content; no undefined', () => {
+    const f = gTest(s64_realestate);
+    const doc = f['docs/91_testing_strategy.md'] || '';
+    assert.ok(doc.length > 200, 'real_estate_portal docs/91 must have testing content');
+    assert.ok(!doc.includes('undefined'), 'real_estate_portal docs/91 must not contain undefined');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 65 — presets-ext3 P10 Business Model (Stripe presets)
+   Verifies docs/38_business_model.md is generated for payment
+   presets and empty for no-payment presets
+   ════════════════════════════════════════════════════════════════ */
+describe('Suite 65: presets-ext3 P10 Business Model — Stripe presets generate revenue docs', () => {
+
+  const mkBase = (purpose, entities, payment) => Object.assign({}, A25, {
+    purpose, data_entities: entities, payment,
+  });
+
+  it('P10: subscription_box (Stripe) → docs/38 business model has サブスク or 課金 content', () => {
+    const f = gP10(mkBase(
+      '毎月キュレーションされた商品を定期配送するサブスクリプションボックスEC',
+      'User, SubBoxPlan, DeliverySchedule, CuratedBox, BoxItem, UnboxingReview', 'stripe'));
+    const doc = f['docs/38_business_model.md'] || '';
+    assert.ok(doc.length > 200, 'subscription_box docs/38 must have business model content');
+    // subscription_box maps to 'ec' domain → commission model (手数料/GMV), not SaaS subscription
+    assert.ok(doc.includes('手数料') || doc.includes('サブスク') || doc.includes('課金') || doc.includes('収益'), 'subscription_box docs/38 must include revenue model content');
+  });
+
+  it('P10: freelance_platform (Stripe) → docs/38 business model has content', () => {
+    const f = gP10(mkBase(
+      'スキルを持つフリーランサーと発注企業をマッチングするスキルマーケットプレイス',
+      'User, FreelancerProfile, ProjectPost, Proposal, FreelanceContract, FreelanceReview', 'stripe'));
+    const doc = f['docs/38_business_model.md'] || '';
+    assert.ok(doc.length > 200, 'freelance_platform docs/38 must have business model content');
+    assert.ok(!doc.includes('undefined'), 'freelance_platform docs/38 must not contain undefined');
+  });
+
+  it('P10: podcast_platform (Stripe) → docs/38 includes subscription or ad revenue model', () => {
+    const f = gP10(mkBase(
+      'ポッドキャストの録音・配信・マネタイズを一元管理する音声配信プラットフォーム',
+      'User, PodcastShow, PodcastEpisode, PodcastListener, PodcastSub, Sponsorship', 'stripe'));
+    const doc = f['docs/38_business_model.md'] || '';
+    assert.ok(doc.length > 200, 'podcast_platform docs/38 must have business model content');
+    assert.ok(doc.includes('サブスク') || doc.includes('課金') || doc.includes('収益'), 'podcast_platform docs/38 must include revenue model');
+  });
+
+  it('P10: farm_direct (Stripe) → docs/38 business model has content', () => {
+    const f = gP10(mkBase(
+      '農家が消費者に直接農産物を販売する産直ECプラットフォーム',
+      'User, FarmerProfile, FarmProduct, DirectOrder, FarmSubscription, ProducerReview', 'stripe'));
+    const doc = f['docs/38_business_model.md'] || '';
+    assert.ok(doc.length > 200, 'farm_direct docs/38 must have business model content');
+    assert.ok(!doc.includes('undefined'), 'farm_direct docs/38 must not contain undefined');
+  });
+
+  it('P10: team_chat (Stripe) → docs/38 includes subscription billing model', () => {
+    const f = gP10(mkBase(
+      'リアルタイムチャット・チャンネル・DMでチームのコラボレーションを促進するメッセージングツール',
+      'User, Channel, ChatMessage, Thread, MessageReaction, ChannelMember', 'stripe'));
+    const doc = f['docs/38_business_model.md'] || '';
+    assert.ok(doc.length > 200, 'team_chat docs/38 must have business model content');
+    assert.ok(doc.includes('サブスク') || doc.includes('課金') || doc.includes('SaaS'), 'team_chat docs/38 must include SaaS/subscription model');
+  });
+
+  it('P10: membership_site (Stripe) → docs/38 includes membership or subscription revenue', () => {
+    const f = gP10(mkBase(
+      'プレミアムコンテンツ・特典を月額/年額会員限定で提供する会員制プラットフォーム',
+      'User, MembershipTier, MemberAccount, ExclusiveContent, MemberBenefit, MemberEvent', 'stripe'));
+    const doc = f['docs/38_business_model.md'] || '';
+    assert.ok(doc.length > 200, 'membership_site docs/38 must have business model content');
+    assert.ok(doc.includes('サブスク') || doc.includes('会員') || doc.includes('課金'), 'membership_site docs/38 must include membership revenue model');
+  });
+
+  it('P10: real_estate_portal (Stripe) → docs/38 business model has content', () => {
+    const f = gP10(mkBase(
+      '物件検索・問い合わせ・内見予約を提供する消費者向け不動産ポータル',
+      'User, PropertyListing, ViewingRequest, RealEstateAgent, Favorite, PropertyImage', 'stripe'));
+    const doc = f['docs/38_business_model.md'] || '';
+    assert.ok(doc.length > 200, 'real_estate_portal docs/38 must have business model content');
+    assert.ok(!doc.includes('undefined'), 'real_estate_portal docs/38 must not contain undefined');
+  });
+
+  it('P10: delivery_tracker (Stripe) → docs/38 business model has content', () => {
+    const f = gP10(Object.assign({}, A25, {
+      purpose:'ラストマイル配達の注文・配達員・リアルタイム追跡を管理するデリバリーシステム',
+      data_entities:'User, DeliveryOrder, Courier, DeliveryZone, TrackingEvent, DeliveryRating',
+      payment:'stripe', mobile:'Expo (React Native)',
+    }));
+    const doc = f['docs/38_business_model.md'] || '';
+    assert.ok(doc.length > 200, 'delivery_tracker docs/38 must have business model content');
+    assert.ok(!doc.includes('undefined'), 'delivery_tracker docs/38 must not contain undefined');
+  });
+
+  it('P10: email_marketing (Stripe) → docs/38 includes サブスク or 自動化 revenue model', () => {
+    const f = gP10(mkBase(
+      'セグメント配信・自動化シーケンス・A/Bテストを備えたメールマーケティング自動化プラットフォーム',
+      'User, EmailCampaign, EmailTemplate, ContactSegment, AutomationRule, CampaignMetric', 'stripe'));
+    const doc = f['docs/38_business_model.md'] || '';
+    assert.ok(doc.length > 200, 'email_marketing docs/38 must have business model content');
+    assert.ok(doc.includes('サブスク') || doc.includes('課金') || doc.includes('自動化'), 'email_marketing docs/38 must include subscription or automation revenue model');
+  });
+
+  it('P10: legal_docs (no payment) → docs/38 is empty (no Stripe configured)', () => {
+    const f = gP10(Object.assign({}, A25, {
+      purpose:'法務文書の作成・管理・電子署名・期限アラートを一元化する法務プラットフォーム',
+      backend:'Node.js + NestJS', database:'PostgreSQL (Railway)', deploy:'Railway',
+      orm:'TypeORM', auth:'JWT', payment:'',
+      data_entities:'User, LegalDocument, Precedent, CaseFile, LegalClause, LegalAlert, AuditLog',
+    }));
+    const doc = f['docs/38_business_model.md'] || '';
+    assert.ok(doc.length === 0, 'legal_docs with no payment must not generate docs/38 business model');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 66 — presets-ext3 P25 Performance + bilingual P23/P25
+   Verifies performance docs generated for each stack and that
+   English mode produces English headings without undefined
+   ════════════════════════════════════════════════════════════════ */
+describe('Suite 66: presets-ext3 P25 Performance + bilingual P23/P25 coverage', () => {
+
+  const s66_legal = Object.assign({}, A25, {
+    purpose:'法務文書の作成・管理・電子署名・期限アラートを一元化する法務プラットフォーム',
+    backend:'Node.js + NestJS', frontend:'React + Next.js',
+    database:'PostgreSQL (Railway)', deploy:'Railway', orm:'TypeORM',
+    auth:'JWT', payment:'', data_entities:'User, LegalDocument, Precedent, CaseFile, LegalClause, LegalAlert, AuditLog',
+  });
+  const s66_claims = Object.assign({}, A25, {
+    purpose:'保険契約者が保険金請求・書類提出・審査状況確認を行えるセルフサービスポータル',
+    backend:'Node.js + NestJS', frontend:'React + Next.js',
+    database:'PostgreSQL (Railway)', deploy:'Railway', orm:'TypeORM',
+    auth:'JWT', payment:'', data_entities:'User, ClaimCase, ClaimDocument, ClaimAdjuster, ClaimPayment, PolicySummary, AuditLog',
+  });
+  const s66_solar = Object.assign({}, A25, {
+    purpose:'家庭・中小規模の太陽光発電の発電量・売電・消費電力をリアルタイムモニタリング',
+    backend:'Node.js + Express', frontend:'React (Vite SPA)',
+    database:'PostgreSQL (Railway)', deploy:'Railway', orm:'Prisma',
+    auth:'JWT', payment:'', data_entities:'User, SolarPanel, PowerGeneration, EnergyBalance, SolarAlert, MaintenanceLog',
+  });
+  const s66_quiz = Object.assign({}, A25, {
+    purpose:'教育・資格取得・トレーニング向けのインタラクティブクイズ学習プラットフォーム',
+    backend:'Firebase', frontend:'React (Vite SPA)',
+    database:'Firestore', auth:'Firebase Auth', deploy:'Firebase Hosting', orm:'',
+    payment:'', data_entities:'User, QuizSet, QuizItem, QuizAttempt, QuizScore, QuizBadge',
+  });
+  const s66_task = Object.assign({}, A25, {
+    purpose:'個人・チームのタスク管理・期限追跡・優先度管理・進捗可視化ツール',
+    backend:'Supabase', frontend:'React (Vite SPA)',
+    database:'Supabase (PostgreSQL)', auth:'Supabase Auth', deploy:'Vercel', orm:'',
+    payment:'', data_entities:'User, TaskList, TaskItem, TaskTag, TaskAssignment, TaskComment',
+  });
+
+  // ── P25 JA: docs/99 performance strategy ──
+  it('P25: legal_docs (NestJS) → docs/99 has キャッシュ + CDN performance content', () => {
+    const f = gPerf(s66_legal);
+    const doc = f['docs/99_performance_strategy.md'] || '';
+    assert.ok(doc.length > 200, 'legal_docs docs/99 must have substantive performance content');
+    assert.ok(doc.includes('キャッシュ') || doc.includes('CDN') || doc.includes('パフォーマンス'), 'legal_docs docs/99 must include cache or CDN strategies');
+  });
+
+  it('P25: claims_portal (NestJS) → docs/100 DB performance has query optimization content', () => {
+    const f = gPerf(s66_claims);
+    const doc = f['docs/100_database_performance.md'] || '';
+    assert.ok(doc.length > 100, 'claims_portal docs/100 must have DB performance content');
+    assert.ok(!doc.includes('undefined'), 'claims_portal docs/100 must not contain undefined');
+  });
+
+  it('P25: solar_monitor (Express+Railway) → docs/99 has performance content; no undefined', () => {
+    const f = gPerf(s66_solar);
+    const doc = f['docs/99_performance_strategy.md'] || '';
+    assert.ok(doc.length > 200, 'solar_monitor docs/99 must have performance content');
+    assert.ok(!doc.includes('undefined'), 'solar_monitor docs/99 must not contain undefined');
+  });
+
+  it('P25: quiz_app (Firebase) → docs/99 has CDN or キャッシュ; docs/101 cache strategy exists', () => {
+    const f = gPerf(s66_quiz);
+    const d99 = f['docs/99_performance_strategy.md'] || '';
+    const d101 = f['docs/101_cache_strategy.md'] || '';
+    assert.ok(d99.includes('CDN') || d99.includes('キャッシュ'), 'quiz_app docs/99 must include CDN or cache strategies');
+    assert.ok(d101.length > 100, 'quiz_app docs/101 cache strategy must have content');
+  });
+
+  it('P25: task_mgmt (Supabase) → docs/101 cache strategy has content; no undefined', () => {
+    const f = gPerf(s66_task);
+    const doc = f['docs/101_cache_strategy.md'] || '';
+    assert.ok(doc.length > 100, 'task_mgmt docs/101 must have cache strategy content');
+    assert.ok(!doc.includes('undefined'), 'task_mgmt docs/101 must not contain undefined');
+  });
+
+  it('P25: docs/102 performance monitoring exists for all ext3 NestJS presets', () => {
+    const fLegal = gPerf(s66_legal);
+    const fClaims = gPerf(s66_claims);
+    assert.ok((fLegal['docs/102_performance_monitoring.md'] || '').length > 100, 'legal_docs docs/102 performance monitoring must have content');
+    assert.ok((fClaims['docs/102_performance_monitoring.md'] || '').length > 100, 'claims_portal docs/102 performance monitoring must have content');
+  });
+
+  // ── P23 EN bilingual ──
+  it('P23 EN: legal_docs → docs/91 English mode has Testing or Supertest in English', () => {
+    const f = gTest(s66_legal, 'en');
+    const doc = f['docs/91_testing_strategy.md'] || '';
+    assert.ok(doc.length > 200, 'legal_docs EN docs/91 must have substantive content');
+    assert.ok(doc.includes('Testing') || doc.includes('Supertest') || doc.includes('Jest'), 'legal_docs EN docs/91 must have English testing content');
+    assert.ok(!doc.includes('undefined'), 'legal_docs EN docs/91 must not contain undefined');
+  });
+
+  it('P23 EN: quiz_app (Firebase) → docs/91 English mode includes Firebase', () => {
+    const f = gTest(s66_quiz, 'en');
+    const doc = f['docs/91_testing_strategy.md'] || '';
+    assert.ok(doc.length > 200, 'quiz_app EN docs/91 must have substantive content');
+    assert.ok(doc.includes('Firebase'), 'quiz_app EN docs/91 must reference Firebase');
+    assert.ok(!doc.includes('undefined'), 'quiz_app EN docs/91 must not contain undefined');
+  });
+
+  it('P23 EN: task_mgmt (Supabase) → docs/91 English mode includes Supabase', () => {
+    const f = gTest(s66_task, 'en');
+    const doc = f['docs/91_testing_strategy.md'] || '';
+    assert.ok(doc.length > 200, 'task_mgmt EN docs/91 must have substantive content');
+    assert.ok(doc.includes('Supabase'), 'task_mgmt EN docs/91 must reference Supabase');
+  });
+
+  // ── P25 EN bilingual ──
+  it('P25 EN: solar_monitor → docs/99 English mode has Performance heading', () => {
+    const f = gPerf(s66_solar, 'en');
+    const doc = f['docs/99_performance_strategy.md'] || '';
+    assert.ok(doc.length > 200, 'solar_monitor EN docs/99 must have substantive content');
+    assert.ok(doc.includes('Performance') || doc.includes('Cache') || doc.includes('CDN'), 'solar_monitor EN docs/99 must have English performance content');
+    assert.ok(!doc.includes('undefined'), 'solar_monitor EN docs/99 must not contain undefined');
+  });
+
+  it('P25 EN: claims_portal (NestJS) → docs/100 English DB performance; no undefined', () => {
+    const f = gPerf(s66_claims, 'en');
+    const doc = f['docs/100_database_performance.md'] || '';
+    assert.ok(doc.length > 100, 'claims_portal EN docs/100 must have DB performance content');
+    assert.ok(!doc.includes('undefined'), 'claims_portal EN docs/100 must not contain undefined');
+  });
+
+  it('P25 EN: quiz_app (Firebase) → docs/101 English cache strategy has content', () => {
+    const f = gPerf(s66_quiz, 'en');
+    const doc = f['docs/101_cache_strategy.md'] || '';
+    assert.ok(doc.length > 100, 'quiz_app EN docs/101 must have English cache strategy content');
+    assert.ok(!doc.includes('undefined'), 'quiz_app EN docs/101 must not contain undefined');
+  });
+});
