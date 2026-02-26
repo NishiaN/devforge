@@ -145,6 +145,7 @@ function gen104(a,pn){
   const be=_obsBackend(a);
   const isBaaS=be==='supabase'||be==='firebase';
   const isPy=be==='python';
+  const isJava=be==='java';
   const orm=a.orm||'';
   const hasPrisma=/Prisma/i.test(orm);
   const hasSQLAlchemy=/SQLAlchemy/i.test(orm);
@@ -204,6 +205,36 @@ function gen104(a,pn){
       doc+="        log.warn('slow_query', query=statement, duration_ms=round(elapsed_ms, 2))\n";
       doc+='```\n\n';
     }
+  } else if(isJava){
+    doc+='## '+(G?'Java SLF4J + Logback JSON セットアップ':'Java SLF4J + Logback JSON Setup')+'\n\n';
+    doc+='```xml\n';
+    doc+='<!-- build.gradle.kts / pom.xml -->\n';
+    doc+='<!-- implementation("net.logstash.logback:logstash-logback-encoder:7.4") -->\n\n';
+    doc+='<!-- logback-spring.xml -->\n';
+    doc+='<appender name="JSON" class="ch.qos.logback.core.ConsoleAppender">\n';
+    doc+='  <encoder class="net.logstash.logback.encoder.LogstashEncoder">\n';
+    doc+='    <!-- REDACTED: mask sensitive fields -->\n';
+    doc+='    <maskPattern>(?&lt;=password=)[^&amp;]+</maskPattern>\n';
+    doc+='    <maskPattern>(?&lt;=token=)[^&amp;]+</maskPattern>\n';
+    doc+='  </encoder>\n';
+    doc+='</appender>\n';
+    doc+='<root level="INFO"><appender-ref ref="JSON" /></root>\n';
+    doc+='```\n\n';
+    doc+='```java\n';
+    doc+='import org.slf4j.Logger;\n';
+    doc+='import org.slf4j.LoggerFactory;\n';
+    doc+='import org.slf4j.MDC;\n\n';
+    doc+='private static final Logger log = LoggerFactory.getLogger('+(pn||'App')+'Service.class);\n\n';
+    doc+='// '+(G?'MDCでトレースID・ユーザーIDを全ログに付与':'Propagate trace_id + user_id to all logs via MDC')+'\n';
+    doc+='MDC.put("trace_id", request.getHeader("traceparent"));\n';
+    doc+='MDC.put("user_id", userId);\n';
+    doc+='try {\n';
+    doc+='    log.info("request_start");\n';
+    doc+='    log.warn("slow_query detected — duration_ms={}", elapsedMs);\n';
+    doc+='} finally {\n';
+    doc+='    MDC.clear();\n';
+    doc+='}\n';
+    doc+='```\n\n';
   } else if(!isBaaS){
     doc+='## '+(G?'Node.js Pino セットアップ':'Node.js Pino Setup')+'\n\n';
     doc+='```bash\nnpm install pino pino-pretty\n```\n\n';
@@ -521,6 +552,7 @@ function gen106(a,pn){
   const be=_obsBackend(a);
   const dep=_obsTarget(a);
   const isPy=be==='python';
+  const isJava=be==='java';
   const isBaaS=be==='supabase'||be==='firebase';
   const stack=OTEL_STACK[dep]||OTEL_STACK.default;
   let doc='# '+pn+' — '+(G?'分散トレーシング & ダッシュボード設計':'Distributed Tracing & Dashboard Design')+'\n';
@@ -552,6 +584,35 @@ function gen106(a,pn){
       doc+='        span.set_attribute("order.id", order_id)\n';
       doc+='        span.set_attribute("order.region", "jp")\n';
       doc+='        pass  # business logic here\n';
+      doc+='```\n\n';
+    } else if(isJava){
+      doc+='```bash\n';
+      doc+='# '+(G?'Java エージェント方式 — コード変更不要で自動計装':'Java agent approach — zero-code auto-instrumentation')+'\n';
+      doc+='wget https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/latest/download/opentelemetry-javaagent.jar\n';
+      doc+='```\n\n';
+      doc+='```bash\n';
+      doc+='# '+(G?'起動コマンドに -javaagent を追加するだけ':'Add -javaagent to JVM startup args')+'\n';
+      doc+='java -javaagent:opentelemetry-javaagent.jar \\\n';
+      doc+='  -Dotel.service.name='+pn.replace(/\s/g,'-').toLowerCase()+' \\\n';
+      doc+='  -Dotel.exporter.otlp.endpoint=http://otel-collector:4317 \\\n';
+      doc+='  -Dotel.traces.sampler=traceidratio \\\n';
+      doc+='  -Dotel.traces.sampler.arg=0.1 \\\n';
+      doc+='  -jar app.jar\n';
+      doc+='```\n\n';
+      doc+='```java\n';
+      doc+='// '+(G?'手動スパン例 (OpenTelemetry Java API)':'Manual span example (OpenTelemetry Java API)')+'\n';
+      doc+='import io.opentelemetry.api.GlobalOpenTelemetry;\n';
+      doc+='import io.opentelemetry.api.trace.Tracer;\n\n';
+      doc+='private static final Tracer tracer =\n';
+      doc+='    GlobalOpenTelemetry.getTracer("'+pn.replace(/\s/g,'-').toLowerCase()+'");\n\n';
+      doc+='Span span = tracer.spanBuilder("processOrder").startSpan();\n';
+      doc+='try (Scope scope = span.makeCurrent()) {\n';
+      doc+='    span.setAttribute("order.id", orderId);\n';
+      doc+='    span.setAttribute("order.region", "jp");\n';
+      doc+='    // business logic here\n';
+      doc+='} finally {\n';
+      doc+='    span.end();\n';
+      doc+='}\n';
       doc+='```\n\n';
     } else {
       doc+='```bash\n';
