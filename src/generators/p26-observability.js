@@ -614,6 +614,38 @@ function gen106(a,pn){
       doc+='    span.end();\n';
       doc+='}\n';
       doc+='```\n\n';
+    } else if(dep==='vercel'){
+      doc+='```bash\n';
+      doc+='npm install @vercel/otel @opentelemetry/api\n';
+      doc+='```\n\n';
+      doc+='```typescript\n';
+      doc+='// instrumentation.ts — '+(G?'Next.js の instrumentationHook で自動ロード':'auto-loaded via Next.js instrumentationHook')+'\n';
+      doc+="import { registerOTel } from '@vercel/otel';\n\n";
+      doc+='export function register() {\n';
+      doc+="  registerOTel({ serviceName: '"+pn.replace(/\s/g,'-').toLowerCase()+"' });\n";
+      doc+='}\n';
+      doc+='```\n\n';
+      doc+='```javascript\n';
+      doc+='// next.config.js\n';
+      doc+='module.exports = {\n';
+      doc+='  experimental: { instrumentationHook: true },\n';
+      doc+='};\n';
+      doc+='```\n\n';
+      doc+='```typescript\n';
+      doc+='// '+(G?'手動スパン例':'Manual span example')+'\n';
+      doc+="import { trace } from '@opentelemetry/api';\n";
+      doc+="const tracer = trace.getTracer('"+pn.replace(/\s/g,'-').toLowerCase()+"');\n\n";
+      doc+='async function processOrder(orderId: string) {\n';
+      doc+="  return tracer.startActiveSpan('processOrder', async (span) => {\n";
+      doc+="    span.setAttribute('order.id', orderId);\n";
+      doc+='    try {\n';
+      doc+='      // business logic here\n';
+      doc+='    } finally {\n';
+      doc+='      span.end();\n';
+      doc+='    }\n';
+      doc+='  });\n';
+      doc+='}\n';
+      doc+='```\n\n';
     } else {
       doc+='```bash\n';
       doc+='npm install @opentelemetry/sdk-node @opentelemetry/auto-instrumentations-node \\\n';
