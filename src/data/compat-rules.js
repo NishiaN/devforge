@@ -699,7 +699,8 @@ const COMPAT_RULES=[
      if(!dom)return false;
      const isSensitiveDomain=['fintech','health','legal'].includes(dom);
      const hasMFA=inc(a.mvp_features,'MFA')||inc(a.mvp_features,'二要素')||inc(a.mvp_features,'2FA')||inc(a.mvp_features,'多要素');
-     return isSensitiveDomain&&!hasMFA;
+     const scale=a.scale||'medium';
+     return isSensitiveDomain&&!hasMFA&&scale!=='solo';
    },
    ja:'金融/医療/法務系のプロジェクトですが、MFA（多要素認証）が設定されていません。セキュリティ強化のためMFA導入を推奨します',
    en:'Finance/health/legal project without MFA (multi-factor authentication). MFA is strongly recommended for security',
