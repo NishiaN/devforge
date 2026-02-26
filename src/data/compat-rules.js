@@ -826,7 +826,8 @@ const COMPAT_RULES=[
    t:a=>{
      if(!a.ai_auto||/なし|None/i.test(a.ai_auto))return false;
      const piiE=['Patient','MedicalRecord','Transaction','BankAccount','CreditCard','Prescription','Diagnosis','PersonalInfo'];
-     return piiE.some(e=>inc(a.data_entities,e));
+     const hasMasking=/(PII|仮名化|匿名化|個人情報マスク|pii.?mask|pseudonym)/i.test(a.mvp_features||'');
+     return !hasMasking&&piiE.some(e=>inc(a.data_entities,e));
    },
    ja:'個人情報エンティティ（Patient/Transaction等）がAI機能と併用されています。LLMへの送信前にPIIをマスキング/仮名化してください (docs/95参照)',
    en:'PII entities (Patient/Transaction/etc.) used with AI features. Mask or pseudonymize PII before sending to LLM (see docs/95)',

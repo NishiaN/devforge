@@ -179,6 +179,7 @@ const tests=[
   {name:'AI+Auth=noLLMwarn',a:{ai_auto:'OpenAI API統合',auth:'Supabase Auth'},expect:'none',id:'ai-noauth-llm'},
   {name:'AI+Patient=PIIwarn',a:{ai_auto:'Claude API医療AI',data_entities:'Patient, MedicalRecord, Doctor'},expect:'warn',id:'ai-pii-masking'},
   {name:'AI+NoPII=noPIIwarn',a:{ai_auto:'Claude API',data_entities:'User, Post, Comment'},expect:'none',id:'ai-pii-masking'},
+  {name:'AI+PII+masking=noPIIwarn',a:{ai_auto:'Claude API医療AI',data_entities:'Patient, MedicalRecord',mvp_features:'診断支援, PII匿名化'},expect:'none',id:'ai-pii-masking'},
   {name:'AI+Express=RateLimitINFO',a:{ai_auto:'Claude API',backend:'Node.js + Express'},expect:'info',id:'ai-ratelimit-reminder'},
   {name:'AI+BaaS=noRateLimitINFO',a:{ai_auto:'Claude API',backend:'Firebase'},expect:'none',id:'ai-ratelimit-reminder'},
   {name:'Ollama+Vercel=infraINFO',a:{ai_auto:'Ollama (ローカルLLM) + llama3',deploy:'Vercel'},expect:'info',id:'ai-local-model-infra'},
