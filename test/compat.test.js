@@ -1,4 +1,4 @@
-// Compat rules functional test (147 rules: 25 ERROR + 90 WARN + 32 INFO)
+// Compat rules functional test (152 rules: 26 ERROR + 94 WARN + 32 INFO)
 const assert=require('node:assert/strict');
 const S={lang:'ja',skill:'pro'};
 eval(require('fs').readFileSync('src/data/compat-rules.js','utf-8'));
@@ -345,6 +345,22 @@ const tests=[
   // auth-firebase-supabase-rls (WARN)
   {name:'FirebaseAuth+SupabaseDB=WARN',a:{auth:'Firebase Auth',database:'Supabase (PostgreSQL)'},expect:'warn',id:'auth-firebase-supabase-rls'},
   {name:'SupabaseAuth+SupabaseDB=noRlsWARN',a:{auth:'Supabase Auth',database:'Supabase (PostgreSQL)'},expect:'none',id:'auth-firebase-supabase-rls'},
+  // be-dep-deno-netlify (WARN)
+  {name:'Deno+Netlify=WARN',a:{backend:'Deno + Hono',deploy:'Netlify'},expect:'warn',id:'be-dep-deno-netlify'},
+  {name:'Deno+DenoDeply=noDenNetlifyWARN',a:{backend:'Deno + Hono',deploy:'Deno Deploy'},expect:'none',id:'be-dep-deno-netlify'},
+  // fe-astro-firebase (WARN)
+  {name:'Astro+FirebaseHosting=WARN',a:{frontend:'Astro',deploy:'Firebase Hosting'},expect:'warn',id:'fe-astro-firebase'},
+  {name:'Astro+Vercel=noAstroFbhWARN',a:{frontend:'Astro',deploy:'Vercel'},expect:'none',id:'fe-astro-firebase'},
+  {name:'Nextjs+FirebaseHosting=noAstroFbhWARN',a:{frontend:'React + Next.js',deploy:'Firebase Hosting'},expect:'none',id:'fe-astro-firebase'},
+  // orm-mongoose-pg (WARN)
+  {name:'Mongoose+PostgreSQL=WARN',a:{orm:'Mongoose',database:'PostgreSQL (Neon)'},expect:'warn',id:'orm-mongoose-pg'},
+  {name:'Mongoose+MongoDB=noMongoosePgWARN',a:{orm:'Mongoose',database:'MongoDB'},expect:'none',id:'orm-mongoose-pg'},
+  // be-dep-bun-cf (ERROR)
+  {name:'Bun+Cloudflare=ERROR',a:{backend:'Bun + Hono',deploy:'Cloudflare Workers'},expect:'error',id:'be-dep-bun-cf'},
+  {name:'Bun+Railway=noBunCfERROR',a:{backend:'Bun + Hono',deploy:'Railway'},expect:'none',id:'be-dep-bun-cf'},
+  // auth-cognito-supabase (WARN)
+  {name:'Cognito+SupabaseDB=WARN',a:{auth:'AWS Cognito',database:'Supabase (PostgreSQL)'},expect:'warn',id:'auth-cognito-supabase'},
+  {name:'SupabaseAuth+SupabaseDB=noCognitoWARN',a:{auth:'Supabase Auth',database:'Supabase (PostgreSQL)'},expect:'none',id:'auth-cognito-supabase'},
 ];
 
 let pass=0,fail=0;
