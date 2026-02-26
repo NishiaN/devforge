@@ -18,7 +18,7 @@
  *   Domain   detectDomain     → .spec/constitution.md §3 fallback KPI
  *   E2E      full generation  → file count, token richness, bilingual parity
  *
- * Suites 1-84: 851 tests total
+ * Suites 1-87: 888 tests total
  */
 
 const { describe, it } = require('node:test');
@@ -8231,5 +8231,378 @@ describe('Suite 84: P24 AI Safety — Claude/OpenAI providers, high-autonomy, RA
       const prose = (f[key] || '').replace(/```[\s\S]*?```/g, '');
       assert.ok(!prose.includes('undefined'), key + ' Llama local LLM prose must not contain undefined');
     });
+  });
+});
+
+/* ══════════════════════════════════════════════════════════════════
+   Suite 85 — P20 CICD depth: docs/77-80 content verification
+   ════════════════════════════════════════════════════════════════ */
+
+const s85_fin = Object.assign({}, A25, { purpose:'fintech payment platform', deploy:'Railway' });
+const s85_cf  = Object.assign({}, A25, { deploy:'Cloudflare Pages' });
+
+describe('Suite 85: P20 CICD depth — docs/77-80', () => {
+  it('docs/77: 9-stage pipeline mermaid header present', () => {
+    const f = gP20(A25);
+    const doc = f['docs/77_cicd_pipeline_design.md'] || '';
+    assert.ok(
+      doc.includes('9ステージ') || doc.includes('9-Stage'),
+      'docs/77 must include 9-stage pipeline heading'
+    );
+  });
+
+  it('docs/77: aquasecurity/trivy-action in YAML security scan step', () => {
+    const f = gP20(A25);
+    const doc = f['docs/77_cicd_pipeline_design.md'] || '';
+    assert.ok(doc.includes('aquasecurity/trivy-action'), 'docs/77 must reference trivy-action for security scan');
+  });
+
+  it('docs/77: Railway deploy target shows railway up command', () => {
+    const f = gP20(s85_fin);
+    const doc = f['docs/77_cicd_pipeline_design.md'] || '';
+    assert.ok(doc.includes('railway up'), 'Railway deploy target must show railway up command in YAML');
+  });
+
+  it('docs/77: Cloudflare deploy target shows wrangler pages deploy command', () => {
+    const f = gP20(s85_cf);
+    const doc = f['docs/77_cicd_pipeline_design.md'] || '';
+    assert.ok(doc.includes('wrangler pages deploy'), 'Cloudflare deploy target must show wrangler pages deploy in YAML');
+  });
+
+  it('docs/77: fintech domain shows Dual Approval Gate in pipeline mermaid', () => {
+    const f = gP20(s85_fin);
+    const doc = f['docs/77_cicd_pipeline_design.md'] || '';
+    assert.ok(
+      doc.includes('Dual Approval Gate') || doc.includes('デュアル承認ゲート'),
+      'Fintech domain must show Dual Approval Gate in pipeline mermaid'
+    );
+  });
+
+  it('docs/78: Blue-Green strategy recommended for fintech domain', () => {
+    const f = gP20(s85_fin);
+    const doc = f['docs/78_deployment_strategy.md'] || '';
+    assert.ok(
+      doc.includes('Blue-Green') || doc.includes('ブルーグリーン'),
+      'Fintech domain must recommend Blue-Green deployment strategy'
+    );
+  });
+
+  it('docs/78: Canary strategy recommended for SaaS domain', () => {
+    const f = gP20(A25);
+    const doc = f['docs/78_deployment_strategy.md'] || '';
+    assert.ok(
+      doc.includes('Canary') || doc.includes('カナリア'),
+      'SaaS domain must recommend Canary deployment strategy'
+    );
+  });
+
+  it('docs/78: rollback triggers include error_rate > 1% threshold', () => {
+    const f = gP20(A25);
+    const doc = f['docs/78_deployment_strategy.md'] || '';
+    assert.ok(doc.includes('error_rate') || doc.includes('1%'), 'docs/78 rollback must reference error_rate > 1% threshold');
+  });
+
+  it('docs/79: fintech coverage threshold is 90 (stricter than default 80)', () => {
+    const fFin = gP20(s85_fin);
+    const docFin = fFin['docs/79_quality_gate_matrix.md'] || '';
+    const fDef = gP20(A25);
+    const docDef = fDef['docs/79_quality_gate_matrix.md'] || '';
+    assert.ok(docFin.includes('"lines": 90') || docFin.includes(': 90,'), 'Fintech coverage threshold must be 90');
+    assert.ok(docDef.includes('"lines": 80') || docDef.includes(': 80,'), 'Default coverage threshold must be 80');
+  });
+
+  it('docs/79: LCP < 2.5s in performance budget table', () => {
+    const f = gP20(A25);
+    const doc = f['docs/79_quality_gate_matrix.md'] || '';
+    assert.ok(doc.includes('LCP') && doc.includes('2.5s'), 'docs/79 must show LCP < 2.5s performance budget');
+  });
+
+  it('docs/80: GitFlow for fintech, Trunk-Based for SaaS', () => {
+    const fFin = gP20(s85_fin);
+    const docFin = fFin['docs/80_release_engineering.md'] || '';
+    const fSaaS = gP20(A25);
+    const docSaaS = fSaaS['docs/80_release_engineering.md'] || '';
+    assert.ok(docFin.includes('GitFlow') || docFin.includes('gitflow'), 'Fintech domain must recommend GitFlow');
+    assert.ok(
+      docSaaS.includes('Trunk') || docSaaS.includes('trunk'),
+      'SaaS domain must recommend Trunk-Based development'
+    );
+  });
+
+  it('docs/80: semantic versioning MAJOR.MINOR.PATCH section', () => {
+    const f = gP20(A25);
+    const doc = f['docs/80_release_engineering.md'] || '';
+    assert.ok(doc.includes('MAJOR.MINOR.PATCH'), 'docs/80 must include semantic versioning MAJOR.MINOR.PATCH');
+  });
+});
+
+/* ══════════════════════════════════════════════════════════════════
+   Suite 86 — P19 Enterprise depth: docs/73-76 content verification
+   ════════════════════════════════════════════════════════════════ */
+
+const s86_fin   = Object.assign({}, A25, { purpose:'fintech payment platform', org_model:'マルチテナント(RLS)' });
+const s86_saas  = Object.assign({}, A25, { org_model:'マルチテナント(RLS)' });
+
+describe('Suite 86: P19 Enterprise depth — docs/73-76', () => {
+  it('docs/73: RLS policy template has CREATE POLICY org_isolation with auth.uid()', () => {
+    const f = gP19(s86_saas);
+    const doc = f['docs/73_enterprise_architecture.md'] || '';
+    assert.ok(doc.includes('CREATE POLICY'), 'docs/73 must include CREATE POLICY SQL statement');
+    assert.ok(doc.includes('auth.uid()'), 'docs/73 RLS policy must reference auth.uid() for user identity');
+  });
+
+  it('docs/73: permission matrix has Owner/Admin/Member/Viewer columns', () => {
+    const f = gP19(s86_saas);
+    const doc = f['docs/73_enterprise_architecture.md'] || '';
+    assert.ok(doc.includes('Owner'), 'docs/73 permission matrix must have Owner column');
+    assert.ok(doc.includes('Admin'), 'docs/73 permission matrix must have Admin column');
+    assert.ok(doc.includes('Member') || doc.includes('Viewer'), 'docs/73 permission matrix must have Member/Viewer columns');
+  });
+
+  it('docs/73: invite flow sequence diagram with OrgInvite token', () => {
+    const f = gP19(s86_saas);
+    const doc = f['docs/73_enterprise_architecture.md'] || '';
+    assert.ok(
+      doc.includes('OrgInvite') || doc.includes('invite') || doc.includes('招待'),
+      'docs/73 must include invite flow sequence diagram'
+    );
+    assert.ok(doc.includes('token') || doc.includes('UUID'), 'docs/73 invite flow must show token/UUID');
+  });
+
+  it('docs/73: scaling decision tree mermaid has tenant count branches', () => {
+    const f = gP19(s86_saas);
+    const doc = f['docs/73_enterprise_architecture.md'] || '';
+    assert.ok(
+      doc.includes('100') && (doc.includes('1000') || doc.includes('RLS')),
+      'docs/73 scaling decision tree must show tenant count thresholds (100/1000)'
+    );
+  });
+
+  it('docs/74: state machine for SaaS has draft/pending/approved states', () => {
+    const f = gP19(s86_saas);
+    const doc = f['docs/74_workflow_engine.md'] || '';
+    assert.ok(doc.includes('draft'), 'docs/74 state machine must include draft state');
+    assert.ok(
+      doc.includes('pending') || doc.includes('approved'),
+      'docs/74 state machine must include pending/approved states'
+    );
+  });
+
+  it('docs/74: SLA tracking code has checkSLABreaches function', () => {
+    const f = gP19(s86_saas);
+    const doc = f['docs/74_workflow_engine.md'] || '';
+    assert.ok(doc.includes('checkSLABreaches'), 'docs/74 SLA tracking must define checkSLABreaches function');
+  });
+
+  it('docs/74: fintech domain customization mentions KYC/AML', () => {
+    const f = gP19(s86_fin);
+    const doc = f['docs/74_workflow_engine.md'] || '';
+    assert.ok(
+      doc.includes('KYC') || doc.includes('AML') || doc.includes('Transfer') || doc.includes('送金'),
+      'Fintech workflow customization must mention KYC/AML or transfer approval'
+    );
+  });
+
+  it('docs/75: admin dashboard wireframe ASCII has MRR KPI card', () => {
+    const f = gP19(s86_saas);
+    const doc = f['docs/75_admin_dashboard_spec.md'] || '';
+    assert.ok(doc.includes('MRR'), 'docs/75 admin dashboard wireframe must show MRR KPI card');
+  });
+
+  it('docs/75: Recharts weekly trend config with new_users, active_users, mrr data keys', () => {
+    const f = gP19(s86_saas);
+    const doc = f['docs/75_admin_dashboard_spec.md'] || '';
+    assert.ok(doc.includes('new_users'), 'docs/75 Recharts config must include new_users data key');
+    assert.ok(doc.includes('active_users'), 'docs/75 Recharts config must include active_users data key');
+    assert.ok(doc.includes('mrr'), 'docs/75 Recharts config must include mrr data key');
+  });
+
+  it('docs/75: role-based dashboard views table includes Billing row', () => {
+    const f = gP19(s86_saas);
+    const doc = f['docs/75_admin_dashboard_spec.md'] || '';
+    assert.ok(
+      doc.includes('Billing') || doc.includes('課金'),
+      'docs/75 role-based views must include Billing row'
+    );
+    assert.ok(
+      doc.includes('Audit') || doc.includes('監査'),
+      'docs/75 role-based views must include Audit log row'
+    );
+  });
+
+  it('docs/76: enterprise components include DataTable, OrgSwitcher, ApprovalBar', () => {
+    const f = gP19(s86_saas);
+    const doc = f['docs/76_enterprise_components.md'] || '';
+    assert.ok(doc.includes('DataTable'), 'docs/76 must include DataTable component spec');
+    assert.ok(doc.includes('OrgSwitcher'), 'docs/76 must include OrgSwitcher component spec');
+    assert.ok(doc.includes('ApprovalBar'), 'docs/76 must include ApprovalBar component spec');
+  });
+
+  it('docs/76: composition pattern shows ApprovalPage with bulkActions', () => {
+    const f = gP19(s86_saas);
+    const doc = f['docs/76_enterprise_components.md'] || '';
+    assert.ok(
+      doc.includes('ApprovalPage') || doc.includes('bulkApprove'),
+      'docs/76 composition pattern must show ApprovalPage or bulkApprove'
+    );
+    assert.ok(doc.includes('bulkActions') || doc.includes('bulk'), 'docs/76 composition must show bulk actions pattern');
+  });
+});
+
+/* ══════════════════════════════════════════════════════════════════
+   Suite 87 — P16/P17 depth: docs/60-63 + docs/65-68 verification
+   ════════════════════════════════════════════════════════════════ */
+
+const s87_fin  = Object.assign({}, A25, { purpose:'fintech payment platform' });
+const s87_saas = Object.assign({}, A25, { purpose:'SaaS subscription management platform' });
+
+describe('Suite 87: P16/P17 depth — docs/60-63 + docs/65-68', () => {
+  // P16: docs/60 — Methodology Intelligence
+  it('docs/60: fintech domain shows Resilient + Data-Driven as primary methodology', () => {
+    const f = gP16(s87_fin);
+    const doc = f['docs/60_methodology_intelligence.md'] || '';
+    assert.ok(
+      doc.includes('レジリエント') || doc.includes('Resilient'),
+      'docs/60 fintech must show Resilient methodology from DEV_METHODOLOGY_MAP'
+    );
+    assert.ok(
+      doc.includes('データドリブン') || doc.includes('Data-Driven'),
+      'docs/60 fintech must show Data-Driven methodology from DEV_METHODOLOGY_MAP'
+    );
+  });
+
+  it('docs/60: EN mode shows English methodology names for fintech', () => {
+    const f = gP16(s87_fin, 'en');
+    const doc = f['docs/60_methodology_intelligence.md'] || '';
+    assert.ok(
+      doc.includes('Resilient') && doc.includes('Data-Driven'),
+      'EN mode docs/60 fintech must show English methodology names'
+    );
+  });
+
+  it('docs/60: approach fit table with 12 design approaches', () => {
+    const f = gP16(A25);
+    const doc = f['docs/60_methodology_intelligence.md'] || '';
+    assert.ok(
+      doc.includes('★★★★★'),
+      'docs/60 approach fit table must use star ratings'
+    );
+    assert.ok(
+      doc.includes('レジリエント設計') || doc.includes('Resilient Design'),
+      'docs/60 approach table must include Resilient Design entry'
+    );
+  });
+
+  // P16: docs/61 — AI Brainstorming Prompt Playbook
+  it('docs/61: PHASE_PROMPTS playbook shows 6-phase prompt templates', () => {
+    const f = gP16(A25);
+    const doc = f['docs/61_ai_brainstorm_playbook.md'] || '';
+    assert.ok(
+      doc.includes('Phase 0') || doc.includes('Phase 1'),
+      'docs/61 must show Phase 0 or Phase 1 brainstorming prompts'
+    );
+    assert.ok(
+      doc.includes('Phase 3') || doc.includes('Phase 4') || doc.includes('Phase 5'),
+      'docs/61 must show later phase prompts (Phase 3-5)'
+    );
+  });
+
+  // P16: docs/63 — Next-Gen UX Strategy
+  it('docs/63: next-gen UX strategy has NEXT_GEN_UX keyword sections', () => {
+    const f = gP16(A25);
+    const doc = f['docs/63_next_gen_ux_strategy.md'] || '';
+    assert.ok(doc.length > 500, 'docs/63 next-gen UX strategy must be a substantial document');
+    assert.ok(
+      doc.includes('UX') || doc.includes('ux') || doc.includes('体験'),
+      'docs/63 must include UX terminology'
+    );
+  });
+
+  // P17: docs/65 — Prompt Genome
+  it('docs/65: CRITERIA 8-axis scoring table with Context 15% and Instructions 20%', () => {
+    const f = gP17(A25);
+    const doc = f['docs/65_prompt_genome.md'] || '';
+    assert.ok(
+      doc.includes('Context') && doc.includes('15%'),
+      'docs/65 CRITERIA table must show Context axis with 15% weight'
+    );
+    assert.ok(
+      doc.includes('Instructions') && doc.includes('20%'),
+      'docs/65 CRITERIA table must show Instructions axis with 20% weight'
+    );
+  });
+
+  it('docs/65: Prompt DNA profile shows domain and AI maturity level', () => {
+    const f = gP17(A25);
+    const doc = f['docs/65_prompt_genome.md'] || '';
+    assert.ok(
+      doc.includes('DNA') || doc.includes('ゲノム') || doc.includes('Genome'),
+      'docs/65 must have Prompt DNA/Genome profile section'
+    );
+    assert.ok(
+      doc.includes('Level') && (doc.includes('AI成熟度') || doc.includes('Maturity')),
+      'docs/65 DNA profile must show AI maturity level'
+    );
+  });
+
+  it('docs/65: phase-by-phase prompt library covers Phase 0 through Phase 5', () => {
+    const f = gP17(A25);
+    const doc = f['docs/65_prompt_genome.md'] || '';
+    assert.ok(doc.includes('Phase 0'), 'docs/65 prompt library must include Phase 0');
+    assert.ok(doc.includes('Phase 5'), 'docs/65 prompt library must include Phase 5 (Operations)');
+  });
+
+  it('docs/65: genome mermaid graph has DNA node and CRITERIA branch', () => {
+    const f = gP17(A25);
+    const doc = f['docs/65_prompt_genome.md'] || '';
+    assert.ok(
+      doc.includes('DNA') && doc.includes('CRITERIA'),
+      'docs/65 genome mermaid must show DNA node with CRITERIA branch'
+    );
+    assert.ok(
+      doc.includes('Context 15%') || doc.includes('Instructions 20%'),
+      'docs/65 genome mermaid must reference CRITERIA axis weights'
+    );
+  });
+
+  // P17: docs/66 — AI Maturity Assessment
+  it('docs/66: AI maturity model shows all 3 levels (Assisted, Augmented, Autonomous)', () => {
+    const f = gP17(A25);
+    const doc = f['docs/66_ai_maturity_assessment.md'] || '';
+    assert.ok(
+      doc.includes('Level 1') || doc.includes('AI支援') || doc.includes('Assisted'),
+      'docs/66 must show Level 1 (Assisted) maturity'
+    );
+    assert.ok(
+      doc.includes('Level 2') || doc.includes('AI協調') || doc.includes('Augmented'),
+      'docs/66 must show Level 2 (Augmented) maturity'
+    );
+    assert.ok(
+      doc.includes('Level 3') || doc.includes('AI自律') || doc.includes('Autonomous'),
+      'docs/66 must show Level 3 (Autonomous) maturity'
+    );
+  });
+
+  it('docs/66: 5-dimension evaluation matrix with Prompt Design dimension', () => {
+    const f = gP17(A25);
+    const doc = f['docs/66_ai_maturity_assessment.md'] || '';
+    assert.ok(
+      doc.includes('プロンプト設計力') || doc.includes('Prompt Design'),
+      'docs/66 5-dimension matrix must include Prompt Design dimension'
+    );
+    assert.ok(
+      doc.includes('品質保証') || doc.includes('Quality Assurance'),
+      'docs/66 5-dimension matrix must include Quality Assurance dimension'
+    );
+  });
+
+  it('docs/68: Prompt KPI dashboard has measurement metrics', () => {
+    const f = gP17(A25);
+    const doc = f['docs/68_prompt_kpi_dashboard.md'] || '';
+    assert.ok(doc.length > 500, 'docs/68 prompt KPI dashboard must be a substantial document');
+    assert.ok(
+      doc.includes('KPI') || doc.includes('metric') || doc.includes('メトリクス'),
+      'docs/68 must include KPI or metric tracking content'
+    );
   });
 });
