@@ -71,8 +71,8 @@ function applyLang(){
   statLbls.forEach((el,i)=>{if(i<4)el.textContent=ja?slJa[i]:slEn[i];});
   // Info cards
   const icards=document.querySelectorAll('.icard');
-  const icJa=[['😱 3つの悪夢を解決','真っ白な画面の絶望・終わらない連携地獄・「俺の環境では動く」症候群…DevForgeが全て自動解決'],['🧪 25の柱×175+ファイル','設計書を自動生成 → AIに投入 → 実コード。質問に答えるだけで仕様・環境・AIルール全てを自動生成。'],['📱 モバイル対応','Expo / React Native 開発パス・EAS Build・OTA更新'],['🤖 AI自律開発','Vibe Coding・マルチAgent・Claude Code Subagents'],['💳 決済・CMS・EC','Stripe・microCMS・Medusa・Shopify Hydrogen'],['📦 フルエクスポート','ZIP・PDF・全ファイル結合コピー・URLシェア']];
-  const icEn=[['😱 Solve 3 Dev Nightmares','Blank screen paralysis, endless integration hell, "works on my machine" syndrome… DevForge auto-resolves all'],['🧪 25 Pillars × 175+ Files','Auto-generate specs → Feed to AI → Real code. Answer questions to auto-generate specs, env, AI rules & strategy.'],['📱 Mobile Support','Expo / React Native dev path, EAS Build, OTA updates'],['🤖 AI Autonomous Dev','Vibe Coding, Multi-Agent, Claude Code Subagents'],['💳 Payment/CMS/EC','Stripe, microCMS, Medusa, Shopify Hydrogen'],['📦 Full Export','ZIP, PDF, Copy All Files, URL Share']];
+  const icJa=[['😱 3つの悪夢を解決','真っ白な画面の絶望・終わらない連携地獄・「俺の環境では動く」症候群…DevForgeが全て自動解決'],['🧪 26の柱×182+ファイル','設計書を自動生成 → AIに投入 → 実コード。質問に答えるだけで仕様・環境・AIルール全てを自動生成。'],['📱 モバイル対応','Expo / React Native 開発パス・EAS Build・OTA更新'],['🤖 AI自律開発','Vibe Coding・マルチAgent・Claude Code Subagents'],['💳 決済・CMS・EC','Stripe・microCMS・Medusa・Shopify Hydrogen'],['📦 フルエクスポート','ZIP・PDF・全ファイル結合コピー・URLシェア']];
+  const icEn=[['😱 Solve 3 Dev Nightmares','Blank screen paralysis, endless integration hell, "works on my machine" syndrome… DevForge auto-resolves all'],['🧪 26 Pillars × 182+ Files','Auto-generate specs → Feed to AI → Real code. Answer questions to auto-generate specs, env, AI rules & strategy.'],['📱 Mobile Support','Expo / React Native dev path, EAS Build, OTA updates'],['🤖 AI Autonomous Dev','Vibe Coding, Multi-Agent, Claude Code Subagents'],['💳 Payment/CMS/EC','Stripe, microCMS, Medusa, Shopify Hydrogen'],['📦 Full Export','ZIP, PDF, Copy All Files, URL Share']];
   icards.forEach((el,i)=>{if(i<6){const d=ja?icJa[i]:icEn[i];const h4=el.querySelector('h4');const p=el.querySelector('p');if(h4)h4.textContent=d[0];if(p)p.textContent=d[1];}});
   // P1: Lv0-1 beginner icard simplification — show only 3 simple cards
   if(S.skillLv<=1){
@@ -103,7 +103,7 @@ function applyLang(){
   pbadges.forEach((el,i)=>{if(i<26)el.title=ja?pbTipJa[i]:pbTipEn[i];});
   // Beginner badge filtering: Lv0-1 shows only 4 essential pillars to reduce cognitive load
   var _bpSet=new Set([0,3,7,8]);
-  pbadges.forEach(function(el,i){if(i<25){el.style.display=(S.skillLv<=1&&!_bpSet.has(i))?'none':'';}});
+  pbadges.forEach(function(el,i){if(i<26){el.style.display=(S.skillLv<=1&&!_bpSet.has(i))?'none':'';}});
   // Keyboard shortcuts overlay
   const kbT=$('kbTitle');if(kbT)kbT.textContent=t('kbTitle');
   const kbLabels=document.querySelectorAll('.kblbl');
@@ -170,8 +170,8 @@ function applyLang(){
     h0.textContent=ja?'難しい知識は不要。質問に答えるだけ':'No technical knowledge needed. Just answer questions.';
   }
   // F2: hero stats skill-adaptation (Lv0-1 shows 4 pillars / key files to reduce info shock)
-  var _spn=$('statPillarNum');if(_spn)_spn.textContent=S.skillLv<=1?'4':'25';
-  var _sfn=$('statFileNum');if(_sfn&&!Object.keys(S.files||{}).length)_sfn.textContent=S.skillLv<=1?(ja?'主要':'Key'):'175+';
+  var _spn=$('statPillarNum');if(_spn)_spn.textContent=S.skillLv<=1?'4':'26';
+  var _sfn=$('statFileNum');if(_sfn&&!Object.keys(S.files||{}).length)_sfn.textContent=S.skillLv<=1?(ja?'主要':'Key'):'182+';
   var _hd=$('heroDesc');
   if(_hd){
     if(S.skillLv<=1)_hd.textContent=ja?'質問に答えるだけで設計書を自動生成。AIにそのまま渡せば開発スタート。':'Answer questions to auto-generate design docs. Feed to AI to start coding.';
@@ -194,6 +194,7 @@ document.querySelectorAll('.skcard').forEach(el=>{
 (function loadFromURL(){
   try{
     const h=location.hash;if(!h||!h.startsWith('#df='))return;
+    if(h.length>100000)return;
     const data=JSON.parse(decodeURIComponent(escape(atob(h.slice(4)))));
     // Backward compatibility: support old short keys {p,a,pr}
     if(!data.projectName&&data.p){data.projectName=data.p;data.answers=data.a;data.preset=data.pr;}
@@ -231,7 +232,7 @@ if(S.projectName&&S.phase>0){
 }
 
 // What's New indicator (HCD: C継続利用)
-const CURRENT_VERSION='9.5.0';
+const CURRENT_VERSION='9.6.0';
 const lastSeenVersion=_lsGet('devforge-last-version');
 if(lastSeenVersion!==CURRENT_VERSION){
   const helpBtn=$('helpBtn')||document.querySelector('[onclick*="showManual"]');

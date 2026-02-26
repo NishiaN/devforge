@@ -85,4 +85,5 @@ function showDiffView(){
 }
 function snapshotFiles(){
   S.prevFiles=JSON.parse(JSON.stringify(S.files));
+  save();
 }

@@ -40,7 +40,7 @@ function _miniMD(raw){
     s=s.replace(/\[([^\]]+)\]\(([^)]+)\)/g,(m,txt,url)=>{
       const u=url.trim().toLowerCase();
       if(!u.startsWith('http://')&&!u.startsWith('https://')&&!u.startsWith('./')&&!u.startsWith('../')&&!u.startsWith('#'))return m;
-      return '<a href="'+escH(url)+'">'+txt+'</a>';
+      return '<a href="'+escH(url)+'">'+escH(txt)+'</a>';
     });
     return s;
   };

@@ -3,10 +3,10 @@ function _getTourSteps(){
   const _ja=S.lang==='ja';
   var steps=[
   {title:_ja?'🌱 スキルレベル':'🌱 Skill Level',desc:_ja?'Beginner / Intermediate / Pro を選ぶと、質問の選択肢が自動調整されます。':'Choose Beginner / Intermediate / Pro to auto-adjust question options.'},
-  {title:_ja?'📝 テンプレート':'📝 Templates',desc:_ja?'📦標準48種 ＋ 🎓分野別82種のプリセット。モード切替で選択。⚔️比較で違いを一覧。選ぶと回答が自動入力。':'📦 48 standard + 🎓 82 field presets. Toggle mode to switch. Use ⚔️ Compare for side-by-side. Pick one to auto-fill answers.'},
+  {title:_ja?'📝 テンプレート':'📝 Templates',desc:_ja?'📦標準63種 ＋ 🎓分野別266種のプリセット。モード切替で選択。⚔️比較で違いを一覧。選ぶと回答が自動入力。':'📦 63 standard + 🎓 266 field presets. Toggle mode to switch. Use ⚔️ Compare for side-by-side. Pick one to auto-fill answers.'},
   {title:_ja?'💬 質問フロー':'💬 Q&A Flow',desc:_ja?'Phase 1-3 の質問に答えるだけ。Beginner: Phase 2自動スキップ＆⭐おすすめ技術をハイライト。スキップ＆後で回答も可能。':'Just answer Phase 1-3 questions. Beginners: Phase 2 auto-skipped & ⭐ recommended tech highlighted. Skip & answer later anytime.'},
   {title:_ja?'✎ 回答編集':'✎ Edit Answers',desc:_ja?'送信済みの回答に表示される ✎ ボタンで修正できます。':'Click the ✎ button on submitted answers to edit them.'},
-  {title:_ja?'📦 175+ファイル生成':'📦 175+ File Generation',desc:_ja?'全質問回答後、25の柱で175+ファイルが自動生成されます。':'After all questions, 175+ files auto-generate across 25 pillars.'},
+  {title:_ja?'📦 182+ファイル生成':'📦 182+ File Generation',desc:_ja?'全質問回答後、26の柱で182+ファイルが自動生成されます。':'After all questions, 182+ files auto-generate across 26 pillars.'},
   {title:_ja?'⚡ 並列探索':'⚡ Parallel Explorer',desc:_ja?'Pillar ⑤ で7スタックを比較。回答に基づくおすすめランキング付き。':'Compare 7 stacks in Pillar ⑤ with recommendation ranking based on your answers.'},
   {title:'📊 Dashboard',desc:_ja?'Pillar ⑥ でコンテキスト可視化＋'+_TECH_COUNT+'技術DBを閲覧。':'Visualize context + browse '+_TECH_COUNT+' tech DB in Pillar ⑥.'},
   {title:_ja?'🤖 AIランチャー':'🤖 AI Launcher',desc:_ja?'Pillar ⑧ で仕様書をAIツールにワンクリック投入。40テンプレート＋トークン推定。':'Feed specs to AI tools in one click from Pillar ⑧. 40 templates + token estimation.'},

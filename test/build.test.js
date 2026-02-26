@@ -102,16 +102,16 @@ describe('Build System', () => {
     assert.deepStrictEqual(missingInJA, [], `Keys in EN but not JA: ${missingInJA.join(', ')}`);
   });
 
-  it('25 pillars consistency across all references', () => {
+  it('26 pillars consistency across all references', () => {
     const html = fs.readFileSync(OUTPUT, 'utf-8');
-    // Check hero description has 25 pillars
-    assert.ok(html.includes('25の柱') || html.includes('24の柱'), 'Should contain "25の柱" or "24の柱" in Japanese hero');
-    assert.ok(html.includes('25 pillars') || html.includes('24 pillars') || html.includes('25 Pillars'), 'Should contain "25 pillars" in English');
-    // Check pillar arrays have 25 items
+    // Check hero description has 26 pillars
+    assert.ok(html.includes('26の柱') || html.includes('25の柱'), 'Should contain "26の柱" or "25の柱" in Japanese hero');
+    assert.ok(html.includes('26 pillars') || html.includes('25 pillars') || html.includes('26 Pillars'), 'Should contain "26 pillars" in English');
+    // Check pillar arrays have 26 items
     const pillarJA = html.match(/pillar:\[([^\]]+)\]/);
     if (pillarJA) {
       const items = pillarJA[1].split(',').length;
-      assert.ok(items === 25, `Pillar array should have 25 items, got ${items}`);
+      assert.ok(items === 26, `Pillar array should have 26 items, got ${items}`);
     }
     // Check P14 & P15 references exist
     assert.ok(html.includes('⑭運用インテリジェンス') || html.includes('⑭Ops Intelligence'), 'Should have ⑭Ops badge');

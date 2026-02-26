@@ -9,7 +9,7 @@ function updTOC(){
       if(!isQActive(q))continue;
       const done=!!S.answers[q.id];
       const active=S.phase===p&&ph.questions.indexOf(q)===S.step;
-      items.push('<div class="toc-item'+(done?' done':'')+(active?' active':'')+'" onclick="jumpToQ(\''+q.id+'\')" title="'+esc(q.q)+'"><span class="toc-dot"></span><span>'+esc(q.q)+'</span></div>');
+      items.push('<div class="toc-item'+(done?' done':'')+(active?' active':'')+'" onclick="jumpToQ(\''+q.id+'\')" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();jumpToQ(\''+q.id+'\');}" role="button" tabindex="0" title="'+esc(q.q)+'"><span class="toc-dot"></span><span>'+esc(q.q)+'</span></div>');
     }
   }
   toc.innerHTML=items.join('');

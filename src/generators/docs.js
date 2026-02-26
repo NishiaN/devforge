@@ -771,7 +771,7 @@ _(${G?'追記してください':'Add entries here'})_`],
     '# '+(G?'ピラー依存マップ':'Pillar Dependency Map')+' — '+pn+'\n\n'
     +'> **'+( G?'生成日':'Generated')+'**: '+adrDate+'  \n'
     +'> **'+(G?'ドメイン':'Domain')+'**: '+cpDomain+' | **Stack**: '+cpFe+' + '+cpBe+' + '+cpDb+'\n\n'
-    +(G?'このドキュメントは25ピラー間の依存関係と生成順序を示します。実装前に依存ピラーが完了していることを確認してください。\n\n':'This document shows dependencies and generation order across 25 pillars. Verify dependent pillars are complete before implementation.\n\n')
+    +(G?'このドキュメントは26ピラー間の依存関係と生成順序を示します。実装前に依存ピラーが完了していることを確認してください。\n\n':'This document shows dependencies and generation order across 26 pillars. Verify dependent pillars are complete before implementation.\n\n')
     +'## '+(G?'依存グラフ (Mermaid)':'Dependency Graph (Mermaid)')+'\n\n'
     +'```mermaid\n'+mmdLines.join('\n')+'\n```\n\n'
     +'## '+(G?'アクティブピラー一覧':'Active Pillar List')+'\n\n'

@@ -75,7 +75,7 @@ function showExplorer(){
       const medal=i<3?medals[i]:'';
       const isTop=i===0;
       const w=Math.max(8,Math.round(r.score/ranked[0].score*100));
-      h+=`<div class="exp-rank-row${isTop?' exp-rank-top':''}" onclick="autoSelectStack('${r.name}')">
+      h+=`<div class="exp-rank-row${isTop?' exp-rank-top':''}" onclick="autoSelectStack('${r.name}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();autoSelectStack('${r.name}');}" role="button" tabindex="0">
         <div class="exp-rank-left">
           <span class="exp-rank-medal">${medal||`#${i+1}`}</span>
           <span class="exp-rank-name">${r.name}</span>

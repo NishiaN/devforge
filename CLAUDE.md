@@ -18,7 +18,7 @@ Generates **182+ files** across **26 pillars** from a wizard-driven Q&A session.
 ## Build & Test
 
 ```bash
-node build.js                          # → devforge-v9.html (~3118KB, limit 5000KB)
+node build.js                          # → devforge-v9.html (~3202KB, limit 5000KB)
 node build.js --no-minify              # debug (skip minification)
 node build.js --report                 # build + size breakdown by module
 npm test                               # 1879 tests, all passing
@@ -61,7 +61,7 @@ S.lang          — UI language 'ja'|'en'
 S.genLang       — generation output language 'ja'|'en'
 S.skill         — 'beginner'|'intermediate'|'pro'
 S.skillLv       — 0-6 (coexists with S.skill; skillTier(lv) maps to string)
-S.pillar        — active pillar tab 0-24
+S.pillar        — active pillar tab 0-25
 S.editedFiles   — user-modified files set
 S.pinnedFiles   — pinned file paths []
 S.recentFiles   — MRU file paths [], max 10
@@ -191,7 +191,7 @@ Key output structure:
 - `.spec/` — constitution, specification, technical-plan, tasks, verification
 - `.devcontainer/` — devcontainer.json, Dockerfile, docker-compose.yml, post-create.sh
 - `.claude/` — thin CLAUDE.md + 5 path-specific rules + settings.json
-- `docs/` — 102 documents (01_project_overview … 102_performance_monitoring)
+- `docs/` — 106 documents (01_project_overview … 106_distributed_tracing)
 - AI rules — AI_BRIEF.md, .cursorrules, .clinerules, .windsurfrules, AGENTS.md, skills/
 - CI/CD — .github/workflows/ci.yml
 

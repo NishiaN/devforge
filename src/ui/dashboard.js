@@ -546,7 +546,7 @@ function showRoadmapUI(){
     const collapsed=!!collapseState[li]||(layerPct===100&&!collapseState['_open_'+li]);
 
     h+=`<div class="road-layer${locked?' road-locked':''}" data-li="${li}">`;
-    h+=`<h3 style="background:${l.color}20;color:${l.color};" class="road-layer-head" onclick="toggleRoadCollapse(${li})">`;
+    h+=`<h3 style="background:${l.color}20;color:${l.color};" class="road-layer-head" onclick="toggleRoadCollapse(${li})" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleRoadCollapse(${li});}" role="button" tabindex="0">`;
     h+=`<span class="road-collapse-icon">${collapsed?'▶':'▼'}</span> `;
     h+=locked?'🔒 ':'';
     h+=`${l.name} <span class="road-layer-pct">${layerPct}%</span>`;
@@ -562,7 +562,7 @@ function showRoadmapUI(){
     l.items.forEach((item,ii)=>{
       const id=li+'_'+ii;
       const disabled=locked?' disabled':'';
-      h+=`<div class="road-task ${item.done?'checked':''}${locked?' road-task-locked':''}" ${locked?'':'onclick="toggleRoadItem2(\''+id+'\',this)"'}>`;
+      h+=`<div class="road-task ${item.done?'checked':''}${locked?' road-task-locked':''}" ${locked?'':'onclick="toggleRoadItem2(\''+id+'\',this)" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();toggleRoadItem2(\''+id+'\',this);}" role="button" tabindex="0"'}>`;
       h+=`<input type="checkbox" ${item.done?'checked':''}${disabled} ${locked?'':'onclick="event.stopPropagation();toggleRoadItem2(\''+id+'\',this.parentElement)"'}>`;
       h+=`<span>${esc(item.text)}</span>`;
       if(item.hrs)h+=`<span class="road-hrs-badge">${item.hrs}h</span>`;
