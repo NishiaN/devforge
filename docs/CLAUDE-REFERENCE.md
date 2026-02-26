@@ -475,7 +475,7 @@ test('pluralize', () => {
 | r27-regression.test.js | 17 | Bug fixes: prices, FK, KPI, ports |
 | r28-regression.test.js | 19 | Quality: REST methods, AC, scope_out, verification |
 | build.test.js | 37 | Build size ≤3000KB, pillar function existence (P1-P25), sbPillarGrid, PILLAR array lengths, tour steps, i18n kb sync |
-| compat.test.js | 1 | Compatibility validation (79 rules: 13 ERROR, 46 WARN, 20 INFO) + calcSynergy unit tests |
+| compat.test.js | 1 | Compatibility validation (136 rules: 22 ERROR, 83 WARN, 31 INFO) + calcSynergy unit tests |
 | security.test.js | 29 | Security: CSP, SRI, sanitization, XSS prevention, proto pollution, .claude/settings.json safety |
 | ops.test.js | 15 | Ops Intelligence (P14): runbook, checklist, ops plane design, SLO adaptation, observability, circuit breaker |
 | future.test.js | 16 | Future Strategy (P15): DOMAIN_MARKET, PERSONA_ARCHETYPES, GTM_STRATEGY, REGULATORY_HORIZON, docs 56-59 |
@@ -723,4 +723,5 @@ Order: `review › arch › reverse › implement › api › i18n › test › 
 - **Phase 4**: `_applyUniversalPostProcess`: static backend での早期 return を廃止し G-1〜G-4 が常に実行されるよう修正; `load()` skillLv に `!isNaN` + `Math.round` + clamp 強化
 - **Phase 5**: compat-rules.js: 2ルール追加 (`mob-flutter-supabase` INFO + `mob-expo-drizzle` WARN) → 60ルール (11+38+11)
 - **Phase 6**: .cursorrules/CLAUDE.md/CLAUDE-REFERENCE.md を 734テスト/2129KB/60ルール に更新
+- **Phase 7**: compat-rules.js: 14ルール追加 (122→136: 6 ERROR + 7 WARN + 1 INFO) — Python/Java/Go+Firebase Hosting、FastAPI+Cloudflare、ORM+NoSQL不整合、dom-saas/government/legal、mob-flutter-drizzle/kysely、db-redis-primary; 1480テスト/3112KB
 
