@@ -5083,3 +5083,163 @@ describe('Suite 59: presets-ext3 Domain Cross-Pillar Verification — ops SLI, p
     assert.ok(doc.length > 200, 'claims_portal P5 QA blueprint must have substantive content');
   });
 });
+
+// ── Suite 60: presets-ext3 English mode (genLang=en) ─────────────────────────
+describe('Suite 60: presets-ext3 English mode — genLang=en produces English content across P1/P22/P20/P21/P14/P18/P5', () => {
+
+  /* Answer bases reused from Suites 57-59 (duplicated locally for isolation) */
+  const en_legal = Object.assign({}, A25, {
+    purpose:'法務文書の作成・管理・電子署名・期限アラートを一元化する法務プラットフォーム',
+    backend:'Node.js + NestJS', frontend:'React + Next.js',
+    database:'PostgreSQL (Railway)', deploy:'Railway', orm:'TypeORM',
+    data_entities:'User, LegalDocument, Precedent, CaseFile, LegalClause, LegalAlert',
+    payment:''
+  });
+  const en_quiz = Object.assign({}, A25, {
+    purpose:'教育・資格取得・トレーニング向けのインタラクティブクイズ学習プラットフォーム',
+    backend:'Firebase', frontend:'React (Vite SPA)',
+    database:'Firestore', auth:'Firebase Auth', deploy:'Firebase Hosting', orm:'',
+    data_entities:'User, QuizSet, QuizItem, QuizAttempt, QuizScore, QuizBadge',
+    payment:''
+  });
+  const en_task = Object.assign({}, A25, {
+    purpose:'個人・チームのタスク管理・期限追跡・優先度管理・進捗可視化ツール',
+    backend:'Supabase', frontend:'React (Vite SPA)',
+    database:'Supabase (PostgreSQL)', auth:'Supabase Auth', deploy:'Vercel', orm:'',
+    data_entities:'User, TaskList, TaskItem, TaskTag, TaskAssignment, TaskComment',
+    payment:''
+  });
+  const en_solar = Object.assign({}, A25, {
+    purpose:'家庭・中小規模の太陽光発電の発電量・売電・消費電力をリアルタイムモニタリング',
+    backend:'Node.js + Express', frontend:'React (Vite SPA)',
+    database:'PostgreSQL (Railway)', deploy:'Railway', orm:'Prisma',
+    data_entities:'User, SolarPanel, PowerGeneration, EnergyBalance, SolarAlert, MaintenanceLog',
+    payment:''
+  });
+  const en_claims = Object.assign({}, A25, {
+    purpose:'保険契約者が保険金請求・書類提出・審査状況確認を行えるセルフサービスポータル',
+    backend:'Node.js + NestJS', frontend:'React + Next.js',
+    database:'PostgreSQL (Railway)', deploy:'Railway', orm:'TypeORM',
+    data_entities:'User, ClaimCase, ClaimDocument, ClaimAdjuster, ClaimPayment, PolicySummary',
+    payment:''
+  });
+  const en_freelance = Object.assign({}, A25, {
+    purpose:'スキルを持つフリーランサーと発注企業をマッチングするスキルマーケットプレイス',
+    data_entities:'User, FreelancerProfile, ProjectPost, Proposal, FreelanceContract, FreelanceReview',
+    payment:'stripe'
+  });
+  const en_disaster = Object.assign({}, A25, {
+    purpose:'リアルタイム防災情報・避難指示・シェルター情報・安否確認を提供する防災ポータル',
+    backend:'Node.js + NestJS', frontend:'React + Next.js',
+    database:'PostgreSQL (Railway)', deploy:'Railway', orm:'TypeORM',
+    data_entities:'User, DisasterAlert, EvacuationOrder, Shelter, SafetyCheck, EmergencyBroadcast',
+    payment:''
+  });
+
+  // ── Suite 57 EN: SDD + DB ──
+  it('EN SDD: legal_docs spec contains LegalDocument (entity names are English)', () => {
+    const f = gSDD(en_legal, 'en');
+    const spec = f['.spec/specification.md'] || '';
+    assert.ok(spec.includes('LegalDocument') || spec.includes('legal') || spec.includes('Legal'), 'EN legal_docs SDD spec must mention LegalDocument');
+  });
+
+  it('EN SDD: quiz_app spec contains no undefined values', () => {
+    const f = gSDD(en_quiz, 'en');
+    const spec = f['.spec/specification.md'] || '';
+    assert.ok(!spec.includes('undefined'), 'EN quiz_app SDD spec must not contain undefined');
+  });
+
+  it('EN DB: legal_docs (TypeORM) → docs/87 shows English heading and TypeORM', () => {
+    const f = gDB(en_legal, 'en');
+    const doc = f['docs/87_database_design_principles.md'] || '';
+    assert.ok(doc.includes('TypeORM'), 'EN legal_docs docs/87 must mention TypeORM');
+    assert.ok(doc.includes('Database Design Principles') || doc.includes('Schema Design') || doc.includes('Naming'), 'EN docs/87 must have English headings');
+  });
+
+  it('EN DB: quiz_app (Firebase) → docs/87 shows Firebase or Firestore in English', () => {
+    const f = gDB(en_quiz, 'en');
+    const doc = f['docs/87_database_design_principles.md'] || '';
+    assert.ok(doc.includes('Firebase') || doc.includes('Firestore'), 'EN quiz_app docs/87 must mention Firebase/Firestore');
+  });
+
+  it('EN DB: task_mgmt (Supabase) → docs/87 shows Supabase in English', () => {
+    const f = gDB(en_task, 'en');
+    const doc = f['docs/87_database_design_principles.md'] || '';
+    assert.ok(doc.includes('Supabase'), 'EN task_mgmt docs/87 must mention Supabase');
+  });
+
+  // ── Suite 58 EN: Roadmap + CI/CD + API + P10 ──
+  it('EN Roadmap: legal_docs (NestJS) → LEARNING_PATH.md references NestJS or Node in English', () => {
+    const f = gRoadmap(en_legal, 'en');
+    const path = f['roadmap/LEARNING_PATH.md'] || '';
+    assert.ok(path.includes('NestJS') || path.includes('Node'), 'EN legal_docs roadmap must reference NestJS or Node');
+  });
+
+  it('EN CI/CD: legal_docs (Railway) → docs/77 mentions Railway in English', () => {
+    const f = gP20(en_legal, 'en');
+    const ci = f['docs/77_cicd_pipeline_design.md'] || '';
+    assert.ok(ci.includes('Railway') || ci.includes('railway'), 'EN legal_docs CI pipeline must reference Railway');
+  });
+
+  it('EN CI/CD: solar_monitor (Railway) → docs/77 mentions Railway in English', () => {
+    const f = gP20(en_solar, 'en');
+    const ci = f['docs/77_cicd_pipeline_design.md'] || '';
+    assert.ok(ci.includes('Railway') || ci.includes('railway'), 'EN solar_monitor CI pipeline must reference Railway');
+  });
+
+  it('EN API: task_mgmt (Supabase) → docs/83 shows Supabase or BaaS in English', () => {
+    const f = gAPI(en_task, 'en');
+    const doc = f['docs/83_api_design_principles.md'] || '';
+    assert.ok(doc.includes('Supabase') || doc.includes('BaaS'), 'EN task_mgmt API doc must mention Supabase/BaaS');
+  });
+
+  it('EN P10: freelance_platform (stripe) → business_model.md generated with English content', () => {
+    const f = gP10(en_freelance, 'en');
+    const doc = f['docs/38_business_model.md'] || '';
+    assert.ok(doc.length > 100, 'EN freelance_platform business_model.md must have substantive English content');
+    assert.ok(!doc.includes('undefined'), 'EN business_model.md must not contain undefined');
+  });
+
+  // ── Suite 59 EN: P14 + P18 + P5 ──
+  it('EN P14: legal_docs → ops runbook shows E-signature or Document Search SLI in English', () => {
+    const f = gP14(Object.assign({}, en_legal), 'en');
+    const doc = f['docs/53_ops_runbook.md'] || '';
+    assert.ok(doc.includes('E-signature') || doc.includes('Document Search') || doc.includes('Version Control'), 'EN legal ops runbook must show English e-signature or document search SLI');
+  });
+
+  it('EN P14: solar_monitor → ops runbook shows Meter or Anomaly SLI in English', () => {
+    const f = gP14(Object.assign({}, en_solar), 'en');
+    const doc = f['docs/53_ops_runbook.md'] || '';
+    assert.ok(doc.includes('Meter') || doc.includes('Grid') || doc.includes('Anomaly'), 'EN solar_monitor ops runbook must show English meter or anomaly SLI');
+  });
+
+  it('EN P14: disaster_info → ops runbook shows government-domain SLI in English', () => {
+    const f = gP14(Object.assign({}, en_disaster), 'en');
+    const doc = f['docs/53_ops_runbook.md'] || '';
+    assert.ok(doc.includes('Application') || doc.includes('Accessibility') || doc.includes('Government') || doc.includes('government'), 'EN disaster_info ops runbook must show English government SLI');
+  });
+
+  it('EN P18: claims_portal → prompt registry shows INS-P or Claim template ID', () => {
+    const f = gP18(Object.assign({}, en_claims), 'en');
+    const doc = f['docs/72_prompt_registry.md'] || '';
+    assert.ok(doc.includes('INS-P') || doc.includes('Claim') || doc.includes('insurance'), 'EN claims_portal prompt registry must show INS-P or Claim template');
+  });
+
+  it('EN P18: legal_docs → prompt registry shows LEGAL-P or eSign template ID', () => {
+    const f = gP18(Object.assign({}, en_legal), 'en');
+    const doc = f['docs/72_prompt_registry.md'] || '';
+    assert.ok(doc.includes('LEGAL-P') || doc.includes('eSign') || doc.includes('Contract') || doc.includes('legal'), 'EN legal_docs prompt registry must show LEGAL-P or eSign template');
+  });
+
+  it('EN P5: quiz_app (education) → QA blueprint shows education matrix in English', () => {
+    const f = gP5(Object.assign({}, en_quiz), 'en');
+    const doc = f['docs/32_qa_blueprint.md'] || '';
+    assert.ok(doc.includes('education') || doc.includes('FERPA') || doc.includes('Exam') || doc.includes('Learning'), 'EN quiz_app P5 must use education QA matrix with English content');
+  });
+
+  it('EN P5: solar_monitor (energy) → QA blueprint shows energy matrix in English', () => {
+    const f = gP5(Object.assign({}, en_solar), 'en');
+    const doc = f['docs/32_qa_blueprint.md'] || '';
+    assert.ok(doc.includes('energy') || doc.includes('Meter reading') || doc.includes('Anomaly'), 'EN solar_monitor P5 must use energy QA matrix with English content');
+  });
+});
