@@ -7009,3 +7009,374 @@ describe('Suite 75: P21–P25 multi-pillar smoke — all docs/83-102 generated f
     });
   });
 });
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 76 — P21 API Intelligence: gRPC + GraphQL EN + Stripe payment
+   Covers stack-specific content not tested in Suite 16 or 68:
+   gRPC proto3 content, GraphQL/FastAPI EN headings, Stripe payment section
+   ════════════════════════════════════════════════════════════════ */
+describe('Suite 76: P21 API — gRPC content, GraphQL EN, FastAPI EN, Stripe payment', () => {
+
+  const s76_grpc = Object.assign({}, A25, {
+    purpose: 'マイクロサービス間のリアルタイム通信と高速データ転送を実現するgRPCバックエンド',
+    backend: 'Go + gRPC',
+    frontend: 'React + Next.js',
+    database: 'PostgreSQL (Neon)',
+    auth: 'JWT',
+    orm: 'Prisma ORM',
+    payment: '',
+  });
+
+  const s76_graphql_en = Object.assign({}, A25, {
+    purpose: 'チームのタスクとプロジェクトを管理するコラボレーションツール',
+    backend: 'Node.js + GraphQL',
+    frontend: 'React + Next.js',
+    database: 'PostgreSQL (Neon)',
+    auth: 'JWT',
+    orm: 'Prisma ORM',
+    payment: '',
+  });
+
+  const s76_py_en = Object.assign({}, A25, {
+    purpose: '在庫・受発注・配送を管理するサプライチェーン管理システム',
+    backend: 'FastAPI (Python)',
+    frontend: 'React + Vite',
+    database: 'PostgreSQL (Neon)',
+    auth: 'JWT',
+    orm: 'SQLAlchemy',
+    payment: '',
+  });
+
+  const s76_stripe = Object.assign({}, A25, {
+    purpose: 'オンラインコースのサブスクリプション購入と決済を管理するプラットフォーム',
+    backend: 'Express.js + Node.js',
+    frontend: 'React + Next.js',
+    database: 'PostgreSQL (Neon)',
+    auth: 'JWT',
+    orm: 'Prisma ORM',
+    payment: 'Stripe',
+  });
+
+  const s76_nopay = Object.assign({}, A25, {
+    purpose: '社内チームのドキュメント管理とナレッジベースシステム',
+    backend: 'Express.js + Node.js',
+    frontend: 'React + Vite',
+    database: 'PostgreSQL (Neon)',
+    auth: 'JWT',
+    orm: 'Prisma ORM',
+    payment: 'なし',
+  });
+
+  // ── gRPC tests ──
+  it('docs/83 gRPC: contains syntax = "proto3"', () => {
+    const f = gAPI(s76_grpc);
+    const doc = f['docs/83_api_design_principles.md'] || '';
+    assert.ok(doc.includes('proto3') || doc.includes('protobuf'), 'docs/83 gRPC must include proto3 definition');
+  });
+
+  it('docs/83 gRPC: contains service UserService block', () => {
+    const f = gAPI(s76_grpc);
+    const doc = f['docs/83_api_design_principles.md'] || '';
+    assert.ok(doc.includes('UserService'), 'docs/83 gRPC must define UserService');
+  });
+
+  it('docs/83 gRPC: contains rpc GetUser declaration', () => {
+    const f = gAPI(s76_grpc);
+    const doc = f['docs/83_api_design_principles.md'] || '';
+    assert.ok(doc.includes('rpc GetUser') || doc.includes('GetUser'), 'docs/83 gRPC must include rpc GetUser');
+  });
+
+  // ── GraphQL EN / FastAPI EN heading tests ──
+  it('docs/83 EN: GraphQL backend → contains "GraphQL Design Principles"', () => {
+    const f = gAPI(s76_graphql_en, 'en');
+    const doc = f['docs/83_api_design_principles.md'] || '';
+    assert.ok(doc.includes('GraphQL Design Principles'), 'docs/83 EN GraphQL must include "GraphQL Design Principles" heading');
+  });
+
+  it('docs/83 EN: Python FastAPI backend → contains "FastAPI Implementation Patterns"', () => {
+    const f = gAPI(s76_py_en, 'en');
+    const doc = f['docs/83_api_design_principles.md'] || '';
+    assert.ok(doc.includes('FastAPI Implementation Patterns'), 'docs/83 EN FastAPI must include "FastAPI Implementation Patterns" heading');
+  });
+
+  // ── Stripe payment section tests ──
+  it('docs/85: Stripe payment → contains payment section', () => {
+    const f = gAPI(s76_stripe);
+    const doc = f['docs/85_api_security_checklist.md'] || '';
+    assert.ok(doc.includes('Stripe') || doc.includes('決済'), 'docs/85 must include Stripe payment section');
+  });
+
+  it('docs/85 EN: Stripe payment → contains "Payment API Checks (Stripe)"', () => {
+    const f = gAPI(s76_stripe, 'en');
+    const doc = f['docs/85_api_security_checklist.md'] || '';
+    assert.ok(doc.includes('Payment API Checks (Stripe)'), 'docs/85 EN Stripe must include exact "Payment API Checks (Stripe)" heading');
+  });
+
+  it('docs/85: no payment → no Stripe payment section', () => {
+    const f = gAPI(s76_nopay);
+    const doc = f['docs/85_api_security_checklist.md'] || '';
+    // Standard security items still present, but no Stripe payment section
+    assert.ok(doc.includes('SQL') || doc.includes('OWASP'), 'docs/85 no-payment must still have standard security content');
+    assert.ok(!doc.includes('Payment API Checks'), 'docs/85 no-payment must NOT include Stripe payment section');
+  });
+
+  it('docs/84: Python FastAPI → local server URL uses port 8000', () => {
+    const f = gAPI(s76_py_en);
+    const doc = f['docs/84_openapi_specification.md'] || '';
+    assert.ok(doc.includes('localhost:8000'), 'docs/84 Python must use port 8000 in local server URL');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 77 — P21 API Intelligence: domain-specific patterns
+   Tests DOMAIN_IMPL_PATTERN in docs/83 and DOMAIN_QA_MAP in docs/86
+   for fintech, health, and saas domains
+   ════════════════════════════════════════════════════════════════ */
+describe('Suite 77: P21 API — domain-specific API patterns (DOMAIN_IMPL_PATTERN + DOMAIN_QA_MAP)', () => {
+
+  const s77_fintech = Object.assign({}, A25, {
+    purpose: '銀行API連携による家計簿・資産管理プラットフォーム',
+    backend: 'Express.js + Node.js',
+    frontend: 'React + Next.js',
+    database: 'PostgreSQL (Neon)',
+    auth: 'JWT',
+    orm: 'Prisma ORM',
+    payment: 'Stripe',
+  });
+
+  const s77_health = Object.assign({}, A25, {
+    purpose: '患者情報・診療記録・処方箋を管理する電子カルテシステム',
+    backend: 'Node.js + Express',
+    frontend: 'React + Next.js',
+    database: 'PostgreSQL (Neon)',
+    auth: 'JWT',
+    orm: 'Prisma ORM',
+    payment: '',
+  });
+
+  const s77_saas = Object.assign({}, A25, {
+    purpose: 'チームのサブスクリプション管理・課題追跡・スプリント計画ツール',
+    backend: 'Node.js + NestJS',
+    frontend: 'React + Next.js',
+    database: 'PostgreSQL (Neon)',
+    auth: 'JWT',
+    orm: 'Prisma ORM',
+    payment: 'Stripe',
+  });
+
+  const s77_legal = Object.assign({}, A25, {
+    purpose: '弁護士向け契約書レビューと法務相談管理システム',
+    backend: 'Node.js + NestJS',
+    frontend: 'React + Next.js',
+    database: 'PostgreSQL (Railway)',
+    auth: 'JWT',
+    orm: 'TypeORM',
+    payment: '',
+  });
+
+  // ── DOMAIN_IMPL_PATTERN in docs/83 ──
+  it('docs/83 fintech: contains "Domain-Specific API Patterns (fintech)"', () => {
+    const f = gAPI(s77_fintech);
+    const doc = f['docs/83_api_design_principles.md'] || '';
+    assert.ok(
+      doc.includes('Domain-Specific API Patterns (fintech)') || doc.includes('ドメイン固有API実装パターン (fintech)'),
+      'docs/83 fintech must include domain-specific API patterns section'
+    );
+  });
+
+  it('docs/83 fintech: contains impl_en balance transaction pattern', () => {
+    const f = gAPI(s77_fintech, 'en');
+    const doc = f['docs/83_api_design_principles.md'] || '';
+    assert.ok(
+      doc.includes('Balance updates require transactions') || doc.includes('idempotency') || doc.includes('immutable'),
+      'docs/83 fintech EN must include fintech impl_en content'
+    );
+  });
+
+  it('docs/83 health: contains "Domain-Specific API Patterns (health)"', () => {
+    const f = gAPI(s77_health);
+    const doc = f['docs/83_api_design_principles.md'] || '';
+    assert.ok(
+      doc.includes('Domain-Specific API Patterns (health)') || doc.includes('ドメイン固有API実装パターン (health)'),
+      'docs/83 health must include domain-specific API patterns section'
+    );
+  });
+
+  it('docs/83 health EN: contains health impl_en content', () => {
+    const f = gAPI(s77_health, 'en');
+    const doc = f['docs/83_api_design_principles.md'] || '';
+    assert.ok(
+      doc.includes('encrypted columns') || doc.includes('consent') || doc.includes('access logs'),
+      'docs/83 health EN must include health impl_en items'
+    );
+  });
+
+  it('docs/83 saas: contains domain-specific API patterns section', () => {
+    const f = gAPI(s77_saas);
+    const doc = f['docs/83_api_design_principles.md'] || '';
+    assert.ok(
+      doc.includes('ドメイン固有API実装パターン (saas)') || doc.includes('Domain-Specific API Patterns (saas)'),
+      'docs/83 saas must include domain-specific API patterns section'
+    );
+  });
+
+  it('docs/83 legal: contains domain-specific API patterns section', () => {
+    const f = gAPI(s77_legal);
+    const doc = f['docs/83_api_design_principles.md'] || '';
+    assert.ok(
+      doc.includes('ドメイン固有API実装パターン (legal)') || doc.includes('Domain-Specific API Patterns (legal)'),
+      'docs/83 legal must include domain-specific API patterns section'
+    );
+  });
+
+  // ── DOMAIN_QA_MAP in docs/86 ──
+  it('docs/86 fintech: contains "Domain-Specific Test Scenarios (fintech)"', () => {
+    const f = gAPI(s77_fintech);
+    const doc = f['docs/86_api_testing_strategy.md'] || '';
+    assert.ok(
+      doc.includes('Domain-Specific Test Scenarios (fintech)') || doc.includes('ドメイン固有テストシナリオ (fintech)'),
+      'docs/86 fintech must include domain QA section'
+    );
+  });
+
+  it('docs/86 fintech EN: contains "Domain-Specific Test Scenarios (fintech)"', () => {
+    const f = gAPI(s77_fintech, 'en');
+    const doc = f['docs/86_api_testing_strategy.md'] || '';
+    assert.ok(
+      doc.includes('Domain-Specific Test Scenarios (fintech)'),
+      'docs/86 fintech EN must include English domain QA section heading'
+    );
+  });
+
+  it('docs/86 fintech: contains focus_en or bugs_en QA content', () => {
+    const f = gAPI(s77_fintech, 'en');
+    const doc = f['docs/86_api_testing_strategy.md'] || '';
+    assert.ok(
+      doc.includes('Transaction integrity') || doc.includes('Double-processing') || doc.includes('Audit log'),
+      'docs/86 fintech EN must include DOMAIN_QA_MAP focus_en items'
+    );
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 78 — P21 API Intelligence: domain QA depth + OpenAPI EN + no-undefined
+   Tests health QA scenarios, docs/84 OpenAPI EN, Node port 3000,
+   and docs/83-86 undefined-free for edge cases
+   ════════════════════════════════════════════════════════════════ */
+describe('Suite 78: P21 API — health domain QA, OpenAPI EN, no-undefined edge cases', () => {
+
+  const s78_health = Object.assign({}, A25, {
+    purpose: '患者情報・診療記録・処方箋を管理する電子カルテシステム',
+    backend: 'Node.js + Express',
+    frontend: 'React + Next.js',
+    database: 'PostgreSQL (Neon)',
+    auth: 'JWT',
+    orm: 'Prisma ORM',
+    payment: '',
+  });
+
+  const s78_node = Object.assign({}, A25, {
+    purpose: 'チームのタスクとプロジェクトを管理するコラボレーションツール',
+    backend: 'Express.js + Node.js',
+    frontend: 'React + Vite',
+    database: 'PostgreSQL (Neon)',
+    auth: 'JWT',
+    orm: 'Prisma ORM',
+    payment: '',
+  });
+
+  const s78_grpc = Object.assign({}, A25, {
+    purpose: 'マイクロサービス間のリアルタイム通信を実現するgRPCバックエンド',
+    backend: 'Go + gRPC',
+    frontend: 'React + Next.js',
+    database: 'PostgreSQL (Neon)',
+    auth: 'JWT',
+    orm: 'Prisma ORM',
+    payment: '',
+  });
+
+  const s78_fintech = Object.assign({}, A25, {
+    purpose: '銀行API連携による家計簿・資産管理プラットフォーム',
+    backend: 'Express.js + Node.js',
+    frontend: 'React + Next.js',
+    database: 'PostgreSQL (Neon)',
+    auth: 'JWT',
+    orm: 'Prisma ORM',
+    payment: 'Stripe',
+  });
+
+  // ── health domain QA ──
+  it('docs/86 health: contains "Domain-Specific Test Scenarios (health)"', () => {
+    const f = gAPI(s78_health);
+    const doc = f['docs/86_api_testing_strategy.md'] || '';
+    assert.ok(
+      doc.includes('Domain-Specific Test Scenarios (health)') || doc.includes('ドメイン固有テストシナリオ (health)'),
+      'docs/86 health must include domain QA section'
+    );
+  });
+
+  it('docs/86 health EN: contains health focus_en QA items', () => {
+    const f = gAPI(s78_health, 'en');
+    const doc = f['docs/86_api_testing_strategy.md'] || '';
+    assert.ok(
+      doc.includes('Patient data') || doc.includes('HIPAA') || doc.includes('Medical'),
+      'docs/86 health EN must include DOMAIN_QA_MAP focus_en health items'
+    );
+  });
+
+  // ── docs/84 OpenAPI EN + port ──
+  it('docs/84 EN: English mode → has "openapi.yaml Template" heading', () => {
+    const f = gAPI(s78_node, 'en');
+    const doc = f['docs/84_openapi_specification.md'] || '';
+    assert.ok(doc.includes('openapi.yaml Template'), 'docs/84 EN must have English openapi.yaml Template heading');
+  });
+
+  it('docs/84: Node backend → local server URL uses port 3000', () => {
+    const f = gAPI(s78_node);
+    const doc = f['docs/84_openapi_specification.md'] || '';
+    assert.ok(doc.includes('localhost:3000'), 'docs/84 Node backend must use port 3000 in local server URL');
+  });
+
+  it('docs/84 EN: openapi version 3.1.0 present in English mode', () => {
+    const f = gAPI(s78_node, 'en');
+    const doc = f['docs/84_openapi_specification.md'] || '';
+    assert.ok(doc.includes('3.1.0'), 'docs/84 EN must include openapi version 3.1.0');
+  });
+
+  // ── no-undefined edge case checks ──
+  it('docs/83-86: no undefined in prose for fintech JA mode', () => {
+    const f = gAPI(s78_fintech);
+    ['docs/83_api_design_principles.md','docs/84_openapi_specification.md',
+     'docs/85_api_security_checklist.md','docs/86_api_testing_strategy.md'].forEach(key => {
+      const prose = (f[key] || '').replace(/```[\s\S]*?```/g, '');
+      assert.ok(!prose.includes('undefined'), key + ' fintech JA prose must not contain undefined');
+    });
+  });
+
+  it('docs/83-86: no undefined in prose for health JA mode', () => {
+    const f = gAPI(s78_health);
+    ['docs/83_api_design_principles.md','docs/84_openapi_specification.md',
+     'docs/85_api_security_checklist.md','docs/86_api_testing_strategy.md'].forEach(key => {
+      const prose = (f[key] || '').replace(/```[\s\S]*?```/g, '');
+      assert.ok(!prose.includes('undefined'), key + ' health JA prose must not contain undefined');
+    });
+  });
+
+  it('docs/83-86: no undefined in prose for gRPC JA mode', () => {
+    const f = gAPI(s78_grpc);
+    ['docs/83_api_design_principles.md','docs/84_openapi_specification.md',
+     'docs/85_api_security_checklist.md','docs/86_api_testing_strategy.md'].forEach(key => {
+      const prose = (f[key] || '').replace(/```[\s\S]*?```/g, '');
+      assert.ok(!prose.includes('undefined'), key + ' gRPC JA prose must not contain undefined');
+    });
+  });
+
+  it('docs/83-86: no undefined in prose for gRPC EN mode', () => {
+    const f = gAPI(s78_grpc, 'en');
+    ['docs/83_api_design_principles.md','docs/84_openapi_specification.md',
+     'docs/85_api_security_checklist.md','docs/86_api_testing_strategy.md'].forEach(key => {
+      const prose = (f[key] || '').replace(/```[\s\S]*?```/g, '');
+      assert.ok(!prose.includes('undefined'), key + ' gRPC EN prose must not contain undefined');
+    });
+  });
+});
