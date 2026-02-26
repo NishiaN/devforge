@@ -44,7 +44,7 @@ Never reorder without checking dependencies.
 | Category | Purpose |
 |----------|---------|
 | `core/` | State (`S`), i18n (`t()`), keyboard events, wizard tour, app init |
-| `data/` | 63 standard presets (`PR`/`_mp()`), 266 field presets (`PR_FIELD`/`_fpd()`), questions, techdb (338 entries), compat-rules (136 rules), gen-templates (bilingual GT dict), helpdata |
+| `data/` | 63 standard presets (`PR`/`_mp()`), 266 field presets (`PR_FIELD`/`_fpd()`), questions, techdb (338 entries), compat-rules (142 rules), gen-templates (bilingual GT dict), helpdata |
 | `generators/` | `index.js` orchestrator + `p1`–`p25` pillars + `docs.js` + `common.js` |
 | `ui/` | wizard, render, presets, preview, sidebar, editor, diff, export, explorer, dashboard, launcher, templates, qbar, cmdpalette, help, voice |
 | `styles/all.css` | Theme (dark/light), responsive; CSS custom properties only |
@@ -160,7 +160,7 @@ Full 6-step process in `docs/CLAUDE-REFERENCE.md`. Key steps often missed:
 
 ## Adding Compat Rules
 
-File: `src/data/compat-rules.js` — currently 136 rules (22 error + 83 warn + 31 info). All rules have `why_ja`/`why_en`.
+File: `src/data/compat-rules.js` — currently 142 rules (24 error + 86 warn + 32 info). All rules have `why_ja`/`why_en`.
 Structure: `{id, p:['field1','field2'], lv:'error'|'warn'|'info', t:conditionFn, ja, en, fix, fixFn, why_ja, why_en}`
 `why_ja`/`why_en`: When set, shows "▶ なぜ？" expandable card in wizard alerts.
 After adding: update header comment totals, add tests to `test/compat.test.js`, update CLAUDE.md rule count.

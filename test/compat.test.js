@@ -1,4 +1,4 @@
-// Compat rules functional test (136 rules: 22 ERROR + 83 WARN + 31 INFO)
+// Compat rules functional test (142 rules: 24 ERROR + 86 WARN + 32 INFO)
 const assert=require('node:assert/strict');
 const S={lang:'ja',skill:'pro'};
 eval(require('fs').readFileSync('src/data/compat-rules.js','utf-8'));
@@ -311,6 +311,24 @@ const tests=[
   // orm-typeorm-mongo (INFO)
   {name:'TypeORM+MongoDB=INFO',a:{orm:'TypeORM',database:'MongoDB'},expect:'info',id:'orm-typeorm-mongo'},
   {name:'Mongoose+MongoDB=noTypeORMMongoINFO',a:{orm:'Mongoose',database:'MongoDB'},expect:'none',id:'orm-typeorm-mongo'},
+  // be-dep-java-netlify (ERROR)
+  {name:'Spring+Netlify=ERROR',a:{backend:'Java + Spring Boot',deploy:'Netlify'},expect:'error',id:'be-dep-java-netlify'},
+  {name:'Spring+Railway=noJavaNetlifyERROR',a:{backend:'Java + Spring Boot',deploy:'Railway'},expect:'none',id:'be-dep-java-netlify'},
+  // auth-dual-baas (WARN)
+  {name:'FirebaseAuth+SupabaseAuth=WARN',a:{auth:'Firebase Auth + Supabase Auth'},expect:'warn',id:'auth-dual-baas'},
+  {name:'FirebaseAuthOnly=noDualBaasWARN',a:{auth:'Firebase Auth'},expect:'none',id:'auth-dual-baas'},
+  // be-nextjs-typeorm (WARN)
+  {name:'Nextjs+TypeORM=WARN',a:{backend:'Next.js',orm:'TypeORM'},expect:'warn',id:'be-nextjs-typeorm'},
+  {name:'Nextjs+Prisma=noNextjsTypeORMWARN',a:{backend:'Next.js',orm:'Prisma ORM'},expect:'none',id:'be-nextjs-typeorm'},
+  // orm-prisma-fs (ERROR)
+  {name:'Prisma+Firestore=ERROR',a:{orm:'Prisma',database:'Firebase Firestore'},expect:'error',id:'orm-prisma-fs'},
+  {name:'Prisma+PostgreSQL=noPrismaFsERROR',a:{orm:'Prisma',database:'PostgreSQL (Neon)'},expect:'none',id:'orm-prisma-fs'},
+  // db-supabase-typeorm (WARN)
+  {name:'Supabase+TypeORM=WARN',a:{database:'Supabase (PostgreSQL)',orm:'TypeORM'},expect:'warn',id:'db-supabase-typeorm'},
+  {name:'Supabase+Drizzle=noSupabaseTypeORMWARN',a:{database:'Supabase (PostgreSQL)',orm:'Drizzle ORM'},expect:'none',id:'db-supabase-typeorm'},
+  // orm-prisma-supabase (INFO)
+  {name:'Supabase+Prisma=INFO',a:{database:'Supabase (PostgreSQL)',orm:'Prisma ORM'},expect:'info',id:'orm-prisma-supabase'},
+  {name:'Neon+Prisma=noPrismaSupabaseINFO',a:{database:'Neon (PostgreSQL)',orm:'Prisma ORM'},expect:'none',id:'orm-prisma-supabase'},
 ];
 
 let pass=0,fail=0;
