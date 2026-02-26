@@ -67,6 +67,8 @@ function gen103(a,pn){
   const dep=_obsTarget(a);
   const stack=OTEL_STACK[dep]||OTEL_STACK.default;
   const isBaaS=be==='supabase'||be==='firebase';
+  const isPy=be==='python';
+  const exporterLabel=isPy?'opentelemetry-sdk (Python / pip)':stack.exporter;
   let doc='# '+pn+' — '+(G?'オブザーバビリティアーキテクチャ':'Observability Architecture')+'\n';
   doc+='> '+(G?'ログ・メトリクス・分散トレーシング の3本柱による可観測性設計':'Three-pillar observability: Logs · Metrics · Distributed Tracing')+'\n\n';
 
@@ -97,7 +99,7 @@ function gen103(a,pn){
   doc+='| '+(G?'コンポーネント':'Component')+' | '+(G?'選定':'Selection')+'|\n';
   doc+='|------|------|\n';
   doc+='| OTel Collector | `'+stack.collector+'` |\n';
-  doc+='| Exporter | `'+stack.exporter+'` |\n';
+  doc+='| Exporter | `'+exporterLabel+'` |\n';
   doc+='| Backend | '+stack.backend+' |\n';
   if(isBaaS){
     var baasStack=OTEL_STACK[be]||OTEL_STACK.supabase;
@@ -161,9 +163,16 @@ function gen104(a,pn){
     doc+='## '+(G?'Python structlog セットアップ':'Python structlog Setup')+'\n\n';
     doc+='```python\n';
     doc+='import structlog\nimport logging\n\n';
+    doc+='# '+(G?'センシティブデータマスキング (パスワード等を [REDACTED] に置換)':'Sensitive data masking (replace passwords etc. with [REDACTED])')+'\n';
+    doc+='def mask_sensitive(_, __, event_dict):\n';
+    doc+="    for key in ('password', 'token', 'secret', 'authorization'):\n";
+    doc+='        if key in event_dict:\n';
+    doc+="            event_dict[key] = '[REDACTED]'\n";
+    doc+='    return event_dict\n\n';
     doc+='structlog.configure(\n';
     doc+='    processors=[\n';
     doc+='        structlog.contextvars.merge_contextvars,\n';
+    doc+='        mask_sensitive,\n';
     doc+='        structlog.processors.add_log_level,\n';
     doc+='        structlog.processors.TimeStamper(fmt="iso"),\n';
     doc+='        structlog.processors.JSONRenderer(),\n';
@@ -179,12 +188,20 @@ function gen104(a,pn){
     doc+=')\n';
     doc+='```\n\n';
     if(hasSQLAlchemy){
-      doc+='### SQLAlchemy '+(G?'クエリログ':'Query Logging')+'\n\n';
+      doc+='### SQLAlchemy '+(G?'クエリログ (スロークエリ検出)':'Query Logging (Slow Query Detection)')+'\n\n';
       doc+='```python\n';
-      doc+='import logging\n';
+      doc+='from sqlalchemy import event\nfrom time import perf_counter\nimport logging\n\n';
       doc+='logging.getLogger("sqlalchemy.engine").setLevel(logging.INFO)\n';
       doc+='# '+(G?'開発時のみ echo=True。本番では必ず False':'echo=True for dev only; always False in prod')+'\n';
-      doc+='engine = create_engine(DATABASE_URL, echo=False)\n';
+      doc+='engine = create_engine(DATABASE_URL, echo=False)\n\n';
+      doc+='@event.listens_for(engine, "before_cursor_execute")\n';
+      doc+='def _before(conn, cursor, statement, params, context, executemany):\n';
+      doc+='    conn.info["query_start"] = perf_counter()\n\n';
+      doc+='@event.listens_for(engine, "after_cursor_execute")\n';
+      doc+='def _after(conn, cursor, statement, params, context, executemany):\n';
+      doc+='    elapsed_ms = (perf_counter() - conn.info.pop("query_start")) * 1000\n';
+      doc+='    if elapsed_ms > 100:\n';
+      doc+="        log.warn('slow_query', query=statement, duration_ms=round(elapsed_ms, 2))\n";
       doc+='```\n\n';
     }
   } else if(!isBaaS){
