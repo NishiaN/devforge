@@ -98,7 +98,14 @@ function gen103(a,pn){
   doc+='|------|------|\n';
   doc+='| OTel Collector | `'+stack.collector+'` |\n';
   doc+='| Exporter | `'+stack.exporter+'` |\n';
-  doc+='| Backend | '+stack.backend+' |\n\n';
+  doc+='| Backend | '+stack.backend+' |\n';
+  if(isBaaS){
+    var baasStack=OTEL_STACK[be]||OTEL_STACK.supabase;
+    doc+='| '+(G?'アプリログ (BaaS)':'App Logs (BaaS)')+' | `'+baasStack.collector+'` |\n';
+    doc+='| '+(G?'サーバーサイドExporter':'Server-side Exporter')+' | `'+baasStack.exporter+'` |\n';
+    doc+='| '+(G?'ログバックエンド':'Log Backend')+' | '+baasStack.backend+' |\n';
+  }
+  doc+='\n';
 
   if(isBaaS){
     doc+='### '+(G?'BaaS環境の注意点':'BaaS Environment Notes')+'\n';
