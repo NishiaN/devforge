@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 # DevForge v9.6.0
 
-**AI Development OS** — 63 JS modules in `src/` → single `devforge-v9.html` (~3091KB / 5000KB limit).
+**AI Development OS** — 63 JS modules in `src/` → single `devforge-v9.html` (~3118KB / 5000KB limit).
 Generates **178+ files** across **25 pillars** from a wizard-driven Q&A session.
 
 ## Documentation Map
@@ -18,7 +18,7 @@ Generates **178+ files** across **25 pillars** from a wizard-driven Q&A session.
 ## Build & Test
 
 ```bash
-node build.js                          # → devforge-v9.html (~3091KB, limit 5000KB)
+node build.js                          # → devforge-v9.html (~3118KB, limit 5000KB)
 node build.js --no-minify              # debug (skip minification)
 node build.js --report                 # build + size breakdown by module
 npm test                               # 1480 tests, all passing
