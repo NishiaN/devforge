@@ -1,4 +1,4 @@
-// Compat rules functional test (142 rules: 24 ERROR + 86 WARN + 32 INFO)
+// Compat rules functional test (147 rules: 25 ERROR + 90 WARN + 32 INFO)
 const assert=require('node:assert/strict');
 const S={lang:'ja',skill:'pro'};
 eval(require('fs').readFileSync('src/data/compat-rules.js','utf-8'));
@@ -329,6 +329,22 @@ const tests=[
   // orm-prisma-supabase (INFO)
   {name:'Supabase+Prisma=INFO',a:{database:'Supabase (PostgreSQL)',orm:'Prisma ORM'},expect:'info',id:'orm-prisma-supabase'},
   {name:'Neon+Prisma=noPrismaSupabaseINFO',a:{database:'Neon (PostgreSQL)',orm:'Prisma ORM'},expect:'none',id:'orm-prisma-supabase'},
+  // be-dep-fastapi-vercel (WARN)
+  {name:'FastAPI+Vercel=WARN',a:{backend:'Python + FastAPI',deploy:'Vercel'},expect:'warn',id:'be-dep-fastapi-vercel'},
+  {name:'FastAPI+Railway=noFastapiVercelWARN',a:{backend:'Python + FastAPI',deploy:'Railway'},expect:'none',id:'be-dep-fastapi-vercel'},
+  // be-dep-fastapi-netlify (WARN)
+  {name:'FastAPI+Netlify=WARN',a:{backend:'Python + FastAPI',deploy:'Netlify'},expect:'warn',id:'be-dep-fastapi-netlify'},
+  {name:'Django+Netlify=noFastapiNetlifyWARN',a:{backend:'Python + Django',deploy:'Netlify'},expect:'none',id:'be-dep-fastapi-netlify'},
+  // fe-nextjs-firebase (WARN)
+  {name:'Nextjs+FirebaseHosting=WARN',a:{frontend:'React + Next.js',deploy:'Firebase Hosting'},expect:'warn',id:'fe-nextjs-firebase'},
+  {name:'Nextjs+Vercel=noNextjsFirebaseWARN',a:{frontend:'React + Next.js',deploy:'Vercel'},expect:'none',id:'fe-nextjs-firebase'},
+  {name:'ReactSPA+FirebaseHosting=noNextjsFirebaseWARN',a:{frontend:'React (Vite SPA)',deploy:'Firebase Hosting'},expect:'none',id:'fe-nextjs-firebase'},
+  // be-dep-go-cf (ERROR)
+  {name:'Go+Cloudflare=ERROR',a:{backend:'Go (Gin)',deploy:'Cloudflare Workers'},expect:'error',id:'be-dep-go-cf'},
+  {name:'Go+Railway=noGoCfERROR',a:{backend:'Go (Gin)',deploy:'Railway'},expect:'none',id:'be-dep-go-cf'},
+  // auth-firebase-supabase-rls (WARN)
+  {name:'FirebaseAuth+SupabaseDB=WARN',a:{auth:'Firebase Auth',database:'Supabase (PostgreSQL)'},expect:'warn',id:'auth-firebase-supabase-rls'},
+  {name:'SupabaseAuth+SupabaseDB=noRlsWARN',a:{auth:'Supabase Auth',database:'Supabase (PostgreSQL)'},expect:'none',id:'auth-firebase-supabase-rls'},
 ];
 
 let pass=0,fail=0;
