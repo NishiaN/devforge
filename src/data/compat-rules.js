@@ -786,7 +786,9 @@ const COMPAT_RULES=[
      const hasAuth=a.auth&&!inc(a.auth,'なし')&&!inc(a.auth,'None')&&a.auth!=='';
      const hasWebFE=inc(a.frontend,'Next.js')||inc(a.frontend,'React')||inc(a.frontend,'Vue')||inc(a.frontend,'Svelte');
      const hasMobileOnly=inc(a.mobile,'Expo')||inc(a.mobile,'React Native');
-     return hasAuth&&hasWebFE&&!hasMobileOnly;
+     // Only warn when E2E testing is explicitly planned (Playwright/Cypress in features)
+     const hasE2E=/(playwright|cypress)/i.test(a.mvp_features||'');
+     return hasAuth&&hasWebFE&&!hasMobileOnly&&hasE2E;
    },
    ja:'認証付きE2EテストはPlaywright storageStateでセッションを再利用し、不安定なログインフローを防いでください',
    en:'E2E tests with auth: use Playwright storageState to reuse sessions and prevent flaky login flows',
