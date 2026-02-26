@@ -423,19 +423,19 @@ function gen98(a,pn){
   // Privilege separation
   doc+=G?'## 権限分離アーキテクチャ\n\n':'## Privilege Separation Architecture\n\n';
   doc+='```mermaid\ngraph TD\n';
-  doc+='  A[ユーザー入力] --> B[入力サニタイズ]\n';
-  doc+='  B --> C[PII検出]\n';
-  doc+='  C --> D[インジェクション検知]\n';
-  doc+='  D --> E{検知?}\n';
-  doc+='  E -->|Yes| F[ブロック & ログ]\n';
-  doc+='  E -->|No| G[LLMリクエスト構築]\n';
-  doc+='  G --> H[システムプロンプト:trusted]\n';
-  doc+='  G --> I[ユーザーメッセージ:untrusted]\n';
-  doc+='  H --> J[LLM API]\n';
+  doc+='  A["ユーザー入力"] --> B["入力サニタイズ"]\n';
+  doc+='  B --> C["PII検出"]\n';
+  doc+='  C --> D["インジェクション検知"]\n';
+  doc+='  D --> E{"検知?"}\n';
+  doc+='  E -->|Yes| F["ブロック & ログ"]\n';
+  doc+='  E -->|No| G["LLMリクエスト構築"]\n';
+  doc+='  G --> H["システムプロンプト:trusted"]\n';
+  doc+='  G --> I["ユーザーメッセージ:untrusted"]\n';
+  doc+='  H --> J["LLM API"]\n';
   doc+='  I --> J\n';
-  doc+='  J --> K[出力バリデーション]\n';
-  doc+='  K --> L[コンテンツモデレーション]\n';
-  doc+='  L --> M[ユーザーへのレスポンス]\n';
+  doc+='  J --> K["出力バリデーション"]\n';
+  doc+='  K --> L["コンテンツモデレーション"]\n';
+  doc+='  L --> M["ユーザーへのレスポンス"]\n';
   doc+='```\n\n';
 
   // Defense checklist
