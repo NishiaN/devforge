@@ -81,16 +81,16 @@ function gen103(a,pn){
 
   doc+='## '+(G?'オブザーバビリティパイプライン':'Observability Pipeline')+'\n\n';
   doc+='```mermaid\nflowchart LR\n';
-  doc+='  subgraph '+(G?'アプリケーション':'Application')+'\n';
-  doc+='    APP['+(G?'アプリ':'App')+']\n';
-  doc+='    SDK[OTel SDK]\n';
+  doc+='  subgraph "'+(G?'アプリケーション':'Application')+'"\n';
+  doc+='    APP["'+(G?'アプリ':'App')+'"]\n';
+  doc+='    SDK["OTel SDK"]\n';
   doc+='    APP-->SDK\n';
   doc+='  end\n';
-  doc+='  subgraph '+(G?'コレクター':'Collector')+'\n';
-  doc+='    COL['+stack.collector+']\n';
+  doc+='  subgraph "'+(G?'コレクター':'Collector')+'"\n';
+  doc+='    COL["'+stack.collector+'"]\n';
   doc+='  end\n';
-  doc+='  subgraph '+(G?'バックエンド':'Backend')+'\n';
-  doc+='    BK['+stack.backend+']\n';
+  doc+='  subgraph "'+(G?'バックエンド':'Backend')+'"\n';
+  doc+='    BK["'+stack.backend+'"]\n';
   doc+='  end\n';
   doc+='  SDK-->COL-->BK\n';
   doc+='```\n\n';
