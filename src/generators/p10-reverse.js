@@ -499,30 +499,30 @@ function _genDoc30(G, rf, flowSteps, kpis, features, entities, a) {
   // ── Dependency Chain (Mermaid flowchart) ── Stack-aware based on resolveArch
   const arch=resolveArch(a);
   doc+=(G?'## 依存関係チェーン':'## Dependency Chain')+'\n\n```mermaid\nflowchart TD\n';
-  const node1=G?'A[KPI定義]':'A[Define KPIs]';
-  const node2=G?'B[機能設計]':'B[Design Features]';
+  const node1=G?'A["KPI定義"]':'A["Define KPIs"]';
+  const node2=G?'B["機能設計"]':'B["Design Features"]';
   let node3,node4,node5,node6,node7;
   if(arch.isBaaS){
     // BaaS: No traditional API layer, use schema + RLS/Rules
-    node3=G?'C[スキーマ設計]':'C[Design Schema]';
-    node4=G?'D[RLS/Rules実装]':'D[Implement RLS/Rules]';
-    node5=G?'E[UI実装]':'E[Implement UI]';
-    node6=G?'F[テスト]':'F[Testing]';
-    node7=G?'G[デプロイ]':'G[Deploy]';
+    node3=G?'C["スキーマ設計"]':'C["Design Schema"]';
+    node4=G?'D["RLS/Rules実装"]':'D["Implement RLS/Rules"]';
+    node5=G?'E["UI実装"]':'E["Implement UI"]';
+    node6=G?'F["テスト"]':'F["Testing"]';
+    node7=G?'G["デプロイ"]':'G["Deploy"]';
   }else if(arch.pattern==='bff'){
     // BFF: API Routes within Next.js
-    node3=G?'C[DB設計]':'C[Design DB]';
-    node4=G?'D[API Routes実装]':'D[Implement API Routes]';
-    node5=G?'E[Pages実装]':'E[Implement Pages]';
-    node6=G?'F[テスト]':'F[Testing]';
-    node7=G?'G[デプロイ]':'G[Deploy]';
+    node3=G?'C["DB設計"]':'C["Design DB"]';
+    node4=G?'D["API Routes実装"]':'D["Implement API Routes"]';
+    node5=G?'E["Pages実装"]':'E["Implement Pages"]';
+    node6=G?'F["テスト"]':'F["Testing"]';
+    node7=G?'G["デプロイ"]':'G["Deploy"]';
   }else{
     // Traditional: Separate FE/BE
-    node3=G?'C[DB設計]':'C[Design DB]';
-    node4=G?'D[API実装]':'D[Implement API]';
-    node5=G?'E[UI実装]':'E[Implement UI]';
-    node6=G?'F[テスト]':'F[Testing]';
-    node7=G?'G[デプロイ]':'G[Deploy]';
+    node3=G?'C["DB設計"]':'C["Design DB"]';
+    node4=G?'D["API実装"]':'D["Implement API"]';
+    node5=G?'E["UI実装"]':'E["Implement UI"]';
+    node6=G?'F["テスト"]':'F["Testing"]';
+    node7=G?'G["デプロイ"]':'G["Deploy"]';
   }
   doc+='  '+node1+' --> '+node2+'\n';
   doc+='  '+node2+' --> '+node3+'\n';
