@@ -1,4 +1,4 @@
-// Compat rules functional test (122 rules: 16 ERROR + 76 WARN + 30 INFO)
+// Compat rules functional test (136 rules: 22 ERROR + 83 WARN + 31 INFO)
 const assert=require('node:assert/strict');
 const S={lang:'ja',skill:'pro'};
 eval(require('fs').readFileSync('src/data/compat-rules.js','utf-8'));
@@ -134,7 +134,7 @@ const tests=[
   {name:'Expo+Firebase=noFlutterINFO',a:{mobile:'Expo (React Native)',backend:'Firebase'},expect:'none'},
   // New Phase 5 rules
   {name:'Expo+Drizzle=WARN',a:{mobile:'Expo (React Native)',orm:'Drizzle ORM'},expect:'warn',id:'mob-expo-drizzle'},
-  {name:'Flutter+Drizzle=noWARN',a:{mobile:'Flutter',orm:'Drizzle ORM'},expect:'none'},
+  {name:'Flutter+Drizzle=noExpoWARN',a:{mobile:'Flutter',orm:'Drizzle ORM'},expect:'none',id:'mob-expo-drizzle'},
   {name:'Expo+Prisma=OK',a:{mobile:'Expo (React Native)',orm:'Prisma'},expect:'none'},
   // Kysely compat rules
   {name:'Python+Kysely=ERROR',a:{backend:'Python + FastAPI',orm:'Kysely'},expect:'error',id:'be-orm-py-prisma'},
@@ -145,7 +145,7 @@ const tests=[
   {name:'Kysely+MongoDB=ERROR',a:{orm:'Kysely',database:'MongoDB'},expect:'error',id:'orm-kysely-mongo'},
   {name:'Kysely+PostgreSQL=OK',a:{orm:'Kysely',database:'PostgreSQL'},expect:'none'},
   {name:'Expo+Kysely=WARN',a:{mobile:'Expo (React Native)',orm:'Kysely'},expect:'warn',id:'mob-expo-kysely'},
-  {name:'Flutter+Kysely=noWARN',a:{mobile:'Flutter',orm:'Kysely'},expect:'none'},
+  {name:'Flutter+Kysely=noExpoWARN',a:{mobile:'Flutter',orm:'Kysely'},expect:'none',id:'mob-expo-kysely'},
   // API品質ルール
   {name:'GraphQL=DataLoaderWARN',a:{backend:'Express.js + Node.js + GraphQL'},expect:'warn',id:'api-graphql-no-dataloader'},
   {name:'Supabase=noDataLoaderWARN',a:{backend:'Supabase'},expect:'none',id:'api-graphql-no-dataloader'},
@@ -260,6 +260,48 @@ const tests=[
   {name:'CF+Prisma=EdgeINFO',a:{orm:'Prisma',deploy:'Cloudflare Workers'},expect:'info',id:'deploy-cloudflare-node-orm'},
   {name:'CF+SQLAlchemy=EdgeINFO',a:{orm:'SQLAlchemy (Python)',deploy:'Cloudflare Workers'},expect:'info',id:'deploy-cloudflare-node-orm'},
   {name:'CF+Drizzle=noEdgeINFO',a:{orm:'Drizzle ORM',deploy:'Cloudflare Workers'},expect:'none',id:'deploy-cloudflare-node-orm'},
+  // dom-saas-nopay (WARN)
+  {name:'SaaS+noPay=WARN',a:{purpose:'SaaS subscription management platform',payment:'なし'},expect:'warn',id:'dom-saas-nopay'},
+  {name:'SaaS+Stripe=noSaasPayWARN',a:{purpose:'SaaS subscription management platform',payment:'Stripe決済'},expect:'none',id:'dom-saas-nopay'},
+  // dom-government-firebase (WARN)
+  {name:'Government+Firebase=WARN',a:{purpose:'government portal for citizen services',backend:'Firebase'},expect:'warn',id:'dom-government-firebase'},
+  {name:'Government+Supabase=noGovFirebaseWARN',a:{purpose:'government portal for citizen services',backend:'Supabase'},expect:'none',id:'dom-government-firebase'},
+  // dom-legal-noaudit (WARN)
+  {name:'Legal+noAudit=WARN',a:{purpose:'legal document management system',data_entities:'User, Contract, Case, Document'},expect:'warn',id:'dom-legal-noaudit'},
+  {name:'Legal+AuditLog=noLegalWARN',a:{purpose:'legal document management system',data_entities:'User, Contract, Case, AuditLog'},expect:'none',id:'dom-legal-noaudit'},
+  // mob-flutter-drizzle (WARN)
+  {name:'Flutter+Drizzle=WARN',a:{mobile:'Flutter',orm:'Drizzle ORM'},expect:'warn',id:'mob-flutter-drizzle'},
+  {name:'Expo+Drizzle=noFlutterDrizzleWARN',a:{mobile:'Expo (React Native)',orm:'Drizzle ORM'},expect:'none',id:'mob-flutter-drizzle'},
+  // mob-flutter-kysely (WARN)
+  {name:'Flutter+Kysely=WARN',a:{mobile:'Flutter',orm:'Kysely'},expect:'warn',id:'mob-flutter-kysely'},
+  {name:'Flutter+Prisma=noFlutterKyselyWARN',a:{mobile:'Flutter',orm:'Prisma'},expect:'none',id:'mob-flutter-kysely'},
+  // be-dep-py-fbh (ERROR)
+  {name:'FastAPI+FirebaseHosting=ERROR',a:{backend:'Python + FastAPI',deploy:'Firebase Hosting'},expect:'error',id:'be-dep-py-fbh'},
+  {name:'FastAPI+Railway=noPyFBHERROR',a:{backend:'Python + FastAPI',deploy:'Railway'},expect:'none',id:'be-dep-py-fbh'},
+  // be-dep-java-fbh (ERROR)
+  {name:'Spring+FirebaseHosting=ERROR',a:{backend:'Java + Spring Boot',deploy:'Firebase Hosting'},expect:'error',id:'be-dep-java-fbh'},
+  {name:'Spring+Railway=noJavaFBHERROR',a:{backend:'Java + Spring Boot',deploy:'Railway'},expect:'none',id:'be-dep-java-fbh'},
+  // be-dep-py-cf (ERROR)
+  {name:'FastAPI+Cloudflare=ERROR',a:{backend:'Python + FastAPI',deploy:'Cloudflare Workers'},expect:'error',id:'be-dep-py-cf'},
+  {name:'Django+Cloudflare=noPyCfERROR',a:{backend:'Python + Django',deploy:'Cloudflare Workers'},expect:'none',id:'be-dep-py-cf'},
+  // sem-auth-nofb-fbauth (WARN)
+  {name:'FirebaseAuth+Express=WARN',a:{auth:'Firebase Auth',backend:'Node.js + Express'},expect:'warn',id:'sem-auth-nofb-fbauth'},
+  {name:'FirebaseAuth+Firebase=noFbAuthWARN',a:{auth:'Firebase Auth',backend:'Firebase'},expect:'none',id:'sem-auth-nofb-fbauth'},
+  // db-redis-primary (WARN)
+  {name:'RedisOnly=WARN',a:{database:'Redis'},expect:'warn',id:'db-redis-primary'},
+  {name:'Redis+PG=noRedisPrimaryWARN',a:{database:'Redis + PostgreSQL'},expect:'none',id:'db-redis-primary'},
+  // orm-typeorm-fs (ERROR)
+  {name:'TypeORM+Firestore=ERROR',a:{orm:'TypeORM',database:'Firebase Firestore'},expect:'error',id:'orm-typeorm-fs'},
+  {name:'TypeORM+PostgreSQL=noTypeORMFsERROR',a:{orm:'TypeORM',database:'PostgreSQL'},expect:'none',id:'orm-typeorm-fs'},
+  // orm-sqla-fs (ERROR)
+  {name:'SQLAlchemy+Firestore=ERROR',a:{orm:'SQLAlchemy (Python)',database:'Firebase Firestore'},expect:'error',id:'orm-sqla-fs'},
+  {name:'SQLAlchemy+PostgreSQL=noSQLAFsERROR',a:{orm:'SQLAlchemy (Python)',database:'PostgreSQL'},expect:'none',id:'orm-sqla-fs'},
+  // orm-sqla-mongo (ERROR)
+  {name:'SQLAlchemy+MongoDB=ERROR',a:{orm:'SQLAlchemy (Python)',database:'MongoDB'},expect:'error',id:'orm-sqla-mongo'},
+  {name:'Prisma+MongoDB=noSQLAMongoERROR',a:{orm:'Prisma',database:'MongoDB'},expect:'none',id:'orm-sqla-mongo'},
+  // orm-typeorm-mongo (INFO)
+  {name:'TypeORM+MongoDB=INFO',a:{orm:'TypeORM',database:'MongoDB'},expect:'info',id:'orm-typeorm-mongo'},
+  {name:'Mongoose+MongoDB=noTypeORMMongoINFO',a:{orm:'Mongoose',database:'MongoDB'},expect:'none',id:'orm-typeorm-mongo'},
 ];
 
 let pass=0,fail=0;

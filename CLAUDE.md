@@ -160,7 +160,7 @@ Full 6-step process in `docs/CLAUDE-REFERENCE.md`. Key steps often missed:
 
 ## Adding Compat Rules
 
-File: `src/data/compat-rules.js` — currently 118 rules (15 error + 73 warn + 30 info). All rules have `why_ja`/`why_en`.
+File: `src/data/compat-rules.js` — currently 136 rules (22 error + 83 warn + 31 info). All rules have `why_ja`/`why_en`.
 Structure: `{id, p:['field1','field2'], lv:'error'|'warn'|'info', t:conditionFn, ja, en, fix, fixFn, why_ja, why_en}`
 `why_ja`/`why_en`: When set, shows "▶ なぜ？" expandable card in wizard alerts.
 After adding: update header comment totals, add tests to `test/compat.test.js`, update CLAUDE.md rule count.
