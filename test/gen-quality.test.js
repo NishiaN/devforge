@@ -18,7 +18,7 @@
  *   Domain   detectDomain     → .spec/constitution.md §3 fallback KPI
  *   E2E      full generation  → file count, token richness, bilingual parity
  *
- * Suites 1-98: 1036 tests total
+ * Suites 1-98: 1039 tests total
  */
 
 const { describe, it } = require('node:test');
@@ -9814,7 +9814,7 @@ describe('Suite 97: P26 Observability depth — docs/103-106', () => {
 /* ════════════════════════════════════════════════════════════════
    Suite 98 — P26 Observability backend/ORM depth
    Kysely, TypeORM, Drizzle, Java/Spring, Vercel deploy, Cloudflare Workers,
-   Firebase, no-ORM, fintech domain (フィンテック), bilingual ORM parity
+   Firebase, no-ORM, Python+AWS, fintech domain (フィンテック), bilingual ORM parity
    ════════════════════════════════════════════════════════════════ */
 
 const obsKysely = {
@@ -10074,5 +10074,59 @@ describe('Suite 98: P26 Observability — backend/ORM depth', () => {
     assert.ok(doc.includes('logQuery'), 'docs/104 Cloudflare/Drizzle must include logQuery');
     assert.ok(!doc.includes('structlog'), 'docs/104 Cloudflare must not include Python structlog');
     assert.ok(!doc.includes('SLF4J'), 'docs/104 Cloudflare must not include Java SLF4J');
+  });
+
+  // ── Python + AWS ─────────────────────────────────────────────────
+  it('gObs Python/AWS: docs/103 AWS ADOT stack with Python exporter (not Node SDK)', () => {
+    const obsPyAWS = {
+      purpose: '医療機関向け電子カルテ・患者管理システム',
+      frontend: 'React + Next.js', backend: 'Python + FastAPI',
+      database: 'PostgreSQL', deploy: 'AWS', orm: 'SQLAlchemy',
+      auth: 'JWT + RBAC',
+      mvp_features: '患者管理, 予約管理, カルテ記録, 処方管理',
+      data_entities: 'Patient, Doctor, Appointment, MedicalRecord',
+    };
+    const f = gObs(obsPyAWS);
+    const doc = f['docs/103_observability_architecture.md'] || '';
+    assert.ok(doc.includes('AWS ADOT'), 'docs/103 Python/AWS must include AWS ADOT');
+    assert.ok(doc.includes('opentelemetry-sdk (Python'), 'docs/103 Python/AWS must show Python SDK exporter');
+    assert.ok(!doc.includes('opentelemetry-sdk-node'), 'docs/103 Python/AWS must not show Node SDK');
+    assert.ok(!doc.includes('@opentelemetry/exporter-otlp-grpc'), 'docs/103 Python/AWS must not show Node OTLP package');
+  });
+
+  it('gObs Python/AWS: docs/104 has structlog + SQLAlchemy slow_query + REDACTED', () => {
+    const obsPyAWS = {
+      purpose: '医療機関向け電子カルテ・患者管理システム',
+      frontend: 'React + Next.js', backend: 'Python + FastAPI',
+      database: 'PostgreSQL', deploy: 'AWS', orm: 'SQLAlchemy',
+      auth: 'JWT + RBAC',
+      mvp_features: '患者管理, 予約管理, カルテ記録, 処方管理',
+      data_entities: 'Patient, Doctor, Appointment, MedicalRecord',
+    };
+    const f = gObs(obsPyAWS);
+    const doc = f['docs/104_structured_logging.md'] || '';
+    assert.ok(doc.includes('structlog'), 'docs/104 Python must use structlog');
+    assert.ok(doc.includes('SQLAlchemy'), 'docs/104 Python must include SQLAlchemy section');
+    assert.ok(doc.includes('slow_query') || doc.includes('after_cursor_execute'), 'docs/104 Python must include slow query detection');
+    assert.ok(doc.includes('REDACTED'), 'docs/104 Python must include REDACTED masking');
+    assert.ok(!doc.includes('pino('), 'docs/104 Python must not include Pino');
+    assert.ok(!doc.includes('SLF4J'), 'docs/104 Python must not include SLF4J');
+  });
+
+  it('gObs Python/AWS: docs/106 uses FastAPIInstrumentor (no Node/Java agent)', () => {
+    const obsPyAWS = {
+      purpose: '医療機関向け電子カルテ・患者管理システム',
+      frontend: 'React + Next.js', backend: 'Python + FastAPI',
+      database: 'PostgreSQL', deploy: 'AWS', orm: 'SQLAlchemy',
+      auth: 'JWT + RBAC',
+      mvp_features: '患者管理, 予約管理, カルテ記録, 処方管理',
+      data_entities: 'Patient, Doctor, Appointment, MedicalRecord',
+    };
+    const f = gObs(obsPyAWS);
+    const doc = f['docs/106_distributed_tracing.md'] || '';
+    assert.ok(doc.includes('FastAPIInstrumentor'), 'docs/106 Python must use FastAPIInstrumentor');
+    assert.ok(doc.includes('opentelemetry-instrumentation-fastapi') || doc.includes('opentelemetry'), 'docs/106 Python must reference OTel FastAPI');
+    assert.ok(!doc.includes('@opentelemetry/sdk-node'), 'docs/106 Python must not show Node.js SDK');
+    assert.ok(!doc.includes('java -javaagent'), 'docs/106 Python must not show Java agent');
   });
 });
