@@ -766,12 +766,12 @@ function gen60(G, domain, meth, a, pn) {
   doc += G ? '## 適合度スコアリング（Mermaid互換性マトリクス）\n\n' : '## Fit Scoring (Mermaid Compatibility Matrix)\n\n';
   doc += '```mermaid\n';
   doc += 'graph TD\n';
-  doc += '  A[' + domain + ' ' + (G ? 'ドメイン' : 'Domain') + '] --> B[' + (G ? meth.primary_ja : meth.primary_en) + ']\n';
-  doc += '  A --> C[' + (G ? meth.secondary_ja : meth.secondary_en) + ']\n';
-  doc += '  B --> D[' + (G ? meth.kw_ja[0] : meth.kw_en[0]) + ']\n';
-  doc += '  B --> E[' + (G ? meth.kw_ja[1] : meth.kw_en[1]) + ']\n';
-  doc += '  C --> F[' + (G ? meth.kw_ja[2] : meth.kw_en[2]) + ']\n';
-  doc += '  C --> G[' + (G ? meth.kw_ja[3] : meth.kw_en[3]) + ']\n';
+  doc += '  A["' + domain + ' ' + (G ? 'ドメイン' : 'Domain') + '"] --> B["' + (G ? meth.primary_ja : meth.primary_en) + '"]\n';
+  doc += '  A --> C["' + (G ? meth.secondary_ja : meth.secondary_en) + '"]\n';
+  doc += '  B --> D["' + (G ? meth.kw_ja[0] : meth.kw_en[0]) + '"]\n';
+  doc += '  B --> E["' + (G ? meth.kw_ja[1] : meth.kw_en[1]) + '"]\n';
+  doc += '  C --> F["' + (G ? meth.kw_ja[2] : meth.kw_en[2]) + '"]\n';
+  doc += '  C --> G["' + (G ? meth.kw_ja[3] : meth.kw_en[3]) + '"]\n';
   doc += '```\n\n';
 
   doc += G ? '---\n\n**次のステップ**: `docs/61_ai_brainstorm_playbook.md` で、このプロジェクト専用のAI壁打ちプロンプト集を確認してください。\n' : '---\n\n**Next Step**: Check `docs/61_ai_brainstorm_playbook.md` for project-specific AI brainstorming prompts.\n';

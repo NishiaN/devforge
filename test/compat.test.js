@@ -1,4 +1,4 @@
-// Compat rules functional test (163 rules: 31 ERROR + 99 WARN + 33 INFO)
+// Compat rules functional test (168 rules: 31 ERROR + 99 WARN + 38 INFO)
 const assert=require('node:assert/strict');
 const S={lang:'ja',skill:'pro'};
 eval(require('fs').readFileSync('src/data/compat-rules.js','utf-8'));
@@ -394,6 +394,22 @@ const tests=[
   // dom-realestate-nopay (INFO) — Real estate domain without payment
   {name:'RealEstate+noPay=INFO',a:{purpose:'real estate property listing and management platform',payment:'なし'},expect:'info',id:'dom-realestate-nopay'},
   {name:'RealEstate+Stripe=noRealEstatePayINFO',a:{purpose:'real estate property listing and management platform',payment:'Stripe決済'},expect:'none',id:'dom-realestate-nopay'},
+  // obs-cf-no-sdk-node (INFO) — Cloudflare Workers + Node.js BE
+  {name:'Express+Cloudflare=obsINFO',a:{backend:'Node.js + Express',deploy:'Cloudflare Workers'},expect:'info',id:'obs-cf-no-sdk-node'},
+  {name:'FastAPI+Cloudflare=noObsCfINFO',a:{backend:'Python + FastAPI',deploy:'Cloudflare Workers'},expect:'none',id:'obs-cf-no-sdk-node'},
+  // obs-vercel-otel (INFO) — Vercel deploy
+  {name:'Vercel=obsVercelINFO',a:{deploy:'Vercel'},expect:'info',id:'obs-vercel-otel'},
+  {name:'Railway=noObsVercelINFO',a:{deploy:'Railway'},expect:'none',id:'obs-vercel-otel'},
+  // obs-baas-limited (INFO) — Firebase/Supabase backend + deploy
+  {name:'Firebase+Vercel+obsLimited=INFO',a:{backend:'Firebase',deploy:'Firebase Hosting'},expect:'info',id:'obs-baas-limited'},
+  {name:'Supabase+Vercel+obsLimited=INFO',a:{backend:'Supabase',deploy:'Vercel'},expect:'info',id:'obs-baas-limited'},
+  {name:'Express+Vercel+noObsBaasINFO',a:{backend:'Node.js + Express',deploy:'Vercel'},expect:'none',id:'obs-baas-limited'},
+  // obs-py-structlog (INFO) — Python backend
+  {name:'FastAPI+obsStructlog=INFO',a:{backend:'Python + FastAPI'},expect:'info',id:'obs-py-structlog'},
+  {name:'Express+noObsPyINFO',a:{backend:'Node.js + Express'},expect:'none',id:'obs-py-structlog'},
+  // obs-java-javaagent (INFO) — Java/Spring backend
+  {name:'Spring+obsJavaagent=INFO',a:{backend:'Java + Spring Boot'},expect:'info',id:'obs-java-javaagent'},
+  {name:'Express+noObsJavaINFO',a:{backend:'Node.js + Express'},expect:'none',id:'obs-java-javaagent'},
 ];
 
 let pass=0,fail=0;

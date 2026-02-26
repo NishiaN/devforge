@@ -468,7 +468,7 @@ _(${G?'追記してください':'Add entries here'})_`],
       if(!addedPaths.has(fullPath)){
         const label=part.replace(/[\[\]:]/g,'');
         const style=route.auth?' --> |🔒|':' --> ';
-        doc35+='  '+currentPath+style+fullPath+'['+label+']\n';
+        doc35+='  '+currentPath+style+fullPath+'["'+label+'"]\n';
         addedPaths.add(fullPath);
       }
       currentPath=fullPath;

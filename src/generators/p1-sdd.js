@@ -409,7 +409,7 @@ function genPillar1_SDD(a,pn){
       return [
         G?'## 4.5 マルチテナントアーキテクチャ':'## 4.5 Multi-Tenant Architecture',
         G?'### テナント分離戦略: Row-Level Security (RLS)':'### Tenant Isolation: Row-Level Security (RLS)',
-        '```mermaid\ngraph LR\n  U[User]-->|auth.uid()|R[RLS Policy]\n  R-->|org_id check|T['+pn+' Data]\n  R-->|blocked|X[Other Org Data]\n  style R fill:#4f46e5,color:#fff\n```',
+        '```mermaid\ngraph LR\n  U["User"]-->|auth.uid()|R["RLS Policy"]\n  R-->|org_id check|T["'+pn+' Data"]\n  R-->|blocked|X["Other Org Data"]\n  style R fill:#4f46e5,color:#fff\n```',
         '',
         G?'### 権限モデル (4階層)':'### Permission Model (4-tier)',
         '| Role | '+( G?'権限':'Permissions')+' |',

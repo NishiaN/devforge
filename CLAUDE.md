@@ -21,7 +21,7 @@ Generates **182+ files** across **26 pillars** from a wizard-driven Q&A session.
 node build.js                          # → devforge-v9.html (~3202KB, limit 5000KB)
 node build.js --no-minify              # debug (skip minification)
 node build.js --report                 # build + size breakdown by module
-npm test                               # 1879 tests, all passing
+npm test                               # 1941 tests, all passing
 node --test test/gen-quality.test.js   # single test file
 npm run dev                            # build + live-server :3000
 npm run check                          # syntax-check extracted JS
@@ -44,7 +44,7 @@ Never reorder without checking dependencies.
 | Category | Purpose |
 |----------|---------|
 | `core/` | State (`S`), i18n (`t()`), keyboard events, wizard tour, app init |
-| `data/` | 63 standard presets (`PR`/`_mp()`), 266 field presets (`PR_FIELD`/`_fpd()`), questions, techdb (338 entries), compat-rules (163 rules), gen-templates (bilingual GT dict), helpdata |
+| `data/` | 63 standard presets (`PR`/`_mp()`), 266 field presets (`PR_FIELD`/`_fpd()`), questions, techdb (338 entries), compat-rules (168 rules), gen-templates (bilingual GT dict), helpdata |
 | `generators/` | `index.js` orchestrator + `p1`–`p26` pillars + `docs.js` + `common.js` |
 | `ui/` | wizard, render, presets, preview, sidebar, editor, diff, export, explorer, dashboard, launcher, templates, qbar, cmdpalette, help, voice |
 | `styles/all.css` | Theme (dark/light), responsive; CSS custom properties only |
@@ -160,7 +160,7 @@ Full 6-step process in `docs/CLAUDE-REFERENCE.md`. Key steps often missed:
 
 ## Adding Compat Rules
 
-File: `src/data/compat-rules.js` — currently 163 rules (31 error + 99 warn + 33 info). All rules have `why_ja`/`why_en`.
+File: `src/data/compat-rules.js` — currently 168 rules (31 error + 99 warn + 38 info). All rules have `why_ja`/`why_en`.
 Structure: `{id, p:['field1','field2'], lv:'error'|'warn'|'info', t:conditionFn, ja, en, fix, fixFn, why_ja, why_en}`
 `why_ja`/`why_en`: When set, shows "▶ なぜ？" expandable card in wizard alerts.
 After adding: update header comment totals, add tests to `test/compat.test.js`, update CLAUDE.md rule count.
@@ -173,11 +173,11 @@ After adding: update header comment totals, add tests to `test/compat.test.js`, 
 | Data/coverage | data-coverage, presets, field-presets | ~116 |
 | Security/compat | security, compat (+7 synergy) | ~136 |
 | Pillars (P14-P20+skill) | ops, future, deviq, promptgenome, promptops, enterprise, cicd, skill-level | ~184 |
-| Gen quality | gen-quality (Suites 1-98, 1039 tests) | ~1039 |
+| Gen quality | gen-quality (Suites 1-101, ~1101 tests) | ~1101 |
 | Preset matching | phase-n (N-1〜N-9 + G-1〜G-7, 68 tests) | ~68 |
 | Other | i18n, state, techdb, utils, complexity, mermaid, help-hints | ~46 |
 
-**Total: 1879 tests** | Test harness pattern: `eval(fs.readFileSync(...))` to load src files; global `S` mock at top.
+**Total: 1941 tests** | Test harness pattern: `eval(fs.readFileSync(...))` to load src files; global `S` mock at top.
 
 **When adding domains**, update: `test/data-coverage.test.js` (4 arrays), `test/gen-coherence.test.js`, `test/ops.test.js`.
 

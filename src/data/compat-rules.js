@@ -1,4 +1,4 @@
-/* ═══ STACK COMPATIBILITY & SEMANTIC CONSISTENCY RULES — 163 rules (ERROR×31 + WARN×99 + INFO×33) ═══ */
+/* ═══ STACK COMPATIBILITY & SEMANTIC CONSISTENCY RULES — 168 rules (ERROR×31 + WARN×99 + INFO×38) ═══ */
 const COMPAT_RULES=[
   // ── FE ↔ Mobile (2 ERROR) ──
   {id:'fe-mob-expo',p:['frontend','mobile'],lv:'error',
@@ -1352,6 +1352,37 @@ const COMPAT_RULES=[
    en:'Cloudflare Workers runs on a non-Node.js Edge Runtime. Prisma/TypeORM/SQLAlchemy require Edge-specific modes — use `@prisma/client/edge` or Drizzle ORM',
    why_ja:'Cloudflare WorkersはV8 Isolate Edge Runtimeであり、Node.js固有API（`fs`/`net`等）が利用できません。PrismaはデフォルトクライアントがNode.js前提のため`@prisma/client/edge`インポートとNeon HTTP接続が必要です。TypeORMはEdge未対応。SQLAlchemyはPython専用でWorkers（JS/WASM）では動作しません。Edge対応ORM筆頭はDrizzle ORM + Neon HTTPです。',
    why_en:'Cloudflare Workers runs on V8 Isolate Edge Runtime, lacking Node.js-specific APIs (`fs`/`net` etc.). Prisma\'s default client assumes Node.js — Workers requires the `@prisma/client/edge` import with Neon HTTP connections. TypeORM has no Edge support. SQLAlchemy is Python-only and doesn\'t run in Workers (JS/WASM). The leading Edge-compatible ORM is Drizzle ORM + Neon HTTP.'},
+  // ── P26 Observability INFO (5) ──
+  {id:'obs-cf-no-sdk-node',p:['backend','deploy'],lv:'info',
+   t:a=>inc(a.deploy,'Cloudflare')&&isNodeBE(a),
+   ja:'Cloudflare WorkersではNode.js用 `@opentelemetry/sdk-node` は動作しません。`@microlabs/otel-cf-workers` の `instrument()` ラッパーを使用してください',
+   en:'`@opentelemetry/sdk-node` does not run in Cloudflare Workers (no Node.js runtime). Use `@microlabs/otel-cf-workers` with the `instrument()` wrapper instead',
+   why_ja:'Cloudflare WorkersはV8 Isolateベースで `process`/`require` 等のNode.js APIが利用できません。`@opentelemetry/sdk-node` はNode.jsプロセス起動時に自動計装するため Workers では動作しません。Edge互換の `@microlabs/otel-cf-workers` はWorkers Runtime向けに設計されており、`instrument()` でfetch/KV等を自動計装できます。',
+   why_en:'Cloudflare Workers runs on V8 Isolate without Node.js APIs (`process`/`require` etc.). `@opentelemetry/sdk-node` auto-instruments at Node.js process startup and cannot run in Workers. The edge-compatible `@microlabs/otel-cf-workers` is designed for the Workers Runtime and auto-instruments fetch/KV/etc. via the `instrument()` wrapper.'},
+  {id:'obs-vercel-otel',p:['deploy'],lv:'info',
+   t:a=>inc(a.deploy,'Vercel'),
+   ja:'Vercelでは `@vercel/otel` + `instrumentation.ts` の `registerOTel()` + `instrumentationHook: true` (next.config) が必要です',
+   en:'Vercel requires `@vercel/otel` + `registerOTel()` in `instrumentation.ts` + `instrumentationHook: true` in next.config for OpenTelemetry',
+   why_ja:'Vercelは独自のOTel統合パッケージ `@vercel/otel` を提供しており、Next.js App RouterのEdge/Node.js両ランタイムに対応しています。標準の `@opentelemetry/sdk-node` は使用できますが、`next.config.js` の `instrumentationHook: true` と `instrumentation.ts` の `registerOTel()` が必須です。`@vercel/otel` を使うとVercel Observability Dashboardとの連携も自動的に有効化されます。',
+   why_en:'Vercel provides its own OTel integration package `@vercel/otel` supporting both Edge and Node.js runtimes in Next.js App Router. Standard `@opentelemetry/sdk-node` also works but requires `instrumentationHook: true` in `next.config.js` and `registerOTel()` in `instrumentation.ts`. Using `@vercel/otel` additionally enables automatic integration with the Vercel Observability Dashboard.'},
+  {id:'obs-baas-limited',p:['backend','deploy'],lv:'info',
+   t:a=>inc(a.backend,'Firebase')||inc(a.backend,'Supabase'),
+   ja:'Firebase/Supabaseではサーバーサイドのカスタムトレースが制限されます。クライアントサイドの Speed Insights / Web Vitals と Cloud Logging / Supabase Logs の活用を推奨します',
+   en:'Firebase/Supabase have limited server-side custom tracing. Use client-side Speed Insights/Web Vitals + Cloud Logging/Supabase Logs for observability',
+   why_ja:'Firebase FunctionsやSupabase Edge Functionsはマネージド環境のため、OTelコレクターの直接デプロイやカスタムエクスポーターの設定が制限されています。代替として: Firebaseは Cloud Logging + Firebase Performance Monitoring (Web Vitals自動収集)、Supabaseは Supabase Dashboard Logs + Vercel Speed Insights (Vercelデプロイ時) が実用的です。P26 doc/106 の「BaaS限定トレース」セクションを参照してください。',
+   why_en:'Firebase Functions and Supabase Edge Functions are managed environments that restrict direct OTel collector deployment and custom exporter configuration. Alternatives: Firebase — Cloud Logging + Firebase Performance Monitoring (Web Vitals auto-collection); Supabase — Supabase Dashboard Logs + Vercel Speed Insights (when deployed on Vercel). See the "BaaS Limited Tracing" section in P26 doc/106.'},
+  {id:'obs-py-structlog',p:['backend'],lv:'info',
+   t:a=>isPyBE(a),
+   ja:'PythonバックエンドにはStructlog + `opentelemetry-sdk` (pip) の組み合わせを推奨します。`[REDACTED]` プロセッサでPII自動マスキングを設定してください',
+   en:'For Python backends, use structlog + `opentelemetry-sdk` (pip). Configure the `[REDACTED]` processor for automatic PII masking in logs',
+   why_ja:'Pythonの標準`logging`モジュールはJSON構造化ログに対応していません。`structlog` はコンテキスト変数・プロセッサチェーン・JSONレンダラーをサポートし、`opentelemetry-sdk` と組み合わせることでOTelトレース連携 (trace_id/span_idの自動インジェクション) が可能になります。`mask_sensitive()` プロセッサを追加してemail/token等のPIIを `[REDACTED]` に置換することでGDPR/個人情報保護法への対応が容易になります。',
+   why_en:'Python\'s standard `logging` module lacks JSON structured logging support. `structlog` provides context variables, processor chains, and JSON renderer, and when combined with `opentelemetry-sdk`, enables OTel trace correlation (automatic trace_id/span_id injection). Adding a `mask_sensitive()` processor to replace email/token PII with `[REDACTED]` simplifies GDPR and privacy law compliance.'},
+  {id:'obs-java-javaagent',p:['backend'],lv:'info',
+   t:a=>inc(a.backend,'Spring')||inc(a.backend,'Java'),
+   ja:'JavaバックエンドはOpenTelemetry Java Agentの JVMオプション (`-javaagent:opentelemetry-javaagent.jar`) によるゼロコード計装を推奨します',
+   en:'Java backends should use the OpenTelemetry Java Agent JVM option (`-javaagent:opentelemetry-javaagent.jar`) for zero-code auto-instrumentation',
+   why_ja:'OpenTelemetry Java Agentはバイトコード操作によりSpring Boot / Hibernate / JDBC / gRPC等を自動計装します。アプリケーションコードの変更なしに全てのHTTPリクエスト・DB呼び出し・外部APIコールが自動的にトレースされます。`-Dotel.service.name` `-Dotel.exporter.otlp.endpoint` を環境変数または JVM引数で設定するだけで本番環境に導入できます。',
+   why_en:'The OpenTelemetry Java Agent uses bytecode manipulation to auto-instrument Spring Boot / Hibernate / JDBC / gRPC and more — no application code changes needed. All HTTP requests, DB calls, and external API calls are automatically traced. Production deployment requires only `-Dotel.service.name` and `-Dotel.exporter.otlp.endpoint` via environment variables or JVM arguments.'},
 ];
 // helpers
 function inc(v,k){return v&&typeof v==='string'&&v.indexOf(k)!==-1;}

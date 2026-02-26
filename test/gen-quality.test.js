@@ -18,7 +18,7 @@
  *   Domain   detectDomain     → .spec/constitution.md §3 fallback KPI
  *   E2E      full generation  → file count, token richness, bilingual parity
  *
- * Suites 1-98: 1039 tests total
+ * Suites 1-101: 1099 tests total (1039 + Suite 99: ~20 + Suite 100: ~20 + Suite 101: ~20)
  */
 
 const { describe, it } = require('node:test');
@@ -10128,5 +10128,515 @@ describe('Suite 98: P26 Observability — backend/ORM depth', () => {
     assert.ok(doc.includes('opentelemetry-instrumentation-fastapi') || doc.includes('opentelemetry'), 'docs/106 Python must reference OTel FastAPI');
     assert.ok(!doc.includes('@opentelemetry/sdk-node'), 'docs/106 Python must not show Node.js SDK');
     assert.ok(!doc.includes('java -javaagent'), 'docs/106 Python must not show Java agent');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 99 — P2 DevContainer depth: devcontainer.json, Dockerfile,
+   docker-compose.yml, post-create.sh, .env.example, build-manifest
+   Node.js/Python/BaaS variants, ORM migrations, bilingual
+   ════════════════════════════════════════════════════════════════ */
+
+function gDevCont(answers, lang) {
+  S.files={}; S.genLang=lang||'ja'; S.skill='intermediate';
+  genPillar2_DevContainer(answers,'QTest');
+  return Object.assign({},S.files);
+}
+
+const dcNode = {
+  purpose: 'SaaS型タスク管理アプリ',
+  frontend: 'React + Next.js', backend: 'Node.js + Express',
+  database: 'PostgreSQL', deploy: 'Railway', orm: 'Prisma',
+  auth: 'JWT', mvp_features: 'タスク管理, ダッシュボード',
+  data_entities: 'User, Task, Project',
+};
+const dcPython = {
+  purpose: '機械学習データ分析基盤',
+  frontend: 'React + Next.js', backend: 'Python + FastAPI',
+  database: 'PostgreSQL', deploy: 'Railway', orm: 'SQLAlchemy',
+  auth: 'JWT', mvp_features: 'データ分析, モデル管理',
+  data_entities: 'Dataset, Model, Experiment',
+};
+const dcFirebase = {
+  purpose: 'リアルタイムコミュニティアプリ',
+  frontend: 'React + Next.js', backend: 'Firebase',
+  database: 'Firebase Firestore', deploy: 'Firebase Hosting',
+  auth: 'Firebase Auth', mvp_features: 'チャット, 通知',
+  data_entities: 'User, Message, Room',
+};
+const dcSupabase = {
+  purpose: 'SaaS型プロジェクト管理ツール',
+  frontend: 'React + Next.js', backend: 'Supabase',
+  database: 'Supabase (PostgreSQL)', deploy: 'Vercel',
+  orm: '', auth: 'Supabase Auth', mvp_features: 'プロジェクト管理, タスク',
+  data_entities: 'User, Project, Task',
+};
+const dcDrizzle = Object.assign({}, dcNode, { orm: 'Drizzle ORM' });
+const dcTypeORM = Object.assign({}, dcNode, { orm: 'TypeORM', backend: 'Node.js + NestJS' });
+const dcKysely = Object.assign({}, dcNode, { orm: 'Kysely' });
+
+describe('Suite 99: P2 DevContainer depth — devcontainer/post-create/env/security', () => {
+
+  it('gDevCont Node.js: all core files generated', () => {
+    const f = gDevCont(dcNode);
+    ['.devcontainer/devcontainer.json','.devcontainer/Dockerfile',
+     '.devcontainer/docker-compose.yml','.devcontainer/post-create.sh',
+     '.env.example','.security/build-manifest.json']
+      .forEach(k => assert.ok(f[k], k + ' required for Node.js'));
+  });
+
+  it('gDevCont Node.js: Dockerfile uses javascript-node:22 base image', () => {
+    const f = gDevCont(dcNode);
+    const df = f['.devcontainer/Dockerfile'] || '';
+    assert.ok(df.includes('javascript-node:22'), 'Dockerfile must use javascript-node:22 base image');
+  });
+
+  it('gDevCont Node.js+Prisma: post-create.sh includes npx prisma generate', () => {
+    const f = gDevCont(dcNode);
+    const sh = f['.devcontainer/post-create.sh'] || '';
+    assert.ok(sh.includes('prisma generate') || sh.includes('prisma db push'), 'post-create.sh must include Prisma migration');
+  });
+
+  it('gDevCont Node.js+Drizzle: post-create.sh includes drizzle-kit push', () => {
+    const f = gDevCont(dcDrizzle);
+    const sh = f['.devcontainer/post-create.sh'] || '';
+    assert.ok(sh.includes('drizzle-kit'), 'post-create.sh must include drizzle-kit for Drizzle ORM');
+  });
+
+  it('gDevCont Node.js+TypeORM: post-create.sh includes typeorm migration:run', () => {
+    const f = gDevCont(dcTypeORM);
+    const sh = f['.devcontainer/post-create.sh'] || '';
+    assert.ok(sh.includes('typeorm'), 'post-create.sh must include typeorm migration for TypeORM');
+  });
+
+  it('gDevCont Node.js+Kysely: post-create.sh includes kysely migrate', () => {
+    const f = gDevCont(dcKysely);
+    const sh = f['.devcontainer/post-create.sh'] || '';
+    assert.ok(sh.includes('kysely'), 'post-create.sh must include kysely migration for Kysely');
+  });
+
+  it('gDevCont Python: Dockerfile uses python:3.12 base image', () => {
+    const f = gDevCont(dcPython);
+    const df = f['.devcontainer/Dockerfile'] || '';
+    assert.ok(df.includes('python:3.12'), 'Dockerfile Python must use python:3.12 base image');
+  });
+
+  it('gDevCont Python+SQLAlchemy: post-create.sh includes alembic upgrade head', () => {
+    const f = gDevCont(dcPython);
+    const sh = f['.devcontainer/post-create.sh'] || '';
+    assert.ok(sh.includes('alembic'), 'post-create.sh Python must include alembic migration');
+  });
+
+  it('gDevCont Python: Dockerfile includes pip install', () => {
+    const f = gDevCont(dcPython);
+    const df = f['.devcontainer/Dockerfile'] || '';
+    assert.ok(df.includes('pip install'), 'Dockerfile Python must include pip install');
+  });
+
+  it('gDevCont Firebase: Dockerfile includes firebase-tools', () => {
+    const f = gDevCont(dcFirebase);
+    const df = f['.devcontainer/Dockerfile'] || '';
+    assert.ok(df.includes('firebase-tools') || df.includes('firebase'), 'Dockerfile Firebase must include firebase-tools');
+  });
+
+  it('gDevCont Firebase: post-create.sh references firebase or emulators', () => {
+    const f = gDevCont(dcFirebase);
+    const sh = f['.devcontainer/post-create.sh'] || '';
+    assert.ok(sh.includes('firebase') || sh.includes('emulator'), 'post-create.sh Firebase must reference firebase CLI');
+  });
+
+  it('gDevCont Supabase: Dockerfile includes supabase', () => {
+    const f = gDevCont(dcSupabase);
+    const df = f['.devcontainer/Dockerfile'] || '';
+    assert.ok(df.includes('supabase'), 'Dockerfile Supabase must include supabase CLI');
+  });
+
+  it('gDevCont Supabase: .env.example includes SUPABASE keys', () => {
+    const f = gDevCont(dcSupabase);
+    const env = f['.env.example'] || '';
+    assert.ok(env.includes('SUPABASE'), '.env.example Supabase must include SUPABASE key prefix');
+  });
+
+  it('gDevCont Node.js: .security/build-manifest.json is valid JSON with gates', () => {
+    const f = gDevCont(dcNode);
+    const raw = f['.security/build-manifest.json'] || '';
+    assert.ok(raw.length > 0, 'build-manifest.json must not be empty');
+    const parsed = JSON.parse(raw);
+    assert.ok(parsed.gates || parsed.securityGates || Object.keys(parsed).length > 0, 'build-manifest.json must contain security gates');
+  });
+
+  it('gDevCont Node.js: build-manifest.json references npm audit', () => {
+    const f = gDevCont(dcNode);
+    const raw = f['.security/build-manifest.json'] || '';
+    assert.ok(raw.includes('npm audit'), 'build-manifest.json Node.js must reference npm audit');
+  });
+
+  it('gDevCont Python: build-manifest.json references pip-audit', () => {
+    const f = gDevCont(dcPython);
+    const raw = f['.security/build-manifest.json'] || '';
+    assert.ok(raw.includes('pip-audit') || raw.includes('pip'), 'build-manifest.json Python must reference pip-audit');
+  });
+
+  it('gDevCont Node.js: docker-compose.yml includes postgres service', () => {
+    const f = gDevCont(dcNode);
+    const compose = f['.devcontainer/docker-compose.yml'] || '';
+    assert.ok(compose.includes('postgres') || compose.includes('PostgreSQL'), 'docker-compose.yml must include postgres service for SQL backend');
+  });
+
+  it('gDevCont Firebase: docker-compose.yml has no postgres (BaaS)', () => {
+    const f = gDevCont(dcFirebase);
+    const compose = f['.devcontainer/docker-compose.yml'] || '';
+    assert.ok(!compose.includes('postgres'), 'docker-compose.yml Firebase must not include postgres service');
+  });
+
+  it('gDevCont EN bilingual: all core files generated in English', () => {
+    const f = gDevCont(dcNode, 'en');
+    ['.devcontainer/devcontainer.json','.devcontainer/Dockerfile',
+     '.devcontainer/post-create.sh','.env.example']
+      .forEach(k => assert.ok(f[k], k + ' required in EN mode'));
+  });
+
+  it('gDevCont EN bilingual: Dockerfile no undefined contamination', () => {
+    const f = gDevCont(dcNode, 'en');
+    const df = f['.devcontainer/Dockerfile'] || '';
+    assert.ok(!df.includes('undefined'), 'Dockerfile EN must not contain undefined');
+  });
+
+  it('gDevCont Node.js: .env.example includes database or API URL pattern', () => {
+    const f = gDevCont(dcNode);
+    const env = f['.env.example'] || '';
+    assert.ok(env.includes('DATABASE_URL') || env.includes('API') || env.length > 50, '.env.example must include connection or API config');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 100 — P12 Security depth: docs/43-47
+   OWASP 2025, CSP, STRIDE, ISMAP, FERPA, ASVS, AI conditional,
+   OWASP ZAP, Semgrep, payment PCI, bilingual
+   ════════════════════════════════════════════════════════════════ */
+
+function gSec(answers, lang) {
+  S.files={}; S.genLang=lang||'ja'; S.skill='intermediate';
+  genPillar12_SecurityIntelligence(answers,'QTest');
+  return Object.assign({},S.files);
+}
+
+const secBase = {
+  purpose: 'SaaS型サブスク管理プラットフォーム',
+  frontend: 'React + Next.js', backend: 'Node.js + Express',
+  database: 'PostgreSQL', deploy: 'Railway', orm: 'Prisma',
+  auth: 'JWT', payment: 'Stripe決済',
+  mvp_features: 'ユーザー認証, サブスク管理, ダッシュボード',
+  data_entities: 'User, Subscription, Invoice',
+};
+const secEdu = Object.assign({}, secBase, {
+  purpose: 'e-learning LMS education platform for students',
+  payment: 'なし', backend: 'Supabase', auth: 'Supabase Auth',
+  data_entities: 'User, Course, Lesson, Progress',
+});
+const secGov = Object.assign({}, secBase, {
+  purpose: '行政手続きポータルサイト（e-Gov）',
+  payment: 'なし', backend: 'Node.js + Express',
+  data_entities: 'User, Application, Document, AuditLog',
+});
+const secNoAI = Object.assign({}, secBase, { ai_auto: 'none' });
+const secAI = Object.assign({}, secBase, { ai_auto: 'マルチAgent協調' });
+
+describe('Suite 100: P12 Security depth — docs/43-47', () => {
+
+  it('gSec: all 5 docs/43-47 generated', () => {
+    const f = gSec(secBase);
+    ['docs/43_security_intelligence.md','docs/44_threat_model.md',
+     'docs/45_compliance_matrix.md','docs/46_ai_security.md',
+     'docs/47_security_testing.md']
+      .forEach(k => assert.ok(f[k], k + ' required'));
+  });
+
+  it('gSec: docs/43 contains OWASP Top 10 (2025) section', () => {
+    const f = gSec(secBase);
+    const doc = f['docs/43_security_intelligence.md'] || '';
+    assert.ok(doc.includes('OWASP') && doc.includes('2025'), 'docs/43 must contain OWASP Top 10 2025');
+  });
+
+  it('gSec: docs/43 contains Content Security Policy (CSP)', () => {
+    const f = gSec(secBase);
+    const doc = f['docs/43_security_intelligence.md'] || '';
+    assert.ok(doc.includes('Content Security Policy') || doc.includes('CSP'), 'docs/43 must contain CSP section');
+  });
+
+  it('gSec: docs/44 contains STRIDE threat analysis', () => {
+    const f = gSec(secBase);
+    const doc = f['docs/44_threat_model.md'] || '';
+    assert.ok(doc.includes('STRIDE'), 'docs/44 must contain STRIDE section');
+  });
+
+  it('gSec: docs/44 contains Trust Boundary Mermaid diagram', () => {
+    const f = gSec(secBase);
+    const doc = f['docs/44_threat_model.md'] || '';
+    assert.ok(doc.includes('mermaid') || doc.includes('flowchart'), 'docs/44 must contain Mermaid Trust Boundary diagram');
+  });
+
+  it('gSec: docs/45 contains APPI (personal data protection law)', () => {
+    const f = gSec(secBase);
+    const doc = f['docs/45_compliance_matrix.md'] || '';
+    assert.ok(doc.includes('APPI') || doc.includes('個人情報保護'), 'docs/45 must contain APPI section');
+  });
+
+  it('gSec: docs/45 contains OWASP ASVS Level 2', () => {
+    const f = gSec(secBase);
+    const doc = f['docs/45_compliance_matrix.md'] || '';
+    assert.ok(doc.includes('ASVS') && (doc.includes('Level 2') || doc.includes('V1.') || doc.includes('V2.')), 'docs/45 must contain ASVS Level 2 requirements');
+  });
+
+  it('gSec: docs/45 contains FERPA for education domain', () => {
+    const f = gSec(secEdu);
+    const doc = f['docs/45_compliance_matrix.md'] || '';
+    assert.ok(doc.includes('FERPA'), 'docs/45 education must contain FERPA compliance');
+  });
+
+  it('gSec: docs/45 has no FERPA for non-education domain', () => {
+    const f = gSec(secBase);
+    const doc = f['docs/45_compliance_matrix.md'] || '';
+    assert.ok(!doc.includes('FERPA'), 'docs/45 non-education must not contain FERPA');
+  });
+
+  it('gSec: docs/45 contains ISMAP for government domain', () => {
+    const f = gSec(secGov);
+    const doc = f['docs/45_compliance_matrix.md'] || '';
+    assert.ok(doc.includes('ISMAP'), 'docs/45 government must contain ISMAP compliance');
+  });
+
+  it('gSec: docs/45 contains PCI DSS for EC/fintech domain', () => {
+    const secEC = Object.assign({}, secBase, {
+      purpose: 'EC通販・オンラインショップ管理システム',
+      data_entities: 'User, Product, Order, Cart, AuditLog',
+    });
+    const f = gSec(secEC);
+    const doc = f['docs/45_compliance_matrix.md'] || '';
+    assert.ok(doc.includes('PCI'), 'docs/45 EC domain with payment must contain PCI DSS');
+  });
+
+  it('gSec: docs/45 contains APPI (always present)', () => {
+    const f = gSec(secBase);
+    const doc = f['docs/45_compliance_matrix.md'] || '';
+    assert.ok(doc.includes('APPI') || doc.includes('個人情報保護'), 'docs/45 must always contain APPI section');
+  });
+
+  it('gSec: docs/46 contains AI security content when ai_auto set', () => {
+    const f = gSec(secAI);
+    const doc = f['docs/46_ai_security.md'] || '';
+    assert.ok(doc.includes('プロンプトインジェクション') || doc.includes('Prompt injection') || doc.includes('AI'), 'docs/46 with AI must contain AI security content');
+  });
+
+  it('gSec: docs/46 skip notice when ai_auto=none', () => {
+    const f = gSec(secNoAI);
+    const doc = f['docs/46_ai_security.md'] || '';
+    assert.ok(doc.includes('none') || doc.includes('スキップ') || doc.includes('skip') || doc.length < 500, 'docs/46 with ai_auto=none must indicate AI section is skipped');
+  });
+
+  it('gSec: docs/47 contains OWASP ZAP', () => {
+    const f = gSec(secBase);
+    const doc = f['docs/47_security_testing.md'] || '';
+    assert.ok(doc.includes('OWASP ZAP') || doc.includes('ZAP'), 'docs/47 must contain OWASP ZAP reference');
+  });
+
+  it('gSec: docs/47 contains IDOR and Rate Limiting security tests', () => {
+    const f = gSec(secBase);
+    const doc = f['docs/47_security_testing.md'] || '';
+    assert.ok(doc.includes('IDOR') || doc.includes('rate limit') || doc.includes('Rate Limit'), 'docs/47 must contain IDOR or rate limiting security test');
+  });
+
+  it('gSec EN bilingual: all 5 docs generated in English', () => {
+    const f = gSec(secBase, 'en');
+    ['docs/43_security_intelligence.md','docs/44_threat_model.md',
+     'docs/45_compliance_matrix.md','docs/46_ai_security.md',
+     'docs/47_security_testing.md']
+      .forEach(k => assert.ok(f[k], k + ' required in EN mode'));
+  });
+
+  it('gSec EN bilingual: docs/43 contains OWASP in English output', () => {
+    const f = gSec(secBase, 'en');
+    const doc = f['docs/43_security_intelligence.md'] || '';
+    assert.ok(doc.includes('OWASP'), 'docs/43 EN must contain OWASP section');
+  });
+
+  it('gSec EN bilingual: docs/43 no undefined in prose', () => {
+    const f = gSec(secBase, 'en');
+    const prose = (f['docs/43_security_intelligence.md']||'').replace(/```[\s\S]*?```/g,'');
+    assert.ok(!prose.includes('undefined'), 'docs/43 EN prose must not contain undefined');
+  });
+
+  it('gSec: docs/47 no undefined in prose', () => {
+    const f = gSec(secBase);
+    const prose = (f['docs/47_security_testing.md']||'').replace(/```[\s\S]*?```/g,'');
+    assert.ok(!prose.includes('undefined'), 'docs/47 prose must not contain undefined');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 101 — P15 Future Strategy depth: docs/56-59
+   SWOT, MOAT, Unit Economics, Persona, RICE, WCAG 2.2,
+   FinOps, EU AI Act, ESG mindmap, DORA (fintech), bilingual
+   ════════════════════════════════════════════════════════════════ */
+
+function gFuture(answers, lang) {
+  S.files={}; S.genLang=lang||'ja'; S.skill='intermediate';
+  genPillar15(answers);
+  return Object.assign({},S.files);
+}
+
+const futBase = {
+  purpose: 'SaaS型サブスク管理プラットフォーム',
+  frontend: 'React + Next.js', backend: 'Supabase',
+  database: 'Supabase (PostgreSQL)', deploy: 'Vercel',
+  orm: '', auth: 'Supabase Auth', payment: 'Stripe Billing (サブスク)',
+  mvp_features: 'サブスク管理, 分析ダッシュボード, チーム機能',
+  data_entities: 'User, Subscription, Invoice, Team',
+  ai_auto: 'none',
+};
+const futFintech = Object.assign({}, futBase, {
+  purpose: 'フィンテック向けリアルタイム決済処理API',
+  backend: 'Node.js + NestJS', database: 'PostgreSQL', deploy: 'Railway',
+  orm: 'Prisma', auth: 'JWT',
+  data_entities: 'User, Transaction, Account, AuditLog',
+});
+const futEdu = Object.assign({}, futBase, {
+  purpose: 'e-learning LMS education platform for students',
+  payment: 'なし', backend: 'Firebase', auth: 'Firebase Auth',
+  data_entities: 'User, Course, Lesson, Progress',
+});
+const futAI = Object.assign({}, futBase, {
+  ai_auto: 'マルチAgent協調',
+});
+
+describe('Suite 101: P15 Future Strategy depth — docs/56-59', () => {
+
+  it('gFuture: all 4 docs/56-59 generated', () => {
+    const f = gFuture(futBase);
+    ['docs/56_market_positioning.md','docs/57_user_experience_strategy.md',
+     'docs/58_ecosystem_strategy.md','docs/59_regulatory_foresight.md']
+      .forEach(k => assert.ok(f[k], k + ' required'));
+  });
+
+  it('gFuture: docs/56 contains SWOT analysis section', () => {
+    const f = gFuture(futBase);
+    const doc = f['docs/56_market_positioning.md'] || '';
+    assert.ok(doc.includes('SWOT'), 'docs/56 must contain SWOT analysis');
+  });
+
+  it('gFuture: docs/56 contains MOAT analysis section', () => {
+    const f = gFuture(futBase);
+    const doc = f['docs/56_market_positioning.md'] || '';
+    assert.ok(doc.includes('MOAT'), 'docs/56 must contain MOAT analysis');
+  });
+
+  it('gFuture: docs/56 contains Unit Economics section', () => {
+    const f = gFuture(futBase);
+    const doc = f['docs/56_market_positioning.md'] || '';
+    assert.ok(doc.includes('ユニットエコノミクス') || doc.includes('Unit Economics'), 'docs/56 must contain Unit Economics section');
+  });
+
+  it('gFuture: docs/56 contains Mermaid mindmap for MOAT', () => {
+    const f = gFuture(futBase);
+    const doc = f['docs/56_market_positioning.md'] || '';
+    assert.ok(doc.includes('mindmap') || doc.includes('mermaid'), 'docs/56 must contain Mermaid MOAT mindmap');
+  });
+
+  it('gFuture: docs/57 contains Persona Definition section', () => {
+    const f = gFuture(futBase);
+    const doc = f['docs/57_user_experience_strategy.md'] || '';
+    assert.ok(doc.includes('ペルソナ') || doc.includes('Persona'), 'docs/57 must contain Persona section');
+  });
+
+  it('gFuture: docs/57 contains RICE prioritization', () => {
+    const f = gFuture(futBase);
+    const doc = f['docs/57_user_experience_strategy.md'] || '';
+    assert.ok(doc.includes('RICE') || doc.includes('Reach'), 'docs/57 must contain RICE prioritization template');
+  });
+
+  it('gFuture: docs/57 contains WCAG 2.2 AA checklist', () => {
+    const f = gFuture(futBase);
+    const doc = f['docs/57_user_experience_strategy.md'] || '';
+    assert.ok(doc.includes('WCAG 2.2') || doc.includes('WCAG'), 'docs/57 must contain WCAG 2.2 compliance checklist');
+  });
+
+  it('gFuture: docs/57 no undefined in prose', () => {
+    const f = gFuture(futBase);
+    const prose = (f['docs/57_user_experience_strategy.md']||'').replace(/```[\s\S]*?```/g,'');
+    assert.ok(!prose.includes('undefined'), 'docs/57 prose must not contain undefined');
+  });
+
+  it('gFuture: docs/58 contains FinOps / Cloud Cost Strategy', () => {
+    const f = gFuture(futBase);
+    const doc = f['docs/58_ecosystem_strategy.md'] || '';
+    assert.ok(doc.includes('FinOps') || doc.includes('Cloud Cost') || doc.includes('クラウドコスト'), 'docs/58 must contain FinOps section');
+  });
+
+  it('gFuture: docs/58 no undefined in prose', () => {
+    const f = gFuture(futBase);
+    const prose = (f['docs/58_ecosystem_strategy.md']||'').replace(/```[\s\S]*?```/g,'');
+    assert.ok(!prose.includes('undefined'), 'docs/58 prose must not contain undefined');
+  });
+
+  it('gFuture: docs/59 contains EU AI Act assessment section', () => {
+    const f = gFuture(futBase);
+    const doc = f['docs/59_regulatory_foresight.md'] || '';
+    assert.ok(doc.includes('EU AI Act'), 'docs/59 must contain EU AI Act section');
+  });
+
+  it('gFuture: docs/59 contains Regulatory Timeline (Mermaid timeline)', () => {
+    const f = gFuture(futBase);
+    const doc = f['docs/59_regulatory_foresight.md'] || '';
+    assert.ok(doc.includes('timeline') || doc.includes('mermaid'), 'docs/59 must contain Regulatory Timeline diagram');
+  });
+
+  it('gFuture: docs/59 contains ESG sustainability section', () => {
+    const f = gFuture(futBase);
+    const doc = f['docs/59_regulatory_foresight.md'] || '';
+    assert.ok(doc.includes('ESG'), 'docs/59 must contain ESG section');
+  });
+
+  it('gFuture fintech: docs/59 contains DORA compliance section', () => {
+    const f = gFuture(futFintech);
+    const doc = f['docs/59_regulatory_foresight.md'] || '';
+    assert.ok(doc.includes('DORA'), 'docs/59 fintech must contain EU DORA compliance section');
+  });
+
+  it('gFuture non-fintech: docs/59 has no DORA section', () => {
+    const f = gFuture(futEdu);
+    const doc = f['docs/59_regulatory_foresight.md'] || '';
+    assert.ok(!doc.includes('DORA'), 'docs/59 non-fintech must not contain DORA');
+  });
+
+  it('gFuture AI active: docs/59 EU AI Act mentions AI usage assessment', () => {
+    const f = gFuture(futAI);
+    const doc = f['docs/59_regulatory_foresight.md'] || '';
+    assert.ok(doc.includes('EU AI Act'), 'docs/59 with AI must include EU AI Act assessment');
+    assert.ok(!doc.includes('直接適用なし') && !doc.includes('not directly applicable'), 'docs/59 with AI must not show "not applicable" message');
+  });
+
+  it('gFuture EN bilingual: all 4 docs generated in English', () => {
+    const f = gFuture(futBase, 'en');
+    ['docs/56_market_positioning.md','docs/57_user_experience_strategy.md',
+     'docs/58_ecosystem_strategy.md','docs/59_regulatory_foresight.md']
+      .forEach(k => assert.ok(f[k], k + ' required in EN mode'));
+  });
+
+  it('gFuture EN bilingual: docs/56 contains SWOT in English output', () => {
+    const f = gFuture(futBase, 'en');
+    const doc = f['docs/56_market_positioning.md'] || '';
+    assert.ok(doc.includes('SWOT'), 'docs/56 EN must contain SWOT section');
+  });
+
+  it('gFuture EN bilingual: docs/56 no undefined contamination', () => {
+    const f = gFuture(futBase, 'en');
+    const prose = (f['docs/56_market_positioning.md']||'').replace(/```[\s\S]*?```/g,'');
+    assert.ok(!prose.includes('undefined'), 'docs/56 EN prose must not contain undefined');
+  });
+
+  it('gFuture: docs/59 no undefined in prose', () => {
+    const f = gFuture(futBase);
+    const prose = (f['docs/59_regulatory_foresight.md']||'').replace(/```[\s\S]*?```/g,'');
+    assert.ok(!prose.includes('undefined'), 'docs/59 prose must not contain undefined');
   });
 });

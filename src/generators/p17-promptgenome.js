@@ -152,15 +152,15 @@ function gen65(G, domain, meth, matLv, a, pn) {
   // Genome signature Mermaid
   d += '```mermaid\n';
   d += 'graph TD\n';
-  d += '  DNA[🧬 Prompt DNA] --> C[CRITERIA Framework]\n';
-  d += '  DNA --> M[' + (G ? 'AI成熟度 Level ' : 'AI Maturity Level ') + matLv + ']\n';
-  d += '  DNA --> A[' + (G ? meth.primary_ja.split(' ')[0] : meth.primary_en.split(' ')[0]) + ']\n';
-  d += '  C --> C1[Context 15%]\n';
-  d += '  C --> C2[Instructions 20%]\n';
-  d += '  C --> C3[Execution 15%]\n';
-  d += '  M --> M1[' + (G ? AI_MATURITY_MODEL[matLv-1].pats_ja.split('、')[0] : AI_MATURITY_MODEL[matLv-1].pats_en.split(',')[0].trim()) + ']\n';
-  d += '  A --> A1[' + (G ? meth.kw_ja[0] : meth.kw_en[0]) + ']\n';
-  d += '  A --> A2[' + (G ? meth.kw_ja[1] : meth.kw_en[1]) + ']\n';
+  d += '  DNA["🧬 Prompt DNA"] --> C["CRITERIA Framework"]\n';
+  d += '  DNA --> M["' + (G ? 'AI成熟度 Level ' : 'AI Maturity Level ') + matLv + '"]\n';
+  d += '  DNA --> A["' + (G ? meth.primary_ja.split(' ')[0] : meth.primary_en.split(' ')[0]) + '"]\n';
+  d += '  C --> C1["Context 15%"]\n';
+  d += '  C --> C2["Instructions 20%"]\n';
+  d += '  C --> C3["Execution 15%"]\n';
+  d += '  M --> M1["' + (G ? AI_MATURITY_MODEL[matLv-1].pats_ja.split('、')[0] : AI_MATURITY_MODEL[matLv-1].pats_en.split(',')[0].trim()) + '"]\n';
+  d += '  A --> A1["' + (G ? meth.kw_ja[0] : meth.kw_en[0]) + '"]\n';
+  d += '  A --> A2["' + (G ? meth.kw_ja[1] : meth.kw_en[1]) + '"]\n';
   d += '```\n\n';
 
   // CRITERIA Scoring Guide
