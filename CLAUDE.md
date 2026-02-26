@@ -44,7 +44,7 @@ Never reorder without checking dependencies.
 | Category | Purpose |
 |----------|---------|
 | `core/` | State (`S`), i18n (`t()`), keyboard events, wizard tour, app init |
-| `data/` | 63 standard presets (`PR`/`_mp()`), 266 field presets (`PR_FIELD`/`_fpd()`), questions, techdb (338 entries), compat-rules (118 rules), gen-templates (bilingual GT dict), helpdata |
+| `data/` | 63 standard presets (`PR`/`_mp()`), 266 field presets (`PR_FIELD`/`_fpd()`), questions, techdb (338 entries), compat-rules (136 rules), gen-templates (bilingual GT dict), helpdata |
 | `generators/` | `index.js` orchestrator + `p1`–`p25` pillars + `docs.js` + `common.js` |
 | `ui/` | wizard, render, presets, preview, sidebar, editor, diff, export, explorer, dashboard, launcher, templates, qbar, cmdpalette, help, voice |
 | `styles/all.css` | Theme (dark/light), responsive; CSS custom properties only |
@@ -171,7 +171,7 @@ After adding: update header comment totals, add tests to `test/compat.test.js`, 
 |----------|-------|--------|
 | Core/regression | gen-coherence, snapshot, r27/r28-regression, build | ~342 |
 | Data/coverage | data-coverage, presets, field-presets | ~116 |
-| Security/compat | security, compat (+7 synergy) | ~118 |
+| Security/compat | security, compat (+7 synergy) | ~136 |
 | Pillars (P14-P20+skill) | ops, future, deviq, promptgenome, promptops, enterprise, cicd, skill-level | ~184 |
 | Gen quality | gen-quality (Suites 1-63, 641 tests) | ~641 |
 | Preset matching | phase-n (N-1〜N-9 + G-1〜G-7, 68 tests) | ~68 |
