@@ -18,7 +18,7 @@
  *   Domain   detectDomain     → .spec/constitution.md §3 fallback KPI
  *   E2E      full generation  → file count, token richness, bilingual parity
  *
- * Suites 1-90: 924 tests total
+ * Suites 1-93: 960 tests total
  */
 
 const { describe, it } = require('node:test');
@@ -8908,5 +8908,361 @@ describe('Suite 90: P13 Strategic depth — docs/48-52', () => {
     const f = gP13(A25);
     const doc = f['docs/51_operational_excellence.md'] || '';
     assert.ok(doc.includes('DORA'), 'docs/51 must include DORA Metrics in team design section');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 91 — P22 Database Intelligence depth: docs/87-90 verification
+   ORM schema patterns (Prisma/@id, SQLAlchemy/mapped_column, BaaS RLS,
+   MongoDB 16MB), EXPLAIN ANALYZE, N+1 fix, migration commands,
+   expand-contract pattern, RTO/RPO, PITR/WAL
+   ════════════════════════════════════════════════════════════════ */
+
+describe('Suite 91: P22 Database depth — docs/87-90', () => {
+
+  // ── docs/87 Database Design Principles ──
+  it('docs/87 Prisma: @id or @@map entity schema annotation present', () => {
+    const f = gDB(dbAnswers);
+    const doc = f['docs/87_database_design_principles.md'] || '';
+    assert.ok(
+      doc.includes('@id') || doc.includes('cuid()') || doc.includes('@@map'),
+      'docs/87 Prisma must show @id / @@map entity schema pattern'
+    );
+  });
+
+  it('docs/87 SQLAlchemy: mapped_column or DeclarativeBase present', () => {
+    const f = gDB(pyDbAnswers);
+    const doc = f['docs/87_database_design_principles.md'] || '';
+    assert.ok(
+      doc.includes('mapped_column') || doc.includes('DeclarativeBase'),
+      'docs/87 SQLAlchemy must show mapped_column or DeclarativeBase ORM pattern'
+    );
+  });
+
+  it('docs/87: soft delete deleted_at column pattern present', () => {
+    const f = gDB(dbAnswers);
+    const doc = f['docs/87_database_design_principles.md'] || '';
+    assert.ok(doc.includes('deleted_at'), 'docs/87 must include soft delete deleted_at column pattern');
+  });
+
+  it('docs/87 BaaS Supabase: Row Level Security or CREATE POLICY present', () => {
+    const f = gDB(baasDbAnswers);
+    const doc = f['docs/87_database_design_principles.md'] || '';
+    assert.ok(
+      doc.includes('Row Level Security') || doc.includes('CREATE POLICY'),
+      'docs/87 Supabase must show RLS and CREATE POLICY example'
+    );
+  });
+
+  it('docs/87 MongoDB: 16MB document limit or Array sub-document guidance', () => {
+    const f = gDB(mongoAnswers);
+    const doc = f['docs/87_database_design_principles.md'] || '';
+    assert.ok(
+      doc.includes('16MB') || doc.includes('Array'),
+      'docs/87 MongoDB must include 16MB document size limit guidance'
+    );
+  });
+
+  // ── docs/88 Query Optimization ──
+  it('docs/88: EXPLAIN ANALYZE query analysis pattern present', () => {
+    const f = gDB(dbAnswers);
+    const doc = f['docs/88_query_optimization_guide.md'] || '';
+    assert.ok(
+      doc.includes('EXPLAIN ANALYZE') || doc.includes('EXPLAIN'),
+      'docs/88 must include EXPLAIN ANALYZE for query performance analysis'
+    );
+  });
+
+  it('docs/88: N+1 problem with include/selectinload fix present', () => {
+    const f = gDB(dbAnswers);
+    const doc = f['docs/88_query_optimization_guide.md'] || '';
+    assert.ok(
+      doc.includes('N+1') || doc.includes('include') || doc.includes('selectinload'),
+      'docs/88 must show N+1 problem fix with include/selectinload pattern'
+    );
+  });
+
+  // ── docs/89 Migration Strategy ──
+  it('docs/89 Prisma: prisma migrate dev command present', () => {
+    const f = gDB(dbAnswers);
+    const doc = f['docs/89_migration_strategy.md'] || '';
+    assert.ok(
+      doc.includes('prisma migrate dev') || doc.includes('prisma migrate'),
+      'docs/89 Prisma must show prisma migrate dev workflow command'
+    );
+  });
+
+  it('docs/89 SQLAlchemy: alembic upgrade head migration command present', () => {
+    const f = gDB(pyDbAnswers);
+    const doc = f['docs/89_migration_strategy.md'] || '';
+    assert.ok(
+      doc.includes('alembic upgrade head') || doc.includes('alembic'),
+      'docs/89 SQLAlchemy must show Alembic migration commands including upgrade head'
+    );
+  });
+
+  it('docs/89: expand-contract zero-downtime migration pattern present', () => {
+    const f = gDB(dbAnswers);
+    const doc = f['docs/89_migration_strategy.md'] || '';
+    assert.ok(
+      doc.includes('Expand') || doc.includes('expand_contract') || doc.includes('Contract'),
+      'docs/89 must describe expand-contract pattern for zero-downtime migrations'
+    );
+  });
+
+  // ── docs/90 Backup & Disaster Recovery ──
+  it('docs/90: RTO and RPO recovery targets defined', () => {
+    const f = gDB(dbAnswers);
+    const doc = f['docs/90_backup_disaster_recovery.md'] || '';
+    assert.ok(doc.includes('RTO') && doc.includes('RPO'), 'docs/90 must define both RTO and RPO recovery targets');
+  });
+
+  it('docs/90: PITR or WAL point-in-time recovery present', () => {
+    const f = gDB(dbAnswers);
+    const doc = f['docs/90_backup_disaster_recovery.md'] || '';
+    assert.ok(
+      doc.includes('PITR') || doc.includes('WAL'),
+      'docs/90 must reference PITR or WAL-based point-in-time recovery for continuous backup'
+    );
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 92 — P23 Testing Intelligence depth: docs/91-94 verification
+   Test pyramid 70% unit, supertest/pytest integration, TDD RED→GREEN,
+   coverage ≥ 80%, Jest coverageThreshold, --cov-fail-under, Playwright
+   POM + storageState, Maestro mobile, Lighthouse CI ≥ 0.8, k6/Locust
+   ════════════════════════════════════════════════════════════════ */
+
+describe('Suite 92: P23 Testing depth — docs/91-94', () => {
+
+  // ── docs/91 Testing Strategy ──
+  it('docs/91: test pyramid 70% unit distribution shown', () => {
+    const f = gTest(testAnswers);
+    const doc = f['docs/91_testing_strategy.md'] || '';
+    assert.ok(doc.includes('70%'), 'docs/91 test pyramid must show 70% unit test ratio');
+  });
+
+  it('docs/91 Node.js: supertest integration testing reference present', () => {
+    const f = gTest(testAnswers);
+    const doc = f['docs/91_testing_strategy.md'] || '';
+    assert.ok(doc.includes('supertest'), 'docs/91 Node.js must reference supertest for API integration testing');
+  });
+
+  it('docs/91 Python: pytest.mark.asyncio async test decorator present', () => {
+    const f = gTest(pyTestAnswers);
+    const doc = f['docs/91_testing_strategy.md'] || '';
+    assert.ok(
+      doc.includes('@pytest.mark.asyncio') || doc.includes('pytest'),
+      'docs/91 Python must show pytest.mark.asyncio for async FastAPI endpoint testing'
+    );
+  });
+
+  it('docs/91: TDD RED→GREEN→REFACTOR workflow present', () => {
+    const f = gTest(testAnswers);
+    const doc = f['docs/91_testing_strategy.md'] || '';
+    assert.ok(
+      doc.includes('RED') || doc.includes('GREEN') || doc.includes('REFACTOR'),
+      'docs/91 must include TDD red-green-refactor development workflow'
+    );
+  });
+
+  // ── docs/92 Coverage Design ──
+  it('docs/92: ≥ 80% unit test coverage threshold present', () => {
+    const f = gTest(testAnswers);
+    const doc = f['docs/92_coverage_design.md'] || '';
+    assert.ok(
+      doc.includes('80') || doc.includes('≥ 80'),
+      'docs/92 must specify ≥ 80% unit test coverage target'
+    );
+  });
+
+  it('docs/92 Node.js: Jest coverageThreshold config present', () => {
+    const f = gTest(testAnswers);
+    const doc = f['docs/92_coverage_design.md'] || '';
+    assert.ok(
+      doc.includes('coverageThreshold') || doc.includes('coverageThresholds'),
+      'docs/92 Jest must show coverageThreshold configuration for CI enforcement'
+    );
+  });
+
+  it('docs/92 Python: --cov-fail-under=80 pytest coverage config present', () => {
+    const f = gTest(pyTestAnswers);
+    const doc = f['docs/92_coverage_design.md'] || '';
+    assert.ok(
+      doc.includes('--cov-fail-under') || doc.includes('cov-fail-under'),
+      'docs/92 Python must show --cov-fail-under=80 for pytest coverage enforcement'
+    );
+  });
+
+  // ── docs/93 E2E Test Architecture ──
+  it('docs/93: Playwright config timeout 30_000ms present', () => {
+    const f = gTest(testAnswers);
+    const doc = f['docs/93_e2e_test_architecture.md'] || '';
+    assert.ok(
+      doc.includes('30_000') || doc.includes('30000'),
+      'docs/93 Playwright config must include 30s (30_000ms) default timeout'
+    );
+  });
+
+  it('docs/93: Page Object Model LoginPage class and storageState present', () => {
+    const f = gTest(testAnswers);
+    const doc = f['docs/93_e2e_test_architecture.md'] || '';
+    assert.ok(
+      doc.includes('LoginPage') || doc.includes('Page Object'),
+      'docs/93 must show Page Object Model with LoginPage class'
+    );
+    assert.ok(doc.includes('storageState'), 'docs/93 must include storageState for auth session reuse across E2E tests');
+  });
+
+  it('docs/93 Mobile: Maestro or Detox React Native E2E tool present', () => {
+    const f = gTest(mobileTestAnswers);
+    const doc = f['docs/93_e2e_test_architecture.md'] || '';
+    assert.ok(
+      doc.includes('Maestro') || doc.includes('Detox'),
+      'docs/93 mobile must reference Maestro or Detox for React Native E2E testing'
+    );
+  });
+
+  // ── docs/94 Performance Testing ──
+  it('docs/94: Lighthouse CI performance threshold ≥ 0.8 present', () => {
+    const f = gTest(testAnswers);
+    const doc = f['docs/94_performance_testing.md'] || '';
+    assert.ok(
+      doc.includes('0.8') || doc.includes('0.85') || doc.includes('minScore'),
+      'docs/94 must include Lighthouse CI performance score threshold ≥ 0.8'
+    );
+  });
+
+  it('docs/94: k6 or Locust load testing tool reference present', () => {
+    const f = gTest(testAnswers);
+    const doc = f['docs/94_performance_testing.md'] || '';
+    assert.ok(
+      doc.includes('k6') || doc.includes('Locust'),
+      'docs/94 must reference k6 (Node.js) or Locust (Python) for load testing'
+    );
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 93 — P24 AI Safety Intelligence depth: docs/95-98 verification
+   6 risk categories (Hallucination/Injection/Jailbreak HIGH severity),
+   Claude system+max_tokens, EU AI Act/NIST compliance, guardrail layers
+   MAX_PROMPT_LENGTH 4096, INJECTION_PATTERNS, PII, rate limiting,
+   RAGAS/Langfuse evaluation, "前の指示" injection attack example
+   ════════════════════════════════════════════════════════════════ */
+
+describe('Suite 93: P24 AI Safety depth — docs/95-98', () => {
+
+  // ── docs/95 AI Safety Framework ──
+  it('docs/95: Hallucination HIGH severity risk category present', () => {
+    const f = gAISafety(aiAnswers);
+    const doc = f['docs/95_ai_safety_framework.md'] || '';
+    assert.ok(
+      doc.includes('Hallucination') || doc.includes('ハルシネーション'),
+      'docs/95 must include Hallucination as a HIGH severity AI risk category'
+    );
+  });
+
+  it('docs/95: Prompt Injection HIGH severity risk category present', () => {
+    const f = gAISafety(aiAnswers);
+    const doc = f['docs/95_ai_safety_framework.md'] || '';
+    assert.ok(
+      doc.includes('prompt_injection') || doc.includes('プロンプトインジェクション') || doc.includes('Prompt Injection'),
+      'docs/95 must include Prompt Injection as a HIGH severity AI risk category'
+    );
+  });
+
+  it('docs/95: Jailbreak risk category present', () => {
+    const f = gAISafety(aiAnswers);
+    const doc = f['docs/95_ai_safety_framework.md'] || '';
+    assert.ok(
+      doc.includes('jailbreak') || doc.includes('ジェイルブレイク') || doc.includes('Jailbreak'),
+      'docs/95 must include Jailbreak as an AI safety risk category'
+    );
+  });
+
+  it('docs/95 Claude provider: system prompt and max_tokens code example present', () => {
+    const f = gAISafety(claudeAnswers);
+    const doc = f['docs/95_ai_safety_framework.md'] || '';
+    assert.ok(
+      doc.includes('max_tokens') || doc.includes('system='),
+      'docs/95 Claude provider must show system prompt and max_tokens configuration'
+    );
+  });
+
+  it('docs/95: EU AI Act or NIST AI RMF compliance framework present', () => {
+    const f = gAISafety(aiAnswers);
+    const doc = f['docs/95_ai_safety_framework.md'] || '';
+    assert.ok(
+      doc.includes('EU AI Act') || doc.includes('NIST AI RMF') || doc.includes('ISO/IEC 42001'),
+      'docs/95 must reference AI governance compliance frameworks (EU AI Act, NIST AI RMF, or ISO 42001)'
+    );
+  });
+
+  // ── docs/96 Guardrail Implementation ──
+  it('docs/96: MAX_PROMPT_LENGTH 4096 input sanitization constant present', () => {
+    const f = gAISafety(aiAnswers);
+    const doc = f['docs/96_ai_guardrail_implementation.md'] || '';
+    assert.ok(
+      doc.includes('MAX_PROMPT_LENGTH') || doc.includes('4096'),
+      'docs/96 must define MAX_PROMPT_LENGTH = 4096 token input length limit'
+    );
+  });
+
+  it('docs/96: prompt injection detection regex for "previous instructions" present', () => {
+    const f = gAISafety(aiAnswers);
+    const doc = f['docs/96_ai_guardrail_implementation.md'] || '';
+    assert.ok(
+      doc.includes('previous instructions') || doc.includes('INJECTION_PATTERNS'),
+      'docs/96 must include injection detection regex matching "ignore previous instructions" pattern'
+    );
+  });
+
+  it('docs/96: PII detection EMAIL or PHONE pattern present', () => {
+    const f = gAISafety(aiAnswers);
+    const doc = f['docs/96_ai_guardrail_implementation.md'] || '';
+    assert.ok(
+      doc.includes('EMAIL') || doc.includes('PII') || doc.includes('PHONE'),
+      'docs/96 must include PII detection patterns for email/phone masking before AI calls'
+    );
+  });
+
+  it('docs/96: AI endpoint rate limiting slidingWindow or Ratelimit present', () => {
+    const f = gAISafety(aiAnswers);
+    const doc = f['docs/96_ai_guardrail_implementation.md'] || '';
+    assert.ok(
+      doc.includes('slidingWindow') || doc.includes('Ratelimit') || doc.includes('rate'),
+      'docs/96 must include AI endpoint rate limiting configuration to prevent abuse'
+    );
+  });
+
+  // ── docs/97 Model Evaluation ──
+  it('docs/97: RAGAS or TruLens hallucination evaluation tool present', () => {
+    const f = gAISafety(aiAnswers);
+    const doc = f['docs/97_ai_model_evaluation.md'] || '';
+    assert.ok(
+      doc.includes('RAGAS') || doc.includes('TruLens'),
+      'docs/97 must reference RAGAS or TruLens for AI hallucination rate evaluation'
+    );
+  });
+
+  it('docs/97: Langfuse tracing integration present', () => {
+    const f = gAISafety(aiAnswers);
+    const doc = f['docs/97_ai_model_evaluation.md'] || '';
+    assert.ok(
+      doc.includes('Langfuse') || doc.includes('langfuse'),
+      'docs/97 must include Langfuse for AI model evaluation tracing and observability'
+    );
+  });
+
+  // ── docs/98 Prompt Injection Defense ──
+  it('docs/98: "前の指示" injection attack example or DAN jailbreak present', () => {
+    const f = gAISafety(aiAnswers);
+    const doc = f['docs/98_prompt_injection_defense.md'] || '';
+    assert.ok(
+      doc.includes('前の指示') || doc.includes('DAN') || doc.includes('ignore'),
+      'docs/98 must show concrete prompt injection attack examples including "前の指示を無視" or DAN'
+    );
   });
 });
