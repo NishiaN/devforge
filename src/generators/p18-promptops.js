@@ -192,12 +192,12 @@ function gen69(G, domain, meth, matLv, a, pn) {
   // Mermaid pipeline diagram
   d += '```mermaid\n';
   d += 'graph LR\n';
-  d += '  D[' + (G ? '起草' : 'Draft') + '] -->|CRITERIA≥3| R[' + (G ? 'レビュー' : 'Review') + ']\n';
-  d += '  R -->|' + (G ? 'スコア≥3.5' : 'Score≥3.5') + '| T[' + (G ? 'テスト' : 'Test') + ']\n';
+  d += '  D["' + (G ? '起草' : 'Draft') + '"] -->|CRITERIA≥3| R["' + (G ? 'レビュー' : 'Review') + '"]\n';
+  d += '  R -->|' + (G ? 'スコア≥3.5' : 'Score≥3.5') + '| T["' + (G ? 'テスト' : 'Test') + '"]\n';
   d += '  R -->|' + (G ? '不合格' : 'Fail') + '| D\n';
-  d += '  T -->|A/B' + (G ? '勝利' : ' Win') + '| P[' + (G ? 'デプロイ' : 'Deploy') + ']\n';
+  d += '  T -->|A/B' + (G ? '勝利' : ' Win') + '| P["' + (G ? 'デプロイ' : 'Deploy') + '"]\n';
   d += '  T -->|' + (G ? '不合格' : 'Fail') + '| D\n';
-  d += '  P -->|10%→50%→100%| M[' + (G ? '監視' : 'Monitor') + ']\n';
+  d += '  P -->|10%→50%→100%| M["' + (G ? '監視' : 'Monitor') + '"]\n';
   d += '  M -->|' + (G ? '品質劣化' : 'Degradation') + '| D\n';
   d += '  style P fill:#4f46e5,color:#fff\n';
   d += '```\n';
@@ -363,13 +363,13 @@ function gen71(G, matLv, a, pn) {
   // Mermaid LLMOps architecture
   d += '```mermaid\n';
   d += 'graph TD\n';
-  d += '  P[' + (G ? 'プロンプト実行' : 'Prompt Execution') + '] --> T[' + (G ? 'トレーシング' : 'Tracing') + ']\n';
-  d += '  T --> C[CRITERIA ' + (G ? '自動評価' : 'Auto Eval') + ']\n';
-  d += '  C --> D[' + (G ? 'ダッシュボード' : 'Dashboard') + ']\n';
-  d += '  D --> A{' + (G ? 'アラート閾値?' : 'Alert threshold?') + '}\n';
-  d += '  A -->|' + (G ? '超過' : 'Exceeded') + '| R[' + (G ? 'ロールバック' : 'Rollback') + ']\n';
-  d += '  A -->|OK| O[' + (G ? '継続最適化' : 'Continuous Opt') + ']\n';
-  d += '  O --> AB[A/B ' + (G ? 'テスト' : 'Test') + ']\n';
+  d += '  P["' + (G ? 'プロンプト実行' : 'Prompt Execution') + '"] --> T["' + (G ? 'トレーシング' : 'Tracing') + '"]\n';
+  d += '  T --> C["CRITERIA ' + (G ? '自動評価' : 'Auto Eval') + '"]\n';
+  d += '  C --> D["' + (G ? 'ダッシュボード' : 'Dashboard') + '"]\n';
+  d += '  D --> A{"' + (G ? 'アラート閾値?' : 'Alert threshold?') + '"}\n';
+  d += '  A -->|' + (G ? '超過' : 'Exceeded') + '| R["' + (G ? 'ロールバック' : 'Rollback') + '"]\n';
+  d += '  A -->|OK| O["' + (G ? '継続最適化' : 'Continuous Opt') + '"]\n';
+  d += '  O --> AB["A/B ' + (G ? 'テスト' : 'Test') + '"]\n';
   d += '  AB --> P\n';
   d += '  style C fill:#4f46e5,color:#fff\n';
   d += '```\n';

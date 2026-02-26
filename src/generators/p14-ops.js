@@ -977,8 +977,8 @@ function genPillar14_OpsIntelligence(a, pn) {
   // Mermaid diagram
   opsPlane += '```mermaid\n';
   opsPlane += 'graph LR\n';
-  opsPlane += '  DevAgent[Dev Agent<br/>Claude Code] -->|Code/Test/PR| SharedContract[Shared Contract<br/>.spec/ + CLAUDE.md<br/>docs/53-55]\n';
-  opsPlane += '  OpsAgent[Ops Agent<br/>Human/AI] -->|Monitor/Flag/Incident| SharedContract\n';
+  opsPlane += '  DevAgent["Dev Agent<br/>Claude Code"] -->|Code/Test/PR| SharedContract["Shared Contract<br/>.spec/ + CLAUDE.md<br/>docs/53-55"]\n';
+  opsPlane += '  OpsAgent["Ops Agent<br/>Human/AI"] -->|Monitor/Flag/Incident| SharedContract\n';
   opsPlane += '  SharedContract -->|Spec| DevAgent\n';
   opsPlane += '  SharedContract -->|SLO/Runbook| OpsAgent\n';
   opsPlane += '```\n\n';
