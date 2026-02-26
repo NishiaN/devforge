@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 # DevForge v9.6.0
 
-**AI Development OS** — 63 JS modules in `src/` → single `devforge-v9.html` (~3091KB / 3500KB limit).
+**AI Development OS** — 63 JS modules in `src/` → single `devforge-v9.html` (~3091KB / 5000KB limit).
 Generates **178+ files** across **25 pillars** from a wizard-driven Q&A session.
 
 ## Documentation Map
@@ -18,7 +18,7 @@ Generates **178+ files** across **25 pillars** from a wizard-driven Q&A session.
 ## Build & Test
 
 ```bash
-node build.js                          # → devforge-v9.html (~3091KB, limit 3500KB)
+node build.js                          # → devforge-v9.html (~3091KB, limit 5000KB)
 node build.js --no-minify              # debug (skip minification)
 node build.js --report                 # build + size breakdown by module
 npm test                               # 1480 tests, all passing
@@ -156,7 +156,7 @@ Full 6-step process in `docs/CLAUDE-REFERENCE.md`. Key steps often missed:
 2. Add entry to `PILLAR_FIRST_FILE[N]` and `GEN_TO_PILLAR[N]` in `src/ui/sidebar.js`
 3. Update Hero Section in `src/index.html` + `src/core/init.js` (pbadge count + icard arrays)
 4. Update `test/build.test.js` pbadge count assertion
-5. Check size budget: `node build.js --report` (warn ≥3300KB, fail ≥3500KB)
+5. Check size budget: `node build.js --report` (warn ≥4700KB, fail ≥5000KB)
 
 ## Adding Compat Rules
 
