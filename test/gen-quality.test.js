@@ -18,7 +18,7 @@
  *   Domain   detectDomain     → .spec/constitution.md §3 fallback KPI
  *   E2E      full generation  → file count, token richness, bilingual parity
  *
- * Suites 1-93: 960 tests total
+ * Suites 1-96: 992 tests total
  */
 
 const { describe, it } = require('node:test');
@@ -9264,5 +9264,343 @@ describe('Suite 93: P24 AI Safety depth — docs/95-98', () => {
       doc.includes('前の指示') || doc.includes('DAN') || doc.includes('ignore'),
       'docs/98 must show concrete prompt injection attack examples including "前の指示を無視" or DAN'
     );
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 94 — P22 Database EN deep: docs/87-90 English mode depth
+   Extends Suite 73 (bilingual smoke) with: Prisma @id, SQLAlchemy
+   mapped_column, connection pooling, Alembic, PITR/WAL, RTO spelled
+   out, Supabase RLS, MongoDB aggregation, no-undefined (Python), parity
+   ════════════════════════════════════════════════════════════════ */
+
+describe('Suite 94: P22 Database depth — English mode (docs/87-90)', () => {
+
+  // smoke: all 4 docs generated
+  it('gDB EN: all 4 docs/87-90 generated in English mode', () => {
+    const f = gDB(dbAnswers, 'en');
+    ['docs/87_database_design_principles.md','docs/88_query_optimization_guide.md',
+     'docs/89_migration_strategy.md','docs/90_backup_disaster_recovery.md']
+      .forEach(k => assert.ok(f[k], k + ' EN required'));
+  });
+
+  it('gDB EN: docs/87 English title "Database Design Principles" and Prisma @id annotation', () => {
+    const f = gDB(dbAnswers, 'en');
+    const doc = f['docs/87_database_design_principles.md'] || '';
+    assert.ok(doc.includes('Database Design Principles'), 'docs/87 EN must have English title');
+    assert.ok(doc.includes('@id') || doc.includes('cuid()') || doc.includes('@@map'), 'docs/87 EN Prisma must show @id or @@map annotation');
+  });
+
+  it('gDB EN: docs/87 Python SQLAlchemy mapped_column or DeclarativeBase in English context', () => {
+    const f = gDB(pyDbAnswers, 'en');
+    const doc = f['docs/87_database_design_principles.md'] || '';
+    assert.ok(
+      doc.includes('mapped_column') || doc.includes('DeclarativeBase'),
+      'docs/87 EN Python must show mapped_column or DeclarativeBase pattern'
+    );
+  });
+
+  it('gDB EN: docs/87 Supabase BaaS Row Level Security in English', () => {
+    const f = gDB(baasDbAnswers, 'en');
+    const doc = f['docs/87_database_design_principles.md'] || '';
+    assert.ok(
+      doc.includes('Row Level Security') || doc.includes('RLS') || doc.includes('CREATE POLICY'),
+      'docs/87 EN Supabase must show Row Level Security or CREATE POLICY'
+    );
+  });
+
+  it('gDB EN: docs/88 connection pooling guidance present', () => {
+    const f = gDB(dbAnswers, 'en');
+    const doc = f['docs/88_query_optimization_guide.md'] || '';
+    assert.ok(
+      doc.includes('pool') || doc.includes('PgBouncer'),
+      'docs/88 EN must include connection pooling guidance'
+    );
+  });
+
+  it('gDB EN: docs/88 MongoDB aggregation pipeline or index guidance present', () => {
+    const f = gDB(mongoAnswers, 'en');
+    const doc = f['docs/88_query_optimization_guide.md'] || '';
+    assert.ok(
+      doc.includes('aggregate') || doc.includes('index') || doc.includes('Index'),
+      'docs/88 EN MongoDB must include index or aggregation guidance'
+    );
+  });
+
+  it('gDB EN: docs/89 Python Alembic migration commands in English context', () => {
+    const f = gDB(pyDbAnswers, 'en');
+    const doc = f['docs/89_migration_strategy.md'] || '';
+    assert.ok(
+      doc.includes('alembic') || doc.includes('Alembic'),
+      'docs/89 EN Python must show Alembic migration workflow'
+    );
+  });
+
+  it('gDB EN: docs/90 PITR or WAL point-in-time recovery in English', () => {
+    const f = gDB(dbAnswers, 'en');
+    const doc = f['docs/90_backup_disaster_recovery.md'] || '';
+    assert.ok(
+      doc.includes('PITR') || doc.includes('WAL'),
+      'docs/90 EN must reference PITR or WAL backup strategy'
+    );
+  });
+
+  it('gDB EN: docs/90 Recovery Time Objective definition spelled out', () => {
+    const f = gDB(dbAnswers, 'en');
+    const doc = f['docs/90_backup_disaster_recovery.md'] || '';
+    assert.ok(
+      doc.includes('Recovery Time Objective') || doc.includes('Recovery Point'),
+      'docs/90 EN must spell out RTO/RPO full definitions'
+    );
+  });
+
+  it('gDB EN: bilingual parity — docs/87-90 all substantial (>400 chars)', () => {
+    const f = gDB(dbAnswers, 'en');
+    ['docs/87_database_design_principles.md','docs/88_query_optimization_guide.md',
+     'docs/89_migration_strategy.md','docs/90_backup_disaster_recovery.md']
+      .forEach(k => assert.ok((f[k]||'').length > 400, k + ' EN must have substantial content'));
+  });
+
+  it('gDB EN: docs/87-90 prose has no undefined (Python stack)', () => {
+    const f = gDB(pyDbAnswers, 'en');
+    ['docs/87_database_design_principles.md','docs/88_query_optimization_guide.md',
+     'docs/89_migration_strategy.md','docs/90_backup_disaster_recovery.md']
+      .forEach(k => {
+        const prose = (f[k]||'').replace(/```[\s\S]*?```/g,'');
+        assert.ok(!prose.includes('undefined'), k + ' EN Python prose must not contain undefined');
+      });
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 95 — P23 Testing EN deep: docs/91-94 English mode depth
+   First dedicated EN suite for Testing Intelligence: Testing Strategy
+   title, 70% pyramid, Jest coverageThreshold, --cov-fail-under,
+   Playwright storageState + POM, Maestro mobile, Lighthouse CI,
+   k6/Locust, bilingual parity, no-undefined
+   ════════════════════════════════════════════════════════════════ */
+
+describe('Suite 95: P23 Testing depth — English mode (docs/91-94)', () => {
+
+  // smoke: all 4 docs generated
+  it('gTest EN: all 4 docs/91-94 generated in English mode', () => {
+    const f = gTest(testAnswers, 'en');
+    ['docs/91_testing_strategy.md','docs/92_coverage_design.md',
+     'docs/93_e2e_test_architecture.md','docs/94_performance_testing.md']
+      .forEach(k => assert.ok(f[k], k + ' EN required'));
+  });
+
+  it('gTest EN: docs/91 English title "Testing Strategy" and 70% unit ratio', () => {
+    const f = gTest(testAnswers, 'en');
+    const doc = f['docs/91_testing_strategy.md'] || '';
+    assert.ok(doc.includes('Testing Strategy'), 'docs/91 EN must have English title');
+    assert.ok(doc.includes('70%'), 'docs/91 EN must show 70% unit test ratio in pyramid');
+  });
+
+  it('gTest EN: docs/91 Python pytest reference in English context', () => {
+    const f = gTest(pyTestAnswers, 'en');
+    const doc = f['docs/91_testing_strategy.md'] || '';
+    assert.ok(doc.includes('pytest'), 'docs/91 EN Python must reference pytest framework');
+  });
+
+  it('gTest EN: docs/92 English title "Coverage Design" and Jest coverageThreshold', () => {
+    const f = gTest(testAnswers, 'en');
+    const doc = f['docs/92_coverage_design.md'] || '';
+    assert.ok(doc.includes('Coverage Design'), 'docs/92 EN must have English title');
+    assert.ok(doc.includes('80'), 'docs/92 EN must reference 80% coverage threshold');
+    assert.ok(
+      doc.includes('coverageThreshold') || doc.includes('threshold'),
+      'docs/92 EN must reference coverageThreshold configuration'
+    );
+  });
+
+  it('gTest EN: docs/92 Python --cov-fail-under coverage enforcement', () => {
+    const f = gTest(pyTestAnswers, 'en');
+    const doc = f['docs/92_coverage_design.md'] || '';
+    assert.ok(
+      doc.includes('--cov-fail-under') || doc.includes('cov-fail-under'),
+      'docs/92 EN Python must show --cov-fail-under coverage enforcement'
+    );
+  });
+
+  it('gTest EN: docs/93 English title "E2E Test Architecture" and Playwright storageState', () => {
+    const f = gTest(testAnswers, 'en');
+    const doc = f['docs/93_e2e_test_architecture.md'] || '';
+    assert.ok(doc.includes('E2E Test Architecture'), 'docs/93 EN must have English title');
+    assert.ok(doc.includes('storageState'), 'docs/93 EN must include storageState for auth session reuse');
+    assert.ok(
+      doc.includes('LoginPage') || doc.includes('Page Object'),
+      'docs/93 EN must show Page Object Model with LoginPage class'
+    );
+  });
+
+  it('gTest EN: docs/93 mobile Maestro or Detox E2E tool in English context', () => {
+    const f = gTest(mobileTestAnswers, 'en');
+    const doc = f['docs/93_e2e_test_architecture.md'] || '';
+    assert.ok(
+      doc.includes('Maestro') || doc.includes('Detox'),
+      'docs/93 EN mobile must reference Maestro or Detox for React Native E2E'
+    );
+  });
+
+  it('gTest EN: docs/94 English title "Performance Testing" with Lighthouse CI and k6', () => {
+    const f = gTest(testAnswers, 'en');
+    const doc = f['docs/94_performance_testing.md'] || '';
+    assert.ok(doc.includes('Performance Testing'), 'docs/94 EN must have English title');
+    assert.ok(
+      doc.includes('Lighthouse') || doc.includes('0.8'),
+      'docs/94 EN must include Lighthouse CI performance threshold'
+    );
+    assert.ok(
+      doc.includes('k6') || doc.includes('Locust'),
+      'docs/94 EN must reference k6 or Locust for load testing'
+    );
+  });
+
+  it('gTest EN: bilingual parity — EN docs/91-94 >= 50% length of JA and >400 chars', () => {
+    const fEn = gTest(testAnswers, 'en');
+    const fJa = gTest(testAnswers, 'ja');
+    ['docs/91_testing_strategy.md','docs/92_coverage_design.md',
+     'docs/93_e2e_test_architecture.md','docs/94_performance_testing.md']
+      .forEach(k => {
+        const en = (fEn[k]||'').length;
+        const ja = (fJa[k]||'').length;
+        assert.ok(en > 400, k + ' EN must have substantial content (>400 chars)');
+        assert.ok(en > ja * 0.5, k + ' EN should be at least 50% the length of JA');
+      });
+  });
+
+  it('gTest EN: docs/91-94 prose has no undefined (Node.js stack)', () => {
+    const f = gTest(testAnswers, 'en');
+    ['docs/91_testing_strategy.md','docs/92_coverage_design.md',
+     'docs/93_e2e_test_architecture.md','docs/94_performance_testing.md']
+      .forEach(k => {
+        const prose = (f[k]||'').replace(/```[\s\S]*?```/g,'');
+        assert.ok(!prose.includes('undefined'), k + ' EN prose must not contain undefined');
+      });
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 96 — P24 AI Safety EN deep: docs/95-98 English mode depth
+   Extends Suite 74 with: English risk categories, EU AI Act/NIST,
+   Claude max_tokens EN, Input Validation Layer EN, MAX_PROMPT_LENGTH,
+   PII EMAIL, RAGAS/Langfuse EN, injection patterns EN, parity, no-undefined
+   ════════════════════════════════════════════════════════════════ */
+
+describe('Suite 96: P24 AI Safety depth — English mode (docs/95-98)', () => {
+
+  // smoke: all 4 docs generated
+  it('gAISafety EN: all 4 docs/95-98 generated in English mode', () => {
+    const f = gAISafety(aiAnswers, 'en');
+    ['docs/95_ai_safety_framework.md','docs/96_ai_guardrail_implementation.md',
+     'docs/97_ai_model_evaluation.md','docs/98_prompt_injection_defense.md']
+      .forEach(k => assert.ok(f[k], k + ' EN required'));
+  });
+
+  it('gAISafety EN: docs/95 English title and English risk category names', () => {
+    const f = gAISafety(aiAnswers, 'en');
+    const doc = f['docs/95_ai_safety_framework.md'] || '';
+    assert.ok(doc.includes('AI Safety Framework'), 'docs/95 EN must have English title');
+    assert.ok(doc.includes('Hallucination'), 'docs/95 EN must use English "Hallucination"');
+    assert.ok(doc.includes('Prompt Injection'), 'docs/95 EN must use English "Prompt Injection"');
+  });
+
+  it('gAISafety EN: docs/95 EU AI Act or NIST AI RMF compliance in English', () => {
+    const f = gAISafety(aiAnswers, 'en');
+    const doc = f['docs/95_ai_safety_framework.md'] || '';
+    assert.ok(
+      doc.includes('EU AI Act') || doc.includes('NIST AI RMF'),
+      'docs/95 EN must reference EU AI Act or NIST AI RMF compliance framework'
+    );
+  });
+
+  it('gAISafety EN: docs/95 Claude provider max_tokens and system prompt in English', () => {
+    const f = gAISafety(claudeAnswers, 'en');
+    const doc = f['docs/95_ai_safety_framework.md'] || '';
+    assert.ok(
+      doc.includes('max_tokens') || doc.includes('system='),
+      'docs/95 EN Claude provider must show max_tokens / system prompt config'
+    );
+  });
+
+  it('gAISafety EN: docs/96 English title and Input Validation Layer name', () => {
+    const f = gAISafety(aiAnswers, 'en');
+    const doc = f['docs/96_ai_guardrail_implementation.md'] || '';
+    assert.ok(
+      doc.includes('AI Guardrail Implementation') || doc.includes('Guardrail Implementation'),
+      'docs/96 EN must have English title'
+    );
+    assert.ok(doc.includes('Input Validation Layer'), 'docs/96 EN must have English "Input Validation Layer" name');
+  });
+
+  it('gAISafety EN: docs/96 MAX_PROMPT_LENGTH and PII detection constants in English', () => {
+    const f = gAISafety(aiAnswers, 'en');
+    const doc = f['docs/96_ai_guardrail_implementation.md'] || '';
+    assert.ok(
+      doc.includes('MAX_PROMPT_LENGTH') || doc.includes('4096'),
+      'docs/96 EN must define MAX_PROMPT_LENGTH token limit'
+    );
+    assert.ok(
+      doc.includes('PII') || doc.includes('EMAIL'),
+      'docs/96 EN must include PII detection patterns (EMAIL/PHONE masking)'
+    );
+  });
+
+  it('gAISafety EN: docs/97 English title and RAGAS / Langfuse evaluation tools', () => {
+    const f = gAISafety(aiAnswers, 'en');
+    const doc = f['docs/97_ai_model_evaluation.md'] || '';
+    assert.ok(
+      doc.includes('AI Model Evaluation') || doc.includes('Model Evaluation'),
+      'docs/97 EN must have English title'
+    );
+    assert.ok(doc.includes('RAGAS') || doc.includes('TruLens'), 'docs/97 EN must reference RAGAS or TruLens');
+    assert.ok(doc.includes('Langfuse'), 'docs/97 EN must include Langfuse tracing integration');
+  });
+
+  it('gAISafety EN: docs/98 English title and "previous instructions" injection pattern', () => {
+    const f = gAISafety(aiAnswers, 'en');
+    const doc = f['docs/98_prompt_injection_defense.md'] || '';
+    assert.ok(doc.includes('Prompt Injection Defense'), 'docs/98 EN must have English title');
+    assert.ok(
+      doc.includes('previous instructions') || doc.includes('DAN') || doc.includes('ignore'),
+      'docs/98 EN must show concrete prompt injection attack example'
+    );
+  });
+
+  it('gAISafety EN: docs/98 Input sanitization and Privilege separation defense patterns', () => {
+    const f = gAISafety(aiAnswers, 'en');
+    const doc = f['docs/98_prompt_injection_defense.md'] || '';
+    assert.ok(
+      doc.includes('Input sanitization') || doc.includes('input sanitization'),
+      'docs/98 EN must reference input sanitization defense pattern'
+    );
+    assert.ok(
+      doc.includes('Privilege separation') || doc.includes('privilege separation'),
+      'docs/98 EN must reference privilege separation pattern'
+    );
+  });
+
+  it('gAISafety EN: bilingual parity — docs/95-98 >= 50% JA length and >600 chars', () => {
+    const fEn = gAISafety(aiAnswers, 'en');
+    const fJa = gAISafety(aiAnswers, 'ja');
+    ['docs/95_ai_safety_framework.md','docs/96_ai_guardrail_implementation.md',
+     'docs/97_ai_model_evaluation.md','docs/98_prompt_injection_defense.md']
+      .forEach(k => {
+        const en = (fEn[k]||'').length;
+        const ja = (fJa[k]||'').length;
+        assert.ok(en > 600, k + ' EN must have substantial content (>600 chars)');
+        assert.ok(en > ja * 0.5, k + ' EN should be at least 50% the length of JA');
+      });
+  });
+
+  it('gAISafety EN: docs/95-98 prose has no undefined', () => {
+    const f = gAISafety(aiAnswers, 'en');
+    ['docs/95_ai_safety_framework.md','docs/96_ai_guardrail_implementation.md',
+     'docs/97_ai_model_evaluation.md','docs/98_prompt_injection_defense.md']
+      .forEach(k => {
+        const prose = (f[k]||'').replace(/```[\s\S]*?```/g,'');
+        assert.ok(!prose.includes('undefined'), k + ' EN prose must not contain undefined');
+      });
   });
 });
