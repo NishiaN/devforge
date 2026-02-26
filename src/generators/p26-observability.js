@@ -207,6 +207,7 @@ function gen104(a,pn){
     doc+='```\n\n';
     var hasDrizzle=/Drizzle/i.test(orm);
     var hasTypeORM=/TypeORM/i.test(orm);
+    var hasKysely=/Kysely/i.test(orm);
     if(hasPrisma){
       doc+='### Prisma '+(G?'クエリログ (スロークエリ検出)':'Query Logging (Slow Query Detection)')+'\n\n';
       doc+='```typescript\n';
@@ -261,6 +262,22 @@ function gen104(a,pn){
       doc+='});\n\n';
       doc+='// '+(G?'本番ではDEBUG無効。スロークエリはPG側で検出:':'In prod, DEBUG is off. Detect slow queries server-side:')+'\n';
       doc+="// ALTER SYSTEM SET log_min_duration_statement = '100';\n";
+      doc+='```\n\n';
+    }
+    if(hasKysely){
+      doc+='### Kysely '+(G?'クエリログ (log コールバック)':'Query Logging (log callback)')+'\n\n';
+      doc+='```typescript\n';
+      doc+="import { Kysely, PostgresDialect } from 'kysely';\n\n";
+      doc+='const db = new Kysely<Database>({\n';
+      doc+='  dialect: new PostgresDialect({ pool }),\n';
+      doc+='  log: (event) => {\n';
+      doc+="    if (event.level === 'error') {\n";
+      doc+="      logger.error({ query: event.query.sql, error: event.error }, 'db_query_error');\n";
+      doc+='    } else if (event.queryDurationMillis > 100) {\n';
+      doc+="      logger.warn({ query: event.query.sql, duration_ms: event.queryDurationMillis }, 'slow_query');\n";
+      doc+='    }\n';
+      doc+='  },\n';
+      doc+='});\n';
       doc+='```\n\n';
     }
   } else {

@@ -931,7 +931,7 @@ function detectDomain(purpose){
     [/不動産|物件|real.?estate|property.?mgmt|property.?management/i,'realestate'],
     [/法務|契約|legal|contract.?mgmt|contract.?management|コンプライアンス/i,'legal'],
     [/人事|HR|採用|recruit|hiring|求人|スカウト/i,'hr'],
-    [/金融|fintech|銀行|bank|決済管理|construction.?pay|工事代金|建設.*支払/i,'fintech'],
+    [/金融|fintech|フィンテック|銀行|bank|決済処理|決済管理|construction.?pay|工事代金|建設.*支払/i,'fintech'],
     [/医療|ヘルスケア|health|medical|clinic|病院|patient|患者|veterinary|動物病院|ペット|健康|フィットネス|ウェルネス|wellness|fitness/i,'health'],
     [/コミュニティ|community|フォーラム|forum|ソーシャルネットワーク/i,'community'],
     [/ゲーミ|gamification|gamify|バッジ|ポイント|リーダーボード|ゲーム要素/i,'gamify'],
