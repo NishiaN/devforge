@@ -23,15 +23,15 @@ function genPillar14_OpsIntelligence(a, pn) {
 
   runbook += '```mermaid\ngraph TB\n';
   runbook += '  subgraph "App Plane"\n';
-  runbook += '    A1[' + (G ? 'ユーザーリクエスト' : 'User Requests') + ']\n';
-  runbook += '    A2[' + (G ? 'ビジネスロジック' : 'Business Logic') + ']\n';
-  runbook += '    A3[' + (G ? 'データベース' : 'Database') + ']\n';
+  runbook += '    A1["' + (G ? 'ユーザーリクエスト' : 'User Requests') + '"]\n';
+  runbook += '    A2["' + (G ? 'ビジネスロジック' : 'Business Logic') + '"]\n';
+  runbook += '    A3["' + (G ? 'データベース' : 'Database') + '"]\n';
   runbook += '  end\n';
   runbook += '  subgraph "Ops Plane"\n';
-  runbook += '    O1[' + (G ? 'Feature Flags' : 'Feature Flags') + ']\n';
-  runbook += '    O2[' + (G ? 'Observability' : 'Observability') + ']\n';
-  runbook += '    O3[' + (G ? 'Job Queue' : 'Job Queue') + ']\n';
-  runbook += '    O4[' + (G ? 'Backup/Recovery' : 'Backup/Recovery') + ']\n';
+  runbook += '    O1["Feature Flags"]\n';
+  runbook += '    O2["Observability"]\n';
+  runbook += '    O3["Job Queue"]\n';
+  runbook += '    O4["Backup/Recovery"]\n';
   runbook += '  end\n';
   runbook += '  A1 --> A2\n  A2 --> A3\n';
   runbook += '  O1 -.-> A2\n  O2 -.-> A1\n  O2 -.-> A2\n  O2 -.-> A3\n';

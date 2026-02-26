@@ -316,15 +316,15 @@ function gen97(a,pn){
   // Evaluation pipeline
   doc+=G?'## 評価パイプライン\n\n':'## Evaluation Pipeline\n\n';
   doc+='```mermaid\ngraph LR\n';
-  doc+='  A[モデル候補] --> B[オフライン評価]\n';
-  doc+='  B --> C{品質基準クリア?}\n';
-  doc+='  C -->|No| D[モデル調整]\n';
+  doc+='  A["モデル候補"] --> B["オフライン評価"]\n';
+  doc+='  B --> C{"品質基準クリア?"}\n';
+  doc+='  C -->|No| D["モデル調整"]\n';
   doc+='  D --> B\n';
-  doc+='  C -->|Yes| E[A/Bテスト]\n';
-  doc+='  E --> F[プロダクション評価]\n';
-  doc+='  F --> G[継続モニタリング]\n';
-  doc+='  G --> H{品質劣化?}\n';
-  doc+='  H -->|Yes| I[アラート & ロールバック]\n';
+  doc+='  C -->|Yes| E["A/Bテスト"]\n';
+  doc+='  E --> F["プロダクション評価"]\n';
+  doc+='  F --> G["継続モニタリング"]\n';
+  doc+='  G --> H{"品質劣化?"}\n';
+  doc+='  H -->|Yes| I["アラート & ロールバック"]\n';
   doc+='  H -->|No| G\n';
   doc+='```\n\n';
 

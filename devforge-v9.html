@@ -14662,17 +14662,17 @@ doc50 += (G ? stakeholder.team_ja : stakeholder.team_en) + '\n\n';
 doc50 += '```mermaid\n';
 doc50 += 'graph LR\n';
 if (stakeholderType === 'startup') {
-doc50 += '  A[Full-stack 1-2] --> B[Front/Back 3-5]\n';
-doc50 += '  B --> C[Specialized 10+]\n';
+doc50 += '  A["Full-stack 1-2"] --> B["Front/Back 3-5"]\n';
+doc50 += '  B --> C["Specialized 10+"]\n';
 } else if (stakeholderType === 'enterprise') {
-doc50 += '  A[Architect] --> B[Team 1]\n';
-doc50 += '  A --> C[Team 2]\n';
-doc50 += '  A --> D[Platform Eng]\n';
+doc50 += '  A["Architect"] --> B["Team 1"]\n';
+doc50 += '  A --> C["Team 2"]\n';
+doc50 += '  A --> D["Platform Eng"]\n';
 } else if (stakeholderType === 'developer') {
-doc50 += '  A[Solo] --> B[Duo]\n';
-doc50 += '  B --> C[Small Team 3-5]\n';
+doc50 += '  A["Solo"] --> B["Duo"]\n';
+doc50 += '  B --> C["Small Team 3-5"]\n';
 } else {
-doc50 += '  A[Cross-functional 5-9] --> B[Two-Pizza Team]\n';
+doc50 += '  A["Cross-functional 5-9"] --> B["Two-Pizza Team"]\n';
 }
 doc50 += '```\n\n';
 doc50 += '## ' + (G ? '4. 予算配分ガイド' : '4. Budget Allocation Guide') + '\n\n';
@@ -14914,15 +14914,15 @@ runbook += G
 : `**Design Principle**: Clearly separate Application Plane (App Plane) and Operations Plane (Ops Plane) so operational tasks don't interfere with development flow.\n\n`;
 runbook += '```mermaid\ngraph TB\n';
 runbook += '  subgraph "App Plane"\n';
-runbook += '    A1[' + (G ? 'ユーザーリクエスト' : 'User Requests') + ']\n';
-runbook += '    A2[' + (G ? 'ビジネスロジック' : 'Business Logic') + ']\n';
-runbook += '    A3[' + (G ? 'データベース' : 'Database') + ']\n';
+runbook += '    A1["' + (G ? 'ユーザーリクエスト' : 'User Requests') + '"]\n';
+runbook += '    A2["' + (G ? 'ビジネスロジック' : 'Business Logic') + '"]\n';
+runbook += '    A3["' + (G ? 'データベース' : 'Database') + '"]\n';
 runbook += '  end\n';
 runbook += '  subgraph "Ops Plane"\n';
-runbook += '    O1[' + (G ? 'Feature Flags' : 'Feature Flags') + ']\n';
-runbook += '    O2[' + (G ? 'Observability' : 'Observability') + ']\n';
-runbook += '    O3[' + (G ? 'Job Queue' : 'Job Queue') + ']\n';
-runbook += '    O4[' + (G ? 'Backup/Recovery' : 'Backup/Recovery') + ']\n';
+runbook += '    O1["Feature Flags"]\n';
+runbook += '    O2["Observability"]\n';
+runbook += '    O3["Job Queue"]\n';
+runbook += '    O4["Backup/Recovery"]\n';
 runbook += '  end\n';
 runbook += '  A1 --> A2\n  A2 --> A3\n';
 runbook += '  O1 -.-> A2\n  O2 -.-> A1\n  O2 -.-> A2\n  O2 -.-> A3\n';
@@ -19668,11 +19668,11 @@ d += '```\n\n';
 // Scaling decision tree
 d += G ? '## 📈 スケーリング判断基準\n\n' : '## 📈 Scaling Decision Tree\n\n';
 d += '```mermaid\ngraph TD\n';
-d += '  S{' + (G ? '規制要件は?' : 'Regulatory req?') + '} -->|' + (G ? '金融/医療' : 'Fintech/Health') + '| DB[' + (G ? 'DB-per-tenant' : 'DB-per-tenant') + ']\n';
-d += '  S -->|' + (G ? 'なし' : 'None') + '| T{' + (G ? 'テナント数?' : 'Tenant count?') + '}\n';
-d += '  T -->|< 100| R[RLS]\n';
-d += '  T -->|100-1000| H[' + (G ? 'Hybrid (RLS+FF)' : 'Hybrid (RLS+FF)') + ']\n';
-d += '  T -->|> 1000| SC[' + (G ? 'Schema-per-tenant' : 'Schema-per-tenant') + ']\n';
+d += '  S{"' + (G ? '規制要件は?' : 'Regulatory req?') + '"} -->|' + (G ? '金融/医療' : 'Fintech/Health') + '| DB["DB-per-tenant"]\n';
+d += '  S -->|' + (G ? 'なし' : 'None') + '| T{"' + (G ? 'テナント数?' : 'Tenant count?') + '"}\n';
+d += '  T -->|< 100| R["RLS"]\n';
+d += '  T -->|100-1000| H["Hybrid (RLS+FF)"]\n';
+d += '  T -->|> 1000| SC["Schema-per-tenant"]\n';
 d += '  style R fill:#22c55e,color:#fff\n';
 d += '  style H fill:#f59e0b,color:#fff\n';
 d += '  style SC fill:#3b82f6,color:#fff\n';
@@ -22365,15 +22365,15 @@ doc+='\n';
 // Evaluation pipeline
 doc+=G?'## 評価パイプライン\n\n':'## Evaluation Pipeline\n\n';
 doc+='```mermaid\ngraph LR\n';
-doc+='  A[モデル候補] --> B[オフライン評価]\n';
-doc+='  B --> C{品質基準クリア?}\n';
-doc+='  C -->|No| D[モデル調整]\n';
+doc+='  A["モデル候補"] --> B["オフライン評価"]\n';
+doc+='  B --> C{"品質基準クリア?"}\n';
+doc+='  C -->|No| D["モデル調整"]\n';
 doc+='  D --> B\n';
-doc+='  C -->|Yes| E[A/Bテスト]\n';
-doc+='  E --> F[プロダクション評価]\n';
-doc+='  F --> G[継続モニタリング]\n';
-doc+='  G --> H{品質劣化?}\n';
-doc+='  H -->|Yes| I[アラート & ロールバック]\n';
+doc+='  C -->|Yes| E["A/Bテスト"]\n';
+doc+='  E --> F["プロダクション評価"]\n';
+doc+='  F --> G["継続モニタリング"]\n';
+doc+='  G --> H{"品質劣化?"}\n';
+doc+='  H -->|Yes| I["アラート & ロールバック"]\n';
 doc+='  H -->|No| G\n';
 doc+='```\n\n';
 // RAGAS evaluation setup

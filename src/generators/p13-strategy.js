@@ -856,17 +856,17 @@ function genPillar13_StrategicIntelligence(a, pn) {
   doc50 += '```mermaid\n';
   doc50 += 'graph LR\n';
   if (stakeholderType === 'startup') {
-    doc50 += '  A[Full-stack 1-2] --> B[Front/Back 3-5]\n';
-    doc50 += '  B --> C[Specialized 10+]\n';
+    doc50 += '  A["Full-stack 1-2"] --> B["Front/Back 3-5"]\n';
+    doc50 += '  B --> C["Specialized 10+"]\n';
   } else if (stakeholderType === 'enterprise') {
-    doc50 += '  A[Architect] --> B[Team 1]\n';
-    doc50 += '  A --> C[Team 2]\n';
-    doc50 += '  A --> D[Platform Eng]\n';
+    doc50 += '  A["Architect"] --> B["Team 1"]\n';
+    doc50 += '  A --> C["Team 2"]\n';
+    doc50 += '  A --> D["Platform Eng"]\n';
   } else if (stakeholderType === 'developer') {
-    doc50 += '  A[Solo] --> B[Duo]\n';
-    doc50 += '  B --> C[Small Team 3-5]\n';
+    doc50 += '  A["Solo"] --> B["Duo"]\n';
+    doc50 += '  B --> C["Small Team 3-5"]\n';
   } else {
-    doc50 += '  A[Cross-functional 5-9] --> B[Two-Pizza Team]\n';
+    doc50 += '  A["Cross-functional 5-9"] --> B["Two-Pizza Team"]\n';
   }
   doc50 += '```\n\n';
 

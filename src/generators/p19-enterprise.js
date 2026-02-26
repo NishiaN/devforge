@@ -280,11 +280,11 @@ function gen73(G, domain, orgModel, isMultiTenant, a, pn) {
   // Scaling decision tree
   d += G ? '## 📈 スケーリング判断基準\n\n' : '## 📈 Scaling Decision Tree\n\n';
   d += '```mermaid\ngraph TD\n';
-  d += '  S{' + (G ? '規制要件は?' : 'Regulatory req?') + '} -->|' + (G ? '金融/医療' : 'Fintech/Health') + '| DB[' + (G ? 'DB-per-tenant' : 'DB-per-tenant') + ']\n';
-  d += '  S -->|' + (G ? 'なし' : 'None') + '| T{' + (G ? 'テナント数?' : 'Tenant count?') + '}\n';
-  d += '  T -->|< 100| R[RLS]\n';
-  d += '  T -->|100-1000| H[' + (G ? 'Hybrid (RLS+FF)' : 'Hybrid (RLS+FF)') + ']\n';
-  d += '  T -->|> 1000| SC[' + (G ? 'Schema-per-tenant' : 'Schema-per-tenant') + ']\n';
+  d += '  S{"' + (G ? '規制要件は?' : 'Regulatory req?') + '"} -->|' + (G ? '金融/医療' : 'Fintech/Health') + '| DB["DB-per-tenant"]\n';
+  d += '  S -->|' + (G ? 'なし' : 'None') + '| T{"' + (G ? 'テナント数?' : 'Tenant count?') + '"}\n';
+  d += '  T -->|< 100| R["RLS"]\n';
+  d += '  T -->|100-1000| H["Hybrid (RLS+FF)"]\n';
+  d += '  T -->|> 1000| SC["Schema-per-tenant"]\n';
   d += '  style R fill:#22c55e,color:#fff\n';
   d += '  style H fill:#f59e0b,color:#fff\n';
   d += '  style SC fill:#3b82f6,color:#fff\n';
