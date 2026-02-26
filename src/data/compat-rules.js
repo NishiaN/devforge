@@ -917,10 +917,11 @@ const COMPAT_RULES=[
    t:a=>{
      const ents=(a.data_entities||'').split(/[,、]\s*/).filter(Boolean).length;
      const hasPagination=/(ページネーション|pagination|cursor|infinite.?scroll|limit|offset)/i.test(a.mvp_features||'');
-     return ents>=5&&!hasPagination;
+     const scale=a.scale||'medium';
+     return ents>=7&&!hasPagination&&scale!=='solo';
    },
-   ja:'エンティティが5件以上ありますが、mvp_featuresにページネーションの記述がありません。一覧画面でのパフォーマンス問題を防ぐためカーソルページネーションを実装してください',
-   en:'5+ entities but no pagination in mvp_features. Implement cursor-based pagination to prevent list view performance issues',
+   ja:'エンティティが7件以上ありますが、mvp_featuresにページネーションの記述がありません。一覧画面でのパフォーマンス問題を防ぐためカーソルページネーションを実装してください',
+   en:'7+ entities but no pagination in mvp_features. Implement cursor-based pagination to prevent list view performance issues',
    why_ja:'SELECT * FROM posts はデータが少ない開発中は問題ありませんが、本番で10万件になると全件をメモリにロードし応答に数秒かかります。カーソルベースのページネーション（WHERE id > cursor LIMIT 20）はインデックスを活用し常に一定速度を保ちます。',
    why_en:'SELECT * FROM posts is fine in development with 100 rows, but in production with 100,000 rows it loads everything into memory and takes seconds. Cursor-based pagination (WHERE id > cursor LIMIT 20) uses an index and maintains constant speed regardless of data size.'},
   {id:'infra-prod-no-monitoring',p:['deploy','mvp_features'],lv:'info',
