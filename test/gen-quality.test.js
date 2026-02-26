@@ -18,7 +18,7 @@
  *   Domain   detectDomain     → .spec/constitution.md §3 fallback KPI
  *   E2E      full generation  → file count, token richness, bilingual parity
  *
- * Suites 1-97: 1004 tests total
+ * Suites 1-98: 1030 tests total
  */
 
 const { describe, it } = require('node:test');
@@ -9808,5 +9808,200 @@ describe('Suite 97: P26 Observability depth — docs/103-106', () => {
       doc.includes('FastAPIInstrumentor') || doc.includes('fastapi') || doc.includes('opentelemetry'),
       'docs/106 Python must include FastAPI instrumentation'
     );
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 98 — P26 Observability backend/ORM depth
+   Kysely, TypeORM, Drizzle, Java/Spring, Vercel deploy,
+   no-ORM, fintech domain (フィンテック), bilingual ORM parity
+   ════════════════════════════════════════════════════════════════ */
+
+const obsKysely = {
+  purpose: 'フィンテック向けリアルタイム決済処理API',
+  frontend: 'React + Next.js', backend: 'Node.js + Express',
+  database: 'PostgreSQL', deploy: 'Railway', orm: 'Kysely',
+  auth: 'JWT', payment: 'Stripe',
+  mvp_features: '決済処理, 取引履歴, 不正検知, 監査ログ',
+  data_entities: 'User, Transaction, AuditLog, PaymentMethod',
+};
+const obsTypeORM = {
+  purpose: 'エンタープライズ向け人事管理システム (HRMS)',
+  frontend: 'React + Next.js', backend: 'Node.js + NestJS',
+  database: 'PostgreSQL', deploy: 'Railway', orm: 'TypeORM',
+  auth: 'JWT + RBAC',
+  mvp_features: '従業員管理, 勤怠管理, 給与計算',
+  data_entities: 'Employee, Department, Attendance, Payroll',
+};
+const obsDrizzle = {
+  purpose: 'グローバルEdge APIゲートウェイ・レート制限サービス',
+  frontend: 'React + Next.js', backend: 'Node.js + Hono (Cloudflare Workers)',
+  database: 'PostgreSQL', deploy: 'Cloudflare Pages', orm: 'Drizzle',
+  auth: 'JWT',
+  mvp_features: 'APIゲートウェイ, レート制限, 認証',
+  data_entities: 'User, ApiKey, RateLimit, RequestLog',
+};
+const obsJava = {
+  purpose: 'エンタープライズ向け基幹業務システム (ERP)',
+  frontend: 'React + Next.js', backend: 'Java + Spring Boot',
+  database: 'PostgreSQL', deploy: 'AWS', orm: 'Hibernate / JPA',
+  auth: 'JWT + RBAC',
+  mvp_features: '受注管理, 在庫管理, 会計処理',
+  data_entities: 'User, Order, Product, Invoice',
+};
+const obsVercel = {
+  purpose: 'SaaS型マーケティング分析ダッシュボード',
+  frontend: 'React + Next.js', backend: 'Node.js + Next.js API Routes',
+  database: 'PostgreSQL', deploy: 'Vercel', orm: 'Prisma',
+  auth: 'NextAuth.js',
+  mvp_features: 'ダッシュボード, レポート, データ可視化',
+  data_entities: 'User, Report, DataSource, Alert',
+};
+const obsNoORM = {
+  purpose: 'RESTful APIバックエンドサービス',
+  frontend: 'React + Next.js', backend: 'Node.js + Express',
+  database: 'PostgreSQL', deploy: 'Railway', orm: '',
+  auth: 'JWT',
+  mvp_features: 'ユーザー管理, データAPI, 認証',
+  data_entities: 'User, Session, Log',
+};
+
+describe('Suite 98: P26 Observability — backend/ORM depth', () => {
+
+  // ── Kysely ──────────────────────────────────────────────────────
+  it('gObs Kysely: docs/104 contains Kysely log: callback with slow_query', () => {
+    const f = gObs(obsKysely);
+    const doc = f['docs/104_structured_logging.md'] || '';
+    assert.ok(doc.includes('Kysely') || doc.includes('kysely'), 'docs/104 must mention Kysely');
+    assert.ok(doc.includes('log:'), 'docs/104 Kysely must include log: callback');
+    assert.ok(doc.includes('slow_query'), 'docs/104 Kysely must include slow_query detection');
+  });
+
+  it('gObs Kysely: fintech domain detected → docs/105 txn_success_rate', () => {
+    const f = gObs(obsKysely);
+    const doc = f['docs/105_metrics_alerting.md'] || '';
+    assert.ok(doc.includes('txn_success_rate') || doc.includes('fraud_detected'), 'docs/105 fintech must include txn_success_rate');
+  });
+
+  it('gObs Kysely: docs/104 no TypeORM/Prisma/Drizzle/structlog contamination', () => {
+    const f = gObs(obsKysely);
+    const doc = f['docs/104_structured_logging.md'] || '';
+    assert.ok(!doc.includes('prisma.$on'), 'docs/104 Kysely must not include Prisma block');
+    assert.ok(!doc.includes('TypeORM'), 'docs/104 Kysely must not include TypeORM block');
+    assert.ok(!doc.includes('structlog'), 'docs/104 Kysely must not include Python structlog');
+  });
+
+  // ── TypeORM ──────────────────────────────────────────────────────
+  it('gObs TypeORM: docs/104 contains TypeORM logger with logQuerySlow', () => {
+    const f = gObs(obsTypeORM);
+    const doc = f['docs/104_structured_logging.md'] || '';
+    assert.ok(doc.includes('TypeORM'), 'docs/104 must mention TypeORM');
+    assert.ok(doc.includes('logQuerySlow') || doc.includes('slow_query'), 'docs/104 TypeORM must include slow query logging');
+    assert.ok(doc.includes('logQueryError'), 'docs/104 TypeORM must include error logging');
+  });
+
+  it('gObs TypeORM: docs/104 no Prisma/Drizzle/Kysely contamination', () => {
+    const f = gObs(obsTypeORM);
+    const doc = f['docs/104_structured_logging.md'] || '';
+    assert.ok(!doc.includes('prisma.$on'), 'docs/104 TypeORM must not include Prisma block');
+    assert.ok(!doc.includes('drizzle(client'), 'docs/104 TypeORM must not include Drizzle block');
+    assert.ok(!doc.includes('Kysely'), 'docs/104 TypeORM must not include Kysely block');
+  });
+
+  // ── Drizzle ──────────────────────────────────────────────────────
+  it('gObs Drizzle: docs/104 contains Drizzle logger with logQuery', () => {
+    const f = gObs(obsDrizzle);
+    const doc = f['docs/104_structured_logging.md'] || '';
+    assert.ok(doc.includes('Drizzle') || doc.includes('drizzle'), 'docs/104 must mention Drizzle');
+    assert.ok(doc.includes('logQuery'), 'docs/104 Drizzle must include logQuery callback');
+  });
+
+  it('gObs Drizzle: docs/103 uses Cloudflare stack (Logpush / edge-compatible)', () => {
+    const f = gObs(obsDrizzle);
+    const doc = f['docs/103_observability_architecture.md'] || '';
+    assert.ok(doc.includes('Cloudflare') || doc.includes('edge'), 'docs/103 Cloudflare must reference Cloudflare stack');
+    assert.ok(!doc.includes('OpenTelemetry Collector (Docker)'), 'docs/103 Cloudflare must not show Docker collector');
+  });
+
+  // ── Java / Spring Boot ───────────────────────────────────────────
+  it('gObs Java: docs/104 contains SLF4J + Logback + MDC setup', () => {
+    const f = gObs(obsJava);
+    const doc = f['docs/104_structured_logging.md'] || '';
+    assert.ok(doc.includes('SLF4J'), 'docs/104 Java must include SLF4J');
+    assert.ok(doc.includes('Logback'), 'docs/104 Java must include Logback');
+    assert.ok(doc.includes('MDC'), 'docs/104 Java must include MDC for trace propagation');
+  });
+
+  it('gObs Java: docs/104 no Node.js/Python contamination', () => {
+    const f = gObs(obsJava);
+    const doc = f['docs/104_structured_logging.md'] || '';
+    assert.ok(!doc.includes('pino('), 'docs/104 Java must not include Pino');
+    assert.ok(!doc.includes('structlog'), 'docs/104 Java must not include Python structlog');
+    assert.ok(!doc.includes('npm install'), 'docs/104 Java must not include npm install');
+  });
+
+  it('gObs Java: docs/106 uses opentelemetry-javaagent (not Node SDK)', () => {
+    const f = gObs(obsJava);
+    const doc = f['docs/106_distributed_tracing.md'] || '';
+    assert.ok(doc.includes('opentelemetry-javaagent') || doc.includes('javaagent'), 'docs/106 Java must use OTel Java agent');
+    assert.ok(doc.includes('java -javaagent'), 'docs/106 Java must show -javaagent JVM arg');
+    assert.ok(!doc.includes('npm install @opentelemetry'), 'docs/106 Java must not show npm install');
+  });
+
+  it('gObs Java: docs/103 AWS stack (ADOT + X-Ray) — no Node SDK', () => {
+    const f = gObs(obsJava);
+    const doc = f['docs/103_observability_architecture.md'] || '';
+    assert.ok(doc.includes('AWS ADOT'), 'docs/103 Java/AWS must include AWS ADOT');
+    assert.ok(doc.includes('X-Ray') || doc.includes('CloudWatch'), 'docs/103 Java/AWS must reference X-Ray/CloudWatch');
+    assert.ok(!doc.includes('opentelemetry-sdk-node'), 'docs/103 Java must not show Node SDK exporter');
+  });
+
+  // ── Vercel deploy ───────────────────────────────────────────────
+  it('gObs Vercel: docs/106 uses @vercel/otel with registerOTel + instrumentationHook', () => {
+    const f = gObs(obsVercel);
+    const doc = f['docs/106_distributed_tracing.md'] || '';
+    assert.ok(doc.includes('@vercel/otel'), 'docs/106 Vercel must use @vercel/otel');
+    assert.ok(doc.includes('registerOTel'), 'docs/106 Vercel must call registerOTel()');
+    assert.ok(doc.includes('instrumentationHook'), 'docs/106 Vercel must enable instrumentationHook');
+  });
+
+  it('gObs Vercel: docs/106 no raw @opentelemetry/sdk-node install', () => {
+    const f = gObs(obsVercel);
+    const doc = f['docs/106_distributed_tracing.md'] || '';
+    assert.ok(!doc.includes('@opentelemetry/sdk-node'), 'docs/106 Vercel must not show @opentelemetry/sdk-node');
+  });
+
+  it('gObs Vercel: docs/103 uses Vercel OTel stack (not Docker collector)', () => {
+    const f = gObs(obsVercel);
+    const doc = f['docs/103_observability_architecture.md'] || '';
+    assert.ok(doc.includes('Vercel OTel') || doc.includes('@vercel/otel'), 'docs/103 Vercel must reference Vercel OTel');
+    assert.ok(!doc.includes('OpenTelemetry Collector (Docker)'), 'docs/103 Vercel must not show Docker collector');
+  });
+
+  // ── No ORM ──────────────────────────────────────────────────────
+  it('gObs no-ORM: docs/104 has Pino but no ORM query blocks', () => {
+    const f = gObs(obsNoORM);
+    const doc = f['docs/104_structured_logging.md'] || '';
+    assert.ok(doc.includes('pino'), 'docs/104 no-ORM must still include Pino setup');
+    assert.ok(!doc.includes('prisma.$on'), 'docs/104 no-ORM must not include Prisma block');
+    assert.ok(!doc.includes('TypeORM'), 'docs/104 no-ORM must not include TypeORM block');
+    assert.ok(!doc.includes('drizzle(client'), 'docs/104 no-ORM must not include Drizzle block');
+    assert.ok(!doc.includes('Kysely'), 'docs/104 no-ORM must not include Kysely block');
+    assert.ok(!doc.includes('slow_query'), 'docs/104 no-ORM must not include slow_query block');
+  });
+
+  // ── Bilingual ORM parity ─────────────────────────────────────────
+  it('gObs Kysely EN: docs/104 English mode has Kysely log: block', () => {
+    const f = gObs(obsKysely, 'en');
+    const doc = f['docs/104_structured_logging.md'] || '';
+    assert.ok(doc.includes('Kysely') || doc.includes('kysely'), 'docs/104 EN Kysely must be present');
+    assert.ok(doc.includes('log:'), 'docs/104 EN Kysely must have log: callback');
+  });
+
+  it('gObs Java EN: docs/104 English mode has SLF4J + REDACTED masking', () => {
+    const f = gObs(obsJava, 'en');
+    const doc = f['docs/104_structured_logging.md'] || '';
+    assert.ok(doc.includes('SLF4J'), 'docs/104 EN Java must include SLF4J');
+    assert.ok(doc.includes('REDACTED'), 'docs/104 EN Java must include REDACTED masking');
   });
 });
