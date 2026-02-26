@@ -1,4 +1,4 @@
-// Compat rules functional test (118 rules: 15 ERROR + 73 WARN + 30 INFO)
+// Compat rules functional test (122 rules: 16 ERROR + 76 WARN + 30 INFO)
 const assert=require('node:assert/strict');
 const S={lang:'ja',skill:'pro'};
 eval(require('fs').readFileSync('src/data/compat-rules.js','utf-8'));
@@ -122,7 +122,12 @@ const tests=[
   {name:'Django+Netlify=WARN',a:{backend:'Python + Django',deploy:'Netlify'},expect:'warn',id:'be-dep-heavy-netlify'},
   {name:'Spring+Netlify=WARN',a:{backend:'Java + Spring Boot',deploy:'Netlify'},expect:'warn',id:'be-dep-heavy-netlify'},
   {name:'NestJS+Netlify=WARN',a:{backend:'Node.js + NestJS',deploy:'Netlify'},expect:'warn',id:'be-dep-nest-netlify'},
-  {name:'Express+Netlify=OK',a:{backend:'Node.js + Express',deploy:'Netlify'},expect:'info'},
+  {name:'NestJS+FirebaseHosting=WARN',a:{backend:'Node.js + NestJS',deploy:'Firebase Hosting'},expect:'warn',id:'be-dep-nest-fbh'},
+  {name:'Express+Netlify=WARN',a:{backend:'Node.js + Express',deploy:'Netlify'},expect:'warn',id:'be-dep-express-netlify'},
+  {name:'Express+FirebaseHosting=WARN',a:{backend:'Node.js + Express',deploy:'Firebase Hosting'},expect:'warn',id:'be-dep-express-fbh'},
+  {name:'Fastify+FirebaseHosting=WARN',a:{backend:'Node.js + Fastify',deploy:'Firebase Hosting'},expect:'warn',id:'be-dep-express-fbh'},
+  {name:'NestJS+Railway=noDepWARN',a:{backend:'Node.js + NestJS',deploy:'Railway'},expect:'info'},
+  {name:'Express+Railway=noDepWARN',a:{backend:'Node.js + Express',deploy:'Railway'},expect:'info'},
   // Flutter + Firebase synergy
   {name:'Flutter+Firebase=INFO',a:{mobile:'Flutter',backend:'Firebase'},expect:'info',id:'mob-flutter-firebase'},
   {name:'Flutter+Supabase=INFO',a:{mobile:'Flutter',backend:'Supabase'},expect:'info',id:'mob-flutter-supabase'},
@@ -215,6 +220,10 @@ const tests=[
   {name:'Firebase+Prisma=ERROR',a:{backend:'Firebase',orm:'Prisma'},expect:'error',id:'be-firebase-prisma'},
   {name:'Firebase+FirebaseSDK=noERROR',a:{backend:'Firebase',orm:'Firebase Admin SDK'},expect:'none',id:'be-firebase-prisma'},
   {name:'Supabase+Prisma=noFirebasePrismaERROR',a:{backend:'Supabase',orm:'Prisma'},expect:'none',id:'be-firebase-prisma'},
+  // be-firebase-typeorm (ERROR)
+  {name:'Firebase+TypeORM=ERROR',a:{backend:'Firebase',orm:'TypeORM'},expect:'error',id:'be-firebase-typeorm'},
+  {name:'Firebase+AdminSDK=noTypeORMERROR',a:{backend:'Firebase',orm:'Firebase Admin SDK'},expect:'none',id:'be-firebase-typeorm'},
+  {name:'NestJS+TypeORM=noFirebaseTypeORMERROR',a:{backend:'Node.js + NestJS',orm:'TypeORM'},expect:'none',id:'be-firebase-typeorm'},
   // mt-supabase-no-rls (ERROR)
   {name:'Supabase+B2B+noRLS=ERROR',a:{backend:'Supabase',org_model:'B2B company management',mvp_features:'認証, ダッシュボード'},expect:'error',id:'mt-supabase-no-rls'},
   {name:'Supabase+team+RLS=noERROR',a:{backend:'Supabase',org_model:'team collaboration',mvp_features:'RLS policy, 認証'},expect:'none',id:'mt-supabase-no-rls'},

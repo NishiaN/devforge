@@ -5243,3 +5243,409 @@ describe('Suite 60: presets-ext3 English mode — genLang=en produces English co
     assert.ok(doc.includes('energy') || doc.includes('Meter reading') || doc.includes('Anomaly'), 'EN solar_monitor P5 must use energy QA matrix with English content');
   });
 });
+
+/* ══════════════════════════════════════════════════════════════════
+   Suite 61 — presets-ext.js field preset entity coherence (14 categories)
+   gSDD: each category's representative preset includes its unique entity names
+   ════════════════════════════════════════════════════════════════ */
+describe('Q61: presets-ext.js field presets — entity schema coherence', () => {
+
+  it('gaming: NPC dialogue system → specification includes NPC or QuestState entity', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: 'LLMによるリアルタイムNPC対話・クエスト分岐・感情応答でゲーム体験を向上',
+      data_entities: 'User, NPC, DialogTree, QuestState, GameSession',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('NPC') || doc.includes('QuestState') || doc.includes('DialogTree'), 'gaming preset spec must include NPC, QuestState, or DialogTree entity');
+  });
+
+  it('video: AI video generation → specification includes VideoProject or GenerationJob entity', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: 'テキスト・画像からAIが映像を自動生成しマルチプラットフォームに配信',
+      data_entities: 'User, VideoProject, GenerationJob, VideoAsset, PublishTarget',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('VideoProject') || doc.includes('GenerationJob') || doc.includes('VideoAsset'), 'video preset spec must include VideoProject, GenerationJob, or VideoAsset entity');
+  });
+
+  it('live_event: event management → specification includes EventPlan or Attendee entity', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: 'オンライン・オフラインイベントの企画からチケット・参加者管理・集計まで一元管理',
+      data_entities: 'User, EventPlan, Ticket, Attendee, CheckIn, Session',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('EventPlan') || doc.includes('Attendee') || doc.includes('CheckIn'), 'live_event preset spec must include EventPlan, Attendee, or CheckIn entity');
+  });
+
+  it('publishing: manga creation → specification includes MangaProject or Panel entity', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: 'AIがコマ割り・ネーム・トーン処理を補助しマンガ制作ワークフローを効率化',
+      data_entities: 'User, MangaProject, Chapter, Panel, Character, AssetLibrary',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('MangaProject') || doc.includes('Panel') || doc.includes('AssetLibrary'), 'publishing preset spec must include MangaProject, Panel, or AssetLibrary entity');
+  });
+
+  it('gambling: responsible gambling → specification includes BettingLimit or SelfExclusion entity', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: '賭け金上限・自己排除・冷却期間を管理しギャンブル依存を防止するコンプライアンスツール',
+      data_entities: 'User, BettingLimit, SelfExclusion, CoolingPeriod, RGAlert',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('BettingLimit') || doc.includes('SelfExclusion') || doc.includes('CoolingPeriod'), 'gambling preset spec must include BettingLimit, SelfExclusion, or CoolingPeriod entity');
+  });
+
+  it('podcast: AI podcast production → specification includes Episode or ShowNote entity', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: '録音・ノイズ除去・BGM・章立て生成をAIが自動化しポッドキャスト制作を大幅効率化',
+      data_entities: 'User, Episode, Recording, AudioTrack, ShowNote, Chapter',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('Episode') || doc.includes('ShowNote') || doc.includes('AudioTrack'), 'podcast preset spec must include Episode, ShowNote, or AudioTrack entity');
+  });
+
+  it('music_biz: AI music generation → specification includes MusicProject or Stem entity', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: 'ジャンル・ムード・テンポを指定するとAIが楽曲を自動生成しDAWエクスポートまで対応',
+      data_entities: 'User, MusicProject, Track, Stem, GenerationJob, MusicAsset',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('MusicProject') || doc.includes('Stem') || doc.includes('MusicAsset'), 'music_biz preset spec must include MusicProject, Stem, or MusicAsset entity');
+  });
+
+  it('housing: smart home IoT → specification includes SmartDevice or Automation entity', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: '照明・空調・セキュリティ・家電をAIが最適制御し快適・省エネなスマートホームを実現',
+      data_entities: 'User, SmartDevice, Automation, EnergyLog, Scene, Alert',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('SmartDevice') || doc.includes('Automation') || doc.includes('EnergyLog'), 'housing preset spec must include SmartDevice, Automation, or EnergyLog entity');
+  });
+
+  it('food: AI recipe generation → specification includes MealPlan or NutritionProfile entity', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: '手持ち食材・アレルギー・栄養目標を入力するとAIが最適レシピを生成し買い物リストも自動作成',
+      data_entities: 'User, Recipe, Ingredient, MealPlan, ShoppingList, NutritionProfile',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('MealPlan') || doc.includes('NutritionProfile') || doc.includes('ShoppingList'), 'food preset spec must include MealPlan, NutritionProfile, or ShoppingList entity');
+  });
+
+  it('mental_health: CBT support app → specification includes TherapySession or MoodLog entity', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: '認知行動療法(CBT)に基づくAIチャットボットでセルフケアと症状管理をサポート',
+      data_entities: 'User, TherapySession, CBTExercise, MoodLog, CrisisAlert',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('TherapySession') || doc.includes('CBTExercise') || doc.includes('MoodLog'), 'mental_health preset spec must include TherapySession, CBTExercise, or MoodLog entity');
+  });
+
+  it('fashion: AI outfit styling → specification includes OutfitSuggestion or StyleProfile entity', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: '体型・好み・イベント・予算を入力するとAIがコーディネートを自動提案し購入導線を作成',
+      data_entities: 'User, WardrobiItem, OutfitSuggestion, StyleProfile, ShoppingCart',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('OutfitSuggestion') || doc.includes('StyleProfile') || doc.includes('WardrobiItem'), 'fashion preset spec must include OutfitSuggestion, StyleProfile, or WardrobiItem entity');
+  });
+
+  it('shopping: household budget tracker → specification includes SavingGoal or FinancialReport entity', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: '銀行・クレカ・電子マネーデータをAIが自動分類し家計の可視化・節約提案を行うアプリ',
+      data_entities: 'User, Transaction, Budget, Category, SavingGoal, FinancialReport',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('SavingGoal') || doc.includes('FinancialReport') || doc.includes('Transaction'), 'shopping preset spec must include SavingGoal, FinancialReport, or Transaction entity');
+  });
+
+  it('pet: AI pet health checker → specification includes VetRecommendation or HealthCheck entity', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: 'ペットの症状入力・写真からAIが健康状態を評価し獣医受診の緊急度を判定',
+      data_entities: 'User, Pet, HealthCheck, Symptom, VetRecommendation',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('VetRecommendation') || doc.includes('HealthCheck') || doc.includes('Symptom'), 'pet preset spec must include VetRecommendation, HealthCheck, or Symptom entity');
+  });
+
+  it('car_life: predictive car maintenance → specification includes SensorData or DiagnosticAlert entity', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: '車載センサーデータをAIがリアルタイム解析し故障を事前予測してコストと安全リスクを低減',
+      data_entities: 'User, Vehicle, SensorData, DiagnosticAlert, MaintenanceSchedule',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('SensorData') || doc.includes('DiagnosticAlert') || doc.includes('MaintenanceSchedule'), 'car_life preset spec must include SensorData, DiagnosticAlert, or MaintenanceSchedule entity');
+  });
+});
+
+/* ══════════════════════════════════════════════════════════════════
+   Suite 62 — presets-ext2.js field preset entity coherence (10 categories)
+   gSDD: each category's representative preset includes its unique entity names
+   ════════════════════════════════════════════════════════════════ */
+describe('Q62: presets-ext2.js field presets — entity schema coherence', () => {
+
+  it('civil_eng: ground survey AI → specification includes BoringData or SoilLayer entity', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: 'ボーリングデータ・標準貫入試験をAIが解析し地盤リスクマップと液状化判定レポートを自動生成',
+      data_entities: 'User, SurveyProject, BoringData, SoilLayer, AnalysisReport',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('BoringData') || doc.includes('SoilLayer') || doc.includes('SurveyProject'), 'civil_eng preset spec must include BoringData, SoilLayer, or SurveyProject entity');
+  });
+
+  it('braintech: cognitive performance → specification includes CognitiveTest or PerformanceMetric entity', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: '認知機能テスト・EEGセンサーデータをAIが分析し集中力・記憶力・反応速度を個別最適化',
+      data_entities: 'User, CognitiveTest, PerformanceMetric, RecommendationPlan, Session',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('CognitiveTest') || doc.includes('PerformanceMetric') || doc.includes('RecommendationPlan'), 'braintech preset spec must include CognitiveTest, PerformanceMetric, or RecommendationPlan entity');
+  });
+
+  it('digital_legacy: digital will platform → specification includes EndingNote or Beneficiary entity', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: 'AI対話式インタビューでエンディングノート・遺言書を作成し弁護士連携・公正証書化まで一元サポート',
+      data_entities: 'User, EndingNote, Will, Beneficiary, LegalDocument',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('EndingNote') || doc.includes('Beneficiary') || doc.includes('Will'), 'digital_legacy preset spec must include EndingNote, Beneficiary, or Will entity');
+  });
+
+  it('data_sovereignty: personal data vault → specification includes DataVault or AccessGrant entity', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: '医療・金融・行動データを暗号化して個人が完全管理し用途別にアクセスを付与するデータ金庫',
+      data_entities: 'User, DataVault, DataItem, AccessGrant, AuditLog',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('DataVault') || doc.includes('AccessGrant') || doc.includes('DataItem'), 'data_sovereignty preset spec must include DataVault, AccessGrant, or DataItem entity');
+  });
+
+  it('space_data: satellite image analysis → specification includes SatelliteImage or GeoReport entity', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: 'マルチスペクトル衛星画像をYOLOv8等のAIが解析し農業・都市変化・災害状況を自動検出・定量化',
+      data_entities: 'User, SatelliteImage, AnalysisJob, Detection, GeoReport',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('SatelliteImage') || doc.includes('GeoReport') || doc.includes('Detection'), 'space_data preset spec must include SatelliteImage, GeoReport, or Detection entity');
+  });
+
+  it('climate_resilience: climate risk assessment → specification includes RiskZone or ESGReport entity', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: '物理的気候リスク(洪水・熱波・海面上昇)をGISデータとAIで定量化しESGレポートと投資リスク評価を自動生成',
+      data_entities: 'User, RiskZone, ClimateData, RiskScore, ESGReport',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('RiskZone') || doc.includes('ESGReport') || doc.includes('ClimateData'), 'climate_resilience preset spec must include RiskZone, ESGReport, or ClimateData entity');
+  });
+
+  it('ai_avatar: personal AI agent → specification includes AIAgent or MemoryStore entity', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: '個人の過去データ・行動パターンを学習したパーソナルAIエージェントが代理でタスク実行・意思決定支援を行う',
+      data_entities: 'User, AIAgent, AgentTask, MemoryStore, ActionLog',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('AIAgent') || doc.includes('MemoryStore') || doc.includes('AgentTask'), 'ai_avatar preset spec must include AIAgent, MemoryStore, or AgentTask entity');
+  });
+
+  it('civic_tech: e-government platform → specification includes FormTemplate or ApprovalFlow entity', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: '行政手続きをデジタル化しAI書類作成支援・電子申請・承認ワークフロー・電子証明書発行を一元提供',
+      data_entities: 'User, Application, FormTemplate, ApprovalFlow, Certificate',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('FormTemplate') || doc.includes('ApprovalFlow') || doc.includes('Certificate'), 'civic_tech preset spec must include FormTemplate, ApprovalFlow, or Certificate entity');
+  });
+
+  it('childcare: child development tracker → specification includes GrowthRecord or DevelopmentMilestone entity', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: '身長・体重・発達マイルストーンをAIが分析し保護者に最適な発達サポートと専門家連携を提供',
+      data_entities: 'User, Child, GrowthRecord, DevelopmentMilestone, PediatricReport',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('GrowthRecord') || doc.includes('DevelopmentMilestone') || doc.includes('PediatricReport'), 'childcare preset spec must include GrowthRecord, DevelopmentMilestone, or PediatricReport entity');
+  });
+
+  it('nomad_life: city cost comparison → specification includes CostOfLiving or CityComparison entity', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: '世界500都市の生活費データをAIが比較分析し予算・ライフスタイルに最適な移住先・滞在先を推薦',
+      data_entities: 'User, Location, CostOfLiving, BudgetPlan, CityComparison',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('CostOfLiving') || doc.includes('CityComparison') || doc.includes('BudgetPlan'), 'nomad_life preset spec must include CostOfLiving, CityComparison, or BudgetPlan entity');
+  });
+});
+
+/* ══════════════════════════════════════════════════════════════════
+   Suite 63 — P22/P21/P20 English mode deep coverage
+   Tests English generation across multiple stacks for Database,
+   API, and CI/CD intelligence pillars
+   ════════════════════════════════════════════════════════════════ */
+describe('Suite 63: P22/P21/P20 English mode — multi-stack deep coverage', () => {
+
+  /* ── Shared answer sets ── */
+  const s63_nestjs = Object.assign({}, A25, {
+    purpose: '保険金請求管理システム',
+    backend: 'Node.js + NestJS', frontend: 'React + Next.js',
+    database: 'PostgreSQL (Railway)', deploy: 'Railway', orm: 'TypeORM',
+    auth: 'JWT', payment: '', data_entities: 'User, Claim, Policy, AuditLog',
+  });
+  const s63_firebase = Object.assign({}, A25, {
+    purpose: '教育クイズ学習プラットフォーム',
+    backend: 'Firebase', frontend: 'React (Vite SPA)',
+    database: 'Firestore', auth: 'Firebase Auth', deploy: 'Firebase Hosting', orm: '',
+    payment: '', data_entities: 'User, QuizSet, QuizItem, QuizAttempt',
+  });
+  const s63_supabase_vercel = Object.assign({}, A25, {
+    purpose: 'SaaS型サブスク管理プラットフォーム',
+    backend: 'Supabase', frontend: 'React + Next.js',
+    database: 'Supabase (PostgreSQL)', deploy: 'Vercel', orm: '',
+    auth: 'Supabase Auth', payment: 'stripe', data_entities: 'User, Subscription, Invoice, Plan',
+  });
+  const s63_python = Object.assign({}, A25, {
+    purpose: '医療データ分析AIプラットフォーム',
+    backend: 'Python + FastAPI', frontend: 'React + Next.js',
+    database: 'PostgreSQL (Railway)', deploy: 'Railway', orm: 'SQLAlchemy',
+    auth: 'JWT', payment: '', data_entities: 'User, Patient, MedicalRecord',
+  });
+
+  // ── P22 (Database Intelligence) EN tests ──
+
+  it('P22 EN: docs/87 TypeORM → English heading + TypeORM reference', () => {
+    const f = gDB(s63_nestjs, 'en');
+    const doc = f['docs/87_database_design_principles.md'] || '';
+    assert.ok(doc.includes('Database Design Principles') || doc.includes('Schema Design'), 'EN docs/87 TypeORM must have English heading');
+    assert.ok(doc.includes('TypeORM'), 'EN docs/87 TypeORM must mention TypeORM ORM');
+  });
+
+  it('P22 EN: docs/89 TypeORM → Zero-Downtime migration in English', () => {
+    const f = gDB(s63_nestjs, 'en');
+    const doc = f['docs/89_migration_strategy.md'] || '';
+    assert.ok(doc.includes('Zero-Downtime') || doc.includes('Migration Strategy'), 'EN docs/89 TypeORM must have English migration heading');
+    assert.ok(doc.includes('TypeORM') || doc.includes('Backward Compatibility'), 'EN docs/89 TypeORM must mention TypeORM migration concept');
+  });
+
+  it('P22 EN: docs/87 Supabase → Supabase Client or Row Level Security in English', () => {
+    const f = gDB(s63_supabase_vercel, 'en');
+    const doc = f['docs/87_database_design_principles.md'] || '';
+    assert.ok(doc.includes('Supabase'), 'EN docs/87 Supabase must mention Supabase');
+    assert.ok(!doc.includes('undefined'), 'EN docs/87 Supabase must not contain undefined');
+  });
+
+  it('P22 EN: docs/90 Supabase → Backup & DR with RTO/RPO in English', () => {
+    const f = gDB(s63_supabase_vercel, 'en');
+    const doc = f['docs/90_backup_disaster_recovery.md'] || '';
+    assert.ok(doc.includes('Backup') || doc.includes('Disaster Recovery'), 'EN docs/90 must have English Backup/DR heading');
+    assert.ok(doc.includes('RTO') && doc.includes('RPO'), 'EN docs/90 must define RTO and RPO targets');
+  });
+
+  it('P22 EN: docs/88 TypeORM → Query Optimization content in English', () => {
+    const f = gDB(s63_nestjs, 'en');
+    const doc = f['docs/88_query_optimization_guide.md'] || '';
+    assert.ok(doc.includes('Query Optimization') || doc.includes('N+1'), 'EN docs/88 TypeORM must have English query optimization content');
+  });
+
+  it('P22 EN: docs/87 no undefined — Firebase stack', () => {
+    const f = gDB(s63_firebase, 'en');
+    const doc = f['docs/87_database_design_principles.md'] || '';
+    assert.ok(doc.length > 100, 'EN docs/87 Firebase must have substantive content');
+    assert.ok(!doc.includes('undefined'), 'EN docs/87 Firebase must not contain undefined');
+  });
+
+  it('P22 EN: docs/90 PostgreSQL/Railway → Backup content with no undefined', () => {
+    const f = gDB(s63_nestjs, 'en');
+    const doc = f['docs/90_backup_disaster_recovery.md'] || '';
+    assert.ok(doc.includes('Backup') || doc.includes('Recovery'), 'EN docs/90 NestJS/Railway must have Backup/Recovery content');
+    assert.ok(!doc.includes('undefined'), 'EN docs/90 must not contain undefined');
+  });
+
+  // ── P21 (API Intelligence) EN tests ──
+
+  it('P21 EN: docs/83 NestJS → RESTful API principles in English', () => {
+    const f = gAPI(s63_nestjs, 'en');
+    const doc = f['docs/83_api_design_principles.md'] || '';
+    assert.ok(doc.includes('RESTful API') || doc.includes('API Design Principles'), 'EN docs/83 NestJS must show RESTful API heading');
+    assert.ok(doc.includes('NestJS') || doc.includes('REST'), 'EN docs/83 NestJS must reference NestJS or REST');
+  });
+
+  it('P21 EN: docs/83 Firebase → BaaS Client SDK pattern in English', () => {
+    const f = gAPI(s63_firebase, 'en');
+    const doc = f['docs/83_api_design_principles.md'] || '';
+    assert.ok(doc.includes('BaaS Client SDK') || doc.includes('Firebase'), 'EN docs/83 Firebase must show BaaS Client SDK or Firebase');
+    assert.ok(doc.includes('Firestore') || doc.includes('Security Rules'), 'EN docs/83 Firebase must reference Firestore or Security Rules');
+  });
+
+  it('P21 EN: docs/84 NestJS → OpenAPI specification template in English', () => {
+    const f = gAPI(s63_nestjs, 'en');
+    const doc = f['docs/84_openapi_specification.md'] || '';
+    assert.ok(doc.includes('OpenAPI') || doc.includes('openapi'), 'EN docs/84 NestJS must have OpenAPI spec');
+    assert.ok(!doc.includes('undefined'), 'EN docs/84 must not contain undefined');
+  });
+
+  it('P21 EN: docs/85 NestJS → OWASP API security checklist in English', () => {
+    const f = gAPI(s63_nestjs, 'en');
+    const doc = f['docs/85_api_security_checklist.md'] || '';
+    assert.ok(doc.includes('OWASP') || doc.includes('API Security'), 'EN docs/85 NestJS must have OWASP or API Security content');
+    assert.ok(doc.includes('CRITICAL') || doc.includes('HIGH') || doc.includes('Checklist'), 'EN docs/85 must show severity ratings');
+  });
+
+  it('P21 EN: docs/86 NestJS → API testing strategy with Test Pyramid', () => {
+    const f = gAPI(s63_nestjs, 'en');
+    const doc = f['docs/86_api_testing_strategy.md'] || '';
+    assert.ok(doc.includes('Test Pyramid') || doc.includes('Testing Strategy'), 'EN docs/86 NestJS must have test pyramid or testing strategy');
+    assert.ok(doc.includes('E2E') || doc.includes('Integration') || doc.includes('Unit'), 'EN docs/86 must mention E2E, Integration, or Unit tests');
+  });
+
+  it('P21 EN: docs/83 Supabase → BaaS pattern with Row Level Security', () => {
+    const f = gAPI(s63_supabase_vercel, 'en');
+    const doc = f['docs/83_api_design_principles.md'] || '';
+    assert.ok(doc.includes('BaaS') || doc.includes('Supabase'), 'EN docs/83 Supabase must show BaaS or Supabase');
+    assert.ok(!doc.includes('undefined'), 'EN docs/83 Supabase must not contain undefined');
+  });
+
+  it('P21 EN: docs/86 Firebase → API testing references Firestore or Firebase', () => {
+    const f = gAPI(s63_firebase, 'en');
+    const doc = f['docs/86_api_testing_strategy.md'] || '';
+    assert.ok(doc.includes('Firebase') || doc.includes('Firestore') || doc.includes('Test'), 'EN docs/86 Firebase must reference Firebase/Firestore or testing content');
+  });
+
+  // ── P20 (CI/CD Intelligence) EN tests ──
+
+  it('P20 EN: docs/77 Firebase Hosting → deploy target shown as Firebase Hosting', () => {
+    const f = gP20(s63_firebase, 'en');
+    const doc = f['docs/77_cicd_pipeline_design.md'] || '';
+    assert.ok(doc.includes('Firebase Hosting') || doc.includes('Firebase'), 'EN docs/77 Firebase must show Firebase Hosting as deploy target');
+    assert.ok(!doc.includes('undefined'), 'EN docs/77 Firebase must not contain undefined');
+  });
+
+  it('P20 EN: docs/78 Firebase → deployment strategy includes Firebase Hosting steps', () => {
+    const f = gP20(s63_firebase, 'en');
+    const doc = f['docs/78_deployment_strategy.md'] || '';
+    assert.ok(doc.includes('Firebase') || doc.includes('Staging') || doc.includes('Production'), 'EN docs/78 Firebase must have deployment strategy content');
+    assert.ok(!doc.includes('undefined'), 'EN docs/78 Firebase must not contain undefined');
+  });
+
+  it('P20 EN: docs/77 Python/Railway → Railway deploy target in pipeline', () => {
+    const f = gP20(s63_python, 'en');
+    const doc = f['docs/77_cicd_pipeline_design.md'] || '';
+    assert.ok(doc.includes('Railway') || doc.includes('CI/CD Pipeline'), 'EN docs/77 Python/Railway must mention Railway or CI/CD Pipeline');
+  });
+
+  it('P20 EN: docs/79 quality gate matrix → English quality gate matrix', () => {
+    const f = gP20(s63_python, 'en');
+    const doc = f['docs/79_quality_gate_matrix.md'] || '';
+    assert.ok(doc.includes('Quality Gate') || doc.includes('Pipeline'), 'EN docs/79 must have Quality Gate or Pipeline matrix');
+    assert.ok(!doc.includes('undefined'), 'EN docs/79 must not contain undefined');
+  });
+
+  it('P20 EN: docs/78 Vercel → Vercel or preview URL in deployment strategy', () => {
+    const f = gP20(s63_supabase_vercel, 'en');
+    const doc = f['docs/78_deployment_strategy.md'] || '';
+    assert.ok(doc.includes('Vercel') || doc.includes('Preview'), 'EN docs/78 Vercel must mention Vercel or Preview deployment');
+  });
+
+  it('P20 EN: docs/77 NestJS/Railway → 9-stage pipeline with Railway in English', () => {
+    const f = gP20(s63_nestjs, 'en');
+    const doc = f['docs/77_cicd_pipeline_design.md'] || '';
+    assert.ok(doc.includes('Railway') || doc.includes('CI/CD'), 'EN docs/77 NestJS/Railway must mention Railway');
+    assert.ok(doc.includes('Pipeline') || doc.includes('Deploy') || doc.includes('Checkout'), 'EN docs/77 NestJS must have pipeline stage content');
+  });
+});
