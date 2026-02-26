@@ -883,12 +883,12 @@ function gen62(G, domain, indStrategy, a, pn) {
   doc += G ? '## アーキテクチャ推奨パターン\n\n' : '## Recommended Architecture Patterns\n\n';
   doc += '```mermaid\n';
   doc += 'graph LR\n';
-  doc += '  A[' + (G ? 'クライアント' : 'Client') + '] --> B[API Gateway]\n';
-  doc += '  B --> C[' + (G ? '認証レイヤー' : 'Auth Layer') + ']\n';
-  doc += '  C --> D[' + (G ? 'ビジネスロジック' : 'Business Logic') + ']\n';
-  doc += '  D --> E[' + (G ? 'データレイヤー' : 'Data Layer') + ']\n';
-  doc += '  E --> F[' + (G ? '暗号化ストレージ' : 'Encrypted Storage') + ']\n';
-  doc += '  D --> G[' + (G ? '監査ログ' : 'Audit Log') + ']\n';
+  doc += '  A["' + (G ? 'クライアント' : 'Client') + '"] --> B["API Gateway"]\n';
+  doc += '  B --> C["' + (G ? '認証レイヤー' : 'Auth Layer') + '"]\n';
+  doc += '  C --> D["' + (G ? 'ビジネスロジック' : 'Business Logic') + '"]\n';
+  doc += '  D --> E["' + (G ? 'データレイヤー' : 'Data Layer') + '"]\n';
+  doc += '  E --> F["' + (G ? '暗号化ストレージ' : 'Encrypted Storage') + '"]\n';
+  doc += '  D --> G["' + (G ? '監査ログ' : 'Audit Log') + '"]\n';
   doc += '```\n\n';
 
   doc += G ? '---\n\n**参考**: `docs/43_security_intelligence.md` で業界特化のセキュリティチェックリストを確認してください。\n' : '---\n\n**Reference**: Check `docs/43_security_intelligence.md` for industry-specific security checklists.\n';
@@ -908,9 +908,9 @@ function gen63(G, domain, meth, a, pn) {
   doc += G ? '### The Context Loop（4段階フレーム）\n\n' : '### The Context Loop (4-Stage Framework)\n\n';
   doc += '```mermaid\n';
   doc += 'graph LR\n';
-  doc += '  A[1. Sensing ' + (G ? '感知' : 'Perception') + '] --> B[2. Thinking ' + (G ? '推論' : 'Reasoning') + ']\n';
-  doc += '  B --> C[3. Morphing ' + (G ? '変異' : 'Transformation') + ']\n';
-  doc += '  C --> D[4. Acting ' + (G ? '作用' : 'Action') + ']\n';
+  doc += '  A["1. Sensing ' + (G ? '感知' : 'Perception') + '"] --> B["2. Thinking ' + (G ? '推論' : 'Reasoning') + '"]\n';
+  doc += '  B --> C["3. Morphing ' + (G ? '変異' : 'Transformation') + '"]\n';
+  doc += '  C --> D["4. Acting ' + (G ? '作用' : 'Action') + '"]\n';
   doc += '  D --> A\n';
   doc += '```\n\n';
 

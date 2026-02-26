@@ -487,9 +487,9 @@ CLAUDE.md        → ${G?'Claude Code用ルール':'Claude Code rules'}
 
     let pipelineMd=`# ${pn} ${G?'— パイプライン':'— Pipelines'}\n\n`;
     pipelines.forEach(p=>{
-      pipelineMd+=`## ${p.n}\n- **${G?'トリガー':'Trigger'}**: ${p.t}\n- **${G?'スキル':'Skills'}**: ${p.s.join(' → ')}\n- **${G?'ゲート':'Gate'}**: ${p.g}\n- **${G?'エラー':'Error'}**: ${G?'ログ → リトライ':'log → retry'}\n\n\`\`\`mermaid\ngraph LR\n  T[${G?'開始':'Start'}]`;
-      p.s.forEach((s,i)=>pipelineMd+=` --> S${i+1}[${s}]`);
-      pipelineMd+=` --> Done[${G?'完了':'Done'}]\n\`\`\`\n\n`;
+      pipelineMd+=`## ${p.n}\n- **${G?'トリガー':'Trigger'}**: ${p.t}\n- **${G?'スキル':'Skills'}**: ${p.s.join(' → ')}\n- **${G?'ゲート':'Gate'}**: ${p.g}\n- **${G?'エラー':'Error'}**: ${G?'ログ → リトライ':'log → retry'}\n\n\`\`\`mermaid\ngraph LR\n  T["${G?'開始':'Start'}"]`;
+      p.s.forEach((s,i)=>pipelineMd+=` --> S${i+1}["${s}"]`);
+      pipelineMd+=` --> Done["${G?'完了':'Done'}"]\n\`\`\`\n\n`;
     });
     pipelineMd+=`${G?'## 実行方法':'## Execution'}\n1. ${G?'トリガー':'Trigger'}\n2. ${G?'スキル実行':'Run skills'}\n3. ${G?'PASS → 次':'PASS → next'}\n`;
 
@@ -656,20 +656,20 @@ CLAUDE.md        → ${G?'Claude Code用ルール':'Claude Code rules'}
 
       skillMapMd+=(G?'## 4層ビジネスモデル':'## 4-Layer Business Model')+'\n\n';
       skillMapMd+='```mermaid\ngraph TB\n';
-      skillMapMd+='  subgraph P['+(G?'企画':'Planning')+']\n';
-      skillMapMd+='    P1['+( G?'要件レビュー':'Req Review')+']\n';
+      skillMapMd+='  subgraph P["'+(G?'企画':'Planning')+'"]\n';
+      skillMapMd+='    P1["'+( G?'要件レビュー':'Req Review')+'"]\n';
       skillMapMd+='  end\n';
-      skillMapMd+='  subgraph D['+(G?'設計':'Design')+']\n';
-      skillMapMd+='    D1['+(G?'設計検証':'Arch Review')+']\n';
-      skillMapMd+='    D2['+(G?'API設計':'API Design')+']\n';
+      skillMapMd+='  subgraph D["'+(G?'設計':'Design')+'"]\n';
+      skillMapMd+='    D1["'+(G?'設計検証':'Arch Review')+'"]\n';
+      skillMapMd+='    D2["'+(G?'API設計':'API Design')+'"]\n';
       skillMapMd+='  end\n';
-      skillMapMd+='  subgraph C['+(G?'制作':'Production')+']\n';
-      skillMapMd+='    C1['+(G?'実装支援':'Code Support')+']\n';
-      skillMapMd+='    C2['+(G?'テスト生成':'Test Gen')+']\n';
+      skillMapMd+='  subgraph C["'+(G?'制作':'Production')+'"]\n';
+      skillMapMd+='    C1["'+(G?'実装支援':'Code Support')+'"]\n';
+      skillMapMd+='    C2["'+(G?'テスト生成':'Test Gen')+'"]\n';
       skillMapMd+='  end\n';
-      skillMapMd+='  subgraph O['+(G?'運用':'Operations')+']\n';
-      skillMapMd+='    O1['+(G?'デプロイ検証':'Deploy Check')+']\n';
-      skillMapMd+='    O2['+(G?'ドキュメント生成':'Doc Gen')+']\n';
+      skillMapMd+='  subgraph O["'+(G?'運用':'Operations')+'"]\n';
+      skillMapMd+='    O1["'+(G?'デプロイ検証':'Deploy Check')+'"]\n';
+      skillMapMd+='    O2["'+(G?'ドキュメント生成':'Doc Gen')+'"]\n';
       skillMapMd+='  end\n\n';
       skillMapMd+='  P1 --> D1\n';
       skillMapMd+='  D1 --> D2\n';
@@ -848,11 +848,11 @@ alwaysApply: false
 ## ${G?'ワークフロー':'Workflow'}
 \`\`\`mermaid
 graph LR
-  A[${G?'機能要求':'Feature Request'}] --> B[${G?'specification更新':'Update specification'}]
-  B --> C[${G?'technical-plan更新':'Update technical-plan'}]
-  C --> D[${G?'tasks生成':'Generate tasks'}]
-  D --> E[${G?'実装':'Implement'}]
-  E --> F[${G?'verification更新':'Update verification'}]
+  A["${G?'機能要求':'Feature Request'}"] --> B["${G?'specification更新':'Update specification'}"]
+  B --> C["${G?'technical-plan更新':'Update technical-plan'}"]
+  C --> D["${G?'tasks生成':'Generate tasks'}"]
+  D --> E["${G?'実装':'Implement'}"]
+  E --> F["${G?'verification更新':'Update verification'}"]
 \`\`\`
 
 ## ${G?'タスク別推奨ファイル':'Task-Specific Recommended Files'}

@@ -269,8 +269,8 @@ function gen66(G, matLv, a, pn) {
   // Maturity transition flow
   d += '```mermaid\n';
   d += 'graph LR\n';
-  d += '  L1[Level 1<br/>' + (G ? 'AI支援' : 'Assisted') + '] -->|' + (G ? 'CRITERIA習得' : 'CRITERIA mastery') + '| L2[Level 2<br/>' + (G ? 'AI協調' : 'Augmented') + ']\n';
-  d += '  L2 -->|' + (G ? 'オーケストレーション' : 'Orchestration') + '| L3[Level 3<br/>' + (G ? 'AI自律' : 'Autonomous') + ']\n';
+  d += '  L1["Level 1<br/>' + (G ? 'AI支援' : 'Assisted') + '"] -->|' + (G ? 'CRITERIA習得' : 'CRITERIA mastery') + '| L2["Level 2<br/>' + (G ? 'AI協調' : 'Augmented') + '"]\n';
+  d += '  L2 -->|' + (G ? 'オーケストレーション' : 'Orchestration') + '| L3["Level 3<br/>' + (G ? 'AI自律' : 'Autonomous') + '"]\n';
   d += '  style L' + matLv + ' fill:#4f46e5,color:#fff\n';
   d += '```\n\n';
 
@@ -525,13 +525,13 @@ function gen68(G, domain, meth, a, pn) {
   // KPI measurement flow Mermaid
   d += '```mermaid\n';
   d += 'graph TD\n';
-  d += '  M[' + (G ? 'KPI計測開始' : 'KPI Measurement Start') + '] --> B[' + (G ? 'Baseline確立' : 'Establish Baseline') + ']\n';
-  d += '  B --> P[' + (G ? 'プロンプト実行' : 'Execute Prompts') + ']\n';
-  d += '  P --> C[' + (G ? 'CRITERIA評価' : 'CRITERIA Evaluation') + ']\n';
-  d += '  C --> K[' + (G ? 'KPI計測' : 'KPI Measurement') + ']\n';
-  d += '  K --> R{' + (G ? '目標達成?' : 'Target Met?') + '}\n';
-  d += '  R -->|' + (G ? 'YES' : 'YES') + '| N[' + (G ? '次フェーズ' : 'Next Phase') + ']\n';
-  d += '  R -->|' + (G ? 'NO' : 'NO') + '| I[' + (G ? 'プロンプト改善' : 'Improve Prompts') + ']\n';
+  d += '  M["' + (G ? 'KPI計測開始' : 'KPI Measurement Start') + '"] --> B["' + (G ? 'Baseline確立' : 'Establish Baseline') + '"]\n';
+  d += '  B --> P["' + (G ? 'プロンプト実行' : 'Execute Prompts') + '"]\n';
+  d += '  P --> C["' + (G ? 'CRITERIA評価' : 'CRITERIA Evaluation') + '"]\n';
+  d += '  C --> K["' + (G ? 'KPI計測' : 'KPI Measurement') + '"]\n';
+  d += '  K --> R{"' + (G ? '目標達成?' : 'Target Met?') + '"}\n';
+  d += '  R -->|' + (G ? 'YES' : 'YES') + '| N["' + (G ? '次フェーズ' : 'Next Phase') + '"]\n';
+  d += '  R -->|' + (G ? 'NO' : 'NO') + '| I["' + (G ? 'プロンプト改善' : 'Improve Prompts') + '"]\n';
   d += '  I --> P\n';
   d += '```\n';
 

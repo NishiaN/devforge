@@ -274,13 +274,13 @@ function gen70(G, domain, matLv, a, pn) {
   // Mermaid ReAct state machine
   d += '```mermaid\n';
   d += 'graph TD\n';
-  d += '  S[' + (G ? '開始' : 'Start') + '] --> R[Reason]\n';
-  d += '  R --> A[Act]\n';
-  d += '  A --> O[Observe]\n';
-  d += '  O --> V{Verify}\n';
-  d += '  V -->|' + (G ? '成功' : 'Pass') + '| N[' + (G ? '次フェーズ' : 'Next Phase') + ']\n';
+  d += '  S["' + (G ? '開始' : 'Start') + '"] --> R["Reason"]\n';
+  d += '  R --> A["Act"]\n';
+  d += '  A --> O["Observe"]\n';
+  d += '  O --> V{"Verify"}\n';
+  d += '  V -->|' + (G ? '成功' : 'Pass') + '| N["' + (G ? '次フェーズ' : 'Next Phase') + '"]\n';
   d += '  V -->|' + (G ? '失敗 iter<3' : 'Fail iter<3') + '| R\n';
-  d += '  V -->|' + (G ? '失敗 iter=3' : 'Fail iter=3') + '| E[' + (G ? 'エスカレーション' : 'Escalate') + ']\n';
+  d += '  V -->|' + (G ? '失敗 iter=3' : 'Fail iter=3') + '| E["' + (G ? 'エスカレーション' : 'Escalate') + '"]\n';
   d += '  style N fill:#22c55e,color:#fff\n';
   d += '  style E fill:#ef4444,color:#fff\n';
   d += '```\n';
@@ -905,12 +905,12 @@ function gen72(G, domain, meth, matLv, a, pn) {
   // Mermaid registry architecture
   d += '```mermaid\n';
   d += 'graph TD\n';
-  d += '  G65[docs/65<br/>Prompt Genome] -->|' + (G ? 'DNA設計' : 'DNA Design') + '| R[' + (G ? 'Registryに登録' : 'Register in Registry') + ']\n';
-  d += '  R --> V[' + (G ? 'バージョン管理' : 'Version Control') + ']\n';
-  d += '  V --> D[' + (G ? 'デプロイ' : 'Deploy') + ']\n';
-  d += '  D --> M[docs/71<br/>LLMOps ' + (G ? '監視' : 'Monitor') + ']\n';
+  d += '  G65["docs/65<br/>Prompt Genome"] -->|' + (G ? 'DNA設計' : 'DNA Design') + '| R["' + (G ? 'Registryに登録' : 'Register in Registry') + '"]\n';
+  d += '  R --> V["' + (G ? 'バージョン管理' : 'Version Control') + '"]\n';
+  d += '  V --> D["' + (G ? 'デプロイ' : 'Deploy') + '"]\n';
+  d += '  D --> M["docs/71<br/>LLMOps ' + (G ? '監視' : 'Monitor') + '"]\n';
   d += '  M -->|' + (G ? '品質低下' : 'Degradation') + '| G65\n';
-  d += '  D --> P[docs/69<br/>Pipeline]\n';
+  d += '  D --> P["docs/69<br/>Pipeline"]\n';
   d += '  style R fill:#4f46e5,color:#fff\n';
   d += '```\n';
 

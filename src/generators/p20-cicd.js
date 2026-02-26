@@ -170,20 +170,20 @@ function gen77(G, domain, dtCfg, a, pn) {
   doc += '## ' + (G ? '9ステージパイプライン全体図' : '9-Stage Pipeline Overview') + '\n\n';
   doc += '```mermaid\n';
   doc += 'graph TD\n';
-  doc += '  A[📥 ' + (G ? 'チェックアウト' : 'Checkout') + '] --> B[📦 ' + (G ? 'インストール' : 'Install') + ']\n';
-  doc += '  B --> C[🔍 Lint & Type Check]\n';
-  doc += '  C --> D[🧪 ' + (G ? 'テスト実行' : 'Run Tests') + ']\n';
-  doc += '  D --> E[🏗️ ' + (G ? 'ビルド' : 'Build') + ']\n';
-  doc += '  E --> F[🔒 ' + (G ? 'セキュリティスキャン' : 'Security Scan') + ']\n';
-  doc += '  F --> G1[🚀 ' + (G ? 'ステージングデプロイ' : 'Deploy Staging') + ']\n';
-  doc += '  G1 --> H[🎭 E2E ' + (G ? 'テスト' : 'Tests') + ']\n';
-  doc += '  H --> I[🌐 ' + (G ? '本番デプロイ' : 'Deploy Production') + ']\n';
+  doc += '  A["📥 ' + (G ? 'チェックアウト' : 'Checkout') + '"] --> B["📦 ' + (G ? 'インストール' : 'Install') + '"]\n';
+  doc += '  B --> C["🔍 Lint & Type Check"]\n';
+  doc += '  C --> D["🧪 ' + (G ? 'テスト実行' : 'Run Tests') + '"]\n';
+  doc += '  D --> E["🏗️ ' + (G ? 'ビルド' : 'Build') + '"]\n';
+  doc += '  E --> F["🔒 ' + (G ? 'セキュリティスキャン' : 'Security Scan') + '"]\n';
+  doc += '  F --> G1["🚀 ' + (G ? 'ステージングデプロイ' : 'Deploy Staging') + '"]\n';
+  doc += '  G1 --> H["🎭 E2E ' + (G ? 'テスト' : 'Tests') + '"]\n';
+  doc += '  H --> I["🌐 ' + (G ? '本番デプロイ' : 'Deploy Production') + '"]\n';
   if (isFintechOrInsurance) {
-    doc += '  I --> J[✅ ' + (G ? 'デュアル承認ゲート' : 'Dual Approval Gate') + ']\n';
-    doc += '  J --> K[🏦 ' + (G ? 'コンプライアンス監査' : 'Compliance Audit') + ']\n';
+    doc += '  I --> J["✅ ' + (G ? 'デュアル承認ゲート' : 'Dual Approval Gate') + '"]\n';
+    doc += '  J --> K["🏦 ' + (G ? 'コンプライアンス監査' : 'Compliance Audit') + '"]\n';
   }
   if (isHealthcare) {
-    doc += '  I --> J[🏥 ' + (G ? 'HIPAA準拠ステージング' : 'HIPAA Compliance Stage') + ']\n';
+    doc += '  I --> J["🏥 ' + (G ? 'HIPAA準拠ステージング' : 'HIPAA Compliance Stage') + '"]\n';
   }
   doc += '\n';
   doc += '  style A fill:#4a9eff,color:#fff\n';
@@ -323,10 +323,10 @@ function gen78(G, domain, dtCfg, a, pn) {
   doc += '## ' + (G ? '環境戦略 (dev / staging / prod)' : 'Environment Strategy (dev / staging / prod)') + '\n\n';
   doc += '```mermaid\n';
   doc += 'flowchart LR\n';
-  doc += '  Dev[🖥️ ' + (G ? 'ローカル開発\nLocalhost' : 'Local Dev\nLocalhost') + ']\n';
-  doc += '  PR[🔀 PR ' + (G ? 'プレビュー\n自動生成URL' : 'Preview\nAuto-generated URL') + ']\n';
-  doc += '  Stg[🧪 Staging\n' + (G ? 'main→staging' : 'main→staging') + ']\n';
-  doc += '  Prod[🌐 Production\n' + (G ? 'タグ/承認後' : 'Tag/Approval') + ']\n';
+  doc += '  Dev["🖥️ ' + (G ? 'ローカル開発<br/>Localhost' : 'Local Dev<br/>Localhost') + '"]\n';
+  doc += '  PR["🔀 PR ' + (G ? 'プレビュー<br/>自動生成URL' : 'Preview<br/>Auto-generated URL') + '"]\n';
+  doc += '  Stg["🧪 Staging<br/>' + (G ? 'main→staging' : 'main→staging') + '"]\n';
+  doc += '  Prod["🌐 Production<br/>' + (G ? 'タグ/承認後' : 'Tag/Approval') + '"]\n';
   doc += '  Dev -->|PR作成| PR\n';
   doc += '  PR -->|マージ| Stg\n';
   doc += '  Stg -->|' + (isFintechOrInsurance ? G ? '承認×2' : '2× Approval' : G ? '自動昇格' : 'Auto-promote') + '| Prod\n';
@@ -513,16 +513,16 @@ function gen79(G, domain, dtCfg, a, pn) {
   doc += '## ' + (G ? '品質ゲートMermaid' : 'Quality Gate Flow (Mermaid)') + '\n\n';
   doc += '```mermaid\n';
   doc += 'flowchart TD\n';
-  doc += '  S[' + (G ? 'PR作成' : 'PR Created') + '] --> L{Lint OK?}\n';
-  doc += '  L -->|No| F1[❌ ' + (G ? 'ブロック' : 'Block') + ']\n';
-  doc += '  L -->|Yes| T{' + (G ? 'テスト+カバレッジ' : 'Test+Coverage') + ' OK?}\n';
-  doc += '  T -->|No| F2[❌ ' + (G ? 'ブロック' : 'Block') + ']\n';
-  doc += '  T -->|Yes| SC{' + (G ? 'セキュリティスキャン' : 'Security Scan') + ' OK?}\n';
-  doc += '  SC -->|No| F3[❌ ' + (G ? 'ブロック' : 'Block') + ']\n';
-  doc += '  SC -->|Yes| D[✅ ' + (G ? 'ステージングデプロイ' : 'Deploy Staging') + ']\n';
-  doc += '  D --> P{' + (G ? 'パフォーマンス予算' : 'Perf Budget') + ' OK?}\n';
-  doc += '  P -->|No| F4[⚠️ ' + (G ? '警告' : 'Warning') + ']\n';
-  doc += '  P -->|Yes| PROD[🌐 ' + (G ? '本番デプロイ' : 'Deploy Prod') + ']\n';
+  doc += '  S["' + (G ? 'PR作成' : 'PR Created') + '"] --> L{"Lint OK?"}\n';
+  doc += '  L -->|No| F1["❌ ' + (G ? 'ブロック' : 'Block') + '"]\n';
+  doc += '  L -->|Yes| T{"' + (G ? 'テスト+カバレッジ' : 'Test+Coverage') + ' OK?"}\n';
+  doc += '  T -->|No| F2["❌ ' + (G ? 'ブロック' : 'Block') + '"]\n';
+  doc += '  T -->|Yes| SC{"' + (G ? 'セキュリティスキャン' : 'Security Scan') + ' OK?"}\n';
+  doc += '  SC -->|No| F3["❌ ' + (G ? 'ブロック' : 'Block') + '"]\n';
+  doc += '  SC -->|Yes| D["✅ ' + (G ? 'ステージングデプロイ' : 'Deploy Staging') + '"]\n';
+  doc += '  D --> P{"' + (G ? 'パフォーマンス予算' : 'Perf Budget') + ' OK?"}\n';
+  doc += '  P -->|No| F4["⚠️ ' + (G ? '警告' : 'Warning') + '"]\n';
+  doc += '  P -->|Yes| PROD["🌐 ' + (G ? '本番デプロイ' : 'Deploy Prod') + '"]\n';
   doc += '```\n';
 
   return doc;
@@ -688,13 +688,13 @@ function gen80(G, domain, dtCfg, a, pn) {
   doc += '## ' + (G ? '緊急ホットフィックスフロー' : 'Emergency Hotfix Flow') + '\n\n';
   doc += '```mermaid\n';
   doc += 'flowchart LR\n';
-  doc += '  A[🚨 ' + (G ? '本番障害検知' : 'Production incident') + '] --> B[hotfix/' + (G ? '障害内容' : 'issue') + ' ' + (G ? 'ブランチ作成' : 'branch') + ']\n';
-  doc += '  B --> C[' + (G ? '修正実装' : 'Implement fix') + ']\n';
-  doc += '  C --> D[CI ' + (G ? 'パス確認' : 'pass check') + ']\n';
-  doc += '  D --> E[main ' + (G ? 'へPR/マージ' : 'PR & merge') + ']\n';
-  doc += '  E --> F[🚀 ' + (G ? '緊急デプロイ' : 'Emergency deploy') + ']\n';
+  doc += '  A["🚨 ' + (G ? '本番障害検知' : 'Production incident') + '"] --> B["hotfix/' + (G ? '障害内容' : 'issue') + ' ' + (G ? 'ブランチ作成' : 'branch') + '"]\n';
+  doc += '  B --> C["' + (G ? '修正実装' : 'Implement fix') + '"]\n';
+  doc += '  C --> D["CI ' + (G ? 'パス確認' : 'pass check') + '"]\n';
+  doc += '  D --> E["main ' + (G ? 'へPR/マージ' : 'PR & merge') + '"]\n';
+  doc += '  E --> F["🚀 ' + (G ? '緊急デプロイ' : 'Emergency deploy') + '"]\n';
   if (rec.id === 'gitflow') {
-    doc += '  F --> G[develop ' + (G ? 'にバックポート' : 'backport') + ']\n';
+    doc += '  F --> G["develop ' + (G ? 'にバックポート' : 'backport') + '"]\n';
   }
   doc += '```\n\n';
 

@@ -1138,12 +1138,12 @@ function genPillar12_SecurityIntelligence(a,pn){
 
     doc46+='```mermaid\n';
     doc46+='flowchart TD\n';
-    doc46+='  A[Agent Action Request] --> B{Reversible?}\n';
-    doc46+='  B -->|Yes| C[Execute]\n';
-    doc46+='  B -->|No| D[HITL Gate]\n';
-    doc46+='  D --> E{Human Approval?}\n';
+    doc46+='  A["Agent Action Request"] --> B{"Reversible?"}\n';
+    doc46+='  B -->|Yes| C["Execute"]\n';
+    doc46+='  B -->|No| D["HITL Gate"]\n';
+    doc46+='  D --> E{"Human Approval?"}\n';
     doc46+='  E -->|Yes| C\n';
-    doc46+='  E -->|No| F[Abort]\n';
+    doc46+='  E -->|No| F["Abort"]\n';
     doc46+='```\n\n';
 
     doc46+=(G?'### サンドボックス設定\n\n':'### Sandbox Configuration\n\n');

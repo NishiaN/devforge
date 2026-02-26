@@ -925,11 +925,11 @@ function gen56Market(G, domain, mkt, gtm, stakeholder) {
   // 5. Unit Economics
   doc += G ? '## 5. ユニットエコノミクス指標\n\n' : '## 5. Unit Economics Metrics\n\n';
   doc += '```mermaid\ngraph LR\n';
-  doc += '  A[' + (G ? 'CAC<br/>顧客獲得コスト' : 'CAC<br/>Customer Acquisition Cost') + '] -->|' + (G ? 'ペイバック期間' : 'Payback Period') + '| B[' + (G ? 'LTV<br/>顧客生涯価値' : 'LTV<br/>Lifetime Value') + ']\n';
-  doc += '  B --> C[' + (G ? 'LTV/CAC比率<br/>3:1が健全' : 'LTV/CAC Ratio<br/>3:1 is healthy') + ']\n';
-  doc += '  A --> D[' + (G ? 'マーケティング' : 'Marketing') + ']\n';
-  doc += '  A --> E[' + (G ? 'セールス' : 'Sales') + ']\n';
-  doc += '  A --> F[' + (G ? 'オンボード' : 'Onboarding') + ']\n';
+  doc += '  A["' + (G ? 'CAC<br/>顧客獲得コスト' : 'CAC<br/>Customer Acquisition Cost') + '"] -->|' + (G ? 'ペイバック期間' : 'Payback Period') + '| B["' + (G ? 'LTV<br/>顧客生涯価値' : 'LTV<br/>Lifetime Value') + '"]\n';
+  doc += '  B --> C["' + (G ? 'LTV/CAC比率<br/>3:1が健全' : 'LTV/CAC Ratio<br/>3:1 is healthy') + '"]\n';
+  doc += '  A --> D["' + (G ? 'マーケティング' : 'Marketing') + '"]\n';
+  doc += '  A --> E["' + (G ? 'セールス' : 'Sales') + '"]\n';
+  doc += '  A --> F["' + (G ? 'オンボード' : 'Onboarding') + '"]\n';
   doc += '```\n\n';
 
   doc += G
@@ -1005,13 +1005,13 @@ function gen57UX(G, domain, personas, mkt) {
   doc += G ? '**ドメイン別リテンションレバー:** ' + mkt.ux_ja + '\n\n' : '**Domain-specific Retention Levers:** ' + mkt.ux_en + '\n\n';
 
   doc += '```mermaid\ngraph TD\n';
-  doc += '  A[' + (G ? '新規ユーザー' : 'New User') + '] --> B[' + (G ? 'アクティブ化' : 'Activation') + ']\n';
-  doc += '  B --> C[' + (G ? 'エンゲージメント' : 'Engagement') + ']\n';
-  doc += '  C --> D[' + (G ? 'リテンション' : 'Retention') + ']\n';
-  doc += '  D --> E[' + (G ? '収益化' : 'Monetization') + ']\n';
-  doc += '  E --> F[' + (G ? '推奨' : 'Referral') + ']\n';
+  doc += '  A["' + (G ? '新規ユーザー' : 'New User') + '"] --> B["' + (G ? 'アクティブ化' : 'Activation') + '"]\n';
+  doc += '  B --> C["' + (G ? 'エンゲージメント' : 'Engagement') + '"]\n';
+  doc += '  C --> D["' + (G ? 'リテンション' : 'Retention') + '"]\n';
+  doc += '  D --> E["' + (G ? '収益化' : 'Monetization') + '"]\n';
+  doc += '  E --> F["' + (G ? '推奨' : 'Referral') + '"]\n';
   doc += '  F -.->|' + (G ? 'バイラルループ' : 'Viral Loop') + '| A\n';
-  doc += '  C -.->|' + (G ? 'チャーン' : 'Churn') + '| G[' + (G ? '離脱' : 'Exit') + ']\n';
+  doc += '  C -.->|' + (G ? 'チャーン' : 'Churn') + '| G["' + (G ? '離脱' : 'Exit') + '"]\n';
   doc += '```\n\n';
 
   doc += G
@@ -1066,9 +1066,9 @@ function gen58Ecosystem(G, domain, mkt, arch, deploy, answers) {
   // 1. API-as-Product Strategy
   doc += G ? '## 1. API-as-Product戦略\n\n' : '## 1. API-as-Product Strategy\n\n';
   doc += '```mermaid\ngraph LR\n';
-  doc += '  A[Internal API] --> B[Partner API]\n';
-  doc += '  B --> C[Public API]\n';
-  doc += '  C --> D[API Marketplace]\n';
+  doc += '  A["Internal API"] --> B["Partner API"]\n';
+  doc += '  B --> C["Public API"]\n';
+  doc += '  C --> D["API Marketplace"]\n';
   doc += '  A -.->|' + (G ? 'DX改善' : 'DX Improvement') + '| A\n';
   doc += '  B -.->|' + (G ? 'SLA・認証' : 'SLA/Auth') + '| B\n';
   doc += '  C -.->|' + (G ? 'ドキュメント・SDK' : 'Docs/SDKs') + '| C\n';
@@ -1097,13 +1097,13 @@ function gen58Ecosystem(G, domain, mkt, arch, deploy, answers) {
   // 3. Developer Experience (DX) Strategy
   doc += G ? '## 3. Developer Experience (DX) 戦略\n\n' : '## 3. Developer Experience (DX) Strategy\n\n';
   doc += '```mermaid\ngraph TD\n';
-  doc += '  A[' + (G ? 'Golden Path' : 'Golden Path') + '] --> B[' + (G ? 'ドキュメント' : 'Documentation') + ']\n';
-  doc += '  A --> C[' + (G ? 'CLI/SDK' : 'CLI/SDKs') + ']\n';
-  doc += '  A --> D[' + (G ? 'テンプレート' : 'Templates') + ']\n';
-  doc += '  B --> E[' + (G ? 'クイックスタート' : 'Quick Start') + ']\n';
-  doc += '  B --> F[' + (G ? 'APIリファレンス' : 'API Reference') + ']\n';
-  doc += '  C --> G[' + (G ? '多言語SDK' : 'Multi-lang SDKs') + ']\n';
-  doc += '  D --> H[' + (G ? 'ボイラープレート' : 'Boilerplates') + ']\n';
+  doc += '  A["Golden Path"] --> B["' + (G ? 'ドキュメント' : 'Documentation') + '"]\n';
+  doc += '  A --> C["' + (G ? 'CLI/SDK' : 'CLI/SDKs') + '"]\n';
+  doc += '  A --> D["' + (G ? 'テンプレート' : 'Templates') + '"]\n';
+  doc += '  B --> E["' + (G ? 'クイックスタート' : 'Quick Start') + '"]\n';
+  doc += '  B --> F["' + (G ? 'APIリファレンス' : 'API Reference') + '"]\n';
+  doc += '  C --> G["' + (G ? '多言語SDK' : 'Multi-lang SDKs') + '"]\n';
+  doc += '  D --> H["' + (G ? 'ボイラープレート' : 'Boilerplates') + '"]\n';
   doc += '```\n\n';
 
   doc += G
