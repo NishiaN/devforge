@@ -887,7 +887,8 @@ const COMPAT_RULES=[
      const isServerless=/Vercel|Netlify|Cloudflare/i.test(a.deploy||'');
      const isPg=/(PostgreSQL|Neon|Supabase)/i.test(a.database||'');
      const hasPool=/(PgBouncer|Pooler|connection.?pool|pgpool|コネクションプール|接続プール)/i.test((a.mvp_features||'')+(a.backend||''));
-     return isServerless&&isPg&&!hasPool;
+     const isSupabase=inc(a.backend,'Supabase')||inc(a.database,'Supabase');
+     return isServerless&&isPg&&!hasPool&&!isSupabase;
    },
    ja:'Serverless+PostgreSQL構成です。コネクションプーリング（Neon Pooler/Supabase Pooler/PgBouncer）なしでは接続数枯渇が起きます（docs/100参照）',
    en:'Serverless + PostgreSQL without connection pooling. Neon Pooler/Supabase Pooler/PgBouncer required to prevent connection exhaustion (see docs/100)',
@@ -1065,7 +1066,8 @@ const COMPAT_RULES=[
      const isPg=/(PostgreSQL|Neon)/i.test(a.database||'');
      const isVercel=inc(a.deploy,'Vercel');
      const hasPool=/(PgBouncer|pgpool|pool|Neon|connection.?pool)/i.test((a.database||'')+(a.mvp_features||''));
-     return isPg&&isVercel&&!hasPool;
+     const isSupabase=inc(a.backend,'Supabase')||inc(a.database,'Supabase');
+     return isPg&&isVercel&&!hasPool&&!isSupabase;
    },
    ja:'Vercelサーバーレス＋PostgreSQLではコネクション枯渇が発生します。PgBouncer/Neonのサーバーレス対応接続プールを使用してください',
    en:'Vercel serverless + PostgreSQL risks connection pool exhaustion. Use PgBouncer or Neon\'s serverless-compatible connection pooler',
