@@ -1,4 +1,4 @@
-// Compat rules functional test (157 rules: 29 ERROR + 96 WARN + 32 INFO)
+// Compat rules functional test (163 rules: 31 ERROR + 99 WARN + 33 INFO)
 const assert=require('node:assert/strict');
 const S={lang:'ja',skill:'pro'};
 eval(require('fs').readFileSync('src/data/compat-rules.js','utf-8'));
@@ -376,6 +376,24 @@ const tests=[
   // auth-clerk-firebase (WARN) — Clerk + Firebase/Firestore
   {name:'Clerk+Firebase=WARN',a:{auth:'Clerk',backend:'Firebase'},expect:'warn',id:'auth-clerk-firebase'},
   {name:'FirebaseAuth+Firebase=noClerkFbWARN',a:{auth:'Firebase Auth',backend:'Firebase'},expect:'none',id:'auth-clerk-firebase'},
+  // be-dep-deno-vercel (ERROR) — Deno + Vercel
+  {name:'Deno+Vercel=ERROR',a:{backend:'Deno + Hono',deploy:'Vercel'},expect:'error',id:'be-dep-deno-vercel'},
+  {name:'Deno+DenoDeploy=noDenoVercelERROR',a:{backend:'Deno + Hono',deploy:'Deno Deploy'},expect:'none',id:'be-dep-deno-vercel'},
+  // be-dep-bun-netlify (ERROR) — Bun + Netlify
+  {name:'Bun+Netlify=ERROR',a:{backend:'Bun + Hono',deploy:'Netlify'},expect:'error',id:'be-dep-bun-netlify'},
+  {name:'Bun+Railway=noBunNetlifyERROR',a:{backend:'Bun + Hono',deploy:'Railway'},expect:'none',id:'be-dep-bun-netlify'},
+  // dom-hr-noaudit (WARN) — HR domain without AuditLog
+  {name:'HR+noAudit=WARN',a:{purpose:'HR recruiting and personnel management tool',data_entities:'User, JobPosting, Applicant, Interview, Evaluation'},expect:'warn',id:'dom-hr-noaudit'},
+  {name:'HR+AuditLog=noHRAuditWARN',a:{purpose:'HR recruiting and personnel management tool',data_entities:'User, JobPosting, Applicant, AuditLog'},expect:'none',id:'dom-hr-noaudit'},
+  // dom-education-noauth (WARN) — Education domain without auth
+  {name:'Education+noAuth=WARN',a:{purpose:'e-learning LMS education platform for students',auth:'なし'},expect:'warn',id:'dom-education-noauth'},
+  {name:'Education+Auth=noEduAuthWARN',a:{purpose:'e-learning LMS education platform for students',auth:'Firebase Auth'},expect:'none',id:'dom-education-noauth'},
+  // dom-travel-nopay (WARN) — Travel domain without payment
+  {name:'Travel+noPay=WARN',a:{purpose:'travel booking platform for tours and hotels',payment:'なし'},expect:'warn',id:'dom-travel-nopay'},
+  {name:'Travel+Stripe=noTravelPayWARN',a:{purpose:'travel booking platform for tours and hotels',payment:'Stripe決済'},expect:'none',id:'dom-travel-nopay'},
+  // dom-realestate-nopay (INFO) — Real estate domain without payment
+  {name:'RealEstate+noPay=INFO',a:{purpose:'real estate property listing and management platform',payment:'なし'},expect:'info',id:'dom-realestate-nopay'},
+  {name:'RealEstate+Stripe=noRealEstatePayINFO',a:{purpose:'real estate property listing and management platform',payment:'Stripe決済'},expect:'none',id:'dom-realestate-nopay'},
 ];
 
 let pass=0,fail=0;

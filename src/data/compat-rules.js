@@ -1,4 +1,4 @@
-/* ═══ STACK COMPATIBILITY & SEMANTIC CONSISTENCY RULES — 157 rules (ERROR×29 + WARN×96 + INFO×32) ═══ */
+/* ═══ STACK COMPATIBILITY & SEMANTIC CONSISTENCY RULES — 163 rules (ERROR×31 + WARN×99 + INFO×33) ═══ */
 const COMPAT_RULES=[
   // ── FE ↔ Mobile (2 ERROR) ──
   {id:'fe-mob-expo',p:['frontend','mobile'],lv:'error',
@@ -373,6 +373,20 @@ const COMPAT_RULES=[
    why_ja:'VercelのサーバーレスランタイムはNode.js（各LTSバージョン）・Python・Edge（V8）のみを公式サポートしています。BunはJavaScriptCoreエンジンとRust製I/Oレイヤーを持つ独立したランタイムで、Vercelのビルドインフラはnpmパッケージとしてのbunをサポートしておらず、Bun固有のAPI（Bun.serve・Bun.file等）はVercel環境で動作しません。RailwayはBunのDockerコンテナを直接実行でき、最も簡単な移行先です。',
    why_en:'Vercel\'s serverless runtime officially supports only Node.js (various LTS versions), Python, and Edge (V8). Bun is a standalone runtime with JavaScriptCore and a Rust-based I/O layer — Vercel\'s build infrastructure does not support Bun natively, and Bun-specific APIs (Bun.serve, Bun.file, etc.) do not work on Vercel. Railway can directly run Bun Docker containers and is the easiest migration target.',
    fix:{f:'deploy',s:'Railway'}},
+  {id:'be-dep-deno-vercel',p:['backend','deploy'],lv:'error',
+   t:a=>inc(a.backend,'Deno')&&inc(a.deploy,'Vercel'),
+   ja:'VercelはDenoランタイムをサポートしません（Node.js/Python/Edgeのみ）。Deno Deployを推奨します',
+   en:'Vercel does not support the Deno runtime (Node.js/Python/Edge only). Use Deno Deploy instead',
+   why_ja:'VercelのサーバーレスランタイムはNode.js・Python・Edge（V8）のみを公式サポートします。DenoはV8エンジンを使いますが独自の権限モデル・組み込みTypeScriptサポート・標準ライブラリを持つ独立ランタイムであり、Vercelのビルドインフラはnpmパッケージとしてのdenoをサポートしていません。Deno固有のAPI（Deno.serve・Deno.readFile等）はVercel環境で動作しません。Deno公式ホスティングのDeno Deployは低レイテンシEdge実行とDenoの全機能をサポートします。',
+   why_en:'Vercel\'s serverless runtime officially supports only Node.js, Python, and Edge (V8). Deno uses V8 but has its own permission model, built-in TypeScript, and standard library — a standalone runtime that Vercel\'s build infrastructure does not support. Deno-specific APIs (Deno.serve, Deno.readFile, etc.) will not work on Vercel. Deno Deploy, the official hosting service, supports all Deno features with low-latency edge execution.',
+   fix:{f:'deploy',s:'Deno Deploy'}},
+  {id:'be-dep-bun-netlify',p:['backend','deploy'],lv:'error',
+   t:a=>inc(a.backend,'Bun')&&inc(a.deploy,'Netlify'),
+   ja:'NetlifyはBunランタイムをサポートしません（Node.js/Goのみ）。RailwayでBunを動かしてください',
+   en:'Netlify does not support the Bun runtime (Node.js/Go only). Use Railway to run Bun instead',
+   why_ja:'NetlifyのFunctionsはAWS Lambda互換でNode.jsとGoを公式サポートします。BunはJavaScriptCoreエンジンとRust製I/Oレイヤーを持つ独立ランタイムであり、Netlifyのビルドインフラはnpmパッケージとしてのbunをサポートしておらず、Bun固有のAPI（Bun.serve・Bun.file等）はNetlify環境で動作しません。RailwayはBunのDockerコンテナを直接実行でき最も簡単な移行先です。',
+   why_en:'Netlify Functions are AWS Lambda-compatible, officially supporting Node.js and Go. Bun is a standalone runtime with JavaScriptCore and a Rust-based I/O layer — Netlify\'s build infrastructure does not support Bun natively, and Bun-specific APIs (Bun.serve, Bun.file, etc.) will not work. Railway can directly run Bun Docker containers and is the easiest migration target.',
+   fix:{f:'deploy',s:'Railway'}},
   {id:'be-dep-hono-cf',p:['backend','deploy'],lv:'info',
    t:a=>inc(a.deploy,'Cloudflare')&&inc(a.backend,'Hono'),
    ja:'✨ Hono + Cloudflare Workersは最適な組み合わせです（超高速Edge実行）',
@@ -538,6 +552,27 @@ const COMPAT_RULES=[
    why_ja:'クリエイタープラットフォームの核心はクリエイターへの収益分配です。単純なStripe決済ではプラットフォーム手数料控除・複数クリエイターへの送金が困難です。Stripe Connectの「Express Account」でKYC・銀行口座登録・自動分配を管理し、`transfer_group`で投げ銭の即時送金・月次まとめ払いを選択できます。ファン→プラットフォーム（手数料控除）→クリエイターの資金フローが核心です。',
    why_en:'The core of a creator platform is revenue distribution to creators. Standard Stripe payments make it difficult to deduct platform fees and send money to multiple creators. Stripe Connect "Express Accounts" manage KYC, bank account registration, and automatic splits; `transfer_group` supports instant tip transfers or monthly batched payouts. The funds flow: fan → platform (minus fee) → creator is central.',
    fix:{f:'payment',s:'Stripe決済 (Connect)'}},
+  {id:'dom-travel-nopay',p:['purpose','payment'],lv:'warn',
+   t:a=>{
+     const dom=detectDomain(a.purpose||'');
+     const hasPay=a.payment&&!inc(a.payment,'なし')&&!inc(a.payment,'None')&&a.payment!=='none';
+     return dom==='travel'&&!hasPay;
+   },
+   ja:'旅行・観光ドメインで決済が未設定です。宿泊・ツアー予約の事前決済（Stripe等）の統合を推奨します',
+   en:'Travel/tourism domain without payment. Add prepayment (Stripe etc.) for accommodation and tour bookings to prevent no-shows',
+   why_ja:'旅行プラットフォームでは宿泊・ツアー・交通の予約において事前決済が必要です。決済なしでは無断キャンセル・ノーショーが発生し収益が失われます。Stripeのデポジット機能（Payment Intents + capture_method:manual）で「仮押さえ→チェックイン確認後に確定」フローを実現し、キャンセル時はホールドを自動解放できます。宿泊施設・ツアー事業者への分配にはStripe Connectが必要です。',
+   why_en:'Travel platforms require prepayment for accommodation, tour, and transport bookings. Without payment, no-shows and last-minute cancellations result in revenue loss. Stripe\'s deposit flow (Payment Intents + capture_method:manual) enables "hold → confirm on check-in → capture" with automatic hold release on cancellation. Stripe Connect handles payouts to accommodation providers and tour operators.',
+   fix:{f:'payment',s:'Stripe決済'}},
+  {id:'dom-realestate-nopay',p:['purpose','payment'],lv:'info',
+   t:a=>{
+     const dom=detectDomain(a.purpose||'');
+     const hasPay=a.payment&&!inc(a.payment,'なし')&&!inc(a.payment,'None')&&a.payment!=='none';
+     return dom==='realestate'&&!hasPay;
+   },
+   ja:'不動産ドメインで決済が未設定です。仲介手数料・保証金の収受にStripe等の決済統合を検討してください',
+   en:'Real estate domain without payment. Consider adding Stripe for brokerage fees, deposits, or rental payments',
+   why_ja:'不動産プラットフォームでは仲介手数料・敷金礼金・月次賃料の収受が中核機能です。決済なしではプラットフォームの収益化が困難になります。Stripeの`Payment Links`で手数料収受、`Subscription`で月次賃料管理、`Connect`で物件オーナーへの送金が実現できます。',
+   why_en:'Real estate platforms need to collect brokerage fees, security deposits, and monthly rent as core features. Without payment, platform monetization is difficult. Stripe `Payment Links` handles fee collection, `Subscription` manages monthly rent, and `Connect` sends payouts to property owners.'},
   {id:'dom-newsletter-noemail',p:['purpose','mvp_features'],lv:'info',
    t:a=>{
      const dom=detectDomain(a.purpose||'');
@@ -569,6 +604,16 @@ const COMPAT_RULES=[
    en:'Insurance domain without AuditLog/ClaimLog entity. Insurance regulations (IAIS standards, national supervisory authorities) require operation log retention',
    why_ja:'保険業界は金融庁・IAISのガイドラインにより、全ての保険証券変更・クレーム処理・保険料計算の操作ログを義務付けています。AuditLogがないと、クレーム不正・証券改ざんの追跡が不可能になります。PostgreSQLのトリガー+AuditLogテーブルで全DML操作を自動記録し、誰が・いつ・何を変更したかをイミュータブルに保存することを推奨します。',
    why_en:'The insurance industry is required by financial regulators and IAIS guidelines to maintain operation logs for all policy changes, claims processing, and premium calculations. Without AuditLog, detecting claim fraud or policy tampering becomes impossible. Use PostgreSQL triggers + AuditLog table to automatically record all DML operations, immutably storing who changed what and when.'},
+  {id:'dom-hr-noaudit',p:['purpose','data_entities'],lv:'warn',
+   t:a=>{
+     const dom=detectDomain(a.purpose||'');
+     const hasAudit=/(AuditLog|TransactionLog|EventLog|AuditTrail|ActivityLog)/i.test(a.data_entities||'');
+     return dom==='hr'&&!hasAudit;
+   },
+   ja:'HRドメインですが、AuditLog等の監査エンティティが見当たりません。労働法・個人情報保護法は人事操作ログの保持を要求します',
+   en:'HR domain without AuditLog entity. Labor law and privacy regulations require operation logs for personnel changes',
+   why_ja:'HR（人事）システムは給与・採用・評価・解雇など機微な人事データを扱います。労働基準法・個人情報保護法では、給与計算変更・評価スコア修正・アクセス権変更等のすべての操作ログをイミュータブルに記録する義務があります。AuditLogがないと、不当解雇訴訟・給与計算ミスの原因追及・内部不正の調査が困難になります。',
+   why_en:'HR systems handle sensitive personnel data — salaries, hiring, performance reviews, terminations. Labor law and privacy regulations require immutable logs of all HR operations: payroll changes, performance score edits, access right modifications. Without AuditLog, defending against wrongful termination suits, tracing payroll errors, and investigating internal fraud becomes nearly impossible.'},
   {id:'dom-legal-noaudit',p:['purpose','data_entities'],lv:'warn',
    t:a=>{
      const dom=detectDomain(a.purpose||'');
@@ -579,6 +624,17 @@ const COMPAT_RULES=[
    en:'Legal domain without AuditLog/AccessLog entity. Attorney regulations and privacy law require access logs for confidential documents',
    why_ja:'法務システムは機密性の高い契約書・訴訟資料・法的意見書を扱います。弁護士法の守秘義務・個人情報保護法・eDiscovery要件により、誰がいつどの文書にアクセスしたかをイミュータブルに記録する監査証跡が必要です。AuditLogがないと、不正アクセス・情報漏洩の事後調査が不可能になり、クライアントへの説明責任を果たせません。',
    why_en:'Legal systems handle highly confidential contracts, litigation materials, and legal opinions. Attorney confidentiality obligations, privacy law, and eDiscovery requirements mandate immutable audit trails of who accessed which document and when. Without AuditLog, post-incident investigation of unauthorized access or data leaks is impossible, making client accountability unachievable.'},
+  {id:'dom-education-noauth',p:['purpose','auth'],lv:'warn',
+   t:a=>{
+     const dom=detectDomain(a.purpose||'');
+     const noAuth=!a.auth||inc(a.auth,'なし')||inc(a.auth,'None')||a.auth==='none';
+     return dom==='education'&&noAuth;
+   },
+   ja:'教育・LMSドメインで認証が未設定です。学習者データ（FERPA/COPPA対応）および未成年者保護のために認証が必要です',
+   en:'Education/LMS domain without authentication. Authentication is required for student data protection (FERPA/COPPA compliance and minor protection)',
+   why_ja:'教育系プラットフォームは学習者の個人情報（成績・出席・行動ログ）を扱います。FERPAは米国で学生教育記録の保護を義務付け、COPPAは13歳未満の子どもの個人情報収集を規制します。認証なしでは誰でも学習履歴にアクセスでき、特に未成年者データの保護義務に違反するリスクがあります。Firebase Auth/Supabase Authを使用してください。',
+   why_en:'Education platforms handle learner personal data (grades, attendance, activity logs). FERPA mandates protection of student education records in the US; COPPA regulates collection of personal information from children under 13. Without authentication, anyone can access learning history — especially risky for platforms handling minor data. Use Firebase Auth or Supabase Auth.',
+   fix:{f:'auth',s:'Firebase Auth'}},
   {id:'dom-media-nocdn',p:['purpose','mvp_features'],lv:'info',
    t:a=>{
      const dom=detectDomain(a.purpose||'');
