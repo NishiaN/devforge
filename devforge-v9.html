@@ -22833,6 +22833,8 @@ const be=_obsBackend(a);
 const dep=_obsTarget(a);
 const stack=OTEL_STACK[dep]||OTEL_STACK.default;
 const isBaaS=be==='supabase'||be==='firebase';
+const isPy=be==='python';
+const exporterLabel=isPy?'opentelemetry-sdk (Python / pip)':stack.exporter;
 let doc='# '+pn+' — '+(G?'オブザーバビリティアーキテクチャ':'Observability Architecture')+'\n';
 doc+='> '+(G?'ログ・メトリクス・分散トレーシング の3本柱による可観測性設計':'Three-pillar observability: Logs · Metrics · Distributed Tracing')+'\n\n';
 doc+='## '+(G?'オブザーバビリティの3本柱':'The Three Pillars of Observability')+'\n\n';
@@ -22860,7 +22862,7 @@ doc+='## '+(G?'デプロイ環境別ツール選定 ('+dep+')':'Tool Selection b
 doc+='| '+(G?'コンポーネント':'Component')+' | '+(G?'選定':'Selection')+'|\n';
 doc+='|------|------|\n';
 doc+='| OTel Collector | `'+stack.collector+'` |\n';
-doc+='| Exporter | `'+stack.exporter+'` |\n';
+doc+='| Exporter | `'+exporterLabel+'` |\n';
 doc+='| Backend | '+stack.backend+' |\n';
 if(isBaaS){
 var baasStack=OTEL_STACK[be]||OTEL_STACK.supabase;
@@ -22901,6 +22903,7 @@ const G=S.genLang==='ja';
 const be=_obsBackend(a);
 const isBaaS=be==='supabase'||be==='firebase';
 const isPy=be==='python';
+const isJava=be==='java';
 const orm=a.orm||'';
 const hasPrisma=/Prisma/i.test(orm);
 const hasSQLAlchemy=/SQLAlchemy/i.test(orm);
@@ -22917,9 +22920,16 @@ if(isPy){
 doc+='## '+(G?'Python structlog セットアップ':'Python structlog Setup')+'\n\n';
 doc+='```python\n';
 doc+='import structlog\nimport logging\n\n';
+doc+='# '+(G?'センシティブデータマスキング (パスワード等を [REDACTED] に置換)':'Sensitive data masking (replace passwords etc. with [REDACTED])')+'\n';
+doc+='def mask_sensitive(_, __, event_dict):\n';
+doc+="    for key in ('password', 'token', 'secret', 'authorization'):\n";
+doc+='        if key in event_dict:\n';
+doc+="            event_dict[key] = '[REDACTED]'\n";
+doc+='    return event_dict\n\n';
 doc+='structlog.configure(\n';
 doc+='    processors=[\n';
 doc+='        structlog.contextvars.merge_contextvars,\n';
+doc+='        mask_sensitive,\n';
 doc+='        structlog.processors.add_log_level,\n';
 doc+='        structlog.processors.TimeStamper(fmt="iso"),\n';
 doc+='        structlog.processors.JSONRenderer(),\n';
@@ -22935,14 +22945,52 @@ doc+='    duration_ms=elapsed,\n';
 doc+=')\n';
 doc+='```\n\n';
 if(hasSQLAlchemy){
-doc+='### SQLAlchemy '+(G?'クエリログ':'Query Logging')+'\n\n';
+doc+='### SQLAlchemy '+(G?'クエリログ (スロークエリ検出)':'Query Logging (Slow Query Detection)')+'\n\n';
 doc+='```python\n';
-doc+='import logging\n';
+doc+='from sqlalchemy import event\nfrom time import perf_counter\nimport logging\n\n';
 doc+='logging.getLogger("sqlalchemy.engine").setLevel(logging.INFO)\n';
 doc+='# '+(G?'開発時のみ echo=True。本番では必ず False':'echo=True for dev only; always False in prod')+'\n';
-doc+='engine = create_engine(DATABASE_URL, echo=False)\n';
+doc+='engine = create_engine(DATABASE_URL, echo=False)\n\n';
+doc+='@event.listens_for(engine, "before_cursor_execute")\n';
+doc+='def _before(conn, cursor, statement, params, context, executemany):\n';
+doc+='    conn.info["query_start"] = perf_counter()\n\n';
+doc+='@event.listens_for(engine, "after_cursor_execute")\n';
+doc+='def _after(conn, cursor, statement, params, context, executemany):\n';
+doc+='    elapsed_ms = (perf_counter() - conn.info.pop("query_start")) * 1000\n';
+doc+='    if elapsed_ms > 100:\n';
+doc+="        log.warn('slow_query', query=statement, duration_ms=round(elapsed_ms, 2))\n";
 doc+='```\n\n';
 }
+} else if(isJava){
+doc+='## '+(G?'Java SLF4J + Logback JSON セットアップ':'Java SLF4J + Logback JSON Setup')+'\n\n';
+doc+='```xml\n';
+doc+='<!-- build.gradle.kts / pom.xml -->\n';
+doc+='<!-- implementation("net.logstash.logback:logstash-logback-encoder:7.4") -->\n\n';
+doc+='<!-- logback-spring.xml -->\n';
+doc+='<appender name="JSON" class="ch.qos.logback.core.ConsoleAppender">\n';
+doc+='  <encoder class="net.logstash.logback.encoder.LogstashEncoder">\n';
+doc+='    <!-- REDACTED: mask sensitive fields -->\n';
+doc+='    <maskPattern>(?&lt;=password=)[^&amp;]+</maskPattern>\n';
+doc+='    <maskPattern>(?&lt;=token=)[^&amp;]+</maskPattern>\n';
+doc+='  </encoder>\n';
+doc+='</appender>\n';
+doc+='<root level="INFO"><appender-ref ref="JSON" /></root>\n';
+doc+='```\n\n';
+doc+='```java\n';
+doc+='import org.slf4j.Logger;\n';
+doc+='import org.slf4j.LoggerFactory;\n';
+doc+='import org.slf4j.MDC;\n\n';
+doc+='private static final Logger log = LoggerFactory.getLogger('+(pn||'App')+'Service.class);\n\n';
+doc+='// '+(G?'MDCでトレースID・ユーザーIDを全ログに付与':'Propagate trace_id + user_id to all logs via MDC')+'\n';
+doc+='MDC.put("trace_id", request.getHeader("traceparent"));\n';
+doc+='MDC.put("user_id", userId);\n';
+doc+='try {\n';
+doc+='    log.info("request_start");\n';
+doc+='    log.warn("slow_query detected — duration_ms={}", elapsedMs);\n';
+doc+='} finally {\n';
+doc+='    MDC.clear();\n';
+doc+='}\n';
+doc+='```\n\n';
 } else if(!isBaaS){
 doc+='## '+(G?'Node.js Pino セットアップ':'Node.js Pino Setup')+'\n\n';
 doc+='```bash\nnpm install pino pino-pretty\n```\n\n';
@@ -22963,6 +23011,7 @@ doc+="logger.error({ err, trace_id, duration_ms }, 'operation_failed');\n";
 doc+='```\n\n';
 var hasDrizzle=/Drizzle/i.test(orm);
 var hasTypeORM=/TypeORM/i.test(orm);
+var hasKysely=/Kysely/i.test(orm);
 if(hasPrisma){
 doc+='### Prisma '+(G?'クエリログ (スロークエリ検出)':'Query Logging (Slow Query Detection)')+'\n\n';
 doc+='```typescript\n';
@@ -23017,6 +23066,22 @@ doc+='  },\n';
 doc+='});\n\n';
 doc+='// '+(G?'本番ではDEBUG無効。スロークエリはPG側で検出:':'In prod, DEBUG is off. Detect slow queries server-side:')+'\n';
 doc+="// ALTER SYSTEM SET log_min_duration_statement = '100';\n";
+doc+='```\n\n';
+}
+if(hasKysely){
+doc+='### Kysely '+(G?'クエリログ (log コールバック)':'Query Logging (log callback)')+'\n\n';
+doc+='```typescript\n';
+doc+="import { Kysely, PostgresDialect } from 'kysely';\n\n";
+doc+='const db = new Kysely<Database>({\n';
+doc+='  dialect: new PostgresDialect({ pool }),\n';
+doc+='  log: (event) => {\n';
+doc+="    if (event.level === 'error') {\n";
+doc+="      logger.error({ query: event.query.sql, error: event.error }, 'db_query_error');\n";
+doc+='    } else if (event.queryDurationMillis > 100) {\n';
+doc+="      logger.warn({ query: event.query.sql, duration_ms: event.queryDurationMillis }, 'slow_query');\n";
+doc+='    }\n';
+doc+='  },\n';
+doc+='});\n';
 doc+='```\n\n';
 }
 } else {
@@ -23229,6 +23294,7 @@ const G=S.genLang==='ja';
 const be=_obsBackend(a);
 const dep=_obsTarget(a);
 const isPy=be==='python';
+const isJava=be==='java';
 const isBaaS=be==='supabase'||be==='firebase';
 const stack=OTEL_STACK[dep]||OTEL_STACK.default;
 let doc='# '+pn+' — '+(G?'分散トレーシング & ダッシュボード設計':'Distributed Tracing & Dashboard Design')+'\n';
@@ -23259,6 +23325,96 @@ doc+='    with tracer.start_as_current_span("process_order") as span:\n';
 doc+='        span.set_attribute("order.id", order_id)\n';
 doc+='        span.set_attribute("order.region", "jp")\n';
 doc+='        pass  # business logic here\n';
+doc+='```\n\n';
+} else if(isJava){
+doc+='```bash\n';
+doc+='# '+(G?'Java エージェント方式 — コード変更不要で自動計装':'Java agent approach — zero-code auto-instrumentation')+'\n';
+doc+='wget https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/latest/download/opentelemetry-javaagent.jar\n';
+doc+='```\n\n';
+doc+='```bash\n';
+doc+='# '+(G?'起動コマンドに -javaagent を追加するだけ':'Add -javaagent to JVM startup args')+'\n';
+doc+='java -javaagent:opentelemetry-javaagent.jar \\\n';
+doc+='  -Dotel.service.name='+pn.replace(/\s/g,'-').toLowerCase()+' \\\n';
+doc+='  -Dotel.exporter.otlp.endpoint=http://otel-collector:4317 \\\n';
+doc+='  -Dotel.traces.sampler=traceidratio \\\n';
+doc+='  -Dotel.traces.sampler.arg=0.1 \\\n';
+doc+='  -jar app.jar\n';
+doc+='```\n\n';
+doc+='```java\n';
+doc+='// '+(G?'手動スパン例 (OpenTelemetry Java API)':'Manual span example (OpenTelemetry Java API)')+'\n';
+doc+='import io.opentelemetry.api.GlobalOpenTelemetry;\n';
+doc+='import io.opentelemetry.api.trace.Tracer;\n\n';
+doc+='private static final Tracer tracer =\n';
+doc+='    GlobalOpenTelemetry.getTracer("'+pn.replace(/\s/g,'-').toLowerCase()+'");\n\n';
+doc+='Span span = tracer.spanBuilder("processOrder").startSpan();\n';
+doc+='try (Scope scope = span.makeCurrent()) {\n';
+doc+='    span.setAttribute("order.id", orderId);\n';
+doc+='    span.setAttribute("order.region", "jp");\n';
+doc+='    // business logic here\n';
+doc+='} finally {\n';
+doc+='    span.end();\n';
+doc+='}\n';
+doc+='```\n\n';
+} else if(dep==='vercel'){
+doc+='```bash\n';
+doc+='npm install @vercel/otel @opentelemetry/api\n';
+doc+='```\n\n';
+doc+='```typescript\n';
+doc+='// instrumentation.ts — '+(G?'Next.js の instrumentationHook で自動ロード':'auto-loaded via Next.js instrumentationHook')+'\n';
+doc+="import { registerOTel } from '@vercel/otel';\n\n";
+doc+='export function register() {\n';
+doc+="  registerOTel({ serviceName: '"+pn.replace(/\s/g,'-').toLowerCase()+"' });\n";
+doc+='}\n';
+doc+='```\n\n';
+doc+='```javascript\n';
+doc+='// next.config.js\n';
+doc+='module.exports = {\n';
+doc+='  experimental: { instrumentationHook: true },\n';
+doc+='};\n';
+doc+='```\n\n';
+doc+='```typescript\n';
+doc+='// '+(G?'手動スパン例':'Manual span example')+'\n';
+doc+="import { trace } from '@opentelemetry/api';\n";
+doc+="const tracer = trace.getTracer('"+pn.replace(/\s/g,'-').toLowerCase()+"');\n\n";
+doc+='async function processOrder(orderId: string) {\n';
+doc+="  return tracer.startActiveSpan('processOrder', async (span) => {\n";
+doc+="    span.setAttribute('order.id', orderId);\n";
+doc+='    try {\n';
+doc+='      // business logic here\n';
+doc+='    } finally {\n';
+doc+='      span.end();\n';
+doc+='    }\n';
+doc+='  });\n';
+doc+='}\n';
+doc+='```\n\n';
+} else if(dep==='cloudflare'){
+doc+='```bash\n';
+doc+='npm install @opentelemetry/api (edge-compatible) @microlabs/otel-cf-workers\n';
+doc+='```\n\n';
+doc+='```typescript\n';
+doc+='// '+(G?'Cloudflare Workers — Node.js SDK は非対応。edge-compatible API を使用':'Cloudflare Workers — Node.js SDK unsupported; use edge-compatible API')+'\n';
+doc+="import { trace, context, propagation } from '@opentelemetry/api';\n";
+doc+="import { instrument } from '@microlabs/otel-cf-workers';\n\n";
+doc+='export default instrument(\n';
+doc+='  { fetch: app.fetch },  // '+(G?'Hono/Workers fetch ハンドラ':'Hono/Workers fetch handler')+'\n';
+doc+='  (env: Env) => ({\n';
+doc+="    exporter: { url: 'https://api.honeycomb.io/v1/traces' },\n";
+doc+="    service: { name: '"+pn.replace(/\s/g,'-').toLowerCase()+"' },\n";
+doc+='  })\n';
+doc+=');\n\n';
+doc+='// '+(G?'手動スパン例 (Edge 環境)':'Manual span example (Edge environment)')+'\n';
+doc+="const tracer = trace.getTracer('"+pn.replace(/\s/g,'-').toLowerCase()+"');\n\n";
+doc+='async function handleRequest(request: Request) {\n';
+doc+="  return tracer.startActiveSpan('handleRequest', async (span) => {\n";
+doc+="    span.setAttribute('http.method', request.method);\n";
+doc+="    span.setAttribute('http.url', request.url);\n";
+doc+='    try {\n';
+doc+='      // business logic here\n';
+doc+='    } finally {\n';
+doc+='      span.end();\n';
+doc+='    }\n';
+doc+='  });\n';
+doc+='}\n';
 doc+='```\n\n';
 } else {
 doc+='```bash\n';
@@ -24986,7 +25142,7 @@ const detect=[
 [/不動産|物件|real.?estate|property.?mgmt|property.?management/i,'realestate'],
 [/法務|契約|legal|contract.?mgmt|contract.?management|コンプライアンス/i,'legal'],
 [/人事|HR|採用|recruit|hiring|求人|スカウト/i,'hr'],
-[/金融|fintech|銀行|bank|決済管理|construction.?pay|工事代金|建設.*支払/i,'fintech'],
+[/金融|fintech|フィンテック|銀行|bank|決済処理|決済管理|construction.?pay|工事代金|建設.*支払/i,'fintech'],
 [/医療|ヘルスケア|health|medical|clinic|病院|patient|患者|veterinary|動物病院|ペット|健康|フィットネス|ウェルネス|wellness|fitness/i,'health'],
 [/コミュニティ|community|フォーラム|forum|ソーシャルネットワーク/i,'community'],
 [/ゲーミ|gamification|gamify|バッジ|ポイント|リーダーボード|ゲーム要素/i,'gamify'],
