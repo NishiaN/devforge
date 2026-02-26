@@ -18,7 +18,7 @@
  *   Domain   detectDomain     → .spec/constitution.md §3 fallback KPI
  *   E2E      full generation  → file count, token richness, bilingual parity
  *
- * Suites 1-98: 1033 tests total
+ * Suites 1-98: 1036 tests total
  */
 
 const { describe, it } = require('node:test');
@@ -9814,7 +9814,7 @@ describe('Suite 97: P26 Observability depth — docs/103-106', () => {
 /* ════════════════════════════════════════════════════════════════
    Suite 98 — P26 Observability backend/ORM depth
    Kysely, TypeORM, Drizzle, Java/Spring, Vercel deploy, Cloudflare Workers,
-   no-ORM, fintech domain (フィンテック), bilingual ORM parity
+   Firebase, no-ORM, fintech domain (フィンテック), bilingual ORM parity
    ════════════════════════════════════════════════════════════════ */
 
 const obsKysely = {
@@ -9864,6 +9864,14 @@ const obsNoORM = {
   auth: 'JWT',
   mvp_features: 'ユーザー管理, データAPI, 認証',
   data_entities: 'User, Session, Log',
+};
+const obsFirebase = {
+  purpose: 'モバイルファーストのコミュニティアプリ',
+  frontend: 'React + Next.js', backend: 'Firebase',
+  database: 'Firestore', deploy: 'Firebase Hosting',
+  orm: '', auth: 'Firebase Auth',
+  mvp_features: 'ユーザー認証, 投稿, コメント, 通知',
+  data_entities: 'User, Post, Comment, Notification',
 };
 const obsCloudflare = {
   purpose: 'グローバルEdge APIゲートウェイ・レート制限サービス',
@@ -10011,6 +10019,34 @@ describe('Suite 98: P26 Observability — backend/ORM depth', () => {
     const doc = f['docs/104_structured_logging.md'] || '';
     assert.ok(doc.includes('SLF4J'), 'docs/104 EN Java must include SLF4J');
     assert.ok(doc.includes('REDACTED'), 'docs/104 EN Java must include REDACTED masking');
+  });
+
+  // ── Firebase ────────────────────────────────────────────────────
+  it('gObs Firebase: docs/103 uses Firebase stack (Crashlytics / Google Cloud Ops)', () => {
+    const f = gObs(obsFirebase);
+    const doc = f['docs/103_observability_architecture.md'] || '';
+    assert.ok(doc.includes('Firebase Crashlytics'), 'docs/103 Firebase must include Crashlytics');
+    assert.ok(doc.includes('firebase-admin logging'), 'docs/103 Firebase must include firebase-admin logging');
+    assert.ok(doc.includes('Google Cloud Ops'), 'docs/103 Firebase must reference Google Cloud Ops');
+    assert.ok(!doc.includes('AWS ADOT'), 'docs/103 Firebase must not show AWS ADOT');
+    assert.ok(!doc.includes('OpenTelemetry Collector (Docker)'), 'docs/103 Firebase must not show Docker collector');
+  });
+
+  it('gObs Firebase: docs/104 uses client-side console logging (no pino/structlog)', () => {
+    const f = gObs(obsFirebase);
+    const doc = f['docs/104_structured_logging.md'] || '';
+    assert.ok(doc.includes('console.info') || doc.includes('console.error'), 'docs/104 Firebase must use console logging');
+    assert.ok(doc.includes('JSON.stringify'), 'docs/104 Firebase must use JSON.stringify');
+    assert.ok(!doc.includes('pino('), 'docs/104 Firebase must not include Pino');
+    assert.ok(!doc.includes('structlog'), 'docs/104 Firebase must not include Python structlog');
+  });
+
+  it('gObs Firebase: docs/106 has BaaS tracing note (no sdk-node / no npm install)', () => {
+    const f = gObs(obsFirebase);
+    const doc = f['docs/106_distributed_tracing.md'] || '';
+    assert.ok(doc.includes('BaaS') || doc.includes('Firebase'), 'docs/106 Firebase must mention BaaS tracing limitations');
+    assert.ok(!doc.includes('@opentelemetry/sdk-node'), 'docs/106 Firebase must not show Node.js SDK');
+    assert.ok(!doc.includes('npm install @opentelemetry'), 'docs/106 Firebase must not show npm install');
   });
 
   // ── Cloudflare Workers ───────────────────────────────────────────
