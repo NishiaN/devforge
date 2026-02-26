@@ -458,6 +458,10 @@ function buildFileTree(){
     files.push({folder:true,name:'docs'});
     ['99_performance_strategy','100_database_performance','101_cache_strategy','102_performance_monitoring'].forEach(f=>
       files.push({name:'  '+f+'.md',path:'docs/'+f+'.md'}));
+  } else if(pillar===25){ // Observability Intelligence (P26)
+    files.push({folder:true,name:'docs'});
+    ['103_observability_architecture','104_structured_logging','105_metrics_alerting','106_distributed_tracing'].forEach(f=>
+      files.push({name:'  '+f+'.md',path:'docs/'+f+'.md'}));
   }
   // Common files
   files.push({name:'───────────',path:''});
@@ -480,7 +484,8 @@ function buildFileTree(){
    '87_database_design_principles','88_query_optimization_guide','89_migration_strategy','90_backup_disaster_recovery',
    '91_testing_strategy','92_coverage_design','93_e2e_test_architecture','94_performance_testing',
    '95_ai_safety_framework','96_ai_guardrail_implementation','97_ai_model_evaluation','98_prompt_injection_defense',
-   '99_performance_strategy','100_database_performance','101_cache_strategy','102_performance_monitoring'].forEach(f=>
+   '99_performance_strategy','100_database_performance','101_cache_strategy','102_performance_monitoring',
+   '103_observability_architecture','104_structured_logging','105_metrics_alerting','106_distributed_tracing'].forEach(f=>
     files.push({name:'  '+f+'.md',path:'docs/'+f+'.md'}));
   files.push({name:'───────────',path:''});
   ['README.md','.gitignore','package.json','LICENSE'].forEach(f=>files.push({name:f,path:f}));

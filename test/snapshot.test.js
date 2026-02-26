@@ -36,6 +36,7 @@ eval(fs.readFileSync('src/generators/p22-database.js','utf-8'));
 eval(fs.readFileSync('src/generators/p23-testing.js','utf-8'));
 eval(fs.readFileSync('src/generators/p24-aisafety.js','utf-8'));
 eval(fs.readFileSync('src/generators/p25-performance.js','utf-8'));
+eval(fs.readFileSync('src/generators/p26-observability.js','utf-8'));
 
 // ═══ Helper ═══
 function generate(answers, name, lang) {
@@ -66,6 +67,7 @@ function generate(answers, name, lang) {
   genPillar23_TestingIntelligence(answers, name);
   genPillar24_AISafety(answers, name);
   genPillar25_Performance(answers, name);
+  genPillar26_Observability(answers, name);
   return { ...S.files };
 }
 
@@ -84,14 +86,14 @@ describe('Snapshot A: LMS/Supabase/Stripe', () => {
     ai_auto: 'マルチAgent協調'
   }, 'LMS');
 
-  test('file count in range 132-163 (ADR+1, SecManifest+3, P21-P25 each add +4 docs)', () => {
+  test('file count in range 136-167 (ADR+1, SecManifest+3, P21-P26 each add +4 docs)', () => {
     const count = Object.keys(files).length;
-    assert.ok(count >= 132 && count <= 163, `Expected 132-163 files (ADR+1, SecManifest+3, P21-P25 +20), got ${count}`);
+    assert.ok(count >= 136 && count <= 167, `Expected 136-167 files (ADR+1, SecManifest+3, P21-P26 +24), got ${count}`);
   });
 
-  test('total tokens in range 12000-90000 (P21-P25 each add ~4-6K tokens)', () => {
+  test('total tokens in range 12000-90000 (P21-P26 each add ~4-6K tokens)', () => {
     const total = Object.values(files).reduce((s, v) => s + tokens(v), 0);
-    assert.ok(total >= 12000 && total <= 90000, `Expected 12K-90K tokens (P21-P25 each +4-6K), got ${total}`);
+    assert.ok(total >= 12000 && total <= 90000, `Expected 12K-90K tokens (P21-P26 each +4-6K), got ${total}`);
   });
 
   // Core files existence
@@ -700,6 +702,13 @@ describe('Snapshot A: LMS/Supabase/Stripe', () => {
     assert.ok(files['docs/101_cache_strategy.md'], 'docs/101 missing');
     assert.ok(files['docs/102_performance_monitoring.md'], 'docs/102 missing');
   });
+
+  test('P26 Observability Intelligence docs/103-106 exist', () => {
+    assert.ok(files['docs/103_observability_architecture.md'], 'docs/103 missing');
+    assert.ok(files['docs/104_structured_logging.md'], 'docs/104 missing');
+    assert.ok(files['docs/105_metrics_alerting.md'], 'docs/105 missing');
+    assert.ok(files['docs/106_distributed_tracing.md'], 'docs/106 missing');
+  });
 });
 
 // ═══ Dev Environment Type Tests ═══
@@ -749,9 +758,9 @@ describe('Snapshot B: Blog/Vite/Netlify', () => {
     dev_methods: 'TDD', ai_tools: 'Cursor', orm: ''
   }, 'Blog');
 
-  test('file count in range 122-152 (P21-P25 each add +4 docs, total +20; +3 ADR/pillar-map/cost-est)', () => {
+  test('file count in range 126-156 (P21-P26 each add +4 docs, total +24; +3 ADR/pillar-map/cost-est)', () => {
     const count = Object.keys(files).length;
-    assert.ok(count >= 122 && count <= 152, `Expected 122-152 files (P21-P25 each +4 docs, +3 new context docs), got ${count}`);
+    assert.ok(count >= 126 && count <= 156, `Expected 126-156 files (P21-P26 each +4 docs, +3 new context docs), got ${count}`);
   });
 
   test('no Stripe content when payment absent', () => {

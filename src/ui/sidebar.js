@@ -213,21 +213,21 @@ function updateSidebarLabels(){
 }
 
 /* ═══ PILLAR ICON GRID ═══ */
-var PILLAR_ICONS=['📋','🐳','🔌','🤖','✅','🗺️','🎨','🔍','💡','🔒','📊','⚙️','🔮','🧬','🧩','🔧','🏢','🚀','🌐','🗄️','📄','📦','🧪','🛡️','⚡'];
-var GEN_TO_PILLAR=[0,1,2,3,0,6,8,9,10,11,12,13,14,15,16,17,18,19,20,21,0,0,22,23,24];
-var PILLAR_FIRST_FILE=['.spec/constitution.md','.devcontainer/devcontainer.json','.mcp/project-context.md',null,null,null,'roadmap/LEARNING_PATH.md',null,'docs/26_design_system.md','docs/29_reverse_engineering.md','docs/39_implementation_playbook.md','docs/43_security_intelligence.md','docs/48_industry_blueprint.md','docs/53_ops_runbook.md','docs/56_market_positioning.md','docs/60_methodology_intelligence.md','docs/65_prompt_genome.md','docs/69_prompt_ops_pipeline.md','docs/73_enterprise_architecture.md','docs/77_cicd_pipeline_design.md','docs/83_api_design_principles.md','docs/87_database_design_principles.md','docs/91_testing_strategy.md','docs/95_ai_safety_framework.md','docs/99_performance_strategy.md'];
+var PILLAR_ICONS=['📋','🐳','🔌','🤖','✅','🗺️','🎨','🔍','💡','🔒','📊','⚙️','🔮','🧬','🧩','🔧','🏢','🚀','🌐','🗄️','📄','📦','🧪','🛡️','⚡','🔭'];
+var GEN_TO_PILLAR=[0,1,2,3,0,6,8,9,10,11,12,13,14,15,16,17,18,19,20,21,0,0,22,23,24,25];
+var PILLAR_FIRST_FILE=['.spec/constitution.md','.devcontainer/devcontainer.json','.mcp/project-context.md',null,null,null,'roadmap/LEARNING_PATH.md',null,'docs/26_design_system.md','docs/29_reverse_engineering.md','docs/39_implementation_playbook.md','docs/43_security_intelligence.md','docs/48_industry_blueprint.md','docs/53_ops_runbook.md','docs/56_market_positioning.md','docs/60_methodology_intelligence.md','docs/65_prompt_genome.md','docs/69_prompt_ops_pipeline.md','docs/73_enterprise_architecture.md','docs/77_cicd_pipeline_design.md','docs/83_api_design_principles.md','docs/87_database_design_principles.md','docs/91_testing_strategy.md','docs/95_ai_safety_framework.md','docs/99_performance_strategy.md','docs/103_observability_architecture.md'];
 
 function renderPillarGrid(){
   const g=$('sbPillarGrid');if(!g)return;
   const _ja=S.lang==='ja';
   const hasFiles=Object.keys(S.files||{}).length>0;
-  const names=_ja?['SDD','DevContainer','MCP','AIルール','品質','ロードマップ','デザイン','リバース','実装','セキュリティ','戦略','運用','未来','開発IQ','ゲノム','Prompt Ops','Enterprise','CI/CD','API','DB','仕様書','共通','テスト','AI安全','パフォ']:['SDD','DevContainer','MCP','AI Rules','Quality','Roadmap','Design','Reverse','Impl','Security','Strategy','Ops','Future','Dev IQ','Genome','Prompt Ops','Enterprise','CI/CD','API','DB','Docs','Common','Testing','AI Safety','Perf'];
+  const names=_ja?['SDD','DevContainer','MCP','AIルール','品質','ロードマップ','デザイン','リバース','実装','セキュリティ','戦略','運用','未来','開発IQ','ゲノム','Prompt Ops','Enterprise','CI/CD','API','DB','仕様書','共通','テスト','AI安全','パフォ','可観測']:['SDD','DevContainer','MCP','AI Rules','Quality','Roadmap','Design','Reverse','Impl','Security','Strategy','Ops','Future','Dev IQ','Genome','Prompt Ops','Enterprise','CI/CD','API','DB','Docs','Common','Testing','AI Safety','Perf','Observ'];
   // F8: beginner-friendly tooltips for Lv0-1 visible pillars
   var _bgTips=S.skillLv<=1?(_ja?{0:'仕様書を見る',3:'AIルールを見る',7:'AIプロンプトを起動',8:'デザインを見る'}:{0:'View Specs',3:'View AI Rules',7:'Launch AI Prompts',8:'View Design'}):null;
   // Lv0-1: show only 4 essential pillars (same set as hero badge filter)
   var _bpFilter=S.skillLv<=1?new Set([0,3,7,8]):null;
   let h='';
-  for(let i=0;i<25;i++){
+  for(let i=0;i<26;i++){
     const cls='sb-pillar-icon'+(hasFiles?' completed':' inactive');
     const hidden=_bpFilter&&!_bpFilter.has(i)?'style="display:none"':'';
     const tip=_bgTips&&_bgTips[i]!==undefined?_bgTips[i]:names[i];

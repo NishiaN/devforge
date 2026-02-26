@@ -324,7 +324,7 @@ describe('Build System', () => {
   it('has correct number of pillar badges', () => {
     const html = fs.readFileSync(OUTPUT, 'utf-8');
     const pbadgeCount = (html.match(/class="pbadge"/g) || []).length;
-    assert.strictEqual(pbadgeCount, 25, `pbadge count should be 25 (one per pillar), got ${pbadgeCount}`);
+    assert.strictEqual(pbadgeCount, 26, `pbadge count should be 26 (one per pillar), got ${pbadgeCount}`);
   });
 
   it('no duplicate @keyframes definitions', () => {
@@ -369,20 +369,20 @@ describe('Build System', () => {
     assert.ok(html.includes('function clickPillarIcon'), 'clickPillarIcon function should exist');
   });
 
-  it('sidebar pillar grid data arrays have 25 entries', () => {
+  it('sidebar pillar grid data arrays have 26 entries', () => {
     const js = fs.readFileSync(path.join(ROOT, 'src/ui/sidebar.js'), 'utf-8');
     const icons = js.match(/var PILLAR_ICONS=\[([^\]]+)\]/);
     assert.ok(icons, 'PILLAR_ICONS should be defined');
     const iconCount = (icons[1].match(/'/g) || []).length / 2;
-    assert.strictEqual(iconCount, 25, `PILLAR_ICONS should have 25 entries, got ${iconCount}`);
+    assert.strictEqual(iconCount, 26, `PILLAR_ICONS should have 26 entries, got ${iconCount}`);
     const gtp = js.match(/var GEN_TO_PILLAR=\[([^\]]+)\]/);
     assert.ok(gtp, 'GEN_TO_PILLAR should be defined');
     const gtpCount = gtp[1].split(',').length;
-    assert.strictEqual(gtpCount, 25, `GEN_TO_PILLAR should have 25 entries, got ${gtpCount}`);
+    assert.strictEqual(gtpCount, 26, `GEN_TO_PILLAR should have 26 entries, got ${gtpCount}`);
     const pff = js.match(/var PILLAR_FIRST_FILE=\[([^\]]+)\]/);
     assert.ok(pff, 'PILLAR_FIRST_FILE should be defined');
     const pffCount = pff[1].split(',').length;
-    assert.strictEqual(pffCount, 25, `PILLAR_FIRST_FILE should have 25 entries, got ${pffCount}`);
+    assert.strictEqual(pffCount, 26, `PILLAR_FIRST_FILE should have 26 entries, got ${pffCount}`);
   });
 
   it('all t() calls reference valid i18n keys', () => {

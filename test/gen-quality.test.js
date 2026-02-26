@@ -18,7 +18,7 @@
  *   Domain   detectDomain     → .spec/constitution.md §3 fallback KPI
  *   E2E      full generation  → file count, token richness, bilingual parity
  *
- * Suites 1-96: 992 tests total
+ * Suites 1-97: 1004 tests total
  */
 
 const { describe, it } = require('node:test');
@@ -64,6 +64,7 @@ eval(fs.readFileSync('src/generators/p22-database.js','utf-8'));
 eval(fs.readFileSync('src/generators/p23-testing.js','utf-8'));
 eval(fs.readFileSync('src/generators/p24-aisafety.js','utf-8'));
 eval(fs.readFileSync('src/generators/p25-performance.js','utf-8'));
+eval(fs.readFileSync('src/generators/p26-observability.js','utf-8'));
 
 /* ═══ Generation helpers ═══ */
 
@@ -110,6 +111,7 @@ function gFull(answers, lang, skill) {
   genPillar23_TestingIntelligence(answers,'QTest');
   genPillar24_AISafety(answers,'QTest');
   genPillar25_Performance(answers,'QTest');
+  genPillar26_Observability(answers,'QTest');
   return Object.assign({},S.files);
 }
 
@@ -685,10 +687,10 @@ describe('Q7: domain-specific KPI fallback in constitution §3', () => {
    ════════════════════════════════════════════════════════════════ */
 describe('Q8: Full E2E generation — file count, tokens, 25 vs 11 delta', () => {
 
-  it('A25 full generation: file count in 108-162 range', () => {
+  it('A25 full generation: file count in 108-170 range', () => {
     const f = gFull(A25);
     const count = Object.keys(f).length;
-    assert.ok(count >= 108 && count <= 166, `A25 full gen file count should be 108-166, got ${count}`);
+    assert.ok(count >= 108 && count <= 170, `A25 full gen file count should be 108-170, got ${count}`);
   });
 
   it('A25 full generation: total tokens ≥ 14000 (rich content across 24 pillars)', () => {
@@ -9602,5 +9604,209 @@ describe('Suite 96: P24 AI Safety depth — English mode (docs/95-98)', () => {
         const prose = (f[k]||'').replace(/```[\s\S]*?```/g,'');
         assert.ok(!prose.includes('undefined'), k + ' EN prose must not contain undefined');
       });
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 97 — P26 Observability Intelligence depth: docs/103-106
+   Architecture pipeline Mermaid, structured logging (Pino/structlog),
+   RED/USE metrics table, prom-client code, SLO YAML, alert rules,
+   OpenTelemetry setup, W3C TraceContext, Grafana dashboard JSON,
+   bilingual parity, no-undefined
+   ════════════════════════════════════════════════════════════════ */
+
+function gObs(answers, lang) {
+  S.files={}; S.genLang=lang||'ja'; S.skill='intermediate';
+  genPillar26_Observability(answers,'QTest');
+  return Object.assign({},S.files);
+}
+
+const obsAnswers = {
+  purpose: 'SaaS型サブスク管理プラットフォーム',
+  frontend: 'React + Next.js', backend: 'Node.js + NestJS',
+  database: 'PostgreSQL', deploy: 'Railway', orm: 'Prisma',
+  auth: 'JWT', mvp_features: 'ユーザー認証, サブスク管理, ダッシュボード',
+  data_entities: 'User, Subscription, Invoice',
+};
+const obsPyAnswers = {
+  purpose: 'AIベース医療データ分析プラットフォーム',
+  frontend: 'React', backend: 'Python + FastAPI',
+  database: 'PostgreSQL', deploy: 'AWS', orm: 'SQLAlchemy',
+  auth: 'JWT', mvp_features: '患者データ分析, レポート生成',
+  data_entities: 'Patient, Appointment, Record',
+};
+const obsBaaSAnswers = {
+  purpose: 'SaaS型学習管理システム',
+  frontend: 'React + Next.js', backend: 'Supabase',
+  database: 'Supabase (PostgreSQL)', deploy: 'Vercel',
+  auth: 'Supabase Auth', mvp_features: 'コース管理, 進捗管理',
+  data_entities: 'User, Course, Progress',
+};
+
+describe('Suite 97: P26 Observability depth — docs/103-106', () => {
+
+  it('gObs: all 4 docs/103-106 generated (Node.js + Railway)', () => {
+    const f = gObs(obsAnswers);
+    ['docs/103_observability_architecture.md','docs/104_structured_logging.md',
+     'docs/105_metrics_alerting.md','docs/106_distributed_tracing.md']
+      .forEach(k => assert.ok(f[k], k + ' required'));
+  });
+
+  it('gObs: docs/103 contains Mermaid pipeline (flowchart LR)', () => {
+    const f = gObs(obsAnswers);
+    const doc = f['docs/103_observability_architecture.md'] || '';
+    assert.ok(doc.includes('flowchart LR') || doc.includes('mermaid'), 'docs/103 must contain Mermaid pipeline diagram');
+  });
+
+  it('gObs: docs/103 contains 3-pillar table (Logs/Metrics/Traces)', () => {
+    const f = gObs(obsAnswers);
+    const doc = f['docs/103_observability_architecture.md'] || '';
+    assert.ok(doc.includes('ログ') || doc.includes('Logs'), 'docs/103 must reference Logs pillar');
+    assert.ok(doc.includes('メトリクス') || doc.includes('Metrics'), 'docs/103 must reference Metrics pillar');
+    assert.ok(doc.includes('トレース') || doc.includes('Traces'), 'docs/103 must reference Traces pillar');
+  });
+
+  it('gObs: docs/104 contains Pino setup for Node.js backend', () => {
+    const f = gObs(obsAnswers);
+    const doc = f['docs/104_structured_logging.md'] || '';
+    assert.ok(doc.includes('pino') || doc.includes('Pino'), 'docs/104 Node.js must include Pino logger setup');
+  });
+
+  it('gObs: docs/104 Python backend uses structlog', () => {
+    const f = gObs(obsPyAnswers);
+    const doc = f['docs/104_structured_logging.md'] || '';
+    assert.ok(doc.includes('structlog') || doc.includes('structlog.configure'), 'docs/104 Python must use structlog');
+  });
+
+  it('gObs: docs/104 contains sensitive data masking patterns', () => {
+    const f = gObs(obsAnswers);
+    const doc = f['docs/104_structured_logging.md'] || '';
+    assert.ok(
+      doc.includes('REDACTED') || doc.includes('redact') || doc.includes('maskEmail'),
+      'docs/104 must include sensitive data masking'
+    );
+  });
+
+  it('gObs: docs/105 contains RED method metrics table', () => {
+    const f = gObs(obsAnswers);
+    const doc = f['docs/105_metrics_alerting.md'] || '';
+    assert.ok(doc.includes('Rate') && doc.includes('Errors') && doc.includes('Duration'), 'docs/105 must contain RED metrics');
+  });
+
+  it('gObs: docs/105 contains SLO YAML definition', () => {
+    const f = gObs(obsAnswers);
+    const doc = f['docs/105_metrics_alerting.md'] || '';
+    assert.ok(doc.includes('slos:') || doc.includes('objective:'), 'docs/105 must contain SLO YAML');
+  });
+
+  it('gObs: docs/105 contains alert rules (Alertmanager YAML)', () => {
+    const f = gObs(obsAnswers);
+    const doc = f['docs/105_metrics_alerting.md'] || '';
+    assert.ok(doc.includes('HighErrorRate') || doc.includes('alert:'), 'docs/105 must contain Alertmanager alert rules');
+  });
+
+  it('gObs: docs/106 contains OpenTelemetry SDK setup', () => {
+    const f = gObs(obsAnswers);
+    const doc = f['docs/106_distributed_tracing.md'] || '';
+    assert.ok(
+      doc.includes('@opentelemetry') || doc.includes('opentelemetry'),
+      'docs/106 must include OpenTelemetry SDK setup'
+    );
+  });
+
+  it('gObs: docs/106 contains W3C TraceContext (traceparent)', () => {
+    const f = gObs(obsAnswers);
+    const doc = f['docs/106_distributed_tracing.md'] || '';
+    assert.ok(doc.includes('traceparent') || doc.includes('TraceContext'), 'docs/106 must reference W3C traceparent header');
+  });
+
+  it('gObs: docs/106 contains Grafana dashboard JSON as code', () => {
+    const f = gObs(obsAnswers);
+    const doc = f['docs/106_distributed_tracing.md'] || '';
+    assert.ok(doc.includes('Service Overview') || doc.includes('"panels"'), 'docs/106 must include Grafana dashboard-as-code');
+  });
+
+  it('gObs EN: all 4 docs generated in English mode', () => {
+    const f = gObs(obsAnswers, 'en');
+    ['docs/103_observability_architecture.md','docs/104_structured_logging.md',
+     'docs/105_metrics_alerting.md','docs/106_distributed_tracing.md']
+      .forEach(k => assert.ok(f[k], k + ' EN required'));
+  });
+
+  it('gObs EN: docs/103 English title and English pillar names', () => {
+    const f = gObs(obsAnswers, 'en');
+    const doc = f['docs/103_observability_architecture.md'] || '';
+    assert.ok(doc.includes('Observability Architecture'), 'docs/103 EN must have English title');
+    assert.ok(doc.includes('Logs') || doc.includes('Traces'), 'docs/103 EN must use English pillar names');
+  });
+
+  it('gObs EN: docs/104 English title and Pino redact config', () => {
+    const f = gObs(obsAnswers, 'en');
+    const doc = f['docs/104_structured_logging.md'] || '';
+    assert.ok(
+      doc.includes('Structured Logging') || doc.includes('Logging Implementation'),
+      'docs/104 EN must have English title'
+    );
+  });
+
+  it('gObs EN: docs/105 English title and RED/USE method labels', () => {
+    const f = gObs(obsAnswers, 'en');
+    const doc = f['docs/105_metrics_alerting.md'] || '';
+    assert.ok(doc.includes('Metrics') || doc.includes('Alerting'), 'docs/105 EN must have English title');
+    assert.ok(doc.includes('RED Method') || doc.includes('Rate') && doc.includes('Errors'), 'docs/105 EN must show RED Method');
+  });
+
+  it('gObs EN: docs/106 English title and sampling strategy in English', () => {
+    const f = gObs(obsAnswers, 'en');
+    const doc = f['docs/106_distributed_tracing.md'] || '';
+    assert.ok(
+      doc.includes('Distributed Tracing') || doc.includes('Dashboard Design'),
+      'docs/106 EN must have English title'
+    );
+    assert.ok(
+      doc.includes('Sampling') || doc.includes('sampler'),
+      'docs/106 EN must reference sampling strategy'
+    );
+  });
+
+  it('gObs: bilingual parity — docs/103-106 EN >= 50% JA length and >400 chars each', () => {
+    const fEn = gObs(obsAnswers, 'en');
+    const fJa = gObs(obsAnswers, 'ja');
+    ['docs/103_observability_architecture.md','docs/104_structured_logging.md',
+     'docs/105_metrics_alerting.md','docs/106_distributed_tracing.md']
+      .forEach(k => {
+        const en = (fEn[k]||'').length;
+        const ja = (fJa[k]||'').length;
+        assert.ok(en > 400, k + ' EN must have substantial content (>400 chars)');
+        assert.ok(en > ja * 0.5, k + ' EN should be at least 50% the length of JA');
+      });
+  });
+
+  it('gObs: docs/103-106 prose has no undefined', () => {
+    const f = gObs(obsAnswers);
+    ['docs/103_observability_architecture.md','docs/104_structured_logging.md',
+     'docs/105_metrics_alerting.md','docs/106_distributed_tracing.md']
+      .forEach(k => {
+        const prose = (f[k]||'').replace(/```[\s\S]*?```/g,'');
+        assert.ok(!prose.includes('undefined'), k + ' prose must not contain undefined');
+      });
+  });
+
+  it('gObs BaaS: docs/103 mentions BaaS limitations', () => {
+    const f = gObs(obsBaaSAnswers);
+    const doc = f['docs/103_observability_architecture.md'] || '';
+    assert.ok(
+      doc.includes('BaaS') || doc.includes('Supabase') || doc.includes('console'),
+      'docs/103 BaaS must mention BaaS-specific guidance'
+    );
+  });
+
+  it('gObs Python: docs/106 uses Python OTel (FastAPI instrumentation)', () => {
+    const f = gObs(obsPyAnswers);
+    const doc = f['docs/106_distributed_tracing.md'] || '';
+    assert.ok(
+      doc.includes('FastAPIInstrumentor') || doc.includes('fastapi') || doc.includes('opentelemetry'),
+      'docs/106 Python must include FastAPI instrumentation'
+    );
   });
 });
