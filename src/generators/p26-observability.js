@@ -206,6 +206,7 @@ function gen104(a,pn){
     doc+="logger.error({ err, trace_id, duration_ms }, 'operation_failed');\n";
     doc+='```\n\n';
     var hasDrizzle=/Drizzle/i.test(orm);
+    var hasTypeORM=/TypeORM/i.test(orm);
     if(hasPrisma){
       doc+='### Prisma '+(G?'クエリログ (スロークエリ検出)':'Query Logging (Slow Query Detection)')+'\n\n';
       doc+='```typescript\n';
@@ -219,6 +220,31 @@ function gen104(a,pn){
       doc+='  if (e.duration > 100) {\n';
       doc+="    logger.warn({ query: e.query, duration_ms: e.duration }, 'slow_query');\n";
       doc+='  }\n';
+      doc+='});\n';
+      doc+='```\n\n';
+    }
+    if(hasTypeORM){
+      doc+='### TypeORM '+(G?'クエリログ (スロークエリ検出)':'Query Logging (Slow Query Detection)')+'\n\n';
+      doc+='```typescript\n';
+      doc+="import { DataSource } from 'typeorm';\n\n";
+      doc+='const AppDataSource = new DataSource({\n';
+      doc+="  type: 'postgres',\n";
+      doc+='  // ...\n';
+      doc+='  maxQueryExecutionTime: 100, // '+(G?'100ms超のクエリをスロークエリとして記録':'Log queries exceeding 100ms as slow')+'\n';
+      doc+='  logger: {\n';
+      doc+='    logQuery(query: string, parameters?: unknown[]) {\n';
+      doc+="      logger.debug({ query, parameters }, 'db_query');\n";
+      doc+='    },\n';
+      doc+='    logQueryError(error: string | Error, query: string) {\n';
+      doc+="      logger.error({ error, query }, 'db_query_error');\n";
+      doc+='    },\n';
+      doc+='    logQuerySlow(time: number, query: string, parameters?: unknown[]) {\n';
+      doc+="      logger.warn({ duration_ms: time, query }, 'slow_query');\n";
+      doc+='    },\n';
+      doc+='    logSchemaBuild(_message: string) {},\n';
+      doc+='    logMigration(_message: string) {},\n';
+      doc+='    log(_level: string, _message: unknown) {},\n';
+      doc+='  },\n';
       doc+='});\n';
       doc+='```\n\n';
     }
