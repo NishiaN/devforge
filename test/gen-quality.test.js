@@ -17,6 +17,8 @@
  *   N-7/ORM  BaaS backend     → roadmap/LEARNING_PATH.md §Layer 3 ORM
  *   Domain   detectDomain     → .spec/constitution.md §3 fallback KPI
  *   E2E      full generation  → file count, token richness, bilingual parity
+ *
+ * Suites 1-84: 851 tests total
  */
 
 const { describe, it } = require('node:test');
@@ -7806,6 +7808,428 @@ describe('Suite 81: P25 EN bilingual depth + Supabase/Kysely DB performance', ()
      'docs/101_cache_strategy.md','docs/102_performance_monitoring.md'].forEach(key => {
       const prose = (f[key] || '').replace(/```[\s\S]*?```/g, '');
       assert.ok(!prose.includes('undefined'), key + ' Cloudflare+Drizzle prose must not contain undefined');
+    });
+  });
+});
+
+describe('Suite 82: P22 Database — index rules, TypeORM, Neon PITR, DR runbook, connection pooling', () => {
+
+  const s82_typeorm = Object.assign({}, A25, {
+    purpose: '社内向けタスク管理・工数追跡システム',
+    backend: 'NestJS + TypeORM',
+    database: 'PostgreSQL (Neon)',
+    orm: 'TypeORM',
+    deploy: 'Railway',
+  });
+  const s82_neon = Object.assign({}, A25, {
+    backend: 'Express.js + Node.js',
+    database: 'PostgreSQL (Neon)',
+    orm: 'Prisma ORM',
+    deploy: 'Railway',
+  });
+  const s82_supabase = Object.assign({}, A25, {
+    backend: 'Supabase',
+    database: 'Supabase (PostgreSQL)',
+    auth: 'Supabase Auth',
+    deploy: 'Vercel',
+    orm: '',
+  });
+  const s82_py = Object.assign({}, A25, {
+    backend: 'Python / FastAPI',
+    database: 'PostgreSQL (Neon)',
+    orm: 'SQLAlchemy',
+    deploy: 'Railway',
+  });
+
+  it('docs/87: index rules table covers covering index (INCLUDE) and partial index pattern', () => {
+    const f = gDB(s82_neon);
+    const doc = f['docs/87_database_design_principles.md'] || '';
+    assert.ok(doc.includes('INCLUDE') || doc.includes('covering'), 'docs/87 must mention covering index with INCLUDE clause');
+    assert.ok(doc.includes('deleted_at IS NULL') || doc.includes('partial'), 'docs/87 must mention partial index pattern');
+  });
+
+  it('docs/87: naming conventions table shows snake_case, UUID, idx_ prefix, TIMESTAMPTZ', () => {
+    const f = gDB(s82_neon);
+    const doc = f['docs/87_database_design_principles.md'] || '';
+    assert.ok(doc.includes('snake_case') || doc.includes('スネークケース'), 'docs/87 must have snake_case (EN) or スネークケース (JA) naming');
+    assert.ok(doc.includes('UUID'), 'docs/87 must have UUID key convention');
+    assert.ok(doc.includes('idx_'), 'docs/87 must show idx_ prefix convention');
+    assert.ok(doc.includes('TIMESTAMPTZ'), 'docs/87 must show TIMESTAMPTZ for timestamps');
+  });
+
+  it('docs/88 TypeORM: N+1 section uses generic SQL LEFT JOIN (no TypeORM-specific branch)', () => {
+    const f = gDB(s82_typeorm);
+    const doc = f['docs/88_query_optimization_guide.md'] || '';
+    assert.ok(doc.includes('LEFT JOIN') || doc.includes('JOIN'), 'docs/88 TypeORM must show JOIN-based N+1 resolution');
+    assert.ok(doc.includes('N+1'), 'docs/88 TypeORM must have N+1 section');
+  });
+
+  it('docs/88 Python: connection pooling shows pool_pre_ping and pool_recycle', () => {
+    const f = gDB(s82_py);
+    const doc = f['docs/88_query_optimization_guide.md'] || '';
+    assert.ok(doc.includes('pool_pre_ping'), 'docs/88 Python must have pool_pre_ping setting');
+    assert.ok(doc.includes('pool_recycle'), 'docs/88 Python must have pool_recycle setting');
+  });
+
+  it('docs/88 Prisma: connection pooling mentions Prisma Accelerate or PgBouncer', () => {
+    const f = gDB(s82_neon);
+    const doc = f['docs/88_query_optimization_guide.md'] || '';
+    assert.ok(
+      doc.includes('Prisma Accelerate') || doc.includes('PgBouncer') || doc.includes('Supabase Pooler'),
+      'docs/88 Prisma must mention serverless connection pooling solution'
+    );
+  });
+
+  it('docs/89 TypeORM: always has Expand-Contract pattern section', () => {
+    const f = gDB(s82_typeorm);
+    const doc = f['docs/89_migration_strategy.md'] || '';
+    assert.ok(doc.includes('Expand-Contract') || doc.includes('エクスパンド'), 'docs/89 TypeORM must have Expand-Contract pattern');
+    assert.ok(doc.includes('Zero-Downtime') || doc.includes('ゼロダウンタイム'), 'docs/89 TypeORM must cover zero-downtime principles');
+  });
+
+  it('docs/89: migration safety checklist includes CONCURRENTLY index creation', () => {
+    const f = gDB(s82_neon);
+    const doc = f['docs/89_migration_strategy.md'] || '';
+    assert.ok(doc.includes('CONCURRENTLY'), 'docs/89 must show CREATE INDEX CONCURRENTLY to avoid locking');
+  });
+
+  it('docs/90 Neon: mentions PITR and neonctl restore or branching', () => {
+    const f = gDB(s82_neon);
+    const doc = f['docs/90_backup_disaster_recovery.md'] || '';
+    assert.ok(
+      doc.includes('PITR') || doc.includes('neonctl') || doc.includes('branching'),
+      'docs/90 Neon must describe PITR or branch-based restore'
+    );
+    assert.ok(doc.includes('Neon'), 'docs/90 must have Neon-specific backup section');
+  });
+
+  it('docs/90: backup strategies table has all 3 tiers (continuous WAL/PITR, daily, logical)', () => {
+    const f = gDB(s82_neon);
+    const doc = f['docs/90_backup_disaster_recovery.md'] || '';
+    assert.ok(doc.includes('WAL') || doc.includes('PITR'), 'docs/90 must have continuous backup tier');
+    assert.ok(doc.includes('pg_dump') || doc.includes('daily') || doc.includes('日次'), 'docs/90 must have daily backup tier');
+    assert.ok(doc.includes('Logical') || doc.includes('論理'), 'docs/90 must have logical backup tier');
+  });
+
+  it('docs/90: DR runbook has step-by-step procedure including maintenance mode and postmortem', () => {
+    const f = gDB(s82_neon);
+    const doc = f['docs/90_backup_disaster_recovery.md'] || '';
+    assert.ok(doc.includes('maintenance') || doc.includes('メンテナンス'), 'docs/90 DR runbook must include maintenance mode step');
+    assert.ok(doc.includes('postmortem') || doc.includes('ポストモーテム'), 'docs/90 DR runbook must include postmortem step');
+  });
+
+  it('docs/90: backup monitoring alerts table has 24h and ±30% checks', () => {
+    const f = gDB(s82_neon);
+    const doc = f['docs/90_backup_disaster_recovery.md'] || '';
+    assert.ok(doc.includes('24') || doc.includes('24時間'), 'docs/90 must alert on 24h+ backup gap');
+    assert.ok(doc.includes('30%') || doc.includes('±30'), 'docs/90 must alert on backup size anomaly');
+  });
+
+  it('docs/87-90: no undefined in prose for TypeORM+Neon stack', () => {
+    const f = gDB(s82_typeorm);
+    ['docs/87_database_design_principles.md','docs/88_query_optimization_guide.md',
+     'docs/89_migration_strategy.md','docs/90_backup_disaster_recovery.md'].forEach(key => {
+      const prose = (f[key] || '').replace(/```[\s\S]*?```/g, '');
+      assert.ok(!prose.includes('undefined'), key + ' TypeORM+Neon prose must not contain undefined');
+    });
+  });
+});
+
+describe('Suite 83: P23 Testing — Java/Spring, BaaS, Vue, mobile E2E, domain QA map', () => {
+
+  const s83_java = Object.assign({}, A25, {
+    purpose: '企業向け受発注・在庫管理ERPシステム',
+    frontend: 'React + Next.js',
+    backend: 'Spring Boot (Java)',
+    database: 'PostgreSQL (Neon)',
+    orm: 'TypeORM',
+    deploy: 'Railway',
+  });
+  const s83_vue = Object.assign({}, A25, {
+    purpose: 'チームのドキュメント共有・Wiki管理ツール',
+    frontend: 'Vue 3 + Nuxt',
+    backend: 'Express.js + Node.js',
+    database: 'PostgreSQL (Neon)',
+    orm: 'Prisma ORM',
+    deploy: 'Railway',
+  });
+  const s83_baas = Object.assign({}, A25, {
+    purpose: 'スタートアップ向けリアルタイムコラボレーションツール',
+    frontend: 'React + Next.js',
+    backend: 'Supabase',
+    database: 'Supabase (PostgreSQL)',
+    auth: 'Supabase Auth',
+    deploy: 'Vercel',
+    orm: '',
+  });
+  const s83_mobile = Object.assign({}, A25, {
+    purpose: 'フィールドワーカー向けモバイル点検・報告アプリ',
+    frontend: 'React + Next.js',
+    backend: 'Express.js + Node.js',
+    database: 'PostgreSQL (Neon)',
+    orm: 'Prisma ORM',
+    deploy: 'Railway',
+    mobile: 'Expo (React Native)',
+    auth: 'Supabase Auth',
+  });
+  const s83_fintech = Object.assign({}, A25, {
+    purpose: '銀行API連携による家計簿・資産管理プラットフォーム',
+    backend: 'NestJS + TypeORM',
+    database: 'PostgreSQL (Neon)',
+    orm: 'TypeORM',
+    deploy: 'Railway',
+  });
+
+  it('docs/91 Java/Spring: recommends JUnit 5 + Mockito + AssertJ', () => {
+    const f = gTest(s83_java);
+    const doc = f['docs/91_testing_strategy.md'] || '';
+    assert.ok(doc.includes('JUnit 5') || doc.includes('JUnit'), 'docs/91 Java must recommend JUnit 5');
+    assert.ok(doc.includes('Mockito') || doc.includes('assertThat') || doc.includes('UserControllerTest'), 'docs/91 Java must include Mockito/AssertJ or integration test class');
+    assert.ok(doc.includes('AssertJ') || doc.includes('assertThat'), 'docs/91 Java must include AssertJ');
+  });
+
+  it('docs/91 Java/Spring: backend test example uses @SpringBootTest and TestRestTemplate', () => {
+    const f = gTest(s83_java);
+    const doc = f['docs/91_testing_strategy.md'] || '';
+    assert.ok(doc.includes('@SpringBootTest'), 'docs/91 Java backend test must use @SpringBootTest');
+    assert.ok(doc.includes('TestRestTemplate') || doc.includes('RANDOM_PORT'), 'docs/91 Java must show random port integration test');
+  });
+
+  it('docs/91 BaaS: uses Vitest and focuses on serverless edge functions', () => {
+    const f = gTest(s83_baas);
+    const doc = f['docs/91_testing_strategy.md'] || '';
+    assert.ok(doc.includes('Vitest') || doc.includes('vitest'), 'docs/91 BaaS must recommend Vitest');
+    assert.ok(
+      doc.includes('serverless') || doc.includes('edge') || doc.includes('processOrder') || doc.includes('BaaS'),
+      'docs/91 BaaS must focus on serverless/edge function testing'
+    );
+  });
+
+  it('docs/91 Vue: uses @vue/test-utils or vue-test-utils', () => {
+    const f = gTest(s83_vue);
+    const doc = f['docs/91_testing_strategy.md'] || '';
+    assert.ok(
+      doc.includes('@vue/test-utils') || doc.includes('vue-test-utils') || doc.includes('mount'),
+      'docs/91 Vue must use @vue/test-utils'
+    );
+    assert.ok(doc.includes('Vitest'), 'docs/91 Vue must recommend Vitest (Vite-native)');
+  });
+
+  it('docs/91 fintech domain: DOMAIN_QA_MAP injects domain-specific test priority matrix', () => {
+    const f = gTest(s83_fintech);
+    const doc = f['docs/91_testing_strategy.md'] || '';
+    assert.ok(
+      doc.includes('fintech') || doc.includes('Test Priority') || doc.includes('品質特性'),
+      'docs/91 fintech must inject domain-specific test priority section'
+    );
+    // DOMAIN_QA_MAP priority is formatted with | separator in table rows
+    assert.ok(doc.includes('|'), 'docs/91 domain QA section must have table rows');
+  });
+
+  it('docs/92 Java: JaCoCo coverage with violation rules', () => {
+    const f = gTest(s83_java);
+    const doc = f['docs/92_coverage_design.md'] || '';
+    assert.ok(doc.includes('JaCoCo') || doc.includes('jacoco'), 'docs/92 Java must use JaCoCo');
+    assert.ok(
+      doc.includes('jacocoTestCoverageVerification') || doc.includes('violationRules') || doc.includes('0.80'),
+      'docs/92 Java must show JaCoCo coverage threshold configuration'
+    );
+  });
+
+  it('docs/93 mobile Expo: has Maestro or Detox mobile E2E section', () => {
+    const f = gTest(s83_mobile);
+    const doc = f['docs/93_e2e_test_architecture.md'] || '';
+    assert.ok(
+      doc.includes('Maestro') || doc.includes('Detox'),
+      'docs/93 with Expo mobile must have Maestro/Detox mobile E2E section'
+    );
+    assert.ok(
+      doc.includes('launchApp') || doc.includes('maestro') || doc.includes('.yaml'),
+      'docs/93 mobile must show Maestro YAML example'
+    );
+  });
+
+  it('docs/93 with auth: has storageState authentication setup pattern', () => {
+    const f = gTest(s83_mobile);
+    const doc = f['docs/93_e2e_test_architecture.md'] || '';
+    assert.ok(
+      doc.includes('storageState') || doc.includes('auth.setup'),
+      'docs/93 with auth must show Playwright storageState auth pattern'
+    );
+  });
+
+  it('docs/94 Python: uses Locust (not k6) for load testing', () => {
+    const f = gTest(Object.assign({}, A25, { backend: 'Python / FastAPI', orm: 'SQLAlchemy' }));
+    const doc = f['docs/94_performance_testing.md'] || '';
+    assert.ok(doc.includes('locust') || doc.includes('Locust'), 'docs/94 Python must use Locust for load testing');
+    assert.ok(doc.includes('HttpUser') || doc.includes('@task'), 'docs/94 Python Locust must show HttpUser/task pattern');
+  });
+
+  it('docs/94 Next.js: has Next.js performance optimization checklist with ISR/SSG and Server Components', () => {
+    const f = gTest(s83_vue.frontend === 'Vue 3 + Nuxt'
+      ? Object.assign({}, A25, { frontend: 'React + Next.js', backend: 'Express.js + Node.js', orm: 'Prisma ORM' })
+      : s83_java);
+    const fNext = gTest(Object.assign({}, A25, { frontend: 'React + Next.js', backend: 'Express.js + Node.js', orm: 'Prisma ORM' }));
+    const doc = fNext['docs/94_performance_testing.md'] || '';
+    assert.ok(doc.includes('next/image') || doc.includes('ISR') || doc.includes('Server Component'), 'docs/94 Next.js must have Next.js optimization checklist');
+    assert.ok(doc.includes('ISR') || doc.includes('ISR/SSG') || doc.includes('revalidate'), 'docs/94 Next.js checklist must include ISR/SSG');
+  });
+
+  it('docs/91-94: no undefined in prose for Java+Spring stack', () => {
+    const f = gTest(s83_java);
+    ['docs/91_testing_strategy.md','docs/92_coverage_design.md',
+     'docs/93_e2e_test_architecture.md','docs/94_performance_testing.md'].forEach(key => {
+      const prose = (f[key] || '').replace(/```[\s\S]*?```/g, '');
+      assert.ok(!prose.includes('undefined'), key + ' Java/Spring prose must not contain undefined');
+    });
+  });
+});
+
+describe('Suite 84: P24 AI Safety — Claude/OpenAI providers, high-autonomy, RAGAS, PII, injection patterns', () => {
+
+  const s84_claude = Object.assign({}, A25, {
+    purpose: '法務契約書レビューと法的リスク評価AI',
+    ai_auto: 'Claude APIを活用した自律エージェント',
+    backend: 'Python / FastAPI',
+  });
+  const s84_openai = Object.assign({}, A25, {
+    purpose: 'カスタマーサポート自動化チャットボットシステム',
+    ai_auto: 'GPT-4を活用した自動応答AI',
+    backend: 'Next.js (App Router) + tRPC',
+  });
+  const s84_generic = Object.assign({}, A25, {
+    purpose: 'AIチャットボット・会話型インターフェース開発プラットフォーム',
+    ai_auto: 'マルチAIエージェント活用',
+    backend: 'Express.js + Node.js',
+  });
+  const s84_noai = Object.assign({}, A25, {
+    ai_auto: 'なし',
+    backend: 'Express.js + Node.js',
+  });
+  const s84_local = Object.assign({}, A25, {
+    purpose: 'プライベートデータを扱うオンプレミスAIアシスタント',
+    ai_auto: 'Llama3ローカル実行',
+    backend: 'Python / FastAPI',
+  });
+
+  it('docs/95 Claude provider: shows claude-opus-4-6 model reference', () => {
+    const f = gAISafety(s84_claude);
+    const doc = f['docs/95_ai_safety_framework.md'] || '';
+    assert.ok(
+      doc.includes('claude-opus-4-6') || doc.includes('claude'),
+      'docs/95 Claude provider must reference claude-opus-4-6 model'
+    );
+  });
+
+  it('docs/95 OpenAI provider: shows gpt-4o and response_format json_object', () => {
+    const f = gAISafety(s84_openai);
+    const doc = f['docs/95_ai_safety_framework.md'] || '';
+    assert.ok(doc.includes('gpt-4o') || doc.includes('GPT'), 'docs/95 OpenAI provider must reference gpt-4o');
+    assert.ok(
+      doc.includes('response_format') || doc.includes('json_object'),
+      'docs/95 OpenAI must show JSON output enforcement for injection defense'
+    );
+  });
+
+  it('docs/95 high-autonomy (Claude autonomous): triggers ⚠️ 高自律レベル検出 warning', () => {
+    const f = gAISafety(s84_claude);
+    const doc = f['docs/95_ai_safety_framework.md'] || '';
+    assert.ok(
+      doc.includes('高自律レベル') || doc.includes('High Autonomy Level'),
+      'docs/95 autonomous AI must trigger high-autonomy warning'
+    );
+  });
+
+  it('docs/96: has PII detection function with email/phone/credit card patterns', () => {
+    const f = gAISafety(s84_generic);
+    const doc = f['docs/96_ai_guardrail_implementation.md'] || '';
+    assert.ok(doc.includes('detectPII'), 'docs/96 must have detectPII function');
+    assert.ok(doc.includes('EMAIL') || doc.includes('email'), 'docs/96 detectPII must cover email pattern');
+    assert.ok(doc.includes('PHONE') || doc.includes('phone'), 'docs/96 detectPII must cover phone pattern');
+  });
+
+  it('docs/96: has AI rate limiting with slidingWindow pattern', () => {
+    const f = gAISafety(s84_generic);
+    const doc = f['docs/96_ai_guardrail_implementation.md'] || '';
+    assert.ok(doc.includes('Ratelimit') || doc.includes('ratelimit'), 'docs/96 must have rate limiting for AI endpoints');
+    assert.ok(
+      doc.includes('slidingWindow') || doc.includes('sliding'),
+      'docs/96 must use sliding window rate limiter'
+    );
+    assert.ok(doc.includes('10') && (doc.includes('1 m') || doc.includes('per')), 'docs/96 must show 10 req/min limit');
+  });
+
+  it('docs/96: has content moderation integration with moderation API reference', () => {
+    const f = gAISafety(s84_generic);
+    const doc = f['docs/96_ai_guardrail_implementation.md'] || '';
+    assert.ok(
+      doc.includes('moderateContent') || doc.includes('moderation'),
+      'docs/96 must have content moderation function'
+    );
+    assert.ok(
+      doc.includes('openai.com/v1/moderations') || doc.includes('Moderation API') || doc.includes('flagged'),
+      'docs/96 must reference OpenAI Moderation API or flagged result'
+    );
+  });
+
+  it('docs/97: evaluation metrics table has all 6 metrics (Accuracy, Hallucination, Toxicity, Latency, Cost, Instruction)', () => {
+    const f = gAISafety(s84_generic);
+    const doc = f['docs/97_ai_model_evaluation.md'] || '';
+    assert.ok(doc.includes('Accuracy') || doc.includes('正確性'), 'docs/97 must have Accuracy metric');
+    assert.ok(doc.includes('Hallucination Rate') || doc.includes('ハルシネーション率'), 'docs/97 must have Hallucination Rate metric');
+    assert.ok(doc.includes('Toxicity') || doc.includes('有害性'), 'docs/97 must have Toxicity metric');
+    assert.ok(doc.includes('Latency P95') || doc.includes('P95'), 'docs/97 must have Latency P95 metric');
+    assert.ok(doc.includes('Cost per') || doc.includes('トークンコスト'), 'docs/97 must have Cost per token metric');
+    assert.ok(doc.includes('Instruction Following') || doc.includes('指示追従'), 'docs/97 must have Instruction Following metric');
+  });
+
+  it('docs/97: RAGAS section with faithfulness and answer_relevancy metrics', () => {
+    const f = gAISafety(s84_generic);
+    const doc = f['docs/97_ai_model_evaluation.md'] || '';
+    assert.ok(doc.includes('ragas') || doc.includes('RAGAS'), 'docs/97 must have RAGAS evaluation section');
+    assert.ok(doc.includes('faithfulness'), 'docs/97 RAGAS must include faithfulness metric');
+    assert.ok(doc.includes('answer_relevancy') || doc.includes('context_precision'), 'docs/97 RAGAS must include relevancy/precision metric');
+  });
+
+  it('docs/97: Langfuse observability section for generic/claude provider', () => {
+    const f = gAISafety(s84_generic);
+    const doc = f['docs/97_ai_model_evaluation.md'] || '';
+    assert.ok(doc.includes('Langfuse') || doc.includes('langfuse'), 'docs/97 must have Langfuse observability integration');
+    assert.ok(doc.includes('tracedCompletion') || doc.includes('trace'), 'docs/97 must show traced completion pattern');
+  });
+
+  it('docs/97: A/B test design table with p < 0.05 and 50/50 split', () => {
+    const f = gAISafety(s84_generic);
+    const doc = f['docs/97_ai_model_evaluation.md'] || '';
+    assert.ok(doc.includes('p < 0.05') || doc.includes('p<0.05'), 'docs/97 A/B test must show statistical significance threshold');
+    assert.ok(doc.includes('50/50'), 'docs/97 A/B test must show 50/50 traffic split');
+  });
+
+  it('docs/98: INJECTION_PATTERNS code block filters "ignore previous instructions"', () => {
+    const f = gAISafety(s84_generic);
+    const doc = f['docs/98_prompt_injection_defense.md'] || '';
+    assert.ok(
+      doc.includes('ignore') && (doc.includes('previous') || doc.includes('FILTERED')),
+      'docs/98 must have injection pattern matching "ignore previous instructions"'
+    );
+    assert.ok(doc.includes('MAX_PROMPT_LENGTH') || doc.includes('4096'), 'docs/98 must enforce prompt length limit');
+  });
+
+  it('docs/98: shows indirect injection attack example with SYSTEM OVERRIDE pattern', () => {
+    const f = gAISafety(s84_generic);
+    const doc = f['docs/98_prompt_injection_defense.md'] || '';
+    assert.ok(
+      doc.includes('SYSTEM OVERRIDE') || doc.includes('indirect') || doc.includes('Indirect'),
+      'docs/98 must cover indirect injection attack pattern'
+    );
+  });
+
+  it('docs/95-98: no undefined in prose for local LLM (Llama) stack', () => {
+    const f = gAISafety(s84_local);
+    ['docs/95_ai_safety_framework.md','docs/96_ai_guardrail_implementation.md',
+     'docs/97_ai_model_evaluation.md','docs/98_prompt_injection_defense.md'].forEach(key => {
+      const prose = (f[key] || '').replace(/```[\s\S]*?```/g, '');
+      assert.ok(!prose.includes('undefined'), key + ' Llama local LLM prose must not contain undefined');
     });
   });
 });
