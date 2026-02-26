@@ -205,6 +205,7 @@ function gen104(a,pn){
     doc+="logger.info({ trace_id: req.headers['x-trace-id'], user_id: session.userId }, 'request_start');\n";
     doc+="logger.error({ err, trace_id, duration_ms }, 'operation_failed');\n";
     doc+='```\n\n';
+    var hasDrizzle=/Drizzle/i.test(orm);
     if(hasPrisma){
       doc+='### Prisma '+(G?'クエリログ (スロークエリ検出)':'Query Logging (Slow Query Detection)')+'\n\n';
       doc+='```typescript\n';
@@ -219,6 +220,21 @@ function gen104(a,pn){
       doc+="    logger.warn({ query: e.query, duration_ms: e.duration }, 'slow_query');\n";
       doc+='  }\n';
       doc+='});\n';
+      doc+='```\n\n';
+    }
+    if(hasDrizzle){
+      doc+='### Drizzle '+(G?'クエリログ (カスタムロガー)':'Query Logging (Custom Logger)')+'\n\n';
+      doc+='```typescript\n';
+      doc+="import { drizzle } from 'drizzle-orm/node-postgres';\n\n";
+      doc+='const db = drizzle(client, {\n';
+      doc+='  logger: {\n';
+      doc+='    logQuery(query: string, params: unknown[]) {\n';
+      doc+="      logger.debug({ query, params }, 'db_query');\n";
+      doc+='    },\n';
+      doc+='  },\n';
+      doc+='});\n\n';
+      doc+='// '+(G?'本番ではDEBUG無効。スロークエリはPG側で検出:':'In prod, DEBUG is off. Detect slow queries server-side:')+'\n';
+      doc+="// ALTER SYSTEM SET log_min_duration_statement = '100';\n";
       doc+='```\n\n';
     }
   } else {
