@@ -18,7 +18,7 @@
  *   Domain   detectDomain     → .spec/constitution.md §3 fallback KPI
  *   E2E      full generation  → file count, token richness, bilingual parity
  *
- * Suites 1-87: 888 tests total
+ * Suites 1-90: 924 tests total
  */
 
 const { describe, it } = require('node:test');
@@ -8604,5 +8604,309 @@ describe('Suite 87: P16/P17 depth — docs/60-63 + docs/65-68', () => {
       doc.includes('KPI') || doc.includes('metric') || doc.includes('メトリクス'),
       'docs/68 must include KPI or metric tracking content'
     );
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 88 — P21 API Intelligence depth: docs/83-86 content verification
+   REST URL conventions, BaaS RLS, GraphQL DataLoader/DepthLimit,
+   OpenAPI 3.1 BearerAuth, OWASP CRITICAL, k6 load test, schemathesis
+   ════════════════════════════════════════════════════════════════ */
+
+describe('Suite 88: P21 API depth — docs/83-86', () => {
+
+  // ── docs/83 REST ──
+  it('docs/83 REST: /api/v1/users URL convention present', () => {
+    const f = gAPI21(expressApiAnswers);
+    const doc = f['docs/83_api_design_principles.md'] || '';
+    assert.ok(doc.includes('/api/v1/users'), 'docs/83 REST must show /api/v1/users URL convention');
+  });
+
+  it('docs/83 REST: RFC 7807 error response format present', () => {
+    const f = gAPI21(expressApiAnswers);
+    const doc = f['docs/83_api_design_principles.md'] || '';
+    assert.ok(doc.includes('RFC 7807'), 'docs/83 REST must reference RFC 7807 Problem Details error format');
+  });
+
+  // ── docs/83 BaaS ──
+  it('docs/83 BaaS Supabase: Row Level Security (RLS) client SDK pattern present', () => {
+    const f = gAPI21(supabaseApiAnswers);
+    const doc = f['docs/83_api_design_principles.md'] || '';
+    assert.ok(
+      doc.includes('Row Level Security (RLS)') || doc.includes('RLS'),
+      'docs/83 BaaS must show Row Level Security (RLS) comment in client SDK code'
+    );
+  });
+
+  // ── docs/83 GraphQL ──
+  it('docs/83 GraphQL: DataLoader N+1 prevention principle present', () => {
+    const f = gAPI21(graphqlAnswers);
+    const doc = f['docs/83_api_design_principles.md'] || '';
+    assert.ok(doc.includes('DataLoader'), 'docs/83 GraphQL must include DataLoader in principles table');
+  });
+
+  it('docs/83 GraphQL: Depth Limit max-5 constraint present', () => {
+    const f = gAPI21(graphqlAnswers);
+    const doc = f['docs/83_api_design_principles.md'] || '';
+    assert.ok(doc.includes('Depth Limit'), 'docs/83 GraphQL must show Depth Limit query constraint');
+  });
+
+  // ── docs/84 OpenAPI Specification ──
+  it('docs/84: openapi: "3.1.0" YAML header present', () => {
+    const f = gAPI21(expressApiAnswers);
+    const doc = f['docs/84_openapi_specification.md'] || '';
+    assert.ok(
+      doc.includes('openapi: "3.1.0"') || doc.includes("openapi: '3.1.0'"),
+      'docs/84 must declare openapi: 3.1.0 in YAML template'
+    );
+  });
+
+  it('docs/84: BearerAuth JWT security scheme present', () => {
+    const f = gAPI21(expressApiAnswers);
+    const doc = f['docs/84_openapi_specification.md'] || '';
+    assert.ok(doc.includes('BearerAuth'), 'docs/84 must include BearerAuth security scheme for JWT auth');
+  });
+
+  // ── docs/85 API Security Checklist ──
+  it('docs/85: 🔴 CRITICAL severity section heading present', () => {
+    const f = gAPI21(expressApiAnswers);
+    const doc = f['docs/85_api_security_checklist.md'] || '';
+    assert.ok(
+      doc.includes('🔴 CRITICAL') || doc.includes('CRITICAL'),
+      'docs/85 must include CRITICAL severity section with 4 items'
+    );
+  });
+
+  it('docs/85 BaaS Supabase: authn check references getUser()/getSession()', () => {
+    const f = gAPI21(supabaseApiAnswers);
+    const doc = f['docs/85_api_security_checklist.md'] || '';
+    assert.ok(
+      doc.includes('getUser()') || doc.includes('getSession()'),
+      'docs/85 BaaS must reference Supabase SDK getUser()/getSession() for server-side auth verification'
+    );
+  });
+
+  it('docs/85: HIGH section includes CORS restriction check', () => {
+    const f = gAPI21(expressApiAnswers);
+    const doc = f['docs/85_api_security_checklist.md'] || '';
+    assert.ok(
+      doc.includes('CORS') || doc.includes('ALLOWED_ORIGINS'),
+      'docs/85 must include CORS as HIGH severity security check'
+    );
+  });
+
+  // ── docs/86 API Testing Strategy ──
+  it('docs/86: k6 load testing tool reference present', () => {
+    const f = gAPI21(expressApiAnswers);
+    const doc = f['docs/86_api_testing_strategy.md'] || '';
+    assert.ok(doc.includes('k6'), 'docs/86 must reference k6 for load testing with threshold config');
+  });
+
+  it('docs/86 Python FastAPI: schemathesis contract testing tool present', () => {
+    const f = gAPI21(pyApiAnswers);
+    const doc = f['docs/86_api_testing_strategy.md'] || '';
+    assert.ok(doc.includes('schemathesis'), 'docs/86 Python must reference schemathesis for OpenAPI contract testing');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 89 — P25 Performance Intelligence depth: docs/99-102 verification
+   CWV LCP/INP targets, Next.js bundle analyzer, Prisma select,
+   CREATE INDEX CONCURRENTLY, N+1 include, pg_stat_statements,
+   Redis Upstash cache-aside, Lighthouse CI, SpeedInsights
+   ════════════════════════════════════════════════════════════════ */
+
+describe('Suite 89: P25 Performance depth — docs/99-102', () => {
+
+  // ── docs/99 Performance Strategy ──
+  it('docs/99: CWV table shows LCP with ≤ 2.5s good threshold', () => {
+    const f = gPerf(perfAnswers);
+    const doc = f['docs/99_performance_strategy.md'] || '';
+    assert.ok(doc.includes('LCP'), 'docs/99 CWV table must include LCP metric');
+    assert.ok(doc.includes('≤ 2.5s'), 'docs/99 CWV LCP good threshold must be ≤ 2.5s');
+  });
+
+  it('docs/99: CWV table shows INP with ≤ 200ms good threshold', () => {
+    const f = gPerf(perfAnswers);
+    const doc = f['docs/99_performance_strategy.md'] || '';
+    assert.ok(doc.includes('INP'), 'docs/99 CWV table must include INP metric');
+    assert.ok(doc.includes('≤ 200ms'), 'docs/99 CWV INP good threshold must be ≤ 200ms');
+  });
+
+  it('docs/99: Next.js bundle tool is @next/bundle-analyzer', () => {
+    const f = gPerf(perfAnswers);
+    const doc = f['docs/99_performance_strategy.md'] || '';
+    assert.ok(doc.includes('@next/bundle-analyzer'), 'docs/99 Next.js must show @next/bundle-analyzer as bundle analysis tool');
+  });
+
+  it('docs/99: Prisma select specific fields optimization pattern present', () => {
+    const f = gPerf(perfAnswers);
+    const doc = f['docs/99_performance_strategy.md'] || '';
+    assert.ok(
+      doc.includes('select: { id: true') || doc.includes('select only needed fields') || doc.includes('select: {'),
+      'docs/99 must show Prisma select-specific-fields optimization to avoid SELECT *'
+    );
+  });
+
+  // ── docs/100 Database Performance ──
+  it('docs/100: CREATE INDEX CONCURRENTLY index design pattern present', () => {
+    const f = gPerf(perfAnswers);
+    const doc = f['docs/100_database_performance.md'] || '';
+    assert.ok(doc.includes('CREATE INDEX CONCURRENTLY'), 'docs/100 must show CREATE INDEX CONCURRENTLY pattern for production-safe indexing');
+  });
+
+  it('docs/100: N+1 problem shows Prisma include fix', () => {
+    const f = gPerf(perfAnswers);
+    const doc = f['docs/100_database_performance.md'] || '';
+    assert.ok(
+      doc.includes('include: { posts: true }') || doc.includes('N+1'),
+      'docs/100 must show N+1 problem fix with Prisma include pattern'
+    );
+  });
+
+  it('docs/100: pg_stat_statements slow query detection present', () => {
+    const f = gPerf(perfAnswers);
+    const doc = f['docs/100_database_performance.md'] || '';
+    assert.ok(doc.includes('pg_stat_statements'), 'docs/100 must reference pg_stat_statements for slow query detection');
+  });
+
+  // ── docs/101 Cache Strategy ──
+  it('docs/101: Redis Upstash cache-aside pattern present', () => {
+    const f = gPerf(perfAnswers);
+    const doc = f['docs/101_cache_strategy.md'] || '';
+    assert.ok(
+      doc.includes('@upstash/redis') || doc.includes('Upstash'),
+      'docs/101 must show Redis Upstash cache-aside implementation pattern'
+    );
+  });
+
+  it('docs/101: cache hierarchy shows CDN/Edge and DB layers', () => {
+    const f = gPerf(perfAnswers);
+    const doc = f['docs/101_cache_strategy.md'] || '';
+    assert.ok(
+      doc.includes('CDN') || doc.includes('Edge'),
+      'docs/101 cache hierarchy must include CDN/Edge layer'
+    );
+    assert.ok(doc.includes('DB'), 'docs/101 cache hierarchy must include DB layer');
+  });
+
+  // ── docs/102 Performance Monitoring ──
+  it('docs/102: Lighthouse CI configuration with lighthouserc.json present', () => {
+    const f = gPerf(perfAnswers);
+    const doc = f['docs/102_performance_monitoring.md'] || '';
+    assert.ok(doc.includes('lighthouserc.json'), 'docs/102 must include Lighthouse CI config referencing lighthouserc.json');
+  });
+
+  it('docs/102: performance budget table shows LCP ≤ 2.5s target', () => {
+    const f = gPerf(perfAnswers);
+    const doc = f['docs/102_performance_monitoring.md'] || '';
+    assert.ok(
+      doc.includes('LCP') && doc.includes('≤ 2.5s'),
+      'docs/102 performance budget table must show LCP ≤ 2.5s target'
+    );
+  });
+
+  it('docs/102 Vercel: SpeedInsights component import present', () => {
+    const f = gPerf(perfAnswers); // deploy: Vercel
+    const doc = f['docs/102_performance_monitoring.md'] || '';
+    assert.ok(doc.includes('SpeedInsights'), 'docs/102 Vercel must show @vercel/speed-insights SpeedInsights component setup');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 90 — P13 Strategic Intelligence depth: docs/48-52 verification
+   Domain-specific regulations (FERPA/COPPA/PCI DSS/SOC2), Tech Radar
+   Adopt/Hold with React 19/jQuery, mermaid timeline, SonarQube, DORA
+   ════════════════════════════════════════════════════════════════ */
+
+const s90_edu  = Object.assign({}, A25, { purpose:'オンライン学習プラットフォーム LMS 教材管理' });
+const s90_ec   = Object.assign({}, A25, { purpose:'ECサイト ショッピングカート 決済システム', payment:'Stripe' });
+// s90_saas uses A25 directly (purpose: 'SaaS型サブスク管理プラットフォーム' → saas domain)
+
+describe('Suite 90: P13 Strategic depth — docs/48-52', () => {
+
+  // ── docs/48 Industry Blueprint ──
+  it('docs/48 education: FERPA student-record compliance present', () => {
+    const f = gP13(s90_edu);
+    const doc = f['docs/48_industry_blueprint.md'] || '';
+    assert.ok(doc.includes('FERPA'), 'docs/48 education domain must show FERPA compliance regulation');
+  });
+
+  it('docs/48 education: COPPA under-13 compliance present', () => {
+    const f = gP13(s90_edu);
+    const doc = f['docs/48_industry_blueprint.md'] || '';
+    assert.ok(doc.includes('COPPA'), 'docs/48 education domain must show COPPA compliance for users under 13');
+  });
+
+  it('docs/48 ec: PCI DSS 4.0.1 card data regulation present', () => {
+    const f = gP13(s90_ec);
+    const doc = f['docs/48_industry_blueprint.md'] || '';
+    assert.ok(doc.includes('PCI DSS'), 'docs/48 EC domain must show PCI DSS 4.0.1 card data compliance');
+  });
+
+  it('docs/48 saas: SOC 2 Type II compliance present', () => {
+    const f = gP13(A25);
+    const doc = f['docs/48_industry_blueprint.md'] || '';
+    assert.ok(doc.includes('SOC 2'), 'docs/48 SaaS domain must show SOC 2 Type II certification requirement');
+  });
+
+  it('docs/48: Top 3 Failure Factors section with numbered headings present', () => {
+    const f = gP13(A25);
+    const doc = f['docs/48_industry_blueprint.md'] || '';
+    assert.ok(
+      doc.includes('失敗要因 1') || doc.includes('Failure Factor 1'),
+      'docs/48 must show numbered failure factor headings in Top 3 section'
+    );
+  });
+
+  // ── docs/49 Tech Radar ──
+  it('docs/49: Tech Radar Adopt category heading present', () => {
+    const f = gP13(A25);
+    const doc = f['docs/49_tech_radar.md'] || '';
+    assert.ok(doc.includes('Adopt'), 'docs/49 Tech Radar must include Adopt category for each tech area');
+  });
+
+  it('docs/49: React 19 listed in frontend Adopt category', () => {
+    const f = gP13(A25);
+    const doc = f['docs/49_tech_radar.md'] || '';
+    assert.ok(doc.includes('React 19'), 'docs/49 Tech Radar must list React 19 in frontend Adopt section');
+  });
+
+  it('docs/49: jQuery listed in frontend Hold (avoid) category', () => {
+    const f = gP13(A25);
+    const doc = f['docs/49_tech_radar.md'] || '';
+    assert.ok(doc.includes('jQuery'), 'docs/49 Tech Radar must list jQuery in Hold/Avoid category');
+  });
+
+  it('docs/49: mermaid timeline diagram for stack evolution roadmap present', () => {
+    const f = gP13(A25);
+    const doc = f['docs/49_tech_radar.md'] || '';
+    assert.ok(
+      doc.includes('```mermaid') && doc.includes('timeline'),
+      'docs/49 must include mermaid timeline diagram for stack evolution roadmap'
+    );
+  });
+
+  // ── docs/50 Stakeholder Strategy ──
+  it('docs/50: Phase 1 development phase present in stakeholder plan', () => {
+    const f = gP13(A25);
+    const doc = f['docs/50_stakeholder_strategy.md'] || '';
+    assert.ok(
+      doc.includes('フェーズ 1') || doc.includes('Phase 1'),
+      'docs/50 must show Phase 1 in stakeholder development phase strategy'
+    );
+  });
+
+  it('docs/50: SonarQube reference in technical debt management section', () => {
+    const f = gP13(A25);
+    const doc = f['docs/50_stakeholder_strategy.md'] || '';
+    assert.ok(doc.includes('SonarQube'), 'docs/50 must reference SonarQube in SQALE Rating tech debt management');
+  });
+
+  // ── docs/51 Operational Excellence ──
+  it('docs/51: DORA Metrics reference in team design section', () => {
+    const f = gP13(A25);
+    const doc = f['docs/51_operational_excellence.md'] || '';
+    assert.ok(doc.includes('DORA'), 'docs/51 must include DORA Metrics in team design section');
   });
 });
