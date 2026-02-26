@@ -646,6 +646,35 @@ function gen106(a,pn){
       doc+='  });\n';
       doc+='}\n';
       doc+='```\n\n';
+    } else if(dep==='cloudflare'){
+      doc+='```bash\n';
+      doc+='npm install @opentelemetry/api (edge-compatible) @microlabs/otel-cf-workers\n';
+      doc+='```\n\n';
+      doc+='```typescript\n';
+      doc+='// '+(G?'Cloudflare Workers — Node.js SDK は非対応。edge-compatible API を使用':'Cloudflare Workers — Node.js SDK unsupported; use edge-compatible API')+'\n';
+      doc+="import { trace, context, propagation } from '@opentelemetry/api';\n";
+      doc+="import { instrument } from '@microlabs/otel-cf-workers';\n\n";
+      doc+='export default instrument(\n';
+      doc+='  { fetch: app.fetch },  // '+(G?'Hono/Workers fetch ハンドラ':'Hono/Workers fetch handler')+'\n';
+      doc+='  (env: Env) => ({\n';
+      doc+="    exporter: { url: 'https://api.honeycomb.io/v1/traces' },\n";
+      doc+="    service: { name: '"+pn.replace(/\s/g,'-').toLowerCase()+"' },\n";
+      doc+='  })\n';
+      doc+=');\n\n';
+      doc+='// '+(G?'手動スパン例 (Edge 環境)':'Manual span example (Edge environment)')+'\n';
+      doc+="const tracer = trace.getTracer('"+pn.replace(/\s/g,'-').toLowerCase()+"');\n\n";
+      doc+='async function handleRequest(request: Request) {\n';
+      doc+="  return tracer.startActiveSpan('handleRequest', async (span) => {\n";
+      doc+="    span.setAttribute('http.method', request.method);\n";
+      doc+="    span.setAttribute('http.url', request.url);\n";
+      doc+='    try {\n';
+      doc+='      // business logic here\n';
+      doc+='    } finally {\n';
+      doc+='      span.end();\n';
+      doc+='    }\n';
+      doc+='  });\n';
+      doc+='}\n';
+      doc+='```\n\n';
     } else {
       doc+='```bash\n';
       doc+='npm install @opentelemetry/sdk-node @opentelemetry/auto-instrumentations-node \\\n';
