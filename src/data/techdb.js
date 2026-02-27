@@ -144,7 +144,7 @@ const TECH_DB=[
 {name:'Claude Code Subagents',cat:'ai_auto',sub:'parallel',req:'optional',level:'pro'},
 {name:'Claude Code Tasks',cat:'ai_auto',sub:'dag',req:'optional',level:'pro'},
 {name:'Claude-Flow',cat:'ai_auto',sub:'orchestrator',req:'optional',level:'pro'},
-{name:'Lovable',cat:'ai_auto',sub:'generator',req:'optional',level:'beg',price:'$25'},
+{name:'Lovable',cat:'ai_auto',sub:'app-gen',req:'optional',level:'beg',price:'free-tier'},
 {name:'Bolt.new',cat:'ai_auto',sub:'generator',req:'optional',level:'beg',price:'free-oss'},
 {name:'v0 (Vercel)',cat:'ai_auto',sub:'ui-gen',req:'optional',level:'int',price:'$20'},
 {name:'Codex App (OpenAI)',cat:'ai_auto',sub:'agentic',req:'optional',level:'pro',price:'$20'},
@@ -256,7 +256,7 @@ const TECH_DB=[
 {name:'Aider',cat:'ai',sub:'cli',req:'optional',level:'int',price:'free-oss'},
 {name:'Jules (Google)',cat:'ai_auto',sub:'async-agent',req:'optional',level:'int',price:'free'},
 {name:'Amazon Q Developer',cat:'ai',sub:'ext',req:'optional',level:'int',price:'free-19'},
-{name:'Gemini Code Assist',cat:'ai',sub:'ext',req:'optional',level:'int',price:'free-tier'},
+{name:'Gemini Code Assist',cat:'ai',sub:'ext',req:'optional',level:'int',price:'free-19'},
 {name:'JetBrains Junie',cat:'ai',sub:'ext',req:'optional',level:'int',price:'bundled'},
 {name:'Tabnine',cat:'ai',sub:'ext',req:'optional',level:'int',price:'free-39'},
 {name:'Trae',cat:'ai',sub:'ide',req:'optional',level:'int',price:'free'},
@@ -266,7 +266,7 @@ const TECH_DB=[
 {name:'DeepSeek V3.2',cat:'ai_auto',sub:'oss-model',req:'optional',level:'pro',price:'free-oss'},
 {name:'Poolside',cat:'ai_auto',sub:'autonomous',req:'optional',level:'pro',price:'paid'},
 {name:'Cursor Composer',cat:'ai_auto',sub:'agent',req:'optional',level:'int'},
-{name:'OpenHands',cat:'ai_auto',sub:'oss',req:'optional',level:'pro',price:'free-oss'},
+{name:'OpenHands',cat:'ai_auto',sub:'agent-fw',req:'optional',level:'pro',price:'free-oss'},
 // ── Design & Methodology (12) ──
 {name:'TDD',cat:'method',sub:'methodology',req:'recommended',level:'int'},
 {name:'BDD',cat:'method',sub:'methodology',req:'recommended',level:'int'},
@@ -369,13 +369,13 @@ const TECH_DB=[
 // ── Event & Music Backend APIs (4) ──
 {name:'Ticketmaster API',cat:'back',sub:'event',req:'optional',level:'int',price:'usage'},
 {name:'Spotify API',cat:'back',sub:'music',req:'optional',level:'int',price:'free-tier'},
-{name:'Stripe Billing',cat:'back',sub:'payment',req:'optional',level:'int',price:'usage'},
+{name:'Stripe Payments SDK',cat:'back',sub:'payment',req:'optional',level:'int',price:'usage'},
 {name:'YouTube Data API',cat:'back',sub:'video',req:'optional',level:'int',price:'free-tier'},
 // ── Analytics & Analytics Tools (4) ──
 {name:'Mixpanel',cat:'data',sub:'analytics',req:'optional',level:'int',price:'free-tier'},
 {name:'Amplitude',cat:'data',sub:'analytics',req:'optional',level:'int',price:'free-tier'},
 {name:'Segment',cat:'data',sub:'cdp',req:'optional',level:'pro',price:'free-tier'},
-{name:'Grafana',cat:'data',sub:'observability',req:'optional',level:'pro',price:'free-oss'},
+{name:'Grafana Stack',cat:'data',sub:'observability',req:'optional',level:'pro',price:'free-oss'},
 // ── Game DevOps (2) ──
 {name:'PlayFab',cat:'devops',sub:'game-backend',req:'optional',level:'game',price:'free-tier'},
 {name:'GameAnalytics',cat:'data',sub:'game-analytics',req:'optional',level:'game',price:'free-tier'},
@@ -433,11 +433,6 @@ const TECH_DB=[
 {name:'Earthly',cat:'devops',sub:'build',req:'optional',level:'pro',price:'free-oss'},
 // ── Test — email (1) ──
 {name:'MailHog',cat:'test',sub:'email',req:'optional',level:'int',price:'free-oss'},
-// ── AI — ext9 (1) ──
-{name:'Gemini Code Assist',cat:'ai',sub:'ext',req:'optional',level:'int',price:'free-19'},
-// ── AI Automation — ext9 (2) ──
-{name:'Lovable',cat:'ai_auto',sub:'app-gen',req:'optional',level:'beg',price:'free-tier'},
-{name:'OpenHands',cat:'ai_auto',sub:'agent-fw',req:'optional',level:'pro',price:'free-oss'},
 ];
 const _TECH_COUNT=TECH_DB.length;
 
