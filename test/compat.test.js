@@ -1,4 +1,4 @@
-// Compat rules functional test (168 rules: 31 ERROR + 99 WARN + 38 INFO)
+// Compat rules functional test (182 rules: 31 ERROR + 103 WARN + 48 INFO)
 const assert=require('node:assert/strict');
 const S={lang:'ja',skill:'pro'};
 eval(require('fs').readFileSync('src/data/compat-rules.js','utf-8'));
@@ -410,6 +410,55 @@ const tests=[
   // obs-java-javaagent (INFO) — Java/Spring backend
   {name:'Spring+obsJavaagent=INFO',a:{backend:'Java + Spring Boot'},expect:'info',id:'obs-java-javaagent'},
   {name:'Express+noObsJavaINFO',a:{backend:'Node.js + Express'},expect:'none',id:'obs-java-javaagent'},
+  // ── Phase C: 14 new rules ──
+  // dom-gaming-noauth (WARN) — gaming purpose + auth=none
+  {name:'gaming+noauth=WARN',a:{purpose:'オンラインマルチプレイゲームプラットフォーム',auth:'なし'},expect:'warn',id:'dom-gaming-noauth'},
+  {name:'gaming+realauth=noWARN',a:{purpose:'オンラインゲーム',auth:'Supabase Auth'},expect:'none',id:'dom-gaming-noauth'},
+  {name:'gaming+noauth+solo=noWARN',a:{purpose:'ゲーミングアプリ',auth:'なし',scale:'solo'},expect:'none',id:'dom-gaming-noauth'},
+  // dom-childcare-minors (WARN) — childcare + payment + no MFA
+  {name:'childcare+pay+noMFA=WARN',a:{purpose:'保育園管理アプリ',payment:'Stripe決済'},expect:'warn',id:'dom-childcare-minors'},
+  {name:'childcare+pay+MFA=noWARN',a:{purpose:'保育園管理アプリ',payment:'Stripe決済',mvp_features:'多要素認証（MFA）'},expect:'none',id:'dom-childcare-minors'},
+  {name:'childcare+nopay=noWARN',a:{purpose:'保育園管理アプリ',payment:'none'},expect:'none',id:'dom-childcare-minors'},
+  // dom-cybersec-noaudit (WARN) — SOC/cybersec without audit entities
+  {name:'DevSecOps+noAudit=WARN',a:{purpose:'DevSecOps脆弱性スキャンとパイプライン自動化',data_entities:'User, ScanConfig, Pipeline, Report'},expect:'warn',id:'dom-cybersec-noaudit'},
+  {name:'cybersec+withAudit=noWARN',a:{purpose:'DevSecOps脆弱性スキャンとパイプライン自動化',data_entities:'User, VulnScan, RemediationTask, AuditLog'},expect:'none',id:'dom-cybersec-noaudit'},
+  {name:'cybersec+withSecEvent=noWARN',a:{purpose:'サイバーセキュリティSOCプラットフォーム',data_entities:'User, SecurityEvent, Playbook, ThreatIndicator'},expect:'none',id:'dom-cybersec-noaudit'},
+  // sec-sensitive-entity-norls (WARN) — Supabase + sensitive entities + no org_model
+  {name:'Supabase+MedicalRecord+noRLS=WARN',a:{backend:'Supabase',data_entities:'User, MedicalRecord, Doctor, Prescription'},expect:'warn',id:'sec-sensitive-entity-norls'},
+  {name:'Supabase+MedicalRecord+RLS=noWARN',a:{backend:'Supabase',data_entities:'User, MedicalRecord, Doctor',org_model:'マルチテナント(RLS)'},expect:'none',id:'sec-sensitive-entity-norls'},
+  {name:'Express+MedicalRecord=noWARN',a:{backend:'Node.js + Express',data_entities:'User, MedicalRecord, Doctor'},expect:'none',id:'sec-sensitive-entity-norls'},
+  {name:'Supabase+HealthLog+noRLS=WARN',a:{backend:'Supabase',data_entities:'User, HealthLog, Workout'},expect:'warn',id:'sec-sensitive-entity-norls'},
+  // dom-logistics-nopay (INFO) — logistics without payment
+  {name:'fleet+nopay=INFO',a:{purpose:'フリート配送管理システム'},expect:'info',id:'dom-logistics-nopay'},
+  {name:'logistics+stripe=noINFO',a:{purpose:'物流管理サービス',payment:'Stripe決済'},expect:'none',id:'dom-logistics-nopay'},
+  // dom-health-mobile-noencrypt (INFO) — health + Expo mobile
+  {name:'health+expo=INFO',a:{purpose:'健康管理・フィットネスアプリ',mobile:'Expo (React Native)'},expect:'info',id:'dom-health-mobile-noencrypt'},
+  {name:'health+noMobile=noINFO',a:{purpose:'健康管理アプリ'},expect:'none',id:'dom-health-mobile-noencrypt'},
+  // dom-rpa-nomonitor (INFO) — RPA without monitoring
+  {name:'rpa+nomonitor=INFO',a:{purpose:'RPA自動化ボット管理プラットフォーム'},expect:'info',id:'dom-rpa-nomonitor'},
+  {name:'rpa+monitor=noINFO',a:{purpose:'RPA自動化ボット管理プラットフォーム',mvp_features:'実行ログ・監視ダッシュボード'},expect:'none',id:'dom-rpa-nomonitor'},
+  // be-firebase-stripe-webhook (INFO) — Firebase + payment
+  {name:'Firebase+stripe=INFO',a:{backend:'Firebase',payment:'Stripe決済'},expect:'info',id:'be-firebase-stripe-webhook'},
+  {name:'Firebase+nopay=noINFO',a:{backend:'Firebase',payment:'none'},expect:'none',id:'be-firebase-stripe-webhook'},
+  // mob-expo-websocket (INFO) — Expo + realtime purpose
+  {name:'expo+realtime=INFO',a:{mobile:'Expo (React Native)',purpose:'リアルタイムチャット・メッセージングアプリ'},expect:'info',id:'mob-expo-websocket'},
+  {name:'expo+norealtimePurpose=noINFO',a:{mobile:'Expo (React Native)',purpose:'タスク管理ツール'},expect:'none',id:'mob-expo-websocket'},
+  // be-express-nosecurity-headers (INFO) — Express backend
+  {name:'Express+medium=INFO',a:{backend:'Node.js + Express'},expect:'info',id:'be-express-nosecurity-headers'},
+  {name:'Express+solo=noINFO',a:{backend:'Node.js + Express',scale:'solo'},expect:'none',id:'be-express-nosecurity-headers'},
+  {name:'NestJS=noExpressINFO',a:{backend:'Node.js + NestJS'},expect:'none',id:'be-express-nosecurity-headers'},
+  // sec-mobile-biometric (INFO) — Expo + payment
+  {name:'expo+pay=biometricINFO',a:{mobile:'Expo (React Native)',payment:'Stripe決済'},expect:'info',id:'sec-mobile-biometric'},
+  {name:'expo+nopay=noBiometricINFO',a:{mobile:'Expo (React Native)',payment:'none'},expect:'none',id:'sec-mobile-biometric'},
+  // perf-realtime-noredis (INFO) — Node.js + realtime purpose
+  {name:'express+realtimePurpose+noRedis=INFO',a:{backend:'Node.js + Express',purpose:'リアルタイムチャットサービス'},expect:'info',id:'perf-realtime-noredis'},
+  {name:'express+realtime+redis=noINFO',a:{backend:'Node.js + Express',purpose:'リアルタイムチャットサービス',mvp_features:'Redis Pub/Sub'},expect:'none',id:'perf-realtime-noredis'},
+  // perf-mobile-offline (INFO) — Expo + field-service purpose
+  {name:'expo+field=offlineINFO',a:{mobile:'Expo (React Native)',purpose:'農業現場作業管理アプリ'},expect:'info',id:'perf-mobile-offline'},
+  {name:'expo+field+offline=noINFO',a:{mobile:'Expo (React Native)',purpose:'農業現場オフライン対応作業管理'},expect:'none',id:'perf-mobile-offline'},
+  // be-batch-serverless (INFO) — DataPipeline entity + Vercel/Firebase Hosting
+  {name:'DataPipeline+Vercel=INFO',a:{data_entities:'DataPipeline, ETLJob, Transform',deploy:'Vercel'},expect:'info',id:'be-batch-serverless'},
+  {name:'DataPipeline+Railway=noINFO',a:{data_entities:'DataPipeline, ETLJob, Transform',deploy:'Railway'},expect:'none',id:'be-batch-serverless'},
 ];
 
 let pass=0,fail=0;

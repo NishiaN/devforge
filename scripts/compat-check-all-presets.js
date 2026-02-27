@@ -100,10 +100,10 @@ console.log(`Checked ${totalChecked} combos (${Object.keys(PR).length} standard 
 console.log('════════════════════════════════════════════\n');
 
 const NEW_RULE_IDS = [
-  'dom-saas-nopay','dom-government-firebase','dom-legal-noaudit',
-  'mob-flutter-drizzle','mob-flutter-kysely','sem-auth-nofb-fbauth','db-redis-primary',
-  'be-dep-py-fbh','be-dep-java-fbh','be-dep-py-cf',
-  'orm-typeorm-fs','orm-sqla-fs','orm-sqla-mongo','orm-typeorm-mongo',
+  'dom-gaming-noauth','dom-childcare-minors','dom-cybersec-noaudit','sec-sensitive-entity-norls',
+  'dom-logistics-nopay','dom-health-mobile-noencrypt','dom-rpa-nomonitor',
+  'be-firebase-stripe-webhook','mob-expo-websocket','be-express-nosecurity-headers',
+  'sec-mobile-biometric','perf-realtime-noredis','perf-mobile-offline','be-batch-serverless',
 ];
 
 const errorRules = Object.entries(hits).filter(([,v])=>v.level==='error');
