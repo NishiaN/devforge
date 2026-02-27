@@ -18,7 +18,7 @@
  *   Domain   detectDomain     → .spec/constitution.md §3 fallback KPI
  *   E2E      full generation  → file count, token richness, bilingual parity
  *
- * Suites 1-151: ~1953 tests total (1687 + Suites 146-151: 266 tests — all remaining field presets)
+ * Suites 1-153: ~2041 tests total (1953 + Suites 152-153: 88 tests — ext5 field presets)
  */
 
 const { describe, it } = require('node:test');
@@ -16851,4 +16851,368 @@ describe('Suite 151: presets-ext3.js field presets (2/2) — entity coherence', 
     assert.ok((f['.spec/specification.md']||'').includes('MedicalFacility') || (f['.spec/specification.md']||'').includes('TravelInsurance'), 'nm_health spec must mention MedicalFacility or TravelInsurance');
   });
 
+});
+
+/*
+   Suite 152 — presets-ext5.js: first field preset per category
+*/
+describe('Suite 152: presets-ext5 field presets (1/2) — entity coherence', () => {
+  it('engineering: eng5_digital_twin → DigitalTwinModel or AssetNode in spec', () => {
+    const f = gSDD(Object.assign({}, A25, { purpose: '工場設備・生産ラインをデジタルツインでモデル化しシミュレーション・異常予測・最適化を行うプラットフォーム', data_entities: 'User, DigitalTwinModel, AssetNode, SimulationRun, DigitalTwinAlert' }));
+    assert.ok((f['.spec/specification.md']||'').includes('DigitalTwinModel') || (f['.spec/specification.md']||'').includes('AssetNode'), 'eng5_digital_twin spec must mention DigitalTwinModel or AssetNode');
+  });
+  it('science: sci5_material_info → MaterialSample or MaterialExperiment in spec', () => {
+    const f = gSDD(Object.assign({}, A25, { purpose: '機械学習と実験データを組み合わせた新材料探索・物性予測・実験設計支援プラットフォーム', data_entities: 'User, MaterialSample, MaterialExperiment, MaterialProperty, PredictionModel' }));
+    assert.ok((f['.spec/specification.md']||'').includes('MaterialSample') || (f['.spec/specification.md']||'').includes('MaterialExperiment'), 'sci5_material_info spec must mention MaterialSample or MaterialExperiment');
+  });
+  it('agriculture: agri5_drone_farm → DroneUnit or DroneFlightPlan in spec', () => {
+    const f = gSDD(Object.assign({}, A25, { purpose: '農業ドローンの飛行計画・圃場調査・作物状態解析・散布記録を管理する精密農業プラットフォーム', data_entities: 'User, DroneUnit, DroneFlightPlan, FieldSurveyResult, DroneAlert' }));
+    assert.ok((f['.spec/specification.md']||'').includes('DroneUnit') || (f['.spec/specification.md']||'').includes('DroneFlightPlan'), 'agri5_drone_farm spec must mention DroneUnit or DroneFlightPlan');
+  });
+  it('medical: med5_phr_portal → PatientRecord or LabResult in spec', () => {
+    const f = gSDD(Object.assign({}, A25, { purpose: '患者が自分の電子カルテ・検査結果・処方歴を安全に閲覧・管理できるパーソナルヘルスレコードポータル', data_entities: 'User, PatientRecord, MedicalVisit, LabResult, PrescriptionHistory' }));
+    assert.ok((f['.spec/specification.md']||'').includes('PatientRecord') || (f['.spec/specification.md']||'').includes('LabResult'), 'med5_phr_portal spec must mention PatientRecord or LabResult');
+  });
+  it('social: soc5_volunteer → VolunteerProfile or VolunteerShift in spec', () => {
+    const f = gSDD(Object.assign({}, A25, { purpose: 'NPO・市民団体のボランティア募集・シフト調整・活動記録・インパクト報告を一元管理するプラットフォーム', data_entities: 'User, VolunteerProfile, VolunteerShift, VolunteerActivity, VolunteerImpactReport' }));
+    assert.ok((f['.spec/specification.md']||'').includes('VolunteerProfile') || (f['.spec/specification.md']||'').includes('VolunteerShift'), 'soc5_volunteer spec must mention VolunteerProfile or VolunteerShift');
+  });
+  it('humanities: hum5_cultural_heritage → HeritageItem or ConservationRecord in spec', () => {
+    const f = gSDD(Object.assign({}, A25, { purpose: '文化財・文化遺産のデジタルアーカイブ・保存状態記録・修復履歴・公開管理を行うプラットフォーム', data_entities: 'User, HeritageItem, ConservationRecord, HeritageMedia, HeritageAccessLog' }));
+    assert.ok((f['.spec/specification.md']||'').includes('HeritageItem') || (f['.spec/specification.md']||'').includes('ConservationRecord'), 'hum5_cultural_heritage spec must mention HeritageItem or ConservationRecord');
+  });
+  it('education_field: edu5_tutoring → TutorProfile or TutoringSession in spec', () => {
+    const f = gSDD(Object.assign({}, A25, { purpose: '講師と生徒のマッチング・授業予約・教材共有・学習進捗管理を提供するオンライン個別指導プラットフォーム', data_entities: 'User, TutorProfile, TutoringSession, TutoringMaterial, TutoringReview' }));
+    assert.ok((f['.spec/specification.md']||'').includes('TutorProfile') || (f['.spec/specification.md']||'').includes('TutoringSession'), 'edu5_tutoring spec must mention TutorProfile or TutoringSession');
+  });
+  it('art: art5_gen_ai_studio → GenerativePrompt or GeneratedArtwork in spec', () => {
+    const f = gSDD(Object.assign({}, A25, { purpose: 'AIプロンプトによる画像生成・スタイル管理・作品コレクション・コミュニティ共有ができる創作スタジオ', data_entities: 'User, GenerativePrompt, GeneratedArtwork, ArtStyle, ArtCollection' }));
+    assert.ok((f['.spec/specification.md']||'').includes('GenerativePrompt') || (f['.spec/specification.md']||'').includes('GeneratedArtwork'), 'art5_gen_ai_studio spec must mention GenerativePrompt or GeneratedArtwork');
+  });
+  it('interdisciplinary: inter5_futures → FuturesScenario or FuturesSignal in spec', () => {
+    const f = gSDD(Object.assign({}, A25, { purpose: '未来トレンド分析・シナリオ設計・シグナル収集・知見共有を支援するフューチャーズリサーチプラットフォーム', data_entities: 'User, FuturesScenario, FuturesSignal, TrendAnalysis, ForesightReport' }));
+    assert.ok((f['.spec/specification.md']||'').includes('FuturesScenario') || (f['.spec/specification.md']||'').includes('FuturesSignal'), 'inter5_futures spec must mention FuturesScenario or FuturesSignal');
+  });
+  it('environment: env5_air_quality → AirSensor or AirReading in spec', () => {
+    const f = gSDD(Object.assign({}, A25, { purpose: 'センサーネットワークによる大気質リアルタイム監視・汚染アラート・市民向け公開APIを提供するプラットフォーム', data_entities: 'User, AirSensor, AirReading, PollutionAlert, AirQualityReport' }));
+    assert.ok((f['.spec/specification.md']||'').includes('AirSensor') || (f['.spec/specification.md']||'').includes('AirReading'), 'env5_air_quality spec must mention AirSensor or AirReading');
+  });
+  it('architecture: arch5_heritage_rest → HeritageProperty or RestorationPlan in spec', () => {
+    const f = gSDD(Object.assign({}, A25, { purpose: '文化財・重要建築物の修復計画・工事記録・検査報告・保存状態追跡を管理するシステム', data_entities: 'User, HeritageProperty, RestorationPlan, RestorationWorkRecord, HeritageInspection' }));
+    assert.ok((f['.spec/specification.md']||'').includes('HeritageProperty') || (f['.spec/specification.md']||'').includes('RestorationPlan'), 'arch5_heritage_rest spec must mention HeritageProperty or RestorationPlan');
+  });
+  it('sports: sports5_injury → AthleteInjury or RehabPlan in spec', () => {
+    const f = gSDD(Object.assign({}, A25, { purpose: 'アスリートの外傷リスク評価・リハビリ計画・回復ログ・復帰可否判断を支援するスポーツ医科学管理システム', data_entities: 'User, AthleteInjury, RehabPlan, RecoveryLog, MedicalClearance' }));
+    assert.ok((f['.spec/specification.md']||'').includes('AthleteInjury') || (f['.spec/specification.md']||'').includes('RehabPlan'), 'sports5_injury spec must mention AthleteInjury or RehabPlan');
+  });
+  it('welfare: wel5_child_welfare → WelfareCase or CaseAssessment in spec', () => {
+    const f = gSDD(Object.assign({}, A25, { purpose: '児童相談所・福祉施設のケース記録・アセスメント・支援計画・進捗管理を行うケースワーク支援システム', data_entities: 'User, WelfareCase, CaseAssessment, InterventionPlan, WelfareProgressReport' }));
+    assert.ok((f['.spec/specification.md']||'').includes('WelfareCase') || (f['.spec/specification.md']||'').includes('CaseAssessment'), 'wel5_child_welfare spec must mention WelfareCase or CaseAssessment');
+  });
+  it('tourism: tour5_cruise → CruisePackage or CruiseBooking in spec', () => {
+    const f = gSDD(Object.assign({}, A25, { purpose: 'クルーズ商品の予約・客室割当・寄港地スケジュール・乗客管理を統合するクルーズ旅行管理システム', data_entities: 'User, CruisePackage, CruiseBooking, PortItinerary, CabinAssignment' }));
+    assert.ok((f['.spec/specification.md']||'').includes('CruisePackage') || (f['.spec/specification.md']||'').includes('CruiseBooking'), 'tour5_cruise spec must mention CruisePackage or CruiseBooking');
+  });
+  it('biotech: bio5_crispr → CrisprTarget or CrisprEditDesign in spec', () => {
+    const f = gSDD(Object.assign({}, A25, { purpose: 'CRISPR-Cas9の標的設計・編集実験記録・シーケンシング結果管理・研究報告を支援する遺伝子編集管理システム', data_entities: 'User, CrisprTarget, CrisprEditDesign, SequencingResult, CrisprExperimentReport' }));
+    assert.ok((f['.spec/specification.md']||'').includes('CrisprTarget') || (f['.spec/specification.md']||'').includes('CrisprEditDesign'), 'bio5_crispr spec must mention CrisprTarget or CrisprEditDesign');
+  });
+  it('mobility: mob5_ev_charging → ChargingStation or ChargingSession in spec', () => {
+    const f = gSDD(Object.assign({}, A25, { purpose: 'EVチャージングステーションの稼働監視・セッション管理・エネルギー消費追跡・アラート管理プラットフォーム', data_entities: 'User, ChargingStation, ChargingSession, EVEnergyConsumption, EVInfraAlert' }));
+    assert.ok((f['.spec/specification.md']||'').includes('ChargingStation') || (f['.spec/specification.md']||'').includes('ChargingSession'), 'mob5_ev_charging spec must mention ChargingStation or ChargingSession');
+  });
+  it('cybersecurity: sec5_pentest → PentestProject or VulnFinding in spec', () => {
+    const f = gSDD(Object.assign({}, A25, { purpose: 'ペネトレーションテストプロジェクトの計画・脆弱性発見・修復追跡・最終報告書管理を行う統合管理システム', data_entities: 'User, PentestProject, VulnFinding, RemediationTicket, PentestReport' }));
+    assert.ok((f['.spec/specification.md']||'').includes('PentestProject') || (f['.spec/specification.md']||'').includes('VulnFinding'), 'sec5_pentest spec must mention PentestProject or VulnFinding');
+  });
+  it('fintech_field: fin5_crypto_tax → CryptoTransaction or TaxLot in spec', () => {
+    const f = gSDD(Object.assign({}, A25, { purpose: '暗号資産の取得・売却・交換履歴を自動集計し税務計算・損益レポート・確定申告書類を生成する支援ツール', data_entities: 'User, CryptoTransaction, TaxLot, CryptoTaxReport, AuditLog' }));
+    assert.ok((f['.spec/specification.md']||'').includes('CryptoTransaction') || (f['.spec/specification.md']||'').includes('TaxLot'), 'fin5_crypto_tax spec must mention CryptoTransaction or TaxLot');
+  });
+  it('smart_factory: sfac5_quality → QualityInspection or DefectRecord in spec', () => {
+    const f = gSDD(Object.assign({}, A25, { purpose: '製造ラインの品質検査記録・不良品分類・品質ルール管理・ロット追跡を行う製造品質管理システム', data_entities: 'User, QualityInspection, DefectRecord, QualityRule, ProductionBatch' }));
+    assert.ok((f['.spec/specification.md']||'').includes('QualityInspection') || (f['.spec/specification.md']||'').includes('DefectRecord'), 'sfac5_quality spec must mention QualityInspection or DefectRecord');
+  });
+  it('cross_theme: cth5_platform_coop → CoopMember or CoopDecision in spec', () => {
+    const f = gSDD(Object.assign({}, A25, { purpose: 'プラットフォーム協同組合の組合員管理・意思決定・収益分配・財務報告を支援する運営管理システム', data_entities: 'User, CoopMember, CoopDecision, CoopRevenueShare, CoopFinancialReport' }));
+    assert.ok((f['.spec/specification.md']||'').includes('CoopMember') || (f['.spec/specification.md']||'').includes('CoopDecision'), 'cth5_platform_coop spec must mention CoopMember or CoopDecision');
+  });
+  it('gaming: gam5_tournament → TournamentBracket or TournamentMatch in spec', () => {
+    const f = gSDD(Object.assign({}, A25, { purpose: 'オンラインゲームのトーナメント開催・ブラケット管理・試合記録・賞金配分を管理するeスポーツ大会プラットフォーム', data_entities: 'User, TournamentBracket, TournamentMatch, TournamentTeam, TournamentPrize' }));
+    assert.ok((f['.spec/specification.md']||'').includes('TournamentBracket') || (f['.spec/specification.md']||'').includes('TournamentMatch'), 'gam5_tournament spec must mention TournamentBracket or TournamentMatch');
+  });
+  it('video: vid5_short → ShortVideo or VideoReaction in spec', () => {
+    const f = gSDD(Object.assign({}, A25, { purpose: '縦型ショートビデオの投稿・レコメンド・リアクション・クリエイター収益化をサポートするコンテンツ配信プラットフォーム', data_entities: 'User, ShortVideo, VideoReaction, VideoHashtag, CreatorStats' }));
+    assert.ok((f['.spec/specification.md']||'').includes('ShortVideo') || (f['.spec/specification.md']||'').includes('VideoReaction'), 'vid5_short spec must mention ShortVideo or VideoReaction');
+  });
+  it('live_event: lev5_hybrid_conf → ConferenceEvent or ConferenceSession in spec', () => {
+    const f = gSDD(Object.assign({}, A25, { purpose: '会場参加・オンライン参加を統合したハイブリッドカンファレンスのセッション管理・参加者追跡・フィードバック収集システム', data_entities: 'User, ConferenceEvent, ConferenceSession, HybridAttendee, SessionFeedback' }));
+    assert.ok((f['.spec/specification.md']||'').includes('ConferenceEvent') || (f['.spec/specification.md']||'').includes('ConferenceSession'), 'lev5_hybrid_conf spec must mention ConferenceEvent or ConferenceSession');
+  });
+  it('publishing: pub5_academic → JournalSubmission or PeerReviewAssignment in spec', () => {
+    const f = gSDD(Object.assign({}, A25, { purpose: '学術論文の投稿受付・査読アサイン・改訂ラウンド管理・掲載号編集を支援する学術誌管理システム', data_entities: 'User, JournalSubmission, PeerReviewAssignment, RevisionRound, JournalIssue' }));
+    assert.ok((f['.spec/specification.md']||'').includes('JournalSubmission') || (f['.spec/specification.md']||'').includes('PeerReviewAssignment'), 'pub5_academic spec must mention JournalSubmission or PeerReviewAssignment');
+  });
+  it('gambling: gbl5_casino → CasinoGame or CasinoGameSession in spec', () => {
+    const f = gSDD(Object.assign({}, A25, { purpose: 'オンラインカジノのゲーム管理・セッション記録・チップ取引・コンプライアンス監査を行う運営管理システム', data_entities: 'User, CasinoGame, CasinoGameSession, ChipTransaction, AuditLog' }));
+    assert.ok((f['.spec/specification.md']||'').includes('CasinoGame') || (f['.spec/specification.md']||'').includes('CasinoGameSession'), 'gbl5_casino spec must mention CasinoGame or CasinoGameSession');
+  });
+  it('podcast: pod5_monetize → SponsorDeal or AdInsertionRecord in spec', () => {
+    const f = gSDD(Object.assign({}, A25, { purpose: 'ポッドキャストのスポンサー契約・広告挿入・収益管理・リスナー属性分析を支援する収益化プラットフォーム', data_entities: 'User, PodcastShow, SponsorDeal, AdInsertionRecord, PodcastRevenueRecord' }));
+    assert.ok((f['.spec/specification.md']||'').includes('SponsorDeal') || (f['.spec/specification.md']||'').includes('AdInsertionRecord'), 'pod5_monetize spec must mention SponsorDeal or AdInsertionRecord');
+  });
+  it('music_biz: mus5_producer → MusicCollabProject or ProducerCollaboration in spec', () => {
+    const f = gSDD(Object.assign({}, A25, { purpose: '音楽プロデューサーとアーティストのプロジェクト管理・トラックバージョン管理・ロイヤリティ分配を支援するプラットフォーム', data_entities: 'User, MusicCollabProject, ProducerCollaboration, TrackVersion, RoyaltySplit' }));
+    assert.ok((f['.spec/specification.md']||'').includes('MusicCollabProject') || (f['.spec/specification.md']||'').includes('ProducerCollaboration'), 'mus5_producer spec must mention MusicCollabProject or ProducerCollaboration');
+  });
+  it('housing: hou5_commercial → CommercialProperty or LeaseNegotiation in spec', () => {
+    const f = gSDD(Object.assign({}, A25, { purpose: 'オフィス・商業施設の区画管理・テナント問合せ・リース交渉・契約管理を行う商業不動産管理システム', data_entities: 'User, CommercialProperty, TenantInquiry, LeaseNegotiation, CommercialLeaseContract' }));
+    assert.ok((f['.spec/specification.md']||'').includes('CommercialProperty') || (f['.spec/specification.md']||'').includes('LeaseNegotiation'), 'hou5_commercial spec must mention CommercialProperty or LeaseNegotiation');
+  });
+  it('food: fod5_restaurant → MenuCategory or KitchenTicket in spec', () => {
+    const f = gSDD(Object.assign({}, A25, { purpose: 'レストランのメニュー管理・テーブル注文・キッチン指示・売上分析を統合する飲食店オペレーションシステム', data_entities: 'User, MenuCategory, MenuItem, TableOrder, KitchenTicket' }));
+    assert.ok((f['.spec/specification.md']||'').includes('MenuCategory') || (f['.spec/specification.md']||'').includes('KitchenTicket'), 'fod5_restaurant spec must mention MenuCategory or KitchenTicket');
+  });
+  it('mental_health: mhe5_digital_cbt → CBTSession or ThoughtRecord in spec', () => {
+    const f = gSDD(Object.assign({}, A25, { purpose: '認知行動療法のセルフヘルプ・思考記録・コーピング戦略・進捗管理を提供するデジタルメンタルヘルスアプリ', data_entities: 'User, CBTSession, ThoughtRecord, CopingStrategy, CBTProgressLog' }));
+    assert.ok((f['.spec/specification.md']||'').includes('CBTSession') || (f['.spec/specification.md']||'').includes('ThoughtRecord'), 'mhe5_digital_cbt spec must mention CBTSession or ThoughtRecord');
+  });
+  it('fashion: fash5_rental → ClothingItem or FashionRentalOrder in spec', () => {
+    const f = gSDD(Object.assign({}, A25, { purpose: 'ファッションアイテムのレンタル・クローゼット共有・コンディション管理・返却処理を行うファッションシェアプラットフォーム', data_entities: 'User, ClothingItem, FashionRentalOrder, ClothingConditionLog, FashionReturn' }));
+    assert.ok((f['.spec/specification.md']||'').includes('ClothingItem') || (f['.spec/specification.md']||'').includes('FashionRentalOrder'), 'fash5_rental spec must mention ClothingItem or FashionRentalOrder');
+  });
+  it('shopping: shop5_group_buy → GroupBuyDeal or DealParticipant in spec', () => {
+    const f = gSDD(Object.assign({}, A25, { purpose: '複数ユーザーが共同購入することで割引を実現するグループ購入・共同購買型ECプラットフォーム', data_entities: 'User, GroupBuyDeal, DealParticipant, GroupBuyOrder, GroupBuySettlement' }));
+    assert.ok((f['.spec/specification.md']||'').includes('GroupBuyDeal') || (f['.spec/specification.md']||'').includes('DealParticipant'), 'shop5_group_buy spec must mention GroupBuyDeal or DealParticipant');
+  });
+  it('pet: pet5_adoption → AdoptionPet or AdoptionApplicant in spec', () => {
+    const f = gSDD(Object.assign({}, A25, { purpose: '保護動物の里親申込・マッチング・譲渡後フォローアップ・統計報告を支援するペット里親管理プラットフォーム', data_entities: 'User, AdoptionPet, AdoptionApplicant, AdoptionMatch, PostAdoptionReport' }));
+    assert.ok((f['.spec/specification.md']||'').includes('AdoptionPet') || (f['.spec/specification.md']||'').includes('AdoptionApplicant'), 'pet5_adoption spec must mention AdoptionPet or AdoptionApplicant');
+  });
+  it('car_life: car5_dealership → CarListing or SalesOpportunity in spec', () => {
+    const f = gSDD(Object.assign({}, A25, { purpose: '自動車ディーラーの在庫管理・商談管理・試乗予約・販売契約を統合する自動車販売業務システム', data_entities: 'User, CarListing, SalesOpportunity, TestDriveRequest, CarSaleContract' }));
+    assert.ok((f['.spec/specification.md']||'').includes('CarListing') || (f['.spec/specification.md']||'').includes('SalesOpportunity'), 'car5_dealership spec must mention CarListing or SalesOpportunity');
+  });
+  it('civil_eng: ce5_construction → ConstructionProject or WorkPhaseRecord in spec', () => {
+    const f = gSDD(Object.assign({}, A25, { purpose: '建設プロジェクトの工程計画・進捗管理・協力会社管理・出来高報告を行うゼネコン向け工程管理システム', data_entities: 'User, ConstructionProject, WorkPhaseRecord, ProgressReport, SubcontractorRecord' }));
+    assert.ok((f['.spec/specification.md']||'').includes('ConstructionProject') || (f['.spec/specification.md']||'').includes('WorkPhaseRecord'), 'ce5_construction spec must mention ConstructionProject or WorkPhaseRecord');
+  });
+  it('braintech: bt5_bci → BCIExperiment or BCISessionRecord in spec', () => {
+    const f = gSDD(Object.assign({}, A25, { purpose: 'BMI・BCI実験の被験者管理・セッション記録・ニューラルデータ保管・研究レポート作成を支援するプラットフォーム', data_entities: 'User, BCIExperiment, BCISessionRecord, NeuralDataFile, BCIResearchReport' }));
+    assert.ok((f['.spec/specification.md']||'').includes('BCIExperiment') || (f['.spec/specification.md']||'').includes('BCISessionRecord'), 'bt5_bci spec must mention BCIExperiment or BCISessionRecord');
+  });
+  it('digital_legacy: dl5_estate → EstatePlan or EstateAssetInventory in spec', () => {
+    const f = gSDD(Object.assign({}, A25, { purpose: '遺産計画書の作成・資産目録管理・受取人指定・重要書類保管を支援するデジタル遺産管理プラットフォーム', data_entities: 'User, EstatePlan, EstateAssetInventory, BeneficiaryDesignation, EstateDocument' }));
+    assert.ok((f['.spec/specification.md']||'').includes('EstatePlan') || (f['.spec/specification.md']||'').includes('EstateAssetInventory'), 'dl5_estate spec must mention EstatePlan or EstateAssetInventory');
+  });
+  it('data_sovereignty: ds5_portability → PortabilityRequest or DataExportJob in spec', () => {
+    const f = gSDD(Object.assign({}, A25, { purpose: 'ユーザーが自分の個人データを標準フォーマットでエクスポート・移転・削除できるデータポータビリティ管理プラットフォーム', data_entities: 'User, PortabilityRequest, DataExportJob, DataExportPackage, PortabilityAuditLog' }));
+    assert.ok((f['.spec/specification.md']||'').includes('PortabilityRequest') || (f['.spec/specification.md']||'').includes('DataExportJob'), 'ds5_portability spec must mention PortabilityRequest or DataExportJob');
+  });
+  it('space_data: sp5_sat_track → SatelliteObject or OrbitTrajectory in spec', () => {
+    const f = gSDD(Object.assign({}, A25, { purpose: '衛星物体の軌道データ管理・打ち上げイベント追跡・衝突リスクアラートを提供する宇宙状況認識プラットフォーム', data_entities: 'User, SatelliteObject, OrbitTrajectory, SpaceLaunchEvent, CollisionRiskAlert' }));
+    assert.ok((f['.spec/specification.md']||'').includes('SatelliteObject') || (f['.spec/specification.md']||'').includes('OrbitTrajectory'), 'sp5_sat_track spec must mention SatelliteObject or OrbitTrajectory');
+  });
+  it('climate_resilience: cr5_wildfire → WildfireRiskZone or FireWeatherAlert in spec', () => {
+    const f = gSDD(Object.assign({}, A25, { purpose: '山火事リスク評価・気象センサーデータ収集・早期警戒アラート・避難区域管理を行う防災管理システム', data_entities: 'User, WildfireRiskZone, FireWeatherAlert, EvacuationZone, WildfireIncidentReport' }));
+    assert.ok((f['.spec/specification.md']||'').includes('WildfireRiskZone') || (f['.spec/specification.md']||'').includes('FireWeatherAlert'), 'cr5_wildfire spec must mention WildfireRiskZone or FireWeatherAlert');
+  });
+  it('ai_avatar: av5_digital_human → DigitalHumanAgent or AvatarPersona in spec', () => {
+    const f = gSDD(Object.assign({}, A25, { purpose: 'デジタルヒューマンAIエージェントを活用した顧客対応・会話管理・ペルソナ設定・応答品質分析プラットフォーム', data_entities: 'User, DigitalHumanAgent, CustomerConversation, AvatarPersona, ConversationAnalytics' }));
+    assert.ok((f['.spec/specification.md']||'').includes('DigitalHumanAgent') || (f['.spec/specification.md']||'').includes('AvatarPersona'), 'av5_digital_human spec must mention DigitalHumanAgent or AvatarPersona');
+  });
+  it('civic_tech: ctc5_e_vote → VotingBallot or VoteRecord in spec', () => {
+    const f = gSDD(Object.assign({}, A25, { purpose: '自治体・組合の電子投票・住民意向調査・投票集計・結果公開を安全に実施するデジタル民主主義プラットフォーム', data_entities: 'User, VotingBallot, VotingQuestion, VoteRecord, VotingResult' }));
+    assert.ok((f['.spec/specification.md']||'').includes('VotingBallot') || (f['.spec/specification.md']||'').includes('VoteRecord'), 'ctc5_e_vote spec must mention VotingBallot or VoteRecord');
+  });
+  it('childcare: cce5_nursery_crm → ChildEnrollment or NurseryClassGroup in spec', () => {
+    const f = gSDD(Object.assign({}, A25, { purpose: '保育園・認定こども園の園児入園管理・クラス編成・出席記録・保護者連絡を管理する保育施設CRMシステム', data_entities: 'User, ChildEnrollment, NurseryClassGroup, NurseryAttendanceLog, GuardianContact' }));
+    assert.ok((f['.spec/specification.md']||'').includes('ChildEnrollment') || (f['.spec/specification.md']||'').includes('NurseryClassGroup'), 'cce5_nursery_crm spec must mention ChildEnrollment or NurseryClassGroup');
+  });
+  it('nomad_life: nml5_coliving → ColivingSpace or RoommateProfile in spec', () => {
+    const f = gSDD(Object.assign({}, A25, { purpose: '世界各地のコリビングスペースと入居者マッチング・部屋予約・コミュニティレビューを提供するノマド向けプラットフォーム', data_entities: 'User, ColivingSpace, RoommateProfile, ColivingBooking, ColivingSpaceReview' }));
+    assert.ok((f['.spec/specification.md']||'').includes('ColivingSpace') || (f['.spec/specification.md']||'').includes('RoommateProfile'), 'nml5_coliving spec must mention ColivingSpace or RoommateProfile');
+  });
+});
+
+/*
+   Suite 153 — presets-ext5.js: second field preset per category
+*/
+describe('Suite 153: presets-ext5 field presets (2/2) — entity coherence', () => {
+  it('engineering: eng5_robotics_ctrl → RobotUnit or RobotTask in spec', () => {
+    const f = gSDD(Object.assign({}, A25, { purpose: '産業ロボットの稼働監視・タスク管理・アラーム対応・保守計画をWeb管理画面で統合管理するシステム', data_entities: 'User, RobotUnit, RobotTask, RobotAlarm, MaintenanceOrder' }));
+    assert.ok((f['.spec/specification.md']||'').includes('RobotUnit') || (f['.spec/specification.md']||'').includes('RobotTask'), 'eng5_robotics_ctrl spec must mention RobotUnit or RobotTask');
+  });
+  it('science: sci5_lab_eln → LabExperiment or SampleRecord in spec', () => {
+    const f = gSDD(Object.assign({}, A25, { purpose: '研究室の実験記録・プロトコル管理・サンプル追跡をデジタル化する電子実験ノートプラットフォーム', data_entities: 'User, LabExperiment, SampleRecord, LabProtocol, ExperimentAttachment' }));
+    assert.ok((f['.spec/specification.md']||'').includes('LabExperiment') || (f['.spec/specification.md']||'').includes('SampleRecord'), 'sci5_lab_eln spec must mention LabExperiment or SampleRecord');
+  });
+  it('agriculture: agri5_aqua → GrowthBed or NutrientLog in spec', () => {
+    const f = gSDD(Object.assign({}, A25, { purpose: 'アクアポニックス・水耕栽培施設の水質パラメータ・養分管理・生育記録・収穫トラッキングシステム', data_entities: 'User, GrowthBed, NutrientLog, HydroHarvestRecord, WaterParam' }));
+    assert.ok((f['.spec/specification.md']||'').includes('GrowthBed') || (f['.spec/specification.md']||'').includes('NutrientLog'), 'agri5_aqua spec must mention GrowthBed or NutrientLog');
+  });
+  it('medical: med5_surgical_plan → SurgeryCase or SurgicalPlan in spec', () => {
+    const f = gSDD(Object.assign({}, A25, { purpose: '画像データと3Dモデルを活用した手術計画・シミュレーション・術前確認を支援する医療システム', data_entities: 'User, SurgeryCase, SurgicalPlan, AnatomyModel, SurgeryOutcome' }));
+    assert.ok((f['.spec/specification.md']||'').includes('SurgeryCase') || (f['.spec/specification.md']||'').includes('SurgicalPlan'), 'med5_surgical_plan spec must mention SurgeryCase or SurgicalPlan');
+  });
+  it('social: soc5_impact → SocialProgram or ImpactIndicator in spec', () => {
+    const f = gSDD(Object.assign({}, A25, { purpose: '社会事業・NPOの活動が生み出すインパクトを定量化・可視化・報告するSROI測定プラットフォーム', data_entities: 'User, SocialProgram, ImpactIndicator, BeneficiaryRecord, ESGSummaryReport' }));
+    assert.ok((f['.spec/specification.md']||'').includes('SocialProgram') || (f['.spec/specification.md']||'').includes('ImpactIndicator'), 'soc5_impact spec must mention SocialProgram or ImpactIndicator');
+  });
+  it('humanities: hum5_oral_history → InterviewRecord or Narrator in spec', () => {
+    const f = gSDD(Object.assign({}, A25, { purpose: '口述歴史のインタビュー収録・書き起こし・索引付け・公開共有を支援するアーカイブプラットフォーム', data_entities: 'User, InterviewRecord, Narrator, TranscriptSegment, OralHistoryMedia' }));
+    assert.ok((f['.spec/specification.md']||'').includes('InterviewRecord') || (f['.spec/specification.md']||'').includes('Narrator'), 'hum5_oral_history spec must mention InterviewRecord or Narrator');
+  });
+  it('education_field: edu5_school_admin → SchoolClass or GradeRecord in spec', () => {
+    const f = gSDD(Object.assign({}, A25, { purpose: '学校の学級管理・出欠記録・成績管理・保護者連絡・行事管理を統合する校務支援システム', data_entities: 'User, SchoolClass, ClassEnrollment, GradeRecord, SchoolEvent' }));
+    assert.ok((f['.spec/specification.md']||'').includes('SchoolClass') || (f['.spec/specification.md']||'').includes('GradeRecord'), 'edu5_school_admin spec must mention SchoolClass or GradeRecord');
+  });
+  it('art: art5_residency → ResidencyProgram or ResidencyArtist in spec', () => {
+    const f = gSDD(Object.assign({}, A25, { purpose: 'アーティスト・レジデンシープログラムの応募管理・滞在記録・成果物管理・報告書作成支援システム', data_entities: 'User, ResidencyProgram, ResidencyArtist, ResidencyArtwork, ResidencyReport' }));
+    assert.ok((f['.spec/specification.md']||'').includes('ResidencyProgram') || (f['.spec/specification.md']||'').includes('ResidencyArtist'), 'art5_residency spec must mention ResidencyProgram or ResidencyArtist');
+  });
+  it('interdisciplinary: inter5_open_sci → ResearchProject or OpenDataset in spec', () => {
+    const f = gSDD(Object.assign({}, A25, { purpose: '研究データの公開・共有・再現性検証・プレプリント管理をオープンサイエンス原則に基づいて支援するプラットフォーム', data_entities: 'User, ResearchProject, OpenDataset, ReproductionAttempt, PublicationRecord' }));
+    assert.ok((f['.spec/specification.md']||'').includes('ResearchProject') || (f['.spec/specification.md']||'').includes('OpenDataset'), 'inter5_open_sci spec must mention ResearchProject or OpenDataset');
+  });
+  it('environment: env5_marine → MarineSensor or WaterSample in spec', () => {
+    const f = gSDD(Object.assign({}, A25, { purpose: '海洋・河川・湖沼の水質センサーデータ収集・分析・異常検知・環境報告を行うモニタリングシステム', data_entities: 'User, MarineSensor, WaterSample, MarineAlert, OceanQualityReport' }));
+    assert.ok((f['.spec/specification.md']||'').includes('MarineSensor') || (f['.spec/specification.md']||'').includes('WaterSample'), 'env5_marine spec must mention MarineSensor or WaterSample');
+  });
+  it('architecture: arch5_facility → FacilityBuilding or MaintenanceRequest in spec', () => {
+    const f = gSDD(Object.assign({}, A25, { purpose: '商業施設・オフィスビルの設備保守依頼・作業指示・点検スケジュール・コスト管理を統合する施設管理システム', data_entities: 'User, FacilityBuilding, MaintenanceRequest, FacilityWorkOrder, FacilityInspection' }));
+    assert.ok((f['.spec/specification.md']||'').includes('FacilityBuilding') || (f['.spec/specification.md']||'').includes('MaintenanceRequest'), 'arch5_facility spec must mention FacilityBuilding or MaintenanceRequest');
+  });
+  it('sports: sports5_scout → ScoutTarget or ScoutingPerformanceReport in spec', () => {
+    const f = gSDD(Object.assign({}, A25, { purpose: '選手スカウティング・パフォーマンス統計・映像分析・オファー管理を統合するスポーツスカウティングシステム', data_entities: 'User, ScoutTarget, ScoutingPerformanceReport, ScoutingVideo, ScoutOffer' }));
+    assert.ok((f['.spec/specification.md']||'').includes('ScoutTarget') || (f['.spec/specification.md']||'').includes('ScoutingPerformanceReport'), 'sports5_scout spec must mention ScoutTarget or ScoutingPerformanceReport');
+  });
+  it('welfare: wel5_refugee → RefugeeProfile or ResettlementPlan in spec', () => {
+    const f = gSDD(Object.assign({}, A25, { purpose: '難民・移民への生活支援・言語支援・就労支援・定住計画を管理する社会統合支援プラットフォーム', data_entities: 'User, RefugeeProfile, SupportService, ResettlementPlan, CaseStatusRecord' }));
+    assert.ok((f['.spec/specification.md']||'').includes('RefugeeProfile') || (f['.spec/specification.md']||'').includes('ResettlementPlan'), 'wel5_refugee spec must mention RefugeeProfile or ResettlementPlan');
+  });
+  it('tourism: tour5_heritage → HeritageSpot or TourRoute in spec', () => {
+    const f = gSDD(Object.assign({}, A25, { purpose: '世界遺産・文化財スポットの観光ルート案内・チェックイン・音声ガイド・レビュー共有アプリ', data_entities: 'User, HeritageSpot, TourRoute, VisitorCheckIn, HeritageSpotReview' }));
+    assert.ok((f['.spec/specification.md']||'').includes('HeritageSpot') || (f['.spec/specification.md']||'').includes('TourRoute'), 'tour5_heritage spec must mention HeritageSpot or TourRoute');
+  });
+  it('biotech: bio5_microbiome → MicrobiomeSample or MetagenomicData in spec', () => {
+    const f = gSDD(Object.assign({}, A25, { purpose: '腸内・環境マイクロバイオームのサンプル収集・メタゲノム解析・菌叢プロファイリング・研究報告プラットフォーム', data_entities: 'User, MicrobiomeSample, MetagenomicData, MicrobialProfile, MicrobiomeReport' }));
+    assert.ok((f['.spec/specification.md']||'').includes('MicrobiomeSample') || (f['.spec/specification.md']||'').includes('MetagenomicData'), 'bio5_microbiome spec must mention MicrobiomeSample or MetagenomicData');
+  });
+  it('mobility: mob5_autonomous → AutonomousVehicle or FleetMission in spec', () => {
+    const f = gSDD(Object.assign({}, A25, { purpose: '自律走行車フリートのリアルタイム位置監視・ミッション管理・センサーフィード・安全インシデント管理システム', data_entities: 'User, AutonomousVehicle, FleetMission, SensorFeedRecord, SafetyIncident' }));
+    assert.ok((f['.spec/specification.md']||'').includes('AutonomousVehicle') || (f['.spec/specification.md']||'').includes('FleetMission'), 'mob5_autonomous spec must mention AutonomousVehicle or FleetMission');
+  });
+  it('cybersecurity: sec5_phishing → PhishSimCampaign or PhishSimResult in spec', () => {
+    const f = gSDD(Object.assign({}, A25, { purpose: '組織のフィッシング耐性向上のためのシミュレーションキャンペーン・ターゲット管理・結果分析・啓発レポートシステム', data_entities: 'User, PhishSimCampaign, PhishSimTarget, PhishSimResult, AwarenessReport' }));
+    assert.ok((f['.spec/specification.md']||'').includes('PhishSimCampaign') || (f['.spec/specification.md']||'').includes('PhishSimResult'), 'sec5_phishing spec must mention PhishSimCampaign or PhishSimResult');
+  });
+  it('fintech_field: fin5_invoice_fin → InvoiceAsset or FinancingRequest in spec', () => {
+    const f = gSDD(Object.assign({}, A25, { purpose: '中小企業の未収入金を早期資金化するファクタリング・請求書ファイナンス管理プラットフォーム', data_entities: 'User, InvoiceAsset, FinancingRequest, FactoringPayout, AuditLog' }));
+    assert.ok((f['.spec/specification.md']||'').includes('InvoiceAsset') || (f['.spec/specification.md']||'').includes('FinancingRequest'), 'fin5_invoice_fin spec must mention InvoiceAsset or FinancingRequest');
+  });
+  it('smart_factory: sfac5_prod_sched → ProductionOrder or ShiftSchedule in spec', () => {
+    const f = gSDD(Object.assign({}, A25, { purpose: '製造指示・シフト・設備稼働能力を考慮した生産スケジュールを最適化・可視化する計画支援システム', data_entities: 'User, ProductionOrder, ShiftSchedule, CapacityPlan, ScheduleOptimizationLog' }));
+    assert.ok((f['.spec/specification.md']||'').includes('ProductionOrder') || (f['.spec/specification.md']||'').includes('ShiftSchedule'), 'sfac5_prod_sched spec must mention ProductionOrder or ShiftSchedule');
+  });
+  it('cross_theme: cth5_citizen_sci → CitizenSciProject or CitizenObservation in spec', () => {
+    const f = gSDD(Object.assign({}, A25, { purpose: '市民参加型の自然観察・環境データ収集・データ検証・研究貢献を支援する市民科学プラットフォーム', data_entities: 'User, CitizenSciProject, CitizenObservation, DataValidationRecord, CitizenSciReport' }));
+    assert.ok((f['.spec/specification.md']||'').includes('CitizenSciProject') || (f['.spec/specification.md']||'').includes('CitizenObservation'), 'cth5_citizen_sci spec must mention CitizenSciProject or CitizenObservation');
+  });
+  it('gaming: gam5_ugc → UGCContent or UGCReview in spec', () => {
+    const f = gSDD(Object.assign({}, A25, { purpose: 'ゲームのユーザー生成コンテンツ(MOD・スキン・マップ)の投稿・レビュー・ダウンロード管理プラットフォーム', data_entities: 'User, UGCContent, UGCCategory, UGCReview, UGCDownloadRecord' }));
+    assert.ok((f['.spec/specification.md']||'').includes('UGCContent') || (f['.spec/specification.md']||'').includes('UGCReview'), 'gam5_ugc spec must mention UGCContent or UGCReview');
+  });
+  it('video: vid5_edu_course → VideoCourse or VideoLesson in spec', () => {
+    const f = gSDD(Object.assign({}, A25, { purpose: '教育コンテンツ制作者が動画コース・講義を販売・配信し学習者が進捗管理できる教育動画プラットフォーム', data_entities: 'User, VideoCourse, VideoLesson, CourseEnrollment, VideoLessonProgress' }));
+    assert.ok((f['.spec/specification.md']||'').includes('VideoCourse') || (f['.spec/specification.md']||'').includes('VideoLesson'), 'vid5_edu_course spec must mention VideoCourse or VideoLesson');
+  });
+  it('live_event: lev5_sports_event → CompetitionEvent or CompetitionEntry in spec', () => {
+    const f = gSDD(Object.assign({}, A25, { purpose: 'スポーツ競技大会のエントリー受付・試合組合せ・結果記録・表彰管理を統合する競技会運営システム', data_entities: 'User, CompetitionEvent, CompetitionEntry, CompetitionResult, AwardRecord' }));
+    assert.ok((f['.spec/specification.md']||'').includes('CompetitionEvent') || (f['.spec/specification.md']||'').includes('CompetitionEntry'), 'lev5_sports_event spec must mention CompetitionEvent or CompetitionEntry');
+  });
+  it('publishing: pub5_manga → MangaSeries or MangaChapter in spec', () => {
+    const f = gSDD(Object.assign({}, A25, { purpose: '漫画家・出版社がマンガを連載配信し読者が購読・購入・レビューできる電子コミックプラットフォーム', data_entities: 'User, MangaSeries, MangaChapter, MangaSubscription, MangaReview' }));
+    assert.ok((f['.spec/specification.md']||'').includes('MangaSeries') || (f['.spec/specification.md']||'').includes('MangaChapter'), 'pub5_manga spec must mention MangaSeries or MangaChapter');
+  });
+  it('gambling: gbl5_fantasy → FantasyLeague or FantasyRoster in spec', () => {
+    const f = gSDD(Object.assign({}, A25, { purpose: 'ファンタジースポーツ・デイリーファンタジーの選手起用・コンテスト参加・スコア集計・賞金配分管理システム', data_entities: 'User, FantasyLeague, FantasyRoster, DFSContestEntry, DFSPrizePool' }));
+    assert.ok((f['.spec/specification.md']||'').includes('FantasyLeague') || (f['.spec/specification.md']||'').includes('FantasyRoster'), 'gbl5_fantasy spec must mention FantasyLeague or FantasyRoster');
+  });
+  it('podcast: pod5_live_audio → LiveAudioRoom or AudioRoomSpeaker in spec', () => {
+    const f = gSDD(Object.assign({}, A25, { purpose: 'リアルタイム音声配信・スピーカー招待・リスナー管理・クリップ保存ができるソーシャルオーディオプラットフォーム', data_entities: 'User, LiveAudioRoom, AudioRoomSpeaker, AudioListenerRecord, AudioClip' }));
+    assert.ok((f['.spec/specification.md']||'').includes('LiveAudioRoom') || (f['.spec/specification.md']||'').includes('AudioRoomSpeaker'), 'pod5_live_audio spec must mention LiveAudioRoom or AudioRoomSpeaker');
+  });
+  it('music_biz: mus5_fan_club → FanClubMember or FanMemberTier in spec', () => {
+    const f = gSDD(Object.assign({}, A25, { purpose: 'アーティストのファンクラブ会員管理・会員特典配信・ファンイベント・限定コンテンツ提供プラットフォーム', data_entities: 'User, FanClubMember, FanMemberTier, FanClubEvent, FanExclusiveContent' }));
+    assert.ok((f['.spec/specification.md']||'').includes('FanClubMember') || (f['.spec/specification.md']||'').includes('FanMemberTier'), 'mus5_fan_club spec must mention FanClubMember or FanMemberTier');
+  });
+  it('housing: hou5_renovation → RenovationProject or WorkContractor in spec', () => {
+    const f = gSDD(Object.assign({}, A25, { purpose: '住宅・商業施設のリノベーション工事の施工会社管理・工程管理・進捗報告・引き渡し管理システム', data_entities: 'User, RenovationProject, WorkContractor, ConstructionPhase, RenovationHandover' }));
+    assert.ok((f['.spec/specification.md']||'').includes('RenovationProject') || (f['.spec/specification.md']||'').includes('WorkContractor'), 'hou5_renovation spec must mention RenovationProject or WorkContractor');
+  });
+  it('food: fod5_food_safety → HACCPPlan or CriticalControlPoint in spec', () => {
+    const f = gSDD(Object.assign({}, A25, { purpose: '食品製造・調理施設のHACCPプラン・重要管理点チェック・衛生点検記録・違反管理を行う食品安全管理システム', data_entities: 'User, HACCPPlan, CriticalControlPoint, FoodSafetyCheck, FoodSafetyViolation' }));
+    assert.ok((f['.spec/specification.md']||'').includes('HACCPPlan') || (f['.spec/specification.md']||'').includes('CriticalControlPoint'), 'fod5_food_safety spec must mention HACCPPlan or CriticalControlPoint');
+  });
+  it('mental_health: mhe5_crisis → CrisisCall or SafetyPlan in spec', () => {
+    const f = gSDD(Object.assign({}, A25, { purpose: '危機介入センターのコール管理・リスクアセスメント・安全計画・フォローアップ追跡を支援する支援管理システム', data_entities: 'User, CrisisCall, CrisisRiskAssessment, SafetyPlan, CrisisFollowUp' }));
+    assert.ok((f['.spec/specification.md']||'').includes('CrisisCall') || (f['.spec/specification.md']||'').includes('SafetyPlan'), 'mhe5_crisis spec must mention CrisisCall or SafetyPlan');
+  });
+  it('fashion: fash5_dtc → BrandProduct or BrandProductionRun in spec', () => {
+    const f = gSDD(Object.assign({}, A25, { purpose: 'DtoC（Direct to Consumer）ファッションブランドの商品管理・直販・生産管理・ブランド分析を支援する運営プラットフォーム', data_entities: 'User, BrandProduct, BrandProductionRun, DirectSaleOrder, BrandPerformanceAnalytics' }));
+    assert.ok((f['.spec/specification.md']||'').includes('BrandProduct') || (f['.spec/specification.md']||'').includes('BrandProductionRun'), 'fash5_dtc spec must mention BrandProduct or BrandProductionRun');
+  });
+  it('shopping: shop5_live_shop → LiveShopStream or StreamProduct in spec', () => {
+    const f = gSDD(Object.assign({}, A25, { purpose: 'ライブ配信中に商品を販売・注文受付できるライブコマース・ストリーミングECプラットフォーム', data_entities: 'User, LiveShopStream, StreamProduct, StreamViewerOrder, StreamHighlight' }));
+    assert.ok((f['.spec/specification.md']||'').includes('LiveShopStream') || (f['.spec/specification.md']||'').includes('StreamProduct'), 'shop5_live_shop spec must mention LiveShopStream or StreamProduct');
+  });
+  it('pet: pet5_vet_clinic → VetPatient or VetConsultRecord in spec', () => {
+    const f = gSDD(Object.assign({}, A25, { purpose: '動物病院の患者台帳・診察記録・処方・請求管理を統合するペットクリニック業務管理システム', data_entities: 'User, VetPatient, VetConsultRecord, VetPrescriptionRecord, VetInvoice' }));
+    assert.ok((f['.spec/specification.md']||'').includes('VetPatient') || (f['.spec/specification.md']||'').includes('VetConsultRecord'), 'pet5_vet_clinic spec must mention VetPatient or VetConsultRecord');
+  });
+  it('car_life: car5_subscription → CarFleetUnit or CarSubscriptionPlan in spec', () => {
+    const f = gSDD(Object.assign({}, A25, { purpose: '車両の月額サブスクリプション提供・プラン管理・車両割当・乗換申請をサポートする自動車サブスク管理システム', data_entities: 'User, CarFleetUnit, CarSubscriptionPlan, CarSubscriptionContract, CarSwapRequest' }));
+    assert.ok((f['.spec/specification.md']||'').includes('CarFleetUnit') || (f['.spec/specification.md']||'').includes('CarSubscriptionPlan'), 'car5_subscription spec must mention CarFleetUnit or CarSubscriptionPlan');
+  });
+  it('civil_eng: ce5_utility → UtilityAsset or UtilityIncident in spec', () => {
+    const f = gSDD(Object.assign({}, A25, { purpose: 'ガス・水道・電力インフラ資産の点検スケジュール・インシデント管理・ネットワークマップ管理を行う公益事業インフラ管理システム', data_entities: 'User, UtilityAsset, UtilityInspectionSchedule, UtilityIncident, UtilityNetworkMap' }));
+    assert.ok((f['.spec/specification.md']||'').includes('UtilityAsset') || (f['.spec/specification.md']||'').includes('UtilityIncident'), 'ce5_utility spec must mention UtilityAsset or UtilityIncident');
+  });
+  it('braintech: bt5_sleep → SleepRecord or SleepStageData in spec', () => {
+    const f = gSDD(Object.assign({}, A25, { purpose: 'ウェアラブルデバイスの睡眠データ収集・睡眠ステージ分析・睡眠目標管理・改善インサイト提供アプリ', data_entities: 'User, SleepRecord, SleepStageData, SleepGoal, SleepInsight' }));
+    assert.ok((f['.spec/specification.md']||'').includes('SleepRecord') || (f['.spec/specification.md']||'').includes('SleepStageData'), 'bt5_sleep spec must mention SleepRecord or SleepStageData');
+  });
+  it('digital_legacy: dl5_memorial → MemorialPage or MemorialPost in spec', () => {
+    const f = gSDD(Object.assign({}, A25, { purpose: '故人の思い出写真・投稿・メッセージを家族・友人がオンラインで共有・保存できるメモリアルページ作成サービス', data_entities: 'User, MemorialPage, MemorialPost, MemorialPhoto, GuestbookEntry' }));
+    assert.ok((f['.spec/specification.md']||'').includes('MemorialPage') || (f['.spec/specification.md']||'').includes('MemorialPost'), 'dl5_memorial spec must mention MemorialPage or MemorialPost');
+  });
+  it('data_sovereignty: ds5_privacy_ops → DPIARecord or PersonalDataMapping in spec', () => {
+    const f = gSDD(Object.assign({}, A25, { purpose: 'DPIAの実施・個人情報マッピング・プライバシーインシデント管理・DSAROps対応を統合するプライバシー業務管理システム', data_entities: 'User, DPIARecord, PersonalDataMapping, PrivacyIncident, DSARRequest' }));
+    assert.ok((f['.spec/specification.md']||'').includes('DPIARecord') || (f['.spec/specification.md']||'').includes('PersonalDataMapping'), 'ds5_privacy_ops spec must mention DPIARecord or PersonalDataMapping');
+  });
+  it('space_data: sp5_astronomy → AstroObservationTarget or TelescopeSession in spec', () => {
+    const f = gSDD(Object.assign({}, A25, { purpose: 'アマチュア・プロ天文家の観測ターゲット管理・望遠鏡セッション記録・観測データ保存・研究報告支援システム', data_entities: 'User, AstroObservationTarget, TelescopeSession, AstroObservationData, AstroReport' }));
+    assert.ok((f['.spec/specification.md']||'').includes('AstroObservationTarget') || (f['.spec/specification.md']||'').includes('TelescopeSession'), 'sp5_astronomy spec must mention AstroObservationTarget or TelescopeSession');
+  });
+  it('climate_resilience: cr5_heatwave → HeatSensorStation or HeatRiskAlert in spec', () => {
+    const f = gSDD(Object.assign({}, A25, { purpose: '熱中症リスクの気象センサーモニタリング・危険区域アラート・脆弱者支援・暑熱管理報告システム', data_entities: 'User, HeatSensorStation, HeatRiskAlert, VulnerablePersonRecord, HeatwaveReport' }));
+    assert.ok((f['.spec/specification.md']||'').includes('HeatSensorStation') || (f['.spec/specification.md']||'').includes('HeatRiskAlert'), 'cr5_heatwave spec must mention HeatSensorStation or HeatRiskAlert');
+  });
+  it('ai_avatar: av5_vr_avatar → VRAvatar or VirtualSpace in spec', () => {
+    const f = gSDD(Object.assign({}, A25, { purpose: 'VRアバターのカスタマイズ・バーチャルスペース管理・アバターアセット売買・VRセッション記録プラットフォーム', data_entities: 'User, VRAvatar, VirtualSpace, AvatarAsset, VRSessionRecord' }));
+    assert.ok((f['.spec/specification.md']||'').includes('VRAvatar') || (f['.spec/specification.md']||'').includes('VirtualSpace'), 'av5_vr_avatar spec must mention VRAvatar or VirtualSpace');
+  });
+  it('civic_tech: ctc5_open_data → OpenDataCatalog or OpenDataAsset in spec', () => {
+    const f = gSDD(Object.assign({}, A25, { purpose: '行政機関の公共データを標準フォーマットで公開・カタログ化・ダウンロード管理・活用事例共有するオープンデータポータル', data_entities: 'User, OpenDataCatalog, OpenDataAsset, DataDownloadLog, OpenDataFeedback' }));
+    assert.ok((f['.spec/specification.md']||'').includes('OpenDataCatalog') || (f['.spec/specification.md']||'').includes('OpenDataAsset'), 'ctc5_open_data spec must mention OpenDataCatalog or OpenDataAsset');
+  });
+  it('childcare: cce5_parent_app → ChildDevelopmentProfile or DailyContactLog in spec', () => {
+    const f = gSDD(Object.assign({}, A25, { purpose: '保育士と保護者間の連絡帳・お知らせ・写真共有・成長マイルストーン記録アプリ', data_entities: 'User, ChildDevelopmentProfile, DailyContactLog, GuardianMessage, GrowthMilestone' }));
+    assert.ok((f['.spec/specification.md']||'').includes('ChildDevelopmentProfile') || (f['.spec/specification.md']||'').includes('DailyContactLog'), 'cce5_parent_app spec must mention ChildDevelopmentProfile or DailyContactLog');
+  });
+  it('nomad_life: nml5_remote_job → RemoteJobListing or FreelancerProfile in spec', () => {
+    const f = gSDD(Object.assign({}, A25, { purpose: '完全リモートの求人・フリーランス案件の検索・応募・プロフィール管理・案件マッチングプラットフォーム', data_entities: 'User, RemoteJobListing, FreelancerProfile, JobApplication, RemoteWorkContract' }));
+    assert.ok((f['.spec/specification.md']||'').includes('RemoteJobListing') || (f['.spec/specification.md']||'').includes('FreelancerProfile'), 'nml5_remote_job spec must mention RemoteJobListing or FreelancerProfile');
+  });
 });
