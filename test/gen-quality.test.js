@@ -18,7 +18,7 @@
  *   Domain   detectDomain     → .spec/constitution.md §3 fallback KPI
  *   E2E      full generation  → file count, token richness, bilingual parity
  *
- * Suites 1-256: ~4958 tests total (4838 + Suites 247-256: 120 tests — presets-ext8 standard presets deep)
+ * Suites 1-266: ~5078 tests total (4958 + Suites 257-266: 120 tests — presets-ext9 standard presets deep)
  */
 
 const { describe, it } = require('node:test');
@@ -34306,5 +34306,857 @@ describe('Suite 256: presets-ext8 game_server_mgmt — Express/Railway/stripe', 
   it('docs/01: game_server_mgmt produces no undefined in overview', () => {
     const f = gSDD(g256_game_server_mgmt);
     assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'game_server_mgmt docs/01 must not contain undefined');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 257 — presets-ext9.js: clinical_trial_mgmt
+   NestJS/Railway/no-pay
+   ════════════════════════════════════════════════════════════════ */
+
+const g257_clinical_trial_mgmt = Object.assign({}, A25, {
+  purpose: '治験・臨床試験のプロトコル管理・被験者登録・症例報告書作成を効率化するGCP準拠CTMS',
+  frontend: 'React + Next.js',
+  backend: 'Node.js + NestJS',
+  database: 'PostgreSQL',
+  deploy: 'Railway',
+  orm: 'TypeORM',
+  auth: 'JWT + Passport',
+  payment: 'none',
+  mobile: 'なし',
+  data_entities: 'User, StudyProtocol, TrialSite, TrialParticipant, CaseReportForm, DataQueryNote, RegulatoryDoc',
+  mvp_features: 'プロトコル作成・バージョン管理, 被験者登録・追跡管理, 症例報告書(CRF)作成, 有害事象・安全性報告, GCP監査証跡, 多要素認証（MFA）, CORSホワイトリスト設定, ページネーション・無限スクロール, AuditLog',
+});
+
+describe('Suite 257: presets-ext9 clinical_trial_mgmt — NestJS/Railway/no-pay', () => {
+
+  it('SDD: clinical_trial_mgmt generates specification.md and constitution.md', () => {
+    const f = gSDD(g257_clinical_trial_mgmt);
+    assert.ok(f['.spec/specification.md'], 'clinical_trial_mgmt must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'clinical_trial_mgmt must generate constitution.md');
+  });
+
+  it('SDD: clinical_trial_mgmt includes StudyProtocol entity in spec', () => {
+    const f = gSDD(g257_clinical_trial_mgmt);
+    assert.ok((f['.spec/specification.md']||'').includes('StudyProtocol'), 'clinical_trial_mgmt spec must mention StudyProtocol');
+  });
+
+  it('SDD: clinical_trial_mgmt includes TrialSite entity in spec', () => {
+    const f = gSDD(g257_clinical_trial_mgmt);
+    assert.ok((f['.spec/specification.md']||'').includes('TrialSite'), 'clinical_trial_mgmt spec must mention TrialSite');
+  });
+
+  it('SDD: clinical_trial_mgmt includes TrialParticipant entity in spec', () => {
+    const f = gSDD(g257_clinical_trial_mgmt);
+    assert.ok((f['.spec/specification.md']||'').includes('TrialParticipant'), 'clinical_trial_mgmt spec must mention TrialParticipant');
+  });
+
+  it('SDD: clinical_trial_mgmt includes CaseReportForm or DataQueryNote in spec', () => {
+    const f = gSDD(g257_clinical_trial_mgmt);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('CaseReportForm')||spec.includes('DataQueryNote'), 'clinical_trial_mgmt spec must mention CaseReportForm or DataQueryNote');
+  });
+
+  it('SDD: clinical_trial_mgmt (NestJS) → NestJS referenced in spec', () => {
+    const f = gSDD(g257_clinical_trial_mgmt);
+    assert.ok((f['.spec/specification.md']||'').includes('NestJS'), 'clinical_trial_mgmt spec must reference NestJS');
+  });
+
+  it('SDD: clinical_trial_mgmt no-payment → Stripe not required in spec', () => {
+    const f = gSDD(g257_clinical_trial_mgmt);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(!spec.includes('Stripe')||spec.includes('なし')||spec.includes('none'), 'clinical_trial_mgmt no-payment must not require Stripe');
+  });
+
+  it('SDD EN: clinical_trial_mgmt English spec contains StudyProtocol', () => {
+    const f = gSDD(g257_clinical_trial_mgmt, 'en');
+    assert.ok((f['.spec/specification.md']||'').includes('StudyProtocol'), 'clinical_trial_mgmt EN spec must contain StudyProtocol');
+  });
+
+  it('SDD EN: clinical_trial_mgmt produces no undefined in spec', () => {
+    const f = gSDD(g257_clinical_trial_mgmt, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'clinical_trial_mgmt EN spec must not contain undefined');
+  });
+
+  it('SDD JA: clinical_trial_mgmt produces no undefined in spec', () => {
+    const f = gSDD(g257_clinical_trial_mgmt);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'clinical_trial_mgmt JA spec must not contain undefined');
+  });
+
+  it('docs/01: clinical_trial_mgmt overview mentions 臨床試験 or プロトコル', () => {
+    const f = gSDD(g257_clinical_trial_mgmt);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('臨床試験')||doc.includes('プロトコル'), 'clinical_trial_mgmt docs/01 must mention 臨床試験 or プロトコル');
+  });
+
+  it('docs/01: clinical_trial_mgmt produces no undefined in overview', () => {
+    const f = gSDD(g257_clinical_trial_mgmt);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'clinical_trial_mgmt docs/01 must not contain undefined');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 258 — presets-ext9.js: art_gallery_platform
+   Supabase/Vercel/stripe
+   ════════════════════════════════════════════════════════════════ */
+
+const g258_art_gallery_platform = Object.assign({}, A25, {
+  purpose: 'アーティストが作品を展示・販売し、コレクターがコレクションを管理できるアートコンテンツプラットフォーム',
+  frontend: 'React + Next.js',
+  backend: 'Supabase',
+  database: 'Supabase PostgreSQL',
+  deploy: 'Vercel',
+  orm: '',
+  auth: 'Supabase Auth',
+  payment: 'stripe',
+  mobile: 'なし',
+  data_entities: 'User, GalleryArtwork, ArtistPage, ArtExhibition, GalleryCollection, ArtworkBid, ArtSaleRecord',
+  mvp_features: '作品展示・ポートフォリオ管理, オークション・入札機能, アート売買決済, 展覧会・企画管理, コレクション管理, ページネーション・無限スクロール',
+});
+
+describe('Suite 258: presets-ext9 art_gallery_platform — Supabase/Vercel/stripe', () => {
+
+  it('SDD: art_gallery_platform generates specification.md and constitution.md', () => {
+    const f = gSDD(g258_art_gallery_platform);
+    assert.ok(f['.spec/specification.md'], 'art_gallery_platform must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'art_gallery_platform must generate constitution.md');
+  });
+
+  it('SDD: art_gallery_platform includes GalleryArtwork entity in spec', () => {
+    const f = gSDD(g258_art_gallery_platform);
+    assert.ok((f['.spec/specification.md']||'').includes('GalleryArtwork'), 'art_gallery_platform spec must mention GalleryArtwork');
+  });
+
+  it('SDD: art_gallery_platform includes ArtistPage entity in spec', () => {
+    const f = gSDD(g258_art_gallery_platform);
+    assert.ok((f['.spec/specification.md']||'').includes('ArtistPage'), 'art_gallery_platform spec must mention ArtistPage');
+  });
+
+  it('SDD: art_gallery_platform includes ArtExhibition entity in spec', () => {
+    const f = gSDD(g258_art_gallery_platform);
+    assert.ok((f['.spec/specification.md']||'').includes('ArtExhibition'), 'art_gallery_platform spec must mention ArtExhibition');
+  });
+
+  it('SDD: art_gallery_platform includes GalleryCollection or ArtworkBid in spec', () => {
+    const f = gSDD(g258_art_gallery_platform);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('GalleryCollection')||spec.includes('ArtworkBid'), 'art_gallery_platform spec must mention GalleryCollection or ArtworkBid');
+  });
+
+  it('SDD: art_gallery_platform (Supabase) → Supabase referenced in spec', () => {
+    const f = gSDD(g258_art_gallery_platform);
+    assert.ok((f['.spec/specification.md']||'').includes('Supabase'), 'art_gallery_platform spec must reference Supabase');
+  });
+
+  it('SDD: art_gallery_platform stripe → Stripe referenced in spec', () => {
+    const f = gSDD(g258_art_gallery_platform);
+    assert.ok((f['.spec/specification.md']||'').includes('Stripe')||(f['.spec/specification.md']||'').includes('stripe')||(f['.spec/specification.md']||'').includes('決済'), 'art_gallery_platform stripe must reference payment');
+  });
+
+  it('SDD EN: art_gallery_platform English spec contains GalleryArtwork', () => {
+    const f = gSDD(g258_art_gallery_platform, 'en');
+    assert.ok((f['.spec/specification.md']||'').includes('GalleryArtwork'), 'art_gallery_platform EN spec must contain GalleryArtwork');
+  });
+
+  it('SDD EN: art_gallery_platform produces no undefined in spec', () => {
+    const f = gSDD(g258_art_gallery_platform, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'art_gallery_platform EN spec must not contain undefined');
+  });
+
+  it('SDD JA: art_gallery_platform produces no undefined in spec', () => {
+    const f = gSDD(g258_art_gallery_platform);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'art_gallery_platform JA spec must not contain undefined');
+  });
+
+  it('docs/01: art_gallery_platform overview mentions アート or ギャラリー', () => {
+    const f = gSDD(g258_art_gallery_platform);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('アート')||doc.includes('ギャラリー'), 'art_gallery_platform docs/01 must mention アート or ギャラリー');
+  });
+
+  it('docs/01: art_gallery_platform produces no undefined in overview', () => {
+    const f = gSDD(g258_art_gallery_platform);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'art_gallery_platform docs/01 must not contain undefined');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 259 — presets-ext9.js: corporate_training
+   Express/Railway/stripe
+   ════════════════════════════════════════════════════════════════ */
+
+const g259_corporate_training = Object.assign({}, A25, {
+  purpose: '企業内eラーニング・研修プログラム管理・受講記録・資格証明書の発行管理システム',
+  frontend: 'React + Next.js',
+  backend: 'Node.js + Express',
+  database: 'PostgreSQL',
+  deploy: 'Railway',
+  orm: 'Prisma',
+  auth: 'JWT + Passport',
+  payment: 'stripe',
+  mobile: 'なし',
+  data_entities: 'User, TrainingProgram, TrainingCourse, CourseEnrollment, LearningModule, AssessmentResult, CourseCertificate',
+  mvp_features: 'eラーニングコース管理, 受講進捗トラッキング, クイズ・テスト機能, 修了証明書発行, 研修レポート・分析, CORSホワイトリスト設定, ページネーション・無限スクロール',
+});
+
+describe('Suite 259: presets-ext9 corporate_training — Express/Railway/stripe', () => {
+
+  it('SDD: corporate_training generates specification.md and constitution.md', () => {
+    const f = gSDD(g259_corporate_training);
+    assert.ok(f['.spec/specification.md'], 'corporate_training must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'corporate_training must generate constitution.md');
+  });
+
+  it('SDD: corporate_training includes TrainingProgram entity in spec', () => {
+    const f = gSDD(g259_corporate_training);
+    assert.ok((f['.spec/specification.md']||'').includes('TrainingProgram'), 'corporate_training spec must mention TrainingProgram');
+  });
+
+  it('SDD: corporate_training includes TrainingCourse entity in spec', () => {
+    const f = gSDD(g259_corporate_training);
+    assert.ok((f['.spec/specification.md']||'').includes('TrainingCourse'), 'corporate_training spec must mention TrainingCourse');
+  });
+
+  it('SDD: corporate_training includes CourseEnrollment entity in spec', () => {
+    const f = gSDD(g259_corporate_training);
+    assert.ok((f['.spec/specification.md']||'').includes('CourseEnrollment'), 'corporate_training spec must mention CourseEnrollment');
+  });
+
+  it('SDD: corporate_training includes LearningModule or AssessmentResult in spec', () => {
+    const f = gSDD(g259_corporate_training);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('LearningModule')||spec.includes('AssessmentResult'), 'corporate_training spec must mention LearningModule or AssessmentResult');
+  });
+
+  it('SDD: corporate_training (Express) → Express referenced in spec', () => {
+    const f = gSDD(g259_corporate_training);
+    assert.ok((f['.spec/specification.md']||'').includes('Express'), 'corporate_training spec must reference Express');
+  });
+
+  it('SDD: corporate_training stripe → Stripe referenced in spec', () => {
+    const f = gSDD(g259_corporate_training);
+    assert.ok((f['.spec/specification.md']||'').includes('Stripe')||(f['.spec/specification.md']||'').includes('stripe')||(f['.spec/specification.md']||'').includes('決済'), 'corporate_training stripe must reference payment');
+  });
+
+  it('SDD EN: corporate_training English spec contains TrainingProgram', () => {
+    const f = gSDD(g259_corporate_training, 'en');
+    assert.ok((f['.spec/specification.md']||'').includes('TrainingProgram'), 'corporate_training EN spec must contain TrainingProgram');
+  });
+
+  it('SDD EN: corporate_training produces no undefined in spec', () => {
+    const f = gSDD(g259_corporate_training, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'corporate_training EN spec must not contain undefined');
+  });
+
+  it('SDD JA: corporate_training produces no undefined in spec', () => {
+    const f = gSDD(g259_corporate_training);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'corporate_training JA spec must not contain undefined');
+  });
+
+  it('docs/01: corporate_training overview mentions 研修 or eラーニング', () => {
+    const f = gSDD(g259_corporate_training);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('研修')||doc.includes('eラーニング'), 'corporate_training docs/01 must mention 研修 or eラーニング');
+  });
+
+  it('docs/01: corporate_training produces no undefined in overview', () => {
+    const f = gSDD(g259_corporate_training);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'corporate_training docs/01 must not contain undefined');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 260 — presets-ext9.js: supply_chain
+   NestJS/Railway/stripe
+   ════════════════════════════════════════════════════════════════ */
+
+const g260_supply_chain = Object.assign({}, A25, {
+  purpose: 'サプライチェーン可視化・調達管理・在庫追跡・仕入先評価を統合するB2B調達プラットフォーム',
+  frontend: 'React + Next.js',
+  backend: 'Node.js + NestJS',
+  database: 'PostgreSQL',
+  deploy: 'Railway',
+  orm: 'TypeORM',
+  auth: 'JWT + Passport',
+  payment: 'stripe',
+  mobile: 'なし',
+  data_entities: 'User, ProcurementNode, SourceItem, SourceOrder, CargoLeg, VendorRating, SupplyChainAlert',
+  mvp_features: '調達・発注管理, 在庫レベル追跡, 仕入先評価・管理, 配送・輸送トラッキング, 需要予測・アラート, CORSホワイトリスト設定, ページネーション・無限スクロール',
+});
+
+describe('Suite 260: presets-ext9 supply_chain — NestJS/Railway/stripe', () => {
+
+  it('SDD: supply_chain generates specification.md and constitution.md', () => {
+    const f = gSDD(g260_supply_chain);
+    assert.ok(f['.spec/specification.md'], 'supply_chain must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'supply_chain must generate constitution.md');
+  });
+
+  it('SDD: supply_chain includes ProcurementNode entity in spec', () => {
+    const f = gSDD(g260_supply_chain);
+    assert.ok((f['.spec/specification.md']||'').includes('ProcurementNode'), 'supply_chain spec must mention ProcurementNode');
+  });
+
+  it('SDD: supply_chain includes SourceItem entity in spec', () => {
+    const f = gSDD(g260_supply_chain);
+    assert.ok((f['.spec/specification.md']||'').includes('SourceItem'), 'supply_chain spec must mention SourceItem');
+  });
+
+  it('SDD: supply_chain includes SourceOrder entity in spec', () => {
+    const f = gSDD(g260_supply_chain);
+    assert.ok((f['.spec/specification.md']||'').includes('SourceOrder'), 'supply_chain spec must mention SourceOrder');
+  });
+
+  it('SDD: supply_chain includes CargoLeg or VendorRating in spec', () => {
+    const f = gSDD(g260_supply_chain);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('CargoLeg')||spec.includes('VendorRating'), 'supply_chain spec must mention CargoLeg or VendorRating');
+  });
+
+  it('SDD: supply_chain (NestJS) → NestJS referenced in spec', () => {
+    const f = gSDD(g260_supply_chain);
+    assert.ok((f['.spec/specification.md']||'').includes('NestJS'), 'supply_chain spec must reference NestJS');
+  });
+
+  it('SDD: supply_chain stripe → Stripe referenced in spec', () => {
+    const f = gSDD(g260_supply_chain);
+    assert.ok((f['.spec/specification.md']||'').includes('Stripe')||(f['.spec/specification.md']||'').includes('stripe')||(f['.spec/specification.md']||'').includes('決済'), 'supply_chain stripe must reference payment');
+  });
+
+  it('SDD EN: supply_chain English spec contains ProcurementNode', () => {
+    const f = gSDD(g260_supply_chain, 'en');
+    assert.ok((f['.spec/specification.md']||'').includes('ProcurementNode'), 'supply_chain EN spec must contain ProcurementNode');
+  });
+
+  it('SDD EN: supply_chain produces no undefined in spec', () => {
+    const f = gSDD(g260_supply_chain, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'supply_chain EN spec must not contain undefined');
+  });
+
+  it('SDD JA: supply_chain produces no undefined in spec', () => {
+    const f = gSDD(g260_supply_chain);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'supply_chain JA spec must not contain undefined');
+  });
+
+  it('docs/01: supply_chain overview mentions サプライチェーン or 調達', () => {
+    const f = gSDD(g260_supply_chain);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('サプライチェーン')||doc.includes('調達'), 'supply_chain docs/01 must mention サプライチェーン or 調達');
+  });
+
+  it('docs/01: supply_chain produces no undefined in overview', () => {
+    const f = gSDD(g260_supply_chain);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'supply_chain docs/01 must not contain undefined');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 261 — presets-ext9.js: investment_tracker
+   Express/Railway/stripe
+   ════════════════════════════════════════════════════════════════ */
+
+const g261_investment_tracker = Object.assign({}, A25, {
+  purpose: '株式・ETF・暗号資産のポートフォリオ管理・損益計算・配当追跡を提供する個人投資管理SaaS',
+  frontend: 'React + Next.js',
+  backend: 'Node.js + Express',
+  database: 'PostgreSQL',
+  deploy: 'Railway',
+  orm: 'Prisma',
+  auth: 'JWT + Passport',
+  payment: 'stripe',
+  mobile: 'なし',
+  data_entities: 'User, InvestmentPortfolio, StockHolding, TradeOrder, AssetQuote, DividendRecord, PortfolioReport, AuditLog',
+  mvp_features: 'ポートフォリオ管理・可視化, 損益計算・税務レポート, 配当・分配金追跡, 価格アラート, 資産配分分析, 多要素認証（MFA）, CORSホワイトリスト設定, ページネーション・無限スクロール, AuditLog',
+});
+
+describe('Suite 261: presets-ext9 investment_tracker — Express/Railway/stripe', () => {
+
+  it('SDD: investment_tracker generates specification.md and constitution.md', () => {
+    const f = gSDD(g261_investment_tracker);
+    assert.ok(f['.spec/specification.md'], 'investment_tracker must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'investment_tracker must generate constitution.md');
+  });
+
+  it('SDD: investment_tracker includes InvestmentPortfolio entity in spec', () => {
+    const f = gSDD(g261_investment_tracker);
+    assert.ok((f['.spec/specification.md']||'').includes('InvestmentPortfolio'), 'investment_tracker spec must mention InvestmentPortfolio');
+  });
+
+  it('SDD: investment_tracker includes StockHolding entity in spec', () => {
+    const f = gSDD(g261_investment_tracker);
+    assert.ok((f['.spec/specification.md']||'').includes('StockHolding'), 'investment_tracker spec must mention StockHolding');
+  });
+
+  it('SDD: investment_tracker includes TradeOrder entity in spec', () => {
+    const f = gSDD(g261_investment_tracker);
+    assert.ok((f['.spec/specification.md']||'').includes('TradeOrder'), 'investment_tracker spec must mention TradeOrder');
+  });
+
+  it('SDD: investment_tracker includes AssetQuote or DividendRecord in spec', () => {
+    const f = gSDD(g261_investment_tracker);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('AssetQuote')||spec.includes('DividendRecord'), 'investment_tracker spec must mention AssetQuote or DividendRecord');
+  });
+
+  it('SDD: investment_tracker (Express) → Express referenced in spec', () => {
+    const f = gSDD(g261_investment_tracker);
+    assert.ok((f['.spec/specification.md']||'').includes('Express'), 'investment_tracker spec must reference Express');
+  });
+
+  it('SDD: investment_tracker stripe → Stripe referenced in spec', () => {
+    const f = gSDD(g261_investment_tracker);
+    assert.ok((f['.spec/specification.md']||'').includes('Stripe')||(f['.spec/specification.md']||'').includes('stripe')||(f['.spec/specification.md']||'').includes('決済'), 'investment_tracker stripe must reference payment');
+  });
+
+  it('SDD EN: investment_tracker English spec contains InvestmentPortfolio', () => {
+    const f = gSDD(g261_investment_tracker, 'en');
+    assert.ok((f['.spec/specification.md']||'').includes('InvestmentPortfolio'), 'investment_tracker EN spec must contain InvestmentPortfolio');
+  });
+
+  it('SDD EN: investment_tracker produces no undefined in spec', () => {
+    const f = gSDD(g261_investment_tracker, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'investment_tracker EN spec must not contain undefined');
+  });
+
+  it('SDD JA: investment_tracker produces no undefined in spec', () => {
+    const f = gSDD(g261_investment_tracker);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'investment_tracker JA spec must not contain undefined');
+  });
+
+  it('docs/01: investment_tracker overview mentions ポートフォリオ or 株式', () => {
+    const f = gSDD(g261_investment_tracker);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('ポートフォリオ')||doc.includes('株式'), 'investment_tracker docs/01 must mention ポートフォリオ or 株式');
+  });
+
+  it('docs/01: investment_tracker produces no undefined in overview', () => {
+    const f = gSDD(g261_investment_tracker);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'investment_tracker docs/01 must not contain undefined');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 262 — presets-ext9.js: venue_management
+   Supabase/Vercel/stripe
+   ════════════════════════════════════════════════════════════════ */
+
+const g262_venue_management = Object.assign({}, A25, {
+  purpose: '会議室・イベント会場・スポーツ施設の予約・料金管理・施設スケジュール最適化SaaS',
+  frontend: 'React + Next.js',
+  backend: 'Supabase',
+  database: 'Supabase PostgreSQL',
+  deploy: 'Vercel',
+  orm: '',
+  auth: 'Supabase Auth',
+  payment: 'stripe',
+  mobile: 'なし',
+  data_entities: 'User, BookingVenue, VenueReservation, ReservationPayment, VenueLayout, VenueEquipment, VenueSchedule',
+  mvp_features: '会場予約・スケジュール管理, 設備・機材レンタル管理, 料金体系・割引設定, 予約確認メール自動送信, 稼働率レポート, ページネーション・無限スクロール',
+});
+
+describe('Suite 262: presets-ext9 venue_management — Supabase/Vercel/stripe', () => {
+
+  it('SDD: venue_management generates specification.md and constitution.md', () => {
+    const f = gSDD(g262_venue_management);
+    assert.ok(f['.spec/specification.md'], 'venue_management must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'venue_management must generate constitution.md');
+  });
+
+  it('SDD: venue_management includes BookingVenue entity in spec', () => {
+    const f = gSDD(g262_venue_management);
+    assert.ok((f['.spec/specification.md']||'').includes('BookingVenue'), 'venue_management spec must mention BookingVenue');
+  });
+
+  it('SDD: venue_management includes VenueReservation entity in spec', () => {
+    const f = gSDD(g262_venue_management);
+    assert.ok((f['.spec/specification.md']||'').includes('VenueReservation'), 'venue_management spec must mention VenueReservation');
+  });
+
+  it('SDD: venue_management includes ReservationPayment entity in spec', () => {
+    const f = gSDD(g262_venue_management);
+    assert.ok((f['.spec/specification.md']||'').includes('ReservationPayment'), 'venue_management spec must mention ReservationPayment');
+  });
+
+  it('SDD: venue_management includes VenueLayout or VenueEquipment in spec', () => {
+    const f = gSDD(g262_venue_management);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('VenueLayout')||spec.includes('VenueEquipment'), 'venue_management spec must mention VenueLayout or VenueEquipment');
+  });
+
+  it('SDD: venue_management (Supabase) → Supabase referenced in spec', () => {
+    const f = gSDD(g262_venue_management);
+    assert.ok((f['.spec/specification.md']||'').includes('Supabase'), 'venue_management spec must reference Supabase');
+  });
+
+  it('SDD: venue_management stripe → Stripe referenced in spec', () => {
+    const f = gSDD(g262_venue_management);
+    assert.ok((f['.spec/specification.md']||'').includes('Stripe')||(f['.spec/specification.md']||'').includes('stripe')||(f['.spec/specification.md']||'').includes('決済'), 'venue_management stripe must reference payment');
+  });
+
+  it('SDD EN: venue_management English spec contains BookingVenue', () => {
+    const f = gSDD(g262_venue_management, 'en');
+    assert.ok((f['.spec/specification.md']||'').includes('BookingVenue'), 'venue_management EN spec must contain BookingVenue');
+  });
+
+  it('SDD EN: venue_management produces no undefined in spec', () => {
+    const f = gSDD(g262_venue_management, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'venue_management EN spec must not contain undefined');
+  });
+
+  it('SDD JA: venue_management produces no undefined in spec', () => {
+    const f = gSDD(g262_venue_management);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'venue_management JA spec must not contain undefined');
+  });
+
+  it('docs/01: venue_management overview mentions 会場 or 予約', () => {
+    const f = gSDD(g262_venue_management);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('会場')||doc.includes('予約'), 'venue_management docs/01 must mention 会場 or 予約');
+  });
+
+  it('docs/01: venue_management produces no undefined in overview', () => {
+    const f = gSDD(g262_venue_management);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'venue_management docs/01 must not contain undefined');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 263 — presets-ext9.js: recipe_platform
+   Supabase/Vercel/no-pay
+   ════════════════════════════════════════════════════════════════ */
+
+const g263_recipe_platform = Object.assign({}, A25, {
+  purpose: 'レシピ投稿・検索・いいね・フォロー機能を備えた料理コミュニティSNSプラットフォーム',
+  frontend: 'React + Next.js',
+  backend: 'Supabase',
+  database: 'Supabase PostgreSQL',
+  deploy: 'Vercel',
+  orm: '',
+  auth: 'Supabase Auth',
+  payment: 'none',
+  mobile: 'なし',
+  data_entities: 'User, Recipe, RecipeIngredient, RecipeStep, RecipeReview, RecipeCollection, CookingLog',
+  mvp_features: 'レシピ投稿・管理, 食材・手順管理, いいね・コメント, ユーザーフォロー, コレクション保存, ページネーション・無限スクロール',
+});
+
+describe('Suite 263: presets-ext9 recipe_platform — Supabase/Vercel/no-pay', () => {
+
+  it('SDD: recipe_platform generates specification.md and constitution.md', () => {
+    const f = gSDD(g263_recipe_platform);
+    assert.ok(f['.spec/specification.md'], 'recipe_platform must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'recipe_platform must generate constitution.md');
+  });
+
+  it('SDD: recipe_platform includes Recipe entity in spec', () => {
+    const f = gSDD(g263_recipe_platform);
+    assert.ok((f['.spec/specification.md']||'').includes('Recipe'), 'recipe_platform spec must mention Recipe');
+  });
+
+  it('SDD: recipe_platform includes RecipeIngredient entity in spec', () => {
+    const f = gSDD(g263_recipe_platform);
+    assert.ok((f['.spec/specification.md']||'').includes('RecipeIngredient'), 'recipe_platform spec must mention RecipeIngredient');
+  });
+
+  it('SDD: recipe_platform includes RecipeStep entity in spec', () => {
+    const f = gSDD(g263_recipe_platform);
+    assert.ok((f['.spec/specification.md']||'').includes('RecipeStep'), 'recipe_platform spec must mention RecipeStep');
+  });
+
+  it('SDD: recipe_platform includes RecipeReview or RecipeCollection in spec', () => {
+    const f = gSDD(g263_recipe_platform);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('RecipeReview')||spec.includes('RecipeCollection'), 'recipe_platform spec must mention RecipeReview or RecipeCollection');
+  });
+
+  it('SDD: recipe_platform (Supabase) → Supabase referenced in spec', () => {
+    const f = gSDD(g263_recipe_platform);
+    assert.ok((f['.spec/specification.md']||'').includes('Supabase'), 'recipe_platform spec must reference Supabase');
+  });
+
+  it('SDD: recipe_platform no-payment → Stripe not required in spec', () => {
+    const f = gSDD(g263_recipe_platform);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(!spec.includes('Stripe')||spec.includes('なし')||spec.includes('none'), 'recipe_platform no-payment must not require Stripe');
+  });
+
+  it('SDD EN: recipe_platform English spec contains Recipe', () => {
+    const f = gSDD(g263_recipe_platform, 'en');
+    assert.ok((f['.spec/specification.md']||'').includes('Recipe'), 'recipe_platform EN spec must contain Recipe');
+  });
+
+  it('SDD EN: recipe_platform produces no undefined in spec', () => {
+    const f = gSDD(g263_recipe_platform, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'recipe_platform EN spec must not contain undefined');
+  });
+
+  it('SDD JA: recipe_platform produces no undefined in spec', () => {
+    const f = gSDD(g263_recipe_platform);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'recipe_platform JA spec must not contain undefined');
+  });
+
+  it('docs/01: recipe_platform overview mentions レシピ or 料理', () => {
+    const f = gSDD(g263_recipe_platform);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('レシピ')||doc.includes('料理'), 'recipe_platform docs/01 must mention レシピ or 料理');
+  });
+
+  it('docs/01: recipe_platform produces no undefined in overview', () => {
+    const f = gSDD(g263_recipe_platform);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'recipe_platform docs/01 must not contain undefined');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 264 — presets-ext9.js: ip_management
+   NestJS/Railway/stripe
+   ════════════════════════════════════════════════════════════════ */
+
+const g264_ip_management = Object.assign({}, A25, {
+  purpose: '特許・商標・著作権・ライセンス契約の出願期限アラート・更新管理を行う知財管理プラットフォーム',
+  frontend: 'React + Next.js',
+  backend: 'Node.js + NestJS',
+  database: 'PostgreSQL',
+  deploy: 'Railway',
+  orm: 'TypeORM',
+  auth: 'JWT + Passport',
+  payment: 'stripe',
+  mobile: 'なし',
+  data_entities: 'User, IPRight, PatentFiling, TrademarkRecord, IPLicense, IPDeadlineAlert, IPPortfolio, AuditLog',
+  mvp_features: '知財ポートフォリオ管理, 特許・商標出願管理, 期限アラート・自動リマインド, ライセンス契約管理, 知財監査ログ, 多要素認証（MFA）, CORSホワイトリスト設定, ページネーション・無限スクロール, AuditLog',
+});
+
+describe('Suite 264: presets-ext9 ip_management — NestJS/Railway/stripe', () => {
+
+  it('SDD: ip_management generates specification.md and constitution.md', () => {
+    const f = gSDD(g264_ip_management);
+    assert.ok(f['.spec/specification.md'], 'ip_management must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'ip_management must generate constitution.md');
+  });
+
+  it('SDD: ip_management includes IPRight entity in spec', () => {
+    const f = gSDD(g264_ip_management);
+    assert.ok((f['.spec/specification.md']||'').includes('IPRight'), 'ip_management spec must mention IPRight');
+  });
+
+  it('SDD: ip_management includes PatentFiling entity in spec', () => {
+    const f = gSDD(g264_ip_management);
+    assert.ok((f['.spec/specification.md']||'').includes('PatentFiling'), 'ip_management spec must mention PatentFiling');
+  });
+
+  it('SDD: ip_management includes TrademarkRecord entity in spec', () => {
+    const f = gSDD(g264_ip_management);
+    assert.ok((f['.spec/specification.md']||'').includes('TrademarkRecord'), 'ip_management spec must mention TrademarkRecord');
+  });
+
+  it('SDD: ip_management includes IPLicense or IPDeadlineAlert in spec', () => {
+    const f = gSDD(g264_ip_management);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('IPLicense')||spec.includes('IPDeadlineAlert'), 'ip_management spec must mention IPLicense or IPDeadlineAlert');
+  });
+
+  it('SDD: ip_management (NestJS) → NestJS referenced in spec', () => {
+    const f = gSDD(g264_ip_management);
+    assert.ok((f['.spec/specification.md']||'').includes('NestJS'), 'ip_management spec must reference NestJS');
+  });
+
+  it('SDD: ip_management stripe → Stripe referenced in spec', () => {
+    const f = gSDD(g264_ip_management);
+    assert.ok((f['.spec/specification.md']||'').includes('Stripe')||(f['.spec/specification.md']||'').includes('stripe')||(f['.spec/specification.md']||'').includes('決済'), 'ip_management stripe must reference payment');
+  });
+
+  it('SDD EN: ip_management English spec contains IPRight', () => {
+    const f = gSDD(g264_ip_management, 'en');
+    assert.ok((f['.spec/specification.md']||'').includes('IPRight'), 'ip_management EN spec must contain IPRight');
+  });
+
+  it('SDD EN: ip_management produces no undefined in spec', () => {
+    const f = gSDD(g264_ip_management, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'ip_management EN spec must not contain undefined');
+  });
+
+  it('SDD JA: ip_management produces no undefined in spec', () => {
+    const f = gSDD(g264_ip_management);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'ip_management JA spec must not contain undefined');
+  });
+
+  it('docs/01: ip_management overview mentions 特許 or 知財', () => {
+    const f = gSDD(g264_ip_management);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('特許')||doc.includes('知財'), 'ip_management docs/01 must mention 特許 or 知財');
+  });
+
+  it('docs/01: ip_management produces no undefined in overview', () => {
+    const f = gSDD(g264_ip_management);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'ip_management docs/01 must not contain undefined');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 265 — presets-ext9.js: ci_cd_dashboard
+   Express/Railway/stripe
+   ════════════════════════════════════════════════════════════════ */
+
+const g265_ci_cd_dashboard = Object.assign({}, A25, {
+  purpose: 'CI/CDパイプライン監視・デプロイ頻度・品質ゲート・テストカバレッジの可視化開発者向けDevOpsダッシュボード',
+  frontend: 'React + Next.js',
+  backend: 'Node.js + Express',
+  database: 'PostgreSQL',
+  deploy: 'Railway',
+  orm: 'Prisma',
+  auth: 'JWT + Passport',
+  payment: 'stripe',
+  mobile: 'なし',
+  data_entities: 'User, CICDPipeline, BuildRecord, DeployTarget, QualityGateResult, TestCoverage, DeployHistory',
+  mvp_features: 'パイプライン監視・可視化, ビルド・デプロイ履歴, 品質ゲート設定, テストカバレッジトラッキング, アラート・通知, CORSホワイトリスト設定, ページネーション・無限スクロール',
+});
+
+describe('Suite 265: presets-ext9 ci_cd_dashboard — Express/Railway/stripe', () => {
+
+  it('SDD: ci_cd_dashboard generates specification.md and constitution.md', () => {
+    const f = gSDD(g265_ci_cd_dashboard);
+    assert.ok(f['.spec/specification.md'], 'ci_cd_dashboard must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'ci_cd_dashboard must generate constitution.md');
+  });
+
+  it('SDD: ci_cd_dashboard includes CICDPipeline entity in spec', () => {
+    const f = gSDD(g265_ci_cd_dashboard);
+    assert.ok((f['.spec/specification.md']||'').includes('CICDPipeline'), 'ci_cd_dashboard spec must mention CICDPipeline');
+  });
+
+  it('SDD: ci_cd_dashboard includes BuildRecord entity in spec', () => {
+    const f = gSDD(g265_ci_cd_dashboard);
+    assert.ok((f['.spec/specification.md']||'').includes('BuildRecord'), 'ci_cd_dashboard spec must mention BuildRecord');
+  });
+
+  it('SDD: ci_cd_dashboard includes DeployTarget entity in spec', () => {
+    const f = gSDD(g265_ci_cd_dashboard);
+    assert.ok((f['.spec/specification.md']||'').includes('DeployTarget'), 'ci_cd_dashboard spec must mention DeployTarget');
+  });
+
+  it('SDD: ci_cd_dashboard includes QualityGateResult or TestCoverage in spec', () => {
+    const f = gSDD(g265_ci_cd_dashboard);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('QualityGateResult')||spec.includes('TestCoverage'), 'ci_cd_dashboard spec must mention QualityGateResult or TestCoverage');
+  });
+
+  it('SDD: ci_cd_dashboard (Express) → Express referenced in spec', () => {
+    const f = gSDD(g265_ci_cd_dashboard);
+    assert.ok((f['.spec/specification.md']||'').includes('Express'), 'ci_cd_dashboard spec must reference Express');
+  });
+
+  it('SDD: ci_cd_dashboard stripe → Stripe referenced in spec', () => {
+    const f = gSDD(g265_ci_cd_dashboard);
+    assert.ok((f['.spec/specification.md']||'').includes('Stripe')||(f['.spec/specification.md']||'').includes('stripe')||(f['.spec/specification.md']||'').includes('決済'), 'ci_cd_dashboard stripe must reference payment');
+  });
+
+  it('SDD EN: ci_cd_dashboard English spec contains CICDPipeline', () => {
+    const f = gSDD(g265_ci_cd_dashboard, 'en');
+    assert.ok((f['.spec/specification.md']||'').includes('CICDPipeline'), 'ci_cd_dashboard EN spec must contain CICDPipeline');
+  });
+
+  it('SDD EN: ci_cd_dashboard produces no undefined in spec', () => {
+    const f = gSDD(g265_ci_cd_dashboard, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'ci_cd_dashboard EN spec must not contain undefined');
+  });
+
+  it('SDD JA: ci_cd_dashboard produces no undefined in spec', () => {
+    const f = gSDD(g265_ci_cd_dashboard);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'ci_cd_dashboard JA spec must not contain undefined');
+  });
+
+  it('docs/01: ci_cd_dashboard overview mentions CI/CD or パイプライン', () => {
+    const f = gSDD(g265_ci_cd_dashboard);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('CI/CD')||doc.includes('パイプライン'), 'ci_cd_dashboard docs/01 must mention CI/CD or パイプライン');
+  });
+
+  it('docs/01: ci_cd_dashboard produces no undefined in overview', () => {
+    const f = gSDD(g265_ci_cd_dashboard);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'ci_cd_dashboard docs/01 must not contain undefined');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 266 — presets-ext9.js: pos_cloud
+   Express/Railway/stripe
+   ════════════════════════════════════════════════════════════════ */
+
+const g266_pos_cloud = Object.assign({}, A25, {
+  purpose: 'クラウドPOS・商品マスタ・売上集計・在庫アラート・レシート発行を統合した小売向けクラウドPOSシステム',
+  frontend: 'React + Next.js',
+  backend: 'Node.js + Express',
+  database: 'PostgreSQL',
+  deploy: 'Railway',
+  orm: 'Prisma',
+  auth: 'JWT + Passport',
+  payment: 'stripe',
+  mobile: 'なし',
+  data_entities: 'User, POSProduct, SaleTransaction, SaleLineItem, CashDrawer, StockRecord, SalesSummary',
+  mvp_features: 'POS売上処理・決済, 商品マスタ管理, 在庫管理・アラート, 日次・月次売上レポート, レシート発行・印刷, CORSホワイトリスト設定, ページネーション・無限スクロール',
+});
+
+describe('Suite 266: presets-ext9 pos_cloud — Express/Railway/stripe', () => {
+
+  it('SDD: pos_cloud generates specification.md and constitution.md', () => {
+    const f = gSDD(g266_pos_cloud);
+    assert.ok(f['.spec/specification.md'], 'pos_cloud must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'pos_cloud must generate constitution.md');
+  });
+
+  it('SDD: pos_cloud includes POSProduct entity in spec', () => {
+    const f = gSDD(g266_pos_cloud);
+    assert.ok((f['.spec/specification.md']||'').includes('POSProduct'), 'pos_cloud spec must mention POSProduct');
+  });
+
+  it('SDD: pos_cloud includes SaleTransaction entity in spec', () => {
+    const f = gSDD(g266_pos_cloud);
+    assert.ok((f['.spec/specification.md']||'').includes('SaleTransaction'), 'pos_cloud spec must mention SaleTransaction');
+  });
+
+  it('SDD: pos_cloud includes SaleLineItem entity in spec', () => {
+    const f = gSDD(g266_pos_cloud);
+    assert.ok((f['.spec/specification.md']||'').includes('SaleLineItem'), 'pos_cloud spec must mention SaleLineItem');
+  });
+
+  it('SDD: pos_cloud includes CashDrawer or StockRecord in spec', () => {
+    const f = gSDD(g266_pos_cloud);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('CashDrawer')||spec.includes('StockRecord'), 'pos_cloud spec must mention CashDrawer or StockRecord');
+  });
+
+  it('SDD: pos_cloud (Express) → Express referenced in spec', () => {
+    const f = gSDD(g266_pos_cloud);
+    assert.ok((f['.spec/specification.md']||'').includes('Express'), 'pos_cloud spec must reference Express');
+  });
+
+  it('SDD: pos_cloud stripe → Stripe referenced in spec', () => {
+    const f = gSDD(g266_pos_cloud);
+    assert.ok((f['.spec/specification.md']||'').includes('Stripe')||(f['.spec/specification.md']||'').includes('stripe')||(f['.spec/specification.md']||'').includes('決済'), 'pos_cloud stripe must reference payment');
+  });
+
+  it('SDD EN: pos_cloud English spec contains POSProduct', () => {
+    const f = gSDD(g266_pos_cloud, 'en');
+    assert.ok((f['.spec/specification.md']||'').includes('POSProduct'), 'pos_cloud EN spec must contain POSProduct');
+  });
+
+  it('SDD EN: pos_cloud produces no undefined in spec', () => {
+    const f = gSDD(g266_pos_cloud, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'pos_cloud EN spec must not contain undefined');
+  });
+
+  it('SDD JA: pos_cloud produces no undefined in spec', () => {
+    const f = gSDD(g266_pos_cloud);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'pos_cloud JA spec must not contain undefined');
+  });
+
+  it('docs/01: pos_cloud overview mentions POS or 販売', () => {
+    const f = gSDD(g266_pos_cloud);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('POS')||doc.includes('販売'), 'pos_cloud docs/01 must mention POS or 販売');
+  });
+
+  it('docs/01: pos_cloud produces no undefined in overview', () => {
+    const f = gSDD(g266_pos_cloud);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'pos_cloud docs/01 must not contain undefined');
   });
 });
