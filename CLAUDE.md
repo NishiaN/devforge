@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 # DevForge v9.6.0
 
-**AI Development OS** — 66 JS modules in `src/` → single `devforge-v9.html` (~2814KB / 5000KB limit).
+**AI Development OS** — 67 JS modules in `src/` → single `devforge-v9.html` (~3439KB / 5000KB limit).
 Generates **182+ files** across **26 pillars** from a wizard-driven Q&A session.
 
 ## Documentation Map
@@ -18,10 +18,10 @@ Generates **182+ files** across **26 pillars** from a wizard-driven Q&A session.
 ## Build & Test
 
 ```bash
-node build.js                          # → devforge-v9.html (~3202KB, limit 5000KB)
+node build.js                          # → devforge-v9.html (~3439KB, limit 5000KB)
 node build.js --no-minify              # debug (skip minification)
 node build.js --report                 # build + size breakdown by module
-npm test                               # 1941 tests, all passing
+npm test                               # 2280 tests, all passing
 node --test test/gen-quality.test.js   # single test file
 npm run dev                            # build + live-server :3000
 npm run check                          # syntax-check extracted JS
@@ -173,11 +173,11 @@ After adding: update header comment totals, add tests to `test/compat.test.js`, 
 | Data/coverage | data-coverage, presets, field-presets | ~116 |
 | Security/compat | security, compat (+7 synergy) | ~136 |
 | Pillars (P14-P20+skill) | ops, future, deviq, promptgenome, promptops, enterprise, cicd, skill-level | ~184 |
-| Gen quality | gen-quality (Suites 1-101, ~1101 tests) | ~1101 |
+| Gen quality | gen-quality (Suites 1-124, ~1437 tests) | ~1437 |
 | Preset matching | phase-n (N-1〜N-9 + G-1〜G-7, 68 tests) | ~68 |
 | Other | i18n, state, techdb, utils, complexity, mermaid, help-hints | ~46 |
 
-**Total: 1941 tests** | Test harness pattern: `eval(fs.readFileSync(...))` to load src files; global `S` mock at top.
+**Total: 2280 tests** | Test harness pattern: `eval(fs.readFileSync(...))` to load src files; global `S` mock at top.
 
 **When adding domains**, update: `test/data-coverage.test.js` (4 arrays), `test/gen-coherence.test.js`, `test/ops.test.js`.
 
