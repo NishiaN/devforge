@@ -44,7 +44,7 @@ Never reorder without checking dependencies.
 | Category | Purpose |
 |----------|---------|
 | `core/` | State (`S`), i18n (`t()`), keyboard events, wizard tour, app init |
-| `data/` | 83 standard presets (`PR`/`_mp()`), 354 field presets (`PR_FIELD`/`_fpd()`), questions, techdb (358 entries), compat-rules (182 rules), gen-templates (bilingual GT dict), helpdata |
+| `data/` | 93 standard presets (`PR`/`_mp()`), 354 field presets (`PR_FIELD`/`_fpd()`), questions, techdb (358 entries), compat-rules (182 rules), gen-templates (bilingual GT dict), helpdata |
 | `generators/` | `index.js` orchestrator + `p1`–`p26` pillars + `docs.js` + `common.js` |
 | `ui/` | wizard, render, presets, preview, sidebar, editor, diff, export, explorer, dashboard, launcher, templates, qbar, cmdpalette, help, voice |
 | `styles/all.css` | Theme (dark/light), responsive; CSS custom properties only |
