@@ -407,6 +407,37 @@ const TECH_DB=[
 // ── Cloud Data Platforms (2) ──
 {name:'Azure Synapse',cat:'specialist',sub:'data_platform',req:'recommended',level:'pro',price:'usage'},
 {name:'Databricks',cat:'specialist',sub:'data_platform',req:'recommended',level:'pro',price:'free-tier'},
+// ── Security — ext9 (2) ──
+{name:'OWASP ZAP',cat:'security',sub:'dast',req:'optional',level:'int',price:'free-oss'},
+{name:'Semgrep',cat:'security',sub:'sast',req:'optional',level:'pro',price:'free-tier'},
+// ── Test — ext9 (2) ──
+{name:'Stryker',cat:'test',sub:'mutation',req:'optional',level:'pro',price:'free-oss'},
+{name:'Chromatic',cat:'test',sub:'visual',req:'optional',level:'int',price:'free-tier'},
+// ── API — ext9 (2) ──
+{name:'Bruno',cat:'api',sub:'client',req:'optional',level:'int',price:'free-oss'},
+{name:'OpenAPI Generator',cat:'api',sub:'codegen',req:'optional',level:'int',price:'free-oss'},
+// ── Method — ext9 (2) ──
+{name:'ADR (Architecture Decision Records)',cat:'method',sub:'convention',req:'recommended',level:'int',price:'free-oss'},
+{name:'CQRS',cat:'method',sub:'pattern',req:'optional',level:'pro',price:'free-oss'},
+// ── Build — ext9 (2) ──
+{name:'Nx',cat:'build',sub:'monorepo',req:'optional',level:'pro',price:'free-oss'},
+{name:'changesets',cat:'build',sub:'release',req:'optional',level:'int',price:'free-oss'},
+// ── Backend — ext9 (2) ──
+{name:'BullMQ',cat:'back',sub:'queue',req:'optional',level:'int',price:'free-oss'},
+{name:'Temporal',cat:'back',sub:'orchestration',req:'optional',level:'pro',price:'free-tier'},
+// ── Data — ext9 (2) ──
+{name:'dbt',cat:'data',sub:'transform',req:'optional',level:'int',price:'free-oss'},
+{name:'Great Expectations',cat:'data',sub:'quality',req:'optional',level:'pro',price:'free-oss'},
+// ── DevOps — ext9 (2) ──
+{name:'Doppler',cat:'devops',sub:'secrets',req:'optional',level:'int',price:'free-tier'},
+{name:'Earthly',cat:'devops',sub:'build',req:'optional',level:'pro',price:'free-oss'},
+// ── Test — email (1) ──
+{name:'MailHog',cat:'test',sub:'email',req:'optional',level:'int',price:'free-oss'},
+// ── AI — ext9 (1) ──
+{name:'Gemini Code Assist',cat:'ai',sub:'ext',req:'optional',level:'int',price:'free-19'},
+// ── AI Automation — ext9 (2) ──
+{name:'Lovable',cat:'ai_auto',sub:'app-gen',req:'optional',level:'beg',price:'free-tier'},
+{name:'OpenHands',cat:'ai_auto',sub:'agent-fw',req:'optional',level:'pro',price:'free-oss'},
 ];
 const _TECH_COUNT=TECH_DB.length;
 
