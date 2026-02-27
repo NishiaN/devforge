@@ -4176,3 +4176,39 @@ const CROSS_CUTTING_IMPL={
   }
 };
 
+// ── E1: Priority Label Helper (P0/P1/P2) ──
+function _priorityLabel(level,G){
+  var m={
+    P0:G?'🔴 P0 (致命的 — 即対応必須)':'🔴 P0 (Critical — Fix Immediately)',
+    P1:G?'🟡 P1 (重要 — 今スプリント対応)':'🟡 P1 (Important — Fix This Sprint)',
+    P2:G?'🟢 P2 (推奨 — 次スプリント以降)':'🟢 P2 (Recommended — Next Sprint)'
+  };
+  return m[level]||(G?'📋 未分類':'📋 Unclassified');
+}
+
+// ── E2: Stage Handoff Block Generator ──
+// stage: string (e.g. '設計フェーズ' / 'Design Phase')
+// items: {decisions:[],handoff:[],pending:[]}
+// Returns a Markdown section for inter-phase handoff
+function _stageHandoff(stage,items,G){
+  var md='\n---\n\n';
+  md+='## '+(G?'次段階への引継ぎ':'Stage Handoff')+'\n\n';
+  md+='> **'+(G?'現フェーズ':'Current Phase')+'**: '+stage+'\n\n';
+  if(items.decisions&&items.decisions.length){
+    md+='### '+(G?'✅ 確定事項':'✅ Confirmed Decisions')+'\n\n';
+    items.decisions.forEach(function(d){md+='- '+d+'\n';});
+    md+='\n';
+  }
+  if(items.handoff&&items.handoff.length){
+    md+='### '+(G?'📤 引継ぎ事項':'📤 Handoff Items')+'\n\n';
+    items.handoff.forEach(function(h){md+='- '+h+'\n';});
+    md+='\n';
+  }
+  if(items.pending&&items.pending.length){
+    md+='### '+(G?'⏳ 未決事項':'⏳ Pending Decisions')+'\n\n';
+    items.pending.forEach(function(p){md+='- '+p+'\n';});
+    md+='\n';
+  }
+  return md;
+}
+

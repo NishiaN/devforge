@@ -960,6 +960,124 @@ function gen63(G, domain, meth, a, pn) {
   return doc;
 }
 
+function gen63b(G, a, pn) {
+  var doc = '';
+  var date = new Date().toISOString().slice(0,10);
+  doc += G ? '# 63-2. 継続的改善プレイブック\n\n' : '# 63-2. Continuous Improvement Playbook\n\n';
+  doc += '> ' + pn + ' — ' + (G ? '生成日: ' : 'Generated: ') + date + '\n\n';
+  doc += G
+    ? '継続的改善を支える4つのフレームワーク: スプリント振り返り (KPT) / 技術的負債管理 / 改善バックログ優先順位付け / A/Bテスト & KPI監視。\n\n'
+    : 'Four frameworks for continuous improvement: Sprint Retrospective (KPT) / Tech Debt Management / Improvement Backlog Prioritization / A/B Testing & KPI Monitoring.\n\n';
+
+  // ── Section 1: Sprint Retrospective ──
+  doc += '---\n\n';
+  doc += '## ' + (G ? '1. スプリント振り返り (KPT)' : '1. Sprint Retrospective (KPT)') + '\n\n';
+  doc += G
+    ? '各スプリント終了後に実施。チーム全員が参加し、15〜30分で完了させること。\n\n'
+    : 'Conduct after each sprint with full team participation; complete in 15–30 min.\n\n';
+  doc += '### ' + (G ? 'テンプレート' : 'Template') + '\n\n';
+  doc += '| ' + (G ? '区分' : 'Type') + ' | ' + (G ? '内容' : 'Content') + ' | ' + (G ? '担当' : 'Owner') + ' | ' + (G ? '期限' : 'Due') + ' |\n';
+  doc += '|' + (G ? '------|------|------|------' : '------|------|------|------') + '|\n';
+  doc += '| ✅ Keep | | | |\n';
+  doc += '| ✅ Keep | | | |\n';
+  doc += '| ⚠️ Problem | | | |\n';
+  doc += '| ⚠️ Problem | | | |\n';
+  doc += '| 🎯 Try | | | Sprint N+1 |\n';
+  doc += '| 🎯 Try | | | Sprint N+1 |\n\n';
+  doc += '### ' + (G ? '実施ルール' : 'Facilitation Rules') + '\n\n';
+  doc += G
+    ? '- **Keep**: 継続すべき良い実践を具体的に挙げる (「週次レビュー」ではなく「月曜10時のコードレビュー会」)\n- **Problem**: 根本原因まで掘り下げる。「なぜ？」を3回繰り返す (5 Whys)\n- **Try**: 1スプリントで実施可能な具体的行動。担当者と期限を必ず設定\n- Try は最大3件に絞る。すべての Problem に対処しようとしない\n'
+    : '- **Keep**: Name concrete practices to continue (not "weekly review" but "Monday 10am code review")\n- **Problem**: Drill to root cause using 5 Whys (ask "why?" 3 times minimum)\n- **Try**: Concrete action achievable in one sprint; always set owner and deadline\n- Limit Try to max 3 items; do not try to address every Problem\n';
+  doc += '\n';
+
+  // ── Section 2: Tech Debt Register ──
+  doc += '---\n\n';
+  doc += '## ' + (G ? '2. 技術的負債レジスター' : '2. Technical Debt Register') + '\n\n';
+  doc += G
+    ? '> **20%ルール**: スプリント工数の20%を技術的負債返済に充てる。\n\n'
+    : '> **20% Rule**: Allocate 20% of sprint capacity to tech debt repayment.\n\n';
+  doc += '| ID | ' + (G ? '負債名' : 'Debt Name') + ' | ' + (G ? '分類' : 'Category') + ' | ' + (G ? '影響度 (1-5)' : 'Impact (1-5)') + ' | ' + (G ? '解消コスト (1-5)' : 'Resolution Cost (1-5)') + ' | ' + (G ? 'スコア' : 'Score') + ' | ' + (G ? '返済計画' : 'Repayment Plan') + ' | ' + (G ? '状態' : 'Status') + ' |\n';
+  doc += '|----|' + (G ? '------|------|----------|------------|-------|--------|------' : '------|------|----------|------------|-------|--------|------') + '|\n';
+  doc += '| D001 | | ' + (G ? 'コード品質' : 'Code Quality') + ' | | | Impact/Cost | | ' + (G ? '未着手' : 'Open') + ' |\n';
+  doc += '| D002 | | ' + (G ? '設計' : 'Design') + ' | | | | | ' + (G ? '未着手' : 'Open') + ' |\n';
+  doc += '| D003 | | ' + (G ? 'テスト' : 'Testing') + ' | | | | | ' + (G ? '未着手' : 'Open') + ' |\n';
+  doc += '| D004 | | ' + (G ? 'ドキュメント' : 'Documentation') + ' | | | | | ' + (G ? '未着手' : 'Open') + ' |\n\n';
+  doc += '### ' + (G ? '分類定義' : 'Category Definitions') + '\n\n';
+  doc += '| ' + (G ? '分類' : 'Category') + ' | ' + (G ? '説明' : 'Description') + ' | ' + (G ? '典型例' : 'Examples') + ' |\n';
+  doc += '|' + (G ? '------|------|------' : '------|------|------') + '|\n';
+  doc += '| ' + (G ? 'コード品質' : 'Code Quality') + ' | ' + (G ? '重複・複雑すぎる関数・長いファイル' : 'Duplication, overly complex functions, long files') + ' | DRY違反, God Class |\n';
+  doc += '| ' + (G ? '設計' : 'Design') + ' | ' + (G ? 'アーキテクチャの不整合・依存循環' : 'Architecture inconsistency, circular dependencies') + ' | 密結合モジュール |\n';
+  doc += '| ' + (G ? 'テスト' : 'Testing') + ' | ' + (G ? 'カバレッジ不足・フラキーテスト' : 'Insufficient coverage, flaky tests') + ' | E2E未整備 |\n';
+  doc += '| ' + (G ? 'ドキュメント' : 'Documentation') + ' | ' + (G ? '仕様書の陳腐化・コメント欠如' : 'Outdated specs, missing comments') + ' | ADR欠落 |\n\n';
+
+  // ── Section 3: Improvement Backlog ──
+  doc += '---\n\n';
+  doc += '## ' + (G ? '3. 改善バックログ (効果 × 工数マトリクス)' : '3. Improvement Backlog (Effect × Effort Matrix)') + '\n\n';
+  doc += G
+    ? '改善施策を効果（ユーザー影響・KPI改善幅）と工数（開発コスト）の2軸で評価し、優先度を決定する。\n\n'
+    : 'Evaluate improvement measures on two axes: effect (user impact, KPI improvement) and effort (development cost), to determine priority.\n\n';
+  doc += '```\n';
+  doc += '         High Effect\n';
+  doc += '              │\n';
+  doc += '  [Quick Win] │ [Big Bet]\n';
+  doc += '  Low Effort  │  High Effort\n';
+  doc += '  ────────────┼────────────\n';
+  doc += '  Low Effort  │  High Effort\n';
+  doc += '  [Fill-in]   │ [Money Pit]\n';
+  doc += '              │\n';
+  doc += '         Low Effect\n';
+  doc += '```\n\n';
+  doc += '| # | ' + (G ? '施策' : 'Measure') + ' | ' + (G ? '効果 (1-5)' : 'Effect (1-5)') + ' | ' + (G ? '工数 (1-5)' : 'Effort (1-5)') + ' | ' + (G ? '象限' : 'Quadrant') + ' | ' + (G ? '優先度' : 'Priority') + ' | ' + (G ? '担当' : 'Owner') + ' |\n';
+  doc += '|---|' + (G ? '------|----------|----------|------|--------|------' : '------|----------|----------|------|--------|------') + '|\n';
+  doc += '| 1 | | | | Quick Win | P1 | |\n';
+  doc += '| 2 | | | | Big Bet | P2 | |\n';
+  doc += '| 3 | | | | Fill-in | P3 | |\n\n';
+
+  // ── Section 4: A/B Test Framework ──
+  doc += '---\n\n';
+  doc += '## ' + (G ? '4. A/Bテスト計画フレームワーク' : '4. A/B Test Planning Framework') + '\n\n';
+  doc += '### ' + (G ? '実験設計テンプレート' : 'Experiment Design Template') + '\n\n';
+  doc += '```\n';
+  doc += (G ? '実験名      : \n仮説        : [Xを変更すると] [Yが] [Z%] 改善する\nプライマリKPI: \nセカンダリKPI: \n分割方法    : ランダム (50/50) | ユーザー属性 | 地域\nサンプルサイズ: n ≥ ___ (α=0.05, β=0.8, 最小改善幅: ___)\n実験期間    : ___ 日間 (最低2ビジネスサイクル)\n停止条件    : 早期停止なし (p-hacking防止) | SRM検出時\n判定基準    : p < 0.05 かつ 実用的効果 ≥ MDE\n'
+        : 'Experiment Name : \nHypothesis      : Changing [X] will improve [Y] by [Z%]\nPrimary KPI     : \nSecondary KPIs  : \nSplit Method    : Random (50/50) | User attribute | Region\nSample Size     : n ≥ ___ (α=0.05, β=0.8, MDE: ___)\nDuration        : ___ days (min 2 business cycles)\nStop Conditions : No early stopping (prevent p-hacking) | On SRM detection\nDecision Rule   : p < 0.05 AND practical effect ≥ MDE\n');
+  doc += '```\n\n';
+  doc += '### ' + (G ? '実験ログ' : 'Experiment Log') + '\n\n';
+  doc += '| ID | ' + (G ? '仮説' : 'Hypothesis') + ' | ' + (G ? 'KPI' : 'KPI') + ' | ' + (G ? '結果' : 'Result') + ' | ' + (G ? '判定' : 'Decision') + ' | ' + (G ? '知見' : 'Insight') + ' |\n';
+  doc += '|----|' + (G ? '------|-----|------|------|------' : '------|-----|------|------|------') + '|\n';
+  doc += '| EXP-001 | | | | ' + (G ? '採用 / 却下 / 継続' : 'Ship / Roll back / Continue') + ' | |\n\n';
+
+  // ── Section 5: KPI Degradation Triggers ──
+  doc += '---\n\n';
+  doc += '## ' + (G ? '5. KPI劣化トリガーと対応フロー' : '5. KPI Degradation Triggers & Response Flow') + '\n\n';
+  doc += G
+    ? '以下のトリガーを検知した際は、対応フローを即座に起動する。\n\n'
+    : 'When any trigger is detected, immediately initiate the corresponding response flow.\n\n';
+  doc += '| ' + (G ? 'KPI' : 'KPI') + ' | ' + (G ? 'P0 トリガー (即対応)' : 'P0 Trigger (Immediate)') + ' | ' + (G ? 'P1 トリガー (今スプリント)' : 'P1 Trigger (This Sprint)') + ' | ' + (G ? '対応フロー' : 'Response Flow') + ' |\n';
+  doc += '|' + (G ? '-----|------------|------------|------' : '-----|------------|------------|------') + '|\n';
+  doc += '| ' + (G ? '転換率 (CVR)' : 'Conversion Rate') + ' | ≥ 20% ' + (G ? '低下' : 'drop') + ' | ≥ 10% ' + (G ? '低下' : 'drop') + ' | ' + (G ? '即時ロールバック検討 → 原因特定 → A/Bテスト' : 'Consider rollback → identify root cause → A/B test') + ' |\n';
+  doc += '| ' + (G ? '継続率 (Retention)' : 'Retention Rate') + ' | ≥ 15% ' + (G ? '低下' : 'drop') + ' | ≥ 8% ' + (G ? '低下' : 'drop') + ' | ' + (G ? 'ユーザーインタビュー → 離脱点分析 → UX改善' : 'User interviews → dropout analysis → UX improvements') + ' |\n';
+  doc += '| ' + (G ? 'エラー率' : 'Error Rate') + ' | ≥ 1% | ≥ 0.5% | ' + (G ? 'オンコール起動 → インシデント対応 → ポストモーテム' : 'On-call alert → incident response → postmortem') + ' |\n';
+  doc += '| ' + (G ? 'レスポンス時間' : 'Response Time') + ' | LCP ≥ 4s | LCP ≥ 2.5s | ' + (G ? 'プロファイリング → キャッシュ最適化 → CDN検討' : 'Profiling → cache optimization → CDN review') + ' |\n';
+  doc += '| ' + (G ? 'ユーザー満足度' : 'User Satisfaction') + ' | NPS ≤ 0 | NPS ≤ 20 | ' + (G ? 'フィードバック収集 → 優先課題特定 → 改善サイクル' : 'Collect feedback → identify top issues → improvement cycle') + ' |\n\n';
+  doc += '### ' + (G ? '対応フロー図' : 'Response Flow Diagram') + '\n\n';
+  doc += '```mermaid\nflowchart TD\n';
+  doc += '  A["' + (G ? 'KPI劣化検知' : 'KPI Degradation Detected') + '"] --> B{"' + (G ? '重大度判定' : 'Severity Check') + '"}\n';
+  doc += '  B --> |P0| C["' + (G ? '即時アラート + オンコール起動' : 'Immediate Alert + On-call') + '"]\n';
+  doc += '  B --> |P1| D["' + (G ? '翌日MTGでトリアージ' : 'Next-day triage meeting') + '"]\n';
+  doc += '  C --> E["' + (G ? '根本原因分析 (5 Whys)' : 'Root Cause Analysis (5 Whys)') + '"]\n';
+  doc += '  D --> E\n';
+  doc += '  E --> F{"' + (G ? '原因特定？' : 'Cause identified?') + '"}\n';
+  doc += '  F --> |Yes| G["' + (G ? '修正 → A/Bテスト → 展開' : 'Fix → A/B Test → Deploy') + '"]\n';
+  doc += '  F --> |No| H["' + (G ? 'ユーザーインタビュー → 仮説再設定' : 'User interviews → Re-hypothesize') + '"]\n';
+  doc += '  G --> I["' + (G ? 'KPI回復確認 → ポストモーテム記録' : 'Confirm KPI recovery → Record postmortem') + '"]\n';
+  doc += '  H --> E\n';
+  doc += '```\n\n';
+
+  doc += '---\n\n';
+  doc += '> _' + (G ? 'このドキュメントはすべてのスプリント終了後に更新すること。変更履歴は Git で管理。' : 'Update this document after every sprint. Track change history in Git.') + '_\n';
+  return doc;
+}
+
 // Main P16 generator function
 function genPillar16_DevIQ(a, pn) {
   const G = S.genLang === 'ja';
@@ -972,4 +1090,5 @@ function genPillar16_DevIQ(a, pn) {
   S.files['docs/61_ai_brainstorm_playbook.md'] = gen61(G, domain, meth, a, pn);
   S.files['docs/62_industry_deep_dive.md'] = gen62(G, domain, indStrategy, a, pn);
   S.files['docs/63_next_gen_ux_strategy.md'] = gen63(G, domain, meth, a, pn);
+  S.files['docs/63-2_continuous_improvement.md'] = gen63b(G, a, pn);
 }
