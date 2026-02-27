@@ -1064,6 +1064,65 @@ const ENTITY_COLUMNS={
   ArtCollection:[_U,_T,_D,'owner_id:UUID:FK(User) NOT NULL:オーナーID:Owner ID','is_public:BOOLEAN:DEFAULT false:公開:Is public','cover_url:TEXT::カバーURL:Cover url'],
   TournamentTeam:[_U,_T,'bracket_id:UUID:FK(TournamentBracket) NOT NULL:ブラケットID:Bracket ID','team_name:VARCHAR(255):NOT NULL:チーム名:Team name','members:JSONB::メンバー:Members','seed:INT::シード:Seed'],
   VotingQuestion:[_U,'ballot_id:UUID:FK(VotingBallot) NOT NULL:投票ID:Ballot ID','question_text:TEXT:NOT NULL:質問文:Question text','choices:JSONB:NOT NULL:選択肢:Choices','question_order:INT:DEFAULT 1:表示順:Question order'],
+  // ── Telehealth (ext7) ──
+  VideoConsultation:['patient_id:UUID:FK(Patient) NOT NULL:患者ID:Patient ID','doctor_id:UUID:FK(User) NOT NULL:医師ID:Doctor ID','scheduled_at:TIMESTAMP:NOT NULL:予約日時:Scheduled at','video_room_url:TEXT::ビデオルームURL:Video room URL',_SP],
+  TelehealthSession:['consultation_id:UUID:FK(VideoConsultation) NOT NULL:診察ID:Consultation ID','started_at:TIMESTAMP::開始日時:Started at','ended_at:TIMESTAMP::終了日時:Ended at','notes:TEXT::診察メモ:Session notes',_SA],
+  DigitalPrescription:[_U,'consultation_id:UUID:FK(VideoConsultation) NOT NULL:診察ID:Consultation ID','medication_name:VARCHAR(255):NOT NULL:薬品名:Medication name','dosage:TEXT::用量:Dosage','issued_at:TIMESTAMP:DEFAULT NOW:発行日時:Issued at'],
+  TelehealthRecord:['patient_id:UUID:FK(Patient) NOT NULL:患者ID:Patient ID','record_type:VARCHAR(50):NOT NULL:記録種別:Record type','recorded_at:TIMESTAMP:DEFAULT NOW:記録日時:Recorded at',_C,_M],
+  // ── Coworking Space (ext7) ──
+  CoworkingMember:[_U,'plan_id:UUID:FK(CoworkingPlan):プランID:Plan ID','membership_start:DATE:NOT NULL:会員開始日:Membership start','membership_end:DATE::会員終了日:Membership end',_SA],
+  CoworkingRoom:['name:VARCHAR(100):NOT NULL:ルーム名:Room name','capacity:INT:NOT NULL:収容人数:Capacity','hourly_rate:DECIMAL(10,2)::時間料金:Hourly rate',_IA,_D],
+  DeskReservation:[_U,'room_id:UUID:FK(CoworkingRoom) NOT NULL:ルームID:Room ID','reserved_date:DATE:NOT NULL:予約日:Reserved date','start_time:TIME:NOT NULL:開始時刻:Start time','end_time:TIME:NOT NULL:終了時刻:End time',_SP],
+  CoworkingPlan:['name:VARCHAR(100):NOT NULL:プラン名:Plan name','monthly_fee:DECIMAL(10,2):NOT NULL:月額料金:Monthly fee','desk_hours_per_month:INT::月間デスク時間:Desk hours/month',_D,_IA],
+  SpaceAccessLog:[_U,'access_type:VARCHAR(20):NOT NULL:入退室種別:Access type','accessed_at:TIMESTAMP:DEFAULT NOW:日時:Accessed at','room_id:UUID:FK(CoworkingRoom):ルームID:Room ID'],
+  // ── Subscription Box EC (ext7) ──
+  SubscriptionBox:['name:VARCHAR(100):NOT NULL:ボックス名:Box name',_D,'theme:VARCHAR(100)::テーマ:Theme','price:DECIMAL(10,2):NOT NULL:価格:Price',_SA],
+  BoxContents:['box_id:UUID:FK(SubscriptionBox) NOT NULL:ボックスID:Box ID','item_name:VARCHAR(255):NOT NULL:商品名:Item name','quantity:INT:DEFAULT 1:数量:Quantity',_D],
+  BoxDelivery:[_U,'box_id:UUID:FK(SubscriptionBox) NOT NULL:ボックスID:Box ID','delivery_month:DATE:NOT NULL:配送月:Delivery month',_SP,'tracking_number:VARCHAR(100)::追跡番号:Tracking number'],
+  BoxCurator:[_U,'bio:TEXT::プロフィール:Bio','specialty:VARCHAR(100)::専門分野:Specialty',_IA],
+  BoxReview:[_U,'box_id:UUID:FK(SubscriptionBox) NOT NULL:ボックスID:Box ID','rating:INT:NOT NULL:評価(1-5):Rating(1-5)',_B,'delivery_month:DATE::配送月:Delivery month'],
+  // ── Wedding Platform (ext7) ──
+  WeddingEvent:['couple_id:UUID:FK(User) NOT NULL:カップルID:Couple ID','wedding_date:DATE:NOT NULL:挙式日:Wedding date','venue_name:VARCHAR(255)::会場名:Venue name','guest_count:INT:DEFAULT 0:ゲスト数:Guest count',_SA],
+  WeddingVendor:['event_id:UUID:FK(WeddingEvent) NOT NULL:イベントID:Event ID','category:VARCHAR(100):NOT NULL:カテゴリ:Category','name:VARCHAR(255):NOT NULL:業者名:Vendor name','price:DECIMAL(10,2)::見積金額:Estimated price',_SA],
+  WeddingGuest:['event_id:UUID:FK(WeddingEvent) NOT NULL:イベントID:Event ID','name:VARCHAR(255):NOT NULL:ゲスト名:Guest name','email:VARCHAR(255)::メール:Email','rsvp_status:VARCHAR(20):DEFAULT \'pending\':出欠状態:RSVP status','table_no:INT::テーブル番号:Table number'],
+  WeddingBudget:['event_id:UUID:FK(WeddingEvent) NOT NULL:イベントID:Event ID','category:VARCHAR(100):NOT NULL:費目:Budget category','planned_amount:DECIMAL(10,2):NOT NULL:予算額:Planned amount','actual_amount:DECIMAL(10,2)::実績額:Actual amount'],
+  WeddingChecklist:['event_id:UUID:FK(WeddingEvent) NOT NULL:イベントID:Event ID','task_name:VARCHAR(255):NOT NULL:タスク名:Task name','due_date:DATE::期日:Due date','is_done:BOOLEAN:DEFAULT false:完了:Done',_N],
+  // ── Volunteer Platform (ext7) ──
+  VolunteerOrg:['name:VARCHAR(255):NOT NULL:団体名:Organization name',_D,'org_type:VARCHAR(50)::団体種別:Organization type','contact_email:VARCHAR(255)::連絡先メール:Contact email',_IA],
+  VolunteerOpportunity:['org_id:UUID:FK(VolunteerOrg) NOT NULL:団体ID:Organization ID',_T,'activity_date:DATE:NOT NULL:活動日:Activity date','max_volunteers:INT:DEFAULT 0:最大ボランティア数:Max volunteers',_SA],
+  VolunteerApplication:[_U,'opportunity_id:UUID:FK(VolunteerOpportunity) NOT NULL:機会ID:Opportunity ID','applied_at:TIMESTAMP:DEFAULT NOW:申込日時:Applied at',_SP,_N],
+  VolunteerHour:[_U,'opportunity_id:UUID:FK(VolunteerOpportunity) NOT NULL:機会ID:Opportunity ID','hours:DECIMAL(4,2):NOT NULL:活動時間:Hours','activity_date:DATE:NOT NULL:活動日:Activity date','verified:BOOLEAN:DEFAULT false:認証済:Verified'],
+  VolunteerReward:[_U,'reward_type:VARCHAR(50):NOT NULL:報奨種別:Reward type','awarded_at:TIMESTAMP:DEFAULT NOW:授与日時:Awarded at',_D],
+  // ── Translation SaaS (ext7) ──
+  TranslationProject:['owner_id:UUID:FK(User) NOT NULL:オーナーID:Owner ID','source_lang:VARCHAR(10):NOT NULL:原文言語:Source language','target_lang:VARCHAR(10):NOT NULL:翻訳先言語:Target language',_SA,_D],
+  Translator:[_U,'language_pair:VARCHAR(50):NOT NULL:言語ペア:Language pair','rate_per_word:DECIMAL(8,4)::単価(1語):Rate per word','bio:TEXT::プロフィール:Bio',_IA],
+  GlossaryTerm:['project_id:UUID:FK(TranslationProject):プロジェクトID:Project ID','source_term:VARCHAR(255):NOT NULL:原文用語:Source term','target_term:VARCHAR(255):NOT NULL:翻訳用語:Target term',_N],
+  LocaleKey:['project_id:UUID:FK(TranslationProject) NOT NULL:プロジェクトID:Project ID','key:VARCHAR(255):NOT NULL:キー:Key','source_text:TEXT:NOT NULL:原文:Source text','context:TEXT::文脈:Context'],
+  TranslationMemory:['source_lang:VARCHAR(10):NOT NULL:原文言語:Source language','target_lang:VARCHAR(10):NOT NULL:翻訳先言語:Target language','source_text:TEXT:NOT NULL:原文:Source text','translated_text:TEXT:NOT NULL:翻訳文:Translated text'],
+  // ── Used Goods Market (ext7) ──
+  UsedItem:[_U,'name:VARCHAR(255):NOT NULL:商品名:Item name','condition:VARCHAR(50):NOT NULL:状態:Condition','price:DECIMAL(10,2):NOT NULL:希望価格:Asking price','category:VARCHAR(100)::カテゴリ:Category',_SA],
+  ItemListing:['item_id:UUID:FK(UsedItem) NOT NULL:商品ID:Item ID','published_at:TIMESTAMP:DEFAULT NOW:出品日時:Published at','views:INT:DEFAULT 0:閲覧数:Views',_SA],
+  TransactionEscrow:['buyer_id:UUID:FK(User) NOT NULL:購入者ID:Buyer ID','seller_id:UUID:FK(User) NOT NULL:出品者ID:Seller ID','item_id:UUID:FK(UsedItem) NOT NULL:商品ID:Item ID','amount:DECIMAL(10,2):NOT NULL:取引金額:Amount',_SP],
+  SellerRating:['reviewer_id:UUID:FK(User) NOT NULL:評価者ID:Reviewer ID','seller_id:UUID:FK(User) NOT NULL:出品者ID:Seller ID','rating:INT:NOT NULL:評価(1-5):Rating(1-5)',_B],
+  ShippingRecord:['escrow_id:UUID:FK(TransactionEscrow) NOT NULL:エスクローID:Escrow ID','carrier:VARCHAR(100)::配送業者:Carrier','tracking_number:VARCHAR(100)::追跡番号:Tracking number','shipped_at:TIMESTAMP::発送日時:Shipped at',_SP],
+  // ── Parking Management (ext7) ──
+  ParkingLot:['name:VARCHAR(255):NOT NULL:駐車場名:Parking lot name',_ADDR,'total_spots:INT:NOT NULL:総スポット数:Total spots','hourly_rate:DECIMAL(8,2)::時間料金:Hourly rate',_IA],
+  ParkingSpot:['lot_id:UUID:FK(ParkingLot) NOT NULL:駐車場ID:Lot ID','spot_number:VARCHAR(20):NOT NULL:スポット番号:Spot number','spot_type:VARCHAR(30):DEFAULT \'standard\':タイプ:Spot type','is_occupied:BOOLEAN:DEFAULT false:使用中:Occupied'],
+  ParkingSession:[_U,'spot_id:UUID:FK(ParkingSpot) NOT NULL:スポットID:Spot ID','entered_at:TIMESTAMP:NOT NULL:入庫日時:Entered at','exited_at:TIMESTAMP::出庫日時:Exited at','amount_charged:DECIMAL(8,2)::請求金額:Amount charged'],
+  MonthlyParkingPass:[_U,'spot_id:UUID:FK(ParkingSpot):スポットID:Spot ID','valid_from:DATE:NOT NULL:有効開始日:Valid from','valid_until:DATE:NOT NULL:有効期限:Valid until','monthly_fee:DECIMAL(8,2):NOT NULL:月額料金:Monthly fee',_SP],
+  ParkingBarrier:['lot_id:UUID:FK(ParkingLot) NOT NULL:駐車場ID:Lot ID','barrier_id:VARCHAR(50):NOT NULL:バリアID:Barrier ID','barrier_type:VARCHAR(20)::タイプ:Type','last_status:VARCHAR(20)::最終状態:Last status','last_seen_at:TIMESTAMP::最終確認日時:Last seen at'],
+  // ── Debt Collection (ext7) ──
+  DebtCase:['debtor_id:UUID:FK(DebtorProfile) NOT NULL:債務者ID:Debtor ID','debt_amount:DECIMAL(12,2):NOT NULL:債権金額:Debt amount','due_date:DATE:NOT NULL:期日:Due date',_SP,'case_number:VARCHAR(50):UNIQUE:案件番号:Case number'],
+  DebtorProfile:[_U,'company_name:VARCHAR(255)::会社名:Company name','contact_phone:VARCHAR(50)::電話番号:Contact phone','credit_score:INT::信用スコア:Credit score',_SA],
+  RepaymentSchedule:['case_id:UUID:FK(DebtCase) NOT NULL:案件ID:Case ID','installment_no:INT:NOT NULL:回数:Installment number','due_date:DATE:NOT NULL:期日:Due date','amount:DECIMAL(12,2):NOT NULL:金額:Amount',_SP],
+  CollectionAction:['case_id:UUID:FK(DebtCase) NOT NULL:案件ID:Case ID','action_type:VARCHAR(50):NOT NULL:督促種別:Action type','performed_at:TIMESTAMP:DEFAULT NOW:実施日時:Performed at',_N,'result:VARCHAR(100)::結果:Result'],
+  DebtPayment:['case_id:UUID:FK(DebtCase) NOT NULL:案件ID:Case ID','amount:DECIMAL(12,2):NOT NULL:入金額:Payment amount','paid_at:TIMESTAMP:DEFAULT NOW:入金日時:Paid at','payment_method:VARCHAR(50)::支払方法:Payment method'],
+  // ── Sports Management (ext7) ──
+  SportsClub:['name:VARCHAR(255):NOT NULL:クラブ名:Club name','sport_type:VARCHAR(100):NOT NULL:競技種別:Sport type',_D,_IA,'founded_year:INT::設立年:Founded year'],
+  TeamRoster:['club_id:UUID:FK(SportsClub) NOT NULL:クラブID:Club ID','player_id:UUID:FK(User) NOT NULL:選手ID:Player ID','jersey_number:INT::背番号:Jersey number','position:VARCHAR(50)::ポジション:Position',_SA],
+  MatchSchedule:['club_id:UUID:FK(SportsClub) NOT NULL:クラブID:Club ID','opponent_name:VARCHAR(255):NOT NULL:相手チーム:Opponent name','match_date:TIMESTAMP:NOT NULL:試合日時:Match date','venue:VARCHAR(255)::会場:Venue',_SA],
+  MatchScore:['match_id:UUID:FK(MatchSchedule) NOT NULL:試合ID:Match ID','home_score:INT:DEFAULT 0:ホームスコア:Home score','away_score:INT:DEFAULT 0:アウェイスコア:Away score','recorded_at:TIMESTAMP:DEFAULT NOW:記録日時:Recorded at'],
+  PlayerStats:['player_id:UUID:FK(User) NOT NULL:選手ID:Player ID','club_id:UUID:FK(SportsClub) NOT NULL:クラブID:Club ID','season:VARCHAR(20):NOT NULL:シーズン:Season','goals:INT:DEFAULT 0:ゴール数:Goals','assists:INT:DEFAULT 0:アシスト数:Assists'],
 };
 
 // ═══ Entity REST method restrictions ═══
