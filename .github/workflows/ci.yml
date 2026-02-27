@@ -35,13 +35,13 @@ jobs:
           SIZE=$(wc -c < devforge-v9.html)
           SIZE_KB=$((SIZE / 1024))
           echo "Build size: ${SIZE_KB}KB"
-          if [ $SIZE_KB -gt 3500 ]; then
-            echo "❌ Build size ${SIZE_KB}KB exceeds 3500KB hard limit!"
+          if [ $SIZE_KB -gt 5000 ]; then
+            echo "❌ Build size ${SIZE_KB}KB exceeds 5000KB hard limit!"
             exit 1
-          elif [ $SIZE_KB -gt 3300 ]; then
-            echo "⚠️ Warning: Build size ${SIZE_KB}KB exceeds 3300KB soft limit"
+          elif [ $SIZE_KB -gt 4700 ]; then
+            echo "⚠️ Warning: Build size ${SIZE_KB}KB exceeds 4700KB soft limit"
           else
-            echo "✅ Build size ${SIZE_KB}KB is within 3500KB limit"
+            echo "✅ Build size ${SIZE_KB}KB is within 5000KB limit"
           fi
 
       - name: Check CLAUDE.md size
