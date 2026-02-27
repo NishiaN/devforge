@@ -18,7 +18,7 @@
  *   Domain   detectDomain     → .spec/constitution.md §3 fallback KPI
  *   E2E      full generation  → file count, token richness, bilingual parity
  *
- * Suites 1-111: ~1219 tests total (1099 + Suites 102-111: ~120 tests, 12 per preset)
+ * Suites 1-114: ~1317 tests total (1219 + Suites 112-114: 98 tests — ext4 field + ext5 standard)
  */
 
 const { describe, it } = require('node:test');
@@ -11590,4 +11590,913 @@ describe('Suite 111: presets-ext4 nursery_mgmt — Firebase/Expo/NurseryChild/Da
     const doc = f['docs/01_project_overview.md'] || '';
     assert.ok(!doc.includes('undefined'), 'nursery_mgmt docs/01 must not contain undefined');
   });
+});
+
+/* ══════════════════════════════════════════════════════════════════
+   Suite 112 — presets-ext4.js: first field preset per category
+   Entity coherence: .spec/specification.md (44 tests)
+   ════════════════════════════════════════════════════════════════ */
+
+describe('Suite 112: presets-ext4 field presets — first per category — entity coherence', () => {
+
+  it('engineering: eng_iot_monitor → Device or SensorData in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: '工場・施設のIoTセンサーデータをリアルタイム可視化し稼働状況と異常を監視',
+      data_entities: 'User, Device, SensorData, Sensor, Alert, DeviceGroup',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('Device') || doc.includes('SensorData'), 'eng_iot_monitor spec must mention Device or SensorData');
+  });
+
+  it('science: sci_genomics → GenomeSample or VariantCall in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: 'NGSシーケンスデータの変異解析・アノテーション・可視化を行う研究支援ツール',
+      data_entities: 'User, GenomeSample, VariantCall, OmicsDataset, ResearchPaper',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('GenomeSample') || doc.includes('VariantCall'), 'sci_genomics spec must mention GenomeSample or VariantCall');
+  });
+
+  it('agriculture: agri_supply_chain → Farm or Harvest in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: '農場から店舗まで農産物のトレーサビリティを管理し品質と安全性を担保',
+      data_entities: 'User, Farm, Crop, Harvest, Shipment, Inventory',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('Farm') || doc.includes('Harvest'), 'agri_supply_chain spec must mention Farm or Harvest');
+  });
+
+  it('medical: med_telehealth → Patient or Appointment in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: '医師と患者をオンラインでつなぐビデオ診察・電子処方箋・オンライン決済の遠隔医療',
+      data_entities: 'User, Patient, Doctor, Appointment, Prescription, MedicalRecord',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('Patient') || doc.includes('Appointment'), 'med_telehealth spec must mention Patient or Appointment');
+  });
+
+  it('social: soc_policy_analysis → LegalCase or ResearchData in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: '法令・政策文書をAIが解析しステークホルダーへの影響・代替案を提示する立法支援',
+      data_entities: 'User, ResearchData, Report, LegalCase',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('LegalCase') || doc.includes('ResearchData'), 'soc_policy_analysis spec must mention LegalCase or ResearchData');
+  });
+
+  it('humanities: hum_digital_archive → LiteratureSource or SearchLog in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: '博物館・図書館の史料・写真・映像をデジタル化し公開・検索可能にするアーカイブ基盤',
+      data_entities: 'User, LiteratureSource, Media, SearchLog, Report',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('LiteratureSource') || doc.includes('SearchLog'), 'hum_digital_archive spec must mention LiteratureSource or SearchLog');
+  });
+
+  it('education_field: edu_assessment → QuizSet or QuizAttempt in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: '問題自動生成・採点・弱点分析・フィードバックを提供する学習評価システム',
+      data_entities: 'User, QuizSet, QuizItem, QuizAttempt, Student, LearningGoal',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('QuizSet') || doc.includes('QuizAttempt'), 'edu_assessment spec must mention QuizSet or QuizAttempt');
+  });
+
+  it('art: art_nft_gallery → ArtWork or GeneratedImage in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: 'アーティストがデジタル作品をNFT化し展示・販売できるギャラリーマーケットプレイス',
+      data_entities: 'User, ArtWork, GeneratedImage, Transaction, Subscription',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('ArtWork') || doc.includes('GeneratedImage'), 'art_nft_gallery spec must mention ArtWork or GeneratedImage');
+  });
+
+  it('interdisciplinary: inter_innovation_hub → KnowledgeItem or Project in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: 'スタートアップ・社内新規事業のアイデア管理・プロトタイプ検証・メンタリングを支援',
+      data_entities: 'User, Project, KnowledgeItem, Community, Report',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('KnowledgeItem') || doc.includes('Project'), 'inter_innovation_hub spec must mention KnowledgeItem or Project');
+  });
+
+  it('environment: env_waste_mgmt → EnergyAsset or Inventory in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: '産業廃棄物の種類・量・処理業者・法定報告をデジタル管理し法令遵守を支援',
+      data_entities: 'User, Report, EnergyAsset, Inventory',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('EnergyAsset') || doc.includes('Inventory'), 'env_waste_mgmt spec must mention EnergyAsset or Inventory');
+  });
+
+  it('architecture: arch_smart_city → UrbanModel or DataPoint in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: '都市データ・人流・交通・エネルギーを統合しスマートシティ施策の効果シミュレーションを支援',
+      data_entities: 'User, UrbanModel, DataPoint, Report, Alert',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('UrbanModel') || doc.includes('DataPoint'), 'arch_smart_city spec must mention UrbanModel or DataPoint');
+  });
+
+  it('sports: sports_esports → Athlete or TrainingPlan in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: 'eスポーツチームの選手・スケジュール・戦績・スポンサー管理を効率化するプラットフォーム',
+      data_entities: 'User, Athlete, GameEvent, TrainingPlan, Coach',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('Athlete') || doc.includes('TrainingPlan'), 'sports_esports spec must mention Athlete or TrainingPlan');
+  });
+
+  it('welfare: wel_disability → EmploymentMatch or CarePlan in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: '障害者の求職・職場定着・支援者との連携をデジタル化する就労支援システム',
+      data_entities: 'User, EmploymentMatch, CarePlan, Report, Community',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('EmploymentMatch') || doc.includes('CarePlan'), 'wel_disability spec must mention EmploymentMatch or CarePlan');
+  });
+
+  it('tourism: tour_experience → Booking or Review in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: '地域の体験型観光コンテンツ（農業体験・クラフトワーク・アウトドア）の予約・管理',
+      data_entities: 'User, Service, Booking, Review, Payment',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('Booking') || doc.includes('Review'), 'tour_experience spec must mention Booking or Review');
+  });
+
+  it('biotech: bio_multi_omics → OmicsDataset or BioAnalysis in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: 'ゲノム・トランスクリプトーム・プロテオームを統合解析し疾患バイオマーカー・創薬標的を発見',
+      data_entities: 'User, OmicsDataset, BioAnalysis, ResearchPaper, ProteinSequence',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('OmicsDataset') || doc.includes('BioAnalysis'), 'bio_multi_omics spec must mention OmicsDataset or BioAnalysis');
+  });
+
+  it('mobility: mob_logistics_optim → Route or DemandForecast in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: '配送ルート・積載・在庫・需要予測をAIで最適化し物流コストとCO2を削減',
+      data_entities: 'User, Route, Shipment, Vehicle, DemandForecast',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('Route') || doc.includes('DemandForecast'), 'mob_logistics_optim spec must mention Route or DemandForecast');
+  });
+
+  it('cybersecurity: sec_devsecops → VulnScan or RemediationTask in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: 'CI/CDパイプラインにSAST・DAST・SCAを統合しシフトレフトなセキュリティを実現',
+      data_entities: 'User, VulnScan, RemediationTask, SecurityPolicy, Report',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('VulnScan') || doc.includes('RemediationTask'), 'sec_devsecops spec must mention VulnScan or RemediationTask');
+  });
+
+  it('fintech_field: fin_robo_advisor → FinancialPlan or InvestmentAdvice in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: 'リスク許容度に基づくポートフォリオ自動構築・リバランス・パフォーマンス報告のロボ投資',
+      data_entities: 'User, FinancialPlan, InvestmentAdvice, Account, Report',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('FinancialPlan') || doc.includes('InvestmentAdvice'), 'fin_robo_advisor spec must mention FinancialPlan or InvestmentAdvice');
+  });
+
+  it('smart_factory: sfac_predictive_maint → Machine or MaintenanceLog in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: '設備センサーデータをMLで分析し故障を予測・保全スケジュールを最適化するAI基盤',
+      data_entities: 'User, Machine, SensorData, Alert, MaintenanceLog',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('Machine') || doc.includes('MaintenanceLog'), 'sfac_predictive_maint spec must mention Machine or MaintenanceLog');
+  });
+
+  it('cross_theme: cth_ai_ethics → AgentConfig or SecurityPolicy in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: 'AI系統の公平性・透明性・説明可能性・プライバシーリスクを評価する倫理監査プラットフォーム',
+      data_entities: 'User, Report, AgentConfig, SecurityPolicy',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('AgentConfig') || doc.includes('SecurityPolicy'), 'cth_ai_ethics spec must mention AgentConfig or SecurityPolicy');
+  });
+
+  it('gaming: gam_analytics → GameEvent or PerformanceLog in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: 'プレイヤー行動・収益・リテンション・バランスデータをリアルタイム分析するゲーム向けBIツール',
+      data_entities: 'User, GameEvent, PerformanceLog, Report, Analytics',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('GameEvent') || doc.includes('PerformanceLog'), 'gam_analytics spec must mention GameEvent or PerformanceLog');
+  });
+
+  it('video: vid_vod_platform → Program or Episode in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: '映画・ドラマ・ドキュメンタリーを月額制で配信するNetflixライクなVODプラットフォーム',
+      data_entities: 'User, Content, Program, Episode, Subscription',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('Program') || doc.includes('Episode'), 'vid_vod_platform spec must mention Program or Episode');
+  });
+
+  it('live_event: lev_virtual_event → Session or Attendee in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: 'オンライン会議・展示会・コンサートをブレイクアウトルーム・ネットワーキングで体験できるバーチャルイベント基盤',
+      data_entities: 'User, Event, Session, Ticket, Attendee',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('Session') || doc.includes('Attendee'), 'lev_virtual_event spec must mention Session or Attendee');
+  });
+
+  it('publishing: pub_digital_textbook → Course or Progress in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: 'インタラクティブな電子教科書の作成・配信・学習進捗管理を提供する教育出版プラットフォーム',
+      data_entities: 'User, Content, Course, Progress, Report',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('Course') || doc.includes('Progress'), 'pub_digital_textbook spec must mention Course or Progress');
+  });
+
+  it('gambling: gbl_sports_betting → GameEvent or AuditLog in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: 'スポーツ賭博のオッズ管理・ベット処理・不正検出・年齢確認を統合する事業者向けプラットフォーム',
+      data_entities: 'User, GameEvent, Transaction, Alert, AuditLog',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('GameEvent') || doc.includes('AuditLog'), 'gbl_sports_betting spec must mention GameEvent or AuditLog');
+  });
+
+  it('podcast: pod_community → PodcastShow or PodcastEpisode in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: 'コミュニティメンバーが番組を持ち制作・配信・リスナーとの交流を行う参加型ポッドキャスト基盤',
+      data_entities: 'User, PodcastShow, PodcastEpisode, Community, Comment',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('PodcastShow') || doc.includes('PodcastEpisode'), 'pod_community spec must mention PodcastShow or PodcastEpisode');
+  });
+
+  it('music_biz: mus_rights_mgmt → MusicSong or Document in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: '楽曲の著作権・原盤権・隣接権の登録・使用許諾・ロイヤリティ分配を一元管理',
+      data_entities: 'User, MusicSong, Transaction, Report, Document',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('MusicSong') || doc.includes('Document'), 'mus_rights_mgmt spec must mention MusicSong or Document');
+  });
+
+  it('housing: hou_student → PropertyListing or Lease in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: '学生と家主をマッチングし大学近隣物件の検索・入居申請・契約をオンライン完結',
+      data_entities: 'User, PropertyListing, Lease, ViewingRequest, Review',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('PropertyListing') || doc.includes('Lease'), 'hou_student spec must mention PropertyListing or Lease');
+  });
+
+  it('food: fod_recipe → Community or Media in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: '料理家・グルメ愛好者がレシピを投稿・共有・評価しフォロワーと交流できる料理特化SNS',
+      data_entities: 'User, Content, Review, Community, Media',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('Community') || doc.includes('Media'), 'fod_recipe spec must mention Community or Media');
+  });
+
+  it('mental_health: mhe_stress_tracker → HealthLog or Goal in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: '日常のストレス・気分・睡眠・活動量を記録しウェルビーイング改善を支援するセルフケアアプリ',
+      data_entities: 'User, HealthLog, Goal, Report, Alert',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('HealthLog') || doc.includes('Goal'), 'mhe_stress_tracker spec must mention HealthLog or Goal');
+  });
+
+  it('fashion: fash_style_ai → Product or Analytics in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: 'ユーザーのワードローブ・体型・シーンをAIが分析しパーソナルコーディネートを提案',
+      data_entities: 'User, Product, Content, Analytics, Subscription',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('Product') || doc.includes('Analytics'), 'fash_style_ai spec must mention Product or Analytics');
+  });
+
+  it('shopping: shop_compare → Product or Alert in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: '複数ECサイトの価格をリアルタイム比較し最安値・値下げアラートを提供する価格追跡ツール',
+      data_entities: 'User, Product, Analytics, Alert, Report',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('Product') || doc.includes('Alert'), 'shop_compare spec must mention Product or Alert');
+  });
+
+  it('pet: pet_boarding → Pet or Booking in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: 'ペットホテル・ペットシッターを検索・予約・レビューできるペットケアマッチングプラットフォーム',
+      data_entities: 'User, Service, Booking, Review, Pet',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('Pet') || doc.includes('Booking'), 'pet_boarding spec must mention Pet or Booking');
+  });
+
+  it('car_life: car_maint → Vehicle or Schedule in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: '愛車の点検・整備・油脂交換・車検・保険の記録と次回メンテナンス通知を管理するカーログ',
+      data_entities: 'User, Vehicle, Schedule, Alert, AuditLog, Report',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('Vehicle') || doc.includes('Schedule'), 'car_maint spec must mention Vehicle or Schedule');
+  });
+
+  it('civil_eng: ce_bridge_monitor → SensorData or InspectionRecord in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: '橋梁・トンネル・ダムのセンサーデータをAIで解析し構造劣化と危険を早期検知',
+      data_entities: 'User, SensorData, Alert, Report, InspectionRecord',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('SensorData') || doc.includes('InspectionRecord'), 'ce_bridge_monitor spec must mention SensorData or InspectionRecord');
+  });
+
+  it('braintech: bt_neurofeedback → HealthLog or Session in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: 'EEGデータのリアルタイム分析とフィードバックで注意力・集中力・メンタルパフォーマンスを改善',
+      data_entities: 'User, HealthLog, Goal, Report, Session',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('HealthLog') || doc.includes('Session'), 'bt_neurofeedback spec must mention HealthLog or Session');
+  });
+
+  it('digital_legacy: dl_will_mgmt → Document or Subscription in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: 'デジタル資産・パスワード・遺言書・エンディングノートを安全に保管し特定の人に引き継ぐサービス',
+      data_entities: 'User, Document, Report, Subscription',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('Document') || doc.includes('Subscription'), 'dl_will_mgmt spec must mention Document or Subscription');
+  });
+
+  it('data_sovereignty: ds_consent_mgmt → AuditLog or Document in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: 'GDPR・個人情報保護法対応の同意取得・記録・更新・撤回を管理するコンプライアンスCMP',
+      data_entities: 'User, Document, AuditLog, Report',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('AuditLog') || doc.includes('Document'), 'ds_consent_mgmt spec must mention AuditLog or Document');
+  });
+
+  it('space_data: sp_sar_monitor → ObservationLog or DataPoint in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: '地球観測衛星の画像・センサーデータをAIで解析し農業・環境・都市変化を監視',
+      data_entities: 'User, ObservationLog, DataPoint, Report, Alert',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('ObservationLog') || doc.includes('DataPoint'), 'sp_sar_monitor spec must mention ObservationLog or DataPoint');
+  });
+
+  it('climate_resilience: cr_flood_risk → Alert or Shelter in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: '洪水・土砂崩れのリスクをハザードマップ・リアルタイムセンサーで評価し住民・行政に提供',
+      data_entities: 'User, Alert, Report, SensorData, Shelter',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('Alert') || doc.includes('Shelter'), 'cr_flood_risk spec must mention Alert or Shelter');
+  });
+
+  it('ai_avatar: av_virtual_inf → Content or Analytics in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: 'AIキャラクターのコンテンツ生成・SNS投稿スケジュール・ブランドコラボ・ファン管理を統合',
+      data_entities: 'User, Content, Community, Analytics, Subscription',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('Content') || doc.includes('Analytics'), 'av_virtual_inf spec must mention Content or Analytics');
+  });
+
+  it('civic_tech: ctc_petition → Document or Community in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: '市民が政策・社会課題に関する請願を作成・署名収集・議会・行政に提出できるシビックプラットフォーム',
+      data_entities: 'User, Community, Document, Report',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('Document') || doc.includes('Community'), 'ctc_petition spec must mention Document or Community');
+  });
+
+  it('childcare: cce_childcare_match → Booking or Service in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: '保育士・ベビーシッターと家庭をマッチングし資格確認・予約・決済・評価を一元管理',
+      data_entities: 'User, Service, Booking, Review, Payment',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('Booking') || doc.includes('Service'), 'cce_childcare_match spec must mention Booking or Service');
+  });
+
+  it('nomad_life: nml_workation → Booking or Community in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: '自治体・企業がワーケーションプログラムを提供しリモートワーカーの受入・滞在・体験を管理',
+      data_entities: 'User, Service, Booking, Community, Report',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('Booking') || doc.includes('Community'), 'nml_workation spec must mention Booking or Community');
+  });
+
+});
+
+/* ══════════════════════════════════════════════════════════════════
+   Suite 113 — presets-ext4.js: second field preset per category
+   Entity coherence: .spec/specification.md (44 tests)
+   ════════════════════════════════════════════════════════════════ */
+
+describe('Suite 113: presets-ext4 field presets — second per category — entity coherence', () => {
+
+  it('engineering: eng_energy_audit → Meter or EnergyAsset in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: '設備・工程別のエネルギー消費データを解析し省エネ施策と削減効果を可視化',
+      data_entities: 'User, Meter, Reading, EnergyAsset, Report, Alert',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('Meter') || doc.includes('EnergyAsset'), 'eng_energy_audit spec must mention Meter or EnergyAsset');
+  });
+
+  it('science: sci_climate_model → SimulationModel or SimResult in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: '気候変動シナリオのシミュレーション実行・結果可視化・レポート出力を支援',
+      data_entities: 'User, SimulationModel, SimInput, SimResult, Report',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('SimulationModel') || doc.includes('SimResult'), 'sci_climate_model spec must mention SimulationModel or SimResult');
+  });
+
+  it('agriculture: agri_certification → Field or Crop in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: '有機JAS・GAP認証の申請・審査・更新をデジタル化し農業認証管理を効率化',
+      data_entities: 'User, Farm, Field, Crop, Report',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('Field') || doc.includes('Crop'), 'agri_certification spec must mention Field or Crop');
+  });
+
+  it('medical: med_drug_safety → ClinicalTrial or AdverseEvent in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: '治験プロトコル・被験者管理・有害事象記録・規制対応をデジタル化するEDCシステム',
+      data_entities: 'User, ClinicalTrial, TrialSubject, AdverseEvent, Report',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('ClinicalTrial') || doc.includes('AdverseEvent'), 'med_drug_safety spec must mention ClinicalTrial or AdverseEvent');
+  });
+
+  it('social: soc_nonprofit → Community or Document in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: '非営利団体の寄付受付・助成金申請・会計・インパクト報告を一元管理',
+      data_entities: 'User, Report, Community, Document',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('Community') || doc.includes('Document'), 'soc_nonprofit spec must mention Community or Document');
+  });
+
+  it('humanities: hum_linguistics → TextAnalysis or LiteratureSource in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: 'テキストコーパスの形態素解析・共起分析・語用論研究をAIで支援する言語研究ツール',
+      data_entities: 'User, LiteratureSource, TextAnalysis, ResearchPaper',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('TextAnalysis') || doc.includes('LiteratureSource'), 'hum_linguistics spec must mention TextAnalysis or LiteratureSource');
+  });
+
+  it('education_field: edu_e_portfolio → PortfolioItem or Credential in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: '学習成果・資格・作品を一元管理し就活・進学・評価に活用できる学習eポートフォリオ',
+      data_entities: 'User, Student, PortfolioItem, Credential, Achievement, LearningGoal',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('PortfolioItem') || doc.includes('Credential'), 'edu_e_portfolio spec must mention PortfolioItem or Credential');
+  });
+
+  it('art: art_creative_collab → ArtWork or Project in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: 'クリエイター同士がプロジェクト・作品をコラボレーションし制作物を共同管理・収益化',
+      data_entities: 'User, Project, ArtWork, PortfolioItem, Invitation',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('ArtWork') || doc.includes('Project'), 'art_creative_collab spec must mention ArtWork or Project');
+  });
+
+  it('interdisciplinary: inter_design_thinking → ResearchData or KnowledgeItem in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: 'HCDプロセスのリサーチ・共感・定義・アイデア発想・プロトタイプを一元管理',
+      data_entities: 'User, Project, ResearchData, KnowledgeItem, Report',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('ResearchData') || doc.includes('KnowledgeItem'), 'inter_design_thinking spec must mention ResearchData or KnowledgeItem');
+  });
+
+  it('environment: env_biodiversity → ObservationLog or DataPoint in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: '野生動植物の観測データ・生息地情報・絶滅危惧種状況をAIで管理・分析',
+      data_entities: 'User, ObservationLog, DataPoint, Report, Alert',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('ObservationLog') || doc.includes('DataPoint'), 'env_biodiversity spec must mention ObservationLog or DataPoint');
+  });
+
+  it('architecture: arch_bim_collab → BIMModel or DesignChange in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: '建築・施工チームがBIMモデルを共有し設計変更・衝突検出・進捗管理をリアルタイム協調',
+      data_entities: 'User, BIMModel, Project, DesignChange, ClashReport, Team',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('BIMModel') || doc.includes('DesignChange'), 'arch_bim_collab spec must mention BIMModel or DesignChange');
+  });
+
+  it('sports: sports_nutrition → Meal or PerformanceLog in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: 'アスリートの食事・栄養素・水分摂取を記録しパフォーマンス向上を栄養面からサポート',
+      data_entities: 'User, Athlete, Meal, Goal, PerformanceLog',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('Meal') || doc.includes('PerformanceLog'), 'sports_nutrition spec must mention Meal or PerformanceLog');
+  });
+
+  it('welfare: wel_elder_care → CareActivity or CareRecord in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: 'デイサービス施設の利用者管理・サービス提供記録・家族連絡をデジタル化',
+      data_entities: 'User, CarePlan, CareActivity, CareRecord, Report',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('CareActivity') || doc.includes('CareRecord'), 'wel_elder_care spec must mention CareActivity or CareRecord');
+  });
+
+  it('tourism: tour_destination → TourismStats or Attraction in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: '観光地の入込客数・消費動向・施設運営・プロモーションを一元管理するDMS',
+      data_entities: 'User, TourismStats, Attraction, Report, Community',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('TourismStats') || doc.includes('Attraction'), 'tour_destination spec must mention TourismStats or Attraction');
+  });
+
+  it('biotech: bio_diagnostics → Compound or QualityCheck in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: '体外診断用医薬品の開発・品質管理・規制申請・販売管理を一元化するプラットフォーム',
+      data_entities: 'User, Compound, QualityCheck, Report, ClinicalTrial',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('Compound') || doc.includes('QualityCheck'), 'bio_diagnostics spec must mention Compound or QualityCheck');
+  });
+
+  it('mobility: mob_micro_mobility → TripPlan or ChargeStation in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: 'シェアサイクル・電動キックボードの車両管理・エリア設定・決済・保険を統合するプラットフォーム',
+      data_entities: 'User, Vehicle, TripPlan, ChargeStation, Payment, AuditLog',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('TripPlan') || doc.includes('ChargeStation'), 'mob_micro_mobility spec must mention TripPlan or ChargeStation');
+  });
+
+  it('cybersecurity: sec_threat_intel → ThreatIndicator or SecurityEvent in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: 'IOC・TTPs・攻撃者プロファイルを収集・分析し脅威ハンティングと防御強化を支援',
+      data_entities: 'User, ThreatIndicator, SecurityEvent, SecurityPolicy, Report',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('ThreatIndicator') || doc.includes('SecurityEvent'), 'sec_threat_intel spec must mention ThreatIndicator or SecurityEvent');
+  });
+
+  it('fintech_field: fin_open_banking → CreditScore or AuditLog in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: '複数金融機関のAPI（PSD2/Open Banking標準）を統合し口座・取引データを活用する金融ハブ',
+      data_entities: 'User, Account, Transaction, CreditScore, AuditLog, Report',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('CreditScore') || doc.includes('AuditLog'), 'fin_open_banking spec must mention CreditScore or AuditLog');
+  });
+
+  it('smart_factory: sfac_carbon_trace → CarbonEmission or ESGReport in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: '製品ライフサイクル（原材料〜製造〜輸送〜廃棄）の炭素排出量を追跡・可視化・報告',
+      data_entities: 'User, CarbonEmission, SupplyNode, Report, ESGReport',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('CarbonEmission') || doc.includes('ESGReport'), 'sfac_carbon_trace spec must mention CarbonEmission or ESGReport');
+  });
+
+  it('cross_theme: cth_data_mesh → DataPipeline or DataConnector in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: '分散データプロダクトを自律チームが管理しデータガバナンスと民主化を実現するデータメッシュ',
+      data_entities: 'User, DataPipeline, DataConnector, Report, AgentConfig',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('DataPipeline') || doc.includes('DataConnector'), 'cth_data_mesh spec must mention DataPipeline or DataConnector');
+  });
+
+  it('gaming: gam_community → Post or Comment in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: 'ゲームタイトルのコミュニティフォーラム・チームルーム・大会情報・クリエイター投稿の統合ハブ',
+      data_entities: 'User, Community, GameEvent, Post, Comment',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('Post') || doc.includes('Comment'), 'gam_community spec must mention Post or Comment');
+  });
+
+  it('video: vid_live_commerce → Product or Order in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: '配信者がライブ動画で商品を紹介・即時購入できるライブコマースECプラットフォーム',
+      data_entities: 'User, Content, Product, Order, Transaction',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('Product') || doc.includes('Order'), 'vid_live_commerce spec must mention Product or Order');
+  });
+
+  it('live_event: lev_fan_engagement → Subscription or Content in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: 'アーティスト・アイドル・スポーツチームのファンクラブ・デジタル特典・ライブ連動体験を提供',
+      data_entities: 'User, Event, Subscription, Community, Content',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('Subscription') || doc.includes('Content'), 'lev_fan_engagement spec must mention Subscription or Content');
+  });
+
+  it('publishing: pub_print_demand → Order or Inventory in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: '著者・クリエイターがデザインをアップロードし注文に応じて印刷・発送するPODプラットフォーム',
+      data_entities: 'User, Product, Order, Inventory, Payment',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('Order') || doc.includes('Inventory'), 'pub_print_demand spec must mention Order or Inventory');
+  });
+
+  it('gambling: gbl_lottery → Ticket or AuditLog in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: 'デジタル宝くじ・スクラッチカードの発券・抽選・当選管理・コンプライアンス対応の運営基盤',
+      data_entities: 'User, Ticket, Payment, Report, AuditLog',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('Ticket') || doc.includes('AuditLog'), 'gbl_lottery spec must mention Ticket or AuditLog');
+  });
+
+  it('podcast: pod_language → PodcastEpisode or LearningGoal in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: '語学学習者向けのレベル別ポッドキャスト・シャドーイング練習・語彙学習を統合した学習支援',
+      data_entities: 'User, PodcastShow, PodcastEpisode, LearningGoal, Progress',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('PodcastEpisode') || doc.includes('LearningGoal'), 'pod_language spec must mention PodcastEpisode or LearningGoal');
+  });
+
+  it('music_biz: mus_live_booking → Venue or Contract in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: 'アーティスト・会場・プロモーターをつなぐライブブッキング・スケジュール・契約管理',
+      data_entities: 'User, Event, Venue, Contract, Payment, AuditLog',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('Venue') || doc.includes('Contract'), 'mus_live_booking spec must mention Venue or Contract');
+  });
+
+  it('housing: hou_co_living → Lease or Booking in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: 'コリビングスペースの入居者管理・共有設備予約・コミュニティイベント・家賃決済を一元化',
+      data_entities: 'User, Unit, Lease, Booking, Community',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('Lease') || doc.includes('Booking'), 'hou_co_living spec must mention Lease or Booking');
+  });
+
+  it('food: fod_meal_plan → Meal or Goal in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: '週単位の食事計画・栄養バランス・買い物リスト自動生成・食費管理を統合するミールプランアプリ',
+      data_entities: 'User, Meal, Goal, Report, Subscription',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('Meal') || doc.includes('Goal'), 'fod_meal_plan spec must mention Meal or Goal');
+  });
+
+  it('mental_health: mhe_group_therapy → Session or Community in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: '精神科医・心理士が主導するオンライングループセラピーとピアサポートコミュニティの安全な場の提供',
+      data_entities: 'User, Session, Community, Report, Subscription',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('Session') || doc.includes('Community'), 'mhe_group_therapy spec must mention Session or Community');
+  });
+
+  it('fashion: fash_sustainable → Order or Review in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: '中古・サステナブルアイテムのリセール・レンタル・修理をサポするサーキュラーファッション基盤',
+      data_entities: 'User, Product, Order, Review, Subscription',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('Order') || doc.includes('Review'), 'fash_sustainable spec must mention Order or Review');
+  });
+
+  it('shopping: shop_wishlist → Community or Payment in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: '家族・友人間でほしいものリストを共有し贈り物をかぶらせないギフト管理プラットフォーム',
+      data_entities: 'User, Product, Subscription, Community, Payment',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('Community') || doc.includes('Payment'), 'shop_wishlist spec must mention Community or Payment');
+  });
+
+  it('pet: pet_insure → Vaccination or Policy in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: 'ペット保険の加入・請求・医療費記録・予防接種管理を一元管理するペット医療プラットフォーム',
+      data_entities: 'User, Pet, Vaccination, Policy, AuditLog, Report',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('Vaccination') || doc.includes('Policy'), 'pet_insure spec must mention Vaccination or Policy');
+  });
+
+  it('car_life: car_share_mgmt → Vehicle or Booking in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: 'カーシェアリングサービスの車両管理・ユーザー認証・予約・損傷報告・決済を統合',
+      data_entities: 'User, Vehicle, Booking, Payment, Report',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('Vehicle') || doc.includes('Booking'), 'car_share_mgmt spec must mention Vehicle or Booking');
+  });
+
+  it('civil_eng: ce_road_damage → InspectionRecord or Alert in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: 'スマートフォン・ドラレコ画像からAIが道路損傷を自動検知し補修優先度と計画を管理',
+      data_entities: 'User, Report, Media, Alert, InspectionRecord',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('InspectionRecord') || doc.includes('Alert'), 'ce_road_damage spec must mention InspectionRecord or Alert');
+  });
+
+  it('braintech: bt_cognitive → QuizAttempt or Patient in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: 'ゲーム型タスクでワーキングメモリ・注意・実行機能を評価し認知機能の変化を長期追跡',
+      data_entities: 'User, QuizAttempt, PerformanceLog, Report, Patient',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('QuizAttempt') || doc.includes('Patient'), 'bt_cognitive spec must mention QuizAttempt or Patient');
+  });
+
+  it('digital_legacy: dl_memory_vault → Media or Content in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: '写真・動画・日記・音声を整理しAIが自動ストーリー化・家族に引き継ぐライフアーカイブ',
+      data_entities: 'User, Media, Content, Subscription, Community',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('Media') || doc.includes('Content'), 'dl_memory_vault spec must mention Media or Content');
+  });
+
+  it('data_sovereignty: ds_personal_ctrl → AccessControl or AuditLog in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: 'ユーザーが自分のデータへのアクセス権・利用目的・提供先を一元管理する個人データポータル',
+      data_entities: 'User, Document, AuditLog, Report, AccessControl',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('AccessControl') || doc.includes('AuditLog'), 'ds_personal_ctrl spec must mention AccessControl or AuditLog');
+  });
+
+  it('space_data: sp_space_weather → SensorData or ObservationLog in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: '太陽活動・地磁気嵐・放射線環境データを収集しインフラ・衛星運用への影響を予測・通知',
+      data_entities: 'User, SensorData, Alert, Report, ObservationLog',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('SensorData') || doc.includes('ObservationLog'), 'sp_space_weather spec must mention SensorData or ObservationLog');
+  });
+
+  it('climate_resilience: cr_carbon_neutral → CarbonEmission or ESGReport in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: '自治体・企業のカーボンニュートラル宣言から実施計画・進捗管理・報告までを一気通貫で支援',
+      data_entities: 'User, CarbonEmission, ESGReport, Report, Alert',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('CarbonEmission') || doc.includes('ESGReport'), 'cr_carbon_neutral spec must mention CarbonEmission or ESGReport');
+  });
+
+  it('ai_avatar: av_ai_companion → Conversation or Agent in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: '孤独感・メンタルヘルスサポートを提供するパーソナライズAIコンパニオンアプリ',
+      data_entities: 'User, Conversation, Agent, Goal, Report',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('Conversation') || doc.includes('Agent'), 'av_ai_companion spec must mention Conversation or Agent');
+  });
+
+  it('civic_tech: ctc_participatory → Analytics or Document in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: '市民が予算案を提案・投票し自治体が採択・実施状況を公開する参加型民主主義ツール',
+      data_entities: 'User, Community, Report, Document, Analytics',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('Analytics') || doc.includes('Document'), 'ctc_participatory spec must mention Analytics or Document');
+  });
+
+  it('childcare: cce_parenting → NurseryChild or DailyReport in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: '授乳・睡眠・発達マイルストーン・予防接種を記録し育児知識・専門家相談を提供するアプリ',
+      data_entities: 'User, NurseryChild, DailyReport, Goal, Notification',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('NurseryChild') || doc.includes('DailyReport'), 'cce_parenting spec must mention NurseryChild or DailyReport');
+  });
+
+  it('nomad_life: nml_community → Review or Attraction in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: '世界各地のデジタルノマドが拠点情報・コワーキングレビュー・仲間を共有するグローバルコミュニティ',
+      data_entities: 'User, Community, Review, Attraction, Report',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('Review') || doc.includes('Attraction'), 'nml_community spec must mention Review or Attraction');
+  });
+
+});
+
+/* ══════════════════════════════════════════════════════════════════
+   Suite 114 — presets-ext5.js: 10 standard presets
+   Entity coherence: .spec/specification.md (10 tests)
+   ════════════════════════════════════════════════════════════════ */
+
+describe('Suite 114: presets-ext5 standard presets — entity coherence', () => {
+
+  it('event_platform → EventPlan or TicketType in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: 'B2Bイベント企画・チケット販売・会場管理・集客を効率化するイベントマネジメントプラットフォーム',
+      data_entities: 'User, EventPlan, TicketType, EventRegistration, VenueInfo, EventOrganizer',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('EventPlan') || doc.includes('TicketType'), 'event_platform spec must mention EventPlan or TicketType');
+  });
+
+  it('newsletter_saas → Subscriber or Campaign in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: 'ニュースレター配信SaaSのコア機能—購読者管理・セグメント配信・開封率分析を提供',
+      data_entities: 'User, Subscriber, Campaign, NewsletterList, Analytics, Plan',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('Subscriber') || doc.includes('Campaign'), 'newsletter_saas spec must mention Subscriber or Campaign');
+  });
+
+  it('creator_economy → CreatorProfile or FanMembership in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: 'クリエイターがファンへ独占コンテンツを届けファンメンバーシップ・投げ銭・コンテンツ販売で収益化するプラットフォーム',
+      data_entities: 'User, CreatorProfile, FanMembership, CreatorPost, Payout',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('CreatorProfile') || doc.includes('FanMembership'), 'creator_economy spec must mention CreatorProfile or FanMembership');
+  });
+
+  it('livestock_mgmt → Livestock or FeedLog in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: '牧場の家畜情報・給餌計画・健康記録・出荷管理をデジタル化する畜産農業管理システム',
+      data_entities: 'User, Livestock, LivestockBreed, FeedLog, LivestockHealth, VetVisit',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('Livestock') || doc.includes('FeedLog'), 'livestock_mgmt spec must mention Livestock or FeedLog');
+  });
+
+  it('tour_operator → TourPackage or TourBooking in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: '旅行ツアーの企画・旅程管理・予約・ガイド手配をおこなうツアーオペレーター管理システム',
+      data_entities: 'User, TourPackage, TourItinerary, TourBooking, TourGuide',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('TourPackage') || doc.includes('TourBooking'), 'tour_operator spec must mention TourPackage or TourBooking');
+  });
+
+  it('industrial_iot → IndustrialDevice or TelemetryData in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: '産業設備のIoTセンサーによるリアルタイム監視・異常検知・アラート管理を実現するインダストリアルIoTプラットフォーム',
+      data_entities: 'User, IndustrialDevice, TelemetryData, IndustrialAlert, ProductionMetric',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('IndustrialDevice') || doc.includes('TelemetryData'), 'industrial_iot spec must mention IndustrialDevice or TelemetryData');
+  });
+
+  it('whiteboard_app → Canvas or WhiteboardSession in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: 'チームがリアルタイムで共同編集できるオンラインホワイトボード・ダイアグラムツール',
+      data_entities: 'User, Canvas, Shape, WhiteboardSession, Collaborator',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('Canvas') || doc.includes('WhiteboardSession'), 'whiteboard_app spec must mention Canvas or WhiteboardSession');
+  });
+
+  it('feature_flag → FeatureFlag or FlagEnvironment in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: '機能フラグの管理・ABテスト・段階的ロールアウトを提供するAPI管理・フィーチャーフラグ開発者サービス',
+      data_entities: 'User, FeatureFlag, FlagEnvironment, FlagRule, FlagSDKKey',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('FeatureFlag') || doc.includes('FlagEnvironment'), 'feature_flag spec must mention FeatureFlag or FlagEnvironment');
+  });
+
+  it('resume_builder → Resume or ResumeTemplate in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: '職務経歴書・ポートフォリオをデジタルで作成・共有・ATS提出できる履歴書ビルダーポートフォリオサービス',
+      data_entities: 'User, Resume, ResumeSection, ResumeTemplate, ResumeShare',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('Resume') || doc.includes('ResumeTemplate'), 'resume_builder spec must mention Resume or ResumeTemplate');
+  });
+
+  it('mes_system → MESWorkOrder or MESQuality in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: '工場の製造指示・生産進捗・品質管理・シフト管理をリアルタイム統合する製造実行システム(MES)',
+      data_entities: 'User, MESWorkOrder, ProductionLine, WorkStation, MESQuality, MESShiftLog',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('MESWorkOrder') || doc.includes('MESQuality'), 'mes_system spec must mention MESWorkOrder or MESQuality');
+  });
+
 });
