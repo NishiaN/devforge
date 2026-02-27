@@ -304,7 +304,7 @@ var FIELD_CAT_MAP={
 };
 
 var FIELD_CATS_JA=[
-  {key:'all',label:'すべて',desc:'全82分野別プリセット'},
+  {key:'all',label:'すべて',desc:'全354分野別プリセット'},
   {key:'engineering',label:'🔧 工学',desc:'設備点検・シミュレーション・CAD・品質管理'},
   {key:'science',label:'🔬 理学',desc:'実験解析・論文・数式・観測'},
   {key:'agriculture',label:'🌾 農学',desc:'作物診断・気象予測・土壌・農業IoT'},
@@ -328,7 +328,7 @@ var FIELD_CATS_JA=[
 ];
 
 var FIELD_CATS_EN=[
-  {key:'all',label:'All',desc:'All 82 field presets'},
+  {key:'all',label:'All',desc:'All 354 field presets'},
   {key:'engineering',label:'🔧 Engineering',desc:'Inspection, simulation, CAD, quality control'},
   {key:'science',label:'🔬 Science',desc:'Experiment analysis, papers, math, observation'},
   {key:'agriculture',label:'🌾 Agriculture',desc:'Crop diagnosis, weather forecast, soil, ag IoT'},

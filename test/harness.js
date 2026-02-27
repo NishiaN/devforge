@@ -65,6 +65,7 @@ loadModule('data/presets.js');
 loadModule('data/presets-ext.js');
 loadModule('data/presets-ext2.js');
 loadModule('data/presets-ext3.js');
+loadModule('data/presets-ext4.js');
 
 module.exports = {
   sandbox,
