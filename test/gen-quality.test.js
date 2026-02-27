@@ -18,7 +18,7 @@
  *   Domain   detectDomain     → .spec/constitution.md §3 fallback KPI
  *   E2E      full generation  → file count, token richness, bilingual parity
  *
- * Suites 1-124: ~1437 tests total (1317 + Suites 115-124: 120 tests — ext6 standard)
+ * Suites 1-125: ~1447 tests total (1437 + Suite 125: 10 tests — ext6 field presets)
  */
 
 const { describe, it } = require('node:test');
@@ -13449,4 +13449,102 @@ describe('Suite 124: presets-ext6 tenant_portal — Supabase/Vercel/Stripe/reale
     const doc = f['docs/01_project_overview.md'] || '';
     assert.ok(!doc.includes('undefined'), 'tenant_portal docs/01 must not contain undefined');
   });
+});
+
+/* ══════════════════════════════════════════════════════════════════
+   Suite 125 — presets-ext6.js: 10 field presets — entity coherence
+   Entity coherence: .spec/specification.md (10 tests)
+   ════════════════════════════════════════════════════════════════ */
+describe('Suite 125: presets-ext6 field presets — entity coherence', () => {
+
+  it('publishing: pub_newsletter_ai → NLSubscriber or NLContent in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: '購読者セグメントごとにコンテンツをAI推薦し開封率・クリック率・解約防止を最大化するニュースレター最適化プラットフォーム',
+      data_entities: 'User, NLSubscriber, NLContent, NLCampaign, NLPersonalization, NLEngagement',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('NLSubscriber') || doc.includes('NLContent'), 'pub_newsletter_ai spec must mention NLSubscriber or NLContent');
+  });
+
+  it('shopping: shop_auction_ai → AuctionValuation or BidTrend in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: '出品データ・落札履歴・市場トレンドをAIが解析し公正評価額推定・偽造品検知・入札戦略推薦を提供するオークションインテリジェンス',
+      data_entities: 'User, AuctionValuation, BidTrend, FraudSignal, PriceHistory, MarketIndex',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('AuctionValuation') || doc.includes('BidTrend'), 'shop_auction_ai spec must mention AuctionValuation or BidTrend');
+  });
+
+  it('shopping: shop_loyalty_ai → LoyaltyInsight or ChurnRisk in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: '購買行動・ポイント消費・エンゲージメントデータをAIが分析しチャーン予測・報酬パーソナライゼーション・ランクアップ施策を自動化',
+      data_entities: 'User, LoyaltyInsight, ChurnRisk, RewardOffer, SegmentProfile, CampaignEffect',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('LoyaltyInsight') || doc.includes('ChurnRisk'), 'shop_loyalty_ai spec must mention LoyaltyInsight or ChurnRisk');
+  });
+
+  it('civic_tech: civic_permit_ai → PermitDocExtract or ApprovalScore in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: '申請書類をAIが自動解析・要件照合し行政の許認可審査を高速化・標準化する行政DX申請インテリジェンスシステム',
+      data_entities: 'User, PermitDocExtract, ApprovalScore, ReviewQueue, CitizenCase, PermitAuditLog',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('PermitDocExtract') || doc.includes('ApprovalScore'), 'civic_permit_ai spec must mention PermitDocExtract or ApprovalScore');
+  });
+
+  it('fintech_field: fintech_expense_ai → ExpenseIntelligence or SpendAnomaly in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: '社員の経費データをAIが自動分類・異常検知・予算超過予測し、不正検知・支出最適化・CFO向けインサイトを提供する経費管理高度化ツール',
+      data_entities: 'User, ExpenseIntelligence, SpendAnomaly, BudgetPlan, VendorRisk, CashflowForecast',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('ExpenseIntelligence') || doc.includes('SpendAnomaly'), 'fintech_expense_ai spec must mention ExpenseIntelligence or SpendAnomaly');
+  });
+
+  it('pet: pet_ins_ai → PetRiskProfile or ClaimIntelligence in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: 'ペット品種・年齢・健康履歴をAIが解析しリスクスコアリング・保険料算出・保険金請求自動査定を実現するペット保険インテリジェンス',
+      data_entities: 'User, PetRiskProfile, ClaimIntelligence, BreedRiskScore, VetDataRecord, InsPayoutModel, AuditLog',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('PetRiskProfile') || doc.includes('ClaimIntelligence'), 'pet_ins_ai spec must mention PetRiskProfile or ClaimIntelligence');
+  });
+
+  it('agriculture: agri_greenhouse_ai → CropHealthIndex or YieldModel in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: 'IoTセンサーデータ・気象予報・生育データをAIが統合解析し温室環境の自動制御・病害虫検知・収穫量予測を最適化',
+      data_entities: 'User, CropHealthIndex, YieldModel, DiseaseSignal, ClimateFactor, HarvestOptimization',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('CropHealthIndex') || doc.includes('YieldModel'), 'agri_greenhouse_ai spec must mention CropHealthIndex or YieldModel');
+  });
+
+  it('data_sovereignty: dso_compliance_ai → ComplianceRisk or PolicyGap in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: '法令・社内規定・データフローをAIが常時監視しコンプライアンスギャップ・規制変更リスク・是正優先度を自動レポート化',
+      data_entities: 'User, ComplianceRisk, PolicyGap, RegChangeAlert, GRCControl, DataFlowMap, AuditLog',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('ComplianceRisk') || doc.includes('PolicyGap'), 'dso_compliance_ai spec must mention ComplianceRisk or PolicyGap');
+  });
+
+  it('social: soc_talent_ai → TalentMatchScore or ResumeVector in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: '履歴書・求人票・スキルグラフをAIが解析しタレントマッチングスコアリング・採用バイアス検出・公平性レポートを自動生成',
+      data_entities: 'User, TalentMatchScore, ResumeVector, BiasAudit, SkillGraph, HiringFunnel, AuditLog',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('TalentMatchScore') || doc.includes('ResumeVector'), 'soc_talent_ai spec must mention TalentMatchScore or ResumeVector');
+  });
+
+  it('housing: housing_tenant_ai → TenantScore or RentForecasting in spec', () => {
+    const f = gSDD(Object.assign({}, A25, {
+      purpose: '入居審査・家賃相場予測・修繕優先度スコアリングをAIが自動化し不動産管理の意思決定を支援するプロップテックインテリジェンス',
+      data_entities: 'User, TenantScore, RentForecasting, MaintenancePriority, PropertyInsight, OccupancyPredictor',
+    }));
+    const doc = f['.spec/specification.md'] || '';
+    assert.ok(doc.includes('TenantScore') || doc.includes('RentForecasting'), 'housing_tenant_ai spec must mention TenantScore or RentForecasting');
+  });
+
 });
