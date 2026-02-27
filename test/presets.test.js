@@ -7,8 +7,8 @@ const PR = h.sandbox.PR;
 describe('Presets', () => {
   const keys = Object.keys(PR);
 
-  it('has 73 presets (including custom)', () => {
-    assert.equal(keys.length, 73);
+  it('has 83 presets (including custom)', () => {
+    assert.equal(keys.length, 83);
   });
 
   it('every preset has bilingual name', () => {
