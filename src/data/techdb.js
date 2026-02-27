@@ -181,7 +181,8 @@ const TECH_DB=[
 {name:'Config Plugins',cat:'mobile',sub:'native-config',req:'recommended',level:'int'},
 {name:'Swift/Kotlin (Native)',cat:'mobile',sub:'native-dev',req:'optional',level:'pro'},
 {name:'Expo Go',cat:'mobile',sub:'dev-tool',req:'recommended',level:'beg'},
-// ── Additional Backend (15) ──
+// ── Additional Backend (16) ──
+{name:'trigger.dev',cat:'back',sub:'jobs',req:'optional',level:'int',price:'free-tier'},
 {name:'Flask',cat:'back',sub:'fw',req:'optional',level:'py'},
 {name:'Gin',cat:'back',sub:'fw',req:'optional',level:'go'},
 {name:'SQLite',cat:'back',sub:'db',req:'optional',level:'embed'},
@@ -197,18 +198,22 @@ const TECH_DB=[
 {name:'Better Auth',cat:'back',sub:'auth',req:'optional',level:'int'},
 {name:'Kysely',cat:'back',sub:'orm',req:'optional',level:'int'},
 {name:'Valkey',cat:'back',sub:'cache',req:'optional',level:'int'},
-// ── Additional BaaS (4) ──
+// ── Additional BaaS (6) ──
 {name:'AWS Lambda',cat:'baas',sub:'serverless',req:'optional',level:'aws'},
 {name:'AWS Amplify',cat:'baas',sub:'full',req:'optional',level:'aws'},
 {name:'Convex',cat:'baas',sub:'reactive',req:'optional',level:'rt'},
 {name:'Turso',cat:'baas',sub:'db',req:'optional',level:'edge'},
+{name:'PGlite',cat:'baas',sub:'db',req:'optional',level:'int',price:'free-oss'},
+{name:'Xata',cat:'baas',sub:'db',req:'optional',level:'int',price:'free-tier'},
+{name:'Upstash',cat:'baas',sub:'serverless',req:'optional',level:'int',price:'free-tier'},
 // ── Additional Payment/CMS/EC (5) ──
 {name:'Prismic',cat:'payment',sub:'cms',req:'optional',level:'int',price:'free-100'},
 {name:'Hygraph',cat:'payment',sub:'cms',req:'optional',level:'pro',price:'free-399'},
 {name:'Storyblok',cat:'payment',sub:'cms',req:'optional',level:'int',price:'free-105'},
 {name:'Vendure',cat:'payment',sub:'ec',req:'optional',level:'pro',price:'free-oss'},
 {name:'WooCommerce',cat:'payment',sub:'ec',req:'optional',level:'beg',price:'free'},
-// ── Additional DevOps (13) ──
+// ── Additional DevOps (14) ──
+{name:'Render',cat:'devops',sub:'paas',req:'optional',level:'int',price:'free-tier'},
 {name:'Fly.io',cat:'devops',sub:'paas',req:'optional',level:'int'},
 {name:'Netlify',cat:'devops',sub:'paas',req:'optional',level:'static'},
 {name:'GCP (Cloud Run)',cat:'devops',sub:'iaas',req:'optional',level:'pro'},
@@ -221,7 +226,8 @@ const TECH_DB=[
 {name:'SST',cat:'devops',sub:'iac',req:'optional',level:'pro'},
 {name:'Coolify',cat:'devops',sub:'paas',req:'optional',level:'int'},
 {name:'Azure',cat:'devops',sub:'iaas',req:'optional',level:'pro'},
-// ── Additional AI Tools (13) ──
+// ── Additional AI Tools (14) ──
+{name:'Vercel AI SDK',cat:'ai',sub:'sdk',req:'optional',level:'int',price:'free-oss'},
 {name:'Claude (Chat)',cat:'ai',sub:'chat',req:'recommended',level:'all',price:'$20'},
 {name:'ChatGPT',cat:'ai',sub:'chat',req:'optional',level:'all',price:'$20'},
 {name:'Gemini',cat:'ai',sub:'chat',req:'optional',level:'all',price:'free-20'},
@@ -232,7 +238,8 @@ const TECH_DB=[
 {name:'Context7',cat:'ai',sub:'mcp-server',req:'recommended',level:'int'},
 {name:'Playwright MCP',cat:'ai',sub:'test-mcp',req:'recommended',level:'int'},
 {name:'VS Code',cat:'ai',sub:'editor',req:'required',level:'all',price:'free'},
-// ── Additional AI Autonomous (13) ──
+// ── Additional AI Autonomous (14) ──
+{name:'SWE-Agent',cat:'ai_auto',sub:'oss',req:'optional',level:'pro',price:'free-oss'},
 {name:'Zencoder/Zenflow',cat:'ai_auto',sub:'spec-agent',req:'optional',level:'pro',price:'paid'},
 {name:'Kilo Code',cat:'ai_auto',sub:'precision',req:'optional',level:'pro',price:'paid'},
 {name:'Continue.dev',cat:'ai_auto',sub:'oss',req:'optional',level:'int',price:'free'},
@@ -273,7 +280,7 @@ const TECH_DB=[
 {name:'Conventional Commits',cat:'method',sub:'convention',req:'recommended',level:'int'},
 {name:'Semantic Versioning',cat:'method',sub:'convention',req:'recommended',level:'int'},
 {name:'Agile / Scrum',cat:'method',sub:'process',req:'recommended',level:'all'},
-// ── Testing & Quality (8) ──
+// ── Testing & Quality (11) ──
 {name:'Cypress',cat:'test',sub:'e2e',req:'optional',level:'int'},
 {name:'Testing Library',cat:'test',sub:'unit',req:'recommended',level:'int'},
 {name:'MSW (Mock Service Worker)',cat:'test',sub:'mock',req:'recommended',level:'int'},
@@ -282,7 +289,10 @@ const TECH_DB=[
 {name:'Sentry',cat:'test',sub:'monitor',req:'recommended',level:'int',price:'free-26'},
 {name:'SonarQube',cat:'test',sub:'quality',req:'optional',level:'pro'},
 {name:'Codecov',cat:'test',sub:'coverage',req:'optional',level:'int'},
-// ── API & Communication (8) ──
+{name:'Artillery',cat:'test',sub:'load',req:'optional',level:'int',price:'free-oss'},
+{name:'k6',cat:'test',sub:'load',req:'optional',level:'int',price:'free-oss'},
+{name:'Pact',cat:'test',sub:'contract',req:'optional',level:'pro',price:'free-oss'},
+// ── API & Communication (10) ──
 {name:'tRPC',cat:'api',sub:'typesafe',req:'optional',level:'int'},
 {name:'gRPC',cat:'api',sub:'rpc',req:'optional',level:'pro'},
 {name:'Zod',cat:'api',sub:'validation',req:'recommended',level:'int'},
@@ -291,7 +301,9 @@ const TECH_DB=[
 {name:'Server-Sent Events',cat:'api',sub:'realtime',req:'optional',level:'int'},
 {name:'Hono RPC',cat:'api',sub:'typesafe',req:'optional',level:'int'},
 {name:'Valibot',cat:'api',sub:'validation',req:'optional',level:'int'},
-// ── Build & Toolchain (9) ──
+{name:'GraphQL Yoga',cat:'api',sub:'graphql',req:'optional',level:'int',price:'free-oss'},
+{name:'Orval',cat:'api',sub:'codegen',req:'optional',level:'int',price:'free-oss'},
+// ── Build & Toolchain (11) ──
 {name:'Turbopack',cat:'build',sub:'bundler',req:'optional',level:'next'},
 {name:'esbuild',cat:'build',sub:'bundler',req:'optional',level:'pro'},
 {name:'SWC',cat:'build',sub:'compiler',req:'recommended',level:'int'},
@@ -301,7 +313,9 @@ const TECH_DB=[
 {name:'WebAssembly (WASI)',cat:'build',sub:'runtime',req:'optional',level:'pro'},
 {name:'Bun (pkg mgr)',cat:'build',sub:'pkgmgr',req:'optional',level:'int'},
 {name:'Oxc',cat:'build',sub:'compiler',req:'optional',level:'pro'},
-// ── Data & Analytics (7) ──
+{name:'Rspack',cat:'build',sub:'bundler',req:'optional',level:'int',price:'free-oss'},
+{name:'Rolldown',cat:'build',sub:'bundler',req:'optional',level:'int',price:'free-oss'},
+// ── Data & Analytics (10) ──
 {name:'Drizzle Studio',cat:'data',sub:'gui',req:'optional',level:'int'},
 {name:'Prisma Studio',cat:'data',sub:'gui',req:'recommended',level:'int'},
 {name:'PostHog',cat:'data',sub:'analytics',req:'optional',level:'int',price:'free-tier'},
@@ -309,7 +323,10 @@ const TECH_DB=[
 {name:'Vercel Analytics',cat:'data',sub:'analytics',req:'recommended',level:'int',price:'free-tier'},
 {name:'OpenTelemetry',cat:'data',sub:'observability',req:'optional',level:'pro'},
 {name:'Tinybird',cat:'data',sub:'analytics',req:'optional',level:'int',price:'free-tier'},
-// ── Security (7) ──
+{name:'DuckDB',cat:'data',sub:'analytics',req:'optional',level:'int',price:'free-oss'},
+{name:'ClickHouse',cat:'data',sub:'analytics',req:'optional',level:'pro',price:'free-tier'},
+{name:'Metabase',cat:'data',sub:'bi',req:'optional',level:'int',price:'free-oss'},
+// ── Security (10) ──
 {name:'Helmet.js',cat:'security',sub:'headers',req:'recommended',level:'int'},
 {name:'CORS',cat:'security',sub:'policy',req:'required',level:'int'},
 {name:'CSP',cat:'security',sub:'policy',req:'recommended',level:'int'},
@@ -317,6 +334,9 @@ const TECH_DB=[
 {name:'npm audit',cat:'security',sub:'deps',req:'required',level:'all'},
 {name:'Snyk',cat:'security',sub:'scanning',req:'optional',level:'pro',price:'free-tier'},
 {name:'Arcjet',cat:'security',sub:'protection',req:'optional',level:'int'},
+{name:'Trivy',cat:'security',sub:'container',req:'optional',level:'int',price:'free-oss'},
+{name:'Socket',cat:'security',sub:'supply-chain',req:'optional',level:'int',price:'free-tier'},
+{name:'Caido',cat:'security',sub:'proxy',req:'optional',level:'pro',price:'free-tier'},
 // ── Game & 3D (6) ──
 {name:'Unity',cat:'front',sub:'game-engine',req:'optional',level:'game'},
 {name:'Unreal Engine',cat:'front',sub:'game-engine',req:'optional',level:'game'},
