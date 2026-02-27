@@ -44,7 +44,7 @@ function createTestEnv() {
   }
 
   // Eval in this context
-  const fn = new Function(code + '\nreturn {S, I18N, REQ_LABELS, PRICE_LABELS, reqLabel, priceLabel, GT, TECH_DB, PRESETS:PR, save, load, _lsGet, _lsSet};');
+  const fn = new Function(code + '\nreturn {S, I18N, REQ_LABELS, PRICE_LABELS, reqLabel, priceLabel, GT, TECH_DB, PRESETS:PR, save, load, _lsGet, _lsSet, skillTier, SKILL_TIERS};');
   return fn();
 }
 

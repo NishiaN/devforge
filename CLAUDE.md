@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 # DevForge v9.6.0
 
-**AI Development OS** — 69 JS modules in `src/` → single `devforge-v9.html` (~3615KB / 5000KB limit).
+**AI Development OS** — 71 JS modules in `src/` → single `devforge-v9.html` (~3757KB / 5000KB limit).
 Generates **182+ files** across **26 pillars** from a wizard-driven Q&A session.
 
 ## Documentation Map
@@ -18,13 +18,14 @@ Generates **182+ files** across **26 pillars** from a wizard-driven Q&A session.
 ## Build & Test
 
 ```bash
-node build.js                          # → devforge-v9.html (~3615KB, limit 5000KB)
+node build.js                          # → devforge-v9.html (~3679KB, limit 5000KB)
 node build.js --no-minify              # debug (skip minification)
 node build.js --report                 # build + size breakdown by module
-npm test                               # 5558 tests, all passing
+npm test                               # 6048 tests, all passing
 node --test test/gen-quality.test.js   # single test file
 npm run dev                            # build + live-server :3000
 npm run check                          # syntax-check extracted JS
+node scripts/compat-check-all-presets.js  # verify 0 ERROR / 0 WARN across all preset combos
 
 # Workflow: Edit src/ → npm test → node build.js → npm run open → commit
 ```
@@ -44,7 +45,7 @@ Never reorder without checking dependencies.
 | Category | Purpose |
 |----------|---------|
 | `core/` | State (`S`), i18n (`t()`), keyboard events, wizard tour, app init |
-| `data/` | 113 standard presets (`PR`/`_mp()`), 472 field presets (`PR_FIELD`/`_fpd()`), questions, techdb (378 entries), compat-rules (182 rules), gen-templates (bilingual GT dict), helpdata |
+| `data/` | 133 standard presets (`PR`/`_mp()`), 492 field presets (`PR_FIELD`/`_fpd()`), questions, techdb (378 entries), compat-rules (182 rules), gen-templates (bilingual GT dict), helpdata |
 | `generators/` | `index.js` orchestrator + `p1`–`p26` pillars + `docs.js` + `common.js` |
 | `ui/` | wizard, render, presets, preview, sidebar, editor, diff, export, explorer, dashboard, launcher, templates, qbar, cmdpalette, help, voice |
 | `styles/all.css` | Theme (dark/light), responsive; CSS custom properties only |
@@ -146,7 +147,13 @@ saas_variant: _mp({
 
 Then: add any new entities to `ENTITY_COLUMNS` in `common.js`; update count in `test/presets.test.js`.
 
-**Field preset** (`_fpd()` helper): `field` must match one of the 34 `FIELD_CAT_DEFAULTS` keys (20 original + 14 in `presets-ext.js`). Update `test/field-presets.test.js` count assertion.
+**Field preset** (`_fpd()` helper): `field` must match one of the 44 `FIELD_CAT_DEFAULTS` keys (20 original + 14 in `presets-ext.js` + 10 in `presets-ext2.js`). Update `test/field-presets.test.js` count assertion.
+
+**Field preset `meta` constraints** — validated by `test/field-presets.test.js`; invalid values cause test failures:
+- `meta.revenue`: must be one of `subscription | btob | subsidy | freemium | usage | license | ec`
+- `meta.onDevice`: must be one of `cloud | edge_cloud | on_device | on_premise` (NOT `'hybrid'`)
+
+After adding presets, run `node scripts/compat-check-all-presets.js` to confirm 0 ERROR / 0 WARN.
 
 ## Adding New Pillars
 
@@ -173,11 +180,11 @@ After adding: update header comment totals, add tests to `test/compat.test.js`, 
 | Data/coverage | data-coverage, presets, field-presets | ~116 |
 | Security/compat | security, compat (+7 synergy) | ~136 |
 | Pillars (P14-P20+skill) | ops, future, deviq, promptgenome, promptops, enterprise, cicd, skill-level | ~184 |
-| Gen quality | gen-quality (Suites 1-236, ~4718 tests) | ~4718 |
+| Gen quality | gen-quality (Suites 1-266, ~5078 tests) | ~5078 |
 | Preset matching | phase-n (N-1〜N-9 + G-1〜G-7, 68 tests) | ~68 |
 | Other | i18n, state, techdb, utils, complexity, mermaid, help-hints | ~46 |
 
-**Total: 5558 tests** | Test harness pattern: `eval(fs.readFileSync(...))` to load src files; global `S` mock at top.
+**Total: 6048 tests** | Test harness pattern: `eval(fs.readFileSync(...))` to load src files; global `S` mock at top.
 
 **When adding domains**, update: `test/data-coverage.test.js` (4 arrays), `test/gen-coherence.test.js`, `test/ops.test.js`.
 

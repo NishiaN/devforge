@@ -7,8 +7,8 @@ const PR = h.sandbox.PR;
 describe('Presets', () => {
   const keys = Object.keys(PR);
 
-  it('has 123 presets (including custom)', () => {
-    assert.equal(keys.length, 123);
+  it('has 133 presets (including custom)', () => {
+    assert.equal(keys.length, 133);
   });
 
   it('every preset has bilingual name', () => {
@@ -37,6 +37,37 @@ describe('Presets', () => {
       const p = PR[key];
       assert.ok(p.purpose, `${key} missing purpose`);
       assert.ok(p.purposeEn, `${key} missing purposeEn`);
+    }
+  });
+
+  it('every preset has deploy and payment fields', () => {
+    for (const key of keys) {
+      if (key === 'custom') continue;
+      const p = PR[key];
+      assert.ok('deploy' in p, `${key} missing deploy field`);
+      assert.ok('payment' in p, `${key} missing payment field`);
+    }
+  });
+
+  it('backend field is always defined (not undefined)', () => {
+    for (const key of keys) {
+      if (key === 'custom') continue;
+      const p = PR[key];
+      assert.notEqual(p.backend, undefined, `${key} backend is undefined`);
+    }
+  });
+
+  it('entity names are unique within each preset (no case-insensitive collisions)', () => {
+    for (const key of keys) {
+      if (key === 'custom') continue;
+      const p = PR[key];
+      if (!p.entities) continue;
+      const entityList = p.entities.split(',').map(e => e.trim().toLowerCase()).filter(Boolean);
+      const seen = new Set();
+      for (const e of entityList) {
+        assert.ok(!seen.has(e), `${key} has duplicate entity: ${e}`);
+        seen.add(e);
+      }
     }
   });
 });

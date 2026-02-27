@@ -64,6 +64,16 @@ const HELP_DATA={
       ]}
   },
   success:{
+    expertHintsFn:function(a,_ja){
+      var hints=[];
+      var domain=typeof detectDomain==='function'?detectDomain(a.purpose||''):'';
+      if(domain==='ec'||domain==='marketplace')hints.push({icon:'🛒',name:_ja?'EC指標':'EC KPIs',hint:_ja?'EC/マーケット → GMV・転換率・カート放棄率・AOV(平均注文額)が最重要KPI。':'EC/Marketplace → GMV, conversion rate, cart abandonment, and AOV (avg order value) are top KPIs.',_ctx:true});
+      if(domain==='saas')hints.push({icon:'📈',name:_ja?'SaaS指標':'SaaS KPIs',hint:_ja?'SaaS → MRR/ARR・チャーン率・NPS・LTV/CAC比が業界標準KPI。月次チャーン<2%を目標に。':'SaaS → MRR/ARR, churn rate, NPS, and LTV/CAC ratio are industry standard KPIs. Target monthly churn <2%.',_ctx:true});
+      if(domain==='education')hints.push({icon:'📚',name:_ja?'教育指標':'Education KPIs',hint:_ja?'教育系 → コース完了率・DAU/MAU比(エンゲージメント)・受講者NPS・合格率が最重要。':'Education → Course completion rate, DAU/MAU ratio, learner NPS, and pass rate are most critical.',_ctx:true});
+      if(domain==='health')hints.push({icon:'🏥',name:_ja?'ヘルス指標':'Health KPIs',hint:_ja?'ヘルス系 → 継続利用率・セッション頻度・健康改善スコアを定量化。規制コンプライアンスも指標に。':'Health → Retention rate, session frequency, and health improvement score. Include compliance metrics.',_ctx:true});
+      if(domain==='social'||domain==='content')hints.push({icon:'👥',name:_ja?'コミュニティ指標':'Community KPIs',hint:_ja?'SNS/コンテンツ系 → MAU・投稿頻度・いいね/シェア率・リテンションが核心指標。':'Social/Content → MAU, post frequency, like/share rate, and retention are core metrics.',_ctx:true});
+      return hints;
+    },
     ja:{title:'成功指標（KPI）',desc:'プロジェクト種別に応じた指標を自動提案。📈成長 💰収益 🔄継続 😊満足 ⚡技術 の10カテゴリから3〜5つ選択。',example:'例: EC→"GMV月100万" / 教育→"完了率80%+"'},
     en:{title:'Success Metrics (KPI)',desc:'Auto-suggested by project type. Pick 3-5 from 10 categories: 📈Growth 💰Revenue 🔄Retention 😊Satisfaction ⚡Perf.',example:'e.g. EC→"$10K GMV" / Education→"80%+ completion"'}
   },
@@ -93,6 +103,17 @@ const HELP_DATA={
       ]}
   },
   deadline:{
+    expertHintsFn:function(a,_ja){
+      var hints=[];
+      var be=a.backend||'';
+      var feats=a.mvp_features||'';
+      var pay=a.payment||'';
+      if(/Firebase|Supabase/i.test(be))hints.push({icon:'🚀',name:_ja?'BaaS高速化':'BaaS Speed',hint:_ja?'BaaS選択済み → 認証・DB・デプロイが即日設定可能。目標を1〜2週間短縮できます。':'BaaS chosen → Auth, DB, and deploy configurable in a day. You can aim 1-2 weeks shorter.',_ctx:true});
+      if(pay&&!/none|なし/i.test(pay))hints.push({icon:'💳',name:_ja?'決済+2週間':'Payment +2w',hint:_ja?'決済実装 → Stripeセキュリティ要件・Webhookテスト・本番審査で+2〜3週間を見込んでください。':'Payment included → Stripe security requirements, webhook testing, and production review add 2-3 weeks.',_ctx:true});
+      var featCount=(feats.match(/,/g)||[]).length+1;
+      if(featCount>=5)hints.push({icon:'⚠️',name:_ja?'機能多め':'Many Features',hint:_ja?'MVP機能が5つ以上あります。3ヶ月以上か、機能を半分に絞ることを検討してください。':'5+ MVP features detected. Consider 3+ months or cutting features in half.',_ctx:true});
+      return hints;
+    },
     ja:{title:'リリース目標',desc:'2週間=超MVP、1ヶ月=基本MVP、3ヶ月=本格版。',example:'TIP: 2週間でまずデプロイ、その後改善サイクルが最速'},
     en:{title:'Release Target',desc:'2 weeks = ultra MVP, 1 month = basic MVP, 3 months = full version.',example:'TIP: Deploy in 2 weeks first, then iterate fast'}
   },
@@ -127,6 +148,18 @@ const HELP_DATA={
     en:{title:'Backend/DB',desc:'BaaS (Firebase/Supabase) needs no server code — fastest path.',example:'Static→None, Auth needed→Firebase/Supabase'}
   },
   ai_tools:{
+    expertHintsFn:function(a,_ja){
+      var hints=[];
+      var lv=typeof S!=='undefined'?S.skillLv:2;
+      var be=a.backend||'';
+      var domain=typeof detectDomain==='function'?detectDomain(a.purpose||''):'';
+      if(lv<=1)hints.push({icon:'🔰',name:_ja?'初心者向け':'For Beginners',hint:_ja?'Lv初心者 → Cursor無料プランから始めましょう。Chat機能だけでも作業効率が3倍になります。':'Lv Beginner → Start with Cursor free plan. Chat alone triples productivity.',_ctx:true});
+      else if(lv>=2&&lv<=4)hints.push({icon:'⚡',name:_ja?'中級向け':'For Intermediate',hint:_ja?'Lv中級 → Cursor AgentとClaude Codeの組み合わせが2026年最強コンボ。複数ファイルの自動修正で生産性10倍。':'Lv Intermediate → Cursor Agent + Claude Code is the 2026 power combo. Multi-file auto-fix = 10x productivity.',_ctx:true});
+      else hints.push({icon:'👑',name:_ja?'上級向け':'For Advanced',hint:_ja?'Lv上級 → Claude Code + Sub-Agentsでタスクを並列化。JulesやOpenHandsでバックグラウンド非同期開発も可能。':'Lv Advanced → Claude Code + Sub-Agents for parallel tasks. Jules or OpenHands for async background dev.',_ctx:true});
+      if(domain==='ai')hints.push({icon:'🤖',name:_ja?'AIアプリ向け':'AI App',hint:_ja?'AIアプリ開発 → OpenRouterで複数LLMを統一APIで試し、最適モデルを選定してから実装するのが定石。':'AI app dev → Use OpenRouter to test multiple LLMs with a unified API, then pick the best model before implementing.',_ctx:true});
+      if(/Python|FastAPI/i.test(be))hints.push({icon:'🐍',name:_ja?'Python向け':'Python Fit',hint:_ja?'Pythonバックエンド → AiderはPythonコードベースとの親和性が高く、CLIから直接ファイル編集が可能です。':'Python backend → Aider has strong Python codebase affinity and can edit files directly from CLI.',_ctx:true});
+      return hints;
+    },
     ja:{title:'AIツール',desc:'Cursor/Antigravity=AI IDE、Claude Code/Aider=CLI、Copilot/Tabnine=補完拡張、OpenRouter=API統合ハブ。',example:'推奨: Cursor or Antigravity + Claude Code'},
     en:{title:'AI Tools',desc:'Cursor/Antigravity=AI IDE, Claude Code/Aider=CLI, Copilot/Tabnine=completion ext, OpenRouter=API hub.',example:'Recommended: Cursor or Antigravity + Claude Code'}
   },
@@ -145,6 +178,17 @@ const HELP_DATA={
     en:{title:'Deployment',desc:'Vercel/Netlify free tier is enough to start.',example:'Next.js→Vercel, Static→Netlify'}
   },
   dev_methods:{
+    expertHintsFn:function(a,_ja){
+      var hints=[];
+      var lv=typeof S!=='undefined'?S.skillLv:2;
+      var domain=typeof detectDomain==='function'?detectDomain(a.purpose||''):'';
+      var be=a.backend||'';
+      if(lv<=1)hints.push({icon:'🔰',name:_ja?'初心者向け':'For Beginners',hint:_ja?'初心者 → まずTDDだけに集中。テストを先に書く習慣を1ヶ月続けると、後の全開発が安定します。':'Beginner → Focus only on TDD first. One month of test-first habit makes all future development stable.',_ctx:true});
+      if(domain==='fintech'||domain==='health'||domain==='legal')hints.push({icon:'⚖️',name:_ja?'コンプライアンス系':'Compliance Domain',hint:_ja?'規制業種 → DDDが特に有効。ドメインエキスパートとユビキタス言語を統一することがシステム品質の鍵です。':'Regulated industry → DDD is especially effective. Unified ubiquitous language with domain experts is key to quality.',_ctx:true});
+      if(domain==='saas'||domain==='marketplace')hints.push({icon:'📦',name:_ja?'SaaS/EC向け':'SaaS/EC Fit',hint:_ja?'SaaS/EC系 → BDD(Cucumber/Gherkin)でビジネスシナリオをテスト化すると、PM・デザイナーとの合意形成が簡単になります。':'SaaS/EC → BDD (Cucumber/Gherkin) as tests lets PMs and designers align on requirements easily.',_ctx:true});
+      if(/NestJS|Spring|Django/i.test(be))hints.push({icon:'🏗️',name:_ja?'フルスタック向け':'Full-Stack Fit',hint:_ja?'フルスタックフレームワーク → DDDのレイヤードアーキテクチャ(Domain/Application/Infrastructure)との相性が最高です。':'Full-stack framework → DDD layered architecture (Domain/Application/Infrastructure) is a perfect match.',_ctx:true});
+      return hints;
+    },
     ja:{title:'駆動開発手法',desc:'TDD=テスト先行、BDD=振る舞い設計、DDD=ドメインモデル中心。',example:'推奨: TDD（必須）+ BDD'},
     en:{title:'Dev Methodologies',desc:'TDD=test-first, BDD=behavior-driven, DDD=domain-model-centric.',example:'Recommended: TDD (essential) + BDD'}
   },
@@ -179,14 +223,47 @@ const HELP_DATA={
       ]}
   },
   org_model:{
+    expertHintsFn:function(a,_ja){
+      var hints=[];
+      var domain=typeof detectDomain==='function'?detectDomain(a.purpose||''):'';
+      var be=a.backend||'';
+      if(domain==='saas'||domain==='marketplace')hints.push({icon:'🏢',name:_ja?'マルチテナント推奨':'Multi-tenant Rec',hint:_ja?'SaaS/マーケット → マルチテナント(RLS)を強く推奨。Org・Team・Member階層でRLSポリシーが自動生成されます。':'SaaS/Marketplace → Multi-tenant (RLS) strongly recommended. Org/Team/Member hierarchy auto-generates RLS policies.',_ctx:true});
+      if(domain==='hr'||domain==='gov'||domain==='education')hints.push({icon:'🏛️',name:_ja?'承認フロー重要':'Approval Flow',hint:_ja?'HR/行政/教育 → 階層型承認フロー(部署→課長→部長)が必要なケースが多い。マルチテナント+RBAC設計を推奨。':'HR/Gov/Education → Hierarchical approval flows (dept→manager→director) are common. Multi-tenant + RBAC design recommended.',_ctx:true});
+      if(/Supabase/i.test(be))hints.push({icon:'💚',name:_ja?'Supabase RLS':'Supabase RLS',hint:_ja?'Supabase選択済み → マルチテナントを選ぶとRow Level Security(RLS)ポリシーが自動生成されます。セキュリティが劇的に向上します。':'Supabase chosen → Multi-tenant selection auto-generates Row Level Security (RLS) policies. Dramatically improves security.',_ctx:true});
+      if(domain==='analytics'||domain==='devtool')hints.push({icon:'👤',name:_ja?'個人向け':'Personal Tool',hint:_ja?'分析/開発ツール系 → 個人ユーザー向けが多い。シングルテナント+パーソナルワークスペースが最もシンプルな構成です。':'Analytics/DevTool → Usually personal users. Single-tenant + personal workspace is the simplest setup.',_ctx:true});
+      return hints;
+    },
     ja:{title:'組織・テナント構造',desc:'マルチテナント選択でRLSポリシー・組織ERモデル・承認フローが自動生成されます。',example:'SaaS: マルチテナント(RLS) / 社内ツール: シングルテナント'},
     en:{title:'Organization & Tenant Structure',desc:'Multi-tenant selection auto-generates RLS policies, org ER model, and approval workflows.',example:'SaaS: Multi-tenant (RLS) / Internal tool: Single-tenant'}
   },
   future_features:{
+    expertHintsFn:function(a,_ja){
+      var hints=[];
+      var scope=a.scope_out||'';
+      var pay=a.payment||'';
+      var mob=a.mobile||'';
+      var ai=a.ai_auto||'';
+      if(/モバイル|mobile/i.test(scope)||(mob&&/none|なし/i.test(mob)))hints.push({icon:'📱',name:_ja?'モバイルv2':'Mobile Phase 2',hint:_ja?'モバイルをスコープ外にした場合 → PWAは最初からWebに組み込めます。ネイティブアプリはDAU 1000+で検討が標準的です。':'Mobile out-of-scope → PWA can be added to web immediately. Native app is typically reconsidered at DAU 1000+.',_ctx:true});
+      if(pay&&/none|なし/i.test(pay))hints.push({icon:'💳',name:_ja?'課金v2':'Billing Phase 2',hint:_ja?'決済なしMVP → PMF確認後にStripe Billingを追加するのが定番。最初の10ユーザーは無料で獲得するのが理想。':'No payment MVP → Adding Stripe Billing after PMF validation is standard. Getting first 10 users free is ideal.',_ctx:true});
+      if(ai&&/none|なし/i.test(ai))hints.push({icon:'🤖',name:_ja?'AI機能v2':'AI Features Phase 2',hint:_ja?'AI機能なしMVP → コアUXを固めた後にAIを追加するのが正しい順序。AIはUXの補助、主役ではありません。':'No AI MVP → Adding AI after core UX is validated is the right order. AI enhances UX, it should not be the lead.',_ctx:true});
+      return hints;
+    },
     ja:{title:'将来追加機能',desc:'Phase 2, 3として計画。MVPリリース後に再評価。',example:'課金→PMF確認後、モバイル→DAU 1000+時'},
     en:{title:'Future Features',desc:'Plan as Phase 2-3. Re-evaluate after MVP launch.',example:'Billing→after PMF, Mobile→at DAU 1000+'}
   },
   data_entities:{
+    expertHintsFn:function(a,_ja){
+      var hints=[];
+      var be=a.backend||'';
+      var domain=typeof detectDomain==='function'?detectDomain(a.purpose||''):'';
+      if(/Firebase/i.test(be))hints.push({icon:'🔥',name:_ja?'Firestore設計':'Firestore Design',hint:_ja?'Firebase選択済み → テーブルはFirestoreコレクションになります。ネストは2階層まで推奨（users/{uid}/posts/{id}）。':'Firebase chosen → Tables become Firestore collections. Nesting recommended up to 2 levels (users/{uid}/posts/{id}).',_ctx:true});
+      var entities=a.data_entities||'';
+      var entityCount=(entities.match(/,/g)||[]).length+1;
+      if(entityCount>=7)hints.push({icon:'📑',name:_ja?'エンティティ多め':'Many Entities',hint:_ja?'7つ以上のエンティティがあります。ページネーション設計(docs/84のPaginationセクション)を今から計画してください。':'7+ entities detected. Plan pagination design (docs/84 Pagination section) from the start.',_ctx:true});
+      if(domain==='fintech'||domain==='health'||domain==='legal')hints.push({icon:'📋',name:_ja?'監査ログ必須':'AuditLog Required',hint:_ja?'規制業種 → AuditLogエンティティを必ず追加。誰が・いつ・何を変更したかの記録が法的要件になる場合があります。':'Regulated industry → Always add AuditLog entity. Records of who/when/what changed may be a legal requirement.',_ctx:true});
+      if(domain==='marketplace'||domain==='saas')hints.push({icon:'🏢',name:_ja?'マルチテナント必須':'Multi-tenant Entities',hint:_ja?'SaaS/マーケット → Organization/TeamエンティティをUser・Resourceの間に必ず追加。RLSの基盤になります。':'SaaS/Marketplace → Always add Organization/Team entity between User and Resources. This is the foundation of RLS.',_ctx:true});
+      return hints;
+    },
     ja:{title:'データテーブル',desc:'英語・単数形・PascalCaseが標準。',example:'User, Post, Comment（Usersではなく単数形）'},
     en:{title:'Data Tables',desc:'English, singular, PascalCase is standard.',example:'User, Post, Comment (singular, not Users)'}
   },
@@ -278,14 +355,45 @@ const HELP_DATA={
     en:{title:'ORM',desc:'ORM enables type-safe database operations. Not needed with BaaS.',example:'Recommended: Prisma (type-safe, Studio included)'}
   },
   dev_env_type:{
+    expertHintsFn:function(a,_ja){
+      var hints=[];
+      var be=a.backend||'';
+      if(/Firebase/i.test(be))hints.push({icon:'🔥',name:_ja?'Firebase Emulator':'Firebase Emulator',hint:_ja?'Firebase選択済み → Firebase Local Emulator Suiteでオフライン開発が可能。Auth/Firestore/Functionsを全てローカルでシミュレーション。':'Firebase chosen → Firebase Local Emulator Suite enables offline development. Auth/Firestore/Functions all simulated locally.',_ctx:true});
+      if(/Supabase/i.test(be))hints.push({icon:'💚',name:_ja?'Supabase Local':'Supabase Local',hint:_ja?'Supabase選択済み → supabase start(Docker)でローカルDBを起動。本番と同一スキーマでオフライン開発が可能です。':'Supabase chosen → supabase start (Docker) boots local DB. Develop offline with production-identical schema.',_ctx:true});
+      if(!/Firebase|Supabase/i.test(be)&&be&&!/none|なし/i.test(be))hints.push({icon:'🐳',name:_ja?'Dockerローカル':'Docker Local',hint:_ja?'カスタムバックエンド → .devcontainer設定が自動生成されます。docker compose upで全サービスが起動します。':'Custom backend → .devcontainer config will be auto-generated. docker compose up starts all services.',_ctx:true});
+      return hints;
+    },
     ja:{title:'開発環境タイプ',desc:'BaaS利用時の開発ワークフローを選択します。',example:'ローカル=オフライン開発可能、クラウド=本番相当データ、ハイブリッド=両方'},
     en:{title:'Dev Environment Type',desc:'Choose development workflow when using BaaS.',example:'Local=offline OK, Cloud=production data, Hybrid=both'}
   },
   learning_path:{
+    expertHintsFn:function(a,_ja){
+      var hints=[];
+      var fe=a.frontend||'';
+      var be=a.backend||'';
+      var mob=a.mobile||'';
+      var ai=a.ai_auto||'';
+      var lv=typeof S!=='undefined'?S.skillLv:2;
+      if(/Firebase|Supabase/i.test(be)&&lv<=2)hints.push({icon:'🚀',name:_ja?'JAMstack推奨':'JAMstack Rec',hint:_ja?'BaaS+低スキル → JAMstackパス(HTML/CSS→React→BaaS統合)が最も挫折しない学習ルートです。':'BaaS + low skill → JAMstack path (HTML/CSS→React→BaaS integration) has the lowest dropout rate.',_ctx:true});
+      if(/Python|FastAPI/i.test(be)&&!mob)hints.push({icon:'🐍',name:_ja?'Python Webパス':'Python Web Path',hint:_ja?'Pythonバックエンド → Python基礎→FastAPI→SQLAlchemy→PostgreSQLの順が最短習得ルートです。':'Python backend → Python basics→FastAPI→SQLAlchemy→PostgreSQL is the shortest mastery path.',_ctx:true});
+      if(mob&&!/none|なし/i.test(mob))hints.push({icon:'📱',name:_ja?'モバイルパス':'Mobile Path',hint:_ja?'モバイル開発 → React(Web)をマスターしてからReact Native/Expoに移行するのが最もコストパフォーマンス高い学習順です。':'Mobile dev → Master React (Web) first, then move to React Native/Expo for best learning ROI.',_ctx:true});
+      if(ai&&!/none|なし/i.test(ai)&&lv>=4)hints.push({icon:'🤖',name:_ja?'AI Agentパス':'AI Agent Path',hint:_ja?'AI自律開発+上級 → LangChain/LangGraph→マルチエージェント設計→Temporal(ワークフロー)の順で体系的に習得可能。':'AI autonomous + advanced → LangChain/LangGraph→multi-agent design→Temporal (workflow) for systematic mastery.',_ctx:true});
+      return hints;
+    },
     ja:{title:'学習パターン',desc:'技術スタックの組み合わせに基づいた学習パスを選択。',example:'初心者→BaaS、中級→PERN、上級→AI Orchestrator'},
     en:{title:'Learning Path',desc:'Choose a learning path based on your tech stack combination.',example:'Beginner→BaaS, Intermediate→PERN, Advanced→AI Orchestrator'}
   },
   skill_level:{
+    expertHintsFn:function(a,_ja){
+      var hints=[];
+      var be=a.backend||'';
+      var feats=a.mvp_features||'';
+      var lv=typeof S!=='undefined'?S.skillLv:2;
+      if(/NestJS|Spring|Go|Rust|Django/i.test(be)&&lv<=1)hints.push({icon:'⚠️',name:_ja?'スタック要注意':'Stack Warning',hint:_ja?'選択したバックエンドは中級以上向けです。Intermediate以上を選択するか、Firebase/Supabaseに変更することを検討してください。':'Your chosen backend is intermediate+. Consider selecting Intermediate+ or switching to Firebase/Supabase.',_ctx:true});
+      if(/認証|auth/i.test(feats)&&/決済|payment|stripe/i.test(feats)&&lv<=1)hints.push({icon:'📈',name:_ja?'機能複雑度高め':'Complex Features',hint:_ja?'認証+決済をMVPに含む場合はIntermediate以上を推奨。Beginnerだとデバッグに多くの時間がかかります。':'Auth + payment in MVP: Intermediate+ recommended. Beginner level will spend much time debugging.',_ctx:true});
+      if(lv>=5)hints.push({icon:'👑',name:_ja?'上級解放済み':'Pro Unlocked',hint:_ja?'上級(Lv5+)選択済み → 全オプションが解放されています。マルチエージェント・カスタムORM・複雑なアーキテクチャを選択可能です。':'Advanced (Lv5+) chosen → All options unlocked. Multi-agent, custom ORM, and complex architectures available.',_ctx:true});
+      return hints;
+    },
     ja:{title:'スキルレベル',desc:'選択により質問の選択肢が動的に変化します。Beginner=基本選択肢のみ、Intermediate=中級選択肢追加、Pro=全選択肢解放。途中変更は非推奨。',example:'迷ったらIntermediate。後から選択肢が足りなければProに変更可能'},
     en:{title:'Skill Level',desc:'Your choice dynamically adjusts available options. Beginner=basic options only, Intermediate=adds mid-level options, Pro=unlocks all. Avoid changing mid-project.',example:'If unsure, pick Intermediate. You can switch to Pro later if needed'}
   },
@@ -331,6 +439,17 @@ const HELP_DATA={
     en:{title:'AI Autonomous Level',desc:'Vibe Coding=rough instructions to AI, Agentic Dev=Cursor Agent/Cline multi-file editing, Multi-Agent=parallel agent work, Full Autonomous=Claude Code Subagents/Jules async development.',example:'Beginner→Vibe Coding, Intermediate→Agentic Dev, Advanced→Multi-Agent+'}
   },
   learning_goal:{
+    expertHintsFn:function(a,_ja){
+      var hints=[];
+      var deadline=a.deadline||'';
+      var fe=a.frontend||'';
+      var be=a.backend||'';
+      var lv=typeof S!=='undefined'?S.skillLv:2;
+      if(/2週間|2 week/i.test(deadline))hints.push({icon:'⚡',name:_ja?'短期集中':'Short Sprint',hint:_ja?'2週間のリリース目標 → 学習より実装に集中してください。目標達成後に「なぜ動いたか」を学習するのが最速です。':'2-week release target → Focus on implementation over learning. Study "why it worked" after shipping is fastest.',_ctx:true});
+      if(/Next\.js|NextJS/i.test(fe)&&/Supabase/i.test(be)&&lv<=3)hints.push({icon:'🎯',name:_ja?'推奨学習順':'Recommended Order',hint:_ja?'Next.js+Supabase → RSC(Server Components)→Auth→RLS→Edge Functions の順に習得すると体系的です。':'Next.js + Supabase → Learn RSC (Server Components)→Auth→RLS→Edge Functions in this order for systematic mastery.',_ctx:true});
+      if(lv<=1)hints.push({icon:'🌱',name:_ja?'初心者の心得':'Beginner Mindset',hint:_ja?'初心者向け → 「完璧なコード」より「動くコード」を優先。リファクタリングは2周目で。まずデプロイまで走り切ることが最重要です。':'Beginner tip → Prioritize "working code" over "perfect code". Refactor in round 2. Shipping first is most important.',_ctx:true});
+      return hints;
+    },
     ja:{title:'学習目標',desc:'このプロジェクトで習得したい技術領域を選択。選択に応じてロードマップの学習パスが最適化されます。',example:'「フルスタック開発」を選ぶとフロントからデプロイまで網羅的なパスが生成されます'},
     en:{title:'Learning Goal',desc:'Select the technical area you want to master through this project. The roadmap learning path optimizes based on your selection.',example:'Choosing "Full-Stack Dev" generates a comprehensive path from frontend to deployment'}
   },
