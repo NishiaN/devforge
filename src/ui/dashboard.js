@@ -1,4 +1,100 @@
 /* ── Pillar ⑥ Context Dashboard (Enhanced) ── */
+// ── Compat Issue Resolution Helpers ──
+var COMPAT_TEMPLATE_MAP={
+  'dom-sec':'security','dom-health':'security','dom-cybersec':'security',
+  'fe':'arch','be':'arch','mob':'arch','api':'arch','sem':'arch',
+  'orm':'db_intelligence','db':'db_intelligence','supa':'db_intelligence',
+  'dep':'cicd','cicd':'cicd',
+  'ai':'ai_model_guide',
+  'sec':'security','auth':'security',
+  'dom':'risk',
+  'perf':'perf',
+  'obs':'ops',
+  'iot':'industry','fleet':'industry','lims':'industry','pos':'industry',
+  'method':'methodology',
+  'pay':'implement',
+  'a11y':'a11y'
+};
+function _compatTemplateKey(id){
+  var parts=(id||'').split('-');
+  for(var n=Math.min(parts.length,2);n>=1;n--){
+    var k=parts.slice(0,n).join('-');
+    if(COMPAT_TEMPLATE_MAP[k])return COMPAT_TEMPLATE_MAP[k];
+  }
+  return 'review';
+}
+function openLauncherForCompat(key){
+  if(typeof showAILauncher==='function')showAILauncher();
+  if(typeof selectLaunchTemplate==='function'&&window._launchPT)selectLaunchTemplate(key);
+}
+var _COMPAT_GUIDANCE={
+  security:{
+    ja:'認証・認可・暗号化の3点を確認してください。①認証: JWT/セッション検証を全エンドポイントに適用。②認可: RBACまたはRLSでユーザー権限を制限。③暗号化: 機密データはat-rest(AES-256)とin-transit(TLS 1.2+)を設定。MFA必須化も検討。',
+    en:'Check authentication, authorization, and encryption. ①Auth: apply JWT/session validation to all endpoints. ②Authz: restrict user permissions with RBAC or RLS. ③Encryption: configure at-rest (AES-256) and in-transit (TLS 1.2+) for sensitive data. Also consider requiring MFA.'
+  },
+  arch:{
+    ja:'フロントエンド/バックエンド間の整合性を確認してください。APIスキーマ(OpenAPI)を定義し、型安全な通信(tRPC/GraphQL/Zod)を導入。依存方向が一方向になるよう設計し、循環参照を排除してください。',
+    en:'Verify frontend/backend alignment. Define API schema (OpenAPI) and introduce type-safe communication (tRPC/GraphQL/Zod). Design unidirectional dependencies and eliminate circular references.'
+  },
+  db_intelligence:{
+    ja:'DBスキーマとORMの整合性を確認してください。①マイグレーション: Prisma Migrate / Drizzle Kitで履歴管理。②インデックス: 主要な検索フィールドにインデックスを付与。③N+1問題: eager loadingまたはデータローダーを使用。',
+    en:'Verify DB schema and ORM alignment. ①Migrations: manage history with Prisma Migrate / Drizzle Kit. ②Indexes: add indexes to primary search fields. ③N+1: use eager loading or data loaders.'
+  },
+  cicd:{
+    ja:'CI/CDパイプラインでデプロイ整合性を確認してください。①ビルド: テスト→Lint→ビルドの順序を固定。②環境変数: シークレットをCIの環境変数に移動。③デプロイ: ブルーグリーンまたはカナリアリリースを検討。',
+    en:'Verify deployment alignment in CI/CD pipeline. ①Build: fix order as test→lint→build. ②Env vars: move secrets to CI environment variables. ③Deploy: consider blue-green or canary release.'
+  },
+  ai_model_guide:{
+    ja:'AI/LLM連携の整合性を確認してください。①モデル選定: タスク複雑度に合ったモデルを選択。②レート制限: 指数バックオフとキュー管理を実装。③コスト: プロンプト最適化でトークン消費を削減。',
+    en:'Verify AI/LLM integration alignment. ①Model selection: choose model by task complexity. ②Rate limiting: implement exponential backoff and queue management. ③Cost: optimize prompts to reduce token consumption.'
+  },
+  risk:{
+    ja:'ドメイン固有のリスクに対応してください。①規制確認: 対象ドメインの法規制(GDPR/個人情報保護法/業法)をチェック。②データ分類: 機密レベルに応じたアクセス制御を設計。③インシデント対応: 対応手順とエスカレーションパスを文書化。',
+    en:'Address domain-specific risks. ①Regulation check: verify applicable regulations (GDPR/Privacy Act/industry law). ②Data classification: design access controls by sensitivity level. ③Incident response: document response procedures and escalation paths.'
+  },
+  perf:{
+    ja:'パフォーマンスの問題に対処してください。①キャッシュ: Redis/CDNで繰り返しクエリをキャッシュ。②ページネーション: 大量リスト取得はcursor-basedページネーション。③クエリ最適化: EXPLAINでスロークエリを特定しインデックスを追加。',
+    en:'Address performance issues. ①Cache: use Redis/CDN to cache repeated queries. ②Pagination: use cursor-based pagination for large list retrieval. ③Query optimization: identify slow queries with EXPLAIN and add indexes.'
+  },
+  ops:{
+    ja:'オブザーバビリティを強化してください。①ログ: 構造化ログ(JSON)で検索可能にする。②メトリクス: Prometheus/CloudWatchでシステム指標を収集。③トレース: OpenTelemetryで分散トレーシングを実装。',
+    en:'Enhance observability. ①Logs: use structured logging (JSON) for searchability. ②Metrics: collect system metrics with Prometheus/CloudWatch. ③Traces: implement distributed tracing with OpenTelemetry.'
+  },
+  industry:{
+    ja:'業界固有の要件を満たしてください。①コンプライアンス: 業界標準規格(ISO/IEC、HIPAA等)の要件を確認。②監査ログ: 全操作を追跡可能な形で記録。③データ保持: 業界規制に従ったデータ保管期間を設定。',
+    en:'Meet industry-specific requirements. ①Compliance: verify requirements for industry standards (ISO/IEC, HIPAA, etc.). ②Audit logs: record all operations in a traceable format. ③Data retention: configure retention periods per industry regulations.'
+  },
+  methodology:{
+    ja:'開発手法の整合性を確認してください。①チームワークフロー: 選択した手法(Scrum/Kanban/SDD)をチーム全体で統一。②ドキュメント: ADR(Architecture Decision Record)で重要な決定を記録。③レトロスペクティブ: 定期的な振り返りで手法を改善。',
+    en:'Verify development methodology alignment. ①Team workflow: unify the chosen methodology (Scrum/Kanban/SDD) across the team. ②Documentation: record key decisions with ADR (Architecture Decision Record). ③Retrospectives: improve methodology through regular retrospectives.'
+  },
+  implement:{
+    ja:'実装の整合性を確認してください。①決済フロー: Stripe Webhookで非同期イベントを処理。②エラーハンドリング: 決済失敗時のリトライとユーザー通知を実装。③テスト: Stripeテストモードで全フローを検証。',
+    en:'Verify implementation alignment. ①Payment flow: handle async events with Stripe Webhooks. ②Error handling: implement retry and user notification on payment failure. ③Testing: verify all flows using Stripe test mode.'
+  },
+  a11y:{
+    ja:'アクセシビリティ要件を満たしてください。①WCAG 2.1 AA準拠: 色コントラスト比4.5:1以上、キーボード操作、スクリーンリーダー対応。②フォーカス管理: モーダル開閉時のフォーカストラップ実装。③ARIA: 動的コンテンツにaria-live属性を付与。',
+    en:'Meet accessibility requirements. ①WCAG 2.1 AA: color contrast ≥4.5:1, keyboard navigation, screen reader support. ②Focus management: implement focus trap on modal open/close. ③ARIA: add aria-live attributes to dynamic content.'
+  },
+  review:{
+    ja:'コードレビューで問題を検証してください。①根本原因: 表面的な修正ではなく設計レベルの解決策を検討。②テスト: 修正後に単体テスト・統合テストを実施。③ドキュメント: 変更内容をADRまたはCHANGELOGに記録。',
+    en:'Verify issues in code review. ①Root cause: consider design-level solutions rather than surface fixes. ②Testing: run unit and integration tests after fixes. ③Documentation: record changes in ADR or CHANGELOG.'
+  }
+};
+function _compatVerify(c,_ja){
+  var parts=[];
+  if(c.fix&&typeof c.fix==='object'&&c.fix.f){
+    parts.push(_ja?'`'+c.fix.f+'`を`'+c.fix.s+'`に設定後、動作確認':'After setting `'+c.fix.f+'` to `'+c.fix.s+'`, verify behavior');
+  }
+  if(c.chain&&c.chain.length){
+    var flds=c.chain.map(function(ch){return '`'+ch.f+'`';}).join(', ');
+    parts.push(_ja?flds+'の連鎖修正後、全フローを再テスト':flds+' chain fix applied — re-test full flow');
+  }
+  if(!parts.length){
+    parts.push(_ja?'修正後、compat-check-all-presetsで0エラーを確認':'After fix, verify 0 errors with compat-check-all-presets');
+  }
+  return parts.join(' / ');
+}
 function showDashboard(){
   pushView({pillar:5,type:'dashboard',file:null});
   const body=$('prevBody');
@@ -168,16 +264,16 @@ function showDashboard(){
     h+=`<div class="compat-ok">✅ ${_ja?`スタック相性・意味的整合ともに問題なし（${COMPAT_RULES.length}ルール検証済）`:`No issues found (${COMPAT_RULES.length} rules verified)`}</div>`;
   } else {
     h+=`<div class="compat-summary"><span class="compat-s-ok">✅ ${_ja?'問題なし':'OK'}: ${COMPAT_RULES.length-compat.length}</span>`;
-    const fixWarns=compat.filter(c=>c.fix&&c.level==='warn');
+    const fixWarns=compat.filter(c=>c.fix&&typeof c.fix==='object'&&c.fix.f&&c.level==='warn');
     if(warns.length)h+=`<span class="compat-s-warn">⚠️ ${_ja?'注意':'Warn'}: ${warns.length}</span>`;
     if(fixWarns.length>1)h+=`<button class="btn btn-xs btn-s compat-fixlv" onclick="fixAllCompat('warn')">🔧 ${fixWarns.length}</button>`;
-    const fixErrs=compat.filter(c=>c.fix&&c.level==='error');
+    const fixErrs=compat.filter(c=>c.fix&&typeof c.fix==='object'&&c.fix.f&&c.level==='error');
     if(errs.length)h+=`<span class="compat-s-err">❌ ${_ja?'要修正':'Fix'}: ${errs.length}</span>`;
     if(fixErrs.length>1)h+=`<button class="btn btn-xs btn-s compat-fixlv" onclick="fixAllCompat('error')">🔧 ${fixErrs.length}</button>`;
-    const fixInfos=compat.filter(c=>c.fix&&c.level==='info');
+    const fixInfos=compat.filter(c=>c.fix&&typeof c.fix==='object'&&c.fix.f&&c.level==='info');
     if(infos.length)h+=`<span class="compat-s-info">ℹ️ ${_ja?'参考':'Info'}: ${infos.length}</span>`;
     if(fixInfos.length>1)h+=`<button class="btn btn-xs btn-s compat-fixlv" onclick="fixAllCompat('info')">🔧 ${fixInfos.length}</button>`;
-    const fixable=compat.filter(c=>c.fix);
+    const fixable=compat.filter(c=>c.fix&&typeof c.fix==='object'&&c.fix.f);
     if(fixable.length>1)h+=`<button class="btn btn-xs btn-p compat-fixall" onclick="fixAllCompat()">🔧 ${_ja?'一括修正 ('+fixable.length+'件)':'Fix All ('+fixable.length+')'}</button>`;
     h+=`<button class="btn btn-xs btn-p compat-report-btn" onclick="exportCompatReport()">📋 ${_ja?'レポート出力':'Export Report'}</button>`;
     h+=`<button class="btn btn-xs btn-s" onclick="printCompatReport()">🖨️ ${_ja?'印刷':'Print'}</button>`;
@@ -186,10 +282,19 @@ function showDashboard(){
       const icon=c.level==='error'?'❌':c.level==='warn'?'⚠️':'ℹ️';
       const cls=c.level==='error'?'compat-error':c.level==='warn'?'compat-warn':'compat-info';
       const pair=c.pair.map(p=>{const n={frontend:'FE',backend:'BE',database:'DB',deploy:'Deploy',mobile:'Mobile',orm:'ORM',ai_auto:'AI',skill_level:'Skill',payment:'Pay',dev_methods:'DevMethod',auth:'Auth',scope_out:'Scope',data_entities:'Entity',purpose:'Purpose',mvp_features:'MVP'};return n[p]||p;}).join(' ↔ ');
+      const _tplKey=_compatTemplateKey(c.id);
+      const _guidance=(_COMPAT_GUIDANCE[_tplKey]||_COMPAT_GUIDANCE['review'])[_ja?'ja':'en'];
+      const _verify=_compatVerify(c,_ja);
       h+=`<div class="${cls}"><span class="compat-pair">${pair}</span><span class="compat-msg">${esc(c.msg)}</span>`;
-      if(c.fix)h+=`<button class="btn btn-xs btn-s compat-fix" onclick="S.answers['${escAttr(c.fix.f)}']='${escAttr(c.fix.s)}';save();showDashboard();">→ ${esc(c.fix.s)}</button>`;
+      if(c.fix&&typeof c.fix==='object'&&c.fix.f)h+=`<button class="btn btn-xs btn-s compat-fix" onclick="S.answers['${escAttr(c.fix.f)}']='${escAttr(c.fix.s)}';save();showDashboard();">→ ${esc(c.fix.s)}</button>`;
       if(c.chain)h+='<button class="btn btn-xs btn-s compat-fix" onclick="_applyCascadingFix(this,\''+escAttr(JSON.stringify(c.chain))+'\')">'+(_ja?'🔧 連鎖修正':'🔧 Chain Fix')+'</button>';
-      if(c.why)h+='<details class="compat-why"><summary class="compat-why-toggle">'+(_ja?'▶ なぜ？':'▶ Why?')+'</summary><div class="compat-why-body">'+esc(c.why)+'</div></details>';
+      if(c.pair&&c.pair.length){c.pair.forEach(function(fid){const loc=findQStep(fid);if(loc){const lbl=_ja?(loc.q.label||fid):(loc.q.labelEn||loc.q.label||fid);h+='<button class="btn btn-xs btn-g compat-jump" onclick="goToQ('+loc.phase+','+loc.step+')">📍 '+esc(lbl)+'</button>';}});}
+      h+='<button class="btn btn-xs btn-p compat-ai-btn" onclick="openLauncherForCompat(\''+escAttr(_tplKey)+'\')">🚀 '+(_ja?'AI対策':'AI Assist')+'</button>';
+      h+='<details class="compat-why"><summary class="compat-why-toggle">'+(_ja?'▶ 詳細 & 対策':'▶ Details & Fix')+'</summary><div class="compat-why-body">';
+      if(c.why)h+='<p><strong>💡 '+(_ja?'原因':'Cause')+':</strong> '+esc(c.why)+'</p>';
+      h+='<p><strong>✅ '+(_ja?'対策':'Fix Guide')+':</strong> '+esc(_guidance)+'</p>';
+      h+='<p><strong>🔍 '+(_ja?'検証':'Verify')+':</strong> '+esc(_verify)+'</p>';
+      h+='</div></details>';
       h+='</div>';
     });
   }
@@ -440,7 +545,7 @@ function filterTechDB(){
 function fixAllCompat(level){
   const _ja=S.lang==='ja';
   const compat=checkCompat(S.answers);
-  const fixable=compat.filter(c=>c.fix&&(!level||c.level===level));
+  const fixable=compat.filter(c=>c.fix&&typeof c.fix==='object'&&c.fix.f&&(!level||c.level===level));
   if(fixable.length===0)return;
   fixable.forEach(c=>{S.answers[c.fix.f]=c.fix.s;});
   save();
@@ -475,7 +580,7 @@ function exportCompatReport(){
       md+='- **'+(_ja?'対象フィールド':'Fields')+'**: '+c.pair.join(', ')+'\n';
       md+='- **'+(_ja?'メッセージ':'Message')+'**: '+c.msg+'\n';
       if(c.why)md+='- **'+(_ja?'理由':'Why')+'**: '+c.why+'\n';
-      if(c.fix)md+='- **'+(_ja?'修正案':'Fix')+'**: `'+c.fix.f+'` → `'+c.fix.s+'`\n';
+      if(c.fix&&typeof c.fix==='object'&&c.fix.f)md+='- **'+(_ja?'修正案':'Fix')+'**: `'+c.fix.f+'` → `'+c.fix.s+'`\n';
       if(c.chain&&c.chain.length){
         md+='- **'+(_ja?'連鎖修正':'Chain Fix')+'**:\n';
         c.chain.forEach(ch=>{md+='  - `'+ch.f+'` → `'+ch.s+'`\n';});
@@ -537,7 +642,7 @@ function printCompatReport(){
       body+='<div class="issue-title">'+icon+' '+(i+1)+'. ['+esc(c.id)+'] '+esc(c.msg)+'</div>';
       body+='<div class="issue-row"><strong>'+(_ja?'対象フィールド':'Fields')+':</strong> '+esc(c.pair.join(', '))+'</div>';
       if(c.why)body+='<div class="issue-row"><strong>'+(_ja?'理由':'Why')+':</strong> '+esc(c.why)+'</div>';
-      if(c.fix)body+='<div class="issue-row"><strong>'+(_ja?'修正案':'Fix')+':</strong> <code>'+esc(c.fix.f)+'</code> → <code>'+esc(c.fix.s)+'</code></div>';
+      if(c.fix&&typeof c.fix==='object'&&c.fix.f)body+='<div class="issue-row"><strong>'+(_ja?'修正案':'Fix')+':</strong> <code>'+esc(c.fix.f)+'</code> → <code>'+esc(c.fix.s)+'</code></div>';
       if(c.chain&&c.chain.length){
         body+='<div class="issue-row"><strong>'+(_ja?'連鎖修正':'Chain')+':</strong> ';
         body+=c.chain.map(ch=>'<code>'+esc(ch.f)+'</code> → <code>'+esc(ch.s)+'</code>').join(', ');

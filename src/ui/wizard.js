@@ -175,7 +175,7 @@ function showCompatAlert(answers){
     const cls=iss.level==='error'?'compat-error':iss.level==='warn'?'compat-warn':'compat-info';
     let h=`<div class="${cls}"><span class="compat-icon">${icon}</span><span class="compat-msg">${esc(iss.msg)}</span>`;
     if(iss.chain){h+=`<button class="btn btn-xs btn-s compat-fix" onclick="_applyCascadingFix(this,'${escAttr(JSON.stringify(iss.chain))}')">${_ja?'一括修正':'Batch Fix'}</button>`;}
-    else if(iss.fix){h+=`<button class="btn btn-xs btn-s compat-fix" onclick="_applyCompatFix(this,'${escAttr(iss.fix.f)}','${escAttr(iss.fix.s)}')">${_ja?'修正':'Fix'}</button>`;}
+    else if(iss.fix&&typeof iss.fix==='object'&&iss.fix.f){h+=`<button class="btn btn-xs btn-s compat-fix" onclick="_applyCompatFix(this,'${escAttr(iss.fix.f)}','${escAttr(iss.fix.s)}')">${_ja?'修正':'Fix'}</button>`;}
     if(iss.pair&&iss.pair.length){iss.pair.forEach(function(fid){const loc=findQStep(fid);if(loc){const lbl=_ja?(loc.q.label||fid):(loc.q.labelEn||loc.q.label||fid);h+='<button class="btn btn-xs btn-g compat-jump" onclick="goToQ('+loc.phase+','+loc.step+')">📍 '+esc(lbl)+'</button>';}});}
     if(iss.level!=='error'){h+='<button class="btn btn-xs btn-g compat-ack" onclick="ackCompat(this,\''+escAttr(iss.id)+'\')">'+(  _ja?'✓ 承知':'✓ OK')+'</button>';}
     if(iss.why)h+=`<details class="compat-why"><summary class="compat-why-toggle">${_ja?'▶ なぜ？':'▶ Why?'}</summary><div class="compat-why-body">${esc(iss.why)}</div></details>`;
@@ -200,7 +200,7 @@ function showCompatSummary(issues){
     const cls=iss.level==='warn'?'compat-warn':'compat-info';
     h+='<div class="'+cls+' compat-sum-item"><span class="compat-icon">'+icon+'</span><span class="compat-msg">'+esc(iss.msg)+'</span>';
     if(iss.chain){h+='<button class="btn btn-xs btn-s compat-fix" onclick="_applyCascadingFix(this,\''+escAttr(JSON.stringify(iss.chain))+'\')">'+(  _ja?'一括修正':'Batch Fix')+'</button>';}
-    else if(iss.fix){h+='<button class="btn btn-xs btn-s compat-fix" onclick="_applyCompatFix(this,\''+escAttr(iss.fix.f)+'\',\''+escAttr(iss.fix.s)+'\')">'+(  _ja?'修正':'Fix')+'</button>';}
+    else if(iss.fix&&typeof iss.fix==='object'&&iss.fix.f){h+='<button class="btn btn-xs btn-s compat-fix" onclick="_applyCompatFix(this,\''+escAttr(iss.fix.f)+'\',\''+escAttr(iss.fix.s)+'\')">'+(  _ja?'修正':'Fix')+'</button>';}
     if(iss.pair&&iss.pair.length){iss.pair.forEach(function(fid){const loc=findQStep(fid);if(loc){const lbl=_ja?(loc.q.label||fid):(loc.q.labelEn||loc.q.label||fid);h+='<button class="btn btn-xs btn-g compat-jump" onclick="goToQ('+loc.phase+','+loc.step+')">📍 '+esc(lbl)+'</button>';}});}
     h+='<button class="btn btn-xs btn-g compat-ack" onclick="ackCompat(this,\''+escAttr(iss.id)+'\')">'+(  _ja?'✓ 承知':'✓ OK')+'</button>';
     if(iss.why)h+='<details class="compat-why"><summary class="compat-why-toggle">'+(_ja?'▶ なぜ？':'▶ Why?')+'</summary><div class="compat-why-body">'+esc(iss.why)+'</div></details>';
