@@ -1,6 +1,6 @@
 # DevForge v9
 
-**AI Development OS** — Answer questions, auto-generate 189+ project files across 27 pillars.
+**AI Development OS** — Answer questions, auto-generate 196+ project files across 27 pillars.
 
 > Single-file web app. No install. Open `devforge-v9.html` in any browser and start building.
 
@@ -10,11 +10,11 @@
 
 DevForge turns a wizard-driven Q&A session into a complete project specification suite:
 
-- **189+ files** — specs, AI rules, devcontainer, CI/CD, roadmap, docs, and more
+- **196+ files** — specs, AI rules, devcontainer, CI/CD, roadmap, docs, and more
 - **27 pillars** — from SDD and security to FinOps and observability
 - **143 standard presets** + **502 field-specific presets** (biotech, robotics, genomics, …)
 - **395-entry TechDB** — stack comparison with recommendations
-- **50 AI prompt templates** — one-click feed to Claude, Cursor, Copilot, Windsurf, etc.
+- **53 AI prompt templates** — one-click feed to Claude, Cursor, Copilot, Windsurf, etc.
 - **Bilingual** — Japanese / English UI and generated output
 
 ---
@@ -39,7 +39,7 @@ DevForge turns a wizard-driven Q&A session into a complete project specification
 | ⑤ | Parallel Explorer | 7-stack comparison + recommendation ranking |
 | ⑥ | Dashboard | Context visualization + TechDB browser |
 | ⑦ | Roadmap | Interactive learning path (layer-based progress) |
-| ⑧ | AI Launcher | 50 prompt templates + token estimation |
+| ⑧ | AI Launcher | 53 prompt templates + token estimation |
 | ⑨ | Design System | Design tokens + sequence diagrams |
 | ⑩ | Reverse Engineering | Goal-driven reverse planning |
 | ⑪ | Impl Guide | Domain-specific patterns + AI runbook |
@@ -84,7 +84,7 @@ npm run dev
 node scripts/compat-check-all-presets.js
 ```
 
-**Build limit:** 5000KB (current: ~3990KB)
+**Build limit:** 5000KB (current: ~4012KB)
 
 ### Architecture
 
@@ -109,14 +109,14 @@ See [`CLAUDE.md`](CLAUDE.md) for the full contributor guide.
 | | |
 |--|--|
 | Modules | 73 JS |
-| Build size | ~3990KB |
+| Build size | ~4012KB |
 | Tests | 6122 |
 | Standard presets | 143 |
 | Field presets | 502 |
 | TechDB entries | 395 |
 | Compat rules | 202 |
-| Launcher templates | 50 |
-| Generated files | 189+ |
+| Launcher templates | 53 |
+| Generated files | 196+ |
 | Pillars | 27 |
 
 ---
