@@ -27,8 +27,8 @@ function _tourUpdateSpotlight(el){
   setTimeout(()=>{
     const r=el.getBoundingClientRect();
     const pad=6;
-    _tourSpotlight.style.top=(r.top-pad+window.scrollY)+'px';
-    _tourSpotlight.style.left=(r.left-pad+window.scrollX)+'px';
+    _tourSpotlight.style.top=(r.top-pad)+'px';
+    _tourSpotlight.style.left=(r.left-pad)+'px';
     _tourSpotlight.style.width=(r.width+pad*2)+'px';
     _tourSpotlight.style.height=(r.height+pad*2)+'px';
     _tourSpotlight.style.display='block';
@@ -37,6 +37,14 @@ function _tourUpdateSpotlight(el){
 
 function _tourClearSpotlight(){
   if(_tourSpotlight){_tourSpotlight.style.display='none';}
+}
+
+function _tourOnResize(){
+  var steps=_getTourSteps();
+  if(tourStep>=0&&tourStep<steps.length&&steps[tourStep].target){
+    var el=$(steps[tourStep].target);
+    if(el)_tourUpdateSpotlight(el);
+  }
 }
 
 function startTour(){
@@ -50,6 +58,7 @@ function startTour(){
     _tourSpotlight.style.display='none';
     document.body.appendChild(_tourSpotlight);
   }
+  window.addEventListener('resize',_tourOnResize);
   tourStep=0;showTourStep();
 }
 
@@ -77,6 +86,7 @@ function showTourStep(){
 }
 
 function closeTour(){
+  window.removeEventListener('resize',_tourOnResize);
   tourStep=-1;
   $('tourContainer').innerHTML='';
   _tourClearSpotlight();

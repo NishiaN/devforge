@@ -194,10 +194,6 @@ function idbRestoreBackup(ts,cb){
 function showIDBRestoreUI(){
   const _ja=S.lang==='ja';
   idbListBackups(backups=>{
-    if(!backups.length){
-      toast(_ja?'バックアップが見つかりません':'No backups found',{type:'warn'});
-      return;
-    }
     const overlay=document.createElement('div');
     overlay.className='modal-overlay';
     overlay.id='idbRestoreModal';
@@ -208,6 +204,11 @@ function showIDBRestoreUI(){
     html+='<h3 class="modal-title">💾 '+(_ja?'バックアップから復元':'Restore from Backup')+'</h3>';
     html+='<button class="modal-close" onclick="document.getElementById(\'idbRestoreModal\').remove()" aria-label="Close">✕</button>';
     html+='</div><div class="modal-body">';
+    if(!backups.length){
+      html+='<p style="text-align:center;color:var(--text-muted);padding:20px 0">'+
+        (_ja?'💾 まだバックアップがありません。<br>操作を続けると60秒後に自動保存されます。':
+             '💾 No backups yet.<br>Backups are auto-saved 60 seconds after your last action.')+'</p>';
+    }else{
     html+='<p style="margin:0 0 12px;color:var(--text-muted);font-size:13px">'+(_ja?'保存されたバックアップを選択して復元します。現在の作業内容は上書きされます。':'Select a saved backup to restore. Your current work will be overwritten.')+'</p>';
     backups.forEach((b,i)=>{
       html+='<div style="display:flex;align-items:center;gap:8px;padding:8px;border:1px solid var(--border);border-radius:6px;margin-bottom:6px">';
@@ -217,6 +218,7 @@ function showIDBRestoreUI(){
       html+='<button class="btn btn-sm btn-primary" onclick="idbDoRestore('+b.ts+')">'+(_ja?'復元':'Restore')+'</button>';
       html+='</div>';
     });
+    }
     html+='</div></div>';
     overlay.innerHTML=html;
     overlay.onclick=e=>{if(e.target===overlay)overlay.remove();};
@@ -298,4 +300,5 @@ function load(){
     }
   }catch(e){_lsRm(KEY);}
 }
+if(typeof window!=='undefined'&&window.addEventListener)window.addEventListener('beforeunload',function(){idbBackupImmediate();});
 let voiceRec=null,voiceBtn=null,_confirmCb=null;
