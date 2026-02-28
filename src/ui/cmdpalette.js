@@ -104,6 +104,8 @@ function updateCmdResults(query,_ja,input,resultsDiv){
     {cat:'app',icon:'🌐',label:_ja?'言語切替':'Toggle Language',labelEn:'Toggle Language',kb:'Ctrl+L',action:()=>toggleLang()},
     {cat:'app',icon:'📁',label:_ja?'プロジェクト管理':'Project Manager',labelEn:'Project Manager',kb:'Ctrl+M',action:()=>showPM()},
     {cat:'app',icon:'🗑️',label:_ja?'履歴クリア':'Clear History',labelEn:'Clear History',action:()=>clearFileHistory()},
+    {cat:'app',icon:'🔁',label:_ja?'バックアップから復元':'Restore from Backup',labelEn:'Restore from Backup',action:()=>showIDBRestoreUI()},
+    ...(S.answersSnapshot?[{cat:'app',icon:'↩️',label:_ja?'プリセット適用を取り消し':'Undo Preset Application',labelEn:'Undo Preset Application',action:()=>undoPreset()}]:[]),
     // Create group
     ...(hasFiles?[
       {cat:'create',icon:'🔄',label:_ja?'再生成':'Regenerate',labelEn:'Regenerate',action:()=>doGenerate()},

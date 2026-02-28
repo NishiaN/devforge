@@ -1,4 +1,83 @@
 /* ═══ PRESET & START ═══ */
+/* ── Preset Recommendation Wizard (3 questions → top 3 presets) ── */
+function showPresetRecommend(){
+  const _ja=S.lang==='ja';
+  var answers={};
+  var step=0;
+  var questions=_ja?[
+    {q:'何を作りたいですか？',opts:[{l:'SaaS / 管理システム',k:'saas'},{l:'EC / マーケットプレイス',k:'ec'},{l:'社内ツール / 業務効率化',k:'internal'},{l:'教育・学習 / コンテンツ',k:'education'}]},
+    {q:'チーム規模は？',opts:[{l:'👤 個人 (solo)',k:'solo'},{l:'🏠 2-5名',k:'small'},{l:'🏢 6-20名',k:'medium'},{l:'🏭 20名以上',k:'large'}]},
+    {q:'技術経験は？',opts:[{l:'🌱 ほぼない (初心者)',k:'beginner'},{l:'📗 1-2年 (初中級)',k:'junior'},{l:'⚡ 2-4年 (中級)',k:'mid'},{l:'🔥 4年以上 (上級)',k:'senior'}]}
+  ]:[
+    {q:'What are you building?',opts:[{l:'SaaS / Admin System',k:'saas'},{l:'E-Commerce / Marketplace',k:'ec'},{l:'Internal Tool / Ops',k:'internal'},{l:'Education / Content',k:'education'}]},
+    {q:'Team size?',opts:[{l:'👤 Solo',k:'solo'},{l:'🏠 2-5 people',k:'small'},{l:'🏢 6-20 people',k:'medium'},{l:'🏭 20+ people',k:'large'}]},
+    {q:'Your experience?',opts:[{l:'🌱 New to dev',k:'beginner'},{l:'📗 1-2 years',k:'junior'},{l:'⚡ 2-4 years',k:'mid'},{l:'🔥 4+ years',k:'senior'}]}
+  ];
+
+  function scorePreset(p,ans){
+    var score=0;
+    var purpose=(p.purpose||'').toLowerCase();
+    var k=ans.type||'saas';
+    if(k==='saas'&&/管理|dashboard|crm|erp|saas|analytics|admin/i.test(purpose))score+=3;
+    else if(k==='ec'&&/ec|shop|market|commerce|booking|予約|販売/i.test(purpose))score+=3;
+    else if(k==='internal'&&/社内|internal|workflow|勤怠|hr|erp|管理|tool/i.test(purpose))score+=3;
+    else if(k==='education'&&/学習|教育|educat|learning|course|lms|チュータ/i.test(purpose))score+=3;
+    var scale=ans.size||'small';
+    if(scale==='solo'&&/シンプル|simple|portfolio|blog|personal/i.test(purpose))score+=1;
+    if(scale==='medium'&&/チーム|team|collab/i.test(purpose))score+=1;
+    var exp=ans.exp||'mid';
+    if(exp==='beginner'&&/シンプル|simple|firebase|supabase|baas/i.test(purpose))score+=1;
+    if(exp==='senior'&&/enterprise|マイクロ|microservice|grpc|事業者/i.test(purpose))score+=1;
+    return score;
+  }
+
+  function renderStep(){
+    var modal=$('presetRecommendModal');if(!modal)return;
+    var body=modal.querySelector('.modal-body');
+    if(step>=questions.length){
+      // Show results
+      var all=Object.keys(PR||{}).map(k=>{var p=PR[k];return{key:k,p,score:scorePreset(p,answers)};}).sort((a,b)=>b.score-a.score).slice(0,3);
+      var html='<div style="margin-bottom:12px;font-weight:600;color:var(--accent)">'+(_ja?'🎯 おすすめプリセット TOP 3':'🎯 Top 3 Recommended Presets')+'</div>';
+      all.forEach(function(item,i){
+        var p=item.p;var n=_ja?p.name:p.nameEn||p.name;
+        html+='<div style="display:flex;align-items:start;gap:12px;padding:10px;border:1px solid var(--border);border-radius:8px;margin-bottom:8px;cursor:pointer;background:var(--bg-3)"';
+        html+=' onclick="pickPreset(\''+item.key+'\');document.getElementById(\'presetRecommendModal\').remove()">';
+        html+='<span style="font-size:24px">'+(p.icon||'📦')+'</span>';
+        html+='<div><div style="font-weight:600">'+esc(n)+'</div>';
+        html+='<div style="font-size:12px;color:var(--text-muted);margin-top:2px">'+esc((_ja?p.purpose:p.purposeEn||p.purpose||'').slice(0,80))+'</div></div>';
+        html+='</div>';
+      });
+      body.innerHTML=html;
+      return;
+    }
+    var q=questions[step];
+    var html='<div style="margin-bottom:12px"><span style="font-size:12px;color:var(--text-3)">'+(step+1)+'/'+questions.length+'</span><div style="font-weight:600;margin-top:4px">'+esc(q.q)+'</div></div>';
+    q.opts.forEach(function(opt){
+      html+='<button class="btn btn-g" style="width:100%;text-align:left;margin-bottom:6px;padding:10px 12px"';
+      html+=' onclick="window._prRecAns(\''+opt.k+'\')">'+esc(opt.l)+'</button>';
+    });
+    body.innerHTML=html;
+  }
+
+  window._prRecAns=function(k){
+    if(step===0)answers.type=k;
+    else if(step===1)answers.size=k;
+    else answers.exp=k;
+    step++;renderStep();
+  };
+
+  var overlay=document.createElement('div');
+  overlay.className='modal-overlay';overlay.id='presetRecommendModal';
+  overlay.setAttribute('role','dialog');overlay.setAttribute('aria-modal','true');
+  overlay.setAttribute('aria-label',_ja?'プリセット提案':'Preset Recommendation');
+  overlay.innerHTML='<div class="modal-box" style="max-width:400px"><div class="modal-header">';
+  overlay.innerHTML+='<h3 class="modal-title">🎯 '+(_ja?'3問でプリセットを提案':'Find Your Preset in 3 Questions')+'</h3>';
+  overlay.innerHTML+='<button class="modal-close" onclick="document.getElementById(\'presetRecommendModal\').remove()" aria-label="Close">✕</button>';
+  overlay.innerHTML+='</div><div class="modal-body"></div></div>';
+  overlay.onclick=function(e){if(e.target===overlay)overlay.remove();};
+  document.body.appendChild(overlay);
+  renderStep();
+}
 function _updateSkillLabel(lv){
   const _ja=S.lang==='ja';
   var n=SKILL_NAMES[lv]||SKILL_NAMES[3];
@@ -311,6 +390,12 @@ function initPresets(){
     if(_presetMode==='field')_renderFieldChips();else _renderPresetChips();suggestIn.focus();
   };
   suggestWrap.appendChild(suggestClear);suggestWrap.appendChild(suggestBox);
+  // Recommend button
+  var recBtn=document.createElement('button');recBtn.className='btn btn-g btn-sm';
+  recBtn.style.cssText='margin-top:6px;width:100%;font-size:12px';
+  recBtn.textContent=_ja?'🎯 3問でおすすめを探す':'🎯 Find My Preset (3 Qs)';
+  recBtn.onclick=showPresetRecommend;
+  suggestWrap.appendChild(recBtn);
   row.appendChild(suggestWrap);
   var _suggestTimer=null;
   suggestIn.addEventListener('input',function(){
@@ -477,11 +562,24 @@ function pickPreset(k,e){
   save();
 }
 
+function undoPreset(){
+  const _ja=S.lang==='ja';
+  if(!S.answersSnapshot){toast(_ja?'元に戻すスナップショットがありません':'No snapshot to restore');return;}
+  S.answers=Object.assign({},S.answersSnapshot);
+  S.answersSnapshot=null;
+  save();
+  if(typeof showQ==='function')showQ();
+  toast(_ja?'↩️ プリセット適用前の回答に戻しました':'↩️ Restored pre-preset answers',{type:'info'});
+}
 function start(){
   const _ja=S.lang==='ja';
   const name=sanitizeName($('nameIn').value);
   if(!name){toast(_ja?'プロジェクト名を入力してください':'Please enter a project name');return;}
   S.projectName=name;S.phase=1;S.step=0;S.skipped=[];
+  // Save answer snapshot before applying preset (for undo)
+  if(S.preset&&S.preset!=='custom'){
+    S.answersSnapshot=JSON.parse(JSON.stringify(S.answers));
+  }
   // Lv0 forced preset: absolute beginners get SaaS preset auto-selected
   if(S.skillLv===0&&S.preset==='custom'){
     S.preset='saas';
@@ -583,7 +681,7 @@ function start(){
     initPills();updProgress();
     if(S.skillLv<=1){addMsg('bot',_ja?'🌱 質問に答えるだけで設計書が自動生成されます。難しく考えなくてOK！スキップもできます。':'🌱 Just answer the questions and design docs will be auto-generated. Don\'t overthink it — you can skip any question!');}
     showQ();
-    if(presetName&&preFilledCount>0){toast(_ja?'✅ "'+presetName+'" ['+_fieldScale+'] を適用 — '+preFilledCount+'件の回答を自動入力':'✅ Applied "'+presetName+'" [Scale: '+_fieldScale+'] — '+preFilledCount+' answers pre-filled');}
+    if(presetName&&preFilledCount>0){toast(_ja?'✅ "'+presetName+'" ['+_fieldScale+'] を適用 — '+preFilledCount+'件の回答を自動入力':'✅ Applied "'+presetName+'" [Scale: '+_fieldScale+'] — '+preFilledCount+' answers pre-filled',{duration:4000,action:undoPreset,actionLabel:_ja?'↩️ Undo':'↩️ Undo'});}
     return;
   }
   const p=PR[S.preset];
@@ -637,7 +735,7 @@ function start(){
   if(S.skillLv<=1){addMsg('bot',_ja?'🌱 質問に答えるだけで設計書が自動生成されます。難しく考えなくてOK！スキップもできます。':'🌱 Just answer the questions and design docs will be auto-generated. Don\'t overthink it — you can skip any question!');}
   showQ();
   if(presetName&&preFilledCount>0){
-    toast(_ja?'✅ "'+presetName+'" を適用 — '+preFilledCount+'件の回答を自動入力':'✅ Applied "'+presetName+'" — '+preFilledCount+' answers pre-filled');
+    toast(_ja?'✅ "'+presetName+'" を適用 — '+preFilledCount+'件の回答を自動入力':'✅ Applied "'+presetName+'" — '+preFilledCount+' answers pre-filled',{duration:4000,action:undoPreset,actionLabel:_ja?'↩️ Undo':'↩️ Undo'});
   }
 }
 

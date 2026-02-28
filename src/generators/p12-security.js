@@ -367,12 +367,31 @@ function _lvl(lv){
   return m[lv]||lv;
 }
 
-// Helper: OWASP section
-function _owaspSection(item,backend){
+// Helper: RFC 2119 compliance level for individual security checks
+// Returns 'MUST' | 'SHOULD' | 'MAY' based on check text + domain context
+function _rfcLvl(checkEn,checkJa,domain){
+  const t=((checkEn||'')+' '+(checkJa||'')).toLowerCase();
+  const hiSec=/fintech|health|lims|clinical|medical|pharma|insurance|gov/i.test(domain||'');
+  // MAY: optional/advanced practices evaluated first to prevent false upgrades
+  if(/slsa|sbom|scorecard|distroless|service mesh|k8s network|private subnet/i.test(t)) return 'MAY';
+  // Hard MUST: critical auth/access-control/data-integrity controls (always required)
+  if(/\brls\b|auth.?check|認証チェック|\bidor\b|owner.?verif|owner検証|default.?deny|デフォルト拒否|default.?credent|デフォルトクレデンシャル変更|deny.?private.?ip|プライベートip拒否|security.?patch|セキュリティパッチ|lockfile|ロックファイル必須|log.all.auth|全認証.*記録|tamper|改ざん防止|incident.?response|インシデント対応手順|webhook.*sign|sign.*webhook/i.test(t)) return 'MUST';
+  // Domain-boosted MUST: standard SHOULD items promoted to MUST in high-security domains
+  if(hiSec&&/mfa|encry|暗号化|audit|監査|baa締結|phi/i.test(t)) return 'MUST';
+  return 'SHOULD';
+}
+
+// Helper: OWASP section (with RFC 2119 level badges)
+function _owaspSection(item,backend,domain){
   const G=S.genLang==='ja';
   let out='### '+item.id+': '+(G?item.ja:item.en)+'\n\n';
   const checks=G?item.checks_ja:item.checks_en;
-  checks.forEach(c=>out+=_chk(c,c));
+  const checksEn=item.checks_en;
+  checks.forEach((c,i)=>{
+    const lv=_rfcLvl(checksEn[i]||c,c,domain);
+    const badge=lv==='MUST'?'**MUST**':lv==='MAY'?'**MAY**':'**SHOULD**';
+    out+='- [ ] '+badge+' '+c+'\n';
+  });
   out+='\n';
 
   // Stack-specific checks
@@ -402,6 +421,7 @@ function _compSection(comp,G){
     out+='#### '+r.id+': '+r.title+'\n';
     out+='- **'+(G?'説明':'Description')+':** '+r.desc+'\n';
     out+='- **'+(G?'実装':'Implementation')+':** '+r.impl+'\n';
+    out+='- **RFC 2119:** '+(G?'`MUST` — コンプライアンス要件は実装必須です':'`MUST` — Compliance requirements are mandatory')+'\n';
     out+=_chk(r.title,r.title);
     out+='\n';
   });
@@ -439,9 +459,11 @@ function genPillar12_SecurityIntelligence(a,pn){
   // OWASP Section
   doc43+='## OWASP Top 10 (2025) Adaptive Audit\n\n';
   doc43+=(G?'このセクションではOWASP Top 10 2025の各項目について、プロジェクトの技術スタックに適応したチェックリストを提供します。\n\n':'This section provides stack-adaptive checklists for each OWASP Top 10 2025 category.\n\n');
+  doc43+=(G?'> **RFC 2119 準拠レベル凡例**: **MUST** = 実装必須 | **SHOULD** = 強く推奨（正当な理由なく省略禁止）| **MAY** = 任意（プロジェクト状況に応じて採用）\n\n':
+    '> **RFC 2119 Compliance Levels**: **MUST** = Required | **SHOULD** = Strongly recommended (omit only with good reason) | **MAY** = Optional (adopt as appropriate)\n\n');
 
   OWASP_2025.forEach(item=>{
-    doc43+=_owaspSection(item,backend);
+    doc43+=_owaspSection(item,backend,domain);
   });
 
   // Security Headers

@@ -505,6 +505,17 @@ function buildFileTree(){
   files.push({folder:true,name:'.github/workflows'});
   files.push({name:'  ci.yml',path:'.github/workflows/ci.yml'});
   files.push({name:'───────────',path:''});
+  if(S.files['api/openapi.yaml']){
+    files.push({folder:true,name:'api'});
+    files.push({name:'  openapi.yaml',path:'api/openapi.yaml'});
+    files.push({name:'───────────',path:''});
+  }
+  if(S.files['db/seed.json']||S.files['db/seed.sql']){
+    files.push({folder:true,name:'db'});
+    if(S.files['db/seed.json'])files.push({name:'  seed.json',path:'db/seed.json'});
+    if(S.files['db/seed.sql'])files.push({name:'  seed.sql',path:'db/seed.sql'});
+    files.push({name:'───────────',path:''});
+  }
   if(S.files['scaffolding/SETUP.md']){
     files.push({folder:true,name:'scaffolding'});
     files.push({name:'  SETUP.md',path:'scaffolding/SETUP.md'});

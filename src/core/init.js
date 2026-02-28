@@ -169,6 +169,9 @@ function applyLang(){
     h0.style.display=S.skillLv===0?'block':'none';
     h0.textContent=ja?'難しい知識は不要。質問に答えるだけ':'No technical knowledge needed. Just answer questions.';
   }
+  // Hero flow labels (bilingual)
+  var _hf={hfLbl1:ja?'25問に回答':'Answer 25 Qs',hfLbl2:ja?'209+ファイル生成':'209+ Files Generated',hfLbl3:ja?'AIツールに投入':'Feed to AI Tools',hfLbl4:ja?'開発スタート':'Start Coding'};
+  Object.keys(_hf).forEach(function(id){var el=$(id);if(el)el.textContent=_hf[id];});
   // F2: hero stats skill-adaptation (Lv0-1 shows 4 pillars / key files to reduce info shock)
   var _spn=$('statPillarNum');if(_spn)_spn.textContent=S.skillLv<=1?'4':'26';
   var _sfn=$('statFileNum');if(_sfn&&!Object.keys(S.files||{}).length)_sfn.textContent=S.skillLv<=1?(ja?'主要':'Key'):'209+';

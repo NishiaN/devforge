@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 # DevForge v9.6.0
 
-**AI Development OS** — 76 JS modules in `src/` → single `devforge-v9.html` (~4100KB / 5000KB limit).
+**AI Development OS** — 75 JS modules in `src/` → single `devforge-v9.html` (~4187KB / 5000KB limit).
 Generates **212+ files** across **27 pillars** from a wizard-driven Q&A session.
 
 ## Documentation Map
@@ -45,7 +45,7 @@ Never reorder without checking dependencies.
 | Category | Purpose |
 |----------|---------|
 | `core/` | State (`S`), i18n (`t()`), keyboard events, wizard tour, app init |
-| `data/` | 157 standard presets (`PR`/`_mp()`), 502 field presets (`PR_FIELD`/`_fpd()`), questions, techdb (395 entries), compat-rules (217 rules), gen-templates (bilingual GT dict), helpdata |
+| `data/` | 157 standard presets (`PR`/`_mp()`), 503 field presets (`PR_FIELD`/`_fpd()`), questions, techdb (423 entries), compat-rules (214 rules), gen-templates (bilingual GT dict), helpdata |
 | `ui/launcher.js` | 53 prompt templates; `templateOrder[53]`, `AI_REC`, `LAUNCH_CAT_MAP`, `TEMPLATE_SCOPE`, `LAUNCH_SKILL_REC` maps; `DOC_GROUPS` for semantic doc grouping |
 | `generators/` | `index.js` orchestrator + `p1`–`p26` pillars + `docs.js` + `common.js` |
 | `ui/` | wizard, render, presets, preview, sidebar, editor, diff, export, explorer, dashboard, launcher, templates, qbar, cmdpalette, help, voice |
@@ -168,7 +168,7 @@ Full 6-step process in `docs/CLAUDE-REFERENCE.md`. Key steps often missed:
 
 ## Adding Compat Rules
 
-File: `src/data/compat-rules.js` — currently 217 rules. All rules have `why_ja`/`why_en`.
+File: `src/data/compat-rules.js` — currently 214 rules (31E+118W+65I). All rules have `why_ja`/`why_en`.
 **Launcher templates**: `src/ui/launcher.js` — currently 57 templates. When adding: register in `TEMPLATE_SCOPE`, both ja+en PT blocks, `AI_REC`, `templateOrder`, `LAUNCH_CAT_MAP`, `LAUNCH_SKILL_REC`; update button text count; update `test/skill-level.test.js` templateOrder.length assertion.
 Structure: `{id, p:['field1','field2'], lv:'error'|'warn'|'info', t:conditionFn, ja, en, fix, fixFn, why_ja, why_en}`
 `why_ja`/`why_en`: When set, shows "▶ なぜ？" expandable card in wizard alerts.

@@ -215,11 +215,47 @@ const techCountMatches = html.match(/>\d{3}<\/div><div class="lbl" id="statTech/
 if (techCountMatches) issues.push('Hardcoded tech count in stat display — use _TECH_COUNT');
 if (!html.includes('_TECH_COUNT=TECH_DB.length')) issues.push('Missing _TECH_COUNT dynamic definition');
 
+// C-11: Document accuracy validation (WARN only — soft check, counts from source files)
+const docWarns = [];
+(function checkDocAccuracy() {
+  const actualModules = jsFiles.length;
+  // Count _mp() across all preset source files
+  const presetFiles = jsFiles.filter(f => f.includes('presets'));
+  const actualPresets = presetFiles.reduce((n, f) => {
+    const src = fs.existsSync(path.join(SRC, f)) ? fs.readFileSync(path.join(SRC, f), 'utf8') : '';
+    return n + (src.match(/_mp\(/g) || []).length;
+  }, 0);
+  const actualFieldPresets = presetFiles.reduce((n, f) => {
+    const src = fs.existsSync(path.join(SRC, f)) ? fs.readFileSync(path.join(SRC, f), 'utf8') : '';
+    return n + (src.match(/_fpd\(/g) || []).length;
+  }, 0);
+  // Count compat rules from compat-rules.js only
+  const compatSrc = fs.existsSync(path.join(SRC, 'data/compat-rules.js')) ? fs.readFileSync(path.join(SRC, 'data/compat-rules.js'), 'utf8') : '';
+  const actualCompatRules = (compatSrc.match(/^\s+\{id:'[^']+'/gm) || []).length;
+  // Count techdb entries from techdb.js only
+  const techSrc = fs.existsSync(path.join(SRC, 'data/techdb.js')) ? fs.readFileSync(path.join(SRC, 'data/techdb.js'), 'utf8') : '';
+  const actualTechEntries = (techSrc.match(/\{name:/g) || []).length;
+  // Check CLAUDE.md values
+  const claudeMd = fs.existsSync('CLAUDE.md') ? fs.readFileSync('CLAUDE.md', 'utf8') : '';
+  const mdModules = (() => { const m = claudeMd.match(/(\d+)\s*JS modules/); return m ? parseInt(m[1]) : null; })();
+  const mdCompatRules = (() => { const m = claudeMd.match(/currently (\d+) rules/); return m ? parseInt(m[1]) : null; })();
+  const mdTechEntries = (() => { const m = claudeMd.match(/techdb \((\d+) entries\)/); return m ? parseInt(m[1]) : null; })();
+  const mdFieldPresets = (() => { const m = claudeMd.match(/(\d+) field presets.*_fpd/); return m ? parseInt(m[1]) : null; })();
+  if (mdModules !== null && mdModules !== actualModules) docWarns.push(`WARN: CLAUDE.md says "${mdModules} JS modules" but jsFiles.length=${actualModules}`);
+  if (mdCompatRules !== null && mdCompatRules !== actualCompatRules) docWarns.push(`WARN: CLAUDE.md says "currently ${mdCompatRules} rules" but actual=${actualCompatRules}`);
+  if (mdTechEntries !== null && mdTechEntries !== actualTechEntries) docWarns.push(`WARN: CLAUDE.md says "techdb (${mdTechEntries} entries)" but actual=${actualTechEntries}`);
+  if (mdFieldPresets !== null && mdFieldPresets !== actualFieldPresets) docWarns.push(`WARN: CLAUDE.md says "${mdFieldPresets} field presets" but actual=${actualFieldPresets}`);
+})();
+
 if (issues.length) {
   console.error('⚠️  Issues found:');
   issues.forEach(i => console.error(`   - ${i}`));
 } else {
   console.log('✅ All checks passed');
+}
+if (docWarns.length) {
+  console.warn('\n📋 Documentation accuracy warnings (update CLAUDE.md):');
+  docWarns.forEach(w => console.warn('  ' + w));
 }
 
 // Optional: Dead CSS detection

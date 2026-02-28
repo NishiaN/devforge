@@ -13,7 +13,7 @@ var SKILL_NAMES=[
   {ja:'エキスパート',en:'Expert',emoji:'💎'},
   {ja:'伝道者',en:'Evangelist',emoji:'👑'}
 ];
-let S={phase:0,step:0,answers:{},projectName:'',skill:'intermediate',skillLv:3,preset:'custom',lang:'ja',genLang:'ja',theme:'dark',pillar:0,previewFile:null,files:{},skipped:[],progress:{},editedFiles:{},prevFiles:{},qbarDismissed:false,pinnedFiles:[],recentFiles:[],sidebarOpen:true,exportedOnce:false,compatAcked:[],_v:V};
+let S={phase:0,step:0,answers:{},answersSnapshot:null,projectName:'',skill:'intermediate',skillLv:3,preset:'custom',lang:'ja',genLang:'ja',theme:'dark',pillar:0,previewFile:null,files:{},skipped:[],progress:{},editedFiles:{},prevFiles:{},qbarDismissed:false,pinnedFiles:[],recentFiles:[],sidebarOpen:true,exportedOnce:false,compatAcked:[],_v:V};
 function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML;}
 function escAttr(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/"/g,'&quot;');}
 function _jp(s,d){if(s==null)return d;try{return JSON.parse(s);}catch(e){return d;}}
@@ -109,6 +109,135 @@ function _lsSet(k,v){if(!_lsOK)return;try{localStorage.setItem(k,v);}catch(e){}}
 function _lsRm(k){if(!_lsOK)return;try{localStorage.removeItem(k);}catch(e){}}
 function _lsUsage(){try{const bytes=JSON.stringify(localStorage).length*2;return{used:bytes,pct:Math.round(bytes/(5*1024*1024)*100)};}catch(e){return{used:0,pct:0};}}
 
+// IndexedDB auto-backup (max 5 generations, debounced 60s)
+const _IDB_NAME='devforge-backup';
+const _IDB_STORE='snapshots';
+const _IDB_MAX=5;
+let _idbDb=null;
+let _idbTimer=null;
+function _idbOpen(cb){
+  if(_idbDb){cb(_idbDb);return;}
+  if(!window.indexedDB){cb(null);return;}
+  try{
+    const req=indexedDB.open(_IDB_NAME,1);
+    req.onupgradeneeded=e=>{const db=e.target.result;if(!db.objectStoreNames.contains(_IDB_STORE))db.createObjectStore(_IDB_STORE,{keyPath:'ts'});};
+    req.onsuccess=e=>{_idbDb=e.target.result;cb(_idbDb);};
+    req.onerror=()=>cb(null);
+  }catch(e){cb(null);}
+}
+function _idbSave(){
+  _idbOpen(db=>{
+    if(!db)return;
+    const ts=Date.now();
+    const data=JSON.stringify(S);
+    const label=new Date(ts).toLocaleString();
+    try{
+      const tx=db.transaction(_IDB_STORE,'readwrite');
+      const store=tx.objectStore(_IDB_STORE);
+      store.put({ts,data,label});
+      // Trim to max 5 entries
+      const req=store.getAll();
+      req.onsuccess=e=>{
+        const all=(e.target.result||[]).sort((a,b)=>b.ts-a.ts);
+        if(all.length>_IDB_MAX){
+          const tx2=db.transaction(_IDB_STORE,'readwrite');
+          const s2=tx2.objectStore(_IDB_STORE);
+          all.slice(_IDB_MAX).forEach(item=>s2.delete(item.ts));
+        }
+      };
+    }catch(e){}
+  });
+}
+function idbBackupDebounced(){
+  clearTimeout(_idbTimer);
+  _idbTimer=setTimeout(_idbSave,60000);
+}
+function idbBackupImmediate(){
+  clearTimeout(_idbTimer);
+  _idbSave();
+}
+function idbListBackups(cb){
+  _idbOpen(db=>{
+    if(!db){cb([]);return;}
+    try{
+      const tx=db.transaction(_IDB_STORE,'readonly');
+      const req=tx.objectStore(_IDB_STORE).getAll();
+      req.onsuccess=e=>cb((e.target.result||[]).sort((a,b)=>b.ts-a.ts));
+      req.onerror=()=>cb([]);
+    }catch(e){cb([]);}
+  });
+}
+function idbRestoreBackup(ts,cb){
+  _idbOpen(db=>{
+    if(!db){cb(false);return;}
+    try{
+      const tx=db.transaction(_IDB_STORE,'readonly');
+      const req=tx.objectStore(_IDB_STORE).get(ts);
+      req.onsuccess=e=>{
+        if(!e.target.result){cb(false);return;}
+        try{
+          const o=JSON.parse(e.target.result.data);
+          const _ja=S.lang==='ja';
+          // Re-use the load() logic by temporarily injecting to localStorage then reloading
+          if(_lsOK){
+            _lsSet(KEY,e.target.result.data);
+            load();
+            save();
+            cb(true);
+          }else{cb(false);}
+        }catch(err){cb(false);}
+      };
+      req.onerror=()=>cb(false);
+    }catch(e){cb(false);}
+  });
+}
+function showIDBRestoreUI(){
+  const _ja=S.lang==='ja';
+  idbListBackups(backups=>{
+    if(!backups.length){
+      toast(_ja?'バックアップが見つかりません':'No backups found',{type:'warn'});
+      return;
+    }
+    const overlay=document.createElement('div');
+    overlay.className='modal-overlay';
+    overlay.id='idbRestoreModal';
+    overlay.setAttribute('role','dialog');
+    overlay.setAttribute('aria-modal','true');
+    overlay.setAttribute('aria-label',_ja?'バックアップから復元':'Restore from Backup');
+    let html='<div class="modal-box" style="max-width:460px"><div class="modal-header">';
+    html+='<h3 class="modal-title">💾 '+(_ja?'バックアップから復元':'Restore from Backup')+'</h3>';
+    html+='<button class="modal-close" onclick="document.getElementById(\'idbRestoreModal\').remove()" aria-label="Close">✕</button>';
+    html+='</div><div class="modal-body">';
+    html+='<p style="margin:0 0 12px;color:var(--text-muted);font-size:13px">'+(_ja?'保存されたバックアップを選択して復元します。現在の作業内容は上書きされます。':'Select a saved backup to restore. Your current work will be overwritten.')+'</p>';
+    backups.forEach((b,i)=>{
+      html+='<div style="display:flex;align-items:center;gap:8px;padding:8px;border:1px solid var(--border);border-radius:6px;margin-bottom:6px">';
+      html+='<span style="font-size:20px">💾</span><div style="flex:1"><div style="font-weight:500">'+esc(b.label)+'</div>';
+      if(i===0)html+='<div style="font-size:11px;color:var(--accent)">'+(_ja?'最新':'Latest')+'</div>';
+      html+='</div>';
+      html+='<button class="btn btn-sm btn-primary" onclick="idbDoRestore('+b.ts+')">'+(_ja?'復元':'Restore')+'</button>';
+      html+='</div>';
+    });
+    html+='</div></div>';
+    overlay.innerHTML=html;
+    overlay.onclick=e=>{if(e.target===overlay)overlay.remove();};
+    document.body.appendChild(overlay);
+  });
+}
+function idbDoRestore(ts){
+  const _ja=S.lang==='ja';
+  const modal=document.getElementById('idbRestoreModal');
+  if(modal)modal.remove();
+  idbRestoreBackup(ts,ok=>{
+    if(ok){
+      toast(_ja?'✅ バックアップから復元しました':'✅ Restored from backup',{type:'success'});
+      if(typeof renderApp==='function')renderApp();
+      else location.reload();
+    }else{
+      toast(_ja?'❌ 復元に失敗しました':'❌ Restore failed',{type:'error'});
+    }
+  });
+}
+
 // Save indicator (HCD: ⑥文脈適合)
 function showSaveIndicator(){
   let ind=$('saveIndicator');
@@ -124,7 +253,7 @@ function showSaveIndicator(){
 }
 
 var _storWarnAt=0;
-function save(){const d=JSON.stringify(S);const sz=d.length;const now=Date.now();if(now-_storWarnAt>30000){if(sz>4*1024*1024){toast(S.lang==='ja'?'⚠️ データ容量が4MBを超えました。ZIPでエクスポートし生成ファイルをクリアしてください':'⚠️ Data exceeded 4MB. Export ZIP and clear generated files.',{type:'error',duration:5000});_storWarnAt=now;}else if(sz>3.5*1024*1024){toast(S.lang==='ja'?'💾 データ容量が3.5MBに近づいています。ZIPエクスポートを推奨します':'💾 Storage nearing 3.5MB. Export ZIP recommended.',{type:'warn',duration:4000});_storWarnAt=now;}}if(_lsOK){try{localStorage.setItem(KEY,d);}catch(e){toast(S.lang==='ja'?'❌ 保存失敗: ブラウザストレージが満杯です。ZIPでエクスポートしてください':'❌ Save failed: Browser storage full. Export as ZIP.',{type:'error',duration:6000});return;}}showSaveIndicator();}
+function save(){const d=JSON.stringify(S);const sz=d.length;const now=Date.now();if(now-_storWarnAt>30000){if(sz>4*1024*1024){toast(S.lang==='ja'?'⚠️ データ容量が4MBを超えました。ZIPでエクスポートし生成ファイルをクリアしてください':'⚠️ Data exceeded 4MB. Export ZIP and clear generated files.',{type:'error',duration:5000});_storWarnAt=now;}else if(sz>3.5*1024*1024){toast(S.lang==='ja'?'💾 データ容量が3.5MBに近づいています。ZIPエクスポートを推奨します':'💾 Storage nearing 3.5MB. Export ZIP recommended.',{type:'warn',duration:4000});_storWarnAt=now;}}if(_lsOK){try{localStorage.setItem(KEY,d);}catch(e){toast(S.lang==='ja'?'❌ 保存失敗: ブラウザストレージが満杯です。ZIPでエクスポートしてください':'❌ Save failed: Browser storage full. Export as ZIP.',{type:'error',duration:6000});return;}}showSaveIndicator();idbBackupDebounced();}
 function load(){
   let d=_lsGet(KEY);
   if(!d){d=_lsGet('devforge-v8');if(d)_lsRm('devforge-v8');}
@@ -158,6 +287,7 @@ function load(){
     if(typeof o.sidebarOpen==='boolean')S.sidebarOpen=o.sidebarOpen;
     if(typeof o.exportedOnce==='boolean')S.exportedOnce=o.exportedOnce;
     if(Array.isArray(o.compatAcked))S.compatAcked=o.compatAcked;
+    if(o.answersSnapshot&&typeof o.answersSnapshot==='object')S.answersSnapshot=_filterProto(o.answersSnapshot);
     if(typeof o._v==='number')S._v=o._v;
     if(!S._v||S._v<V){
       S.genLang=S.genLang||S.lang||'ja';

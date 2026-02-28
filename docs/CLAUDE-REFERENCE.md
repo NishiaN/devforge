@@ -8,7 +8,7 @@ This document contains detailed reference information for DevForge v9 developmen
 
 ### src/generators/common.js
 **Data Structures:**
-- **ENTITY_COLUMNS**: 145+ entity schemas with FK/constraints (includes 4 補完: Examination, Claim, Milestone, Inventory + 14 new preset entities)
+- **ENTITY_COLUMNS**: 998 entity schemas with FK/constraints (includes 4 補完: Examination, Claim, Milestone, Inventory + 14 new preset entities)
 - **ENTITY_METHODS**: REST API method restrictions per entity (added 5: AuditLog, PointLog, Achievement, ClickLog, SensorData)
 - **FEATURE_DETAILS**: 31 feature patterns with acceptance criteria & test cases (added 10: Social, Settings, MFA, Webhook, Onboarding, API Key, Audit, Map, Import, Template)
 - **SCREEN_COMPONENTS**: UI component dictionary by screen type
