@@ -27,14 +27,14 @@ function showPostGenGuide(force){
   ]):isP?(_ja?[
     ['Agent Teams並列開発','AGENTS.mdでエージェント役割定義 → Claude Code Subagents / Antigravity Manager Viewで並列実行。'],
     ['SDD仕様駆動','<code>.spec/</code>がSSoT。tasks.mdをタスクキューとしてAIに投入。verification.mdで品質判定。'],
-    ['40テンプレートパイプライン','柱⑧で📋レビュー→🔨実装→🧪テスト→♻️リファクタ→🔒セキュリティ→📝ドキュメント→🛡️Ops準備。全工程自動化。'],
+    ['50テンプレートパイプライン','柱⑧で📋レビュー→🔨実装→🧪テスト→♻️リファクタ→🔒セキュリティ→📝ドキュメント→🛡️Ops準備。全工程自動化。'],
     ['3-layer CLAUDE.md','ルートCLAUDE.md(薄い ~1.5Kトークン) + .claude/rules/(パス別5ファイル) + .claude/settings.json でトークン最小化。'],
     ['Ops Plane統合','docs/53-55でSLO/SLI設計・Feature Flags・Circuit Breaker・12 Ops Capabilities。運用自動化。'],
     ['創造工学×AI活用','柱⑧「🎭 9人の専門家ブレスト」+「🎯 UXジャーニー設計」+「🤖 AIモデル使い分け」で創造的思考→UX設計→AI最適化の全工程をカバー。'],
   ]:[
     ['Agent Teams Parallel Dev','AGENTS.md defines roles → Run with Claude Code Subagents / Antigravity Manager View.'],
     ['SDD Spec-Driven','<code>.spec/</code> is your SSoT. Feed tasks.md as task queue. Verify with verification.md.'],
-    ['40-Template Pipeline','Pillar ⑧: 📋Review → 🔨Implement → 🧪Test → ♻️Refactor → 🔒Security → 📝Docs → 🛡️Ops. Full automation.'],
+    ['50-Template Pipeline','Pillar ⑧: 📋Review → 🔨Implement → 🧪Test → ♻️Refactor → 🔒Security → 📝Docs → 🛡️Ops. Full automation.'],
     ['3-layer CLAUDE.md','Root CLAUDE.md (thin ~1.5K tokens) + .claude/rules/ (path-specific 5 files) + .claude/settings.json minimizes tokens.'],
     ['Ops Plane Integration','docs/53-55 for SLO/SLI design, Feature Flags, Circuit Breaker, 12 Ops Capabilities. Ops automation.'],
     ['Creative Eng × AI','Pillar ⑧ "🎭 9-Expert Brainstorm" + "🎯 UX Journey Design" + "🤖 AI Model Selection" covers the full pipeline: creative thinking → UX design → AI optimization.'],
@@ -95,7 +95,7 @@ function showPostGenGuide(force){
         <button class="guide-bridge-card" onclick="this.closest('.guide-overlay').remove();var _t=document.querySelectorAll('.piltab');if(_t[7])_t[7].click();">
           <span class="bridge-icon">🚀</span>
           <div class="bridge-name">${_ja?'⑧ AIランチャー':'⑧ AI Launcher'}</div>
-          <div class="bridge-why">${_ja?'40種プロンプトでAIをプロジェクト専用に即戦力化':'40 prompt templates — make AI your dedicated team member'}</div>
+          <div class="bridge-why">${_ja?'50種プロンプトでAIをプロジェクト専用に即戦力化':'50 prompt templates — make AI your dedicated team member'}</div>
         </button>
         <button class="guide-bridge-card" onclick="this.closest('.guide-overlay').remove();var _t=document.querySelectorAll('.piltab');if(_t[6])_t[6].click();">
           <span class="bridge-icon">🗺️</span>

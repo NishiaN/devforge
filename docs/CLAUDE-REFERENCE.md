@@ -494,14 +494,14 @@ test('pluralize', () => {
 | utils.test.js | 43 | Utility functions: esc, escAttr, sanitize, fileSlug, sanitizeName, _jp, _lsGet |
 | Others | 25 | i18n (15), state (5), techdb (5) |
 
-**Total: 971 tests (all passing, 100% pass rate)**
+**Total: 6048 tests (all passing, 100% pass rate)**
 
 ---
 
 ## AI Prompt Launcher Templates (Full List)
 
-40 templates in `src/ui/launcher.js`. Auto-inject project context (name, stack, auth, entities).
-Order: `review › arch › reverse › implement › api › i18n › test › test_intel › qa › security › ai_safety › a11y › perf › metrics › refactor › debug › incident › ops › docs › migrate › db_intelligence › cicd › growth › strategy › methodology › brainstorm › ux_journey › ux_audit › ai_model_guide › industry › nextgen › cognitive › genome › maturity › react_debug › prompt_ops › enterprise_arch › workflow_audit › risk › onboard`
+50 templates in `src/ui/launcher.js`. Auto-inject project context (name, stack, auth, entities).
+Order: `review › requirements › hearing › arch › spec_hole › adversarial › reverse › implement › task_decompose › api › i18n › test › test_intel › qa › security › ai_safety › a11y › perf › metrics › refactor › debug › incident › ops › sprint_retro › docs › text_polish › migrate › db_intelligence › cicd › planning › growth › strategy › commander › methodology › brainstorm › ux_journey › ux_audit › ai_model_guide › industry › nextgen › cognitive › genome › maturity › react_debug › prompt_ops › enterprise_arch › workflow_audit › risk › acceptance › onboard`
 
 **Review & Audit group:**
 - 🔍 **Spec Review** — 4-step structured review (mission → requirements → architecture → consistency)
@@ -537,7 +537,7 @@ Order: `review › arch › reverse › implement › api › i18n › test › 
 - 🏢 **Strategic Intelligence** — Industry blueprint TAM/SAM/SOM, tech radar, stakeholder strategy
 - 🧬 **Optimal Methodology** — Select optimal dev methodology from DEV_METHODOLOGY_MAP (P16)
 - 🎭 **9-Expert Brainstorm** — 9 expert personas generate ideas + 3-axis evaluation + cross-pollination
-- 🎯 **UX Journey Design** — Lv.0-5 progressive disclosure journey + "3 Nightmares" anti-failure UI
+- 🎯 **UX Journey Design** — Lv.0-6 progressive disclosure journey + "3 Nightmares" anti-failure UI
 - 🔬 **UX Proficiency Audit** — 7-level UX gap analysis with structural gap map
 - 🏭 **Industry Deep Dive** — Industry-specific pitfalls, regulatory compliance, arch patterns (P16)
 - 🔮 **Next-Gen UX** — Agentic Workflow/Generative UI/Spatial Computing/Calm Technology (P16)

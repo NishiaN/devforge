@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Compat check against all 329 presets (63 standard + 266 field × 4 scales)
+ * Compat check against all 625 presets (133 standard + 492 field × 4 scales)
  * Applies _applyUniversalPostProcess() then runs checkCompat() on each.
  * Reports any ERROR or WARN hits grouped by rule ID.
  */

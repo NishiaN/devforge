@@ -485,7 +485,8 @@ function buildFileTree(){
    '91_testing_strategy','92_coverage_design','93_e2e_test_architecture','94_performance_testing',
    '95_ai_safety_framework','96_ai_guardrail_implementation','97_ai_model_evaluation','98_prompt_injection_defense',
    '99_performance_strategy','100_database_performance','101_cache_strategy','102_performance_monitoring',
-   '103_observability_architecture','104_structured_logging','105_metrics_alerting','106_distributed_tracing'].forEach(f=>
+   '103_observability_architecture','104_structured_logging','105_metrics_alerting','106_distributed_tracing',
+   '107_project_governance','108_uat_acceptance'].forEach(f=>
     files.push({name:'  '+f+'.md',path:'docs/'+f+'.md'}));
   files.push({name:'───────────',path:''});
   ['README.md','.gitignore','package.json','LICENSE'].forEach(f=>files.push({name:f,path:f}));
