@@ -1,6 +1,56 @@
 /* ═══ QUICK ACTION BAR (HCD-optimized) ═══ */
 // Context-aware action groups, FAB minimize/restore, keyboard navigation, ARIA support
 
+/* ── Dynamic Recommendation Engine ── */
+function _getRecommendedActions(){
+  const _ja=S.lang==='ja';
+  const recs=[];
+  const a=S.answers;
+  const hasFiles=Object.keys(S.files).length>0;
+  const answered=Object.keys(a).length;
+
+  // Priority 10: compat ERROR exists
+  if(typeof checkCompat==='function'){
+    try{
+      const compat=checkCompat(a);
+      const errs=compat.filter(c=>c.level==='error');
+      if(errs.length>0){
+        recs.push({pri:10,icon:'⚠️',label:_ja?'互換性エラーを修正':'Fix Compat Errors',action:'S.pillar=5;save();showDashboard();updateQbar()'});
+      }
+    }catch(e){}
+  }
+
+  // Priority 9: not generated yet + 5+ answers
+  if(!hasFiles&&answered>=5){
+    recs.push({pri:9,icon:'📦',label:_ja?'ファイル生成':'Generate Files',action:'doGenerate()'});
+  }
+
+  // Priority 8: generated + not exported
+  if(hasFiles&&!S.exportedOnce){
+    recs.push({pri:8,icon:'📦',label:_ja?'ZIP保存':'Save ZIP',action:'exportZIP()'});
+  }
+
+  // Priority 5: pillar-specific context
+  if(S.pillar===11){
+    recs.push({pri:5,icon:'🔒',label:_ja?'セキュリティ確認':'Security Check',action:'S.pillar=5;save();showDashboard();updateQbar()'});
+  }
+  if(S.pillar===7){
+    recs.push({pri:5,icon:'🎭',label:_ja?'専門家ブレスト':'Expert Brainstorm',action:'showAILauncher()'});
+  }
+
+  // Priority 4: edited files exist
+  if(S.editedFiles&&S.editedFiles.size>0){
+    recs.push({pri:4,icon:'💾',label:_ja?'変更をエクスポート':'Export Changes',action:'exportZIP()'});
+  }
+
+  // Priority 3: fewer than 5 answers
+  if(answered<5){
+    recs.push({pri:3,icon:'💬',label:_ja?'質問に回答':'Answer Questions',action:'showWizard()'});
+  }
+
+  return recs.sort((a,b)=>b.pri-a.pri).slice(0,3);
+}
+
 function createQbar(){
   if($('qbar'))return; // Already exists
   const ws=$('ws');if(!ws)return;
@@ -17,6 +67,20 @@ function createQbar(){
   qb.setAttribute('aria-label',_ja?'クイックアクション':'Quick Actions');
 
   let html='';
+
+  // Recommendation chips
+  const recs=_getRecommendedActions();
+  if(recs.length>0){
+    html+=`<div class="qbar-group qbar-rec-group" data-group="recs">`;
+    html+=`<span class="qbar-rec-label">💡</span>`;
+    recs.forEach(r=>{
+      html+=`<button class="qbar-rec-chip" onclick="${r.action}" title="${r.label}" aria-label="${r.label}">
+        <span>${r.icon}</span><span>${r.label}</span>
+      </button>`;
+    });
+    html+=`</div>`;
+    html+=`<span class="qbar-sep" role="separator"></span>`;
+  }
 
   // Export group
   if(hasFiles){

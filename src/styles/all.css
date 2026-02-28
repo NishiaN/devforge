@@ -382,6 +382,8 @@ mark{background:var(--accent-soft);color:var(--accent);padding:0 2px;border-radi
   .road-layer h3{font-size:12px;padding:6px 10px;}
   .road-task{font-size:11px;padding:6px 8px;}
   .road-progress{padding:12px;}
+  /* qbar recommendation chips — icons only on mobile */
+  .qbar-rec-chip span:last-child{display:none;}
 }
 @media(max-width:480px){
   .stat-row{grid-template-columns:repeat(2,1fr);gap:8px;}
@@ -1203,4 +1205,24 @@ div.guide-sub.guide-lv-p{background:none;color:var(--danger);}
 .piltab-wrap{position:relative;display:inline-flex;align-items:center;}
 .piltab-regen{position:absolute;right:-2px;top:-6px;background:var(--bg-3);border:1px solid var(--border);border-radius:10px;padding:1px 5px;font-size:9px;color:var(--text-3);cursor:pointer;display:none;transition:all .15s;white-space:nowrap;}
 .piltab-wrap:hover .piltab-regen{display:block;}
+
+/* ── qbar Recommendation Chips ── */
+.qbar-rec-group{display:flex;align-items:center;gap:4px;}
+.qbar-rec-label{font-size:14px;flex-shrink:0;}
+.qbar-rec-chip{padding:4px 8px;border:1px solid var(--accent);border-radius:16px;font-size:10px;font-weight:600;background:var(--accent-soft);color:var(--accent);cursor:pointer;white-space:nowrap;transition:all .15s;display:flex;align-items:center;gap:4px;}
+.qbar-rec-chip:hover,.qbar-rec-chip:focus{background:var(--accent);color:#fff;outline:2px solid var(--accent);outline-offset:2px;}
+
+/* ── Explorer Category Filter ── */
+.exp-filter{display:flex;flex-wrap:wrap;gap:4px;margin:8px 0 12px;}
+.exp-filter-chip{padding:4px 10px;border-radius:16px;font-size:10px;font-weight:600;background:var(--bg-3);color:var(--text-3);border:1px solid var(--border);cursor:pointer;transition:all .15s;}
+.exp-filter-chip:hover,.exp-filter-chip:focus{background:var(--accent-soft);color:var(--accent);border-color:var(--accent);outline:none;}
+.exp-filter-chip.exp-filter-on{background:var(--accent-soft);color:var(--accent);border-color:var(--accent);}
+
+/* ── Explorer Pros/Cons ── */
+.exp-pros,.exp-cons{margin-top:8px;padding:8px 12px;border-radius:6px;font-size:11px;}
+.exp-pros{background:color-mix(in srgb,var(--success) 8%,transparent);border:1px solid color-mix(in srgb,var(--success) 20%,transparent);}
+.exp-cons{background:color-mix(in srgb,var(--warn) 8%,transparent);border:1px solid color-mix(in srgb,var(--warn) 20%,transparent);}
+.exp-pros h4,.exp-cons h4{font-size:11px;margin-bottom:4px;font-weight:600;}
+.exp-pros ul,.exp-cons ul{margin:0;padding-left:16px;line-height:1.6;}
+
 .piltab-regen:hover{background:var(--accent-soft);color:var(--accent);border-color:var(--accent);}

@@ -179,6 +179,7 @@ function showDashboard(){
     if(fixInfos.length>1)h+=`<button class="btn btn-xs btn-s compat-fixlv" onclick="fixAllCompat('info')">🔧 ${fixInfos.length}</button>`;
     const fixable=compat.filter(c=>c.fix);
     if(fixable.length>1)h+=`<button class="btn btn-xs btn-p compat-fixall" onclick="fixAllCompat()">🔧 ${_ja?'一括修正 ('+fixable.length+'件)':'Fix All ('+fixable.length+')'}</button>`;
+    h+=`<button class="btn btn-xs btn-p compat-report-btn" onclick="exportCompatReport()">📋 ${_ja?'レポート出力':'Export Report'}</button>`;
     h+='</div>';
     compat.forEach(c=>{
       const icon=c.level==='error'?'❌':c.level==='warn'?'⚠️':'ℹ️';
@@ -186,6 +187,8 @@ function showDashboard(){
       const pair=c.pair.map(p=>{const n={frontend:'FE',backend:'BE',database:'DB',deploy:'Deploy',mobile:'Mobile',orm:'ORM',ai_auto:'AI',skill_level:'Skill',payment:'Pay',dev_methods:'DevMethod',auth:'Auth',scope_out:'Scope',data_entities:'Entity',purpose:'Purpose',mvp_features:'MVP'};return n[p]||p;}).join(' ↔ ');
       h+=`<div class="${cls}"><span class="compat-pair">${pair}</span><span class="compat-msg">${esc(c.msg)}</span>`;
       if(c.fix)h+=`<button class="btn btn-xs btn-s compat-fix" onclick="S.answers['${escAttr(c.fix.f)}']='${escAttr(c.fix.s)}';save();showDashboard();">→ ${esc(c.fix.s)}</button>`;
+      if(c.chain)h+='<button class="btn btn-xs btn-s compat-fix" onclick="_applyCascadingFix(this,\''+escAttr(JSON.stringify(c.chain))+'\')">'+(_ja?'🔧 連鎖修正':'🔧 Chain Fix')+'</button>';
+      if(c.why)h+='<details class="compat-why"><summary class="compat-why-toggle">'+(_ja?'▶ なぜ？':'▶ Why?')+'</summary><div class="compat-why-body">'+esc(c.why)+'</div></details>';
       h+='</div>';
     });
   }
@@ -208,11 +211,16 @@ function showDashboard(){
         {p:'.spec/verification.md',l:_ja?'完了基準':'Acceptance',d:2}
       ]},
       {id:'ai',icon:'🤖',title:_ja?'AI開発フロー':'AI Dev Flow',files:[
-        {p:'CLAUDE.md',l:_ja?'AI設定(自動読込)':'AI config (auto-loaded)',d:0},
-        {p:'AI_BRIEF.md',l:_ja?'要約(最初の投入)':'Brief (first input)',d:1},
+        {p:'CLAUDE.md',l:_ja?'AI設定(自動読込)':'AI config',d:0},
+        {p:'AI_BRIEF.md',l:_ja?'要約(最初の投入)':'Brief',d:1},
         {p:'AGENTS.md',l:_ja?'Agent役割定義':'Agent roles',d:1},
         {p:'.cursor/rules',l:_ja?'Cursorルール':'Cursor rules',d:1},
-        {p:'skills/project.md',l:_ja?'スキル定義':'Skills',d:2}
+        {p:'.claude/agents/requirements-agent.md',l:_ja?'要件Agent':'Requirements Agent',d:2},
+        {p:'.claude/agents/review-agent.md',l:_ja?'レビューAgent':'Review Agent',d:2},
+        {p:'skills/spec-review/SKILL.md',l:_ja?'スキル定義(agentskills.io)':'Skills (agentskills.io)',d:2},
+        {p:'.codex/agents/openai.yaml',l:_ja?'Codex互換':'Codex compat',d:2},
+        {p:'docs/113_ai_collaboration_guide.md',l:_ja?'AI協業ガイド':'AI Collaboration',d:2},
+        {p:'docs/115_skill_portfolio.md',l:_ja?'スキルポートフォリオ':'Skill Portfolio',d:2}
       ]},
       {id:'qa',icon:'🧪',title:_ja?'品質・テストフロー':'QA & Test Flow',files:[
         {p:'docs/28_qa_strategy.md',l:_ja?'QA戦略':'QA Strategy',d:0},
@@ -228,6 +236,23 @@ function showDashboard(){
         {p:'docs/40_ai_dev_runbook.md',l:_ja?'AI運用手順':'AI Runbook',d:2}
       ]}
     ];
+    if(S.skillLv>=2){
+      groups.push({id:'sec',icon:'🔒',title:_ja?'セキュリティフロー':'Security Flow',files:[
+        {p:'docs/43_security_intelligence.md',l:_ja?'セキュリティ全体方針':'Security Policy',d:0},
+        {p:'docs/44_threat_model.md',l:_ja?'脅威モデル':'Threat Model',d:1},
+        {p:'docs/45_compliance_matrix.md',l:_ja?'コンプライアンス':'Compliance Matrix',d:1},
+        {p:'docs/46_ai_security.md',l:_ja?'AIセキュリティ':'AI Security',d:1},
+        {p:'docs/47_security_testing.md',l:_ja?'セキュリティテスト':'Security Testing',d:2},
+        {p:'docs/82_architecture_integrity_check.md',l:_ja?'整合性チェック(自動採点)':'Integrity Check',d:2}
+      ]});
+      groups.push({id:'cicd',icon:'🚀',title:_ja?'CI/CDフロー':'CI/CD Flow',files:[
+        {p:'.github/workflows/ci.yml',l:_ja?'CIパイプライン':'CI Pipeline',d:0},
+        {p:'docs/77_cicd_pipeline_design.md',l:_ja?'CI/CD設計':'CI/CD Design',d:1},
+        {p:'docs/78_deployment_strategy.md',l:_ja?'デプロイ戦略':'Deployment Strategy',d:1},
+        {p:'docs/09_release_checklist.md',l:_ja?'リリースチェックリスト':'Release Checklist',d:2},
+        {p:'docs/80_release_engineering.md',l:_ja?'リリースエンジニアリング':'Release Engineering',d:2}
+      ]});
+    }
     groups.forEach(g=>{
       const count=g.files.filter(f=>S.files[f.p]).length;
       h+=`<div class="fdep-group"><div class="fdep-header" onclick="toggleFdep('${g.id}')"><span class="fdep-icon">▶</span><span class="fdep-title">${g.icon} ${g.title}</span><span class="fdep-count">${count}/${g.files.length}</span></div>`;
@@ -420,6 +445,47 @@ function fixAllCompat(level){
   save();
   toast(_ja?'🔧 '+fixable.length+'件の問題を修正しました':'🔧 Fixed '+fixable.length+' issue(s)');
   showDashboard();
+}
+
+function exportCompatReport(){
+  const _ja=S.lang==='ja';
+  const compat=checkCompat(S.answers);
+  const errs=compat.filter(c=>c.level==='error');
+  const warns=compat.filter(c=>c.level==='warn');
+  const infos=compat.filter(c=>c.level==='info');
+  const ok=COMPAT_RULES.length-compat.length;
+  const now=new Date().toLocaleString(_ja?'ja-JP':'en-US');
+  let md='# '+(_ja?'互換性チェックレポート':'Compatibility Check Report')+'\n\n';
+  md+='**'+(_ja?'プロジェクト':'Project')+'**: '+S.projectName+'\n';
+  md+='**'+(_ja?'生成日時':'Generated')+'**: '+now+'\n';
+  md+='**'+(_ja?'チェックルール数':'Rules Checked')+'**: '+COMPAT_RULES.length+'\n\n';
+  md+='## '+(_ja?'サマリー':'Summary')+'\n\n';
+  md+='| '+(_ja?'状態':'Status')+' | '+(_ja?'件数':'Count')+' |\n';
+  md+='|---|---|\n';
+  md+='| ✅ '+(_ja?'問題なし':'OK')+' | '+ok+' |\n';
+  md+='| ❌ '+(_ja?'要修正 (ERROR)':'Error')+' | '+errs.length+' |\n';
+  md+='| ⚠️ '+(_ja?'注意 (WARN)':'Warning')+' | '+warns.length+' |\n';
+  md+='| ℹ️ '+(_ja?'情報 (INFO)':'Info')+' | '+infos.length+' |\n\n';
+  if(compat.length>0){
+    md+='## '+(_ja?'検出された問題':'Detected Issues')+'\n\n';
+    compat.forEach((c,i)=>{
+      const icon=c.level==='error'?'❌':c.level==='warn'?'⚠️':'ℹ️';
+      md+='### '+(i+1)+'. '+icon+' ['+c.id+']\n\n';
+      md+='- **'+(_ja?'対象フィールド':'Fields')+'**: '+c.pair.join(', ')+'\n';
+      md+='- **'+(_ja?'メッセージ':'Message')+'**: '+c.msg+'\n';
+      if(c.why)md+='- **'+(_ja?'理由':'Why')+'**: '+c.why+'\n';
+      if(c.fix)md+='- **'+(_ja?'修正案':'Fix')+'**: `'+c.fix.f+'` → `'+c.fix.s+'`\n';
+      if(c.chain&&c.chain.length){
+        md+='- **'+(_ja?'連鎖修正':'Chain Fix')+'**:\n';
+        c.chain.forEach(ch=>{md+='  - `'+ch.f+'` → `'+ch.s+'`\n';});
+      }
+      md+='\n';
+    });
+  }
+  md+='---\n*Generated by DevForge v9*\n';
+  navigator.clipboard.writeText(md)
+    .then(()=>toast(_ja?'📋 レポートをクリップボードにコピーしました':'📋 Report copied to clipboard'))
+    .catch(()=>toast(_ja?'❌ コピー失敗':'❌ Copy failed'));
 }
 
 function toggleFdep(id){
