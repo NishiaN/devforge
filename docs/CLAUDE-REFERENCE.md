@@ -624,6 +624,31 @@ Order: `review › requirements › hearing › arch › spec_hole › adversari
 - `docs/101_cache_strategy.md` — Cache layer design (CDN/Redis/HTTP Cache/Query Cache), invalidation patterns
 - `docs/102_performance_monitoring.md` — APM provider selection (Sentry/Datadog/New Relic/CloudWatch), performance budget alerts
 
+### New in v9.6.x (Pillar ㉖ Observability)
+- `docs/103_observability_strategy.md` — OpenTelemetry setup, instrumentation strategy, observability stack selection
+- `docs/104_metrics_dashboard.md` — RED/USE metrics, SLO/SLI definitions, Grafana/Prometheus dashboard design
+- `docs/105_distributed_tracing.md` — Trace context propagation, sampling strategy, trace analysis patterns
+- `docs/106_log_management.md` — Structured logging, log levels, Grafana Loki/CloudWatch aggregation
+
+### New in v9.6.x (Governance + UAT docs — always generated)
+- `docs/107_project_governance.md` — Document management, decision log (auto-generated from answers), issue management, CR management
+- `docs/108_uat_acceptance.md` — UAT scenarios (auto-generated from features), non-functional tests, Go/No-Go criteria, defect management
+
+### New in v9.6.x (Pillar ㉗ Cost Optimization)
+- `docs/109_cost_optimization_strategy.md` — FinOps maturity model, cloud cost breakdown, optimization roadmap
+- `docs/110_budget_management.md` — Budget alerts, spend forecasting, tagging strategy, cost anomaly detection
+- `docs/111_resource_rightsizing.md` — Rightsizing recommendations, auto-scaling policy, reserved instance planning
+- `docs/112_ai_cost_analysis.md` — AI/LLM token cost tracking, model selection economics, batch vs real-time cost analysis
+
+### New in v9.6.x (ワークスロップ防止 + スペック駆動開発 brushup)
+- `docs/113_ai_collaboration_guide.md` — 6 NG-behavior anti-workslop checklist, iterative dialogue protocol (5 steps), quality verification checklist, domain-specific AI collaboration focus
+- `docs/114_domain_knowledge_guide.md` — Business rule templates (from DOMAIN_PLAYBOOK), As-Is/To-Be Mermaid workflow docs, SDD integration flow (glossary→spec→tasks→API→src→UAT)
+- `.claude/agents/requirements-agent.md` — Requirements agent: spec ambiguity detection, AC generation (Given/When/Then), spec hole identification P0/P1/P2
+- `.claude/agents/design-agent.md` — Design agent: architecture/ER/API consistency verification, ADR creation
+- `.claude/agents/task-planner-agent.md` — Task planner agent: Epic→Story→Task decomposition, P0/P1/P2 priority assignment, dependency analysis
+- `.claude/agents/implementation-agent.md` — Implementation agent: faithful code generation from specs, TypeScript types→data→logic→UI order
+- `.claude/agents/review-agent.md` — Review agent: 6 NG-behavior anti-workslop checks, security audit, drift analysis from specs
+
 ---
 
 ## Version History (Phase A-J)
@@ -724,4 +749,14 @@ Order: `review › requirements › hearing › arch › spec_hole › adversari
 - **Phase 5**: compat-rules.js: 2ルール追加 (`mob-flutter-supabase` INFO + `mob-expo-drizzle` WARN) → 60ルール (11+38+11)
 - **Phase 6**: .cursorrules/CLAUDE.md/CLAUDE-REFERENCE.md を 734テスト/2129KB/60ルール に更新
 - **Phase 7**: compat-rules.js: 14ルール追加 (122→136: 6 ERROR + 7 WARN + 1 INFO) — Python/Java/Go+Firebase Hosting、FastAPI+Cloudflare、ORM+NoSQL不整合、dom-saas/government/legal、mob-flutter-drizzle/kysely、db-redis-primary; 1480テスト/3112KB
+
+### ワークスロップ防止 + スペック駆動開発 brushup (v9.6.x)
+- **common.js**: `DOMAIN_GLOSSARY` 追加 — 32ドメイン × 4-8バイリンガル業務用語 `[term_pair, def_ja, def_en, bounded_context]`
+- **docs.js**: `_buildGlossary()` ヘルパー追加 — docs/13_glossary を §1エンティティ辞書 / §2ユビキタス言語 / §3境界コンテキストマップ / §4業務ルール候補 に拡充
+- **docs.js**: docs/113 (ワークスロップ防止ガイド) + docs/114 (ドメイン知識構造化ガイド) を常時生成
+- **p4-airules.js**: `.claude/agents/` 5ファイル常時生成 (requirements/design/task-planner/implementation/review); review-agentに6NG行為チェック組み込み
+- **p1-sdd.js**: `.spec/tasks.md` 拡充 — `_estH()` + `_sprintPri()` ヘルパー + P0/P1/P2優先度ラベル + 受入基準 + 見積時間 + スプリントサマリーテーブル
+- **launcher.js**: +3テンプレート (domain_structure📘/anti_workslop🛡️/spec_workflow📋), templateOrder=53, 全5マップ更新
+- **Bug**: task-planner-agent.md の4箇所で `G?'ja','en'`（コンマ）→ `G?'ja':'en'`（コロン）に修正
+- **Tests**: snapshot 130-169 / gen-quality 112-183 / skill-level 53; 6122テスト ✅ / ~4012KB ✅ / 0 compatエラー ✅
 
