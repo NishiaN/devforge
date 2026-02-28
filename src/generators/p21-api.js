@@ -308,11 +308,37 @@ function gen84(a,pn,G){
   doc+='    PaginationMeta:\n      type: object\n      properties:\n        cursor:\n          type: string\n          nullable: true\n        hasNextPage:\n          type: boolean\n        total:\n          type: integer\n\n';
   doc+='    ErrorResponse:\n      type: object\n      required: [type, title, status]\n      properties:\n        type:\n          type: string\n          format: uri\n        title:\n          type: string\n        status:\n          type: integer\n        detail:\n          type: string\n        instance:\n          type: string\n\n';
 
-  // Generate schemas for top 3 entities
+  // Generate schemas for top 3 entities using getEntityColumns
+  var _p84OA=function(c){
+    if(!c)return null;
+    var cn=c.col,ct=(c.type||'').toUpperCase(),cv=c.constraint||'',lbl=c.desc||cn;
+    if(/^(id|created_at|updated_at|deleted_at)$/.test(cn))return null;
+    var ot='string',ox='';
+    if(/UUID/.test(ct))ox='\n          format: uuid';
+    else if(/TIMESTAMP|DATE/.test(ct))ox='\n          format: date-time';
+    else if(/^INT|BIGINT|SMALLINT/.test(ct))ot='integer';
+    else if(/DECIMAL|FLOAT|NUMERIC|REAL/.test(ct))ot='number';
+    else if(/BOOL/.test(ct))ot='boolean';
+    else if(/JSON/.test(ct))ot='object';
+    return {n:cn,t:ot,x:ox,l:lbl,c:cv};
+  };
   entities.slice(0,3).forEach(function(ent){
-    const entLower=ent.toLowerCase();
-    doc+='    '+ent+':\n      type: object\n      properties:\n        id:\n          type: string\n          format: uuid\n        created_at:\n          type: string\n          format: date-time\n        updated_at:\n          type: string\n          format: date-time\n      # TODO: '+(G?'エンティティ固有フィールドを追加':'Add entity-specific fields')+'\n\n';
-    doc+='    '+ent+'Create:\n      type: object\n      required: []  # TODO: '+(G?'必須フィールドを指定':'Specify required fields')+'\n      # TODO: '+(G?'作成時フィールドを追加':'Add creation fields')+'\n\n';
+    var cols=getEntityColumns(ent,G,entities);
+    var props=cols.map(_p84OA).filter(Boolean);
+    var reqF=props.filter(function(p){return /NOT NULL/.test(p.c)&&!/DEFAULT/.test(p.c);}).map(function(p){return p.n;});
+    doc+='    '+ent+':\n      type: object\n      properties:\n';
+    doc+='        id:\n          type: string\n          format: uuid\n';
+    doc+='        created_at:\n          type: string\n          format: date-time\n';
+    doc+='        updated_at:\n          type: string\n          format: date-time\n';
+    props.forEach(function(p){doc+='        '+p.n+':\n          type: '+p.t+(p.x?p.x:'')+'\n          description: "'+p.l+'"\n';});
+    if(!props.length)doc+='      # '+(G?'プロジェクト固有フィールドをここに追加':'Add project-specific fields here')+'\n';
+    doc+='\n';
+    doc+='    '+ent+'Create:\n      type: object\n';
+    if(reqF.length)doc+='      required: ['+reqF.map(function(f){return '"'+f+'"';}).join(', ')+']\n';
+    doc+='      properties:\n';
+    if(props.length){props.forEach(function(p){doc+='        '+p.n+':\n          type: '+p.t+(p.x?p.x:'')+'\n          description: "'+p.l+'"\n';});}
+    else doc+='      # '+(G?'作成時フィールドをここに追加':'Add creation fields here')+'\n';
+    doc+='\n';
   });
 
   doc+='paths:\n';

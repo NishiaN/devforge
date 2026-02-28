@@ -1,6 +1,38 @@
 /* ═══ PILLAR ㉕ PERFORMANCE INTELLIGENCE ═══ */
 /* Generates: docs/99-102 — Performance Strategy, DB Perf, Cache Strategy, Monitoring */
 
+/* Domain-specific performance extras */
+var DOMAIN_PERF_EXTRA={
+  fintech:{
+    db_ja:['トランザクション分離レベル Serializable の使用 (競合検出)','AuditLogテーブルへのPartitioned Index (月次パーティション)','決済レコードのRead Replica活用 (レポート参照)'],
+    db_en:['Use Serializable transaction isolation (conflict detection)','Partitioned index on AuditLog table (monthly partitions)','Read replica for payment record reporting queries'],
+    cache_ja:['口座残高・残高照会はキャッシュ禁止 (Always Fresh)','セッショントークンは Redis TTL 15分 (セキュリティ)','レートリミット用 Redis カウンター (Sliding Window)'],
+    cache_en:['Account balance: never cache (Always Fresh)','Session tokens: Redis TTL 15 min (security)','Rate limiting: Redis sliding window counter'],
+    alert_ja:['決済API P95 > 3s → 🔴 Critical (即時対応)','エラー率 > 0.5% → 🔴 Critical (即時対応)','DB接続プール枯渇 > 90% → 🟠 Warning'],
+    alert_en:['Payment API P95 > 3s → 🔴 Critical (immediate)','Error rate > 0.5% → 🔴 Critical (immediate)','DB connection pool > 90% → 🟠 Warning']},
+  health:{
+    db_ja:['患者記録のRow-Level Securityで検索最適化 (RLS Policy Index)','PHIカラムに暗号化 + 検索用インデックス分離','時系列バイタルデータ → TimescaleDB / PostgreSQL hypertable'],
+    db_en:['Patient record RLS with optimized policy indexes','PHI columns: encryption + separate search index','Time-series vitals → TimescaleDB / PostgreSQL hypertable'],
+    cache_ja:['PHI (保護医療情報) のキャッシュ禁止','診断コード・薬品マスタは長期キャッシュ可 (変化なし)','セッションは暗号化Redis (HIPAA準拠)'],
+    cache_en:['Never cache PHI (protected health information)','Diagnosis codes/drug master: long-term cacheable (static)','Session: encrypted Redis (HIPAA compliant)'],
+    alert_ja:['API可用性 < 99.9% → 🔴 Critical','レスポンス P99 > 2s → 🟠 Warning','バックアップ失敗 → 🔴 Critical (即時)'],
+    alert_en:['API availability < 99.9% → 🔴 Critical','Response P99 > 2s → 🟠 Warning','Backup failure → 🔴 Critical (immediate)']},
+  ec:{
+    db_ja:['在庫テーブルに SELECT FOR UPDATE SKIP LOCKED (非ブロッキング在庫ロック)','注文ステータス推移は状態機械テーブル + インデックス','商品検索は全文検索インデックス (pg_trgm / Elasticsearch)'],
+    db_en:['Inventory: SELECT FOR UPDATE SKIP LOCKED (non-blocking lock)','Order status transitions: state machine table + indexes','Product search: full-text index (pg_trgm / Elasticsearch)'],
+    cache_ja:['商品カタログ: CDN + アプリキャッシュ 5分 (変更時Purge)','カート: Redis セッション (TTL 24h)','在庫数: Redis カウンター (DECRBY) + DB定期同期'],
+    cache_en:['Product catalog: CDN + app cache 5min (purge on change)','Cart: Redis session (TTL 24h)','Inventory count: Redis DECRBY counter + DB sync'],
+    alert_ja:['チェックアウト成功率 < 98% → 🔴 Critical','カート放棄率急増 +20% → 🟠 Warning','決済ゲートウェイ遅延 > 5s → 🟠 Warning'],
+    alert_en:['Checkout success rate < 98% → 🔴 Critical','Cart abandonment spike +20% → 🟠 Warning','Payment gateway latency > 5s → 🟠 Warning']},
+  ai:{
+    db_ja:['ベクトル検索: pgvector に HNSW インデックス (ANN精度90%↑)','会話履歴テーブル: user_id + created_at複合インデックス','大量埋め込みベクトル: バッチ処理 + 非同期更新'],
+    db_en:['Vector search: pgvector HNSW index (90%+ ANN accuracy)','Conversation history: composite index (user_id + created_at)','Bulk embeddings: batch processing + async updates'],
+    cache_ja:['同一プロンプトへのLLM APIレスポンスをRedisキャッシュ (TTL 1h)','埋め込みベクトルはDB永続化 (再生成コスト削減)','コンテキストウィンドウ管理で不要トークン削減'],
+    cache_en:['Cache LLM API responses for identical prompts (Redis TTL 1h)','Persist embedding vectors in DB (avoid regeneration cost)','Context window management to minimize unnecessary tokens'],
+    alert_ja:['LLM APIエラー率 > 1% → 🔴 Critical','レスポンスP95 > 10s → 🟠 Warning','月次APIコスト > 予算の80% → 🟡 Info'],
+    alert_en:['LLM API error rate > 1% → 🔴 Critical','Response P95 > 10s → 🟠 Warning','Monthly API cost > 80% of budget → 🟡 Info']},
+};
+
 const CORE_WEB_VITALS=[
   {metric:'LCP',name:'Largest Contentful Paint',ja:'最大コンテンツ描画',good:'≤ 2.5s',ni:'2.5-4.0s',poor:'> 4.0s',tip:'Optimize hero images, server response time, render-blocking resources'},
   {metric:'INP',name:'Interaction to Next Paint',ja:'次の描画までの時間',good:'≤ 200ms',ni:'200-500ms',poor:'> 500ms',tip:'Minimize long tasks, defer non-critical JS, use web workers'},
@@ -219,6 +251,15 @@ function gen100(a,pn){
     doc+='```typescript\n// Kysely: compile queries for reuse\nconst compiled = db.selectFrom(\'users\')\n  .selectAll()\n  .where(\'id\', \'=\', sql.lit(0))\n  .compile();\n// Reuse compiled query with different params\n```\n';
   }
 
+  // Domain-specific DB performance tips
+  var _d100=detectDomain(a.purpose||'');
+  var _dp100=_d100&&DOMAIN_PERF_EXTRA[_d100];
+  if(_dp100){
+    doc+='\n## '+(G?'ドメイン固有DBパフォーマンス ('+_d100+')':'Domain DB Performance ('+_d100+')')+'\n\n';
+    (G?_dp100.db_ja:_dp100.db_en).forEach(function(t){doc+='- '+t+'\n';});
+    doc+='\n';
+  }
+
   S.files['docs/100_database_performance.md']=doc;
 }
 
@@ -282,6 +323,15 @@ function gen101(a,pn){
          '- **Image caching**: expo-image with `cachePolicy: \'memory-disk\'` for local image caching')+'\n';
   }
 
+  // Domain-specific cache considerations
+  var _d101=detectDomain(a.purpose||'');
+  var _dp101=_d101&&DOMAIN_PERF_EXTRA[_d101];
+  if(_dp101){
+    doc+='\n## '+(G?'ドメイン固有キャッシュ戦略 ('+_d101+')':'Domain Cache Strategy ('+_d101+')')+'\n\n';
+    (G?_dp101.cache_ja:_dp101.cache_en).forEach(function(c){doc+='- '+c+'\n';});
+    doc+='\n';
+  }
+
   S.files['docs/101_cache_strategy.md']=doc;
 }
 
@@ -339,6 +389,15 @@ function gen102(a,pn){
   doc+='| LCP > 4s '+(G?'の訪問者':'visitors')+' > 20% | 🟠 Warning | '+(G?'1時間以内':'Within 1h')+'|\n';
   doc+='| '+(G?'メモリ使用率':'Memory usage')+' > 85% | 🟠 Warning | '+(G?'1時間以内':'Within 1h')+'|\n';
   doc+='| JS Bundle '+(G?'サイズ増加':'size increase')+' > 50KB | 🟡 Info | '+(G?'次回PR':'Next PR')+'|\n';
+
+  // Domain-specific monitoring alerts
+  var _d102=detectDomain(a.purpose||'');
+  var _dp102=_d102&&DOMAIN_PERF_EXTRA[_d102];
+  if(_dp102){
+    doc+='\n## '+(G?'ドメイン固有アラート ('+_d102+')':'Domain-Specific Alerts ('+_d102+')')+'\n\n';
+    (G?_dp102.alert_ja:_dp102.alert_en).forEach(function(al){doc+='- '+al+'\n';});
+    doc+='\n';
+  }
 
   S.files['docs/102_performance_monitoring.md']=doc;
 }

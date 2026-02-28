@@ -45,6 +45,38 @@ var WEB_VITALS=[
    ja_tip:'画像・広告にwidth/height指定。動的コンテンツの領域確保',en_tip:'Specify width/height for images/ads. Reserve space for dynamic content'},
 ];
 
+/* Domain-specific test strategies */
+var DOMAIN_TEST_EXTRA={
+  fintech:{
+    cov_ja:['決済フロー (Payment Flow) → ≥95% カバレッジ必須','トランザクション分離 (Serializable) の境界値テスト','AML/KYCルールのユニットテスト完全カバー','認証2段階フローの全パスカバー'],
+    cov_en:['Payment flow coverage ≥ 95% required','Transaction isolation (Serializable) boundary tests','Full unit coverage for AML/KYC rules','Full coverage for 2FA auth flow'],
+    e2e_ja:['支払い完了フロー (Stripe/card → success/failure)','認証2FA フロー (TOTP/SMS)','取引履歴ページネーションのE2E','不正検知アラートのUI確認'],
+    e2e_en:['Payment checkout flow (success/failure)','2FA authentication flow (TOTP/SMS)','Transaction history pagination E2E','Fraud alert UI validation'],
+    perf_ja:['同時決済 100並列 → エラー率 < 0.1% 目標','タイムアウト設定: 決済API 5s / 認証API 2s','DB ロックタイムアウト境界値テスト'],
+    perf_en:['100 concurrent payments → error rate < 0.1%','Timeout: payment API 5s / auth API 2s','DB lock timeout boundary test']},
+  health:{
+    cov_ja:['患者記録CRUD → 100% カバレッジ','同意管理フロー (Consent) の境界値テスト','PHIアクセスログ記録の完全テスト','HIPAA監査トレイル生成の検証'],
+    cov_en:['Patient record CRUD → 100% coverage','Consent management flow boundary tests','PHI access log recording full test','HIPAA audit trail generation validation'],
+    e2e_ja:['患者記録作成→参照→更新→論理削除フロー','診断書・処方箋PDFダウンロードE2E','権限別アクセス制御 (医師/看護師/患者) の検証'],
+    e2e_en:['Patient record create→read→update→soft-delete flow','Medical report PDF download E2E','Role-based access control (doctor/nurse/patient) validation'],
+    perf_ja:['EMRクエリ P95 ≤ 500ms (1000レコード)','同時200セッション接続テスト','バックアップ/リストア時間計測'],
+    perf_en:['EMR query P95 ≤ 500ms (1000 records)','Concurrent 200 session load test','Backup/restore time measurement']},
+  ec:{
+    cov_ja:['カート操作→在庫管理連携 → ≥90% カバレッジ','在庫0時の注文防止ロジック (オーバーセル防止) の完全テスト','決済Webhookハンドラのユニットテスト'],
+    cov_en:['Cart→inventory integration coverage ≥ 90%','Oversell prevention logic full unit coverage','Payment webhook handler unit tests'],
+    e2e_ja:['カート追加→決済→注文確認メールフロー','在庫切れ商品の購入不可確認','クーポン適用→割引額計算→決済フロー'],
+    e2e_en:['Add to cart→checkout→order confirmation email flow','Out-of-stock purchase prevention check','Coupon apply→discount calc→checkout flow'],
+    perf_ja:['フラッシュセール模擬: 10K同時リクエスト → 在庫競合テスト','商品一覧ページ: P95 ≤ 1s (1000商品)'],
+    perf_en:['Flash sale simulation: 10K concurrent requests → inventory contention','Product listing page: P95 ≤ 1s (1000 items)']},
+  ai:{
+    cov_ja:['LLMレスポンスパーサー → ≥85% カバレッジ','プロンプトインジェクション防御ロジックの完全テスト','RAGパイプラインのユニットテスト (モック使用)'],
+    cov_en:['LLM response parser coverage ≥ 85%','Prompt injection defense logic full coverage','RAG pipeline unit tests (with mocks)'],
+    e2e_ja:['チャット送信→ストリーミングレスポンスのE2E','API タイムアウト処理 (30s超過) の確認','会話履歴の永続化と復元フロー'],
+    e2e_en:['Chat send→streaming response E2E','API timeout handling (>30s) validation','Conversation history persistence and restore flow'],
+    perf_ja:['LLM API レイテンシ P95 ≤ 5s (ストリーミング除く)','同時チャット 50セッション→エラー率 < 1%'],
+    perf_en:['LLM API latency P95 ≤ 5s (excl. streaming)','50 concurrent chat sessions → error rate < 1%']},
+};
+
 // ============================================================================
 // HELPERS
 // ============================================================================
@@ -177,6 +209,44 @@ function gen91(a,pn,G,feType,beType){
     doc+='\n';
   }
 
+  // Entity-specific test fixtures
+  var _p91ents=(a.entities||'').split(',').map(function(e){return e.trim();}).filter(Boolean);
+  if(_p91ents.length){
+    var _p91ent=_p91ents[0];
+    var _p91cols=getEntityColumns(_p91ent,G,_p91ents);
+    if(_p91cols.length){
+      doc+='## '+(G?'エンティティ別テストフィクスチャ例 ('+_p91ent+')':'Entity Test Fixtures ('+_p91ent+')')+'\n\n';
+      var _p91obj={};
+      _p91cols.forEach(function(c){
+        if(!c)return;
+        var cn=c.col,ct=(c.type||'').toUpperCase();
+        if(/^(id|created_at|updated_at|deleted_at)$/.test(cn))return;
+        if(/UUID/.test(ct))_p91obj[cn]='"'+cn+'-uuid"';
+        else if(/^INT|BIGINT|SMALLINT/.test(ct))_p91obj[cn]='1';
+        else if(/DECIMAL|FLOAT|NUMERIC/.test(ct))_p91obj[cn]='9.99';
+        else if(/BOOL/.test(ct))_p91obj[cn]='true';
+        else if(/TIMESTAMP|DATE/.test(ct))_p91obj[cn]='"2024-01-01T00:00:00Z"';
+        else if(/JSON/.test(ct))_p91obj[cn]='{}';
+        else _p91obj[cn]='"'+cn.replace(/_/g,'-')+'"';
+      });
+      var _p91lines=Object.keys(_p91obj).map(function(k){return '  '+k+': '+_p91obj[k];});
+      if(isPy){
+        doc+='```python\n# tests/fixtures/'+_p91ent.toLowerCase()+'_fixture.py\nSAMPLE_DATA = {\n';
+        _p91lines.forEach(function(l){doc+=l+',\n';});
+        doc+='}\n```\n\n';
+      } else {
+        doc+='```typescript\n// tests/fixtures/'+_p91ent[0].toLowerCase()+_p91ent.slice(1)+'.fixture.ts\nimport type { '+_p91ent+' } from \'@/types\';\n\nexport const sample'+_p91ent+': Partial<'+_p91ent+'> = {\n';
+        _p91lines.forEach(function(l){doc+=l+',\n';});
+        doc+='};\n```\n\n';
+      }
+      var _p91reqCol=_p91cols.find(function(c){return c&&/NOT NULL/.test(c.constraint||'')&&!/DEFAULT/.test(c.constraint||'')&&!/^(id|created_at|updated_at|deleted_at)$/.test(c.col||'');});
+      if(_p91reqCol){
+        var _p91rf=_p91reqCol.col;
+        doc+='```typescript\n// '+(G?'必須フィールドバリデーションテスト':'Required field validation')+'\nit(\'rejects missing '+_p91rf+'\', async () => {\n  const data = { ...sample'+_p91ent+' };\n  delete (data as any).'+_p91rf+';\n  await expect(service.create(data)).rejects.toThrow();\n});\n```\n\n';
+      }
+    }
+  }
+
   S.files['docs/91_testing_strategy.md']=doc;
 }
 
@@ -229,6 +299,15 @@ function gen92(a,pn,G,feType,beType){
   );
   doc+='```bash\n'+(isPy?'# mutmut (Python)\npip install mutmut\nmutmut run\nmutmut results':'# Stryker (JavaScript/TypeScript)\nnpm install -D @stryker-mutator/core @stryker-mutator/jest-runner\nnpx stryker run')+'\n```\n\n';
 
+  // Domain-specific coverage priorities
+  var _d92=detectDomain(a.purpose||'');
+  var _de92=_d92&&DOMAIN_TEST_EXTRA[_d92];
+  if(_de92){
+    doc+='## '+(G?'ドメイン固有カバレッジ優先 ('+_d92+')':'Domain Coverage Priorities ('+_d92+')')+'\n\n';
+    (G?_de92.cov_ja:_de92.cov_en).forEach(function(c){doc+='- '+c+'\n';});
+    doc+='\n';
+  }
+
   S.files['docs/92_coverage_design.md']=doc;
 }
 
@@ -278,6 +357,15 @@ function gen93(a,pn,G,feType,beType){
       :'For Expo/React Native projects, use **Maestro** (simple) or **Detox** (precise) for mobile E2E.\n\n'
     );
     doc+='```yaml\n# .maestro/login_flow.yaml\nappId: com.example.app\n---\n- launchApp\n- tapOn: "Email"\n- inputText: "test@example.com"\n- tapOn: "Password"\n- inputText: "password123"\n- tapOn: "Login"\n- assertVisible: "Welcome"\n```\n\n';
+  }
+
+  // Domain-specific E2E scenarios
+  var _d93=detectDomain(a.purpose||'');
+  var _de93=_d93&&DOMAIN_TEST_EXTRA[_d93];
+  if(_de93){
+    doc+='## '+(G?'ドメイン固有E2Eシナリオ ('+_d93+')':'Domain E2E Scenarios ('+_d93+')')+'\n\n';
+    (G?_de93.e2e_ja:_de93.e2e_en).forEach(function(s){doc+='- [ ] '+s+'\n';});
+    doc+='\n';
   }
 
   // CI
@@ -350,6 +438,15 @@ function gen94(a,pn,G,feType,beType){
   doc+='| '+(G?'APIレスポンス (p95)':'API response (p95)')+' | < 500ms | k6 / Locust |\n';
   doc+='| '+(G?'DBクエリ':'DB query')+' (p95) | < 100ms | pg_stat_statements |\n';
   doc+='\n';
+
+  // Domain-specific load test scenarios
+  var _d94=detectDomain(a.purpose||'');
+  var _de94=_d94&&DOMAIN_TEST_EXTRA[_d94];
+  if(_de94&&_de94.perf_ja){
+    doc+='## '+(G?'ドメイン固有負荷テストシナリオ ('+_d94+')':'Domain Load Test Scenarios ('+_d94+')')+'\n\n';
+    (G?_de94.perf_ja:_de94.perf_en).forEach(function(s){doc+='- '+s+'\n';});
+    doc+='\n';
+  }
 
   S.files['docs/94_performance_testing.md']=doc;
 }

@@ -803,6 +803,27 @@ function genPillar12_SecurityIntelligence(a,pn){
     doc44+='\n'+(G?'> これらのガードレールは `docs/39_implementation_playbook.md` の実装パターンと連携して確認してください。\n\n':'> Verify these guardrails in conjunction with implementation patterns in `docs/39_implementation_playbook.md`.\n\n');
   }
 
+  // Feature-Specific Security Acceptance Test Scenarios (via getFeatureDetail)
+  var _secFdItems=[];
+  features.forEach(function(f){
+    var fd=typeof getFeatureDetail==='function'?getFeatureDetail(f):null;
+    if(!fd)return;
+    var errTests=G?(fd.tests_ja||[]):(fd.tests_en||[]);
+    var errorCases=errTests.filter(function(t){return/(異常系|Error|error|401|403|422|409)/i.test(t[0]+t[1]);});
+    if(errorCases.length>0)_secFdItems.push({name:f,cases:errorCases});
+  });
+  if(_secFdItems.length>0){
+    doc44+='## '+(G?'フィーチャー別セキュリティ検証テストシナリオ':'Feature-Specific Security Validation Scenarios')+'\n\n';
+    doc44+=(G?'以下は機能仕様から導出したセキュリティ検証シナリオです（認可・バリデーション・認証エラーケース）。\n\n':'The following security validation scenarios are derived from feature specifications (auth, authorization, validation error cases).\n\n');
+    _secFdItems.forEach(function(item){
+      doc44+='### '+item.name+'\n\n';
+      doc44+='| '+(G?'テストケース':'Test Case')+' | '+(G?'期待結果':'Expected Result')+' | '+(G?'ステータス':'Status')+' |\n';
+      doc44+='|---|---|:---:|\n';
+      item.cases.forEach(function(t){doc44+='| '+t[0]+' | '+t[1]+' | ⬜ |\n';});
+      doc44+='\n';
+    });
+  }
+
   doc44+=(G?'## 📚 関連ドキュメント\n\n':'## 📚 Related Documents\n\n');
   doc44+='- [Security Intelligence](./43_security_intelligence.md)\n';
   doc44+='- [Security Testing](./47_security_testing.md)\n';

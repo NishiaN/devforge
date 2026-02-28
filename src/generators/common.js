@@ -19,6 +19,11 @@ function isNone(v){
   return !v||v==='none'||v==='None'||v==='なし';
 }
 
+// ── Check if backend is a BaaS (Supabase / Firebase / Convex) ──
+function isBaaS(a){
+  return /Supabase|Firebase|Convex/.test((a||{}).backend||'');
+}
+
 // ── P15: Stakeholder type inference from domain ──
 function inferStakeholder(domain){
   var map={

@@ -28,6 +28,39 @@ function _costDB(a){
   return {name:'PostgreSQL',free:'Self-hosted (free)',pro:'Managed DB from $20/月',opt_ja:'接続プール・vacuum定期実行・クエリ最適化',opt_en:'Connection pooling, regular vacuum, query optimization'};
 }
 
+/* ── Domain-specific cost factor map ── */
+var DOMAIN_COST_FACTORS={
+  fintech:{
+    ja:['コンプライアンス監査ログストレージ (月$20-100)','HSM/KMS 暗号鍵管理 ($5-50/月)','本番環境冗長化 (HA構成で×2-3コスト)','SOC2/PCI-DSS 監査ツール ($200-500/月)'],
+    en:['Compliance audit log storage ($20-100/mo)','HSM/KMS key management ($5-50/mo)','HA production redundancy (2-3× cost)','SOC2/PCI-DSS audit tooling ($200-500/mo)']},
+  health:{
+    ja:['HIPAA準拠ストレージ暗号化 (+20-30%コスト)','BAA締結クラウドサービス (AWS/GCP医療グレード)','監査ログ7年保存ストレージ','緊急系HA構成 (RPO<1min → 高コスト)'],
+    en:['HIPAA-compliant encrypted storage (+20-30% cost)','BAA-signed cloud services (AWS/GCP healthcare tier)','7-year audit log retention storage','HA for critical systems (RPO<1min → high cost)']},
+  ec:{
+    ja:['決済手数料 Stripe: 3.6%+¥40/件','CDN帯域 (商品画像・動画で高コスト傾向)','在庫DB書き込み負荷 (ピーク時コスト増)','不正検知 API ($0.001-0.01/トランザクション)'],
+    en:['Payment fees: Stripe 2.9%+$0.30/txn','CDN bandwidth (product images/video intensive)','Inventory DB write load (peaks spike cost)','Fraud detection API ($0.001-0.01/txn)']},
+  media:{
+    ja:['動画ストレージ・CDN転送が支出の60-80%を占める','エンコード (AWS MediaConvert $0.0075/min)','グローバルCDN帯域 ($0.01-0.085/GB)','オリジンサーバーはスケール可能に設計'],
+    en:['Video storage & CDN transfer = 60-80% of spend','Encoding (AWS MediaConvert $0.0075/min)','Global CDN bandwidth ($0.01-0.085/GB)','Design origin for horizontal scale']},
+  ai:{
+    ja:['LLM APIコスト (GPT-4o: $2.5/1M input tok)','ベクトルDB (Pinecone $70〜/月 or Supabase pgvector)','GPU推論 (A100: $3-5/h on demand)','リクエストキャッシュでAPI呼び出し30-50%削減'],
+    en:['LLM API cost (GPT-4o: $2.5/1M input tok)','Vector DB (Pinecone $70+/mo or pgvector free)','GPU inference (A100: $3-5/h on-demand)','Request caching reduces API calls 30-50%']},
+  analytics:{
+    ja:['データウェアハウス BigQuery: $5/TB クエリ','ストリーム処理 Kafka/Kinesis ($0.015/shard-h)','BI可視化 Metabase/Grafana Cloud (Free〜$500)','データ保持ポリシーでストレージ最適化'],
+    en:['Data warehouse: BigQuery $5/TB queried','Stream processing: Kafka/Kinesis ($0.015/shard-h)','BI viz: Metabase/Grafana Cloud (Free-$500)','Data retention policy optimizes storage']},
+  iot:{
+    ja:['デバイス接続料 AWS IoT Core: $0.08/百万メッセージ','時系列DB (InfluxDB Cloud $250〜 or TimescaleDB)','Edge処理でクラウド転送量を70%削減可能','OTAアップデート配信コスト考慮'],
+    en:['Device messaging: AWS IoT Core $0.08/1M msgs','Time-series DB (InfluxDB Cloud $250+ or TimescaleDB)','Edge processing reduces cloud transfer by 70%','Factor in OTA update distribution cost']},
+  education:{
+    ja:['動画配信CDN (コース動画で帯域大)','ユーザー急増期(入学シーズン)のスケーリングコスト','LMS認定・セキュリティ監査 ($200-1000/年)','無料枠ユーザーのコスト配分戦略が重要'],
+    en:['Video CDN (course videos drive bandwidth)','Seasonal scaling cost (enrollment periods)','LMS certification & security audit ($200-1000/yr)','Free-tier user cost allocation strategy critical']},
+};
+function _costDomain(domain,G){
+  var d=DOMAIN_COST_FACTORS[domain];
+  if(!d)return null;
+  return G?d.ja:d.en;
+}
+
 function genPillar27_CostOptimization(a,pn){
   gen109(a,pn);gen110(a,pn);gen111(a,pn);gen112(a,pn);
 }
@@ -71,6 +104,15 @@ function gen109(a,pn){
   doc+='- [ ] GitHub Actions 2000 min/月\n';
   doc+='- [ ] Cloudflare Free (CDN, DDoS保護)\n';
   doc+='- [ ] Sentry Free (5K events/月)\n';
+
+  /* Domain-specific cost factors */
+  var _cd=detectDomain(a.purpose);
+  var _cf=_cd?_costDomain(_cd,G):null;
+  if(_cf&&_cf.length){
+    doc+='\n## '+(G?'ドメイン固有コスト要因 ('+_cd+')':'Domain-Specific Cost Factors ('+_cd+')')+'\n\n';
+    doc+=(G?'> このプロジェクトのドメイン固有コスト要因を考慮してください:':'> Consider these domain-specific cost factors for your project:')+'\n\n';
+    _cf.forEach(function(f){doc+='- '+f+'\n';});
+  }
 
   S.files['docs/109_cost_architecture.md']=doc;
 }

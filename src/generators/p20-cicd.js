@@ -510,6 +510,28 @@ function gen79(G, domain, dtCfg, a, pn) {
     }
   }
 
+  // Feature-Specific Acceptance Gates (via getFeatureDetail)
+  var _cicdFeatures = (a.mvp_features || '').split(/[,、]/).map(function(f){return f.trim();}).filter(Boolean);
+  var _cicdFdItems = [];
+  _cicdFeatures.forEach(function(f) {
+    var fd = typeof getFeatureDetail === 'function' ? getFeatureDetail(f) : null;
+    if (!fd) return;
+    var criteria = G ? (fd.criteria_ja || []) : (fd.criteria_en || []);
+    if (criteria.length > 0) _cicdFdItems.push({name: f, criteria: criteria.slice(0, 3)});
+  });
+  if (_cicdFdItems.length > 0) {
+    doc += '## ' + (G ? 'フィーチャー別デプロイ前受入ゲート' : 'Feature-Specific Pre-Deploy Acceptance Gates') + '\n\n';
+    doc += (G ? '機能仕様から導出した受入条件。ステージング環境でのE2E検証に含めてください。\n\n' : 'Acceptance criteria derived from feature specs. Include in staging E2E validation.\n\n');
+    doc += '| ' + (G ? 'フィーチャー' : 'Feature') + ' | ' + (G ? '受入条件' : 'Acceptance Criterion') + ' | ' + (G ? '検証' : 'Verified') + ' |\n';
+    doc += '|---|---|:---:|\n';
+    _cicdFdItems.forEach(function(item) {
+      item.criteria.forEach(function(c, ci) {
+        doc += '| ' + (ci === 0 ? item.name : '') + ' | ' + c + ' | ⬜ |\n';
+      });
+    });
+    doc += '\n';
+  }
+
   doc += '## ' + (G ? '品質ゲートMermaid' : 'Quality Gate Flow (Mermaid)') + '\n\n';
   doc += '```mermaid\n';
   doc += 'flowchart TD\n';

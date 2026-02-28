@@ -294,6 +294,27 @@ function genPillar14_OpsIntelligence(a, pn) {
   }
   runbook += '\n';
 
+  // Feature-Specific Production Error Monitoring (via getFeatureDetail)
+  var _opsFeatures = (a.mvp_features || '').split(/[,、]/).map(function(f){return f.trim();}).filter(Boolean);
+  var _opsFdItems = [];
+  _opsFeatures.forEach(function(f) {
+    var fd = typeof getFeatureDetail === 'function' ? getFeatureDetail(f) : null;
+    if (!fd) return;
+    var errTests = G ? (fd.tests_ja || []) : (fd.tests_en || []);
+    var errorCases = errTests.filter(function(t){return /(異常系|Error|error|401|403|422|409)/i.test(t[0]+t[1]);});
+    if (errorCases.length > 0) _opsFdItems.push({name: f, cases: errorCases});
+  });
+  if (_opsFdItems.length > 0) {
+    runbook += `### ${G ? 'フィーチャー別エラー監視ポイント' : 'Feature-Specific Error Monitoring Points'}\n\n`;
+    runbook += (G ? '以下のエラーシナリオを本番モニタリングのアラート設定に含めてください。\n\n' : 'Include the following error scenarios in production monitoring alerts.\n\n');
+    _opsFdItems.slice(0, 5).forEach(function(item) {
+      runbook += '**' + item.name + '**: ';
+      var errorLabels = item.cases.map(function(t){return t[1].split(',')[0].trim();}).join(' / ');
+      runbook += errorLabels + '\n';
+    });
+    runbook += '\n';
+  }
+
   // Section 4: Observability Stack
   runbook += `## ${G ? '4. Observability Stack' : '4. Observability Stack'}\n\n`;
   runbook += `### ${G ? 'ログ・メトリクス・トレース' : 'Logs, Metrics, Traces'}\n\n`;
