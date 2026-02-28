@@ -253,6 +253,97 @@ function buildDeps(a){
   return {deps,devDeps,scripts};
 }
 
+// ── F: Scaffolding Recipe Builder ──
+function buildScaffoldingSteps(a){
+  const fe=a.frontend||'Next.js';const be=a.backend||'';
+  const orm=resolveORM(a);const auth=resolveAuth(a);
+  const isBaaS=/Supabase|Firebase|Convex/.test(be);
+  const hasPay=a.payment&&!/なし|None|none/.test(a.payment);
+  const steps=[];
+
+  // Step 1: Project initialization
+  let initCmd='';
+  if(fe.includes('Next.js'))initCmd='npx create-next-app@latest . --typescript --tailwind --eslint --app --src-dir --import-alias "@/*"';
+  else if(fe.includes('Nuxt'))initCmd='npx nuxi@latest init .';
+  else if(fe.includes('SvelteKit'))initCmd='npx sv create .';
+  else if(fe.includes('Vite')&&fe.includes('React'))initCmd='npm create vite@latest . -- --template react-ts';
+  else if(fe.includes('Vite')&&fe.includes('Vue'))initCmd='npm create vite@latest . -- --template vue-ts';
+  else if(fe.includes('Expo')||fe.includes('React Native'))initCmd='npx create-expo-app@latest . --template blank-typescript';
+  else if(fe.includes('Astro'))initCmd='npm create astro@latest .';
+  if(initCmd)steps.push({title_ja:'プロジェクト初期化',title_en:'Project Initialization',cmds:['mkdir my-project && cd my-project',initCmd,'npm install']});
+
+  // Step 2: Backend init (standalone backend only)
+  if(!isBaaS&&!fe.includes('Next.js')&&!fe.includes('Nuxt')&&be&&be!=='Node.js'){
+    const beCmds=[];
+    if(be.includes('NestJS'))beCmds.push('npx @nestjs/cli new api --package-manager npm');
+    else if(be.includes('Hono'))beCmds.push('mkdir api && cd api && npm create hono@latest . -- --template nodejs');
+    else if(be.includes('Fastify'))beCmds.push('mkdir api && cd api && npm init -y && npm install fastify');
+    else if(be.includes('FastAPI'))beCmds.push('pip install fastapi uvicorn[standard] sqlalchemy alembic pydantic-settings');
+    if(beCmds.length)steps.push({title_ja:'バックエンドAPI初期化',title_en:'Backend API Init',cmds:beCmds});
+  }
+
+  // Step 3: ORM / DB setup
+  const dbCmds=[];
+  if(isBaaS){
+    if(be.includes('Supabase'))dbCmds.push('npx supabase@latest init','npx supabase start','# Run SQL migrations in supabase/migrations/');
+    else if(be.includes('Firebase'))dbCmds.push('npx firebase-tools@latest init','npx firebase deploy --only firestore:rules,firestore:indexes');
+    else if(be.includes('Convex'))dbCmds.push('npx convex dev');
+  } else if(orm.name.includes('Prisma')){
+    dbCmds.push('npx prisma init','# Edit prisma/schema.prisma to match your entities','npx prisma db push','npx prisma generate');
+  } else if(orm.name.includes('Drizzle')){
+    dbCmds.push('npm install drizzle-orm drizzle-kit','# Create drizzle.config.ts and define your schema','npx drizzle-kit push');
+  } else if(orm.name.includes('TypeORM')){
+    dbCmds.push('npm install typeorm @types/typeorm reflect-metadata','# Define entity classes in src/entities/','npx typeorm migration:run -d src/data-source.ts');
+  } else if(orm.name.includes('SQLAlchemy')){
+    dbCmds.push('pip install sqlalchemy alembic psycopg2-binary','alembic init alembic','alembic upgrade head');
+  }
+  if(dbCmds.length)steps.push({title_ja:'データベース & ORM セットアップ',title_en:'Database & ORM Setup',cmds:dbCmds});
+
+  // Step 4: Auth setup
+  const authCmds=[];
+  if(auth.provider==='authjs')authCmds.push('npm install next-auth@beta','npx auth secret','# Configure AUTH_* env vars and add auth.config.ts');
+  else if(auth.provider==='supabase')authCmds.push('# Supabase Auth is built-in','# Enable providers: Supabase Dashboard > Authentication > Providers');
+  else if(auth.provider==='firebase')authCmds.push('# Firebase Auth is built-in','# Enable providers: Firebase Console > Authentication > Sign-in method');
+  else if(auth.provider==='clerk')authCmds.push('npm install @clerk/nextjs','# Add NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY and CLERK_SECRET_KEY to .env.local');
+  if(authCmds.length)steps.push({title_ja:'認証セットアップ',title_en:'Auth Setup',cmds:authCmds});
+
+  // Step 5: Payment setup
+  if(hasPay&&(a.payment||'').includes('Stripe')){
+    steps.push({title_ja:'決済 (Stripe) セットアップ',title_en:'Payment (Stripe) Setup',
+      cmds:['npm install stripe @stripe/stripe-js','npx stripe login','# Add STRIPE_SECRET_KEY and NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY to .env.local','# Create products/prices in Stripe Dashboard']});
+  }
+
+  // Step 6: Environment variables
+  const envVars=['# .env.local — NEVER commit this file'];
+  const db=a.database||'';
+  if(!isBaaS&&db.includes('PostgreSQL'))envVars.push('DATABASE_URL="postgresql://USER:PASSWORD@localhost:5432/DBNAME"');
+  else if(!isBaaS&&db.includes('MySQL'))envVars.push('DATABASE_URL="mysql://USER:PASSWORD@localhost:3306/DBNAME"');
+  else if(!isBaaS&&db.includes('SQLite'))envVars.push('DATABASE_URL="file:./dev.db"');
+  if(be.includes('Supabase')){envVars.push('NEXT_PUBLIC_SUPABASE_URL="https://YOUR_PROJECT.supabase.co"','NEXT_PUBLIC_SUPABASE_ANON_KEY="your-anon-key"','SUPABASE_SERVICE_ROLE_KEY="your-service-role-key"');}
+  if(auth.provider==='authjs'){envVars.push('AUTH_SECRET="$(npx auth secret)"','AUTH_URL="http://localhost:3000"');}
+  if(auth.provider==='clerk'){envVars.push('NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY="pk_test_..."','CLERK_SECRET_KEY="sk_test_..."');}
+  if(hasPay&&(a.payment||'').includes('Stripe')){envVars.push('STRIPE_SECRET_KEY="sk_test_..."','NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY="pk_test_..."','STRIPE_WEBHOOK_SECRET="whsec_..."');}
+  if(envVars.length>1)steps.push({title_ja:'環境変数設定',title_en:'Environment Variables (.env.local)',cmds:envVars,note_ja:'⚠️ .env.local を .gitignore に必ず追加してください。',note_en:'⚠️ Add .env.local to .gitignore — never commit secrets.'});
+
+  // Step 7: Development start
+  const devCmds=[];
+  if(fe.includes('Next.js')||fe.includes('Nuxt')||fe.includes('SvelteKit'))devCmds.push('npm run dev','# Open http://localhost:3000');
+  else if(fe.includes('Vite'))devCmds.push('npm run dev','# Open http://localhost:5173');
+  else if(fe.includes('Expo')||fe.includes('React Native'))devCmds.push('npx expo start','# Scan QR code with Expo Go app on your phone');
+  else if(fe.includes('Astro'))devCmds.push('npm run dev','# Open http://localhost:4321');
+  if(devCmds.length)steps.push({title_ja:'開発サーバー起動',title_en:'Start Dev Server',cmds:devCmds});
+
+  // Step 8: AI tool integration
+  steps.push({title_ja:'AIツールとの連携',title_en:'AI Tool Integration',
+    cmds:['# 1. ZIPを展開してプロジェクトフォルダをCursor/Windsurf/Claude Codeで開く',
+           '# 2. CLAUDE.md を読ませる (@CLAUDE.md または drag-and-drop)',
+           '# 3. tasks.md の最優先タスクを実装させる',
+           '# 例: "tasks.mdの最上位タスクを実装してください"',
+           '# Example: "Implement the top-priority task from tasks.md"']});
+
+  return steps;
+}
+
 // ── B5: Domain Entity Validation & ER Inference ──
 const DOMAIN_ENTITIES={
   education:{core:['User','Course','Lesson','Progress','Quiz','Enrollment'],warn:['Product','Order','Cart'],suggest:{Product:'Course',Order:'Enrollment',Cart:'Wishlist'}},

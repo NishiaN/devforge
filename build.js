@@ -154,12 +154,13 @@ function legacyMinJS(s) {
   // NOTE: We do NOT remove block/line comments because:
   // Generated docs contain CSS/markdown with "/* ... */" and "//" inside strings
   // Regex-based removal doesn't understand string context and breaks syntax
-  // Safe whitespace optimization: remove indentation + collapse blank lines
+  // Safe whitespace optimization: remove indentation + trailing whitespace + collapse blank lines
   return s
     .replace(/\/\*[ \t]*[═=]{3}[\s\S]*?[═=]{3}[ \t]*\*\/\n?/g, '') // Remove module headers (ASCII === and Unicode ═══)
-    .replace(/\n{2,}/g, '\n')               // Collapse blank lines
+    .replace(/\r/g, '')                     // Normalize line endings
     .replace(/^[ \t]+/gm, '')               // Remove line-leading whitespace (indentation)
-    .replace(/;\s*\n/g, ';\n')              // Remove trailing spaces after semicolons
+    .replace(/[ \t]+$/gm, '')               // Remove trailing whitespace on each line
+    .replace(/\n{2,}/g, '\n')               // Collapse blank lines (after whitespace removal catches whitespace-only lines)
     .trim();
 }
 

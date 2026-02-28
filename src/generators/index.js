@@ -344,7 +344,84 @@ function showExportGrid(){
     '</div>';
   })();
 
-  $('izone').innerHTML=summary+heroCard+_powerOps+_aiQs+_startHere+exportGroup+mgmtGroup+dangerZone;
+  // B: Smart File Priority Map — role-based reading guide (Lv2+)
+  const _priorityMap=(function(){
+    if(S.skillLv<=1)return '';
+    if(typeof EXPORT_ROLES==='undefined')return '';
+    const roles=['developer','pm','qa','designer','ai'];
+    const tabs=roles.map(function(r){
+      var role=EXPORT_ROLES[r];if(!role)return '';
+      return '<button class="pm-tab'+(r==='developer'?' pm-tab-active':'')+'" data-role="'+r+'" onclick="showPMRole(\''+r+'\')">'+(_ja?role.ja:role.en)+'</button>';
+    }).join('');
+    return '<div class="priority-map-card">'+
+      '<div class="pm-header">📂 '+(_ja?'ロール別 最初に読むファイル':'Files to Read First by Role')+'</div>'+
+      '<div class="pm-tabs">'+tabs+'</div>'+
+      '<div class="pm-files" id="pmFiles"><div class="pm-empty">'+(_ja?'タブを選択してください':'Select a tab above')+'</div></div>'+
+      '<button class="btn btn-xs btn-s pm-dl-btn" id="pmDlBtn" onclick="exportByRole(\'developer\')">'+
+        (_ja?'📦 このロールのファイルをDL':'📦 Download Role Files')+'</button>'+
+    '</div>';
+  })();
+
+  $('izone').innerHTML=summary+heroCard+_powerOps+_aiQs+_startHere+_priorityMap+exportGroup+mgmtGroup+dangerZone;
+  // Initialize priority map with developer role
+  if(S.skillLv>=2&&typeof showPMRole==='function')setTimeout(function(){showPMRole('developer');},0);
+}
+
+// E: Selective pillar regeneration — regenerate a single pillar without touching others
+function regenSinglePillar(pillarIdx){
+  var _ja=S.lang==='ja';
+  if(!S.projectName||!Object.keys(S.files).length){
+    toast(_ja?'⚠️ 先にファイルを生成してください':'⚠️ Generate files first');return;
+  }
+  var pillarIcons=['📋','🐳','🔌','🤖','✅','🗺️','🎨','🔍','💡','🔒','📊','⚙️','🔮','🧬','🧩','🔧','🏢','🚀','🌐','🗄️','📄','📦','🧪','🛡️','⚡','🔭','💰'];
+  var icon=pillarIcons[pillarIdx]||'🔄';
+  if(!confirm(_ja?icon+' この柱だけ再生成しますか？\n（この柱の生成ファイルは上書きされます。他の柱は保持されます。）':icon+' Regenerate this pillar only?\n(This pillar\'s files will be overwritten; others are preserved.)'))return;
+  var a=S.answers,pn=S.projectName;
+  var fns=[
+    function(){genPillar1_SDD(a,pn);},
+    function(){genPillar2_DevContainer(a,pn);},
+    function(){genPillar3_MCP(a,pn);},
+    function(){genPillar4_AIRules(a,pn);},
+    function(){genPillar5_QualityIntelligence(a,pn);},
+    function(){genPillar7_Roadmap(a,pn);},
+    function(){genPillar9_DesignSystem(a,pn);},
+    function(){genPillar10_ReverseEngineering(a,pn);},
+    function(){genPillar11_ImplIntelligence(a,pn);gen81();},
+    function(){genPillar12_SecurityIntelligence(a,pn);},
+    function(){genPillar13_StrategicIntelligence(a,pn);},
+    function(){genPillar14_OpsIntelligence(a,pn);},
+    function(){genPillar15(a);},
+    function(){genPillar16_DevIQ(a,pn);},
+    function(){genPillar17_PromptGenome(a,pn);},
+    function(){genPillar18_PromptOps(a,pn);},
+    function(){genPillar19_EnterpriseSaaS(a,pn);},
+    function(){genPillar20_CICDIntelligence(a,pn);},
+    function(){genPillar21_APIIntelligence(a,pn);},
+    function(){genPillar22_DatabaseIntelligence(a,pn);},
+    function(){genPillar23_TestingIntelligence(a,pn);},
+    function(){genPillar24_AISafety(a,pn);},
+    function(){genPillar25_Performance(a,pn);},
+    function(){genPillar26_Observability(a,pn);},
+    function(){genPillar27_CostOptimization(a,pn);},
+    function(){genDocs21(a,pn);},
+    function(){genCommonFiles(a,pn);},
+  ];
+  var fn=fns[pillarIdx];
+  if(!fn){toast(_ja?'⚠️ 無効な柱インデックス':'⚠️ Invalid pillar index');return;}
+  var saved=Object.assign({},S.files);
+  S.files={};
+  try{fn();}catch(e){
+    S.files=saved;
+    toast(_ja?'❌ 再生成中にエラーが発生しました':'❌ Error during regeneration');
+    console.error('regenSinglePillar error:',e);return;
+  }
+  var newFiles=S.files;
+  S.files=saved;
+  Object.assign(S.files,newFiles);
+  save();
+  showFileTree();
+  if(typeof renderPillarGrid==='function')renderPillarGrid();
+  toast(_ja?icon+' 柱を再生成しました（'+Object.keys(newFiles).length+'ファイル更新）':icon+' Pillar regenerated ('+Object.keys(newFiles).length+' files updated)',{type:'success'});
 }
 
 function clearFiles(){

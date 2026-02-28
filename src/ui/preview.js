@@ -195,9 +195,11 @@ function initPrevTabs(){
 }
 
 function initPillarTabs(){
+  const _ja=S.lang==='ja';
   const tabs=$('pillarTabs');tabs.innerHTML='';
   const names=t('pillar');
   names.forEach((n,i)=>{
+    const wrap=document.createElement('div');wrap.className='piltab-wrap';
     const b=document.createElement('button');b.className='piltab'+(i===0?' on':'');
     b.setAttribute('role','tab');b.setAttribute('aria-selected',String(i===0));
     b.textContent=n;b.onclick=()=>{
@@ -214,7 +216,18 @@ function initPillarTabs(){
       else if(i===11) showFileTree(); // Security Intelligence
       else if(i===12) showFileTree(); // Strategic Intelligence
       else showFileTree();
-    };tabs.appendChild(b);
+    };
+    // E: Selective pillar regeneration button (Lv2+, only when files exist)
+    if(S.skillLv>=2&&Object.keys(S.files).length>0){
+      const regen=document.createElement('button');
+      regen.className='piltab-regen';
+      regen.title=(_ja?'この柱だけ再生成':'Regen this pillar');
+      regen.textContent='🔄';
+      regen.onclick=function(ev){ev.stopPropagation();if(typeof regenSinglePillar==='function')regenSinglePillar(i);};
+      wrap.appendChild(regen);
+    }
+    wrap.appendChild(b);
+    tabs.appendChild(wrap);
   });
 }
 
@@ -492,8 +505,13 @@ function buildFileTree(){
   files.push({folder:true,name:'.github/workflows'});
   files.push({name:'  ci.yml',path:'.github/workflows/ci.yml'});
   files.push({name:'───────────',path:''});
+  if(S.files['scaffolding/SETUP.md']){
+    files.push({folder:true,name:'scaffolding'});
+    files.push({name:'  SETUP.md',path:'scaffolding/SETUP.md'});
+    files.push({name:'───────────',path:''});
+  }
   files.push({folder:true,name:'docs'});
-  ['00_architecture_decision_records',
+  ['00_devforge_guide','00_architecture_decision_records',
    '01_project_overview','02_requirements','03_architecture','04_er_diagram',
    '05_api_design','06_screen_design','07_test_cases','08_security',
    '09_release_checklist','10_gantt','11_wbs','12_driven_dev','13_glossary',
@@ -511,7 +529,7 @@ function buildFileTree(){
    '99_performance_strategy','100_database_performance','101_cache_strategy','102_performance_monitoring',
    '103_observability_architecture','104_structured_logging','105_metrics_alerting','106_distributed_tracing',
    '107_project_governance','108_uat_acceptance',
-   '113_ai_collaboration_guide','114_domain_knowledge_guide'].forEach(f=>
+   '113_ai_collaboration_guide','114_domain_knowledge_guide','115_skill_portfolio'].forEach(f=>
     files.push({name:'  '+f+'.md',path:'docs/'+f+'.md'}));
   files.push({name:'───────────',path:''});
   ['README.md','.gitignore','package.json','LICENSE'].forEach(f=>files.push({name:f,path:f}));

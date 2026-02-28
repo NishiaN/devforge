@@ -1397,6 +1397,86 @@ Steps:
     +domNote+'\n\n'
     +'## '+(G?'実装推奨順序':'Recommended Implementation Order')+'\n\n'
     +(G?'1. **P1-P3**: 仕様・タスク・アーキテクチャを確定（変更コスト最大）\n2. **P6**: DBスキーマ確定（後変更はマイグレーション必要）\n3. **P8**: 認証実装（全APIが依存）\n4. **P5/P21**: API設計・実装\n5. **P14/P20**: DevOps・CI/CD整備\n6. **P23/P25**: テスト・パフォーマンス検証':'1. **P1-P3**: Finalize spec, tasks, architecture (highest change cost)\n2. **P6**: Finalize DB schema (later changes require migrations)\n3. **P8**: Implement auth (all APIs depend on this)\n4. **P5/P21**: API design and implementation\n5. **P14/P20**: DevOps and CI/CD setup\n6. **P23/P25**: Testing and performance verification');
+
+  // F: Scaffolding recipe
+  genScaffolding(a,pn,G);
+  // H: DevForge Guide (effect, usage, limitations)
+  genDevForgeGuide(a,pn,G);
+}
+
+// F: Scaffolding recipe generation — scaffolding/SETUP.md
+function genScaffolding(a,pn,G){
+  const steps=typeof buildScaffoldingSteps==='function'?buildScaffoldingSteps(a):[];
+  if(!steps.length)return;
+  let doc='# '+pn+(G?' — スキャフォールディングレシピ':' — Scaffolding Recipe')+'\n';
+  doc+='> '+(G?'このファイルはAIツールで開発を開始するためのCLIコマンド集です。上から順番に実行してください。':'This file contains CLI commands to start development with your AI tool. Execute in order.')+'\n\n';
+  doc+='> **Stack**: '+(a.frontend||'')+(a.backend?' + '+a.backend:'')+(a.database?' + '+a.database:'')+'\n\n';
+  doc+='---\n\n';
+  steps.forEach(function(s,i){
+    doc+='## Step '+(i+1)+': '+(G?s.title_ja:s.title_en)+'\n\n';
+    doc+='```bash\n';
+    s.cmds.forEach(function(cmd){doc+=cmd+'\n';});
+    doc+='```\n\n';
+    if(G&&s.note_ja)doc+='> '+s.note_ja+'\n\n';
+    else if(!G&&s.note_en)doc+='> '+s.note_en+'\n\n';
+  });
+  doc+='---\n\n';
+  doc+='## '+(G?'次のステップ: AIツールで開発開始':'Next: Start Development with AI Tool')+'\n\n';
+  doc+=(G?'1. このプロジェクトフォルダをCursor / Windsurf / Claude Code で開く\n2. チャットに `CLAUDE.md を読んで` と入力\n3. チャットに `tasks.mdの最優先タスクを実装して` と入力\n\n> **注意**: このファイルのコマンドはあくまでセットアップの出発点です。\n> 実際の実装はAIツールと.spec/specification.mdを組み合わせて行ってください。':
+    '1. Open this project folder in Cursor / Windsurf / Claude Code\n2. Type in chat: `Read CLAUDE.md`\n3. Type in chat: `Implement the top-priority task from tasks.md`\n\n> **Note**: These commands are a starting point for setup.\n> Actual implementation should combine your AI tool with .spec/specification.md.\n');
+  S.files['scaffolding/SETUP.md']=doc;
+}
+
+// H: DevForge Guide — docs/00_devforge_guide.md
+function genDevForgeGuide(a,pn,G){
+  const fe=a.frontend||'React';const be=a.backend||'Node.js';const db=a.database||'PostgreSQL';
+  const fc=Object.keys(S.files).length;
+  let doc='# '+(G?'DevForge v9 ガイド — 生成物の効果・最適な使い方・注意点':'DevForge v9 Guide — Effect, Optimal Usage & Limitations')+'\n\n';
+  doc+='> '+(G?`このドキュメントは **${pn}** の生成物について、効果・最適な使用方法・注意点・不可能なことを説明します。`:`This document explains the effect, optimal usage, limitations, and impossible things about the generated output for **${pn}**.`)+'\n\n';
+
+  // Section 1: What was generated
+  doc+='## 1. '+(G?'生成物の概要':'What Was Generated')+'\n\n';
+  doc+=(G?`DevForge v9 は 25問のウィザードから **${fc}ファイル** の「AI開発OS」を生成しました。`:
+    `DevForge v9 generated **${fc} files** of an "AI Development OS" from 25 wizard questions.`)+'\n\n';
+  doc+=(G?'生成物は3つの層で構成されています:':'The output is organized in 3 layers:')+'\n\n';
+  doc+='| '+(G?'層':'Layer')+' | '+(G?'ファイル例':'Key Files')+' | '+(G?'効果':'Effect')+'|\n';
+  doc+='|------|----------|------|\n';
+  doc+='| **AI Context** | CLAUDE.md, .cursorrules, skills/ | '+(G?'AIツールがプロジェクト全体を理解し、一貫したコードを生成':'AI tools understand the full project and generate consistent code')+'|\n';
+  doc+='| **Specification** | .spec/, docs/ (108文書) | '+(G?'アーキテクチャ・セキュリティ・テスト・運用の全設計を網羅':'Full design coverage for architecture, security, testing, operations')+'|\n';
+  doc+='| **Infrastructure** | .devcontainer/, .github/ | '+(G?'開発環境とCI/CDを即座に構築':'Development environment and CI/CD ready to use')+'|\n\n';
+
+  // Section 2: Optimal usage
+  doc+='## 2. '+(G?'最適な使用方法':'Optimal Usage')+'\n\n';
+  doc+=(G?'### AI開発ループ\n\n1. **ZIPをダウンロード**してCursor / Windsurf / Claude Codeで開く\n2. **CLAUDE.md を読ませる**: `@CLAUDE.md` または `Read CLAUDE.md and understand the project`\n3. **tasks.md の最優先タスクを実装させる**: `tasks.mdの最優先タスクを実装してください`\n4. 実装後、**compat警告**を確認（wizard画面 → Compatタブ）\n5. **AI Launcher**でドメイン固有プロンプトを活用（pillar 7タブ）\n':
+    '### AI Development Loop\n\n1. **Download ZIP** and open in Cursor / Windsurf / Claude Code\n2. **Feed CLAUDE.md**: `@CLAUDE.md` or `Read CLAUDE.md and understand the project`\n3. **Implement from tasks.md**: `Implement the top-priority task from tasks.md`\n4. After implementation, **check compat warnings** (wizard screen → Compat tab)\n5. **Use AI Launcher** for domain-specific prompts (pillar 7 tab)\n')+'\n';
+
+  doc+=(G?'### ロール別の読み方\n\n- **開発者**: CLAUDE.md → .spec/ → docs/03_architecture.md → scaffolding/SETUP.md\n- **PM**: docs/01_project_overview.md → docs/02_requirements.md → docs/107_project_governance.md\n- **QA**: docs/108_uat_acceptance.md → docs/17_test_strategy.md → docs/22_security.md\n- **アーキテクト**: docs/03_architecture.md → docs/82_architecture_integrity_check.md → .spec/technical-plan.md\n':
+    '### Reading Guide by Role\n\n- **Developer**: CLAUDE.md → .spec/ → docs/03_architecture.md → scaffolding/SETUP.md\n- **PM**: docs/01_project_overview.md → docs/02_requirements.md → docs/107_project_governance.md\n- **QA**: docs/108_uat_acceptance.md → docs/17_test_strategy.md → docs/22_security.md\n- **Architect**: docs/03_architecture.md → docs/82_architecture_integrity_check.md → .spec/technical-plan.md\n')+'\n';
+
+  // Section 3: Warnings / caveats
+  doc+='## 3. '+(G?'注意点':'Important Caveats')+'\n\n';
+  doc+=(G?'- **localStorage は揮発性**: ブラウザのデータは消える場合があります。必ずZIPエクスポートしてから閉じてください\n- **再生成すると上書き**: ウィザード回答を変更して再生成すると、手動編集ファイルが上書きされます（編集済みファイルは●マークで識別可能）\n- **CDN依存**: JSZip / mermaid.js はCDNから読み込みます。オフライン環境ではZIPのかわりに結合MDファイルがダウンロードされます\n- **スタック互換性**: compat警告（217ルール）を無視すると、生成ドキュメントと実装が乖離する可能性があります\n- **バージョン固定なし**: 生成されるpackage.jsonは最新バージョンを使用します。本番環境では`package-lock.json`で固定してください\n':
+    '- **localStorage is volatile**: Browser data can be lost. Always export ZIP before closing\n- **Regeneration overwrites**: Changing wizard answers and regenerating will overwrite manually edited files (edited files are marked with ●)\n- **CDN dependency**: JSZip / mermaid.js are loaded from CDN. Offline: combined .md fallback is used instead of ZIP\n- **Stack compatibility**: Ignoring compat warnings (217 rules) can cause misalignment between docs and implementation\n- **No version pinning**: Generated package.json uses latest versions. Pin with package-lock.json in production\n')+'\n';
+
+  // Section 4: Limitations
+  doc+='## 4. '+(G?'このアプリでは不可能なこと':'What This App Cannot Do')+'\n\n';
+  doc+=(G?'- ❌ **実行可能なソースコード** (TypeScript / Python等) の生成 → AIツール (Cursor, Windsurf等) を使用してください\n- ❌ **外部サービスとの連携** (API呼出、DB接続、デプロイ実行)\n- ❌ **チーム同時編集** / リアルタイムコラボレーション\n- ❌ **Go / Rust / Java / .NET スタック**の深い最適化（JS/TSエコシステム中心）\n- ❌ **カスタムビジネスロジック**の自動推論（テンプレートベース。必ず仕様書を見直してください）\n- ❌ **5,000KBを超えるコンテンツ**の追加（ビルドサイズ制限）\n- ❌ **マルチプロジェクト管理** / リアルタイムDB同期\n':
+    '- ❌ **Executable source code** (TypeScript / Python etc.) → Use AI tools (Cursor, Windsurf etc.)\n- ❌ **External service integration** (API calls, DB connections, deployment execution)\n- ❌ **Real-time team collaboration** / multi-user editing\n- ❌ **Deep optimization** for Go / Rust / Java / .NET stacks (JS/TS ecosystem focused)\n- ❌ **Custom business logic** auto-inference (template-based — always review specifications)\n- ❌ **Content beyond 5,000KB** (build size limit)\n- ❌ **Multi-project management** / real-time database sync\n')+'\n';
+
+  // Section 5: Tool positioning
+  doc+='## 5. '+(G?'他ツールとの位置づけ':'Tool Positioning')+'\n\n';
+  doc+=(G?'DevForge v9 は **上流仕様エンジン** です。Cursor / Windsurf / Claude Code 等の **下流コード生成ツール** の入力を最適化します。\n\n':
+    'DevForge v9 is an **upstream specification engine**. It optimizes input for downstream code generation tools like Cursor / Windsurf / Claude Code.\n\n');
+  doc+='```\n';
+  doc+=(G?'[DevForge v9] ──仕様+AIコンテキスト──→ [Cursor/Windsurf/Claude Code] ──実装──→ [動くコード]\n  ↑ここが価値                                      ↑ここで実コード生成':
+    '[DevForge v9] ──specs+AI context──→ [Cursor/Windsurf/Claude Code] ──implement──→ [working code]\n  ↑Value is here                          ↑Real code is generated here')+'\n';
+  doc+='```\n\n';
+  doc+=(G?'**使い方のコツ**: AIツールに `CLAUDE.md を読んで、tasks.md の最優先タスクを実装して` と伝えると、アーキテクチャ整合性・セキュリティ準拠・ドメイン適応済みのコードが生成されます。':
+    '**Key tip**: Tell your AI tool: `Read CLAUDE.md, then implement the top-priority task from tasks.md` — this generates architecture-consistent, security-compliant, domain-adapted code.')+'\n\n';
+
+  doc+='---\n\n';
+  doc+='> '+(G?'Generated by DevForge v9 — © 2026 Engineering no Tane Committee':'Generated by DevForge v9 — © 2026 Engineering no Tane Committee')+'\n';
+  S.files['docs/00_devforge_guide.md']=doc;
 }
 
 
