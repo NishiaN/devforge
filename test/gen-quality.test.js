@@ -18,7 +18,7 @@
  *   Domain   detectDomain     → .spec/constitution.md §3 fallback KPI
  *   E2E      full generation  → file count, token richness, bilingual parity
  *
- * Suites 1-276: ~5198 tests total (5078 + Suites 267-276: 120 tests — presets-ext10 standard presets deep)
+ * Suites 1-300: ~5324 tests total (5198 + Suites 277-286: 90 tests — presets-ext11 + Suites 287-300: 126 tests — presets-ext12)
  */
 
 const { describe, it } = require('node:test');
@@ -36628,5 +36628,915 @@ describe('Suite 286: presets-ext11 freelancer_marketplace — Supabase/Vercel/st
   it('docs/01: freelancer_marketplace produces no undefined in overview', () => {
     const f = gSDD(g286_freelancer_marketplace);
     assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'freelancer_marketplace docs/01 must not contain undefined');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 287 — presets-ext12.js: video_conference
+   Supabase/Vercel/stripe
+   ════════════════════════════════════════════════════════════════ */
+
+const g287_video_conference = Object.assign({}, A25, {
+  purpose: 'ウェビナー開催・参加者管理・録画・共同作業チャネルを提供するクラウド型ビデオ会議SaaS',
+  frontend: 'React + Next.js',
+  backend: 'Supabase',
+  database: 'PostgreSQL',
+  deploy: 'Vercel',
+  orm: 'Prisma',
+  auth: 'JWT + Supabase Auth',
+  payment: 'stripe',
+  mobile: 'なし',
+  data_entities: 'User, MeetingRoom, MeetingSession, MeetingParticipant, MeetingRecording',
+  mvp_features: 'ミーティングルーム作成・管理, 参加者招待・権限管理, 録画・クラウド保存, チャット・画面共有, ページネーション・無限スクロール',
+});
+
+describe('Suite 287: presets-ext12 video_conference — Supabase/Vercel/stripe', () => {
+
+  it('SDD: video_conference generates specification.md and constitution.md', () => {
+    const f = gSDD(g287_video_conference);
+    assert.ok(f['.spec/specification.md'], 'video_conference must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'video_conference must generate constitution.md');
+  });
+
+  it('SDD: video_conference includes MeetingRoom in spec', () => {
+    const f = gSDD(g287_video_conference);
+    assert.ok((f['.spec/specification.md']||'').includes('MeetingRoom'), 'video_conference spec must mention MeetingRoom');
+  });
+
+  it('SDD: video_conference (Supabase) → Supabase referenced in spec', () => {
+    const f = gSDD(g287_video_conference);
+    assert.ok((f['.spec/specification.md']||'').includes('Supabase'), 'video_conference spec must reference Supabase');
+  });
+
+  it('SDD: video_conference stripe → Stripe referenced in spec', () => {
+    const f = gSDD(g287_video_conference);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('Stripe')||spec.includes('stripe')||spec.includes('決済'), 'video_conference stripe must reference payment');
+  });
+
+  it('SDD EN: video_conference produces no undefined in spec', () => {
+    const f = gSDD(g287_video_conference, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'video_conference EN spec must not contain undefined');
+  });
+
+  it('SDD JA: video_conference produces no undefined in spec', () => {
+    const f = gSDD(g287_video_conference);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'video_conference JA spec must not contain undefined');
+  });
+
+  it('docs/01: video_conference overview mentions ウェビナー or Webinar', () => {
+    const f = gSDD(g287_video_conference);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('ウェビナー')||doc.includes('Webinar'), 'video_conference docs/01 must mention ウェビナー or Webinar');
+  });
+
+  it('docs/01: video_conference produces no undefined in overview', () => {
+    const f = gSDD(g287_video_conference);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'video_conference docs/01 must not contain undefined');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 288 — presets-ext12.js: accounting_saas
+   Supabase/Vercel/stripe
+   ════════════════════════════════════════════════════════════════ */
+
+const g288_accounting_saas = Object.assign({}, A25, {
+  purpose: '中小企業向けクラウド会計・簿記・請求書発行・経費管理を一元化したクラウド会計SaaS',
+  frontend: 'React + Next.js',
+  backend: 'Supabase',
+  database: 'PostgreSQL',
+  deploy: 'Vercel',
+  orm: 'Prisma',
+  auth: 'JWT + Supabase Auth',
+  payment: 'stripe',
+  mobile: 'なし',
+  data_entities: 'User, AccountingEntry, AccountingInvoice, ExpenseReport, AuditLog',
+  mvp_features: '会計仕訳・帳簿入力, 請求書作成・送付, 経費申請・承認フロー, AuditLog, ページネーション・無限スクロール',
+});
+
+describe('Suite 288: presets-ext12 accounting_saas — Supabase/Vercel/stripe', () => {
+
+  it('SDD: accounting_saas generates specification.md and constitution.md', () => {
+    const f = gSDD(g288_accounting_saas);
+    assert.ok(f['.spec/specification.md'], 'accounting_saas must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'accounting_saas must generate constitution.md');
+  });
+
+  it('SDD: accounting_saas includes AccountingInvoice in spec', () => {
+    const f = gSDD(g288_accounting_saas);
+    assert.ok((f['.spec/specification.md']||'').includes('AccountingInvoice'), 'accounting_saas spec must mention AccountingInvoice');
+  });
+
+  it('SDD: accounting_saas (Supabase) → Supabase referenced in spec', () => {
+    const f = gSDD(g288_accounting_saas);
+    assert.ok((f['.spec/specification.md']||'').includes('Supabase'), 'accounting_saas spec must reference Supabase');
+  });
+
+  it('SDD: accounting_saas stripe → Stripe referenced in spec', () => {
+    const f = gSDD(g288_accounting_saas);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('Stripe')||spec.includes('stripe')||spec.includes('決済'), 'accounting_saas stripe must reference payment');
+  });
+
+  it('SDD EN: accounting_saas produces no undefined in spec', () => {
+    const f = gSDD(g288_accounting_saas, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'accounting_saas EN spec must not contain undefined');
+  });
+
+  it('SDD JA: accounting_saas produces no undefined in spec', () => {
+    const f = gSDD(g288_accounting_saas);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'accounting_saas JA spec must not contain undefined');
+  });
+
+  it('docs/01: accounting_saas overview mentions 会計 or Accounting', () => {
+    const f = gSDD(g288_accounting_saas);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('会計')||doc.includes('Accounting'), 'accounting_saas docs/01 must mention 会計 or Accounting');
+  });
+
+  it('docs/01: accounting_saas produces no undefined in overview', () => {
+    const f = gSDD(g288_accounting_saas);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'accounting_saas docs/01 must not contain undefined');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 289 — presets-ext12.js: esignature
+   Supabase/Vercel/stripe
+   ════════════════════════════════════════════════════════════════ */
+
+const g289_esignature = Object.assign({}, A25, {
+  purpose: '電子署名・法務文書承認ワークフロー・署名証跡管理を提供するクラウド型電子署名SaaS',
+  frontend: 'React + Next.js',
+  backend: 'Supabase',
+  database: 'PostgreSQL',
+  deploy: 'Vercel',
+  orm: 'Prisma',
+  auth: 'JWT + Supabase Auth',
+  payment: 'stripe',
+  mobile: 'なし',
+  data_entities: 'User, SigningDocument, SignatureRequest, SignerRecord, SignatureAuditLog',
+  mvp_features: '文書アップロード・テンプレート管理, 署名依頼・リマインダー自動送信, 電子署名フロー管理, AuditLog, ページネーション・無限スクロール',
+});
+
+describe('Suite 289: presets-ext12 esignature — Supabase/Vercel/stripe', () => {
+
+  it('SDD: esignature generates specification.md and constitution.md', () => {
+    const f = gSDD(g289_esignature);
+    assert.ok(f['.spec/specification.md'], 'esignature must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'esignature must generate constitution.md');
+  });
+
+  it('SDD: esignature includes SigningDocument in spec', () => {
+    const f = gSDD(g289_esignature);
+    assert.ok((f['.spec/specification.md']||'').includes('SigningDocument'), 'esignature spec must mention SigningDocument');
+  });
+
+  it('SDD: esignature (Supabase) → Supabase referenced in spec', () => {
+    const f = gSDD(g289_esignature);
+    assert.ok((f['.spec/specification.md']||'').includes('Supabase'), 'esignature spec must reference Supabase');
+  });
+
+  it('SDD: esignature stripe → Stripe referenced in spec', () => {
+    const f = gSDD(g289_esignature);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('Stripe')||spec.includes('stripe')||spec.includes('決済'), 'esignature stripe must reference payment');
+  });
+
+  it('SDD EN: esignature produces no undefined in spec', () => {
+    const f = gSDD(g289_esignature, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'esignature EN spec must not contain undefined');
+  });
+
+  it('SDD JA: esignature produces no undefined in spec', () => {
+    const f = gSDD(g289_esignature);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'esignature JA spec must not contain undefined');
+  });
+
+  it('docs/01: esignature overview mentions 電子署名 or E-Signature', () => {
+    const f = gSDD(g289_esignature);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('電子署名')||doc.includes('E-Signature'), 'esignature docs/01 must mention 電子署名 or E-Signature');
+  });
+
+  it('docs/01: esignature produces no undefined in overview', () => {
+    const f = gSDD(g289_esignature);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'esignature docs/01 must not contain undefined');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 290 — presets-ext12.js: social_media_mgmt
+   Supabase/Vercel/stripe
+   ════════════════════════════════════════════════════════════════ */
+
+const g290_social_media_mgmt = Object.assign({}, A25, {
+  purpose: '複数SNSアカウントの投稿スケジュール・エンゲージメント分析・チームコラボレーションダッシュボードを提供するSNS管理SaaS',
+  frontend: 'React + Next.js',
+  backend: 'Supabase',
+  database: 'PostgreSQL',
+  deploy: 'Vercel',
+  orm: 'Prisma',
+  auth: 'JWT + Supabase Auth',
+  payment: 'stripe',
+  mobile: 'なし',
+  data_entities: 'User, SocialAccount, ScheduledPost, PostAnalytic, SocialCampaign',
+  mvp_features: 'マルチSNSアカウント接続・管理, 投稿スケジュール・カレンダー, エンゲージメント・フォロワー分析, ページネーション・無限スクロール',
+});
+
+describe('Suite 290: presets-ext12 social_media_mgmt — Supabase/Vercel/stripe', () => {
+
+  it('SDD: social_media_mgmt generates specification.md and constitution.md', () => {
+    const f = gSDD(g290_social_media_mgmt);
+    assert.ok(f['.spec/specification.md'], 'social_media_mgmt must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'social_media_mgmt must generate constitution.md');
+  });
+
+  it('SDD: social_media_mgmt includes SocialAccount in spec', () => {
+    const f = gSDD(g290_social_media_mgmt);
+    assert.ok((f['.spec/specification.md']||'').includes('SocialAccount'), 'social_media_mgmt spec must mention SocialAccount');
+  });
+
+  it('SDD: social_media_mgmt (Supabase) → Supabase referenced in spec', () => {
+    const f = gSDD(g290_social_media_mgmt);
+    assert.ok((f['.spec/specification.md']||'').includes('Supabase'), 'social_media_mgmt spec must reference Supabase');
+  });
+
+  it('SDD: social_media_mgmt stripe → Stripe referenced in spec', () => {
+    const f = gSDD(g290_social_media_mgmt);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('Stripe')||spec.includes('stripe')||spec.includes('決済'), 'social_media_mgmt stripe must reference payment');
+  });
+
+  it('SDD EN: social_media_mgmt produces no undefined in spec', () => {
+    const f = gSDD(g290_social_media_mgmt, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'social_media_mgmt EN spec must not contain undefined');
+  });
+
+  it('SDD JA: social_media_mgmt produces no undefined in spec', () => {
+    const f = gSDD(g290_social_media_mgmt);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'social_media_mgmt JA spec must not contain undefined');
+  });
+
+  it('docs/01: social_media_mgmt overview mentions SNS or 投稿 or Social', () => {
+    const f = gSDD(g290_social_media_mgmt);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('SNS')||doc.includes('投稿')||doc.includes('Social')||doc.includes('エンゲージメント'), 'social_media_mgmt docs/01 must mention SNS or 投稿 or Social');
+  });
+
+  it('docs/01: social_media_mgmt produces no undefined in overview', () => {
+    const f = gSDD(g290_social_media_mgmt);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'social_media_mgmt docs/01 must not contain undefined');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 291 — presets-ext12.js: appointment_scheduler
+   Supabase/Vercel/stripe
+   ════════════════════════════════════════════════════════════════ */
+
+const g291_appointment_scheduler = Object.assign({}, A25, {
+  purpose: 'サービス提供者と顧客の予約・スケジュール調整・リマインダー通知をオンラインで管理する予約管理SaaS',
+  frontend: 'React + Next.js',
+  backend: 'Supabase',
+  database: 'PostgreSQL',
+  deploy: 'Vercel',
+  orm: 'Prisma',
+  auth: 'JWT + Supabase Auth',
+  payment: 'stripe',
+  mobile: 'なし',
+  data_entities: 'User, ServiceMenu, AppointmentSlot, ServiceBooking, BookingReminder',
+  mvp_features: 'サービスメニュー・時間枠設定, 顧客オンライン予約受付, 予約カレンダー・スケジュール管理, ページネーション・無限スクロール',
+});
+
+describe('Suite 291: presets-ext12 appointment_scheduler — Supabase/Vercel/stripe', () => {
+
+  it('SDD: appointment_scheduler generates specification.md and constitution.md', () => {
+    const f = gSDD(g291_appointment_scheduler);
+    assert.ok(f['.spec/specification.md'], 'appointment_scheduler must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'appointment_scheduler must generate constitution.md');
+  });
+
+  it('SDD: appointment_scheduler includes AppointmentSlot in spec', () => {
+    const f = gSDD(g291_appointment_scheduler);
+    assert.ok((f['.spec/specification.md']||'').includes('AppointmentSlot'), 'appointment_scheduler spec must mention AppointmentSlot');
+  });
+
+  it('SDD: appointment_scheduler (Supabase) → Supabase referenced in spec', () => {
+    const f = gSDD(g291_appointment_scheduler);
+    assert.ok((f['.spec/specification.md']||'').includes('Supabase'), 'appointment_scheduler spec must reference Supabase');
+  });
+
+  it('SDD: appointment_scheduler stripe → Stripe referenced in spec', () => {
+    const f = gSDD(g291_appointment_scheduler);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('Stripe')||spec.includes('stripe')||spec.includes('決済'), 'appointment_scheduler stripe must reference payment');
+  });
+
+  it('SDD EN: appointment_scheduler produces no undefined in spec', () => {
+    const f = gSDD(g291_appointment_scheduler, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'appointment_scheduler EN spec must not contain undefined');
+  });
+
+  it('SDD JA: appointment_scheduler produces no undefined in spec', () => {
+    const f = gSDD(g291_appointment_scheduler);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'appointment_scheduler JA spec must not contain undefined');
+  });
+
+  it('docs/01: appointment_scheduler overview mentions 予約 or Appointment', () => {
+    const f = gSDD(g291_appointment_scheduler);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('予約')||doc.includes('Appointment'), 'appointment_scheduler docs/01 must mention 予約 or Appointment');
+  });
+
+  it('docs/01: appointment_scheduler produces no undefined in overview', () => {
+    const f = gSDD(g291_appointment_scheduler);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'appointment_scheduler docs/01 must not contain undefined');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 292 — presets-ext12.js: time_tracking
+   Supabase/Vercel/stripe
+   ════════════════════════════════════════════════════════════════ */
+
+const g292_time_tracking = Object.assign({}, A25, {
+  purpose: 'プロジェクト別工数追跡・タイムシート承認・請求可能時間レポートを提供する工数管理SaaS',
+  frontend: 'React + Next.js',
+  backend: 'Supabase',
+  database: 'PostgreSQL',
+  deploy: 'Vercel',
+  orm: 'Prisma',
+  auth: 'JWT + Supabase Auth',
+  payment: 'stripe',
+  mobile: 'なし',
+  data_entities: 'User, TimesheetEntry, TimesheetProject, TimesheetPeriod, TimesheetReport',
+  mvp_features: 'タイマー・工数入力, プロジェクト・タスク別集計, タイムシート提出・承認フロー, ページネーション・無限スクロール',
+});
+
+describe('Suite 292: presets-ext12 time_tracking — Supabase/Vercel/stripe', () => {
+
+  it('SDD: time_tracking generates specification.md and constitution.md', () => {
+    const f = gSDD(g292_time_tracking);
+    assert.ok(f['.spec/specification.md'], 'time_tracking must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'time_tracking must generate constitution.md');
+  });
+
+  it('SDD: time_tracking includes TimesheetEntry in spec', () => {
+    const f = gSDD(g292_time_tracking);
+    assert.ok((f['.spec/specification.md']||'').includes('TimesheetEntry'), 'time_tracking spec must mention TimesheetEntry');
+  });
+
+  it('SDD: time_tracking (Supabase) → Supabase referenced in spec', () => {
+    const f = gSDD(g292_time_tracking);
+    assert.ok((f['.spec/specification.md']||'').includes('Supabase'), 'time_tracking spec must reference Supabase');
+  });
+
+  it('SDD: time_tracking stripe → Stripe referenced in spec', () => {
+    const f = gSDD(g292_time_tracking);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('Stripe')||spec.includes('stripe')||spec.includes('決済'), 'time_tracking stripe must reference payment');
+  });
+
+  it('SDD EN: time_tracking produces no undefined in spec', () => {
+    const f = gSDD(g292_time_tracking, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'time_tracking EN spec must not contain undefined');
+  });
+
+  it('SDD JA: time_tracking produces no undefined in spec', () => {
+    const f = gSDD(g292_time_tracking);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'time_tracking JA spec must not contain undefined');
+  });
+
+  it('docs/01: time_tracking overview mentions タイムシート or Timesheet', () => {
+    const f = gSDD(g292_time_tracking);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('タイムシート')||doc.includes('Timesheet'), 'time_tracking docs/01 must mention タイムシート or Timesheet');
+  });
+
+  it('docs/01: time_tracking produces no undefined in overview', () => {
+    const f = gSDD(g292_time_tracking);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'time_tracking docs/01 must not contain undefined');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 293 — presets-ext12.js: inventory_mgmt
+   Supabase/Vercel/stripe
+   ════════════════════════════════════════════════════════════════ */
+
+const g293_inventory_mgmt = Object.assign({}, A25, {
+  purpose: '小売店・販売事業者向けリアルタイム在庫追跡・発注管理・在庫評価・欠品アラートを提供するクラウド在庫管理SaaS',
+  frontend: 'React + Next.js',
+  backend: 'Supabase',
+  database: 'PostgreSQL',
+  deploy: 'Vercel',
+  orm: 'Prisma',
+  auth: 'JWT + Supabase Auth',
+  payment: 'stripe',
+  mobile: 'なし',
+  data_entities: 'User, InventoryItem, StockLevel, PurchaseOrder, StockMovement',
+  mvp_features: 'リアルタイム在庫追跡, 仕入れ発注管理, 欠品・過剰在庫アラート, ページネーション・無限スクロール',
+});
+
+describe('Suite 293: presets-ext12 inventory_mgmt — Supabase/Vercel/stripe', () => {
+
+  it('SDD: inventory_mgmt generates specification.md and constitution.md', () => {
+    const f = gSDD(g293_inventory_mgmt);
+    assert.ok(f['.spec/specification.md'], 'inventory_mgmt must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'inventory_mgmt must generate constitution.md');
+  });
+
+  it('SDD: inventory_mgmt includes InventoryItem in spec', () => {
+    const f = gSDD(g293_inventory_mgmt);
+    assert.ok((f['.spec/specification.md']||'').includes('InventoryItem'), 'inventory_mgmt spec must mention InventoryItem');
+  });
+
+  it('SDD: inventory_mgmt (Supabase) → Supabase referenced in spec', () => {
+    const f = gSDD(g293_inventory_mgmt);
+    assert.ok((f['.spec/specification.md']||'').includes('Supabase'), 'inventory_mgmt spec must reference Supabase');
+  });
+
+  it('SDD: inventory_mgmt stripe → Stripe referenced in spec', () => {
+    const f = gSDD(g293_inventory_mgmt);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('Stripe')||spec.includes('stripe')||spec.includes('決済'), 'inventory_mgmt stripe must reference payment');
+  });
+
+  it('SDD EN: inventory_mgmt produces no undefined in spec', () => {
+    const f = gSDD(g293_inventory_mgmt, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'inventory_mgmt EN spec must not contain undefined');
+  });
+
+  it('SDD JA: inventory_mgmt produces no undefined in spec', () => {
+    const f = gSDD(g293_inventory_mgmt);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'inventory_mgmt JA spec must not contain undefined');
+  });
+
+  it('docs/01: inventory_mgmt overview mentions 在庫 or Inventory', () => {
+    const f = gSDD(g293_inventory_mgmt);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('在庫')||doc.includes('Inventory'), 'inventory_mgmt docs/01 must mention 在庫 or Inventory');
+  });
+
+  it('docs/01: inventory_mgmt produces no undefined in overview', () => {
+    const f = gSDD(g293_inventory_mgmt);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'inventory_mgmt docs/01 must not contain undefined');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 294 — presets-ext12.js: api_gateway
+   Node.js + Express/Railway/stripe
+   ════════════════════════════════════════════════════════════════ */
+
+const g294_api_gateway = Object.assign({}, A25, {
+  purpose: 'APIキー発行・レートリミット設定・エンドポイント管理・使用状況分析を提供する開発者向けAPIゲートウェイポータルSaaS',
+  frontend: 'React + Next.js',
+  backend: 'Node.js + Express',
+  database: 'PostgreSQL',
+  deploy: 'Railway',
+  orm: 'Prisma',
+  auth: 'JWT + Passport',
+  payment: 'stripe',
+  mobile: 'なし',
+  data_entities: 'User, ApiGatewayKey, ApiRoute, RateLimitRule, ApiCallLog',
+  mvp_features: 'APIキー発行・ローテーション, レートリミット・クォータ設定, エンドポイント管理・テスト, ページネーション・無限スクロール',
+});
+
+describe('Suite 294: presets-ext12 api_gateway — Node.js + Express/Railway/stripe', () => {
+
+  it('SDD: api_gateway generates specification.md and constitution.md', () => {
+    const f = gSDD(g294_api_gateway);
+    assert.ok(f['.spec/specification.md'], 'api_gateway must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'api_gateway must generate constitution.md');
+  });
+
+  it('SDD: api_gateway includes ApiGatewayKey in spec', () => {
+    const f = gSDD(g294_api_gateway);
+    assert.ok((f['.spec/specification.md']||'').includes('ApiGatewayKey'), 'api_gateway spec must mention ApiGatewayKey');
+  });
+
+  it('SDD: api_gateway (Node.js + Express) → Express referenced in spec', () => {
+    const f = gSDD(g294_api_gateway);
+    assert.ok((f['.spec/specification.md']||'').includes('Express'), 'api_gateway spec must reference Express');
+  });
+
+  it('SDD: api_gateway stripe → Stripe referenced in spec', () => {
+    const f = gSDD(g294_api_gateway);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('Stripe')||spec.includes('stripe')||spec.includes('決済'), 'api_gateway stripe must reference payment');
+  });
+
+  it('SDD EN: api_gateway produces no undefined in spec', () => {
+    const f = gSDD(g294_api_gateway, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'api_gateway EN spec must not contain undefined');
+  });
+
+  it('SDD JA: api_gateway produces no undefined in spec', () => {
+    const f = gSDD(g294_api_gateway);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'api_gateway JA spec must not contain undefined');
+  });
+
+  it('docs/01: api_gateway overview mentions API or API', () => {
+    const f = gSDD(g294_api_gateway);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('API'), 'api_gateway docs/01 must mention API');
+  });
+
+  it('docs/01: api_gateway produces no undefined in overview', () => {
+    const f = gSDD(g294_api_gateway);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'api_gateway docs/01 must not contain undefined');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 295 — presets-ext12.js: password_mgmt
+   Supabase/Vercel/stripe
+   ════════════════════════════════════════════════════════════════ */
+
+const g295_password_mgmt = Object.assign({}, A25, {
+  purpose: 'チーム向け安全なパスワードVault・シークレット共有・アクセス監査ログを提供するエンタープライズパスワード管理SaaS',
+  frontend: 'React + Next.js',
+  backend: 'Supabase',
+  database: 'PostgreSQL',
+  deploy: 'Vercel',
+  orm: 'Prisma',
+  auth: 'JWT + Supabase Auth',
+  payment: 'stripe',
+  mobile: 'なし',
+  data_entities: 'User, VaultEntry, VaultCredential, SharedVaultItem, VaultAccessLog',
+  mvp_features: 'パスワードVault暗号化保存, チームシークレット共有, アクセス監査ログ, AuditLog, ページネーション・無限スクロール',
+});
+
+describe('Suite 295: presets-ext12 password_mgmt — Supabase/Vercel/stripe', () => {
+
+  it('SDD: password_mgmt generates specification.md and constitution.md', () => {
+    const f = gSDD(g295_password_mgmt);
+    assert.ok(f['.spec/specification.md'], 'password_mgmt must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'password_mgmt must generate constitution.md');
+  });
+
+  it('SDD: password_mgmt includes VaultEntry in spec', () => {
+    const f = gSDD(g295_password_mgmt);
+    assert.ok((f['.spec/specification.md']||'').includes('VaultEntry'), 'password_mgmt spec must mention VaultEntry');
+  });
+
+  it('SDD: password_mgmt (Supabase) → Supabase referenced in spec', () => {
+    const f = gSDD(g295_password_mgmt);
+    assert.ok((f['.spec/specification.md']||'').includes('Supabase'), 'password_mgmt spec must reference Supabase');
+  });
+
+  it('SDD: password_mgmt stripe → Stripe referenced in spec', () => {
+    const f = gSDD(g295_password_mgmt);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('Stripe')||spec.includes('stripe')||spec.includes('決済'), 'password_mgmt stripe must reference payment');
+  });
+
+  it('SDD EN: password_mgmt produces no undefined in spec', () => {
+    const f = gSDD(g295_password_mgmt, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'password_mgmt EN spec must not contain undefined');
+  });
+
+  it('SDD JA: password_mgmt produces no undefined in spec', () => {
+    const f = gSDD(g295_password_mgmt);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'password_mgmt JA spec must not contain undefined');
+  });
+
+  it('docs/01: password_mgmt overview mentions パスワード or Password', () => {
+    const f = gSDD(g295_password_mgmt);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('パスワード')||doc.includes('Password'), 'password_mgmt docs/01 must mention パスワード or Password');
+  });
+
+  it('docs/01: password_mgmt produces no undefined in overview', () => {
+    const f = gSDD(g295_password_mgmt);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'password_mgmt docs/01 must not contain undefined');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 296 — presets-ext12.js: customer_feedback
+   Supabase/Vercel/stripe
+   ════════════════════════════════════════════════════════════════ */
+
+const g296_customer_feedback = Object.assign({}, A25, {
+  purpose: 'NPSサーベイ・顧客フィードバック収集・テキスト分析ダッシュボードを提供するカスタマーフィードバック管理SaaS',
+  frontend: 'React + Next.js',
+  backend: 'Supabase',
+  database: 'PostgreSQL',
+  deploy: 'Vercel',
+  orm: 'Prisma',
+  auth: 'JWT + Supabase Auth',
+  payment: 'stripe',
+  mobile: 'なし',
+  data_entities: 'User, FeedbackSurvey, SurveyAnswer, FeedbackTag, NpsScore',
+  mvp_features: 'NPSサーベイ作成・配信, フィードバック回答収集, テキスト分析・タグ付け, ページネーション・無限スクロール',
+});
+
+describe('Suite 296: presets-ext12 customer_feedback — Supabase/Vercel/stripe', () => {
+
+  it('SDD: customer_feedback generates specification.md and constitution.md', () => {
+    const f = gSDD(g296_customer_feedback);
+    assert.ok(f['.spec/specification.md'], 'customer_feedback must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'customer_feedback must generate constitution.md');
+  });
+
+  it('SDD: customer_feedback includes FeedbackSurvey in spec', () => {
+    const f = gSDD(g296_customer_feedback);
+    assert.ok((f['.spec/specification.md']||'').includes('FeedbackSurvey'), 'customer_feedback spec must mention FeedbackSurvey');
+  });
+
+  it('SDD: customer_feedback (Supabase) → Supabase referenced in spec', () => {
+    const f = gSDD(g296_customer_feedback);
+    assert.ok((f['.spec/specification.md']||'').includes('Supabase'), 'customer_feedback spec must reference Supabase');
+  });
+
+  it('SDD: customer_feedback stripe → Stripe referenced in spec', () => {
+    const f = gSDD(g296_customer_feedback);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('Stripe')||spec.includes('stripe')||spec.includes('決済'), 'customer_feedback stripe must reference payment');
+  });
+
+  it('SDD EN: customer_feedback produces no undefined in spec', () => {
+    const f = gSDD(g296_customer_feedback, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'customer_feedback EN spec must not contain undefined');
+  });
+
+  it('SDD JA: customer_feedback produces no undefined in spec', () => {
+    const f = gSDD(g296_customer_feedback);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'customer_feedback JA spec must not contain undefined');
+  });
+
+  it('docs/01: customer_feedback overview mentions フィードバック or Feedback', () => {
+    const f = gSDD(g296_customer_feedback);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('フィードバック')||doc.includes('Feedback'), 'customer_feedback docs/01 must mention フィードバック or Feedback');
+  });
+
+  it('docs/01: customer_feedback produces no undefined in overview', () => {
+    const f = gSDD(g296_customer_feedback);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'customer_feedback docs/01 must not contain undefined');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 297 — presets-ext12.js: form_builder
+   Supabase/Vercel/stripe
+   ════════════════════════════════════════════════════════════════ */
+
+const g297_form_builder = Object.assign({}, A25, {
+  purpose: 'ノーコードでフォームをデザイン・公開・回答収集・データ分析できるフォームビルダーSaaS',
+  frontend: 'React + Next.js',
+  backend: 'Supabase',
+  database: 'PostgreSQL',
+  deploy: 'Vercel',
+  orm: 'Prisma',
+  auth: 'JWT + Supabase Auth',
+  payment: 'stripe',
+  mobile: 'なし',
+  data_entities: 'User, FormDefinition, FormField, FormSubmission, FormWebhook',
+  mvp_features: 'ドラッグ&ドロップフォームデザイン, 条件分岐ロジック設定, フォーム公開・回答収集, ページネーション・無限スクロール',
+});
+
+describe('Suite 297: presets-ext12 form_builder — Supabase/Vercel/stripe', () => {
+
+  it('SDD: form_builder generates specification.md and constitution.md', () => {
+    const f = gSDD(g297_form_builder);
+    assert.ok(f['.spec/specification.md'], 'form_builder must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'form_builder must generate constitution.md');
+  });
+
+  it('SDD: form_builder includes FormDefinition in spec', () => {
+    const f = gSDD(g297_form_builder);
+    assert.ok((f['.spec/specification.md']||'').includes('FormDefinition'), 'form_builder spec must mention FormDefinition');
+  });
+
+  it('SDD: form_builder (Supabase) → Supabase referenced in spec', () => {
+    const f = gSDD(g297_form_builder);
+    assert.ok((f['.spec/specification.md']||'').includes('Supabase'), 'form_builder spec must reference Supabase');
+  });
+
+  it('SDD: form_builder stripe → Stripe referenced in spec', () => {
+    const f = gSDD(g297_form_builder);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('Stripe')||spec.includes('stripe')||spec.includes('決済'), 'form_builder stripe must reference payment');
+  });
+
+  it('SDD EN: form_builder produces no undefined in spec', () => {
+    const f = gSDD(g297_form_builder, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'form_builder EN spec must not contain undefined');
+  });
+
+  it('SDD JA: form_builder produces no undefined in spec', () => {
+    const f = gSDD(g297_form_builder);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'form_builder JA spec must not contain undefined');
+  });
+
+  it('docs/01: form_builder overview mentions フォーム or Form', () => {
+    const f = gSDD(g297_form_builder);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('フォーム')||doc.includes('Form'), 'form_builder docs/01 must mention フォーム or Form');
+  });
+
+  it('docs/01: form_builder produces no undefined in overview', () => {
+    const f = gSDD(g297_form_builder);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'form_builder docs/01 must not contain undefined');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 298 — presets-ext12.js: asset_mgmt
+   Node.js + Express/Railway/stripe
+   ════════════════════════════════════════════════════════════════ */
+
+const g298_asset_mgmt = Object.assign({}, A25, {
+  purpose: '社内ITデバイス・ソフトウェアライセンス・アセット割り当て・保守スケジュールをクラウドで一元管理するITアセット管理SaaS',
+  frontend: 'React + Next.js',
+  backend: 'Node.js + Express',
+  database: 'PostgreSQL',
+  deploy: 'Railway',
+  orm: 'Prisma',
+  auth: 'JWT + Passport',
+  payment: 'stripe',
+  mobile: 'なし',
+  data_entities: 'User, ItAsset, AssetAssignment, SoftwareLicense, AssetMaintenanceLog',
+  mvp_features: 'ITアセット台帳登録・管理, デバイス割り当て・返却管理, ソフトウェアライセンス管理, ページネーション・無限スクロール',
+});
+
+describe('Suite 298: presets-ext12 asset_mgmt — Node.js + Express/Railway/stripe', () => {
+
+  it('SDD: asset_mgmt generates specification.md and constitution.md', () => {
+    const f = gSDD(g298_asset_mgmt);
+    assert.ok(f['.spec/specification.md'], 'asset_mgmt must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'asset_mgmt must generate constitution.md');
+  });
+
+  it('SDD: asset_mgmt includes ItAsset in spec', () => {
+    const f = gSDD(g298_asset_mgmt);
+    assert.ok((f['.spec/specification.md']||'').includes('ItAsset'), 'asset_mgmt spec must mention ItAsset');
+  });
+
+  it('SDD: asset_mgmt (Node.js + Express) → Express referenced in spec', () => {
+    const f = gSDD(g298_asset_mgmt);
+    assert.ok((f['.spec/specification.md']||'').includes('Express'), 'asset_mgmt spec must reference Express');
+  });
+
+  it('SDD: asset_mgmt stripe → Stripe referenced in spec', () => {
+    const f = gSDD(g298_asset_mgmt);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('Stripe')||spec.includes('stripe')||spec.includes('決済'), 'asset_mgmt stripe must reference payment');
+  });
+
+  it('SDD EN: asset_mgmt produces no undefined in spec', () => {
+    const f = gSDD(g298_asset_mgmt, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'asset_mgmt EN spec must not contain undefined');
+  });
+
+  it('SDD JA: asset_mgmt produces no undefined in spec', () => {
+    const f = gSDD(g298_asset_mgmt);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'asset_mgmt JA spec must not contain undefined');
+  });
+
+  it('docs/01: asset_mgmt overview mentions アセット or Asset', () => {
+    const f = gSDD(g298_asset_mgmt);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('アセット')||doc.includes('Asset'), 'asset_mgmt docs/01 must mention アセット or Asset');
+  });
+
+  it('docs/01: asset_mgmt produces no undefined in overview', () => {
+    const f = gSDD(g298_asset_mgmt);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'asset_mgmt docs/01 must not contain undefined');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 299 — presets-ext12.js: project_billing
+   Supabase/Vercel/stripe
+   ════════════════════════════════════════════════════════════════ */
+
+const g299_project_billing = Object.assign({}, A25, {
+  purpose: 'プロジェクトの工数記録・請求レート設定・自動請求書生成を提供するプロジェクト工数請求管理SaaS',
+  frontend: 'React + Next.js',
+  backend: 'Supabase',
+  database: 'PostgreSQL',
+  deploy: 'Vercel',
+  orm: 'Prisma',
+  auth: 'JWT + Supabase Auth',
+  payment: 'stripe',
+  mobile: 'なし',
+  data_entities: 'User, BillingClient, BillingProject, BillingRate, ProjectInvoice',
+  mvp_features: 'プロジェクト・クライアント管理, 工数記録・レート設定, 自動請求書生成, ページネーション・無限スクロール',
+});
+
+describe('Suite 299: presets-ext12 project_billing — Supabase/Vercel/stripe', () => {
+
+  it('SDD: project_billing generates specification.md and constitution.md', () => {
+    const f = gSDD(g299_project_billing);
+    assert.ok(f['.spec/specification.md'], 'project_billing must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'project_billing must generate constitution.md');
+  });
+
+  it('SDD: project_billing includes ProjectInvoice in spec', () => {
+    const f = gSDD(g299_project_billing);
+    assert.ok((f['.spec/specification.md']||'').includes('ProjectInvoice'), 'project_billing spec must mention ProjectInvoice');
+  });
+
+  it('SDD: project_billing (Supabase) → Supabase referenced in spec', () => {
+    const f = gSDD(g299_project_billing);
+    assert.ok((f['.spec/specification.md']||'').includes('Supabase'), 'project_billing spec must reference Supabase');
+  });
+
+  it('SDD: project_billing stripe → Stripe referenced in spec', () => {
+    const f = gSDD(g299_project_billing);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('Stripe')||spec.includes('stripe')||spec.includes('決済'), 'project_billing stripe must reference payment');
+  });
+
+  it('SDD EN: project_billing produces no undefined in spec', () => {
+    const f = gSDD(g299_project_billing, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'project_billing EN spec must not contain undefined');
+  });
+
+  it('SDD JA: project_billing produces no undefined in spec', () => {
+    const f = gSDD(g299_project_billing);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'project_billing JA spec must not contain undefined');
+  });
+
+  it('docs/01: project_billing overview mentions 請求 or Billing', () => {
+    const f = gSDD(g299_project_billing);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('請求')||doc.includes('Billing'), 'project_billing docs/01 must mention 請求 or Billing');
+  });
+
+  it('docs/01: project_billing produces no undefined in overview', () => {
+    const f = gSDD(g299_project_billing);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'project_billing docs/01 must not contain undefined');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 300 — presets-ext12.js: nocode_builder
+   Supabase/Vercel/stripe
+   ════════════════════════════════════════════════════════════════ */
+
+const g300_nocode_builder = Object.assign({}, A25, {
+  purpose: 'ノーコードでウェブサイト・ランディングページをデザイン・公開できるビジュアルウェブサイトビルダーSaaS',
+  frontend: 'React + Next.js',
+  backend: 'Supabase',
+  database: 'PostgreSQL',
+  deploy: 'Vercel',
+  orm: 'Prisma',
+  auth: 'JWT + Supabase Auth',
+  payment: 'stripe',
+  mobile: 'なし',
+  data_entities: 'User, BuilderProject, BuilderPage, BuilderBlock, BuilderDomain',
+  mvp_features: 'ビジュアルページエディタ, テンプレートライブラリ, カスタムドメイン公開, ページネーション・無限スクロール',
+});
+
+describe('Suite 300: presets-ext12 nocode_builder — Supabase/Vercel/stripe', () => {
+
+  it('SDD: nocode_builder generates specification.md and constitution.md', () => {
+    const f = gSDD(g300_nocode_builder);
+    assert.ok(f['.spec/specification.md'], 'nocode_builder must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'nocode_builder must generate constitution.md');
+  });
+
+  it('SDD: nocode_builder includes BuilderProject in spec', () => {
+    const f = gSDD(g300_nocode_builder);
+    assert.ok((f['.spec/specification.md']||'').includes('BuilderProject'), 'nocode_builder spec must mention BuilderProject');
+  });
+
+  it('SDD: nocode_builder (Supabase) → Supabase referenced in spec', () => {
+    const f = gSDD(g300_nocode_builder);
+    assert.ok((f['.spec/specification.md']||'').includes('Supabase'), 'nocode_builder spec must reference Supabase');
+  });
+
+  it('SDD: nocode_builder stripe → Stripe referenced in spec', () => {
+    const f = gSDD(g300_nocode_builder);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('Stripe')||spec.includes('stripe')||spec.includes('決済'), 'nocode_builder stripe must reference payment');
+  });
+
+  it('SDD EN: nocode_builder produces no undefined in spec', () => {
+    const f = gSDD(g300_nocode_builder, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'nocode_builder EN spec must not contain undefined');
+  });
+
+  it('SDD JA: nocode_builder produces no undefined in spec', () => {
+    const f = gSDD(g300_nocode_builder);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'nocode_builder JA spec must not contain undefined');
+  });
+
+  it('docs/01: nocode_builder overview mentions ウェブサイト or Website', () => {
+    const f = gSDD(g300_nocode_builder);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('ウェブサイト')||doc.includes('Website'), 'nocode_builder docs/01 must mention ウェブサイト or Website');
+  });
+
+  it('docs/01: nocode_builder produces no undefined in overview', () => {
+    const f = gSDD(g300_nocode_builder);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'nocode_builder docs/01 must not contain undefined');
   });
 });

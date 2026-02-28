@@ -46,6 +46,7 @@ const jsFiles = [
   'data/presets-ext9.js',
   'data/presets-ext10.js',
   'data/presets-ext11.js',
+  'data/presets-ext12.js',
   'data/questions.js',
   'data/techdb.js',
   'data/helpdata.js',
@@ -97,6 +98,7 @@ const jsFiles = [
   'generators/p27-cost.js',
   'generators/docs.js',
   'generators/common.js',
+  'data/entity-ext.js',
 
   // UI (export, dashboard, etc.)
   'ui/editor.js',
