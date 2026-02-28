@@ -70,10 +70,10 @@ function showPresetRecommend(){
   overlay.className='modal-overlay';overlay.id='presetRecommendModal';
   overlay.setAttribute('role','dialog');overlay.setAttribute('aria-modal','true');
   overlay.setAttribute('aria-label',_ja?'プリセット提案':'Preset Recommendation');
-  overlay.innerHTML='<div class="modal-box" style="max-width:400px"><div class="modal-header">';
-  overlay.innerHTML+='<h3 class="modal-title">🎯 '+(_ja?'3問でプリセットを提案':'Find Your Preset in 3 Questions')+'</h3>';
-  overlay.innerHTML+='<button class="modal-close" onclick="document.getElementById(\'presetRecommendModal\').remove()" aria-label="Close">✕</button>';
-  overlay.innerHTML+='</div><div class="modal-body"></div></div>';
+  var html='<div class="modal-box" style="max-width:400px"><div class="modal-header">';
+  html+='<h3 class="modal-title">🎯 '+(_ja?'3問でプリセットを提案':'Find Your Preset in 3 Questions')+'</h3>';
+  html+='<button class="modal-close" onclick="document.getElementById(\'presetRecommendModal\').remove()" aria-label="Close">✕</button>';
+  html+='</div><div class="modal-body"></div></div>';overlay.innerHTML=html;
   overlay.onclick=function(e){if(e.target===overlay)overlay.remove();};
   document.body.appendChild(overlay);
   renderStep();

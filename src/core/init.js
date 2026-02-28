@@ -71,18 +71,18 @@ function applyLang(){
   statLbls.forEach((el,i)=>{if(i<4)el.textContent=ja?slJa[i]:slEn[i];});
   // Info cards
   const icards=document.querySelectorAll('.icard');
-  const icJa=[['😱 3つの悪夢を解決','真っ白な画面の絶望・終わらない連携地獄・「俺の環境では動く」症候群…DevForgeが全て自動解決'],['🧪 26の柱×185+ファイル','設計書を自動生成 → AIに投入 → 実コード。質問に答えるだけで仕様・環境・AIルール全てを自動生成。'],['📱 モバイル対応','Expo / React Native 開発パス・EAS Build・OTA更新'],['🤖 AI自律開発','Vibe Coding・マルチAgent・Claude Code Subagents'],['💳 決済・CMS・EC','Stripe・microCMS・Medusa・Shopify Hydrogen'],['📦 フルエクスポート','ZIP・PDF・全ファイル結合コピー・URLシェア']];
-  const icEn=[['😱 Solve 3 Dev Nightmares','Blank screen paralysis, endless integration hell, "works on my machine" syndrome… DevForge auto-resolves all'],['🧪 26 Pillars × 185+ Files','Auto-generate specs → Feed to AI → Real code. Answer questions to auto-generate specs, env, AI rules & strategy.'],['📱 Mobile Support','Expo / React Native dev path, EAS Build, OTA updates'],['🤖 AI Autonomous Dev','Vibe Coding, Multi-Agent, Claude Code Subagents'],['💳 Payment/CMS/EC','Stripe, microCMS, Medusa, Shopify Hydrogen'],['📦 Full Export','ZIP, PDF, Copy All Files, URL Share']];
-  icards.forEach((el,i)=>{if(i<6){const d=ja?icJa[i]:icEn[i];const h4=el.querySelector('h4');const p=el.querySelector('p');if(h4)h4.textContent=d[0];if(p)p.textContent=d[1];}});
+  const icJa=[['😱 3つの悪夢を解決','真っ白な画面の絶望・終わらない連携地獄・「俺の環境では動く」症候群…DevForgeが全て自動解決'],['🧪 27の柱×209+ファイル','設計書を自動生成 → AIに投入 → 実コード。質問に答えるだけで仕様・環境・AIルール全てを自動生成。'],['📱 モバイル対応','Expo / React Native 開発パス・EAS Build・OTA更新'],['🤖 AI自律開発','Vibe Coding・マルチAgent・Claude Code Subagents'],['💳 決済・CMS・EC','Stripe・microCMS・Medusa・Shopify Hydrogen'],['📦 フルエクスポート','ZIP・PDF・全ファイル結合コピー・URLシェア']];
+  const icEn=[['😱 Solve 3 Dev Nightmares','Blank screen paralysis, endless integration hell, "works on my machine" syndrome… DevForge auto-resolves all'],['🧪 27 Pillars × 209+ Files','Auto-generate specs → Feed to AI → Real code. Answer questions to auto-generate specs, env, AI rules & strategy.'],['📱 Mobile Support','Expo / React Native dev path, EAS Build, OTA updates'],['🤖 AI Autonomous Dev','Vibe Coding, Multi-Agent, Claude Code Subagents'],['💳 Payment/CMS/EC','Stripe, microCMS, Medusa, Shopify Hydrogen'],['📦 Full Export','ZIP, PDF, Copy All Files, URL Share']];
+  icards.forEach((el,i)=>{if(i<6){const d=ja?icJa[i]:icEn[i];const h3=el.querySelector('h3');const p=el.querySelector('p');if(h3)h3.textContent=d[0];if(p)p.textContent=d[1];}});
   // P1: Lv0-1 beginner icard simplification — show only 3 simple cards
   if(S.skillLv<=1){
     // F5: set expectation — output is design docs, not code
     const _lv0ic0=ja?['📖 設計書を自動で作る','質問に答えるだけでAI用の設計書を生成。そのままCursor等のAIツールに渡すと実コードに変換されます。']:['📖 Auto-Generate Design Docs','Answer questions to generate AI-ready design docs. Feed them to Cursor or other AI tools to get real code.'];
-    if(icards[0]){const h4=icards[0].querySelector('h4'),p=icards[0].querySelector('p');if(h4)h4.textContent=_lv0ic0[0];if(p)p.textContent=_lv0ic0[1];}
+    if(icards[0]){const h3=icards[0].querySelector('h3'),p=icards[0].querySelector('p');if(h3)h3.textContent=_lv0ic0[0];if(p)p.textContent=_lv0ic0[1];}
     const _lv0ic1=ja?['🚀 3ステップで設計書完成','①質問に答える → ②ZIPダウンロード → ③AIに渡す。それだけ！']:['🚀 Done in 3 Steps','①Answer questions → ②Download ZIP → ③Feed to AI. That\'s it!'];
     const _lv0ic2=ja?['🤖 AIにそのまま渡せる','生成ファイルをAIツールに投入するだけ。難しい知識は不要。']:['🤖 Ready to Feed to AI','Just give generated files to your AI tool. No technical knowledge needed.'];
-    if(icards[1]){const h4=icards[1].querySelector('h4'),p=icards[1].querySelector('p');if(h4)h4.textContent=_lv0ic1[0];if(p)p.textContent=_lv0ic1[1];}
-    if(icards[2]){const h4=icards[2].querySelector('h4'),p=icards[2].querySelector('p');if(h4)h4.textContent=_lv0ic2[0];if(p)p.textContent=_lv0ic2[1];}
+    if(icards[1]){const h3=icards[1].querySelector('h3'),p=icards[1].querySelector('p');if(h3)h3.textContent=_lv0ic1[0];if(p)p.textContent=_lv0ic1[1];}
+    if(icards[2]){const h3=icards[2].querySelector('h3'),p=icards[2].querySelector('p');if(h3)h3.textContent=_lv0ic2[0];if(p)p.textContent=_lv0ic2[1];}
     for(var _ici=3;_ici<6;_ici++){if(icards[_ici])icards[_ici].style.display='none';}
   }else{
     for(var _ici=3;_ici<6;_ici++){if(icards[_ici])icards[_ici].style.display='';}
@@ -173,7 +173,7 @@ function applyLang(){
   var _hf={hfLbl1:ja?'25問に回答':'Answer 25 Qs',hfLbl2:ja?'209+ファイル生成':'209+ Files Generated',hfLbl3:ja?'AIツールに投入':'Feed to AI Tools',hfLbl4:ja?'開発スタート':'Start Coding'};
   Object.keys(_hf).forEach(function(id){var el=$(id);if(el)el.textContent=_hf[id];});
   // F2: hero stats skill-adaptation (Lv0-1 shows 4 pillars / key files to reduce info shock)
-  var _spn=$('statPillarNum');if(_spn)_spn.textContent=S.skillLv<=1?'4':'26';
+  var _spn=$('statPillarNum');if(_spn)_spn.textContent=S.skillLv<=1?'4':'27';
   var _sfn=$('statFileNum');if(_sfn&&!Object.keys(S.files||{}).length)_sfn.textContent=S.skillLv<=1?(ja?'主要':'Key'):'209+';
   var _hd=$('heroDesc');
   if(_hd){

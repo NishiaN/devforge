@@ -20,7 +20,6 @@ function _getTourSteps(){
 }
 let tourStep=-1;
 let _tourSpotlight=null;
-let _tourResizeObs=null;
 
 function _tourUpdateSpotlight(el){
   if(!el||!_tourSpotlight)return;
@@ -38,7 +37,6 @@ function _tourUpdateSpotlight(el){
 
 function _tourClearSpotlight(){
   if(_tourSpotlight){_tourSpotlight.style.display='none';}
-  if(_tourResizeObs){_tourResizeObs.disconnect();_tourResizeObs=null;}
 }
 
 function startTour(){
