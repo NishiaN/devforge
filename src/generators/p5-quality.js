@@ -268,6 +268,52 @@ function genPillar5_QualityIntelligence(a,pn){
   doc33+='| Locust | '+(G?'Python DSL・分散テスト':'Python DSL, distributed')+' | '+(G?'大規模同時接続テスト':'Large-scale concurrent user tests')+' |\n\n';
   doc33+=(G?'**シナリオ分類**: ① Smoke (1VU) → ② Load (想定ピーク) → ③ Stress (限界) → ④ Soak (24h持続)\n\n':'**Scenario Types**: ① Smoke (1VU) → ② Load (expected peak) → ③ Stress (breaking point) → ④ Soak (24h sustained)\n\n');
 
+  // Entity-Specific CRUD Test Matrix
+  if(entities.length>0){
+    doc33+=(G?'## エンティティ別 CRUD テストマトリクス':'## Entity-Specific CRUD Test Matrix')+'\n\n';
+    doc33+=G?'> 各エンティティの主要操作に対するテストケースを自動生成します。\n\n':'> Auto-generated CRUD test cases for each entity.\n\n';
+    entities.slice(0,6).forEach(entity=>{
+      doc33+='### '+entity+'\n\n';
+      doc33+='| '+(G?'操作':'Operation')+' | '+(G?'エンドポイント':'Endpoint')+' | '+(G?'期待結果':'Expected')+' | '+(G?'優先度':'Priority')+' |\n';
+      doc33+='|---|---|---|---|\n';
+      doc33+='| CREATE | POST /api/v1/'+entity.toLowerCase()+'s | 201 Created | P0 |\n';
+      doc33+='| READ (list) | GET /api/v1/'+entity.toLowerCase()+'s | 200 + pagination | P0 |\n';
+      doc33+='| READ (one) | GET /api/v1/'+entity.toLowerCase()+'s/:id | 200 OK | P0 |\n';
+      doc33+='| UPDATE | PUT /api/v1/'+entity.toLowerCase()+'s/:id | 200 OK | P1 |\n';
+      doc33+='| DELETE | DELETE /api/v1/'+entity.toLowerCase()+'s/:id | 204 No Content | P1 |\n';
+      doc33+='| '+(G?'権限なし (403)':'No permission (403)')+' | '+(G?'全操作':'All ops')+' | 403 Forbidden | P0 |\n';
+      doc33+='| '+(G?'存在しないID (404)':'ID not found (404)')+' | GET/PUT/DELETE | 404 Not Found | P1 |\n\n';
+    });
+  }
+
+  // AI Test Generation Prompt
+  doc33+=(G?'## AI テスト生成プロンプト':'## AI Test Generation Prompt')+'\n\n';
+  doc33+='```\n';
+  doc33+=G?
+    '以下の仕様に基づいてテストファイルを生成してください。\n\n'+
+    'エンティティ: '+entities.slice(0,4).join(', ')+'\n'+
+    '機能: '+critFuncs.slice(0,3).join(', ')+'\n'+
+    'フレームワーク: Vitest (unit) + Playwright (E2E)\n\n'+
+    '生成するテスト:\n'+
+    '1. 正常系: 有効なデータで全 CRUD 操作が成功\n'+
+    '2. 異常系: 不正データ・権限なし・存在しない ID\n'+
+    '3. 境界値: 最大/最小フィールド長・数値範囲\n'+
+    '4. 認証: 未ログイン状態での全エンドポイント拒否\n\n'+
+    'カバレッジ目標: 80%+ (P0機能は100%)\n'+
+    'ファイル出力先: src/__tests__/ または tests/':
+    'Generate test files based on the following spec.\n\n'+
+    'Entities: '+entities.slice(0,4).join(', ')+'\n'+
+    'Functions: '+critFuncs.slice(0,3).join(', ')+'\n'+
+    'Framework: Vitest (unit) + Playwright (E2E)\n\n'+
+    'Generate tests for:\n'+
+    '1. Happy path: All CRUD operations succeed with valid data\n'+
+    '2. Error path: Invalid data, no permission, missing ID\n'+
+    '3. Boundary: Max/min field lengths, numeric ranges\n'+
+    '4. Auth: All endpoints reject unauthenticated requests\n\n'+
+    'Coverage target: 80%+ (P0 functions: 100%)\n'+
+    'Output: src/__tests__/ or tests/';
+  doc33+='```\n\n';
+
   S.files['docs/33_test_matrix.md']=doc33;
 
   // ═══ B1: docs/34_incident_response.md (~10KB) ═══

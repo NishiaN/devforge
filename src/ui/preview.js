@@ -462,6 +462,10 @@ function buildFileTree(){
     files.push({folder:true,name:'docs'});
     ['103_observability_architecture','104_structured_logging','105_metrics_alerting','106_distributed_tracing'].forEach(f=>
       files.push({name:'  '+f+'.md',path:'docs/'+f+'.md'}));
+  } else if(pillar===26){ // Cost Optimization Intelligence (P27)
+    files.push({folder:true,name:'docs'});
+    ['109_cost_architecture','110_resource_optimization','111_finops_strategy','112_cost_monitoring'].forEach(f=>
+      files.push({name:'  '+f+'.md',path:'docs/'+f+'.md'}));
   }
   // Common files
   files.push({name:'───────────',path:''});

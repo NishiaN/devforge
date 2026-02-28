@@ -3,7 +3,7 @@ const I18N={
 ja:{
 p1:'Phase 1',p2:'Phase 2',p3:'Phase 3',
 heroTitle:'DevForge v9',
-heroDesc:'質問に答えるだけで、185+ファイルの開発ドキュメント・環境設定・AIルール・学習ロードマップを自動生成。26の柱でAI駆動開発をゼロから完全サポート。',
+heroDesc:'質問に答えるだけで、185+ファイルの開発ドキュメント・環境設定・AIルール・学習ロードマップを自動生成。27の柱でAI駆動開発をゼロから完全サポート。',
 startBtn:'🚀 開始する',
 statFiles:'生成ファイル',statTech:'技術エントリ',statPillars:'柱 (Pillars)',statAI:'AIツール対応',
 skillAsk:'スキルレベルを選択',
@@ -27,13 +27,13 @@ pmTitle:'📁 プロジェクト管理',pmNew:'新規プロジェクト',pmEmpty
 helpClose:'閉じる',
 kbTitle:'⌨️ ショートカット',
 kb:['ヘルプ・マニュアル','ショートカット一覧','コマンドパレット','テーマ切替','言語切替','エクスポート','全ファイルコピー','プロジェクト管理','サイドバー切替','エクスプローラー','ダッシュボード','ロードマップ','AI起動'],
-pillar:['①SDD統合','②DevContainer','③MCP設定','④AIルール','⑤並列探索','⑥Dashboard','⑦ロードマップ','⑧AIランチャー','⑨デザインシステム','⑩リバースEng','⑪実装ガイド','⑫セキュリティ','⑬戦略インテリジェンス','⑭運用インテリジェンス','⑮未来戦略','⑯開発IQ','⑰プロンプトゲノム','⑱Prompt Ops','⑲エンタープライズ','⑳CI/CD','㉑APIインテリジェンス','㉒DBインテリジェンス','㉓テストインテリジェンス','㉔AI安全性','㉕パフォーマンス','㉖可観測性'],
+pillar:['①SDD統合','②DevContainer','③MCP設定','④AIルール','⑤並列探索','⑥Dashboard','⑦ロードマップ','⑧AIランチャー','⑨デザインシステム','⑩リバースEng','⑪実装ガイド','⑫セキュリティ','⑬戦略インテリジェンス','⑭運用インテリジェンス','⑮未来戦略','⑯開発IQ','⑰プロンプトゲノム','⑱Prompt Ops','⑲エンタープライズ','⑳CI/CD','㉑APIインテリジェンス','㉒DBインテリジェンス','㉓テストインテリジェンス','㉔AI安全性','㉕パフォーマンス','㉖可観測性','㉗コスト最適化'],
 skillFineTune:'スキル微調整'
 },
 en:{
 p1:'Phase 1',p2:'Phase 2',p3:'Phase 3',
 heroTitle:'DevForge v9',
-heroDesc:'Solve 3 dev nightmares. Answer questions to auto-generate 185+ design docs. 26 pillars guide your "idea → spec → code" journey with AI.',
+heroDesc:'Solve 3 dev nightmares. Answer questions to auto-generate 185+ design docs. 27 pillars guide your "idea → spec → code" journey with AI.',
 startBtn:'🚀 Get Started',
 statFiles:'Generated Files',statTech:'Tech Entries',statPillars:'Pillars',statAI:'AI Tools',
 skillAsk:'Select your skill level',
@@ -57,7 +57,7 @@ pmTitle:'📁 Project Manager',pmNew:'New Project',pmEmpty:'No saved projects',
 helpClose:'Close',
 kbTitle:'⌨️ Shortcuts',
 kb:['Help / Manual','Shortcuts','Command Palette','Toggle Theme','Toggle Language','Export','Copy All Files','Project Manager','Toggle Sidebar','Explorer','Dashboard','Roadmap','AI Launcher'],
-pillar:['①SDD','②DevContainer','③MCP','④AI Rules','⑤Explorer','⑥Dashboard','⑦Roadmap','⑧AI Launcher','⑨Design System','⑩Reverse Eng','⑪Impl Guide','⑫Security','⑬Strategic Intelligence','⑭Ops Intelligence','⑮Future Strategy','⑯Dev IQ','⑰Prompt Genome','⑱Prompt Ops','⑲Enterprise','⑳CI/CD','㉑API Intelligence','㉒DB Intelligence','㉓Testing Intelligence','㉔AI Safety','㉕Performance','㉖Observability'],
+pillar:['①SDD','②DevContainer','③MCP','④AI Rules','⑤Explorer','⑥Dashboard','⑦Roadmap','⑧AI Launcher','⑨Design System','⑩Reverse Eng','⑪Impl Guide','⑫Security','⑬Strategic Intelligence','⑭Ops Intelligence','⑮Future Strategy','⑯Dev IQ','⑰Prompt Genome','⑱Prompt Ops','⑲Enterprise','⑳CI/CD','㉑API Intelligence','㉒DB Intelligence','㉓Testing Intelligence','㉔AI Safety','㉕Performance','㉖Observability','㉗Cost Optimization'],
 skillFineTune:'Skill Fine-Tune'
 }
 };

@@ -37,6 +37,7 @@ eval(fs.readFileSync('src/generators/p23-testing.js','utf-8'));
 eval(fs.readFileSync('src/generators/p24-aisafety.js','utf-8'));
 eval(fs.readFileSync('src/generators/p25-performance.js','utf-8'));
 eval(fs.readFileSync('src/generators/p26-observability.js','utf-8'));
+eval(fs.readFileSync('src/generators/p27-cost.js','utf-8').replace(/const (COST_PLATFORM)/g,'var $1'));
 
 // ═══ Helper ═══
 function generate(answers, name, lang) {
@@ -68,6 +69,7 @@ function generate(answers, name, lang) {
   genPillar24_AISafety(answers, name);
   genPillar25_Performance(answers, name);
   genPillar26_Observability(answers, name);
+  genPillar27_CostOptimization(answers, name);
   return { ...S.files };
 }
 
@@ -86,9 +88,9 @@ describe('Snapshot A: LMS/Supabase/Stripe', () => {
     ai_auto: 'マルチAgent協調'
   }, 'LMS');
 
-  test('file count in range 136-167 (ADR+1, SecManifest+3, P21-P26 each add +4 docs)', () => {
+  test('file count in range 140-171 (ADR+1, SecManifest+3, P21-P27 each add +4 docs)', () => {
     const count = Object.keys(files).length;
-    assert.ok(count >= 136 && count <= 167, `Expected 136-167 files (ADR+1, SecManifest+3, P21-P26 +24), got ${count}`);
+    assert.ok(count >= 140 && count <= 171, `Expected 140-171 files (ADR+1, SecManifest+3, P21-P27 +28), got ${count}`);
   });
 
   test('total tokens in range 12000-90000 (P21-P26 each add ~4-6K tokens)', () => {
@@ -758,9 +760,9 @@ describe('Snapshot B: Blog/Vite/Netlify', () => {
     dev_methods: 'TDD', ai_tools: 'Cursor', orm: ''
   }, 'Blog');
 
-  test('file count in range 126-158 (P21-P26 each add +4 docs, total +24; +3 ADR/pillar-map/cost-est; +2 docs/107-108)', () => {
+  test('file count in range 130-162 (P21-P27 each add +4 docs, total +28; +3 ADR/pillar-map/cost-est; +2 docs/107-108)', () => {
     const count = Object.keys(files).length;
-    assert.ok(count >= 126 && count <= 158, `Expected 126-158 files (P21-P26 each +4 docs, +3 new context docs, +2 governance/UAT), got ${count}`);
+    assert.ok(count >= 130 && count <= 162, `Expected 130-162 files (P21-P27 each +4 docs, +3 new context docs, +2 governance/UAT), got ${count}`);
   });
 
   test('no Stripe content when payment absent', () => {

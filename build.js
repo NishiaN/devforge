@@ -45,6 +45,7 @@ const jsFiles = [
   'data/presets-ext8.js',
   'data/presets-ext9.js',
   'data/presets-ext10.js',
+  'data/presets-ext11.js',
   'data/questions.js',
   'data/techdb.js',
   'data/helpdata.js',
@@ -93,6 +94,7 @@ const jsFiles = [
   'generators/p24-aisafety.js',
   'generators/p25-performance.js',
   'generators/p26-observability.js',
+  'generators/p27-cost.js',
   'generators/docs.js',
   'generators/common.js',
 

@@ -65,6 +65,7 @@ eval(fs.readFileSync('src/generators/p23-testing.js','utf-8'));
 eval(fs.readFileSync('src/generators/p24-aisafety.js','utf-8'));
 eval(fs.readFileSync('src/generators/p25-performance.js','utf-8'));
 eval(fs.readFileSync('src/generators/p26-observability.js','utf-8'));
+eval(fs.readFileSync('src/generators/p27-cost.js','utf-8').replace(/const (COST_PLATFORM)/g,'var $1'));
 
 /* ═══ Generation helpers ═══ */
 
@@ -112,6 +113,7 @@ function gFull(answers, lang, skill) {
   genPillar24_AISafety(answers,'QTest');
   genPillar25_Performance(answers,'QTest');
   genPillar26_Observability(answers,'QTest');
+  genPillar27_CostOptimization(answers,'QTest');
   return Object.assign({},S.files);
 }
 
@@ -687,10 +689,10 @@ describe('Q7: domain-specific KPI fallback in constitution §3', () => {
    ════════════════════════════════════════════════════════════════ */
 describe('Q8: Full E2E generation — file count, tokens, 25 vs 11 delta', () => {
 
-  it('A25 full generation: file count in 108-172 range', () => {
+  it('A25 full generation: file count in 112-176 range', () => {
     const f = gFull(A25);
     const count = Object.keys(f).length;
-    assert.ok(count >= 108 && count <= 172, `A25 full gen file count should be 108-172, got ${count}`);
+    assert.ok(count >= 112 && count <= 176, `A25 full gen file count should be 112-176, got ${count}`);
   });
 
   it('A25 full generation: total tokens ≥ 14000 (rich content across 24 pillars)', () => {
@@ -36010,5 +36012,621 @@ describe('Suite 276: presets-ext10 digital_signage — NestJS/Railway/stripe', (
   it('docs/01: digital_signage produces no undefined in overview', () => {
     const f = gSDD(g276_digital_signage);
     assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'digital_signage docs/01 must not contain undefined');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 277 — presets-ext11.js: corporate_wiki
+   Express/Railway/stripe
+   ════════════════════════════════════════════════════════════════ */
+
+const g277_corporate_wiki = Object.assign({}, A25, {
+  purpose: 'AIセマンティック検索・バージョン管理・アクセス権限制御を備えた社内ナレッジWikiドキュメント管理システム',
+  frontend: 'React + Next.js',
+  backend: 'Node.js + Express',
+  database: 'PostgreSQL',
+  deploy: 'Railway',
+  orm: 'Prisma',
+  auth: 'JWT + Passport',
+  payment: 'stripe',
+  mobile: 'なし',
+  data_entities: 'User, WikiArticle, WikiCategory, WikiTag, WikiRevision, WikiComment',
+  mvp_features: 'WikiArticle作成・編集・バージョン管理, カテゴリ・タグ管理, AIセマンティック全文検索, 閲覧権限・アクセス制御, 変更履歴・差分表示, ページネーション・無限スクロール',
+});
+
+describe('Suite 277: presets-ext11 corporate_wiki — Express/Railway/stripe', () => {
+
+  it('SDD: corporate_wiki generates specification.md and constitution.md', () => {
+    const f = gSDD(g277_corporate_wiki);
+    assert.ok(f['.spec/specification.md'], 'corporate_wiki must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'corporate_wiki must generate constitution.md');
+  });
+
+  it('SDD: corporate_wiki includes WikiArticle entity in spec', () => {
+    const f = gSDD(g277_corporate_wiki);
+    assert.ok((f['.spec/specification.md']||'').includes('WikiArticle'), 'corporate_wiki spec must mention WikiArticle');
+  });
+
+  it('SDD: corporate_wiki (Express) → Express referenced in spec', () => {
+    const f = gSDD(g277_corporate_wiki);
+    assert.ok((f['.spec/specification.md']||'').includes('Express'), 'corporate_wiki spec must reference Express');
+  });
+
+  it('SDD: corporate_wiki stripe → Stripe referenced in spec', () => {
+    const f = gSDD(g277_corporate_wiki);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('Stripe')||spec.includes('stripe')||spec.includes('決済'), 'corporate_wiki stripe must reference payment');
+  });
+
+  it('SDD EN: corporate_wiki English spec contains WikiArticle', () => {
+    const f = gSDD(g277_corporate_wiki, 'en');
+    assert.ok((f['.spec/specification.md']||'').includes('WikiArticle'), 'corporate_wiki EN spec must contain WikiArticle');
+  });
+
+  it('SDD EN: corporate_wiki produces no undefined in spec', () => {
+    const f = gSDD(g277_corporate_wiki, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'corporate_wiki EN spec must not contain undefined');
+  });
+
+  it('SDD JA: corporate_wiki produces no undefined in spec', () => {
+    const f = gSDD(g277_corporate_wiki);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'corporate_wiki JA spec must not contain undefined');
+  });
+
+  it('docs/01: corporate_wiki overview mentions Wiki or ナレッジ or ドキュメント', () => {
+    const f = gSDD(g277_corporate_wiki);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('Wiki')||doc.includes('ナレッジ')||doc.includes('ドキュメント')||doc.includes('Document'), 'corporate_wiki docs/01 must mention Wiki or ナレッジ or ドキュメント');
+  });
+
+  it('docs/01: corporate_wiki produces no undefined in overview', () => {
+    const f = gSDD(g277_corporate_wiki);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'corporate_wiki docs/01 must not contain undefined');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 278 — presets-ext11.js: smart_parking
+   Express/Railway/stripe
+   ════════════════════════════════════════════════════════════════ */
+
+const g278_smart_parking = Object.assign({}, A25, {
+  purpose: 'IoTセンサーで駐車場の空き状況をリアルタイム管理し、オンライン予約・料金計算・入出庫ログを提供するスマート駐車管理SaaS',
+  frontend: 'React + Next.js',
+  backend: 'Node.js + Express',
+  database: 'PostgreSQL',
+  deploy: 'Railway',
+  orm: 'Prisma',
+  auth: 'JWT + Passport',
+  payment: 'stripe',
+  mobile: 'なし',
+  data_entities: 'User, ParkingLot, ParkingSlot, ParkingSession, ParkingRate, ParkingReservation',
+  mvp_features: 'リアルタイム空き状況監視, 駐車スロット予約管理, 料金プラン・計算, 入出庫ログ・分析, センサー異常アラート, CORSホワイトリスト設定, ページネーション・無限スクロール',
+});
+
+describe('Suite 278: presets-ext11 smart_parking — Express/Railway/stripe', () => {
+
+  it('SDD: smart_parking generates specification.md and constitution.md', () => {
+    const f = gSDD(g278_smart_parking);
+    assert.ok(f['.spec/specification.md'], 'smart_parking must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'smart_parking must generate constitution.md');
+  });
+
+  it('SDD: smart_parking includes ParkingLot entity in spec', () => {
+    const f = gSDD(g278_smart_parking);
+    assert.ok((f['.spec/specification.md']||'').includes('ParkingLot'), 'smart_parking spec must mention ParkingLot');
+  });
+
+  it('SDD: smart_parking includes ParkingSlot or ParkingSession in spec', () => {
+    const f = gSDD(g278_smart_parking);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('ParkingSlot')||spec.includes('ParkingSession'), 'smart_parking spec must mention ParkingSlot or ParkingSession');
+  });
+
+  it('SDD EN: smart_parking produces no undefined in spec', () => {
+    const f = gSDD(g278_smart_parking, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'smart_parking EN spec must not contain undefined');
+  });
+
+  it('SDD JA: smart_parking produces no undefined in spec', () => {
+    const f = gSDD(g278_smart_parking);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'smart_parking JA spec must not contain undefined');
+  });
+
+  it('docs/01: smart_parking overview mentions 駐車 or Parking', () => {
+    const f = gSDD(g278_smart_parking);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('駐車')||doc.includes('Parking')||doc.includes('IoT'), 'smart_parking docs/01 must mention 駐車 or Parking');
+  });
+
+  it('docs/01: smart_parking produces no undefined in overview', () => {
+    const f = gSDD(g278_smart_parking);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'smart_parking docs/01 must not contain undefined');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 279 — presets-ext11.js: pet_health_tracker
+   Supabase/Vercel/stripe
+   ════════════════════════════════════════════════════════════════ */
+
+const g279_pet_health_tracker = Object.assign({}, A25, {
+  purpose: 'ペットの健康記録・ワクチンスケジュール・体重推移・かかりつけ医情報を家族で共有管理するペットケアプラットフォーム',
+  frontend: 'React + Next.js',
+  backend: 'Supabase',
+  database: 'Supabase (PostgreSQL)',
+  deploy: 'Vercel',
+  auth: 'Supabase Auth',
+  payment: 'stripe',
+  mobile: 'なし',
+  data_entities: 'User, Pet, VetVisit, PetVaccination, PetMedication, PetWeight',
+  mvp_features: 'ペット基本情報・プロフィール管理, ワクチン接種記録・スケジュール, 体重・健康指標トラッキング, 通院履歴・検査結果記録, リマインダー通知, ページネーション・無限スクロール',
+});
+
+describe('Suite 279: presets-ext11 pet_health_tracker — Supabase/Vercel/stripe', () => {
+
+  it('SDD: pet_health_tracker generates specification.md and constitution.md', () => {
+    const f = gSDD(g279_pet_health_tracker);
+    assert.ok(f['.spec/specification.md'], 'pet_health_tracker must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'pet_health_tracker must generate constitution.md');
+  });
+
+  it('SDD: pet_health_tracker includes Pet entity in spec', () => {
+    const f = gSDD(g279_pet_health_tracker);
+    assert.ok((f['.spec/specification.md']||'').includes('Pet'), 'pet_health_tracker spec must mention Pet');
+  });
+
+  it('SDD: pet_health_tracker includes PetVaccination or VetVisit in spec', () => {
+    const f = gSDD(g279_pet_health_tracker);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('PetVaccination')||spec.includes('VetVisit'), 'pet_health_tracker spec must mention vaccination or vet visit');
+  });
+
+  it('SDD EN: pet_health_tracker produces no undefined in spec', () => {
+    const f = gSDD(g279_pet_health_tracker, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'pet_health_tracker EN spec must not contain undefined');
+  });
+
+  it('SDD JA: pet_health_tracker produces no undefined in spec', () => {
+    const f = gSDD(g279_pet_health_tracker);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'pet_health_tracker JA spec must not contain undefined');
+  });
+
+  it('docs/01: pet_health_tracker overview mentions ペット or Pet or 健康', () => {
+    const f = gSDD(g279_pet_health_tracker);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('ペット')||doc.includes('Pet')||doc.includes('健康'), 'pet_health_tracker docs/01 must mention ペット or Pet');
+  });
+
+  it('docs/01: pet_health_tracker produces no undefined in overview', () => {
+    const f = gSDD(g279_pet_health_tracker);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'pet_health_tracker docs/01 must not contain undefined');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 280 — presets-ext11.js: donation_platform
+   Supabase/Vercel/stripe
+   ════════════════════════════════════════════════════════════════ */
+
+const g280_donation_platform = Object.assign({}, A25, {
+  purpose: 'NPO・社会貢献プロジェクト向けのオンライン寄付受付・クラウドファンディングキャンペーン管理・寄付者分析プラットフォーム',
+  frontend: 'React + Next.js',
+  backend: 'Supabase',
+  database: 'Supabase (PostgreSQL)',
+  deploy: 'Vercel',
+  auth: 'Supabase Auth',
+  payment: 'stripe',
+  mobile: 'なし',
+  data_entities: 'User, DonationCampaign, Donation, DonorProfile, CampaignUpdate',
+  mvp_features: '寄付キャンペーン作成・管理, オンライン決済受付, 寄付者プロフィール管理, キャンペーン進捗・レポート, 税控除証明書発行, ページネーション・無限スクロール',
+});
+
+describe('Suite 280: presets-ext11 donation_platform — Supabase/Vercel/stripe', () => {
+
+  it('SDD: donation_platform generates specification.md and constitution.md', () => {
+    const f = gSDD(g280_donation_platform);
+    assert.ok(f['.spec/specification.md'], 'donation_platform must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'donation_platform must generate constitution.md');
+  });
+
+  it('SDD: donation_platform includes DonationCampaign entity in spec', () => {
+    const f = gSDD(g280_donation_platform);
+    assert.ok((f['.spec/specification.md']||'').includes('DonationCampaign'), 'donation_platform spec must mention DonationCampaign');
+  });
+
+  it('SDD: donation_platform stripe → Stripe referenced in spec', () => {
+    const f = gSDD(g280_donation_platform);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('Stripe')||spec.includes('stripe')||spec.includes('決済'), 'donation_platform stripe must reference payment');
+  });
+
+  it('SDD EN: donation_platform produces no undefined in spec', () => {
+    const f = gSDD(g280_donation_platform, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'donation_platform EN spec must not contain undefined');
+  });
+
+  it('SDD JA: donation_platform produces no undefined in spec', () => {
+    const f = gSDD(g280_donation_platform);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'donation_platform JA spec must not contain undefined');
+  });
+
+  it('docs/01: donation_platform overview mentions 寄付 or Donation or クラウドファンディング', () => {
+    const f = gSDD(g280_donation_platform);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('寄付')||doc.includes('Donation')||doc.includes('クラウドファンディング')||doc.includes('Crowdfunding'), 'donation_platform docs/01 must mention 寄付 or Donation');
+  });
+
+  it('docs/01: donation_platform produces no undefined in overview', () => {
+    const f = gSDD(g280_donation_platform);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'donation_platform docs/01 must not contain undefined');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 281 — presets-ext11.js: real_estate_listing
+   Express/Railway/stripe
+   ════════════════════════════════════════════════════════════════ */
+
+const g281_real_estate_listing = Object.assign({}, A25, {
+  purpose: '物件検索・不動産ポータル掲載・仲介業者マッチング・内見予約・問い合わせ管理を提供する不動産仲介プラットフォーム',
+  frontend: 'React + Next.js',
+  backend: 'Node.js + Express',
+  database: 'PostgreSQL',
+  deploy: 'Railway',
+  orm: 'Prisma',
+  auth: 'JWT + Passport',
+  payment: 'stripe',
+  mobile: 'なし',
+  data_entities: 'User, Property, PropertyListing, PropertyImage, ListingInquiry, FavoriteProperty',
+  mvp_features: '物件掲載・詳細管理, 地図・条件検索, 内見予約・スケジュール管理, お問い合わせ・商談管理, お気に入り物件保存, ページネーション・無限スクロール',
+});
+
+describe('Suite 281: presets-ext11 real_estate_listing — Express/Railway/stripe', () => {
+
+  it('SDD: real_estate_listing generates specification.md and constitution.md', () => {
+    const f = gSDD(g281_real_estate_listing);
+    assert.ok(f['.spec/specification.md'], 'real_estate_listing must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'real_estate_listing must generate constitution.md');
+  });
+
+  it('SDD: real_estate_listing includes Property entity in spec', () => {
+    const f = gSDD(g281_real_estate_listing);
+    assert.ok((f['.spec/specification.md']||'').includes('Property'), 'real_estate_listing spec must mention Property');
+  });
+
+  it('SDD: real_estate_listing includes PropertyListing or ListingInquiry in spec', () => {
+    const f = gSDD(g281_real_estate_listing);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('PropertyListing')||spec.includes('ListingInquiry'), 'real_estate_listing spec must mention listing or inquiry');
+  });
+
+  it('SDD EN: real_estate_listing produces no undefined in spec', () => {
+    const f = gSDD(g281_real_estate_listing, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'real_estate_listing EN spec must not contain undefined');
+  });
+
+  it('SDD JA: real_estate_listing produces no undefined in spec', () => {
+    const f = gSDD(g281_real_estate_listing);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'real_estate_listing JA spec must not contain undefined');
+  });
+
+  it('docs/01: real_estate_listing overview mentions 不動産 or Property or 物件', () => {
+    const f = gSDD(g281_real_estate_listing);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('不動産')||doc.includes('Property')||doc.includes('物件')||doc.includes('Real Estate'), 'real_estate_listing docs/01 must mention real estate');
+  });
+
+  it('docs/01: real_estate_listing produces no undefined in overview', () => {
+    const f = gSDD(g281_real_estate_listing);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'real_estate_listing docs/01 must not contain undefined');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 282 — presets-ext11.js: language_learning
+   Supabase/Vercel/stripe
+   ════════════════════════════════════════════════════════════════ */
+
+const g282_language_learning = Object.assign({}, A25, {
+  purpose: 'AIを活用した語学レッスン・会話練習・語彙学習・学習進捗トラッキングを提供する語学学習プラットフォーム',
+  frontend: 'React + Next.js',
+  backend: 'Supabase',
+  database: 'Supabase (PostgreSQL)',
+  deploy: 'Vercel',
+  auth: 'Supabase Auth',
+  payment: 'stripe',
+  mobile: 'なし',
+  data_entities: 'User, LangLesson, LangExercise, LangProgress, LangVocab, ConversationSession',
+  mvp_features: '語学レッスン・コンテンツ管理, AI会話練習セッション, 語彙カードとスペースド復習, 学習進捗・達成バッジ, 発音評価・フィードバック, ページネーション・無限スクロール',
+});
+
+describe('Suite 282: presets-ext11 language_learning — Supabase/Vercel/stripe', () => {
+
+  it('SDD: language_learning generates specification.md and constitution.md', () => {
+    const f = gSDD(g282_language_learning);
+    assert.ok(f['.spec/specification.md'], 'language_learning must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'language_learning must generate constitution.md');
+  });
+
+  it('SDD: language_learning includes LangLesson entity in spec', () => {
+    const f = gSDD(g282_language_learning);
+    assert.ok((f['.spec/specification.md']||'').includes('LangLesson'), 'language_learning spec must mention LangLesson');
+  });
+
+  it('SDD: language_learning includes LangVocab or ConversationSession in spec', () => {
+    const f = gSDD(g282_language_learning);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('LangVocab')||spec.includes('ConversationSession'), 'language_learning spec must mention vocab or conversation');
+  });
+
+  it('SDD EN: language_learning produces no undefined in spec', () => {
+    const f = gSDD(g282_language_learning, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'language_learning EN spec must not contain undefined');
+  });
+
+  it('SDD JA: language_learning produces no undefined in spec', () => {
+    const f = gSDD(g282_language_learning);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'language_learning JA spec must not contain undefined');
+  });
+
+  it('docs/01: language_learning overview mentions 語学 or Language or 学習', () => {
+    const f = gSDD(g282_language_learning);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('語学')||doc.includes('Language')||doc.includes('学習')||doc.includes('Learning'), 'language_learning docs/01 must mention language or learning');
+  });
+
+  it('docs/01: language_learning produces no undefined in overview', () => {
+    const f = gSDD(g282_language_learning);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'language_learning docs/01 must not contain undefined');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 283 — presets-ext11.js: warehouse_mgmt
+   Express/Railway/stripe
+   ════════════════════════════════════════════════════════════════ */
+
+const g283_warehouse_mgmt = Object.assign({}, A25, {
+  purpose: '倉庫ゾーン管理・入出庫記録・在庫アラート・棚卸効率化を提供する物流倉庫管理SaaS',
+  frontend: 'React + Next.js',
+  backend: 'Node.js + Express',
+  database: 'PostgreSQL',
+  deploy: 'Railway',
+  orm: 'Prisma',
+  auth: 'JWT + Passport',
+  payment: 'stripe',
+  mobile: 'なし',
+  data_entities: 'User, Warehouse, WarehouseZone, StockItem, StockMovement, StockAlert',
+  mvp_features: '倉庫ゾーン・棚管理, 在庫品目・ロケーション管理, 入出庫記録・履歴, 在庫不足・過剰アラート, 棚卸レポート, CORSホワイトリスト設定, ページネーション・無限スクロール',
+});
+
+describe('Suite 283: presets-ext11 warehouse_mgmt — Express/Railway/stripe', () => {
+
+  it('SDD: warehouse_mgmt generates specification.md and constitution.md', () => {
+    const f = gSDD(g283_warehouse_mgmt);
+    assert.ok(f['.spec/specification.md'], 'warehouse_mgmt must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'warehouse_mgmt must generate constitution.md');
+  });
+
+  it('SDD: warehouse_mgmt includes Warehouse entity in spec', () => {
+    const f = gSDD(g283_warehouse_mgmt);
+    assert.ok((f['.spec/specification.md']||'').includes('Warehouse'), 'warehouse_mgmt spec must mention Warehouse');
+  });
+
+  it('SDD: warehouse_mgmt includes StockItem or StockMovement in spec', () => {
+    const f = gSDD(g283_warehouse_mgmt);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('StockItem')||spec.includes('StockMovement'), 'warehouse_mgmt spec must mention StockItem or StockMovement');
+  });
+
+  it('SDD EN: warehouse_mgmt produces no undefined in spec', () => {
+    const f = gSDD(g283_warehouse_mgmt, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'warehouse_mgmt EN spec must not contain undefined');
+  });
+
+  it('SDD JA: warehouse_mgmt produces no undefined in spec', () => {
+    const f = gSDD(g283_warehouse_mgmt);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'warehouse_mgmt JA spec must not contain undefined');
+  });
+
+  it('docs/01: warehouse_mgmt overview mentions 倉庫 or Warehouse or 在庫', () => {
+    const f = gSDD(g283_warehouse_mgmt);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('倉庫')||doc.includes('Warehouse')||doc.includes('在庫')||doc.includes('Stock'), 'warehouse_mgmt docs/01 must mention warehouse or stock');
+  });
+
+  it('docs/01: warehouse_mgmt produces no undefined in overview', () => {
+    const f = gSDD(g283_warehouse_mgmt);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'warehouse_mgmt docs/01 must not contain undefined');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 284 — presets-ext11.js: podcast_hosting
+   Supabase/Vercel/stripe
+   ════════════════════════════════════════════════════════════════ */
+
+const g284_podcast_hosting = Object.assign({}, A25, {
+  purpose: 'ポッドキャスト番組ホスティング・RSS自動配信・リスナー購読管理・再生統計を提供する独立型ポッドキャストホスティングSaaS',
+  frontend: 'React + Next.js',
+  backend: 'Supabase',
+  database: 'Supabase (PostgreSQL)',
+  deploy: 'Vercel',
+  auth: 'Supabase Auth',
+  payment: 'stripe',
+  mobile: 'なし',
+  data_entities: 'User, PodcastShow, PodcastEpisode, PodcastFeed, PodcastListener, PodcastStat',
+  mvp_features: '番組・エピソードホスティング管理, RSSフィード自動配信管理, リスナー購読・管理, 再生・ダウンロード統計, プラットフォーム配信ステータス, ページネーション・無限スクロール',
+});
+
+describe('Suite 284: presets-ext11 podcast_hosting — Supabase/Vercel/stripe', () => {
+
+  it('SDD: podcast_hosting generates specification.md and constitution.md', () => {
+    const f = gSDD(g284_podcast_hosting);
+    assert.ok(f['.spec/specification.md'], 'podcast_hosting must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'podcast_hosting must generate constitution.md');
+  });
+
+  it('SDD: podcast_hosting includes PodcastShow entity in spec', () => {
+    const f = gSDD(g284_podcast_hosting);
+    assert.ok((f['.spec/specification.md']||'').includes('PodcastShow'), 'podcast_hosting spec must mention PodcastShow');
+  });
+
+  it('SDD: podcast_hosting includes PodcastEpisode or PodcastFeed in spec', () => {
+    const f = gSDD(g284_podcast_hosting);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('PodcastEpisode')||spec.includes('PodcastFeed'), 'podcast_hosting spec must mention episode or feed');
+  });
+
+  it('SDD EN: podcast_hosting produces no undefined in spec', () => {
+    const f = gSDD(g284_podcast_hosting, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'podcast_hosting EN spec must not contain undefined');
+  });
+
+  it('SDD JA: podcast_hosting produces no undefined in spec', () => {
+    const f = gSDD(g284_podcast_hosting);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'podcast_hosting JA spec must not contain undefined');
+  });
+
+  it('docs/01: podcast_hosting overview mentions Podcast or ポッドキャスト or RSS', () => {
+    const f = gSDD(g284_podcast_hosting);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('Podcast')||doc.includes('ポッドキャスト')||doc.includes('RSS'), 'podcast_hosting docs/01 must mention podcast or RSS');
+  });
+
+  it('docs/01: podcast_hosting produces no undefined in overview', () => {
+    const f = gSDD(g284_podcast_hosting);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'podcast_hosting docs/01 must not contain undefined');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 285 — presets-ext11.js: carbon_offset_marketplace
+   NestJS/Railway/stripe
+   ════════════════════════════════════════════════════════════════ */
+
+const g285_carbon_offset = Object.assign({}, A25, {
+  purpose: 'CO2排出量オフセット取引・カーボンクレジット管理・環境プロジェクト認証・脱炭素レポートを提供する環境取引プラットフォーム',
+  frontend: 'React + Next.js',
+  backend: 'Node.js + NestJS',
+  database: 'PostgreSQL',
+  deploy: 'Railway',
+  orm: 'TypeORM',
+  auth: 'JWT + Passport',
+  payment: 'stripe',
+  mobile: 'なし',
+  data_entities: 'User, CarbonProject, CarbonCredit, CarbonOffset, CarbonCertificate, CarbonMarketOrder',
+  mvp_features: 'カーボンクレジット売買取引, プロジェクト認証・管理, CO2排出量オフセット計算, 脱炭素進捗レポート, 証書発行・管理, CORSホワイトリスト設定, ページネーション・無限スクロール',
+});
+
+describe('Suite 285: presets-ext11 carbon_offset_marketplace — NestJS/Railway/stripe', () => {
+
+  it('SDD: carbon_offset_marketplace generates specification.md and constitution.md', () => {
+    const f = gSDD(g285_carbon_offset);
+    assert.ok(f['.spec/specification.md'], 'carbon_offset must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'carbon_offset must generate constitution.md');
+  });
+
+  it('SDD: carbon_offset_marketplace includes CarbonProject entity in spec', () => {
+    const f = gSDD(g285_carbon_offset);
+    assert.ok((f['.spec/specification.md']||'').includes('CarbonProject'), 'carbon_offset spec must mention CarbonProject');
+  });
+
+  it('SDD: carbon_offset_marketplace includes CarbonCredit or CarbonOffset in spec', () => {
+    const f = gSDD(g285_carbon_offset);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('CarbonCredit')||spec.includes('CarbonOffset'), 'carbon_offset spec must mention credit or offset');
+  });
+
+  it('SDD: carbon_offset_marketplace (NestJS) → NestJS referenced in spec', () => {
+    const f = gSDD(g285_carbon_offset);
+    assert.ok((f['.spec/specification.md']||'').includes('NestJS'), 'carbon_offset spec must reference NestJS');
+  });
+
+  it('SDD EN: carbon_offset_marketplace produces no undefined in spec', () => {
+    const f = gSDD(g285_carbon_offset, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'carbon_offset EN spec must not contain undefined');
+  });
+
+  it('SDD JA: carbon_offset_marketplace produces no undefined in spec', () => {
+    const f = gSDD(g285_carbon_offset);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'carbon_offset JA spec must not contain undefined');
+  });
+
+  it('docs/01: carbon_offset overview mentions カーボン or Carbon or CO2', () => {
+    const f = gSDD(g285_carbon_offset);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('カーボン')||doc.includes('Carbon')||doc.includes('CO2')||doc.includes('脱炭素'), 'carbon_offset docs/01 must mention carbon or CO2');
+  });
+
+  it('docs/01: carbon_offset_marketplace produces no undefined in overview', () => {
+    const f = gSDD(g285_carbon_offset);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'carbon_offset docs/01 must not contain undefined');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 286 — presets-ext11.js: freelancer_marketplace
+   Supabase/Vercel/stripe
+   ════════════════════════════════════════════════════════════════ */
+
+const g286_freelancer_marketplace = Object.assign({}, A25, {
+  purpose: 'フリーランサーと発注者をマッチングし、プロジェクト提案・契約・安全決済・レビューを一貫管理するフリーランスマーケットプレイス',
+  frontend: 'React + Next.js',
+  backend: 'Supabase',
+  database: 'Supabase (PostgreSQL)',
+  deploy: 'Vercel',
+  auth: 'Supabase Auth',
+  payment: 'stripe',
+  mobile: 'なし',
+  data_entities: 'User, FreelancerProfile, FreelanceJob, FreelanceProposal, FreelanceContract, FreelanceReview',
+  mvp_features: 'フリーランサープロフィール・スキル管理, 案件掲載・検索・マッチング, 提案書送付・ネゴシエーション, マイルストーン決済・エスクロー, レビュー・評価システム, ページネーション・無限スクロール',
+});
+
+describe('Suite 286: presets-ext11 freelancer_marketplace — Supabase/Vercel/stripe', () => {
+
+  it('SDD: freelancer_marketplace generates specification.md and constitution.md', () => {
+    const f = gSDD(g286_freelancer_marketplace);
+    assert.ok(f['.spec/specification.md'], 'freelancer_marketplace must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'freelancer_marketplace must generate constitution.md');
+  });
+
+  it('SDD: freelancer_marketplace includes FreelancerProfile entity in spec', () => {
+    const f = gSDD(g286_freelancer_marketplace);
+    assert.ok((f['.spec/specification.md']||'').includes('FreelancerProfile'), 'freelancer_marketplace spec must mention FreelancerProfile');
+  });
+
+  it('SDD: freelancer_marketplace includes FreelanceJob or FreelanceProposal in spec', () => {
+    const f = gSDD(g286_freelancer_marketplace);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('FreelanceJob')||spec.includes('FreelanceProposal'), 'freelancer_marketplace spec must mention job or proposal');
+  });
+
+  it('SDD: freelancer_marketplace stripe → Stripe referenced in spec', () => {
+    const f = gSDD(g286_freelancer_marketplace);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('Stripe')||spec.includes('stripe')||spec.includes('決済'), 'freelancer_marketplace stripe must reference payment');
+  });
+
+  it('SDD EN: freelancer_marketplace produces no undefined in spec', () => {
+    const f = gSDD(g286_freelancer_marketplace, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'freelancer_marketplace EN spec must not contain undefined');
+  });
+
+  it('SDD JA: freelancer_marketplace produces no undefined in spec', () => {
+    const f = gSDD(g286_freelancer_marketplace);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'freelancer_marketplace JA spec must not contain undefined');
+  });
+
+  it('docs/01: freelancer_marketplace overview mentions フリーランス or Freelancer or マーケットプレイス', () => {
+    const f = gSDD(g286_freelancer_marketplace);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('フリーランス')||doc.includes('Freelancer')||doc.includes('マーケットプレイス')||doc.includes('Marketplace'), 'freelancer_marketplace docs/01 must mention freelancer or marketplace');
+  });
+
+  it('docs/01: freelancer_marketplace produces no undefined in overview', () => {
+    const f = gSDD(g286_freelancer_marketplace);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'freelancer_marketplace docs/01 must not contain undefined');
   });
 });

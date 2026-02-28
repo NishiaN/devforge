@@ -433,6 +433,32 @@ const TECH_DB=[
 {name:'Earthly',cat:'devops',sub:'build',req:'optional',level:'pro',price:'free-oss'},
 // ── Test — email (1) ──
 {name:'MailHog',cat:'test',sub:'email',req:'optional',level:'int',price:'free-oss'},
+// ── ext11: Backend Frameworks (2) ──
+{name:'Elysia',cat:'back',sub:'fw',req:'optional',level:'int',price:'free-oss'},
+{name:'Axum',cat:'back',sub:'fw',req:'optional',level:'sys',price:'free-oss'},
+// ── ext11: Backend AI / Vector (5) ──
+{name:'LangChain',cat:'back',sub:'ai',req:'optional',level:'int',price:'free-oss'},
+{name:'Ollama',cat:'back',sub:'ai',req:'optional',level:'int',price:'free-oss'},
+{name:'Mastra',cat:'back',sub:'ai',req:'optional',level:'pro',price:'free-oss'},
+{name:'pgvector',cat:'back',sub:'vector',req:'optional',level:'int',price:'free-oss'},
+{name:'ChromaDB',cat:'back',sub:'vector',req:'optional',level:'int',price:'free-oss'},
+// ── ext11: Backend Email / Queue (3) ──
+{name:'Resend',cat:'back',sub:'email',req:'optional',level:'int',price:'free-tier'},
+{name:'React Email',cat:'front',sub:'email',req:'optional',level:'int',price:'free-oss'},
+{name:'Inngest',cat:'back',sub:'queue',req:'optional',level:'int',price:'free-tier'},
+// ── ext11: Frontend (5) ──
+{name:'Solid.js',cat:'front',sub:'fw',req:'optional',level:'int',price:'free-oss'},
+{name:'SolidStart',cat:'front',sub:'meta-fw',req:'optional',level:'pro',price:'free-oss'},
+{name:'HTMX',cat:'front',sub:'lib',req:'optional',level:'int',price:'free-oss'},
+{name:'Jotai',cat:'front',sub:'state',req:'optional',level:'int',price:'free-oss'},
+{name:'Capacitor',cat:'mobile',sub:'hybrid',req:'optional',level:'int',price:'free-oss'},
+// ── ext11: DevOps / Observability (3) ──
+{name:'Caddy',cat:'devops',sub:'web',req:'optional',level:'int',price:'free-oss'},
+{name:'Grafana Loki',cat:'devops',sub:'logging',req:'optional',level:'int',price:'free-oss'},
+{name:'Langfuse',cat:'devops',sub:'ai_obs',req:'optional',level:'int',price:'free-tier'},
+// ── ext11: Misc (2) ──
+{name:'Effect-TS',cat:'lang',sub:'library',req:'optional',level:'pro',price:'free-oss'},
+{name:'Fumadocs',cat:'front',sub:'docs',req:'optional',level:'int',price:'free-oss'},
 ];
 const _TECH_COUNT=TECH_DB.length;
 

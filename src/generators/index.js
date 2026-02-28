@@ -47,10 +47,10 @@ function doGenerate(lang){
   addMsg('bot',S.lang==='ja'?'🔨 ファイルを生成中...':'🔨 Generating files...');
 
   // Smart loading UI (HCD: ⑤感情体験 ③認知負荷)
-  const pillarIcons=['📋','🐳','🔌','🤖','✅','🗺️','🎨','🔍','💡','🔒','📊','⚙️','🔮','🧬','🧩','🔧','🏢','🚀','🌐','🗄️','📄','📦','🧪','🛡️','⚡','🔭'];
-  const pillarNames=_j?['SDD','DevContainer','MCP','AIルール','品質','ロードマップ','デザイン','リバース','実装','セキュリティ','戦略','運用','未来','開発IQ','ゲノム','Prompt Ops','Enterprise','CI/CD','API','DB','仕様書','共通','テスト','AI安全','パフォ','可観測']:['SDD','DevContainer','MCP','AI Rules','Quality','Roadmap','Design','Reverse','Impl','Security','Strategy','Ops','Future','Dev IQ','Genome','Prompt Ops','Enterprise','CI/CD','API','DB','Docs','Common','Testing','AI Safety','Perf','Observ'];
+  const pillarIcons=['📋','🐳','🔌','🤖','✅','🗺️','🎨','🔍','💡','🔒','📊','⚙️','🔮','🧬','🧩','🔧','🏢','🚀','🌐','🗄️','📄','📦','🧪','🛡️','⚡','🔭','💰'];
+  const pillarNames=_j?['SDD','DevContainer','MCP','AIルール','品質','ロードマップ','デザイン','リバース','実装','セキュリティ','戦略','運用','未来','開発IQ','ゲノム','Prompt Ops','Enterprise','CI/CD','API','DB','仕様書','共通','テスト','AI安全','パフォ','可観測','コスト']:['SDD','DevContainer','MCP','AI Rules','Quality','Roadmap','Design','Reverse','Impl','Security','Strategy','Ops','Future','Dev IQ','Genome','Prompt Ops','Enterprise','CI/CD','API','DB','Docs','Common','Testing','AI Safety','Perf','Observ','Cost'];
   let pillarGrid='<div class="gen-pillar-grid">';
-  for(let i=0;i<26;i++){
+  for(let i=0;i<27;i++){
     pillarGrid+=`<div class="gen-pillar-card" id="genPillar${i}" data-status="pending">
       <div class="gen-pillar-icon">${pillarIcons[i]}</div>
       <div class="gen-pillar-name">${pillarNames[i]}</div>
@@ -97,6 +97,7 @@ function doGenerate(lang){
     {fn:()=>genPillar24_AISafety(a,pn),lbl:_j?'柱㉔ AI安全性インテリジェンス':'Pillar ㉔ AI Safety Intelligence',err:'P24-AISafety'},
     {fn:()=>genPillar25_Performance(a,pn),lbl:_j?'柱㉕ パフォーマンスインテリジェンス':'Pillar ㉕ Performance Intelligence',err:'P25-Perf'},
     {fn:()=>genPillar26_Observability(a,pn),lbl:_j?'柱㉖ オブザーバビリティ':'Pillar ㉖ Observability',err:'P26-Obs'},
+    {fn:()=>genPillar27_CostOptimization(a,pn),lbl:_j?'柱㉗ コスト最適化':'Pillar ㉗ Cost Optimization',err:'P27-Cost'},
     {fn:()=>genDocs21(a,pn),lbl:_j?'仕様書28種':'28 Spec Docs',err:'Docs'},
     {fn:()=>genCommonFiles(a,pn),lbl:_j?'共通ファイル':'Common Files',err:'Common'},
   ];
