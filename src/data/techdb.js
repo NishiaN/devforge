@@ -459,6 +459,43 @@ const TECH_DB=[
 // ── ext11: Misc (2) ──
 {name:'Effect-TS',cat:'lang',sub:'library',req:'optional',level:'pro',price:'free-oss'},
 {name:'Fumadocs',cat:'front',sub:'docs',req:'optional',level:'int',price:'free-oss'},
+// ── ext-de2: Cloudflare Ecosystem (5) ──
+{name:'Cloudflare D1',cat:'baas',sub:'db',req:'optional',level:'edge',price:'free-tier'},
+{name:'Cloudflare R2',cat:'baas',sub:'storage',req:'optional',level:'edge',price:'free-tier'},
+{name:'Cloudflare KV',cat:'baas',sub:'store',req:'optional',level:'edge',price:'free-tier'},
+{name:'Cloudflare Workers AI',cat:'ai',sub:'sdk',req:'optional',level:'edge',price:'free-tier'},
+{name:'Cloudflare Pages',cat:'devops',sub:'paas',req:'optional',level:'int',price:'free-tier'},
+// ── ext-de2: Databases (5) ──
+{name:'PlanetScale',cat:'baas',sub:'db',req:'optional',level:'int',price:'free-tier'},
+{name:'CockroachDB',cat:'back',sub:'db',req:'optional',level:'pro',price:'free-tier'},
+{name:'EdgeDB',cat:'back',sub:'db',req:'optional',level:'pro',price:'free-oss'},
+{name:'SurrealDB',cat:'back',sub:'db',req:'optional',level:'pro',price:'free-oss'},
+// ── ext-de2: Vector DBs (3) ──
+{name:'Pinecone',cat:'back',sub:'vector',req:'optional',level:'int',price:'free-tier'},
+{name:'Weaviate',cat:'back',sub:'vector',req:'optional',level:'pro',price:'free-oss'},
+{name:'Qdrant',cat:'back',sub:'vector',req:'optional',level:'int',price:'free-oss'},
+// ── ext-de2: AI / LLM SDKs (5) ──
+{name:'LlamaIndex',cat:'back',sub:'ai',req:'optional',level:'int',price:'free-oss'},
+{name:'Groq SDK',cat:'ai',sub:'sdk',req:'optional',level:'int',price:'free-tier'},
+{name:'Mistral AI SDK',cat:'ai',sub:'sdk',req:'optional',level:'int',price:'free-tier'},
+{name:'Anthropic SDK',cat:'ai',sub:'sdk',req:'optional',level:'int',price:'usage'},
+{name:'Together AI',cat:'ai',sub:'sdk',req:'optional',level:'int',price:'free-tier'},
+// ── ext-de2: Auth (3) ──
+{name:'Lucia',cat:'back',sub:'auth',req:'optional',level:'int',price:'free-oss'},
+{name:'Kinde',cat:'payment',sub:'auth',req:'optional',level:'int',price:'free-tier'},
+{name:'WorkOS',cat:'payment',sub:'auth',req:'optional',level:'pro',price:'free-tier'},
+// ── ext-de2: Monitoring / Observability (3) ──
+{name:'Axiom',cat:'devops',sub:'logging',req:'optional',level:'int',price:'free-tier'},
+{name:'BetterStack',cat:'devops',sub:'monitor',req:'optional',level:'int',price:'free-tier'},
+{name:'Highlight.io',cat:'test',sub:'monitor',req:'optional',level:'int',price:'free-tier'},
+// ── ext-de2: Infra / Deployment (2) ──
+{name:'Kamal',cat:'devops',sub:'deploy',req:'optional',level:'pro',price:'free-oss'},
+{name:'Dokku',cat:'devops',sub:'paas',req:'optional',level:'int',price:'free-oss'},
+// ── ext-de2: Frontend / UI (1) ──
+{name:'Qwik',cat:'front',sub:'fw',req:'optional',level:'int',price:'free-oss'},
+// ── ext-de2: Backend / Runtime (2) ──
+{name:'Nitro',cat:'back',sub:'fw',req:'optional',level:'int',price:'free-oss'},
+{name:'Electron',cat:'mobile',sub:'desktop',req:'optional',level:'int',price:'free-oss'},
 ];
 const _TECH_COUNT=TECH_DB.length;
 

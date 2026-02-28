@@ -1,4 +1,4 @@
-/* ═══ STACK COMPATIBILITY & SEMANTIC CONSISTENCY RULES — 202 rules (ERROR×31 + WARN×114 + INFO×57) ═══ */
+/* ═══ STACK COMPATIBILITY & SEMANTIC CONSISTENCY RULES — 217 rules (ERROR×31 + WARN×121 + INFO×65) ═══ */
 const COMPAT_RULES=[
   // ── FE ↔ Mobile (2 ERROR) ──
   {id:'fe-mob-expo',p:['frontend','mobile'],lv:'error',
@@ -1607,6 +1607,90 @@ const COMPAT_RULES=[
    en:'Large-scale AI system. Recommend canary release, gradual rollout, and feature flag strategy for safe AI model updates in production',
    why_ja:'AIモデルの更新は「全ユーザーに即時切り替え」すると予期しない挙動の影響範囲が最大化します。カナリアリリースでは最初5%のトラフィックで新モデルをテストし、問題なければ段階的に拡大します。@launchdarkly/node-server-sdkまたはunleashでフィーチャーフラグを管理し、問題発生時は即座にロールバックできる設計にしてください。',
    why_en:'Switching all users to a new AI model simultaneously maximizes the impact of unexpected behavior. Canary releases test the new model on 5% of traffic first, then gradually expand if stable. Use @launchdarkly/node-server-sdk or unleash for feature flag management, designed for immediate rollback on issues.'},
+  // ── ext12: Bun/Deno/Runtime compat (4 WARN) ──
+  {id:'bun-nestjs-compat',p:['backend'],lv:'warn',
+   t:a=>inc(a.backend,'Bun + Hono')===false&&inc(a.backend,'Bun')&&(inc(a.backend,'NestJS')||inc(a.backend,'Express')),
+   ja:'Bun RuntimeでNestJS/Expressを使用する場合、一部のNode.js固有APIで互換性の問題が発生する可能性があります。Hono + Bunの組み合わせを推奨します',
+   en:'Running NestJS/Express on Bun Runtime may cause compatibility issues with some Node.js-specific APIs. Hono + Bun is recommended',
+   why_ja:'BunはNode.js互換を目指していますが、NestJSが内部で使用するReflect Metadataのデコレータ実装が異なる場合があります。Hono + Bunは公式にサポートされており、ビルトインHTTPサーバーによるネイティブ速度を発揮できます。',
+   why_en:'Bun targets Node.js compatibility but decorator implementations for Reflect Metadata used by NestJS may differ. Hono + Bun is officially supported and delivers native speed via its built-in HTTP server.'},
+  {id:'deno-express-incompat',p:['backend'],lv:'warn',
+   t:a=>inc(a.backend,'Deno')&&inc(a.backend,'Express'),
+   ja:'DenoはNode.js互換モードでExpressを動かせますが、本番利用では非推奨です。Deno + Honoの使用を推奨します',
+   en:'Deno can run Express in Node.js compat mode but it\'s not recommended for production. Use Deno + Hono instead',
+   why_ja:'Expressはnpmパッケージです。Denoの`npm:`スコープで読み込めますが、Expressが依存する`http`モジュールのshimが完全ではないケースがあります。Hono(`jsr:@hono/hono`)はDenoでネイティブ動作し、型安全・JSR対応済みです。',
+   why_en:'Express is an npm package loadable via Deno\'s `npm:` scope, but `http` module shims may be incomplete for production. Hono (`jsr:@hono/hono`) runs natively on Deno with type safety and JSR support.'},
+  {id:'bun-docker-image',p:['backend','deploy'],lv:'warn',
+   t:a=>inc(a.backend,'Bun')&&(inc(a.deploy,'Docker')||inc(a.deploy,'Railway')||inc(a.deploy,'Fly.io')),
+   ja:'Bun RuntimeをDockerで使用する場合、公式イメージ`oven/bun`の使用を推奨します。Node.js Dockerイメージでは最適なパフォーマンスが得られません',
+   en:'When using Bun Runtime with Docker, use the official `oven/bun` image. Node.js Docker images won\'t deliver optimal Bun performance',
+   why_ja:'`oven/bun`はBunのバイナリを直接含む公式Dockerイメージです。Node.jsイメージ上でBunをインストールする方法では、JavaScriptCoreエンジンの最適化が活かされません。',
+   why_en:'`oven/bun` is the official Docker image with the Bun binary. Installing Bun on a Node.js image bypasses JavaScriptCore engine optimizations.'},
+  {id:'deno-deploy-mismatch',p:['backend','deploy'],lv:'warn',
+   t:a=>inc(a.backend,'Deno')&&(inc(a.deploy,'Railway')||inc(a.deploy,'Render')),
+   ja:'Deno RuntimeはRailway/RenderではDockerコンテナとして動作させる必要があります。Deno Deployはネイティブ対応で推奨されます',
+   en:'Deno Runtime on Railway/Render requires Docker container setup. Deno Deploy is natively supported and recommended',
+   why_ja:'Railway/RenderはDenoをファーストクラスでサポートしていません。Deno Deploy（deno.com/deploy）はGitHub連携・V8エッジランタイムで即座にデプロイでき、管理コストがゼロです。',
+   why_en:'Railway/Render don\'t natively support Deno. Deno Deploy (deno.com/deploy) provides instant GitHub-integrated V8 edge deployment with zero management cost.'},
+  // ── ext12: DB + AI/Vector rules (3 INFO) ──
+  {id:'db-pgvector-missing',p:['ai_auto'],lv:'info',
+   t:a=>{
+     if(!a.ai_auto||/なし|None/i.test(a.ai_auto))return false;
+     const db=a.database||a.backend||'';
+     if(!inc(db,'PostgreSQL')&&!inc(db,'Supabase'))return false;
+     return !/(pgvector|vector.*search|ベクトル検索|semantic.*search|embedding)/i.test(a.mvp_features||'');
+   },
+   ja:'AI機能にPostgreSQLを使用しています。pgvector拡張機能によるベクトル類似度検索を追加することでRAG・セマンティック検索が実装できます',
+   en:'Using PostgreSQL for AI features. Adding pgvector extension for vector similarity search enables RAG and semantic search',
+   why_ja:'pgvectorはPostgreSQL内でベクトル埋め込みをネイティブに保存・検索できる拡張機能です。Supabaseでは`vecs`ライブラリで扱えます。外部ベクトルDBを追加しなくても既存PostgreSQLでRAGが実現できます。',
+   why_en:'pgvector enables native vector embedding storage and similarity search in PostgreSQL. Supabase supports it via the `vecs` library. RAG can be implemented on existing PostgreSQL without adding external vector DBs.'},
+  {id:'db-turso-drizzle',p:['database'],lv:'info',
+   t:a=>inc(a.database,'Turso')&&!inc(a.orm,'Drizzle'),
+   ja:'TursoはDrizzle ORMとの親和性が最高です。ORM選択でDrizzleへの変更を推奨します（公式libsqlドライバー対応）',
+   en:'Turso works best with Drizzle ORM. Consider switching to Drizzle (official libsql driver support)',
+   why_ja:'Drizzleは`drizzle-orm/libsql`アダプターでTursoに型安全なクエリを提供します。ローカルSQLite→本番Tursoへのシームレスな移行が可能です。',
+   why_en:'Drizzle provides type-safe queries via `drizzle-orm/libsql` adapter with seamless migration from local SQLite to production Turso.'},
+  {id:'db-d1-large-scale',p:['database'],lv:'info',
+   t:a=>inc(a.database,'D1')&&(a.scale||'medium')==='large',
+   ja:'Cloudflare D1は大規模スケールでの利用に制限があります（最大10GB）。高トラフィック・大容量にはNeon/TiDB Serverlessの検討を推奨します',
+   en:'Cloudflare D1 has limitations (max 10GB) for large-scale usage. Consider Neon/TiDB Serverless for high-traffic workloads',
+   why_ja:'D1は1DB最大10GB（2024年時点）、単一ライターによるグローバル非同期レプリケーション型です。大規模SaaSでは書き込みスループットが律速になります。NeonはPostgreSQL互換で読み書き分離・自動スケーリングを提供します。',
+   why_en:'D1 supports up to 10GB per database with single-writer global async replication. Write throughput becomes a bottleneck for large SaaS. Neon provides PostgreSQL-compatible read/write separation with autoscaling.'},
+  // ── ext12: CSS/DevMethod/Mobile-Pay rules (4 INFO + 4 WARN in header) ──
+  {id:'css-expo-tailwind',p:['css_fw','mobile'],lv:'info',
+   t:a=>inc(a.mobile,'Expo')&&inc(a.css_fw,'Tailwind'),
+   ja:'ExpoでTailwindを使用する場合、NativeWindライブラリが必要です（TailwindクラスをReact Nativeスタイルに変換）',
+   en:'Using Tailwind with Expo requires NativeWind (converts Tailwind classes to React Native styles)',
+   why_ja:'ブラウザ向けTailwindCSSはReact Nativeに直接適用できません。NativeWind v4はTailwindv4設定を読み込みRNの`StyleSheet`に変換するバベルプラグインです。`expo install nativewind`でセットアップしてください。',
+   why_en:'Browser-targeted Tailwind CSS cannot be applied to React Native directly. NativeWind v4 reads Tailwind v4 config and converts to RN `StyleSheet` via Babel plugin. Set up with `expo install nativewind`.'},
+  {id:'css-svelte-bootstrap',p:['css_fw','frontend'],lv:'info',
+   t:a=>inc(a.frontend,'Svelte')&&inc(a.css_fw,'Bootstrap'),
+   ja:'SvelteKitでBootstrapを使用する場合、BootstrapのJSコンポーネントがSvelteのリアクティビティと競合することがあります。Tailwind + skeleton UIを推奨します',
+   en:'Bootstrap JS components may conflict with Svelte\'s reactivity. Tailwind + skeleton UI is recommended',
+   why_ja:'Bootstrap v5のDropdown/ModalはVanilla JSベースでSvelteのリアクティビティシステムと競合するケースがあります。skeleton UIはSvelte公式サポートのUIフレームワークです。',
+   why_en:'Bootstrap v5 Dropdown/Modal are Vanilla JS-based and may conflict with Svelte\'s reactivity system. skeleton UI has official Svelte support.'},
+  {id:'method-ddd-no-repo',p:['dev_methods','backend'],lv:'info',
+   t:a=>/(DDD|ドメイン駆動)/i.test(a.dev_methods||'')&&(inc(a.backend,'Express')||inc(a.backend,'Fastify')||inc(a.backend,'Hono'))&&!/(Repository|リポジトリ|Clean Architecture|クリーンアーキテクチャ)/i.test(a.mvp_features||''),
+   ja:'DDD（ドメイン駆動設計）を選択し、軽量バックエンドを使用しています。Repositoryパターン・ドメイン層の分離を明示的に実装計画に含めることを推奨します',
+   en:'DDD selected with a lightweight backend. Explicitly plan Repository pattern and domain layer separation for clean DDD implementation',
+   why_ja:'DDD+Express/Fastify/Hono構成ではフレームワークがアーキテクチャを強制しないため、Repositoryパターン・UseCase層・ドメインサービスを手動で設計する必要があります。NestJS+デコレータを利用するとDDDパターンの実装が容易になります。',
+   why_en:'DDD with Express/Fastify/Hono requires manually designing Repository, UseCase, and domain service layers since the framework provides no structure. NestJS + decorators simplifies DDD pattern implementation.'},
+  {id:'method-ddd-simple',p:['dev_methods'],lv:'info',
+   t:a=>{
+     if(!/(DDD|ドメイン駆動)/i.test(a.dev_methods||''))return false;
+     const ents=(a.data_entities||a.entities||'').split(',').map(function(e){return e.trim();}).filter(Boolean);
+     return ents.length>0&&ents.length<5;
+   },
+   ja:'DDD（ドメイン駆動設計）を選択していますが、エンティティ数が4件以下です。シンプルなシステムではDDDのオーバーヘッドが開発コストを増加させる場合があります',
+   en:'DDD selected with fewer than 5 entities. For simple systems, DDD overhead may increase development cost',
+   why_ja:'DDDは複雑なビジネスルールを持つ大規模システムで効果を発揮します。エンティティが4件以下のシンプルなCRUDアプリではリポジトリパターン・集約の定義コストが開発速度を下げます。TDD+SDDの組み合わせで十分な品質が得られます。',
+   why_en:'DDD excels in large-scale systems with complex business rules. For simple CRUD apps with fewer than 5 entities, defining repositories and aggregates slows development. TDD + SDD delivers sufficient quality for small-scale projects.'},
+  {id:'mob-stripe-native',p:['mobile','payment'],lv:'info',
+   t:a=>inc(a.mobile,'Expo')&&a.payment&&!isNone(a.payment),
+   ja:'ExpoアプリでStripe決済を実装する場合、`@stripe/stripe-react-native`の使用が必要です（WebビューのStripe.jsは非推奨）',
+   en:'For Stripe payment in Expo apps, use `@stripe/stripe-react-native` (Stripe.js in WebView is not recommended)',
+   why_ja:'Stripeは`@stripe/stripe-react-native`を公式提供しており、Apple Pay・Google Pay・カードフォームをネイティブUIで実装できます。WebViewでStripe.jsを使う方法はAppStore審査でリジェクトされるリスクがあります。',
+   why_en:'Stripe officially provides `@stripe/stripe-react-native` with native UI for Apple Pay, Google Pay, and card forms. Using Stripe.js in WebView risks App Store rejection.'},
 ];
 // helpers
 function inc(v,k){return v&&typeof v==='string'&&v.indexOf(k)!==-1;}
