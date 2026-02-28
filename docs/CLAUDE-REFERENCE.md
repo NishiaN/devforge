@@ -352,8 +352,8 @@ function genPillarN_Name(a, pn) {
 
 ### 6. Size Budget Check
 - Estimate new generator size (~10-20KB typical)
-- Run `node build.js --report` to verify ≤2000KB
-- Current budget remaining: ~778KB
+- Run `node build.js --report` to verify ≤5000KB
+- Current budget remaining: ~1010KB (3990KB / 5000KB limit)
 
 **Reference Implementations:**
 - Pillar ⑩ (Reverse Engineering): Domain-specific goal decomposition with REVERSE_FLOW_MAP
@@ -470,12 +470,12 @@ test('pluralize', () => {
 | File | Tests | Purpose |
 |------|-------|---------|
 | gen-coherence.test.js | 1 | Full LMS generation + structural validation + post-generation audit (C2-C10) |
-| snapshot.test.js | 154 | 6 scenario regression (LMS/Blog/EC/English/PropertyMgmt/Helpdesk) + P12-P25 docs existence, context engineering, skills, quality files |
+| snapshot.test.js | 156 | 6 scenario regression (LMS/Blog/EC/English/PropertyMgmt/Helpdesk) + P12-P27 docs existence, context engineering, skills, quality files |
 | data-coverage.test.js | 38 | Data integrity: entity coverage, FK validation, domain detection (32 domains), DOMAIN_OPS/MARKET, P19 entity tests |
 | r27-regression.test.js | 17 | Bug fixes: prices, FK, KPI, ports |
 | r28-regression.test.js | 19 | Quality: REST methods, AC, scope_out, verification |
-| build.test.js | 37 | Build size ≤3000KB, pillar function existence (P1-P25), sbPillarGrid, PILLAR array lengths, tour steps, i18n kb sync |
-| compat.test.js | 1 | Compatibility validation (136 rules: 22 ERROR, 83 WARN, 31 INFO) + calcSynergy unit tests |
+| build.test.js | 37 | Build size ≤5000KB, pillar function existence (P1-P27), sbPillarGrid, PILLAR array lengths, tour steps, i18n kb sync |
+| compat.test.js | 1 | Compatibility validation (202 rules) + calcSynergy unit tests |
 | security.test.js | 29 | Security: CSP, SRI, sanitization, XSS prevention, proto pollution, .claude/settings.json safety |
 | ops.test.js | 15 | Ops Intelligence (P14): runbook, checklist, ops plane design, SLO adaptation, observability, circuit breaker |
 | future.test.js | 16 | Future Strategy (P15): DOMAIN_MARKET, PERSONA_ARCHETYPES, GTM_STRATEGY, REGULATORY_HORIZON, docs 56-59 |
@@ -484,17 +484,17 @@ test('pluralize', () => {
 | promptops.test.js | 22 | Prompt Ops (P18): REACT_PROTOCOL (6 phases × 4 stages), LLMOPS_STACK (3 Lv), PROMPT_LIFECYCLE (5 stages), docs 69-72 |
 | enterprise.test.js | 27 | Enterprise (P19): ENTERPRISE_ARCH_PATTERNS (4), WORKFLOW_TEMPLATES (5), docs 73-76, domain skip logic |
 | cicd.test.js | 30 | CI/CD (P20): PIPELINE_STAGES (9), DEPLOY_STRATEGIES (4), QUALITY_GATES (5), RELEASE_MODELS (3), docs 77-80 |
-| skill-level.test.js | 33 | 7-Level Skill System: SKILL_NAMES (7), pickSkillLv, Lv0/Lv2/Lv4/Lv6 behaviors, db_intelligence/ai_safety/test_intel templates |
-| presets.test.js | 4 | Preset count (48 standard), bilingual names, tech fields, purpose |
-| field-presets.test.js | 56 | Field preset system: PR_FIELD=138, FIELD_CAT_MAP=138, FIELD_CATS=35, FIELD_TREND=34, THEME_OVERLAYS=6 |
-| gen-quality.test.js | 239 | Suites 1-23: generation quality across all pillars (P1-P25), ORM/Auth/Payment coherence |
-| phase-n.test.js | 93 | N-1〜N-9 preset→wizard auto-fill + G-1〜G-7 skill/deadline/learning-path inference |
+| skill-level.test.js | 39 | 7-Level Skill System: SKILL_NAMES (7), pickSkillLv, Lv0/Lv2/Lv4/Lv6 behaviors, db_intelligence/ai_safety/test_intel templates |
+| presets.test.js | 7 | Preset count (143 standard), bilingual names, tech fields, purpose |
+| field-presets.test.js | 62 | Field preset system: PR_FIELD=502, FIELD_CAT_MAP=502, FIELD_CATS=44, FIELD_TREND=34, THEME_OVERLAYS=6 |
+| gen-quality.test.js | 5272 | Suites 1-286: generation quality across all pillars (P1-P27), ORM/Auth/Payment coherence |
+| phase-n.test.js | 94 | N-1〜N-9 preset→wizard auto-fill + G-1〜G-7 skill/deadline/learning-path inference |
 | complexity.test.js | 16 | Complexity scoring, getComplexityMini, risk thresholds |
 | mermaid.test.js | 14 | Mermaid diagram syntax validation across 10+ diagram types |
 | utils.test.js | 43 | Utility functions: esc, escAttr, sanitize, fileSlug, sanitizeName, _jp, _lsGet |
 | Others | 25 | i18n (15), state (5), techdb (5) |
 
-**Total: 6048 tests (all passing, 100% pass rate)**
+**Total: 6122 tests (all passing, 100% pass rate)**
 
 ---
 
