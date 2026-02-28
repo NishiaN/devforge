@@ -88,9 +88,9 @@ describe('Snapshot A: LMS/Supabase/Stripe', () => {
     ai_auto: 'マルチAgent協調'
   }, 'LMS');
 
-  test('file count in range 140-171 (ADR+1, SecManifest+3, P21-P27 each add +4 docs)', () => {
+  test('file count in range 140-178 (ADR+1, SecManifest+3, P21-P27 each add +4 docs, +7 agents/docs113-114)', () => {
     const count = Object.keys(files).length;
-    assert.ok(count >= 140 && count <= 171, `Expected 140-171 files (ADR+1, SecManifest+3, P21-P27 +28), got ${count}`);
+    assert.ok(count >= 140 && count <= 178, `Expected 140-178 files (ADR+1, SecManifest+3, P21-P27 +28, +7 agents/docs113-114), got ${count}`);
   });
 
   test('total tokens in range 12000-90000 (P21-P26 each add ~4-6K tokens)', () => {
@@ -760,9 +760,9 @@ describe('Snapshot B: Blog/Vite/Netlify', () => {
     dev_methods: 'TDD', ai_tools: 'Cursor', orm: ''
   }, 'Blog');
 
-  test('file count in range 130-162 (P21-P27 each add +4 docs, total +28; +3 ADR/pillar-map/cost-est; +2 docs/107-108)', () => {
+  test('file count in range 130-169 (P21-P27 each add +4 docs, total +28; +3 ADR/pillar-map/cost-est; +2 docs/107-108; +7 agents/docs113-114)', () => {
     const count = Object.keys(files).length;
-    assert.ok(count >= 130 && count <= 162, `Expected 130-162 files (P21-P27 each +4 docs, +3 new context docs, +2 governance/UAT), got ${count}`);
+    assert.ok(count >= 130 && count <= 169, `Expected 130-169 files (P21-P27 each +4 docs, +3 new context docs, +2 governance/UAT, +7 agents/docs113-114), got ${count}`);
   });
 
   test('no Stripe content when payment absent', () => {

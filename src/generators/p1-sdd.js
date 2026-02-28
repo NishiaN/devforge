@@ -539,30 +539,94 @@ function genPillar1_SDD(a,pn){
   ].join('\n');
 
   // B7: Tasks from single schedule source
-  const sprintTasks=(si)=>{
-    if(si===0) return ['- [ ] '+(G?'リポジトリ作成・初期設定':'Repo init & config'),
-      '- [ ] '+(G?'DevContainer設定':'DevContainer setup'),
-      '- [ ] '+(G?'CI/CD パイプライン構築':'CI/CD pipeline'),
-      '- [ ] '+(G?'データベーススキーマ定義':'Database schema')+((arch.isBaaS&&be.includes('Supabase'))?' + '+(G?'RLSポリシー設定':'RLS policy setup'):''),
-      '- [ ] '+(G?'認証基盤実装':'Auth implementation')+' ('+auth.sot+')'].join('\n');
-    if(si===1) return (a.mvp_features||(G?'CRUD操作':'CRUD Operations')).split(', ').map(f=>'- [ ] '+f).join('\n');
-    if(si===2) return (a.screens||(G?'ダッシュボード, ログイン':'Dashboard, Login')).split(', ').map(s=>'- [ ] '+s+' '+(G?'画面実装':'screen')).join('\n');
-    if(si===3) return ['- [ ] '+(G?'ユニットテスト (カバレッジ80%+)':'Unit tests (80%+ coverage)'),
-      '- [ ] '+(G?'E2Eテスト (主要フロー)':'E2E tests (key flows)'),
-      '- [ ] '+(G?'パフォーマンス最適化':'Performance optimization'),
-      '- [ ] '+(G?'本番デプロイ':'Production deploy'),
-      '- [ ] '+(G?'ドキュメント整備':'Documentation')].join('\n');
-    if(si===4) return ['- [ ] '+a.mobile+' '+(G?'プロジェクト初期化':'project init'),
-      '- [ ] '+(G?'画面実装（モバイル版）':'Mobile screens'),
-      '- [ ] '+(G?'ストアビルド設定':'Store build config'),
-      '- [ ] '+(G?'テスト':'Testing')].join('\n');
-    return '';
+  const _estH=(label)=>{
+    if(/infra|ci|cd|devcontainer|schema|env|setup/i.test(label)) return '2h';
+    if(/screen|画面/i.test(label)) return '4h';
+    if(/test|テスト/i.test(label)) return '4h';
+    if(/deploy|performance|最適化|docs|document/i.test(label)) return '3h';
+    return '4-8h';
   };
+  const _sprintPri=(si,idx)=>{
+    if(si===0) return 'P0';
+    if(si===1) return idx===0?'P0':'P1';
+    if(si===2) return 'P1';
+    return 'P2';
+  };
+  const sprintTasks=(si)=>{
+    const _pl=(p)=>_priorityLabel?_priorityLabel(p,G):'['+p+']';
+    let tasks=[];
+    if(si===0){
+      tasks=[
+        [G?'リポジトリ作成・初期設定':'Repo init & config','P0'],
+        [G?'DevContainer設定':'DevContainer setup','P0'],
+        [G?'CI/CD パイプライン構築':'CI/CD pipeline','P0'],
+        [(G?'データベーススキーマ定義':'Database schema')+((arch.isBaaS&&be.includes('Supabase'))?' + '+(G?'RLSポリシー設定':'RLS policy setup'):''),'P0'],
+        [(G?'認証基盤実装':'Auth implementation')+' ('+auth.sot+')','P0'],
+      ];
+    } else if(si===1){
+      const feats=(a.mvp_features||(G?'CRUD操作':'CRUD Operations')).split(', ').filter(Boolean);
+      tasks=feats.map((f,i)=>[f,i===0?'P0':'P1']);
+    } else if(si===2){
+      const scrs=(a.screens||(G?'ダッシュボード, ログイン':'Dashboard, Login')).split(', ').filter(Boolean);
+      tasks=scrs.map(s=>[s+' '+(G?'画面実装':'screen'),'P1']);
+    } else if(si===3){
+      tasks=[
+        [G?'ユニットテスト (カバレッジ80%+)':'Unit tests (80%+ coverage)','P1'],
+        [G?'E2Eテスト (主要フロー)':'E2E tests (key flows)','P1'],
+        [G?'パフォーマンス最適化':'Performance optimization','P2'],
+        [G?'本番デプロイ':'Production deploy','P0'],
+        [G?'ドキュメント整備':'Documentation','P2'],
+      ];
+    } else if(si===4){
+      tasks=[
+        [a.mobile+' '+(G?'プロジェクト初期化':'project init'),'P1'],
+        [G?'画面実装（モバイル版）':'Mobile screens','P1'],
+        [G?'ストアビルド設定':'Store build config','P2'],
+        [G?'テスト':'Testing','P1'],
+      ];
+    }
+    return tasks.map((t,i)=>{
+      const fd=si===1&&typeof getFeatureDetail==='function'?getFeatureDetail(t[0]):null;
+      const criteria=fd?(G?fd.criteria_ja:fd.criteria_en)||[]:[];
+      const est=_estH(t[0]);
+      const dep=si===1&&i>0?(' Dep: T'+(i-1).toString().padStart(2,'0')):'';
+      return '- [ ] '+_pl(t[1])+' **'+t[0]+'** ('+est+')'+dep+
+        (criteria.length?'\n  - AC: '+criteria[0].replace(/\{auth\}/g,a.auth||'OAuth'):'');
+    }).join('\n');
+  };
+
+  // Summary table
+  const _taskSummary=(()=>{
+    let p0=0,p1=0,p2=0,ht=0;
+    sched.sprints.forEach((sp,si)=>{
+      const tasks=si===0?5:si===1?(a.mvp_features||'').split(', ').filter(Boolean).length||1:
+        si===2?(a.screens||'').split(', ').filter(Boolean).length||1:si===3?5:si===4?4:0;
+      if(si===0)p0+=tasks;
+      else if(si===1){p0+=1;p1+=Math.max(tasks-1,0);}
+      else if(si===2)p1+=tasks;
+      else if(si===3){p0+=1;p1+=2;p2+=2;}
+      else p1+=2;p2+=2;
+      ht+=tasks*(si===0?2:si===2?4:si===3?3.5:6);
+    });
+    const header=G?
+      '## タスクサマリー / Task Summary\n| Sprint | P0 | P1 | P2 | '+(G?'推定工数':'Est. Hours')+' |\n|--------|----|----|----|---------|\n':
+      '## Task Summary\n| Sprint | P0 | P1 | P2 | Est. Hours |\n|--------|----|----|----|-----------|\n';
+    const rows=sched.sprints.map((sp,si)=>{
+      const tasks=si===0?5:si===1?(a.mvp_features||'').split(', ').filter(Boolean).length||1:
+        si===2?(a.screens||'').split(', ').filter(Boolean).length||1:si===3?5:4;
+      const _p0=si===0?tasks:si===1?1:si===3?1:0;
+      const _p1=si===1?Math.max(tasks-1,0):si===2?tasks:si===3?2:si===4?2:0;
+      const _p2=si===3?2:si===4?2:0;
+      return '| '+sp.name+' | '+_p0+' | '+_p1+' | '+_p2+' | ~'+(tasks*(si===0?2:si===2?4:si===3?3.5:6)).toFixed(0)+'h |';
+    }).join('\n');
+    return header+rows+'\n\n> '+(G?'優先度: P0=KPI直結（必須）/ P1=品質影響 / P2=推奨':'Priority: P0=KPI-critical (required) / P1=quality-impact / P2=recommended')+'\n';
+  })();
 
   S.files['.spec/tasks.md']=[
     '# '+pn+' — '+(G?'タスク一覧 (Tasks)':'Task List'),
     '> Generated by DevForge v9 — '+date,
     '> '+(G?'計画期間':'Timeline')+': '+sched.totalWeeks+' '+(G?'週間':'weeks')+' ('+sched.startDate+' 〜)','',
+    _taskSummary,
     ...sched.sprints.map((sp,i)=>'## '+sp.name+': '+(G?sp.focus_ja:sp.focus_en)+' ['+sp.weeks+']\n'+sprintTasks(i)),''
   ].join('\n\n');
 
