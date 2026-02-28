@@ -370,9 +370,19 @@ function buildFileTree(){
     ['.cursor/rules','.github/copilot-instructions.md','.windsurfrules','.clinerules',
      '.kiro/spec.md','CLAUDE.md','.claude/rules/spec.md','.claude/rules/frontend.md',
      '.claude/rules/backend.md','.claude/rules/test.md','.claude/rules/ops.md',
-     '.claude/settings.json','AI_BRIEF.md','AGENTS.md','codex-instructions.md',
-     'skills/project.md','skills/catalog.md','skills/pipelines.md','skills/factory.md',
-     'skills/README.md','skills/skill_map.md','skills/agents/coordinator.md','skills/agents/reviewer.md',
+     '.claude/settings.json','.claude/agents/requirements-agent.md','.claude/agents/design-agent.md',
+     '.claude/agents/task-planner-agent.md','.claude/agents/implementation-agent.md','.claude/agents/review-agent.md',
+     'AI_BRIEF.md','AGENTS.md','codex-instructions.md',
+     'skills/README.md',
+     'skills/spec-review/SKILL.md','skills/code-gen/SKILL.md','skills/test-gen/SKILL.md',
+     'skills/doc-gen/SKILL.md','skills/refactor/SKILL.md',
+     'skills/catalog.md','skills/pipelines.md','skills/factory.md',
+     'skills/skill_map.md','skills/agents/coordinator.md','skills/agents/reviewer.md',
+     'skills/spec-hole-detect.md',
+     '.codex/agents/openai.yaml',
+     '.codex/skills/spec-review/SKILL.md','.codex/skills/code-gen/SKILL.md',
+     '.codex/skills/test-gen/SKILL.md','.codex/skills/doc-gen/SKILL.md','.codex/skills/refactor/SKILL.md',
+     'docs/115_skill_portfolio.md',
      '.ai/hooks.yml','.gemini/settings.json'
     ].forEach(f=>files.push({name:f,path:f}));
   } else if(pillar===4){ // Explorer

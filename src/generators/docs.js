@@ -974,6 +974,88 @@ Steps:
     S.files['docs/114_domain_knowledge_guide.md']=doc114;
   })();
 
+  // ═══ docs/115_skill_portfolio.md — agentskills.io準拠スキルポートフォリオ ═══
+  (function(){
+    var doc115='# '+pn+' — '+(G?'スキルポートフォリオ (agentskills.io準拠)':'Skill Portfolio (agentskills.io Compliant)')+'\n\n';
+    doc115+=G?'このドキュメントはプロジェクトのAIスキル構成・Progressive Disclosure設計・クロスプラットフォーム互換性を定義します。\n\n':'This document defines the project AI skill configuration, Progressive Disclosure design, and cross-platform compatibility.\n\n';
+
+    // §1 MCP vs Skills アーキテクチャ
+    doc115+='## 1. '+(G?'MCP vs Skills アーキテクチャ':'MCP vs Skills Architecture')+'\n\n';
+    doc115+=G?'MCPとSkillsは**役割分担**によって共存します。混在・混同はポータビリティとテスタビリティを損ないます。\n\n':'MCP and Skills coexist through **role separation**. Mixing them damages portability and testability.\n\n';
+    doc115+='| '+(G?'観点':'Aspect')+' | MCP (Model Context Protocol) | Skills ([name]/SKILL.md) |\n';
+    doc115+='|------|------|------|\n';
+    doc115+='| '+(G?'役割':'Role')+' | '+(G?'物理ツールアクセス (Read/Write/Bash/Search)':'Physical tool access (Read/Write/Bash/Search)')+' | '+(G?'論理判断ロジック (レビュー/生成/検証)':'Logical judgment logic (review/generate/validate)')+' |\n';
+    doc115+='| '+(G?'配置':'Placement')+' | `.mcp/` | `skills/[name]/SKILL.md` |\n';
+    doc115+='| '+(G?'ポータビリティ':'Portability')+' | '+(G?'ランタイム依存 (Claude Code等)':'Runtime-dependent (Claude Code etc.)')+' | '+(G?'LLM非依存 (Markdown)':'LLM-agnostic (Markdown)')+' |\n';
+    doc115+='| '+(G?'テスト':'Testability')+' | '+(G?'ツール実行テスト':'Tool execution test')+' | '+(G?'入出力ユニットテスト':'Input/output unit test')+' |\n';
+    doc115+='| '+(G?'監査':'Audit')+' | '+(G?'ツールログで追跡':'Tracked via tool logs')+' | '+(G?'SKILL.mdで明示的':'Explicit in SKILL.md')+' |\n';
+    doc115+='\n'+(G?'**なぜ分離するか**: 判断ロジック(スキル)をツールアクセス(MCP)から分離することで、スキルをどのIDEでも再利用でき、LLM切替えコストがゼロになります。':'**Why separate**: Separating judgment logic (skills) from tool access (MCP) allows skills to be reused across any IDE, with zero LLM-switching cost.')+'\n\n';
+
+    // §2 Progressive Disclosure プロトコル
+    doc115+='## 2. '+(G?'Progressive Disclosure プロトコル (3段階)':'Progressive Disclosure Protocol (3 Stages)')+'\n\n';
+    doc115+=G?'AIはコンテキストを段階的にロードします。Stage 1だけで起動可否を判断でき、不要なトークンを消費しません。\n\n':'AI loads context progressively. Stage 1 alone enables activation decisions, without consuming unnecessary tokens.\n\n';
+    doc115+='| '+(G?'ステージ':'Stage')+' | '+(G?'内容':'Content')+' | '+(G?'トークン目安':'Token Budget')+' | '+(G?'判断':'Decision')+' |\n';
+    doc115+='|-------|--------|----------|------|\n';
+    doc115+='| Stage 1 | YAML frontmatter (`name`/`description`: What/When/Covers) | ~100 tok | '+(G?'起動するか？':'Activate?')+' |\n';
+    doc115+='| Stage 2 | '+(G?'スキル本文 (Purpose/Input/Judgment/Next/Token Estimate)':'Skill body (Purpose/Input/Judgment/Next/Token Estimate)')+' | <5,000 tok | '+(G?'実行手順確認':'Confirm procedure')+' |\n';
+    doc115+='| Stage 3 | '+(G?'参照スクリプト・外部ファイル・lazy load':'Referenced scripts, external files, lazy load')+' | '+(G?'必要時のみ':'On demand')+' | '+(G?'詳細処理':'Detail processing')+' |\n\n';
+
+    // §3 クロスプラットフォーム互換性
+    doc115+='## 3. '+(G?'クロスプラットフォーム互換性':'Cross-Platform Compatibility')+'\n\n';
+    doc115+='| '+(G?'プラットフォーム':'Platform')+' | '+(G?'スキルパス':'Skill Path')+' | '+(G?'フォーマット':'Format')+' | '+(G?'備考':'Notes')+' |\n';
+    doc115+='|---------|---------|--------|------|\n';
+    doc115+='| Claude Code | `skills/[name]/SKILL.md` | Markdown+YAML | '+(G?'agentskills.io標準':'agentskills.io standard')+' |\n';
+    doc115+='| OpenAI Codex | `.codex/skills/[name]/SKILL.md` | Markdown+YAML | '+(G?'ミラー (同一内容)':'Mirror (identical content)')+' |\n';
+    doc115+='| Cursor | `skills/[name]/SKILL.md` | Markdown+YAML | '+(G?'Claude Code互換':'Claude Code compatible')+' |\n';
+    doc115+='| Windsurf | `skills/[name]/SKILL.md` | Markdown+YAML | '+(G?'Claude Code互換':'Claude Code compatible')+' |\n';
+    doc115+='| Cline | `skills/[name]/SKILL.md` | Markdown+YAML | '+(G?'Claude Code互換':'Claude Code compatible')+' |\n';
+    doc115+='| GitHub Copilot | `.github/copilot-instructions.md` | Markdown | '+(G?'ルールベースのみ':'Rules-based only')+' |\n\n';
+
+    // §4 スキル設計品質チェックリスト
+    doc115+='## 4. '+(G?'スキル設計品質チェックリスト':'Skill Design Quality Checklist')+'\n\n';
+    var checks=[
+      G?'[ ] スキル名がkebab-caseである (例: spec-review, code-gen)':'[ ] Skill name is kebab-case (e.g., spec-review, code-gen)',
+      G?'[ ] YAML frontmatterに What/When/Covers の3フィールドがある':'[ ] YAML frontmatter has What/When/Covers 3 fields',
+      G?'[ ] 1スキル = 1判断 (PASS/FAILまたは数値目標)':'[ ] 1 Skill = 1 Judgment (PASS/FAIL or numeric target)',
+      G?'[ ] 判断基準が定量的 (「矛盾0件」「カバレッジ≥80%」等)':'[ ] Judgment criteria are quantitative (e.g., "0 contradictions", "coverage ≥80%")',
+      G?'[ ] Stage 1 (~100tok) のみで起動可否を判断できる':'[ ] Activation decision possible from Stage 1 (~100tok) alone',
+      G?'[ ] MCPツールアクセスをスキル内に書いていない':'[ ] No MCP tool access written inside skill',
+      G?'[ ] 山括弧テンプレート (<your task here>) を使っていない':'[ ] No angle-bracket templates (<your task here>)',
+      G?'[ ] 次スキル (Next) が定義されている':'[ ] Next skill is defined',
+      G?'[ ] 入力ファイル (Input) が具体的なパスで指定されている':'[ ] Input files specified with concrete paths',
+      G?'[ ] スキル名がスキルIDと一致している (skills/[id]/SKILL.md)':'[ ] Skill name matches skill ID (skills/[id]/SKILL.md)'
+    ];
+    checks.forEach(function(c){doc115+=c+'\n';});
+    doc115+='\n';
+
+    // §5 プロジェクトのスキル構成
+    doc115+='## 5. '+(G?'プロジェクトのスキル構成':'Project Skill Configuration')+'\n\n';
+    doc115+='| '+(G?'スキルID':'Skill ID')+' | '+(G?'役割':'Role')+' | '+(G?'判断基準':'Judgment')+' | '+(G?'次スキル':'Next')+' |\n';
+    doc115+='|---------|------|----------|------|\n';
+    if(typeof SKILL_DEFS!=='undefined'){
+      SKILL_DEFS.forEach(function(sk){
+        doc115+='| '+sk.id+' | '+sk.role+' | '+(G?sk.judgment_ja:sk.judgment_en)+' | '+sk.next+' |\n';
+      });
+    }
+    doc115+='\n';
+
+    // §6 マルチLLMルーティングガイド
+    doc115+='## 6. '+(G?'マルチLLMルーティングガイド':'Multi-LLM Routing Guide')+'\n\n';
+    doc115+=G?'タスク種別に応じて最適なAIを選択することで、品質とコスト効率を最大化します。\n\n':'Select the optimal AI per task type to maximize quality and cost efficiency.\n\n';
+    doc115+='| '+(G?'タスク種別':'Task Type')+' | '+(G?'推奨AI':'Recommended AI')+' | '+(G?'理由':'Reason')+' |\n';
+    doc115+='|---------|---------|------|\n';
+    doc115+='| '+(G?'仕様レビュー・設計検証':'Spec review / design validation')+' | Claude | '+(G?'長文理解・論理的一貫性評価に強い':'Strong at long-doc comprehension and logical consistency')+' |\n';
+    doc115+='| '+(G?'コード生成・実装':'Code generation / implementation')+' | Copilot / Codex | '+(G?'IDE統合・コード補完に最適化':'Optimized for IDE integration and code completion')+' |\n';
+    doc115+='| '+(G?'大規模ドキュメント処理':'Large-scale document processing')+' | Gemini 2.5 Pro | '+(G?'1Mコンテキスト対応':'1M context window')+' |\n';
+    doc115+='| '+(G?'ブレインストーミング・アイデア出し':'Brainstorming / idea generation')+' | ChatGPT | '+(G?'創造的思考・多角的視点に強い':'Strong at creative thinking and diverse perspectives')+' |\n';
+    doc115+='| '+(G?'テスト生成':'Test generation')+' | Copilot | '+(G?'既存コードパターン学習に強い':'Strong at learning existing code patterns')+' |\n';
+    doc115+='| '+(G?'セキュリティ監査':'Security audit')+' | Gemini | '+(G?'最新脆弱性データベース参照':'References latest vulnerability databases')+' |\n\n';
+    doc115+=G?'> **注意**: AIの選択は固定ではありません。プロジェクトの状況・コスト・モデルの進化に応じて随時見直してください。\n':
+      '> **Note**: AI selection is not fixed. Revisit based on project context, cost, and model evolution.\n';
+
+    S.files['docs/115_skill_portfolio.md']=doc115;
+  })();
+
   // ═══ B2: docs/35_sitemap.md (~8KB) ═══
   let doc35='# '+pn+' — '+(G?'サイトマップ・情報設計':'Sitemap & Information Architecture')+'\n\n';
   doc35+=G?'**重要**: このドキュメントはアプリケーション全体のURL構造とナビゲーションパターンを定義します。新規ページ追加時は必ずこのサイトマップを更新してください。\n\n':'**IMPORTANT**: This document defines the URL structure and navigation patterns for the entire application. MUST update this sitemap when adding new pages.\n\n';

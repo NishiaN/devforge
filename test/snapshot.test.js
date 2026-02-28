@@ -88,14 +88,14 @@ describe('Snapshot A: LMS/Supabase/Stripe', () => {
     ai_auto: 'マルチAgent協調'
   }, 'LMS');
 
-  test('file count in range 140-178 (ADR+1, SecManifest+3, P21-P27 each add +4 docs, +7 agents/docs113-114)', () => {
+  test('file count in range 140-193 (P21-P27 each +4 docs; +7 agents/docs113-114; +11 agentskills.io: 5 SKILL.md+5.codex+.codex/yaml+docs115 net)', () => {
     const count = Object.keys(files).length;
-    assert.ok(count >= 140 && count <= 178, `Expected 140-178 files (ADR+1, SecManifest+3, P21-P27 +28, +7 agents/docs113-114), got ${count}`);
+    assert.ok(count >= 140 && count <= 193, `Expected 140-193 files (P21-P27 each +4 docs, +7 agents/docs113-114, +11 agentskills.io), got ${count}`);
   });
 
-  test('total tokens in range 12000-90000 (P21-P26 each add ~4-6K tokens)', () => {
+  test('total tokens in range 12000-100000 (P21-P26 each add ~4-6K tokens, +agentskills.io skills)', () => {
     const total = Object.values(files).reduce((s, v) => s + tokens(v), 0);
-    assert.ok(total >= 12000 && total <= 90000, `Expected 12K-90K tokens (P21-P26 each +4-6K), got ${total}`);
+    assert.ok(total >= 12000 && total <= 100000, `Expected 12K-100K tokens (P21-P26 each +4-6K + agentskills.io), got ${total}`);
   });
 
   // Core files existence
@@ -760,9 +760,9 @@ describe('Snapshot B: Blog/Vite/Netlify', () => {
     dev_methods: 'TDD', ai_tools: 'Cursor', orm: ''
   }, 'Blog');
 
-  test('file count in range 130-169 (P21-P27 each add +4 docs, total +28; +3 ADR/pillar-map/cost-est; +2 docs/107-108; +7 agents/docs113-114)', () => {
+  test('file count in range 130-184 (P21-P27 each add +4 docs; +2 docs/107-108; +7 agents/docs113-114; +13 agentskills.io: 5 SKILL.md+README+5.codex+.codex/yaml+docs115)', () => {
     const count = Object.keys(files).length;
-    assert.ok(count >= 130 && count <= 169, `Expected 130-169 files (P21-P27 each +4 docs, +3 new context docs, +2 governance/UAT, +7 agents/docs113-114), got ${count}`);
+    assert.ok(count >= 130 && count <= 184, `Expected 130-184 files (P21-P27 each +4 docs, +2 governance/UAT, +7 agents/docs113-114, +13 agentskills.io), got ${count}`);
   });
 
   test('no Stripe content when payment absent', () => {

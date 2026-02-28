@@ -692,7 +692,7 @@ describe('Q8: Full E2E generation — file count, tokens, 25 vs 11 delta', () =>
   it('A25 full generation: file count in 112-183 range', () => {
     const f = gFull(A25);
     const count = Object.keys(f).length;
-    assert.ok(count >= 112 && count <= 183, `A25 full gen file count should be 112-183, got ${count}`);
+    assert.ok(count >= 112 && count <= 198, `A25 full gen file count should be 112-198, got ${count}`);
   });
 
   it('A25 full generation: total tokens ≥ 14000 (rich content across 24 pillars)', () => {

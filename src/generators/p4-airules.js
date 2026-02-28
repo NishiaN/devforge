@@ -1,4 +1,47 @@
 /* ── Pillar ④ AI Agent Rules (Phase B: Context-Aware, 11 files) ── */
+/* ── agentskills.io Standard — 5 core skill definitions ── */
+var SKILL_DEFS=[
+  {id:'spec-review',role:'Planning',phase:0,
+   name_ja:'仕様レビュー',name_en:'Spec Review',
+   what_ja:'.spec/の仕様書を包括レビュー',what_en:'Review specs in .spec/ comprehensively',
+   when_ja:'仕様作成後・実装開始前・仕様変更時',when_en:'After spec creation, before impl, on changes',
+   covers_ja:'整合性, 網羅性, 受入基準, 曖昧表現',covers_en:'Alignment, coverage, AC, ambiguity',
+   input:'.spec/constitution.md, .spec/specification.md',
+   judgment_ja:'矛盾0件, P0穴0件',judgment_en:'0 contradictions, 0 P0 holes',
+   next:'code-gen',tok1:80,tok2:3000},
+  {id:'code-gen',role:'Production',phase:2,
+   name_ja:'コード生成',name_en:'Code Generation',
+   what_ja:'仕様書に基づきTypeScriptコードを生成',what_en:'Generate TypeScript code based on specs',
+   when_ja:'設計確定後・機能追加時',when_en:'After design confirmed, on feature addition',
+   covers_ja:'型定義, データ層, ビジネスロジック, UI',covers_en:'Types, data layer, business logic, UI',
+   input:'.spec/technical-plan.md, docs/05_api_design.md',
+   judgment_ja:'型エラー0件, テスト全PASS',judgment_en:'0 type errors, all tests PASS',
+   next:'test-gen',tok1:100,tok2:5000},
+  {id:'test-gen',role:'Production',phase:2,
+   name_ja:'テスト生成',name_en:'Test Generation',
+   what_ja:'実装コードのVitestテストを自動生成',what_en:'Auto-generate Vitest tests for implementation',
+   when_ja:'機能実装後・リファクタ後',when_en:'After feature implementation or refactoring',
+   covers_ja:'正常系, 異常系, 境界値, カバレッジ',covers_en:'Happy path, error cases, boundary, coverage',
+   input:'src/ (new code), docs/07_test_cases.md',
+   judgment_ja:'カバレッジ≥80%',judgment_en:'Coverage ≥80%',
+   next:'doc-gen',tok1:80,tok2:4000},
+  {id:'doc-gen',role:'Operations',phase:3,
+   name_ja:'ドキュメント生成',name_en:'Doc Generation',
+   what_ja:'実装変更に連動してdocs/を自動更新',what_en:'Auto-update docs/ on implementation changes',
+   when_ja:'リリース前・機能変更後',when_en:'Before release, after feature changes',
+   covers_ja:'API変更, 設計変更, 運用手順, 変更履歴',covers_en:'API changes, design changes, ops, changelog',
+   input:'src/ (changed code), docs/ (existing)',
+   judgment_ja:'未文書化変更0件',judgment_en:'0 undocumented changes',
+   next:'refactor',tok1:80,tok2:3000},
+  {id:'refactor',role:'Planning',phase:0,
+   name_ja:'リファクタリング提案',name_en:'Refactoring Proposal',
+   what_ja:'技術的負債・重複コードの改善提案',what_en:'Propose improvements for tech debt and duplication',
+   when_ja:'Sprint終了時・パフォーマンス劣化時',when_en:'At sprint end, on performance degradation',
+   covers_ja:'SOLID原則, 重複排除, パフォーマンス, 可読性',covers_en:'SOLID principles, dedup, performance, readability',
+   input:'src/ (target code), docs/16_review.md',
+   judgment_ja:'重複率≤10%',judgment_en:'Duplication ≤10%',
+   next:'spec-review',tok1:60,tok2:2000}
+];
 function genPillar4_AIRules(a,pn){
   const G=S.genLang==='ja';
   const db=a.database||'PostgreSQL';
@@ -160,7 +203,55 @@ ${coreRules}`;
 
   S.files['AGENTS.md']=`# AGENTS.md — ${pn}\n\n## Agent Guidelines\n${core}\n\n## Task Assignment\n- Frontend agent: UI components, pages, styling\n- Backend agent: ${arch.isBaaS?a.backend+' functions, RLS policies':arch.pattern==='bff'?'Next.js API Routes, middleware':'API routes, database, auth'}\n- Test agent: Unit tests, E2E tests\n- DevOps agent: CI/CD, deployment\n\n## Agent Specialization Matrix\n${G?'**エージェント種別と責任範囲**':'**Agent types and responsibilities**'}\n\n${agentSpecMatrix}${handoffProtocol}\n\n## Coordination\n- All agents must read .spec/ before starting\n- Use tasks.md for work coordination\n- Commit with conventional commits`;
   S.files['codex-instructions.md']=`# Codex Instructions (OpenAI)\n${copilotRules}\n\n## Codex Agent Mode\n- Use agentic mode for multi-file refactoring\n- Verify changes with npm test before committing\n- Respect .spec/ constraints`;
-  S.files['skills/project.md']=`# ${pn} ${G?'— AIスキル':'— AI Skills'}\n${G?'工場テンプレート形式。詳細はskills/catalog.md参照':'Factory Template format. See skills/catalog.md for details'}\n\n${G?'## スキル':'## Skills'}\n\n### 1. spec-review\n- **${G?'役割':'Role'}**: ${G?'設計':'Design'}\n- **${G?'目的':'Purpose'}**: ${G?'.spec/検証':'Verify .spec/'}\n- **${G?'入力':'Input'}**: .spec/constitution.md, specification.md\n- **${G?'判断':'Judgment'}**: ${G?'矛盾0件':' 0 contradictions'}\n- **${G?'次':'Next'}**: code-gen\n\n### 2. code-gen\n- **${G?'役割':'Role'}**: ${G?'制作':'Production'}\n- **${G?'目的':'Purpose'}**: ${G?'コード生成':'Generate code'}\n- **${G?'入力':'Input'}**: .spec/technical-plan.md\n- **${G?'判断':'Judgment'}**: ${G?'エラー0':'0 errors'}\n- **${G?'次':'Next'}**: test-gen\n\n### 3. test-gen\n- **${G?'役割':'Role'}**: ${G?'制作':'Production'}\n- **${G?'目的':'Purpose'}**: ${G?'テスト生成':'Generate tests'}\n- **${G?'入力':'Input'}**: ${G?'新規コード':'New code'}\n- **${G?'判断':'Judgment'}**: ${G?'カバレッジ80%+':'Coverage ≥80%'}\n- **${G?'次':'Next'}**: deploy-check\n\n### 4. doc-gen\n- **${G?'役割':'Role'}**: ${G?'運用':'Operations'}\n- **${G?'目的':'Purpose'}**: ${G?'ドキュメント生成':'Generate docs'}\n- **${G?'判断':'Judgment'}**: ${G?'未文書化0':'0 undocumented'}\n- **${G?'次':'Next'}**: refactor\n\n### 5. refactor\n- **${G?'役割':'Role'}**: ${G?'設計':'Design'}\n- **${G?'目的':'Purpose'}**: ${G?'リファクタリング提案':'Suggest refactoring'}\n- **${G?'判断':'Judgment'}**: ${G?'重複10%↓':'Duplication ≤10%'}\n- **${G?'次':'Next'}**: spec-review\n\n${G?'## テンプレート':'## Template'}\n\`\`\`markdown\n### [skill-id]\n- **${G?'役割':'Role'}**: [Planning/Design/Production/Operations]\n- **${G?'目的':'Purpose'}**: [${G?'何をするか':'What it does'}]\n- **${G?'判断':'Judgment'}**: [${G?'成功条件':'Success criteria'}]\n- **${G?'次':'Next'}**: [${G?'次のスキル':'Next skill'}]\n\`\`\`\n`;
+  // ═══ skills/[name]/SKILL.md — agentskills.io standard (always generated) ═══
+  SKILL_DEFS.forEach(function(sk){
+    var yFm='---\nname: '+sk.id+'\ndescription: |\n'
+      +'  What: '+(G?sk.what_ja:sk.what_en)+'\n'
+      +'  When: '+(G?sk.when_ja:sk.when_en)+'\n'
+      +'  Covers: '+(G?sk.covers_ja:sk.covers_en)+'\n---\n\n';
+    var skBody='# '+(G?sk.name_ja:sk.name_en)+' — '+pn+'\n\n';
+    skBody+='## '+(G?'役割':'Role')+'\n\n'+sk.role+'\n\n';
+    skBody+='## '+(G?'目的 (What)':'Purpose (What)')+'\n\n'+(G?sk.what_ja:sk.what_en)+'\n\n';
+    skBody+='## '+(G?'起動条件 (When)':'Activation (When)')+'\n\n'+(G?sk.when_ja:sk.when_en)+'\n\n';
+    skBody+='## '+(G?'対象範囲 (Covers)':'Coverage (Covers)')+'\n\n'+(G?sk.covers_ja:sk.covers_en)+'\n\n';
+    skBody+='## '+(G?'入力':'Input')+'\n\n'+sk.input+'\n\n';
+    skBody+='## '+(G?'判断基準':'Judgment')+'\n\n'+(G?sk.judgment_ja:sk.judgment_en)+'\n\n';
+    skBody+='## '+(G?'次スキル':'Next Skill')+'\n\n'+sk.next+'\n\n';
+    skBody+='## '+(G?'トークン見積':'Token Estimate')+'\n\n';
+    skBody+='- Stage 1 (YAML frontmatter): ~'+sk.tok1+' tok\n';
+    skBody+='- Stage 2 ('+(G?'スキル本文':'Skill body')+'): ~'+sk.tok2+' tok\n';
+    S.files['skills/'+sk.id+'/SKILL.md']=yFm+skBody;
+  });
+  // ═══ skills/README.md — スキルレジストリ (常時生成) ═══
+  var _skReg='# '+pn+' — '+(G?'スキルレジストリ':'Skill Registry')+'\n\n';
+  _skReg+='## '+(G?'スキル一覧':'Skill Inventory')+'\n\n';
+  _skReg+='| '+(G?'スキルID':'Skill ID')+' | '+(G?'役割':'Role')+' | Stage 1 | Stage 2 | '+(G?'起動条件':'Activation')+' |\n';
+  _skReg+='|---------|------|---------|---------|----------|\n';
+  SKILL_DEFS.forEach(function(sk){
+    _skReg+='| '+sk.id+' | '+sk.role+' | ~'+sk.tok1+' tok | ~'+sk.tok2+' tok | '+(G?sk.when_ja:sk.when_en)+' |\n';
+  });
+  _skReg+='\n## '+(G?'Progressive Disclosure プロトコル':'Progressive Disclosure Protocol')+'\n\n';
+  _skReg+='| '+(G?'ステージ':'Stage')+' | '+(G?'内容':'Content')+' | '+(G?'トークン目安':'Token Budget')+' |\n';
+  _skReg+='|-------|--------|----------|\n';
+  _skReg+='| Stage 1 | YAML frontmatter (`name`/`description`) | ~100 tok |\n';
+  _skReg+='| Stage 2 | '+(G?'スキル本文 (Purpose/Input/Judgment/Next)':'Skill body (Purpose/Input/Judgment/Next)')+' | <5,000 tok |\n';
+  _skReg+='| Stage 3 | '+(G?'参照スクリプト・lazy load':'Referenced scripts, lazy load')+' | '+(G?'必要時のみ':'On demand')+' |\n';
+  _skReg+='\n## '+(G?'ファイル構成':'File Structure')+'\n\n```\nskills/\n';
+  SKILL_DEFS.forEach(function(sk){_skReg+='├── '+sk.id+'/\n│   └── SKILL.md\n';});
+  _skReg+='└── README.md\n```\n\n';
+  _skReg+='## '+(G?'MCP vs Skills アーキテクチャ':'MCP vs Skills Architecture')+'\n\n';
+  _skReg+='| '+(G?'項目':'Item')+' | MCP | Skills |\n|------|-----|--------|\n';
+  _skReg+='| '+(G?'役割':'Role')+' | '+(G?'物理ツールアクセス':'Physical tool access')+' | '+(G?'論理判断ロジック':'Logical judgment logic')+' |\n';
+  _skReg+='| '+(G?'配置':'Location')+' | `.mcp/` | `skills/[name]/SKILL.md` |\n';
+  _skReg+='| '+(G?'ポータビリティ':'Portability')+' | '+(G?'ランタイム依存':'Runtime-dependent')+' | '+(G?'LLM非依存':'LLM-agnostic')+' |\n';
+  _skReg+='| '+(G?'テスト':'Testability')+' | '+(G?'ツール実行テスト':'Tool execution test')+' | '+(G?'入出力ユニットテスト':'I/O unit test')+' |\n';
+  S.files['skills/README.md']=_skReg;
+  // ═══ .codex/skills/ — OpenAI Codex互換ミラー (常時生成) ═══
+  SKILL_DEFS.forEach(function(sk){
+    var _ex=S.files['skills/'+sk.id+'/SKILL.md'];
+    if(_ex) S.files['.codex/skills/'+sk.id+'/SKILL.md']=_ex;
+  });
+  S.files['.codex/agents/openai.yaml']='# OpenAI Codex Agent — '+pn+'\nname: '+pn.toLowerCase().replace(/[\s_]+/g,'-')+'-agent\nskills:\n'+SKILL_DEFS.map(function(sk){return '  - id: '+sk.id+'\n    path: .codex/skills/'+sk.id+'/SKILL.md\n    role: '+sk.role+'\n';}).join('')+'context:\n  spec_dir: .spec/\n  docs_dir: docs/\n';
   S.files['.gemini/settings.json']=`{\n  "project": "${pn}",\n  "model": "gemini-3-pro",\n  "context": {\n    "spec_dir": ".spec/",\n    "include": ["src/", "package.json", "tsconfig.json"],\n    "exclude": ["node_modules/", "dist/"]\n  },\n  "safety": "balanced",\n  "tools": ["code_execution", "grounding"]\n}`;
   S.files['.ai/hooks.yml']=`# AI Hooks Configuration
 hooks:
@@ -597,6 +688,20 @@ CLAUDE.md        → ${G?'Claude Code用ルール':'Claude Code rules'}
     }
     factoryMd+='\n';
 
+    // agentskills.io standard format guide
+    factoryMd+='\n## '+(G?'agentskills.io 標準フォーマット (YAML frontmatter)':'agentskills.io Standard Format (YAML frontmatter)')+'\n\n';
+    factoryMd+='```yaml\n---\nname: '+(G?'kebab-case-スキル名':'kebab-case-skill-name')+'\ndescription: |\n  What: '+(G?'このスキルが何をするか (1文)':'What this skill does (1 sentence)')+'\n  When: '+(G?'いつ使うか (トリガー条件)':'When to use (trigger condition)')+'\n  Covers: '+(G?'対象範囲 (カンマ区切り)':'Coverage scope (comma-separated)')+'\n---\n```\n\n';
+    factoryMd+='### '+(G?'アンチパターン（回避すべき設計）':'Anti-Patterns (Avoid These)')+'\n\n';
+    factoryMd+='- \u274c **'+(G?'曖昧な説明':'Vague description')+'**: `do stuff` '+(G?'→ 何をするか不明':'→ unclear what it does')+'\n';
+    factoryMd+='- \u274c **'+(G?'山括弧テンプレート':'Angle-bracket templates')+'**: `<your task here>` '+(G?'→ AI混乱の原因':'→ confuses AI')+'\n';
+    factoryMd+='- \u274c **'+(G?'モノリシックスキル':'Monolithic skill')+'**: '+(G?'1スキルに複数判断を詰め込む':'Packing multiple judgments into 1 skill')+'\n';
+    factoryMd+='- \u274c **MCP混同**: '+(G?'ツールアクセス(MCP)をスキルに書く':'Writing tool access (MCP) inside skills')+'\n\n';
+    factoryMd+='### '+(G?'マイクロスキル設計原則':'Micro-Skill Design Principles')+'\n\n';
+    factoryMd+='- \u2705 '+(G?'1スキル = 1判断 (PASS/FAIL または数値目標)':'1 Skill = 1 Judgment (PASS/FAIL or numeric target)')+'\n';
+    factoryMd+='- \u2705 '+(G?'スキル名はkebab-case (spec-review, code-gen)':'Skill name in kebab-case (spec-review, code-gen)')+'\n';
+    factoryMd+='- \u2705 '+(G?'What/When/Covers の3フィールドを必ず記述':'Always include What/When/Covers 3 fields')+'\n';
+    factoryMd+='- \u2705 '+(G?'Stage 1 (~100tok) で起動可否を判断できる設計':'Design for Stage 1 (~100tok) activation decision')+'\n';
+
     S.files['skills/factory.md']=factoryMd;
 
     // ═══ C2: md Package Distribution (~10KB, ai_auto=multi/full/orch only) ═══
@@ -617,11 +722,11 @@ CLAUDE.md        → ${G?'Claude Code用ルール':'Claude Code rules'}
       skillsReadme+='```\n';
       skillsReadme+='skills/\n';
       skillsReadme+='├── README.md          # '+(G?'このファイル':'This file')+'\n';
+      SKILL_DEFS.forEach(function(sk){skillsReadme+='├── '+sk.id+'/\n│   └── SKILL.md\n';});
       skillsReadme+='├── skill_map.md       # '+(G?'依存関係マップ':'Dependency map')+'\n';
       skillsReadme+='├── catalog.md         # '+(G?'全スキルカタログ':'Full catalog')+'\n';
       skillsReadme+='├── pipelines.md       # '+(G?'自動化パイプライン':'Automation pipelines')+'\n';
       skillsReadme+='├── factory.md         # '+(G?'スキル工場テンプレート':'Skill factory template')+'\n';
-      skillsReadme+='├── project.md         # '+( G?'プロジェクトスキル':'Project skills')+'\n';
       skillsReadme+='└── agents/\n';
       skillsReadme+='    ├── coordinator.md # '+(G?'オーケストレーター':'Coordinator agent')+'\n';
       skillsReadme+='    └── reviewer.md    # '+(G?'レビューアー':'Reviewer agent')+'\n';
@@ -665,7 +770,7 @@ CLAUDE.md        → ${G?'Claude Code用ルール':'Claude Code rules'}
       skillsReadme+='}\n';
       skillsReadme+='```\n\n';
 
-      S.files['skills/README.md']=skillsReadme;
+      S.files['skills/README.md']+='\n\n'+skillsReadme;
 
       // skills/skill_map.md - Dependency map with 4-layer business model
       let skillMapMd='# '+pn+' Skill Map\n\n';
@@ -772,7 +877,7 @@ CLAUDE.md        → ${G?'Claude Code用ルール':'Claude Code rules'}
       S.files['skills/agents/reviewer.md']=reviewerMd;
 
       // skills/spec-hole-detect.md — Spec Hole Detection Skill
-      var specHoleMd='# '+(G?'仕様穴あき検出スキル':'Spec Hole Detection Skill')+'\n\n';
+      var specHoleMd='---\nname: spec-hole-detect\ndescription: |\n  What: '+(G?'仕様書の穴を9観点で検出':'Detect spec holes from 9 perspectives')+'\n  When: '+(G?'仕様確定前、実装開始前':'Before spec finalization and implementation')+'\n  Covers: '+(G?'曖昧性, 権限, バリデーション, エラー, 監査, 運用, 性能, セキュリティ':'Ambiguity, auth, validation, error, audit, ops, perf, security')+'\n---\n\n# '+(G?'仕様穴あき検出スキル':'Spec Hole Detection Skill')+'\n\n';
       specHoleMd+=G?'**役割**: 設計\n**目的**: 仕様書の穴を9観点で検出し、P0優先の修正案を出力する\n\n':'**Role**: Design\n**Purpose**: Detect spec holes from 9 perspectives and output P0-prioritized fix proposals\n\n';
       specHoleMd+=(G?'## 入力':'## Input')+'\n\n';
       specHoleMd+='- .spec/constitution.md\n- .spec/specification.md\n- .spec/technical-plan.md\n\n';
