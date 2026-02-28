@@ -585,6 +585,10 @@ function exportCompatReport(){
         md+='- **'+(_ja?'連鎖修正':'Chain Fix')+'**:\n';
         c.chain.forEach(ch=>{md+='  - `'+ch.f+'` → `'+ch.s+'`\n';});
       }
+      const _tplKey=_compatTemplateKey(c.id);
+      const _guidance=(_COMPAT_GUIDANCE[_tplKey]||_COMPAT_GUIDANCE['review'])[_ja?'ja':'en'];
+      md+='- **'+(_ja?'対策':'Fix Guide')+'**: '+_guidance+'\n';
+      md+='- **'+(_ja?'検証':'Verify')+'**: '+_compatVerify(c,_ja)+'\n';
       md+='\n';
     });
   }
@@ -648,6 +652,10 @@ function printCompatReport(){
         body+=c.chain.map(ch=>'<code>'+esc(ch.f)+'</code> → <code>'+esc(ch.s)+'</code>').join(', ');
         body+='</div>';
       }
+      const _tplKey=_compatTemplateKey(c.id);
+      const _guidance=(_COMPAT_GUIDANCE[_tplKey]||_COMPAT_GUIDANCE['review'])[_ja?'ja':'en'];
+      body+='<div class="issue-row"><strong>'+(_ja?'対策':'Fix Guide')+':</strong> '+esc(_guidance)+'</div>';
+      body+='<div class="issue-row"><strong>'+(_ja?'検証':'Verify')+':</strong> '+esc(_compatVerify(c,_ja))+'</div>';
       body+='</div>';
     });
   }
