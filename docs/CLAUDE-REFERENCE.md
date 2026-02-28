@@ -353,7 +353,7 @@ function genPillarN_Name(a, pn) {
 ### 6. Size Budget Check
 - Estimate new generator size (~10-20KB typical)
 - Run `node build.js --report` to verify ≤5000KB
-- Current budget remaining: ~1010KB (3990KB / 5000KB limit)
+- Current budget remaining: ~988KB (4012KB / 5000KB limit)
 
 **Reference Implementations:**
 - Pillar ⑩ (Reverse Engineering): Domain-specific goal decomposition with REVERSE_FLOW_MAP
@@ -500,8 +500,8 @@ test('pluralize', () => {
 
 ## AI Prompt Launcher Templates (Full List)
 
-50 templates in `src/ui/launcher.js`. Auto-inject project context (name, stack, auth, entities).
-Order: `review › requirements › hearing › arch › spec_hole › adversarial › reverse › implement › task_decompose › api › i18n › test › test_intel › qa › security › ai_safety › a11y › perf › metrics › refactor › debug › incident › ops › sprint_retro › docs › text_polish › migrate › db_intelligence › cicd › planning › growth › strategy › commander › methodology › brainstorm › ux_journey › ux_audit › ai_model_guide › industry › nextgen › cognitive › genome › maturity › react_debug › prompt_ops › enterprise_arch › workflow_audit › risk › acceptance › onboard`
+53 templates in `src/ui/launcher.js`. Auto-inject project context (name, stack, auth, entities).
+Order: `review › requirements › hearing › arch › spec_hole › adversarial › reverse › implement › task_decompose › api › i18n › test › test_intel › qa › security › ai_safety › a11y › perf › metrics › refactor › debug › incident › ops › sprint_retro › docs › text_polish › migrate › db_intelligence › cicd › planning › growth › strategy › commander › methodology › brainstorm › ux_journey › ux_audit › ai_model_guide › industry › nextgen › cognitive › genome › maturity › react_debug › prompt_ops › enterprise_arch › workflow_audit › risk › acceptance › onboard › domain_structure › anti_workslop › spec_workflow`
 
 **Review & Audit group:**
 - 🔍 **Spec Review** — 4-step structured review (mission → requirements → architecture → consistency)
