@@ -206,9 +206,9 @@ describe('[SkillLevel] Migration from old skill string', () => {
 });
 
 describe('[SkillLevel] templateOrder count', () => {
-  test('launcher templateOrder has 48 entries', () => {
+  test('launcher templateOrder has 50 entries', () => {
     assert.ok(templateOrder !== null, 'templateOrder should be parseable from launcher.js');
-    assert.strictEqual(templateOrder.length, 48, `templateOrder.length should be 48, got ${templateOrder ? templateOrder.length : 'null'}`);
+    assert.strictEqual(templateOrder.length, 50, `templateOrder.length should be 50, got ${templateOrder ? templateOrder.length : 'null'}`);
   });
 });
 
@@ -280,7 +280,7 @@ describe('[SkillLevel] DOC_GROUPS and TEMPLATE_SCOPE coverage', () => {
     assert.ok(TEMPLATE_SCOPE_parsed !== null, 'TEMPLATE_SCOPE should be parseable from launcher.js');
     assert.ok(typeof TEMPLATE_SCOPE_parsed === 'object', 'TEMPLATE_SCOPE should be an object');
   });
-  test('all 40 templateOrder keys exist in TEMPLATE_SCOPE', () => {
+  test('all templateOrder keys exist in TEMPLATE_SCOPE', () => {
     assert.ok(templateOrder !== null, 'templateOrder should be parseable');
     assert.ok(TEMPLATE_SCOPE_parsed !== null, 'TEMPLATE_SCOPE should be parseable');
     const missing = templateOrder.filter(k => !TEMPLATE_SCOPE_parsed[k]);
