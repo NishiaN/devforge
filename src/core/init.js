@@ -171,7 +171,7 @@ function applyLang(){
   }
   // F2: hero stats skill-adaptation (Lv0-1 shows 4 pillars / key files to reduce info shock)
   var _spn=$('statPillarNum');if(_spn)_spn.textContent=S.skillLv<=1?'4':'26';
-  var _sfn=$('statFileNum');if(_sfn&&!Object.keys(S.files||{}).length)_sfn.textContent=S.skillLv<=1?(ja?'主要':'Key'):'185+';
+  var _sfn=$('statFileNum');if(_sfn&&!Object.keys(S.files||{}).length)_sfn.textContent=S.skillLv<=1?(ja?'主要':'Key'):'209+';
   var _hd=$('heroDesc');
   if(_hd){
     if(S.skillLv<=1)_hd.textContent=ja?'質問に答えるだけで設計書を自動生成。AIにそのまま渡せば開発スタート。':'Answer questions to auto-generate design docs. Feed to AI to start coding.';

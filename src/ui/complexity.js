@@ -1,8 +1,7 @@
 /* ═══ V9 COMPLEXITY ANALYSIS ═══ */
-function getComplexityHTML(){
-  const a=S.answers;const _ja=S.lang==='ja';
-  const fs=(a.mvp_features||'').split(',').map(s=>s.trim()).filter(Boolean);
-  const fCount=fs.length;
+function _calcComplexityScore(){
+  const a=S.answers;
+  const fCount=(a.mvp_features||'').split(',').map(s=>s.trim()).filter(Boolean).length;
   const eCount=((a.data_entities||'').split(',')).filter(Boolean).length;
   const sCount=((a.screens||'').split(',')).filter(Boolean).length;
   const authCount=((a.auth||'').split(',')).filter(Boolean).length;
@@ -15,7 +14,11 @@ function getComplexityHTML(){
   score+=authCount*2;
   score+=beComplex*5;
   score+=(hasTDD+hasBDD+hasDDD)*3;
-  score=Math.min(score,100);
+  return {score:Math.min(score,100),fCount,eCount,sCount,authCount};
+}
+function getComplexityHTML(){
+  const _ja=S.lang==='ja';
+  const {score,fCount,eCount,sCount,authCount}=_calcComplexityScore();
   const level=score<=30?'low':score<=60?'mid':'high';
   const levelLabel=score<=30?(_ja?'🟢 シンプル':'🟢 Simple'):score<=60?(_ja?'🟡 中規模':'🟡 Medium'):(_ja?'🔴 大規模':'🔴 Large');
   const weeks=score<=30?(_ja?'2-4週':'2-4 wks'):score<=60?(_ja?'1-3ヶ月':'1-3 mo'):(_ja?'3-6ヶ月':'3-6 mo');
@@ -29,22 +32,7 @@ function getComplexityHTML(){
 <div class="complexity-item"><span>${_ja?'推奨人数':'Team Size'}</span><span>${devs}</span></div></div></div>`;
 }
 function getComplexityMini(){
-  const a=S.answers;
-  const fs=(a.mvp_features||'').split(',').map(s=>s.trim()).filter(Boolean);
-  const fCount=fs.length;
-  const eCount=((a.data_entities||'').split(',')).filter(Boolean).length;
-  const sCount=((a.screens||'').split(',')).filter(Boolean).length;
-  const authCount=((a.auth||'').split(',')).filter(Boolean).length;
-  const hasTDD=hasDM('TDD')?1:0,hasBDD=hasDM('BDD')?1:0,hasDDD=hasDM('DDD')?1:0;
-  const beComplex=(a.backend||'').includes('なし')||(a.backend||'').includes('None')?0:(a.backend||'').includes('Firebase')||(a.backend||'').includes('Supabase')?1:2;
-  let score=0;
-  score+=Math.min(fCount*8,50);
-  score+=Math.min(eCount*3,20);
-  score+=Math.min(sCount*2,14);
-  score+=authCount*2;
-  score+=beComplex*5;
-  score+=(hasTDD+hasBDD+hasDDD)*3;
-  score=Math.min(score,100);
+  const {score}=_calcComplexityScore();
   if(!score)return '';
   const color=score<=30?'var(--success)':score<=60?'var(--warn)':'var(--danger)';
   const label=score<=30?'🟢':score<=60?'🟡':'🔴';

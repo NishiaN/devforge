@@ -10,6 +10,11 @@ function showExplorer(){
     'SvelteKit + Supabase':{fe:'SvelteKit',be:'Supabase',db:'PostgreSQL',deploy:'Vercel',cost:'$0–$25',speed:5,scale:3,learn:4,eco:2,best:_ja?'軽量・高速':'Lightweight & fast',tags:['perf','mvp','lightweight']},
     'Next.js + FastAPI + Mongo':{fe:'React + Next.js',be:'FastAPI',db:'MongoDB',deploy:'Vercel+Railway',cost:'$0–$30',speed:4,scale:4,learn:3,eco:4,best:_ja?'AI/ML統合':'AI/ML integration',tags:['ai','ml','python','data']},
     'Expo + Supabase':{fe:'Expo (RN)',be:'Supabase',db:'PostgreSQL',deploy:'EAS Build',cost:'$0–$30',speed:4,scale:3,learn:3,eco:3,best:_ja?'モバイルアプリ':'Mobile app',tags:['mobile','expo','native']},
+    'Astro + Supabase':{fe:'Astro',be:'Supabase',db:'PostgreSQL',deploy:'Vercel',cost:'$0–$25',speed:5,scale:3,learn:5,eco:3,best:_ja?'コンテンツ・ブログ':'Content & Blog',tags:['content','blog','static','mvp']},
+    'Next.js + Hono + D1':{fe:'React + Next.js',be:'Hono',db:'Cloudflare D1',deploy:'Cloudflare Pages',cost:'$0–$5',speed:5,scale:4,learn:3,eco:3,best:_ja?'エッジネイティブ':'Edge-native',tags:['edge','global','perf']},
+    'Nuxt + Express + PG':{fe:'Vue 3 + Nuxt',be:'Express',db:'PostgreSQL',deploy:'Railway',cost:'$0–$20',speed:4,scale:4,learn:4,eco:3,best:_ja?'Vueフルスタック':'Vue full-stack',tags:['vue','fullstack','api','stripe']},
+    'SvelteKit + Express + PG':{fe:'SvelteKit',be:'Express',db:'PostgreSQL',deploy:'Railway',cost:'$0–$20',speed:4,scale:4,learn:4,eco:2,best:_ja?'軽量フルスタック':'Lightweight full-stack',tags:['perf','fullstack','api']},
+    'Next.js + FastAPI + PG':{fe:'React + Next.js',be:'FastAPI',db:'PostgreSQL',deploy:'Vercel+Fly.io',cost:'$5–$30',speed:4,scale:4,learn:3,eco:4,best:_ja?'AI統合・SQL':'AI + SQL backend',tags:['ai','ml','python','data','stripe']},
   };
   const names=Object.keys(stacks);const a=S.answers;
   const bar=v=>'⚡'.repeat(v)+'<span class="exp-dim">'+'⚡'.repeat(5-v)+'</span>';
@@ -37,12 +42,14 @@ function showExplorer(){
     if(feAns.includes('react')&&stack.fe.includes('React')){score+=20;reasons.push(_ja?'フロントエンド一致':'Frontend match');}
     else if(feAns.includes('vue')&&stack.fe.includes('Vue')){score+=20;reasons.push(_ja?'Vue選択に一致':'Vue selection match');}
     else if(feAns.includes('svelte')&&stack.fe.includes('Svelte')){score+=20;reasons.push(_ja?'Svelte選択に一致':'Svelte selection match');}
+    else if(feAns.includes('astro')&&stack.fe==='Astro'){score+=20;reasons.push(_ja?'Astro選択に一致':'Astro selection match');}
 
     // 3. Backend match (0-15)
     if(beAns.includes('supabase')&&stack.be==='Supabase'){score+=15;reasons.push(_ja?'Supabase選択に一致':'Supabase match');}
     else if(beAns.includes('express')&&stack.be==='Express'){score+=15;reasons.push(_ja?'Express選択に一致':'Express match');}
     else if(beAns.includes('nest')&&stack.be==='NestJS'){score+=15;reasons.push(_ja?'NestJS選択に一致':'NestJS match');}
     else if(beAns.includes('fastapi')&&stack.be==='FastAPI'){score+=15;reasons.push(_ja?'FastAPI選択に一致':'FastAPI match');}
+    else if(beAns.includes('hono')&&stack.be==='Hono'){score+=15;reasons.push(_ja?'Hono選択に一致':'Hono match');}
 
     // 4. Mobile (0-15)
     if(mob&&mob!=='none'&&stack.tags.includes('mobile')){score+=15;reasons.push(_ja?'モバイル対応':'Mobile support');}

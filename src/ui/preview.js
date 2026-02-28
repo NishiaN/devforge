@@ -313,16 +313,19 @@ function showFileTree(){
     h+='<li class="ft-separator">────────────────</li>';
   }
 
+  let _curFtFid='';let _ftFidN=0;
   tree.forEach(f=>{
     if(!f.name||f.name==='───────────'){h+='<li class="ft-separator">────────────────</li>';return;}
-    if(f.folder) h+=`<li class="folder">📁 ${f.name}/</li>`;
-    else {
+    if(f.folder){
+      const fid='ftf'+(++_ftFidN);_curFtFid=fid;
+      h+=`<li class="folder" data-fid="${fid}" onclick="toggleFolderCollapse('${fid}')" tabindex="0" role="button" aria-expanded="true" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFolderCollapse('${fid}');}"><span class="ft-fold-icon">▼</span> 📁 ${esc(f.name)}/</li>`;
+    } else {
       const isGen=hasFiles&&S.files[f.path];
       const isActive=S.previewFile===f.path;
       const isEdited=S.editedFiles&&S.editedFiles[f.path];
       const isPinned=S.pinnedFiles&&S.pinnedFiles.includes(f.path);
       const pinBtn=isGen?`<button class="ft-pin${isPinned?' ft-pin-active':''}" onclick="event.stopPropagation();togglePin('${escAttr(f.path)}')" title="${_ja?(isPinned?'ピン留め解除':'ピン留め'):(isPinned?'Unpin':'Pin')}">${isPinned?'📌':'○'}</button>`:'';
-      h+=`<li data-path="${esc(f.path)}" onclick="previewFile('${escAttr(f.path)}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();previewFile('${escAttr(f.path)}')}" class="tree-item${isActive?' active':''}${f.name.startsWith('  ')?' tree-indent':''}${isGen?'':' tree-disabled'}" role="treeitem" tabindex="0">
+      h+=`<li data-path="${esc(f.path)}" data-folder="${esc(_curFtFid)}" onclick="previewFile('${escAttr(f.path)}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();previewFile('${escAttr(f.path)}')}" class="tree-item${isActive?' active':''}${f.name.startsWith('  ')?' tree-indent':''}${isGen?'':' tree-disabled'}" role="treeitem" tabindex="0">
         ${isGen?'📄':'⬜'} ${esc(f.name.trim())}${isEdited?'<span class="tree-edited" title="Edited">●</span>':''}${isGen?'<span class="tree-gen">✓</span>':''}${pinBtn}
       </li>`;
     }
@@ -339,6 +342,13 @@ function showFileTree(){
   
   body.innerHTML=h;
   if(typeof renderSidebarFiles==='function')renderSidebarFiles();
+}
+
+function toggleFolderCollapse(fid){
+  const folder=document.querySelector('.folder[data-fid="'+fid+'"]');if(!folder)return;
+  const isCollapsed=folder.classList.toggle('ft-collapsed');
+  folder.setAttribute('aria-expanded',isCollapsed?'false':'true');
+  document.querySelectorAll('li[data-folder="'+fid+'"]').forEach(li=>{li.style.display=isCollapsed?'none':'';});
 }
 
 function buildFileTree(){

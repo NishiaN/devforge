@@ -323,10 +323,36 @@ function showGenerate(){
     wd.onclick=()=>{S.exportedOnce=true;save();wb.remove();};
     wb.appendChild(wt);wb.appendChild(wd);zone.appendChild(wb);
   }
+  // Answer review panel
+  const rv=document.createElement('div');rv.innerHTML=buildAnswerReview();zone.appendChild(rv);
   const btn=document.createElement('button');btn.className='btn btn-p';btn.style.cssText='padding:14px 40px;font-size:14px;margin:20px;';
   btn.textContent=t('genBtn');
   btn.onclick=()=>{generateAll();};
   zone.appendChild(btn);
+}
+
+function buildAnswerReview(){
+  const _ja=S.lang==='ja';
+  const qs=getQ();const a=S.answers;
+  let h='<div class="review-panel"><h3>'+(_ja?'📋 回答サマリー — 確認してから生成してください':'📋 Answer Summary — Review before generating')+'</h3>';
+  [1,2,3].forEach(p=>{
+    const ph=qs[p];if(!ph)return;
+    const rows=ph.questions.filter(q=>isQActive(q)&&a[q.id]).map(q=>{
+      const qLabel=typeof q.q==='string'?q.q.replace(/^[🔤🎯🚀✅💡🏢🔐💰📱🤖🔧⚙️🌐📦]+\s*/,'').slice(0,45):'';
+      return '<div class="review-row"><span class="review-q">'+esc(qLabel)+'</span><span class="review-a">'+esc(String(a[q.id]).slice(0,60))+'</span></div>';
+    }).join('');
+    if(!rows)return;
+    h+='<div class="review-section">';
+    h+='<div class="review-section-head"><span>'+esc(ph.name)+'</span>';
+    h+='<button class="btn btn-xs" onclick="reviewEditPhase('+p+')">'+(_ja?'✏️ 編集':'✏️ Edit')+'</button></div>';
+    h+=rows+'</div>';
+  });
+  h+='</div>';
+  return h;
+}
+
+function reviewEditPhase(phase){
+  S.phase=phase;S.step=0;save();showQ();
 }
 
 function findNext(){
