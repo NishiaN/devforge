@@ -295,7 +295,11 @@ function parseHearingData(text){
   for(const line of lines){
     const hm=line.match(/^#{1,3}\s+(.+)$/);
     if(hm){flush();curKey=hm[1].trim().toLowerCase();curLines=[];}
-    else if(curKey&&line.trim()){curLines.push(line.replace(/^[-*•]\s*/,'').trim());}
+    else if(curKey&&line.trim()){
+      const lt=line.trim();
+      if(/^>/.test(lt)||/^▶|^記入例|^Example:/i.test(lt)||/^---+$/.test(lt)||/^（ここに記入）$|^\(Fill here\)$|^（）$|^\(\)$/i.test(lt))continue;
+      curLines.push(lt.replace(/^[-*•]\s*/,'').trim());
+    }
   }
   flush();
   const getSection=(...keys)=>{
