@@ -370,7 +370,7 @@ function gen102(a,pn){
 
   if(isVercel){
     doc+='## Vercel Analytics '+(G?'設定':'Setup')+'\n\n';
-    doc+='```typescript\n// app/layout.tsx\nimport { Analytics } from \'@vercel/analytics/react\';\nimport { SpeedInsights } from \'@vercel/speed-insights/next\';\n\nexport default function RootLayout({ children }) {\n  return (\n    <html>\n      <body>\n        {children}\n        <Analytics />\n        <SpeedInsights />\n      </body>\n    </html>\n  );\n}\n```\n\n';
+    doc+='```typescript\n// app/layout.tsx\nimport { Analytics } from \'@vercel/analytics/react\';\nimport { SpeedInsights } from \'@vercel/speed-insights/next\';\n\nexport default function RootLayout({ children }) {\n  return (\n    <html>\n      <body>\n        {children}\n        <Analytics />\n        <SpeedInsights />\n      <\/body>\n    </html>\n  );\n}\n```\n\n';
     doc+=(G?'Vercel Analyticsは自動でRUM (Real User Monitoring) を収集します。Dashboard → Analytics → Web Vitals で確認できます。':
          'Vercel Analytics automatically collects RUM (Real User Monitoring). View in Dashboard → Analytics → Web Vitals.')+'\n';
   } else {

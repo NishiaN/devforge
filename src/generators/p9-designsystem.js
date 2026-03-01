@@ -268,7 +268,7 @@ function genPillar9_DesignSystem(a,pn){
   // Dark/Light Mode
   designDoc+=darkMode+'\n\n';
   if(isTailwind){
-    designDoc+='```jsx\n// app/layout.tsx\nimport { ThemeProvider } from "next-themes"\n\nexport default function RootLayout({ children }) {\n  return (\n    <html suppressHydrationWarning>\n      <body>\n        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>\n          {children}\n        </ThemeProvider>\n      </body>\n    </html>\n  )\n}\n```\n\n'+(G?'使用例: `className="bg-white dark:bg-gray-900"`':'Usage: `className="bg-white dark:bg-gray-900"`')+'\n\n';
+    designDoc+='```jsx\n// app/layout.tsx\nimport { ThemeProvider } from "next-themes"\n\nexport default function RootLayout({ children }) {\n  return (\n    <html suppressHydrationWarning>\n      <body>\n        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>\n          {children}\n        </ThemeProvider>\n      <\/body>\n    </html>\n  )\n}\n```\n\n'+(G?'使用例: `className="bg-white dark:bg-gray-900"`':'Usage: `className="bg-white dark:bg-gray-900"`')+'\n\n';
   }else{
     designDoc+='```js\n// Toggle theme\nfunction toggleTheme() {\n  document.documentElement.dataset.theme = \n    document.documentElement.dataset.theme === "dark" ? "light" : "dark";\n}\n```\n\n';
   }

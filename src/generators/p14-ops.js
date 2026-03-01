@@ -328,7 +328,7 @@ function genPillar14_OpsIntelligence(a, pn) {
     runbook += '// app/layout.tsx\n';
     runbook += 'import { Analytics } from \'@vercel/analytics/react\';\n';
     runbook += 'export default function RootLayout({ children }) {\n';
-    runbook += '  return <html><body>{children}<Analytics /></body></html>;\n';
+    runbook += '  return <html><body>{children}<Analytics /><\/body></html>;\n';
     runbook += '}\n```\n\n';
   } else if (deployTarget.includes('Railway') || deployTarget.includes('Render')) {
     runbook += G

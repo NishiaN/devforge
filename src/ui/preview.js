@@ -737,7 +737,7 @@ async function printCurrentFile(){
   if(path.endsWith('.md'))content=await _renderMermaidSVG(content);
   const css='body{font-family:-apple-system,sans-serif;padding:40px;max-width:800px;margin:0 auto;color:#1e222d;}'+'pre{background:#f5f5f5;padding:16px;border-radius:8px;overflow-x:auto;}'+'table{width:100%;border-collapse:collapse;}th,td{border:1px solid #ddd;padding:8px;text-align:left;}th{background:#f0f0f0;}'+'div[style*="page-break-inside:avoid"] svg{max-width:100%;height:auto;}'+'@media print{div[style*="page-break-inside:avoid"]{page-break-inside:avoid;}svg{max-width:100%;}}';
   const _CSP_META='<meta http-equiv="Content-Security-Policy" content="default-src \'none\'; style-src \'unsafe-inline\'; img-src data: blob:;">';
-  const html='<!DOCTYPE html><html><head>'+_CSP_META+'<title>'+escHtml(path)+'</title><style>'+css+'</style></head><body>'+'<h1 style="border-bottom:2px solid #3b82f6;padding-bottom:8px;">'+escHtml(path)+'</h1>'+content+'</body></html>';
+  const html='<!DOCTYPE html><html><head>'+_CSP_META+'<title>'+escHtml(path)+'</title><style>'+css+'</style></head><body>'+'<h1 style="border-bottom:2px solid #3b82f6;padding-bottom:8px;">'+escHtml(path)+'</h1>'+content+'<\/body></html>';
   const win=window.open('','_blank');
   if(win){win.document.write(html);win.document.close();}
   else{
