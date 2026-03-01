@@ -297,8 +297,9 @@ function parseHearingData(text){
     if(hm){flush();curKey=hm[1].trim().toLowerCase();curLines=[];}
     else if(curKey&&line.trim()){
       const lt=line.trim();
-      if(/^>/.test(lt)||/^▶|^記入例|^Example:/i.test(lt)||/^---+$/.test(lt)||/^（ここに記入）$|^\(Fill here\)$|^（）$|^\(\)$/i.test(lt))continue;
-      curLines.push(lt.replace(/^[-*•]\s*/,'').trim());
+      if(/^>/.test(lt)||/^▶|^記入例|^Example:/i.test(lt)||/^---+$/.test(lt)||/^（ここに記入）$|^\(Fill here\)$/i.test(lt))continue;
+      var cl=lt.replace(/^[-*•]\s*/,'').trim().replace(/^（([^）]*)）$/,'$1').replace(/^\(([^)]*)\)$/,'$1').trim();
+      if(cl)curLines.push(cl);
     }
   }
   flush();
