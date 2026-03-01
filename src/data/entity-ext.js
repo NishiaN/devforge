@@ -1566,3 +1566,345 @@ ENTITY_COLUMNS['OralArchive']=[
   'published_at:TIMESTAMP::公開日時:Published at',
   'citation:TEXT::引用情報:Citation'
 ];
+
+// ── ext14: presets-ext14.js new entity columns ────────────────────────────────
+
+ENTITY_COLUMNS['CircuitProject']=[
+  'user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID',
+  'project_name:VARCHAR(255):NOT NULL:プロジェクト名:Project name',
+  'description:TEXT::説明:Description',
+  'circuit_json:JSONB::回路データ:Circuit data',
+  'status:VARCHAR(20):DEFAULT \'draft\':ステータス:Status'
+];
+
+ENTITY_COLUMNS['CircuitComponent']=[
+  'project_id:UUID:FK(CircuitProject) NOT NULL:プロジェクトID:Project ID',
+  'component_type:VARCHAR(100):NOT NULL:コンポーネント種別:Component type',
+  'label:VARCHAR(100)::ラベル:Label',
+  'value:VARCHAR(100)::値:Value',
+  'position_x:DECIMAL(10,2)::X座標:X position',
+  'position_y:DECIMAL(10,2)::Y座標:Y position'
+];
+
+ENTITY_COLUMNS['CircuitNode']=[
+  'project_id:UUID:FK(CircuitProject) NOT NULL:プロジェクトID:Project ID',
+  'node_id:VARCHAR(50):NOT NULL:ノードID:Node ID',
+  'node_name:VARCHAR(100)::ノード名:Node name',
+  'voltage:DECIMAL(10,4)::電圧(V):Voltage (V)'
+];
+
+ENTITY_COLUMNS['SimWaveform']=[
+  'project_id:UUID:FK(CircuitProject) NOT NULL:プロジェクトID:Project ID',
+  'signal_name:VARCHAR(100):NOT NULL:信号名:Signal name',
+  'time_data:JSONB:NOT NULL:時間データ:Time data',
+  'value_data:JSONB:NOT NULL:値データ:Value data',
+  'unit:VARCHAR(20)::単位:Unit'
+];
+
+ENTITY_COLUMNS['MolFile']=[
+  'user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID',
+  'file_name:VARCHAR(255):NOT NULL:ファイル名:File name',
+  'format:VARCHAR(20):NOT NULL:フォーマット:Format',
+  'mol_data:TEXT:NOT NULL:分子データ:Molecule data',
+  'formula:VARCHAR(255)::化学式:Chemical formula',
+  'molecular_weight:DECIMAL(10,4)::分子量:Molecular weight'
+];
+
+ENTITY_COLUMNS['MolAtom']=[
+  'mol_id:UUID:FK(MolFile) NOT NULL:分子ファイルID:Molecule file ID',
+  'atom_index:INT:NOT NULL:原子インデックス:Atom index',
+  'element:VARCHAR(10):NOT NULL:元素記号:Element symbol',
+  'pos_x:DECIMAL(10,4)::X座標:X position',
+  'pos_y:DECIMAL(10,4)::Y座標:Y position',
+  'charge:INT:DEFAULT 0:電荷:Charge'
+];
+
+ENTITY_COLUMNS['MolBond']=[
+  'mol_id:UUID:FK(MolFile) NOT NULL:分子ファイルID:Molecule file ID',
+  'atom1_idx:INT:NOT NULL:原子1インデックス:Atom 1 index',
+  'atom2_idx:INT:NOT NULL:原子2インデックス:Atom 2 index',
+  'bond_type:INT:NOT NULL:結合種別:Bond type',
+  'stereo:INT:DEFAULT 0:立体化学:Stereo'
+];
+
+ENTITY_COLUMNS['MolVisualization']=[
+  'mol_id:UUID:FK(MolFile) NOT NULL:分子ファイルID:Molecule file ID',
+  'view_mode:VARCHAR(20):DEFAULT \'2D\':表示モード:View mode',
+  'color_scheme:VARCHAR(50):DEFAULT \'cpk\':配色スキーム:Color scheme',
+  'settings:JSONB::表示設定:Display settings'
+];
+
+ENTITY_COLUMNS['PlantCrop']=[
+  'user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID',
+  'plant_name:VARCHAR(255):NOT NULL:植物名:Plant name',
+  'plant_name_en:VARCHAR(255)::植物名(英):Plant name (EN)',
+  'category:VARCHAR(100)::カテゴリ:Category',
+  'days_to_harvest:INT::収穫日数:Days to harvest',
+  'care_tips:TEXT::育て方メモ:Care tips'
+];
+
+ENTITY_COLUMNS['GardenBed']=[
+  'user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID',
+  'bed_name:VARCHAR(255):NOT NULL:畑区画名:Garden bed name',
+  'width_m:DECIMAL(5,2)::横幅(m):Width (m)',
+  'length_m:DECIMAL(5,2)::奥行(m):Length (m)',
+  'soil_type:VARCHAR(100)::土壌種別:Soil type',
+  'current_crops:JSONB::栽培中作物:Current crops'
+];
+
+ENTITY_COLUMNS['GrowCalendar']=[
+  'user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID',
+  'crop_id:UUID:FK(PlantCrop) NOT NULL:作物ID:Crop ID',
+  'bed_id:UUID:FK(GardenBed):区画ID:Garden bed ID',
+  'sow_date:DATE::播種日:Sow date',
+  'transplant_date:DATE::定植日:Transplant date',
+  'expected_harvest:DATE::収穫予定日:Expected harvest date'
+];
+
+ENTITY_COLUMNS['HarvestRecord']=[
+  'user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID',
+  'crop_id:UUID:FK(PlantCrop) NOT NULL:作物ID:Crop ID',
+  'harvest_date:DATE:NOT NULL:収穫日:Harvest date',
+  'quantity_kg:DECIMAL(6,2)::収穫量(kg):Harvest quantity (kg)',
+  'quality_rating:INT::品質評価(1-5):Quality rating (1-5)',
+  'notes:TEXT::メモ:Notes'
+];
+
+ENTITY_COLUMNS['MedPrescription']=[
+  'user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID',
+  'prescribed_date:DATE:NOT NULL:処方日:Prescribed date',
+  'prescriber:VARCHAR(255)::処方医:Prescriber',
+  'pharmacy:VARCHAR(255)::調剤薬局:Pharmacy',
+  'notes:TEXT::備考:Notes',
+  'status:VARCHAR(20):DEFAULT \'active\':ステータス:Status'
+];
+
+ENTITY_COLUMNS['MedDrug']=[
+  'prescription_id:UUID:FK(MedPrescription) NOT NULL:処方ID:Prescription ID',
+  'drug_name:VARCHAR(255):NOT NULL:薬品名:Drug name',
+  'dosage:VARCHAR(100):NOT NULL:用量:Dosage',
+  'frequency:VARCHAR(100):NOT NULL:服用頻度:Frequency',
+  'duration_days:INT::服用日数:Duration (days)',
+  'drug_code:VARCHAR(100)::薬品コード:Drug code'
+];
+
+ENTITY_COLUMNS['DoseSchedule']=[
+  'user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID',
+  'drug_id:UUID:FK(MedDrug) NOT NULL:薬品ID:Drug ID',
+  'scheduled_time:TIME:NOT NULL:服用予定時刻:Scheduled time',
+  'dose_timing:VARCHAR(50):NOT NULL:服用タイミング:Dose timing',
+  'is_active:BOOLEAN:DEFAULT true:有効:Active'
+];
+
+ENTITY_COLUMNS['DrugInteraction']=[
+  'drug1_name:VARCHAR(255):NOT NULL:薬品1名:Drug 1 name',
+  'drug2_name:VARCHAR(255):NOT NULL:薬品2名:Drug 2 name',
+  'severity:VARCHAR(20):NOT NULL:重篤度:Severity',
+  'description:TEXT:NOT NULL:相互作用説明:Interaction description',
+  'recommendation:TEXT::対処推奨:Recommendation'
+];
+
+ENTITY_COLUMNS['EtymWord']=[
+  'user_id:UUID:FK(User):ユーザーID:User ID',
+  'word:VARCHAR(255):NOT NULL:語彙:Word',
+  'language:VARCHAR(50):NOT NULL:言語:Language',
+  'definition:TEXT::定義:Definition',
+  'first_recorded:VARCHAR(100)::初出記録:First recorded',
+  'ipa:VARCHAR(255)::IPA発音記号:IPA pronunciation'
+];
+
+ENTITY_COLUMNS['WordOrigin']=[
+  'word_id:UUID:FK(EtymWord) NOT NULL:語彙ID:Word ID',
+  'source_language:VARCHAR(100):NOT NULL:起源言語:Source language',
+  'source_word:VARCHAR(255):NOT NULL:起源語:Source word',
+  'period:VARCHAR(100)::時代:Period',
+  'route:TEXT::伝播経路:Transmission route'
+];
+
+ENTITY_COLUMNS['LangFamily']=[
+  'family_name:VARCHAR(100):NOT NULL:語族名:Language family name',
+  'family_name_en:VARCHAR(100):NOT NULL:語族名(英):Language family name (EN)',
+  'branch:VARCHAR(100)::語派:Language branch',
+  'geographic_origin:VARCHAR(255)::地理的起源:Geographic origin',
+  'member_count:INT::使用言語数:Member language count'
+];
+
+ENTITY_COLUMNS['WordRelation']=[
+  'word1_id:UUID:FK(EtymWord) NOT NULL:語彙1ID:Word 1 ID',
+  'word2_id:UUID:FK(EtymWord) NOT NULL:語彙2ID:Word 2 ID',
+  'relation_type:VARCHAR(50):NOT NULL:関係種別:Relation type',
+  'description:TEXT::説明:Description'
+];
+
+ENTITY_COLUMNS['CodeExercise']=[
+  'author_id:UUID:FK(User) NOT NULL:作成者ID:Author ID',
+  'title:VARCHAR(255):NOT NULL:演習タイトル:Exercise title',
+  'language:VARCHAR(50):NOT NULL:プログラミング言語:Programming language',
+  'difficulty:VARCHAR(20):DEFAULT \'medium\':難易度:Difficulty',
+  'description:TEXT:NOT NULL:問題文:Description',
+  'test_cases:JSONB::テストケース:Test cases'
+];
+
+ENTITY_COLUMNS['CodeSubmission']=[
+  'exercise_id:UUID:FK(CodeExercise) NOT NULL:演習ID:Exercise ID',
+  'user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID',
+  'code:TEXT:NOT NULL:提出コード:Submitted code',
+  'result:VARCHAR(20)::実行結果:Execution result',
+  'score:INT::スコア:Score',
+  'feedback:TEXT::フィードバック:Feedback'
+];
+
+ENTITY_COLUMNS['ReviewComment']=[
+  'submission_id:UUID:FK(CodeSubmission) NOT NULL:提出ID:Submission ID',
+  'reviewer_id:UUID:FK(User) NOT NULL:レビュアーID:Reviewer ID',
+  'line_number:INT::行番号:Line number',
+  'comment:TEXT:NOT NULL:コメント:Comment',
+  'category:VARCHAR(50)::カテゴリ:Category',
+  'ai_generated:BOOLEAN:DEFAULT false:AI生成:AI generated'
+];
+
+ENTITY_COLUMNS['LearningPath']=[
+  'user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID',
+  'path_name:VARCHAR(255):NOT NULL:パス名:Path name',
+  'language:VARCHAR(50):NOT NULL:言語:Language',
+  'exercises:JSONB::演習リスト:Exercise list',
+  'current_step:INT:DEFAULT 0:現在ステップ:Current step',
+  'completed_at:TIMESTAMP::完了日時:Completed at'
+];
+
+ENTITY_COLUMNS['FontProject']=[
+  'user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID',
+  'project_name:VARCHAR(255):NOT NULL:プロジェクト名:Project name',
+  'description:TEXT::説明:Description',
+  'units_per_em:INT:DEFAULT 1000:UPM:Units per em',
+  'status:VARCHAR(20):DEFAULT \'draft\':ステータス:Status'
+];
+
+ENTITY_COLUMNS['FontGlyph']=[
+  'project_id:UUID:FK(FontProject) NOT NULL:プロジェクトID:Project ID',
+  'unicode:INT:NOT NULL:Unicodeコード:Unicode code point',
+  'glyph_name:VARCHAR(100)::グリフ名:Glyph name',
+  'path_data:TEXT::パスデータ(SVG):Path data (SVG)',
+  'advance_width:INT::字幅:Advance width',
+  'bearing_x:INT::ベアリングX:Bearing X'
+];
+
+ENTITY_COLUMNS['FontFamily']=[
+  'project_id:UUID:FK(FontProject) NOT NULL:プロジェクトID:Project ID',
+  'weight:INT:NOT NULL:ウェイト:Weight',
+  'style:VARCHAR(20):DEFAULT \'normal\':スタイル:Style',
+  'glyph_count:INT:DEFAULT 0:グリフ数:Glyph count'
+];
+
+ENTITY_COLUMNS['FontExport']=[
+  'project_id:UUID:FK(FontProject) NOT NULL:プロジェクトID:Project ID',
+  'format:VARCHAR(20):NOT NULL:フォーマット:Format',
+  'file_size_kb:INT::ファイルサイズ(KB):File size (KB)',
+  'exported_at:TIMESTAMP:DEFAULT NOW:エクスポート日時:Exported at',
+  'settings:JSONB::エクスポート設定:Export settings'
+];
+
+ENTITY_COLUMNS['DiaryEntry']=[
+  'user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID',
+  'entry_date:DATE:NOT NULL:記録日:Entry date',
+  'content:TEXT:NOT NULL:本文:Content',
+  'weather:VARCHAR(50)::天気:Weather',
+  'mood_score:INT::気分スコア(1-10):Mood score (1-10)',
+  'word_count:INT:DEFAULT 0:文字数:Word count'
+];
+
+ENTITY_COLUMNS['EmotionTag']=[
+  'entry_id:UUID:FK(DiaryEntry) NOT NULL:日記ID:Diary entry ID',
+  'emotion:VARCHAR(100):NOT NULL:感情:Emotion',
+  'intensity:INT:DEFAULT 3:強度(1-5):Intensity (1-5)',
+  'ai_detected:BOOLEAN:DEFAULT false:AI検出:AI detected'
+];
+
+ENTITY_COLUMNS['LifelogSummary']=[
+  'user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID',
+  'period:VARCHAR(20):NOT NULL:集計期間:Period',
+  'start_date:DATE:NOT NULL:開始日:Start date',
+  'end_date:DATE:NOT NULL:終了日:End date',
+  'avg_mood:DECIMAL(4,2)::平均気分:Average mood',
+  'top_emotions:JSONB::主要感情:Top emotions'
+];
+
+ENTITY_COLUMNS['InsightReport']=[
+  'user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID',
+  'generated_at:TIMESTAMP:DEFAULT NOW:生成日時:Generated at',
+  'period:VARCHAR(50):NOT NULL:対象期間:Target period',
+  'insights:JSONB:NOT NULL:インサイト:Insights',
+  'recommendations:TEXT::推奨事項:Recommendations',
+  'ai_model:VARCHAR(100)::使用AIモデル:AI model used'
+];
+
+ENTITY_COLUMNS['BudgetCategory']=[
+  'user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID',
+  'category_name:VARCHAR(100):NOT NULL:カテゴリ名:Category name',
+  'category_type:VARCHAR(20):NOT NULL:種別(収入/支出):Type (income/expense)',
+  'monthly_budget:DECIMAL(12,2)::月次予算:Monthly budget',
+  'color:VARCHAR(20)::表示色:Color',
+  'icon:VARCHAR(50)::アイコン:Icon'
+];
+
+ENTITY_COLUMNS['BudgetTransaction']=[
+  'user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID',
+  'category_id:UUID:FK(BudgetCategory) NOT NULL:カテゴリID:Category ID',
+  'amount:DECIMAL(12,2):NOT NULL:金額:Amount',
+  'transaction_date:DATE:NOT NULL:取引日:Transaction date',
+  'description:VARCHAR(255)::説明:Description',
+  'notes:TEXT::メモ:Notes'
+];
+
+ENTITY_COLUMNS['FinAsset']=[
+  'user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID',
+  'asset_name:VARCHAR(255):NOT NULL:資産名:Asset name',
+  'asset_type:VARCHAR(50):NOT NULL:資産種別:Asset type',
+  'current_value:DECIMAL(15,2):NOT NULL:現在価値:Current value',
+  'acquisition_value:DECIMAL(15,2)::取得価額:Acquisition value',
+  'last_updated:DATE::最終更新日:Last updated'
+];
+
+ENTITY_COLUMNS['SavingGoal']=[
+  'user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID',
+  'goal_name:VARCHAR(255):NOT NULL:目標名:Goal name',
+  'target_amount:DECIMAL(15,2):NOT NULL:目標金額:Target amount',
+  'current_amount:DECIMAL(15,2):DEFAULT 0:現在積立額:Current saved amount',
+  'target_date:DATE::目標達成日:Target date',
+  'status:VARCHAR(20):DEFAULT \'active\':ステータス:Status'
+];
+
+ENTITY_COLUMNS['ProdOrder']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'order_number:VARCHAR(100):UNIQUE NOT NULL:製造指示番号:Order number',
+  'product_name:VARCHAR(255):NOT NULL:製品名:Product name',
+  'quantity:INT:NOT NULL:数量:Quantity',
+  'priority:VARCHAR(20):DEFAULT \'normal\':優先度:Priority',
+  'due_date:DATE:NOT NULL:納期:Due date'
+];
+
+ENTITY_COLUMNS['FactoryMachine']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'machine_code:VARCHAR(100):UNIQUE NOT NULL:機械コード:Machine code',
+  'machine_name:VARCHAR(255):NOT NULL:機械名:Machine name',
+  'capacity_per_hour:DECIMAL(10,2)::時間能力:Capacity per hour',
+  'setup_time_min:INT:DEFAULT 0:段取時間(分):Setup time (min)',
+  'status:VARCHAR(20):DEFAULT \'available\':稼働状態:Status'
+];
+
+ENTITY_COLUMNS['ScheduleSlot']=[
+  'machine_id:UUID:FK(FactoryMachine) NOT NULL:機械ID:Machine ID',
+  'order_id:UUID:FK(ProdOrder) NOT NULL:製造指示ID:Order ID',
+  'start_time:TIMESTAMP:NOT NULL:開始時刻:Start time',
+  'end_time:TIMESTAMP:NOT NULL:終了時刻:End time',
+  'status:VARCHAR(20):DEFAULT \'scheduled\':ステータス:Status'
+];
+
+ENTITY_COLUMNS['ProdPlan']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'plan_name:VARCHAR(255):NOT NULL:計画名:Plan name',
+  'plan_date:DATE:NOT NULL:計画日:Plan date',
+  'schedule_data:JSONB::スケジュールデータ:Schedule data',
+  'kpi_data:JSONB::KPIデータ:KPI data',
+  'ai_optimized:BOOLEAN:DEFAULT false:AI最適化済み:AI optimized'
+];

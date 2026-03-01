@@ -38190,3 +38190,655 @@ describe('Suite 310: presets-ext13 carbon_calc — Supabase/Vercel/no-payment', 
     assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'carbon_calc docs/01 must not contain undefined');
   });
 });
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 311 — presets-ext14.js: circuit_sim
+   Supabase/Vercel/payment:none
+   ════════════════════════════════════════════════════════════════ */
+
+const g311_circuit_sim = Object.assign({}, A25, {
+  purpose: '回路図作成・コンポーネント配置・SPICE互換シミュレーション・波形グラフ表示・回路図エクスポートができる工学向けローカルHTML電気回路設計ツール',
+  frontend: 'React + Next.js',
+  backend: 'Supabase',
+  database: 'PostgreSQL',
+  deploy: 'Vercel',
+  orm: 'Prisma',
+  auth: 'JWT + Supabase Auth',
+  payment: 'none',
+  mobile: 'なし',
+  data_entities: 'User, CircuitProject, CircuitComponent, CircuitNode, SimWaveform',
+  mvp_features: '回路図作成・コンポーネント配置, SPICE互換シミュレーション, 波形グラフ表示, 回路図エクスポート, ページネーション・無限スクロール',
+});
+
+describe('Suite 311: presets-ext14 circuit_sim — Supabase/Vercel/no-payment', () => {
+
+  it('SDD: circuit_sim generates specification.md and constitution.md', () => {
+    const f = gSDD(g311_circuit_sim);
+    assert.ok(f['.spec/specification.md'], 'circuit_sim must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'circuit_sim must generate constitution.md');
+  });
+
+  it('SDD: circuit_sim includes CircuitProject in spec', () => {
+    const f = gSDD(g311_circuit_sim);
+    assert.ok((f['.spec/specification.md']||'').includes('CircuitProject'), 'circuit_sim spec must mention CircuitProject');
+  });
+
+  it('SDD: circuit_sim (Supabase) → Supabase referenced in spec', () => {
+    const f = gSDD(g311_circuit_sim);
+    assert.ok((f['.spec/specification.md']||'').includes('Supabase'), 'circuit_sim spec must reference Supabase');
+  });
+
+  it('SDD: circuit_sim purpose keyword in spec', () => {
+    const f = gSDD(g311_circuit_sim);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('回路')||spec.includes('Circuit')||spec.includes('シミュレーション'), 'circuit_sim spec must mention circuit context');
+  });
+
+  it('SDD EN: circuit_sim produces no undefined in spec', () => {
+    const f = gSDD(g311_circuit_sim, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'circuit_sim EN spec must not contain undefined');
+  });
+
+  it('SDD JA: circuit_sim produces no undefined in spec', () => {
+    const f = gSDD(g311_circuit_sim);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'circuit_sim JA spec must not contain undefined');
+  });
+
+  it('docs/01: circuit_sim overview mentions 回路 or Circuit', () => {
+    const f = gSDD(g311_circuit_sim);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('回路')||doc.includes('Circuit')||doc.includes('シミュレーション'), 'circuit_sim docs/01 must mention 回路 or Circuit');
+  });
+
+  it('docs/01: circuit_sim produces no undefined in overview', () => {
+    const f = gSDD(g311_circuit_sim);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'circuit_sim docs/01 must not contain undefined');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 312 — presets-ext14.js: molecule_viewer
+   Supabase/Vercel/payment:none
+   ════════════════════════════════════════════════════════════════ */
+
+const g312_molecule_viewer = Object.assign({}, A25, {
+  purpose: '分子構造の2D/3D表示・原子結合編集・化学式分子量計算・PDB/MOL形式インポート・構造エクスポートができる学術向けローカルHTML分子可視化ツール',
+  frontend: 'React + Next.js',
+  backend: 'Supabase',
+  database: 'PostgreSQL',
+  deploy: 'Vercel',
+  orm: 'Prisma',
+  auth: 'JWT + Supabase Auth',
+  payment: 'none',
+  mobile: 'なし',
+  data_entities: 'User, MolFile, MolAtom, MolBond, MolVisualization',
+  mvp_features: '分子構造2D/3D表示, 原子・結合編集, 化学式・分子量計算, PDB/MOLインポート, ページネーション・無限スクロール',
+});
+
+describe('Suite 312: presets-ext14 molecule_viewer — Supabase/Vercel/no-payment', () => {
+
+  it('SDD: molecule_viewer generates specification.md and constitution.md', () => {
+    const f = gSDD(g312_molecule_viewer);
+    assert.ok(f['.spec/specification.md'], 'molecule_viewer must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'molecule_viewer must generate constitution.md');
+  });
+
+  it('SDD: molecule_viewer includes MolFile in spec', () => {
+    const f = gSDD(g312_molecule_viewer);
+    assert.ok((f['.spec/specification.md']||'').includes('MolFile'), 'molecule_viewer spec must mention MolFile');
+  });
+
+  it('SDD: molecule_viewer (Supabase) → Supabase referenced in spec', () => {
+    const f = gSDD(g312_molecule_viewer);
+    assert.ok((f['.spec/specification.md']||'').includes('Supabase'), 'molecule_viewer spec must reference Supabase');
+  });
+
+  it('SDD: molecule_viewer purpose keyword in spec', () => {
+    const f = gSDD(g312_molecule_viewer);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('分子')||spec.includes('Molecule')||spec.includes('化学'), 'molecule_viewer spec must mention molecule context');
+  });
+
+  it('SDD EN: molecule_viewer produces no undefined in spec', () => {
+    const f = gSDD(g312_molecule_viewer, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'molecule_viewer EN spec must not contain undefined');
+  });
+
+  it('SDD JA: molecule_viewer produces no undefined in spec', () => {
+    const f = gSDD(g312_molecule_viewer);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'molecule_viewer JA spec must not contain undefined');
+  });
+
+  it('docs/01: molecule_viewer overview mentions 分子 or Molecule', () => {
+    const f = gSDD(g312_molecule_viewer);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('分子')||doc.includes('Molecule')||doc.includes('化学'), 'molecule_viewer docs/01 must mention 分子 or Molecule');
+  });
+
+  it('docs/01: molecule_viewer produces no undefined in overview', () => {
+    const f = gSDD(g312_molecule_viewer);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'molecule_viewer docs/01 must not contain undefined');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 313 — presets-ext14.js: garden_advisor
+   Supabase/Vercel/payment:none
+   ════════════════════════════════════════════════════════════════ */
+
+const g313_garden_advisor = Object.assign({}, A25, {
+  purpose: '植物・作物データベース・栽培カレンダー自動生成・水やり施肥スケジュール・収穫記録・病害虫チェックリストを提供する個人向けローカルHTML家庭菜園アドバイザー',
+  frontend: 'React + Next.js',
+  backend: 'Supabase',
+  database: 'PostgreSQL',
+  deploy: 'Vercel',
+  orm: 'Prisma',
+  auth: 'JWT + Supabase Auth',
+  payment: 'none',
+  mobile: 'なし',
+  data_entities: 'User, PlantCrop, GardenBed, GrowCalendar, HarvestRecord',
+  mvp_features: '植物・作物データベース管理, 栽培カレンダー自動生成, 水やり・施肥スケジュール, 収穫記録・成長追跡, ページネーション・無限スクロール',
+});
+
+describe('Suite 313: presets-ext14 garden_advisor — Supabase/Vercel/no-payment', () => {
+
+  it('SDD: garden_advisor generates specification.md and constitution.md', () => {
+    const f = gSDD(g313_garden_advisor);
+    assert.ok(f['.spec/specification.md'], 'garden_advisor must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'garden_advisor must generate constitution.md');
+  });
+
+  it('SDD: garden_advisor includes PlantCrop in spec', () => {
+    const f = gSDD(g313_garden_advisor);
+    assert.ok((f['.spec/specification.md']||'').includes('PlantCrop'), 'garden_advisor spec must mention PlantCrop');
+  });
+
+  it('SDD: garden_advisor (Supabase) → Supabase referenced in spec', () => {
+    const f = gSDD(g313_garden_advisor);
+    assert.ok((f['.spec/specification.md']||'').includes('Supabase'), 'garden_advisor spec must reference Supabase');
+  });
+
+  it('SDD: garden_advisor purpose keyword in spec', () => {
+    const f = gSDD(g313_garden_advisor);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('栽培')||spec.includes('Garden')||spec.includes('菜園'), 'garden_advisor spec must mention garden context');
+  });
+
+  it('SDD EN: garden_advisor produces no undefined in spec', () => {
+    const f = gSDD(g313_garden_advisor, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'garden_advisor EN spec must not contain undefined');
+  });
+
+  it('SDD JA: garden_advisor produces no undefined in spec', () => {
+    const f = gSDD(g313_garden_advisor);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'garden_advisor JA spec must not contain undefined');
+  });
+
+  it('docs/01: garden_advisor overview mentions 菜園 or Garden', () => {
+    const f = gSDD(g313_garden_advisor);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('菜園')||doc.includes('Garden')||doc.includes('栽培'), 'garden_advisor docs/01 must mention 菜園 or Garden');
+  });
+
+  it('docs/01: garden_advisor produces no undefined in overview', () => {
+    const f = gSDD(g313_garden_advisor);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'garden_advisor docs/01 must not contain undefined');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 314 — presets-ext14.js: medication_mgr
+   Supabase/Vercel/payment:none
+   ════════════════════════════════════════════════════════════════ */
+
+const g314_medication_mgr = Object.assign({}, A25, {
+  purpose: '処方薬登録・服薬スケジュール管理・薬の飲み合わせ相互作用チェック・服薬記録・おくすり手帳PDF出力ができる個人向けローカルHTML服薬管理アプリ',
+  frontend: 'React + Next.js',
+  backend: 'Supabase',
+  database: 'PostgreSQL',
+  deploy: 'Vercel',
+  orm: 'Prisma',
+  auth: 'JWT + Supabase Auth',
+  payment: 'none',
+  mobile: 'なし',
+  data_entities: 'User, MedPrescription, MedDrug, DoseSchedule, DrugInteraction',
+  mvp_features: '処方薬登録・管理, 服薬スケジュール・リマインダー, 薬の飲み合わせ相互作用チェック, 服薬記録, ページネーション・無限スクロール',
+});
+
+describe('Suite 314: presets-ext14 medication_mgr — Supabase/Vercel/no-payment', () => {
+
+  it('SDD: medication_mgr generates specification.md and constitution.md', () => {
+    const f = gSDD(g314_medication_mgr);
+    assert.ok(f['.spec/specification.md'], 'medication_mgr must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'medication_mgr must generate constitution.md');
+  });
+
+  it('SDD: medication_mgr includes MedPrescription in spec', () => {
+    const f = gSDD(g314_medication_mgr);
+    assert.ok((f['.spec/specification.md']||'').includes('MedPrescription'), 'medication_mgr spec must mention MedPrescription');
+  });
+
+  it('SDD: medication_mgr (Supabase) → Supabase referenced in spec', () => {
+    const f = gSDD(g314_medication_mgr);
+    assert.ok((f['.spec/specification.md']||'').includes('Supabase'), 'medication_mgr spec must reference Supabase');
+  });
+
+  it('SDD: medication_mgr purpose keyword in spec', () => {
+    const f = gSDD(g314_medication_mgr);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('服薬')||spec.includes('Medication')||spec.includes('処方'), 'medication_mgr spec must mention medication context');
+  });
+
+  it('SDD EN: medication_mgr produces no undefined in spec', () => {
+    const f = gSDD(g314_medication_mgr, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'medication_mgr EN spec must not contain undefined');
+  });
+
+  it('SDD JA: medication_mgr produces no undefined in spec', () => {
+    const f = gSDD(g314_medication_mgr);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'medication_mgr JA spec must not contain undefined');
+  });
+
+  it('docs/01: medication_mgr overview mentions 服薬 or Medication', () => {
+    const f = gSDD(g314_medication_mgr);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('服薬')||doc.includes('Medication')||doc.includes('処方'), 'medication_mgr docs/01 must mention 服薬 or Medication');
+  });
+
+  it('docs/01: medication_mgr produces no undefined in overview', () => {
+    const f = gSDD(g314_medication_mgr);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'medication_mgr docs/01 must not contain undefined');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 315 — presets-ext14.js: etymology_explorer
+   Supabase/Vercel/payment:none
+   ════════════════════════════════════════════════════════════════ */
+
+const g315_etymology_explorer = Object.assign({}, A25, {
+  purpose: '語源データベース検索・語彙ネットワーク可視化・言語族系統図・同語源語グループ・語源カード作成保存ができる学術向けローカルHTML語源探索ツール',
+  frontend: 'React + Next.js',
+  backend: 'Supabase',
+  database: 'PostgreSQL',
+  deploy: 'Vercel',
+  orm: 'Prisma',
+  auth: 'JWT + Supabase Auth',
+  payment: 'none',
+  mobile: 'なし',
+  data_entities: 'User, EtymWord, WordOrigin, LangFamily, WordRelation',
+  mvp_features: '語源データベース検索, 語彙ネットワーク可視化, 言語族系統図, 語源カード作成・保存, ページネーション・無限スクロール',
+});
+
+describe('Suite 315: presets-ext14 etymology_explorer — Supabase/Vercel/no-payment', () => {
+
+  it('SDD: etymology_explorer generates specification.md and constitution.md', () => {
+    const f = gSDD(g315_etymology_explorer);
+    assert.ok(f['.spec/specification.md'], 'etymology_explorer must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'etymology_explorer must generate constitution.md');
+  });
+
+  it('SDD: etymology_explorer includes EtymWord in spec', () => {
+    const f = gSDD(g315_etymology_explorer);
+    assert.ok((f['.spec/specification.md']||'').includes('EtymWord'), 'etymology_explorer spec must mention EtymWord');
+  });
+
+  it('SDD: etymology_explorer (Supabase) → Supabase referenced in spec', () => {
+    const f = gSDD(g315_etymology_explorer);
+    assert.ok((f['.spec/specification.md']||'').includes('Supabase'), 'etymology_explorer spec must reference Supabase');
+  });
+
+  it('SDD: etymology_explorer purpose keyword in spec', () => {
+    const f = gSDD(g315_etymology_explorer);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('語源')||spec.includes('Etymology')||spec.includes('語彙'), 'etymology_explorer spec must mention etymology context');
+  });
+
+  it('SDD EN: etymology_explorer produces no undefined in spec', () => {
+    const f = gSDD(g315_etymology_explorer, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'etymology_explorer EN spec must not contain undefined');
+  });
+
+  it('SDD JA: etymology_explorer produces no undefined in spec', () => {
+    const f = gSDD(g315_etymology_explorer);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'etymology_explorer JA spec must not contain undefined');
+  });
+
+  it('docs/01: etymology_explorer overview mentions 語源 or Etymology', () => {
+    const f = gSDD(g315_etymology_explorer);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('語源')||doc.includes('Etymology')||doc.includes('語彙'), 'etymology_explorer docs/01 must mention 語源 or Etymology');
+  });
+
+  it('docs/01: etymology_explorer produces no undefined in overview', () => {
+    const f = gSDD(g315_etymology_explorer);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'etymology_explorer docs/01 must not contain undefined');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 316 — presets-ext14.js: code_learning
+   Supabase/Vercel/payment:stripe
+   ════════════════════════════════════════════════════════════════ */
+
+const g316_code_learning = Object.assign({}, A25, {
+  purpose: 'プログラミング演習問題管理・コード提出自動採点・AIコードレビューフィードバック・学習パス管理・進捗ダッシュボードを提供する教育向けSaaSプラットフォーム',
+  frontend: 'React + Next.js',
+  backend: 'Supabase',
+  database: 'PostgreSQL',
+  deploy: 'Vercel',
+  orm: 'Prisma',
+  auth: 'JWT + Supabase Auth',
+  payment: 'stripe',
+  mobile: 'なし',
+  data_entities: 'User, CodeExercise, CodeSubmission, ReviewComment, LearningPath',
+  mvp_features: 'プログラミング演習問題管理, コード提出・自動採点, AIコードレビュー, 学習パス管理, ページネーション・無限スクロール',
+});
+
+describe('Suite 316: presets-ext14 code_learning — Supabase/Vercel/stripe', () => {
+
+  it('SDD: code_learning generates specification.md and constitution.md', () => {
+    const f = gSDD(g316_code_learning);
+    assert.ok(f['.spec/specification.md'], 'code_learning must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'code_learning must generate constitution.md');
+  });
+
+  it('SDD: code_learning includes CodeExercise in spec', () => {
+    const f = gSDD(g316_code_learning);
+    assert.ok((f['.spec/specification.md']||'').includes('CodeExercise'), 'code_learning spec must mention CodeExercise');
+  });
+
+  it('SDD: code_learning (Supabase) → Supabase referenced in spec', () => {
+    const f = gSDD(g316_code_learning);
+    assert.ok((f['.spec/specification.md']||'').includes('Supabase'), 'code_learning spec must reference Supabase');
+  });
+
+  it('SDD: code_learning purpose keyword in spec', () => {
+    const f = gSDD(g316_code_learning);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('プログラミング')||spec.includes('Programming')||spec.includes('コード'), 'code_learning spec must mention programming context');
+  });
+
+  it('SDD EN: code_learning produces no undefined in spec', () => {
+    const f = gSDD(g316_code_learning, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'code_learning EN spec must not contain undefined');
+  });
+
+  it('SDD JA: code_learning produces no undefined in spec', () => {
+    const f = gSDD(g316_code_learning);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'code_learning JA spec must not contain undefined');
+  });
+
+  it('docs/01: code_learning overview mentions プログラミング or Programming', () => {
+    const f = gSDD(g316_code_learning);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('プログラミング')||doc.includes('Programming')||doc.includes('学習'), 'code_learning docs/01 must mention プログラミング or Programming');
+  });
+
+  it('Stripe: code_learning generates billing docs when payment=stripe', () => {
+    const f = gSDD(g316_code_learning);
+    const hasBilling = Object.keys(f).some(k=>k.includes('payment')||k.includes('billing')||k.includes('subscription'));
+    assert.ok(hasBilling||f['docs/01_project_overview.md'], 'code_learning must generate docs with stripe payment');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 317 — presets-ext14.js: font_generator
+   Supabase/Vercel/payment:none
+   ════════════════════════════════════════════════════════════════ */
+
+const g317_font_generator = Object.assign({}, A25, {
+  purpose: 'フォントグリフ作成編集・タイポグラフィルール設定・フォントファミリー管理・Web Font/TTF/OTFエクスポート・フォントプレビューができるデザイナー向けローカルHTMLフォント設計ツール',
+  frontend: 'React + Next.js',
+  backend: 'Supabase',
+  database: 'PostgreSQL',
+  deploy: 'Vercel',
+  orm: 'Prisma',
+  auth: 'JWT + Supabase Auth',
+  payment: 'none',
+  mobile: 'なし',
+  data_entities: 'User, FontProject, FontGlyph, FontFamily, FontExport',
+  mvp_features: 'フォントグリフ作成・編集, タイポグラフィメトリクス設定, フォントファミリー管理, Web Font/TTF/OTFエクスポート, ページネーション・無限スクロール',
+});
+
+describe('Suite 317: presets-ext14 font_generator — Supabase/Vercel/no-payment', () => {
+
+  it('SDD: font_generator generates specification.md and constitution.md', () => {
+    const f = gSDD(g317_font_generator);
+    assert.ok(f['.spec/specification.md'], 'font_generator must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'font_generator must generate constitution.md');
+  });
+
+  it('SDD: font_generator includes FontProject in spec', () => {
+    const f = gSDD(g317_font_generator);
+    assert.ok((f['.spec/specification.md']||'').includes('FontProject'), 'font_generator spec must mention FontProject');
+  });
+
+  it('SDD: font_generator (Supabase) → Supabase referenced in spec', () => {
+    const f = gSDD(g317_font_generator);
+    assert.ok((f['.spec/specification.md']||'').includes('Supabase'), 'font_generator spec must reference Supabase');
+  });
+
+  it('SDD: font_generator purpose keyword in spec', () => {
+    const f = gSDD(g317_font_generator);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('フォント')||spec.includes('Font')||spec.includes('タイポグラフィ'), 'font_generator spec must mention font context');
+  });
+
+  it('SDD EN: font_generator produces no undefined in spec', () => {
+    const f = gSDD(g317_font_generator, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'font_generator EN spec must not contain undefined');
+  });
+
+  it('SDD JA: font_generator produces no undefined in spec', () => {
+    const f = gSDD(g317_font_generator);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'font_generator JA spec must not contain undefined');
+  });
+
+  it('docs/01: font_generator overview mentions フォント or Font', () => {
+    const f = gSDD(g317_font_generator);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('フォント')||doc.includes('Font')||doc.includes('タイポグラフィ'), 'font_generator docs/01 must mention フォント or Font');
+  });
+
+  it('docs/01: font_generator produces no undefined in overview', () => {
+    const f = gSDD(g317_font_generator);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'font_generator docs/01 must not contain undefined');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 318 — presets-ext14.js: diary_lifelog
+   Supabase/Vercel/payment:none
+   ════════════════════════════════════════════════════════════════ */
+
+const g318_diary_lifelog = Object.assign({}, A25, {
+  purpose: '日記日誌記録・感情タグ付け気分追跡・AIライフログ要約インサイト・カレンダービュータイムライン・プライバシー保護暗号化を提供する個人向けローカルHTMLライフログアプリ',
+  frontend: 'React + Next.js',
+  backend: 'Supabase',
+  database: 'PostgreSQL',
+  deploy: 'Vercel',
+  orm: 'Prisma',
+  auth: 'JWT + Supabase Auth',
+  payment: 'none',
+  mobile: 'なし',
+  data_entities: 'User, DiaryEntry, EmotionTag, LifelogSummary, InsightReport',
+  mvp_features: '日記・日誌記録, 感情タグ付け・気分追跡, AIライフログ要約, カレンダービュー, ページネーション・無限スクロール',
+});
+
+describe('Suite 318: presets-ext14 diary_lifelog — Supabase/Vercel/no-payment', () => {
+
+  it('SDD: diary_lifelog generates specification.md and constitution.md', () => {
+    const f = gSDD(g318_diary_lifelog);
+    assert.ok(f['.spec/specification.md'], 'diary_lifelog must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'diary_lifelog must generate constitution.md');
+  });
+
+  it('SDD: diary_lifelog includes DiaryEntry in spec', () => {
+    const f = gSDD(g318_diary_lifelog);
+    assert.ok((f['.spec/specification.md']||'').includes('DiaryEntry'), 'diary_lifelog spec must mention DiaryEntry');
+  });
+
+  it('SDD: diary_lifelog (Supabase) → Supabase referenced in spec', () => {
+    const f = gSDD(g318_diary_lifelog);
+    assert.ok((f['.spec/specification.md']||'').includes('Supabase'), 'diary_lifelog spec must reference Supabase');
+  });
+
+  it('SDD: diary_lifelog purpose keyword in spec', () => {
+    const f = gSDD(g318_diary_lifelog);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('日記')||spec.includes('Diary')||spec.includes('ライフログ'), 'diary_lifelog spec must mention diary context');
+  });
+
+  it('SDD EN: diary_lifelog produces no undefined in spec', () => {
+    const f = gSDD(g318_diary_lifelog, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'diary_lifelog EN spec must not contain undefined');
+  });
+
+  it('SDD JA: diary_lifelog produces no undefined in spec', () => {
+    const f = gSDD(g318_diary_lifelog);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'diary_lifelog JA spec must not contain undefined');
+  });
+
+  it('docs/01: diary_lifelog overview mentions 日記 or Diary', () => {
+    const f = gSDD(g318_diary_lifelog);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('日記')||doc.includes('Diary')||doc.includes('ライフログ'), 'diary_lifelog docs/01 must mention 日記 or Diary');
+  });
+
+  it('docs/01: diary_lifelog produces no undefined in overview', () => {
+    const f = gSDD(g318_diary_lifelog);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'diary_lifelog docs/01 must not contain undefined');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 319 — presets-ext14.js: household_budget
+   Supabase/Vercel/payment:none
+   ════════════════════════════════════════════════════════════════ */
+
+const g319_household_budget = Object.assign({}, A25, {
+  purpose: '収支カテゴリ別記録管理・月次年次予算設定・資産負債管理・貯蓄目標達成率追跡・家計レポートグラフ出力ができる個人向けローカルHTML家計管理アプリ',
+  frontend: 'React + Next.js',
+  backend: 'Supabase',
+  database: 'PostgreSQL',
+  deploy: 'Vercel',
+  orm: 'Prisma',
+  auth: 'JWT + Supabase Auth',
+  payment: 'none',
+  mobile: 'なし',
+  data_entities: 'User, BudgetCategory, BudgetTransaction, FinAsset, SavingGoal',
+  mvp_features: '収支カテゴリ別記録, 月次・年次予算設定, 資産・負債管理, 貯蓄目標追跡, ページネーション・無限スクロール',
+});
+
+describe('Suite 319: presets-ext14 household_budget — Supabase/Vercel/no-payment', () => {
+
+  it('SDD: household_budget generates specification.md and constitution.md', () => {
+    const f = gSDD(g319_household_budget);
+    assert.ok(f['.spec/specification.md'], 'household_budget must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'household_budget must generate constitution.md');
+  });
+
+  it('SDD: household_budget includes BudgetCategory in spec', () => {
+    const f = gSDD(g319_household_budget);
+    assert.ok((f['.spec/specification.md']||'').includes('BudgetCategory'), 'household_budget spec must mention BudgetCategory');
+  });
+
+  it('SDD: household_budget (Supabase) → Supabase referenced in spec', () => {
+    const f = gSDD(g319_household_budget);
+    assert.ok((f['.spec/specification.md']||'').includes('Supabase'), 'household_budget spec must reference Supabase');
+  });
+
+  it('SDD: household_budget purpose keyword in spec', () => {
+    const f = gSDD(g319_household_budget);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('家計')||spec.includes('Budget')||spec.includes('資産'), 'household_budget spec must mention budget context');
+  });
+
+  it('SDD EN: household_budget produces no undefined in spec', () => {
+    const f = gSDD(g319_household_budget, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'household_budget EN spec must not contain undefined');
+  });
+
+  it('SDD JA: household_budget produces no undefined in spec', () => {
+    const f = gSDD(g319_household_budget);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'household_budget JA spec must not contain undefined');
+  });
+
+  it('docs/01: household_budget overview mentions 家計 or Budget', () => {
+    const f = gSDD(g319_household_budget);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('家計')||doc.includes('Budget')||doc.includes('資産'), 'household_budget docs/01 must mention 家計 or Budget');
+  });
+
+  it('docs/01: household_budget produces no undefined in overview', () => {
+    const f = gSDD(g319_household_budget);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'household_budget docs/01 must not contain undefined');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 320 — presets-ext14.js: production_scheduler
+   Supabase/Vercel/payment:stripe
+   ════════════════════════════════════════════════════════════════ */
+
+const g320_production_scheduler = Object.assign({}, A25, {
+  purpose: '製造オーダー管理・機械設備リソース管理・AIガント生産スケジューリング・生産計画負荷平準化・KPI稼働率ダッシュボードを提供する製造DX向けSaaS生産スケジューラー',
+  frontend: 'React + Next.js',
+  backend: 'Supabase',
+  database: 'PostgreSQL',
+  deploy: 'Vercel',
+  orm: 'Prisma',
+  auth: 'JWT + Supabase Auth',
+  payment: 'stripe',
+  mobile: 'なし',
+  data_entities: 'User, ProdOrder, FactoryMachine, ScheduleSlot, ProdPlan',
+  mvp_features: '製造オーダー管理, 機械・設備リソース管理, AIガント生産スケジューリング, 生産計画・負荷平準化, ページネーション・無限スクロール',
+});
+
+describe('Suite 320: presets-ext14 production_scheduler — Supabase/Vercel/stripe', () => {
+
+  it('SDD: production_scheduler generates specification.md and constitution.md', () => {
+    const f = gSDD(g320_production_scheduler);
+    assert.ok(f['.spec/specification.md'], 'production_scheduler must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'production_scheduler must generate constitution.md');
+  });
+
+  it('SDD: production_scheduler includes ProdOrder in spec', () => {
+    const f = gSDD(g320_production_scheduler);
+    assert.ok((f['.spec/specification.md']||'').includes('ProdOrder'), 'production_scheduler spec must mention ProdOrder');
+  });
+
+  it('SDD: production_scheduler (Supabase) → Supabase referenced in spec', () => {
+    const f = gSDD(g320_production_scheduler);
+    assert.ok((f['.spec/specification.md']||'').includes('Supabase'), 'production_scheduler spec must reference Supabase');
+  });
+
+  it('SDD: production_scheduler purpose keyword in spec', () => {
+    const f = gSDD(g320_production_scheduler);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('製造')||spec.includes('Production')||spec.includes('スケジュール'), 'production_scheduler spec must mention production context');
+  });
+
+  it('SDD EN: production_scheduler produces no undefined in spec', () => {
+    const f = gSDD(g320_production_scheduler, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'production_scheduler EN spec must not contain undefined');
+  });
+
+  it('SDD JA: production_scheduler produces no undefined in spec', () => {
+    const f = gSDD(g320_production_scheduler);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'production_scheduler JA spec must not contain undefined');
+  });
+
+  it('docs/01: production_scheduler overview mentions 製造 or Production', () => {
+    const f = gSDD(g320_production_scheduler);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('製造')||doc.includes('Production')||doc.includes('スケジュール'), 'production_scheduler docs/01 must mention 製造 or Production');
+  });
+
+  it('Stripe: production_scheduler generates billing docs when payment=stripe', () => {
+    const f = gSDD(g320_production_scheduler);
+    const hasBilling = Object.keys(f).some(k=>k.includes('payment')||k.includes('billing')||k.includes('subscription'));
+    assert.ok(hasBilling||f['docs/01_project_overview.md'], 'production_scheduler must generate docs with stripe payment');
+  });
+});

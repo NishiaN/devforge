@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 # DevForge v9.6.0
 
-**AI Development OS** — 76 JS modules in `src/` → single `devforge-v9.html` (~4187KB / 5000KB limit).
+**AI Development OS** — 77 JS modules in `src/` → single `devforge-v9.html` (~4187KB / 5000KB limit).
 Generates **212+ files** across **27 pillars** from a wizard-driven Q&A session.
 
 ## Documentation Map
@@ -45,7 +45,7 @@ Never reorder without checking dependencies.
 | Category | Purpose |
 |----------|---------|
 | `core/` | State (`S`), i18n (`t()`), keyboard events, wizard tour, app init |
-| `data/` | 167 standard presets (`PR`/`_mp()`), 513 field presets (`PR_FIELD`/`_fpd()`), questions, techdb (423 entries), compat-rules (214 rules), gen-templates (bilingual GT dict), helpdata |
+| `data/` | 177 standard presets (`PR`/`_mp()`), 523 field presets (`PR_FIELD`/`_fpd()`), questions, techdb (423 entries), compat-rules (214 rules), gen-templates (bilingual GT dict), helpdata |
 | `ui/launcher.js` | 53 prompt templates; `templateOrder[53]`, `AI_REC`, `LAUNCH_CAT_MAP`, `TEMPLATE_SCOPE`, `LAUNCH_SKILL_REC` maps; `DOC_GROUPS` for semantic doc grouping |
 | `generators/` | `index.js` orchestrator + `p1`–`p26` pillars + `docs.js` + `common.js` |
 | `ui/` | wizard, render, presets, preview, sidebar, editor, diff, export, explorer, dashboard, launcher, templates, qbar, cmdpalette, help, voice |
