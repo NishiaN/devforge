@@ -1226,3 +1226,15 @@ div.guide-sub.guide-lv-p{background:none;color:var(--danger);}
 .exp-pros ul,.exp-cons ul{margin:0;padding-left:16px;line-height:1.6;}
 
 .piltab-regen:hover{background:var(--accent-soft);color:var(--accent);border-color:var(--accent);}
+
+/* ── Hearing Import Bridge (Step 1: Phase -1 入力) ── */
+.hearing-import-banner{display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--bg-3);border:1px solid var(--border);border-radius:var(--radius);margin:4px 0;}
+.hearing-import-tip{font-size:11px;color:var(--text-3);}
+.hearing-preview-table{width:100%;border-collapse:collapse;font-size:12px;margin-top:4px;}
+.hearing-preview-table th,.hearing-preview-table td{border:1px solid var(--border);padding:5px 8px;text-align:left;}
+.hearing-preview-table th{background:var(--bg-3);font-weight:600;font-size:11px;}
+.hearing-preview-table tr:nth-child(even){background:var(--bg-3);}
+.hearing-field-status{font-size:13px;vertical-align:middle;}
+.status-ok{color:var(--success);}
+.status-est{color:var(--warn);}
+.status-none{color:var(--text-3);}

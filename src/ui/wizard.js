@@ -121,6 +121,113 @@ function addMsg(type,text,tip,qid,helpId){
   return d;
 }
 
+function showHearingImport(){
+  const _ja=S.lang==='ja';
+  const overlay=document.createElement('div');
+  overlay.className='modal-overlay';overlay.id='hearingImportModal';
+  overlay.setAttribute('role','dialog');overlay.setAttribute('aria-modal','true');
+  let html='<div class="modal-box" style="max-width:600px;width:95vw">';
+  html+='<div class="modal-header"><h3 class="modal-title">📋 '+(_ja?'ヒアリング結果からインポート':'Import from Hearing Notes')+'</h3>';
+  html+='<button class="modal-close" onclick="document.getElementById(\'hearingImportModal\').remove()" aria-label="Close">✕</button></div>';
+  html+='<div class="modal-body">';
+  html+='<p style="font-size:12px;color:var(--text-muted);margin-bottom:8px">'+(_ja?'ヒアリングシートのMarkdownをペーストしてください。目的・ターゲット・機能要件・エンティティ・KPI・スケジュール・スコープ外・画面一覧を自動マッピングします。':'Paste your hearing sheet Markdown. Purpose, target, features, entities, KPI, schedule, scope-out, and screens will be auto-mapped.')+'</p>';
+  html+='<textarea id="hearingImportTA" style="width:100%;height:180px;background:var(--bg-3);border:1px solid var(--border);border-radius:6px;padding:8px;font-size:12px;font-family:var(--mono);color:var(--text);resize:vertical;box-sizing:border-box" placeholder="'+(_ja?'## 目的\n...\n## ターゲット\n...\n## 機能要件\n...\n## KPI\n...\n## スケジュール\n...\n## スコープ外\n...\n## 画面一覧\n...':'## Purpose\n...\n## Target\n...\n## Features\n...\n## KPI\n...\n## Schedule\n...\n## Out of scope\n...\n## Screens\n...')+'"></textarea>';
+  html+='<div id="hearingPreview" style="margin-top:12px"></div>';
+  html+='<div style="display:flex;gap:8px;margin-top:12px;justify-content:flex-end">';
+  html+='<button class="btn btn-sm" onclick="previewHearingImport()">'+(_ja?'🔍 プレビュー':'🔍 Preview')+'</button>';
+  html+='<button class="btn btn-sm btn-primary" id="hearingApplyBtn" style="display:none" onclick="applyHearingImport()">'+(_ja?'✅ 適用':'✅ Apply')+'</button>';
+  html+='</div></div></div>';
+  overlay.innerHTML=html;
+  overlay.onclick=e=>{if(e.target===overlay)overlay.remove();};
+  document.body.appendChild(overlay);
+  const ta=overlay.querySelector('#hearingImportTA');if(ta)ta.focus();
+}
+function parseHearingData(text){
+  const result={};
+  if(!text)return result;
+  const safe=s=>sanitize(String(s||'').trim().replace(/\n+/g,' ').replace(/\s+/g,' '),300);
+  // Section-based parsing: find ##/### headings and extract content
+  const sections={};
+  const lines=text.split('\n');
+  let curKey=null,curLines=[];
+  const flush=()=>{if(curKey&&curLines.length){const v=curLines.join('\n').trim();if(v)sections[curKey]=(sections[curKey]?sections[curKey]+'\n':'')+v;}};
+  for(const line of lines){
+    const hm=line.match(/^#{1,3}\s+(.+)$/);
+    if(hm){flush();curKey=hm[1].trim().toLowerCase();curLines=[];}
+    else if(curKey&&line.trim()){curLines.push(line.replace(/^[-*•]\s*/,'').trim());}
+  }
+  flush();
+  const getSection=(...keys)=>{
+    for(const k of keys){
+      const found=Object.keys(sections).find(sk=>sk.includes(k.toLowerCase()));
+      if(found&&sections[found].trim())return sections[found].trim();
+    }
+    return '';
+  };
+  const extractList=text=>{
+    if(!text)return '';
+    const items=text.split('\n').map(l=>l.replace(/^[-*\d.]+\s*/,'').trim()).filter(Boolean);
+    return items.join(', ');
+  };
+  const purpose=getSection('目的','purpose','概要','overview','プロジェクト');
+  if(purpose)result.purpose={val:safe(purpose),conf:'detected'};
+  const target=getSection('ターゲット','target','ユーザー','user','対象');
+  if(target)result.target={val:safe(extractList(target)||target),conf:'detected'};
+  const features=getSection('機能要件','機能','features','feature','mvp','要件');
+  if(features)result.mvp_features={val:safe(extractList(features)||features),conf:'detected'};
+  const entities=getSection('データ','entity','entities','エンティティ','テーブル','table');
+  if(entities)result.data_entities={val:safe(extractList(entities)||entities),conf:'detected'};
+  const kpi=getSection('成功指標','kpi','指標','success','kpi','目標','goal');
+  if(kpi)result.success={val:safe(extractList(kpi)||kpi),conf:'detected'};
+  const schedule=getSection('スケジュール','schedule','deadline','期間','リリース','release');
+  if(schedule)result.deadline={val:safe(schedule),conf:'estimated'};
+  const scopeOut=getSection('スコープ外','scope','除外','out of scope','対象外','やらないこと');
+  if(scopeOut)result.scope_out={val:safe(extractList(scopeOut)||scopeOut),conf:'detected'};
+  const screens=getSection('画面','screen','page','ページ','画面一覧','ui');
+  if(screens)result.screens={val:safe(extractList(screens)||screens),conf:'detected'};
+  return result;
+}
+function previewHearingImport(){
+  const _ja=S.lang==='ja';
+  const ta=document.getElementById('hearingImportTA');if(!ta)return;
+  const text=ta.value;
+  if(!text.trim()){
+    const prev=document.getElementById('hearingPreview');
+    if(prev)prev.innerHTML='<p style="color:var(--warn);font-size:12px">'+(_ja?'⚠️ テキストを入力してください':'⚠️ Please enter text')+'</p>';
+    return;
+  }
+  const parsed=parseHearingData(text);
+  window._hearingParsed=parsed;
+  const fieldLabels=_ja?{purpose:'目的',target:'ターゲット',mvp_features:'機能要件',data_entities:'データエンティティ',success:'成功指標',deadline:'スケジュール',scope_out:'スコープ外',screens:'画面一覧'}:{purpose:'Purpose',target:'Target',mvp_features:'MVP Features',data_entities:'Entities',success:'KPI',deadline:'Schedule',scope_out:'Scope Out',screens:'Screens'};
+  const allFields=['purpose','target','mvp_features','data_entities','success','deadline','scope_out','screens'];
+  let html='<table class="hearing-preview-table"><thead><tr><th>'+(_ja?'項目':'Field')+'</th><th>'+(_ja?'状態':'Status')+'</th><th>'+(_ja?'マッピング値（先頭60文字）':'Mapped Value (first 60 chars)')+'</th></tr></thead><tbody>';
+  allFields.forEach(f=>{
+    const r=parsed[f];
+    const icon=r?(r.conf==='detected'?'<span class="hearing-field-status status-ok">✅</span>':'<span class="hearing-field-status status-est">⚠️</span>'):'<span class="hearing-field-status status-none">❌</span>';
+    const conf=r?(r.conf==='detected'?(_ja?'検出':'Detected'):(_ja?'推定':'Estimated')):(_ja?'未検出':'Not found');
+    const val=r?esc(String(r.val).slice(0,60)):'—';
+    html+='<tr><td>'+esc(fieldLabels[f]||f)+'</td><td>'+icon+' '+esc(conf)+'</td><td style="font-size:11px;font-family:var(--mono)">'+val+'</td></tr>';
+  });
+  html+='</tbody></table>';
+  const detectedCount=Object.keys(parsed).length;
+  html+='<p style="font-size:12px;margin-top:8px;color:var(--text-muted)">'+(_ja?'🔍 '+detectedCount+'/'+allFields.length+' 項目を検出しました。「適用」で回答に反映されます。':'🔍 Detected '+detectedCount+'/'+allFields.length+' fields. Click "Apply" to map to wizard answers.')+'</p>';
+  const prev=document.getElementById('hearingPreview');if(prev)prev.innerHTML=html;
+  const applyBtn=document.getElementById('hearingApplyBtn');
+  if(applyBtn)applyBtn.style.display=detectedCount>0?'':'none';
+}
+function applyHearingImport(){
+  const _ja=S.lang==='ja';
+  const parsed=window._hearingParsed||{};
+  if(!Object.keys(parsed).length){toast(_ja?'⚠️ インポートするデータがありません':'⚠️ No data to import');return;}
+  Object.entries(parsed).forEach(([field,r])=>{if(r&&r.val)S.answers[field]=r.val;});
+  if(typeof _applyUniversalPostProcess==='function')_applyUniversalPostProcess();
+  save();
+  const modal=document.getElementById('hearingImportModal');if(modal)modal.remove();
+  const count=Object.keys(parsed).length;
+  toast(_ja?'✅ '+count+'項目をインポートしました':'✅ Imported '+count+' fields');
+  if(typeof updProgress==='function')updProgress();
+}
+
 function showQ(){
   const qs=getQ();
   const ph=qs[S.phase];if(!ph)return;
@@ -134,6 +241,22 @@ function showQ(){
   const q=ph.questions[S.step];
   $('pdTitle').textContent=ph.name;
   updProgress();
+  // Show hearing import button at Phase 1 Step 0 for Lv2+
+  if(S.phase===1&&S.step===0&&S.skillLv>=2&&!document.getElementById('hearingImportBanner')){
+    const _ja=S.lang==='ja';
+    const body=$('cbody');if(body){
+      const banner=document.createElement('div');banner.className='msg';banner.id='hearingImportBanner';
+      const d=document.createElement('div');d.className='hearing-import-banner';
+      const btn=document.createElement('button');btn.className='btn btn-sm btn-g';
+      btn.textContent='📋 '+(_ja?'ヒアリング結果から入力':'Import from Hearing Notes');
+      btn.onclick=()=>showHearingImport();
+      d.appendChild(btn);
+      const tip=document.createElement('span');tip.className='hearing-import-tip';
+      tip.textContent=_ja?'（ヒアリングシートのMarkdownを貼り付けて自動入力）':'(Paste hearing sheet Markdown for auto-fill)';
+      d.appendChild(tip);
+      banner.appendChild(d);body.appendChild(banner);body.scrollTop=body.scrollHeight;
+    }
+  }
   addMsg('bot',q.q,q.tip,null,q.help);
   if(q.id==='scope_out'){const body=$('chatBody');if(body){const _ja=S.lang==='ja';const w=document.createElement('div');w.className='msg';w.innerHTML='<div class="compat-warn"><span class="compat-icon">⚠️</span><span class="compat-msg">'+(_ja?'よくある失敗: スコープ外を定義しないと「機能追加地獄」に陥り、MVPが完成しません。':'Common pitfall: Without defining scope-out, you\'ll fall into "feature hell" and never ship your MVP.')+'</span></div>';body.appendChild(w);body.scrollTop=body.scrollHeight;}}
   renderInputFor(q,(val)=>{

@@ -88,9 +88,9 @@ describe('Snapshot A: LMS/Supabase/Stripe', () => {
     ai_auto: 'マルチAgent協調'
   }, 'LMS');
 
-  test('file count in range 140-193 (P21-P27 each +4 docs; +7 agents/docs113-114; +11 agentskills.io: 5 SKILL.md+5.codex+.codex/yaml+docs115 net)', () => {
+  test('file count in range 140-198 (P21-P27 each +4 docs; +7 agents/docs113-114; +11 agentskills.io; +2 docs/116+118)', () => {
     const count = Object.keys(files).length;
-    assert.ok(count >= 140 && count <= 193, `Expected 140-193 files (P21-P27 each +4 docs, +7 agents/docs113-114, +11 agentskills.io), got ${count}`);
+    assert.ok(count >= 140 && count <= 198, `Expected 140-198 files (P21-P27 each +4 docs, +7 agents/docs113-114, +11 agentskills.io, +2 estimation/ops), got ${count}`);
   });
 
   test('total tokens in range 12000-100000 (P21-P26 each add ~4-6K tokens, +agentskills.io skills)', () => {
@@ -760,9 +760,9 @@ describe('Snapshot B: Blog/Vite/Netlify', () => {
     dev_methods: 'TDD', ai_tools: 'Cursor', orm: ''
   }, 'Blog');
 
-  test('file count in range 130-184 (P21-P27 each add +4 docs; +2 docs/107-108; +7 agents/docs113-114; +13 agentskills.io: 5 SKILL.md+README+5.codex+.codex/yaml+docs115)', () => {
+  test('file count in range 130-189 (P21-P27 each add +4 docs; +2 docs/107-108; +7 agents/docs113-114; +13 agentskills.io; +2 docs/116+118)', () => {
     const count = Object.keys(files).length;
-    assert.ok(count >= 130 && count <= 184, `Expected 130-184 files (P21-P27 each +4 docs, +2 governance/UAT, +7 agents/docs113-114, +13 agentskills.io), got ${count}`);
+    assert.ok(count >= 130 && count <= 189, `Expected 130-189 files (P21-P27 each +4 docs, +2 governance/UAT, +7 agents/docs113-114, +13 agentskills.io, +2 estimation/ops), got ${count}`);
   });
 
   test('no Stripe content when payment absent', () => {

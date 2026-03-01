@@ -727,18 +727,45 @@ Steps:
 
   // ═══ docs/107_project_governance.md ═══
   const govDom=detectDomain(a.purpose||'');
+  const _cssFw=a.css_fw||'Tailwind CSS';
+  const _devMethods=a.dev_methods||'TDD';
+  const _mobile=a.mobile||(G?'なし':'None');
+  const _aiAuto=a.ai_auto||(G?'なし':'None');
+  const _pay=a.payment||(G?'なし':'None');
+  const _scopeOut=a.scope_out||(G?'未設定':'Not set');
+  const _successGoal=a.success||(G?'未設定':'Not set');
+  const _deadlineGoal=a.deadline||(G?'6ヶ月':'6 months');
+  const _hasMobile=_mobile&&!/なし|none/i.test(_mobile);
+  const _hasAiAuto=_aiAuto&&!/なし|none|Vibe Coding入門|Vibe Coding Intro/i.test(_aiAuto);
+  const _hasMFA=/MFA/i.test(a.auth||'');
   const initDecs=G?[
     {id:'DEC-001',content:'技術スタック確定 ('+fe+' + '+be+')',doc:'.spec/technical-plan.md'},
     {id:'DEC-002',content:'デプロイ先確定 ('+deployTarget+')',doc:'.spec/technical-plan.md'},
-    {id:'DEC-003',content:'認証方式確定 ('+resolveAuth(a).provider+')',doc:'.spec/specification.md'},
-    {id:'DEC-004',content:'ORM確定 ('+resolveORM(a).name+')',doc:'.spec/technical-plan.md'},
+    {id:'DEC-003',content:'認証方式確定 ('+auth.provider+')',doc:'.spec/specification.md'},
+    {id:'DEC-004',content:'ORM確定 ('+orm+')',doc:'.spec/technical-plan.md'},
+    {id:'DEC-005',content:'CSSフレームワーク確定 ('+_cssFw+')',doc:'.spec/technical-plan.md'},
+    {id:'DEC-006',content:'駆動開発手法確定 ('+_devMethods+')',doc:'.spec/specification.md'},
+    {id:'DEC-007',content:'モバイル戦略確定 ('+_mobile+')',doc:'.spec/technical-plan.md'},
+    {id:'DEC-008',content:'AI開発レベル確定 ('+_aiAuto+')',doc:'docs/22_prompt_playbook.md'},
+    {id:'DEC-009',content:'決済方式確定 ('+_pay+')',doc:'docs/38_business_model.md'},
+    {id:'DEC-010',content:'スコープ外確定 ('+String(_scopeOut).slice(0,40)+')',doc:'docs/02_requirements.md'},
+    {id:'DEC-011',content:'成功指標確定 ('+String(_successGoal).slice(0,40)+')',doc:'docs/01_project_overview.md'},
+    {id:'DEC-012',content:'リリース目標確定 ('+_deadlineGoal+')',doc:'docs/10_gantt.md'},
   ]:[
     {id:'DEC-001',content:'Tech stack finalized ('+fe+' + '+be+')',doc:'.spec/technical-plan.md'},
     {id:'DEC-002',content:'Deploy target finalized ('+deployTarget+')',doc:'.spec/technical-plan.md'},
-    {id:'DEC-003',content:'Authentication method finalized ('+resolveAuth(a).provider+')',doc:'.spec/specification.md'},
-    {id:'DEC-004',content:'ORM finalized ('+resolveORM(a).name+')',doc:'.spec/technical-plan.md'},
+    {id:'DEC-003',content:'Authentication method finalized ('+auth.provider+')',doc:'.spec/specification.md'},
+    {id:'DEC-004',content:'ORM finalized ('+orm+')',doc:'.spec/technical-plan.md'},
+    {id:'DEC-005',content:'CSS framework finalized ('+_cssFw+')',doc:'.spec/technical-plan.md'},
+    {id:'DEC-006',content:'Dev methodology finalized ('+_devMethods+')',doc:'.spec/specification.md'},
+    {id:'DEC-007',content:'Mobile strategy finalized ('+_mobile+')',doc:'.spec/technical-plan.md'},
+    {id:'DEC-008',content:'AI dev level finalized ('+_aiAuto+')',doc:'docs/22_prompt_playbook.md'},
+    {id:'DEC-009',content:'Payment method finalized ('+_pay+')',doc:'docs/38_business_model.md'},
+    {id:'DEC-010',content:'Scope-out finalized ('+String(_scopeOut).slice(0,40)+')',doc:'docs/02_requirements.md'},
+    {id:'DEC-011',content:'Success metrics finalized ('+String(_successGoal).slice(0,40)+')',doc:'docs/01_project_overview.md'},
+    {id:'DEC-012',content:'Release target finalized ('+_deadlineGoal+')',doc:'docs/10_gantt.md'},
   ];
-  const initIssues=G?[
+  const _baseIssues=G?[
     {id:'ISS-001',type:'技術',content:'DB スキーマ設計レビュー',priority:'P1',owner:'TL'},
     {id:'ISS-002',type:'技術',content:'認証フロー設計確認',priority:'P1',owner:'TL'},
     {id:'ISS-003',type:'管理',content:'開発環境構築手順書作成',priority:'P2',owner:'Dev'},
@@ -747,6 +774,14 @@ Steps:
     {id:'ISS-002',type:'Tech',content:'Authentication flow design confirmation',priority:'P1',owner:'TL'},
     {id:'ISS-003',type:'Mgmt',content:'Dev environment setup guide creation',priority:'P2',owner:'Dev'},
   ];
+  const _extraIssues=[];
+  let _issN=4;
+  if(hasPay)_extraIssues.push(G?{id:'ISS-0'+(_issN++),type:'技術',content:'決済E2Eテスト計画策定 ('+_pay+')',priority:'P0',owner:'Dev'}:{id:'ISS-0'+(_issN++),type:'Tech',content:'Payment E2E test plan ('+_pay+')',priority:'P0',owner:'Dev'});
+  if(_hasMobile)_extraIssues.push(G?{id:'ISS-0'+(_issN++),type:'技術',content:'モバイルテスト環境セットアップ ('+_mobile+')',priority:'P1',owner:'Dev'}:{id:'ISS-0'+(_issN++),type:'Tech',content:'Mobile test environment setup ('+_mobile+')',priority:'P1',owner:'Dev'});
+  if(_hasAiAuto)_extraIssues.push(G?{id:'ISS-0'+(_issN++),type:'管理',content:'AI開発ワークフロー設計 ('+_aiAuto+')',priority:'P1',owner:'TL'}:{id:'ISS-0'+(_issN++),type:'Mgmt',content:'AI dev workflow design ('+_aiAuto+')',priority:'P1',owner:'TL'});
+  _extraIssues.push(G?{id:'ISS-0'+(_issN++),type:'管理',content:'MVP機能優先度最終確認',priority:'P0',owner:'PM'}:{id:'ISS-0'+(_issN++),type:'Mgmt',content:'MVP feature priority final review',priority:'P0',owner:'PM'});
+  if(_hasMFA)_extraIssues.push(G?{id:'ISS-0'+(_issN++),type:'技術',content:'MFA実装手順・UXフロー確認',priority:'P1',owner:'TL'}:{id:'ISS-0'+(_issN++),type:'Tech',content:'MFA implementation & UX flow review',priority:'P1',owner:'TL'});
+  const initIssues=[..._baseIssues,..._extraIssues];
   let gov107='# '+pn+' — '+(G?'プロジェクトガバナンス':'Project Governance')+'\n> '+date+'\n\n';
   gov107+='## '+(G?'1. 文書管理ルール':'1. Document Management Rules')+'\n';
   gov107+='- '+(G?'文書ID体系':'Doc ID scheme')+': '+pn.replace(/\s/g,'').substring(0,6)+'-{種別}-{連番}\n';
@@ -780,6 +815,201 @@ Steps:
   gov107+='| '+(G?'リリース':'Release')+' | '+(G?'Go/No-Go判定 / ステークホルダー承認 / ロールバック手順確認':'Go/No-Go judgment / stakeholder approval / rollback plan verified')+' |\n';
   gov107+='| '+(G?'運用':'Operations')+' | '+(G?'監視・アラート設定 / RunBook整備':'Monitoring & alerts / runbook ready')+' |\n';
   S.files['docs/107_project_governance.md']=gov107;
+
+  // ═══ docs/116_estimation_prerequisites.md ═══
+  (function(){
+    const _feats=(stripPri(a.mvp_features)||(G?'CRUD操作':'CRUD')).split(', ').filter(Boolean);
+    const _scrs=(stripPri(a.screens)||(G?'ダッシュボード':'Dashboard')).split(', ').filter(Boolean);
+    const _ents=(stripPri(a.data_entities)||'User').split(/[,、]\s*/).map(e=>e.trim()).filter(Boolean);
+    const _scopeArr=(a.scope_out||'').split(/[,、,]\s*/).map(s=>s.trim()).filter(s=>s&&!/なし|none/i.test(s));
+    const _authStr=a.auth||(G?'メール/パスワード':'Email/Password');
+    const _db=a.database||'PostgreSQL';
+    // Effort estimation
+    const _eEnt=_ents.length;const _eScr=_scrs.length;const _eFeat=_feats.length;
+    const _crudH=Math.round(_eEnt*6*1.2);
+    const _scrH=Math.round(_eScr*3*1.2);
+    const _authH=hasPay?40:16;
+    const _payH=hasPay?Math.round(24*1.5):0;
+    const _aiH=_hasAiAuto?8:0;
+    const _infraH=8;const _testH=Math.round((_crudH+_scrH+_authH)*0.3);
+    const _totalH=_crudH+_scrH+_authH+_payH+_aiH+_infraH+_testH;
+    // Compat-based risk
+    const _compatWarn=(typeof checkCompat==='function'?checkCompat(a):[]).filter(c=>c.level==='warn').length;
+    const _compatErr=(typeof checkCompat==='function'?checkCompat(a):[]).filter(c=>c.level==='error').length;
+    const _riskCoef=_compatErr>0?1.5:_compatWarn>2?1.3:_compatWarn>0?1.15:1.0;
+    let doc='# '+pn+' — '+(G?'見積前提条件確認書':'Estimation Prerequisites')+'\n> '+date+'\n\n';
+    doc+='> '+(G?'このドキュメントはウィザード回答から自動生成されました。実際の見積前にPM・TLが内容を確認・調整してください。':'Auto-generated from wizard answers. PM & TL should review and adjust before issuing estimates.')+'\n\n';
+    doc+='## '+(G?'1. 対象スコープ':'1. Scope')+'\n\n';
+    doc+='### '+(G?'1.1 機能一覧 (MVP)':'1.1 Feature List (MVP)')+'\n';
+    doc+='| # | '+(G?'機能名':'Feature')+' | '+(G?'開発種別':'Type')+' | '+(G?'優先度':'Priority')+' | '+(G?'備考':'Notes')+' |\n|---|------|------|---------|----|:\n';
+    _feats.forEach((f,i)=>{ doc+='| '+(i+1)+' | '+f+' | '+(G?'新規開発':'New')+' | '+(i<2?'P0':'P1')+' | |\n'; });
+    doc+='\n### '+(G?'1.2 画面一覧':'1.2 Screen List')+'\n';
+    doc+='| # | '+(G?'画面名':'Screen')+' | '+(G?'優先度':'Priority')+' | '+(G?'備考':'Notes')+' |\n|---|------|---------|----|\n';
+    _scrs.forEach((s,i)=>{ doc+='| '+(i+1)+' | '+s+' | '+(i<3?'P0':'P1')+' | |\n'; });
+    doc+='\n### '+(G?'1.3 データエンティティ':'1.3 Data Entities')+'\n';
+    doc+='| # | '+(G?'エンティティ':'Entity')+' | CRUD | '+(G?'備考':'Notes')+' |\n|---|-----------|------|----|\n';
+    _ents.forEach((e,i)=>{ doc+='| '+(i+1)+' | '+e+' | ✅✅✅✅ | |\n'; });
+    doc+='\n## '+(G?'2. 除外スコープ':'2. Out of Scope')+'\n';
+    doc+='| '+(G?'除外項目':'Item')+' | '+(G?'除外理由':'Reason')+' | '+(G?'後対応可否':'Post-release?')+' |\n|---------|---------|----------|\n';
+    if(_scopeArr.length){_scopeArr.forEach(s=>{ doc+='| '+s+' | '+(G?'MVP外 — 優先度低':'Out of MVP scope')+' | △ |\n'; });}
+    else{ doc+='| — | '+(G?'スコープ外未設定':'Not defined')+' | — |\n'; }
+    doc+='\n## '+(G?'3. 技術前提条件':'3. Technical Prerequisites')+'\n';
+    doc+='| '+(G?'層':'Layer')+' | '+(G?'選定技術':'Technology')+' | '+(G?'選定理由':'Rationale')+' | '+(G?'制約事項':'Constraints')+' |\n|---|---------|---------|----------|\n';
+    doc+='| Frontend | '+fe+' | '+(G?'ウィザード選定':'Wizard selection')+' | |\n';
+    doc+='| Backend | '+be+' | '+(G?'ウィザード選定':'Wizard selection')+' | |\n';
+    doc+='| DB | '+_db+' | '+(G?'ウィザード選定':'Wizard selection')+' | |\n';
+    doc+='| Deploy | '+deployTarget+' | '+(G?'ウィザード選定':'Wizard selection')+' | |\n';
+    doc+='| Auth | '+_authStr+' | '+(G?'ウィザード選定':'Wizard selection')+' | |\n';
+    if(!/Firebase|Supabase/i.test(be)){ doc+='| ORM | '+orm+' | '+(G?'ウィザード選定':'Wizard selection')+' | |\n'; }
+    doc+='| CSS | '+_cssFw+' | '+(G?'ウィザード選定':'Wizard selection')+' | |\n';
+    doc+='\n## '+(G?'4. 工数概算':'4. Effort Estimation')+'\n\n';
+    doc+='### '+(G?'4.1 見積前提':'4.1 Estimation Assumptions')+'\n';
+    doc+='- '+(G?'エンティティ数':'Entities')+': '+_eEnt+(G?'件 (CRUD API 4エンドポイント × 1.5h)':' (4 CRUD endpoints × 1.5h each)')+'\n';
+    doc+='- '+(G?'画面数':'Screens')+': '+_eScr+(G?'画面 (平均3h/画面)':' (avg 3h/screen)')+'\n';
+    doc+='- '+(G?'機能数':'Features')+': '+_eFeat+(G?'機能':' features')+'\n';
+    doc+='- '+(G?'バッファ係数':'Buffer coefficient')+': 1.2 ('+( G?'見積誤差考慮':'estimation uncertainty')+') × '+_riskCoef+(G?' (compat警告係数)':' (compat risk factor)')+'\n\n';
+    doc+='### '+(G?'4.2 工数テーブル':'4.2 Effort Table')+'\n';
+    doc+='| '+(G?'カテゴリ':'Category')+' | '+(G?'単位工数':'Unit')+' | '+(G?'数量':'Qty')+' | '+(G?'小計(h)':'Sub(h)')+' | '+(G?'係数':'Factor')+' | '+(G?'合計(h)':'Total(h)')+' |\n|---------|---------|------|---------|------|--------|\n';
+    doc+='| '+(G?'DB設計・マイグレーション':'DB Design & Migration')+' | 4h | 1 | 4h | 1.0 | 4h |\n';
+    doc+='| '+(G?'Entity CRUD API':'Entity CRUD API')+' | 1.5h/ep | '+(_eEnt*4)+' | '+Math.round(_eEnt*6)+'h | 1.2 | '+_crudH+'h |\n';
+    doc+='| '+(G?'画面実装':'Screen Implementation')+' | 3h/'+(G?'画面':'screen')+' | '+_eScr+' | '+Math.round(_eScr*3)+'h | 1.2 | '+_scrH+'h |\n';
+    doc+='| '+(G?'認証実装 ('+_authStr+')':'Auth ('+_authStr+')')+' | '+_authH+'h | 1 | '+_authH+'h | 1.0 | '+_authH+'h |\n';
+    if(hasPay){ doc+='| '+(G?'決済実装 ('+_pay+')':'Payment ('+_pay+')')+' | 24h | 1 | 24h | 1.5 | '+_payH+'h |\n'; }
+    if(_hasAiAuto){ doc+='| '+(G?'AI統合':'AI Integration')+' | 8h | 1 | 8h | 1.0 | '+_aiH+'h |\n'; }
+    doc+='| '+(G?'テスト':'Testing')+' | — | — | — | 0.3 | '+_testH+'h |\n';
+    doc+='| '+(G?'CI/CD・インフラ':'CI/CD & Infra')+' | 8h | 1 | 8h | 1.0 | '+_infraH+'h |\n';
+    doc+='| **'+(G?'合計':'Total')+'** | | | | | **'+_totalH+'h** |\n';
+    doc+='| **'+(G?'リスク係数後合計':'After risk factor')+'** | | | | '+_riskCoef+' | **'+Math.round(_totalH*_riskCoef)+'h** |\n';
+    doc+='\n## '+(G?'5. リスク係数':'5. Risk Factors')+'\n';
+    doc+='| '+(G?'リスク項目':'Risk Item')+' | '+(G?'評価':'Assessment')+' | '+(G?'係数':'Factor')+' | '+(G?'対策':'Mitigation')+' |\n|---------|---------|------|----------|\n';
+    doc+='| compat '+(G?'エラー':'errors')+' | '+_compatErr+(G?'件':'')+'  | '+(_compatErr>0?'×1.5':'-')+' | '+(G?'エラー修正必須':'Must fix errors')+' |\n';
+    doc+='| compat '+(G?'警告':'warnings')+' | '+_compatWarn+(G?'件':'')+'  | '+(_compatWarn>2?'×1.3':_compatWarn>0?'×1.15':'-')+' | '+(G?'警告確認推奨':'Review warnings')+' |\n';
+    doc+='| '+(G?'新規技術採用':'New technology')+' | '+(G?'選定確認':'Check adoption')+' | — | '+(G?'スパイク実施':'Technical spike')+' |\n';
+    doc+='| '+(G?'要件変更リスク':'Requirement change')+' | '+(G?'中':'Med')+' | — | CR '+(G?'管理':'management')+' (docs/107) |\n';
+    doc+='\n## '+(G?'6. 依存関係・制約':'6. Dependencies & Constraints')+'\n';
+    if(hasPay)doc+='- **'+(G?'決済':'Payment')+'**: '+_pay+(G?' — ストライプアカウント・APIキー取得が前提':'  — Stripe account & API keys required first')+'\n';
+    if(_hasMobile)doc+='- **'+(G?'モバイル':'Mobile')+'**: '+_mobile+(G?' — EAS Build環境・App Store申請期間を考慮':'  — EAS Build env & App Store review time required')+'\n';
+    if(_hasAiAuto)doc+='- **AI**: '+_aiAuto+(G?' — OpenAI/Claude APIキー・予算枠設定必要':' — OpenAI/Claude API keys & budget limits required')+'\n';
+    doc+='- **'+deployTarget+'**: '+(G?'環境変数設定・カスタムドメイン申請期間考慮':'Env var setup & custom domain provisioning time')+'\n';
+    doc+='- **'+_db+'**: '+(G?'スキーマ確定後にマイグレーション実行 — スキーマ変更は工数増':'Run migration after schema finalized — schema changes add effort')+'\n';
+    doc+='\n## '+(G?'7. 変更管理':'7. Change Management')+'\n';
+    doc+='→ '+(G?'変更要求はdocs/107_project_governance.md の変更管理フローに従って管理します。':'Change requests are managed via docs/107_project_governance.md CR flow.')+'\n';
+    doc+='→ '+(G?'詳細CR票はdocs/118_project_operations_pack.md §3を参照してください。':'Detailed CR forms are in docs/118_project_operations_pack.md §3.')+'\n';
+    S.files['docs/116_estimation_prerequisites.md']=doc;
+  })();
+
+  // ═══ docs/118_project_operations_pack.md ═══
+  (function(){
+    const _feats=(stripPri(a.mvp_features)||(G?'CRUD操作':'CRUD')).split(', ').filter(Boolean);
+    const _scrs=(stripPri(a.screens)||(G?'ダッシュボード':'Dashboard')).split(', ').filter(Boolean);
+    const _ents=(stripPri(a.data_entities)||'User').split(/[,、]\s*/).map(e=>e.trim()).filter(Boolean);
+    // SLA defaults by deploy target
+    const _slaMap={'Vercel':{avail:'99.99%',rto:'5分/5m',rpo:'0',support:'コミュニティ/community'},'Firebase Hosting':{avail:'99.95%',rto:'10分/10m',rpo:'0',support:'Google support'},'Railway':{avail:'99.9%',rto:'15分/15m',rpo:'1h',support:'Railway Discord'},'Fly.io':{avail:'99.9%',rto:'10分/10m',rpo:'1h',support:'Fly.io community'},'AWS':{avail:'99.99%',rto:'5分/5m',rpo:'1h',support:'AWS Support'},'Cloudflare':{avail:'99.99%',rto:'5分/5m',rpo:'0',support:'Cloudflare support'},'Netlify':{avail:'99.99%',rto:'5分/5m',rpo:'0',support:'Netlify support'}};
+    const _sla=_slaMap[deployTarget]||_slaMap[Object.keys(_slaMap).find(k=>deployTarget.includes(k))]||{avail:'99.9%',rto:'15分/15m',rpo:'1h',support:'ベンダー/vendor'};
+    // Deploy-specific ops checks
+    const _deployOps={'Vercel':[G?'Vercel Analyticsダッシュボード確認':'Check Vercel Analytics dashboard',G?'Edge Functions エラーレート監視':'Monitor Edge Functions error rate',G?'Deployment Protection設定確認':'Verify Deployment Protection config'],'Railway':[G?'Railway Metrics CPU/メモリ確認':'Check Railway Metrics CPU/memory',G?'PostgreSQL接続プール使用率監視':'Monitor PostgreSQL connection pool usage',G?'Railway sleeping設定確認':'Check Railway sleeping settings'],'AWS':[G?'CloudWatch Logs確認':'Check CloudWatch Logs',G?'RDS Performance Insights確認':'Review RDS Performance Insights',G?'Cost Explorer予算アラート確認':'Verify Cost Explorer budget alerts'],'Cloudflare':[G?'Workers Analytics確認':'Check Workers Analytics',G?'D1/KV使用量確認':'Monitor D1/KV usage',G?'ゼロトラストポリシー確認':'Review Zero Trust policies']};
+    const _dops=_deployOps[deployTarget]||_deployOps[Object.keys(_deployOps).find(k=>deployTarget&&k&&deployTarget.includes(k))]||[G?'デプロイログ確認':'Check deployment logs',G?'エラーレート監視':'Monitor error rate',G?'ストレージ使用量確認':'Monitor storage usage'];
+    let doc='# '+pn+' — '+(G?'プロジェクト運用設計書':'Project Operations Pack')+'\n> '+date+'\n\n';
+    doc+='> '+(G?'このドキュメントはウィザード回答から自動生成されました。プロジェクト文脈に応じた参照リンク・固有チェック項目が含まれます。':'Auto-generated from wizard answers. Includes context-specific doc references and deployment-specific checks.')+'\n\n';
+    // §1 Phase Gate Checklist
+    doc+='## §1 '+(G?'フェーズゲートチェックリスト':'Phase Gate Checklist')+'\n\n';
+    const _gates=G?[
+      {name:'Gate 1: 要件定義完了',checks:['[ ] 全MVP機能にAC（受入基準）定義 → .spec/specification.md','[ ] 非機能要件が定量値で記述 → docs/02_requirements.md','[ ] スコープ外が明文化 → docs/116_estimation_prerequisites.md §2','[ ] 見積前提確認 → docs/116_estimation_prerequisites.md §4']},
+      {name:'Gate 2: 設計完了',checks:['[ ] ER図レビュー完了 → docs/04_er_diagram.md','[ ] API設計レビュー完了 → docs/05_api_design.md','[ ] 画面設計レビュー完了 → docs/06_screen_design.md','[ ] セキュリティ設計確認 → docs/08_security.md','[ ] 設計レビュー記録 → 本文書 §2',hasPay?'[ ] 決済フロー設計確認 → docs/38_business_model.md':'[ ] 認証フロー設計確認 → .spec/specification.md']},
+      {name:'Gate 3: 実装完了',checks:['[ ] コードレビュー完了（PRごと）','[ ] テストカバレッジ 80%+ → docs/17_test_strategy.md','[ ] Lint・型チェッククリーン','[ ] セキュリティスキャン完了 → docs/22_prompt_playbook.md',hasPay?'[ ] 決済E2Eテスト通過':'[ ] 認証E2Eテスト通過','[ ] compat警告ゼロ確認']},
+      {name:'Gate 4: テスト完了',checks:['[ ] UATシート全項目完了 → docs/108_uat_acceptance.md','[ ] P0不具合ゼロ','[ ] P1不具合は対応済みまたは計画策定','[ ] 非機能テスト（LCP/可用性）通過 → docs/108_uat_acceptance.md §3','[ ] リリースチェックリスト確認 → docs/09_release_checklist.md']},
+      {name:'Gate 5: リリース判定',checks:['[ ] Go/No-Go判定会議実施 → docs/108_uat_acceptance.md §5','[ ] ステークホルダー承認取得 → docs/107_project_governance.md','[ ] ロールバック手順確認 → docs/09_release_checklist.md','[ ] '+deployTarget+'デプロイ手順確認 → scaffolding/SETUP.md','[ ] CI/CDパイプライン動作確認 → .github/workflows/ci.yml']},
+      {name:'Gate 6: 運用開始',checks:['[ ] 監視・アラート設定 → docs/17_monitoring.md','[ ] RunBook整備 → docs/'+deployTarget.toLowerCase().replace(/[^a-z]/g,'_')+'（参照: §5）','[ ] 問い合わせ対応フロー確認 → 本文書 §4','[ ] バックアップ確認 → docs/90_backup_disaster_recovery.md','[ ] チーム引き継ぎ完了']}
+    ]:[
+      {name:'Gate 1: Requirements Complete',checks:['[ ] All MVP features have Acceptance Criteria → .spec/specification.md','[ ] Non-functional requirements are quantitative → docs/02_requirements.md','[ ] Scope-out is documented → docs/116_estimation_prerequisites.md §2','[ ] Estimation assumptions confirmed → docs/116_estimation_prerequisites.md §4']},
+      {name:'Gate 2: Design Complete',checks:['[ ] ER diagram reviewed → docs/04_er_diagram.md','[ ] API design reviewed → docs/05_api_design.md','[ ] Screen design reviewed → docs/06_screen_design.md','[ ] Security design confirmed → docs/08_security.md','[ ] Design review record → this doc §2',hasPay?'[ ] Payment flow design reviewed → docs/38_business_model.md':'[ ] Auth flow design reviewed → .spec/specification.md']},
+      {name:'Gate 3: Implementation Complete',checks:['[ ] Code review done (per PR)','[ ] Test coverage 80%+ → docs/17_test_strategy.md','[ ] Lint & type checks clean','[ ] Security scan complete → docs/22_prompt_playbook.md',hasPay?'[ ] Payment E2E tests pass':'[ ] Auth E2E tests pass','[ ] Zero compat warnings']},
+      {name:'Gate 4: Testing Complete',checks:['[ ] UAT sheet all items done → docs/108_uat_acceptance.md','[ ] P0 bugs = 0','[ ] P1 bugs resolved or planned','[ ] NFR tests pass (LCP/availability) → docs/108_uat_acceptance.md §3','[ ] Release checklist confirmed → docs/09_release_checklist.md']},
+      {name:'Gate 5: Release Judgment',checks:['[ ] Go/No-Go meeting held → docs/108_uat_acceptance.md §5','[ ] Stakeholder approval obtained → docs/107_project_governance.md','[ ] Rollback procedure confirmed → docs/09_release_checklist.md','[ ] '+deployTarget+' deploy procedure confirmed → scaffolding/SETUP.md','[ ] CI/CD pipeline verified → .github/workflows/ci.yml']},
+      {name:'Gate 6: Operations Start',checks:['[ ] Monitoring & alerts configured → docs/17_monitoring.md','[ ] RunBook prepared (see §5)','[ ] Inquiry handling flow confirmed → this doc §4','[ ] Backup verified → docs/90_backup_disaster_recovery.md','[ ] Team handover complete']}
+    ];
+    _gates.forEach(g=>{
+      doc+='\n### '+g.name+'\n';
+      doc+='| # | '+(G?'確認項目':'Check Item')+' | '+(G?'参照':'Ref')+' | '+(G?'結果':'Result')+' |\n|---|------|------|------|\n';
+      g.checks.forEach((c,i)=>{
+        const refMatch=c.match(/→\s*(.+)$/);
+        const item=c.replace(/→\s*.+$/,'').trim();
+        doc+='| '+(i+1)+' | '+item+' | '+(refMatch?refMatch[1]:'')+' | |\n';
+      });
+    });
+    // §2 Design Review Record
+    doc+='\n## §2 '+(G?'設計レビュー記録':'Design Review Record')+'\n\n';
+    doc+='### '+(G?'2.1 UI画面レビュー':'2.1 UI Screen Review')+'\n';
+    doc+='| # | '+(G?'画面名':'Screen')+' | '+(G?'レビュー観点':'Review Focus')+' | '+(G?'指摘事項':'Issues')+' | '+(G?'対応状況':'Status')+' |\n|---|--------|-----------|---------|--------|\n';
+    _scrs.forEach((s,i)=>{
+      doc+='| '+(i+1)+' | '+s+' | '+(G?'UI/UX整合・アクセシビリティ・レスポンシブ':'UI/UX consistency, A11y, Responsive')+' | | '+(G?'未対応':'Open')+' |\n';
+    });
+    doc+='\n### '+(G?'2.2 DB/エンティティレビュー':'2.2 DB / Entity Review')+'\n';
+    doc+='| # | '+(G?'エンティティ':'Entity')+' | '+(G?'レビュー観点':'Review Focus')+' | '+(G?'指摘事項':'Issues')+' | '+(G?'対応状況':'Status')+' |\n|---|-----------|-----------|---------|--------|\n';
+    _ents.forEach((e,i)=>{
+      doc+='| '+(i+1)+' | '+e+' | '+(G?'カラム定義・インデックス・RLS':'Column def, Index, RLS')+' | | '+(G?'未対応':'Open')+' |\n';
+    });
+    doc+='\n### '+(G?'2.3 認証・権限マトリクス':'2.3 Auth & Permission Matrix')+'\n';
+    doc+='| '+(G?'ロール':'Role')+' | '+(G?'画面アクセス':'Screen Access')+' | API CRUD | '+(G?'管理操作':'Admin Ops')+' |\n|------|------------|---------|----------|\n';
+    const _roles=hasAdmin?[G?'管理者':'Admin',G?'一般ユーザー':'User',G?'ゲスト':'Guest']:[G?'ユーザー':'User',G?'ゲスト':'Guest'];
+    _roles.forEach(r=>{ doc+='| '+r+' | | ✅/❌ | '+(r===( G?'管理者':'Admin')?'✅':'❌')+' |\n'; });
+    // §3 CR Template
+    doc+='\n## §3 '+(G?'変更要求票 (CR)':'Change Request (CR)')+'\n\n';
+    doc+='### '+(G?'3.1 CR詳細テンプレート':'3.1 CR Template')+'\n';
+    doc+='| '+(G?'項目':'Field')+' | '+(G?'内容':'Content')+' |\n|------|--------|\n';
+    doc+='| CR番号 | CR-001 |\n';
+    doc+='| '+(G?'起票日':'Submitted')+' | '+date+' |\n';
+    doc+='| '+(G?'起票者':'Submitter')+' | |\n';
+    doc+='| '+(G?'変更タイトル':'Change Title')+' | |\n';
+    doc+='| '+(G?'変更理由':'Reason')+' | |\n';
+    doc+='| '+(G?'変更内容詳細':'Details')+' | |\n';
+    doc+='| '+(G?'影響範囲':'Impact Scope')+' | '+(G?'機能/スケジュール/コスト/品質':'Function/Schedule/Cost/Quality')+' |\n';
+    doc+='| '+(G?'影響度':'Impact Level')+' | '+(G?'高/中/低':'High/Med/Low')+' |\n';
+    doc+='| '+(G?'追加工数見積':'Effort Estimate')+' | |\n';
+    doc+='| '+(G?'対応方針':'Approach')+' | |\n';
+    doc+='| '+(G?'承認者':'Approver')+' | |\n';
+    doc+='| '+(G?'承認日':'Approved')+' | |\n';
+    doc+='| '+(G?'ステータス':'Status')+' | '+(G?'起票中/レビュー中/承認済/却下':'Draft/Review/Approved/Rejected')+' |\n';
+    doc+='\n### '+(G?'3.2 影響ファイルチェックリスト':'3.2 Impact File Checklist')+'\n';
+    doc+=(G?'> 変更内容に応じて該当ファイルにチェックしてください。':'> Check files impacted by the change request.')+'\n\n';
+    const _impactFiles=['.spec/specification.md','.spec/technical-plan.md','.spec/tasks.md','docs/01_project_overview.md','docs/02_requirements.md','docs/03_architecture.md','docs/04_er_diagram.md','docs/05_api_design.md','docs/06_screen_design.md','docs/107_project_governance.md','docs/108_uat_acceptance.md','docs/116_estimation_prerequisites.md','docs/09_release_checklist.md','scaffolding/SETUP.md','.github/workflows/ci.yml'];
+    _impactFiles.forEach(f=>{ doc+='- [ ] `'+f+'`\n'; });
+    // §4 Operations Inquiry Log
+    doc+='\n## §4 '+(G?'運用問い合わせ記録':'Operations Inquiry Log')+'\n\n';
+    doc+='### '+(G?'4.1 SLA基準値 ('+deployTarget+' 環境)':'4.1 SLA Criteria ('+deployTarget+')')+'\n';
+    doc+='| '+(G?'項目':'Item')+' | '+(G?'基準値':'Criteria')+' | '+(G?'測定方法':'Measurement')+' |\n|------|---------|----------|\n';
+    doc+='| '+(G?'可用性 (Availability)':'Availability')+' | '+_sla.avail+' | '+(G?'月次計測':'Monthly')+' |\n';
+    doc+='| RTO '+(G?'(目標復旧時間)':'(Recovery Time Obj)')+' | '+_sla.rto+' | |\n';
+    doc+='| RPO '+(G?'(目標復旧時点)':'(Recovery Point Obj)')+' | '+_sla.rpo+' | |\n';
+    doc+='| '+(G?'サポート':'Support')+' | '+_sla.support+' | |\n';
+    doc+='| LCP | < 2.5s | Lighthouse |\n';
+    doc+='| '+(G?'エラーレート':'Error Rate')+' | < 0.1% | '+deployTarget+' '+( G?'ダッシュボード':'dashboard')+' |\n';
+    doc+='\n### '+(G?'4.2 問い合わせ記録テンプレート':'4.2 Inquiry Log Template')+'\n';
+    doc+='| ID | '+(G?'種別':'Type')+' | '+(G?'内容':'Content')+' | '+(G?'影響度':'Impact')+' | '+(G?'緊急度':'Urgency')+' | '+(G?'初動':'Action')+' | '+(G?'担当':'Owner')+' | '+(G?'解決日':'Resolved')+' | '+(G?'ステータス':'Status')+' |\n|-----|------|--------|------|------|--------|------|---------|----------|\n';
+    doc+='| INQ-001 | '+(G?'障害':'Failure')+' | | '+(G?'高/中/低':'H/M/L')+' | '+(G?'高/中/低':'H/M/L')+' | | | | '+(G?'対応中':'Open')+' |\n';
+    doc+='| INQ-002 | '+(G?'操作問い合わせ':'Inquiry')+' | | '+(G?'高/中/低':'H/M/L')+' | '+(G?'高/中/低':'H/M/L')+' | | | | '+(G?'対応中':'Open')+' |\n';
+    doc+='| INQ-003 | '+(G?'改善要望':'Request')+' | | '+(G?'低':'L')+' | '+(G?'低':'L')+' | | | | '+(G?'受付':'Received')+' |\n';
+    // §5 Operations Checklist
+    doc+='\n## §5 '+(G?'プロジェクト運用チェックリスト':'Project Operations Checklist')+'\n\n';
+    doc+='### '+(G?'5.1 日次チェック':'5.1 Daily Checks')+'\n';
+    _dops.forEach(c=>{ doc+='- [ ] '+c+'\n'; });
+    doc+='- [ ] '+(G?'エラーログ確認 → docs/25_error_logs.md':'Error log review → docs/25_error_logs.md')+'\n';
+    doc+='- [ ] '+(G?'未対応問い合わせ確認 → §4':'Review open inquiries → §4')+'\n';
+    doc+='\n### '+(G?'5.2 週次チェック':'5.2 Weekly Checks')+'\n';
+    doc+='- [ ] '+(G?'パフォーマンス指標確認 → docs/99_performance_strategy.md':'Performance metrics review → docs/99_performance_strategy.md')+'\n';
+    doc+='- [ ] '+(G?'セキュリティアラート確認 → docs/22_prompt_playbook.md':'Security alerts review → docs/22_prompt_playbook.md')+'\n';
+    doc+='- [ ] '+(G?'バックアップ成功確認 → docs/90_backup_disaster_recovery.md':'Backup success verification → docs/90_backup_disaster_recovery.md')+'\n';
+    doc+='- [ ] '+(G?'コスト確認 → '+deployTarget+'管理コンソール':'Cost review → '+deployTarget+' admin console')+'\n';
+    doc+='\n### '+(G?'5.3 スプリント毎':'5.3 Per Sprint')+'\n';
+    doc+='- [ ] '+(G?'CI/CDパイプライン結果確認 → .github/workflows/ci.yml':'CI/CD pipeline results → .github/workflows/ci.yml')+'\n';
+    doc+='- [ ] '+(G?'スプリントレビュー議事録 → docs/15_meeting.md':'Sprint review notes → docs/15_meeting.md')+'\n';
+    doc+='- [ ] '+(G?'CR票の優先度見直し → §3':'CR priority review → §3')+'\n';
+    doc+='- [ ] '+(G?'進捗更新 → docs/24_progress.md':'Progress update → docs/24_progress.md')+'\n';
+    doc+='\n### '+(G?'5.4 リリース時 ('+deployTarget+' 固有)':'5.4 At Release ('+deployTarget+' specific)')+'\n';
+    const _relChks=G?['Go/No-Go最終判定 → docs/108_uat_acceptance.md §5','リリースチェックリスト実施 → docs/09_release_checklist.md',deployTarget+'デプロイ実行 → scaffolding/SETUP.md','本番動作確認（スモークテスト）','ロールバック手順の事前確認','CHANGELOG更新 → docs/21_changelog.md','ステークホルダーへのリリース通知']:['Final Go/No-Go → docs/108_uat_acceptance.md §5','Release checklist → docs/09_release_checklist.md',deployTarget+' deploy → scaffolding/SETUP.md','Smoke test in production','Rollback procedure pre-verified','Update CHANGELOG → docs/21_changelog.md','Notify stakeholders'];
+    _relChks.forEach(c=>{ doc+='- [ ] '+c+'\n'; });
+    S.files['docs/118_project_operations_pack.md']=doc;
+  })();
 
   // ═══ docs/108_uat_acceptance.md ═══
   const uatFeatures=features.slice(0,Math.min(features.length,6));
