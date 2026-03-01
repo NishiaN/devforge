@@ -94,6 +94,7 @@ function pickSkillLv(n){
   var tIdx={'beginner':0,'intermediate':1,'pro':2}[S.skill];
   if(cards[tIdx]){cards[tIdx].classList.add('on');cards[tIdx].setAttribute('aria-checked','true');}
   _updateSkillLabel(n);
+  var _hdl=$('hearingDlBtn');if(_hdl)_hdl.style.display=n>=2?'':'none';
   save();
 }
 function pickSkill(lv){
@@ -105,6 +106,7 @@ function pickSkill(lv){
   // Sync slider and label
   var sl=$('skillLvSlider');if(sl){sl.value=S.skillLv;}
   _updateSkillLabel(S.skillLv);
+  var _hdl2=$('hearingDlBtn');if(_hdl2)_hdl2.style.display=S.skillLv>=2?'':'none';
   save();
 }
 

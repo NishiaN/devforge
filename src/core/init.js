@@ -158,6 +158,9 @@ function applyLang(){
   document.title=ja?'DevForge v9.6 — AI駆動開発 統合プラットフォーム':'DevForge v9.6 — AI-Driven Development Platform';
   // Compare button translation (D4)
   const cl=$('compareLbl');if(cl)cl.textContent=ja?'テンプレート比較':'Compare Templates';
+  // Hearing sheet DL button (Lv2+)
+  var hdl=$('hearingDlBtn');if(hdl)hdl.style.display=S.skillLv>=2?'':'none';
+  var hdlbl=$('hearingDlLbl');if(hdlbl)hdlbl.textContent=ja?'ヒアリングシートDL':'Hearing Sheet DL';
   // Update QBar labels when language changes
   if(typeof updateQbar==='function')updateQbar();
   // Sync skill slider and label to current S.skillLv
