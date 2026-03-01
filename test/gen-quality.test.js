@@ -38842,3 +38842,1303 @@ describe('Suite 320: presets-ext14 production_scheduler — Supabase/Vercel/stri
     assert.ok(hasBilling||f['docs/01_project_overview.md'], 'production_scheduler must generate docs with stripe payment');
   });
 });
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 321 — presets-ext15.js: senior_phone_assist
+   Supabase/Vercel/payment:none
+   ════════════════════════════════════════════════════════════════ */
+
+const g321_senior_phone_assist = Object.assign({}, A25, {
+  purpose: 'シニア世代向けにスマートフォンの基本操作・アプリ使い方・トラブル対処法をわかりやすく解説するサポートガイドシステム',
+  frontend: 'React + Next.js',
+  backend: 'Supabase',
+  database: 'PostgreSQL',
+  deploy: 'Vercel',
+  orm: 'Prisma',
+  auth: 'JWT + Supabase Auth',
+  payment: 'none',
+  mobile: 'なし',
+  data_entities: 'User, PhoneGuide, TutorialStep, HelpCategory, SupportSession',
+  mvp_features: '操作ガイド管理, チュートリアル管理, ヘルプ検索, Q&A, ページネーション・無限スクロール',
+});
+
+describe('Suite 321: presets-ext15 senior_phone_assist — Supabase/Vercel/no-payment', () => {
+
+  it('SDD: senior_phone_assist generates specification.md and constitution.md', () => {
+    const f = gSDD(g321_senior_phone_assist);
+    assert.ok(f['.spec/specification.md'], 'senior_phone_assist must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'senior_phone_assist must generate constitution.md');
+  });
+
+  it('SDD: senior_phone_assist includes PhoneGuide in spec', () => {
+    const f = gSDD(g321_senior_phone_assist);
+    assert.ok((f['.spec/specification.md']||'').includes('PhoneGuide'), 'senior_phone_assist spec must mention PhoneGuide');
+  });
+
+  it('SDD: senior_phone_assist (Supabase) → Supabase referenced in spec', () => {
+    const f = gSDD(g321_senior_phone_assist);
+    assert.ok((f['.spec/specification.md']||'').includes('Supabase'), 'senior_phone_assist spec must reference Supabase');
+  });
+
+  it('SDD: senior_phone_assist purpose keyword in spec', () => {
+    const f = gSDD(g321_senior_phone_assist);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('PhoneGuide')||spec.includes('ガイド')||spec.includes('Guide'), 'senior_phone_assist spec must mention guide context');
+  });
+
+  it('SDD EN: senior_phone_assist produces no undefined in spec', () => {
+    const f = gSDD(g321_senior_phone_assist, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'senior_phone_assist EN spec must not contain undefined');
+  });
+
+  it('SDD JA: senior_phone_assist produces no undefined in spec', () => {
+    const f = gSDD(g321_senior_phone_assist);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'senior_phone_assist JA spec must not contain undefined');
+  });
+
+  it('docs/01: senior_phone_assist overview mentions シニア or Senior', () => {
+    const f = gSDD(g321_senior_phone_assist);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('シニア')||doc.includes('Senior')||doc.includes('ガイド'), 'senior_phone_assist docs/01 must mention シニア or Senior');
+  });
+
+  it('docs/01: senior_phone_assist produces no undefined in overview', () => {
+    const f = gSDD(g321_senior_phone_assist);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'senior_phone_assist docs/01 must not contain undefined');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 322 — presets-ext15.js: restaurant_recommend
+   Supabase/Vercel/payment:stripe
+   ════════════════════════════════════════════════════════════════ */
+
+const g322_restaurant_recommend = Object.assign({}, A25, {
+  purpose: 'AIがユーザーの好み・エリア・予算・シーンをもとにレストランを推薦し口コミ評価・訪問記録・グルメコレクション管理を提供するグルメプラットフォーム',
+  frontend: 'React + Next.js',
+  backend: 'Supabase',
+  database: 'PostgreSQL',
+  deploy: 'Vercel',
+  orm: 'Prisma',
+  auth: 'JWT + Supabase Auth',
+  payment: 'stripe',
+  mobile: 'なし',
+  data_entities: 'User, RestaurantRecord, RestaurantReview, MenuCategory, Bookmark',
+  mvp_features: 'AIレストラン推薦, 口コミ評価, グルメコレクション, フィルタ, ページネーション・無限スクロール',
+});
+
+describe('Suite 322: presets-ext15 restaurant_recommend — Supabase/Vercel/stripe', () => {
+
+  it('SDD: restaurant_recommend generates specification.md and constitution.md', () => {
+    const f = gSDD(g322_restaurant_recommend);
+    assert.ok(f['.spec/specification.md'], 'restaurant_recommend must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'restaurant_recommend must generate constitution.md');
+  });
+
+  it('SDD: restaurant_recommend includes RestaurantRecord in spec', () => {
+    const f = gSDD(g322_restaurant_recommend);
+    assert.ok((f['.spec/specification.md']||'').includes('RestaurantRecord'), 'restaurant_recommend spec must mention RestaurantRecord');
+  });
+
+  it('SDD: restaurant_recommend (Supabase) → Supabase referenced in spec', () => {
+    const f = gSDD(g322_restaurant_recommend);
+    assert.ok((f['.spec/specification.md']||'').includes('Supabase'), 'restaurant_recommend spec must reference Supabase');
+  });
+
+  it('SDD: restaurant_recommend purpose keyword in spec', () => {
+    const f = gSDD(g322_restaurant_recommend);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('レストラン')||spec.includes('Restaurant')||spec.includes('グルメ'), 'restaurant_recommend spec must mention restaurant context');
+  });
+
+  it('SDD EN: restaurant_recommend produces no undefined in spec', () => {
+    const f = gSDD(g322_restaurant_recommend, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'restaurant_recommend EN spec must not contain undefined');
+  });
+
+  it('SDD JA: restaurant_recommend produces no undefined in spec', () => {
+    const f = gSDD(g322_restaurant_recommend);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'restaurant_recommend JA spec must not contain undefined');
+  });
+
+  it('docs/01: restaurant_recommend overview mentions レストラン or Restaurant', () => {
+    const f = gSDD(g322_restaurant_recommend);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('レストラン')||doc.includes('Restaurant')||doc.includes('グルメ'), 'restaurant_recommend docs/01 must mention restaurant context');
+  });
+
+  it('docs/01: restaurant_recommend produces no undefined in overview', () => {
+    const f = gSDD(g322_restaurant_recommend);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'restaurant_recommend docs/01 must not contain undefined');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 323 — presets-ext15.js: microbiome_analyzer
+   Supabase/Vercel/payment:stripe
+   ════════════════════════════════════════════════════════════════ */
+
+const g323_microbiome_analyzer = Object.assign({}, A25, {
+  purpose: '腸内フローラ検査データをAIが解析し多様性スコア・食事相関・健康インサイトをパーソナライズレポートで提供するマイクロバイオーム分析SaaS',
+  frontend: 'React + Next.js',
+  backend: 'Supabase',
+  database: 'PostgreSQL',
+  deploy: 'Vercel',
+  orm: 'Prisma',
+  auth: 'JWT + Supabase Auth',
+  payment: 'stripe',
+  mobile: 'なし',
+  data_entities: 'User, MicrobiomeSample, TaxonomyReport, DietCorrelation, HealthInsight',
+  mvp_features: '検査データ解析, 多様性スコア, 食事相関分析, 健康インサイト, 多要素認証（MFA）, ページネーション・無限スクロール',
+});
+
+describe('Suite 323: presets-ext15 microbiome_analyzer — Supabase/Vercel/stripe', () => {
+
+  it('SDD: microbiome_analyzer generates specification.md and constitution.md', () => {
+    const f = gSDD(g323_microbiome_analyzer);
+    assert.ok(f['.spec/specification.md'], 'microbiome_analyzer must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'microbiome_analyzer must generate constitution.md');
+  });
+
+  it('SDD: microbiome_analyzer includes MicrobiomeSample in spec', () => {
+    const f = gSDD(g323_microbiome_analyzer);
+    assert.ok((f['.spec/specification.md']||'').includes('MicrobiomeSample'), 'microbiome_analyzer spec must mention MicrobiomeSample');
+  });
+
+  it('SDD: microbiome_analyzer (Supabase) → Supabase referenced in spec', () => {
+    const f = gSDD(g323_microbiome_analyzer);
+    assert.ok((f['.spec/specification.md']||'').includes('Supabase'), 'microbiome_analyzer spec must reference Supabase');
+  });
+
+  it('SDD: microbiome_analyzer purpose keyword in spec', () => {
+    const f = gSDD(g323_microbiome_analyzer);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('腸内')||spec.includes('Microbiome')||spec.includes('フローラ'), 'microbiome_analyzer spec must mention microbiome context');
+  });
+
+  it('SDD EN: microbiome_analyzer produces no undefined in spec', () => {
+    const f = gSDD(g323_microbiome_analyzer, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'microbiome_analyzer EN spec must not contain undefined');
+  });
+
+  it('SDD JA: microbiome_analyzer produces no undefined in spec', () => {
+    const f = gSDD(g323_microbiome_analyzer);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'microbiome_analyzer JA spec must not contain undefined');
+  });
+
+  it('docs/01: microbiome_analyzer overview mentions 腸内 or Microbiome', () => {
+    const f = gSDD(g323_microbiome_analyzer);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('腸内')||doc.includes('Microbiome')||doc.includes('フローラ'), 'microbiome_analyzer docs/01 must mention microbiome context');
+  });
+
+  it('docs/01: microbiome_analyzer produces no undefined in overview', () => {
+    const f = gSDD(g323_microbiome_analyzer);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'microbiome_analyzer docs/01 must not contain undefined');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 324 — presets-ext15.js: delivery_route_opt
+   Supabase/Vercel/payment:stripe
+   ════════════════════════════════════════════════════════════════ */
+
+const g324_delivery_route_opt = Object.assign({}, A25, {
+  purpose: '配送注文・ドライバー・車両管理とAI配送ルート最適化・リアルタイム追跡・KPIダッシュボードを提供する物流DX SaaS',
+  frontend: 'React + Next.js',
+  backend: 'Supabase',
+  database: 'PostgreSQL',
+  deploy: 'Vercel',
+  orm: 'Prisma',
+  auth: 'JWT + Supabase Auth',
+  payment: 'stripe',
+  mobile: 'なし',
+  data_entities: 'User, DeliveryOrder, RouteStop, VehicleFleet, RouteOptResult',
+  mvp_features: '配送注文管理, AIルート最適化, ドライバー管理, リアルタイム追跡, AuditLog, ページネーション・無限スクロール',
+});
+
+describe('Suite 324: presets-ext15 delivery_route_opt — Supabase/Vercel/stripe', () => {
+
+  it('SDD: delivery_route_opt generates specification.md and constitution.md', () => {
+    const f = gSDD(g324_delivery_route_opt);
+    assert.ok(f['.spec/specification.md'], 'delivery_route_opt must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'delivery_route_opt must generate constitution.md');
+  });
+
+  it('SDD: delivery_route_opt includes DeliveryOrder in spec', () => {
+    const f = gSDD(g324_delivery_route_opt);
+    assert.ok((f['.spec/specification.md']||'').includes('DeliveryOrder'), 'delivery_route_opt spec must mention DeliveryOrder');
+  });
+
+  it('SDD: delivery_route_opt (Supabase) → Supabase referenced in spec', () => {
+    const f = gSDD(g324_delivery_route_opt);
+    assert.ok((f['.spec/specification.md']||'').includes('Supabase'), 'delivery_route_opt spec must reference Supabase');
+  });
+
+  it('SDD: delivery_route_opt purpose keyword in spec', () => {
+    const f = gSDD(g324_delivery_route_opt);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('配送')||spec.includes('Delivery')||spec.includes('ルート'), 'delivery_route_opt spec must mention delivery context');
+  });
+
+  it('SDD EN: delivery_route_opt produces no undefined in spec', () => {
+    const f = gSDD(g324_delivery_route_opt, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'delivery_route_opt EN spec must not contain undefined');
+  });
+
+  it('SDD JA: delivery_route_opt produces no undefined in spec', () => {
+    const f = gSDD(g324_delivery_route_opt);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'delivery_route_opt JA spec must not contain undefined');
+  });
+
+  it('docs/01: delivery_route_opt overview mentions 配送 or Delivery', () => {
+    const f = gSDD(g324_delivery_route_opt);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('配送')||doc.includes('Delivery')||doc.includes('ルート'), 'delivery_route_opt docs/01 must mention delivery context');
+  });
+
+  it('docs/01: delivery_route_opt produces no undefined in overview', () => {
+    const f = gSDD(g324_delivery_route_opt);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'delivery_route_opt docs/01 must not contain undefined');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 325 — presets-ext15.js: gdpr_privacy_tool
+   Supabase/Vercel/payment:stripe
+   ════════════════════════════════════════════════════════════════ */
+
+const g325_gdpr_privacy_tool = Object.assign({}, A25, {
+  purpose: 'GDPR・個人情報保護法対応のデータ主体リクエスト管理・同意記録・データインベントリ・プライバシーレポート生成を提供するコンプライアンスSaaS',
+  frontend: 'React + Next.js',
+  backend: 'Supabase',
+  database: 'PostgreSQL',
+  deploy: 'Vercel',
+  orm: 'Prisma',
+  auth: 'JWT + Supabase Auth',
+  payment: 'stripe',
+  mobile: 'なし',
+  data_entities: 'User, DataSubjectReq, PrivacyConsent, DataInventory, PrivacyReport',
+  mvp_features: 'データ主体リクエスト管理, 同意記録, データインベントリ, 個人情報マスク・プライバシー保護, AuditLog, 多要素認証（MFA）, ページネーション・無限スクロール',
+});
+
+describe('Suite 325: presets-ext15 gdpr_privacy_tool — Supabase/Vercel/stripe', () => {
+
+  it('SDD: gdpr_privacy_tool generates specification.md and constitution.md', () => {
+    const f = gSDD(g325_gdpr_privacy_tool);
+    assert.ok(f['.spec/specification.md'], 'gdpr_privacy_tool must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'gdpr_privacy_tool must generate constitution.md');
+  });
+
+  it('SDD: gdpr_privacy_tool includes DataSubjectReq in spec', () => {
+    const f = gSDD(g325_gdpr_privacy_tool);
+    assert.ok((f['.spec/specification.md']||'').includes('DataSubjectReq'), 'gdpr_privacy_tool spec must mention DataSubjectReq');
+  });
+
+  it('SDD: gdpr_privacy_tool (Supabase) → Supabase referenced in spec', () => {
+    const f = gSDD(g325_gdpr_privacy_tool);
+    assert.ok((f['.spec/specification.md']||'').includes('Supabase'), 'gdpr_privacy_tool spec must reference Supabase');
+  });
+
+  it('SDD: gdpr_privacy_tool purpose keyword in spec', () => {
+    const f = gSDD(g325_gdpr_privacy_tool);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('GDPR')||spec.includes('プライバシー')||spec.includes('Privacy'), 'gdpr_privacy_tool spec must mention GDPR context');
+  });
+
+  it('SDD EN: gdpr_privacy_tool produces no undefined in spec', () => {
+    const f = gSDD(g325_gdpr_privacy_tool, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'gdpr_privacy_tool EN spec must not contain undefined');
+  });
+
+  it('SDD JA: gdpr_privacy_tool produces no undefined in spec', () => {
+    const f = gSDD(g325_gdpr_privacy_tool);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'gdpr_privacy_tool JA spec must not contain undefined');
+  });
+
+  it('docs/01: gdpr_privacy_tool overview mentions GDPR or Privacy', () => {
+    const f = gSDD(g325_gdpr_privacy_tool);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('GDPR')||doc.includes('プライバシー')||doc.includes('Privacy'), 'gdpr_privacy_tool docs/01 must mention GDPR context');
+  });
+
+  it('docs/01: gdpr_privacy_tool produces no undefined in overview', () => {
+    const f = gSDD(g325_gdpr_privacy_tool);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'gdpr_privacy_tool docs/01 must not contain undefined');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 326 — presets-ext15.js: building_energy_sim
+   Supabase/Vercel/payment:none
+   ════════════════════════════════════════════════════════════════ */
+
+const g326_building_energy_sim = Object.assign({}, A25, {
+  purpose: '建物モデル・気候データ・設備仕様をもとにエネルギー消費シミュレーション・省エネシナリオ比較・ZEB/ZEH達成レポートを生成する建築向けSaaS',
+  frontend: 'React + Next.js',
+  backend: 'Supabase',
+  database: 'PostgreSQL',
+  deploy: 'Vercel',
+  orm: 'Prisma',
+  auth: 'JWT + Supabase Auth',
+  payment: 'none',
+  mobile: 'なし',
+  data_entities: 'User, BuildingModel, EnergyScenario, SimResult, EnergyReport',
+  mvp_features: '建物モデル入力, エネルギーシミュレーション, 省エネシナリオ比較, ZEB/ZEHレポート, ページネーション・無限スクロール',
+});
+
+describe('Suite 326: presets-ext15 building_energy_sim — Supabase/Vercel/no-payment', () => {
+
+  it('SDD: building_energy_sim generates specification.md and constitution.md', () => {
+    const f = gSDD(g326_building_energy_sim);
+    assert.ok(f['.spec/specification.md'], 'building_energy_sim must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'building_energy_sim must generate constitution.md');
+  });
+
+  it('SDD: building_energy_sim includes BuildingModel in spec', () => {
+    const f = gSDD(g326_building_energy_sim);
+    assert.ok((f['.spec/specification.md']||'').includes('BuildingModel'), 'building_energy_sim spec must mention BuildingModel');
+  });
+
+  it('SDD: building_energy_sim (Supabase) → Supabase referenced in spec', () => {
+    const f = gSDD(g326_building_energy_sim);
+    assert.ok((f['.spec/specification.md']||'').includes('Supabase'), 'building_energy_sim spec must reference Supabase');
+  });
+
+  it('SDD: building_energy_sim purpose keyword in spec', () => {
+    const f = gSDD(g326_building_energy_sim);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('エネルギー')||spec.includes('Energy')||spec.includes('建物'), 'building_energy_sim spec must mention energy context');
+  });
+
+  it('SDD EN: building_energy_sim produces no undefined in spec', () => {
+    const f = gSDD(g326_building_energy_sim, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'building_energy_sim EN spec must not contain undefined');
+  });
+
+  it('SDD JA: building_energy_sim produces no undefined in spec', () => {
+    const f = gSDD(g326_building_energy_sim);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'building_energy_sim JA spec must not contain undefined');
+  });
+
+  it('docs/01: building_energy_sim overview mentions エネルギー or Energy', () => {
+    const f = gSDD(g326_building_energy_sim);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('エネルギー')||doc.includes('Energy')||doc.includes('ZEB'), 'building_energy_sim docs/01 must mention energy context');
+  });
+
+  it('docs/01: building_energy_sim produces no undefined in overview', () => {
+    const f = gSDD(g326_building_energy_sim);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'building_energy_sim docs/01 must not contain undefined');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 327 — presets-ext15.js: biodiversity_monitor
+   Supabase/Vercel/payment:none
+   ════════════════════════════════════════════════════════════════ */
+
+const g327_biodiversity_monitor = Object.assign({}, A25, {
+  purpose: '生物種観察記録・調査プロット管理・生物多様性指数算出・生態系アラート通知を提供するフィールド調査支援SaaS',
+  frontend: 'React + Next.js',
+  backend: 'Supabase',
+  database: 'PostgreSQL',
+  deploy: 'Vercel',
+  orm: 'Prisma',
+  auth: 'JWT + Supabase Auth',
+  payment: 'none',
+  mobile: 'なし',
+  data_entities: 'User, SpeciesObservation, MonitoringPlot, BiodiversityIndex, EcologicalAlert',
+  mvp_features: '生物種観察記録, 調査プロット管理, 多様性指数算出, 生態系アラート, ページネーション・無限スクロール',
+});
+
+describe('Suite 327: presets-ext15 biodiversity_monitor — Supabase/Vercel/no-payment', () => {
+
+  it('SDD: biodiversity_monitor generates specification.md and constitution.md', () => {
+    const f = gSDD(g327_biodiversity_monitor);
+    assert.ok(f['.spec/specification.md'], 'biodiversity_monitor must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'biodiversity_monitor must generate constitution.md');
+  });
+
+  it('SDD: biodiversity_monitor includes SpeciesObservation in spec', () => {
+    const f = gSDD(g327_biodiversity_monitor);
+    assert.ok((f['.spec/specification.md']||'').includes('SpeciesObservation'), 'biodiversity_monitor spec must mention SpeciesObservation');
+  });
+
+  it('SDD: biodiversity_monitor (Supabase) → Supabase referenced in spec', () => {
+    const f = gSDD(g327_biodiversity_monitor);
+    assert.ok((f['.spec/specification.md']||'').includes('Supabase'), 'biodiversity_monitor spec must reference Supabase');
+  });
+
+  it('SDD: biodiversity_monitor purpose keyword in spec', () => {
+    const f = gSDD(g327_biodiversity_monitor);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('生物')||spec.includes('Biodiversity')||spec.includes('多様性'), 'biodiversity_monitor spec must mention biodiversity context');
+  });
+
+  it('SDD EN: biodiversity_monitor produces no undefined in spec', () => {
+    const f = gSDD(g327_biodiversity_monitor, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'biodiversity_monitor EN spec must not contain undefined');
+  });
+
+  it('SDD JA: biodiversity_monitor produces no undefined in spec', () => {
+    const f = gSDD(g327_biodiversity_monitor);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'biodiversity_monitor JA spec must not contain undefined');
+  });
+
+  it('docs/01: biodiversity_monitor overview mentions 生物 or Biodiversity', () => {
+    const f = gSDD(g327_biodiversity_monitor);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('生物')||doc.includes('Biodiversity')||doc.includes('多様性'), 'biodiversity_monitor docs/01 must mention biodiversity context');
+  });
+
+  it('docs/01: biodiversity_monitor produces no undefined in overview', () => {
+    const f = gSDD(g327_biodiversity_monitor);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'biodiversity_monitor docs/01 must not contain undefined');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 328 — presets-ext15.js: nutrition_meal_log
+   Supabase/Vercel/payment:none
+   ════════════════════════════════════════════════════════════════ */
+
+const g328_nutrition_meal_log = Object.assign({}, A25, {
+  purpose: '食事記録・栄養素計算・目標カロリー管理・週次栄養レポートを提供する個人向け栄養管理アプリ',
+  frontend: 'React + Next.js',
+  backend: 'Supabase',
+  database: 'PostgreSQL',
+  deploy: 'Vercel',
+  orm: 'Prisma',
+  auth: 'JWT + Supabase Auth',
+  payment: 'none',
+  mobile: 'なし',
+  data_entities: 'User, MealRecord, NutrientData, DietGoal, NutritionWklyReport',
+  mvp_features: '食事記録, 栄養素計算, 目標カロリー管理, 週次レポート, 多要素認証（MFA）, ページネーション・無限スクロール',
+});
+
+describe('Suite 328: presets-ext15 nutrition_meal_log — Supabase/Vercel/no-payment', () => {
+
+  it('SDD: nutrition_meal_log generates specification.md and constitution.md', () => {
+    const f = gSDD(g328_nutrition_meal_log);
+    assert.ok(f['.spec/specification.md'], 'nutrition_meal_log must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'nutrition_meal_log must generate constitution.md');
+  });
+
+  it('SDD: nutrition_meal_log includes MealRecord in spec', () => {
+    const f = gSDD(g328_nutrition_meal_log);
+    assert.ok((f['.spec/specification.md']||'').includes('MealRecord'), 'nutrition_meal_log spec must mention MealRecord');
+  });
+
+  it('SDD: nutrition_meal_log (Supabase) → Supabase referenced in spec', () => {
+    const f = gSDD(g328_nutrition_meal_log);
+    assert.ok((f['.spec/specification.md']||'').includes('Supabase'), 'nutrition_meal_log spec must reference Supabase');
+  });
+
+  it('SDD: nutrition_meal_log purpose keyword in spec', () => {
+    const f = gSDD(g328_nutrition_meal_log);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('栄養')||spec.includes('Nutrition')||spec.includes('食事'), 'nutrition_meal_log spec must mention nutrition context');
+  });
+
+  it('SDD EN: nutrition_meal_log produces no undefined in spec', () => {
+    const f = gSDD(g328_nutrition_meal_log, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'nutrition_meal_log EN spec must not contain undefined');
+  });
+
+  it('SDD JA: nutrition_meal_log produces no undefined in spec', () => {
+    const f = gSDD(g328_nutrition_meal_log);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'nutrition_meal_log JA spec must not contain undefined');
+  });
+
+  it('docs/01: nutrition_meal_log overview mentions 栄養 or Nutrition', () => {
+    const f = gSDD(g328_nutrition_meal_log);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('栄養')||doc.includes('Nutrition')||doc.includes('食事'), 'nutrition_meal_log docs/01 must mention nutrition context');
+  });
+
+  it('docs/01: nutrition_meal_log produces no undefined in overview', () => {
+    const f = gSDD(g328_nutrition_meal_log);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'nutrition_meal_log docs/01 must not contain undefined');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 329 — presets-ext15.js: invoice_expense_auto
+   Supabase/Vercel/payment:stripe
+   ════════════════════════════════════════════════════════════════ */
+
+const g329_invoice_expense_auto = Object.assign({}, A25, {
+  purpose: '請求書OCR読取・経費申請承認・ベンダー管理・支払い処理・会計連携を自動化する中小企業向けバックオフィス自動化SaaS',
+  frontend: 'React + Next.js',
+  backend: 'Supabase',
+  database: 'PostgreSQL',
+  deploy: 'Vercel',
+  orm: 'Prisma',
+  auth: 'JWT + Supabase Auth',
+  payment: 'stripe',
+  mobile: 'なし',
+  data_entities: 'User, InvoiceRecord, ExpenseEntry, VendorAccount, PaymentRecord',
+  mvp_features: '請求書OCR自動読取, 経費申請承認, ベンダー管理, 支払い処理, AuditLog, ページネーション・無限スクロール',
+});
+
+describe('Suite 329: presets-ext15 invoice_expense_auto — Supabase/Vercel/stripe', () => {
+
+  it('SDD: invoice_expense_auto generates specification.md and constitution.md', () => {
+    const f = gSDD(g329_invoice_expense_auto);
+    assert.ok(f['.spec/specification.md'], 'invoice_expense_auto must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'invoice_expense_auto must generate constitution.md');
+  });
+
+  it('SDD: invoice_expense_auto includes InvoiceRecord in spec', () => {
+    const f = gSDD(g329_invoice_expense_auto);
+    assert.ok((f['.spec/specification.md']||'').includes('InvoiceRecord'), 'invoice_expense_auto spec must mention InvoiceRecord');
+  });
+
+  it('SDD: invoice_expense_auto (Supabase) → Supabase referenced in spec', () => {
+    const f = gSDD(g329_invoice_expense_auto);
+    assert.ok((f['.spec/specification.md']||'').includes('Supabase'), 'invoice_expense_auto spec must reference Supabase');
+  });
+
+  it('SDD: invoice_expense_auto purpose keyword in spec', () => {
+    const f = gSDD(g329_invoice_expense_auto);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('請求書')||spec.includes('Invoice')||spec.includes('経費'), 'invoice_expense_auto spec must mention invoice context');
+  });
+
+  it('SDD EN: invoice_expense_auto produces no undefined in spec', () => {
+    const f = gSDD(g329_invoice_expense_auto, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'invoice_expense_auto EN spec must not contain undefined');
+  });
+
+  it('SDD JA: invoice_expense_auto produces no undefined in spec', () => {
+    const f = gSDD(g329_invoice_expense_auto);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'invoice_expense_auto JA spec must not contain undefined');
+  });
+
+  it('docs/01: invoice_expense_auto overview mentions 請求書 or Invoice', () => {
+    const f = gSDD(g329_invoice_expense_auto);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('請求書')||doc.includes('Invoice')||doc.includes('経費'), 'invoice_expense_auto docs/01 must mention invoice context');
+  });
+
+  it('docs/01: invoice_expense_auto produces no undefined in overview', () => {
+    const f = gSDD(g329_invoice_expense_auto);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'invoice_expense_auto docs/01 must not contain undefined');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 330 — presets-ext15.js: work_manual_gen
+   Supabase/Vercel/payment:stripe
+   ════════════════════════════════════════════════════════════════ */
+
+const g330_work_manual_gen = Object.assign({}, A25, {
+  purpose: '業務プロセス入力・手順ステップ管理・AIによるマニュアル文書自動生成・ナレッジベース構築を提供する業務効率化SaaS',
+  frontend: 'React + Next.js',
+  backend: 'Supabase',
+  database: 'PostgreSQL',
+  deploy: 'Vercel',
+  orm: 'Prisma',
+  auth: 'JWT + Supabase Auth',
+  payment: 'stripe',
+  mobile: 'なし',
+  data_entities: 'User, ManualDocument, WorkProcess, ProcedureStep, KnowledgeBase',
+  mvp_features: '業務プロセス管理, 手順ステップ管理, AIマニュアル自動生成, ナレッジベース, AuditLog, ページネーション・無限スクロール',
+});
+
+describe('Suite 330: presets-ext15 work_manual_gen — Supabase/Vercel/stripe', () => {
+
+  it('SDD: work_manual_gen generates specification.md and constitution.md', () => {
+    const f = gSDD(g330_work_manual_gen);
+    assert.ok(f['.spec/specification.md'], 'work_manual_gen must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'work_manual_gen must generate constitution.md');
+  });
+
+  it('SDD: work_manual_gen includes ManualDocument in spec', () => {
+    const f = gSDD(g330_work_manual_gen);
+    assert.ok((f['.spec/specification.md']||'').includes('ManualDocument'), 'work_manual_gen spec must mention ManualDocument');
+  });
+
+  it('SDD: work_manual_gen (Supabase) → Supabase referenced in spec', () => {
+    const f = gSDD(g330_work_manual_gen);
+    assert.ok((f['.spec/specification.md']||'').includes('Supabase'), 'work_manual_gen spec must reference Supabase');
+  });
+
+  it('SDD: work_manual_gen purpose keyword in spec', () => {
+    const f = gSDD(g330_work_manual_gen);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('マニュアル')||spec.includes('Manual')||spec.includes('業務'), 'work_manual_gen spec must mention manual context');
+  });
+
+  it('SDD EN: work_manual_gen produces no undefined in spec', () => {
+    const f = gSDD(g330_work_manual_gen, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'work_manual_gen EN spec must not contain undefined');
+  });
+
+  it('SDD JA: work_manual_gen produces no undefined in spec', () => {
+    const f = gSDD(g330_work_manual_gen);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'work_manual_gen JA spec must not contain undefined');
+  });
+
+  it('docs/01: work_manual_gen overview mentions マニュアル or Manual', () => {
+    const f = gSDD(g330_work_manual_gen);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('マニュアル')||doc.includes('Manual')||doc.includes('業務'), 'work_manual_gen docs/01 must mention manual context');
+  });
+
+  it('docs/01: work_manual_gen produces no undefined in overview', () => {
+    const f = gSDD(g330_work_manual_gen);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'work_manual_gen docs/01 must not contain undefined');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 331 — presets-ext16.js: sign_language_tool
+   Supabase/Vercel/payment:stripe
+   ════════════════════════════════════════════════════════════════ */
+
+const g331_sign_language_tool = Object.assign({}, A25, {
+  purpose: '手話動画レッスン・ジェスチャー認識AI・学習進捗管理・クイズで手話コミュニケーション学習を支援するアクセシビリティ教育SaaS',
+  frontend: 'React + Next.js',
+  backend: 'Supabase',
+  database: 'PostgreSQL',
+  deploy: 'Vercel',
+  orm: 'Prisma',
+  auth: 'JWT + Supabase Auth',
+  payment: 'stripe',
+  mobile: 'なし',
+  data_entities: 'User, SignVideoLesson, GestureModel, UserSignProgress, SignQuiz',
+  mvp_features: '手話動画レッスン管理, ジェスチャー認識AIフィードバック, 学習進捗ダッシュボード, 手話クイズ, AuditLog, 多要素認証（MFA）, ページネーション・無限スクロール',
+});
+
+describe('Suite 331: presets-ext16 sign_language_tool — Supabase/Vercel/stripe', () => {
+
+  it('SDD: sign_language_tool generates specification.md and constitution.md', () => {
+    const f = gSDD(g331_sign_language_tool);
+    assert.ok(f['.spec/specification.md'], 'sign_language_tool must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'sign_language_tool must generate constitution.md');
+  });
+
+  it('SDD: sign_language_tool includes SignVideoLesson in spec', () => {
+    const f = gSDD(g331_sign_language_tool);
+    assert.ok((f['.spec/specification.md']||'').includes('SignVideoLesson'), 'sign_language_tool spec must mention SignVideoLesson');
+  });
+
+  it('SDD: sign_language_tool (Supabase) → Supabase referenced in spec', () => {
+    const f = gSDD(g331_sign_language_tool);
+    assert.ok((f['.spec/specification.md']||'').includes('Supabase'), 'sign_language_tool spec must reference Supabase');
+  });
+
+  it('SDD: sign_language_tool purpose keyword in spec', () => {
+    const f = gSDD(g331_sign_language_tool);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('手話')||spec.includes('Sign')||spec.includes('ジェスチャー'), 'sign_language_tool spec must mention sign language context');
+  });
+
+  it('SDD EN: sign_language_tool produces no undefined in spec', () => {
+    const f = gSDD(g331_sign_language_tool, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'sign_language_tool EN spec must not contain undefined');
+  });
+
+  it('SDD JA: sign_language_tool produces no undefined in spec', () => {
+    const f = gSDD(g331_sign_language_tool);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'sign_language_tool JA spec must not contain undefined');
+  });
+
+  it('docs/01: sign_language_tool overview mentions 手話 or Sign', () => {
+    const f = gSDD(g331_sign_language_tool);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('手話')||doc.includes('Sign')||doc.includes('ジェスチャー'), 'sign_language_tool docs/01 must mention sign language context');
+  });
+
+  it('docs/01: sign_language_tool produces no undefined in overview', () => {
+    const f = gSDD(g331_sign_language_tool);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'sign_language_tool docs/01 must not contain undefined');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 332 — presets-ext16.js: travel_review_gen
+   Supabase/Vercel/payment:stripe
+   ════════════════════════════════════════════════════════════════ */
+
+const g332_travel_review_gen = Object.assign({}, A25, {
+  purpose: '旅行先の口コミレビュー投稿・AIによる旅程自動生成・観光スポット管理・旅行記コレクションを提供する旅行体験共有プラットフォーム',
+  frontend: 'React + Next.js',
+  backend: 'Supabase',
+  database: 'PostgreSQL',
+  deploy: 'Vercel',
+  orm: 'Prisma',
+  auth: 'JWT + Supabase Auth',
+  payment: 'stripe',
+  mobile: 'なし',
+  data_entities: 'User, TripItinerary, TravelReview, Attraction, TravelRecommendation',
+  mvp_features: '旅行レビュー投稿・評価, AI旅程自動生成, 観光スポット管理, 旅行記コレクション, ページネーション・無限スクロール',
+});
+
+describe('Suite 332: presets-ext16 travel_review_gen — Supabase/Vercel/stripe', () => {
+
+  it('SDD: travel_review_gen generates specification.md and constitution.md', () => {
+    const f = gSDD(g332_travel_review_gen);
+    assert.ok(f['.spec/specification.md'], 'travel_review_gen must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'travel_review_gen must generate constitution.md');
+  });
+
+  it('SDD: travel_review_gen includes TripItinerary in spec', () => {
+    const f = gSDD(g332_travel_review_gen);
+    assert.ok((f['.spec/specification.md']||'').includes('TripItinerary'), 'travel_review_gen spec must mention TripItinerary');
+  });
+
+  it('SDD: travel_review_gen (Supabase) → Supabase referenced in spec', () => {
+    const f = gSDD(g332_travel_review_gen);
+    assert.ok((f['.spec/specification.md']||'').includes('Supabase'), 'travel_review_gen spec must reference Supabase');
+  });
+
+  it('SDD: travel_review_gen purpose keyword in spec', () => {
+    const f = gSDD(g332_travel_review_gen);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('旅行')||spec.includes('Travel')||spec.includes('旅程'), 'travel_review_gen spec must mention travel context');
+  });
+
+  it('SDD EN: travel_review_gen produces no undefined in spec', () => {
+    const f = gSDD(g332_travel_review_gen, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'travel_review_gen EN spec must not contain undefined');
+  });
+
+  it('SDD JA: travel_review_gen produces no undefined in spec', () => {
+    const f = gSDD(g332_travel_review_gen);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'travel_review_gen JA spec must not contain undefined');
+  });
+
+  it('docs/01: travel_review_gen overview mentions 旅行 or Travel', () => {
+    const f = gSDD(g332_travel_review_gen);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('旅行')||doc.includes('Travel')||doc.includes('旅程'), 'travel_review_gen docs/01 must mention travel context');
+  });
+
+  it('docs/01: travel_review_gen produces no undefined in overview', () => {
+    const f = gSDD(g332_travel_review_gen);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'travel_review_gen docs/01 must not contain undefined');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 333 — presets-ext16.js: synbio_design
+   Supabase/Vercel/payment:stripe
+   ════════════════════════════════════════════════════════════════ */
+
+const g333_synbio_design = Object.assign({}, A25, {
+  purpose: '遺伝子パーツ設計・生体回路シミュレーション・発現予測・実験プロトコル生成を提供する合成生物学研究支援SaaS',
+  frontend: 'React + Next.js',
+  backend: 'Supabase',
+  database: 'PostgreSQL',
+  deploy: 'Vercel',
+  orm: 'Prisma',
+  auth: 'JWT + Supabase Auth',
+  payment: 'stripe',
+  mobile: 'なし',
+  data_entities: 'User, GeneticPart, SynBioDesign, BioCircuit, ExpressionResult',
+  mvp_features: '遺伝子パーツライブラリ管理, 生体回路シミュレーション, AI発現レベル予測, 実験プロトコル自動生成, AuditLog, 多要素認証（MFA）, ページネーション・無限スクロール',
+});
+
+describe('Suite 333: presets-ext16 synbio_design — Supabase/Vercel/stripe', () => {
+
+  it('SDD: synbio_design generates specification.md and constitution.md', () => {
+    const f = gSDD(g333_synbio_design);
+    assert.ok(f['.spec/specification.md'], 'synbio_design must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'synbio_design must generate constitution.md');
+  });
+
+  it('SDD: synbio_design includes GeneticPart in spec', () => {
+    const f = gSDD(g333_synbio_design);
+    assert.ok((f['.spec/specification.md']||'').includes('GeneticPart'), 'synbio_design spec must mention GeneticPart');
+  });
+
+  it('SDD: synbio_design (Supabase) → Supabase referenced in spec', () => {
+    const f = gSDD(g333_synbio_design);
+    assert.ok((f['.spec/specification.md']||'').includes('Supabase'), 'synbio_design spec must reference Supabase');
+  });
+
+  it('SDD: synbio_design purpose keyword in spec', () => {
+    const f = gSDD(g333_synbio_design);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('合成生物')||spec.includes('Synth')||spec.includes('遺伝子'), 'synbio_design spec must mention synbio context');
+  });
+
+  it('SDD EN: synbio_design produces no undefined in spec', () => {
+    const f = gSDD(g333_synbio_design, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'synbio_design EN spec must not contain undefined');
+  });
+
+  it('SDD JA: synbio_design produces no undefined in spec', () => {
+    const f = gSDD(g333_synbio_design);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'synbio_design JA spec must not contain undefined');
+  });
+
+  it('docs/01: synbio_design overview mentions 合成生物 or GeneticPart', () => {
+    const f = gSDD(g333_synbio_design);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('合成生物')||doc.includes('Synth')||doc.includes('遺伝子'), 'synbio_design docs/01 must mention synbio context');
+  });
+
+  it('docs/01: synbio_design produces no undefined in overview', () => {
+    const f = gSDD(g333_synbio_design);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'synbio_design docs/01 must not contain undefined');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 334 — presets-ext16.js: dashcam_analyzer
+   Supabase/Vercel/payment:stripe
+   ════════════════════════════════════════════════════════════════ */
+
+const g334_dashcam_analyzer = Object.assign({}, A25, {
+  purpose: 'ドライブレコーダー映像をAIがリアルタイム解析し危険運転検出・事故判定・ドライバースコアリング・保険連携レポートを提供するモビリティSaaS',
+  frontend: 'React + Next.js',
+  backend: 'Supabase',
+  database: 'PostgreSQL',
+  deploy: 'Vercel',
+  orm: 'Prisma',
+  auth: 'JWT + Supabase Auth',
+  payment: 'stripe',
+  mobile: 'なし',
+  data_entities: 'User, DashcamFootage, DrivingEvent, AccidentReport, DrivingScore',
+  mvp_features: 'ドラレコ映像アップロード・解析, 危険運転イベント検出, 事故判定・事故レポート, ドライバースコアリング, AuditLog, ページネーション・無限スクロール',
+});
+
+describe('Suite 334: presets-ext16 dashcam_analyzer — Supabase/Vercel/stripe', () => {
+
+  it('SDD: dashcam_analyzer generates specification.md and constitution.md', () => {
+    const f = gSDD(g334_dashcam_analyzer);
+    assert.ok(f['.spec/specification.md'], 'dashcam_analyzer must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'dashcam_analyzer must generate constitution.md');
+  });
+
+  it('SDD: dashcam_analyzer includes DashcamFootage in spec', () => {
+    const f = gSDD(g334_dashcam_analyzer);
+    assert.ok((f['.spec/specification.md']||'').includes('DashcamFootage'), 'dashcam_analyzer spec must mention DashcamFootage');
+  });
+
+  it('SDD: dashcam_analyzer (Supabase) → Supabase referenced in spec', () => {
+    const f = gSDD(g334_dashcam_analyzer);
+    assert.ok((f['.spec/specification.md']||'').includes('Supabase'), 'dashcam_analyzer spec must reference Supabase');
+  });
+
+  it('SDD: dashcam_analyzer purpose keyword in spec', () => {
+    const f = gSDD(g334_dashcam_analyzer);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('ドラレコ')||spec.includes('Dashcam')||spec.includes('ドライバー'), 'dashcam_analyzer spec must mention dashcam context');
+  });
+
+  it('SDD EN: dashcam_analyzer produces no undefined in spec', () => {
+    const f = gSDD(g334_dashcam_analyzer, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'dashcam_analyzer EN spec must not contain undefined');
+  });
+
+  it('SDD JA: dashcam_analyzer produces no undefined in spec', () => {
+    const f = gSDD(g334_dashcam_analyzer);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'dashcam_analyzer JA spec must not contain undefined');
+  });
+
+  it('docs/01: dashcam_analyzer overview mentions ドラレコ or Dashcam', () => {
+    const f = gSDD(g334_dashcam_analyzer);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('ドラレコ')||doc.includes('Dashcam')||doc.includes('ドライバー'), 'dashcam_analyzer docs/01 must mention dashcam context');
+  });
+
+  it('docs/01: dashcam_analyzer produces no undefined in overview', () => {
+    const f = gSDD(g334_dashcam_analyzer);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'dashcam_analyzer docs/01 must not contain undefined');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 335 — presets-ext16.js: incident_forensics
+   Supabase/Vercel/payment:stripe
+   ════════════════════════════════════════════════════════════════ */
+
+const g335_incident_forensics = Object.assign({}, A25, {
+  purpose: 'セキュリティインシデントのログ収集・脅威指標解析・フォレンジック証拠管理・インシデント調査レポート自動生成を提供するサイバーセキュリティSaaS',
+  frontend: 'React + Next.js',
+  backend: 'Supabase',
+  database: 'PostgreSQL',
+  deploy: 'Vercel',
+  orm: 'Prisma',
+  auth: 'JWT + Supabase Auth',
+  payment: 'stripe',
+  mobile: 'なし',
+  data_entities: 'User, SecurityIncident, ForensicEvidence, ThreatIndicator, InvestigationReport',
+  mvp_features: 'セキュリティインシデント管理, ログ収集・IOC解析, フォレンジック証拠管理, AI調査レポート自動生成, AuditLog, 多要素認証（MFA）, ページネーション・無限スクロール',
+});
+
+describe('Suite 335: presets-ext16 incident_forensics — Supabase/Vercel/stripe', () => {
+
+  it('SDD: incident_forensics generates specification.md and constitution.md', () => {
+    const f = gSDD(g335_incident_forensics);
+    assert.ok(f['.spec/specification.md'], 'incident_forensics must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'incident_forensics must generate constitution.md');
+  });
+
+  it('SDD: incident_forensics includes SecurityIncident in spec', () => {
+    const f = gSDD(g335_incident_forensics);
+    assert.ok((f['.spec/specification.md']||'').includes('SecurityIncident'), 'incident_forensics spec must mention SecurityIncident');
+  });
+
+  it('SDD: incident_forensics (Supabase) → Supabase referenced in spec', () => {
+    const f = gSDD(g335_incident_forensics);
+    assert.ok((f['.spec/specification.md']||'').includes('Supabase'), 'incident_forensics spec must reference Supabase');
+  });
+
+  it('SDD: incident_forensics purpose keyword in spec', () => {
+    const f = gSDD(g335_incident_forensics);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('インシデント')||spec.includes('Incident')||spec.includes('フォレンジック'), 'incident_forensics spec must mention incident context');
+  });
+
+  it('SDD EN: incident_forensics produces no undefined in spec', () => {
+    const f = gSDD(g335_incident_forensics, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'incident_forensics EN spec must not contain undefined');
+  });
+
+  it('SDD JA: incident_forensics produces no undefined in spec', () => {
+    const f = gSDD(g335_incident_forensics);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'incident_forensics JA spec must not contain undefined');
+  });
+
+  it('docs/01: incident_forensics overview mentions インシデント or Incident', () => {
+    const f = gSDD(g335_incident_forensics);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('インシデント')||doc.includes('Incident')||doc.includes('フォレンジック'), 'incident_forensics docs/01 must mention incident context');
+  });
+
+  it('docs/01: incident_forensics produces no undefined in overview', () => {
+    const f = gSDD(g335_incident_forensics);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'incident_forensics docs/01 must not contain undefined');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 336 — presets-ext16.js: cultural_3d_archive
+   Supabase/Vercel/payment:none
+   ════════════════════════════════════════════════════════════════ */
+
+const g336_cultural_3d_archive = Object.assign({}, A25, {
+  purpose: '文化財・遺跡の3Dスキャンモデル管理・アノテーション・デジタル展示・教育コンテンツ配信を提供する文化遺産デジタル保存プラットフォーム',
+  frontend: 'React + Next.js',
+  backend: 'Supabase',
+  database: 'PostgreSQL',
+  deploy: 'Vercel',
+  orm: 'Prisma',
+  auth: 'JWT + Supabase Auth',
+  payment: 'なし',
+  mobile: 'なし',
+  data_entities: 'User, CulturalAsset, ScanModel3D, AnnotationLayer, DigitalExhibit',
+  mvp_features: '3Dスキャンモデルアップロード・管理, 文化財アノテーション・メタデータ管理, デジタル展示コンテンツ配信, 教育コンテンツ・ガイドツアー, ページネーション・無限スクロール',
+});
+
+describe('Suite 336: presets-ext16 cultural_3d_archive — Supabase/Vercel/no-payment', () => {
+
+  it('SDD: cultural_3d_archive generates specification.md and constitution.md', () => {
+    const f = gSDD(g336_cultural_3d_archive);
+    assert.ok(f['.spec/specification.md'], 'cultural_3d_archive must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'cultural_3d_archive must generate constitution.md');
+  });
+
+  it('SDD: cultural_3d_archive includes CulturalAsset in spec', () => {
+    const f = gSDD(g336_cultural_3d_archive);
+    assert.ok((f['.spec/specification.md']||'').includes('CulturalAsset'), 'cultural_3d_archive spec must mention CulturalAsset');
+  });
+
+  it('SDD: cultural_3d_archive (Supabase) → Supabase referenced in spec', () => {
+    const f = gSDD(g336_cultural_3d_archive);
+    assert.ok((f['.spec/specification.md']||'').includes('Supabase'), 'cultural_3d_archive spec must reference Supabase');
+  });
+
+  it('SDD: cultural_3d_archive purpose keyword in spec', () => {
+    const f = gSDD(g336_cultural_3d_archive);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('文化財')||spec.includes('Cultural')||spec.includes('3D'), 'cultural_3d_archive spec must mention cultural heritage context');
+  });
+
+  it('SDD EN: cultural_3d_archive produces no undefined in spec', () => {
+    const f = gSDD(g336_cultural_3d_archive, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'cultural_3d_archive EN spec must not contain undefined');
+  });
+
+  it('SDD JA: cultural_3d_archive produces no undefined in spec', () => {
+    const f = gSDD(g336_cultural_3d_archive);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'cultural_3d_archive JA spec must not contain undefined');
+  });
+
+  it('docs/01: cultural_3d_archive overview mentions 文化財 or Cultural', () => {
+    const f = gSDD(g336_cultural_3d_archive);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('文化財')||doc.includes('Cultural')||doc.includes('アーカイブ'), 'cultural_3d_archive docs/01 must mention cultural heritage context');
+  });
+
+  it('docs/01: cultural_3d_archive produces no undefined in overview', () => {
+    const f = gSDD(g336_cultural_3d_archive);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'cultural_3d_archive docs/01 must not contain undefined');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 337 — presets-ext16.js: lab_notebook
+   Supabase/Vercel/payment:stripe
+   ════════════════════════════════════════════════════════════════ */
+
+const g337_lab_notebook = Object.assign({}, A25, {
+  purpose: '実験記録・プロトコル管理・観測データ収集・チーム共有・レポート自動生成を提供する研究室向け電子実験ノートSaaS',
+  frontend: 'React + Next.js',
+  backend: 'Supabase',
+  database: 'PostgreSQL',
+  deploy: 'Vercel',
+  orm: 'Prisma',
+  auth: 'JWT + Supabase Auth',
+  payment: 'stripe',
+  mobile: 'なし',
+  data_entities: 'User, ExperimentRecord, LabProtocol, ResearchObservation, DataMeasurement',
+  mvp_features: '実験記録・プロトコル管理, 観測データ・測定値管理, チーム共有・コメント機能, 実験レポート自動生成, AuditLog, 多要素認証（MFA）, ページネーション・無限スクロール',
+});
+
+describe('Suite 337: presets-ext16 lab_notebook — Supabase/Vercel/stripe', () => {
+
+  it('SDD: lab_notebook generates specification.md and constitution.md', () => {
+    const f = gSDD(g337_lab_notebook);
+    assert.ok(f['.spec/specification.md'], 'lab_notebook must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'lab_notebook must generate constitution.md');
+  });
+
+  it('SDD: lab_notebook includes ExperimentRecord in spec', () => {
+    const f = gSDD(g337_lab_notebook);
+    assert.ok((f['.spec/specification.md']||'').includes('ExperimentRecord'), 'lab_notebook spec must mention ExperimentRecord');
+  });
+
+  it('SDD: lab_notebook (Supabase) → Supabase referenced in spec', () => {
+    const f = gSDD(g337_lab_notebook);
+    assert.ok((f['.spec/specification.md']||'').includes('Supabase'), 'lab_notebook spec must reference Supabase');
+  });
+
+  it('SDD: lab_notebook purpose keyword in spec', () => {
+    const f = gSDD(g337_lab_notebook);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('実験')||spec.includes('Lab')||spec.includes('Experiment'), 'lab_notebook spec must mention lab notebook context');
+  });
+
+  it('SDD EN: lab_notebook produces no undefined in spec', () => {
+    const f = gSDD(g337_lab_notebook, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'lab_notebook EN spec must not contain undefined');
+  });
+
+  it('SDD JA: lab_notebook produces no undefined in spec', () => {
+    const f = gSDD(g337_lab_notebook);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'lab_notebook JA spec must not contain undefined');
+  });
+
+  it('docs/01: lab_notebook overview mentions 実験 or Lab', () => {
+    const f = gSDD(g337_lab_notebook);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('実験')||doc.includes('Lab')||doc.includes('Experiment'), 'lab_notebook docs/01 must mention lab notebook context');
+  });
+
+  it('docs/01: lab_notebook produces no undefined in overview', () => {
+    const f = gSDD(g337_lab_notebook);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'lab_notebook docs/01 must not contain undefined');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 338 — presets-ext16.js: pronunciation_ai
+   Supabase/Vercel/payment:stripe
+   ════════════════════════════════════════════════════════════════ */
+
+const g338_pronunciation_ai = Object.assign({}, A25, {
+  purpose: 'AIが発音を評価しフォネーム別スコア・アクセント分析・矯正フィードバックを提供する外国語発音学習SaaS',
+  frontend: 'React + Next.js',
+  backend: 'Supabase',
+  database: 'PostgreSQL',
+  deploy: 'Vercel',
+  orm: 'Prisma',
+  auth: 'JWT + Supabase Auth',
+  payment: 'stripe',
+  mobile: 'なし',
+  data_entities: 'User, PronunciationLesson, SpeechRecord, PhonemeScore, AccentFeedback',
+  mvp_features: '音声録音・発音評価AI, フォネーム別スコア分析, アクセント・リズム分析, 矯正フィードバック・練習提案, 学習進捗・弱点分析, ページネーション・無限スクロール',
+});
+
+describe('Suite 338: presets-ext16 pronunciation_ai — Supabase/Vercel/stripe', () => {
+
+  it('SDD: pronunciation_ai generates specification.md and constitution.md', () => {
+    const f = gSDD(g338_pronunciation_ai);
+    assert.ok(f['.spec/specification.md'], 'pronunciation_ai must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'pronunciation_ai must generate constitution.md');
+  });
+
+  it('SDD: pronunciation_ai includes PronunciationLesson in spec', () => {
+    const f = gSDD(g338_pronunciation_ai);
+    assert.ok((f['.spec/specification.md']||'').includes('PronunciationLesson'), 'pronunciation_ai spec must mention PronunciationLesson');
+  });
+
+  it('SDD: pronunciation_ai (Supabase) → Supabase referenced in spec', () => {
+    const f = gSDD(g338_pronunciation_ai);
+    assert.ok((f['.spec/specification.md']||'').includes('Supabase'), 'pronunciation_ai spec must reference Supabase');
+  });
+
+  it('SDD: pronunciation_ai purpose keyword in spec', () => {
+    const f = gSDD(g338_pronunciation_ai);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('発音')||spec.includes('Pronunciation')||spec.includes('フォネーム'), 'pronunciation_ai spec must mention pronunciation context');
+  });
+
+  it('SDD EN: pronunciation_ai produces no undefined in spec', () => {
+    const f = gSDD(g338_pronunciation_ai, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'pronunciation_ai EN spec must not contain undefined');
+  });
+
+  it('SDD JA: pronunciation_ai produces no undefined in spec', () => {
+    const f = gSDD(g338_pronunciation_ai);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'pronunciation_ai JA spec must not contain undefined');
+  });
+
+  it('docs/01: pronunciation_ai overview mentions 発音 or Pronunciation', () => {
+    const f = gSDD(g338_pronunciation_ai);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('発音')||doc.includes('Pronunciation')||doc.includes('フォネーム'), 'pronunciation_ai docs/01 must mention pronunciation context');
+  });
+
+  it('docs/01: pronunciation_ai produces no undefined in overview', () => {
+    const f = gSDD(g338_pronunciation_ai);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'pronunciation_ai docs/01 must not contain undefined');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 339 — presets-ext16.js: hr_evaluation_dashboard
+   Supabase/Vercel/payment:stripe
+   ════════════════════════════════════════════════════════════════ */
+
+const g339_hr_evaluation_dashboard = Object.assign({}, A25, {
+  purpose: '目標設定・360度フィードバック・パフォーマンス評価サイクル管理・昇給昇格シミュレーションを提供する人事評価SaaS',
+  frontend: 'React + Next.js',
+  backend: 'Supabase',
+  database: 'PostgreSQL',
+  deploy: 'Vercel',
+  orm: 'Prisma',
+  auth: 'JWT + Supabase Auth',
+  payment: 'stripe',
+  mobile: 'なし',
+  data_entities: 'User, EmployeeProfile, EvalCycle, PerformanceGoal, EvalFeedback',
+  mvp_features: '目標管理(OKR/MBO), 360度フィードバック収集, 評価サイクル管理, パフォーマンスダッシュボード, AuditLog, 多要素認証（MFA）, ページネーション・無限スクロール',
+});
+
+describe('Suite 339: presets-ext16 hr_evaluation_dashboard — Supabase/Vercel/stripe', () => {
+
+  it('SDD: hr_evaluation_dashboard generates specification.md and constitution.md', () => {
+    const f = gSDD(g339_hr_evaluation_dashboard);
+    assert.ok(f['.spec/specification.md'], 'hr_evaluation_dashboard must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'hr_evaluation_dashboard must generate constitution.md');
+  });
+
+  it('SDD: hr_evaluation_dashboard includes EmployeeProfile in spec', () => {
+    const f = gSDD(g339_hr_evaluation_dashboard);
+    assert.ok((f['.spec/specification.md']||'').includes('EmployeeProfile'), 'hr_evaluation_dashboard spec must mention EmployeeProfile');
+  });
+
+  it('SDD: hr_evaluation_dashboard (Supabase) → Supabase referenced in spec', () => {
+    const f = gSDD(g339_hr_evaluation_dashboard);
+    assert.ok((f['.spec/specification.md']||'').includes('Supabase'), 'hr_evaluation_dashboard spec must reference Supabase');
+  });
+
+  it('SDD: hr_evaluation_dashboard purpose keyword in spec', () => {
+    const f = gSDD(g339_hr_evaluation_dashboard);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('人事')||spec.includes('HR')||spec.includes('評価'), 'hr_evaluation_dashboard spec must mention HR context');
+  });
+
+  it('SDD EN: hr_evaluation_dashboard produces no undefined in spec', () => {
+    const f = gSDD(g339_hr_evaluation_dashboard, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'hr_evaluation_dashboard EN spec must not contain undefined');
+  });
+
+  it('SDD JA: hr_evaluation_dashboard produces no undefined in spec', () => {
+    const f = gSDD(g339_hr_evaluation_dashboard);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'hr_evaluation_dashboard JA spec must not contain undefined');
+  });
+
+  it('docs/01: hr_evaluation_dashboard overview mentions 人事 or HR', () => {
+    const f = gSDD(g339_hr_evaluation_dashboard);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('人事')||doc.includes('HR')||doc.includes('評価'), 'hr_evaluation_dashboard docs/01 must mention HR context');
+  });
+
+  it('docs/01: hr_evaluation_dashboard produces no undefined in overview', () => {
+    const f = gSDD(g339_hr_evaluation_dashboard);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'hr_evaluation_dashboard docs/01 must not contain undefined');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 340 — presets-ext16.js: livestock_optimizer
+   Supabase/Vercel/payment:stripe
+   ════════════════════════════════════════════════════════════════ */
+
+const g340_livestock_optimizer = Object.assign({}, A25, {
+  purpose: '家畜個体管理・飼料スケジュール・健康モニタリング・生産量予測・AIによる飼養最適化を提供する畜産DX SaaS',
+  frontend: 'React + Next.js',
+  backend: 'Supabase',
+  database: 'PostgreSQL',
+  deploy: 'Vercel',
+  orm: 'Prisma',
+  auth: 'JWT + Supabase Auth',
+  payment: 'stripe',
+  mobile: 'なし',
+  data_entities: 'User, LivestockRecord, FeedSchedule, HealthMonitor, ProductionYield',
+  mvp_features: '家畜個体管理・系譜追跡, 飼料スケジュール・コスト管理, 健康モニタリング・異常検知, AI生産量予測, 飼養最適化レポート, ページネーション・無限スクロール',
+});
+
+describe('Suite 340: presets-ext16 livestock_optimizer — Supabase/Vercel/stripe', () => {
+
+  it('SDD: livestock_optimizer generates specification.md and constitution.md', () => {
+    const f = gSDD(g340_livestock_optimizer);
+    assert.ok(f['.spec/specification.md'], 'livestock_optimizer must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'livestock_optimizer must generate constitution.md');
+  });
+
+  it('SDD: livestock_optimizer includes LivestockRecord in spec', () => {
+    const f = gSDD(g340_livestock_optimizer);
+    assert.ok((f['.spec/specification.md']||'').includes('LivestockRecord'), 'livestock_optimizer spec must mention LivestockRecord');
+  });
+
+  it('SDD: livestock_optimizer (Supabase) → Supabase referenced in spec', () => {
+    const f = gSDD(g340_livestock_optimizer);
+    assert.ok((f['.spec/specification.md']||'').includes('Supabase'), 'livestock_optimizer spec must reference Supabase');
+  });
+
+  it('SDD: livestock_optimizer purpose keyword in spec', () => {
+    const f = gSDD(g340_livestock_optimizer);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('畜産')||spec.includes('Livestock')||spec.includes('家畜'), 'livestock_optimizer spec must mention livestock context');
+  });
+
+  it('SDD EN: livestock_optimizer produces no undefined in spec', () => {
+    const f = gSDD(g340_livestock_optimizer, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'livestock_optimizer EN spec must not contain undefined');
+  });
+
+  it('SDD JA: livestock_optimizer produces no undefined in spec', () => {
+    const f = gSDD(g340_livestock_optimizer);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'livestock_optimizer JA spec must not contain undefined');
+  });
+
+  it('docs/01: livestock_optimizer overview mentions 畜産 or Livestock', () => {
+    const f = gSDD(g340_livestock_optimizer);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('畜産')||doc.includes('Livestock')||doc.includes('家畜'), 'livestock_optimizer docs/01 must mention livestock context');
+  });
+
+  it('docs/01: livestock_optimizer produces no undefined in overview', () => {
+    const f = gSDD(g340_livestock_optimizer);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'livestock_optimizer docs/01 must not contain undefined');
+  });
+});

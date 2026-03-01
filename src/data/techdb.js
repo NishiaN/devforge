@@ -496,6 +496,27 @@ const TECH_DB=[
 // ── ext-de2: Backend / Runtime (2) ──
 {name:'Nitro',cat:'back',sub:'fw',req:'optional',level:'int',price:'free-oss'},
 {name:'Electron',cat:'mobile',sub:'desktop',req:'optional',level:'int',price:'free-oss'},
+// ── ext15 batch: 20 new tools ──
+{name:'Waku',cat:'front',sub:'fw',req:'optional',level:'pro',price:'free-oss'},
+{name:'Rsbuild',cat:'build',sub:'bundler',req:'optional',level:'int',price:'free-oss'},
+{name:'Bun Shell',cat:'back',sub:'runtime',req:'optional',level:'int',price:'free-oss'},
+{name:'Prisma Pulse',cat:'back',sub:'realtime',req:'optional',level:'pro',price:'free-tier'},
+{name:'Supabase Realtime v2',cat:'back',sub:'realtime',req:'optional',level:'int',price:'free-tier'},
+{name:'Playwright Component',cat:'test',sub:'component',req:'optional',level:'int',price:'free-oss'},
+{name:'Vitest Browser Mode',cat:'test',sub:'browser',req:'optional',level:'int',price:'free-oss'},
+{name:'Upstash QStash',cat:'back',sub:'queue',req:'optional',level:'int',price:'free-tier'},
+{name:'UnoCSS',cat:'front',sub:'css',req:'optional',level:'int',price:'free-oss'},
+{name:'Knip',cat:'build',sub:'analyzer',req:'optional',level:'int',price:'free-oss'},
+{name:'Conform',cat:'front',sub:'form',req:'optional',level:'int',price:'free-oss'},
+{name:'Logto',cat:'back',sub:'auth',req:'optional',level:'int',price:'free-oss'},
+{name:'Liveblocks',cat:'back',sub:'realtime',req:'optional',level:'int',price:'free-tier'},
+{name:'ElectricSQL',cat:'back',sub:'db',req:'optional',level:'pro',price:'free-oss'},
+{name:'Mantine',cat:'front',sub:'ui',req:'optional',level:'int',price:'free-oss'},
+{name:'Panda CSS',cat:'front',sub:'css',req:'optional',level:'pro',price:'free-oss'},
+{name:'Nuqs',cat:'front',sub:'state',req:'optional',level:'int',price:'free-oss'},
+{name:'Encore.ts',cat:'back',sub:'fw',req:'optional',level:'pro',price:'free-tier'},
+{name:'Million.js',cat:'front',sub:'perf',req:'optional',level:'int',price:'free-oss'},
+{name:'Directus',cat:'baas',sub:'cms',req:'optional',level:'int',price:'free-oss'},
 ];
 const _TECH_COUNT=TECH_DB.length;
 

@@ -1,4 +1,4 @@
-// Compat rules functional test (202 rules: 31 ERROR + 114 WARN + 57 INFO)
+// Compat rules functional test (229 rules: 33 ERROR + 125 WARN + 71 INFO)
 const assert=require('node:assert/strict');
 const S={lang:'ja',skill:'pro'};
 eval(require('fs').readFileSync('src/data/compat-rules.js','utf-8'));
@@ -35,7 +35,7 @@ const tests=[
   {name:'Next+Vercel=OK',a:{frontend:'React + Next.js',deploy:'Vercel'},expect:'info'},
   {name:'Supabase+SupaDB=OK',a:{backend:'Supabase',database:'Supabase (PostgreSQL)'},expect:'none'},
   {name:'Firebase+Firestore=OK',a:{backend:'Firebase',database:'Firebase Firestore'},expect:'none'},
-  {name:'Pro+FullAuto=OK',a:{ai_auto:'フル自律開発',skill_level:'Professional'},expect:'none'},
+  {name:'Pro+FullAuto=noSkillMismatch',a:{ai_auto:'フル自律開発',skill_level:'Professional'},expect:'none',id:'ai-auto-skill-mismatch'},
   {name:'Antigravity+Windsurf=warn',a:{ai_tools:'Google Antigravity, Windsurf'},expect:'warn'},
   {name:'Antigravity only=OK',a:{ai_tools:'Google Antigravity, Claude Code'},expect:'none'},
   {name:'OpenRouter=info',a:{ai_tools:'Cursor, OpenRouter'},expect:'info'},
@@ -459,6 +459,62 @@ const tests=[
   // be-batch-serverless (INFO) — DataPipeline entity + Vercel/Firebase Hosting
   {name:'DataPipeline+Vercel=INFO',a:{data_entities:'DataPipeline, ETLJob, Transform',deploy:'Vercel'},expect:'info',id:'be-batch-serverless'},
   {name:'DataPipeline+Railway=noINFO',a:{data_entities:'DataPipeline, ETLJob, Transform',deploy:'Railway'},expect:'none',id:'be-batch-serverless'},
+  // ── Phase D: 15 new rules ──
+  // dom-manufacturing-noaudit (WARN) — large-scale manufacturing without AuditLog
+  {name:'manufacturing+large+noAudit=WARN',a:{purpose:'製造品質管理システム',data_entities:'User, Product, QCResult, Machine',scale:'large'},expect:'warn',id:'dom-manufacturing-noaudit'},
+  {name:'manufacturing+large+withAudit=noWARN',a:{purpose:'製造品質管理システム',data_entities:'User, Product, QCResult, AuditLog',scale:'large'},expect:'none',id:'dom-manufacturing-noaudit'},
+  {name:'manufacturing+medium+noAudit=noWARN',a:{purpose:'製造品質管理システム',data_entities:'User, Product, QCResult',scale:'medium'},expect:'none',id:'dom-manufacturing-noaudit'},
+  // dom-manufacturing-noiot (INFO) — smart factory without IoT
+  {name:'smartFactory+noIoT=INFO',a:{purpose:'スマートファクトリー設備稼働監視システム'},expect:'info',id:'dom-manufacturing-noiot'},
+  {name:'smartFactory+withMQTT=noINFO',a:{purpose:'スマートファクトリー設備稼働監視システム',mvp_features:'MQTT連携,センサーデータ収集'},expect:'none',id:'dom-manufacturing-noiot'},
+  // dom-medical-noencrypt (ERROR) — EHR without encryption
+  {name:'EHR+PatientRecord+noEncrypt=ERROR',a:{purpose:'電子カルテシステム病院向け',data_entities:'User, PatientRecord, Diagnosis, Prescription'},expect:'error',id:'dom-medical-noencrypt'},
+  {name:'EHR+PatientRecord+withEncrypt=noERROR',a:{purpose:'電子カルテシステム病院向け',data_entities:'User, PatientRecord, Diagnosis',mvp_features:'データ暗号化(AES-256)'},expect:'none',id:'dom-medical-noencrypt'},
+  {name:'EHR+noSensitiveEntity=noERROR',a:{purpose:'電子カルテシステム',data_entities:'User, Staff, Schedule'},expect:'none',id:'dom-medical-noencrypt'},
+  // dom-medical-noaudit (WARN) — clinical system without AuditLog
+  {name:'clinical+MedRecord+noAudit=WARN',a:{purpose:'クリニック管理システム',data_entities:'User, PatientRecord, Prescription, Diagnosis'},expect:'warn',id:'dom-medical-noaudit'},
+  {name:'clinical+MedRecord+withAudit=noWARN',a:{purpose:'クリニック管理システム',data_entities:'User, PatientRecord, Prescription, AuditLog'},expect:'none',id:'dom-medical-noaudit'},
+  // dom-education-nolti (INFO) — LMS without LTI/SCORM
+  {name:'LMS+noLTI=INFO',a:{purpose:'学習管理システムプラットフォーム'},expect:'info',id:'dom-education-nolti'},
+  {name:'LMS+withLTI=noINFO',a:{purpose:'学習管理システムプラットフォーム',mvp_features:'LTI 1.3連携,SCORM対応'},expect:'none',id:'dom-education-nolti'},
+  // dom-fintech-no2fa (ERROR) — banking/securities without MFA
+  {name:'digitalBanking+noMFA=ERROR',a:{purpose:'デジタル銀行プラットフォームオンライン決済'},expect:'error',id:'dom-fintech-no2fa'},
+  {name:'digitalBanking+withMFA=noERROR',a:{purpose:'デジタル銀行プラットフォームオンライン決済',mvp_features:'多要素認証（MFA）'},expect:'none',id:'dom-fintech-no2fa'},
+  {name:'investment+noMFA=noERROR',a:{purpose:'投資ポートフォリオ管理'},expect:'none',id:'dom-fintech-no2fa'},
+  // ai-medical-legal-noguard (WARN) — AI medical/legal without guardrail
+  {name:'medAI+noGuard=WARN',a:{purpose:'医療AI診断支援システム',ai_auto:'AIオーケストレーター'},expect:'warn',id:'ai-medical-legal-noguard'},
+  {name:'medAI+withGuard=noWARN',a:{purpose:'医療AI診断支援システム',ai_auto:'AIオーケストレーター',mvp_features:'ガードレール設定,HITL'},expect:'none',id:'ai-medical-legal-noguard'},
+  {name:'medAI+noAI=noWARN',a:{purpose:'医療AI診断支援システム',ai_auto:'none'},expect:'none',id:'ai-medical-legal-noguard'},
+  // fe-react-legacy-state (INFO) — React + legacy state management
+  {name:'React+Redux=INFO',a:{frontend:'React + Next.js',mvp_features:'Redux状態管理'},expect:'info',id:'fe-react-legacy-state'},
+  {name:'React+ReduxToolkit=noINFO',a:{frontend:'React + Next.js',mvp_features:'Redux Toolkit'},expect:'none',id:'fe-react-legacy-state'},
+  {name:'React+Zustand=noINFO',a:{frontend:'React + Next.js',mvp_features:'Zustand状態管理'},expect:'none',id:'fe-react-legacy-state'},
+  // perf-large-entity-noindex (WARN) — many entities without index at large scale
+  {name:'12entities+large+noIndex=WARN',a:{data_entities:'User, Team, Project, Task, Comment, Tag, File, Notification, AuditLog, Role, Permission, Session',scale:'large'},expect:'warn',id:'perf-large-entity-noindex'},
+  {name:'12entities+large+withIndex=noWARN',a:{data_entities:'User, Team, Project, Task, Comment, Tag, File, Notification, AuditLog, Role, Permission, Session',scale:'large',mvp_features:'複合インデックス設計'},expect:'none',id:'perf-large-entity-noindex'},
+  {name:'5entities+large+noIndex=noWARN',a:{data_entities:'User, Team, Project, Task, Comment',scale:'large'},expect:'none',id:'perf-large-entity-noindex'},
+  // sec-sensitive-nobackup (WARN) — sensitive entities without backup at large scale
+  {name:'MedicalRecord+large+noBackup=WARN',a:{data_entities:'User, MedicalRecord, Doctor, Prescription',scale:'large'},expect:'warn',id:'sec-sensitive-nobackup'},
+  {name:'MedicalRecord+large+withBackup=noWARN',a:{data_entities:'User, MedicalRecord, Doctor',scale:'large',mvp_features:'バックアップ・DR計画'},expect:'none',id:'sec-sensitive-nobackup'},
+  {name:'MedicalRecord+medium+noBackup=noWARN',a:{data_entities:'User, MedicalRecord, Doctor',scale:'medium'},expect:'none',id:'sec-sensitive-nobackup'},
+  // cl-monorepo-notools (INFO) — monorepo without management tools
+  {name:'monorepo+noTools=INFO',a:{dev_methods:'モノレポ構成'},expect:'info',id:'cl-monorepo-notools'},
+  {name:'monorepo+Turborepo=noINFO',a:{dev_methods:'モノレポ構成',mvp_features:'Turborepo,pnpm workspace'},expect:'none',id:'cl-monorepo-notools'},
+  // cl-baas-customlogic (INFO) — Firebase with 10+ entities
+  {name:'Firebase+10entities=INFO',a:{backend:'Firebase',data_entities:'User, Team, Project, Task, Comment, Tag, File, Notification, AuditLog, Role'},expect:'info',id:'cl-baas-customlogic'},
+  {name:'Firebase+5entities=noINFO',a:{backend:'Firebase',data_entities:'User, Team, Project, Task, Comment'},expect:'none',id:'cl-baas-customlogic'},
+  // cl-ai-nomonitoring (WARN) — high AI autonomy without monitoring
+  {name:'fullAuto+noMonitor=WARN',a:{ai_auto:'フル自律開発'},expect:'warn',id:'cl-ai-nomonitoring'},
+  {name:'orchestrator+withMonitor=noWARN',a:{ai_auto:'AIオーケストレーター',mvp_features:'Langfuse AI監視'},expect:'none',id:'cl-ai-nomonitoring'},
+  {name:'copilot+noMonitor=noWARN',a:{ai_auto:'コーディングアシスタント（Copilot等）'},expect:'none',id:'cl-ai-nomonitoring'},
+  // cl-api-noversioning (INFO) — large Node.js/Python API without versioning
+  {name:'Express+large+noVersion=INFO',a:{backend:'Node.js + Express',scale:'large'},expect:'info',id:'cl-api-noversioning'},
+  {name:'Express+large+withVersion=noINFO',a:{backend:'Node.js + Express',scale:'large',mvp_features:'/v1/ APIバージョニング'},expect:'none',id:'cl-api-noversioning'},
+  {name:'Express+medium+noVersion=noINFO',a:{backend:'Node.js + Express',scale:'medium'},expect:'none',id:'cl-api-noversioning'},
+  // cl-payment-nowebhook (WARN) — large Node.js + payment without webhook
+  {name:'Express+pay+large+noWebhook=WARN',a:{payment:'Stripe決済',backend:'Node.js + Express',scale:'large'},expect:'warn',id:'cl-payment-nowebhook'},
+  {name:'Express+pay+large+withWebhook=noWARN',a:{payment:'Stripe決済',backend:'Node.js + Express',scale:'large',mvp_features:'Stripe Webhook署名検証'},expect:'none',id:'cl-payment-nowebhook'},
+  {name:'Express+pay+medium+noWebhook=noWARN',a:{payment:'Stripe決済',backend:'Node.js + Express',scale:'medium'},expect:'none',id:'cl-payment-nowebhook'},
 ];
 
 let pass=0,fail=0;

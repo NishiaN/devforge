@@ -1908,3 +1908,753 @@ ENTITY_COLUMNS['ProdPlan']=[
   'kpi_data:JSONB::KPIデータ:KPI data',
   'ai_optimized:BOOLEAN:DEFAULT false:AI最適化済み:AI optimized'
 ];
+
+// ── ext15 entities (presets-ext15.js: senior/food/biotech/logistics/privacy/energy/ecology/nutrition/invoice/manual) ──
+
+ENTITY_COLUMNS['PhoneGuide']=[
+  'user_id:UUID:FK(User):ユーザーID:User ID',
+  'title:VARCHAR(255):NOT NULL:ガイドタイトル:Guide title',
+  'category_id:UUID:FK(HelpCategory) NOT NULL:カテゴリID:Category ID',
+  'content:TEXT:NOT NULL:ガイド内容:Guide content',
+  'difficulty:VARCHAR(20):DEFAULT \'beginner\':難易度:Difficulty',
+  'view_count:INT:DEFAULT 0:閲覧数:View count'
+];
+
+ENTITY_COLUMNS['TutorialStep']=[
+  'guide_id:UUID:FK(PhoneGuide) NOT NULL:ガイドID:Guide ID',
+  'step_number:INT:NOT NULL:ステップ番号:Step number',
+  'step_title:VARCHAR(255):NOT NULL:ステップタイトル:Step title',
+  'instruction:TEXT:NOT NULL:操作説明:Instruction',
+  'image_url:VARCHAR(512)::スクリーンショットURL:Screenshot URL',
+  'tip:TEXT::コツ・注意点:Tips & notes'
+];
+
+ENTITY_COLUMNS['HelpCategory']=[
+  'name:VARCHAR(100):NOT NULL:カテゴリ名:Category name',
+  'name_en:VARCHAR(100)::英語カテゴリ名:English category name',
+  'icon:VARCHAR(10)::アイコン:Icon',
+  'sort_order:INT:DEFAULT 0:表示順:Sort order',
+  'parent_id:UUID:FK(HelpCategory):親カテゴリID:Parent category ID'
+];
+
+ENTITY_COLUMNS['SupportSession']=[
+  'user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID',
+  'question:TEXT:NOT NULL:質問内容:Question',
+  'status:VARCHAR(20):DEFAULT \'open\':ステータス:Status',
+  'response:TEXT::回答内容:Response',
+  'resolved_at:TIMESTAMP::解決日時:Resolved at'
+];
+
+ENTITY_COLUMNS['RestaurantRecord']=[
+  'name:VARCHAR(255):NOT NULL:レストラン名:Restaurant name',
+  'genre:VARCHAR(100)::ジャンル:Genre',
+  'area:VARCHAR(100)::エリア:Area',
+  'price_range:VARCHAR(50)::価格帯:Price range',
+  'latitude:DECIMAL(9,6)::緯度:Latitude',
+  'longitude:DECIMAL(9,6)::経度:Longitude',
+  'avg_rating:DECIMAL(3,2):DEFAULT 0:平均評価:Average rating'
+];
+
+ENTITY_COLUMNS['RestaurantReview']=[
+  'user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID',
+  'restaurant_id:UUID:FK(RestaurantRecord) NOT NULL:レストランID:Restaurant ID',
+  'rating:DECIMAL(2,1):NOT NULL:評価:Rating',
+  'comment:TEXT::コメント:Comment',
+  'visit_date:DATE::訪問日:Visit date',
+  'photo_urls:JSONB::写真URL一覧:Photo URLs'
+];
+
+ENTITY_COLUMNS['MenuCategory']=[
+  'restaurant_id:UUID:FK(RestaurantRecord) NOT NULL:レストランID:Restaurant ID',
+  'category_name:VARCHAR(100):NOT NULL:カテゴリ名:Category name',
+  'sort_order:INT:DEFAULT 0:表示順:Sort order'
+];
+
+ENTITY_COLUMNS['Bookmark']=[
+  'user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID',
+  'restaurant_id:UUID:FK(RestaurantRecord) NOT NULL:レストランID:Restaurant ID',
+  'note:VARCHAR(500)::メモ:Note',
+  'collection_name:VARCHAR(100):DEFAULT \'お気に入り\':コレクション名:Collection name',
+  'created_at:TIMESTAMP:DEFAULT NOW():作成日時:Created at'
+];
+
+ENTITY_COLUMNS['MicrobiomeSample']=[
+  'user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID',
+  'sample_date:DATE:NOT NULL:採取日:Sample date',
+  'kit_id:VARCHAR(100):UNIQUE NOT NULL:キットID:Kit ID',
+  'sequencing_method:VARCHAR(50)::シーケンシング手法:Sequencing method',
+  'status:VARCHAR(20):DEFAULT \'pending\':処理状態:Processing status',
+  'raw_data_url:VARCHAR(512)::生データURL:Raw data URL'
+];
+
+ENTITY_COLUMNS['TaxonomyReport']=[
+  'sample_id:UUID:FK(MicrobiomeSample) NOT NULL:サンプルID:Sample ID',
+  'diversity_shannon:DECIMAL(6,4)::Shannon多様性指数:Shannon diversity index',
+  'diversity_simpson:DECIMAL(6,4)::Simpson多様性指数:Simpson diversity index',
+  'dominant_phylum:VARCHAR(100)::優勢門:Dominant phylum',
+  'report_data:JSONB::分類詳細データ:Taxonomy detail data',
+  'generated_at:TIMESTAMP:DEFAULT NOW():生成日時:Generated at'
+];
+
+ENTITY_COLUMNS['DietCorrelation']=[
+  'user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID',
+  'food_group:VARCHAR(100):NOT NULL:食品グループ:Food group',
+  'correlation_score:DECIMAL(4,3)::相関スコア:Correlation score',
+  'effect_type:VARCHAR(50)::効果タイプ:Effect type',
+  'confidence:DECIMAL(4,3)::信頼度:Confidence level',
+  'analysis_period:VARCHAR(50)::分析期間:Analysis period'
+];
+
+ENTITY_COLUMNS['HealthInsight']=[
+  'user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID',
+  'insight_type:VARCHAR(50):NOT NULL:インサイト種別:Insight type',
+  'title:VARCHAR(255):NOT NULL:インサイトタイトル:Insight title',
+  'body:TEXT:NOT NULL:インサイト内容:Insight body',
+  'priority:VARCHAR(20):DEFAULT \'info\':重要度:Priority',
+  'generated_at:TIMESTAMP:DEFAULT NOW():生成日時:Generated at'
+];
+
+ENTITY_COLUMNS['DeliveryOrder']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'order_number:VARCHAR(100):UNIQUE NOT NULL:注文番号:Order number',
+  'pickup_address:TEXT:NOT NULL:集荷住所:Pickup address',
+  'delivery_address:TEXT:NOT NULL:配達先住所:Delivery address',
+  'status:VARCHAR(30):DEFAULT \'pending\':配送状態:Delivery status',
+  'scheduled_at:TIMESTAMP::配送予定日時:Scheduled delivery time',
+  'weight_kg:DECIMAL(6,2)::重量(kg):Weight (kg)'
+];
+
+ENTITY_COLUMNS['RouteStop']=[
+  'route_id:UUID:NOT NULL:ルートID:Route ID',
+  'order_id:UUID:FK(DeliveryOrder) NOT NULL:注文ID:Order ID',
+  'stop_sequence:INT:NOT NULL:停車順:Stop sequence',
+  'latitude:DECIMAL(9,6):NOT NULL:緯度:Latitude',
+  'longitude:DECIMAL(9,6):NOT NULL:経度:Longitude',
+  'estimated_arrival:TIMESTAMP::到着予定:Estimated arrival',
+  'completed_at:TIMESTAMP::完了日時:Completed at'
+];
+
+ENTITY_COLUMNS['VehicleFleet']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'vehicle_code:VARCHAR(50):UNIQUE NOT NULL:車両コード:Vehicle code',
+  'license_plate:VARCHAR(20):NOT NULL:ナンバープレート:License plate',
+  'vehicle_type:VARCHAR(50):NOT NULL:車両種別:Vehicle type',
+  'capacity_kg:DECIMAL(8,2)::積載容量(kg):Load capacity (kg)',
+  'driver_id:UUID:FK(User):担当ドライバーID:Driver ID',
+  'status:VARCHAR(20):DEFAULT \'available\':稼働状態:Status'
+];
+
+ENTITY_COLUMNS['RouteOptResult']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'vehicle_id:UUID:FK(VehicleFleet) NOT NULL:車両ID:Vehicle ID',
+  'route_date:DATE:NOT NULL:配送日:Delivery date',
+  'total_distance_km:DECIMAL(8,2)::総距離(km):Total distance (km)',
+  'estimated_duration_min:INT::推定所要時間(分):Estimated duration (min)',
+  'stop_count:INT::停車数:Stop count',
+  'optimization_score:DECIMAL(5,2)::最適化スコア:Optimization score'
+];
+
+ENTITY_COLUMNS['DataSubjectReq']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'request_type:VARCHAR(50):NOT NULL:リクエスト種別:Request type',
+  'subject_name:VARCHAR(255):NOT NULL:データ主体名:Data subject name',
+  'subject_email:VARCHAR(255):NOT NULL:データ主体メール:Data subject email',
+  'status:VARCHAR(30):DEFAULT \'received\':対応状態:Status',
+  'due_date:DATE::期限:Due date',
+  'completed_at:TIMESTAMP::完了日時:Completed at'
+];
+
+ENTITY_COLUMNS['PrivacyConsent']=[
+  'user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID',
+  'consent_type:VARCHAR(100):NOT NULL:同意種別:Consent type',
+  'version:VARCHAR(20):NOT NULL:バージョン:Version',
+  'granted:BOOLEAN:NOT NULL:同意可否:Granted',
+  'granted_at:TIMESTAMP:DEFAULT NOW():同意日時:Granted at',
+  'ip_address:VARCHAR(45)::IPアドレス:IP address'
+];
+
+ENTITY_COLUMNS['DataInventory']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'data_category:VARCHAR(100):NOT NULL:データカテゴリ:Data category',
+  'data_type:VARCHAR(100):NOT NULL:データ種別:Data type',
+  'storage_location:VARCHAR(255)::保存場所:Storage location',
+  'retention_period:VARCHAR(50)::保持期間:Retention period',
+  'third_party_shared:BOOLEAN:DEFAULT false:第三者提供:Third-party shared',
+  'legal_basis:VARCHAR(100)::処理根拠:Legal basis'
+];
+
+ENTITY_COLUMNS['PrivacyReport']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'report_type:VARCHAR(50):NOT NULL:レポート種別:Report type',
+  'period_start:DATE:NOT NULL:期間開始:Period start',
+  'period_end:DATE:NOT NULL:期間終了:Period end',
+  'dsr_count:INT:DEFAULT 0:DSR件数:DSR count',
+  'report_data:JSONB::レポートデータ:Report data',
+  'generated_at:TIMESTAMP:DEFAULT NOW():生成日時:Generated at'
+];
+
+ENTITY_COLUMNS['BuildingModel']=[
+  'user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID',
+  'building_name:VARCHAR(255):NOT NULL:建物名:Building name',
+  'building_type:VARCHAR(50):NOT NULL:建物用途:Building type',
+  'floor_area_m2:DECIMAL(10,2):NOT NULL:延床面積(m2):Total floor area (m2)',
+  'floors:INT:DEFAULT 1:階数:Number of floors',
+  'climate_zone:VARCHAR(50)::気候区分:Climate zone',
+  'construction_year:INT::建設年:Construction year'
+];
+
+ENTITY_COLUMNS['EnergyScenario']=[
+  'model_id:UUID:FK(BuildingModel) NOT NULL:建物モデルID:Building model ID',
+  'scenario_name:VARCHAR(255):NOT NULL:シナリオ名:Scenario name',
+  'insulation_level:VARCHAR(50)::断熱性能:Insulation level',
+  'hvac_type:VARCHAR(100)::空調方式:HVAC type',
+  'renewable_energy:VARCHAR(100)::再エネ設備:Renewable energy',
+  'lighting_type:VARCHAR(50)::照明種別:Lighting type'
+];
+
+ENTITY_COLUMNS['SimResult']=[
+  'scenario_id:UUID:FK(EnergyScenario) NOT NULL:シナリオID:Scenario ID',
+  'annual_energy_kwh:DECIMAL(12,2)::年間エネルギー消費(kWh):Annual energy (kWh)',
+  'co2_emission_kg:DECIMAL(12,2)::CO2排出量(kg):CO2 emission (kg)',
+  'energy_cost_jpy:DECIMAL(12,2)::エネルギーコスト(円):Energy cost (JPY)',
+  'bpi_score:DECIMAL(6,2)::BPI値:BPI score',
+  'zeb_achieved:BOOLEAN:DEFAULT false:ZEB達成:ZEB achieved'
+];
+
+ENTITY_COLUMNS['EnergyReport']=[
+  'model_id:UUID:FK(BuildingModel) NOT NULL:建物モデルID:Building model ID',
+  'report_name:VARCHAR(255):NOT NULL:レポート名:Report name',
+  'best_scenario_id:UUID:FK(EnergyScenario):最良シナリオID:Best scenario ID',
+  'savings_potential_pct:DECIMAL(5,2)::省エネ余地(%):Savings potential (%)',
+  'report_url:VARCHAR(512)::レポートURL:Report URL',
+  'generated_at:TIMESTAMP:DEFAULT NOW():生成日時:Generated at'
+];
+
+ENTITY_COLUMNS['SpeciesObservation']=[
+  'user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID',
+  'plot_id:UUID:FK(MonitoringPlot) NOT NULL:プロットID:Plot ID',
+  'species_name:VARCHAR(255):NOT NULL:種名:Species name',
+  'species_name_en:VARCHAR(255)::英語種名:Species name (English)',
+  'count:INT:NOT NULL:個体数:Count',
+  'observed_at:TIMESTAMP:DEFAULT NOW():観察日時:Observed at',
+  'photo_url:VARCHAR(512)::写真URL:Photo URL',
+  'notes:TEXT::備考:Notes'
+];
+
+ENTITY_COLUMNS['MonitoringPlot']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'plot_name:VARCHAR(255):NOT NULL:プロット名:Plot name',
+  'latitude:DECIMAL(9,6):NOT NULL:緯度:Latitude',
+  'longitude:DECIMAL(9,6):NOT NULL:経度:Longitude',
+  'area_m2:DECIMAL(10,2)::面積(m2):Area (m2)',
+  'habitat_type:VARCHAR(100)::生息地タイプ:Habitat type',
+  'established_date:DATE::設置日:Established date'
+];
+
+ENTITY_COLUMNS['BiodiversityIndex']=[
+  'plot_id:UUID:FK(MonitoringPlot) NOT NULL:プロットID:Plot ID',
+  'survey_date:DATE:NOT NULL:調査日:Survey date',
+  'shannon_index:DECIMAL(6,4)::Shannon多様性指数:Shannon index',
+  'simpson_index:DECIMAL(6,4)::Simpson多様性指数:Simpson index',
+  'species_richness:INT::種豊富度:Species richness',
+  'evenness:DECIMAL(6,4)::均等度:Evenness',
+  'trend:VARCHAR(20)::トレンド:Trend'
+];
+
+ENTITY_COLUMNS['EcologicalAlert']=[
+  'plot_id:UUID:FK(MonitoringPlot) NOT NULL:プロットID:Plot ID',
+  'alert_type:VARCHAR(50):NOT NULL:アラート種別:Alert type',
+  'severity:VARCHAR(20):DEFAULT \'info\':重大度:Severity',
+  'message:TEXT:NOT NULL:メッセージ:Message',
+  'triggered_at:TIMESTAMP:DEFAULT NOW():発生日時:Triggered at',
+  'resolved_at:TIMESTAMP::解決日時:Resolved at'
+];
+
+ENTITY_COLUMNS['MealRecord']=[
+  'user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID',
+  'meal_type:VARCHAR(20):NOT NULL:食事種別:Meal type',
+  'recorded_at:TIMESTAMP:DEFAULT NOW():記録日時:Recorded at',
+  'total_calories:DECIMAL(8,2)::合計カロリー:Total calories',
+  'total_protein_g:DECIMAL(8,2)::タンパク質(g):Protein (g)',
+  'total_fat_g:DECIMAL(8,2)::脂質(g):Fat (g)',
+  'total_carb_g:DECIMAL(8,2)::炭水化物(g):Carbohydrate (g)',
+  'note:TEXT::メモ:Note'
+];
+
+ENTITY_COLUMNS['NutrientData']=[
+  'food_name:VARCHAR(255):NOT NULL:食品名:Food name',
+  'food_name_en:VARCHAR(255)::英語食品名:Food name (English)',
+  'per_100g_calories:DECIMAL(8,2)::100g当たりカロリー:Calories per 100g',
+  'per_100g_protein:DECIMAL(8,2)::100g当たりタンパク質(g):Protein per 100g (g)',
+  'per_100g_fat:DECIMAL(8,2)::100g当たり脂質(g):Fat per 100g (g)',
+  'per_100g_carb:DECIMAL(8,2)::100g当たり炭水化物(g):Carbohydrate per 100g (g)',
+  'category:VARCHAR(100)::カテゴリ:Category'
+];
+
+ENTITY_COLUMNS['DietGoal']=[
+  'user_id:UUID:FK(User) UNIQUE NOT NULL:ユーザーID:User ID',
+  'target_calories:DECIMAL(8,2):NOT NULL:目標カロリー:Target calories',
+  'target_protein_g:DECIMAL(8,2)::目標タンパク質(g):Target protein (g)',
+  'target_fat_g:DECIMAL(8,2)::目標脂質(g):Target fat (g)',
+  'target_carb_g:DECIMAL(8,2)::目標炭水化物(g):Target carbohydrate (g)',
+  'goal_type:VARCHAR(50):DEFAULT \'balance\':目標タイプ:Goal type',
+  'updated_at:TIMESTAMP:DEFAULT NOW():更新日時:Updated at'
+];
+
+ENTITY_COLUMNS['NutritionWklyReport']=[
+  'user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID',
+  'week_start:DATE:NOT NULL:週開始日:Week start',
+  'avg_calories:DECIMAL(8,2)::平均カロリー:Average calories',
+  'avg_protein_g:DECIMAL(8,2)::平均タンパク質(g):Average protein (g)',
+  'goal_achievement_pct:DECIMAL(5,2)::目標達成率(%):Goal achievement (%)',
+  'insights:JSONB::AIインサイト:AI insights'
+];
+
+ENTITY_COLUMNS['InvoiceRecord']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'invoice_number:VARCHAR(100):UNIQUE NOT NULL:請求書番号:Invoice number',
+  'vendor_id:UUID:FK(VendorAccount) NOT NULL:ベンダーID:Vendor ID',
+  'amount:DECIMAL(15,2):NOT NULL:金額:Amount',
+  'currency:CHAR(3):DEFAULT \'JPY\':通貨:Currency',
+  'issue_date:DATE:NOT NULL:発行日:Issue date',
+  'due_date:DATE:NOT NULL:支払期限:Due date',
+  'status:VARCHAR(30):DEFAULT \'pending\':状態:Status',
+  'ocr_data:JSONB::OCR解析データ:OCR data'
+];
+
+ENTITY_COLUMNS['ExpenseEntry']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'user_id:UUID:FK(User) NOT NULL:申請者ID:Applicant ID',
+  'category:VARCHAR(100):NOT NULL:経費カテゴリ:Expense category',
+  'amount:DECIMAL(15,2):NOT NULL:金額:Amount',
+  'currency:CHAR(3):DEFAULT \'JPY\':通貨:Currency',
+  'expense_date:DATE:NOT NULL:発生日:Expense date',
+  'description:TEXT::説明:Description',
+  'status:VARCHAR(30):DEFAULT \'draft\':承認状態:Approval status',
+  'receipt_url:VARCHAR(512)::領収書URL:Receipt URL'
+];
+
+ENTITY_COLUMNS['VendorAccount']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'vendor_name:VARCHAR(255):NOT NULL:ベンダー名:Vendor name',
+  'vendor_code:VARCHAR(50):UNIQUE NOT NULL:ベンダーコード:Vendor code',
+  'contact_email:VARCHAR(255)::担当メール:Contact email',
+  'payment_terms:VARCHAR(100)::支払条件:Payment terms',
+  'bank_account:VARCHAR(255)::振込先口座:Bank account',
+  'status:VARCHAR(20):DEFAULT \'active\':状態:Status'
+];
+
+ENTITY_COLUMNS['PaymentRecord']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'invoice_id:UUID:FK(InvoiceRecord) NOT NULL:請求書ID:Invoice ID',
+  'amount:DECIMAL(15,2):NOT NULL:支払金額:Payment amount',
+  'payment_date:DATE:NOT NULL:支払日:Payment date',
+  'payment_method:VARCHAR(50):NOT NULL:支払方法:Payment method',
+  'transaction_id:VARCHAR(255)::取引ID:Transaction ID',
+  'status:VARCHAR(30):DEFAULT \'completed\':状態:Status'
+];
+
+ENTITY_COLUMNS['ManualDocument']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'title:VARCHAR(255):NOT NULL:マニュアルタイトル:Manual title',
+  'process_id:UUID:FK(WorkProcess) NOT NULL:プロセスID:Process ID',
+  'version:VARCHAR(20):DEFAULT \'1.0\':バージョン:Version',
+  'status:VARCHAR(30):DEFAULT \'draft\':状態:Status',
+  'content:TEXT::マニュアル内容:Manual content',
+  'published_at:TIMESTAMP::公開日時:Published at'
+];
+
+ENTITY_COLUMNS['WorkProcess']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'process_name:VARCHAR(255):NOT NULL:プロセス名:Process name',
+  'department:VARCHAR(100)::部署:Department',
+  'description:TEXT::プロセス説明:Process description',
+  'category:VARCHAR(100)::カテゴリ:Category',
+  'sort_order:INT:DEFAULT 0:表示順:Sort order'
+];
+
+ENTITY_COLUMNS['ProcedureStep']=[
+  'process_id:UUID:FK(WorkProcess) NOT NULL:プロセスID:Process ID',
+  'step_number:INT:NOT NULL:ステップ番号:Step number',
+  'step_title:VARCHAR(255):NOT NULL:ステップタイトル:Step title',
+  'description:TEXT:NOT NULL:手順説明:Procedure description',
+  'caution:TEXT::注意事項:Caution',
+  'estimated_min:INT::所要時間(分):Estimated time (min)',
+  'media_url:VARCHAR(512)::画像・動画URL:Media URL'
+];
+
+ENTITY_COLUMNS['KnowledgeBase']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'title:VARCHAR(255):NOT NULL:タイトル:Title',
+  'content:TEXT:NOT NULL:本文:Content',
+  'category:VARCHAR(100)::カテゴリ:Category',
+  'tags:JSONB::タグ:Tags',
+  'view_count:INT:DEFAULT 0:閲覧数:View count',
+  'helpful_count:INT:DEFAULT 0:役に立った数:Helpful count',
+  'updated_at:TIMESTAMP:DEFAULT NOW():更新日時:Updated at'
+];
+
+/* ── ext16: sign_language_tool ── */
+ENTITY_COLUMNS['SignVideoLesson']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'title:VARCHAR(255):NOT NULL:レッスンタイトル:Lesson title',
+  'sign_category:VARCHAR(100):NOT NULL:手話カテゴリ:Sign category',
+  'video_url:VARCHAR(512):NOT NULL:動画URL:Video URL',
+  'difficulty:VARCHAR(30):DEFAULT \'beginner\':難易度:Difficulty',
+  'duration_sec:INT::再生時間(秒):Duration (sec)',
+  'sort_order:INT:DEFAULT 0:表示順:Sort order'
+];
+ENTITY_COLUMNS['GestureModel']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'model_name:VARCHAR(255):NOT NULL:モデル名:Model name',
+  'sign_label:VARCHAR(100):NOT NULL:手話ラベル:Sign label',
+  'keypoints:JSONB:NOT NULL:キーポイントデータ:Keypoints data',
+  'accuracy:DECIMAL(5,2)::精度(%):Accuracy (%)',
+  'version:VARCHAR(20):DEFAULT \'1.0\':バージョン:Version'
+];
+ENTITY_COLUMNS['UserSignProgress']=[
+  'user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID',
+  'lesson_id:UUID:FK(SignVideoLesson) NOT NULL:レッスンID:Lesson ID',
+  'status:VARCHAR(30):DEFAULT \'not_started\':進捗状態:Progress status',
+  'score:DECIMAL(5,2)::スコア:Score',
+  'completed_at:TIMESTAMP::完了日時:Completed at',
+  'attempts:INT:DEFAULT 0:試行回数:Attempt count'
+];
+ENTITY_COLUMNS['SignQuiz']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'lesson_id:UUID:FK(SignVideoLesson):レッスンID:Lesson ID',
+  'question:TEXT:NOT NULL:問題文:Question',
+  'answer_key:VARCHAR(255):NOT NULL:正解:Answer key',
+  'quiz_type:VARCHAR(30):DEFAULT \'gesture\':クイズ種別:Quiz type',
+  'sort_order:INT:DEFAULT 0:表示順:Sort order'
+];
+
+/* ── ext16: travel_review_gen ── */
+ENTITY_COLUMNS['TripItinerary']=[
+  'user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID',
+  'title:VARCHAR(255):NOT NULL:旅程タイトル:Itinerary title',
+  'destination:VARCHAR(255):NOT NULL:目的地:Destination',
+  'start_date:DATE:NOT NULL:出発日:Start date',
+  'end_date:DATE:NOT NULL:帰着日:End date',
+  'budget:DECIMAL(12,2)::予算:Budget',
+  'status:VARCHAR(30):DEFAULT \'draft\':状態:Status'
+];
+ENTITY_COLUMNS['TravelReview']=[
+  'user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID',
+  'attraction_id:UUID:FK(Attraction) NOT NULL:スポットID:Attraction ID',
+  'rating:SMALLINT:NOT NULL CHECK(rating BETWEEN 1 AND 5):評価:Rating',
+  'title:VARCHAR(255)::レビュータイトル:Review title',
+  'body:TEXT:NOT NULL:本文:Body',
+  'visited_date:DATE::訪問日:Visited date',
+  'helpful_count:INT:DEFAULT 0:役立った数:Helpful count'
+];
+ENTITY_COLUMNS['Attraction']=[
+  'name:VARCHAR(255):NOT NULL:スポット名:Attraction name',
+  'country:VARCHAR(100):NOT NULL:国:Country',
+  'region:VARCHAR(100)::地域:Region',
+  'category:VARCHAR(100)::カテゴリ:Category',
+  'description:TEXT::説明:Description',
+  'avg_rating:DECIMAL(3,2)::平均評価:Average rating',
+  'review_count:INT:DEFAULT 0:レビュー数:Review count'
+];
+ENTITY_COLUMNS['TravelRecommendation']=[
+  'user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID',
+  'attraction_id:UUID:FK(Attraction) NOT NULL:スポットID:Attraction ID',
+  'score:DECIMAL(5,4):NOT NULL:推薦スコア:Recommendation score',
+  'reason_ja:TEXT::推薦理由(日本語):Reason (JA)',
+  'reason_en:TEXT::推薦理由(英語):Reason (EN)',
+  'generated_at:TIMESTAMP:DEFAULT NOW():生成日時:Generated at'
+];
+
+/* ── ext16: synbio_design ── */
+ENTITY_COLUMNS['GeneticPart']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'part_name:VARCHAR(255):NOT NULL:パーツ名:Part name',
+  'part_type:VARCHAR(100):NOT NULL:パーツ種別:Part type',
+  'sequence:TEXT:NOT NULL:塩基配列:Nucleotide sequence',
+  'description:TEXT::説明:Description',
+  'source:VARCHAR(255)::出典:Source',
+  'tags:JSONB::タグ:Tags'
+];
+ENTITY_COLUMNS['SynBioDesign']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'design_name:VARCHAR(255):NOT NULL:設計名:Design name',
+  'description:TEXT::説明:Description',
+  'parts:JSONB:NOT NULL:パーツ構成:Parts composition',
+  'version:VARCHAR(20):DEFAULT \'1.0\':バージョン:Version',
+  'status:VARCHAR(30):DEFAULT \'draft\':状態:Status',
+  'created_by:UUID:FK(User):作成者:Created by'
+];
+ENTITY_COLUMNS['BioCircuit']=[
+  'design_id:UUID:FK(SynBioDesign) NOT NULL:設計ID:Design ID',
+  'circuit_name:VARCHAR(255):NOT NULL:回路名:Circuit name',
+  'topology:JSONB:NOT NULL:回路トポロジー:Circuit topology',
+  'inputs:JSONB::入力シグナル:Input signals',
+  'outputs:JSONB::出力シグナル:Output signals',
+  'notes:TEXT::ノート:Notes'
+];
+ENTITY_COLUMNS['ExpressionResult']=[
+  'design_id:UUID:FK(SynBioDesign) NOT NULL:設計ID:Design ID',
+  'simulation_date:TIMESTAMP:DEFAULT NOW():シミュレーション日時:Simulation date',
+  'expression_level:DECIMAL(10,4)::発現レベル:Expression level',
+  'unit:VARCHAR(50)::単位:Unit',
+  'conditions:JSONB::実験条件:Experimental conditions',
+  'result_data:JSONB::結果データ:Result data'
+];
+
+/* ── ext16: dashcam_analyzer ── */
+ENTITY_COLUMNS['DashcamFootage']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'vehicle_id:VARCHAR(100):NOT NULL:車両ID:Vehicle ID',
+  'driver_id:UUID:FK(User)::ドライバーID:Driver ID',
+  'recorded_at:TIMESTAMP:NOT NULL:録画日時:Recorded at',
+  'duration_sec:INT:NOT NULL:録画時間(秒):Duration (sec)',
+  'storage_url:VARCHAR(512):NOT NULL:ストレージURL:Storage URL',
+  'analysis_status:VARCHAR(30):DEFAULT \'pending\':解析状態:Analysis status'
+];
+ENTITY_COLUMNS['DrivingEvent']=[
+  'footage_id:UUID:FK(DashcamFootage) NOT NULL:映像ID:Footage ID',
+  'event_type:VARCHAR(100):NOT NULL:イベント種別:Event type',
+  'severity:VARCHAR(30):NOT NULL:重大度:Severity',
+  'timestamp_sec:INT:NOT NULL:発生時刻(秒):Timestamp (sec)',
+  'confidence:DECIMAL(5,2)::信頼度(%):Confidence (%)',
+  'description:TEXT::説明:Description'
+];
+ENTITY_COLUMNS['AccidentReport']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'footage_id:UUID:FK(DashcamFootage) NOT NULL:映像ID:Footage ID',
+  'accident_date:TIMESTAMP:NOT NULL:事故日時:Accident date',
+  'severity:VARCHAR(30):NOT NULL:重大度:Severity',
+  'description:TEXT:NOT NULL:事故説明:Accident description',
+  'ai_judgment:TEXT::AI判定:AI judgment',
+  'status:VARCHAR(30):DEFAULT \'open\':状態:Status'
+];
+ENTITY_COLUMNS['DrivingScore']=[
+  'driver_id:UUID:FK(User) NOT NULL:ドライバーID:Driver ID',
+  'period_start:DATE:NOT NULL:集計開始日:Period start',
+  'period_end:DATE:NOT NULL:集計終了日:Period end',
+  'overall_score:DECIMAL(5,2):NOT NULL:総合スコア:Overall score',
+  'safety_score:DECIMAL(5,2)::安全スコア:Safety score',
+  'event_count:INT:DEFAULT 0:イベント件数:Event count',
+  'rank:INT::ランキング:Rank'
+];
+
+/* ── ext16: incident_forensics ── */
+ENTITY_COLUMNS['SecurityIncident']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'title:VARCHAR(255):NOT NULL:インシデントタイトル:Incident title',
+  'severity:VARCHAR(30):NOT NULL:重大度:Severity',
+  'status:VARCHAR(30):DEFAULT \'open\':状態:Status',
+  'detected_at:TIMESTAMP:NOT NULL:検知日時:Detected at',
+  'resolved_at:TIMESTAMP::解決日時:Resolved at',
+  'assigned_to:UUID:FK(User)::担当者ID:Assigned to'
+];
+ENTITY_COLUMNS['ForensicEvidence']=[
+  'incident_id:UUID:FK(SecurityIncident) NOT NULL:インシデントID:Incident ID',
+  'evidence_type:VARCHAR(100):NOT NULL:証拠種別:Evidence type',
+  'file_name:VARCHAR(255):NOT NULL:ファイル名:File name',
+  'storage_url:VARCHAR(512):NOT NULL:ストレージURL:Storage URL',
+  'hash_sha256:VARCHAR(64):NOT NULL:SHA256ハッシュ:SHA256 hash',
+  'collected_at:TIMESTAMP:DEFAULT NOW():収集日時:Collected at',
+  'notes:TEXT::メモ:Notes'
+];
+ENTITY_COLUMNS['ThreatIndicator']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'ioc_type:VARCHAR(100):NOT NULL:IOC種別:IOC type',
+  'value:TEXT:NOT NULL:IOC値:IOC value',
+  'confidence:VARCHAR(30):NOT NULL:信頼度:Confidence',
+  'tlp:VARCHAR(20):DEFAULT \'amber\':TLPレベル:TLP level',
+  'source:VARCHAR(255)::情報源:Source',
+  'expires_at:TIMESTAMP::有効期限:Expires at'
+];
+ENTITY_COLUMNS['InvestigationReport']=[
+  'incident_id:UUID:FK(SecurityIncident) NOT NULL:インシデントID:Incident ID',
+  'title:VARCHAR(255):NOT NULL:レポートタイトル:Report title',
+  'summary:TEXT:NOT NULL:概要:Summary',
+  'timeline:JSONB::タイムライン:Timeline',
+  'root_cause:TEXT::根本原因:Root cause',
+  'recommendations:TEXT::対策推薦:Recommendations',
+  'status:VARCHAR(30):DEFAULT \'draft\':状態:Status'
+];
+
+/* ── ext16: cultural_3d_archive ── */
+ENTITY_COLUMNS['CulturalAsset']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'name:VARCHAR(255):NOT NULL:文化財名:Asset name',
+  'asset_type:VARCHAR(100):NOT NULL:種別:Asset type',
+  'period:VARCHAR(100)::時代:Period',
+  'location:VARCHAR(255)::所在地:Location',
+  'description:TEXT::説明:Description',
+  'metadata:JSONB::メタデータ:Metadata'
+];
+ENTITY_COLUMNS['ScanModel3D']=[
+  'asset_id:UUID:FK(CulturalAsset) NOT NULL:文化財ID:Asset ID',
+  'model_name:VARCHAR(255):NOT NULL:モデル名:Model name',
+  'file_url:VARCHAR(512):NOT NULL:ファイルURL:File URL',
+  'file_format:VARCHAR(50):NOT NULL:ファイル形式:File format',
+  'polygon_count:INT::ポリゴン数:Polygon count',
+  'scan_date:DATE::スキャン日:Scan date',
+  'resolution_mm:DECIMAL(6,3)::解像度(mm):Resolution (mm)'
+];
+ENTITY_COLUMNS['AnnotationLayer']=[
+  'model_id:UUID:FK(ScanModel3D) NOT NULL:モデルID:Model ID',
+  'label:VARCHAR(255):NOT NULL:ラベル:Label',
+  'annotation_type:VARCHAR(100):NOT NULL:アノテーション種別:Annotation type',
+  'coordinates:JSONB:NOT NULL:座標データ:Coordinates',
+  'description:TEXT::説明:Description',
+  'created_by:UUID:FK(User):作成者:Created by'
+];
+ENTITY_COLUMNS['DigitalExhibit']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'title:VARCHAR(255):NOT NULL:展示タイトル:Exhibit title',
+  'description:TEXT::展示説明:Description',
+  'assets:JSONB:NOT NULL:展示文化財リスト:Asset list',
+  'is_public:BOOLEAN:DEFAULT false:公開フラグ:Public flag',
+  'published_at:TIMESTAMP::公開日時:Published at'
+];
+
+/* ── ext16: lab_notebook ── */
+ENTITY_COLUMNS['ExperimentRecord']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'title:VARCHAR(255):NOT NULL:実験タイトル:Experiment title',
+  'hypothesis:TEXT::仮説:Hypothesis',
+  'protocol_id:UUID:FK(LabProtocol)::プロトコルID:Protocol ID',
+  'status:VARCHAR(30):DEFAULT \'in_progress\':状態:Status',
+  'started_at:TIMESTAMP:NOT NULL:開始日時:Started at',
+  'completed_at:TIMESTAMP::完了日時:Completed at',
+  'created_by:UUID:FK(User):作成者:Created by'
+];
+ENTITY_COLUMNS['LabProtocol']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'title:VARCHAR(255):NOT NULL:プロトコルタイトル:Protocol title',
+  'category:VARCHAR(100)::カテゴリ:Category',
+  'steps:JSONB:NOT NULL:手順ステップ:Protocol steps',
+  'reagents:JSONB::試薬リスト:Reagents list',
+  'version:VARCHAR(20):DEFAULT \'1.0\':バージョン:Version',
+  'is_approved:BOOLEAN:DEFAULT false:承認済みフラグ:Approved flag'
+];
+ENTITY_COLUMNS['ResearchObservation']=[
+  'experiment_id:UUID:FK(ExperimentRecord) NOT NULL:実験ID:Experiment ID',
+  'observed_at:TIMESTAMP:NOT NULL:観測日時:Observed at',
+  'observer_id:UUID:FK(User):観測者ID:Observer ID',
+  'description:TEXT:NOT NULL:観測内容:Observation description',
+  'images:JSONB::観測画像:Observation images',
+  'notes:TEXT::メモ:Notes'
+];
+ENTITY_COLUMNS['DataMeasurement']=[
+  'experiment_id:UUID:FK(ExperimentRecord) NOT NULL:実験ID:Experiment ID',
+  'parameter_name:VARCHAR(255):NOT NULL:パラメータ名:Parameter name',
+  'value:DECIMAL(20,6):NOT NULL:測定値:Measured value',
+  'unit:VARCHAR(50):NOT NULL:単位:Unit',
+  'measured_at:TIMESTAMP:NOT NULL:測定日時:Measured at',
+  'instrument:VARCHAR(255)::使用機器:Instrument'
+];
+
+/* ── ext16: pronunciation_ai ── */
+ENTITY_COLUMNS['PronunciationLesson']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'title:VARCHAR(255):NOT NULL:レッスンタイトル:Lesson title',
+  'language:VARCHAR(50):NOT NULL:対象言語:Target language',
+  'target_text:TEXT:NOT NULL:練習テキスト:Target text',
+  'phonemes:JSONB::フォネームリスト:Phoneme list',
+  'difficulty:VARCHAR(30):DEFAULT \'beginner\':難易度:Difficulty',
+  'sort_order:INT:DEFAULT 0:表示順:Sort order'
+];
+ENTITY_COLUMNS['SpeechRecord']=[
+  'user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID',
+  'lesson_id:UUID:FK(PronunciationLesson) NOT NULL:レッスンID:Lesson ID',
+  'audio_url:VARCHAR(512):NOT NULL:音声URL:Audio URL',
+  'duration_ms:INT:NOT NULL:録音時間(ms):Duration (ms)',
+  'recorded_at:TIMESTAMP:DEFAULT NOW():録音日時:Recorded at',
+  'analysis_status:VARCHAR(30):DEFAULT \'pending\':解析状態:Analysis status'
+];
+ENTITY_COLUMNS['PhonemeScore']=[
+  'speech_id:UUID:FK(SpeechRecord) NOT NULL:音声ID:Speech record ID',
+  'phoneme:VARCHAR(20):NOT NULL:フォネーム:Phoneme',
+  'score:DECIMAL(5,2):NOT NULL:スコア:Score',
+  'accuracy_pct:DECIMAL(5,2)::正確率(%):Accuracy (%)',
+  'feedback:TEXT::フィードバック:Feedback'
+];
+ENTITY_COLUMNS['AccentFeedback']=[
+  'speech_id:UUID:FK(SpeechRecord) NOT NULL:音声ID:Speech record ID',
+  'accent_type:VARCHAR(100)::アクセント種別:Accent type',
+  'rhythm_score:DECIMAL(5,2)::リズムスコア:Rhythm score',
+  'intonation_score:DECIMAL(5,2)::イントネーションスコア:Intonation score',
+  'overall_score:DECIMAL(5,2):NOT NULL:総合スコア:Overall score',
+  'suggestions:TEXT::改善提案:Suggestions'
+];
+
+/* ── ext16: hr_evaluation_dashboard ── */
+ENTITY_COLUMNS['EmployeeProfile']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID',
+  'department:VARCHAR(100):NOT NULL:部署:Department',
+  'position:VARCHAR(100):NOT NULL:役職:Position',
+  'hire_date:DATE:NOT NULL:入社日:Hire date',
+  'grade:VARCHAR(30)::等級:Grade',
+  'manager_id:UUID:FK(User)::上長ID:Manager ID'
+];
+ENTITY_COLUMNS['EvalCycle']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'cycle_name:VARCHAR(255):NOT NULL:評価サイクル名:Cycle name',
+  'period_start:DATE:NOT NULL:期間開始:Period start',
+  'period_end:DATE:NOT NULL:期間終了:Period end',
+  'status:VARCHAR(30):DEFAULT \'active\':状態:Status',
+  'description:TEXT::説明:Description'
+];
+ENTITY_COLUMNS['PerformanceGoal']=[
+  'employee_id:UUID:FK(EmployeeProfile) NOT NULL:従業員ID:Employee ID',
+  'cycle_id:UUID:FK(EvalCycle) NOT NULL:サイクルID:Cycle ID',
+  'goal_type:VARCHAR(50):NOT NULL:目標種別:Goal type',
+  'title:VARCHAR(255):NOT NULL:目標タイトル:Goal title',
+  'description:TEXT::説明:Description',
+  'weight:DECIMAL(5,2)::ウェイト(%):Weight (%)',
+  'achievement_pct:DECIMAL(5,2)::達成率(%):Achievement (%)'
+];
+ENTITY_COLUMNS['EvalFeedback']=[
+  'employee_id:UUID:FK(EmployeeProfile) NOT NULL:評価対象ID:Evaluatee ID',
+  'evaluator_id:UUID:FK(User) NOT NULL:評価者ID:Evaluator ID',
+  'cycle_id:UUID:FK(EvalCycle) NOT NULL:サイクルID:Cycle ID',
+  'feedback_type:VARCHAR(50):NOT NULL:フィードバック種別:Feedback type',
+  'content:TEXT:NOT NULL:フィードバック内容:Feedback content',
+  'overall_rating:SMALLINT::総合評価:Overall rating',
+  'submitted_at:TIMESTAMP:DEFAULT NOW():提出日時:Submitted at'
+];
+
+/* ── ext16: livestock_optimizer ── */
+ENTITY_COLUMNS['LivestockRecord']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'animal_id:VARCHAR(100):NOT NULL UNIQUE:個体識別番号:Animal ID',
+  'species:VARCHAR(50):NOT NULL:畜種:Species',
+  'breed:VARCHAR(100)::品種:Breed',
+  'birth_date:DATE::生年月日:Birth date',
+  'sex:VARCHAR(10)::性別:Sex',
+  'mother_id:UUID:FK(LivestockRecord)::母親ID:Mother ID'
+];
+ENTITY_COLUMNS['FeedSchedule']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'animal_id:UUID:FK(LivestockRecord) NOT NULL:個体ID:Animal ID',
+  'feed_type:VARCHAR(100):NOT NULL:飼料種別:Feed type',
+  'quantity_kg:DECIMAL(8,3):NOT NULL:給与量(kg):Quantity (kg)',
+  'feeding_time:TIME:NOT NULL:給与時刻:Feeding time',
+  'cost_per_kg:DECIMAL(8,2)::単価(円/kg):Cost per kg',
+  'notes:TEXT::メモ:Notes'
+];
+ENTITY_COLUMNS['HealthMonitor']=[
+  'animal_id:UUID:FK(LivestockRecord) NOT NULL:個体ID:Animal ID',
+  'measured_at:TIMESTAMP:NOT NULL:測定日時:Measured at',
+  'temperature:DECIMAL(4,1)::体温(℃):Temperature (℃)',
+  'weight_kg:DECIMAL(8,2)::体重(kg):Weight (kg)',
+  'health_status:VARCHAR(30):DEFAULT \'normal\':健康状態:Health status',
+  'notes:TEXT::メモ:Notes',
+  'vet_id:UUID:FK(User)::獣医師ID:Vet ID'
+];
+ENTITY_COLUMNS['ProductionYield']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'animal_id:UUID:FK(LivestockRecord) NOT NULL:個体ID:Animal ID',
+  'yield_type:VARCHAR(50):NOT NULL:生産物種別:Yield type',
+  'quantity:DECIMAL(10,3):NOT NULL:生産量:Quantity',
+  'unit:VARCHAR(30):NOT NULL:単位:Unit',
+  'measured_date:DATE:NOT NULL:測定日:Measured date',
+  'forecast_qty:DECIMAL(10,3)::予測量:Forecast quantity'
+];

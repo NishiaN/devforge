@@ -49,6 +49,8 @@ const jsFiles = [
   'data/presets-ext12.js',
   'data/presets-ext13.js',
   'data/presets-ext14.js',
+  'data/presets-ext15.js',
+  'data/presets-ext16.js',
   'data/questions.js',
   'data/techdb.js',
   'data/helpdata.js',
