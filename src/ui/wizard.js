@@ -227,6 +227,11 @@ function showHearingImport(){
   html+='<button class="modal-close" onclick="document.getElementById(\'hearingImportModal\').remove()" aria-label="Close">✕</button></div>';
   html+='<div class="modal-body">';
   html+='<p style="font-size:12px;color:var(--text-muted);margin-bottom:8px">'+(_ja?'ヒアリングシートのMarkdownをペーストしてください。目的・ターゲット・機能要件・エンティティ・KPI・スケジュール・スコープ外・画面一覧を自動マッピングします。':'Paste your hearing sheet Markdown. Purpose, target, features, entities, KPI, schedule, scope-out, and screens will be auto-mapped.')+'</p>';
+  html+='<div id="hearingDropZone" class="hearing-drop-zone">';
+  html+='<span>'+(_ja?'📂 .mdファイルをドラッグ&ドロップ':'📂 Drag & drop .md file here')+'</span>';
+  html+='<button class="btn btn-xs btn-s" onclick="document.getElementById(\'hearingFileIn\').click()" style="margin-left:8px">'+(_ja?'ファイル選択':'Choose File')+'</button>';
+  html+='<input type="file" id="hearingFileIn" accept=".md,.txt,.markdown" style="display:none">';
+  html+='</div>';
   html+='<textarea id="hearingImportTA" style="width:100%;height:180px;background:var(--bg-3);border:1px solid var(--border);border-radius:6px;padding:8px;font-size:12px;font-family:var(--mono);color:var(--text);resize:vertical;box-sizing:border-box" placeholder="'+(_ja?'## 目的\n...\n## ターゲット\n...\n## 機能要件\n...\n## KPI\n...\n## スケジュール\n...\n## スコープ外\n...\n## 画面一覧\n...':'## Purpose\n...\n## Target\n...\n## Features\n...\n## KPI\n...\n## Schedule\n...\n## Out of scope\n...\n## Screens\n...')+'"></textarea>';
   html+='<div id="hearingPreview" style="margin-top:12px"></div>';
   html+='<div style="display:flex;gap:8px;margin-top:12px;justify-content:flex-end">';
@@ -236,7 +241,47 @@ function showHearingImport(){
   overlay.innerHTML=html;
   overlay.onclick=e=>{if(e.target===overlay)overlay.remove();};
   document.body.appendChild(overlay);
-  const ta=overlay.querySelector('#hearingImportTA');if(ta)ta.focus();
+  // File input handler
+  const fi=overlay.querySelector('#hearingFileIn');
+  if(fi)fi.onchange=function(e){
+    const f=e.target.files[0];if(!f)return;
+    var reader=new FileReader();
+    reader.onload=function(ev){
+      const ta2=overlay.querySelector('#hearingImportTA');
+      if(ta2){ta2.value=ev.target.result;previewHearingImport();}
+    };
+    reader.readAsText(f);
+  };
+  // Drag & drop handlers
+  const dz=overlay.querySelector('#hearingDropZone');
+  const ta=overlay.querySelector('#hearingImportTA');
+  if(dz){
+    dz.ondragover=function(e){e.preventDefault();dz.classList.add('hearing-drop-active');};
+    dz.ondragleave=function(){dz.classList.remove('hearing-drop-active');};
+    dz.ondrop=function(e){
+      e.preventDefault();dz.classList.remove('hearing-drop-active');
+      const f=e.dataTransfer.files[0];if(!f)return;
+      var reader=new FileReader();
+      reader.onload=function(ev){if(ta){ta.value=ev.target.result;previewHearingImport();}};
+      reader.readAsText(f);
+    };
+  }
+  // textarea にもドロップ可能にする
+  if(ta){
+    ta.ondragover=function(e){e.preventDefault();dz&&dz.classList.add('hearing-drop-active');};
+    ta.ondragleave=function(){dz&&dz.classList.remove('hearing-drop-active');};
+    ta.ondrop=function(e){
+      e.preventDefault();dz&&dz.classList.remove('hearing-drop-active');
+      const f=e.dataTransfer&&e.dataTransfer.files[0];
+      if(f){
+        var reader=new FileReader();
+        reader.onload=function(ev){ta.value=ev.target.result;previewHearingImport();};
+        reader.readAsText(f);
+        e.stopPropagation();
+      }
+    };
+    ta.focus();
+  }
 }
 function parseHearingData(text){
   const result={};
