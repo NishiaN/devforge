@@ -18,7 +18,7 @@
  *   Domain   detectDomain     → .spec/constitution.md §3 fallback KPI
  *   E2E      full generation  → file count, token richness, bilingual parity
  *
- * Suites 1-300: ~5324 tests total (5198 + Suites 277-286: 90 tests — presets-ext11 + Suites 287-300: 126 tests — presets-ext12)
+ * Suites 1-310: ~5404 tests total (5198 + Suites 277-286: 90 tests — presets-ext11 + Suites 287-300: 126 tests — presets-ext12 + Suites 301-310: 80 tests — presets-ext13)
  */
 
 const { describe, it } = require('node:test');
@@ -37538,5 +37538,655 @@ describe('Suite 300: presets-ext12 nocode_builder — Supabase/Vercel/stripe', (
   it('docs/01: nocode_builder produces no undefined in overview', () => {
     const f = gSDD(g300_nocode_builder);
     assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'nocode_builder docs/01 must not contain undefined');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 301 — presets-ext13.js: survey_data_calc
+   Supabase/Vercel/payment:none
+   ════════════════════════════════════════════════════════════════ */
+
+const g301_survey_data_calc = Object.assign({}, A25, {
+  purpose: 'データ入力から基本統計量・t検定・カイ二乗検定・回帰分析・グラフ可視化まで一括処理できる学術・教育向けオンライン統計解析ツール',
+  frontend: 'React + Next.js',
+  backend: 'Supabase',
+  database: 'PostgreSQL',
+  deploy: 'Vercel',
+  orm: 'Prisma',
+  auth: 'JWT + Supabase Auth',
+  payment: 'none',
+  mobile: 'なし',
+  data_entities: 'User, StatDataset, StatAnalysis, StatHypothesis, StatResult',
+  mvp_features: 'CSV/手入力データ取込, 基本統計量算出, 仮説検定, 回帰分析, ページネーション・無限スクロール',
+});
+
+describe('Suite 301: presets-ext13 survey_data_calc — Supabase/Vercel/no-payment', () => {
+
+  it('SDD: survey_data_calc generates specification.md and constitution.md', () => {
+    const f = gSDD(g301_survey_data_calc);
+    assert.ok(f['.spec/specification.md'], 'survey_data_calc must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'survey_data_calc must generate constitution.md');
+  });
+
+  it('SDD: survey_data_calc includes StatDataset in spec', () => {
+    const f = gSDD(g301_survey_data_calc);
+    assert.ok((f['.spec/specification.md']||'').includes('StatDataset'), 'survey_data_calc spec must mention StatDataset');
+  });
+
+  it('SDD: survey_data_calc (Supabase) → Supabase referenced in spec', () => {
+    const f = gSDD(g301_survey_data_calc);
+    assert.ok((f['.spec/specification.md']||'').includes('Supabase'), 'survey_data_calc spec must reference Supabase');
+  });
+
+  it('SDD: survey_data_calc purpose keyword in spec', () => {
+    const f = gSDD(g301_survey_data_calc);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('統計')||spec.includes('Statistics')||spec.includes('解析'), 'survey_data_calc spec must mention stats context');
+  });
+
+  it('SDD EN: survey_data_calc produces no undefined in spec', () => {
+    const f = gSDD(g301_survey_data_calc, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'survey_data_calc EN spec must not contain undefined');
+  });
+
+  it('SDD JA: survey_data_calc produces no undefined in spec', () => {
+    const f = gSDD(g301_survey_data_calc);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'survey_data_calc JA spec must not contain undefined');
+  });
+
+  it('docs/01: survey_data_calc overview mentions 統計 or Statistics', () => {
+    const f = gSDD(g301_survey_data_calc);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('統計')||doc.includes('Statistics')||doc.includes('解析'), 'survey_data_calc docs/01 must mention 統計 or Statistics');
+  });
+
+  it('docs/01: survey_data_calc produces no undefined in overview', () => {
+    const f = gSDD(g301_survey_data_calc);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'survey_data_calc docs/01 must not contain undefined');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 302 — presets-ext13.js: flashcard_app
+   Supabase/Vercel/payment:none
+   ════════════════════════════════════════════════════════════════ */
+
+const g302_flashcard_app = Object.assign({}, A25, {
+  purpose: '間隔反復アルゴリズム（SM-2）を用いて効率的な暗記学習を支援する個人向けデジタルフラッシュカードアプリ',
+  frontend: 'React + Next.js',
+  backend: 'Supabase',
+  database: 'PostgreSQL',
+  deploy: 'Vercel',
+  orm: 'Prisma',
+  auth: 'JWT + Supabase Auth',
+  payment: 'none',
+  mobile: 'なし',
+  data_entities: 'User, FlashDeck, FlashCard, FlashReviewSession, FlashProgress',
+  mvp_features: 'フラッシュカードデッキ作成・管理, SM-2間隔反復スケジューリング, 学習セッション, ページネーション・無限スクロール',
+});
+
+describe('Suite 302: presets-ext13 flashcard_app — Supabase/Vercel/no-payment', () => {
+
+  it('SDD: flashcard_app generates specification.md and constitution.md', () => {
+    const f = gSDD(g302_flashcard_app);
+    assert.ok(f['.spec/specification.md'], 'flashcard_app must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'flashcard_app must generate constitution.md');
+  });
+
+  it('SDD: flashcard_app includes FlashDeck in spec', () => {
+    const f = gSDD(g302_flashcard_app);
+    assert.ok((f['.spec/specification.md']||'').includes('FlashDeck'), 'flashcard_app spec must mention FlashDeck');
+  });
+
+  it('SDD: flashcard_app (Supabase) → Supabase referenced in spec', () => {
+    const f = gSDD(g302_flashcard_app);
+    assert.ok((f['.spec/specification.md']||'').includes('Supabase'), 'flashcard_app spec must reference Supabase');
+  });
+
+  it('SDD: flashcard_app purpose keyword in spec', () => {
+    const f = gSDD(g302_flashcard_app);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('暗記')||spec.includes('Flashcard')||spec.includes('学習'), 'flashcard_app spec must mention learning context');
+  });
+
+  it('SDD EN: flashcard_app produces no undefined in spec', () => {
+    const f = gSDD(g302_flashcard_app, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'flashcard_app EN spec must not contain undefined');
+  });
+
+  it('SDD JA: flashcard_app produces no undefined in spec', () => {
+    const f = gSDD(g302_flashcard_app);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'flashcard_app JA spec must not contain undefined');
+  });
+
+  it('docs/01: flashcard_app overview mentions 暗記 or Flashcard', () => {
+    const f = gSDD(g302_flashcard_app);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('暗記')||doc.includes('Flashcard')||doc.includes('学習'), 'flashcard_app docs/01 must mention 暗記 or Flashcard');
+  });
+
+  it('docs/01: flashcard_app produces no undefined in overview', () => {
+    const f = gSDD(g302_flashcard_app);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'flashcard_app docs/01 must not contain undefined');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 303 — presets-ext13.js: pomodoro_app
+   Supabase/Vercel/payment:none
+   ════════════════════════════════════════════════════════════════ */
+
+const g303_pomodoro_app = Object.assign({}, A25, {
+  purpose: 'ポモドーロテクニックを活用したタスク管理・集中作業・休憩サイクル・生産性分析を提供する個人向けタイムマネジメントアプリ',
+  frontend: 'React + Next.js',
+  backend: 'Supabase',
+  database: 'PostgreSQL',
+  deploy: 'Vercel',
+  orm: 'Prisma',
+  auth: 'JWT + Supabase Auth',
+  payment: 'none',
+  mobile: 'なし',
+  data_entities: 'User, PomodoroTask, PomodoroSession, PomodoroStat, PomodoroSetting',
+  mvp_features: 'ポモドーロタイマー（25分/5分サイクル）, タスクリスト・見積もり管理, 生産性統計, ページネーション・無限スクロール',
+});
+
+describe('Suite 303: presets-ext13 pomodoro_app — Supabase/Vercel/no-payment', () => {
+
+  it('SDD: pomodoro_app generates specification.md and constitution.md', () => {
+    const f = gSDD(g303_pomodoro_app);
+    assert.ok(f['.spec/specification.md'], 'pomodoro_app must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'pomodoro_app must generate constitution.md');
+  });
+
+  it('SDD: pomodoro_app includes PomodoroTask in spec', () => {
+    const f = gSDD(g303_pomodoro_app);
+    assert.ok((f['.spec/specification.md']||'').includes('PomodoroTask'), 'pomodoro_app spec must mention PomodoroTask');
+  });
+
+  it('SDD: pomodoro_app (Supabase) → Supabase referenced in spec', () => {
+    const f = gSDD(g303_pomodoro_app);
+    assert.ok((f['.spec/specification.md']||'').includes('Supabase'), 'pomodoro_app spec must reference Supabase');
+  });
+
+  it('SDD: pomodoro_app purpose keyword in spec', () => {
+    const f = gSDD(g303_pomodoro_app);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('ポモドーロ')||spec.includes('Pomodoro')||spec.includes('タイマー'), 'pomodoro_app spec must mention pomodoro context');
+  });
+
+  it('SDD EN: pomodoro_app produces no undefined in spec', () => {
+    const f = gSDD(g303_pomodoro_app, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'pomodoro_app EN spec must not contain undefined');
+  });
+
+  it('SDD JA: pomodoro_app produces no undefined in spec', () => {
+    const f = gSDD(g303_pomodoro_app);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'pomodoro_app JA spec must not contain undefined');
+  });
+
+  it('docs/01: pomodoro_app overview mentions ポモドーロ or Pomodoro', () => {
+    const f = gSDD(g303_pomodoro_app);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('ポモドーロ')||doc.includes('Pomodoro')||doc.includes('タイムマネジメント'), 'pomodoro_app docs/01 must mention ポモドーロ or Pomodoro');
+  });
+
+  it('docs/01: pomodoro_app produces no undefined in overview', () => {
+    const f = gSDD(g303_pomodoro_app);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'pomodoro_app docs/01 must not contain undefined');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 304 — presets-ext13.js: tax_calc
+   Supabase/Vercel/payment:none
+   ════════════════════════════════════════════════════════════════ */
+
+const g304_tax_calc = Object.assign({}, A25, {
+  purpose: '給与・事業所得・各種控除を入力するだけで所得税・住民税・社会保険料を自動計算し確定申告書下書きを生成する個人向け税務計算ツール',
+  frontend: 'React + Next.js',
+  backend: 'Supabase',
+  database: 'PostgreSQL',
+  deploy: 'Vercel',
+  orm: 'Prisma',
+  auth: 'JWT + Supabase Auth',
+  payment: 'none',
+  mobile: 'なし',
+  data_entities: 'User, TaxIncome, TaxDeduction, TaxReturn, TaxCalculation',
+  mvp_features: '収入・経費入力管理, 所得控除自動計算, 所得税・住民税計算, 確定申告書サマリー生成, ページネーション・無限スクロール',
+});
+
+describe('Suite 304: presets-ext13 tax_calc — Supabase/Vercel/no-payment', () => {
+
+  it('SDD: tax_calc generates specification.md and constitution.md', () => {
+    const f = gSDD(g304_tax_calc);
+    assert.ok(f['.spec/specification.md'], 'tax_calc must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'tax_calc must generate constitution.md');
+  });
+
+  it('SDD: tax_calc includes TaxIncome in spec', () => {
+    const f = gSDD(g304_tax_calc);
+    assert.ok((f['.spec/specification.md']||'').includes('TaxIncome'), 'tax_calc spec must mention TaxIncome');
+  });
+
+  it('SDD: tax_calc (Supabase) → Supabase referenced in spec', () => {
+    const f = gSDD(g304_tax_calc);
+    assert.ok((f['.spec/specification.md']||'').includes('Supabase'), 'tax_calc spec must reference Supabase');
+  });
+
+  it('SDD: tax_calc purpose keyword in spec', () => {
+    const f = gSDD(g304_tax_calc);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('税')||spec.includes('Tax')||spec.includes('確定申告'), 'tax_calc spec must mention tax context');
+  });
+
+  it('SDD EN: tax_calc produces no undefined in spec', () => {
+    const f = gSDD(g304_tax_calc, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'tax_calc EN spec must not contain undefined');
+  });
+
+  it('SDD JA: tax_calc produces no undefined in spec', () => {
+    const f = gSDD(g304_tax_calc);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'tax_calc JA spec must not contain undefined');
+  });
+
+  it('docs/01: tax_calc overview mentions 税 or Tax', () => {
+    const f = gSDD(g304_tax_calc);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('税')||doc.includes('Tax'), 'tax_calc docs/01 must mention 税 or Tax');
+  });
+
+  it('docs/01: tax_calc produces no undefined in overview', () => {
+    const f = gSDD(g304_tax_calc);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'tax_calc docs/01 must not contain undefined');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 305 — presets-ext13.js: meeting_minutes
+   Supabase/Vercel/stripe
+   ════════════════════════════════════════════════════════════════ */
+
+const g305_meeting_minutes = Object.assign({}, A25, {
+  purpose: '会議音声・テキスト入力からAIが議事録・アクションアイテム・決定事項を自動生成し会議効率化を支援するSaaSツール',
+  frontend: 'React + Next.js',
+  backend: 'Supabase',
+  database: 'PostgreSQL',
+  deploy: 'Vercel',
+  orm: 'Prisma',
+  auth: 'JWT + Supabase Auth',
+  payment: 'stripe',
+  mobile: 'なし',
+  data_entities: 'User, MinutesMeeting, MinutesAttendee, MinutesActionItem, MinutesSummary',
+  mvp_features: '会議テキスト・音声アップロード, AI議事録自動生成, アクションアイテム抽出, ページネーション・無限スクロール',
+});
+
+describe('Suite 305: presets-ext13 meeting_minutes — Supabase/Vercel/stripe', () => {
+
+  it('SDD: meeting_minutes generates specification.md and constitution.md', () => {
+    const f = gSDD(g305_meeting_minutes);
+    assert.ok(f['.spec/specification.md'], 'meeting_minutes must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'meeting_minutes must generate constitution.md');
+  });
+
+  it('SDD: meeting_minutes includes MinutesMeeting in spec', () => {
+    const f = gSDD(g305_meeting_minutes);
+    assert.ok((f['.spec/specification.md']||'').includes('MinutesMeeting'), 'meeting_minutes spec must mention MinutesMeeting');
+  });
+
+  it('SDD: meeting_minutes (Supabase) → Supabase referenced in spec', () => {
+    const f = gSDD(g305_meeting_minutes);
+    assert.ok((f['.spec/specification.md']||'').includes('Supabase'), 'meeting_minutes spec must reference Supabase');
+  });
+
+  it('SDD: meeting_minutes stripe → Stripe referenced in spec', () => {
+    const f = gSDD(g305_meeting_minutes);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('Stripe')||spec.includes('stripe')||spec.includes('決済'), 'meeting_minutes stripe must reference payment');
+  });
+
+  it('SDD EN: meeting_minutes produces no undefined in spec', () => {
+    const f = gSDD(g305_meeting_minutes, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'meeting_minutes EN spec must not contain undefined');
+  });
+
+  it('SDD JA: meeting_minutes produces no undefined in spec', () => {
+    const f = gSDD(g305_meeting_minutes);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'meeting_minutes JA spec must not contain undefined');
+  });
+
+  it('docs/01: meeting_minutes overview mentions 議事録 or Minutes', () => {
+    const f = gSDD(g305_meeting_minutes);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('議事録')||doc.includes('Minutes')||doc.includes('会議'), 'meeting_minutes docs/01 must mention 議事録 or Minutes');
+  });
+
+  it('docs/01: meeting_minutes produces no undefined in overview', () => {
+    const f = gSDD(g305_meeting_minutes);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'meeting_minutes docs/01 must not contain undefined');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 306 — presets-ext13.js: hazard_map
+   Supabase/Vercel/payment:none
+   ════════════════════════════════════════════════════════════════ */
+
+const g306_hazard_map = Object.assign({}, A25, {
+  purpose: '住所・地域データから洪水・土砂・地震リスクを可視化し避難経路・防災計画書を自動生成する防災・ハザードマップツール',
+  frontend: 'React + Next.js',
+  backend: 'Supabase',
+  database: 'PostgreSQL',
+  deploy: 'Vercel',
+  orm: 'Prisma',
+  auth: 'JWT + Supabase Auth',
+  payment: 'none',
+  mobile: 'なし',
+  data_entities: 'User, HazardArea, HazardMarker, HazardEvacRoute, HazardAlert',
+  mvp_features: '住所・地域データ入力・管理, ハザードリスク可視化マップ, 避難経路マッピング, 防災計画書PDF出力, ページネーション・無限スクロール',
+});
+
+describe('Suite 306: presets-ext13 hazard_map — Supabase/Vercel/no-payment', () => {
+
+  it('SDD: hazard_map generates specification.md and constitution.md', () => {
+    const f = gSDD(g306_hazard_map);
+    assert.ok(f['.spec/specification.md'], 'hazard_map must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'hazard_map must generate constitution.md');
+  });
+
+  it('SDD: hazard_map includes HazardArea in spec', () => {
+    const f = gSDD(g306_hazard_map);
+    assert.ok((f['.spec/specification.md']||'').includes('HazardArea'), 'hazard_map spec must mention HazardArea');
+  });
+
+  it('SDD: hazard_map (Supabase) → Supabase referenced in spec', () => {
+    const f = gSDD(g306_hazard_map);
+    assert.ok((f['.spec/specification.md']||'').includes('Supabase'), 'hazard_map spec must reference Supabase');
+  });
+
+  it('SDD: hazard_map purpose keyword in spec', () => {
+    const f = gSDD(g306_hazard_map);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('防災')||spec.includes('Hazard')||spec.includes('避難'), 'hazard_map spec must mention disaster context');
+  });
+
+  it('SDD EN: hazard_map produces no undefined in spec', () => {
+    const f = gSDD(g306_hazard_map, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'hazard_map EN spec must not contain undefined');
+  });
+
+  it('SDD JA: hazard_map produces no undefined in spec', () => {
+    const f = gSDD(g306_hazard_map);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'hazard_map JA spec must not contain undefined');
+  });
+
+  it('docs/01: hazard_map overview mentions 防災 or Hazard', () => {
+    const f = gSDD(g306_hazard_map);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('防災')||doc.includes('Hazard')||doc.includes('ハザード'), 'hazard_map docs/01 must mention 防災 or Hazard');
+  });
+
+  it('docs/01: hazard_map produces no undefined in overview', () => {
+    const f = gSDD(g306_hazard_map);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'hazard_map docs/01 must not contain undefined');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 307 — presets-ext13.js: color_palette
+   Supabase/Vercel/payment:none
+   ════════════════════════════════════════════════════════════════ */
+
+const g307_color_palette = Object.assign({}, A25, {
+  purpose: 'カラーホイール・補色・アクセシビリティ対応配色チェックとパレット管理・エクスポートができるデザイナー向けカラーパレット生成ツール',
+  frontend: 'React + Next.js',
+  backend: 'Supabase',
+  database: 'PostgreSQL',
+  deploy: 'Vercel',
+  orm: 'Prisma',
+  auth: 'JWT + Supabase Auth',
+  payment: 'none',
+  mobile: 'なし',
+  data_entities: 'User, PaletteProject, PaletteSwatch, PaletteRule, PaletteExport',
+  mvp_features: 'カラーホイール・補色・類似色生成, WCAGコントラスト検証, パレット作成・保存, CSS変数エクスポート, ページネーション・無限スクロール',
+});
+
+describe('Suite 307: presets-ext13 color_palette — Supabase/Vercel/no-payment', () => {
+
+  it('SDD: color_palette generates specification.md and constitution.md', () => {
+    const f = gSDD(g307_color_palette);
+    assert.ok(f['.spec/specification.md'], 'color_palette must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'color_palette must generate constitution.md');
+  });
+
+  it('SDD: color_palette includes PaletteProject in spec', () => {
+    const f = gSDD(g307_color_palette);
+    assert.ok((f['.spec/specification.md']||'').includes('PaletteProject'), 'color_palette spec must mention PaletteProject');
+  });
+
+  it('SDD: color_palette (Supabase) → Supabase referenced in spec', () => {
+    const f = gSDD(g307_color_palette);
+    assert.ok((f['.spec/specification.md']||'').includes('Supabase'), 'color_palette spec must reference Supabase');
+  });
+
+  it('SDD: color_palette purpose keyword in spec', () => {
+    const f = gSDD(g307_color_palette);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('カラー')||spec.includes('Color')||spec.includes('パレット'), 'color_palette spec must mention color context');
+  });
+
+  it('SDD EN: color_palette produces no undefined in spec', () => {
+    const f = gSDD(g307_color_palette, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'color_palette EN spec must not contain undefined');
+  });
+
+  it('SDD JA: color_palette produces no undefined in spec', () => {
+    const f = gSDD(g307_color_palette);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'color_palette JA spec must not contain undefined');
+  });
+
+  it('docs/01: color_palette overview mentions カラー or Color', () => {
+    const f = gSDD(g307_color_palette);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('カラー')||doc.includes('Color')||doc.includes('配色'), 'color_palette docs/01 must mention カラー or Color');
+  });
+
+  it('docs/01: color_palette produces no undefined in overview', () => {
+    const f = gSDD(g307_color_palette);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'color_palette docs/01 must not contain undefined');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 308 — presets-ext13.js: mindmap_app
+   Supabase/Vercel/payment:none
+   ════════════════════════════════════════════════════════════════ */
+
+const g308_mindmap_app = Object.assign({}, A25, {
+  purpose: 'ブレインストーミング・アイデア整理・プロジェクト計画をビジュアルマインドマップで構造化・共有・エクスポートできる個人向けアイデア管理ツール',
+  frontend: 'React + Next.js',
+  backend: 'Supabase',
+  database: 'PostgreSQL',
+  deploy: 'Vercel',
+  orm: 'Prisma',
+  auth: 'JWT + Supabase Auth',
+  payment: 'none',
+  mobile: 'なし',
+  data_entities: 'User, MindMapDoc, MindMapNode, MindMapEdge, MindMapTag',
+  mvp_features: 'マインドマップ作成・編集, ノード・ブランチ管理, ドラッグ&ドロップ, PNG/PDF/Markdownエクスポート, ページネーション・無限スクロール',
+});
+
+describe('Suite 308: presets-ext13 mindmap_app — Supabase/Vercel/no-payment', () => {
+
+  it('SDD: mindmap_app generates specification.md and constitution.md', () => {
+    const f = gSDD(g308_mindmap_app);
+    assert.ok(f['.spec/specification.md'], 'mindmap_app must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'mindmap_app must generate constitution.md');
+  });
+
+  it('SDD: mindmap_app includes MindMapDoc in spec', () => {
+    const f = gSDD(g308_mindmap_app);
+    assert.ok((f['.spec/specification.md']||'').includes('MindMapDoc'), 'mindmap_app spec must mention MindMapDoc');
+  });
+
+  it('SDD: mindmap_app (Supabase) → Supabase referenced in spec', () => {
+    const f = gSDD(g308_mindmap_app);
+    assert.ok((f['.spec/specification.md']||'').includes('Supabase'), 'mindmap_app spec must reference Supabase');
+  });
+
+  it('SDD: mindmap_app purpose keyword in spec', () => {
+    const f = gSDD(g308_mindmap_app);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('マインドマップ')||spec.includes('Mind')||spec.includes('アイデア'), 'mindmap_app spec must mention mindmap context');
+  });
+
+  it('SDD EN: mindmap_app produces no undefined in spec', () => {
+    const f = gSDD(g308_mindmap_app, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'mindmap_app EN spec must not contain undefined');
+  });
+
+  it('SDD JA: mindmap_app produces no undefined in spec', () => {
+    const f = gSDD(g308_mindmap_app);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'mindmap_app JA spec must not contain undefined');
+  });
+
+  it('docs/01: mindmap_app overview mentions マインドマップ or Mind', () => {
+    const f = gSDD(g308_mindmap_app);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('マインドマップ')||doc.includes('Mind')||doc.includes('アイデア'), 'mindmap_app docs/01 must mention マインドマップ or Mind');
+  });
+
+  it('docs/01: mindmap_app produces no undefined in overview', () => {
+    const f = gSDD(g308_mindmap_app);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'mindmap_app docs/01 must not contain undefined');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 309 — presets-ext13.js: training_log
+   Supabase/Vercel/payment:none
+   ════════════════════════════════════════════════════════════════ */
+
+const g309_training_log = Object.assign({}, A25, {
+  purpose: '筋トレ・有酸素運動・柔軟性トレーニングのメニュー管理・セット記録・体重・体脂肪推移をトラッキングする個人向けフィットネス記録アプリ',
+  frontend: 'React + Next.js',
+  backend: 'Supabase',
+  database: 'PostgreSQL',
+  deploy: 'Vercel',
+  orm: 'Prisma',
+  auth: 'JWT + Supabase Auth',
+  payment: 'none',
+  mobile: 'なし',
+  data_entities: 'User, FitPlan, FitSession, FitSet, FitProgress',
+  mvp_features: 'トレーニングメニュー作成・管理, セット数・重量・回数記録, 体重・体脂肪率トラッキング, 進捗グラフ, ページネーション・無限スクロール',
+});
+
+describe('Suite 309: presets-ext13 training_log — Supabase/Vercel/no-payment', () => {
+
+  it('SDD: training_log generates specification.md and constitution.md', () => {
+    const f = gSDD(g309_training_log);
+    assert.ok(f['.spec/specification.md'], 'training_log must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'training_log must generate constitution.md');
+  });
+
+  it('SDD: training_log includes FitPlan in spec', () => {
+    const f = gSDD(g309_training_log);
+    assert.ok((f['.spec/specification.md']||'').includes('FitPlan'), 'training_log spec must mention FitPlan');
+  });
+
+  it('SDD: training_log (Supabase) → Supabase referenced in spec', () => {
+    const f = gSDD(g309_training_log);
+    assert.ok((f['.spec/specification.md']||'').includes('Supabase'), 'training_log spec must reference Supabase');
+  });
+
+  it('SDD: training_log purpose keyword in spec', () => {
+    const f = gSDD(g309_training_log);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('トレーニング')||spec.includes('Training')||spec.includes('フィットネス'), 'training_log spec must mention training context');
+  });
+
+  it('SDD EN: training_log produces no undefined in spec', () => {
+    const f = gSDD(g309_training_log, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'training_log EN spec must not contain undefined');
+  });
+
+  it('SDD JA: training_log produces no undefined in spec', () => {
+    const f = gSDD(g309_training_log);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'training_log JA spec must not contain undefined');
+  });
+
+  it('docs/01: training_log overview mentions トレーニング or Training', () => {
+    const f = gSDD(g309_training_log);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('トレーニング')||doc.includes('Training')||doc.includes('フィットネス'), 'training_log docs/01 must mention トレーニング or Training');
+  });
+
+  it('docs/01: training_log produces no undefined in overview', () => {
+    const f = gSDD(g309_training_log);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'training_log docs/01 must not contain undefined');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 310 — presets-ext13.js: carbon_calc
+   Supabase/Vercel/payment:none
+   ════════════════════════════════════════════════════════════════ */
+
+const g310_carbon_calc = Object.assign({}, A25, {
+  purpose: '移動・食事・電力・消費活動を入力するだけで個人のCO2排出量を算出し削減目標・オフセット提案・環境貢献レポートを生成する環境ツール',
+  frontend: 'React + Next.js',
+  backend: 'Supabase',
+  database: 'PostgreSQL',
+  deploy: 'Vercel',
+  orm: 'Prisma',
+  auth: 'JWT + Supabase Auth',
+  payment: 'none',
+  mobile: 'なし',
+  data_entities: 'User, FootprintActivity, FootprintCategory, FootprintGoal, FootprintReport',
+  mvp_features: '移動・食事・電力別CO2計算, 年間・月間排出量サマリー, CO2削減目標設定, オフセット活動提案, ページネーション・無限スクロール',
+});
+
+describe('Suite 310: presets-ext13 carbon_calc — Supabase/Vercel/no-payment', () => {
+
+  it('SDD: carbon_calc generates specification.md and constitution.md', () => {
+    const f = gSDD(g310_carbon_calc);
+    assert.ok(f['.spec/specification.md'], 'carbon_calc must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'carbon_calc must generate constitution.md');
+  });
+
+  it('SDD: carbon_calc includes FootprintActivity in spec', () => {
+    const f = gSDD(g310_carbon_calc);
+    assert.ok((f['.spec/specification.md']||'').includes('FootprintActivity'), 'carbon_calc spec must mention FootprintActivity');
+  });
+
+  it('SDD: carbon_calc (Supabase) → Supabase referenced in spec', () => {
+    const f = gSDD(g310_carbon_calc);
+    assert.ok((f['.spec/specification.md']||'').includes('Supabase'), 'carbon_calc spec must reference Supabase');
+  });
+
+  it('SDD: carbon_calc purpose keyword in spec', () => {
+    const f = gSDD(g310_carbon_calc);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('CO2')||spec.includes('カーボン')||spec.includes('Carbon'), 'carbon_calc spec must mention carbon context');
+  });
+
+  it('SDD EN: carbon_calc produces no undefined in spec', () => {
+    const f = gSDD(g310_carbon_calc, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'carbon_calc EN spec must not contain undefined');
+  });
+
+  it('SDD JA: carbon_calc produces no undefined in spec', () => {
+    const f = gSDD(g310_carbon_calc);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'carbon_calc JA spec must not contain undefined');
+  });
+
+  it('docs/01: carbon_calc overview mentions CO2 or Carbon', () => {
+    const f = gSDD(g310_carbon_calc);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('CO2')||doc.includes('カーボン')||doc.includes('Carbon'), 'carbon_calc docs/01 must mention CO2 or Carbon');
+  });
+
+  it('docs/01: carbon_calc produces no undefined in overview', () => {
+    const f = gSDD(g310_carbon_calc);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'carbon_calc docs/01 must not contain undefined');
   });
 });

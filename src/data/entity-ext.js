@@ -1180,3 +1180,389 @@ ENTITY_COLUMNS['GeoFence']=[
   'is_active:BOOLEAN:DEFAULT true:有効:Active',
   'created_by:UUID:FK(User) NOT NULL:作成者ID:Created by'
 ];
+
+// ── ext13: presets-ext13.js new entity columns ────────────────────────────────
+
+ENTITY_COLUMNS['StatDataset']=[
+  'user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID',
+  'name:VARCHAR(255):NOT NULL:データセット名:Dataset name',
+  'description:TEXT::説明:Description',
+  'row_count:INT:DEFAULT 0:行数:Row count',
+  'column_names:JSONB::列名リスト:Column names',
+  'created_at:TIMESTAMP:DEFAULT NOW:作成日時:Created at'
+];
+
+ENTITY_COLUMNS['StatAnalysis']=[
+  'dataset_id:UUID:FK(StatDataset) NOT NULL:データセットID:Dataset ID',
+  'analysis_type:VARCHAR(50):NOT NULL:解析種別:Analysis type',
+  'parameters:JSONB::パラメータ:Parameters',
+  'result_summary:JSONB::結果サマリー:Result summary',
+  'created_at:TIMESTAMP:DEFAULT NOW:作成日時:Created at'
+];
+
+ENTITY_COLUMNS['StatHypothesis']=[
+  'dataset_id:UUID:FK(StatDataset) NOT NULL:データセットID:Dataset ID',
+  'test_type:VARCHAR(50):NOT NULL:検定種別:Test type',
+  'null_hypothesis:TEXT:NOT NULL:帰無仮説:Null hypothesis',
+  'alpha:DECIMAL(4,3):DEFAULT 0.05:有意水準:Significance level',
+  'p_value:DECIMAL(10,6)::p値:p-value',
+  'rejected:BOOLEAN::棄却:Rejected'
+];
+
+ENTITY_COLUMNS['StatResult']=[
+  'analysis_id:UUID:FK(StatAnalysis) NOT NULL:解析ID:Analysis ID',
+  'result_type:VARCHAR(50):NOT NULL:結果種別:Result type',
+  'result_data:JSONB:NOT NULL:結果データ:Result data',
+  'chart_config:JSONB::チャート設定:Chart config',
+  'created_at:TIMESTAMP:DEFAULT NOW:作成日時:Created at'
+];
+
+ENTITY_COLUMNS['FlashDeck']=[
+  'user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID',
+  'title:VARCHAR(255):NOT NULL:デッキ名:Deck title',
+  'description:TEXT::説明:Description',
+  'card_count:INT:DEFAULT 0:カード数:Card count',
+  'language:VARCHAR(10):DEFAULT \'ja\':言語:Language',
+  'is_public:BOOLEAN:DEFAULT false:公開:Public'
+];
+
+ENTITY_COLUMNS['FlashCard']=[
+  'deck_id:UUID:FK(FlashDeck) NOT NULL:デッキID:Deck ID',
+  'front:TEXT:NOT NULL:表面:Front',
+  'back:TEXT:NOT NULL:裏面:Back',
+  'hint:TEXT::ヒント:Hint',
+  'tags:JSONB::タグ:Tags',
+  'created_at:TIMESTAMP:DEFAULT NOW:作成日時:Created at'
+];
+
+ENTITY_COLUMNS['FlashReviewSession']=[
+  'user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID',
+  'deck_id:UUID:FK(FlashDeck) NOT NULL:デッキID:Deck ID',
+  'cards_reviewed:INT:DEFAULT 0:復習カード数:Cards reviewed',
+  'correct_count:INT:DEFAULT 0:正解数:Correct count',
+  'duration_sec:INT::学習時間(秒):Duration (sec)',
+  'completed_at:TIMESTAMP::完了日時:Completed at'
+];
+
+ENTITY_COLUMNS['FlashProgress']=[
+  'user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID',
+  'card_id:UUID:FK(FlashCard) NOT NULL:カードID:Card ID',
+  'ease_factor:DECIMAL(4,2):DEFAULT 2.5:難易度係数(SM-2):Ease factor (SM-2)',
+  'interval_days:INT:DEFAULT 1:次回間隔(日):Interval (days)',
+  'repetitions:INT:DEFAULT 0:繰り返し回数:Repetitions',
+  'next_review_at:TIMESTAMP::次回復習日時:Next review at'
+];
+
+ENTITY_COLUMNS['PomodoroTask']=[
+  'user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID',
+  'title:VARCHAR(255):NOT NULL:タスク名:Task title',
+  'estimated_pomodoros:INT:DEFAULT 1:見積ポモドーロ数:Estimated pomodoros',
+  'completed_pomodoros:INT:DEFAULT 0:完了ポモドーロ数:Completed pomodoros',
+  'priority:INT:DEFAULT 2:優先度(1-3):Priority',
+  'status:VARCHAR(20):DEFAULT \'pending\':ステータス:Status'
+];
+
+ENTITY_COLUMNS['PomodoroSession']=[
+  'user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID',
+  'task_id:UUID:FK(PomodoroTask):タスクID:Task ID',
+  'type:VARCHAR(10):DEFAULT \'work\':種別(work/break):Type',
+  'duration_min:INT:DEFAULT 25:時間(分):Duration (min)',
+  'started_at:TIMESTAMP:NOT NULL:開始日時:Started at',
+  'ended_at:TIMESTAMP::終了日時:Ended at',
+  'completed:BOOLEAN:DEFAULT false:完了:Completed'
+];
+
+ENTITY_COLUMNS['PomodoroStat']=[
+  'user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID',
+  'date:DATE:NOT NULL:日付:Date',
+  'total_pomodoros:INT:DEFAULT 0:合計ポモドーロ:Total pomodoros',
+  'total_focus_min:INT:DEFAULT 0:合計集中時間(分):Total focus (min)',
+  'tasks_completed:INT:DEFAULT 0:完了タスク数:Tasks completed'
+];
+
+ENTITY_COLUMNS['PomodoroSetting']=[
+  'user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID',
+  'work_duration_min:INT:DEFAULT 25:作業時間(分):Work duration (min)',
+  'short_break_min:INT:DEFAULT 5:短休憩(分):Short break (min)',
+  'long_break_min:INT:DEFAULT 15:長休憩(分):Long break (min)',
+  'long_break_interval:INT:DEFAULT 4:長休憩間隔:Long break interval',
+  'sound_enabled:BOOLEAN:DEFAULT true:サウンド有効:Sound enabled'
+];
+
+ENTITY_COLUMNS['TaxIncome']=[
+  'user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID',
+  'fiscal_year:INT:NOT NULL:年度:Fiscal year',
+  'income_type:VARCHAR(50):NOT NULL:所得種別:Income type',
+  'gross_amount:DECIMAL(12,2):NOT NULL:収入金額:Gross amount',
+  'expense_amount:DECIMAL(12,2):DEFAULT 0:経費・控除額:Expense amount',
+  'net_amount:DECIMAL(12,2):NOT NULL:所得金額:Net income'
+];
+
+ENTITY_COLUMNS['TaxDeduction']=[
+  'user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID',
+  'fiscal_year:INT:NOT NULL:年度:Fiscal year',
+  'deduction_type:VARCHAR(100):NOT NULL:控除種別:Deduction type',
+  'amount:DECIMAL(12,2):NOT NULL:控除額:Amount',
+  'description:TEXT::摘要:Description'
+];
+
+ENTITY_COLUMNS['TaxReturn']=[
+  'user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID',
+  'fiscal_year:INT:NOT NULL:年度:Fiscal year',
+  'total_income:DECIMAL(12,2):NOT NULL:総所得:Total income',
+  'total_deductions:DECIMAL(12,2):NOT NULL:総控除額:Total deductions',
+  'taxable_income:DECIMAL(12,2):NOT NULL:課税所得:Taxable income',
+  'status:VARCHAR(20):DEFAULT \'draft\':ステータス:Status'
+];
+
+ENTITY_COLUMNS['TaxCalculation']=[
+  'return_id:UUID:FK(TaxReturn) NOT NULL:申告ID:Return ID',
+  'income_tax:DECIMAL(12,2):NOT NULL:所得税:Income tax',
+  'resident_tax:DECIMAL(12,2):NOT NULL:住民税:Resident tax',
+  'social_insurance:DECIMAL(12,2):DEFAULT 0:社会保険料:Social insurance',
+  'total_tax:DECIMAL(12,2):NOT NULL:税負担合計:Total tax',
+  'calculated_at:TIMESTAMP:DEFAULT NOW:計算日時:Calculated at'
+];
+
+ENTITY_COLUMNS['MinutesMeeting']=[
+  'user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID',
+  'title:VARCHAR(255):NOT NULL:会議名:Meeting title',
+  'meeting_date:DATE:NOT NULL:開催日:Meeting date',
+  'duration_min:INT::時間(分):Duration (min)',
+  'location:VARCHAR(255)::場所:Location',
+  'status:VARCHAR(20):DEFAULT \'draft\':ステータス:Status'
+];
+
+ENTITY_COLUMNS['MinutesAttendee']=[
+  'meeting_id:UUID:FK(MinutesMeeting) NOT NULL:会議ID:Meeting ID',
+  'name:VARCHAR(255):NOT NULL:氏名:Name',
+  'department:VARCHAR(255)::部門:Department',
+  'role:VARCHAR(50)::役割:Role',
+  'attended:BOOLEAN:DEFAULT true:出席:Attended'
+];
+
+ENTITY_COLUMNS['MinutesActionItem']=[
+  'meeting_id:UUID:FK(MinutesMeeting) NOT NULL:会議ID:Meeting ID',
+  'content:TEXT:NOT NULL:アクション内容:Action content',
+  'assignee:VARCHAR(255)::担当者:Assignee',
+  'due_date:DATE::期日:Due date',
+  'status:VARCHAR(20):DEFAULT \'open\':ステータス:Status'
+];
+
+ENTITY_COLUMNS['MinutesSummary']=[
+  'meeting_id:UUID:FK(MinutesMeeting) NOT NULL:会議ID:Meeting ID',
+  'agenda_items:JSONB::議題リスト:Agenda items',
+  'decisions:TEXT::決定事項:Decisions',
+  'notes:TEXT::議事録全文:Full minutes',
+  'ai_generated:BOOLEAN:DEFAULT false:AI生成:AI generated',
+  'generated_at:TIMESTAMP::生成日時:Generated at'
+];
+
+ENTITY_COLUMNS['HazardArea']=[
+  'user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID',
+  'area_name:VARCHAR(255):NOT NULL:地区名:Area name',
+  'prefecture:VARCHAR(50):NOT NULL:都道府県:Prefecture',
+  'city:VARCHAR(100):NOT NULL:市区町村:City',
+  'flood_risk:VARCHAR(20):DEFAULT \'low\':洪水リスク:Flood risk',
+  'landslide_risk:VARCHAR(20):DEFAULT \'low\':土砂リスク:Landslide risk',
+  'earthquake_risk:VARCHAR(20):DEFAULT \'low\':地震リスク:Earthquake risk'
+];
+
+ENTITY_COLUMNS['HazardMarker']=[
+  'area_id:UUID:FK(HazardArea) NOT NULL:地区ID:Area ID',
+  'marker_type:VARCHAR(50):NOT NULL:マーカー種別:Marker type',
+  'lat:DECIMAL(10,7):NOT NULL:緯度:Latitude',
+  'lng:DECIMAL(10,7):NOT NULL:経度:Longitude',
+  'label:VARCHAR(255)::ラベル:Label',
+  'description:TEXT::説明:Description'
+];
+
+ENTITY_COLUMNS['HazardEvacRoute']=[
+  'area_id:UUID:FK(HazardArea) NOT NULL:地区ID:Area ID',
+  'route_name:VARCHAR(255):NOT NULL:経路名:Route name',
+  'start_point:JSONB:NOT NULL:出発地点:Start point',
+  'end_point:JSONB:NOT NULL:避難所:Shelter',
+  'waypoints:JSONB::中継地点:Waypoints',
+  'distance_m:INT::距離(m):Distance (m)'
+];
+
+ENTITY_COLUMNS['HazardAlert']=[
+  'area_id:UUID:FK(HazardArea) NOT NULL:地区ID:Area ID',
+  'alert_type:VARCHAR(50):NOT NULL:アラート種別:Alert type',
+  'severity:VARCHAR(20):DEFAULT \'info\':深刻度:Severity',
+  'message:TEXT:NOT NULL:メッセージ:Message',
+  'issued_at:TIMESTAMP:DEFAULT NOW:発出日時:Issued at',
+  'expires_at:TIMESTAMP::有効期限:Expires at'
+];
+
+ENTITY_COLUMNS['PaletteProject']=[
+  'user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID',
+  'name:VARCHAR(255):NOT NULL:パレット名:Palette name',
+  'description:TEXT::説明:Description',
+  'base_color:VARCHAR(7)::ベースカラー(HEX):Base color (HEX)',
+  'swatch_count:INT:DEFAULT 0:スウォッチ数:Swatch count',
+  'is_public:BOOLEAN:DEFAULT false:公開:Public'
+];
+
+ENTITY_COLUMNS['PaletteSwatch']=[
+  'palette_id:UUID:FK(PaletteProject) NOT NULL:パレットID:Palette ID',
+  'name:VARCHAR(100)::色名:Color name',
+  'hex:VARCHAR(7):NOT NULL:HEXコード:HEX code',
+  'rgb:JSONB::RGBオブジェクト:RGB object',
+  'hsl:JSONB::HSLオブジェクト:HSL object',
+  'role:VARCHAR(50)::役割(primary/accent):Role'
+];
+
+ENTITY_COLUMNS['PaletteRule']=[
+  'palette_id:UUID:FK(PaletteProject) NOT NULL:パレットID:Palette ID',
+  'rule_type:VARCHAR(50):NOT NULL:ルール種別:Rule type',
+  'foreground_hex:VARCHAR(7):NOT NULL:前景色HEX:Foreground HEX',
+  'background_hex:VARCHAR(7):NOT NULL:背景色HEX:Background HEX',
+  'contrast_ratio:DECIMAL(5,2)::コントラスト比:Contrast ratio',
+  'wcag_level:VARCHAR(10)::WCAGレベル:WCAG level'
+];
+
+ENTITY_COLUMNS['PaletteExport']=[
+  'palette_id:UUID:FK(PaletteProject) NOT NULL:パレットID:Palette ID',
+  'format:VARCHAR(20):NOT NULL:エクスポート形式:Export format',
+  'content:TEXT:NOT NULL:エクスポート内容:Export content',
+  'created_at:TIMESTAMP:DEFAULT NOW:作成日時:Created at'
+];
+
+ENTITY_COLUMNS['MindMapDoc']=[
+  'user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID',
+  'title:VARCHAR(255):NOT NULL:マインドマップ名:Mind map title',
+  'description:TEXT::説明:Description',
+  'node_count:INT:DEFAULT 1:ノード数:Node count',
+  'template_id:VARCHAR(100)::テンプレートID:Template ID',
+  'is_public:BOOLEAN:DEFAULT false:公開:Public'
+];
+
+ENTITY_COLUMNS['MindMapNode']=[
+  'map_id:UUID:FK(MindMapDoc) NOT NULL:マップID:Map ID',
+  'parent_id:UUID:FK(MindMapNode)::親ノードID:Parent node ID',
+  'label:TEXT:NOT NULL:ラベル:Label',
+  'color:VARCHAR(7)::色(HEX):Color (HEX)',
+  'pos_x:DECIMAL(8,2)::X座標:X position',
+  'pos_y:DECIMAL(8,2)::Y座標:Y position'
+];
+
+ENTITY_COLUMNS['MindMapEdge']=[
+  'map_id:UUID:FK(MindMapDoc) NOT NULL:マップID:Map ID',
+  'source_id:UUID:FK(MindMapNode) NOT NULL:始点ノードID:Source node ID',
+  'target_id:UUID:FK(MindMapNode) NOT NULL:終点ノードID:Target node ID',
+  'label:VARCHAR(255)::エッジラベル:Edge label',
+  'style:VARCHAR(50):DEFAULT \'solid\':スタイル:Style'
+];
+
+ENTITY_COLUMNS['MindMapTag']=[
+  'map_id:UUID:FK(MindMapDoc) NOT NULL:マップID:Map ID',
+  'name:VARCHAR(100):NOT NULL:タグ名:Tag name',
+  'color:VARCHAR(7)::色(HEX):Color (HEX)'
+];
+
+ENTITY_COLUMNS['FitPlan']=[
+  'user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID',
+  'name:VARCHAR(255):NOT NULL:プラン名:Plan name',
+  'description:TEXT::説明:Description',
+  'days_per_week:INT:DEFAULT 3:週当たり日数:Days per week',
+  'goal:VARCHAR(255)::目標:Goal',
+  'status:VARCHAR(20):DEFAULT \'active\':ステータス:Status'
+];
+
+ENTITY_COLUMNS['FitSession']=[
+  'user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID',
+  'plan_id:UUID:FK(FitPlan)::プランID:Plan ID',
+  'session_date:DATE:NOT NULL:実施日:Session date',
+  'duration_min:INT::時間(分):Duration (min)',
+  'notes:TEXT::メモ:Notes',
+  'calories_burned:INT::消費カロリー:Calories burned'
+];
+
+ENTITY_COLUMNS['FitSet']=[
+  'session_id:UUID:FK(FitSession) NOT NULL:セッションID:Session ID',
+  'exercise_name:VARCHAR(255):NOT NULL:種目名:Exercise name',
+  'set_number:INT:NOT NULL:セット番号:Set number',
+  'reps:INT::回数:Reps',
+  'weight_kg:DECIMAL(6,2)::重量(kg):Weight (kg)',
+  'duration_sec:INT::時間(秒):Duration (sec)'
+];
+
+ENTITY_COLUMNS['FitProgress']=[
+  'user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID',
+  'record_date:DATE:NOT NULL:記録日:Record date',
+  'weight_kg:DECIMAL(5,2)::体重(kg):Weight (kg)',
+  'body_fat_pct:DECIMAL(4,1)::体脂肪率(%):Body fat (%)',
+  'muscle_mass_kg:DECIMAL(5,2)::筋肉量(kg):Muscle mass (kg)'
+];
+
+ENTITY_COLUMNS['FootprintActivity']=[
+  'user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID',
+  'category_id:UUID:FK(FootprintCategory) NOT NULL:カテゴリID:Category ID',
+  'activity_date:DATE:NOT NULL:活動日:Activity date',
+  'description:VARCHAR(255)::活動内容:Description',
+  'quantity:DECIMAL(10,2):NOT NULL:量:Quantity',
+  'unit:VARCHAR(50):NOT NULL:単位:Unit',
+  'co2_kg:DECIMAL(10,4):NOT NULL:CO2排出量(kg):CO2 emission (kg)'
+];
+
+ENTITY_COLUMNS['FootprintCategory']=[
+  'name:VARCHAR(100):NOT NULL:カテゴリ名:Category name',
+  'name_en:VARCHAR(100):NOT NULL:カテゴリ名(英):Category name (EN)',
+  'emission_factor:DECIMAL(10,6):NOT NULL:排出係数:Emission factor',
+  'unit:VARCHAR(50):NOT NULL:単位:Unit',
+  'icon:VARCHAR(10)::アイコン:Icon'
+];
+
+ENTITY_COLUMNS['FootprintGoal']=[
+  'user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID',
+  'target_year:INT:NOT NULL:目標年:Target year',
+  'baseline_co2_kg:DECIMAL(10,2):NOT NULL:基準CO2(kg/年):Baseline CO2 (kg/yr)',
+  'target_co2_kg:DECIMAL(10,2):NOT NULL:目標CO2(kg/年):Target CO2 (kg/yr)',
+  'reduction_pct:DECIMAL(5,2)::削減率(%):Reduction (%)',
+  'status:VARCHAR(20):DEFAULT \'active\':ステータス:Status'
+];
+
+ENTITY_COLUMNS['FootprintReport']=[
+  'user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID',
+  'report_period:VARCHAR(20):NOT NULL:集計期間:Report period',
+  'start_date:DATE:NOT NULL:開始日:Start date',
+  'end_date:DATE:NOT NULL:終了日:End date',
+  'total_co2_kg:DECIMAL(10,2):NOT NULL:合計CO2(kg):Total CO2 (kg)',
+  'by_category:JSONB::カテゴリ別集計:By category breakdown'
+];
+
+ENTITY_COLUMNS['OralInterview']=[
+  'user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID',
+  'title:VARCHAR(255):NOT NULL:インタビュー題名:Interview title',
+  'interviewee:VARCHAR(255):NOT NULL:語り手:Interviewee',
+  'interview_date:DATE::収録日:Interview date',
+  'duration_sec:INT::収録時間(秒):Duration (sec)',
+  'status:VARCHAR(20):DEFAULT \'raw\':ステータス:Status'
+];
+
+ENTITY_COLUMNS['OralTranscript']=[
+  'interview_id:UUID:FK(OralInterview) NOT NULL:インタビューID:Interview ID',
+  'language:VARCHAR(10):DEFAULT \'ja\':言語:Language',
+  'content:TEXT:NOT NULL:文字起こし全文:Transcript content',
+  'speaker_labels:JSONB::話者ラベル:Speaker labels',
+  'ai_generated:BOOLEAN:DEFAULT false:AI生成:AI generated',
+  'created_at:TIMESTAMP:DEFAULT NOW:作成日時:Created at'
+];
+
+ENTITY_COLUMNS['OralTheme']=[
+  'interview_id:UUID:FK(OralInterview) NOT NULL:インタビューID:Interview ID',
+  'theme_name:VARCHAR(255):NOT NULL:テーマ名:Theme name',
+  'keywords:JSONB::キーワードリスト:Keywords',
+  'excerpt:TEXT::引用テキスト:Excerpt',
+  'ai_extracted:BOOLEAN:DEFAULT false:AI抽出:AI extracted'
+];
+
+ENTITY_COLUMNS['OralArchive']=[
+  'interview_id:UUID:FK(OralInterview) NOT NULL:インタビューID:Interview ID',
+  'archive_id:VARCHAR(100):UNIQUE NOT NULL:アーカイブID:Archive ID',
+  'access_level:VARCHAR(20):DEFAULT \'private\':公開レベル:Access level',
+  'metadata:JSONB::メタデータ:Metadata',
+  'published_at:TIMESTAMP::公開日時:Published at',
+  'citation:TEXT::引用情報:Citation'
+];
