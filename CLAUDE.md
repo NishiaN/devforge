@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 # DevForge v9.6.0
 
-**AI Development OS** — 83 JS modules in `src/` → single `devforge-v9.html` (~4923KB / 6000KB limit).
+**AI Development OS** — 84 JS modules in `src/` → single `devforge-v9.html` (~4964KB / 6000KB limit).
 Generates **218+ files** across **27 pillars** from a wizard-driven Q&A session.
 
 ## Documentation Map
@@ -18,10 +18,10 @@ Generates **218+ files** across **27 pillars** from a wizard-driven Q&A session.
 ## Build & Test
 
 ```bash
-node build.js                          # → devforge-v9.html (~4923KB, limit 6000KB)
+node build.js                          # → devforge-v9.html (~4964KB, limit 6000KB)
 node build.js --no-minify              # debug (skip minification)
 node build.js --report                 # build + size breakdown by module
-npm test                               # 7027 tests, all passing
+npm test                               # 7107 tests, all passing
 node --test test/gen-quality.test.js   # single test file
 npm run dev                            # build + live-server :3000
 npm run check                          # syntax-check extracted JS
@@ -45,7 +45,7 @@ Never reorder without checking dependencies.
 | Category | Purpose |
 |----------|---------|
 | `core/` | State (`S`), i18n (`t()`), keyboard events, wizard tour, app init |
-| `data/` | 237 standard presets (`PR`/`_mp()`), 581 field presets (`PR_FIELD`/`_fpd()`), questions, techdb (478 entries), compat-rules (278 rules), gen-templates (bilingual GT dict), helpdata |
+| `data/` | 247 standard presets (`PR`/`_mp()`), 591 field presets (`PR_FIELD`/`_fpd()`), questions, techdb (478 entries), compat-rules (278 rules), gen-templates (bilingual GT dict), helpdata |
 | `ui/launcher.js` | 70 prompt templates; `templateOrder[70]`, `AI_REC`, `LAUNCH_CAT_MAP`, `TEMPLATE_SCOPE`, `LAUNCH_SKILL_REC` maps; `DOC_GROUPS` for semantic doc grouping |
 | `generators/` | `index.js` orchestrator + `p1`–`p26` pillars + `docs.js` + `common.js` |
 | `ui/` | wizard, render, presets, preview, sidebar, editor, diff, export, explorer, dashboard, launcher, templates, qbar, cmdpalette, help, voice |
