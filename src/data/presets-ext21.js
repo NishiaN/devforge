@@ -8,14 +8,14 @@
           mfg_skill_transfer_ai */
 Object.assign(PR,{
 
-geotech_survey:_mp({name:'地質・地盤調査データ管理システム',nameEn:'Geotechnical Survey Data Management System',icon:'⛏️',
-  purpose:'ボーリング柱状図・標準貫入試験・室内土質試験データを統合管理し地盤断面図・液状化リスク評価・地盤改良設計を自動生成する地盤調査SaaS',
-  purposeEn:'Ground investigation SaaS that integrates borehole logs, SPT & laboratory soil test data to auto-generate soil cross-sections, liquefaction risk assessments & ground improvement designs',
-  target:['地質調査技術者','地盤設計エンジニア','公共工事担当者'],targetEn:['Geotechnical Investigators','Ground Engineers','Public Works Officers'],
+geotech_survey:_mp({name:'斜面安定性・地盤リスク評価SaaS',nameEn:'Slope Stability & Geotechnical Risk Assessment SaaS',icon:'⛏️',
+  purpose:'切土・盛土・崖地の斜面安定計算・崩壊リスク評価・擁壁設計・地震時応答解析を自動化し発注者向けリスクレポートを生成する斜面地盤リスクSaaS',
+  purposeEn:'Slope & retaining wall risk SaaS that automates slope stability calculations, failure risk assessment, retaining wall design & seismic response analysis to generate client-facing risk reports',
+  target:['地盤・斜面設計エンジニア','建設・土木コンサルタント','自治体ハザード管理担当'],targetEn:['Slope & Ground Design Engineers','Civil Engineering Consultants','Municipal Hazard Management Officers'],
   frontend:'React (Vite SPA)',backend:'Express',
-  features:['ボーリング柱状図入力・管理','N値・地盤定数AI解析','地盤断面図・等値線図生成','液状化判定・地盤改良設計支援','調査報告書PDF自動出力','CORS設定','ページネーション・無限スクロール'],
-  featuresEn:['Borehole log entry & management','N-value & soil parameter AI analysis','Soil cross-section & contour map generation','Liquefaction assessment & ground improvement design support','Investigation report PDF auto-output','CORS Configuration','Cursor Pagination'],
-  entities:'GeotechSite,BoringLog,SoilClassification,GroundwaterTable,LiquefactionZone',
+  features:['斜面安定計算(円弧・非円弧)','崩壊リスクスコア・ハザードマップ生成','擁壁・アンカー設計支援','地震時応答解析・液状化判定','リスクレポートPDF出力','CORS設定','ページネーション・無限スクロール'],
+  featuresEn:['Slope stability calculation (circular & non-circular)','Failure risk scoring & hazard map generation','Retaining wall & anchor design support','Seismic response analysis & liquefaction assessment','Risk report PDF output','CORS Configuration','Cursor Pagination'],
+  entities:'SlopeMonitor,StabilityAnalysis,RetainingWall,SeismicRisk,GeoRiskReport',
   payment:'stripe',org_model:'マルチテナント(RLS)',deploy:'Railway'}),
 
 health_checkup_ai:_mp({name:'健康診断分析AIシステム',nameEn:'Health Checkup AI Analysis System',icon:'🏥',
