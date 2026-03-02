@@ -29,7 +29,7 @@ material_strength_tool:_mp({name:'材料強度・疲労寿命予測システム'
   entities:'MaterialSpec,FatigueTestResult,SNcurveModel,FailureMode,StrengthReport',
   payment:'stripe',org_model:'マルチテナント(RLS)',deploy:'Railway'}),
 
-geo_survey_mgr:_mp({name:'地質・地盤調査データ管理システム',nameEn:'Geology & Ground Investigation Data Management',icon:'🪨',
+geo_survey_mgr:_mp({name:'地質・地盤調査データ管理システム',nameEn:'Geology & Ground Investigation Data Management',icon:'⛏️',
   purpose:'ボーリング調査・標準貫入試験・室内土質試験の記録を統合管理し地盤断面図・N値分布・液状化判定・地盤改良設計を自動生成する地盤調査SaaS',
   purposeEn:'Ground investigation SaaS integrating borehole, SPT & laboratory soil test records to auto-generate soil profile cross-sections, N-value distributions, liquefaction assessments & ground improvement designs',
   target:['地質調査技術者','地盤設計エンジニア','公共工事担当'],targetEn:['Geotechnical Investigators','Ground Engineers','Public Works Officers'],
