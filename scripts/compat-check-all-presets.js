@@ -107,6 +107,8 @@ const NEW_RULE_IDS = [
   // docs/121 security design rules (+6)
   'sec-no-secrets-mgr','sec-no-sbom','sec-sensitive-no-classify',
   'sec-no-sast','sec-container-no-scan','sec-no-security-metrics',
+  // API performance rules (+4)
+  'perf-no-compression','perf-no-etag','api-no-deprecation-plan','perf-rest-no-fieldselect',
 ];
 
 const errorRules = Object.entries(hits).filter(([,v])=>v.level==='error');

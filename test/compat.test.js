@@ -1,4 +1,4 @@
-// Compat rules functional test (246 rules: 33 ERROR + 132 WARN + 81 INFO)
+// Compat rules functional test (250 rules: 33 ERROR + 134 WARN + 83 INFO)
 const assert=require('node:assert/strict');
 const S={lang:'ja',skill:'pro'};
 eval(require('fs').readFileSync('src/data/compat-rules.js','utf-8'));
@@ -589,6 +589,29 @@ const tests=[
   {name:'large+fintech+MTTD=noMetricsINFO',a:{scale:'large',purpose:'フィンテック決済プラットフォーム',mvp_features:'MTTD/MTTR測定, セキュリティダッシュボード'},expect:'none',id:'sec-no-security-metrics'},
   {name:'medium+fintech+noMetrics=noMetricsINFO',a:{scale:'medium',purpose:'フィンテック決済プラットフォーム'},expect:'none',id:'sec-no-security-metrics'},
   {name:'large+general+noMetrics=noMetricsINFO',a:{scale:'large',purpose:'タスク管理ツール'},expect:'none',id:'sec-no-security-metrics'},
+  // ── API Performance Rules (4 rules) ──
+  // perf-no-compression (WARN) — large + 8+ entities + non-BaaS + no compression
+  {name:'Express+large+8ents+noCompress=WARN',a:{backend:'Node.js + Express',scale:'large',data_entities:'User, Team, Project, Task, Comment, Tag, File, Notification'},expect:'warn',id:'perf-no-compression'},
+  {name:'Express+large+8ents+withCompress=noWARN',a:{backend:'Node.js + Express',scale:'large',data_entities:'User, Team, Project, Task, Comment, Tag, File, Notification',mvp_features:'圧縮ミドルウェア, brotli'},expect:'none',id:'perf-no-compression'},
+  {name:'Supabase+large+8ents+noCompress=noWARN',a:{backend:'Supabase',scale:'large',data_entities:'User, Team, Project, Task, Comment, Tag, File, Notification'},expect:'none',id:'perf-no-compression'},
+  {name:'Express+large+5ents+noCompress=noWARN',a:{backend:'Node.js + Express',scale:'large',data_entities:'User, Team, Project, Task, Comment'},expect:'none',id:'perf-no-compression'},
+  {name:'Express+medium+8ents+noCompress=noWARN',a:{backend:'Node.js + Express',scale:'medium',data_entities:'User, Team, Project, Task, Comment, Tag, File, Notification'},expect:'none',id:'perf-no-compression'},
+  // perf-no-etag (INFO) — large + non-BaaS + no ETag
+  {name:'Express+large+noETag=INFO',a:{backend:'Node.js + Express',scale:'large'},expect:'info',id:'perf-no-etag'},
+  {name:'Express+large+withETag=noETagINFO',a:{backend:'Node.js + Express',scale:'large',mvp_features:'ETag条件付きリクエスト'},expect:'none',id:'perf-no-etag'},
+  {name:'Supabase+large+noETag=noETagINFO',a:{backend:'Supabase',scale:'large'},expect:'none',id:'perf-no-etag'},
+  {name:'Express+medium+noETag=noETagINFO',a:{backend:'Node.js + Express',scale:'medium'},expect:'none',id:'perf-no-etag'},
+  // api-no-deprecation-plan (INFO) — large + non-BaaS + no deprecation plan
+  {name:'NestJS+large+noSunset=INFO',a:{backend:'Node.js + NestJS',scale:'large'},expect:'info',id:'api-no-deprecation-plan'},
+  {name:'NestJS+large+withSunset=noDeprecationINFO',a:{backend:'Node.js + NestJS',scale:'large',mvp_features:'APIバージョン移行計画, Deprecation'},expect:'none',id:'api-no-deprecation-plan'},
+  {name:'Firebase+large+noSunset=noDeprecationINFO',a:{backend:'Firebase',scale:'large'},expect:'none',id:'api-no-deprecation-plan'},
+  {name:'Express+medium+noSunset=noDeprecationINFO',a:{backend:'Node.js + Express',scale:'medium'},expect:'none',id:'api-no-deprecation-plan'},
+  // perf-rest-no-fieldselect (INFO) — 8+ entities + non-BaaS + non-GraphQL + no field select
+  {name:'Express+8ents+noFieldSelect=INFO',a:{backend:'Node.js + Express',data_entities:'User, Team, Project, Task, Comment, Tag, File, Notification'},expect:'info',id:'perf-rest-no-fieldselect'},
+  {name:'Express+8ents+withFieldSelect=noFieldINFO',a:{backend:'Node.js + Express',data_entities:'User, Team, Project, Task, Comment, Tag, File, Notification',mvp_features:'fields=クエリパラメータ, field select'},expect:'none',id:'perf-rest-no-fieldselect'},
+  {name:'Supabase+8ents+noFieldSelect=noFieldINFO',a:{backend:'Supabase',data_entities:'User, Team, Project, Task, Comment, Tag, File, Notification'},expect:'none',id:'perf-rest-no-fieldselect'},
+  {name:'GraphQL+8ents+noFieldSelect=noFieldINFO',a:{backend:'Node.js + NestJS + GraphQL',data_entities:'User, Team, Project, Task, Comment, Tag, File, Notification'},expect:'none',id:'perf-rest-no-fieldselect'},
+  {name:'Express+5ents+noFieldSelect=noFieldINFO',a:{backend:'Node.js + Express',data_entities:'User, Team, Project, Task, Comment'},expect:'none',id:'perf-rest-no-fieldselect'},
 ];
 
 let pass=0,fail=0;

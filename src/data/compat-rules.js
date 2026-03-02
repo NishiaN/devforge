@@ -1,4 +1,4 @@
-/* ═══ STACK COMPATIBILITY & SEMANTIC CONSISTENCY RULES — 246 rules (ERROR×33 + WARN×132 + INFO×81) ═══ */
+/* ═══ STACK COMPATIBILITY & SEMANTIC CONSISTENCY RULES — 250 rules (ERROR×33 + WARN×134 + INFO×83) ═══ */
 const COMPAT_RULES=[
   // ── FE ↔ Mobile (2 ERROR) ──
   {id:'fe-mob-expo',p:['frontend','mobile'],lv:'error',
@@ -1958,6 +1958,61 @@ const COMPAT_RULES=[
    en:'Large-scale high-security domain without security metrics (MTTD/MTTR) defined. Recommend implementing quantitative security management. See docs/121',
    why_ja:'「セキュリティインシデントが発生してから検知まで何時間かかっているか」（MTTD）「検知から修復まで何時間かかっているか」（MTTR）を測定しないと改善できません。特に金融・医療・政府ドメインでは規制要件として定期的なセキュリティ報告が求められます。SIEM統合またはGitHub Security Overviewでこれらの指標を可視化することを推奨します。詳細: docs/121_security_design_guide.md §6',
    why_en:'Without measuring "how long from incident to detection" (MTTD) and "how long from detection to remediation" (MTTR), improvement is impossible. Finance, healthcare, and government domains specifically require regular security reporting as a regulatory requirement. SIEM integration or GitHub Security Overview can visualize these metrics. See: docs/121_security_design_guide.md §6'},
+  // ── API Performance (+4: 1W+3I) ──
+  {id:'perf-no-compression',p:['backend','scale'],lv:'warn',
+   t:a=>{
+    var sc=a.scale||'medium';
+    var be=a.backend||'';
+    var isStatic=/静的サイト|static site/i.test(be)||!be;
+    var isBaaS=/Supabase|Firebase|Convex/i.test(be);
+    var feats=a.mvp_features||'';
+    var hasCompress=/compress|brotli|gzip|圧縮ミドルウェア/i.test(feats);
+    var ents=(a.data_entities||'').split(',').filter(function(e){return e.trim();});
+    return sc==='large'&&!isBaaS&&!isStatic&&!hasCompress&&ents.length>=8;},
+   ja:'大規模バックエンドでレスポンス圧縮（Gzip/Brotli）が未設定です。JSON APIで30-70%の帯域削減が可能です。docs/101参照',
+   en:'Large-scale backend without response compression (Gzip/Brotli) configured. 30-70% bandwidth reduction possible for JSON APIs. See docs/101',
+   why_ja:'大規模サービスでは、JSONレスポンスにGzip/Brotli圧縮を適用することで帯域コストを30-70%削減できます。Expressでは`compression`パッケージを追加するだけで有効化でき、nginxリバースプロキシでもgzip/brotliディレクティブで設定可能です。特に8エンティティ以上の大規模データモデルでは効果が顕著です。詳細: docs/101_cache_strategy.md',
+   why_en:'For large-scale services, applying Gzip/Brotli compression to JSON responses can reduce bandwidth costs by 30-70%. In Express, simply adding the `compression` package enables it; nginx reverse proxies can also configure gzip/brotli directives. The impact is especially significant for large data models with 8+ entities. See: docs/101_cache_strategy.md'},
+  {id:'perf-no-etag',p:['backend','scale'],lv:'info',
+   t:a=>{
+    var sc=a.scale||'medium';
+    var be=a.backend||'';
+    var isStatic=/静的サイト|static site/i.test(be)||!be;
+    var isBaaS=/Supabase|Firebase|Convex/i.test(be);
+    var feats=a.mvp_features||'';
+    var hasETag=/ETag|条件付きリクエスト|conditional request|304/i.test(feats);
+    return sc==='large'&&!isBaaS&&!isStatic&&!hasETag;},
+   ja:'大規模バックエンドでETag/条件付きリクエストが未設定です。帯域30-90%削減と不要な処理の削減が可能です。docs/101参照',
+   en:'Large-scale backend without ETag/conditional requests configured. Possible 30-90% bandwidth reduction and elimination of redundant processing. See docs/101',
+   why_ja:'ETagは`If-None-Match`リクエストヘッダーと組み合わせることで、リソースが変更されていない場合に304 Not Modifiedを返し、レスポンスボディの転送を不要にします。帯域削減だけでなく、サーバー側のDBクエリやJSON直列化処理も省略できるため、特に頻繁にポーリングされるエンドポイントでパフォーマンスが大幅に向上します。詳細: docs/101_cache_strategy.md',
+   why_en:'ETag combined with the `If-None-Match` request header allows returning 304 Not Modified when resources haven\'t changed, eliminating response body transfer. Beyond bandwidth savings, it also skips server-side DB queries and JSON serialization, significantly improving performance for frequently polled endpoints. See: docs/101_cache_strategy.md'},
+  {id:'api-no-deprecation-plan',p:['backend','scale'],lv:'info',
+   t:a=>{
+    var sc=a.scale||'medium';
+    var be=a.backend||'';
+    var isStatic=/静的サイト|static site/i.test(be)||!be;
+    var isBaaS=/Supabase|Firebase|Convex/i.test(be);
+    var feats=a.mvp_features||'';
+    var hasDeprecation=/Deprecation|Sunset|廃止計画|バージョン移行/i.test(feats);
+    return sc==='large'&&!isBaaS&&!isStatic&&!hasDeprecation;},
+   ja:'大規模APIでバージョン廃止計画（Deprecation/Sunsetヘッダー）が未定義です。クライアント影響を最小化する移行戦略の策定を推奨します。docs/83参照',
+   en:'Large-scale API without version deprecation plan (Deprecation/Sunset headers) defined. Recommend establishing a migration strategy to minimize client impact. See docs/83',
+   why_ja:'APIバージョンの廃止を突然行うとクライアントが壊れます。RFC 8594のSunsetヘッダーを使うことで、廃止日を事前に通知できます。最低6ヶ月の移行期間を設け、`Deprecation: true`と`Sunset: <日付>`ヘッダーを全レスポンスに付与することで、クライアント開発者が計画的に移行できます。詳細: docs/83_api_design_principles.md §APIライフサイクル管理',
+   why_en:'Abruptly deprecating API versions breaks clients. Using RFC 8594 Sunset headers provides advance notice of deprecation dates. Setting a minimum 6-month migration period and adding `Deprecation: true` and `Sunset: <date>` headers to all responses allows client developers to plan migrations systematically. See: docs/83_api_design_principles.md §API Lifecycle Management'},
+  {id:'perf-rest-no-fieldselect',p:['backend','data_entities'],lv:'info',
+   t:a=>{
+    var sc=a.scale||'medium';
+    var be=a.backend||'';
+    var isBaaS=/Supabase|Firebase|Convex/i.test(be);
+    var isGraphQL=/GraphQL/i.test(be)||(a.frontend&&/GraphQL/i.test(a.frontend));
+    var feats=a.mvp_features||'';
+    var hasFieldSelect=/sparse fieldset|fields=|フィールド選択|field select/i.test(feats);
+    var ents=(a.data_entities||'').split(',').filter(function(e){return e.trim();});
+    return !isBaaS&&!isGraphQL&&ents.length>=8&&sc!=='solo'&&!hasFieldSelect;},
+   ja:'8件超エンティティのREST APIでフィールド選択（?fields=）が未実装です。過剰なペイロード転送を防ぐSparse Fieldsetsの実装を推奨します。docs/83参照',
+   en:'REST API with 8+ entities without field selection (?fields=) implemented. Recommend Sparse Fieldsets to prevent over-fetching payload transfer. See docs/83',
+   why_ja:'GraphQLはフィールド選択をネイティブに解決しますが、REST APIでは全フィールドを返すのがデフォルトです。`?fields=id,name,email`クエリパラメータを実装することで、クライアントが必要なフィールドだけを取得でき、特にモバイルクライアントや一覧表示での帯域・処理時間を大幅に削減できます。8エンティティ以上の大規模データモデルでは特に効果的です。詳細: docs/83_api_design_principles.md §ペイロード最適化',
+   why_en:'While GraphQL natively solves field selection, REST APIs default to returning all fields. Implementing the `?fields=id,name,email` query parameter allows clients to fetch only needed fields, significantly reducing bandwidth and processing time, especially for mobile clients and list views. Particularly effective for large data models with 8+ entities. See: docs/83_api_design_principles.md §Payload Optimization'},
 ];
 // helpers
 function inc(v,k){return v&&typeof v==='string'&&v.indexOf(k)!==-1;}

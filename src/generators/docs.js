@@ -2424,11 +2424,11 @@ function genOpenAPISpec(a,pn,G){
       out+=ind(8,'- '+tag+'\n');
       if(hasAuth){out+=ind(6,'security:\n');out+=ind(8,'- bearerAuth: []\n');}
       out+=ind(6,'parameters:\n');
-      out+=ind(8,'- name: page\n');
+      out+=ind(8,'- name: cursor\n');
       out+=ind(10,'in: query\n');
+      out+=ind(10,'description: '+(G?'前ページの末尾カーソル（初回は省略）':'End cursor from previous page (omit for first page)')+'\n');
       out+=ind(10,'schema:\n');
-      out+=ind(12,'type: integer\n');
-      out+=ind(12,'default: 1\n');
+      out+=ind(12,'type: string\n');
       out+=ind(8,'- name: limit\n');
       out+=ind(10,'in: query\n');
       out+=ind(10,'schema:\n');
@@ -2447,8 +2447,12 @@ function genOpenAPISpec(a,pn,G){
       out+=ind(20,'type: array\n');
       out+=ind(20,'items:\n');
       out+=ind(22,'$ref: \'#/components/schemas/'+tag+'\'\n');
-      out+=ind(18,'total:\n');
-      out+=ind(20,'type: integer\n');
+      out+=ind(18,'cursor:\n');
+      out+=ind(20,'type: string\n');
+      out+=ind(20,'nullable: true\n');
+      out+=ind(20,'description: '+(G?'次ページ取得用カーソル（nullで最終ページ）':'Cursor for next page (null means last page)')+'\n');
+      out+=ind(18,'hasNextPage:\n');
+      out+=ind(20,'type: boolean\n');
       out+=ind(8,"'401':\n");
       out+=ind(10,'description: '+(G?'認証エラー':'Unauthorized')+'\n');
       out+=ind(10,'content:\n');

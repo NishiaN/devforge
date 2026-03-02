@@ -268,6 +268,7 @@ function gen101(a,pn){
   const deploy=a.deploy||'';
   const fe=a.frontend||'';
   const be=a.backend||'';
+  const isBaaS=/Supabase|Firebase|Convex/i.test(be);
   const isVercel=/Vercel/i.test(deploy);
   const isCF=/Cloudflare/i.test(deploy);
   const isNext=/Next\.js/i.test(fe);
@@ -331,6 +332,46 @@ function gen101(a,pn){
     (G?_dp101.cache_ja:_dp101.cache_en).forEach(function(c){doc+='- '+c+'\n';});
     doc+='\n';
   }
+
+  if(!isBaaS){
+    doc+='\n## '+(G?'ETag / 条件付きリクエスト':'ETag / Conditional Requests')+'\n\n';
+    doc+=(G
+      ?'ETagを使うと同一リソースが未変更の場合に **304 Not Modified** を返し、帯域を **30–90%** 削減できます。\n\n'
+      :'ETag enables **304 Not Modified** responses for unchanged resources, reducing bandwidth by **30–90%**.\n\n'
+    );
+    doc+=(G?'### Express 実装例':'### Express Implementation')+'\n\n';
+    doc+='```typescript\nimport crypto from \'crypto\';\n\n// Option 1: Express built-in weak ETag\napp.set(\'etag\', \'strong\');\n\n// Option 2: Custom strong ETag with content hash\napp.get(\'/api/products\', async (req, res) => {\n  const data = await getProducts();\n  const etag = \'"\' + crypto.createHash(\'sha256\')\n    .update(JSON.stringify(data)).digest(\'hex\').slice(0, 16) + \'"\';\n  if (req.headers[\'if-none-match\'] === etag) {\n    return res.status(304).end();\n  }\n  res.setHeader(\'ETag\', etag);\n  res.setHeader(\'Cache-Control\', \'max-age=60, must-revalidate\');\n  res.json(data);\n});\n```\n';
+    if(isNext){
+      doc+='\n'+(G?'### Next.js API Route 実装例':'### Next.js API Route')+'\n\n';
+      doc+='```typescript\n// app/api/products/route.ts\nimport { NextRequest, NextResponse } from \'next/server\';\nimport crypto from \'crypto\';\n\nexport async function GET(req: NextRequest) {\n  const data = await getProducts();\n  const etag = \'"\' + crypto.createHash(\'sha256\')\n    .update(JSON.stringify(data)).digest(\'hex\').slice(0,16) + \'"\';\n  const clientEtag = req.headers.get(\'if-none-match\');\n  if (clientEtag === etag) {\n    return new NextResponse(null, { status: 304, headers: { ETag: etag } });\n  }\n  return NextResponse.json(data, { headers: { ETag: etag, \'Cache-Control\': \'max-age=60, must-revalidate\' } });\n}\n```\n';
+    }
+    doc+='\n## '+(G?'レスポンス圧縮ミドルウェア':'Response Compression Middleware')+'\n\n';
+    doc+=(G
+      ?'Gzip/Brotli圧縮でJSONペイロードを **30–70%** 削減できます。特に大規模レスポンスで効果大。\n\n'
+      :'Gzip/Brotli compression reduces JSON payloads by **30–70%**, especially effective for large responses.\n\n'
+    );
+    doc+='```typescript\n// Express: compression middleware\nimport compression from \'compression\';\napp.use(compression({\n  level: 6,          // Balanced CPU vs compression ratio\n  threshold: 1024,   // Only compress responses > 1KB\n  filter: (req, res) => {\n    if (req.headers[\'x-no-compression\']) return false;\n    return compression.filter(req, res);\n  }\n}));\n```\n\n';
+    doc+='```nginx\n# nginx: Gzip + Brotli dual compression\ngzip on;\ngzip_types application/json text/plain application/xml;\ngzip_min_length 1024;\ngzip_comp_level 6;\nbrotli on;\nbrotli_types application/json text/plain;\nbrotli_comp_level 4;\n```\n\n';
+    doc+='| '+(G?'方式':'Method')+' | '+(G?'圧縮率':'Ratio')+' | CPU | '+(G?'ブラウザ対応':'Browser')+' | '+(G?'推奨用途':'Use Case')+' |\n';
+    doc+='|------|------|-----|------|------|\n';
+    doc+='| Brotli | ~26% better than gzip | '+(G?'高':'High')+' | Chrome/Firefox/Edge | '+(G?'静的アセット / CDN':'Static assets / CDN')+' |\n';
+    doc+='| Gzip | '+(G?'標準':'Standard')+' | '+(G?'中':'Med')+' | '+(G?'全ブラウザ':'All browsers')+' | '+(G?'API / 汎用':'API / General')+' |\n';
+    doc+='\n';
+  }
+
+  doc+='## '+(G?'Stale-While-Revalidate APIパターン':'Stale-While-Revalidate API Pattern')+'\n\n';
+  doc+=(G
+    ?'エンドポイント種別ごとの推奨 `Cache-Control` ヘッダー設計:\n\n'
+    :'Recommended `Cache-Control` header design by endpoint type:\n\n'
+  );
+  doc+='| '+(G?'エンドポイント種別':'Endpoint Type')+' | Cache-Control | '+(G?'説明':'Notes')+' |\n';
+  doc+='|------|------|------|\n';
+  doc+='| '+(G?'静的参照データ (マスター等)':'Static reference data (master etc.)')+' | `public, max-age=3600, stale-while-revalidate=86400` | '+(G?'1h新鮮 + 1d猶予':'1h fresh + 1d grace')+' |\n';
+  doc+='| '+(G?'共有リソース一覧':'Shared resource list')+' | `public, s-maxage=60, stale-while-revalidate=600` | '+(G?'CDN 1min + 10min猶予':'CDN 1min + 10min grace')+' |\n';
+  doc+='| '+(G?'ユーザー固有データ':'User-specific data')+' | `private, max-age=0, stale-while-revalidate=60` | '+(G?'秘匿 + 60s猶予':'Private + 60s grace')+' |\n';
+  doc+='| '+(G?'リアルタイムデータ':'Realtime data')+' | `no-store` | '+(G?'キャッシュ不可':'No caching')+' |\n';
+  doc+='| '+(G?'Mutation後のGET':'GET after mutation')+' | `no-cache` | '+(G?'毎回再検証':'Revalidate each time')+' |\n';
+  doc+='\n';
 
   S.files['docs/101_cache_strategy.md']=doc;
 }

@@ -241,10 +241,21 @@ function gen83(a,pn,G){
   doc+='| Header | `Accept: application/vnd.api+json;v=1` | - | '+(G?'URLがクリーン':'Cleaner URL')+' |\n';
   doc+='| Query | `/users?version=1` | ❌ | '+(G?'避けること':'Avoid')+' |\n';
   doc+='\n';
+  doc+='## '+(G?'APIライフサイクル管理':'API Lifecycle Management')+'\n\n';
+  doc+='| '+(G?'フェーズ':'Phase')+' | '+(G?'期間目安':'Duration')+' | '+(G?'HTTPヘッダー':'HTTP Headers')+' | '+(G?'クライアント対応':'Client Action')+' |\n';
+  doc+='|------|------|------|------|\n';
+  doc+='| Active | — | — | '+(G?'通常利用':'Normal use')+' |\n';
+  doc+='| Deprecated | '+(G?'最低6ヶ月':'Min 6 months')+' | `Deprecation: true` / `Sunset: <RFC 7231 date>` | '+(G?'移行計画を立てる':'Plan migration')+' |\n';
+  doc+='| Sunset | '+(G?'1ヶ月':'1 month')+' | `Sunset: <date>` / `Link: rel="successor-version"` | '+(G?'新バージョンへ切替':'Switch to new version')+' |\n';
+  doc+='| Retired | — | `410 Gone` | '+(G?'移行完了':'Migration complete')+' |\n';
+  doc+='| Removed | — | `404 Not Found` | — |\n\n';
+  doc+='```http\n# RFC 8594 — Sunset Header (deprecated API response)\nHTTP/1.1 200 OK\nDeprecation: true\nSunset: Sat, 01 Jan 2028 00:00:00 GMT\nLink: <https://api.example.com/v2/users>; rel="successor-version"\n```\n\n';
+  doc+=(G?'**移行チェックリスト**:':'**Migration Checklist**:')+'\n';
   doc+=(G
-    ?'**廃止ポリシー**: v1 廃止前に最低6ヶ月の移行期間を設ける。`Deprecation` ヘッダーで通知。\n\n'
-    :'**Deprecation Policy**: Provide minimum 6-month migration period before deprecating v1. Notify via `Deprecation` header.\n\n'
+    ?'1. Deprecation通知をAPI Changelogとメール両方で告知\n2. `Sunset` ヘッダーを全レスポンスに付与\n3. v1/v2並行期間を最低6ヶ月確保\n4. モニタリングでv1呼び出しを追跡し移行状況を可視化\n5. Sunset日の2週間前に最終リマインダー送信\n'
+    :'1. Announce deprecation via both API Changelog and email\n2. Add `Sunset` header to all responses\n3. Maintain v1/v2 parallel period for at least 6 months\n4. Track v1 calls in monitoring to visualize migration progress\n5. Send final reminder 2 weeks before Sunset date\n'
   );
+  doc+='\n';
 
   // Domain-specific implementation patterns
   var _api83dom=typeof detectDomain==='function'?detectDomain(a.purpose||''):null;
@@ -261,6 +272,39 @@ function gen83(a,pn,G){
       doc+='### '+(G?'コアロジック擬似コード':'Core Logic Pseudo-code')+'\n\n';
       doc+='```javascript\n'+_api83pat.pseudo+'\n```\n\n';
     }
+  }
+
+  if(!isBaaS&&!isGRPC){
+    var _ents83=(a.entities||a.data_entities||'').split(',').map(function(e){return e.trim();}).filter(Boolean);
+    doc+='## '+(G?'ペイロード最適化 — Sparse Fieldsets':'Payload Optimization — Sparse Fieldsets')+'\n\n';
+    doc+=(G
+      ?'`?fields=name,email` クエリパラメータでレスポンスフィールドを選択し、不要データの転送を防ぎます。\n\n'
+      :'Use `?fields=name,email` query parameter to select response fields, preventing unnecessary data transfer.\n\n'
+    );
+    if(_ents83.length>0){
+      doc+='| '+(G?'エンドポイント':'Endpoint')+' | '+(G?'全フィールド':'All Fields')+' | '+(G?'最小セット例':'Minimal Set')+' | '+(G?'削減率目安':'Est. Reduction')+' |\n';
+      doc+='|------|------|------|------|\n';
+      _ents83.slice(0,3).forEach(function(e){
+        doc+='| `GET /api/'+e.toLowerCase()+'s` | '+(G?'全カラム':'All columns')+' | `id,name,updatedAt` | ~60–80% |\n';
+      });
+      doc+='\n';
+    }
+    doc+=(isBaaS
+      ?'> **Supabase**: `.select(\'id, name, email\')` で'+(G?'ネイティブにフィールド選択可能。':'natively supports field selection.')
+      :''
+    );
+    doc+='```typescript\n// Express/Hono: Sparse Fieldsets middleware\napp.use((req, res, next) => {\n  if (req.query.fields) {\n    const allowed = new Set((req.query.fields as string).split(\',\'));\n    const originalJson = res.json.bind(res);\n    res.json = (data: any) => {\n      if (Array.isArray(data)) {\n        return originalJson(data.map(item =>\n          Object.fromEntries(Object.entries(item).filter(([k]) => allowed.has(k)))\n        ));\n      }\n      return originalJson(Object.fromEntries(\n        Object.entries(data).filter(([k]) => allowed.has(k))\n      ));\n    };\n  }\n  next();\n});\n```\n\n';
+  }
+
+  if(!isBaaS){
+    doc+='## '+(G?'3層レートリミット戦略':'3-Layer Rate Limit Strategy')+'\n\n';
+    doc+='| '+(G?'層':'Layer')+' | '+(G?'対象':'Target')+' | '+(G?'ツール':'Tool')+' | '+(G?'設定例':'Config')+' | '+(G?'HTTPヘッダー':'Headers')+' |\n';
+    doc+='|------|------|------|------|------|\n';
+    doc+='| L1 '+(G?'エンドポイント別':'Per-Endpoint')+' | '+(G?'特定API (認証/決済)':'Specific API (auth/payment)')+' | express-rate-limit | 10 req/min | `X-RateLimit-Limit` |\n';
+    doc+='| L2 '+(G?'ユーザー/IP別':'Per-User/IP')+' | '+(G?'認証ユーザーまたはIP':'Auth user or IP')+' | express-rate-limit + Redis | 100 req/15min | `X-RateLimit-Remaining` |\n';
+    doc+='| L3 '+(G?'システム全体':'System-Wide')+' | '+(G?'全エンドポイント':'All endpoints')+' | nginx / Cloudflare | 1000 req/min | `Retry-After` |\n';
+    doc+='\n';
+    doc+='```typescript\nimport rateLimit from \'express-rate-limit\';\nimport RedisStore from \'rate-limit-redis\';\n\n// L1: Strict limit for auth endpoints\nconst authLimiter = rateLimit({ windowMs: 60_000, limit: 10,\n  message: { error: \'Too many auth attempts\' } });\n\n// L2: Per-user limit with Redis (distributed)\nconst userLimiter = rateLimit({ windowMs: 15 * 60_000, limit: 100,\n  keyGenerator: (req) => req.user?.id || req.ip,\n  store: new RedisStore({ client: redis }) });\n\n// L3: System-wide fallback\nconst globalLimiter = rateLimit({ windowMs: 60_000, limit: 1000 });\n\n// Apply in order: global → user → endpoint\napp.use(globalLimiter);\napp.use(\'/api\', userLimiter);\napp.post(\'/api/auth/login\', authLimiter, loginHandler);\n```\n\n';
   }
 
   doc+='---\n*'+(G?'DevForge v9 自動生成':'Generated by DevForge v9')+'*\n';
