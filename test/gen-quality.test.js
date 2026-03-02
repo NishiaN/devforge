@@ -42078,3 +42078,555 @@ describe('Suite 370: presets-ext19 construction_safety — Express/Railway/strip
     assert.ok(f['docs/38_business_model.md'], 'construction_safety with stripe must generate business_model.md');
   });
 });
+
+
+/* ── Suite 371 — presets-ext20.js: pipe_routing_tool
+   Express/Railway/stripe/engineering
+   ════════════════════════════════════════════════════════════════════════════ */
+
+const g371_pipe = Object.assign({}, A25, {
+  purpose: '建築・設備設計における配管・配線の3D経路自動生成・干渉チェック・材料拾い出し・見積書出力を一元化した設備設計SaaS',
+  frontend: 'React (Vite SPA)',
+  backend: 'Express',
+  database: 'PostgreSQL',
+  deploy: 'Railway',
+  orm: 'Prisma',
+  auth: 'JWT',
+  payment: 'stripe',
+  mobile: 'なし',
+  data_entities: 'User, PipeRoute, WiringPath, NodePoint, InterferenceCheck',
+  mvp_features: '3D配管・配線経路自動生成, 干渉チェック, 材料拾い出し, 見積書出力, AuditLog, ページネーション・無限スクロール',
+});
+
+describe('Suite 371: presets-ext20 pipe_routing_tool — Express/Railway/stripe', () => {
+  it('SDD: pipe_routing_tool generates specification.md and constitution.md', () => {
+    const f = gSDD(g371_pipe);
+    assert.ok(f['.spec/specification.md'], 'pipe_routing_tool must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'pipe_routing_tool must generate constitution.md');
+  });
+  it('SDD: pipe_routing_tool includes PipeRoute in spec', () => {
+    const f = gSDD(g371_pipe);
+    assert.ok((f['.spec/specification.md']||'').includes('PipeRoute')||(f['.spec/specification.md']||'').includes('配管'), 'pipe_routing_tool spec must mention PipeRoute or 配管');
+  });
+  it('SDD: pipe_routing_tool purpose keyword in spec', () => {
+    const f = gSDD(g371_pipe);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('配管')||spec.includes('経路')||spec.includes('pipe')||spec.includes('route'), 'pipe_routing_tool spec must mention routing context');
+  });
+  it('SDD EN: pipe_routing_tool produces no undefined in spec', () => {
+    const f = gSDD(g371_pipe, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'pipe_routing_tool EN spec must not contain undefined');
+  });
+  it('SDD JA: pipe_routing_tool produces no undefined in spec', () => {
+    const f = gSDD(g371_pipe);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'pipe_routing_tool JA spec must not contain undefined');
+  });
+  it('docs/01: pipe_routing_tool overview mentions 配管 or pipe', () => {
+    const f = gSDD(g371_pipe);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('配管')||doc.includes('経路')||doc.includes('pipe')||doc.includes('設備'), 'pipe_routing_tool docs/01 must mention pipe context');
+  });
+  it('docs/01: pipe_routing_tool produces no undefined in overview', () => {
+    const f = gSDD(g371_pipe);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'pipe_routing_tool docs/01 must not contain undefined');
+  });
+  it('payment: pipe_routing_tool generates business_model.md', () => {
+    const f = gFull(g371_pipe);
+    assert.ok(f['docs/38_business_model.md'], 'pipe_routing_tool with stripe must generate business_model.md');
+  });
+});
+
+/* ── Suite 372 — presets-ext20.js: material_strength_tool
+   ════════════════════════════════════════════════════════════════════════════ */
+
+const g372_material = Object.assign({}, A25, {
+  purpose: '金属・複合材の引張強度・疲労試験データをAI解析し設計寿命予測・安全係数算出・破損モード分類・試験計画立案を支援するエンジニアリングSaaS',
+  frontend: 'React (Vite SPA)',
+  backend: 'Express',
+  database: 'PostgreSQL',
+  deploy: 'Railway',
+  orm: 'Prisma',
+  auth: 'JWT',
+  payment: 'stripe',
+  mobile: 'なし',
+  data_entities: 'User, MaterialSpec, FatigueTestResult, SNcurveModel, StrengthReport',
+  mvp_features: '材料試験データ管理, AI疲労寿命予測, S-N曲線生成, 安全係数算出, AuditLog, ページネーション・無限スクロール',
+});
+
+describe('Suite 372: presets-ext20 material_strength_tool — Express/Railway/stripe', () => {
+  it('SDD: material_strength_tool generates specification.md and constitution.md', () => {
+    const f = gSDD(g372_material);
+    assert.ok(f['.spec/specification.md'], 'material_strength_tool must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'material_strength_tool must generate constitution.md');
+  });
+  it('SDD: material_strength_tool includes MaterialSpec in spec', () => {
+    const f = gSDD(g372_material);
+    assert.ok((f['.spec/specification.md']||'').includes('MaterialSpec')||(f['.spec/specification.md']||'').includes('材料'), 'material_strength_tool spec must mention MaterialSpec');
+  });
+  it('SDD: material_strength_tool purpose keyword in spec', () => {
+    const f = gSDD(g372_material);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('疲労')||spec.includes('強度')||spec.includes('fatigue')||spec.includes('material'), 'material_strength_tool spec must mention material context');
+  });
+  it('SDD EN: material_strength_tool produces no undefined in spec', () => {
+    const f = gSDD(g372_material, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'material_strength_tool EN spec must not contain undefined');
+  });
+  it('SDD JA: material_strength_tool produces no undefined in spec', () => {
+    const f = gSDD(g372_material);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'material_strength_tool JA spec must not contain undefined');
+  });
+  it('docs/01: material_strength_tool overview mentions 材料 or material', () => {
+    const f = gSDD(g372_material);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('材料')||doc.includes('疲労')||doc.includes('material')||doc.includes('fatigue'), 'material_strength_tool docs/01 must mention material context');
+  });
+  it('docs/01: material_strength_tool produces no undefined in overview', () => {
+    const f = gSDD(g372_material);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'material_strength_tool docs/01 must not contain undefined');
+  });
+  it('payment: material_strength_tool generates business_model.md', () => {
+    const f = gFull(g372_material);
+    assert.ok(f['docs/38_business_model.md'], 'material_strength_tool with stripe must generate business_model.md');
+  });
+});
+
+/* ── Suite 373 — presets-ext20.js: geo_survey_mgr
+   ════════════════════════════════════════════════════════════════════════════ */
+
+const g373_geo = Object.assign({}, A25, {
+  purpose: 'ボーリング調査・標準貫入試験・室内土質試験の記録を統合管理し地盤断面図・N値分布・液状化判定・地盤改良設計を自動生成する地盤調査SaaS',
+  frontend: 'React (Vite SPA)',
+  backend: 'Express',
+  database: 'PostgreSQL',
+  deploy: 'Railway',
+  orm: 'Prisma',
+  auth: 'JWT',
+  payment: 'stripe',
+  mobile: 'なし',
+  data_entities: 'User, GeoBorehole, SoilLayer, SptResult, GeotechReport',
+  mvp_features: 'ボーリングデータインポート, N値解析, 地盤断面図生成, 液状化判定, ページネーション・無限スクロール',
+});
+
+describe('Suite 373: presets-ext20 geo_survey_mgr — Express/Railway/stripe', () => {
+  it('SDD: geo_survey_mgr generates specification.md and constitution.md', () => {
+    const f = gSDD(g373_geo);
+    assert.ok(f['.spec/specification.md'], 'geo_survey_mgr must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'geo_survey_mgr must generate constitution.md');
+  });
+  it('SDD: geo_survey_mgr includes GeoBorehole in spec', () => {
+    const f = gSDD(g373_geo);
+    assert.ok((f['.spec/specification.md']||'').includes('GeoBorehole')||(f['.spec/specification.md']||'').includes('地盤'), 'geo_survey_mgr spec must mention GeoBorehole');
+  });
+  it('SDD: geo_survey_mgr purpose keyword in spec', () => {
+    const f = gSDD(g373_geo);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('ボーリング')||spec.includes('地盤')||spec.includes('borehole')||spec.includes('geotech'), 'geo_survey_mgr spec must mention geotech context');
+  });
+  it('SDD EN: geo_survey_mgr produces no undefined in spec', () => {
+    const f = gSDD(g373_geo, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'geo_survey_mgr EN spec must not contain undefined');
+  });
+  it('SDD JA: geo_survey_mgr produces no undefined in spec', () => {
+    const f = gSDD(g373_geo);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'geo_survey_mgr JA spec must not contain undefined');
+  });
+  it('docs/01: geo_survey_mgr overview mentions 地盤 or geotech', () => {
+    const f = gSDD(g373_geo);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('地盤')||doc.includes('ボーリング')||doc.includes('geotech')||doc.includes('borehole'), 'geo_survey_mgr docs/01 must mention geotech context');
+  });
+  it('docs/01: geo_survey_mgr produces no undefined in overview', () => {
+    const f = gSDD(g373_geo);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'geo_survey_mgr docs/01 must not contain undefined');
+  });
+  it('payment: geo_survey_mgr generates business_model.md', () => {
+    const f = gFull(g373_geo);
+    assert.ok(f['docs/38_business_model.md'], 'geo_survey_mgr with stripe must generate business_model.md');
+  });
+});
+
+/* ── Suite 374 — presets-ext20.js: aquaculture_monitor
+   ════════════════════════════════════════════════════════════════════════════ */
+
+const g374_aqua = Object.assign({}, A25, {
+  purpose: '養殖場の水温・溶存酸素・pH・塩分・餌料をIoTセンサーでリアルタイム監視し給餌量最適化・疾病早期警戒・収量予測を行う水産養殖SaaS',
+  frontend: 'React (Vite SPA)',
+  backend: 'Express',
+  database: 'PostgreSQL',
+  deploy: 'Railway',
+  orm: 'Prisma',
+  auth: 'JWT',
+  payment: 'stripe',
+  mobile: 'なし',
+  data_entities: 'User, AquacultureTank, WaterQualityLog, AquaFeed, HarvestBatch',
+  mvp_features: 'IoT水質センサー監視, 給餌量最適化, 疾病アラート, 収量予測, ページネーション・無限スクロール',
+});
+
+describe('Suite 374: presets-ext20 aquaculture_monitor — Express/Railway/stripe', () => {
+  it('SDD: aquaculture_monitor generates specification.md and constitution.md', () => {
+    const f = gSDD(g374_aqua);
+    assert.ok(f['.spec/specification.md'], 'aquaculture_monitor must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'aquaculture_monitor must generate constitution.md');
+  });
+  it('SDD: aquaculture_monitor includes AquacultureTank in spec', () => {
+    const f = gSDD(g374_aqua);
+    assert.ok((f['.spec/specification.md']||'').includes('AquacultureTank')||(f['.spec/specification.md']||'').includes('養殖'), 'aquaculture_monitor spec must mention AquacultureTank');
+  });
+  it('SDD: aquaculture_monitor purpose keyword in spec', () => {
+    const f = gSDD(g374_aqua);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('養殖')||spec.includes('水質')||spec.includes('aquaculture')||spec.includes('water'), 'aquaculture_monitor spec must mention aquaculture context');
+  });
+  it('SDD EN: aquaculture_monitor produces no undefined in spec', () => {
+    const f = gSDD(g374_aqua, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'aquaculture_monitor EN spec must not contain undefined');
+  });
+  it('SDD JA: aquaculture_monitor produces no undefined in spec', () => {
+    const f = gSDD(g374_aqua);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'aquaculture_monitor JA spec must not contain undefined');
+  });
+  it('docs/01: aquaculture_monitor overview mentions 養殖 or aquaculture', () => {
+    const f = gSDD(g374_aqua);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('養殖')||doc.includes('水質')||doc.includes('aquaculture')||doc.includes('IoT'), 'aquaculture_monitor docs/01 must mention aquaculture context');
+  });
+  it('docs/01: aquaculture_monitor produces no undefined in overview', () => {
+    const f = gSDD(g374_aqua);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'aquaculture_monitor docs/01 must not contain undefined');
+  });
+  it('payment: aquaculture_monitor generates business_model.md', () => {
+    const f = gFull(g374_aqua);
+    assert.ok(f['docs/38_business_model.md'], 'aquaculture_monitor with stripe must generate business_model.md');
+  });
+});
+
+/* ── Suite 375 — presets-ext20.js: medical_image_ai
+   ════════════════════════════════════════════════════════════════════════════ */
+
+const g375_medimg = Object.assign({}, A25, {
+  purpose: 'CT・MRI・X線・超音波画像のAI異常検出・病変セグメンテーション・診断レポート自動生成・放射線科医レビューワークフローを統合した医療画像診断SaaS',
+  frontend: 'React (Vite SPA)',
+  backend: 'Express',
+  database: 'PostgreSQL',
+  deploy: 'Railway',
+  orm: 'Prisma',
+  auth: 'JWT',
+  payment: 'stripe',
+  mobile: 'なし',
+  data_entities: 'User, ClinicalImage, ImagingStudy, LesionAnnotation, RadiologistReport',
+  mvp_features: 'DICOM画像管理, AI病変検出, 診断レポート生成, 多要素認証（MFA）, AuditLog, ページネーション・無限スクロール',
+});
+
+describe('Suite 375: presets-ext20 medical_image_ai — Express/Railway/stripe', () => {
+  it('SDD: medical_image_ai generates specification.md and constitution.md', () => {
+    const f = gSDD(g375_medimg);
+    assert.ok(f['.spec/specification.md'], 'medical_image_ai must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'medical_image_ai must generate constitution.md');
+  });
+  it('SDD: medical_image_ai includes ClinicalImage in spec', () => {
+    const f = gSDD(g375_medimg);
+    assert.ok((f['.spec/specification.md']||'').includes('ClinicalImage')||(f['.spec/specification.md']||'').includes('画像'), 'medical_image_ai spec must mention ClinicalImage');
+  });
+  it('SDD: medical_image_ai purpose keyword in spec', () => {
+    const f = gSDD(g375_medimg);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('画像')||spec.includes('診断')||spec.includes('imaging')||spec.includes('diagnosis'), 'medical_image_ai spec must mention medical imaging context');
+  });
+  it('SDD EN: medical_image_ai produces no undefined in spec', () => {
+    const f = gSDD(g375_medimg, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'medical_image_ai EN spec must not contain undefined');
+  });
+  it('SDD JA: medical_image_ai produces no undefined in spec', () => {
+    const f = gSDD(g375_medimg);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'medical_image_ai JA spec must not contain undefined');
+  });
+  it('docs/01: medical_image_ai overview mentions 画像 or imaging', () => {
+    const f = gSDD(g375_medimg);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('画像')||doc.includes('診断')||doc.includes('imaging')||doc.includes('medical'), 'medical_image_ai docs/01 must mention imaging context');
+  });
+  it('docs/01: medical_image_ai produces no undefined in overview', () => {
+    const f = gSDD(g375_medimg);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'medical_image_ai docs/01 must not contain undefined');
+  });
+  it('payment: medical_image_ai generates business_model.md', () => {
+    const f = gFull(g375_medimg);
+    assert.ok(f['docs/38_business_model.md'], 'medical_image_ai with stripe must generate business_model.md');
+  });
+});
+
+/* ── Suite 376 — presets-ext20.js: special_edu_platform
+   ════════════════════════════════════════════════════════════════════════════ */
+
+const g376_spedu = Object.assign({}, A25, {
+  purpose: '発達障害・学習障害・身体障害のある学習者向けに個別の指導計画（IEP）作成・支援活動記録・保護者連携・合理的配慮管理を統合した特別支援教育SaaS',
+  frontend: 'React (Vite SPA)',
+  backend: 'Express',
+  database: 'PostgreSQL',
+  deploy: 'Railway',
+  orm: 'Prisma',
+  auth: 'JWT',
+  payment: 'stripe',
+  mobile: 'なし',
+  data_entities: 'User, SpecialStudent, LearningIEP, SupportActivity, LearnerMilestone',
+  mvp_features: 'IEP作成管理, 支援活動記録, 保護者連携, 合理的配慮管理, ページネーション・無限スクロール',
+});
+
+describe('Suite 376: presets-ext20 special_edu_platform — Express/Railway/stripe', () => {
+  it('SDD: special_edu_platform generates specification.md and constitution.md', () => {
+    const f = gSDD(g376_spedu);
+    assert.ok(f['.spec/specification.md'], 'special_edu_platform must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'special_edu_platform must generate constitution.md');
+  });
+  it('SDD: special_edu_platform includes SpecialStudent in spec', () => {
+    const f = gSDD(g376_spedu);
+    assert.ok((f['.spec/specification.md']||'').includes('SpecialStudent')||(f['.spec/specification.md']||'').includes('支援'), 'special_edu_platform spec must mention SpecialStudent');
+  });
+  it('SDD: special_edu_platform purpose keyword in spec', () => {
+    const f = gSDD(g376_spedu);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('IEP')||spec.includes('特別支援')||spec.includes('special')||spec.includes('inclusive'), 'special_edu_platform spec must mention special education context');
+  });
+  it('SDD EN: special_edu_platform produces no undefined in spec', () => {
+    const f = gSDD(g376_spedu, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'special_edu_platform EN spec must not contain undefined');
+  });
+  it('SDD JA: special_edu_platform produces no undefined in spec', () => {
+    const f = gSDD(g376_spedu);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'special_edu_platform JA spec must not contain undefined');
+  });
+  it('docs/01: special_edu_platform overview mentions 支援 or special', () => {
+    const f = gSDD(g376_spedu);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('支援')||doc.includes('IEP')||doc.includes('special')||doc.includes('inclusive'), 'special_edu_platform docs/01 must mention special education context');
+  });
+  it('docs/01: special_edu_platform produces no undefined in overview', () => {
+    const f = gSDD(g376_spedu);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'special_edu_platform docs/01 must not contain undefined');
+  });
+  it('payment: special_edu_platform generates business_model.md', () => {
+    const f = gFull(g376_spedu);
+    assert.ok(f['docs/38_business_model.md'], 'special_edu_platform with stripe must generate business_model.md');
+  });
+});
+
+/* ── Suite 377 — presets-ext20.js: interior_design_ai
+   ════════════════════════════════════════════════════════════════════════════ */
+
+const g377_interior = Object.assign({}, A25, {
+  purpose: '間取り・写真・予算入力からAIが最適なインテリアスタイル・家具配置・カラースキーム・素材選定を提案しクライアント向けビジュアル提案書を自動生成するインテリアSaaS',
+  frontend: 'React (Vite SPA)',
+  backend: 'Express',
+  database: 'PostgreSQL',
+  deploy: 'Railway',
+  orm: 'Prisma',
+  auth: 'JWT',
+  payment: 'stripe',
+  mobile: 'なし',
+  data_entities: 'User, InteriorProject, RoomPlan, DecorItem, StyleMoodboard',
+  mvp_features: '間取り図アップロード, AIスタイル提案, 家具配置生成, 素材ライブラリ, 提案書PDF出力, ページネーション・無限スクロール',
+});
+
+describe('Suite 377: presets-ext20 interior_design_ai — Express/Railway/stripe', () => {
+  it('SDD: interior_design_ai generates specification.md and constitution.md', () => {
+    const f = gSDD(g377_interior);
+    assert.ok(f['.spec/specification.md'], 'interior_design_ai must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'interior_design_ai must generate constitution.md');
+  });
+  it('SDD: interior_design_ai includes InteriorProject in spec', () => {
+    const f = gSDD(g377_interior);
+    assert.ok((f['.spec/specification.md']||'').includes('InteriorProject')||(f['.spec/specification.md']||'').includes('インテリア'), 'interior_design_ai spec must mention InteriorProject');
+  });
+  it('SDD: interior_design_ai purpose keyword in spec', () => {
+    const f = gSDD(g377_interior);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('インテリア')||spec.includes('デザイン')||spec.includes('interior')||spec.includes('design')||spec.includes('Interior'), 'interior_design_ai spec must mention interior design context');
+  });
+  it('SDD EN: interior_design_ai produces no undefined in spec', () => {
+    const f = gSDD(g377_interior, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'interior_design_ai EN spec must not contain undefined');
+  });
+  it('SDD JA: interior_design_ai produces no undefined in spec', () => {
+    const f = gSDD(g377_interior);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'interior_design_ai JA spec must not contain undefined');
+  });
+  it('docs/01: interior_design_ai overview mentions インテリア or interior', () => {
+    const f = gSDD(g377_interior);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('インテリア')||doc.includes('デザイン')||doc.includes('interior')||doc.includes('design'), 'interior_design_ai docs/01 must mention interior design context');
+  });
+  it('docs/01: interior_design_ai produces no undefined in overview', () => {
+    const f = gSDD(g377_interior);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'interior_design_ai docs/01 must not contain undefined');
+  });
+  it('payment: interior_design_ai generates business_model.md', () => {
+    const f = gFull(g377_interior);
+    assert.ok(f['docs/38_business_model.md'], 'interior_design_ai with stripe must generate business_model.md');
+  });
+});
+
+/* ── Suite 378 — presets-ext20.js: cost_estimate_saas
+   ════════════════════════════════════════════════════════════════════════════ */
+
+const g378_cost = Object.assign({}, A25, {
+  purpose: '建設・土木工事の工種別単価DB・歩掛DB・資材価格を統合し設計図からAIが数量算出・積算・見積書・発注管理を自動化する建設積算SaaS',
+  frontend: 'React (Vite SPA)',
+  backend: 'Express',
+  database: 'PostgreSQL',
+  deploy: 'Railway',
+  orm: 'Prisma',
+  auth: 'JWT',
+  payment: 'stripe',
+  mobile: 'なし',
+  data_entities: 'User, EstimateItem, WorkPackage, MaterialUnit, QuoteDraft',
+  mvp_features: '単価DBマスタ管理, 数量自動算出, 積算・見積書生成, AuditLog, 入札比較, ページネーション・無限スクロール',
+});
+
+describe('Suite 378: presets-ext20 cost_estimate_saas — Express/Railway/stripe', () => {
+  it('SDD: cost_estimate_saas generates specification.md and constitution.md', () => {
+    const f = gSDD(g378_cost);
+    assert.ok(f['.spec/specification.md'], 'cost_estimate_saas must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'cost_estimate_saas must generate constitution.md');
+  });
+  it('SDD: cost_estimate_saas includes EstimateItem in spec', () => {
+    const f = gSDD(g378_cost);
+    assert.ok((f['.spec/specification.md']||'').includes('EstimateItem')||(f['.spec/specification.md']||'').includes('積算'), 'cost_estimate_saas spec must mention EstimateItem');
+  });
+  it('SDD: cost_estimate_saas purpose keyword in spec', () => {
+    const f = gSDD(g378_cost);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('積算')||spec.includes('見積')||spec.includes('estimate')||spec.includes('cost'), 'cost_estimate_saas spec must mention cost estimation context');
+  });
+  it('SDD EN: cost_estimate_saas produces no undefined in spec', () => {
+    const f = gSDD(g378_cost, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'cost_estimate_saas EN spec must not contain undefined');
+  });
+  it('SDD JA: cost_estimate_saas produces no undefined in spec', () => {
+    const f = gSDD(g378_cost);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'cost_estimate_saas JA spec must not contain undefined');
+  });
+  it('docs/01: cost_estimate_saas overview mentions 積算 or estimate', () => {
+    const f = gSDD(g378_cost);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('積算')||doc.includes('見積')||doc.includes('estimate')||doc.includes('建設'), 'cost_estimate_saas docs/01 must mention cost estimation context');
+  });
+  it('docs/01: cost_estimate_saas produces no undefined in overview', () => {
+    const f = gSDD(g378_cost);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'cost_estimate_saas docs/01 must not contain undefined');
+  });
+  it('payment: cost_estimate_saas generates business_model.md', () => {
+    const f = gFull(g378_cost);
+    assert.ok(f['docs/38_business_model.md'], 'cost_estimate_saas with stripe must generate business_model.md');
+  });
+});
+
+/* ── Suite 379 — presets-ext20.js: referee_support_ai
+   ════════════════════════════════════════════════════════════════════════════ */
+
+const g379_referee = Object.assign({}, A25, {
+  purpose: 'スポーツ競技の映像・センサーデータをAIがリアルタイム解析してファウル・ラインアウト・スコア判定を支援し審判記録・試合統計・ハイライト自動生成を提供するスポーツ審判SaaS',
+  frontend: 'React (Vite SPA)',
+  backend: 'Express',
+  database: 'PostgreSQL',
+  deploy: 'Railway',
+  orm: 'Prisma',
+  auth: 'JWT',
+  payment: 'stripe',
+  mobile: 'なし',
+  data_entities: 'User, SportGameEvent, RulingCall, VideoReviewClip, SportRule',
+  mvp_features: '映像AI判定支援, ファウル自動検出, 審判記録管理, 試合統計, ハイライト生成, ページネーション・無限スクロール',
+});
+
+describe('Suite 379: presets-ext20 referee_support_ai — Express/Railway/stripe', () => {
+  it('SDD: referee_support_ai generates specification.md and constitution.md', () => {
+    const f = gSDD(g379_referee);
+    assert.ok(f['.spec/specification.md'], 'referee_support_ai must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'referee_support_ai must generate constitution.md');
+  });
+  it('SDD: referee_support_ai includes SportGameEvent in spec', () => {
+    const f = gSDD(g379_referee);
+    assert.ok((f['.spec/specification.md']||'').includes('SportGameEvent')||(f['.spec/specification.md']||'').includes('審判'), 'referee_support_ai spec must mention SportGameEvent');
+  });
+  it('SDD: referee_support_ai purpose keyword in spec', () => {
+    const f = gSDD(g379_referee);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('審判')||spec.includes('判定')||spec.includes('referee')||spec.includes('sport'), 'referee_support_ai spec must mention referee context');
+  });
+  it('SDD EN: referee_support_ai produces no undefined in spec', () => {
+    const f = gSDD(g379_referee, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'referee_support_ai EN spec must not contain undefined');
+  });
+  it('SDD JA: referee_support_ai produces no undefined in spec', () => {
+    const f = gSDD(g379_referee);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'referee_support_ai JA spec must not contain undefined');
+  });
+  it('docs/01: referee_support_ai overview mentions 審判 or referee', () => {
+    const f = gSDD(g379_referee);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('審判')||doc.includes('スポーツ')||doc.includes('referee')||doc.includes('sport'), 'referee_support_ai docs/01 must mention referee context');
+  });
+  it('docs/01: referee_support_ai produces no undefined in overview', () => {
+    const f = gSDD(g379_referee);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'referee_support_ai docs/01 must not contain undefined');
+  });
+  it('payment: referee_support_ai generates business_model.md', () => {
+    const f = gFull(g379_referee);
+    assert.ok(f['docs/38_business_model.md'], 'referee_support_ai with stripe must generate business_model.md');
+  });
+});
+
+/* ── Suite 380 — presets-ext20.js: pharma_vigilance
+   ════════════════════════════════════════════════════════════════════════════ */
+
+const g380_pharma = Object.assign({}, A25, {
+  purpose: '医薬品の有害事象報告（ICSR）収集・MedDRAコーディング・シグナル検出・規制当局報告書自動生成を統合した製薬企業向けファーマコビジランスSaaS',
+  frontend: 'React (Vite SPA)',
+  backend: 'Express',
+  database: 'PostgreSQL',
+  deploy: 'Railway',
+  orm: 'Prisma',
+  auth: 'JWT',
+  payment: 'stripe',
+  mobile: 'なし',
+  data_entities: 'User, DrugAdverseEvent, SafetySignal, VigilanceCase, PharmacovigReport',
+  mvp_features: '有害事象ICSR収集, MedDRAコーディング, シグナル検出, 規制報告書生成, 多要素認証（MFA）, AuditLog, ページネーション・無限スクロール',
+});
+
+describe('Suite 380: presets-ext20 pharma_vigilance — Express/Railway/stripe', () => {
+  it('SDD: pharma_vigilance generates specification.md and constitution.md', () => {
+    const f = gSDD(g380_pharma);
+    assert.ok(f['.spec/specification.md'], 'pharma_vigilance must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'pharma_vigilance must generate constitution.md');
+  });
+  it('SDD: pharma_vigilance includes DrugAdverseEvent in spec', () => {
+    const f = gSDD(g380_pharma);
+    assert.ok((f['.spec/specification.md']||'').includes('DrugAdverseEvent')||(f['.spec/specification.md']||'').includes('医薬品'), 'pharma_vigilance spec must mention DrugAdverseEvent');
+  });
+  it('SDD: pharma_vigilance purpose keyword in spec', () => {
+    const f = gSDD(g380_pharma);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('有害事象')||spec.includes('医薬品')||spec.includes('adverse')||spec.includes('pharma'), 'pharma_vigilance spec must mention pharmacovigilance context');
+  });
+  it('SDD EN: pharma_vigilance produces no undefined in spec', () => {
+    const f = gSDD(g380_pharma, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'pharma_vigilance EN spec must not contain undefined');
+  });
+  it('SDD JA: pharma_vigilance produces no undefined in spec', () => {
+    const f = gSDD(g380_pharma);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'pharma_vigilance JA spec must not contain undefined');
+  });
+  it('docs/01: pharma_vigilance overview mentions 医薬品 or pharma', () => {
+    const f = gSDD(g380_pharma);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('医薬品')||doc.includes('有害事象')||doc.includes('pharma')||doc.includes('adverse'), 'pharma_vigilance docs/01 must mention pharmacovigilance context');
+  });
+  it('docs/01: pharma_vigilance produces no undefined in overview', () => {
+    const f = gSDD(g380_pharma);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'pharma_vigilance docs/01 must not contain undefined');
+  });
+  it('payment: pharma_vigilance generates business_model.md', () => {
+    const f = gFull(g380_pharma);
+    assert.ok(f['docs/38_business_model.md'], 'pharma_vigilance with stripe must generate business_model.md');
+  });
+});
