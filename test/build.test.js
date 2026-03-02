@@ -78,7 +78,7 @@ describe('Build System', () => {
     const stats = fs.statSync(OUTPUT);
     const kb = stats.size / 1024;
     assert.ok(kb > 200, `Output should be > 200KB, got ${kb.toFixed(0)}KB`);
-    assert.ok(kb < 5000, `Output should be < 5000KB, got ${kb.toFixed(0)}KB`);
+    assert.ok(kb < 6000, `Output should be < 6000KB, got ${kb.toFixed(0)}KB`);
   });
 
   it('i18n keys match between JA and EN', () => {

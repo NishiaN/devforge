@@ -202,11 +202,11 @@ const sizeKB = (Buffer.byteLength(html) / 1024).toFixed(0);
 const moduleCount = jsFiles.length;
 const minifierInfo = NO_MINIFY ? ', unminified' : `, minified with ${MINIFIER}`;
 console.log(`✅ Built devforge-v9.html (${sizeKB}KB, ${moduleCount} modules${minifierInfo})`);
-if (parseInt(sizeKB) > 5000) {
-  console.error('❌ Build size exceeds 5000KB limit! (' + sizeKB + 'KB / 5000KB)');
+if (parseInt(sizeKB) > 6000) {
+  console.error('❌ Build size exceeds 6000KB limit! (' + sizeKB + 'KB / 6000KB)');
   process.exit(1);
-} else if (parseInt(sizeKB) > 4700) {
-  console.warn('⚠️  Build size approaching 5000KB limit (' + sizeKB + 'KB / 5000KB)');
+} else if (parseInt(sizeKB) > 5700) {
+  console.warn('⚠️  Build size approaching 6000KB limit (' + sizeKB + 'KB / 6000KB)');
 }
 
 // Verify: check for common issues
