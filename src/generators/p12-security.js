@@ -631,6 +631,72 @@ function genPillar12_SecurityIntelligence(a,pn){
   doc43+='| 404 | Not Found | '+(G?'リソース不存在（認可状況に関係なく存在を隠す場合も）':'Not found (also used to hide resource existence)')+' |\n\n';
   doc43+=_chk('401(未認証)と403(権限不足)を混同しない — 401はWWW-Authenticateヘッダーを返す','Do not confuse 401 (unauthenticated) with 403 (forbidden) — 401 returns WWW-Authenticate header')+'\n\n';
 
+  // Authorization Model Selection
+  (function(){
+    var _sc43=a.scale||'medium';
+    var _ents43=entities.length||3;
+    var _isBaaS43=/Supabase|Firebase|Convex/i.test(backend);
+    var _dom43=domain||'';
+    var _isLarge43=/large/i.test(_sc43);
+    var _isMedLarge=/medium|large/i.test(_sc43);
+    doc43+='### '+(G?'認可モデル選定マトリクス':'Authorization Model Selection Matrix')+'\n\n';
+    doc43+=(G
+      ?'> 認証 (Authentication) は「誰か」を確認し、認可 (Authorization) は「何をしてよいか」を決定します。\n> プロジェクトの複雑度に合わせてモデルを選択してください。\n\n'
+      :'> Authentication answers "who are you?"; Authorization answers "what can you do?".\n> Select a model appropriate to your project\'s complexity.\n\n'
+    );
+    doc43+='| '+(G?'モデル':'Model')+' | '+(G?'仕組み':'Mechanism')+' | '+(G?'柔軟性':'Flexibility')+' | '+(G?'実装コスト':'Impl. Cost')+' | '+(G?'推奨エンティティ数':'Rec. Entities')+' | '+(G?'推奨ドメイン':'Rec. Domain')+' |\n';
+    doc43+='|------|------|------|------|------|------|\n';
+    doc43+='| **RBAC** | '+(G?'ロール→権限マッピング':'Role→permission mapping')+' | ★★☆ | ★☆☆ | '+(G?'< 10エンティティ':'< 10 entities')+' | '+(G?'SaaS・社内ツール':'SaaS, internal tools')+' |\n';
+    doc43+='| **ABAC** | '+(G?'属性ベース動的評価':'Attribute-based dynamic eval')+' | ★★★ | ★★★ | '+(G?'10+ エンティティ':'10+ entities')+' | '+(G?'医療・金融・コンプライアンス':'Healthcare, finance, compliance')+' |\n';
+    doc43+='| **ACL** | '+(G?'リソース別アクセスリスト':'Per-resource access list')+' | ★★☆ | ★★☆ | '+(G?'中規模':'Medium scale')+' | '+(G?'ファイル共有・コンテンツ管理':'File sharing, CMS')+' |\n';
+    doc43+='| **RLS** | '+(G?'DB行レベル自動フィルタ':'DB row-level auto-filter')+' | ★★☆ | ★★☆ | '+(G?'任意（DB直接アクセス）':'Any (direct DB access)')+' | '+(G?'マルチテナント・BaaS':'Multi-tenant, BaaS')+' |\n\n';
+    doc43+='#### '+(G?'このプロジェクトへの推奨':'Recommendation for This Project')+'\n\n';
+    if(_isBaaS43){
+      doc43+=(G
+        ?'**推奨: RBAC + RLS (ハイブリッド)**\n\n'+backend+' を使用するため、RLS (Row Level Security) がデータ分離の基盤となります。\nカスタムClaimsでRBACを実装し、auth.uid() を利用したRLSポリシーで行レベル制御を組み合わせてください。\n\n'
+        :'**Recommended: RBAC + RLS (Hybrid)**\n\nUsing '+backend+', RLS is the foundation for data isolation.\nImplement RBAC via custom Claims and combine with RLS policies using auth.uid() for row-level control.\n\n'
+      );
+    } else if(_isLarge43||_ents43>=10){
+      doc43+=(G
+        ?'**推奨: RBAC 基盤 + ABAC 補完 (ハイブリッド)**\n\n'+(+_ents43)+'エンティティ / '+_sc43+'スケールの本プロジェクトでは、単純なRBACのみでは権限設計が破綻するリスクがあります。\nRBACをベースラインとし、機密データや動的条件にはABACを組み合わせてください。\n\n'
+        :'**Recommended: RBAC (base) + ABAC (supplement) Hybrid**\n\nWith '+_ents43+' entities at '+_sc43+' scale, pure RBAC risks permission design breakdown.\nUse RBAC as baseline and supplement with ABAC for sensitive data or dynamic conditions.\n\n'
+      );
+    } else {
+      doc43+=(G
+        ?'**推奨: RBAC**\n\nシンプルなロールベース管理で十分です。`admin`, `editor`, `viewer` の3〜5ロール構成から始めてください。\n\n'
+        :'**Recommended: RBAC**\n\nSimple role-based management is sufficient. Start with 3–5 roles: `admin`, `editor`, `viewer`.\n\n'
+      );
+    }
+    doc43+='#### '+(G?'ハイブリッドアプローチ実装例':'Hybrid Approach Implementation')+'\n\n';
+    doc43+='```typescript\n';
+    doc43+='// RBAC: role-based coarse-grained control\n';
+    doc43+='type Role = \'admin\' | \'editor\' | \'viewer\';\n';
+    doc43+='const ROLE_PERMISSIONS: Record<Role, string[]> = {\n';
+    doc43+='  admin:  [\'read\', \'write\', \'delete\', \'manage_users\'],\n';
+    doc43+='  editor: [\'read\', \'write\'],\n';
+    doc43+='  viewer: [\'read\'],\n';
+    doc43+='};\n\n';
+    doc43+='// ABAC: attribute-based fine-grained supplement\n';
+    doc43+='function canAccess(user: User, resource: Resource, action: string): boolean {\n';
+    doc43+='  // Step 1: RBAC check\n';
+    doc43+='  if (!ROLE_PERMISSIONS[user.role]?.includes(action)) return false;\n';
+    doc43+='  // Step 2: ABAC — ownership / department / time constraints\n';
+    doc43+='  if (resource.ownerId === user.id) return true;\n';
+    doc43+='  if (resource.department && resource.department !== user.department) return false;\n';
+    doc43+='  if (resource.expiresAt && new Date() > resource.expiresAt) return false;\n';
+    doc43+='  return true;\n';
+    doc43+='}\n';
+    doc43+='```\n\n';
+    doc43+='#### '+(G?'認可設計チェックリスト':'Authorization Design Checklist')+'\n\n';
+    doc43+=_chk('認可ロジックをアプリ全体で1箇所に集約（分散させない）','Centralize authorization logic in one place (avoid scattering)');
+    doc43+=_chk('デフォルト拒否 (Deny by Default) を原則とする','Apply Deny-by-Default principle');
+    doc43+=_chk('フロントエンドのUI制御だけに頼らず、サーバーサイドで必ず検証する','Always validate server-side; do not rely on frontend UI control alone');
+    doc43+=_chk('権限昇格 (Privilege Escalation) のテストケースを用意する','Prepare test cases for privilege escalation scenarios');
+    if(_isBaaS43){doc43+=_chk('RLSポリシーを全テーブルに適用（未設定テーブルはアクセス不可に）','Apply RLS policies to all tables (block access to tables without policies)');}
+    if(_isLarge43){doc43+=_chk('認可ルールのバージョン管理と変更監査ログを実装する','Implement versioned authorization rules with change audit logs');}
+    doc43+='\n> '+(G?'参照: docs/119_auth_architecture_guide.md / docs/82-2_architecture_decision_records.md (ADR-004)':'See also: docs/119_auth_architecture_guide.md / docs/82-2_architecture_decision_records.md (ADR-004)')+'\n\n';
+  })();
+
   doc43+='## '+(G?'NIST SSDF (SP 800-218) セキュア開発フレームワーク':'NIST SSDF (SP 800-218) Secure Software Development Framework')+'\n\n';
   doc43+=(G?
     '| グループ | 概要 |\n|----------|------|\n'+

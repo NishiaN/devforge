@@ -1543,6 +1543,31 @@ Steps:
       doc119+='- [ ] '+(G?'State parameterによるCSRF防止':'CSRF prevention via state parameter')+'\n';
       doc119+='- [ ] '+(G?'Fallback: Social Login障害時のEmail/Password認証確保':'Fallback: Email/Password auth when social login fails')+'\n\n';
     }
+    // §7 Authorization Model Selection Guide
+    doc119+='## §7 '+(G?'認可モデル選定ガイド':'Authorization Model Selection Guide')+'\n\n';
+    doc119+=(G
+      ?'> 認可 (Authorization) は「認証済みユーザーが何をしてよいか」を制御する仕組みです。\n> 認証 (Authentication) と混同しないでください。\n\n'
+      :'> Authorization controls "what an authenticated user is allowed to do".\n> Do not confuse with Authentication.\n\n'
+    );
+    var _sc119=a.scale||'medium';
+    var _ents119=(a.entities||'User').split(',').filter(function(e){return e.trim();}).length;
+    var _isBaaS119=/Supabase|Firebase|Convex/i.test(be);
+    doc119+='### '+(G?'モデル比較':'Model Comparison')+'\n\n';
+    doc119+='| '+(G?'モデル':'Model')+' | '+(G?'判断基準':'Criteria')+' | '+(G?'メリット':'Pros')+' | '+(G?'デメリット':'Cons')+' |\n';
+    doc119+='|------|------|------|------|\n';
+    doc119+='| RBAC | '+(G?'ロール（役割）':'Role-based')+' | '+(G?'シンプル・可読性高':'Simple, readable')+' | '+(G?'ロール爆発リスク':'Role explosion risk')+' |\n';
+    doc119+='| ABAC | '+(G?'属性（時間・場所・データ状態）':'Attribute-based')+' | '+(G?'柔軟・細粒度':'Flexible, fine-grained')+' | '+(G?'実装複雑':'Complex impl')+' |\n';
+    doc119+='| ACL | '+(G?'リソース別許可リスト':'Per-resource list')+' | '+(G?'直感的':'Intuitive')+' | '+(G?'大規模でスケールしない':'Doesn\'t scale')+' |\n';
+    doc119+='| RLS | '+(G?'DB行レベル自動フィルタ':'DB row-level filter')+' | '+(G?'バイパス不可・DB保証':'Cannot bypass, DB-enforced')+' | '+(G?'DBに密結合':'Tightly coupled to DB')+' |\n\n';
+    doc119+='### '+(G?'プロジェクト推奨':'Project Recommendation')+'\n\n';
+    if(_isBaaS119){
+      doc119+=(G?'**RBAC + RLS ハイブリッド** ('+be+' ベース)\n\nRLSをデータ保護の最終防御線とし、カスタムClaimsでRBACを実装します。\nauth.uid()=user_id パターンを全テーブルに適用してください。\n\n':'**RBAC + RLS Hybrid** ('+be+'-based)\n\nUse RLS as the last line of defense for data protection, and implement RBAC via custom Claims.\nApply auth.uid()=user_id pattern to all tables.\n\n');
+    } else if(/large/i.test(_sc119)||_ents119>=10){
+      doc119+=(G?'**RBAC 基盤 + ABAC 補完** ('+_ents119+'エンティティ / '+_sc119+'スケール)\n\n単純RBACではエンティティ数増加時に権限爆発が起きます。\nRBACをコアとし、動的条件（時間帯・部門・データ状態）にはABACを追加してください。\n\n':'**RBAC (base) + ABAC (supplement)** ('+_ents119+' entities / '+_sc119+' scale)\n\nPure RBAC causes permission explosion as entities grow.\nUse RBAC as core and add ABAC for dynamic conditions (time, department, data state).\n\n');
+    } else {
+      doc119+=(G?'**RBAC** ('+_ents119+'エンティティ / '+_sc119+'スケール)\n\nシンプルなRBACで十分です。`admin`, `editor`, `viewer`から始め、必要に応じて拡張してください。\n\n':'**RBAC** ('+_ents119+' entities / '+_sc119+' scale)\n\nSimple RBAC is sufficient. Start with `admin`, `editor`, `viewer` and extend as needed.\n\n');
+    }
+    doc119+='> '+(G?'詳細実装: [docs/43_security_intelligence.md](./43_security_intelligence.md) — 認可モデル選定マトリクス':'Detailed implementation: [docs/43_security_intelligence.md](./43_security_intelligence.md) — Authorization Model Selection Matrix')+'\n\n';
     doc119+='### '+(G?'関連ドキュメント':'Related Documents')+'\n\n';
     doc119+='- [ADR-004](./00_architecture_decision_records.md)\n';
     doc119+='- ['+(G?'セキュリティインテリジェンス':'Security Intelligence')+'](./43_security_intelligence.md)\n';
@@ -1637,6 +1662,43 @@ Steps:
     else if(sc==='small'){d+=(G?'**Small**: マネージドDB + 単一BE。Neon/Supabase Pro + Railway。垂直スケールで対応。':'**Small**: Managed DB + single BE. Neon/Supabase Pro + Railway. Vertical scaling.')+'\n\n';}
     else if(sc==='medium'){d+=(G?'**Medium**: 垂直スケール + Read Replica検討。Redis (Upstash) でAPIキャッシュ最適化。Sentry/Datadog監視。':'**Medium**: Vertical scaling + consider Read Replica. Redis (Upstash) for API cache. Sentry/Datadog monitoring.')+'\n\n';}
     else{d+=(G?'**Large**: 水平スケール必須。LB + Read Replica (×2) + Redis Cluster + PgBouncer。k8s/ECS + Auto Scaling Group。CDNエッジキャッシュ。':'**Large**: Horizontal scaling required. LB + Read Replica (×2) + Redis Cluster + PgBouncer. k8s/ECS + Auto Scaling Group. CDN edge cache.')+'\n\n';}
+    if(sc==='large'&&!_isBaas){
+      d+='### '+(G?'DBスケーリング戦略 (Largeスケール)':'DB Scaling Strategy (Large Scale)')+'\n\n';
+      d+='#### '+(G?'レプリケーション構成比較':'Replication Configuration Comparison')+'\n\n';
+      d+='| '+(G?'構成':'Config')+' | '+(G?'仕組み':'Mechanism')+' | '+(G?'読み取り':'Read')+' | '+(G?'書き込み':'Write')+' | '+(G?'障害時':'On Failure')+' | '+(G?'適用シーン':'Best For')+' |\n';
+      d+='|------|------|------|------|------|---------|\n';
+      d+='| Leader-Follower | '+(G?'1つのLeaderが全書き込みを処理':'1 Leader handles all writes')+' | '+(G?'Followerから分散':'Distributed from Followers')+' | '+(G?'Leader集中':'Leader only')+' | '+(G?'Followerが自動昇格':'Follower promotes')+' | '+(G?'Read-Heavy・BI':'Read-heavy, BI')+' |\n';
+      d+='| Leader-Leader | '+(G?'複数Leaderが書き込みを分担':'Multiple Leaders share writes')+' | '+(G?'全Leaderから可':'From any Leader')+' | '+(G?'分散書き込み':'Distributed write')+' | '+(G?'他Leaderが継続':'Other Leaders continue')+' | '+(G?'地理分散・Multi-Region':'Geo-distributed, multi-region')+' |\n\n';
+      d+='#### '+(G?'同期 vs 非同期レプリケーション':'Sync vs Async Replication Trade-offs')+'\n\n';
+      d+='| '+(G?'観点':'Aspect')+' | '+(G?'同期 (Sync)':'Sync')+' | '+(G?'非同期 (Async)':'Async')+' |\n|------|------|------|\n';
+      d+='| '+(G?'一貫性':'Consistency')+' | ✅ '+(G?'完全一貫 (RPO=0)':'Full consistency (RPO=0)')+' | ⚠️ '+(G?'結果整合 (RPO>0)':'Eventual (RPO>0)')+' |\n';
+      d+='| '+(G?'レイテンシ':'Latency')+' | '+(G?'高い（Follower確認待ち）':'High (waits for Follower ack)')+' | '+(G?'低い（Leader即レスポンス）':'Low (Leader responds immediately)')+' |\n';
+      d+='| '+(G?'障害時データロス':'Data loss on failure')+' | '+(G?'なし':'None')+' | '+(G?'最大: レプリケーション遅延分':'Up to: replication lag')+' |\n';
+      d+='| '+(G?'推奨用途':'Recommended For')+' | '+(G?'決済・金融・医療データ':'Payment, finance, healthcare')+' | '+(G?'ログ・解析・コンテンツ配信':'Logs, analytics, CDN')+' |\n\n';
+      var _entList120=(a.entities||'User, Post').split(',').map(function(e){return e.trim();}).filter(Boolean);
+      var _shardCandidates=_entList120.filter(function(e){return /User|Order|Event|Log|Message|Record|Transaction/i.test(e);});
+      var _shardKey=_shardCandidates.length>0?_shardCandidates[0]+'Id':'userId';
+      d+='#### '+(G?'シャーディング戦略':'Sharding Strategy')+'\n\n';
+      d+='| '+(G?'戦略':'Strategy')+' | '+(G?'仕組み':'Mechanism')+' | '+(G?'メリット':'Pros')+' | '+(G?'デメリット':'Cons')+' | '+(G?'推奨シーン':'When to Use')+' |\n';
+      d+='|------|------|------|------|------|\n';
+      d+='| Range Sharding | '+(G?'キー範囲でシャード分割 (例: userId 0-999→Shard1)':'Split by key range (e.g. userId 0-999→Shard1)')+' | '+(G?'範囲クエリ高速':'Fast range queries')+' | '+(G?'ホットスポットのリスク':'Hotspot risk')+' | '+(G?'時系列データ・日付分割':'Time-series, date-based')+' |\n';
+      d+='| Hash Sharding | '+(G?'キーのハッシュ値でシャード決定':'Determine shard by hash of key')+' | '+(G?'均等分散':'Even distribution')+' | '+(G?'範囲クエリ困難':'Range queries hard')+' | '+(G?'均等負荷分散・大規模OLTP':'Uniform load, large OLTP')+' |\n\n';
+      d+=(G
+        ?'> **このプロジェクトのシャードキー候補**: `'+_shardKey+'`\n> エンティティ一覧 ('+_entList120.join(', ')+') からアクセス頻度の高いリレーションを起点に選定します。\n\n'
+        :'> **Shard key candidates for this project**: `'+_shardKey+'`\n> Selected from entity list ('+_entList120.join(', ')+') based on most-accessed relationships.\n\n'
+      );
+      d+='#### '+(G?'段階的スケーリングロードマップ':'Incremental Scaling Roadmap')+'\n\n';
+      d+='| '+(G?'フェーズ':'Phase')+' | '+(G?'構成':'Config')+' | '+(G?'目安QPS':'Target QPS')+' | '+(G?'主な作業':'Key Tasks')+' |\n|------|------|------|------|\n';
+      d+='| Phase 1 | Leader + Read Replica ×2 + PgBouncer | ~2,000 QPS | '+(G?'Replica追加・コネクションプール設定':'Add replica, configure connection pool')+' |\n';
+      d+='| Phase 2 | Phase 1 + Redis Cluster (L2キャッシュ) | ~10,000 QPS | '+(G?'キャッシュ層追加・TTL設計':'Add cache layer, TTL design')+' |\n';
+      d+='| Phase 3 | Phase 2 + Hash Sharding ('+_shardKey+'ベース) | ~50,000 QPS | '+(G?'シャードキー設計・アプリ改修':'Shard key design, app refactor')+' |\n';
+      d+='| Phase 4 | Phase 3 + Multi-Region + CQRS | 100,000+ QPS | '+(G?'リージョン分散・読み書き分離':'Regional distribution, read-write split')+' |\n\n';
+      d+='#### '+(G?'競合解決戦略 (Leader-Leader / 分散書き込み時)':'Conflict Resolution (Leader-Leader / Distributed Writes)')+'\n\n';
+      d+='| '+(G?'戦略':'Strategy')+' | '+(G?'仕組み':'Mechanism')+' | '+(G?'適用シーン':'Use Case')+' | '+(G?'注意点':'Caveat')+' |\n|------|------|------|------|\n';
+      d+='| LWW (Last-Write-Wins) | '+(G?'最新タイムスタンプを優先':'Prefer latest timestamp')+' | '+(G?'ユーザープロフィール更新':'User profile updates')+' | '+(G?'クロック同期必須 (NTP)':'Clock sync required (NTP)')+' |\n';
+      d+='| '+(G?'バージョンベクター':'Vector Clock')+' | '+(G?'因果関係を追跡して競合検出':'Track causality to detect conflicts')+' | '+(G?'ショッピングカート・予約':'Cart, reservation')+' | '+(G?'実装複雑度が高い':'High implementation complexity')+' |\n';
+      d+='| '+(G?'カスタムマージ':'Custom Merge')+' | '+(G?'アプリレベルで競合を解決':'App-level conflict resolution')+' | '+(G?'共同編集・ドキュメント':'Collaborative docs')+' | '+(G?'ドメイン固有ロジックが必要':'Domain-specific logic required')+' |\n\n';
+    }
     // §4 Protocols
     d+='## '+(G?'§4 通信プロトコル選定':'§4 Communication Protocol Selection')+'\n\n';
     d+='| '+(G?'プロトコル':'Protocol')+' | Transport | '+(G?'通信方向':'Direction')+' | '+(G?'接続性':'Connection')+' | '+(G?'レイテンシ':'Latency')+' | '+(G?'主なユースケース':'Use Cases')+' |\n';

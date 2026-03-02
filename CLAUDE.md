@@ -45,7 +45,7 @@ Never reorder without checking dependencies.
 | Category | Purpose |
 |----------|---------|
 | `core/` | State (`S`), i18n (`t()`), keyboard events, wizard tour, app init |
-| `data/` | 257 standard presets (`PR`/`_mp()`), 602 field presets (`PR_FIELD`/`_fpd()`), questions, techdb (478 entries), compat-rules (278 rules), gen-templates (bilingual GT dict), helpdata |
+| `data/` | 257 standard presets (`PR`/`_mp()`), 603 field presets (`PR_FIELD`/`_fpd()`), questions, techdb (478 entries), compat-rules (280 rules), gen-templates (bilingual GT dict), helpdata |
 | `ui/launcher.js` | 70 prompt templates; `templateOrder[70]`, `AI_REC`, `LAUNCH_CAT_MAP`, `TEMPLATE_SCOPE`, `LAUNCH_SKILL_REC` maps; `DOC_GROUPS` for semantic doc grouping |
 | `generators/` | `index.js` orchestrator + `p1`–`p26` pillars + `docs.js` + `common.js` |
 | `ui/` | wizard, render, presets, preview, sidebar, editor, diff, export, explorer, dashboard, launcher, templates, qbar, cmdpalette, help, voice |
@@ -168,7 +168,7 @@ Full 6-step process in `docs/CLAUDE-REFERENCE.md`. Key steps often missed:
 
 ## Adding Compat Rules
 
-File: `src/data/compat-rules.js` — currently 278 rules (33E+135W+110I). All rules have `why_ja`/`why_en`.
+File: `src/data/compat-rules.js` — currently 280 rules (33E+135W+112I). All rules have `why_ja`/`why_en`.
 **Launcher templates**: `src/ui/launcher.js` — currently 70 templates. When adding: register in `TEMPLATE_SCOPE`, both ja+en PT blocks, `AI_REC`, `templateOrder`, `LAUNCH_CAT_MAP`, `LAUNCH_SKILL_REC`; update button text count; update `test/skill-level.test.js` templateOrder.length assertion.
 Structure: `{id, p:['field1','field2'], lv:'error'|'warn'|'info', t:conditionFn, ja, en, fix, fixFn, why_ja, why_en}`
 `why_ja`/`why_en`: When set, shows "▶ なぜ？" expandable card in wizard alerts.

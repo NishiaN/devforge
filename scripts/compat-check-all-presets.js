@@ -122,6 +122,8 @@ const NEW_RULE_IDS = [
   // ext18 testing/ml/a11y/cache rules (+8)
   'test-no-coverage-gate','test-large-no-e2e','ml-no-model-monitoring','ai-no-eval-framework',
   'a11y-no-wcag-target','cache-large-no-redis','queue-no-deadletter','feat-flag-no-cleanup',
+  // 参考資料ベース品質改善 (+2)
+  'api-realtime-http-polling','sec-large-no-authz-model',
 ];
 
 const errorRules = Object.entries(hits).filter(([,v])=>v.level==='error');

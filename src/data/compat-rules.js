@@ -1,4 +1,4 @@
-/* ═══ STACK COMPATIBILITY & SEMANTIC CONSISTENCY RULES — 278 rules (ERROR×33 + WARN×135 + INFO×110) ═══ */
+/* ═══ STACK COMPATIBILITY & SEMANTIC CONSISTENCY RULES — 280 rules (ERROR×33 + WARN×135 + INFO×112) ═══ */
 const COMPAT_RULES=[
   // ── FE ↔ Mobile (2 ERROR) ──
   {id:'fe-mob-expo',p:['frontend','mobile'],lv:'error',
@@ -2332,6 +2332,29 @@ const COMPAT_RULES=[
    fix:{f:'future_features',s:'フィーチャーフラグ ライフサイクル管理'},
    why_ja:'フィーチャーフラグを削除せず放置すると、条件分岐が積み重なりコードの認知負荷が増大します（Martin Fowler "Feature Toggle" アンチパターン）。各フラグにTTLと所有者を設定し、四半期ごとに棚卸しを実施してください。',
    why_en:'Unremoved feature flags accumulate conditional branches, increasing cognitive load (Martin Fowler\'s "Feature Toggle" anti-pattern). Set TTL and owners for each flag and conduct quarterly inventory reviews.'},
+  // ── 参考資料ベース品質改善 (2 INFO) ──
+  {id:'api-realtime-http-polling',p:['scale','backend'],lv:'info',
+   t:function(a){var ents=(a.data_entities||'').split(',').map(function(e){return e.trim();}).filter(Boolean);
+    var hasRT=/realtime|リアルタイム|chat|チャット|notification|通知|push/i.test((a.purpose||'')+(a.mvp_features||''));
+    var hasWS=/WebSocket|websocket|socket\.io|sse|server.sent/i.test((a.backend||'')+(a.mvp_features||'')+(a.future_features||''));
+    var isBaaS=/Supabase|Firebase|Convex/i.test(a.backend||'');
+    var isNode=/Express|Fastify|NestJS|Hono|Bun|Deno/i.test(a.backend||'');
+    return hasRT&&!hasWS&&!isBaaS&&isNode&&a.scale==='large'&&ents.length>=6;},
+   ja:'リアルタイム機能 + Node.js + large構成でWebSocket/SSEが未検討です。HTTP長時間ポーリングはスケール時に接続数コストが高く、WebSocketまたはSSEへの移行を推奨します。docs/83, docs/120参照',
+   en:'Realtime features + Node.js + large scale without WebSocket/SSE consideration. HTTP long-polling is costly at scale. Recommend migrating to WebSocket or SSE. See docs/83, docs/120',
+   fix:{f:'future_features',s:'WebSocket / SSE リアルタイム実装'},
+   why_ja:'HTTPポーリングでは各クライアントが定期的に新規コネクションを確立するため、1000同時接続で毎分60,000リクエストが発生します。WebSocketは1接続を維持し続けるためサーバーコストを大幅に削減できます。',
+   why_en:'HTTP polling generates ~60,000 requests/min with 1,000 concurrent clients (1 req/sec each). WebSocket maintains 1 persistent connection per client, dramatically reducing server load.'},
+  {id:'sec-large-no-authz-model',p:['scale','data_entities'],lv:'info',
+   t:function(a){var ents=(a.data_entities||'').split(',').map(function(e){return e.trim();}).filter(Boolean);
+    var isBaaS=/Supabase|Firebase|Convex/i.test(a.backend||'');
+    var hasAuthzModel=/RBAC|ABAC|ACL|RLS|認可モデル|authz|authorization.model|権限設計/i.test((a.mvp_features||'')+(a.future_features||'')+(a.purpose||''));
+    return a.scale==='large'&&ents.length>=10&&!isBaaS&&!hasAuthzModel;},
+   ja:'large構成 + 10エンティティ以上で認可モデルが未設計です。RBACをベースにABACを補完するハイブリッドアプローチを推奨します。docs/43, docs/119参照',
+   en:'Large scale + 10+ entities without authorization model design. Recommend RBAC-base + ABAC-supplement hybrid approach. See docs/43, docs/119',
+   fix:{f:'future_features',s:'RBAC + ABAC 認可モデル設計'},
+   why_ja:'エンティティ数が10を超えると、単純なロールベース管理では「ロール爆発」が発生します。RBAC（粗粒度のロール制御）とABAC（細粒度の属性ベース制御）を組み合わせることで、柔軟かつ管理可能な権限設計が実現できます。',
+   why_en:'With 10+ entities, pure role-based management causes "role explosion". Combining RBAC (coarse-grained role control) with ABAC (fine-grained attribute-based control) achieves flexible yet manageable permission design.'},
 ];
 // helpers
 function inc(v,k){return v&&typeof v==='string'&&v.indexOf(k)!==-1;}

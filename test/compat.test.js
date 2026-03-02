@@ -717,6 +717,16 @@ const tests=[
   // ── ext18: feat-flag-no-cleanup (INFO) ──
   {name:'featflag: flagsused+medium+6ents+noCleanup=INFO',a:{scale:'medium',dev_methods:'アジャイル・スクラム',data_entities:'A,B,C,D,E,F',mvp_features:'フィーチャーフラグ管理 (LaunchDarkly)'},expect:'info',id:'feat-flag-no-cleanup'},
   {name:'featflag: flagsused+medium+6ents+hasCleanup=none',a:{scale:'medium',dev_methods:'アジャイル・スクラム',data_entities:'A,B,C,D,E,F',mvp_features:'フィーチャーフラグ管理 (LaunchDarkly)',future_features:'フィーチャーフラグ ライフサイクル管理'},expect:'none',id:'feat-flag-no-cleanup'},
+  // ── 参考資料ベース品質改善: api-realtime-http-polling (INFO) ──
+  {name:'realtime-ws: RT+Node+large+6ents+noWS=INFO',a:{scale:'large',backend:'Node.js + Express',purpose:'リアルタイムチャット',data_entities:'A,B,C,D,E,F'},expect:'info',id:'api-realtime-http-polling'},
+  {name:'realtime-ws: RT+Node+large+6ents+hasWS=none',a:{scale:'large',backend:'Node.js + Express',purpose:'リアルタイムチャット',data_entities:'A,B,C,D,E,F',mvp_features:'WebSocket実装'},expect:'none',id:'api-realtime-http-polling'},
+  {name:'realtime-ws: RT+Node+small+6ents+noWS=none (not large)',a:{scale:'small',backend:'Node.js + Express',purpose:'リアルタイムチャット',data_entities:'A,B,C,D,E,F'},expect:'none',id:'api-realtime-http-polling'},
+  {name:'realtime-ws: RT+BaaS+large+6ents+noWS=none (BaaS)',a:{scale:'large',backend:'Supabase',purpose:'リアルタイムチャット',data_entities:'A,B,C,D,E,F'},expect:'none',id:'api-realtime-http-polling'},
+  // ── 参考資料ベース品質改善: sec-large-no-authz-model (INFO) ──
+  {name:'authz-model: large+10ents+noModel+nobaas=INFO',a:{scale:'large',backend:'Node.js + Express',data_entities:'A,B,C,D,E,F,G,H,I,J'},expect:'info',id:'sec-large-no-authz-model'},
+  {name:'authz-model: large+10ents+hasRBAC=none',a:{scale:'large',backend:'Node.js + Express',data_entities:'A,B,C,D,E,F,G,H,I,J',mvp_features:'RBAC権限設計'},expect:'none',id:'sec-large-no-authz-model'},
+  {name:'authz-model: large+9ents+noModel=none (< 10 ents)',a:{scale:'large',backend:'Node.js + Express',data_entities:'A,B,C,D,E,F,G,H,I'},expect:'none',id:'sec-large-no-authz-model'},
+  {name:'authz-model: large+10ents+BaaS+noModel=none (BaaS)',a:{scale:'large',backend:'Supabase',data_entities:'A,B,C,D,E,F,G,H,I,J'},expect:'none',id:'sec-large-no-authz-model'},
 ];
 
 let pass=0,fail=0;
