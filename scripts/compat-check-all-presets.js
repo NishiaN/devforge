@@ -116,6 +116,9 @@ const NEW_RULE_IDS = [
   // Observability rules (+6)
   'obs-large-no-structured-log','obs-no-error-tracking','obs-no-alerting-config',
   'obs-no-health-endpoint','obs-production-no-sla','obs-no-log-retention',
+  // ext17 infrastructure & reliability rules (+6)
+  'db-large-no-read-replica','db-no-connection-pool','fe-large-no-error-boundary',
+  'ops-no-rollback-plan','sec-no-secret-rotation','perf-large-no-cdn',
 ];
 
 const errorRules = Object.entries(hits).filter(([,v])=>v.level==='error');

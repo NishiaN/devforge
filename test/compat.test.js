@@ -1,4 +1,4 @@
-// Compat rules functional test (258 rules: 33 ERROR + 136 WARN + 89 INFO)
+// Compat rules functional test (270 rules: 33 ERROR + 136 WARN + 101 INFO)
 const assert=require('node:assert/strict');
 const S={lang:'ja',skill:'pro'};
 eval(require('fs').readFileSync('src/data/compat-rules.js','utf-8'));
@@ -672,6 +672,24 @@ const tests=[
   // obs-no-log-retention (INFO) — large + 10ents + regulated domain + no retention policy
   {name:'obs-logret: large+10ents+health+noRetention=INFO',a:{scale:'large',data_entities:'A,B,C,D,E,F,G,H,I,J',purpose:'医療記録・患者管理システム health'},expect:'info',id:'obs-no-log-retention'},
   {name:'obs-logret: large+10ents+health+withRetention=none',a:{scale:'large',data_entities:'A,B,C,D,E,F,G,H,I,J',purpose:'医療記録・患者管理システム health',mvp_features:'ログ保持ポリシー (7年)'},expect:'none',id:'obs-no-log-retention'},
+  // ── ext17: db-large-no-read-replica (INFO) ──
+  {name:'db-read-replica: large+postgres+10ents+noReplica=INFO',a:{scale:'large',database:'PostgreSQL',data_entities:'A,B,C,D,E,F,G,H,I,J'},expect:'info',id:'db-large-no-read-replica'},
+  {name:'db-read-replica: large+postgres+10ents+hasReplica=none',a:{scale:'large',database:'PostgreSQL',data_entities:'A,B,C,D,E,F,G,H,I,J',future_features:'リードレプリカ'},expect:'none',id:'db-large-no-read-replica'},
+  // ── ext17: db-no-connection-pool (INFO) ──
+  {name:'db-connpool: large+express+10ents+noPool=INFO',a:{scale:'large',backend:'Express',data_entities:'A,B,C,D,E,F,G,H,I,J'},expect:'info',id:'db-no-connection-pool'},
+  {name:'db-connpool: large+firebase+10ents=none',a:{scale:'large',backend:'Firebase',data_entities:'A,B,C,D,E,F,G,H,I,J'},expect:'none',id:'db-no-connection-pool'},
+  // ── ext17: fe-large-no-error-boundary (INFO) ──
+  {name:'fe-errboundary: react+large+10ents+noEB=INFO',a:{scale:'large',frontend:'React',data_entities:'A,B,C,D,E,F,G,H,I,J'},expect:'info',id:'fe-large-no-error-boundary'},
+  {name:'fe-errboundary: react+large+10ents+hasEB=none',a:{scale:'large',frontend:'React',data_entities:'A,B,C,D,E,F,G,H,I,J',mvp_features:'Error Boundary実装'},expect:'none',id:'fe-large-no-error-boundary'},
+  // ── ext17: ops-no-rollback-plan (INFO) ──
+  {name:'ops-rollback: large+10ents+noRollback=INFO',a:{scale:'large',deploy:'Vercel',data_entities:'A,B,C,D,E,F,G,H,I,J'},expect:'info',id:'ops-no-rollback-plan'},
+  {name:'ops-rollback: large+10ents+bluegreen=none',a:{scale:'large',data_entities:'A,B,C,D,E,F,G,H,I,J',deploy:'blue-green deployment'},expect:'none',id:'ops-no-rollback-plan'},
+  // ── ext17: sec-no-secret-rotation (INFO) ──
+  {name:'sec-rotation: large+fintech+10ents+noRotation=INFO',a:{scale:'large',data_entities:'A,B,C,D,E,F,G,H,I,J',purpose:'金融サービス fintech'},expect:'info',id:'sec-no-secret-rotation'},
+  {name:'sec-rotation: large+fintech+10ents+hasRotation=none',a:{scale:'large',data_entities:'A,B,C,D,E,F,G,H,I,J',purpose:'金融サービス fintech',future_features:'シークレット自動ローテーション'},expect:'none',id:'sec-no-secret-rotation'},
+  // ── ext17: perf-large-no-cdn (INFO) ──
+  {name:'perf-cdn: spa+large+10ents+noCDN=INFO',a:{scale:'large',frontend:'React',data_entities:'A,B,C,D,E,F,G,H,I,J'},expect:'info',id:'perf-large-no-cdn'},
+  {name:'perf-cdn: spa+large+10ents+hasCDN=none',a:{scale:'large',frontend:'React',data_entities:'A,B,C,D,E,F,G,H,I,J',future_features:'CDN導入 (Cloudflare)'},expect:'none',id:'perf-large-no-cdn'},
 ];
 
 let pass=0,fail=0;

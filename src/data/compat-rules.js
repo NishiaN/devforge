@@ -1,4 +1,4 @@
-/* ═══ STACK COMPATIBILITY & SEMANTIC CONSISTENCY RULES — 264 rules (ERROR×33 + WARN×136 + INFO×95) ═══ */
+/* ═══ STACK COMPATIBILITY & SEMANTIC CONSISTENCY RULES — 270 rules (ERROR×33 + WARN×136 + INFO×101) ═══ */
 const COMPAT_RULES=[
   // ── FE ↔ Mobile (2 ERROR) ──
   {id:'fe-mob-expo',p:['frontend','mobile'],lv:'error',
@@ -2181,6 +2181,68 @@ const COMPAT_RULES=[
    fix:{f:'mvp_features',s:'ログ保持ポリシー (7年/3年)'},
    why_ja:'金融業界（金融商品取引法）では取引記録を7年、医療（HIPAA）では患者記録を6年以上保持する義務があります。ログを自動削除するデフォルト設定のまま運用すると、監査時に証拠が提出できず行政指導の対象になります。',
    why_en:'Finance regulations (e.g., Securities Exchange Act) require 7-year transaction record retention; healthcare (HIPAA) requires 6+ years. Default auto-delete settings can eliminate required evidence, leading to regulatory violations during audits.'},
+  // ── ext17: Infrastructure & Reliability (6 INFO) ──
+  {id:'db-large-no-read-replica',p:['scale','database'],lv:'info',
+   t:function(a){var ents=(a.data_entities||'').split(',').map(function(e){return e.trim();}).filter(Boolean);
+    var db=a.database||'';var isPostgresLike=/postgres|mysql|planetscale|neon/i.test(db);
+    var hasReplica=/replica|read.?only|リードレプリカ|read.replica/i.test((a.mvp_features||'')+(a.future_features||''));
+    return a.scale==='large'&&isPostgresLike&&ents.length>=10&&!hasReplica;},
+   ja:'大規模PostgreSQL/MySQL構成でリードレプリカが未検討です。読み取り負荷の高いクエリをレプリカに分散し、書き込みDBの負荷を軽減することを検討してください。docs/120参照',
+   en:'Large PostgreSQL/MySQL config without read replica consideration. Distribute read-heavy queries to replicas to reduce write DB load. See docs/120',
+   fix:{f:'future_features',s:'リードレプリカ / Read Replica'},
+   why_ja:'大規模アプリでは読み取りクエリが書き込みの5-10倍を占めることが多く、リードレプリカなしでは単一DBがボトルネックになります。PostgreSQLの物理レプリケーションやPlanetScaleのブランチ機能で読み取りスケールを実現できます。',
+   why_en:'In large apps, read queries often outnumber writes 5-10x. Without read replicas, a single DB becomes a bottleneck. PostgreSQL physical replication or PlanetScale branching enables read scaling.'},
+  {id:'db-no-connection-pool',p:['scale','backend'],lv:'info',
+   t:function(a){var ents=(a.data_entities||'').split(',').map(function(e){return e.trim();}).filter(Boolean);
+    var be=a.backend||'';var isBaaS=be.indexOf('Firebase')!==-1||be.indexOf('Supabase')!==-1||be.indexOf('Amplify')!==-1;
+    var isStatic=be.indexOf('なし')!==-1||be.indexOf('None')!==-1||be.indexOf('static')!==-1;
+    var hasPool=/pgbouncer|connection.pool|コネクションプール|prisma.*pool|pool.*size/i.test((a.mvp_features||'')+(a.future_features||''));
+    return a.scale==='large'&&!isBaaS&&!isStatic&&ents.length>=10&&!hasPool;},
+   ja:'大規模バックエンドでコネクションプールが未設定です。PgBouncer等のプール設定なしでは同時接続数超過によるDB接続エラーが発生します。docs/120参照',
+   en:'Large backend without connection pooling. Without PgBouncer or pool config, excessive simultaneous connections cause DB errors. See docs/120',
+   fix:{f:'mvp_features',s:'コネクションプール設定 (PgBouncer)'},
+   why_ja:'PostgreSQLはデフォルトで100接続が上限です。コネクションプールなしでNode.jsアプリが各リクエストでDB接続を開くと、高負荷時に接続枯渇が発生します。PgBouncerやPrismaのconnection_limitで安全な上限を設定してください。',
+   why_en:'PostgreSQL defaults to 100 connections. Without pooling, Node.js apps opening per-request DB connections exhaust the pool under load. Use PgBouncer or Prisma connection_limit to set safe limits.'},
+  {id:'fe-large-no-error-boundary',p:['scale','frontend'],lv:'info',
+   t:function(a){var ents=(a.data_entities||'').split(',').map(function(e){return e.trim();}).filter(Boolean);
+    var fe=a.frontend||'';var isReact=fe.indexOf('React')!==-1||fe.indexOf('Next')!==-1;
+    var hasEB=/error.boundary|ErrorBoundary|エラーバウンダリ/i.test((a.mvp_features||'')+(a.future_features||''));
+    return isReact&&a.scale==='large'&&ents.length>=10&&!hasEB;},
+   ja:'大規模Reactアプリ(10+エンティティ)でError Boundaryが未実装です。未捕捉の例外がUI全体をクラッシュさせるリスクがあります。docs/123参照',
+   en:'Large React app (10+ entities) without Error Boundary. Uncaught exceptions can crash the entire UI. See docs/123',
+   fix:{f:'mvp_features',s:'Error Boundary実装'},
+   why_ja:'Reactでは子コンポーネントでthrowされた例外がError Boundaryで補足されない場合、画面全体が白画面になります。大規模アプリでは非同期データ取得の失敗やAPIエラーが頻発するため、セクション別のError Boundaryが不可欠です。',
+   why_en:'In React, exceptions thrown in child components without an Error Boundary result in a full white screen. Large apps frequently encounter async data fetch failures and API errors, making per-section Error Boundaries essential.'},
+  {id:'ops-no-rollback-plan',p:['scale','deploy'],lv:'info',
+   t:function(a){var ents=(a.data_entities||'').split(',').map(function(e){return e.trim();}).filter(Boolean);
+    var dep=a.deploy||'';var hasRollback=/rollback|blue.green|canary|ロールバック|カナリア/i.test((a.mvp_features||'')+(a.future_features||'')+dep);
+    return a.scale==='large'&&ents.length>=10&&!hasRollback;},
+   ja:'大規模構成でロールバック戦略が未定義です。Blue-Green deploymentやCanary releaseなどの手法でリリース障害時の迅速な復旧計画を策定してください。docs/117参照',
+   en:'Large-scale config without rollback strategy. Define Blue-Green deployment or Canary release for rapid recovery from release failures. See docs/117',
+   fix:{f:'future_features',s:'Blue-Greenデプロイ / ロールバック戦略'},
+   why_ja:'大規模リリースで問題が発生した場合、ロールバック手順が未定義だと復旧に数時間かかることがあります。Blue-Greenはトラフィック切り替えで即座にロールバック可能、Canaryは段階的なリリースでリスクを最小化します。',
+   why_en:'Without a defined rollback procedure, recovering from a bad release in a large system can take hours. Blue-Green enables instant rollback via traffic switching; Canary minimizes risk through phased rollout.'},
+  {id:'sec-no-secret-rotation',p:['scale','purpose'],lv:'info',
+   t:function(a){var ents=(a.data_entities||'').split(',').map(function(e){return e.trim();}).filter(Boolean);
+    var dom=typeof detectDomain==='function'?detectDomain(a.purpose||''):'';
+    var isRegulated=/fintech|health|legal|government|insurance/i.test(dom);
+    var hasRotation=/secret.*rotat|rotat.*secret|シークレット.*ローテーション|ローテーション.*シークレット|key.*rotat|rotat.*key/i.test((a.mvp_features||'')+(a.future_features||''));
+    return a.scale==='large'&&isRegulated&&ents.length>=10&&!hasRotation;},
+   ja:'規制ドメインの大規模構成でシークレットローテーションが未検討です。APIキー・DB認証情報の定期的な自動ローテーションをHashiCorp Vault等で実装してください。docs/121参照',
+   en:'Regulated domain large-scale config without secret rotation. Implement automatic periodic rotation of API keys and DB credentials via HashiCorp Vault. See docs/121',
+   fix:{f:'future_features',s:'シークレット自動ローテーション'},
+   why_ja:'規制業界では認証情報の定期ローテーションが義務付けられることがあります（PCI DSS: 90日以内）。長期間同じシークレットを使い続けると、漏洩時の被害期間が長くなります。HashiCorp VaultやAWS Secrets Managerで自動ローテーションを設定してください。',
+   why_en:'Regulated industries often mandate periodic credential rotation (PCI DSS: within 90 days). Long-lived secrets increase breach exposure windows. Use HashiCorp Vault or AWS Secrets Manager for automated rotation.'},
+  {id:'perf-large-no-cdn',p:['scale','frontend'],lv:'info',
+   t:function(a){var ents=(a.data_entities||'').split(',').map(function(e){return e.trim();}).filter(Boolean);
+    var fe=a.frontend||'';var isSPA=fe.indexOf('React')!==-1||fe.indexOf('Vue')!==-1||fe.indexOf('Angular')!==-1||fe.indexOf('Next')!==-1||fe.indexOf('Nuxt')!==-1;
+    var dep=a.deploy||'';var hasCDN=/cdn|cloudflare|cloudfront|fastly|CDN/i.test((a.mvp_features||'')+(a.future_features||'')+dep);
+    return isSPA&&a.scale==='large'&&ents.length>=10&&!hasCDN;},
+   ja:'大規模SPA構成でCDNが未検討です。静的アセットをCDNで配信することでロード時間を50-80%削減できます。Cloudflare/CloudFront等の導入を検討してください。docs/101参照',
+   en:'Large SPA config without CDN. Serving static assets via CDN can reduce load time by 50-80%. Consider Cloudflare/CloudFront. See docs/101',
+   fix:{f:'future_features',s:'CDN導入 (Cloudflare / CloudFront)'},
+   why_ja:'SPAの静的アセット（JS/CSS/画像）をオリジンサーバーから直接配信すると、地理的に遠いユーザーのレイテンシが増大します。CDNはエッジノードでアセットをキャッシュし、世界中のユーザーに低レイテンシで配信します。Core Web VitalsのLCPスコアに直接影響します。',
+   why_en:'Serving SPA static assets (JS/CSS/images) directly from origin increases latency for geographically distant users. CDNs cache assets at edge nodes for low-latency global delivery. This directly impacts LCP scores in Core Web Vitals.'},
 ];
 // helpers
 function inc(v,k){return v&&typeof v==='string'&&v.indexOf(k)!==-1;}

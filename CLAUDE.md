@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 # DevForge v9.6.0
 
-**AI Development OS** — 79 JS modules in `src/` → single `devforge-v9.html` (~4658KB / 5000KB limit).
+**AI Development OS** — 80 JS modules in `src/` → single `devforge-v9.html` (~4774KB / 5000KB limit).
 Generates **218+ files** across **27 pillars** from a wizard-driven Q&A session.
 
 ## Documentation Map
@@ -45,8 +45,8 @@ Never reorder without checking dependencies.
 | Category | Purpose |
 |----------|---------|
 | `core/` | State (`S`), i18n (`t()`), keyboard events, wizard tour, app init |
-| `data/` | 197 standard presets (`PR`/`_mp()`), 541 field presets (`PR_FIELD`/`_fpd()`), questions, techdb (443 entries), compat-rules (264 rules), gen-templates (bilingual GT dict), helpdata |
-| `ui/launcher.js` | 65 prompt templates; `templateOrder[65]`, `AI_REC`, `LAUNCH_CAT_MAP`, `TEMPLATE_SCOPE`, `LAUNCH_SKILL_REC` maps; `DOC_GROUPS` for semantic doc grouping |
+| `data/` | 207 standard presets (`PR`/`_mp()`), 551 field presets (`PR_FIELD`/`_fpd()`), questions, techdb (463 entries), compat-rules (270 rules), gen-templates (bilingual GT dict), helpdata |
+| `ui/launcher.js` | 70 prompt templates; `templateOrder[70]`, `AI_REC`, `LAUNCH_CAT_MAP`, `TEMPLATE_SCOPE`, `LAUNCH_SKILL_REC` maps; `DOC_GROUPS` for semantic doc grouping |
 | `generators/` | `index.js` orchestrator + `p1`–`p26` pillars + `docs.js` + `common.js` |
 | `ui/` | wizard, render, presets, preview, sidebar, editor, diff, export, explorer, dashboard, launcher, templates, qbar, cmdpalette, help, voice |
 | `styles/all.css` | Theme (dark/light), responsive; CSS custom properties only |
@@ -168,8 +168,8 @@ Full 6-step process in `docs/CLAUDE-REFERENCE.md`. Key steps often missed:
 
 ## Adding Compat Rules
 
-File: `src/data/compat-rules.js` — currently 264 rules (33E+136W+95I). All rules have `why_ja`/`why_en`.
-**Launcher templates**: `src/ui/launcher.js` — currently 65 templates. When adding: register in `TEMPLATE_SCOPE`, both ja+en PT blocks, `AI_REC`, `templateOrder`, `LAUNCH_CAT_MAP`, `LAUNCH_SKILL_REC`; update button text count; update `test/skill-level.test.js` templateOrder.length assertion.
+File: `src/data/compat-rules.js` — currently 270 rules (33E+136W+101I). All rules have `why_ja`/`why_en`.
+**Launcher templates**: `src/ui/launcher.js` — currently 70 templates. When adding: register in `TEMPLATE_SCOPE`, both ja+en PT blocks, `AI_REC`, `templateOrder`, `LAUNCH_CAT_MAP`, `LAUNCH_SKILL_REC`; update button text count; update `test/skill-level.test.js` templateOrder.length assertion.
 Structure: `{id, p:['field1','field2'], lv:'error'|'warn'|'info', t:conditionFn, ja, en, fix, fixFn, why_ja, why_en}`
 `why_ja`/`why_en`: When set, shows "▶ なぜ？" expandable card in wizard alerts.
 After adding: update header comment totals, add tests to `test/compat.test.js`, update CLAUDE.md rule count.
@@ -182,11 +182,11 @@ After adding: update header comment totals, add tests to `test/compat.test.js`, 
 | Data/coverage | data-coverage, presets, field-presets | ~116 |
 | Security/compat | security, compat (+7 synergy) | ~136 |
 | Pillars (P14-P20+skill) | ops, future, deviq, promptgenome, promptops, enterprise, cicd, skill-level | ~184 |
-| Gen quality | gen-quality (Suites 1-340, ~5644 tests) | ~5644 |
+| Gen quality | gen-quality (Suites 1-350, ~5724 tests) | ~5724 |
 | Preset matching | phase-n (N-1〜N-9 + G-1〜G-7, 68 tests) | ~68 |
 | Other | i18n, state, techdb, utils, complexity, mermaid, help-hints | ~46 |
 
-**Total: 6707 tests** | Test harness pattern: `eval(fs.readFileSync(...))` to load src files; global `S` mock at top.
+**Total: 6787 tests** | Test harness pattern: `eval(fs.readFileSync(...))` to load src files; global `S` mock at top.
 
 **When adding domains**, update: `test/data-coverage.test.js` (4 arrays), `test/gen-coherence.test.js`, `test/ops.test.js`.
 
@@ -196,7 +196,7 @@ After adding: update header comment totals, add tests to `test/compat.test.js`, 
 
 `docs/82_architecture_integrity_check.md` — always generated; scores ORM/Auth/CORS/async/soft-delete integrity (10.0 scale).
 
-**File count ranges** (used in tests): `snapshot.test.js` A:140–200/B:130–191; `gen-quality.test.js` A25 112–205.
+**File count ranges** (used in tests): `snapshot.test.js` A:140–204/B:130–195; `gen-quality.test.js` A25 112–209.
 
 Key output structure:
 - `.spec/` — constitution, specification, technical-plan, tasks, verification

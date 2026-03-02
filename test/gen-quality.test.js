@@ -689,10 +689,10 @@ describe('Q7: domain-specific KPI fallback in constitution §3', () => {
    ════════════════════════════════════════════════════════════════ */
 describe('Q8: Full E2E generation — file count, tokens, 25 vs 11 delta', () => {
 
-  it('A25 full generation: file count in 112-207 range', () => {
+  it('A25 full generation: file count in 112-209 range', () => {
     const f = gFull(A25);
     const count = Object.keys(f).length;
-    assert.ok(count >= 112 && count <= 207, `A25 full gen file count should be 112-207, got ${count}`);
+    assert.ok(count >= 112 && count <= 209, `A25 full gen file count should be 112-209, got ${count}`);
   });
 
   it('A25 full generation: total tokens ≥ 14000 (rich content across 24 pillars)', () => {
@@ -40140,5 +40140,655 @@ describe('Suite 340: presets-ext16 livestock_optimizer — Supabase/Vercel/strip
   it('docs/01: livestock_optimizer produces no undefined in overview', () => {
     const f = gSDD(g340_livestock_optimizer);
     assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'livestock_optimizer docs/01 must not contain undefined');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 341 — presets-ext17.js: pet_health_tracker
+   Supabase/Vercel/payment:stripe
+   ════════════════════════════════════════════════════════════════ */
+
+const g341_pet_health = Object.assign({}, A25, {
+  purpose: 'ペットの健康記録・ワクチン接種スケジュール・動物病院予約・体重・投薬管理をワンストップ提供するヘルスケアSaaS',
+  frontend: 'React + Next.js',
+  backend: 'Supabase',
+  database: 'PostgreSQL',
+  deploy: 'Vercel',
+  orm: 'Prisma',
+  auth: 'JWT + Supabase Auth',
+  payment: 'stripe',
+  mobile: 'なし',
+  data_entities: 'User, Pet, HealthRecord, VaccinationSchedule, VetAppointment',
+  mvp_features: 'ペット健康記録管理, ワクチン接種スケジュール, 動物病院予約, 体重・投薬追跡, AIアドバイス, ページネーション・無限スクロール',
+});
+
+describe('Suite 341: presets-ext17 pet_health_tracker — Supabase/Vercel/stripe', () => {
+
+  it('SDD: pet_health_tracker generates specification.md and constitution.md', () => {
+    const f = gSDD(g341_pet_health);
+    assert.ok(f['.spec/specification.md'], 'pet_health_tracker must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'pet_health_tracker must generate constitution.md');
+  });
+
+  it('SDD: pet_health_tracker includes Pet in spec', () => {
+    const f = gSDD(g341_pet_health);
+    assert.ok((f['.spec/specification.md']||'').includes('Pet'), 'pet_health_tracker spec must mention Pet');
+  });
+
+  it('SDD: pet_health_tracker (Supabase) → Supabase referenced in spec', () => {
+    const f = gSDD(g341_pet_health);
+    assert.ok((f['.spec/specification.md']||'').includes('Supabase'), 'pet_health_tracker spec must reference Supabase');
+  });
+
+  it('SDD: pet_health_tracker purpose keyword in spec', () => {
+    const f = gSDD(g341_pet_health);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('ペット')||spec.includes('Pet')||spec.includes('health'), 'pet_health_tracker spec must mention pet context');
+  });
+
+  it('SDD EN: pet_health_tracker produces no undefined in spec', () => {
+    const f = gSDD(g341_pet_health, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'pet_health_tracker EN spec must not contain undefined');
+  });
+
+  it('SDD JA: pet_health_tracker produces no undefined in spec', () => {
+    const f = gSDD(g341_pet_health);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'pet_health_tracker JA spec must not contain undefined');
+  });
+
+  it('docs/01: pet_health_tracker overview mentions ペット or Pet', () => {
+    const f = gSDD(g341_pet_health);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('ペット')||doc.includes('Pet')||doc.includes('health'), 'pet_health_tracker docs/01 must mention pet context');
+  });
+
+  it('docs/01: pet_health_tracker produces no undefined in overview', () => {
+    const f = gSDD(g341_pet_health);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'pet_health_tracker docs/01 must not contain undefined');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 342 — presets-ext17.js: language_exchange
+   Express/Railway/payment:none
+   ════════════════════════════════════════════════════════════════ */
+
+const g342_lang_exchange = Object.assign({}, A25, {
+  purpose: 'ネイティブ話者同士がペアを組んでお互いの言語を練習できるP2P言語交換SaaS',
+  frontend: 'React (Vite SPA)',
+  backend: 'Express',
+  database: 'PostgreSQL',
+  deploy: 'Railway',
+  orm: 'Prisma',
+  auth: 'JWT',
+  payment: 'none',
+  mobile: 'なし',
+  data_entities: 'User, LanguageProfile, ExchangeSession, ConversationRoom, LearningGoal',
+  mvp_features: '言語プロフィール管理, セッションマッチング, ビデオ会話ルーム, 学習目標設定, 進捗レポート, ページネーション・無限スクロール',
+});
+
+describe('Suite 342: presets-ext17 language_exchange — Express/Railway', () => {
+
+  it('SDD: language_exchange generates specification.md and constitution.md', () => {
+    const f = gSDD(g342_lang_exchange);
+    assert.ok(f['.spec/specification.md'], 'language_exchange must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'language_exchange must generate constitution.md');
+  });
+
+  it('SDD: language_exchange includes LanguageProfile in spec', () => {
+    const f = gSDD(g342_lang_exchange);
+    assert.ok((f['.spec/specification.md']||'').includes('LanguageProfile'), 'language_exchange spec must mention LanguageProfile');
+  });
+
+  it('SDD: language_exchange purpose keyword in spec', () => {
+    const f = gSDD(g342_lang_exchange);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('言語')||spec.includes('Language')||spec.includes('Exchange'), 'language_exchange spec must mention language context');
+  });
+
+  it('SDD EN: language_exchange produces no undefined in spec', () => {
+    const f = gSDD(g342_lang_exchange, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'language_exchange EN spec must not contain undefined');
+  });
+
+  it('SDD JA: language_exchange produces no undefined in spec', () => {
+    const f = gSDD(g342_lang_exchange);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'language_exchange JA spec must not contain undefined');
+  });
+
+  it('docs/01: language_exchange overview mentions 言語 or Language', () => {
+    const f = gSDD(g342_lang_exchange);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('言語')||doc.includes('Language')||doc.includes('Exchange'), 'language_exchange docs/01 must mention language context');
+  });
+
+  it('docs/01: language_exchange produces no undefined in overview', () => {
+    const f = gSDD(g342_lang_exchange);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'language_exchange docs/01 must not contain undefined');
+  });
+
+  it('no payment section when payment:none', () => {
+    const f = gFull(g342_lang_exchange);
+    assert.ok(!f['docs/38_business_model.md'], 'language_exchange with payment:none must not generate business_model.md');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 343 — presets-ext17.js: warehouse_mgmt
+   Express/Railway/payment:none/RLS
+   ════════════════════════════════════════════════════════════════ */
+
+const g343_warehouse = Object.assign({}, A25, {
+  purpose: '在庫管理・入出庫処理・棚番管理・発注アラート・バーコード対応の物流倉庫管理SaaS',
+  frontend: 'React (Vite SPA)',
+  backend: 'Express',
+  database: 'PostgreSQL',
+  deploy: 'Railway',
+  orm: 'Prisma',
+  auth: 'JWT',
+  payment: 'none',
+  mobile: 'なし',
+  data_entities: 'User, Warehouse, InventoryItem, ShipmentOrder, StockMovement',
+  mvp_features: '在庫管理・入出庫処理, 棚番管理, 発注アラート, バーコードスキャン対応, 出荷レポート, ページネーション・無限スクロール',
+});
+
+describe('Suite 343: presets-ext17 warehouse_mgmt — Express/Railway/logistics', () => {
+
+  it('SDD: warehouse_mgmt generates specification.md and constitution.md', () => {
+    const f = gSDD(g343_warehouse);
+    assert.ok(f['.spec/specification.md'], 'warehouse_mgmt must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'warehouse_mgmt must generate constitution.md');
+  });
+
+  it('SDD: warehouse_mgmt includes InventoryItem in spec', () => {
+    const f = gSDD(g343_warehouse);
+    assert.ok((f['.spec/specification.md']||'').includes('InventoryItem'), 'warehouse_mgmt spec must mention InventoryItem');
+  });
+
+  it('SDD: warehouse_mgmt purpose keyword in spec', () => {
+    const f = gSDD(g343_warehouse);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('倉庫')||spec.includes('Warehouse')||spec.includes('在庫'), 'warehouse_mgmt spec must mention warehouse context');
+  });
+
+  it('SDD EN: warehouse_mgmt produces no undefined in spec', () => {
+    const f = gSDD(g343_warehouse, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'warehouse_mgmt EN spec must not contain undefined');
+  });
+
+  it('SDD JA: warehouse_mgmt produces no undefined in spec', () => {
+    const f = gSDD(g343_warehouse);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'warehouse_mgmt JA spec must not contain undefined');
+  });
+
+  it('docs/01: warehouse_mgmt overview mentions 倉庫 or Warehouse', () => {
+    const f = gSDD(g343_warehouse);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('倉庫')||doc.includes('Warehouse')||doc.includes('在庫'), 'warehouse_mgmt docs/01 must mention warehouse context');
+  });
+
+  it('docs/01: warehouse_mgmt produces no undefined in overview', () => {
+    const f = gSDD(g343_warehouse);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'warehouse_mgmt docs/01 must not contain undefined');
+  });
+
+  it('no payment section when payment:none', () => {
+    const f = gFull(g343_warehouse);
+    assert.ok(!f['docs/38_business_model.md'], 'warehouse_mgmt with payment:none must not generate business_model.md');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 344 — presets-ext17.js: legal_contract
+   Express/Railway/payment:none/legal domain
+   ════════════════════════════════════════════════════════════════ */
+
+const g344_legal = Object.assign({}, A25, {
+  purpose: '契約書の電子署名・テンプレート管理・期限アラート・監査ログ・承認フローを提供する法務SaaS',
+  frontend: 'React (Vite SPA)',
+  backend: 'Express',
+  database: 'PostgreSQL',
+  deploy: 'Railway',
+  orm: 'Prisma',
+  auth: 'JWT',
+  payment: 'none',
+  mobile: 'なし',
+  data_entities: 'User, Contract, ContractTemplate, SignatureRequest, AuditTrail',
+  mvp_features: '契約書作成・管理, 電子署名フロー, テンプレートライブラリ, 期限アラート, 監査ログ, ページネーション・無限スクロール',
+});
+
+describe('Suite 344: presets-ext17 legal_contract — Express/Railway/legal', () => {
+
+  it('SDD: legal_contract generates specification.md and constitution.md', () => {
+    const f = gSDD(g344_legal);
+    assert.ok(f['.spec/specification.md'], 'legal_contract must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'legal_contract must generate constitution.md');
+  });
+
+  it('SDD: legal_contract includes Contract in spec', () => {
+    const f = gSDD(g344_legal);
+    assert.ok((f['.spec/specification.md']||'').includes('Contract'), 'legal_contract spec must mention Contract');
+  });
+
+  it('SDD: legal_contract purpose keyword in spec', () => {
+    const f = gSDD(g344_legal);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('契約')||spec.includes('Contract')||spec.includes('Legal'), 'legal_contract spec must mention legal context');
+  });
+
+  it('SDD EN: legal_contract produces no undefined in spec', () => {
+    const f = gSDD(g344_legal, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'legal_contract EN spec must not contain undefined');
+  });
+
+  it('SDD JA: legal_contract produces no undefined in spec', () => {
+    const f = gSDD(g344_legal);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'legal_contract JA spec must not contain undefined');
+  });
+
+  it('docs/01: legal_contract overview mentions 契約 or Contract', () => {
+    const f = gSDD(g344_legal);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('契約')||doc.includes('Contract')||doc.includes('Legal'), 'legal_contract docs/01 must mention legal context');
+  });
+
+  it('docs/01: legal_contract produces no undefined in overview', () => {
+    const f = gSDD(g344_legal);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'legal_contract docs/01 must not contain undefined');
+  });
+
+  it('legal_contract includes AuditTrail entity in spec', () => {
+    const f = gSDD(g344_legal);
+    assert.ok((f['.spec/specification.md']||'').includes('AuditTrail'), 'legal_contract spec must mention AuditTrail');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 345 — presets-ext17.js: carbon_offset_mgr
+   Supabase/Vercel/payment:stripe/environment
+   ════════════════════════════════════════════════════════════════ */
+
+const g345_carbon = Object.assign({}, A25, {
+  purpose: '企業のCO2排出量記録・カーボンクレジット購入・オフセット証書管理・環境報告書生成SaaS',
+  frontend: 'React + Next.js',
+  backend: 'Supabase',
+  database: 'PostgreSQL',
+  deploy: 'Vercel',
+  orm: 'Prisma',
+  auth: 'JWT + Supabase Auth',
+  payment: 'stripe',
+  mobile: 'なし',
+  data_entities: 'User, CarbonProject, OffsetCredit, EmissionReport, RetirementCert',
+  mvp_features: 'CO2排出量記録・分析, カーボンクレジット購入, オフセット証書管理, 環境報告書自動生成, ESGダッシュボード, ページネーション・無限スクロール',
+});
+
+describe('Suite 345: presets-ext17 carbon_offset_mgr — Supabase/Vercel/stripe', () => {
+
+  it('SDD: carbon_offset_mgr generates specification.md and constitution.md', () => {
+    const f = gSDD(g345_carbon);
+    assert.ok(f['.spec/specification.md'], 'carbon_offset_mgr must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'carbon_offset_mgr must generate constitution.md');
+  });
+
+  it('SDD: carbon_offset_mgr includes CarbonProject in spec', () => {
+    const f = gSDD(g345_carbon);
+    assert.ok((f['.spec/specification.md']||'').includes('CarbonProject'), 'carbon_offset_mgr spec must mention CarbonProject');
+  });
+
+  it('SDD: carbon_offset_mgr purpose keyword in spec', () => {
+    const f = gSDD(g345_carbon);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('カーボン')||spec.includes('Carbon')||spec.includes('CO2'), 'carbon_offset_mgr spec must mention carbon context');
+  });
+
+  it('SDD EN: carbon_offset_mgr produces no undefined in spec', () => {
+    const f = gSDD(g345_carbon, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'carbon_offset_mgr EN spec must not contain undefined');
+  });
+
+  it('SDD JA: carbon_offset_mgr produces no undefined in spec', () => {
+    const f = gSDD(g345_carbon);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'carbon_offset_mgr JA spec must not contain undefined');
+  });
+
+  it('docs/01: carbon_offset_mgr overview mentions カーボン or Carbon', () => {
+    const f = gSDD(g345_carbon);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('カーボン')||doc.includes('Carbon')||doc.includes('CO2'), 'carbon_offset_mgr docs/01 must mention carbon context');
+  });
+
+  it('docs/01: carbon_offset_mgr produces no undefined in overview', () => {
+    const f = gSDD(g345_carbon);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'carbon_offset_mgr docs/01 must not contain undefined');
+  });
+
+  it('payment stripe: carbon_offset_mgr generates 38_business_model.md', () => {
+    const f = gFull(g345_carbon);
+    assert.ok(f['docs/38_business_model.md'], 'carbon_offset_mgr with stripe must generate docs/38_business_model.md');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 346 — presets-ext17.js: sports_league
+   Express/Vercel/payment:stripe/booking
+   ════════════════════════════════════════════════════════════════ */
+
+const g346_sports = Object.assign({}, A25, {
+  purpose: 'アマチュアスポーツリーグの試合スケジュール管理・チーム登録・選手スタッツ追跡・観戦チケット販売SaaS',
+  frontend: 'React (Vite SPA)',
+  backend: 'Express',
+  database: 'PostgreSQL',
+  deploy: 'Vercel',
+  orm: 'Prisma',
+  auth: 'JWT',
+  payment: 'stripe',
+  mobile: 'なし',
+  data_entities: 'User, League, Team, MatchSchedule, PlayerStat',
+  mvp_features: 'リーグ・チーム登録管理, 試合スケジュール管理, 選手スタッツ追跡, 順位表・統計, チケット販売, ページネーション・無限スクロール',
+});
+
+describe('Suite 346: presets-ext17 sports_league — Express/Vercel/stripe', () => {
+
+  it('SDD: sports_league generates specification.md and constitution.md', () => {
+    const f = gSDD(g346_sports);
+    assert.ok(f['.spec/specification.md'], 'sports_league must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'sports_league must generate constitution.md');
+  });
+
+  it('SDD: sports_league includes League in spec', () => {
+    const f = gSDD(g346_sports);
+    assert.ok((f['.spec/specification.md']||'').includes('League'), 'sports_league spec must mention League');
+  });
+
+  it('SDD: sports_league purpose keyword in spec', () => {
+    const f = gSDD(g346_sports);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('スポーツ')||spec.includes('League')||spec.includes('Sports'), 'sports_league spec must mention sports context');
+  });
+
+  it('SDD EN: sports_league produces no undefined in spec', () => {
+    const f = gSDD(g346_sports, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'sports_league EN spec must not contain undefined');
+  });
+
+  it('SDD JA: sports_league produces no undefined in spec', () => {
+    const f = gSDD(g346_sports);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'sports_league JA spec must not contain undefined');
+  });
+
+  it('docs/01: sports_league overview mentions スポーツ or Sports', () => {
+    const f = gSDD(g346_sports);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('スポーツ')||doc.includes('League')||doc.includes('Sports'), 'sports_league docs/01 must mention sports context');
+  });
+
+  it('docs/01: sports_league produces no undefined in overview', () => {
+    const f = gSDD(g346_sports);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'sports_league docs/01 must not contain undefined');
+  });
+
+  it('payment stripe: sports_league generates business_model.md', () => {
+    const f = gFull(g346_sports);
+    assert.ok(f['docs/38_business_model.md'], 'sports_league with stripe must generate business_model.md');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 347 — presets-ext17.js: music_streaming
+   Express/Vercel/payment:stripe/content
+   ════════════════════════════════════════════════════════════════ */
+
+const g347_music = Object.assign({}, A25, {
+  purpose: 'アーティストが楽曲をアップロード・配信し、リスナーがプレイリストを作成・共有できるコンテンツSaaS',
+  frontend: 'React (Vite SPA)',
+  backend: 'Express',
+  database: 'PostgreSQL',
+  deploy: 'Vercel',
+  orm: 'Prisma',
+  auth: 'JWT',
+  payment: 'stripe',
+  mobile: 'なし',
+  data_entities: 'User, Track, Playlist, Album, StreamingHistory',
+  mvp_features: '楽曲アップロード・配信管理, プレイリスト作成・共有, アルバム管理, ストリーミング再生, アーティスト収益レポート, ページネーション・無限スクロール',
+});
+
+describe('Suite 347: presets-ext17 music_streaming — Express/Vercel/stripe/content', () => {
+
+  it('SDD: music_streaming generates specification.md and constitution.md', () => {
+    const f = gSDD(g347_music);
+    assert.ok(f['.spec/specification.md'], 'music_streaming must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'music_streaming must generate constitution.md');
+  });
+
+  it('SDD: music_streaming includes Track in spec', () => {
+    const f = gSDD(g347_music);
+    assert.ok((f['.spec/specification.md']||'').includes('Track'), 'music_streaming spec must mention Track');
+  });
+
+  it('SDD: music_streaming purpose keyword in spec', () => {
+    const f = gSDD(g347_music);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('楽曲')||spec.includes('Track')||spec.includes('Playlist')||spec.includes('アーティスト')||spec.includes('コンテンツ'), 'music_streaming spec must mention music context');
+  });
+
+  it('SDD EN: music_streaming produces no undefined in spec', () => {
+    const f = gSDD(g347_music, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'music_streaming EN spec must not contain undefined');
+  });
+
+  it('SDD JA: music_streaming produces no undefined in spec', () => {
+    const f = gSDD(g347_music);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'music_streaming JA spec must not contain undefined');
+  });
+
+  it('docs/01: music_streaming overview mentions 楽曲 or Track or Playlist', () => {
+    const f = gSDD(g347_music);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('楽曲')||doc.includes('Track')||doc.includes('Playlist')||doc.includes('アーティスト')||doc.includes('Artist'), 'music_streaming docs/01 must mention music context');
+  });
+
+  it('docs/01: music_streaming produces no undefined in overview', () => {
+    const f = gSDD(g347_music);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'music_streaming docs/01 must not contain undefined');
+  });
+
+  it('payment stripe: music_streaming generates business_model.md', () => {
+    const f = gFull(g347_music);
+    assert.ok(f['docs/38_business_model.md'], 'music_streaming with stripe must generate business_model.md');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 348 — presets-ext17.js: home_renovation
+   Supabase/Vercel/payment:stripe/realestate
+   ════════════════════════════════════════════════════════════════ */
+
+const g348_renovation = Object.assign({}, A25, {
+  purpose: 'リノベーション業者の見積・施工管理・進捗写真・材料発注・顧客コミュニケーションを統合する不動産SaaS',
+  frontend: 'React + Next.js',
+  backend: 'Supabase',
+  database: 'PostgreSQL',
+  deploy: 'Vercel',
+  orm: 'Prisma',
+  auth: 'JWT + Supabase Auth',
+  payment: 'stripe',
+  mobile: 'なし',
+  data_entities: 'User, RenovationProject, ContractorBid, MaterialList, ProgressPhoto',
+  mvp_features: '施工プロジェクト管理, 業者見積・入札管理, 材料リスト・発注, 進捗写真タイムライン, 顧客ポータル, ページネーション・無限スクロール',
+});
+
+describe('Suite 348: presets-ext17 home_renovation — Supabase/Vercel/stripe', () => {
+
+  it('SDD: home_renovation generates specification.md and constitution.md', () => {
+    const f = gSDD(g348_renovation);
+    assert.ok(f['.spec/specification.md'], 'home_renovation must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'home_renovation must generate constitution.md');
+  });
+
+  it('SDD: home_renovation includes RenovationProject in spec', () => {
+    const f = gSDD(g348_renovation);
+    assert.ok((f['.spec/specification.md']||'').includes('RenovationProject'), 'home_renovation spec must mention RenovationProject');
+  });
+
+  it('SDD: home_renovation purpose keyword in spec', () => {
+    const f = gSDD(g348_renovation);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('リノベーション')||spec.includes('Renovation')||spec.includes('施工'), 'home_renovation spec must mention renovation context');
+  });
+
+  it('SDD EN: home_renovation produces no undefined in spec', () => {
+    const f = gSDD(g348_renovation, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'home_renovation EN spec must not contain undefined');
+  });
+
+  it('SDD JA: home_renovation produces no undefined in spec', () => {
+    const f = gSDD(g348_renovation);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'home_renovation JA spec must not contain undefined');
+  });
+
+  it('docs/01: home_renovation overview mentions リノベーション or Renovation', () => {
+    const f = gSDD(g348_renovation);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('リノベーション')||doc.includes('Renovation')||doc.includes('施工'), 'home_renovation docs/01 must mention renovation context');
+  });
+
+  it('docs/01: home_renovation produces no undefined in overview', () => {
+    const f = gSDD(g348_renovation);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'home_renovation docs/01 must not contain undefined');
+  });
+
+  it('payment stripe: home_renovation generates business_model.md', () => {
+    const f = gFull(g348_renovation);
+    assert.ok(f['docs/38_business_model.md'], 'home_renovation with stripe must generate business_model.md');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 349 — presets-ext17.js: coworking_space
+   Express/Vercel/payment:stripe/booking
+   ════════════════════════════════════════════════════════════════ */
+
+const g349_coworking = Object.assign({}, A25, {
+  purpose: 'デスク予約・会員管理・入退室ログ・月額プラン・会議室予約を提供するコワーキング管理SaaS',
+  frontend: 'React (Vite SPA)',
+  backend: 'Express',
+  database: 'PostgreSQL',
+  deploy: 'Vercel',
+  orm: 'Prisma',
+  auth: 'JWT',
+  payment: 'stripe',
+  mobile: 'なし',
+  data_entities: 'User, CoworkingSpace, DeskReservation, MembershipPlan, AccessLog',
+  mvp_features: 'デスク予約管理, 会員管理・プラン, 入退室ログ, 会議室予約, 利用統計レポート, ページネーション・無限スクロール',
+});
+
+describe('Suite 349: presets-ext17 coworking_space — Express/Vercel/stripe', () => {
+
+  it('SDD: coworking_space generates specification.md and constitution.md', () => {
+    const f = gSDD(g349_coworking);
+    assert.ok(f['.spec/specification.md'], 'coworking_space must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'coworking_space must generate constitution.md');
+  });
+
+  it('SDD: coworking_space includes DeskReservation in spec', () => {
+    const f = gSDD(g349_coworking);
+    assert.ok((f['.spec/specification.md']||'').includes('DeskReservation'), 'coworking_space spec must mention DeskReservation');
+  });
+
+  it('SDD: coworking_space purpose keyword in spec', () => {
+    const f = gSDD(g349_coworking);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('コワーキング')||spec.includes('Coworking')||spec.includes('デスク'), 'coworking_space spec must mention coworking context');
+  });
+
+  it('SDD EN: coworking_space produces no undefined in spec', () => {
+    const f = gSDD(g349_coworking, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'coworking_space EN spec must not contain undefined');
+  });
+
+  it('SDD JA: coworking_space produces no undefined in spec', () => {
+    const f = gSDD(g349_coworking);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'coworking_space JA spec must not contain undefined');
+  });
+
+  it('docs/01: coworking_space overview mentions コワーキング or Coworking', () => {
+    const f = gSDD(g349_coworking);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('コワーキング')||doc.includes('Coworking')||doc.includes('デスク'), 'coworking_space docs/01 must mention coworking context');
+  });
+
+  it('docs/01: coworking_space produces no undefined in overview', () => {
+    const f = gSDD(g349_coworking);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'coworking_space docs/01 must not contain undefined');
+  });
+
+  it('payment stripe: coworking_space generates business_model.md', () => {
+    const f = gFull(g349_coworking);
+    assert.ok(f['docs/38_business_model.md'], 'coworking_space with stripe must generate business_model.md');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 350 — presets-ext17.js: subscription_box
+   Express/Vercel/payment:stripe/ec
+   ════════════════════════════════════════════════════════════════ */
+
+const g350_subbox = Object.assign({}, A25, {
+  purpose: '月次キュレーションボックスの定期購入・配送管理・パーソナライズ・商品レビュー管理SaaS',
+  frontend: 'React (Vite SPA)',
+  backend: 'Express',
+  database: 'PostgreSQL',
+  deploy: 'Vercel',
+  orm: 'Prisma',
+  auth: 'JWT',
+  payment: 'stripe',
+  mobile: 'なし',
+  data_entities: 'User, SubscriptionPlan, BoxCuration, ShipmentTracker, ProductReview',
+  mvp_features: 'サブスクリプションプラン管理, ボックスキュレーション, 配送追跡管理, パーソナライズ設定, 商品レビュー, ページネーション・無限スクロール',
+});
+
+describe('Suite 350: presets-ext17 subscription_box — Express/Vercel/stripe/ec', () => {
+
+  it('SDD: subscription_box generates specification.md and constitution.md', () => {
+    const f = gSDD(g350_subbox);
+    assert.ok(f['.spec/specification.md'], 'subscription_box must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'subscription_box must generate constitution.md');
+  });
+
+  it('SDD: subscription_box includes SubscriptionPlan in spec', () => {
+    const f = gSDD(g350_subbox);
+    assert.ok((f['.spec/specification.md']||'').includes('SubscriptionPlan'), 'subscription_box spec must mention SubscriptionPlan');
+  });
+
+  it('SDD: subscription_box purpose keyword in spec', () => {
+    const f = gSDD(g350_subbox);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('サブスク')||spec.includes('Subscription')||spec.includes('定期'), 'subscription_box spec must mention subscription context');
+  });
+
+  it('SDD EN: subscription_box produces no undefined in spec', () => {
+    const f = gSDD(g350_subbox, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'subscription_box EN spec must not contain undefined');
+  });
+
+  it('SDD JA: subscription_box produces no undefined in spec', () => {
+    const f = gSDD(g350_subbox);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'subscription_box JA spec must not contain undefined');
+  });
+
+  it('docs/01: subscription_box overview mentions サブスク or Subscription', () => {
+    const f = gSDD(g350_subbox);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('サブスク')||doc.includes('Subscription')||doc.includes('定期'), 'subscription_box docs/01 must mention subscription context');
+  });
+
+  it('docs/01: subscription_box produces no undefined in overview', () => {
+    const f = gSDD(g350_subbox);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'subscription_box docs/01 must not contain undefined');
+  });
+
+  it('payment stripe: subscription_box generates business_model.md', () => {
+    const f = gFull(g350_subbox);
+    assert.ok(f['docs/38_business_model.md'], 'subscription_box with stripe must generate business_model.md');
   });
 });

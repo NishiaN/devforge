@@ -517,6 +517,33 @@ const TECH_DB=[
 {name:'Encore.ts',cat:'back',sub:'fw',req:'optional',level:'pro',price:'free-tier'},
 {name:'Million.js',cat:'front',sub:'perf',req:'optional',level:'int',price:'free-oss'},
 {name:'Directus',cat:'baas',sub:'cms',req:'optional',level:'int',price:'free-oss'},
+// ── ext17 batch: 20 new tools ──
+// Observability & Tracing
+{name:'Grafana Tempo',cat:'devops',sub:'tracing',req:'optional',level:'pro',price:'free-oss'},
+{name:'Jaeger',cat:'devops',sub:'tracing',req:'optional',level:'int',price:'free-oss'},
+{name:'SigNoz',cat:'devops',sub:'observability',req:'optional',level:'int',price:'free-oss'},
+{name:'Checkly',cat:'test',sub:'monitoring',req:'optional',level:'int',price:'free-tier'},
+// Security
+{name:'HashiCorp Vault',cat:'security',sub:'secrets',req:'optional',level:'pro',price:'free-oss'},
+{name:'Infisical',cat:'security',sub:'secrets',req:'optional',level:'int',price:'free-oss'},
+{name:'Unkey',cat:'security',sub:'api-keys',req:'optional',level:'int',price:'free-tier'},
+// Data & Storage
+{name:'Nile',cat:'data',sub:'multi-tenant',req:'optional',level:'pro',price:'free-tier'},
+{name:'Vercel Blob',cat:'data',sub:'storage',req:'optional',level:'int',price:'free-tier'},
+{name:'Vercel KV',cat:'data',sub:'cache',req:'optional',level:'int',price:'free-tier'},
+{name:'Astro DB',cat:'data',sub:'db',req:'optional',level:'int',price:'free-tier'},
+// Backend & Realtime
+{name:'PartyKit',cat:'back',sub:'realtime',req:'optional',level:'int',price:'free-tier'},
+{name:'Val Town',cat:'back',sub:'serverless',req:'optional',level:'int',price:'free-tier'},
+{name:'Hatchet',cat:'back',sub:'workflow',req:'optional',level:'int',price:'free-oss'},
+{name:'Novu',cat:'back',sub:'notifications',req:'optional',level:'int',price:'free-oss'},
+// Frontend & CMS
+{name:'Ark UI',cat:'front',sub:'components',req:'optional',level:'int',price:'free-oss'},
+{name:'Basehub',cat:'baas',sub:'cms',req:'optional',level:'int',price:'free-tier'},
+// DevOps & Docs
+{name:'Mintlify',cat:'devops',sub:'docs',req:'optional',level:'int',price:'free-tier'},
+{name:'Starlight',cat:'devops',sub:'docs',req:'optional',level:'int',price:'free-oss'},
+{name:'Wrangler',cat:'devops',sub:'cli',req:'optional',level:'int',price:'free-oss'},
 ];
 const _TECH_COUNT=TECH_DB.length;
 
