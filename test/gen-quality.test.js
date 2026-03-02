@@ -43180,3 +43180,553 @@ describe('Suite 390: presets-ext21 skill_transfer_saas — Express/Railway/strip
     assert.ok(f['docs/38_business_model.md'], 'skill_transfer_saas with stripe must generate business_model.md');
   });
 });
+
+/* ── Suite 391 — presets-ext22.js: agri_gap_tool
+   ════════════════════════════════════════════════════════════════════════════ */
+
+const g391_gap = Object.assign({}, A25, {
+  purpose: '農薬・肥料の使用記録をデジタル管理しGAP認証取得・更新を自動支援し農産物トレーサビリティ証明書を発行する農業DX SaaS',
+  frontend: 'React (Vite SPA)',
+  backend: 'Express',
+  database: 'PostgreSQL',
+  deploy: 'Railway',
+  orm: 'Prisma',
+  auth: 'JWT',
+  payment: 'stripe',
+  mobile: 'なし',
+  data_entities: 'User, GapFarmField, GapCropRecord, PesticideApplication, FertilizerLog, GapAuditResult',
+  mvp_features: '農薬・肥料使用記録デジタル化, GAP認証チェックリスト自動管理, トレーサビリティ証明書発行, 圃場別作業履歴, JFS-A/B対応, CORS設定, ページネーション・無限スクロール',
+});
+
+describe('Suite 391: presets-ext22 agri_gap_tool — Express/Railway/stripe', () => {
+  it('SDD: agri_gap_tool generates specification.md and constitution.md', () => {
+    const f = gSDD(g391_gap);
+    assert.ok(f['.spec/specification.md'], 'agri_gap_tool must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'agri_gap_tool must generate constitution.md');
+  });
+  it('SDD: agri_gap_tool includes GapFarmField in spec', () => {
+    const f = gSDD(g391_gap);
+    assert.ok((f['.spec/specification.md']||'').includes('GapFarmField')||(f['.spec/specification.md']||'').includes('農薬'), 'agri_gap_tool spec must mention GapFarmField');
+  });
+  it('SDD: agri_gap_tool purpose keyword in spec', () => {
+    const f = gSDD(g391_gap);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('農薬')||spec.includes('GAP')||spec.includes('pesticide')||spec.includes('gap'), 'agri_gap_tool spec must mention GAP context');
+  });
+  it('SDD EN: agri_gap_tool produces no undefined in spec', () => {
+    const f = gSDD(g391_gap, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'agri_gap_tool EN spec must not contain undefined');
+  });
+  it('SDD JA: agri_gap_tool produces no undefined in spec', () => {
+    const f = gSDD(g391_gap);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'agri_gap_tool JA spec must not contain undefined');
+  });
+  it('docs/01: agri_gap_tool overview mentions 農薬 or GAP', () => {
+    const f = gSDD(g391_gap);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('農薬')||doc.includes('GAP')||doc.includes('pesticide')||doc.includes('gap'), 'agri_gap_tool docs/01 must mention GAP context');
+  });
+  it('docs/01: agri_gap_tool produces no undefined in overview', () => {
+    const f = gSDD(g391_gap);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'agri_gap_tool docs/01 must not contain undefined');
+  });
+  it('payment: agri_gap_tool generates business_model.md', () => {
+    const f = gFull(g391_gap);
+    assert.ok(f['docs/38_business_model.md'], 'agri_gap_tool with stripe must generate business_model.md');
+  });
+});
+
+/* ── Suite 392 — presets-ext22.js: agri_sim
+   ════════════════════════════════════════════════════════════════════════════ */
+
+const g392_sim = Object.assign({}, A25, {
+  purpose: '作付け計画・収量予測・資材コスト・販売価格シミュレーションで農業経営の利益最大化戦略を立案し補助金申請書類を自動生成する農業経営支援SaaS',
+  frontend: 'React (Vite SPA)',
+  backend: 'Express',
+  database: 'PostgreSQL',
+  deploy: 'Railway',
+  orm: 'Prisma',
+  auth: 'JWT',
+  payment: 'stripe',
+  mobile: 'なし',
+  data_entities: 'User, FarmSimScenario, CropPlanItem, YieldForecast, CostSimEntry, SubsidyApplication',
+  mvp_features: '作付け計画収益シミュレーション, 収量予測AIモデル, 資材コスト管理, 補助金申請書自動生成, 経営改善レポート, CORS設定, ページネーション・無限スクロール',
+});
+
+describe('Suite 392: presets-ext22 agri_sim — Express/Railway/stripe', () => {
+  it('SDD: agri_sim generates specification.md and constitution.md', () => {
+    const f = gSDD(g392_sim);
+    assert.ok(f['.spec/specification.md'], 'agri_sim must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'agri_sim must generate constitution.md');
+  });
+  it('SDD: agri_sim includes FarmSimScenario in spec', () => {
+    const f = gSDD(g392_sim);
+    assert.ok((f['.spec/specification.md']||'').includes('FarmSimScenario')||(f['.spec/specification.md']||'').includes('農業'), 'agri_sim spec must mention FarmSimScenario');
+  });
+  it('SDD: agri_sim purpose keyword in spec', () => {
+    const f = gSDD(g392_sim);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('農業')||spec.includes('シミュレーション')||spec.includes('agriculture')||spec.includes('simulation'), 'agri_sim spec must mention agriculture simulation context');
+  });
+  it('SDD EN: agri_sim produces no undefined in spec', () => {
+    const f = gSDD(g392_sim, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'agri_sim EN spec must not contain undefined');
+  });
+  it('SDD JA: agri_sim produces no undefined in spec', () => {
+    const f = gSDD(g392_sim);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'agri_sim JA spec must not contain undefined');
+  });
+  it('docs/01: agri_sim overview mentions 農業 or simulation', () => {
+    const f = gSDD(g392_sim);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('農業')||doc.includes('シミュレーション')||doc.includes('agriculture')||doc.includes('simulation'), 'agri_sim docs/01 must mention agriculture simulation context');
+  });
+  it('docs/01: agri_sim produces no undefined in overview', () => {
+    const f = gSDD(g392_sim);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'agri_sim docs/01 must not contain undefined');
+  });
+  it('payment: agri_sim generates business_model.md', () => {
+    const f = gFull(g392_sim);
+    assert.ok(f['docs/38_business_model.md'], 'agri_sim with stripe must generate business_model.md');
+  });
+});
+
+/* ── Suite 393 — presets-ext22.js: phil_text_search
+   ════════════════════════════════════════════════════════════════════════════ */
+
+const g393_phil = Object.assign({}, A25, {
+  purpose: '仏典・聖書・コーラン・哲学書などの宗教・哲学テキストをベクトル検索でセマンティック横断検索し概念比較・引用分析・翻訳対照を提供する学術・教育向けSaaS',
+  frontend: 'React (Vite SPA)',
+  backend: 'Express',
+  database: 'PostgreSQL',
+  deploy: 'Railway',
+  orm: 'Prisma',
+  auth: 'JWT',
+  payment: 'stripe',
+  mobile: 'なし',
+  data_entities: 'User, PhilTextCorpus, PhilPassage, PhilConcept, PhilAnnotation, PhilSearchResult',
+  mvp_features: '宗教哲学テキストベクトル検索, セマンティック概念横断検索, 多言語翻訳対照表示, 引用元分析, テキスト比較注釈, CORS設定, ページネーション・無限スクロール',
+});
+
+describe('Suite 393: presets-ext22 phil_text_search — Express/Railway/stripe', () => {
+  it('SDD: phil_text_search generates specification.md and constitution.md', () => {
+    const f = gSDD(g393_phil);
+    assert.ok(f['.spec/specification.md'], 'phil_text_search must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'phil_text_search must generate constitution.md');
+  });
+  it('SDD: phil_text_search includes PhilTextCorpus in spec', () => {
+    const f = gSDD(g393_phil);
+    assert.ok((f['.spec/specification.md']||'').includes('PhilTextCorpus')||(f['.spec/specification.md']||'').includes('哲学'), 'phil_text_search spec must mention PhilTextCorpus');
+  });
+  it('SDD: phil_text_search purpose keyword in spec', () => {
+    const f = gSDD(g393_phil);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('哲学')||spec.includes('宗教')||spec.includes('philosophy')||spec.includes('religion')||spec.includes('text'), 'phil_text_search spec must mention philosophy text context');
+  });
+  it('SDD EN: phil_text_search produces no undefined in spec', () => {
+    const f = gSDD(g393_phil, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'phil_text_search EN spec must not contain undefined');
+  });
+  it('SDD JA: phil_text_search produces no undefined in spec', () => {
+    const f = gSDD(g393_phil);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'phil_text_search JA spec must not contain undefined');
+  });
+  it('docs/01: phil_text_search overview mentions 哲学 or philosophy', () => {
+    const f = gSDD(g393_phil);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('哲学')||doc.includes('宗教')||doc.includes('philosophy')||doc.includes('text'), 'phil_text_search docs/01 must mention philosophy context');
+  });
+  it('docs/01: phil_text_search produces no undefined in overview', () => {
+    const f = gSDD(g393_phil);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'phil_text_search docs/01 must not contain undefined');
+  });
+  it('payment: phil_text_search generates business_model.md', () => {
+    const f = gFull(g393_phil);
+    assert.ok(f['docs/38_business_model.md'], 'phil_text_search with stripe must generate business_model.md');
+  });
+});
+
+/* ── Suite 394 — presets-ext22.js: modeling_3d_tool
+   ════════════════════════════════════════════════════════════════════════════ */
+
+const g394_3d = Object.assign({}, A25, {
+  purpose: 'WebGL/Three.jsベースの3Dモデルビューア・バリデーター・素材ライブラリ・プロトタイプコメントツールを提供しデザイン→製造ワークフローを加速する3D設計支援SaaS',
+  frontend: 'React (Vite SPA)',
+  backend: 'Express',
+  database: 'PostgreSQL',
+  deploy: 'Railway',
+  orm: 'Prisma',
+  auth: 'JWT',
+  payment: 'stripe',
+  mobile: 'なし',
+  data_entities: 'User, ThreeDModel, ThreeDModelVersion, MaterialAsset, PrototypeComment, RenderJob',
+  mvp_features: 'WebGL 3Dモデルビューア, モデルバリデーション, 素材テクスチャライブラリ, プロトタイプレビューコメント, STL OBJ GLTFエクスポート, CORS設定, ページネーション・無限スクロール',
+});
+
+describe('Suite 394: presets-ext22 modeling_3d_tool — Express/Railway/stripe', () => {
+  it('SDD: modeling_3d_tool generates specification.md and constitution.md', () => {
+    const f = gSDD(g394_3d);
+    assert.ok(f['.spec/specification.md'], 'modeling_3d_tool must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'modeling_3d_tool must generate constitution.md');
+  });
+  it('SDD: modeling_3d_tool includes ThreeDModel in spec', () => {
+    const f = gSDD(g394_3d);
+    assert.ok((f['.spec/specification.md']||'').includes('ThreeDModel')||(f['.spec/specification.md']||'').includes('3D')||(f['.spec/specification.md']||'').includes('モデル'), 'modeling_3d_tool spec must mention ThreeDModel');
+  });
+  it('SDD: modeling_3d_tool purpose keyword in spec', () => {
+    const f = gSDD(g394_3d);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('3D')||spec.includes('モデル')||spec.includes('model')||spec.includes('design'), 'modeling_3d_tool spec must mention 3D modeling context');
+  });
+  it('SDD EN: modeling_3d_tool produces no undefined in spec', () => {
+    const f = gSDD(g394_3d, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'modeling_3d_tool EN spec must not contain undefined');
+  });
+  it('SDD JA: modeling_3d_tool produces no undefined in spec', () => {
+    const f = gSDD(g394_3d);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'modeling_3d_tool JA spec must not contain undefined');
+  });
+  it('docs/01: modeling_3d_tool overview mentions 3D or model', () => {
+    const f = gSDD(g394_3d);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('3D')||doc.includes('モデル')||doc.includes('model')||doc.includes('design'), 'modeling_3d_tool docs/01 must mention 3D modeling context');
+  });
+  it('docs/01: modeling_3d_tool produces no undefined in overview', () => {
+    const f = gSDD(g394_3d);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'modeling_3d_tool docs/01 must not contain undefined');
+  });
+  it('payment: modeling_3d_tool generates business_model.md', () => {
+    const f = gFull(g394_3d);
+    assert.ok(f['docs/38_business_model.md'], 'modeling_3d_tool with stripe must generate business_model.md');
+  });
+});
+
+/* ── Suite 395 — presets-ext22.js: contact_mgr
+   ════════════════════════════════════════════════════════════════════════════ */
+
+const g395_contact = Object.assign({}, A25, {
+  purpose: '名刺写真のOCR読み取り・AI名寄せ・連絡先DBの自動整理・フォローアップリマインダー・営業活動履歴管理を統合したビジネスパーソン向け名刺管理SaaS',
+  frontend: 'React (Vite SPA)',
+  backend: 'Express',
+  database: 'PostgreSQL',
+  deploy: 'Railway',
+  orm: 'Prisma',
+  auth: 'JWT',
+  payment: 'stripe',
+  mobile: 'なし',
+  data_entities: 'User, ContactCard, ContactOrg, ContactTag, FollowUpTask, ActivityLog',
+  mvp_features: '名刺OCR自動読み取り, AI名寄せ重複排除, 連絡先タググループ管理, フォローアップリマインダー, 営業活動履歴管理, CORS設定, ページネーション・無限スクロール',
+});
+
+describe('Suite 395: presets-ext22 contact_mgr — Express/Railway/stripe', () => {
+  it('SDD: contact_mgr generates specification.md and constitution.md', () => {
+    const f = gSDD(g395_contact);
+    assert.ok(f['.spec/specification.md'], 'contact_mgr must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'contact_mgr must generate constitution.md');
+  });
+  it('SDD: contact_mgr includes ContactCard in spec', () => {
+    const f = gSDD(g395_contact);
+    assert.ok((f['.spec/specification.md']||'').includes('ContactCard')||(f['.spec/specification.md']||'').includes('名刺'), 'contact_mgr spec must mention ContactCard');
+  });
+  it('SDD: contact_mgr purpose keyword in spec', () => {
+    const f = gSDD(g395_contact);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('名刺')||spec.includes('連絡先')||spec.includes('contact')||spec.includes('business card'), 'contact_mgr spec must mention contact management context');
+  });
+  it('SDD EN: contact_mgr produces no undefined in spec', () => {
+    const f = gSDD(g395_contact, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'contact_mgr EN spec must not contain undefined');
+  });
+  it('SDD JA: contact_mgr produces no undefined in spec', () => {
+    const f = gSDD(g395_contact);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'contact_mgr JA spec must not contain undefined');
+  });
+  it('docs/01: contact_mgr overview mentions 名刺 or contact', () => {
+    const f = gSDD(g395_contact);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('名刺')||doc.includes('連絡先')||doc.includes('contact')||doc.includes('card'), 'contact_mgr docs/01 must mention contact management context');
+  });
+  it('docs/01: contact_mgr produces no undefined in overview', () => {
+    const f = gSDD(g395_contact);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'contact_mgr docs/01 must not contain undefined');
+  });
+  it('payment: contact_mgr generates business_model.md', () => {
+    const f = gFull(g395_contact);
+    assert.ok(f['docs/38_business_model.md'], 'contact_mgr with stripe must generate business_model.md');
+  });
+});
+
+/* ── Suite 396 — presets-ext22.js: inbound_payment
+   ════════════════════════════════════════════════════════════════════════════ */
+
+const g396_inbound = Object.assign({}, A25, {
+  purpose: '外国人旅行者向けに多通貨決済・免税手続きデジタル化・パスポート確認・免税レシート電子発行・税務申告連携を統合したインバウンド商業施設向けSaaS',
+  frontend: 'React (Vite SPA)',
+  backend: 'Express',
+  database: 'PostgreSQL',
+  deploy: 'Railway',
+  orm: 'Prisma',
+  auth: 'JWT',
+  payment: 'stripe',
+  mobile: 'なし',
+  data_entities: 'User, InboundTransaction, TaxFreeRecord, PassportVerify, CurrencyRate, TaxFiling',
+  mvp_features: '多通貨Stripe決済, パスポートOCR本人確認, 免税手続きデジタル化, 電子免税レシート, 税務申告集計, 多要素認証（MFA）, AuditLog, 個人情報マスク, CORS設定, ページネーション・無限スクロール',
+});
+
+describe('Suite 396: presets-ext22 inbound_payment — Express/Railway/stripe/MFA/AuditLog', () => {
+  it('SDD: inbound_payment generates specification.md and constitution.md', () => {
+    const f = gSDD(g396_inbound);
+    assert.ok(f['.spec/specification.md'], 'inbound_payment must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'inbound_payment must generate constitution.md');
+  });
+  it('SDD: inbound_payment includes InboundTransaction in spec', () => {
+    const f = gSDD(g396_inbound);
+    assert.ok((f['.spec/specification.md']||'').includes('InboundTransaction')||(f['.spec/specification.md']||'').includes('インバウンド'), 'inbound_payment spec must mention InboundTransaction');
+  });
+  it('SDD: inbound_payment purpose keyword in spec', () => {
+    const f = gSDD(g396_inbound);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('インバウンド')||spec.includes('免税')||spec.includes('inbound')||spec.includes('tax-free')||spec.includes('currency'), 'inbound_payment spec must mention inbound payment context');
+  });
+  it('SDD EN: inbound_payment produces no undefined in spec', () => {
+    const f = gSDD(g396_inbound, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'inbound_payment EN spec must not contain undefined');
+  });
+  it('SDD JA: inbound_payment produces no undefined in spec', () => {
+    const f = gSDD(g396_inbound);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'inbound_payment JA spec must not contain undefined');
+  });
+  it('docs/01: inbound_payment overview mentions インバウンド or inbound', () => {
+    const f = gSDD(g396_inbound);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('インバウンド')||doc.includes('免税')||doc.includes('inbound')||doc.includes('tax'), 'inbound_payment docs/01 must mention inbound payment context');
+  });
+  it('docs/01: inbound_payment produces no undefined in overview', () => {
+    const f = gSDD(g396_inbound);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'inbound_payment docs/01 must not contain undefined');
+  });
+  it('payment: inbound_payment generates business_model.md', () => {
+    const f = gFull(g396_inbound);
+    assert.ok(f['docs/38_business_model.md'], 'inbound_payment with stripe must generate business_model.md');
+  });
+});
+
+/* ── Suite 397 — presets-ext22.js: lab_animal_mgr
+   ════════════════════════════════════════════════════════════════════════════ */
+
+const g397_animal = Object.assign({}, A25, {
+  purpose: '実験動物の個体管理・飼育記録・実験プロトコル・動物実験委員会への倫理審査申請書類を自動生成し3Rs原則遵守を支援する研究機関向けSaaS',
+  frontend: 'React (Vite SPA)',
+  backend: 'Express',
+  database: 'PostgreSQL',
+  deploy: 'Railway',
+  orm: 'Prisma',
+  auth: 'JWT',
+  payment: 'stripe',
+  mobile: 'なし',
+  data_entities: 'User, LabAnimalRecord, AnimalCageUnit, ExperimentProto, EthicsApplication, AnimalObservation',
+  mvp_features: '実験動物個体管理飼育記録, 実験プロトコル承認ワークフロー, 倫理審査申請書類自動生成, 3Rs原則チェックリスト, 動物実験委員会ダッシュボード, CORS設定, ページネーション・無限スクロール',
+});
+
+describe('Suite 397: presets-ext22 lab_animal_mgr — Express/Railway/stripe', () => {
+  it('SDD: lab_animal_mgr generates specification.md and constitution.md', () => {
+    const f = gSDD(g397_animal);
+    assert.ok(f['.spec/specification.md'], 'lab_animal_mgr must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'lab_animal_mgr must generate constitution.md');
+  });
+  it('SDD: lab_animal_mgr includes LabAnimalRecord in spec', () => {
+    const f = gSDD(g397_animal);
+    assert.ok((f['.spec/specification.md']||'').includes('LabAnimalRecord')||(f['.spec/specification.md']||'').includes('実験動物'), 'lab_animal_mgr spec must mention LabAnimalRecord');
+  });
+  it('SDD: lab_animal_mgr purpose keyword in spec', () => {
+    const f = gSDD(g397_animal);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('実験動物')||spec.includes('倫理')||spec.includes('animal')||spec.includes('ethics'), 'lab_animal_mgr spec must mention laboratory animal context');
+  });
+  it('SDD EN: lab_animal_mgr produces no undefined in spec', () => {
+    const f = gSDD(g397_animal, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'lab_animal_mgr EN spec must not contain undefined');
+  });
+  it('SDD JA: lab_animal_mgr produces no undefined in spec', () => {
+    const f = gSDD(g397_animal);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'lab_animal_mgr JA spec must not contain undefined');
+  });
+  it('docs/01: lab_animal_mgr overview mentions 実験動物 or animal', () => {
+    const f = gSDD(g397_animal);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('実験動物')||doc.includes('倫理')||doc.includes('animal')||doc.includes('laboratory'), 'lab_animal_mgr docs/01 must mention laboratory animal context');
+  });
+  it('docs/01: lab_animal_mgr produces no undefined in overview', () => {
+    const f = gSDD(g397_animal);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'lab_animal_mgr docs/01 must not contain undefined');
+  });
+  it('payment: lab_animal_mgr generates business_model.md', () => {
+    const f = gFull(g397_animal);
+    assert.ok(f['docs/38_business_model.md'], 'lab_animal_mgr with stripe must generate business_model.md');
+  });
+});
+
+/* ── Suite 398 — presets-ext22.js: car_share_fleet
+   ════════════════════════════════════════════════════════════════════════════ */
+
+const g398_carshare = Object.assign({}, A25, {
+  purpose: 'カーシェアリング車両の予約・鍵管理・稼働率分析・整備スケジュール・フリート最適化・利用者請求を統合管理する中小モビリティ事業者向けSaaS',
+  frontend: 'React (Vite SPA)',
+  backend: 'Express',
+  database: 'PostgreSQL',
+  deploy: 'Railway',
+  orm: 'Prisma',
+  auth: 'JWT',
+  payment: 'stripe',
+  mobile: 'なし',
+  data_entities: 'User, ShareVehicle, ShareReservation, ShareKey, VehicleService, FleetUtilization',
+  mvp_features: '車両予約スマートキー管理, リアルタイム車両位置追跡, 稼働率収益ダッシュボード, 整備スケジュールアラート, 利用者請求Stripe決済, CORS設定, ページネーション・無限スクロール',
+});
+
+describe('Suite 398: presets-ext22 car_share_fleet — Express/Railway/stripe', () => {
+  it('SDD: car_share_fleet generates specification.md and constitution.md', () => {
+    const f = gSDD(g398_carshare);
+    assert.ok(f['.spec/specification.md'], 'car_share_fleet must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'car_share_fleet must generate constitution.md');
+  });
+  it('SDD: car_share_fleet includes ShareVehicle in spec', () => {
+    const f = gSDD(g398_carshare);
+    assert.ok((f['.spec/specification.md']||'').includes('ShareVehicle')||(f['.spec/specification.md']||'').includes('カーシェア'), 'car_share_fleet spec must mention ShareVehicle');
+  });
+  it('SDD: car_share_fleet purpose keyword in spec', () => {
+    const f = gSDD(g398_carshare);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('カーシェア')||spec.includes('フリート')||spec.includes('車両')||spec.includes('car')||spec.includes('fleet')||spec.includes('vehicle'), 'car_share_fleet spec must mention car sharing context');
+  });
+  it('SDD EN: car_share_fleet produces no undefined in spec', () => {
+    const f = gSDD(g398_carshare, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'car_share_fleet EN spec must not contain undefined');
+  });
+  it('SDD JA: car_share_fleet produces no undefined in spec', () => {
+    const f = gSDD(g398_carshare);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'car_share_fleet JA spec must not contain undefined');
+  });
+  it('docs/01: car_share_fleet overview mentions カーシェア or fleet', () => {
+    const f = gSDD(g398_carshare);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('カーシェア')||doc.includes('フリート')||doc.includes('car')||doc.includes('fleet'), 'car_share_fleet docs/01 must mention car sharing context');
+  });
+  it('docs/01: car_share_fleet produces no undefined in overview', () => {
+    const f = gSDD(g398_carshare);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'car_share_fleet docs/01 must not contain undefined');
+  });
+  it('payment: car_share_fleet generates business_model.md', () => {
+    const f = gFull(g398_carshare);
+    assert.ok(f['docs/38_business_model.md'], 'car_share_fleet with stripe must generate business_model.md');
+  });
+});
+
+/* ── Suite 399 — presets-ext22.js: insurtech_claims
+   ════════════════════════════════════════════════════════════════════════════ */
+
+const g399_insur = Object.assign({}, A25, {
+  purpose: '保険金請求書類のOCR読み取り・AI審査・不正検知・支払い承認ワークフロー・規制報告書自動生成を統合し損保・生保の請求処理を大幅自動化する保険テックSaaS',
+  frontend: 'React (Vite SPA)',
+  backend: 'Express',
+  database: 'PostgreSQL',
+  deploy: 'Railway',
+  orm: 'Prisma',
+  auth: 'JWT',
+  payment: 'stripe',
+  mobile: 'なし',
+  data_entities: 'User, InsuranceClaim, ClaimDocument, FraudAlert, ClaimApproval, PolicyHolder',
+  mvp_features: '保険金請求書類OCR, AI審査不正検知エンジン, 支払い承認ワークフロー, 規制報告書自動生成, 請求統計ダッシュボード, AuditLog, 多要素認証（MFA）, 個人情報マスク, CORS設定, ページネーション・無限スクロール',
+});
+
+describe('Suite 399: presets-ext22 insurtech_claims — Express/Railway/stripe/MFA/AuditLog', () => {
+  it('SDD: insurtech_claims generates specification.md and constitution.md', () => {
+    const f = gSDD(g399_insur);
+    assert.ok(f['.spec/specification.md'], 'insurtech_claims must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'insurtech_claims must generate constitution.md');
+  });
+  it('SDD: insurtech_claims includes InsuranceClaim in spec', () => {
+    const f = gSDD(g399_insur);
+    assert.ok((f['.spec/specification.md']||'').includes('InsuranceClaim')||(f['.spec/specification.md']||'').includes('保険'), 'insurtech_claims spec must mention InsuranceClaim');
+  });
+  it('SDD: insurtech_claims purpose keyword in spec', () => {
+    const f = gSDD(g399_insur);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('保険')||spec.includes('請求')||spec.includes('insurance')||spec.includes('claim'), 'insurtech_claims spec must mention insurance claims context');
+  });
+  it('SDD EN: insurtech_claims produces no undefined in spec', () => {
+    const f = gSDD(g399_insur, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'insurtech_claims EN spec must not contain undefined');
+  });
+  it('SDD JA: insurtech_claims produces no undefined in spec', () => {
+    const f = gSDD(g399_insur);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'insurtech_claims JA spec must not contain undefined');
+  });
+  it('docs/01: insurtech_claims overview mentions 保険 or insurance', () => {
+    const f = gSDD(g399_insur);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('保険')||doc.includes('請求')||doc.includes('insurance')||doc.includes('claim'), 'insurtech_claims docs/01 must mention insurance claims context');
+  });
+  it('docs/01: insurtech_claims produces no undefined in overview', () => {
+    const f = gSDD(g399_insur);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'insurtech_claims docs/01 must not contain undefined');
+  });
+  it('payment: insurtech_claims generates business_model.md', () => {
+    const f = gFull(g399_insur);
+    assert.ok(f['docs/38_business_model.md'], 'insurtech_claims with stripe must generate business_model.md');
+  });
+});
+
+/* ── Suite 400 — presets-ext22.js: land_registry_survey
+   ════════════════════════════════════════════════════════════════════════════ */
+
+const g400_land = Object.assign({}, A25, {
+  purpose: '法務局データ連携・土地画地計算（路線価方式/倍率方式）・相続税評価・不動産登記申請書類自動作成・謄本管理を統合した土地家屋調査士・司法書士向け不動産登記SaaS',
+  frontend: 'React (Vite SPA)',
+  backend: 'Express',
+  database: 'PostgreSQL',
+  deploy: 'Railway',
+  orm: 'Prisma',
+  auth: 'JWT',
+  payment: 'stripe',
+  mobile: 'なし',
+  data_entities: 'User, LandParcel, PropertyCert, ParcelValuation, RegistrationDoc, LandOwner',
+  mvp_features: '法務局不動産謄本データ管理, 土地画地計算路線価倍率, 相続税評価額自動算出, 登記申請書類自動作成, 地番家屋番号検索, CORS設定, ページネーション・無限スクロール',
+});
+
+describe('Suite 400: presets-ext22 land_registry_survey — Express/Railway/stripe', () => {
+  it('SDD: land_registry_survey generates specification.md and constitution.md', () => {
+    const f = gSDD(g400_land);
+    assert.ok(f['.spec/specification.md'], 'land_registry_survey must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'land_registry_survey must generate constitution.md');
+  });
+  it('SDD: land_registry_survey includes LandParcel in spec', () => {
+    const f = gSDD(g400_land);
+    assert.ok((f['.spec/specification.md']||'').includes('LandParcel')||(f['.spec/specification.md']||'').includes('不動産'), 'land_registry_survey spec must mention LandParcel');
+  });
+  it('SDD: land_registry_survey purpose keyword in spec', () => {
+    const f = gSDD(g400_land);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('不動産')||spec.includes('登記')||spec.includes('land')||spec.includes('registry'), 'land_registry_survey spec must mention land registry context');
+  });
+  it('SDD EN: land_registry_survey produces no undefined in spec', () => {
+    const f = gSDD(g400_land, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'land_registry_survey EN spec must not contain undefined');
+  });
+  it('SDD JA: land_registry_survey produces no undefined in spec', () => {
+    const f = gSDD(g400_land);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'land_registry_survey JA spec must not contain undefined');
+  });
+  it('docs/01: land_registry_survey overview mentions 不動産 or land', () => {
+    const f = gSDD(g400_land);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('不動産')||doc.includes('登記')||doc.includes('land')||doc.includes('registry'), 'land_registry_survey docs/01 must mention land registry context');
+  });
+  it('docs/01: land_registry_survey produces no undefined in overview', () => {
+    const f = gSDD(g400_land);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'land_registry_survey docs/01 must not contain undefined');
+  });
+  it('payment: land_registry_survey generates business_model.md', () => {
+    const f = gFull(g400_land);
+    assert.ok(f['docs/38_business_model.md'], 'land_registry_survey with stripe must generate business_model.md');
+  });
+});
