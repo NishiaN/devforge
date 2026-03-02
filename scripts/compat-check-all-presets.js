@@ -109,6 +109,10 @@ const NEW_RULE_IDS = [
   'sec-no-sast','sec-container-no-scan','sec-no-security-metrics',
   // API performance rules (+4)
   'perf-no-compression','perf-no-etag','api-no-deprecation-plan','perf-rest-no-fieldselect',
+  // docs/122 concurrency & docs/123 frontend rules (+8)
+  'scale-booking-no-idempotency','fe-spa-payment-no-csp','scale-large-no-circuit-breaker',
+  'scale-write-heavy-no-queue','fe-large-no-codesplit','org-rls-large-no-audit',
+  'dev-tdd-no-coverage','ai-prompt-no-version',
 ];
 
 const errorRules = Object.entries(hits).filter(([,v])=>v.level==='error');

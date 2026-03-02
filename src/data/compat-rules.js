@@ -1,4 +1,4 @@
-/* ═══ STACK COMPATIBILITY & SEMANTIC CONSISTENCY RULES — 250 rules (ERROR×33 + WARN×134 + INFO×83) ═══ */
+/* ═══ STACK COMPATIBILITY & SEMANTIC CONSISTENCY RULES — 258 rules (ERROR×33 + WARN×136 + INFO×89) ═══ */
 const COMPAT_RULES=[
   // ── FE ↔ Mobile (2 ERROR) ──
   {id:'fe-mob-expo',p:['frontend','mobile'],lv:'error',
@@ -2013,6 +2013,105 @@ const COMPAT_RULES=[
    en:'REST API with 8+ entities without field selection (?fields=) implemented. Recommend Sparse Fieldsets to prevent over-fetching payload transfer. See docs/83',
    why_ja:'GraphQLはフィールド選択をネイティブに解決しますが、REST APIでは全フィールドを返すのがデフォルトです。`?fields=id,name,email`クエリパラメータを実装することで、クライアントが必要なフィールドだけを取得でき、特にモバイルクライアントや一覧表示での帯域・処理時間を大幅に削減できます。8エンティティ以上の大規模データモデルでは特に効果的です。詳細: docs/83_api_design_principles.md §ペイロード最適化',
    why_en:'While GraphQL natively solves field selection, REST APIs default to returning all fields. Implementing the `?fields=id,name,email` query parameter allows clients to fetch only needed fields, significantly reducing bandwidth and processing time, especially for mobile clients and list views. Particularly effective for large data models with 8+ entities. See: docs/83_api_design_principles.md §Payload Optimization'},
+
+  // ── docs/122 Concurrency & docs/123 Frontend rules (+8) ──
+  {id:'scale-booking-no-idempotency',p:['purpose','payment','scale'],lv:'warn',
+   t:function(a){
+    var dom=typeof detectDomain==='function'?detectDomain(a.purpose||''):'';
+    var isBookingDom=/booking|ec|fintech|marketplace|event|travel/.test(dom||'');
+    var hasPay=a.payment&&!/なし|none/i.test(a.payment);
+    var ents=(a.data_entities||'').split(',').filter(function(e){return e.trim();});
+    var hasIdempotency=/idempotency|冪等|idempotent/i.test((a.mvp_features||'')+(a.data_entities||''));
+    return isBookingDom&&hasPay&&(a.scale==='large')&&ents.length>=8&&!hasIdempotency;},
+   ja:'大規模な予約/EC/Fintechドメインで決済あり構成です。冪等性 (Idempotency Key) の実装が必要です。docs/122参照',
+   en:'Large-scale booking/EC/Fintech domain with payment. Idempotency Key implementation required. See docs/122',
+   fix:{f:'mvp_features',s:'Idempotency Key実装'},
+   why_ja:'ネットワーク障害やタイムアウト時にクライアントがリトライすると、決済が二重実行される危険があります。X-Idempotency-KeyヘッダーとDB UNIQUE制約の組み合わせで重複リクエストを安全に処理できます。8エンティティ以上の大規模システムでは取引量も多く、冪等性の実装は必須です。詳細: docs/122_concurrency_consistency_guide.md §2',
+   why_en:'On network failure or timeout, client retries can cause double-charging. Combining X-Idempotency-Key header with DB UNIQUE constraint safely handles duplicate requests. Large systems with 8+ entities have high transaction volume making idempotency essential. See docs/122_concurrency_consistency_guide.md §2'},
+
+  {id:'fe-spa-payment-no-csp',p:['frontend','payment','scale'],lv:'warn',
+   t:function(a){
+    var isSPA=/React|Vue|Angular|Svelte|Next|Nuxt|SvelteKit/i.test(a.frontend||'');
+    var hasPay=a.payment&&!/なし|none/i.test(a.payment);
+    var ents=(a.data_entities||'').split(',').filter(function(e){return e.trim();});
+    var hasCSP=/CSP|Content.Security.Policy|content.security/i.test((a.mvp_features||'')+(a.data_entities||''));
+    return isSPA&&hasPay&&(a.scale==='large')&&ents.length>=8&&!hasCSP;},
+   ja:'大規模SPAで決済あり構成です。CSP (Content Security Policy) の設定が必要です。docs/123参照',
+   en:'Large-scale SPA with payment. CSP (Content Security Policy) configuration required. See docs/123',
+   fix:{f:'mvp_features',s:'CSP設定'},
+   why_ja:'SPAはXSSに対して脆弱で、決済フロントエンドへの攻撃はPCI DSSコンプライアンス違反につながります。CSPヘッダーはスクリプトの実行元を制限し、XSSによるクレジットカード情報窃取を防止します。大規模決済システムではSRI (Subresource Integrity) との組み合わせも必須です。詳細: docs/123_frontend_architecture_guide.md §5',
+   why_en:'SPAs are vulnerable to XSS, and attacks on payment frontends lead to PCI DSS compliance violations. CSP headers restrict script execution origins, preventing credit card theft via XSS. Large payment systems also require SRI (Subresource Integrity) combination. See docs/123_frontend_architecture_guide.md §5'},
+
+  {id:'scale-large-no-circuit-breaker',p:['backend','scale'],lv:'info',
+   t:function(a){
+    var isBaaS=/Firebase|Supabase|Convex/i.test(a.backend||'');
+    var isStatic=/なし（静的|None|static/i.test(a.backend||'');
+    var hasCircuitBreaker=/circuit.breaker|resilience|サーキットブレーカー|opossum|hystrix/i.test((a.mvp_features||'')+(a.data_entities||''));
+    return (a.scale==='large')&&!isBaaS&&!isStatic&&!hasCircuitBreaker;},
+   ja:'大規模バックエンドでサーキットブレーカーの実装が検討されていません。外部サービス障害の波及防止に有効です。docs/122参照',
+   en:'Large-scale backend without circuit breaker consideration. Effective for preventing cascading failures from external service outages. See docs/122',
+   fix:{f:'mvp_features',s:'サーキットブレーカー実装'},
+   why_ja:'外部API・マイクロサービスへの依存がある大規模システムでは、1つのサービス障害が全体に波及するカスケード障害のリスクがあります。サーキットブレーカー (opossum等) を使用することで、障害サービスへの呼び出しを即座に遮断し、システム全体の安定性を維持できます。詳細: docs/122_concurrency_consistency_guide.md §4',
+   why_en:'Large systems with external API/microservice dependencies face cascading failure risk where one service outage propagates system-wide. Circuit breakers (opossum etc.) immediately cut calls to failed services, maintaining overall system stability. See docs/122_concurrency_consistency_guide.md §4'},
+
+  {id:'scale-write-heavy-no-queue',p:['purpose','scale'],lv:'info',
+   t:function(a){
+    var dom=typeof detectDomain==='function'?detectDomain(a.purpose||''):'';
+    var isWriteHeavy=/booking|ec|manufacturing|event|logistics/.test(dom||'');
+    var hasQueue=/queue|Kafka|BullMQ|SQS|RabbitMQ|キュー|非同期処理/i.test((a.mvp_features||'')+(a.data_entities||''));
+    return (a.scale==='large')&&isWriteHeavy&&!hasQueue;},
+   ja:'大規模な書込多ドメインでメッセージキューの検討がありません。高負荷時の安定性向上に有効です。docs/122参照',
+   en:'Large write-heavy domain without message queue consideration. Effective for improving stability under high load. See docs/122',
+   fix:{f:'mvp_features',s:'メッセージキュー (BullMQ/SQS)'},
+   why_ja:'予約・EC・製造・イベントなど書込が集中するドメインでは、同期処理だけでは高負荷時にデータベースが飽和します。メッセージキュー (BullMQ/SQS/RabbitMQ) を使用した非同期処理により、書込負荷を分散し、ピーク時の安定性を大幅に向上できます。詳細: docs/122_concurrency_consistency_guide.md §5',
+   why_en:'Write-intensive domains (booking, EC, manufacturing, events) can saturate the database under high load with synchronous processing alone. Message queues (BullMQ/SQS/RabbitMQ) with async processing distribute write load and significantly improve peak stability. See docs/122_concurrency_consistency_guide.md §5'},
+
+  {id:'fe-large-no-codesplit',p:['frontend','scale'],lv:'info',
+   t:function(a){
+    var isSPA=/React|Vue|Angular/i.test(a.frontend||'');
+    var hasCodeSplit=/code.split|lazy|dynamic.import|コード分割/i.test((a.mvp_features||'')+(a.data_entities||''));
+    return isSPA&&(a.scale==='large')&&!hasCodeSplit;},
+   ja:'大規模SPAでコード分割 (Code Splitting) の検討がありません。初期ロードパフォーマンス向上に有効です。docs/123参照',
+   en:'Large-scale SPA without code splitting consideration. Effective for improving initial load performance. See docs/123',
+   fix:{f:'mvp_features',s:'コード分割 (React.lazy/dynamic import)'},
+   why_ja:'大規模SPAでは機能追加とともにバンドルサイズが増大し、初回ロードが遅くなります。React.lazy/Suspense やNext.jsのdynamic importでルートベースのコード分割を実施すると、Initial JSを200KB以下に抑えLCPを2.5秒以内に改善できます。詳細: docs/123_frontend_architecture_guide.md §3',
+   why_en:'As features grow in large SPAs, bundle size increases and initial load slows. Route-based code splitting with React.lazy/Suspense or Next.js dynamic import keeps Initial JS under 200KB and improves LCP to under 2.5s. See docs/123_frontend_architecture_guide.md §3'},
+
+  {id:'org-rls-large-no-audit',p:['org_model','scale'],lv:'info',
+   t:function(a){
+    var hasRLS=/RLS/i.test(a.org_model||'');
+    var ents=(a.data_entities||'').split(',').filter(function(e){return e.trim();});
+    var hasAudit=/AuditLog|AuditTrail|ActivityLog|監査ログ/i.test(a.data_entities||'');
+    return hasRLS&&(a.scale==='large')&&ents.length>=6&&!hasAudit;},
+   ja:'RLSマルチテナント大規模構成で監査ログ (AuditLog) エンティティが未定義です。テナント間操作の追跡に必要です。',
+   en:'Large-scale RLS multi-tenant config without AuditLog entity. Required for tracking cross-tenant operations.',
+   fix:{f:'data_entities',s:'AuditLog'},
+   why_ja:'RLS (Row Level Security) はテナント間のデータ分離を保証しますが、不正アクセス試行や設定ミスによるデータ漏洩が発生した場合、AuditLogがなければ原因追跡が困難です。大規模マルチテナントシステムでは監査ログはセキュリティ要件として必須と考えてください。',
+   why_en:'While RLS guarantees data isolation between tenants, without AuditLog it is difficult to trace the cause of unauthorized access attempts or misconfiguration-induced data leaks. In large multi-tenant systems, audit logs should be considered a mandatory security requirement.'},
+
+  {id:'dev-tdd-no-coverage',p:['dev_methods','scale'],lv:'info',
+   t:function(a){
+    var hasTDD=/TDD/i.test(a.dev_methods||'');
+    var ents=(a.data_entities||'').split(',').filter(function(e){return e.trim();});
+    var hasCoverage=/coverage|カバレッジ|カバー率/i.test((a.mvp_features||'')+(a.data_entities||''));
+    return hasTDD&&(a.scale!=='solo')&&ents.length>=6&&!hasCoverage;},
+   ja:'TDD採用でカバレッジ計測が明示されていません。TDDの効果を定量的に確認するためカバレッジ目標の設定を推奨します。',
+   en:'TDD adopted without explicit coverage measurement. Recommend setting coverage targets to quantitatively verify TDD effectiveness.',
+   fix:{f:'mvp_features',s:'カバレッジ計測 (80%以上)'},
+   why_ja:'TDDはテストファーストで開発することで品質を高める手法ですが、カバレッジ目標 (通常80%以上) がないとリグレッションが見落とされる危険があります。`vitest --coverage`や`jest --coverage`でレポートをCI/CDに組み込み、カバレッジが閾値を下回ったらビルドを失敗させる設定を推奨します。',
+   why_en:'TDD improves quality through test-first development, but without coverage targets (typically 80%+) regressions can be missed. Integrate coverage reports into CI/CD with `vitest --coverage` or `jest --coverage` and fail builds when coverage drops below threshold.'},
+
+  {id:'ai-prompt-no-version',p:['ai_auto','scale'],lv:'info',
+   t:function(a){
+    var isOrchestrator=/orchestrator|multi.agent|マルチエージェント/i.test(a.ai_auto||'');
+    var ents=(a.data_entities||'').split(',').filter(function(e){return e.trim();});
+    var hasPromptVersion=/prompt.version|プロンプトバージョン|prompt.*管理|version.*prompt/i.test((a.mvp_features||'')+(a.data_entities||''));
+    return isOrchestrator&&(a.scale==='large')&&!hasPromptVersion;},
+   ja:'大規模マルチエージェント構成でプロンプトバージョン管理が未定義です。プロンプト変更の追跡と品質管理に必要です。docs/115参照',
+   en:'Large-scale multi-agent config without prompt version management. Required for tracking prompt changes and quality control. See docs/115',
+   fix:{f:'mvp_features',s:'プロンプトバージョン管理'},
+   why_ja:'マルチエージェント・オーケストレーター構成では、プロンプトの変更が出力品質に直接影響します。バージョン管理なしでプロンプトを変更すると、どの変更が品質劣化を引き起こしたか追跡できません。Langfuse等のプロンプト管理ツールを導入し、バージョニング・A/Bテスト・品質メトリクスの記録を行うことを推奨します。詳細: docs/115_skill_portfolio.md',
+   why_en:'In multi-agent/orchestrator configs, prompt changes directly affect output quality. Without version control, changes cannot be traced to quality degradation. Recommend adopting prompt management tools like Langfuse for versioning, A/B testing, and quality metric recording. See docs/115_skill_portfolio.md'},
 ];
 // helpers
 function inc(v,k){return v&&typeof v==='string'&&v.indexOf(k)!==-1;}

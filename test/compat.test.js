@@ -1,4 +1,4 @@
-// Compat rules functional test (250 rules: 33 ERROR + 134 WARN + 83 INFO)
+// Compat rules functional test (258 rules: 33 ERROR + 136 WARN + 89 INFO)
 const assert=require('node:assert/strict');
 const S={lang:'ja',skill:'pro'};
 eval(require('fs').readFileSync('src/data/compat-rules.js','utf-8'));
@@ -612,6 +612,48 @@ const tests=[
   {name:'Supabase+8ents+noFieldSelect=noFieldINFO',a:{backend:'Supabase',data_entities:'User, Team, Project, Task, Comment, Tag, File, Notification'},expect:'none',id:'perf-rest-no-fieldselect'},
   {name:'GraphQL+8ents+noFieldSelect=noFieldINFO',a:{backend:'Node.js + NestJS + GraphQL',data_entities:'User, Team, Project, Task, Comment, Tag, File, Notification'},expect:'none',id:'perf-rest-no-fieldselect'},
   {name:'Express+5ents+noFieldSelect=noFieldINFO',a:{backend:'Node.js + Express',data_entities:'User, Team, Project, Task, Comment'},expect:'none',id:'perf-rest-no-fieldselect'},
+
+  // scale-booking-no-idempotency (WARN) — booking domain + payment + large + 8+ entities + no idempotency
+  {name:'booking+payment+large+8ents+noIdempotency=WARN',a:{purpose:'施設予約・ホテル予約管理プラットフォーム',payment:'Stripe',scale:'large',data_entities:'User, Hotel, Room, Booking, Payment, Review, Availability, Notification'},expect:'warn',id:'scale-booking-no-idempotency'},
+  {name:'booking+payment+large+8ents+withIdempotency=noIdempotencyWARN',a:{purpose:'施設予約・ホテル予約管理プラットフォーム',payment:'Stripe',scale:'large',data_entities:'User, Hotel, Room, Booking, Payment, Review, Availability, Notification',mvp_features:'冪等性 Idempotency Key実装'},expect:'none',id:'scale-booking-no-idempotency'},
+  {name:'booking+noPay+large+8ents=noIdempotencyWARN',a:{purpose:'施設予約・ホテル予約管理プラットフォーム',payment:'なし',scale:'large',data_entities:'User, Hotel, Room, Booking, Payment, Review, Availability, Notification'},expect:'none',id:'scale-booking-no-idempotency'},
+  {name:'booking+payment+medium+8ents=noIdempotencyWARN',a:{purpose:'施設予約・ホテル予約管理プラットフォーム',payment:'Stripe',scale:'medium',data_entities:'User, Hotel, Room, Booking, Payment, Review, Availability, Notification'},expect:'none',id:'scale-booking-no-idempotency'},
+
+  // fe-spa-payment-no-csp (WARN) — SPA + payment + large + 8+ entities + no CSP
+  {name:'React+payment+large+8ents+noCSP=WARN',a:{frontend:'React + Vite',payment:'Stripe',scale:'large',data_entities:'User, Product, Cart, Order, Payment, Review, Category, Inventory'},expect:'warn',id:'fe-spa-payment-no-csp'},
+  {name:'React+payment+large+8ents+withCSP=noCSPWARN',a:{frontend:'React + Vite',payment:'Stripe',scale:'large',data_entities:'User, Product, Cart, Order, Payment, Review, Category, Inventory',mvp_features:'CSP設定, Content Security Policy'},expect:'none',id:'fe-spa-payment-no-csp'},
+  {name:'React+noPay+large+8ents=noCSPWARN',a:{frontend:'React + Vite',payment:'なし',scale:'large',data_entities:'User, Product, Cart, Order, Payment, Review, Category, Inventory'},expect:'none',id:'fe-spa-payment-no-csp'},
+  {name:'Astro+payment+large+8ents=noCSPWARN',a:{frontend:'Astro',payment:'Stripe',scale:'large',data_entities:'User, Product, Cart, Order, Payment, Review, Category, Inventory'},expect:'none',id:'fe-spa-payment-no-csp'},
+
+  // scale-large-no-circuit-breaker (INFO) — large + not BaaS + not static + no circuit breaker
+  {name:'Express+large+noCircuitBreaker=INFO',a:{backend:'Node.js + Express',scale:'large'},expect:'info',id:'scale-large-no-circuit-breaker'},
+  {name:'Express+large+withCircuitBreaker=noCBINFO',a:{backend:'Node.js + Express',scale:'large',mvp_features:'サーキットブレーカー opossum実装'},expect:'none',id:'scale-large-no-circuit-breaker'},
+  {name:'Firebase+large+noCircuitBreaker=noCBINFO',a:{backend:'Firebase',scale:'large'},expect:'none',id:'scale-large-no-circuit-breaker'},
+
+  // scale-write-heavy-no-queue (INFO) — large + write-heavy domain + no queue
+  {name:'EC+large+noQueue=INFO',a:{purpose:'ECマーケットプレイス・商品販売・購入プラットフォーム',scale:'large'},expect:'info',id:'scale-write-heavy-no-queue'},
+  {name:'EC+large+withQueue=noQueueINFO',a:{purpose:'ECマーケットプレイス・商品販売・購入プラットフォーム',scale:'large',mvp_features:'BullMQ非同期処理, メッセージキュー'},expect:'none',id:'scale-write-heavy-no-queue'},
+  {name:'EC+medium+noQueue=noQueueINFO',a:{purpose:'ECマーケットプレイス・商品販売・購入プラットフォーム',scale:'medium'},expect:'none',id:'scale-write-heavy-no-queue'},
+
+  // fe-large-no-codesplit (INFO) — React/Vue/Angular + large + no code split
+  {name:'React+large+noCodeSplit=INFO',a:{frontend:'React + Vite',scale:'large'},expect:'info',id:'fe-large-no-codesplit'},
+  {name:'React+large+withCodeSplit=noCSINFO',a:{frontend:'React + Vite',scale:'large',mvp_features:'コード分割 React.lazy, dynamic import'},expect:'none',id:'fe-large-no-codesplit'},
+  {name:'React+medium+noCodeSplit=noCSINFO',a:{frontend:'React + Vite',scale:'medium'},expect:'none',id:'fe-large-no-codesplit'},
+
+  // org-rls-large-no-audit (INFO) — RLS + large + 6+ entities + no AuditLog
+  {name:'RLS+large+6ents+noAuditLog=INFO',a:{org_model:'マルチテナント(RLS)',scale:'large',data_entities:'User, Team, Project, Task, Comment, File'},expect:'info',id:'org-rls-large-no-audit'},
+  {name:'RLS+large+6ents+withAuditLog=noAuditINFO',a:{org_model:'マルチテナント(RLS)',scale:'large',data_entities:'User, Team, Project, Task, Comment, AuditLog'},expect:'none',id:'org-rls-large-no-audit'},
+  {name:'noRLS+large+6ents=noAuditINFO',a:{org_model:'シングルテナント',scale:'large',data_entities:'User, Team, Project, Task, Comment, File'},expect:'none',id:'org-rls-large-no-audit'},
+
+  // dev-tdd-no-coverage (INFO) — TDD + not solo + 6+ entities + no coverage
+  {name:'TDD+medium+6ents+noCoverage=INFO',a:{dev_methods:'TDD, アジャイル',scale:'medium',data_entities:'User, Team, Project, Task, Comment, File'},expect:'info',id:'dev-tdd-no-coverage'},
+  {name:'TDD+medium+6ents+withCoverage=noCovINFO',a:{dev_methods:'TDD, アジャイル',scale:'medium',data_entities:'User, Team, Project, Task, Comment, File',mvp_features:'カバレッジ計測 80%以上'},expect:'none',id:'dev-tdd-no-coverage'},
+  {name:'TDD+solo+6ents=noCovINFO',a:{dev_methods:'TDD',scale:'solo',data_entities:'User, Team, Project, Task, Comment, File'},expect:'none',id:'dev-tdd-no-coverage'},
+
+  // ai-prompt-no-version (INFO) — orchestrator/multi-agent + large + no prompt version
+  {name:'multiAgent+large+noPromptVersion=INFO',a:{ai_auto:'orchestrator (マルチエージェント)',scale:'large'},expect:'info',id:'ai-prompt-no-version'},
+  {name:'multiAgent+large+withPromptVersion=noPVINFO',a:{ai_auto:'orchestrator (マルチエージェント)',scale:'large',mvp_features:'プロンプトバージョン管理, Langfuse'},expect:'none',id:'ai-prompt-no-version'},
+  {name:'rag+large+noPromptVersion=noPVINFO',a:{ai_auto:'RAG (検索拡張生成)',scale:'large'},expect:'none',id:'ai-prompt-no-version'},
 ];
 
 let pass=0,fail=0;

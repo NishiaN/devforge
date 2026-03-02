@@ -6,8 +6,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 # DevForge v9.6.0
 
-**AI Development OS** — 79 JS modules in `src/` → single `devforge-v9.html` (~4515KB / 5000KB limit).
-Generates **212+ files** across **27 pillars** from a wizard-driven Q&A session.
+**AI Development OS** — 79 JS modules in `src/` → single `devforge-v9.html` (~4658KB / 5000KB limit).
+Generates **218+ files** across **27 pillars** from a wizard-driven Q&A session.
 
 ## Documentation Map
 
@@ -18,7 +18,7 @@ Generates **212+ files** across **27 pillars** from a wizard-driven Q&A session.
 ## Build & Test
 
 ```bash
-node build.js                          # → devforge-v9.html (~4100KB, limit 5000KB)
+node build.js                          # → devforge-v9.html (~4658KB, limit 5000KB)
 node build.js --no-minify              # debug (skip minification)
 node build.js --report                 # build + size breakdown by module
 npm test                               # 6707 tests, all passing
@@ -45,7 +45,7 @@ Never reorder without checking dependencies.
 | Category | Purpose |
 |----------|---------|
 | `core/` | State (`S`), i18n (`t()`), keyboard events, wizard tour, app init |
-| `data/` | 197 standard presets (`PR`/`_mp()`), 541 field presets (`PR_FIELD`/`_fpd()`), questions, techdb (443 entries), compat-rules (250 rules), gen-templates (bilingual GT dict), helpdata |
+| `data/` | 197 standard presets (`PR`/`_mp()`), 541 field presets (`PR_FIELD`/`_fpd()`), questions, techdb (443 entries), compat-rules (264 rules), gen-templates (bilingual GT dict), helpdata |
 | `ui/launcher.js` | 65 prompt templates; `templateOrder[65]`, `AI_REC`, `LAUNCH_CAT_MAP`, `TEMPLATE_SCOPE`, `LAUNCH_SKILL_REC` maps; `DOC_GROUPS` for semantic doc grouping |
 | `generators/` | `index.js` orchestrator + `p1`–`p26` pillars + `docs.js` + `common.js` |
 | `ui/` | wizard, render, presets, preview, sidebar, editor, diff, export, explorer, dashboard, launcher, templates, qbar, cmdpalette, help, voice |
@@ -168,7 +168,7 @@ Full 6-step process in `docs/CLAUDE-REFERENCE.md`. Key steps often missed:
 
 ## Adding Compat Rules
 
-File: `src/data/compat-rules.js` — currently 250 rules (33E+134W+83I). All rules have `why_ja`/`why_en`.
+File: `src/data/compat-rules.js` — currently 264 rules (33E+136W+95I). All rules have `why_ja`/`why_en`.
 **Launcher templates**: `src/ui/launcher.js` — currently 65 templates. When adding: register in `TEMPLATE_SCOPE`, both ja+en PT blocks, `AI_REC`, `templateOrder`, `LAUNCH_CAT_MAP`, `LAUNCH_SKILL_REC`; update button text count; update `test/skill-level.test.js` templateOrder.length assertion.
 Structure: `{id, p:['field1','field2'], lv:'error'|'warn'|'info', t:conditionFn, ja, en, fix, fixFn, why_ja, why_en}`
 `why_ja`/`why_en`: When set, shows "▶ なぜ？" expandable card in wizard alerts.
@@ -182,7 +182,7 @@ After adding: update header comment totals, add tests to `test/compat.test.js`, 
 | Data/coverage | data-coverage, presets, field-presets | ~116 |
 | Security/compat | security, compat (+7 synergy) | ~136 |
 | Pillars (P14-P20+skill) | ops, future, deviq, promptgenome, promptops, enterprise, cicd, skill-level | ~184 |
-| Gen quality | gen-quality (Suites 1-276, ~5198 tests) | ~5198 |
+| Gen quality | gen-quality (Suites 1-340, ~5644 tests) | ~5644 |
 | Preset matching | phase-n (N-1〜N-9 + G-1〜G-7, 68 tests) | ~68 |
 | Other | i18n, state, techdb, utils, complexity, mermaid, help-hints | ~46 |
 
@@ -196,13 +196,13 @@ After adding: update header comment totals, add tests to `test/compat.test.js`, 
 
 `docs/82_architecture_integrity_check.md` — always generated; scores ORM/Auth/CORS/async/soft-delete integrity (10.0 scale).
 
-**File count ranges** (used in tests): `snapshot.test.js` 130–169; `gen-quality.test.js` A25 112–183.
+**File count ranges** (used in tests): `snapshot.test.js` A:140–200/B:130–191; `gen-quality.test.js` A25 112–205.
 
 Key output structure:
 - `.spec/` — constitution, specification, technical-plan, tasks, verification
 - `.devcontainer/` — devcontainer.json, Dockerfile, docker-compose.yml, post-create.sh
 - `.claude/` — thin CLAUDE.md + 5 path-specific rules + settings.json
-- `docs/` — 108 documents (01_project_overview … 108_uat_acceptance)
+- `docs/` — 123 documents (00_devforge_guide … 123_frontend_architecture_guide)
   - `docs/107_project_governance.md` — always generated; governance, decisions log, issue/CR management
   - `docs/108_uat_acceptance.md` — always generated; UAT scenarios (from features), Go/No-Go, defect mgmt
 - AI rules — AI_BRIEF.md, .cursorrules, .clinerules, .windsurfrules, AGENTS.md, skills/

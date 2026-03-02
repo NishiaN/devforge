@@ -1480,6 +1480,182 @@ Steps:
     S.files['docs/121_security_design_guide.md']=d;
   })();
 
+  // ═══ docs/122_concurrency_consistency_guide.md ═══
+  (function(){
+    function _inc(v,k){return v&&v.indexOf(k)!==-1;}
+    var be122=be; var sc122=a.scale||'medium'; var dom122=detectDomain(a.purpose||'');
+    var _isBaas=/Firebase|Supabase|Convex/i.test(be122);
+    var _isStatic=/なし（静的|None|static/i.test(be122);
+    var _isBooking=/booking|ec|fintech|marketplace|event/.test(dom122||'');
+    var _isNode=/Express|NestJS|Hono|Fastify|Next/i.test(be122);
+    var d='# '+pn+' — '+(G?'並行性・分散整合性ガイド':'Concurrency & Distributed Consistency Guide')+'\n> '+date+'\n\n';
+    d+='> '+(G?'ウィザード入力から自動生成。詳細: [docs/120_system_design_guide.md](./120_system_design_guide.md)':'Auto-generated from wizard inputs. Details: [docs/120_system_design_guide.md](./120_system_design_guide.md)')+'\n\n';
+    // §1 Concurrency Control
+    if(!_isBaas&&!_isStatic){
+      d+='## '+(G?'§1 並行処理制御パターン':'§1 Concurrency Control Patterns')+'\n\n';
+      d+=(G?'複数ユーザーが同一リソースに同時アクセスした際のデータ整合性を保証する設計が必要。':'Design to guarantee data integrity when multiple users access the same resource simultaneously.')+'\n\n';
+      d+='### '+(G?'Read-Check-Write Gap 問題':'Read-Check-Write Gap Problem')+'\n\n';
+      d+='```\n'+(G?'ユーザーA: 在庫読取(残1) ─────────────────── 予約書込(残0)\nユーザーB:          在庫読取(残1) ── 予約書込(残0) ← 二重予約！':'User A: Read stock(1) ──────────────────── Write booking(0)\nUser B:          Read stock(1) ── Write booking(0) ← Double booking!')+'\n```\n\n';
+      d+='### '+(G?'楽観的ロック (Optimistic Lock)':'Optimistic Locking')+'\n\n';
+      d+=(G?'読取→変更→書込のフローで、書込時に競合を検出する。Read-Heavy なシステムに最適。':'Detect conflicts at write time in read-change-write flow. Best for read-heavy systems.')+'\n\n';
+      d+='```typescript\n// Prisma: version フィールドで楽観的ロック\nawait prisma.item.update({\n  where: { id: itemId, version: currentVersion }, // version不一致 → エラー\n  data: { stock: newStock, version: { increment: 1 } },\n});\n```\n\n';
+      d+='### '+(G?'悲観的ロック (Pessimistic Lock)':'Pessimistic Locking')+'\n\n';
+      d+=(G?'読取時にロックを取得し、他のトランザクションをブロックする。Write-Heavy・金融系に最適。':'Acquire lock at read time to block other transactions. Best for write-heavy and financial systems.')+'\n\n';
+      d+='```sql\nBEGIN;\nSELECT * FROM inventory WHERE id = $1 FOR UPDATE; -- 他TXをブロック\nUPDATE inventory SET stock = stock - 1 WHERE id = $1;\nINSERT INTO bookings (item_id, user_id) VALUES ($1, $2);\nCOMMIT;\n```\n\n';
+      d+='### '+(G?'選定チャート':'Selection Chart')+'\n\n';
+      d+='| '+(G?'シナリオ':'Scenario')+' | '+(G?'推奨アプローチ':'Recommended Approach')+' |\n|---------|--------------------|\n';
+      d+='| '+(G?'読取多・書込少 (SNS、ブログ)':'Read-heavy, write-light (SNS, blog)')+' | '+(G?'楽観的ロック + version カラム':'Optimistic lock + version column')+' |\n';
+      d+='| '+(G?'書込競合高 (在庫、座席、決済)':'Write-contention high (stock, seats, payment)')+' | '+(G?'悲観的ロック (SELECT FOR UPDATE)':'Pessimistic lock (SELECT FOR UPDATE)')+' |\n';
+      d+='| BaaS | '+(G?'サーバー管理 (Firestore トランザクション)':'Server-managed (Firestore transactions)')+' |\n\n';
+    }
+    // §2 Idempotency
+    d+='## '+(G?'§2 べき等性設計 (Idempotency)':'§2 Idempotency Design')+'\n\n';
+    d+=(G?'同じリクエストを複数回送信しても結果が変わらない設計。ネットワーク障害時のリトライ安全性を保証。':'Design ensures identical results for repeated requests. Guarantees safe retry on network failure.')+'\n\n';
+    d+='### '+(G?'3層防御':'3-Layer Defense')+'\n\n';
+    d+='```\n'+(G?'クライアント UUID (X-Idempotency-Key ヘッダー)\n  → サーバーハッシュ (Hash(UserID+ResourceID+Action))\n    → DB UNIQUE制約 (idempotency_key カラム)':'Client UUID (X-Idempotency-Key header)\n  → Server hash (Hash(UserID+ResourceID+Action))\n    → DB UNIQUE constraint (idempotency_key column)')+'\n```\n\n';
+    d+='```typescript\n// Express middleware\napp.use(async (req, res, next) => {\n  const key = req.headers[\'x-idempotency-key\'];\n  if (key) {\n    const cached = await redis.get(`idempotent:${key}`);\n    if (cached) return res.json(JSON.parse(cached));\n    res.on(\'finish\', () =>\n      redis.setex(`idempotent:${key}`, 86400, JSON.stringify(res.body)));\n  }\n  next();\n});\n```\n\n';
+    if(_isBooking){
+      d+='### '+(G?'決済フロー冪等性':'Payment Flow Idempotency')+'\n\n';
+      d+='```\n'+(G?'1. クライアント→サーバー: POST /orders {idempotency_key: uuid}\n2. サーバー: idempotency_key 存在確認 (DB UNIQUE)\n3. 未処理: 決済処理 → 結果をDB保存\n4. 処理済み: 保存済み結果を返却 (決済は実行しない)\n5. Stripe/決済API: 同一idempotency_keyで重複課金防止':'1. Client→Server: POST /orders {idempotency_key: uuid}\n2. Server: Check idempotency_key existence (DB UNIQUE)\n3. New: Process payment → save result to DB\n4. Duplicate: Return saved result (no charge)\n5. Stripe/payment API: Prevent double-charge with same key')+'\n```\n\n';
+    }
+    // §3 Distributed Transactions
+    if(sc122==='large'&&!_isBaas){
+      d+='## '+(G?'§3 分散トランザクション戦略':'§3 Distributed Transaction Strategy')+'\n\n';
+      d+=(G?'マイクロサービス環境では単一DBトランザクションが使えない。以下3パターンから選定する。':'In microservices, a single DB transaction cannot be used. Select from these 3 patterns.')+'\n\n';
+      d+='| '+(G?'パターン':'Pattern')+' | '+(G?'一貫性':'Consistency')+' | '+(G?'複雑度':'Complexity')+' | '+(G?'ユースケース':'Use Cases')+' |\n|---------|------------|---------|----------|\n';
+      d+='| **2PC** | '+(G?'強一貫性':'Strong')+' | '+(G?'高（コーディネーター依存）':'High (coordinator dependency)')+' | '+(G?'金融・決済（同期必須）':'Finance, payment (sync required)')+' |\n';
+      d+='| **Saga** | '+(G?'結果整合性':'Eventual')+' | '+(G?'中（補償TXが必要）':'Medium (compensating TX)')+' | '+(G?'EC・予約・注文':'EC, booking, orders')+' |\n';
+      d+='| **TCC** | '+(G?'強一貫性':'Strong')+' | '+(G?'中（3フェーズ実装）':'Medium (3-phase impl)')+' | '+(G?'在庫・クーポン管理':'Inventory, coupon mgmt')+' |\n\n';
+      d+='> **Pragmatic Microservices**: '+(G?'マイクロサービス初期は共有DBを維持することで分散トランザクションを回避。サービス分離はトラフィック増加後に段階的に実施。':'In early microservices, maintain a shared DB to avoid distributed transactions. Separate services gradually as traffic increases.')+'\n\n';
+      d+='### Saga '+(G?'補償トランザクション例 (注文フロー)':'Compensating Transaction Example (Order Flow)')+'\n\n';
+      d+='```\n'+(G?'正常系: Reserve在庫 → Pay決済 → Notify通知\n失敗系 (決済失敗): Pay失敗 → Cancel在庫リリース → 失敗通知':'Happy path: Reserve stock → Pay charge → Notify\nFailure (pay failed): Pay fail → Compensate stock release → Notify failure')+'\n```\n\n';
+    }
+    // §4 Fault Tolerance
+    if(!_isBaas&&!_isStatic){
+      d+='## '+(G?'§4 耐障害性パターン':'§4 Fault Tolerance Patterns')+'\n\n';
+      d+='### '+(G?'サーキットブレーカー 状態遷移':'Circuit Breaker State Transitions')+'\n\n';
+      d+='| '+(G?'状態':'State')+' | '+(G?'動作':'Behavior')+' | '+(G?'遷移条件':'Transition')+' |\n|------|---------|----------|\n';
+      d+='| **Closed** | '+(G?'通常通りリクエスト通過':'Normal request passing')+' | '+(G?'失敗率>閾値 → Open':'Failure rate > threshold → Open')+' |\n';
+      d+='| **Open** | '+(G?'即座にエラー返却（外部呼び出しなし）':'Immediately return error (no external call)')+' | '+(G?'タイムアウト経過 → Half-Open':'Timeout expires → Half-Open')+' |\n';
+      d+='| **Half-Open** | '+(G?'少量リクエストでテスト':'Test with limited requests')+' | '+(G?'成功 → Closed / 失敗 → Open':'Success → Closed / Fail → Open')+' |\n\n';
+      d+='### '+(G?'Exponential Backoff + Jitter':'Exponential Backoff + Jitter')+'\n\n';
+      d+='```\n'+(G?'待機時間 = min(cap, base × 2^attempt) + random(0, base)\n例: base=100ms, cap=10s, attempt=3\n  → min(10000, 100 × 8) + rand(0,100) = 800〜900ms':'Wait = min(cap, base × 2^attempt) + random(0, base)\nExample: base=100ms, cap=10s, attempt=3\n  → min(10000, 100 × 8) + rand(0,100) = 800~900ms')+'\n```\n\n';
+      d+='### Bulkhead '+(G?'パターン (接続プール分離)':'Pattern (Connection Pool Isolation)')+'\n\n';
+      d+=(G?'外部サービスごとに接続プールを分離し、1サービスの障害が全体に波及しないよう設計する。':'Isolate connection pools per external service so one service failure does not cascade system-wide.')+'\n\n';
+      if(_isNode){
+        d+='```typescript\n// Node.js: opossum library\nimport CircuitBreaker from \'opossum\';\nconst breaker = new CircuitBreaker(asyncFn, {\n  timeout: 3000, errorThresholdPercentage: 50, resetTimeout: 30000\n});\nbreaker.fallback(() => \'service unavailable\');\n```\n\n';
+      }
+    }
+    // §5 Load Estimation
+    d+='## '+(G?'§5 負荷見積もり基礎':'§5 Load Estimation Basics')+'\n\n';
+    d+='| '+(G?'指標':'Metric')+' | '+(G?'定義':'Definition')+' | '+(G?'計算例':'Example')+' |\n|------|------|--------|\n';
+    d+='| **QPS** | Queries Per Second | '+(G?'DAU 10万 × 10クエリ/日 ÷ 86400s = 11.6 QPS':'DAU 100K × 10 queries/day ÷ 86400s = 11.6 QPS')+' |\n';
+    d+='| **TPS** | Transactions Per Second | '+(G?'年間取引100万 ÷ 365 ÷ 86400s = 0.032 TPS':'1M annual TX ÷ 365 ÷ 86400s = 0.032 TPS')+' |\n';
+    d+='| Peak | '+(G?'ピーク倍率':'Peak multiplier')+' | '+(G?'通常の5〜10倍（キャンペーン・季節変動）':'5-10x normal (campaign/seasonal)')+' |\n\n';
+    d+='### '+(G?'トラフィックファネル':'Traffic Funnel')+'\n\n';
+    d+='```\n100% '+(G?'訪問 → 10% 検索/閲覧 → 1% コンバージョン':'Visits → 10% Search/Browse → 1% Conversion')+'\n```\n\n';
+    d+='### '+(G?'Read/Write比率 → アーキテクチャ指針':'Read/Write Ratio → Architecture Guidance')+'\n\n';
+    d+='| '+(G?'比率':'Ratio')+' | '+(G?'パターン':'Pattern')+' | '+(G?'推奨アーキテクチャ':'Recommended Architecture')+' |\n|------|---------|--------------------|\n';
+    d+='| 60:1 R:W | '+(G?'読取過多':'Read-dominant')+' | CQRS + '+(G?'キャッシュ (Redis/CDN)':'Cache (Redis/CDN)')+' |\n';
+    d+='| 10:1 R:W | '+(G?'標準的':'Standard')+' | '+(G?'Read Replica + 接続プール':'Read Replica + connection pool')+' |\n';
+    d+='| 1:1 R:W | '+(G?'書込多':'Write-heavy')+' | '+(G?'メッセージキュー + 非同期処理':'Message queue + async processing')+' |\n\n';
+    // §6 Cross Reference
+    d+='## '+(G?'§6 クロスリファレンス':'§6 Cross Reference')+'\n\n';
+    d+='- ['+(G?'システムデザイン意思決定':'System Design Decisions')+'](./120_system_design_guide.md)\n';
+    d+='- ['+(G?'セキュリティ設計':'Security Design')+'](./121_security_design_guide.md)\n';
+    d+='- ['+(G?'API設計原則':'API Design Principles')+'](./83_api_design_principles.md)\n';
+    d+='- ['+(G?'パフォーマンス戦略':'Performance Strategy')+'](./99_performance_strategy.md)\n';
+    S.files['docs/122_concurrency_consistency_guide.md']=d;
+  })();
+
+  // ═══ docs/123_frontend_architecture_guide.md ═══
+  (function(){
+    var fe123=fe;
+    var hasSPA=/React|Vue|Angular|Svelte|Next|Nuxt|SvelteKit/i.test(fe123);
+    if(!hasSPA) return;
+    var isReact=/React|Next/i.test(fe123);
+    var isVue=/Vue|Nuxt/i.test(fe123);
+    var isNext=/Next/i.test(fe123);
+    var isSvelte=/Svelte|SvelteKit/i.test(fe123);
+    var hasPay=a.payment&&!/なし|none/i.test(a.payment);
+    var d='# '+pn+' — '+(G?'フロントエンドアーキテクチャガイド':'Frontend Architecture Guide')+'\n> '+date+'\n\n';
+    d+='> '+(G?'ウィザード入力から自動生成。フロントエンド: '+fe123:'Auto-generated from wizard inputs. Frontend: '+fe123)+'\n\n';
+    // §1 Rendering Strategy
+    d+='## '+(G?'§1 レンダリング戦略選定':'§1 Rendering Strategy Selection')+'\n\n';
+    d+='| '+(G?'戦略':'Strategy')+' | '+(G?'初回表示':'Initial Load')+' | SEO | '+(G?'リアルタイム':'Realtime')+' | '+(G?'サーバーコスト':'Server Cost')+' | '+(G?'推奨ユースケース':'Use Cases')+' |\n';
+    d+='|---------|-----------|-----|------------|------------|---------------|\n';
+    d+='| **SSR** | ✅'+(G?'高速':'Fast')+' | ✅ | ✅ | '+(G?'中':'Medium')+' | '+(G?'EC・SaaS・ニュース':'EC, SaaS, News')+' |\n';
+    d+='| **SSG** | ✅'+(G?'最高速':'Fastest')+' | ✅ | ❌ | '+(G?'低（CDN）':'Low (CDN)')+' | '+(G?'ブログ・ドキュメント':'Blog, Docs')+' |\n';
+    d+='| **ISR** | ✅'+(G?'高速':'Fast')+' | ✅ | ⚠️ | '+(G?'低':'Low')+' | '+(G?'EC商品ページ・CMS':'EC products, CMS')+' |\n';
+    d+='| **CSR** | ⚠️'+(G?'遅い':'Slow')+' | ❌ | ✅ | '+(G?'低':'Low')+' | '+(G?'ダッシュボード・管理画面':'Dashboard, Admin')+' |\n\n';
+    d+='### '+(G?'決定木':'Decision Tree')+'\n\n';
+    d+='```\n'+(G?'ECサイト / マーケットプレイス → SSR + ISR（商品詳細）\nブログ / ドキュメント        → SSG\nリアルタイムダッシュボード   → CSR（認証後のみ）\nSaaS / 業務アプリ            → SSR（初回）+ CSR（操作）':'EC / Marketplace             → SSR + ISR (product pages)\nBlog / Documentation         → SSG\nRealtime Dashboard            → CSR (authenticated only)\nSaaS / Business App           → SSR (initial) + CSR (interactions)')+'\n```\n\n';
+    if(isNext){
+      d+='### '+(G?'Server Components vs Client Components':'Server Components vs Client Components')+'\n\n';
+      d+='| '+(G?'種別':'Type')+' | '+(G?'実行場所':'Runtime')+' | '+(G?'データフェッチ':'Data Fetch')+' | '+(G?'インタラクション':'Interactivity')+' | '+(G?'推奨用途':'Best For')+' |\n';
+      d+='|------|---------|-----------|-------------|----------|\n';
+      d+='| Server Component | '+(G?'サーバー':'Server')+' | '+(G?'直接DB・API':'Direct DB/API')+' | ❌ | '+(G?'ページ・レイアウト・静的UI':'Pages, layouts, static UI')+' |\n';
+      d+='| Client Component | '+(G?'ブラウザ':'Browser')+' | SWR/fetch | ✅ | '+(G?'フォーム・モーダル・インタラクション':'Forms, modals, interactions')+' |\n\n';
+      d+='> `\'use client\'` '+(G?'ディレクティブはインタラクティブな末端コンポーネントにのみ追加。ページルートはデフォルトでServer Component。':'directive only for interactive leaf components. Page roots are Server Components by default.')+'\n\n';
+    }
+    // §2 State Management
+    d+='## '+(G?'§2 状態管理選定':'§2 State Management')+'\n\n';
+    if(isReact){
+      d+='### '+(G?'Server State vs Client State 分離原則':'Server State vs Client State Separation')+'\n\n';
+      d+='```\nServer State: '+(G?'API/DBデータ → TanStack Query (useQuery/useMutation)':'API/DB data → TanStack Query (useQuery/useMutation)')+'\nClient State: '+(G?'UIの状態・選択・フォーム → Zustand':'UI state, selections, forms → Zustand')+'\n```\n\n';
+      d+='| '+(G?'ライブラリ':'Library')+' | '+(G?'種別':'Type')+' | '+(G?'学習コスト':'Learning Curve')+' | '+(G?'バンドルサイズ':'Bundle')+' | '+(G?'推奨ユースケース':'Best For')+' |\n';
+      d+='|---------|------|----------|--------|----------|\n';
+      d+='| **TanStack Query** | Server State | '+(G?'低':'Low')+' | 13KB | '+(G?'API・キャッシュ・同期':'API, caching, sync')+' |\n';
+      d+='| **Zustand** | Client State | '+(G?'低':'Low')+' | 3KB | '+(G?'UIグローバル状態':'Global UI state')+' |\n';
+      d+='| **Jotai** | Client State | '+(G?'低':'Low')+' | 3KB | '+(G?'アトム粒度の状態':'Atomic state')+' |\n';
+      d+='| **Redux Toolkit** | '+(G?'汎用':'General')+' | '+(G?'中':'Medium')+' | 39KB | '+(G?'大規模・既存Redux移行':'Large apps, Redux migration')+' |\n\n';
+      d+='> '+(G?'推奨: **TanStack Query** (Server State) + **Zustand** (Client State) の組み合わせ':'Recommended: **TanStack Query** (Server State) + **Zustand** (Client State) combination')+'\n\n';
+    } else if(isVue){
+      d+='> '+(G?'推奨: **Pinia** (Vue公式状態管理) + **VueQuery** (TanStack Query Vueアダプター) の組み合わせ':'Recommended: **Pinia** (Vue official state) + **VueQuery** (TanStack Query Vue adapter) combination')+'\n\n';
+    } else if(isSvelte){
+      d+='> '+(G?'Svelte 組み込みストア (`writable`, `derived`, `readable`) を活用。大規模アプリはSvelte Storesで十分対応可能。':'Leverage Svelte built-in stores (`writable`, `derived`, `readable`). Svelte Stores handle most large apps without extra libraries.')+'\n\n';
+    }
+    // §3 Code Splitting
+    d+='## '+(G?'§3 コード分割・バンドル最適化':'§3 Code Splitting & Bundle Optimization')+'\n\n';
+    d+='### '+(G?'バンドルサイズ目標':'Bundle Size Targets')+'\n\n';
+    d+='| '+(G?'指標':'Metric')+' | '+(G?'目標値':'Target')+' | '+(G?'測定方法':'Measurement')+' |\n|------|------|----------|\n';
+    d+='| Initial JS | < 200KB (gzip) | Chrome DevTools / Lighthouse |\n';
+    d+='| LCP | < 2.5s | Lighthouse / Core Web Vitals |\n';
+    d+='| TBT | < 200ms | Lighthouse |\n\n';
+    if(isNext){
+      d+='```tsx\nimport dynamic from \'next/dynamic\';\nconst HeavyChart = dynamic(() => import(\'./HeavyChart\'), {\n  loading: () => <Skeleton />, ssr: false\n});\n```\n\n';
+    } else if(isReact){
+      d+='```tsx\n// Route-based Code Splitting\nimport { lazy, Suspense } from \'react\';\nconst Dashboard = lazy(() => import(\'./pages/Dashboard\'));\n\n<Suspense fallback={<Spinner />}>\n  <Dashboard />\n</Suspense>\n```\n\n';
+    }
+    d+='### '+(G?'最適化ツール':'Optimization Tools')+'\n\n';
+    d+='- `@next/bundle-analyzer` / `source-map-explorer`: '+(G?'バンドル構成の可視化':'Bundle composition visualization')+'\n';
+    d+='- Tree shaking: '+(G?'named imports使用 (`import { debounce } from \'lodash-es\'`)、`sideEffects: false`を`package.json`に設定':'Use named imports, set `sideEffects: false` in `package.json`')+'\n\n';
+    // §4 Component Design
+    d+='## '+(G?'§4 コンポーネント設計原則':'§4 Component Design Principles')+'\n\n';
+    d+='### '+(G?'Feature-based ディレクトリ構造 (推奨)':'Feature-based Directory Structure (Recommended)')+'\n\n';
+    d+='```\nsrc/\n  features/\n    auth/\n      components/   '+(G?'# UI コンポーネント':'# UI components')+'\n      hooks/        '+(G?'# カスタムフック (React)':'# Custom hooks (React)')+'\n      api/          '+(G?'# API呼び出し':'# API calls')+'\n      types.ts\n    dashboard/\n    products/\n  shared/\n    ui/             '+(G?'# 汎用UIコンポーネント':'# Shared UI components')+'\n    utils/\n```\n\n';
+    if(isReact){
+      d+='### '+(G?'Custom Hooks でロジック分離':'Custom Hooks for Logic Separation')+'\n\n';
+      d+='```tsx\n// NG: コンポーネントに直接ロジック\nfunction ProductPage() { /* 20行のfetch/state管理ロジック */ }\n\n// OK: hooks でロジック分離\nfunction useProduct(id: string) {\n  const { data, isLoading } = useQuery([\'product\', id], () => fetchProduct(id));\n  return { product: data, isLoading };\n}\nfunction ProductPage({ id }: { id: string }) {\n  const { product, isLoading } = useProduct(id);\n  return isLoading ? <Skeleton /> : <ProductView product={product} />;\n}\n```\n\n';
+    }
+    // §5 Frontend Security
+    d+='## '+(G?'§5 フロントエンドセキュリティ':'§5 Frontend Security')+'\n\n';
+    d+='### CSP (Content Security Policy)\n\n';
+    d+='```http\nContent-Security-Policy:\n  default-src \'self\';\n  script-src \'self\' \'nonce-{RANDOM}\';\n  style-src \'self\' \'unsafe-inline\';\n  img-src \'self\' data: https:;\n  connect-src \'self\' https://api.example.com\n```\n\n';
+    d+='### '+(G?'XSS防止 (DOMPurify)':'XSS Prevention (DOMPurify)')+'\n\n';
+    d+='```typescript\n// NG: innerHTML でユーザー入力レンダリング\nelement.innerHTML = userInput;\n\n// OK: DOMPurify でサニタイズ\nimport DOMPurify from \'dompurify\';\nelement.innerHTML = DOMPurify.sanitize(userInput);\n```\n\n';
+    if(hasPay){
+      d+='### '+(G?'決済フロントエンド追加対策 (PCI DSS)':'Payment Frontend Measures (PCI DSS)')+'\n\n';
+      d+='| '+(G?'対策':'Measure')+' | '+(G?'実装':'Implementation')+' | '+(G?'目的':'Purpose')+' |\n|------|---------|------|\n';
+      d+='| SRI | `<script integrity="sha256-...">` | '+(G?'CDNスクリプト改ざん防止':'Prevent CDN script tampering')+' |\n';
+      d+='| '+(G?'カード情報非保持':'No card data storage')+' | Stripe Elements / Hosted Fields | '+(G?'PCI DSS スコープ外':'PCI DSS scope out')+' |\n';
+      d+='| CSRF Token | `X-CSRF-Token` '+(G?'ヘッダー':'header')+' | '+(G?'フォーム偽造防止':'Form forgery prevention')+' |\n';
+      d+='| HTTPS Only | HSTS '+(G?'ヘッダー':'header')+' | '+(G?'中間者攻撃防止':'MITM prevention')+' |\n\n';
+    }
+    d+='> '+(G?'参照: [セキュリティ設計ガイド](./121_security_design_guide.md) | [OWASP Top 10](./43_security_intelligence.md)':'Reference: [Security Design Guide](./121_security_design_guide.md) | [OWASP Top 10](./43_security_intelligence.md)')+'\n\n';
+    S.files['docs/123_frontend_architecture_guide.md']=d;
+  })();
+
   // ═══ docs/108_uat_acceptance.md ═══
   const uatFeatures=features.slice(0,Math.min(features.length,6));
   let uat108='# '+pn+' — '+(G?'UAT受入テスト・リリース判定':'UAT Acceptance Test & Release Judgment')+'\n> '+date+'\n\n';
