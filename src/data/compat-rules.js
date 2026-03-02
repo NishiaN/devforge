@@ -1,4 +1,4 @@
-/* ═══ STACK COMPATIBILITY & SEMANTIC CONSISTENCY RULES — 229 rules (ERROR×33 + WARN×125 + INFO×71) ═══ */
+/* ═══ STACK COMPATIBILITY & SEMANTIC CONSISTENCY RULES — 234 rules (ERROR×33 + WARN×127 + INFO×74) ═══ */
 const COMPAT_RULES=[
   // ── FE ↔ Mobile (2 ERROR) ──
   {id:'fe-mob-expo',p:['frontend','mobile'],lv:'error',
@@ -1787,6 +1787,38 @@ const COMPAT_RULES=[
    en:'Large-scale Node.js/Python API with payment but no Webhook handling configured. Implement Webhook event reception (e.g., payment_intent.succeeded) with signature verification and idempotency',
    why_ja:'クレジットカード決済・サブスクリプション管理ではStripe WebhookでのイベントドリブンなDB更新が必須です。Webhookなしでは決済成功のポーリングが必要となりリアルタイム性・信頼性が著しく低下します。必ず`stripe-signature`ヘッダーの署名検証と、イベントIDによる冪等性チェックを実装してください。',
    why_en:'Credit card payment and subscription management require event-driven DB updates via Stripe Webhook. Without Webhook, polling for payment success degrades real-time capability and reliability. Always implement `stripe-signature` header verification and idempotency checks using event IDs.'},
+  // ── Auth Best Practices (5 rules) ──
+  {id:'auth-token-localstorage',p:['auth','mvp_features'],lv:'warn',
+   t:a=>/Custom JWT|JWT/i.test(a.auth||'')&&/localStorage|ローカルストレージ|local.?storage/i.test(a.mvp_features||'')&&!/(HttpOnly|httponly|cookie)/i.test(a.mvp_features||''),
+   ja:'JWTトークンをLocalStorageに保管しています。XSS攻撃でトークンが窃取されるリスクがあります。HttpOnly CookieまたはメモリでAccess Tokenを保持してください',
+   en:'JWT token stored in LocalStorage. XSS attacks can steal tokens. Use HttpOnly Cookie or in-memory Access Token storage instead',
+   fix:{f:'mvp_features',s:'HttpOnly Cookie + Secure + SameSite=Strict'},
+   why_ja:'LocalStorageはJavaScriptから完全にアクセス可能なため、XSSが成立した瞬間にトークンが窃取されます。推奨パターン: Access TokenはReact stateなどのメモリに保持し、Refresh TokenをHttpOnly Cookie（SameSite=Strict）に保管。BaaS（Supabase/Firebase）はSDKがこのパターンを自動実装します。詳細: docs/119_auth_architecture_guide.md',
+   why_en:'LocalStorage is fully accessible to JavaScript — XSS immediately exposes tokens. Recommended pattern: Access Token in React state (memory), Refresh Token in HttpOnly Cookie (SameSite=Strict). BaaS SDKs implement this automatically. See: docs/119_auth_architecture_guide.md'},
+  {id:'auth-apikey-enduser',p:['auth'],lv:'info',
+   t:a=>/API.*Key|APIキー|api.?key/i.test(a.auth||'')&&!/(B2B|サービス間|service.?to.?service|developer.*api|開発者.*API|M2M)/i.test((a.target||'')+(a.purpose||'')),
+   ja:'エンドユーザー向けアプリでAPI Key認証が設定されています。API Keyはサーバー間・M2M通信向けです。エンドユーザーにはOAuth 2.0/OIDCまたはセッション認証を推奨します',
+   en:'API Key authentication for end-user app. API Keys are for server-to-server/M2M communication. Use OAuth 2.0/OIDC or session auth for end users',
+   why_ja:'API Keyをブラウザやモバイルアプリに埋め込むと、開発者ツール・ログ・ネットワーク傍受で容易に漏洩します。OAuth 2.0のAuthorization Code Flow + PKCEで短期間のアクセストークンを発行するパターンが安全です。',
+   why_en:'API Keys embedded in browsers or mobile apps are easily exposed via dev tools, logs, or network sniffing. Use OAuth 2.0 Authorization Code Flow + PKCE to issue short-lived access tokens securely.'},
+  {id:'auth-stateful-distributed',p:['auth'],lv:'info',
+   t:a=>(/(Auth\.js|NextAuth|セッション.*認証|session.?auth)/i.test(a.auth||''))&&/(k8s|kubernetes|マイクロサービス|microservice|分散.*環境|distributed)/i.test((a.mvp_features||'')+(a.backend||'')),
+   ja:'セッション認証と分散インフラが混在しています。ステートフルセッションは分散環境（k8s/マイクロサービス）で単一障害点になります。Redisなどの共有セッションストアを導入してください',
+   en:'Stateful session auth with distributed infrastructure. Sessions become a SPOF in k8s/microservices. Add a shared session store like Redis',
+   why_ja:'セッション認証は水平スケール時にスティッキーセッションが必要になるか、セッションDBがボトルネックになります。Redis Clusterや外部セッションストア（connect-redis等）を使うことで水平スケールに対応できます。JWTへの移行も選択肢の一つです。',
+   why_en:'Session auth requires sticky sessions when scaling horizontally, or the session DB becomes a bottleneck. Use Redis Cluster or an external session store (e.g., connect-redis) for horizontal scaling. Migrating to JWT is also an option.'},
+  {id:'auth-no-mfa-payment',p:['payment','auth'],lv:'warn',
+   t:a=>{var pay=a.payment||'';var au=a.auth||'';return !/(none|なし)/i.test(pay)&&pay.length>0&&!/(none|なし)/i.test(au)&&au.length>0&&!/(MFA|2FA|多要素|二要素|TOTP|FIDO|WebAuthn)/i.test((a.mvp_features||'')+au)&&(a.scale||'medium')==='large';},
+   ja:'決済機能があるシステム（大規模）でMFAが設定されていません。決済を扱うアプリではMFA（TOTP/WebAuthn）の実装を強く推奨します',
+   en:'Large-scale system with payment but no MFA. Systems handling payments should strongly consider MFA (TOTP/WebAuthn)',
+   why_ja:'決済機能があるシステムではアカウント乗っ取り（ATO）攻撃により不正決済が発生するリスクがあります。TOTPやWebAuthn（パスキー）を実装することでフィッシング・クレデンシャルスタッフィング攻撃への耐性が向上します。高額決済時のstep-up authenticationも効果的です。詳細: docs/119_auth_architecture_guide.md',
+   why_en:'Payment systems face Account Takeover (ATO) risks causing fraudulent charges. TOTP or WebAuthn (passkeys) implementation increases resistance to phishing and credential stuffing. Step-up authentication for high-value transactions is also effective. See: docs/119_auth_architecture_guide.md'},
+  {id:'auth-oauth-no-fallback',p:['auth'],lv:'info',
+   t:a=>{var au=a.auth||'';return /(Google|GitHub|Apple.*Sign|Twitter|LINE)/i.test(au)&&!/(メール|Email|Password|パスワード)/i.test(au)&&(a.scale||'medium')!=='solo';},
+   ja:'ソーシャルログインのみが設定されています。プロバイダー障害時にログイン不可になるリスクがあります。Email/Password認証をフォールバックとして併用することを推奨します',
+   en:'Only social login configured. Provider outages will block all logins. Consider adding Email/Password as a fallback',
+   why_ja:'Googleログインのみに依存した場合、Google OAuth障害やプロバイダーによるアカウント停止時にユーザーが完全にログインできなくなります。Email/Passwordをフォールバックとして提供することでリスクを分散できます。',
+   why_en:'Relying solely on a social provider means any OAuth outage or provider account suspension locks all users out. Adding Email/Password as a fallback distributes this risk effectively.'},
 ];
 // helpers
 function inc(v,k){return v&&typeof v==='string'&&v.indexOf(k)!==-1;}

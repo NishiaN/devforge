@@ -1011,6 +1011,178 @@ Steps:
     S.files['docs/118_project_operations_pack.md']=doc;
   })();
 
+  // ═══ docs/119_auth_architecture_guide.md — 認証アーキテクチャガイド ═══
+  (function(){
+    var a119=resolveAuth(a);
+    var hasMfa=/(MFA|2FA|多要素|二要素|TOTP|FIDO|WebAuthn)/i.test((a.auth||'')+(a.mvp_features||''));
+    var hasSocial=/(Google|GitHub|Apple|Twitter|LINE)/i.test(a.auth||'');
+    var doc119='# '+pn+' — '+(G?'認証アーキテクチャガイド':'Authentication Architecture Guide')+'\n> '+date+'\n\n';
+    doc119+='> '+(G?'本ドキュメントは認証設計の判断根拠・実装ベストプラクティス・よくある誤解を整理したものです。詳細はdocs/00_architecture_decision_records.md ADR-004も参照してください。':'This document consolidates auth design rationale, implementation best practices, and common misconceptions. See also docs/00_architecture_decision_records.md ADR-004.')+'\n\n';
+    // §1 Auth Method Selection Matrix
+    doc119+='## §1 '+(G?'認証方式選定マトリクス':'Auth Method Selection Matrix')+'\n\n';
+    doc119+='| '+(G?'プロバイダー':'Provider')+' | '+(G?'認証方式':'Method')+' | MFA | Social | '+(G?'採用':'Selected')+' |\n';
+    doc119+='|----------|------|-----|--------|--------|\n';
+    var _prov=[
+      {n:'Supabase Auth',m:'JWT + RLS',mfa:'✓',soc:'✓',cur:a119.provider==='supabase'},
+      {n:'Firebase Auth',m:'ID Token',mfa:'✓',soc:'✓',cur:a119.provider==='firebase'},
+      {n:'Auth.js (NextAuth)',m:G?'セッションToken':'Session Token',mfa:'△',soc:'✓',cur:a119.provider==='authjs'},
+      {n:'Custom JWT',m:'Bearer JWT',mfa:G?'要実装':'Custom',soc:G?'要実装':'Custom',cur:a119.provider==='jwt'},
+    ];
+    _prov.forEach(function(p){
+      doc119+='| '+p.n+' | '+p.m+' | '+p.mfa+' | '+p.soc+' | '+(p.cur?'**✅ '+(G?'採用':'Selected')+'**':'—')+' |\n';
+    });
+    doc119+='\n**'+(G?'採用: ':'Selected: ')+a119.sot+'**\n\n';
+    if(a119.provider==='supabase'){doc119+=(G?'選定理由: PostgreSQL+RLS統合・JWT/OAuth/MFA統一SDK・ステートレス設計':'Rationale: PostgreSQL+RLS integration, unified JWT/OAuth/MFA SDK, stateless design')+'\n\n';}
+    else if(a119.provider==='firebase'){doc119+=(G?'選定理由: Googleエコシステム統合・Firestoreセキュリティルール連携・マルチプロバイダー管理':'Rationale: Google ecosystem integration, Firestore security rules, multi-provider management')+'\n\n';}
+    else if(a119.provider==='authjs'){doc119+=(G?'選定理由: Next.js App Router/Middlewareネイティブ対応・40+プロバイダー標準サポート':'Rationale: Next.js App Router/Middleware native support, 40+ providers out of the box')+'\n\n';}
+    else{doc119+=(G?'選定理由: カスタム要件対応・完全制御・RS256署名推奨':'Rationale: Custom requirements, full control, RS256 signing recommended')+'\n\n';}
+    // §2 Token Lifecycle & Storage
+    doc119+='## §2 '+(G?'トークンライフサイクルと保管場所':'Token Lifecycle & Storage')+'\n\n';
+    doc119+='### '+(G?'保管場所の選択マトリクス':'Token Storage Decision Matrix')+'\n\n';
+    doc119+='| '+(G?'保管場所':'Storage')+' | XSS'+(G?'耐性':'Resistance')+' | CSRF'+(G?'耐性':'Resistance')+' | '+(G?'推奨用途':'Recommended Use')+' |\n';
+    doc119+='|--------|-------|-------|----------|\n';
+    doc119+='| LocalStorage | ✗ | ✓ | **'+(G?'非推奨':'Not recommended')+'** — '+(G?'XSSでトークン窃取リスク':'XSS can steal tokens')+' |\n';
+    doc119+='| SessionStorage | ✗ | ✓ | '+(G?'一時データのみ（タブ単位）':'Temporary per-tab data only')+' |\n';
+    doc119+='| HttpOnly Cookie | ✓ | △ | '+(G?'Access/Refresh Token（SameSite=Strict必須）':'Access/Refresh Token (SameSite=Strict required)')+' |\n';
+    doc119+='| '+(G?'メモリ (JS変数)':'Memory (JS variable)')+' | ✓ | ✓ | '+(G?'Access Token短期保持（リロードで消失）':'Short-lived Access Token (lost on reload)')+' |\n\n';
+    doc119+='### '+(G?'推奨トークン構成':'Recommended Token Configuration')+'\n\n';
+    doc119+='| '+(G?'種別':'Type')+' | '+(G?'有効期限':'Expiry')+' | '+(G?'保管場所':'Storage')+' | '+(G?'送信方法':'Transport')+' |\n';
+    doc119+='|------|--------|--------|----------|\n';
+    if(a119.provider==='supabase'||a119.provider==='firebase'){
+      doc119+='| Access Token | 1h (SDK) | '+(G?'メモリ (SDK管理)':'Memory (SDK-managed)')+' | Authorization: Bearer |\n';
+      doc119+='| Refresh Token | 30d | HttpOnly Cookie (SDK) | '+(G?'SDK自動ローテーション':'SDK auto-rotation')+' |\n';
+    } else if(a119.provider==='authjs'){
+      doc119+='| Session Token | 30d | HttpOnly Cookie | Cookie '+(G?'自動送信':'auto-sent')+' |\n';
+      doc119+='| CSRF Token | '+(G?'リクエスト毎':'Per request')+' | '+(G?'フォームhidden':'Form hidden')+' | POST body |\n';
+    } else {
+      doc119+='| Access Token | 15min | '+(G?'メモリ（JS変数）':'Memory (JS variable)')+' | Authorization: Bearer |\n';
+      doc119+='| Refresh Token | 7d | HttpOnly Cookie (Secure+SameSite=Strict) | '+(G?'自動送信':'Auto-sent')+' |\n';
+    }
+    doc119+='\n> '+(G?'**推奨**: Access Tokenはメモリ保持 + Refresh TokenはHttpOnly Cookie。BaaS SDKは自動実装。':'**Best practice**: Access Token in memory + Refresh Token in HttpOnly Cookie. BaaS SDKs implement this automatically.')+'\n\n';
+    // §3 OAuth 2.0 vs OIDC
+    doc119+='## §3 '+(G?'OAuth 2.0 vs OIDC の区別':'OAuth 2.0 vs OIDC Distinction')+'\n\n';
+    doc119+='| '+(G?'プロトコル':'Protocol')+' | '+(G?'目的':'Purpose')+' | '+(G?'提供するもの':'Provides')+' | '+(G?'主な用途':'Use')+' |\n';
+    doc119+='|----------|------|------------|-------|\n';
+    doc119+='| OAuth 2.0 | '+(G?'認可 (Authorization)':'Authorization')+' | Access Token | '+(G?'リソースアクセス委譲':'Delegated resource access')+' |\n';
+    doc119+='| OIDC | '+(G?'認証 + 認可':'Authentication + Authorization')+' | ID Token + Access Token | '+(G?'ユーザーID確認 + リソースアクセス':'User identity + resource access')+' |\n';
+    doc119+='\n> '+(G?'「Googleでログイン」はOAuth単独ではなく **OIDC** を使用しています。OAuth 2.0だけではユーザーのIDを確認できません。':'**"Login with Google"** uses OIDC, not OAuth alone. OAuth 2.0 by itself cannot verify user identity.')+'\n\n';
+    doc119+='### Authorization Code Flow + PKCE\n\n';
+    doc119+='```\n';
+    doc119+=G?
+      'ユーザー → Client: ログインボタン\n'+
+      'Client → 認証サーバー: code_challenge (PKCE) + scope=openid\n'+
+      '認証サーバー → ユーザー: 同意画面\n'+
+      'ユーザー → 認証サーバー: 認証情報入力\n'+
+      '認証サーバー → Client: 認可コード\n'+
+      'Client → 認証サーバー: code + code_verifier → Token交換\n'+
+      '認証サーバー → Client: ID Token + Access Token + Refresh Token\n':
+      'User → Client: Click login\n'+
+      'Client → Auth Server: code_challenge (PKCE) + scope=openid\n'+
+      'Auth Server → User: Consent screen\n'+
+      'User → Auth Server: Submit credentials\n'+
+      'Auth Server → Client: Authorization code\n'+
+      'Client → Auth Server: code + code_verifier → Token exchange\n'+
+      'Auth Server → Client: ID Token + Access Token + Refresh Token\n';
+    doc119+='```\n\n';
+    // §4 5 Common Auth Misconceptions
+    doc119+='## §4 '+(G?'認証に関する5つの誤解':'5 Common Authentication Misconceptions')+'\n\n';
+    var _misc=G?[
+      ['JWT ≠ 認証','JWTは署名付きデータフォーマットです。認証ロジック（パスワード検証・MFA）は別途実装が必要です。'],
+      ['OAuth ≠ ログイン','OAuth 2.0は**認可**プロトコルです。「Googleでログイン」はOIDCを使用しています。'],
+      ['SSO ≠ プロトコル','SSOは概念であり、SAML 2.0・OIDC・LDAP等の様々なプロトコルで実現できます。'],
+      ['Bearer ≠ JWT専用','BearerはHTTP認証スキームの名前。任意のトークン（OpaqueトークンやSupabase JWTも含む）に使えます。'],
+      ['AuthN ≠ AuthZ','Authentication（誰であるか）とAuthorization（何ができるか）は別物。RBACやRLSで認可制御を実装してください。'],
+    ]:[
+      ['JWT ≠ Authentication','JWT is a signed data format. Authentication logic (password verification, MFA) must be implemented separately.'],
+      ['OAuth ≠ Login','OAuth 2.0 is an authorization protocol. "Login with Google" uses OIDC, not OAuth alone.'],
+      ['SSO ≠ Protocol','SSO is a concept, implementable via SAML 2.0, OIDC, LDAP, etc.'],
+      ['Bearer ≠ JWT only','Bearer is an HTTP auth scheme name — any token (opaque tokens, Supabase JWT, etc.) can use it.'],
+      ['AuthN ≠ AuthZ','"Who you are" (AuthN) and "what you can do" (AuthZ) are separate. Implement RBAC or RLS for authorization.'],
+    ];
+    _misc.forEach(function(m,i){doc119+='### '+(i+1)+'. '+m[0]+'\n\n'+m[1]+'\n\n';});
+    // §5 HTTP Status Code Decision Guide
+    doc119+='## §5 '+(G?'HTTPステータスコード判断ガイド':'HTTP Status Code Decision Guide')+'\n\n';
+    doc119+='```mermaid\nflowchart TD\n';
+    doc119+=G?
+      '  A[APIリクエスト受信] --> B{認証情報あり?}\n'+
+      '  B -- なし --> C[401 Unauthorized]\n'+
+      '  B -- あり --> D{トークン有効?}\n'+
+      '  D -- 無効/期限切れ --> E[401 Unauthorized]\n'+
+      '  D -- 有効 --> F{リソースへの権限あり?}\n'+
+      '  F -- 権限なし --> G2[403 Forbidden]\n'+
+      '  F -- 権限あり --> H{リソース存在?}\n'+
+      '  H -- 存在しない --> I[404 Not Found]\n'+
+      '  H -- 存在する --> J[200 / 201 OK]\n':
+      '  A[API Request] --> B{Auth credentials present?}\n'+
+      '  B -- No --> C[401 Unauthorized]\n'+
+      '  B -- Yes --> D{Token valid?}\n'+
+      '  D -- Invalid/Expired --> E[401 Unauthorized]\n'+
+      '  D -- Valid --> F{Has permission?}\n'+
+      '  F -- No --> G2[403 Forbidden]\n'+
+      '  F -- Yes --> H{Resource exists?}\n'+
+      '  H -- No --> I[404 Not Found]\n'+
+      '  H -- Yes --> J[200 / 201 OK]\n';
+    doc119+='```\n\n';
+    doc119+='| '+(G?'コード':'Code')+' | '+(G?'意味':'Meaning')+' | '+(G?'使用場面':'When')+' |\n';
+    doc119+='|------|------|-------|\n';
+    doc119+='| 400 | Bad Request | '+(G?'バリデーションエラー':'Validation error')+' |\n';
+    doc119+='| 401 | Unauthorized | '+(G?'未認証またはトークン無効/期限切れ':'Unauthenticated or token invalid/expired')+' |\n';
+    doc119+='| 403 | Forbidden | '+(G?'認証済み・権限なし':'Authenticated but no permission')+' |\n';
+    doc119+='| 404 | Not Found | '+(G?'リソース不存在（権限なし時の存在隠蔽にも使用可）':'Not found (also used to hide resource existence)')+' |\n\n';
+    // §6 Implementation Checklist
+    doc119+='## §6 '+(G?'実装チェックリスト':'Implementation Checklist')+'\n\n';
+    doc119+='### '+(G?'基本設定（全プロジェクト共通）':'Base Configuration')+'\n\n';
+    doc119+='- [ ] '+(G?'HTTPS強制（HTTP→HTTPSリダイレクト）':'Enforce HTTPS')+'\n';
+    doc119+='- [ ] '+(G?'CORS: 許可オリジンを明示的にホワイトリスト化':'CORS: Explicitly whitelist allowed origins')+'\n';
+    doc119+='- [ ] '+(G?'レート制限: ログインエンドポイントに試行回数制限（5回/分推奨）':'Rate limiting: 5 attempts/min on login endpoints')+'\n';
+    doc119+='- [ ] '+(G?'パスワードハッシュ: bcrypt (cost=12以上) またはArgon2id':'Password hashing: bcrypt (cost=12+) or Argon2id')+'\n';
+    doc119+='- [ ] '+(G?'認証エラーメッセージ統一（ユーザー存在漏洩防止）':'Unified error messages (prevent user enumeration)')+'\n\n';
+    if(a119.provider==='supabase'){
+      doc119+='### '+(G?'Supabase Auth 固有設定':'Supabase Auth Configuration')+'\n\n';
+      doc119+='- [ ] '+(G?'Email confirmation強制':'Enforce email confirmation')+'\n';
+      doc119+='- [ ] '+(G?'JWT有効期限設定 (デフォルト3600s)':'Set JWT expiry (default 3600s)')+'\n';
+      doc119+='- [ ] '+(G?'Refresh token rotation有効化':'Enable refresh token rotation')+'\n';
+      doc119+='- [ ] '+(G?'RLSポリシー: auth.uid()=user_id を全テーブルに設定':'RLS policy: auth.uid()=user_id on all tables')+'\n\n';
+    } else if(a119.provider==='firebase'){
+      doc119+='### '+(G?'Firebase Auth 固有設定':'Firebase Auth Configuration')+'\n\n';
+      doc119+='- [ ] '+(G?'Email enumeration protection有効化':'Enable email enumeration protection')+'\n';
+      doc119+='- [ ] '+(G?'passwordPolicyOptions設定':'Configure passwordPolicyOptions')+'\n';
+      doc119+='- [ ] '+(G?'App Checkによるリクエスト認証':'App Check for request authentication')+'\n';
+      doc119+='- [ ] '+(G?'セキュリティルール: request.auth != null を全コレクションに設定':'Security rules: request.auth != null on all collections')+'\n\n';
+    } else if(a119.provider==='authjs'){
+      doc119+='### '+(G?'Auth.js 固有設定':'Auth.js Configuration')+'\n\n';
+      doc119+='- [ ] '+(G?'NEXTAUTH_SECRET: 32文字以上のランダム文字列':'NEXTAUTH_SECRET: 32+ random characters')+'\n';
+      doc119+='- [ ] '+(G?'session.maxAge: 適切な値に短縮（デフォルト30日）':'session.maxAge: Shorten from default 30d')+'\n';
+      doc119+='- [ ] '+(G?'Middleware: matcherで保護対象パスを指定':'Middleware: Use matcher for protected paths')+'\n';
+      doc119+='- [ ] trustHost: true (Vercel/proxy)\n\n';
+    } else {
+      doc119+='### '+(G?'Custom JWT 固有設定':'Custom JWT Configuration')+'\n\n';
+      doc119+='- [ ] '+(G?'RS256署名（秘密鍵は環境変数で管理）':'RS256 signing (private key via env var)')+'\n';
+      doc119+='- [ ] '+(G?'Access Token有効期限: 15分以内':'Access Token expiry: ≤15 min')+'\n';
+      doc119+='- [ ] '+(G?'Refresh Token: HttpOnly Cookie + SameSite=Strict':'Refresh Token: HttpOnly Cookie + SameSite=Strict')+'\n';
+      doc119+='- [ ] '+(G?'Token blacklist: RedisでjtiをBLACKLIST管理':'Token blacklist: Track jti in Redis')+'\n\n';
+    }
+    if(hasMfa||hasPay){
+      doc119+='### '+(G?'MFA設定':'MFA Configuration')+'\n\n';
+      doc119+='- [ ] '+(G?'TOTP (Google Authenticator/Authy対応)':'TOTP (Google Authenticator/Authy compatible)')+'\n';
+      doc119+='- [ ] '+(G?'バックアップコード (10コード、使い切り)':'Backup codes (10 codes, single-use)')+'\n';
+      if(hasPay)doc119+='- [ ] '+(G?'決済操作時のMFA再検証（step-up authentication）':'Re-verify MFA for payment ops (step-up authentication)')+'\n';
+      doc119+='\n';
+    }
+    if(hasSocial){
+      doc119+='### '+(G?'Social Login設定':'Social Login Configuration')+'\n\n';
+      doc119+='- [ ] '+(G?'OAuth Callback URL: 本番ドメインのみ許可':'OAuth Callback URL: production domain only')+'\n';
+      doc119+='- [ ] '+(G?'State parameterによるCSRF防止':'CSRF prevention via state parameter')+'\n';
+      doc119+='- [ ] '+(G?'Fallback: Social Login障害時のEmail/Password認証確保':'Fallback: Email/Password auth when social login fails')+'\n\n';
+    }
+    doc119+='### '+(G?'関連ドキュメント':'Related Documents')+'\n\n';
+    doc119+='- [ADR-004](./00_architecture_decision_records.md)\n';
+    doc119+='- ['+(G?'セキュリティインテリジェンス':'Security Intelligence')+'](./43_security_intelligence.md)\n';
+    doc119+='- ['+(G?'脅威モデル':'Threat Model')+'](./44_threat_model.md)\n';
+    doc119+='- ['+(G?'コンプライアンスマトリクス':'Compliance Matrix')+'](./45_compliance_matrix.md)\n';
+    S.files['docs/119_auth_architecture_guide.md']=doc119;
+  })();
+
   // ═══ docs/108_uat_acceptance.md ═══
   const uatFeatures=features.slice(0,Math.min(features.length,6));
   let uat108='# '+pn+' — '+(G?'UAT受入テスト・リリース判定':'UAT Acceptance Test & Release Judgment')+'\n> '+date+'\n\n';
@@ -1506,7 +1678,7 @@ Steps:
   const authCtx=G?'セキュアなユーザー認証の実装方針を決定しました。'+(hasPay?'決済機能があるため認証セキュリティは特に重要です。':'')+(domainName==='health'||domainName==='fintech'||domainName==='legal'?'規制ドメインのため高セキュリティ認証が必要です。':''):'Defined the user authentication implementation approach. '+(hasPay?'Payment features make authentication security especially critical.':'')+(domainName==='health'||domainName==='fintech'||domainName==='legal'?'Regulated domain requires high-security authentication.':'');
   const authDecision=G?'**'+authName+'** を採用します。\n\n選定理由:\n- '+(inc2(authName,'Supabase')?'Supabase AuthはRLS・JWT・OAuth・MFAを統合提供':inc2(authName,'Firebase')?'Firebase AuthはGoogle/Apple/Emailをワンストップ提供':'カスタム要件に合わせた完全制御が可能'):'Adopt **'+authName+'**.\n\nReasons:\n- '+(inc2(authName,'Supabase')?'Supabase Auth provides integrated RLS, JWT, OAuth, and MFA':inc2(authName,'Firebase')?'Firebase Auth provides one-stop Google/Apple/Email':'Full control for custom requirements');
   const authAlt=G?'- '+(inc2(authName,'Supabase')?'Firebase Auth（Googleエコシステム統合）':'Supabase Auth（PostgreSQL統合が容易）')+'\n- Auth.js / NextAuth.js（Next.js特化）\n- Clerk（フルマネージド認証UI）':'- '+(inc2(authName,'Supabase')?'Firebase Auth (Google ecosystem integration)':'Supabase Auth (easy PostgreSQL integration)')+'\n- Auth.js / NextAuth.js (Next.js-specific)\n- Clerk (fully managed auth UI)';
-  const authConseq=G?'- セッション管理: '+(isBaaS?'BaaS SDKが自動的にセッションを管理':'JWTのrefreshトークンローテーションを実装')+'\n- '+(isBaaS?'RLSポリシーとauth.uid()を連携させてデータアクセス制御':'カスタムミドルウェアでAPIルートを保護'):'- Session management: '+(isBaaS?'BaaS SDK automatically manages sessions':'Implement JWT refresh token rotation')+'\n- '+(isBaaS?'Integrate RLS policies with auth.uid() for data access control':'Protect API routes with custom middleware');
+  const authConseq=G?'- セッション管理: '+(isBaaS?'BaaS SDKが自動的にセッションを管理':'JWTのrefreshトークンローテーションを実装')+'\n- '+(isBaaS?'RLSポリシーとauth.uid()を連携させてデータアクセス制御':'カスタムミドルウェアでAPIルートを保護')+'\n- トークン保管: '+(isBaaS?'SDK管理（LocalStorageは使わないこと）':'Access TokenはメモリかHttpOnly Cookie推奨')+'\n- リスク: '+(auth.provider==='jwt'?'JWTは無効化困難（Redisブラックリスト等の対策を要検討）':auth.provider==='authjs'?'セッションDBが単一障害点（Redisセッションストア推奨）':'BaaSサービスキーをサーバーサイドのみで使用')+'\n- 詳細: docs/119_auth_architecture_guide.md 参照':'- Session management: '+(isBaaS?'BaaS SDK automatically manages sessions':'Implement JWT refresh token rotation')+'\n- '+(isBaaS?'Integrate RLS policies with auth.uid() for data access control':'Protect API routes with custom middleware')+'\n- Token storage: '+(isBaaS?'SDK-managed (avoid LocalStorage)':'Access Token in memory or HttpOnly Cookie')+'\n- Risk: '+(auth.provider==='jwt'?'JWT hard to invalidate (consider Redis blacklist)':auth.provider==='authjs'?'Session DB is SPOF (consider Redis session store)':'Use BaaS service keys server-side only')+'\n- Details: see docs/119_auth_architecture_guide.md';
 
   // ADR-005: Deployment
   const depCtx=G?'デプロイ戦略はチームのDevOps習熟度・コスト・スケーラビリティ要件に基づき決定しました。':'Deployment strategy decided based on team DevOps proficiency, cost, and scalability requirements.';

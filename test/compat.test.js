@@ -1,4 +1,4 @@
-// Compat rules functional test (229 rules: 33 ERROR + 125 WARN + 71 INFO)
+// Compat rules functional test (234 rules: 33 ERROR + 127 WARN + 74 INFO)
 const assert=require('node:assert/strict');
 const S={lang:'ja',skill:'pro'};
 eval(require('fs').readFileSync('src/data/compat-rules.js','utf-8'));
@@ -515,6 +515,25 @@ const tests=[
   {name:'Express+pay+large+noWebhook=WARN',a:{payment:'Stripe決済',backend:'Node.js + Express',scale:'large'},expect:'warn',id:'cl-payment-nowebhook'},
   {name:'Express+pay+large+withWebhook=noWARN',a:{payment:'Stripe決済',backend:'Node.js + Express',scale:'large',mvp_features:'Stripe Webhook署名検証'},expect:'none',id:'cl-payment-nowebhook'},
   {name:'Express+pay+medium+noWebhook=noWARN',a:{payment:'Stripe決済',backend:'Node.js + Express',scale:'medium'},expect:'none',id:'cl-payment-nowebhook'},
+  // ── Auth Best Practices (5 rules) ──
+  // auth-token-localstorage (WARN) — JWT + LocalStorage
+  {name:'JWT+localStorage=WARN',a:{auth:'Custom JWT (jose)',mvp_features:'認証, localStorage保存'},expect:'warn',id:'auth-token-localstorage'},
+  {name:'JWT+HttpOnly=noLocalStorageWARN',a:{auth:'Custom JWT (jose)',mvp_features:'認証, HttpOnly Cookie保存'},expect:'none',id:'auth-token-localstorage'},
+  {name:'Supabase+localStorage=noLocalStorageWARN',a:{auth:'Supabase Auth',mvp_features:'認証, localStorage保存'},expect:'none',id:'auth-token-localstorage'},
+  // auth-apikey-enduser (INFO) — API Key for end users
+  {name:'APIKey+consumer=INFO',a:{auth:'API Key認証',target:'一般ユーザー向けWebアプリ',purpose:'タスク管理アプリ'},expect:'info',id:'auth-apikey-enduser'},
+  {name:'APIKey+B2B=noINFO',a:{auth:'API Key認証',target:'開発者向けAPIサービス',purpose:'B2B SaaS'},expect:'none',id:'auth-apikey-enduser'},
+  // auth-stateful-distributed (INFO) — session auth + distributed env
+  {name:'NextAuth+k8s=INFO',a:{auth:'Auth.js/NextAuth',mvp_features:'認証, Kubernetes分散デプロイ'},expect:'info',id:'auth-stateful-distributed'},
+  {name:'NextAuth+noK8s=noINFO',a:{auth:'Auth.js/NextAuth',mvp_features:'認証, ダッシュボード'},expect:'none',id:'auth-stateful-distributed'},
+  // auth-no-mfa-payment (WARN) — large payment + no MFA
+  {name:'Auth+Pay+large+noMFA=WARN',a:{payment:'Stripe決済',auth:'Supabase Auth',mvp_features:'認証, 決済処理',scale:'large'},expect:'warn',id:'auth-no-mfa-payment'},
+  {name:'Auth+Pay+large+MFA=noPayMFAWARN',a:{payment:'Stripe決済',auth:'Supabase Auth',mvp_features:'認証, MFA, 決済',scale:'large'},expect:'none',id:'auth-no-mfa-payment'},
+  {name:'Auth+Pay+medium+noMFA=noPayMFAWARN',a:{payment:'Stripe決済',auth:'Supabase Auth',mvp_features:'決済'},expect:'none',id:'auth-no-mfa-payment'},
+  // auth-oauth-no-fallback (INFO) — social login only
+  {name:'GoogleOnly+noEmail=INFO',a:{auth:'Google OAuth'},expect:'info',id:'auth-oauth-no-fallback'},
+  {name:'Google+Email=noOAuthFallbackINFO',a:{auth:'Google OAuth + Email/Password'},expect:'none',id:'auth-oauth-no-fallback'},
+  {name:'Google+solo=noOAuthFallbackINFO',a:{auth:'Google OAuth',scale:'solo'},expect:'none',id:'auth-oauth-no-fallback'},
 ];
 
 let pass=0,fail=0;

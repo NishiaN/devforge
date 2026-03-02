@@ -611,6 +611,26 @@ function genPillar12_SecurityIntelligence(a,pn){
   doc43+=_chk('異常なセッション活動を監視','Monitor abnormal session activity')+'\n';
   doc43+=_chk('パスワード変更時に全セッション無効化','Invalidate all sessions on password change')+'\n\n';
 
+  // Token Storage Decision Matrix
+  doc43+='### '+(G?'トークン保管場所の選択マトリクス':'Token Storage Decision Matrix')+'\n\n';
+  doc43+='| '+(G?'保管場所':'Storage')+' | XSS'+(G?'耐性':'Resistance')+' | CSRF'+(G?'耐性':'Resistance')+' | '+(G?'推奨用途':'Recommended Use')+' |\n';
+  doc43+='|--------|-------|-------|----------|\n';
+  doc43+='| LocalStorage | ✗ | ✓ | **'+(G?'非推奨':'Not recommended')+'** — '+(G?'XSSでトークン窃取リスク':'XSS can steal tokens')+' |\n';
+  doc43+='| SessionStorage | ✗ | ✓ | '+(G?'一時データのみ（タブ単位）':'Temporary per-tab data only')+' |\n';
+  doc43+='| HttpOnly Cookie | ✓ | △ | '+(G?'Access/Refresh Token（SameSite=Strict必須）':'Access/Refresh Token (SameSite=Strict required)')+' |\n';
+  doc43+='| '+(G?'メモリ (JS変数)':'Memory (JS variable)')+' | ✓ | ✓ | '+(G?'Access Token短期保持（リロードで消失）':'Short-lived Access Token (lost on reload)')+' |\n\n';
+  doc43+=_chk('JWTをLocalStorageに保存しない（HttpOnly Cookie推奨）','Do not store JWT in LocalStorage (use HttpOnly Cookie)')+'\n\n';
+
+  // Auth HTTP Status Code Guide
+  doc43+='### '+(G?'認証関連HTTPステータスコードの使い分け':'Auth HTTP Status Code Guide')+'\n\n';
+  doc43+='| '+(G?'コード':'Code')+' | '+(G?'意味':'Meaning')+' | '+(G?'使用場面':'When to use')+' |\n';
+  doc43+='|------|------|-------|\n';
+  doc43+='| 400 | Bad Request | '+(G?'バリデーションエラー（リクエスト形式不正）':'Validation error (malformed request)')+' |\n';
+  doc43+='| 401 | Unauthorized | '+(G?'未認証 またはトークン無効/期限切れ':'Unauthenticated or token invalid/expired')+' |\n';
+  doc43+='| 403 | Forbidden | '+(G?'認証済みだが権限不足':'Authenticated but lacks permission')+' |\n';
+  doc43+='| 404 | Not Found | '+(G?'リソース不存在（認可状況に関係なく存在を隠す場合も）':'Not found (also used to hide resource existence)')+' |\n\n';
+  doc43+=_chk('401(未認証)と403(権限不足)を混同しない — 401はWWW-Authenticateヘッダーを返す','Do not confuse 401 (unauthenticated) with 403 (forbidden) — 401 returns WWW-Authenticate header')+'\n\n';
+
   doc43+='## '+(G?'NIST SSDF (SP 800-218) セキュア開発フレームワーク':'NIST SSDF (SP 800-218) Secure Software Development Framework')+'\n\n';
   doc43+=(G?
     '| グループ | 概要 |\n|----------|------|\n'+
