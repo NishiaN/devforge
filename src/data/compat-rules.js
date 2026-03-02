@@ -1,4 +1,4 @@
-/* ═══ STACK COMPATIBILITY & SEMANTIC CONSISTENCY RULES — 240 rules (ERROR×33 + WARN×130 + INFO×77) ═══ */
+/* ═══ STACK COMPATIBILITY & SEMANTIC CONSISTENCY RULES — 246 rules (ERROR×33 + WARN×132 + INFO×81) ═══ */
 const COMPAT_RULES=[
   // ── FE ↔ Mobile (2 ERROR) ──
   {id:'fe-mob-expo',p:['frontend','mobile'],lv:'error',
@@ -1881,6 +1881,83 @@ const COMPAT_RULES=[
    en:'NoSQL DB with finance/insurance/legal domain. NoSQL has limited ACID transaction guarantees, complicating financial data consistency. Consider PostgreSQL or another RDBMS. See docs/120',
    why_ja:'MongoDBはマルチドキュメントトランザクションをサポートしますがデフォルトは結果整合性（BASE）です。金融取引・保険契約・法務文書では「ある操作が成功したか失敗したか」の厳密な保証（ACID）が必要です。PostgreSQLのSERIALIZABLEトランザクションとROW LEVEL SECURITYを組み合わせることで高い整合性を実現できます。詳細: docs/120_system_design_guide.md §2',
    why_en:'MongoDB supports multi-document transactions but defaults to eventual consistency (BASE). Financial transactions, insurance contracts, and legal documents require strict ACID guarantees. PostgreSQL SERIALIZABLE transactions + Row Level Security achieves the required consistency. See: docs/120_system_design_guide.md §2'},
+  // ── Security Design Rules (6 rules) — docs/121 ──
+  {id:'sec-no-secrets-mgr',p:['scale','backend'],lv:'warn',
+   t:a=>{
+    var sc=a.scale||'medium';
+    var be=a.backend||'';
+    var isBaas=/Firebase|Supabase|Convex/i.test(be);
+    var isStatic=/なし（静的|None|static/i.test(be);
+    var hasSensEnt=/MedicalRecord|PatientRecord|ClinicalData|FinancialTransaction|CreditCard|BankAccount/i.test(a.data_entities||'');
+    var feats=a.mvp_features||'';
+    var hasSecMgr=/Vault|Doppler|SOPS|Secrets Manager|Secret Manager/i.test(feats);
+    return sc==='large'&&!isBaas&&!isStatic&&hasSensEnt&&!hasSecMgr;},
+   ja:'大規模環境に機密エンティティが存在しますがシークレット管理ツールが未設定です。APIキーやDB接続文字列の漏洩リスクがあります。Vault/Dopplerの導入を推奨します。docs/121参照',
+   en:'Large-scale environment with sensitive entities but no secrets management tool configured. Risk of API key/DB credential leakage. Recommend Vault/Doppler. See docs/121',
+   why_ja:'シークレット（DBパスワード・APIキー・JWTシークレット）をコードやコンテナ環境変数に直接埋め込むと、ソースコード漏洩・コンテナイメージ抽出・ログ出力などで露出します。HashiCorp Vault/Dopplerは動的シークレット発行・自動ローテーション・監査ログを提供し、大規模環境での機密データ保護の標準手段です。詳細: docs/121_security_design_guide.md §2',
+   why_en:'Embedding secrets (DB passwords, API keys, JWT secrets) directly in code or container env vars exposes them via source leaks, container image extraction, or log output. HashiCorp Vault/Doppler provide dynamic secret issuance, auto-rotation, and audit logs — the standard for protecting sensitive data at scale. See: docs/121_security_design_guide.md §2'},
+  {id:'sec-no-sbom',p:['deploy','scale'],lv:'info',
+   t:a=>{
+    var sc=a.scale||'medium';
+    var dep=a.deploy||'';
+    var isContainer=/Railway|Fly\.io|ECS|Cloud Run|Render|Coolify|Docker/i.test(dep);
+    var feats=a.mvp_features||'';
+    var hasSbom=/SBOM|CycloneDX|Syft|sbom/i.test(feats);
+    return sc==='large'&&isContainer&&!hasSbom;},
+   ja:'大規模コンテナデプロイでSBOM（ソフトウェア部品表）が未設定です。CycloneDX/Syftでのサプライチェーンセキュリティ対策を推奨します。docs/121参照',
+   en:'Large-scale container deployment without SBOM (Software Bill of Materials). Recommend CycloneDX/Syft for supply chain security. See docs/121',
+   why_ja:'SBOM（Software Bill of Materials）はすべての依存コンポーネントを一覧化し、新たなCVE（Common Vulnerabilities and Exposures）が発見された際に影響範囲を即座に特定できます。Log4Shell事件では多くの企業がLog4jを使用しているかどうかすら把握できず対応が遅延しました。CycloneDX/SyftでSBOMをCI/CDパイプラインに統合することを推奨します。詳細: docs/121_security_design_guide.md §3',
+   why_en:'SBOM (Software Bill of Materials) lists all dependency components, enabling instant impact assessment when new CVEs are discovered. During Log4Shell, many organizations could not determine if they used Log4j, delaying response. Integrate CycloneDX/Syft into your CI/CD pipeline for proactive supply chain security. See: docs/121_security_design_guide.md §3'},
+  {id:'sec-sensitive-no-classify',p:['data_entities','scale'],lv:'info',
+   t:a=>{
+    var sc=a.scale||'medium';
+    var ents=a.data_entities||'';
+    var hasSens=/Patient|Medical|ClinicalData|Transaction|Payment|Credit|Health|Insurance/i.test(ents);
+    var feats=(a.mvp_features||'')+(a.purpose||'');
+    var hasClassify=/データ分類|data classification|PII|PHI|PCI|Restricted|Confidential/i.test(feats);
+    return sc!=='solo'&&hasSens&&!hasClassify;},
+   ja:'機密エンティティ（患者/医療/決済/健康）が存在しますがデータ分類フレームワークが未定義です。PII/PHI/PCIティアの定義を推奨します。docs/121参照',
+   en:'Sensitive entities (patient/medical/payment/health) exist without a data classification framework. Recommend defining PII/PHI/PCI tiers. See docs/121',
+   why_ja:'データ分類なしでは「このフィールドの暗号化は必要か？」「誰がアクセスできるか？」「どのくらい保存するか？」の判断基準がなく、過剰/過少な保護が発生します。PII（個人識別情報）、PHI（医療情報）、PCI（カード情報）の4ティア分類により、適切な暗号化・アクセス制御・保存期間ポリシーを適用できます。詳細: docs/121_security_design_guide.md §4',
+   why_en:'Without data classification, there is no basis for deciding "does this field need encryption?", "who can access it?", or "how long to retain it?", leading to under/over-protection. A 4-tier classification of PII, PHI, and PCI enables appropriate encryption, access control, and retention policies. See: docs/121_security_design_guide.md §4'},
+  {id:'sec-no-sast',p:['backend','scale'],lv:'info',
+   t:a=>{
+    var sc=a.scale||'medium';
+    var be=a.backend||'';
+    var isBaas=/Firebase|Supabase|Convex/i.test(be);
+    var isStatic=/なし（静的|None|static/i.test(be);
+    var feats=a.mvp_features||'';
+    var hasSast=/SAST|Semgrep|CodeQL|SonarQube|静的解析/i.test(feats);
+    return sc==='large'&&!isBaas&&!isStatic&&!hasSast;},
+   ja:'大規模環境でSASTツール（静的解析）が未設定です。Semgrep/CodeQLのCI/CD統合を推奨します。docs/121参照',
+   en:'Large-scale environment without SAST tool configured. Recommend integrating Semgrep/CodeQL in CI/CD. See docs/121',
+   why_ja:'大規模プロジェクトでは手動コードレビューだけでセキュリティ脆弱性を見つけることが困難です。SAST（静的アプリケーションセキュリティテスト）ツールはコードをビルドせずに解析し、SQLインジェクション・XSS・ハードコードシークレット等のパターンをPR単位で自動検出します。SemgrepはGitHub Actionsに5分で統合でき、カスタムルールも作成できます。詳細: docs/121_security_design_guide.md §5',
+   why_en:'At large scale, manual code review alone cannot catch all security vulnerabilities. SAST (Static Application Security Testing) tools analyze code without building it, auto-detecting patterns like SQL injection, XSS, and hardcoded secrets at the PR level. Semgrep integrates with GitHub Actions in 5 minutes and supports custom rules. See: docs/121_security_design_guide.md §5'},
+  {id:'sec-container-no-scan',p:['deploy','scale'],lv:'warn',
+   t:a=>{
+    var sc=a.scale||'medium';
+    var dep=a.deploy||'';
+    var isContainer=/Railway|Fly\.io|ECS|Cloud Run|Render|Coolify|Docker/i.test(dep);
+    var hasSensEnt=/MedicalRecord|PatientRecord|ClinicalData|FinancialTransaction|CreditCard|BankAccount/i.test(a.data_entities||'');
+    var feats=a.mvp_features||'';
+    var hasScan=/Trivy|Grype|コンテナスキャン|container scan/i.test(feats);
+    return isContainer&&sc==='large'&&hasSensEnt&&!hasScan;},
+   ja:'大規模コンテナデプロイに機密エンティティが存在しますがコンテナイメージスキャンが未設定です。Trivy/Gryeでの脆弱性スキャンを推奨します。docs/121参照',
+   en:'Large-scale container deployment with sensitive entities but no container image scanning configured. Recommend Trivy/Grype vulnerability scanning. See docs/121',
+   why_ja:'コンテナイメージには多数のOSパッケージ・ライブラリが含まれており、その中に既知の脆弱性（CVE）が含まれている可能性があります。特に機密データを扱うコンテナでは、Trivy等でCIパイプラインにイメージスキャンを組み込み、CriticalなCVEが含まれるイメージのデプロイをブロックすることが重要です。詳細: docs/121_security_design_guide.md §1',
+   why_en:'Container images contain many OS packages and libraries that may include known vulnerabilities (CVEs). Especially for containers handling sensitive data, integrating Trivy image scanning into the CI pipeline to block deployments of images with Critical CVEs is essential. See: docs/121_security_design_guide.md §1'},
+  {id:'sec-no-security-metrics',p:['scale','purpose'],lv:'info',
+   t:a=>{
+    var sc=a.scale||'medium';
+    var dom=detectDomain(a.purpose||'');
+    var isHiSec=/fintech|health|insurance|government|legal/i.test(dom);
+    var feats=a.mvp_features||'';
+    var hasMetrics=/MTTD|MTTR|セキュリティメトリクス|security metrics|脆弱性エイジング|vulnerability aging/i.test(feats);
+    return sc==='large'&&isHiSec&&!hasMetrics;},
+   ja:'大規模高セキュリティドメインでセキュリティメトリクス（MTTD/MTTR）が未定義です。定量的なセキュリティ管理の導入を推奨します。docs/121参照',
+   en:'Large-scale high-security domain without security metrics (MTTD/MTTR) defined. Recommend implementing quantitative security management. See docs/121',
+   why_ja:'「セキュリティインシデントが発生してから検知まで何時間かかっているか」（MTTD）「検知から修復まで何時間かかっているか」（MTTR）を測定しないと改善できません。特に金融・医療・政府ドメインでは規制要件として定期的なセキュリティ報告が求められます。SIEM統合またはGitHub Security Overviewでこれらの指標を可視化することを推奨します。詳細: docs/121_security_design_guide.md §6',
+   why_en:'Without measuring "how long from incident to detection" (MTTD) and "how long from detection to remediation" (MTTR), improvement is impossible. Finance, healthcare, and government domains specifically require regular security reporting as a regulatory requirement. SIEM integration or GitHub Security Overview can visualize these metrics. See: docs/121_security_design_guide.md §6'},
 ];
 // helpers
 function inc(v,k){return v&&typeof v==='string'&&v.indexOf(k)!==-1;}

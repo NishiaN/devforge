@@ -104,6 +104,9 @@ const NEW_RULE_IDS = [
   'dom-logistics-nopay','dom-health-mobile-noencrypt','dom-rpa-nomonitor',
   'be-firebase-stripe-webhook','mob-expo-websocket','be-express-nosecurity-headers',
   'sec-mobile-biometric','perf-realtime-noredis','perf-mobile-offline','be-batch-serverless',
+  // docs/121 security design rules (+6)
+  'sec-no-secrets-mgr','sec-no-sbom','sec-sensitive-no-classify',
+  'sec-no-sast','sec-container-no-scan','sec-no-security-metrics',
 ];
 
 const errorRules = Object.entries(hits).filter(([,v])=>v.level==='error');
@@ -134,9 +137,9 @@ if (errorRules.length === 0 && warnRules.length === 0) {
 
 // New-rule summary
 const newHits = NEW_RULE_IDS.filter(id => hits[id]);
-console.log('── New rules (14 added today) ──');
+console.log('── New rules (20 added today) ──');
 if (newHits.length === 0) {
-  console.log('✅ None of the 14 new rules fire on any existing preset.\n');
+  console.log('✅ None of the 20 new rules fire on any existing preset.\n');
 } else {
   for (const id of newHits) {
     const {level, entries} = hits[id];

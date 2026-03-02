@@ -437,7 +437,7 @@ function buildFileTree(){
     }
   } else if(pillar===11){ // Security Intelligence
     files.push({folder:true,name:'docs'});
-    ['43_security_intelligence','44_threat_model','45_compliance_matrix','46_ai_security','47_security_testing'].forEach(f=>
+    ['43_security_intelligence','44_threat_model','45_compliance_matrix','46_ai_security','47_security_testing','121_security_design_guide'].forEach(f=>
       files.push({name:'  '+f+'.md',path:'docs/'+f+'.md'}));
   } else if(pillar===12){ // Strategic Intelligence
     files.push({folder:true,name:'docs'});
@@ -542,7 +542,7 @@ function buildFileTree(){
    '107_project_governance','108_uat_acceptance',
    '113_ai_collaboration_guide','114_domain_knowledge_guide','115_skill_portfolio',
    '116_estimation_prerequisites','118_project_operations_pack','119_auth_architecture_guide',
-   '120_system_design_guide'].forEach(f=>
+   '120_system_design_guide','121_security_design_guide'].forEach(f=>
     files.push({name:'  '+f+'.md',path:'docs/'+f+'.md'}));
   files.push({name:'───────────',path:''});
   ['README.md','.gitignore','package.json','LICENSE'].forEach(f=>files.push({name:f,path:f}));

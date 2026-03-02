@@ -1,4 +1,4 @@
-// Compat rules functional test (240 rules: 33 ERROR + 130 WARN + 77 INFO)
+// Compat rules functional test (246 rules: 33 ERROR + 132 WARN + 81 INFO)
 const assert=require('node:assert/strict');
 const S={lang:'ja',skill:'pro'};
 eval(require('fs').readFileSync('src/data/compat-rules.js','utf-8'));
@@ -556,6 +556,39 @@ const tests=[
   {name:'MongoDB+fintech=INFO',a:{database:'MongoDB',purpose:'金融取引プラットフォームオンライン決済管理'},expect:'info',id:'db-nosql-acid-risk'},
   {name:'PostgreSQL+fintech=noACIDINFO',a:{database:'PostgreSQL',purpose:'金融取引プラットフォームオンライン決済管理'},expect:'none',id:'db-nosql-acid-risk'},
   {name:'MongoDB+general=noACIDINFO',a:{database:'MongoDB',purpose:'タスク管理ツール'},expect:'none',id:'db-nosql-acid-risk'},
+  // ── Security Design Rules (6 rules) — docs/121 ──
+  // sec-no-secrets-mgr (WARN) — large + sensitive entities + no Vault/Doppler
+  {name:'large+MedicalRecord+Express+noVault=WARN',a:{scale:'large',backend:'Node.js + Express',data_entities:'User, MedicalRecord, Doctor, Prescription'},expect:'warn',id:'sec-no-secrets-mgr'},
+  {name:'large+MedicalRecord+Express+Vault=noWARN',a:{scale:'large',backend:'Node.js + Express',data_entities:'User, MedicalRecord, Doctor',mvp_features:'HashiCorp Vault統合, セキュリティ'},expect:'none',id:'sec-no-secrets-mgr'},
+  {name:'large+MedicalRecord+Supabase+noVault=noWARN',a:{scale:'large',backend:'Supabase',data_entities:'User, MedicalRecord, Doctor'},expect:'none',id:'sec-no-secrets-mgr'},
+  {name:'medium+MedicalRecord+Express+noVault=noWARN',a:{scale:'medium',backend:'Node.js + Express',data_entities:'User, MedicalRecord, Doctor'},expect:'none',id:'sec-no-secrets-mgr'},
+  {name:'large+CreditCard+FastAPI+noDoppler=WARN',a:{scale:'large',backend:'Python + FastAPI',data_entities:'User, CreditCard, Payment, Order'},expect:'warn',id:'sec-no-secrets-mgr'},
+  // sec-no-sbom (INFO) — large + container + no SBOM
+  {name:'large+Railway+noSBOM=INFO',a:{scale:'large',deploy:'Railway'},expect:'info',id:'sec-no-sbom'},
+  {name:'large+Railway+CycloneDX=noSBOMINFO',a:{scale:'large',deploy:'Railway',mvp_features:'CycloneDX SBOM生成, セキュリティ'},expect:'none',id:'sec-no-sbom'},
+  {name:'solo+Railway+noSBOM=noSBOMINFO',a:{scale:'solo',deploy:'Railway'},expect:'none',id:'sec-no-sbom'},
+  {name:'large+Vercel+noSBOM=noSBOMINFO',a:{scale:'large',deploy:'Vercel'},expect:'none',id:'sec-no-sbom'},
+  // sec-sensitive-no-classify (INFO) — sensitive entities + no data classification
+  {name:'Patient+medium+noClassify=INFO',a:{scale:'medium',data_entities:'User, Patient, MedicalRecord, Prescription'},expect:'info',id:'sec-sensitive-no-classify'},
+  {name:'Patient+medium+PII=noClassifyINFO',a:{scale:'medium',data_entities:'User, Patient, MedicalRecord',mvp_features:'データ分類, PII保護'},expect:'none',id:'sec-sensitive-no-classify'},
+  {name:'solo+Patient+noClassify=noClassifyINFO',a:{scale:'solo',data_entities:'User, Patient, MedicalRecord'},expect:'none',id:'sec-sensitive-no-classify'},
+  {name:'medium+noSensEntity+noClassify=noClassifyINFO',a:{scale:'medium',data_entities:'User, Team, Project, Task'},expect:'none',id:'sec-sensitive-no-classify'},
+  // sec-no-sast (INFO) — large + non-BaaS + no SAST
+  {name:'large+Express+noSAST=INFO',a:{scale:'large',backend:'Node.js + Express'},expect:'info',id:'sec-no-sast'},
+  {name:'large+Express+Semgrep=noSASTINFO',a:{scale:'large',backend:'Node.js + Express',mvp_features:'Semgrep SAST, セキュリティゲート'},expect:'none',id:'sec-no-sast'},
+  {name:'large+Supabase+noSAST=noSASTINFO',a:{scale:'large',backend:'Supabase'},expect:'none',id:'sec-no-sast'},
+  {name:'medium+Express+noSAST=noSASTINFO',a:{scale:'medium',backend:'Node.js + Express'},expect:'none',id:'sec-no-sast'},
+  // sec-container-no-scan (WARN) — container + large + sensitive entities + no scan
+  {name:'large+Railway+MedicalRecord+noTrivy=WARN',a:{scale:'large',deploy:'Railway',data_entities:'User, MedicalRecord, Doctor, Prescription'},expect:'warn',id:'sec-container-no-scan'},
+  {name:'large+Railway+MedicalRecord+Trivy=noWARN',a:{scale:'large',deploy:'Railway',data_entities:'User, MedicalRecord, Doctor',mvp_features:'Trivy コンテナスキャン, CI/CD'},expect:'none',id:'sec-container-no-scan'},
+  {name:'large+Vercel+MedicalRecord+noTrivy=noScanWARN',a:{scale:'large',deploy:'Vercel',data_entities:'User, MedicalRecord, Doctor'},expect:'none',id:'sec-container-no-scan'},
+  {name:'medium+Railway+MedicalRecord+noTrivy=noScanWARN',a:{scale:'medium',deploy:'Railway',data_entities:'User, MedicalRecord, Doctor'},expect:'none',id:'sec-container-no-scan'},
+  {name:'large+ECS+CreditCard+noScan=WARN',a:{scale:'large',deploy:'ECS',data_entities:'User, CreditCard, BankAccount, Transaction'},expect:'warn',id:'sec-container-no-scan'},
+  // sec-no-security-metrics (INFO) — large + hiSec domain + no MTTD/MTTR
+  {name:'large+fintech+noMetrics=INFO',a:{scale:'large',purpose:'フィンテック決済プラットフォーム金融サービス'},expect:'info',id:'sec-no-security-metrics'},
+  {name:'large+fintech+MTTD=noMetricsINFO',a:{scale:'large',purpose:'フィンテック決済プラットフォーム',mvp_features:'MTTD/MTTR測定, セキュリティダッシュボード'},expect:'none',id:'sec-no-security-metrics'},
+  {name:'medium+fintech+noMetrics=noMetricsINFO',a:{scale:'medium',purpose:'フィンテック決済プラットフォーム'},expect:'none',id:'sec-no-security-metrics'},
+  {name:'large+general+noMetrics=noMetricsINFO',a:{scale:'large',purpose:'タスク管理ツール'},expect:'none',id:'sec-no-security-metrics'},
 ];
 
 let pass=0,fail=0;

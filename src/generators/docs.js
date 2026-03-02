@@ -1306,6 +1306,180 @@ Steps:
     S.files['docs/120_system_design_guide.md']=d;
   })();
 
+  // ═══ docs/121_security_design_guide.md ═══
+  (function(){
+    function _inc(v,k){return v&&v.indexOf(k)!==-1;}
+    var be121=be; var dep121=a.deploy||'Vercel'; var sc121=a.scale||'medium';
+    var dom121=detectDomain(a.purpose||'');
+    var _isBaas=/Firebase|Supabase|Convex/i.test(be121);
+    var _isStatic=/なし（静的|None|static/i.test(be121);
+    var _isContainer=_inc(dep121,'Railway')||_inc(dep121,'Fly')||_inc(dep121,'ECS')||_inc(dep121,'Cloud Run')||_inc(dep121,'Render')||_inc(dep121,'Coolify')||(/Docker/i.test(dep121));
+    var _isVercel=_inc(dep121,'Vercel');
+    var _isAWS=_inc(dep121,'AWS')||_inc(dep121,'ECS');
+    var _isGCP=_inc(dep121,'GCP')||_inc(dep121,'Cloud Run')||_inc(dep121,'Firebase Hosting');
+    var _hiSec=/fintech|health|insurance|government|legal/i.test(dom121);
+    var _isNode=/Express|NestJS|Hono|Fastify|Next/i.test(be121);
+    var _isPy=/Python|FastAPI|Django/i.test(be121);
+    function _classifyEnt(ent){
+      if(/patient|medical|clinical|prescription|diagnosis/i.test(ent)) return 'restricted';
+      if(/payment|credit|card|bank|transaction|financial/i.test(ent)) return 'restricted';
+      if(/password|secret|apikey|token|credential/i.test(ent)) return 'restricted';
+      if(/personal|pii|profile|identity|ssn|passport|insurance/i.test(ent)) return 'confidential';
+      if(/user|customer|employee|order|invoice|contract/i.test(ent)) return 'confidential';
+      if(/audit|log|event|session|notification/i.test(ent)) return 'internal';
+      return 'public';
+    }
+    var d='# '+pn+' \u2014 '+(G?'\u30bb\u30ad\u30e5\u30ea\u30c6\u30a3\u8a2d\u8a08\u30ac\u30a4\u30c9':'Security Design Guide')+'\n> '+date+'\n\n';
+    d+='> '+(G?'\u30a6\u30a3\u30b6\u30fc\u30c9\u5165\u529b\u304b\u3089\u81ea\u52d5\u751f\u6210\u3002OWASP\u8a73\u7d30: [docs/43_security_intelligence.md](./43_security_intelligence.md)':'Auto-generated from wizard inputs. OWASP details: [docs/43_security_intelligence.md](./43_security_intelligence.md)')+'\n\n';
+    // §1 Defense-in-Depth
+    d+='## '+(G?'§1 \u591a\u5c64\u9632\u5fa1\u30a2\u30fc\u30ad\u30c6\u30af\u30c1\u30e3 (Defense-in-Depth)':'§1 Defense-in-Depth Architecture')+'\n\n';
+    d+=(G?'5\u5c64\u30bb\u30ad\u30e5\u30ea\u30c6\u30a3\u30e2\u30c7\u30eb\u3067\u30ea\u30b9\u30af\u3092\u5206\u6563\u3055\u305b\u3001\u5358\u4e00\u30ec\u30a4\u30e4\u30fc\u7a81\u7834\u304c\u5168\u4f53\u4fb5\u5bb3\u306b\u3064\u306a\u304c\u3089\u306a\u3044\u8a2d\u8a08\u3002':'5-layer security model distributes risk so a single layer breach does not lead to full compromise.')+'\n\n';
+    d+='| '+(G?'\u30ec\u30a4\u30e4\u30fc':'Layer')+' | '+(G?'\u76ee\u7684':'Purpose')+' | '+(G?'\u4e3b\u8981\u30b3\u30f3\u30c8\u30ed\u30fc\u30eb':'Key Controls')+' | '+(G?'\u672c\u30d7\u30ed\u30b8\u30a7\u30af\u30c8':'This Project')+' |\n';
+    d+='|------|------|-------------|------------|\n';
+    if(_isBaas){
+      d+='| Network+Host | '+(G?'BaaS\u7ba1\u7406\uff08\u81ea\u52d5\uff09':'BaaS managed (auto)')+' | '+(G?'\u30d7\u30ed\u30d0\u30a4\u30c0\u5074\u3067\u5bfe\u5fdc\u6e08':'Provider handles it')+' | \u2705 '+be121+' |\n';
+    } else {
+      d+='| Network | '+(G?'\u5916\u90e8\u8106\u5a01\u906e\u65ad':'Block external threats')+' | WAF, DDoS'+(G?'\u5bfe\u7b56':' protection')+', CDN | '+(sc121==='large'?G?'WAF/Cloudflare\u5fc5\u9808':'WAF/Cloudflare required':G?'CDN + \u30ec\u30fc\u30c8\u5236\u9650':'CDN + rate limiting')+' |\n';
+      d+='| Host | '+(G?'\u30b5\u30fc\u30d0\u30fc\u4fdd\u8b77':'Server protection')+' | '+(G?'OS\u5f37\u5316, \u6700\u5c0f\u6a29\u9650, \u30d1\u30c3\u30c1\u7ba1\u7406':'OS hardening, least privilege, patching')+' | '+(_isContainer?G?'Trivy/distroless\u6700\u5c0f\u5316':'Trivy/distroless image scan':G?'\u5b9a\u671f\u30d1\u30c3\u30c1\u9069\u7528':'Regular patching')+' |\n';
+    }
+    d+='| Application | '+(G?'\u30a2\u30d7\u30ea\u8106\u5a01\u6027\u5bfe\u7b56':'App vulnerability mitigation')+' | '+(G?'\u5165\u529b\u691c\u8a3c, OWASP Top 10, CSP':'Input validation, OWASP Top 10, CSP')+' | '+(G?'docs/43\u53c2\u7167':'See docs/43')+' |\n';
+    d+='| Data | '+(G?'\u30c7\u30fc\u30bf\u4fdd\u8b77':'Data protection')+' | '+(G?'\u6697\u53f7\u5316 (at-rest/in-transit), \u30de\u30b9\u30ad\u30f3\u30b0, RLS':'Encryption (at-rest/in-transit), masking, RLS')+' | '+(_hiSec?G?'AES-256 + RLS\u5fc5\u9808':'AES-256 + RLS required':G?'TLS 1.3 + DB\u6697\u53f7\u5316':'TLS 1.3 + DB encryption')+' |\n';
+    d+='| Monitoring | '+(G?'\u691c\u77e5\u30fb\u5bfe\u5fdc':'Detection & response')+' | '+(G?'SIEM, \u7570\u5e38\u691c\u77e5, \u30a2\u30e9\u30fc\u30c8':'SIEM, anomaly detection, alerting')+' | '+(sc121==='large'?G?'SIEM\u7d71\u5408\u63a8\u5968':'SIEM integration recommended':G?'\u30ed\u30b0\u96c6\u7d04 + \u30a2\u30e9\u30fc\u30c8':'Log aggregation + alerting')+' |\n\n';
+    if(sc121==='large'){d+='> \u26a0\ufe0f **'+(G?'\u5927\u898f\u6a21\u74b0\u5883':'Large scale')+' \u2014 '+(G?'WAF (AWS WAF/Cloudflare)\u3068DDoS\u5bfe\u7b56 (AWS Shield/Cloudflare DDoS)\u3092\u5fc5\u305a\u8a2d\u5b9a\u3057\u3066\u304f\u3060\u3055\u3044\u3002':'Configure WAF (AWS WAF/Cloudflare) and DDoS protection (AWS Shield) for production.')+'**\n\n';}
+    if(_isContainer){d+='> \ud83d\udc33 **'+(G?'\u30b3\u30f3\u30c6\u30ca\u30fc\u74b0\u5883':'Container environment')+' \u2014 '+(G?'distroless\u307e\u305f\u306falpine\u30d9\u30fc\u30b9\u30a4\u30e1\u30fc\u30b8\u3092\u4f7f\u7528\u3057\u3001Trivy\u3067CI\u30a4\u30e1\u30fc\u30b8\u30b9\u30ad\u30e3\u30f3\u3092\u5b9f\u65bd\u3057\u3066\u304f\u3060\u3055\u3044\u3002':'Use distroless or alpine base images and run Trivy image scanning in CI.')+'**\n\n';}
+    d+='> '+(G?'\u53c2\u7167: [A05 \u30bb\u30ad\u30e5\u30ea\u30c6\u30a3\u8a2d\u5b9a\u30df\u30b9](./43_security_intelligence.md)':'Reference: [A05 Security Misconfiguration](./43_security_intelligence.md)')+'\n\n';
+    // §2 Secrets Management Lifecycle
+    d+='## '+(G?'§2 \u30b7\u30fc\u30af\u30ec\u30c3\u30c8\u7ba1\u7406\u30e9\u30a4\u30d5\u30b5\u30a4\u30af\u30eb':'§2 Secrets Management Lifecycle')+'\n\n';
+    d+=(G?'\u30b7\u30fc\u30af\u30ec\u30c3\u30c8\uff08API\u30ad\u30fc\u30fbDB\u63a5\u7d9a\u6587\u5b57\u5217\u30fb\u30c8\u30fc\u30af\u30f3\uff09\u306f\u30b3\u30fc\u30c9\u306b\u30cf\u30fc\u30c9\u30b3\u30fc\u30c9\u305b\u305a\u3001\u5c02\u7528\u30c4\u30fc\u30eb\u3067\u7ba1\u7406\u3059\u308b\u3002':'Secrets (API keys, DB connection strings, tokens) must never be hardcoded — use dedicated management tools.')+'\n\n';
+    d+='### '+(G?'\u30e9\u30a4\u30d5\u30b5\u30a4\u30af\u30eb 5\u6bb5\u968e':'5-Stage Lifecycle')+'\n\n';
+    d+='| '+(G?'\u6bb5\u968e':'Stage')+' | '+(G?'\u5185\u5bb9':'What')+' | '+(G?'\u30d9\u30b9\u30c8\u30d7\u30e9\u30af\u30c6\u30a3\u30b9':'Best Practice')+' |\n|------|------|----------------|\n';
+    d+='| 1. Create | '+(G?'\u751f\u6210\u30fb\u767a\u884c':'Generate / issue')+' | '+(G?'\u6700\u5c0f\u6a29\u9650\u30fb\u6709\u52b9\u671f\u9650\u8a2d\u5b9a':'Least privilege + expiry')+' |\n';
+    d+='| 2. Store | '+(G?'\u5b89\u5168\u306a\u4fdd\u7ba1':'Secure storage')+' | '+(G?'\u5c02\u7528\u30c4\u30fc\u30eb\u4f7f\u7528\u30fbGit\u306b\u542b\u3081\u306a\u3044':'Use dedicated tool, never commit to Git')+' |\n';
+    d+='| 3. Access | '+(G?'\u30a2\u30af\u30bb\u30b9\u5236\u5fa1':'Access control')+' | '+(G?'\u74b0\u5883\u5909\u6570 or Secret Manager\u7d4c\u7531':'Via env vars or Secret Manager')+' |\n';
+    d+='| 4. Rotate | '+(G?'\u5b9a\u671f\u30ed\u30fc\u30c6\u30fc\u30b7\u30e7\u30f3':'Periodic rotation')+' | '+(G?'90\u65e5\u4ee5\u5185\u30fbCI/CD\u81ea\u52d5\u5316':'Within 90 days, automate in CI/CD')+' |\n';
+    d+='| 5. Revoke | '+(G?'\u5931\u52b9\u30fb\u5ec3\u68c4':'Revoke / retire')+' | '+(G?'\u5373\u6642\u5931\u52b9\u30fb\u76e3\u67fb\u30ed\u30b0\u8a18\u9332':'Immediate revocation + audit log')+' |\n\n';
+    d+='### '+(G?'\u30c4\u30fc\u30eb\u6bd4\u8f03 (6\u7a2e)':'Tool Comparison (6 tools)')+'\n\n';
+    d+='| '+(G?'\u30c4\u30fc\u30eb':'Tool')+' | '+(G?'\u30ed\u30fc\u30c6\u30fc\u30b7\u30e7\u30f3':'Rotation')+' | '+(G?'\u76e3\u67fb':'Audit')+' | '+(G?'\u9069\u5408\u74b0\u5883':'Best For')+' | '+(G?'\u30b3\u30b9\u30c8\u76ee\u5b89':'Cost')+' |\n|------|-----------|------|----------|------|\n';
+    d+='| **Doppler** | \u2705'+(G?'\u81ea\u52d5':'auto')+' | \u2705 | '+(G?'\u3042\u3089\u3086\u308b\u74b0\u5883':'Any environment')+' | Free\u301c |\n';
+    d+='| **HashiCorp Vault** | \u2705'+(G?'\u52d5\u7684':'dynamic')+' | \u2705 | '+(G?'\u5927\u898f\u6a21\u30fb\u30aa\u30f3\u30d7\u30ec':'Large scale / on-premise')+' | OSS/Enterprise |\n';
+    d+='| **SOPS** | \u26a0\ufe0f'+(G?'\u624b\u52d5':'manual')+' | \u2705Git | '+(G?'GitOps\u30fb\u30d5\u30a1\u30a4\u30eb\u30d9\u30fc\u30b9':'GitOps, file-based')+' | Free |\n';
+    d+='| **AWS Secrets Manager** | \u2705'+(G?'\u81ea\u52d5':'auto')+' | \u2705CloudTrail | '+(G?'AWS\u74b0\u5883':'AWS environments')+' | $0.40/secret/mo |\n';
+    d+='| **GCP Secret Manager** | \u2705'+(G?'\u81ea\u52d5':'auto')+' | \u2705Cloud Audit | '+(G?'GCP\u74b0\u5883':'GCP environments')+' | $0.06/10K ops |\n';
+    d+='| **1Password CLI** | \u26a0\ufe0f'+(G?'\u624b\u52d5':'manual')+' | \u2705 | '+(G?'\u30c1\u30fc\u30e0\u30fb\u958b\u767a\u74b0\u5883':'Teams, dev environments')+' | $3/user/mo |\n\n';
+    d+='### '+(G?'\u30c7\u30d7\u30ed\u30a4\u5225\u63a8\u5968':'Deploy-Specific Recommendation')+'\n\n';
+    if(_isVercel) d+='**Vercel**: '+(G?'Vercel Environment Variables\uff08\u6697\u53f7\u5316\u6e08\u307f\uff09\u3092\u4f7f\u7528\u3002`.env`\u30d5\u30a1\u30a4\u30eb\u306f\u30ed\u30fc\u30ab\u30eb\u306e\u307f\u3002':'Use Vercel Environment Variables (encrypted). Keep `.env` files local only.')+'\n\n';
+    else if(_isAWS) d+='**AWS**: '+(G?'AWS Secrets Manager\u3092\u4f7f\u7528\u3002\u30ed\u30fc\u30c6\u30fc\u30b7\u30e7\u30f3Lambda\u3067\u81ea\u52d5\u5316\u3002IAM\u30ed\u30fc\u30eb\u3067\u30a2\u30d7\u30ea\u304b\u3089\u30a2\u30af\u30bb\u30b9\u3002':'Use AWS Secrets Manager. Automate rotation with Lambda. Access from app via IAM Role.')+'\n\n';
+    else if(_isGCP) d+='**GCP**: '+(G?'GCP Secret Manager\u3092\u4f7f\u7528\u3002Cloud Run\u306e\u30b5\u30fc\u30d3\u30b9\u30a2\u30ab\u30a6\u30f3\u30c8\u306b\u6700\u5c0f\u6a29\u9650IAM\u3092\u8a2d\u5b9a\u3002':'Use GCP Secret Manager. Assign minimal permission IAM to Cloud Run service account.')+'\n\n';
+    else if(_isBaas) d+='**'+be121+'**: '+(G?'Firebase App Check + Firebase Secret Manager\u3092\u4f7f\u7528\u3002\u30af\u30e9\u30a4\u30a2\u30f3\u30c8\u30b5\u30a4\u30c9APIKey\u9732\u51fa\u306b\u6ce8\u610f\u3002':'Use Firebase App Check + Secret Manager. Beware of client-side API key exposure.')+'\n\n';
+    else d+='**'+dep121+'**: '+(G?'\u74b0\u5883\u5909\u6570\u7ba1\u7406\u30c4\u30fc\u30eb\uff08Doppler\u63a8\u5968\uff09\u3092\u4f7f\u7528\u3002\u30d7\u30e9\u30c3\u30c8\u30d5\u30a9\u30fc\u30e0\u306eSecret\u7ba1\u7406\u6a5f\u80fd\u3092\u6d3b\u7528\u3002':'Use env var management tool (Doppler recommended). Leverage platform secret management features.')+'\n\n';
+    d+='> \u26a0\ufe0f '+(G?'**\u30a8\u30f3\u30d9\u30ed\u30fc\u30d7\u6697\u53f7\u5316**: \u30c7\u30fc\u30bf\u30ad\u30fc (DEK)\u3092\u30de\u30b9\u30bf\u30fc\u30ad\u30fc (KEK)\u3067\u6697\u53f7\u5316\u3059\u308b2\u5c64\u69cb\u9020\u3002AWS KMS/Cloud KMS\u304cKEK\u3092\u7ba1\u7406\u3002':'**Envelope Encryption**: 2-layer structure \u2014 data key (DEK) encrypted by master key (KEK). AWS KMS/Cloud KMS manages KEK.')+'\n\n';
+    d+='> '+(G?'\u53c2\u7167: [A02 \u6697\u53f7\u5316\u306e\u5931\u6557](./43_security_intelligence.md)':'Reference: [A02 Cryptographic Failures](./43_security_intelligence.md)')+'\n\n';
+    // §3 Supply Chain Security
+    d+='## '+(G?'§3 \u30bd\u30d5\u30c8\u30a6\u30a7\u30a2\u30b5\u30d7\u30e9\u30a4\u30c1\u30a7\u30fc\u30f3\u30bb\u30ad\u30e5\u30ea\u30c6\u30a3':'§3 Software Supply Chain Security')+'\n\n';
+    d+=(G?'\u4f9d\u5b58\u95a2\u4fc2\u30fb\u30d3\u30eb\u30c9\u6210\u679c\u7269\u30fb\u30b3\u30f3\u30c6\u30ca\u30a4\u30e1\u30fc\u30b8\u3092\u901a\u3058\u305f\u653b\u6483\u30ea\u30b9\u30af\u3092\u4f53\u7cfb\u7684\u306b\u7ba1\u7406\u3059\u308b\u3002':'Systematically manage attack risks through dependencies, build artifacts, and container images.')+'\n\n';
+    d+='### '+(G?'SLSA \u6210\u719f\u5ea6\u30ec\u30d9\u30eb (Supply-chain Levels for Software Artifacts)':'SLSA Maturity Levels')+'\n\n';
+    d+='| Level | '+(G?'\u8981\u4ef6':'Requirements')+' | '+(G?'\u672c\u30d7\u30ed\u30b8\u30a7\u30af\u30c8\u76ee\u6a19 ('+sc121+')':'Target ('+sc121+')')+' |\n|-------|------------|-------------------|\n';
+    d+='| L1 | '+(G?'\u30d3\u30eb\u30c9\u30b9\u30af\u30ea\u30d7\u30c8\u306e\u30c9\u30ad\u30e5\u30e1\u30f3\u30c8\u5316':'Build script documentation')+' | '+(sc121==='solo'?'\u2705 '+(G?'\u63a8\u5968':'Recommended'):'\u2705 '+(G?'\u9054\u6210\u6e08\u307f\u57fa\u6e96':'Baseline'))+' |\n';
+    d+='| L2 | '+(G?'\u30d0\u30fc\u30b8\u30e7\u30f3\u7ba1\u7406 + CI/CD\u7d71\u5408':'Version control + CI/CD integration')+' | '+(sc121!=='solo'?'\u2705 '+(G?'\u63a8\u5968':'Recommended'):'—')+' |\n';
+    d+='| L3 | '+(G?'\u6539\u305a\u3093\u9632\u6b62\u30d3\u30eb\u30c9\u74b0\u5883':'Tamper-resistant build environment')+' | '+(sc121==='large'?'\u2705 '+(G?'\u63a8\u5968 (GitHub OIDC + Sigstore)':'Recommended (GitHub OIDC + Sigstore)'):'—')+' |\n';
+    d+='| L4 | '+(G?'\u5b8c\u5168\u306b\u5206\u96e2\u3057\u305f2\u8005\u7f72\u540d':'Fully isolated 2-party signing')+' | '+(G?'\u5927\u898f\u6a21\u91d1\u878d\u30fb\u653f\u5e9c\u5411\u3051\u306e\u307f':'Large-scale finance/government only')+' |\n\n';
+    d+='### SBOM (Software Bill of Materials)\n\n';
+    d+='| '+(G?'\u30c4\u30fc\u30eb':'Tool')+' | '+(G?'\u51fa\u529b\u5f62\u5f0f':'Output Format')+' | '+(G?'\u7528\u9014':'Usage')+' |\n|------|------------|------|\n';
+    d+='| **CycloneDX** | JSON/XML | '+(G?'\u8106\u5a01\u6027\u30b9\u30ad\u30e3\u30f3\u30fb\u30b3\u30f3\u30d7\u30e9\u30a4\u30a2\u30f3\u30b9':'Vulnerability scanning, compliance')+' |\n';
+    d+='| **Syft** | SPDX/CycloneDX | '+(G?'\u30b3\u30f3\u30c6\u30ca\u30fb\u30d5\u30a1\u30a4\u30eb\u30b7\u30b9\u30c6\u30e0SBOM\u751f\u6210':'Container / filesystem SBOM generation')+' |\n\n';
+    d+='**'+(G?'\u63a8\u5968\u30e9\u30a4\u30d5\u30b5\u30a4\u30af\u30eb':'Recommended lifecycle')+'**: '+(G?'(1)\u30d3\u30eb\u30c9\u6642SBOM\u751f\u6210 \u2192 (2)\u8106\u5a01\u6027DB\u7167\u5408 \u2192 (3)\u30ea\u30ea\u30fc\u30b9\u306b\u6dfb\u4ed8 \u2192 (4)\u5b9a\u671f\u518d\u30b9\u30ad\u30e3\u30f3':'(1) Generate SBOM at build \u2192 (2) Check against vuln DB \u2192 (3) Attach to release \u2192 (4) Periodic rescan')+'\n\n';
+    d+='### '+(G?'\u6210\u679c\u7269\u7f72\u540d & \u4f9d\u5b58\u95a2\u4fc2\u30dd\u30ea\u30b7\u30fc':'Artifact Signing & Dependency Policy')+'\n\n';
+    if(_isContainer){d+='- **cosign** (Sigstore): '+(G?'\u30b3\u30f3\u30c6\u30ca\u30a4\u30e1\u30fc\u30b8\u3078\u306e\u6697\u53f7\u7f72\u540d\u3002`cosign sign --key cosign.key image`':'Cryptographic signing of container images. `cosign sign --key cosign.key image`')+'\n';}
+    d+='- **npm provenance**: '+(G?'`npm publish --provenance` \u3067SBOM\u3092\u81ea\u52d5\u751f\u6210':'Auto-generate SBOM with `npm publish --provenance`')+'\n';
+    d+='- **lockfile**: '+(G?'`package-lock.json`/`pnpm-lock.yaml`\u3092\u5fc5\u305a\u30b3\u30df\u30c3\u30c8\u3002CI\u3067lockfile checksum\u691c\u8a3c':'Always commit lockfile. Verify lockfile checksum in CI')+'\n';
+    d+='- **--ignore-scripts**: '+(G?'npm\u30a4\u30f3\u30b9\u30c8\u30fc\u30eb\u6642\u306bpostinstall\u30b9\u30af\u30ea\u30d7\u30c8\u5b9f\u884c\u3092\u7981\u6b62\uff08SolarWinds\u578b\u653b\u6483\u9632\u6b62\uff09':'Prevent postinstall script execution on npm install (prevents SolarWinds-type attacks)')+'\n\n';
+    if(_isNode){d+='**Node.js**: `npm audit` (weekly CI) + Snyk (PR gate) + `npm-audit-resolver` (suppression\u7ba1\u7406)\n\n';}
+    if(_isPy){d+='**Python**: `pip-audit` + Bandit (`bandit -r src/`) + Safety (dependency check)\n\n';}
+    if(!_isNode&&!_isPy&&!_isBaas){d+='**'+be121+'**: Trivy (universal scanner) + \u30d7\u30e9\u30c3\u30c8\u30d5\u30a9\u30fc\u30e0\u56fa\u6709SCA tool\u3092\u4f75\u7528\n\n';}
+    d+='> '+(G?'\u53c2\u7167: [A03 \u30a4\u30f3\u30b8\u30a7\u30af\u30b7\u30e7\u30f3](./43_security_intelligence.md)':'Reference: [A03 Injection](./43_security_intelligence.md)')+'\n\n';
+    // §4 Data Classification
+    d+='## '+(G?'§4 \u30c7\u30fc\u30bf\u5206\u985e\u30d5\u30ec\u30fc\u30e0\u30ef\u30fc\u30af':'§4 Data Classification Framework')+'\n\n';
+    d+=(G?'\u5168\u30c7\u30fc\u30bf\u3092\u30d53\u30a4\u30a2\u306b\u5206\u985e\u3057\u3001\u30c6\u30a3\u30a2\u306b\u5fdc\u3058\u305f\u4fdd\u8b77\u8981\u4ef6\u3092\u9069\u7528\u3059\u308b\u3002':'Classify all data into 4 tiers and apply protection requirements per tier.')+'\n\n';
+    d+='| '+(G?'\u30c6\u30a3\u30a2':'Tier')+' | '+(G?'\u5b9a\u7fa9':'Definition')+' | '+(G?'\u6697\u53f7\u5316':'Encryption')+' | '+(G?'\u30a2\u30af\u30bb\u30b9\u5236\u5fa1':'Access Control')+' | '+(G?'\u4fdd\u5b58\u671f\u9593':'Retention')+' | '+(G?'\u76e3\u67fb':'Audit')+' |\n|------|------|---------|------------|---------|------|\n';
+    d+='| **Restricted** | PII/PHI/PCI | AES-256 | '+(G?'\u6700\u5c0f\u6a29\u9650 + MFA':'Least privilege + MFA')+' | '+(G?'\u6cd5\u5b9a\u671f\u9593':'Legal req')+' | \u2705 '+(G?'\u5fc5\u9808':'Required')+' |\n';
+    d+='| **Confidential** | '+(G?'\u696d\u52d9\u6a5f\u5bc6':'Business confidential')+' | TLS 1.3 + DB\u6697\u53f7\u5316 | RBAC | 3'+(G?'\u5e74':'y')+' | \u2705 '+(G?'\u63a8\u5968':'Recommended')+' |\n';
+    d+='| **Internal** | '+(G?'\u793e\u5185\u5229\u7528\u30c7\u30fc\u30bf':'Internal use data')+' | TLS 1.3 | '+(G?'\u8a8d\u8a3c\u6e08\u307f\u30e6\u30fc\u30b6\u30fc':'Authenticated users')+' | 1'+(G?'\u5e74':'y')+' | \u26a0\ufe0f '+(G?'\u4efb\u610f':'Optional')+' |\n';
+    d+='| **Public** | '+(G?'\u516c\u958b\u60c5\u5831':'Public information')+' | TLS 1.3 | '+(G?'\u306a\u3057':'None')+' | '+(G?'\u4e0d\u8981':'N/A')+' | \u2014 |\n\n';
+    if(entities&&entities.length>0){
+      d+='### '+(G?'\u30a8\u30f3\u30c6\u30a3\u30c6\u30a3\u81ea\u52d5\u5206\u985e\uff08\u672c\u30d7\u30ed\u30b8\u30a7\u30af\u30c8\uff09':'Entity Auto-Classification (This Project)')+'\n\n';
+      d+='| '+(G?'\u30a8\u30f3\u30c6\u30a3\u30c6\u30a3':'Entity')+' | '+(G?'\u5206\u985e':'Tier')+' | '+(G?'\u53d6\u6271\u3044\u8981\u4ef6':'Handling')+' |\n|--------|------|----------|\n';
+      entities.forEach(function(ent){
+        var tier=_classifyEnt(ent);
+        var req=tier==='restricted'?(G?'AES-256\u6697\u53f7\u5316 + RLS + MFA + \u76e3\u67fb\u30ed\u30b0':'AES-256 + RLS + MFA + Audit Log'):
+                tier==='confidential'?(G?'DB\u6697\u53f7\u5316 + RBAC + \u76e3\u67fb\u30ed\u30b0\u63a8\u5968':'DB encryption + RBAC + Audit Log'):
+                tier==='internal'?(G?'\u8a8d\u8a3c\u5fc5\u9808':'Auth required'):(G?'\u516c\u958b\u53ef':'Public OK');
+        d+='| '+ent+' | '+tier+' | '+req+' |\n';
+      });
+      d+='\n';
+    }
+    if(dom121==='health'||dom121==='medical'||/\u533b\u7642|\u75c5\u9662|hospital|clinic/i.test(a.purpose||'')){d+='> \ud83c\udfe5 '+(G?'**PHI (Protected Health Information)**: HIPAA\u6e96\u62e0\u304c\u5fc5\u8981\u3002\u60a3\u8005\u30c7\u30fc\u30bf\u306f\u5fc5\u305aRestricted\u6271\u3044\u3002':'**PHI (Protected Health Information)**: HIPAA compliance required. Patient data must be Restricted tier.')+'\n\n';}
+    if(dom121==='fintech'||/payment|\u6c7a\u6e08|pci/i.test(a.purpose||'')){d+='> \ud83d\udcb3 '+(G?'**PCI DSS**: \u30ab\u30fc\u30c9\u4f1a\u54e1\u30c7\u30fc\u30bf\u306fRestricted\u6271\u3044\u3002\u30c8\u30fc\u30af\u30ca\u30a4\u30bc\u30fc\u30b7\u30e7\u30f3\u3067PCI DSS\u30b9\u30b3\u30fc\u30d7\u3092\u6700\u5c0f\u5316\u63a8\u5968\u3002':'**PCI DSS**: Cardholder data is Restricted. Tokenization recommended to minimize PCI DSS scope.')+'\n\n';}
+    d+='> '+(G?'\u53c2\u7167: [A02 \u6697\u53f7\u5316](./43_security_intelligence.md) | [\u30b3\u30f3\u30d7\u30e9\u30a4\u30a2\u30f3\u30b9\u30de\u30c8\u30ea\u30af\u30b9](./45_compliance_matrix.md)':'Reference: [A02 Encryption](./43_security_intelligence.md) | [Compliance Matrix](./45_compliance_matrix.md)')+'\n\n';
+    // §5 Security Pipeline
+    d+='## '+(G?'§5 \u30bb\u30ad\u30e5\u30ea\u30c6\u30a3\u30d1\u30a4\u30d7\u30e9\u30a4\u30f3\u7d71\u5408':'§5 Security Pipeline Integration')+'\n\n';
+    d+=(G?'SAST\u30fbSCA\u30fbDAST\u3092CI/CD\u30d1\u30a4\u30d7\u30e9\u30a4\u30f3\u306b\u7d71\u5408\u3057\u3001\u30bb\u30ad\u30e5\u30ea\u30c6\u30a3\u3092\u300c\u5f8c\u4ed8\u3051\u300d\u3067\u306f\u306a\u304f\u300c\u7d44\u307f\u8fbc\u307f\u300d\u306b\u3059\u308b\u3002':'Integrate SAST, SCA, and DAST into CI/CD to make security built-in, not bolted on.')+'\n\n';
+    d+='### SAST / SCA '+(G?'\u30c4\u30fc\u30eb\u6bd4\u8f03':'Tool Comparison')+'\n\n';
+    d+='| '+(G?'\u30c4\u30fc\u30eb':'Tool')+' | '+(G?'\u7a2e\u5225':'Type')+' | '+(G?'\u8a00\u8a9e':'Language')+' | CI | '+(G?'\u7279\u5fb4':'Feature')+' |\n|------|------|------|---------|-------|\n';
+    d+='| **Semgrep** | SAST | '+(G?'\u591a\u8a00\u8a9e':'Multi-lang')+' | \u2705 GitHub Actions | '+(G?'\u30ab\u30b9\u30bf\u30e0\u30eb\u30fc\u30eb\u30fb\u9ad8\u901f':'Custom rules, fast')+' |\n';
+    d+='| **CodeQL** | SAST | JS/TS/Python/Go | \u2705 GitHub Advanced Security | '+(G?'\u6df1\u3044\u89e3\u6790\u30fbOSS\u7121\u6599':'Deep analysis, free for OSS')+' |\n';
+    d+='| **SonarQube** | SAST+SCA | '+(G?'\u591a\u8a00\u8a9e':'Multi-lang')+' | \u2705 PR gate | '+(G?'\u54c1\u8cea\u30b2\u30fc\u30c8\u30fb\u7dcf\u5408\u30ec\u30dd\u30fc\u30c8':'Quality gate, comprehensive report')+' |\n';
+    d+='| **Trivy** | SCA+Container | '+(G?'\u4e07\u80fd':'Universal')+' | \u2705 | SBOM'+(G?'\u751f\u6210\u30fbCVE\u30b9\u30ad\u30e3\u30f3':'gen + CVE scan')+' |\n';
+    d+='| **Snyk** | SCA | '+(G?'\u591a\u8a00\u8a9e':'Multi-lang')+' | \u2705 PR decorator | '+(G?'Fix PR\u81ea\u52d5\u751f\u6210':'Auto fix PR generation')+' |\n';
+    d+='| **npm audit** | SCA | Node.js | \u2705 | '+(G?'\u7d44\u307f\u8fbc\u307f\u30fb\u5373\u6642\u5b9f\u884c\u53ef':'Built-in, instant')+' |\n\n';
+    d+='### '+(G?'backend\u5225\u63a8\u5968\u30b9\u30bf\u30c3\u30af':'Backend-Specific Stack')+'\n\n';
+    if(_isNode){d+='**Node.js/TypeScript**: Semgrep (`semgrep --config=auto`) + `npm audit --audit-level=high` + Snyk (PR gate)\n\n';}
+    else if(_isPy){d+='**Python**: Semgrep + Bandit (`bandit -r src/`) + `pip-audit` (dependency check)\n\n';}
+    else if(_isBaas){d+='**BaaS ('+be121+')**: Semgrep (FE code) + `npm audit` + Snyk (client dependencies)\n\n';}
+    else{d+='**'+be121+'**: Trivy (universal) + Semgrep ('+(G?'\u30ab\u30b9\u30bf\u30e0\u30eb\u30fc\u30eb':'custom rules')+') + SonarQube (quality gate)\n\n';}
+    d+='### '+(G?'\u30bb\u30ad\u30e5\u30ea\u30c6\u30a3\u30b2\u30fc\u30c8\u57fa\u6e96':'Security Gate Criteria')+'\n\n';
+    d+='| '+(G?'\u30b2\u30fc\u30c8':'Gate')+' | '+(G?'\u30bf\u30a4\u30df\u30f3\u30b0':'Timing')+' | '+(G?'\u5408\u683c\u57fa\u6e96':'Pass Criteria')+' |\n|------|---------|----------|\n';
+    d+='| PR Gate | Pull Request | '+(G?'Critical/High\u8106\u5a01\u6027\u30bc\u30ed + SAST\u30a8\u30e9\u30fc\u30bc\u30ed':'Zero Critical/High vulns + zero SAST errors')+' |\n';
+    d+='| Deploy Gate | '+(G?'\u30b9\u30c6\u30fc\u30b8\u30f3\u30b0\u30c7\u30d7\u30ed\u30a4':'Staging deploy')+' | '+(G?'SAST\u30af\u30ea\u30fc\u30f3 + DAST\u57fa\u672c\u30c6\u30b9\u30c8\u901a\u904e':'SAST clean + DAST basic tests passed')+' |\n';
+    d+='| Release Gate | '+(G?'\u672c\u756a\u30ea\u30ea\u30fc\u30b9':'Production release')+' | '+(G?'\u5168\u30bb\u30ad\u30e5\u30ea\u30c6\u30a3\u30c6\u30b9\u30c8\u901a\u904e + \u30da\u30f3\u30c6\u30b9\u30c8\u7d50\u679c\u78ba\u8a8d':'All security tests passed + pentest results reviewed')+' |\n\n';
+    d+='### '+(G?'\u8106\u5a01\u6027\u5bfe\u5fdc SLA':'Vulnerability Response SLA')+'\n\n';
+    d+='| '+(G?'\u91cd\u5927\u5ea6':'Severity')+' | SLA | '+(G?'\u5bfe\u5fdc\u65b9\u9488':'Policy')+' |\n|-------|-----|--------|\n';
+    d+='| \ud83d\udd34 Critical | 24h | '+(G?'\u5373\u6642\u5bfe\u5fdc\u30fb\u672c\u756a\u505c\u6b62\u691c\u8a0e':'Immediate fix, consider prod halt')+' |\n';
+    d+='| \ud83d\udfe0 High | 7d | '+(G?'\u7dca\u6025\u30ea\u30ea\u30fc\u30b9\u5bfe\u5fdc':'Emergency release')+' |\n';
+    d+='| \ud83d\udfe1 Medium | 30d | '+(G?'\u6b21\u30b9\u30d7\u30ea\u30f3\u30c8\u306b\u542b\u3081\u308b':'Include in next sprint')+' |\n';
+    d+='| \ud83d\udd35 Low | 90d | '+(G?'\u30d0\u30c3\u30af\u30ed\u30b0\u7a4d\u307f':'Add to backlog')+' |\n\n';
+    d+='> '+(G?'\u53c2\u7167: [\u30bb\u30ad\u30e5\u30ea\u30c6\u30a3\u30c6\u30b9\u30c8](./47_security_testing.md)':'Reference: [Security Testing](./47_security_testing.md)')+'\n\n';
+    // §6 Security Metrics
+    d+='## '+(G?'§6 \u30bb\u30ad\u30e5\u30ea\u30c6\u30a3\u30e1\u30c8\u30ea\u30af\u30b9\u30fbKPI':'§6 Security Metrics & KPI')+'\n\n';
+    d+=(G?'\u6e2c\u5b9a\u306a\u304d\u6539\u5584\u306f\u306a\u3044\u3002\u4ee5\u4e0b8\u6307\u6a19\u3067\u30bb\u30ad\u30e5\u30ea\u30c6\u30a3\u6210\u719f\u5ea6\u3092\u5b9a\u91cf\u5316\u3059\u308b\u3002':'You cannot improve what you do not measure. Quantify security maturity with these 8 metrics.')+'\n\n';
+    d+='| '+(G?'\u6307\u6a19':'Metric')+' | '+(G?'\u5b9a\u7fa9':'Definition')+' | '+(G?'\u76ee\u6a19\u5024 ('+sc121+')':'Target ('+sc121+')')+' |\n|------|------|-----|\n';
+    d+='| **MTTD** | '+(G?'\u5e73\u5747\u691c\u77e5\u6642\u9593 (Mean Time to Detect)':'Mean Time to Detect')+' | '+(sc121==='large'?'< 1h':sc121==='medium'?'< 24h':'< 72h')+' |\n';
+    d+='| **MTTR** | '+(G?'\u5e73\u5747\u4fee\u5fa9\u6642\u9593 (Mean Time to Respond)':'Mean Time to Respond')+' | '+(sc121==='large'?G?'Critical < 4\u6642\u9593':'Critical < 4h':sc121==='medium'?G?'Critical < 24\u6642\u9593':'Critical < 24h':G?'Critical < 72\u6642\u9593':'Critical < 72h')+' |\n';
+    d+='| **Vuln Aging** | '+(G?'\u8106\u5a01\u6027\u653e\u7f6e\u671f\u9593':'Average open vulnerability age')+' | '+(G?'High\u4ee5\u4e0a\u306e\u5e73\u5747\u653e\u7f6e < 7\u65e5':'High+ avg age < 7d')+' |\n';
+    d+='| **Patch Cadence** | '+(G?'\u4f9d\u5b58\u95a2\u4fc2\u66f4\u65b0\u983b\u5ea6':'Dependency update frequency')+' | '+(G?'\u6708 2\u56de\u4ee5\u4e0a':'\u22652x/month')+' |\n';
+    d+='| **Security Debt** | '+(G?'\u30bb\u30ad\u30e5\u30ea\u30c6\u30a3\u8ca0\u50b5\u6bd4\u7387 (\u653e\u7f6e/\u7dcf\u8106\u5a01\u6027)':'Ratio of open to total vulns')+' | < 10% |\n';
+    d+='| **FP Rate** | '+(G?'SAST\u306e\u8aa4\u691c\u77e5\u7387':'SAST false positive rate')+' | < 20% |\n';
+    d+='| **OWASP Coverage** | '+(G?'OWASP Top 10\u30ab\u30d0\u30fc\u7387':'OWASP Top 10 coverage')+' | '+(sc121==='large'?'10/10':sc121==='medium'?'8/10':'5/10')+' |\n';
+    d+='| **Dep Freshness** | '+(G?'\u4f9d\u5b58\u95a2\u4fc2\u306e\u65b0\u9bae\u5ea6 (\u6700\u65b0\u30d0\u30fc\u30b8\u30e7\u30f3\u7387)':'Dependency freshness (latest version rate)')+' | '+(G?'Major\u4f9d\u5b58\u95a2\u4fc2\u306e80%\u4ee5\u4e0a':'\u226580% of majors')+' |\n\n';
+    d+='### '+(G?'\u30ec\u30dd\u30fc\u30c8\u983b\u5ea6 (scale\u5225)':'Reporting Frequency (by scale)')+'\n\n';
+    d+='- **solo**: '+(G?'\u6708\u6b21\u30ec\u30d3\u30e5\u30fc\uff08\u30bb\u30ad\u30e5\u30ea\u30c6\u30a3\u30b9\u30ad\u30e3\u30f3\u81ea\u52d5\u5b9f\u884c + \u7d50\u679c\u78ba\u8a8d\uff09':'Monthly review (automated scan + result check)')+'\n';
+    d+='- **medium**: '+(G?'\u9694\u9031\u30ec\u30d3\u30e5\u30fc\uff08KPI\u30c0\u30c3\u30b7\u30e5\u30dc\u30fc\u30c9 + PR gate\u7d50\u679c\u96c6\u8a08\uff09':'Biweekly review (KPI dashboard + PR gate results)')+'\n';
+    d+='- **large**: '+(G?'\u9031\u6b21\u30ec\u30d3\u30e5\u30fc\uff08SIEM\u7d71\u5408 + \u30bb\u30ad\u30e5\u30ea\u30c6\u30a3\u59d4\u54e1\u4f1a\u5831\u544a\uff09':'Weekly review (SIEM integration + security committee report)')+'\n\n';
+    d+='### '+(G?'\u6210\u719f\u5ea6 3\u30ec\u30d9\u30eb':'3 Maturity Levels')+'\n\n';
+    d+='| '+(G?'\u30ec\u30d9\u30eb':'Level')+' | '+(G?'\u7279\u5fb4':'Characteristics')+' | '+(G?'\u672c\u30d7\u30ed\u30b8\u30a7\u30af\u30c8':'This Project')+' |\n|------|------|------------|\n';
+    d+='| Reactive | '+(G?'\u30a4\u30f3\u30b7\u30c7\u30f3\u30c8\u767a\u751f\u5f8c\u306b\u5bfe\u5fdc':'React after incident')+' | \u2014 |\n';
+    d+='| Proactive | '+(G?'\u5b9a\u671f\u30b9\u30ad\u30e3\u30f3\u30fb\u30b2\u30fc\u30c8\u7ba1\u7406':'Regular scanning + gate management')+' | '+(sc121!=='solo'?'\u2705 '+(G?'\u76ee\u6a19':'Target'):'\u2014')+' |\n';
+    d+='| Predictive | '+(G?'\u8105\u5a01\u30a4\u30f3\u30c6\u30ea\u30b8\u30a7\u30f3\u30b9\u30fbAI\u7570\u5e38\u691c\u77e5':'Threat intelligence + AI anomaly detection')+' | '+(sc121==='large'?'\u2705 '+(G?'\u76ee\u6a19':'Target'):'\u2014')+' |\n\n';
+    if(_hiSec){d+='> \ud83d\udd12 **'+(G?'\u9ad8\u30bb\u30ad\u30e5\u30ea\u30c6\u30a3\u30c9\u30e1\u30a4\u30f3 ('+dom121+')':'High Security Domain ('+dom121+')')+' \u2014 '+(G?'\u30bb\u30ad\u30e5\u30ea\u30c6\u30a3\u30e1\u30c8\u30ea\u30af\u30b9\u3092\u5b9a\u671f\u7684\u306b\u30b9\u30c6\u30fc\u30af\u30db\u30eb\u30c0\u30fc\u306b\u5831\u544a\u3057\u3001\u30b3\u30f3\u30d7\u30e9\u30a4\u30a2\u30f3\u30b9\u8981\u4ef6\u3078\u306e\u9069\u5408\u3092\u7d99\u7d9a\u7684\u306b\u8a3c\u660e\u3057\u3066\u304f\u3060\u3055\u3044\u3002':'Regularly report security metrics to stakeholders and continuously demonstrate compliance.')+'**\n\n';}
+    d+='### '+(G?'\u53c2\u7167\u30c9\u30ad\u30e5\u30e1\u30f3\u30c8':'Reference Documents')+'\n\n';
+    d+='- ['+(G?'OWASP\u30bb\u30ad\u30e5\u30ea\u30c6\u30a3\u30a4\u30f3\u30c6\u30ea\u30b8\u30a7\u30f3\u30b9':'OWASP Security Intelligence')+'](./43_security_intelligence.md)\n';
+    d+='- ['+(G?'\u8105\u5a01\u30e2\u30c7\u30eb':'Threat Model')+'](./44_threat_model.md)\n';
+    d+='- ['+(G?'\u30b3\u30f3\u30d7\u30e9\u30a4\u30a2\u30f3\u30b9\u30de\u30c8\u30ea\u30af\u30b9':'Compliance Matrix')+'](./45_compliance_matrix.md)\n';
+    d+='- ['+(G?'\u30bb\u30ad\u30e5\u30ea\u30c6\u30a3\u30c6\u30b9\u30c8':'Security Testing')+'](./47_security_testing.md)\n';
+    d+='- ['+(G?'\u8a8d\u8a3c\u30a2\u30fc\u30ad\u30c6\u30af\u30c1\u30e3':'Auth Architecture')+'](./119_auth_architecture_guide.md)\n';
+    d+='- ['+(G?'\u30b7\u30b9\u30c6\u30e0\u30c7\u30b6\u30a4\u30f3':'System Design')+'](./120_system_design_guide.md)\n';
+    S.files['docs/121_security_design_guide.md']=d;
+  })();
+
   // ═══ docs/108_uat_acceptance.md ═══
   const uatFeatures=features.slice(0,Math.min(features.length,6));
   let uat108='# '+pn+' — '+(G?'UAT受入テスト・リリース判定':'UAT Acceptance Test & Release Judgment')+'\n> '+date+'\n\n';
