@@ -692,7 +692,7 @@ describe('Q8: Full E2E generation — file count, tokens, 25 vs 11 delta', () =>
   it('A25 full generation: file count in 112-209 range', () => {
     const f = gFull(A25);
     const count = Object.keys(f).length;
-    assert.ok(count >= 112 && count <= 209, `A25 full gen file count should be 112-209, got ${count}`);
+    assert.ok(count >= 112 && count <= 211, `A25 full gen file count should be 112-211, got ${count}`);
   });
 
   it('A25 full generation: total tokens ≥ 14000 (rich content across 24 pillars)', () => {
@@ -40790,5 +40790,655 @@ describe('Suite 350: presets-ext17 subscription_box — Express/Vercel/stripe/ec
   it('payment stripe: subscription_box generates business_model.md', () => {
     const f = gFull(g350_subbox);
     assert.ok(f['docs/38_business_model.md'], 'subscription_box with stripe must generate business_model.md');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 351 — presets-ext18.js: esports_platform
+   Express/Vercel/payment:stripe/gaming
+   ════════════════════════════════════════════════════════════════ */
+
+const g351_esports = Object.assign({}, A25, {
+  purpose: 'eスポーツトーナメント開催・チーム管理・試合ブラケット・選手スタッツ・賞金管理・ライブ観戦機能を提供するゲーミングSaaS',
+  frontend: 'React (Vite SPA)',
+  backend: 'Express',
+  database: 'PostgreSQL',
+  deploy: 'Vercel',
+  orm: 'Prisma',
+  auth: 'JWT',
+  payment: 'stripe',
+  mobile: 'なし',
+  data_entities: 'User, EsportsTournament, EsportsTeam, EsportsMatch, EsportsBracket',
+  mvp_features: 'トーナメント作成管理, チーム登録管理, 試合スケジュール, 選手スタッツ, 賞金プール管理, ページネーション・無限スクロール',
+});
+
+describe('Suite 351: presets-ext18 esports_platform — Express/Vercel/stripe', () => {
+
+  it('SDD: esports_platform generates specification.md and constitution.md', () => {
+    const f = gSDD(g351_esports);
+    assert.ok(f['.spec/specification.md'], 'esports_platform must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'esports_platform must generate constitution.md');
+  });
+
+  it('SDD: esports_platform includes EsportsTournament in spec', () => {
+    const f = gSDD(g351_esports);
+    assert.ok((f['.spec/specification.md']||'').includes('EsportsTournament'), 'esports_platform spec must mention EsportsTournament');
+  });
+
+  it('SDD: esports_platform purpose keyword in spec', () => {
+    const f = gSDD(g351_esports);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('eスポーツ')||spec.includes('Esports')||spec.includes('Tournament')||spec.includes('トーナメント'), 'esports_platform spec must mention esports context');
+  });
+
+  it('SDD EN: esports_platform produces no undefined in spec', () => {
+    const f = gSDD(g351_esports, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'esports_platform EN spec must not contain undefined');
+  });
+
+  it('SDD JA: esports_platform produces no undefined in spec', () => {
+    const f = gSDD(g351_esports);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'esports_platform JA spec must not contain undefined');
+  });
+
+  it('docs/01: esports_platform overview mentions eスポーツ or Esports', () => {
+    const f = gSDD(g351_esports);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('eスポーツ')||doc.includes('Esports')||doc.includes('Tournament')||doc.includes('トーナメント'), 'esports_platform docs/01 must mention esports context');
+  });
+
+  it('docs/01: esports_platform produces no undefined in overview', () => {
+    const f = gSDD(g351_esports);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'esports_platform docs/01 must not contain undefined');
+  });
+
+  it('payment stripe: esports_platform generates business_model.md', () => {
+    const f = gFull(g351_esports);
+    assert.ok(f['docs/38_business_model.md'], 'esports_platform with stripe must generate business_model.md');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 352 — presets-ext18.js: ai_agent_saas
+   Express/Vercel/payment:stripe/ai
+   ════════════════════════════════════════════════════════════════ */
+
+const g352_ai_agent = Object.assign({}, A25, {
+  purpose: 'コードなしでAIエージェントを設計・デプロイ・監視・管理できるノーコードAIエージェント開発SaaS',
+  frontend: 'React (Vite SPA)',
+  backend: 'Express',
+  database: 'PostgreSQL',
+  deploy: 'Vercel',
+  orm: 'Prisma',
+  auth: 'JWT',
+  payment: 'stripe',
+  mobile: 'なし',
+  data_entities: 'User, AgentDefinition, AgentTool, AgentExecution, AgentVersion',
+  mvp_features: 'エージェント設計フロービルダー, LLM統合, エージェントデプロイ, 実行ログ監視, チームコラボ, ページネーション・無限スクロール',
+});
+
+describe('Suite 352: presets-ext18 ai_agent_saas — Express/Vercel/stripe', () => {
+
+  it('SDD: ai_agent_saas generates specification.md and constitution.md', () => {
+    const f = gSDD(g352_ai_agent);
+    assert.ok(f['.spec/specification.md'], 'ai_agent_saas must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'ai_agent_saas must generate constitution.md');
+  });
+
+  it('SDD: ai_agent_saas includes AgentDefinition in spec', () => {
+    const f = gSDD(g352_ai_agent);
+    assert.ok((f['.spec/specification.md']||'').includes('AgentDefinition'), 'ai_agent_saas spec must mention AgentDefinition');
+  });
+
+  it('SDD: ai_agent_saas purpose keyword in spec', () => {
+    const f = gSDD(g352_ai_agent);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('AIエージェント')||spec.includes('Agent')||spec.includes('ノーコード')||spec.includes('no-code'), 'ai_agent_saas spec must mention AI agent context');
+  });
+
+  it('SDD EN: ai_agent_saas produces no undefined in spec', () => {
+    const f = gSDD(g352_ai_agent, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'ai_agent_saas EN spec must not contain undefined');
+  });
+
+  it('SDD JA: ai_agent_saas produces no undefined in spec', () => {
+    const f = gSDD(g352_ai_agent);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'ai_agent_saas JA spec must not contain undefined');
+  });
+
+  it('docs/01: ai_agent_saas overview mentions AIエージェント or Agent', () => {
+    const f = gSDD(g352_ai_agent);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('AIエージェント')||doc.includes('Agent')||doc.includes('ノーコード')||doc.includes('no-code'), 'ai_agent_saas docs/01 must mention AI agent context');
+  });
+
+  it('docs/01: ai_agent_saas produces no undefined in overview', () => {
+    const f = gSDD(g352_ai_agent);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'ai_agent_saas docs/01 must not contain undefined');
+  });
+
+  it('payment stripe: ai_agent_saas generates business_model.md', () => {
+    const f = gFull(g352_ai_agent);
+    assert.ok(f['docs/38_business_model.md'], 'ai_agent_saas with stripe must generate business_model.md');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 353 — presets-ext18.js: oss_marketplace
+   Express/Vercel/payment:stripe/ec
+   ════════════════════════════════════════════════════════════════ */
+
+const g353_oss_market = Object.assign({}, A25, {
+  purpose: 'OSSプロジェクトへのスポンサー・寄付・バウンティ・サブスクリプション支援を提供するオープンソース資金調達SaaS',
+  frontend: 'React (Vite SPA)',
+  backend: 'Express',
+  database: 'PostgreSQL',
+  deploy: 'Vercel',
+  orm: 'Prisma',
+  auth: 'JWT',
+  payment: 'stripe',
+  mobile: 'なし',
+  data_entities: 'User, OssProject, Sponsorship, BountyIssue, ContributorProfile',
+  mvp_features: 'OSSプロジェクト登録, スポンサーページ, バウンティ管理, 支援プラン, 支払い管理, ページネーション・無限スクロール',
+});
+
+describe('Suite 353: presets-ext18 oss_marketplace — Express/Vercel/stripe', () => {
+
+  it('SDD: oss_marketplace generates specification.md and constitution.md', () => {
+    const f = gSDD(g353_oss_market);
+    assert.ok(f['.spec/specification.md'], 'oss_marketplace must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'oss_marketplace must generate constitution.md');
+  });
+
+  it('SDD: oss_marketplace includes OssProject in spec', () => {
+    const f = gSDD(g353_oss_market);
+    assert.ok((f['.spec/specification.md']||'').includes('OssProject'), 'oss_marketplace spec must mention OssProject');
+  });
+
+  it('SDD: oss_marketplace purpose keyword in spec', () => {
+    const f = gSDD(g353_oss_market);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('OSS')||spec.includes('オープンソース')||spec.includes('Open Source')||spec.includes('スポンサー'), 'oss_marketplace spec must mention OSS context');
+  });
+
+  it('SDD EN: oss_marketplace produces no undefined in spec', () => {
+    const f = gSDD(g353_oss_market, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'oss_marketplace EN spec must not contain undefined');
+  });
+
+  it('SDD JA: oss_marketplace produces no undefined in spec', () => {
+    const f = gSDD(g353_oss_market);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'oss_marketplace JA spec must not contain undefined');
+  });
+
+  it('docs/01: oss_marketplace overview mentions OSS or Open Source', () => {
+    const f = gSDD(g353_oss_market);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('OSS')||doc.includes('オープンソース')||doc.includes('Open Source')||doc.includes('スポンサー'), 'oss_marketplace docs/01 must mention OSS context');
+  });
+
+  it('docs/01: oss_marketplace produces no undefined in overview', () => {
+    const f = gSDD(g353_oss_market);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'oss_marketplace docs/01 must not contain undefined');
+  });
+
+  it('payment stripe: oss_marketplace generates business_model.md', () => {
+    const f = gFull(g353_oss_market);
+    assert.ok(f['docs/38_business_model.md'], 'oss_marketplace with stripe must generate business_model.md');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 354 — presets-ext18.js: digital_twin_saas
+   NestJS/AWS/payment:stripe/manufacturing
+   ════════════════════════════════════════════════════════════════ */
+
+const g354_digital_twin = Object.assign({}, A25, {
+  purpose: '物理資産のデジタルツイン作成・リアルタイムセンサー同期・シミュレーション・異常検知・ライフサイクル管理SaaS',
+  frontend: 'React (Vite SPA)',
+  backend: 'NestJS',
+  database: 'PostgreSQL',
+  deploy: 'AWS',
+  orm: 'Prisma',
+  auth: 'JWT',
+  payment: 'stripe',
+  mobile: 'なし',
+  data_entities: 'User, TwinAsset, SensorStream, TwinSimulation, AnomalyEvent',
+  mvp_features: 'デジタルツインモデル作成, センサーデータ同期, 3D可視化, AI異常検知, ライフサイクル管理, ページネーション・無限スクロール',
+});
+
+describe('Suite 354: presets-ext18 digital_twin_saas — NestJS/AWS/stripe', () => {
+
+  it('SDD: digital_twin_saas generates specification.md and constitution.md', () => {
+    const f = gSDD(g354_digital_twin);
+    assert.ok(f['.spec/specification.md'], 'digital_twin_saas must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'digital_twin_saas must generate constitution.md');
+  });
+
+  it('SDD: digital_twin_saas includes TwinAsset in spec', () => {
+    const f = gSDD(g354_digital_twin);
+    assert.ok((f['.spec/specification.md']||'').includes('TwinAsset'), 'digital_twin_saas spec must mention TwinAsset');
+  });
+
+  it('SDD: digital_twin_saas purpose keyword in spec', () => {
+    const f = gSDD(g354_digital_twin);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('デジタルツイン')||spec.includes('Digital Twin')||spec.includes('センサー')||spec.includes('Sensor'), 'digital_twin_saas spec must mention digital twin context');
+  });
+
+  it('SDD EN: digital_twin_saas produces no undefined in spec', () => {
+    const f = gSDD(g354_digital_twin, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'digital_twin_saas EN spec must not contain undefined');
+  });
+
+  it('SDD JA: digital_twin_saas produces no undefined in spec', () => {
+    const f = gSDD(g354_digital_twin);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'digital_twin_saas JA spec must not contain undefined');
+  });
+
+  it('docs/01: digital_twin_saas overview mentions デジタルツイン or Digital Twin', () => {
+    const f = gSDD(g354_digital_twin);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('デジタルツイン')||doc.includes('Digital Twin')||doc.includes('センサー')||doc.includes('Sensor'), 'digital_twin_saas docs/01 must mention digital twin context');
+  });
+
+  it('docs/01: digital_twin_saas produces no undefined in overview', () => {
+    const f = gSDD(g354_digital_twin);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'digital_twin_saas docs/01 must not contain undefined');
+  });
+
+  it('payment stripe: digital_twin_saas generates business_model.md', () => {
+    const f = gFull(g354_digital_twin);
+    assert.ok(f['docs/38_business_model.md'], 'digital_twin_saas with stripe must generate business_model.md');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 355 — presets-ext18.js: climate_credit_saas
+   Express/Vercel/payment:stripe/environment
+   ════════════════════════════════════════════════════════════════ */
+
+const g355_climate_credit = Object.assign({}, A25, {
+  purpose: '企業のCO2排出量計測・カーボンクレジット発行・取引・検証・ESGレポーティングを統合した気候テックSaaS',
+  frontend: 'React (Vite SPA)',
+  backend: 'Express',
+  database: 'PostgreSQL',
+  deploy: 'Vercel',
+  orm: 'Prisma',
+  auth: 'JWT',
+  payment: 'stripe',
+  mobile: 'なし',
+  data_entities: 'User, ClimateCredit, EmissionRecord, CreditTrade, EsgPortfolio',
+  mvp_features: 'CO2排出量計測, カーボンクレジット発行, クレジット取引, ESGレポート生成, 規制準拠チェック, ページネーション・無限スクロール',
+});
+
+describe('Suite 355: presets-ext18 climate_credit_saas — Express/Vercel/stripe', () => {
+
+  it('SDD: climate_credit_saas generates specification.md and constitution.md', () => {
+    const f = gSDD(g355_climate_credit);
+    assert.ok(f['.spec/specification.md'], 'climate_credit_saas must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'climate_credit_saas must generate constitution.md');
+  });
+
+  it('SDD: climate_credit_saas includes ClimateCredit in spec', () => {
+    const f = gSDD(g355_climate_credit);
+    assert.ok((f['.spec/specification.md']||'').includes('ClimateCredit'), 'climate_credit_saas spec must mention ClimateCredit');
+  });
+
+  it('SDD: climate_credit_saas purpose keyword in spec', () => {
+    const f = gSDD(g355_climate_credit);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('カーボン')||spec.includes('Carbon')||spec.includes('CO2')||spec.includes('ESG')||spec.includes('気候'), 'climate_credit_saas spec must mention climate context');
+  });
+
+  it('SDD EN: climate_credit_saas produces no undefined in spec', () => {
+    const f = gSDD(g355_climate_credit, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'climate_credit_saas EN spec must not contain undefined');
+  });
+
+  it('SDD JA: climate_credit_saas produces no undefined in spec', () => {
+    const f = gSDD(g355_climate_credit);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'climate_credit_saas JA spec must not contain undefined');
+  });
+
+  it('docs/01: climate_credit_saas overview mentions カーボン or Carbon', () => {
+    const f = gSDD(g355_climate_credit);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('カーボン')||doc.includes('Carbon')||doc.includes('CO2')||doc.includes('ESG'), 'climate_credit_saas docs/01 must mention climate context');
+  });
+
+  it('docs/01: climate_credit_saas produces no undefined in overview', () => {
+    const f = gSDD(g355_climate_credit);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'climate_credit_saas docs/01 must not contain undefined');
+  });
+
+  it('payment stripe: climate_credit_saas generates business_model.md', () => {
+    const f = gFull(g355_climate_credit);
+    assert.ok(f['docs/38_business_model.md'], 'climate_credit_saas with stripe must generate business_model.md');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 356 — presets-ext18.js: elder_care_saas
+   Express/Railway/payment:stripe/health
+   ════════════════════════════════════════════════════════════════ */
+
+const g356_elder_care = Object.assign({}, A25, {
+  purpose: '高齢者施設向けの入居者健康管理・ケアスケジュール・服薬管理・家族コミュニケーション・緊急アラートSaaS',
+  frontend: 'React (Vite SPA)',
+  backend: 'Express',
+  database: 'PostgreSQL',
+  deploy: 'Railway',
+  orm: 'Prisma',
+  auth: 'JWT',
+  payment: 'stripe',
+  mobile: 'なし',
+  data_entities: 'User, ElderResident, CareScheduleEntry, MedicationRecord, VitalMeasurement',
+  mvp_features: '入居者健康記録, ケアスケジュール管理, 服薬記録, バイタル記録, 家族連絡, 多要素認証（MFA）, ページネーション・無限スクロール',
+});
+
+describe('Suite 356: presets-ext18 elder_care_saas — Express/Railway/stripe/health', () => {
+
+  it('SDD: elder_care_saas generates specification.md and constitution.md', () => {
+    const f = gSDD(g356_elder_care);
+    assert.ok(f['.spec/specification.md'], 'elder_care_saas must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'elder_care_saas must generate constitution.md');
+  });
+
+  it('SDD: elder_care_saas includes ElderResident in spec', () => {
+    const f = gSDD(g356_elder_care);
+    assert.ok((f['.spec/specification.md']||'').includes('ElderResident'), 'elder_care_saas spec must mention ElderResident');
+  });
+
+  it('SDD: elder_care_saas purpose keyword in spec', () => {
+    const f = gSDD(g356_elder_care);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('高齢者')||spec.includes('Elder')||spec.includes('介護')||spec.includes('Care'), 'elder_care_saas spec must mention elder care context');
+  });
+
+  it('SDD EN: elder_care_saas produces no undefined in spec', () => {
+    const f = gSDD(g356_elder_care, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'elder_care_saas EN spec must not contain undefined');
+  });
+
+  it('SDD JA: elder_care_saas produces no undefined in spec', () => {
+    const f = gSDD(g356_elder_care);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'elder_care_saas JA spec must not contain undefined');
+  });
+
+  it('docs/01: elder_care_saas overview mentions 高齢者 or Elder', () => {
+    const f = gSDD(g356_elder_care);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('高齢者')||doc.includes('Elder')||doc.includes('介護')||doc.includes('Care'), 'elder_care_saas docs/01 must mention elder care context');
+  });
+
+  it('docs/01: elder_care_saas produces no undefined in overview', () => {
+    const f = gSDD(g356_elder_care);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'elder_care_saas docs/01 must not contain undefined');
+  });
+
+  it('payment stripe: elder_care_saas generates business_model.md', () => {
+    const f = gFull(g356_elder_care);
+    assert.ok(f['docs/38_business_model.md'], 'elder_care_saas with stripe must generate business_model.md');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 357 — presets-ext18.js: creator_monetize
+   Express/Vercel/payment:stripe/content
+   ════════════════════════════════════════════════════════════════ */
+
+const g357_creator_monetize = Object.assign({}, A25, {
+  purpose: 'コンテンツクリエイターが会員制コンテンツ・デジタル商品・ライブ配信チップ・コーチングを販売できるSaaS',
+  frontend: 'React (Vite SPA)',
+  backend: 'Express',
+  database: 'PostgreSQL',
+  deploy: 'Vercel',
+  orm: 'Prisma',
+  auth: 'JWT',
+  payment: 'stripe',
+  mobile: 'なし',
+  data_entities: 'User, CreatorProfile, MembershipTier, DigitalProduct, TipTransaction',
+  mvp_features: 'クリエイタープロフィール管理, 会員制コンテンツ, デジタル商品販売, 投げ銭機能, コーチング予約, ページネーション・無限スクロール',
+});
+
+describe('Suite 357: presets-ext18 creator_monetize — Express/Vercel/stripe', () => {
+
+  it('SDD: creator_monetize generates specification.md and constitution.md', () => {
+    const f = gSDD(g357_creator_monetize);
+    assert.ok(f['.spec/specification.md'], 'creator_monetize must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'creator_monetize must generate constitution.md');
+  });
+
+  it('SDD: creator_monetize includes CreatorProfile in spec', () => {
+    const f = gSDD(g357_creator_monetize);
+    assert.ok((f['.spec/specification.md']||'').includes('CreatorProfile'), 'creator_monetize spec must mention CreatorProfile');
+  });
+
+  it('SDD: creator_monetize purpose keyword in spec', () => {
+    const f = gSDD(g357_creator_monetize);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('クリエイター')||spec.includes('Creator')||spec.includes('コンテンツ')||spec.includes('Content'), 'creator_monetize spec must mention creator context');
+  });
+
+  it('SDD EN: creator_monetize produces no undefined in spec', () => {
+    const f = gSDD(g357_creator_monetize, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'creator_monetize EN spec must not contain undefined');
+  });
+
+  it('SDD JA: creator_monetize produces no undefined in spec', () => {
+    const f = gSDD(g357_creator_monetize);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'creator_monetize JA spec must not contain undefined');
+  });
+
+  it('docs/01: creator_monetize overview mentions クリエイター or Creator', () => {
+    const f = gSDD(g357_creator_monetize);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('クリエイター')||doc.includes('Creator')||doc.includes('コンテンツ')||doc.includes('Content'), 'creator_monetize docs/01 must mention creator context');
+  });
+
+  it('docs/01: creator_monetize produces no undefined in overview', () => {
+    const f = gSDD(g357_creator_monetize);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'creator_monetize docs/01 must not contain undefined');
+  });
+
+  it('payment stripe: creator_monetize generates business_model.md', () => {
+    const f = gFull(g357_creator_monetize);
+    assert.ok(f['docs/38_business_model.md'], 'creator_monetize with stripe must generate business_model.md');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 358 — presets-ext18.js: devtools_saas
+   Express/Vercel/payment:stripe/analytics
+   ════════════════════════════════════════════════════════════════ */
+
+const g358_devtools = Object.assign({}, A25, {
+  purpose: 'コードレビュー・テスト生成・ドキュメント自動作成・PR管理・開発メトリクス分析を提供する開発者生産性SaaS',
+  frontend: 'React (Vite SPA)',
+  backend: 'Express',
+  database: 'PostgreSQL',
+  deploy: 'Vercel',
+  orm: 'Prisma',
+  auth: 'JWT',
+  payment: 'stripe',
+  mobile: 'なし',
+  data_entities: 'User, DevProject, CodeReview, AutoTestSuite, DevMetricReport',
+  mvp_features: 'AIコードレビュー, 自動テスト生成, ドキュメント自動生成, GitHub PR統合, 開発メトリクス, ページネーション・無限スクロール',
+});
+
+describe('Suite 358: presets-ext18 devtools_saas — Express/Vercel/stripe', () => {
+
+  it('SDD: devtools_saas generates specification.md and constitution.md', () => {
+    const f = gSDD(g358_devtools);
+    assert.ok(f['.spec/specification.md'], 'devtools_saas must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'devtools_saas must generate constitution.md');
+  });
+
+  it('SDD: devtools_saas includes DevProject in spec', () => {
+    const f = gSDD(g358_devtools);
+    assert.ok((f['.spec/specification.md']||'').includes('DevProject'), 'devtools_saas spec must mention DevProject');
+  });
+
+  it('SDD: devtools_saas purpose keyword in spec', () => {
+    const f = gSDD(g358_devtools);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('コードレビュー')||spec.includes('Code Review')||spec.includes('開発者')||spec.includes('Developer'), 'devtools_saas spec must mention dev tools context');
+  });
+
+  it('SDD EN: devtools_saas produces no undefined in spec', () => {
+    const f = gSDD(g358_devtools, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'devtools_saas EN spec must not contain undefined');
+  });
+
+  it('SDD JA: devtools_saas produces no undefined in spec', () => {
+    const f = gSDD(g358_devtools);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'devtools_saas JA spec must not contain undefined');
+  });
+
+  it('docs/01: devtools_saas overview mentions コードレビュー or Code Review', () => {
+    const f = gSDD(g358_devtools);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('コードレビュー')||doc.includes('Code Review')||doc.includes('開発者')||doc.includes('Developer'), 'devtools_saas docs/01 must mention dev tools context');
+  });
+
+  it('docs/01: devtools_saas produces no undefined in overview', () => {
+    const f = gSDD(g358_devtools);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'devtools_saas docs/01 must not contain undefined');
+  });
+
+  it('payment stripe: devtools_saas generates business_model.md', () => {
+    const f = gFull(g358_devtools);
+    assert.ok(f['docs/38_business_model.md'], 'devtools_saas with stripe must generate business_model.md');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 359 — presets-ext18.js: compliance_auto
+   Express/Vercel/payment:stripe/saas
+   ════════════════════════════════════════════════════════════════ */
+
+const g359_compliance = Object.assign({}, A25, {
+  purpose: 'SOC2・ISO27001・GDPR・PCI DSSなどの規制準拠を自動化するチェック・証跡収集・監査レポート生成SaaS',
+  frontend: 'React (Vite SPA)',
+  backend: 'Express',
+  database: 'PostgreSQL',
+  deploy: 'Vercel',
+  orm: 'Prisma',
+  auth: 'JWT',
+  payment: 'stripe',
+  mobile: 'なし',
+  data_entities: 'User, ComplianceFramework, ControlCheck, EvidenceItem, AuditReportDoc',
+  mvp_features: 'コンプライアンスフレームワーク管理, 自動コントロールチェック, 証跡収集, リスクアセスメント, 監査レポート生成, AuditLog, ページネーション・無限スクロール',
+});
+
+describe('Suite 359: presets-ext18 compliance_auto — Express/Vercel/stripe', () => {
+
+  it('SDD: compliance_auto generates specification.md and constitution.md', () => {
+    const f = gSDD(g359_compliance);
+    assert.ok(f['.spec/specification.md'], 'compliance_auto must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'compliance_auto must generate constitution.md');
+  });
+
+  it('SDD: compliance_auto includes ComplianceFramework in spec', () => {
+    const f = gSDD(g359_compliance);
+    assert.ok((f['.spec/specification.md']||'').includes('ComplianceFramework'), 'compliance_auto spec must mention ComplianceFramework');
+  });
+
+  it('SDD: compliance_auto purpose keyword in spec', () => {
+    const f = gSDD(g359_compliance);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('コンプライアンス')||spec.includes('Compliance')||spec.includes('SOC2')||spec.includes('監査'), 'compliance_auto spec must mention compliance context');
+  });
+
+  it('SDD EN: compliance_auto produces no undefined in spec', () => {
+    const f = gSDD(g359_compliance, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'compliance_auto EN spec must not contain undefined');
+  });
+
+  it('SDD JA: compliance_auto produces no undefined in spec', () => {
+    const f = gSDD(g359_compliance);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'compliance_auto JA spec must not contain undefined');
+  });
+
+  it('docs/01: compliance_auto overview mentions コンプライアンス or Compliance', () => {
+    const f = gSDD(g359_compliance);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('コンプライアンス')||doc.includes('Compliance')||doc.includes('SOC2')||doc.includes('監査'), 'compliance_auto docs/01 must mention compliance context');
+  });
+
+  it('docs/01: compliance_auto produces no undefined in overview', () => {
+    const f = gSDD(g359_compliance);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'compliance_auto docs/01 must not contain undefined');
+  });
+
+  it('payment stripe: compliance_auto generates business_model.md', () => {
+    const f = gFull(g359_compliance);
+    assert.ok(f['docs/38_business_model.md'], 'compliance_auto with stripe must generate business_model.md');
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Suite 360 — presets-ext18.js: smart_city_platform
+   NestJS/AWS/payment:none/transportation
+   ════════════════════════════════════════════════════════════════ */
+
+const g360_smart_city = Object.assign({}, A25, {
+  purpose: '都市インフラセンサー統合・交通流量最適化・エネルギー管理・市民サービスダッシュボード・AIシミュレーションSaaS',
+  frontend: 'React (Vite SPA)',
+  backend: 'NestJS',
+  database: 'PostgreSQL',
+  deploy: 'AWS',
+  orm: 'Prisma',
+  auth: 'JWT',
+  payment: 'none',
+  mobile: 'なし',
+  data_entities: 'User, CityInfraNode, TrafficFlowData, EnergyGridData, CitizenServiceRequest',
+  mvp_features: 'インフラセンサー統合, 交通流量監視, エネルギー管理, 市民サービス窓口, AIシミュレーション, ページネーション・無限スクロール',
+});
+
+describe('Suite 360: presets-ext18 smart_city_platform — NestJS/AWS/no-payment', () => {
+
+  it('SDD: smart_city_platform generates specification.md and constitution.md', () => {
+    const f = gSDD(g360_smart_city);
+    assert.ok(f['.spec/specification.md'], 'smart_city_platform must generate specification.md');
+    assert.ok(f['.spec/constitution.md'], 'smart_city_platform must generate constitution.md');
+  });
+
+  it('SDD: smart_city_platform includes CityInfraNode in spec', () => {
+    const f = gSDD(g360_smart_city);
+    assert.ok((f['.spec/specification.md']||'').includes('CityInfraNode'), 'smart_city_platform spec must mention CityInfraNode');
+  });
+
+  it('SDD: smart_city_platform purpose keyword in spec', () => {
+    const f = gSDD(g360_smart_city);
+    const spec = f['.spec/specification.md']||'';
+    assert.ok(spec.includes('スマートシティ')||spec.includes('Smart City')||spec.includes('都市')||spec.includes('インフラ'), 'smart_city_platform spec must mention smart city context');
+  });
+
+  it('SDD EN: smart_city_platform produces no undefined in spec', () => {
+    const f = gSDD(g360_smart_city, 'en');
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'smart_city_platform EN spec must not contain undefined');
+  });
+
+  it('SDD JA: smart_city_platform produces no undefined in spec', () => {
+    const f = gSDD(g360_smart_city);
+    assert.ok(!(f['.spec/specification.md']||'').includes('undefined'), 'smart_city_platform JA spec must not contain undefined');
+  });
+
+  it('docs/01: smart_city_platform overview mentions スマートシティ or Smart City', () => {
+    const f = gSDD(g360_smart_city);
+    const doc = f['docs/01_project_overview.md']||'';
+    assert.ok(doc.includes('スマートシティ')||doc.includes('Smart City')||doc.includes('都市')||doc.includes('インフラ'), 'smart_city_platform docs/01 must mention smart city context');
+  });
+
+  it('docs/01: smart_city_platform produces no undefined in overview', () => {
+    const f = gSDD(g360_smart_city);
+    assert.ok(!(f['docs/01_project_overview.md']||'').includes('undefined'), 'smart_city_platform docs/01 must not contain undefined');
+  });
+
+  it('no payment: smart_city_platform does NOT generate business_model.md', () => {
+    const f = gFull(g360_smart_city);
+    assert.ok(!f['docs/38_business_model.md'], 'smart_city_platform without payment must not generate business_model.md');
   });
 });

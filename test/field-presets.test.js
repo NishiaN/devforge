@@ -31,8 +31,8 @@ describe('Field Presets (PR_FIELD)', () => {
   const VALID_SCALES = ['solo','small','medium','large'];
   const META_DIMS = ['revenue','regulation','apiDep','agentLv','multimodal','onDevice'];
 
-  it('PR_FIELD has 551 entries', () => {
-    assert.equal(fieldKeys.length, 551);
+  it('PR_FIELD has 561 entries', () => {
+    assert.equal(fieldKeys.length, 561);
   });
 
   it('every field preset has bilingual name and icon', () => {
@@ -118,8 +118,8 @@ describe('_SCALE_DEFAULTS', () => {
 });
 
 describe('FIELD_CAT_MAP', () => {
-  it('covers all 551 field presets', () => {
-    assert.equal(Object.keys(FIELD_CAT_MAP).length, 551);
+  it('covers all 561 field presets', () => {
+    assert.equal(Object.keys(FIELD_CAT_MAP).length, 561);
   });
 
   it('all FIELD_CAT_MAP values match PR_FIELD[key].field', () => {

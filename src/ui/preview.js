@@ -543,7 +543,8 @@ function buildFileTree(){
    '113_ai_collaboration_guide','114_domain_knowledge_guide','115_skill_portfolio',
    '116_estimation_prerequisites','117_deployment_environment_guide','118_project_operations_pack','119_auth_architecture_guide',
    '120_system_design_guide','121_security_design_guide',
-   '122_concurrency_consistency_guide','123_frontend_architecture_guide','124_test_quality_guide'].forEach(f=>
+   '122_concurrency_consistency_guide','123_frontend_architecture_guide','124_test_quality_guide',
+   '125_healthcare_compliance_guide','126_fintech_fraud_prevention','127_manufacturing_iot_guide'].forEach(f=>
     files.push({name:'  '+f+'.md',path:'docs/'+f+'.md'}));
   files.push({name:'───────────',path:''});
   ['README.md','.gitignore','package.json','LICENSE'].forEach(f=>files.push({name:f,path:f}));

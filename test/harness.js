@@ -79,6 +79,7 @@ loadModule('data/presets-ext14.js');
 loadModule('data/presets-ext15.js');
 loadModule('data/presets-ext16.js');
 loadModule('data/presets-ext17.js');
+loadModule('data/presets-ext18.js');
 
 module.exports = {
   sandbox,

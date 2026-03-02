@@ -2096,6 +2096,148 @@ Steps:
     S.files['docs/124_test_quality_guide.md']=d;
   })();
 
+  // ═══ docs/125_healthcare_compliance_guide.md ═══ (health domain only)
+  {const _dom125=detectDomain(a.purpose||'');
+  if(_dom125==='health'){(()=>{
+    let d='# '+(G?'ヘルスケアコンプライアンスガイド':'Healthcare Compliance Guide')+'\n\n';
+    d+='> '+(G?'生成日':'Generated')+': '+new Date().toISOString().split('T')[0]+' | '+(G?'ドメイン':'Domain')+': health\n\n';
+    d+='## '+(G?'1. 適用規制フレームワーク':'1. Applicable Regulatory Framework')+'\n\n';
+    d+='| '+(G?'規制':'Regulation')+' | '+(G?'適用地域':'Region')+' | '+(G?'主要要件':'Key Requirements')+' | '+(G?'ペナルティ':'Penalty')+' |\n';
+    d+='|------|--------|----------|----------|\n';
+    d+='| HIPAA | USA | PHI保護・アクセス制御・監査ログ | $100〜$50,000/件 |\n';
+    d+='| GDPR | EU/EEA | 個人データ同意・削除権・DPA | 年収4%/€2,000万 |\n';
+    d+='| 医療法 | 日本 | 電子カルテ・診療記録5年保存 | 業務停止 |\n';
+    d+='| HL7 FHIR | 国際 | 標準医療データ交換フォーマット | — |\n\n';
+    d+='## '+(G?'2. PHI（保護医療情報）管理':'2. PHI (Protected Health Information) Management')+'\n\n';
+    d+='### '+(G?'データ分類':'Data Classification')+'\n';
+    d+='- **PHI (高)**: 氏名+診断名+処方薬 → AES-256暗号化必須\n';
+    d+='- **PHI (中)**: 年齢+性別+地域 → 仮名化推奨\n';
+    d+='- **非PHI**: 匿名統計データ → 標準保護\n\n';
+    d+='### '+(G?'実装チェックリスト':'Implementation Checklist')+'\n';
+    d+='- [ ] '+(G?'保存時暗号化 (AES-256 / TDE)':'Encryption at rest (AES-256 / TDE)')+'\n';
+    d+='- [ ] '+(G?'転送時暗号化 (TLS 1.3)':'Encryption in transit (TLS 1.3)')+'\n';
+    d+='- [ ] '+(G?'多要素認証 (MFA) 全スタッフ必須':'Multi-factor authentication (MFA) for all staff')+'\n';
+    d+='- [ ] '+(G?'アクセスログ・監査証跡 (6年保存)':'Access logs & audit trail (6-year retention)')+'\n';
+    d+='- [ ] '+(G?'最小権限原則 (RBAC)':'Principle of least privilege (RBAC)')+'\n';
+    d+='- [ ] '+(G?'データ侵害時72時間以内通知':'Data breach notification within 72 hours')+'\n';
+    d+='- [ ] '+(G?'定期リスクアセスメント (年1回以上)':'Regular risk assessment (at least once per year)')+'\n\n';
+    d+='## '+(G?'3. 医療システムセキュリティ設計':'3. Healthcare System Security Design')+'\n\n';
+    d+='```\n';
+    d+=(G?'患者データフロー（最小化原則）':'Patient Data Flow (Minimization Principle)')+'\n';
+    d+='UI Layer     → 表示前にPHIマスキング適用\n';
+    d+='API Layer    → エンドポイント別アクセス制御 (RBAC)\n';
+    d+='Service Layer→ PHI処理ログ自動記録\n';
+    d+='DB Layer     → 列レベル暗号化 + RLS\n';
+    d+='Backup Layer → 暗号化バックアップ + 保持期間ポリシー\n';
+    d+='```\n\n';
+    d+='## '+(G?'4. インシデント対応計画':'4. Incident Response Plan')+'\n\n';
+    d+='| '+(G?'フェーズ':'Phase')+' | '+(G?'アクション':'Action')+' | '+(G?'期限':'Deadline')+' |\n';
+    d+='|--------|----------|------|\n';
+    d+='| 検知 | 異常アクセスアラート → SOC通知 | 即時 |\n';
+    d+='| 封じ込め | 影響システム隔離・証拠保全 | 1時間以内 |\n';
+    d+='| 通知 | 監督機関・患者通知 | 72時間以内 |\n';
+    d+='| 復旧 | バックアップ復元・脆弱性修正 | 24〜48時間 |\n';
+    d+='| 再発防止 | RCA・セキュリティ強化 | 30日以内 |\n\n';
+    d+='> '+(G?'参照':'See also')+': docs/121_security_design_guide.md | docs/44_threat_model.md | docs/45_compliance_matrix.md';
+    S.files['docs/125_healthcare_compliance_guide.md']=d;
+  })();}}
+
+  // ═══ docs/126_fintech_fraud_prevention.md ═══ (fintech + payment only)
+  {const _dom126=detectDomain(a.purpose||'');
+  if(_dom126==='fintech'&&hasPay){(()=>{
+    let d='# '+(G?'フィンテック不正検知・防止ガイド':'Fintech Fraud Detection & Prevention Guide')+'\n\n';
+    d+='> '+(G?'生成日':'Generated')+': '+new Date().toISOString().split('T')[0]+' | '+(G?'ドメイン':'Domain')+': fintech | Payment: '+a.payment+'\n\n';
+    d+='## '+(G?'1. 不正パターン分類':'1. Fraud Pattern Classification')+'\n\n';
+    d+='| '+(G?'不正種別':'Fraud Type')+' | '+(G?'説明':'Description')+' | '+(G?'検知手法':'Detection Method')+' |\n';
+    d+='|----------|------|----------|\n';
+    d+='| カード不正利用 | 盗難カード・番号詐取 | Velocity Check + IP地理フィルタ |\n';
+    d+='| アカウント乗っ取り (ATO) | 認証情報窃取・不正ログイン | デバイスフィンガープリント + MFA |\n';
+    d+='| 資金洗浄 (AML) | 不正資金隠匿・多段転送 | トランザクション監視 + CTF報告 |\n';
+    d+='| フィッシング | 偽サイト・メール詐欺 | CSP + DMARC + 教育 |\n';
+    d+='| インサイダー脅威 | 内部者による不正操作 | AuditLog + 異常行動検知 |\n\n';
+    d+='## '+(G?'2. リアルタイム不正検知アーキテクチャ':'2. Real-Time Fraud Detection Architecture')+'\n\n';
+    d+='```\n';
+    d+='決済リクエスト\n';
+    d+='    ↓\n';
+    d+='[L1] ルールエンジン (< 50ms)\n';
+    d+='  • Velocity Check (同一カード 5回/分)\n';
+    d+='  • 金額閾値 (¥500,000超→要確認)\n';
+    d+='  • ブラックリスト照合\n';
+    d+='    ↓\n';
+    d+='[L2] MLスコアリング (< 200ms)\n';
+    d+='  • 行動バイオメトリクス\n';
+    d+='  • デバイスフィンガープリント\n';
+    d+='  • 地理的異常検知\n';
+    d+='    ↓\n';
+    d+='[L3] 人間レビュー (高リスクのみ)\n';
+    d+='  • フラグ付きトランザクション\n';
+    d+='  • チャージバック分析\n';
+    d+='```\n\n';
+    d+='## '+(G?'3. PCI DSS 要件チェックリスト':'3. PCI DSS Requirements Checklist')+'\n\n';
+    d+='| '+(G?'要件':'Requirement')+' | '+(G?'内容':'Description')+' | '+(G?'対応':'Action')+' |\n';
+    d+='|------|------|------|\n';
+    d+='| Req 3 | カードデータ保護 | トークン化 (never store PAN) |\n';
+    d+='| Req 4 | 転送時暗号化 | TLS 1.3 専用エンドポイント |\n';
+    d+='| Req 6 | セキュア開発 | SAST/DAST + 定期ペンテスト |\n';
+    d+='| Req 7 | アクセス制御 | 最小権限 + MFA |\n';
+    d+='| Req 10 | ログ監視 | 監査ログ + SIEM連携 |\n';
+    d+='| Req 12 | 情報セキュリティポリシー | 年次レビュー + 訓練 |\n\n';
+    d+='## '+(G?'4. Stripe Radar 活用パターン':'4. Stripe Radar Usage Patterns')+'\n\n';
+    d+='```javascript\n// Stripe Radar custom rule example\n';
+    d+="// Block high-risk countries for large amounts\n// Rule: block_if :amount_in_usd: > 1000 AND :ip_country: IN ['XX', 'YY']\n\n";
+    d+='// Webhook signature verification (MUST)\nconst sig = req.headers["stripe-signature"];\n';
+    d+="const event = stripe.webhooks.constructEvent(payload, sig, process.env.STRIPE_WEBHOOK_SECRET);\n```\n\n";
+    d+='> '+(G?'参照':'See also')+': docs/121_security_design_guide.md | docs/45_compliance_matrix.md | docs/08_auth.md';
+    S.files['docs/126_fintech_fraud_prevention.md']=d;
+  })();}}
+
+  // ═══ docs/127_manufacturing_iot_guide.md ═══ (manufacturing domain only)
+  {const _dom127=detectDomain(a.purpose||'');
+  if(_dom127==='manufacturing'){(()=>{
+    let d='# '+(G?'製造業 IoT・Industry 4.0 統合ガイド':'Manufacturing IoT & Industry 4.0 Integration Guide')+'\n\n';
+    d+='> '+(G?'生成日':'Generated')+': '+new Date().toISOString().split('T')[0]+' | '+(G?'ドメイン':'Domain')+': manufacturing\n\n';
+    d+='## '+(G?'1. Industry 4.0 アーキテクチャ':'1. Industry 4.0 Architecture')+'\n\n';
+    d+='```\n';
+    d+='Edge Layer     → センサー/PLC/SCADA (OPC-UA/MQTT)\n';
+    d+='Fog Layer      → エッジコンピューティング (AWS Greengrass / Azure IoT Edge)\n';
+    d+='Cloud Layer    → IoTプラットフォーム (AWS IoT Core / Azure IoT Hub)\n';
+    d+='Application    → MES/ERP 統合 + AI分析ダッシュボード\n';
+    d+='```\n\n';
+    d+='## '+(G?'2. IoT プロトコル選定マトリクス':'2. IoT Protocol Selection Matrix')+'\n\n';
+    d+='| '+(G?'プロトコル':'Protocol')+' | '+(G?'レイテンシ':'Latency')+' | '+(G?'帯域':'Bandwidth')+' | '+(G?'ユースケース':'Use Case')+' |\n';
+    d+='|----------|----------|------|----------|\n';
+    d+='| MQTT | 低 (< 1ms) | 低 | センサーデータ収集・設備監視 |\n';
+    d+='| OPC-UA | 中 | 中 | PLC/CNC通信・安全制御 |\n';
+    d+='| AMQP | 中 | 高 | エンタープライズMQ統合 |\n';
+    d+='| HTTP/REST | 高 | 高 | クラウドAPI・ダッシュボード |\n';
+    d+='| WebSocket | 低-中 | 中 | リアルタイムモニタリング |\n\n';
+    d+='## '+(G?'3. 予知保全 (Predictive Maintenance) 設計':'3. Predictive Maintenance Design')+'\n\n';
+    d+='```\n';
+    d+='データ収集\n';
+    d+='  振動センサー → FFT解析 → 異常振動パターン検出\n';
+    d+='  温度センサー → 閾値監視 → オーバーヒート予測\n';
+    d+='  電流センサー → 負荷分析 → モーター劣化予測\n\n';
+    d+='MLパイプライン\n';
+    d+='  生データ → 前処理/正規化 → 特徴量エンジニアリング\n';
+    d+='  → Isolation Forest (異常検知) → 残寿命予測モデル\n';
+    d+='  → アラート → 保全作業オーダー自動生成\n';
+    d+='```\n\n';
+    d+='## '+(G?'4. セキュリティ考慮事項 (OT/IT 融合)':'4. Security Considerations (OT/IT Convergence)')+'\n\n';
+    d+='- **ネットワーク分離**: OTネットワークとITネットワークのDMZ設置\n';
+    d+='- **ファームウェア管理**: IoTデバイスの定期アップデート・脆弱性スキャン\n';
+    d+='- **認証**: デバイス証明書 + mTLS (相互TLS)\n';
+    d+='- **監査ログ**: 制御コマンドの全ログ保存 (改ざん防止)\n\n';
+    d+='## '+(G?'5. データ品質・品質管理 (QC) 統合':'5. Data Quality & Quality Control (QC) Integration')+'\n\n';
+    d+='| '+(G?'KPI':'KPI')+' | '+(G?'計算式':'Formula')+' | '+(G?'目標':'Target')+' |\n';
+    d+='|-----|----------|------|\n';
+    d+='| OEE (設備総合効率) | 可用性×性能×品質 | ≥ 85% |\n';
+    d+='| MTBF (平均故障間隔) | 稼働時間 ÷ 故障回数 | 最大化 |\n';
+    d+='| MTTR (平均修理時間) | 修理時間 ÷ 故障回数 | 最小化 |\n';
+    d+='| 不良率 | 不良品数 ÷ 総生産数 | < 0.1% |\n\n';
+    d+='> '+(G?'参照':'See also')+': docs/120_system_design_guide.md | docs/17_monitoring.md | docs/109_cost_intelligence.md';
+    S.files['docs/127_manufacturing_iot_guide.md']=d;
+  })();}}
+
   // ═══ docs/108_uat_acceptance.md ═══
   const uatFeatures=features.slice(0,Math.min(features.length,6));
   let uat108='# '+pn+' — '+(G?'UAT受入テスト・リリース判定':'UAT Acceptance Test & Release Judgment')+'\n> '+date+'\n\n';

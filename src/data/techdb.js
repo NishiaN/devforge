@@ -544,6 +544,27 @@ const TECH_DB=[
 {name:'Mintlify',cat:'devops',sub:'docs',req:'optional',level:'int',price:'free-tier'},
 {name:'Starlight',cat:'devops',sub:'docs',req:'optional',level:'int',price:'free-oss'},
 {name:'Wrangler',cat:'devops',sub:'cli',req:'optional',level:'int',price:'free-oss'},
+// ── ext18 batch: 15 new tools ──
+// Data & Vector DB
+{name:'Milvus',cat:'data',sub:'vector',req:'optional',level:'pro',price:'free-oss'},
+{name:'RisingWave',cat:'data',sub:'streaming',req:'optional',level:'pro',price:'free-tier'},
+{name:'TiDB',cat:'data',sub:'db',req:'optional',level:'pro',price:'free-tier'},
+// Security & Compliance
+{name:'Grype',cat:'devops',sub:'security',req:'optional',level:'int',price:'free-oss'},
+{name:'Falco',cat:'devops',sub:'security',req:'optional',level:'pro',price:'free-oss'},
+{name:'Checkov',cat:'devops',sub:'security',req:'optional',level:'int',price:'free-oss'},
+// AI Evaluation & Observability
+{name:'Braintrust',cat:'ai',sub:'eval',req:'optional',level:'int',price:'free-tier'},
+{name:'Promptfoo',cat:'ai',sub:'eval',req:'optional',level:'int',price:'free-oss'},
+{name:'Helicone',cat:'ai',sub:'monitor',req:'optional',level:'int',price:'free-tier'},
+{name:'LangSmith',cat:'ai',sub:'monitor',req:'optional',level:'int',price:'free-tier'},
+// Backend Utilities
+{name:'ts-pattern',cat:'back',sub:'logic',req:'optional',level:'int',price:'free-oss'},
+{name:'Oslo',cat:'back',sub:'auth',req:'optional',level:'int',price:'free-oss'},
+{name:'Arctic',cat:'back',sub:'auth',req:'optional',level:'int',price:'free-oss'},
+// Build & Frontend
+{name:'tsdown',cat:'build',sub:'bundler',req:'optional',level:'int',price:'free-oss'},
+{name:'Motion One',cat:'front',sub:'animation',req:'optional',level:'int',price:'free-oss'},
 ];
 const _TECH_COUNT=TECH_DB.length;
 

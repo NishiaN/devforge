@@ -1,4 +1,4 @@
-// Compat rules functional test (270 rules: 33 ERROR + 136 WARN + 101 INFO)
+// Compat rules functional test (278 rules: 33 ERROR + 136 WARN + 109 INFO)
 const assert=require('node:assert/strict');
 const S={lang:'ja',skill:'pro'};
 eval(require('fs').readFileSync('src/data/compat-rules.js','utf-8'));
@@ -504,9 +504,12 @@ const tests=[
   {name:'Firebase+10entities=INFO',a:{backend:'Firebase',data_entities:'User, Team, Project, Task, Comment, Tag, File, Notification, AuditLog, Role'},expect:'info',id:'cl-baas-customlogic'},
   {name:'Firebase+5entities=noINFO',a:{backend:'Firebase',data_entities:'User, Team, Project, Task, Comment'},expect:'none',id:'cl-baas-customlogic'},
   // cl-ai-nomonitoring (WARN) — high AI autonomy without monitoring
-  {name:'fullAuto+noMonitor=WARN',a:{ai_auto:'フル自律開発'},expect:'warn',id:'cl-ai-nomonitoring'},
-  {name:'orchestrator+withMonitor=noWARN',a:{ai_auto:'AIオーケストレーター',mvp_features:'Langfuse AI監視'},expect:'none',id:'cl-ai-nomonitoring'},
+  {name:'fullAuto+noMonitor+entities=WARN',a:{ai_auto:'フル自律開発',data_entities:'User,Project,Task,Result,Log'},expect:'warn',id:'cl-ai-nomonitoring'},
+  {name:'fullAuto+noMonitor+noEntities=noWARN',a:{ai_auto:'フル自律開発'},expect:'none',id:'cl-ai-nomonitoring'},
+  {name:'orchestrator+withMonitor=noWARN',a:{ai_auto:'AIオーケストレーター',mvp_features:'Langfuse AI監視',data_entities:'User,Agent,Task'},expect:'none',id:'cl-ai-nomonitoring'},
   {name:'copilot+noMonitor=noWARN',a:{ai_auto:'コーディングアシスタント（Copilot等）'},expect:'none',id:'cl-ai-nomonitoring'},
+  {name:'multiAgent+noMonitor+entities=noWARN',a:{ai_auto:'マルチAgent協調',purpose:'在庫管理システム',data_entities:'User,Warehouse,Item'},expect:'none',id:'cl-ai-nomonitoring'},
+  {name:'multiAgent+aiPurpose+noMonitor=noWARN',a:{ai_auto:'マルチAgent協調',purpose:'AIエージェントプラットフォーム',data_entities:'User,Agent,Task'},expect:'none',id:'cl-ai-nomonitoring'},
   // cl-api-noversioning (INFO) — large Node.js/Python API without versioning
   {name:'Express+large+noVersion=INFO',a:{backend:'Node.js + Express',scale:'large'},expect:'info',id:'cl-api-noversioning'},
   {name:'Express+large+withVersion=noINFO',a:{backend:'Node.js + Express',scale:'large',mvp_features:'/v1/ APIバージョニング'},expect:'none',id:'cl-api-noversioning'},
@@ -690,6 +693,30 @@ const tests=[
   // ── ext17: perf-large-no-cdn (INFO) ──
   {name:'perf-cdn: spa+large+10ents+noCDN=INFO',a:{scale:'large',frontend:'React',data_entities:'A,B,C,D,E,F,G,H,I,J'},expect:'info',id:'perf-large-no-cdn'},
   {name:'perf-cdn: spa+large+10ents+hasCDN=none',a:{scale:'large',frontend:'React',data_entities:'A,B,C,D,E,F,G,H,I,J',future_features:'CDN導入 (Cloudflare)'},expect:'none',id:'perf-large-no-cdn'},
+  // ── ext18: test-no-coverage-gate (INFO) ──
+  {name:'covgate: tdd+medium+6ents+noCovGate=INFO',a:{scale:'medium',dev_methods:'TDD・テスト駆動開発',data_entities:'A,B,C,D,E,F'},expect:'info',id:'test-no-coverage-gate'},
+  {name:'covgate: tdd+medium+6ents+hasCovGate=none',a:{scale:'medium',dev_methods:'TDD・テスト駆動開発',data_entities:'A,B,C,D,E,F',future_features:'coverageThreshold 80%'},expect:'none',id:'test-no-coverage-gate'},
+  // ── ext18: test-large-no-e2e (INFO) ──
+  {name:'e2e: react+large+8ents+noE2E=INFO',a:{scale:'large',frontend:'React',data_entities:'A,B,C,D,E,F,G,H'},expect:'info',id:'test-large-no-e2e'},
+  {name:'e2e: react+large+8ents+hasPlaywright=none',a:{scale:'large',frontend:'React',data_entities:'A,B,C,D,E,F,G,H',future_features:'Playwright E2Eテスト'},expect:'none',id:'test-large-no-e2e'},
+  // ── ext18: ml-no-model-monitoring (INFO) ──
+  {name:'mlmon: ai+medium+6ents+noMonitor=INFO',a:{scale:'medium',ai_auto:'オーケストレーター',data_entities:'A,B,C,D,E,F'},expect:'info',id:'ml-no-model-monitoring'},
+  {name:'mlmon: ai+medium+6ents+hasLangfuse=none',a:{scale:'medium',ai_auto:'オーケストレーター',data_entities:'A,B,C,D,E,F',future_features:'Langfuseモニタリング'},expect:'none',id:'ml-no-model-monitoring'},
+  // ── ext18: ai-no-eval-framework (INFO) ──
+  {name:'aieval: orchestrator+medium+6ents+noEval=INFO',a:{scale:'medium',ai_auto:'フル自律開発',data_entities:'A,B,C,D,E,F'},expect:'info',id:'ai-no-eval-framework'},
+  {name:'aieval: orchestrator+medium+6ents+hasPromptfoo=none',a:{scale:'medium',ai_auto:'フル自律開発',data_entities:'A,B,C,D,E,F',future_features:'Promptfoo評価フレームワーク'},expect:'none',id:'ai-no-eval-framework'},
+  // ── ext18: a11y-no-wcag-target (INFO) ──
+  {name:'a11y: react+edu+medium+6ents+noWCAG=INFO',a:{scale:'medium',frontend:'React',purpose:'教育学習支援プラットフォーム education',data_entities:'A,B,C,D,E,F'},expect:'info',id:'a11y-no-wcag-target'},
+  {name:'a11y: react+edu+medium+6ents+hasWCAG=none',a:{scale:'medium',frontend:'React',purpose:'教育学習支援プラットフォーム education',data_entities:'A,B,C,D,E,F',future_features:'WCAG 2.1 AA対応 (axe-core)'},expect:'none',id:'a11y-no-wcag-target'},
+  // ── ext18: cache-large-no-redis (INFO) ──
+  {name:'cache: ec+large+8ents+noRedis=INFO',a:{scale:'large',backend:'Node.js + Express',purpose:'ECサイト ec',data_entities:'A,B,C,D,E,F,G,H'},expect:'info',id:'cache-large-no-redis'},
+  {name:'cache: ec+large+8ents+hasRedis=none',a:{scale:'large',backend:'Node.js + Express',purpose:'ECサイト ec',data_entities:'A,B,C,D,E,F,G,H',future_features:'Redisキャッシュ層'},expect:'none',id:'cache-large-no-redis'},
+  // ── ext18: queue-no-deadletter (INFO) ──
+  {name:'dlq: queue+medium+6ents+noDLQ=INFO',a:{scale:'medium',backend:'Node.js + Express',dev_methods:'BullMQ+キュー処理',data_entities:'A,B,C,D,E,F',mvp_features:'BullMQジョブキュー'},expect:'info',id:'queue-no-deadletter'},
+  {name:'dlq: queue+medium+6ents+hasDLQ=none',a:{scale:'medium',backend:'Node.js + Express',dev_methods:'BullMQ+キュー処理',data_entities:'A,B,C,D,E,F',mvp_features:'BullMQジョブキュー',future_features:'Dead Letter Queue (DLQ) 設定'},expect:'none',id:'queue-no-deadletter'},
+  // ── ext18: feat-flag-no-cleanup (INFO) ──
+  {name:'featflag: flagsused+medium+6ents+noCleanup=INFO',a:{scale:'medium',dev_methods:'アジャイル・スクラム',data_entities:'A,B,C,D,E,F',mvp_features:'フィーチャーフラグ管理 (LaunchDarkly)'},expect:'info',id:'feat-flag-no-cleanup'},
+  {name:'featflag: flagsused+medium+6ents+hasCleanup=none',a:{scale:'medium',dev_methods:'アジャイル・スクラム',data_entities:'A,B,C,D,E,F',mvp_features:'フィーチャーフラグ管理 (LaunchDarkly)',future_features:'フィーチャーフラグ ライフサイクル管理'},expect:'none',id:'feat-flag-no-cleanup'},
 ];
 
 let pass=0,fail=0;

@@ -119,6 +119,9 @@ const NEW_RULE_IDS = [
   // ext17 infrastructure & reliability rules (+6)
   'db-large-no-read-replica','db-no-connection-pool','fe-large-no-error-boundary',
   'ops-no-rollback-plan','sec-no-secret-rotation','perf-large-no-cdn',
+  // ext18 testing/ml/a11y/cache rules (+8)
+  'test-no-coverage-gate','test-large-no-e2e','ml-no-model-monitoring','ai-no-eval-framework',
+  'a11y-no-wcag-target','cache-large-no-redis','queue-no-deadletter','feat-flag-no-cleanup',
 ];
 
 const errorRules = Object.entries(hits).filter(([,v])=>v.level==='error');

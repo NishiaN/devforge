@@ -3319,3 +3319,935 @@ ENTITY_COLUMNS['LabSafetyLog']=[
   'description:TEXT:NOT NULL:内容:Description',
   'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
 ];
+
+// ── ext18: presets-ext18.js new entity columns ────────────────────────────────
+
+// esports_platform
+ENTITY_COLUMNS['EsportsTournament']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'name:VARCHAR(255):NOT NULL:トーナメント名:Tournament name',
+  'game_title:VARCHAR(100):NOT NULL:ゲームタイトル:Game title',
+  'format:VARCHAR(50):DEFAULT \'single_elimination\':フォーマット:Format',
+  'prize_pool:DECIMAL(12,2):DEFAULT 0:賞金総額:Prize pool',
+  'max_teams:INT:NOT NULL:最大チーム数:Max teams',
+  'start_date:TIMESTAMP:NOT NULL:開始日時:Start date',
+  'status:VARCHAR(20):DEFAULT \'draft\':ステータス:Status',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];
+ENTITY_COLUMNS['EsportsTeam']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'name:VARCHAR(200):NOT NULL:チーム名:Team name',
+  'logo_url:TEXT::ロゴURL:Logo URL',
+  'captain_id:UUID:FK(User) NOT NULL:キャプテンID:Captain ID',
+  'region:VARCHAR(50)::地域:Region',
+  'rank_score:INT:DEFAULT 0:ランクスコア:Rank score',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];
+ENTITY_COLUMNS['EsportsMatch']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'tournament_id:UUID:FK(EsportsTournament) NOT NULL:トーナメントID:Tournament ID',
+  'team_a_id:UUID:FK(EsportsTeam) NOT NULL:チームAのID:Team A ID',
+  'team_b_id:UUID:FK(EsportsTeam) NOT NULL:チームBのID:Team B ID',
+  'round:INT:NOT NULL:ラウンド:Round',
+  'score_a:INT:DEFAULT 0:チームAスコア:Team A score',
+  'score_b:INT:DEFAULT 0:チームBスコア:Team B score',
+  'winner_id:UUID:FK(EsportsTeam)::勝者ID:Winner ID',
+  'played_at:TIMESTAMP::試合日時:Played at',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];
+ENTITY_COLUMNS['EsportsPlayerStat']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'match_id:UUID:FK(EsportsMatch) NOT NULL:試合ID:Match ID',
+  'player_id:UUID:FK(User) NOT NULL:選手ID:Player ID',
+  'kills:INT:DEFAULT 0:キル数:Kills',
+  'deaths:INT:DEFAULT 0:デス数:Deaths',
+  'assists:INT:DEFAULT 0:アシスト数:Assists',
+  'damage_dealt:INT:DEFAULT 0:与ダメージ:Damage dealt',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];
+ENTITY_COLUMNS['EsportsBracket']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'tournament_id:UUID:FK(EsportsTournament) NOT NULL:トーナメントID:Tournament ID',
+  'round:INT:NOT NULL:ラウンド:Round',
+  'position:INT:NOT NULL:ポジション:Position',
+  'team_id:UUID:FK(EsportsTeam)::チームID:Team ID',
+  'is_bye:BOOLEAN:DEFAULT false:シード:Bye',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];
+
+// ai_agent_saas
+ENTITY_COLUMNS['AgentDefinition']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'name:VARCHAR(255):NOT NULL:エージェント名:Agent name',
+  'description:TEXT::説明:Description',
+  'llm_provider:VARCHAR(50):DEFAULT \'openai\':LLMプロバイダー:LLM provider',
+  'system_prompt:TEXT::システムプロンプト:System prompt',
+  'is_active:BOOLEAN:DEFAULT true:有効:Active',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];
+ENTITY_COLUMNS['AgentTool']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'agent_id:UUID:FK(AgentDefinition) NOT NULL:エージェントID:Agent ID',
+  'tool_name:VARCHAR(100):NOT NULL:ツール名:Tool name',
+  'tool_type:VARCHAR(50):NOT NULL:ツール種別:Tool type',
+  'config:JSONB::設定:Config',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];
+ENTITY_COLUMNS['AgentExecution']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'agent_id:UUID:FK(AgentDefinition) NOT NULL:エージェントID:Agent ID',
+  'input:TEXT:NOT NULL:入力:Input',
+  'output:TEXT::出力:Output',
+  'tokens_used:INT:DEFAULT 0:トークン数:Tokens used',
+  'duration_ms:INT::実行時間(ms):Duration (ms)',
+  'status:VARCHAR(20):DEFAULT \'running\':ステータス:Status',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];
+ENTITY_COLUMNS['AgentVersion']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'agent_id:UUID:FK(AgentDefinition) NOT NULL:エージェントID:Agent ID',
+  'version_num:INT:NOT NULL:バージョン番号:Version number',
+  'config_snapshot:JSONB:NOT NULL:設定スナップショット:Config snapshot',
+  'deployed_at:TIMESTAMP::デプロイ日時:Deployed at',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];
+ENTITY_COLUMNS['AgentUsageLog']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'agent_id:UUID:FK(AgentDefinition) NOT NULL:エージェントID:Agent ID',
+  'usage_date:DATE:NOT NULL:利用日:Usage date',
+  'call_count:INT:DEFAULT 0:呼び出し回数:Call count',
+  'total_tokens:INT:DEFAULT 0:総トークン数:Total tokens',
+  'cost_usd:DECIMAL(10,6):DEFAULT 0:コスト(USD):Cost (USD)',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];
+
+// oss_marketplace
+ENTITY_COLUMNS['OssProject']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'name:VARCHAR(255):NOT NULL:プロジェクト名:Project name',
+  'description:TEXT::説明:Description',
+  'repo_url:VARCHAR(500):NOT NULL:リポジトリURL:Repository URL',
+  'language:VARCHAR(50)::主要言語:Primary language',
+  'monthly_goal_usd:DECIMAL(10,2):DEFAULT 0:月次目標金額(USD):Monthly goal (USD)',
+  'is_verified:BOOLEAN:DEFAULT false:認証済み:Verified',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];
+ENTITY_COLUMNS['Sponsorship']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'project_id:UUID:FK(OssProject) NOT NULL:プロジェクトID:Project ID',
+  'sponsor_id:UUID:FK(User) NOT NULL:スポンサーID:Sponsor ID',
+  'amount_usd:DECIMAL(10,2):NOT NULL:金額(USD):Amount (USD)',
+  'frequency:VARCHAR(20):DEFAULT \'monthly\':頻度:Frequency',
+  'status:VARCHAR(20):DEFAULT \'active\':ステータス:Status',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];
+ENTITY_COLUMNS['BountyIssue']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'project_id:UUID:FK(OssProject) NOT NULL:プロジェクトID:Project ID',
+  'issue_url:VARCHAR(500):NOT NULL:Issue URL:Issue URL',
+  'title:VARCHAR(500):NOT NULL:タイトル:Title',
+  'bounty_usd:DECIMAL(10,2):NOT NULL:バウンティ金額(USD):Bounty (USD)',
+  'status:VARCHAR(20):DEFAULT \'open\':ステータス:Status',
+  'claimed_by:UUID:FK(User)::クレーム者ID:Claimed by',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];
+ENTITY_COLUMNS['ContributorProfile']=[
+  'user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID',
+  'github_username:VARCHAR(100):NOT NULL:GitHubユーザー名:GitHub username',
+  'bio:TEXT::自己紹介:Bio',
+  'skills:JSONB::スキル:Skills',
+  'total_earned_usd:DECIMAL(12,2):DEFAULT 0:総獲得金額(USD):Total earned (USD)',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];
+ENTITY_COLUMNS['PayoutRecord']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'recipient_id:UUID:FK(User) NOT NULL:受取者ID:Recipient ID',
+  'amount_usd:DECIMAL(10,2):NOT NULL:支払額(USD):Payout amount (USD)',
+  'payout_method:VARCHAR(50):NOT NULL:支払方法:Payout method',
+  'status:VARCHAR(20):DEFAULT \'pending\':ステータス:Status',
+  'processed_at:TIMESTAMP::処理日時:Processed at',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];
+
+// digital_twin_saas
+ENTITY_COLUMNS['TwinAsset']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'asset_name:VARCHAR(255):NOT NULL:資産名:Asset name',
+  'asset_type:VARCHAR(100):NOT NULL:資産種別:Asset type',
+  'physical_id:VARCHAR(200)::物理ID:Physical ID',
+  'model_config:JSONB::モデル設定:Model config',
+  'status:VARCHAR(20):DEFAULT \'active\':ステータス:Status',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];
+ENTITY_COLUMNS['SensorStream']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'asset_id:UUID:FK(TwinAsset) NOT NULL:資産ID:Asset ID',
+  'sensor_type:VARCHAR(100):NOT NULL:センサー種別:Sensor type',
+  'value:DECIMAL(20,6):NOT NULL:値:Value',
+  'unit:VARCHAR(50):NOT NULL:単位:Unit',
+  'recorded_at:TIMESTAMP:NOT NULL:記録日時:Recorded at',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];
+ENTITY_COLUMNS['TwinSimulation']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'asset_id:UUID:FK(TwinAsset) NOT NULL:資産ID:Asset ID',
+  'scenario:VARCHAR(255):NOT NULL:シナリオ:Scenario',
+  'parameters:JSONB::パラメータ:Parameters',
+  'result_summary:JSONB::結果サマリー:Result summary',
+  'status:VARCHAR(20):DEFAULT \'running\':ステータス:Status',
+  'completed_at:TIMESTAMP::完了日時:Completed at',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];
+ENTITY_COLUMNS['AnomalyEvent']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'asset_id:UUID:FK(TwinAsset) NOT NULL:資産ID:Asset ID',
+  'anomaly_type:VARCHAR(100):NOT NULL:異常種別:Anomaly type',
+  'severity:VARCHAR(20):DEFAULT \'warning\':重大度:Severity',
+  'description:TEXT:NOT NULL:説明:Description',
+  'resolved_at:TIMESTAMP::解消日時:Resolved at',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];
+ENTITY_COLUMNS['MaintenancePlan']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'asset_id:UUID:FK(TwinAsset) NOT NULL:資産ID:Asset ID',
+  'plan_type:VARCHAR(50):NOT NULL:計画種別:Plan type',
+  'scheduled_at:TIMESTAMP:NOT NULL:予定日時:Scheduled at',
+  'estimated_hours:DECIMAL(5,1)::推定作業時間:Estimated hours',
+  'status:VARCHAR(20):DEFAULT \'planned\':ステータス:Status',
+  'completed_at:TIMESTAMP::完了日時:Completed at',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];
+
+// climate_credit_saas
+ENTITY_COLUMNS['ClimateCredit']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'project_name:VARCHAR(255):NOT NULL:プロジェクト名:Project name',
+  'credit_type:VARCHAR(100):NOT NULL:クレジット種別:Credit type',
+  'volume_tco2:DECIMAL(12,2):NOT NULL:数量(tCO2):Volume (tCO2)',
+  'vintage_year:INT:NOT NULL:ビンテージ年:Vintage year',
+  'status:VARCHAR(20):DEFAULT \'available\':ステータス:Status',
+  'registry_id:VARCHAR(200)::登録機関ID:Registry ID',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];
+ENTITY_COLUMNS['EmissionRecord']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'scope:VARCHAR(10):NOT NULL:スコープ:Scope',
+  'category:VARCHAR(100):NOT NULL:カテゴリ:Category',
+  'amount_tco2:DECIMAL(12,4):NOT NULL:排出量(tCO2):Emission amount (tCO2)',
+  'measurement_date:DATE:NOT NULL:計測日:Measurement date',
+  'data_source:VARCHAR(200)::データソース:Data source',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];
+ENTITY_COLUMNS['CreditTrade']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'credit_id:UUID:FK(ClimateCredit) NOT NULL:クレジットID:Credit ID',
+  'buyer_id:UUID:FK(User) NOT NULL:購入者ID:Buyer ID',
+  'seller_id:UUID:FK(User) NOT NULL:販売者ID:Seller ID',
+  'quantity_tco2:DECIMAL(12,2):NOT NULL:取引量(tCO2):Trade quantity (tCO2)',
+  'price_per_tco2:DECIMAL(10,2):NOT NULL:単価(tCO2):Price per tCO2',
+  'trade_date:TIMESTAMP:NOT NULL:取引日時:Trade date',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];
+ENTITY_COLUMNS['VerificationReport']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'credit_id:UUID:FK(ClimateCredit) NOT NULL:クレジットID:Credit ID',
+  'verifier_org:VARCHAR(255):NOT NULL:検証機関:Verifier organization',
+  'verification_date:DATE:NOT NULL:検証日:Verification date',
+  'report_url:TEXT::レポートURL:Report URL',
+  'status:VARCHAR(20):DEFAULT \'pending\':ステータス:Status',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];
+ENTITY_COLUMNS['EsgPortfolio']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'period_year:INT:NOT NULL:対象年:Period year',
+  'total_emission_tco2:DECIMAL(12,2):DEFAULT 0:総排出量(tCO2):Total emission (tCO2)',
+  'total_offset_tco2:DECIMAL(12,2):DEFAULT 0:総オフセット量(tCO2):Total offset (tCO2)',
+  'net_emission_tco2:DECIMAL(12,2)::純排出量(tCO2):Net emission (tCO2)',
+  'esg_score:DECIMAL(5,2)::ESGスコア:ESG score',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];
+
+// elder_care_saas
+ENTITY_COLUMNS['ElderResident']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'full_name:VARCHAR(200):NOT NULL:氏名:Full name',
+  'birth_date:DATE:NOT NULL:生年月日:Birth date',
+  'room_number:VARCHAR(20)::部屋番号:Room number',
+  'care_level:INT:DEFAULT 1:要介護度:Care level',
+  'emergency_contact:VARCHAR(500)::緊急連絡先:Emergency contact',
+  'medical_notes:TEXT::医療情報メモ:Medical notes',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];
+ENTITY_COLUMNS['CareScheduleEntry']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'resident_id:UUID:FK(ElderResident) NOT NULL:入居者ID:Resident ID',
+  'care_type:VARCHAR(100):NOT NULL:ケア種別:Care type',
+  'scheduled_time:TIME:NOT NULL:予定時刻:Scheduled time',
+  'assigned_staff_id:UUID:FK(User)::担当スタッフID:Assigned staff ID',
+  'frequency:VARCHAR(50):DEFAULT \'daily\':頻度:Frequency',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];
+ENTITY_COLUMNS['MedicationRecord']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'resident_id:UUID:FK(ElderResident) NOT NULL:入居者ID:Resident ID',
+  'medication_name:VARCHAR(200):NOT NULL:薬品名:Medication name',
+  'dosage:VARCHAR(100):NOT NULL:用量:Dosage',
+  'administered_at:TIMESTAMP:NOT NULL:投薬日時:Administered at',
+  'staff_id:UUID:FK(User) NOT NULL:担当スタッフID:Staff ID',
+  'is_skipped:BOOLEAN:DEFAULT false:スキップ:Skipped',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];
+ENTITY_COLUMNS['VitalMeasurement']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'resident_id:UUID:FK(ElderResident) NOT NULL:入居者ID:Resident ID',
+  'measured_at:TIMESTAMP:NOT NULL:計測日時:Measured at',
+  'blood_pressure_sys:INT::最高血圧:Systolic BP',
+  'blood_pressure_dia:INT::最低血圧:Diastolic BP',
+  'pulse:INT::脈拍:Pulse',
+  'body_temp:DECIMAL(4,1)::体温:Body temperature',
+  'spo2:INT::血中酸素飽和度:SpO2',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];
+ENTITY_COLUMNS['FamilyMessage']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'resident_id:UUID:FK(ElderResident) NOT NULL:入居者ID:Resident ID',
+  'sender_id:UUID:FK(User) NOT NULL:送信者ID:Sender ID',
+  'message_body:TEXT:NOT NULL:メッセージ本文:Message body',
+  'is_read:BOOLEAN:DEFAULT false:既読:Read',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];
+
+// creator_monetize
+ENTITY_COLUMNS['CreatorProfile']=[
+  'user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID',
+  'display_name:VARCHAR(200):NOT NULL:表示名:Display name',
+  'bio:TEXT::自己紹介:Bio',
+  'avatar_url:TEXT::アバターURL:Avatar URL',
+  'category:VARCHAR(100)::カテゴリ:Category',
+  'total_revenue_jpy:DECIMAL(14,2):DEFAULT 0:総収益(JPY):Total revenue (JPY)',
+  'subscriber_count:INT:DEFAULT 0:購読者数:Subscriber count',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];
+ENTITY_COLUMNS['MembershipTier']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'creator_id:UUID:FK(CreatorProfile) NOT NULL:クリエイターID:Creator ID',
+  'tier_name:VARCHAR(100):NOT NULL:プラン名:Tier name',
+  'price_jpy:INT:NOT NULL:月額(JPY):Monthly price (JPY)',
+  'benefits:JSONB::特典:Benefits',
+  'member_count:INT:DEFAULT 0:会員数:Member count',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];
+ENTITY_COLUMNS['DigitalProduct']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'creator_id:UUID:FK(CreatorProfile) NOT NULL:クリエイターID:Creator ID',
+  'title:VARCHAR(300):NOT NULL:タイトル:Title',
+  'product_type:VARCHAR(50):NOT NULL:商品種別:Product type',
+  'price_jpy:INT:NOT NULL:価格(JPY):Price (JPY)',
+  'download_url:TEXT::ダウンロードURL:Download URL',
+  'sales_count:INT:DEFAULT 0:販売数:Sales count',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];
+ENTITY_COLUMNS['TipTransaction']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'creator_id:UUID:FK(CreatorProfile) NOT NULL:クリエイターID:Creator ID',
+  'tipper_id:UUID:FK(User) NOT NULL:投げ銭者ID:Tipper ID',
+  'amount_jpy:INT:NOT NULL:金額(JPY):Amount (JPY)',
+  'message:VARCHAR(500)::メッセージ:Message',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];
+ENTITY_COLUMNS['CoachingSession']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'creator_id:UUID:FK(CreatorProfile) NOT NULL:クリエイターID:Creator ID',
+  'client_id:UUID:FK(User) NOT NULL:クライアントID:Client ID',
+  'scheduled_at:TIMESTAMP:NOT NULL:予定日時:Scheduled at',
+  'duration_min:INT:DEFAULT 60:時間(分):Duration (min)',
+  'price_jpy:INT:NOT NULL:料金(JPY):Price (JPY)',
+  'status:VARCHAR(20):DEFAULT \'scheduled\':ステータス:Status',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];
+
+// devtools_saas
+ENTITY_COLUMNS['DevProject']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'name:VARCHAR(255):NOT NULL:プロジェクト名:Project name',
+  'repo_url:VARCHAR(500):NOT NULL:リポジトリURL:Repository URL',
+  'git_provider:VARCHAR(50):DEFAULT \'github\':Gitプロバイダー:Git provider',
+  'language:VARCHAR(50)::主要言語:Primary language',
+  'is_active:BOOLEAN:DEFAULT true:有効:Active',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];
+ENTITY_COLUMNS['CodeReview']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'project_id:UUID:FK(DevProject) NOT NULL:プロジェクトID:Project ID',
+  'pr_number:INT:NOT NULL:PR番号:PR number',
+  'pr_url:VARCHAR(500):NOT NULL:PR URL:PR URL',
+  'review_summary:TEXT::レビューサマリー:Review summary',
+  'issue_count:INT:DEFAULT 0:指摘数:Issue count',
+  'severity:VARCHAR(20):DEFAULT \'medium\':重要度:Severity',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];
+ENTITY_COLUMNS['AutoTestSuite']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'project_id:UUID:FK(DevProject) NOT NULL:プロジェクトID:Project ID',
+  'suite_name:VARCHAR(255):NOT NULL:スイート名:Suite name',
+  'test_count:INT:DEFAULT 0:テスト数:Test count',
+  'pass_rate:DECIMAL(5,2):DEFAULT 0:合格率(%):Pass rate (%)',
+  'generated_by:VARCHAR(50):DEFAULT \'ai\':生成元:Generated by',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];
+ENTITY_COLUMNS['DocGeneration']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'project_id:UUID:FK(DevProject) NOT NULL:プロジェクトID:Project ID',
+  'doc_type:VARCHAR(100):NOT NULL:ドキュメント種別:Doc type',
+  'content:TEXT:NOT NULL:内容:Content',
+  'status:VARCHAR(20):DEFAULT \'draft\':ステータス:Status',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];
+ENTITY_COLUMNS['DevMetricReport']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'project_id:UUID:FK(DevProject) NOT NULL:プロジェクトID:Project ID',
+  'period_start:DATE:NOT NULL:期間開始:Period start',
+  'period_end:DATE:NOT NULL:期間終了:Period end',
+  'commits:INT:DEFAULT 0:コミット数:Commits',
+  'prs_merged:INT:DEFAULT 0:マージPR数:PRs merged',
+  'bugs_fixed:INT:DEFAULT 0:修正バグ数:Bugs fixed',
+  'coverage_pct:DECIMAL(5,2):DEFAULT 0:カバレッジ(%):Coverage (%)',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];
+
+// compliance_auto
+ENTITY_COLUMNS['ComplianceFramework']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'framework_name:VARCHAR(100):NOT NULL:フレームワーク名:Framework name',
+  'version:VARCHAR(20)::バージョン:Version',
+  'total_controls:INT:DEFAULT 0:総コントロール数:Total controls',
+  'is_active:BOOLEAN:DEFAULT true:有効:Active',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];
+ENTITY_COLUMNS['ControlCheck']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'framework_id:UUID:FK(ComplianceFramework) NOT NULL:フレームワークID:Framework ID',
+  'control_id:VARCHAR(50):NOT NULL:コントロールID:Control ID',
+  'control_name:VARCHAR(300):NOT NULL:コントロール名:Control name',
+  'status:VARCHAR(20):DEFAULT \'not_started\':ステータス:Status',
+  'last_checked_at:TIMESTAMP::最終チェック日時:Last checked at',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];
+ENTITY_COLUMNS['EvidenceItem']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'control_id:UUID:FK(ControlCheck) NOT NULL:コントロールID:Control ID',
+  'evidence_type:VARCHAR(100):NOT NULL:証跡種別:Evidence type',
+  'file_url:TEXT::ファイルURL:File URL',
+  'description:TEXT:NOT NULL:説明:Description',
+  'collected_at:TIMESTAMP:NOT NULL:収集日時:Collected at',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];
+ENTITY_COLUMNS['RiskAssessment']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'risk_name:VARCHAR(300):NOT NULL:リスク名:Risk name',
+  'category:VARCHAR(100):NOT NULL:カテゴリ:Category',
+  'likelihood:INT:DEFAULT 3:発生可能性(1-5):Likelihood (1-5)',
+  'impact:INT:DEFAULT 3:影響度(1-5):Impact (1-5)',
+  'risk_score:INT::リスクスコア:Risk score',
+  'mitigation:TEXT::軽減策:Mitigation',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];
+ENTITY_COLUMNS['AuditReportDoc']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'framework_id:UUID:FK(ComplianceFramework) NOT NULL:フレームワークID:Framework ID',
+  'report_date:DATE:NOT NULL:レポート日:Report date',
+  'overall_score:DECIMAL(5,2)::総合スコア:Overall score',
+  'pass_count:INT:DEFAULT 0:合格数:Pass count',
+  'fail_count:INT:DEFAULT 0:不合格数:Fail count',
+  'report_url:TEXT::レポートURL:Report URL',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];
+
+// smart_city_platform
+ENTITY_COLUMNS['CityInfraNode']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'node_name:VARCHAR(255):NOT NULL:ノード名:Node name',
+  'node_type:VARCHAR(100):NOT NULL:ノード種別:Node type',
+  'latitude:DECIMAL(10,7)::緯度:Latitude',
+  'longitude:DECIMAL(10,7)::経度:Longitude',
+  'status:VARCHAR(20):DEFAULT \'active\':ステータス:Status',
+  'installed_at:TIMESTAMP::設置日時:Installed at',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];
+ENTITY_COLUMNS['TrafficFlowData']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'node_id:UUID:FK(CityInfraNode) NOT NULL:ノードID:Node ID',
+  'vehicle_count:INT:DEFAULT 0:車両数:Vehicle count',
+  'avg_speed_kmh:DECIMAL(5,1)::平均速度(km/h):Avg speed (km/h)',
+  'congestion_level:INT:DEFAULT 0:渋滞レベル(0-5):Congestion level (0-5)',
+  'recorded_at:TIMESTAMP:NOT NULL:記録日時:Recorded at',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];
+ENTITY_COLUMNS['EnergyGridData']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'node_id:UUID:FK(CityInfraNode) NOT NULL:ノードID:Node ID',
+  'consumption_kwh:DECIMAL(12,4):NOT NULL:消費電力(kWh):Consumption (kWh)',
+  'generation_kwh:DECIMAL(12,4):DEFAULT 0:発電量(kWh):Generation (kWh)',
+  'renewable_pct:DECIMAL(5,2):DEFAULT 0:再生可能エネルギー率(%):Renewable (%)',
+  'recorded_at:TIMESTAMP:NOT NULL:記録日時:Recorded at',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];
+ENTITY_COLUMNS['CitizenServiceRequest']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'citizen_id:UUID:FK(User) NOT NULL:市民ID:Citizen ID',
+  'service_type:VARCHAR(100):NOT NULL:サービス種別:Service type',
+  'description:TEXT:NOT NULL:内容:Description',
+  'status:VARCHAR(20):DEFAULT \'submitted\':ステータス:Status',
+  'assigned_dept:VARCHAR(100)::担当部署:Assigned dept',
+  'resolved_at:TIMESTAMP::解決日時:Resolved at',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];
+ENTITY_COLUMNS['CitySimulationRun']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'simulation_type:VARCHAR(100):NOT NULL:シミュレーション種別:Simulation type',
+  'scenario_name:VARCHAR(255):NOT NULL:シナリオ名:Scenario name',
+  'parameters:JSONB:NOT NULL:パラメータ:Parameters',
+  'result_summary:JSONB::結果サマリー:Result summary',
+  'status:VARCHAR(20):DEFAULT \'running\':ステータス:Status',
+  'completed_at:TIMESTAMP::完了日時:Completed at',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];
+
+// Field preset entities (ext18)
+ENTITY_COLUMNS['FpsMatchData']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'player_id:UUID:FK(User) NOT NULL:選手ID:Player ID',
+  'game_title:VARCHAR(100):NOT NULL:ゲームタイトル:Game title',
+  'match_duration_sec:INT:NOT NULL:試合時間(秒):Match duration (sec)',
+  'map_name:VARCHAR(100)::マップ名:Map name',
+  'result:VARCHAR(20):NOT NULL:結果:Result',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];
+ENTITY_COLUMNS['PlayerAimStat']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'match_id:UUID:FK(FpsMatchData) NOT NULL:試合ID:Match ID',
+  'accuracy_pct:DECIMAL(5,2)::精度(%):Accuracy (%)',
+  'headshot_pct:DECIMAL(5,2)::ヘッドショット率(%):Headshot (%)',
+  'avg_reaction_ms:INT::平均反応時間(ms):Avg reaction (ms)',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];
+ENTITY_COLUMNS['MapHeatmap']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'match_id:UUID:FK(FpsMatchData) NOT NULL:試合ID:Match ID',
+  'map_name:VARCHAR(100):NOT NULL:マップ名:Map name',
+  'heatmap_data:JSONB:NOT NULL:ヒートマップデータ:Heatmap data',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];
+ENTITY_COLUMNS['TacticalReplay']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'match_id:UUID:FK(FpsMatchData) NOT NULL:試合ID:Match ID',
+  'replay_url:TEXT::リプレイURL:Replay URL',
+  'ai_annotation:TEXT::AIアノテーション:AI annotation',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];
+ENTITY_COLUMNS['CoachingInsight']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'player_id:UUID:FK(User) NOT NULL:選手ID:Player ID',
+  'insight_type:VARCHAR(100):NOT NULL:インサイト種別:Insight type',
+  'content:TEXT:NOT NULL:内容:Content',
+  'priority:VARCHAR(20):DEFAULT \'medium\':優先度:Priority',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];
+ENTITY_COLUMNS['DevRepo']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'repo_name:VARCHAR(255):NOT NULL:リポジトリ名:Repo name',
+  'repo_url:VARCHAR(500):NOT NULL:URL:URL',
+  'default_branch:VARCHAR(100):DEFAULT \'main\':デフォルトブランチ:Default branch',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];
+ENTITY_COLUMNS['AiCodeReview']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'repo_id:UUID:FK(DevRepo) NOT NULL:リポジトリID:Repo ID',
+  'pr_number:INT:NOT NULL:PR番号:PR number',
+  'ai_summary:TEXT::AIサマリー:AI summary',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];
+ENTITY_COLUMNS['AutoTestCase']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'repo_id:UUID:FK(DevRepo) NOT NULL:リポジトリID:Repo ID',
+  'test_name:VARCHAR(300):NOT NULL:テスト名:Test name',
+  'test_code:TEXT:NOT NULL:テストコード:Test code',
+  'ai_generated:BOOLEAN:DEFAULT true:AI生成:AI generated',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];
+ENTITY_COLUMNS['TechDebtItem']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'repo_id:UUID:FK(DevRepo) NOT NULL:リポジトリID:Repo ID',
+  'debt_type:VARCHAR(100):NOT NULL:負債種別:Debt type',
+  'description:TEXT:NOT NULL:説明:Description',
+  'severity:VARCHAR(20):DEFAULT \'medium\':重大度:Severity',
+  'estimated_hours:DECIMAL(5,1)::推定工数:Estimated hours',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];
+ENTITY_COLUMNS['AiDocDraft']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'repo_id:UUID:FK(DevRepo) NOT NULL:リポジトリID:Repo ID',
+  'doc_type:VARCHAR(100):NOT NULL:ドキュメント種別:Doc type',
+  'content:TEXT:NOT NULL:内容:Content',
+  'status:VARCHAR(20):DEFAULT \'draft\':ステータス:Status',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];
+ENTITY_COLUMNS['ClimateStation']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'station_name:VARCHAR(255):NOT NULL:ステーション名:Station name',
+  'latitude:DECIMAL(10,7):NOT NULL:緯度:Latitude',
+  'longitude:DECIMAL(10,7):NOT NULL:経度:Longitude',
+  'elevation_m:DECIMAL(8,2)::標高(m):Elevation (m)',
+  'is_active:BOOLEAN:DEFAULT true:有効:Active',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];
+ENTITY_COLUMNS['AtmosphericReading']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'station_id:UUID:FK(ClimateStation) NOT NULL:ステーションID:Station ID',
+  'co2_ppm:DECIMAL(8,2)::CO2濃度(ppm):CO2 (ppm)',
+  'temperature_c:DECIMAL(5,2)::気温(℃):Temperature (℃)',
+  'humidity_pct:DECIMAL(5,2)::湿度(%):Humidity (%)',
+  'recorded_at:TIMESTAMP:NOT NULL:記録日時:Recorded at',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];
+ENTITY_COLUMNS['ExtremWeatherAlert']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'alert_type:VARCHAR(100):NOT NULL:アラート種別:Alert type',
+  'severity:VARCHAR(20):DEFAULT \'moderate\':重大度:Severity',
+  'region:VARCHAR(200):NOT NULL:地域:Region',
+  'description:TEXT:NOT NULL:説明:Description',
+  'issued_at:TIMESTAMP:NOT NULL:発報日時:Issued at',
+  'expires_at:TIMESTAMP::失効日時:Expires at',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];
+ENTITY_COLUMNS['ClimateModelRun']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'model_name:VARCHAR(200):NOT NULL:モデル名:Model name',
+  'scenario:VARCHAR(100):NOT NULL:シナリオ:Scenario',
+  'forecast_years:INT:NOT NULL:予測年数:Forecast years',
+  'parameters:JSONB::パラメータ:Parameters',
+  'status:VARCHAR(20):DEFAULT \'running\':ステータス:Status',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];
+ENTITY_COLUMNS['Co2TrendReport']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'report_date:DATE:NOT NULL:レポート日:Report date',
+  'period:VARCHAR(50):NOT NULL:期間:Period',
+  'avg_co2_ppm:DECIMAL(8,2)::平均CO2(ppm):Avg CO2 (ppm)',
+  'trend_direction:VARCHAR(20)::トレンド方向:Trend direction',
+  'summary:TEXT::サマリー:Summary',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];
+ENTITY_COLUMNS['HomeElderProfile']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'full_name:VARCHAR(200):NOT NULL:氏名:Full name',
+  'birth_date:DATE:NOT NULL:生年月日:Birth date',
+  'address:TEXT:NOT NULL:住所:Address',
+  'care_level:INT:DEFAULT 1:要介護度:Care level',
+  'emergency_contact:VARCHAR(500)::緊急連絡先:Emergency contact',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];
+ENTITY_COLUMNS['ActivityPattern']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'elder_id:UUID:FK(HomeElderProfile) NOT NULL:入居者ID:Elder ID',
+  'pattern_date:DATE:NOT NULL:パターン日:Pattern date',
+  'activity_type:VARCHAR(100):NOT NULL:活動種別:Activity type',
+  'duration_min:INT::時間(分):Duration (min)',
+  'anomaly_flag:BOOLEAN:DEFAULT false:異常フラグ:Anomaly flag',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];
+ENTITY_COLUMNS['FallDetectionEvent']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'elder_id:UUID:FK(HomeElderProfile) NOT NULL:入居者ID:Elder ID',
+  'detected_at:TIMESTAMP:NOT NULL:検知日時:Detected at',
+  'location:VARCHAR(200)::場所:Location',
+  'severity:VARCHAR(20):DEFAULT \'medium\':重大度:Severity',
+  'notified_at:TIMESTAMP::通知日時:Notified at',
+  'resolved_at:TIMESTAMP::解消日時:Resolved at',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];
+ENTITY_COLUMNS['CognitiveAssessment']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'elder_id:UUID:FK(HomeElderProfile) NOT NULL:入居者ID:Elder ID',
+  'assessment_date:DATE:NOT NULL:評価日:Assessment date',
+  'mmse_score:INT::MMSE得点:MMSE score',
+  'ai_analysis:TEXT::AI分析:AI analysis',
+  'assessor_id:UUID:FK(User)::評価者ID:Assessor ID',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];
+ENTITY_COLUMNS['CareTeamNote']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'elder_id:UUID:FK(HomeElderProfile) NOT NULL:入居者ID:Elder ID',
+  'author_id:UUID:FK(User) NOT NULL:記録者ID:Author ID',
+  'note_body:TEXT:NOT NULL:ノート内容:Note body',
+  'note_type:VARCHAR(50):DEFAULT \'observation\':種別:Note type',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];
+ENTITY_COLUMNS['CreatorChannel']=[
+  'user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID',
+  'channel_name:VARCHAR(200):NOT NULL:チャンネル名:Channel name',
+  'platform:VARCHAR(50):NOT NULL:プラットフォーム:Platform',
+  'subscriber_count:INT:DEFAULT 0:購読者数:Subscriber count',
+  'total_views:BIGINT:DEFAULT 0:総視聴回数:Total views',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];
+ENTITY_COLUMNS['ContentPost']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'channel_id:UUID:FK(CreatorChannel) NOT NULL:チャンネルID:Channel ID',
+  'title:VARCHAR(500):NOT NULL:タイトル:Title',
+  'content_type:VARCHAR(50):NOT NULL:コンテンツ種別:Content type',
+  'views:BIGINT:DEFAULT 0:視聴数:Views',
+  'likes:INT:DEFAULT 0:いいね数:Likes',
+  'revenue_jpy:DECIMAL(12,2):DEFAULT 0:収益(JPY):Revenue (JPY)',
+  'published_at:TIMESTAMP::公開日時:Published at',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];
+ENTITY_COLUMNS['AudienceInsight']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'channel_id:UUID:FK(CreatorChannel) NOT NULL:チャンネルID:Channel ID',
+  'segment_name:VARCHAR(100):NOT NULL:セグメント名:Segment name',
+  'age_range:VARCHAR(20)::年代:Age range',
+  'gender:VARCHAR(20)::性別:Gender',
+  'region:VARCHAR(100)::地域:Region',
+  'audience_pct:DECIMAL(5,2)::割合(%):Audience (%)',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];
+ENTITY_COLUMNS['RevenueProjection']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'channel_id:UUID:FK(CreatorChannel) NOT NULL:チャンネルID:Channel ID',
+  'projection_month:DATE:NOT NULL:予測月:Projection month',
+  'projected_jpy:DECIMAL(12,2):NOT NULL:予測収益(JPY):Projected revenue (JPY)',
+  'actual_jpy:DECIMAL(12,2)::実績収益(JPY):Actual revenue (JPY)',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];
+ENTITY_COLUMNS['CollabOpportunity']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'proposer_id:UUID:FK(User) NOT NULL:提案者ID:Proposer ID',
+  'target_creator_id:UUID:FK(CreatorProfile) NOT NULL:対象クリエイターID:Target creator ID',
+  'collab_type:VARCHAR(100):NOT NULL:コラボ種別:Collab type',
+  'description:TEXT:NOT NULL:説明:Description',
+  'status:VARCHAR(20):DEFAULT \'open\':ステータス:Status',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];
+ENTITY_COLUMNS['KycRecord']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'customer_id:UUID:FK(User) NOT NULL:顧客ID:Customer ID',
+  'id_type:VARCHAR(50):NOT NULL:身分証種別:ID type',
+  'verification_status:VARCHAR(20):DEFAULT \'pending\':確認ステータス:Verification status',
+  'verified_at:TIMESTAMP::確認日時:Verified at',
+  'risk_level:VARCHAR(20):DEFAULT \'low\':リスクレベル:Risk level',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];
+ENTITY_COLUMNS['AmlAlert']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'customer_id:UUID:FK(User) NOT NULL:顧客ID:Customer ID',
+  'alert_type:VARCHAR(100):NOT NULL:アラート種別:Alert type',
+  'amount:DECIMAL(15,2):NOT NULL:金額:Amount',
+  'risk_score:DECIMAL(5,2):NOT NULL:リスクスコア:Risk score',
+  'status:VARCHAR(20):DEFAULT \'open\':ステータス:Status',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];
+ENTITY_COLUMNS['TransactionMonitor']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'customer_id:UUID:FK(User) NOT NULL:顧客ID:Customer ID',
+  'transaction_ref:VARCHAR(100):NOT NULL:取引参照番号:Transaction ref',
+  'amount:DECIMAL(15,2):NOT NULL:金額:Amount',
+  'currency:VARCHAR(10):DEFAULT \'JPY\':通貨:Currency',
+  'risk_flag:BOOLEAN:DEFAULT false:リスクフラグ:Risk flag',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];
+ENTITY_COLUMNS['RegulatoryReport']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'report_type:VARCHAR(100):NOT NULL:レポート種別:Report type',
+  'reporting_period:VARCHAR(50):NOT NULL:報告期間:Reporting period',
+  'content:TEXT:NOT NULL:内容:Content',
+  'submitted_at:TIMESTAMP::提出日時:Submitted at',
+  'status:VARCHAR(20):DEFAULT \'draft\':ステータス:Status',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];
+ENTITY_COLUMNS['ComplianceRiskScore']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'customer_id:UUID:FK(User) NOT NULL:顧客ID:Customer ID',
+  'score:DECIMAL(5,2):NOT NULL:スコア:Score',
+  'score_date:DATE:NOT NULL:スコア算出日:Score date',
+  'factors:JSONB::スコア要因:Score factors',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];
+ENTITY_COLUMNS['TrafficSensorNode']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'sensor_name:VARCHAR(255):NOT NULL:センサー名:Sensor name',
+  'sensor_type:VARCHAR(100):NOT NULL:センサー種別:Sensor type',
+  'latitude:DECIMAL(10,7):NOT NULL:緯度:Latitude',
+  'longitude:DECIMAL(10,7):NOT NULL:経度:Longitude',
+  'is_active:BOOLEAN:DEFAULT true:有効:Active',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];
+ENTITY_COLUMNS['SignalControlData']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'node_id:UUID:FK(TrafficSensorNode) NOT NULL:ノードID:Node ID',
+  'green_duration_sec:INT:DEFAULT 30:青信号時間(秒):Green duration (sec)',
+  'red_duration_sec:INT:DEFAULT 30:赤信号時間(秒):Red duration (sec)',
+  'ai_optimized:BOOLEAN:DEFAULT false:AI最適化:AI optimized',
+  'updated_at:TIMESTAMP:NOT NULL:更新日時:Updated at',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];
+ENTITY_COLUMNS['PublicTransitFeed']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'transit_type:VARCHAR(50):NOT NULL:交通機関種別:Transit type',
+  'line_name:VARCHAR(200):NOT NULL:路線名:Line name',
+  'current_delay_min:INT:DEFAULT 0:現在遅延(分):Current delay (min)',
+  'recorded_at:TIMESTAMP:NOT NULL:記録日時:Recorded at',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];
+ENTITY_COLUMNS['CongestionPrediction']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'node_id:UUID:FK(TrafficSensorNode) NOT NULL:ノードID:Node ID',
+  'predicted_at:TIMESTAMP:NOT NULL:予測対象日時:Predicted at',
+  'congestion_level:INT:NOT NULL:渋滞レベル予測(0-5):Predicted congestion (0-5)',
+  'confidence_pct:DECIMAL(5,2)::信頼度(%):Confidence (%)',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];
+ENTITY_COLUMNS['UrbanRouteOpt']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'origin_lat:DECIMAL(10,7):NOT NULL:出発緯度:Origin lat',
+  'origin_lng:DECIMAL(10,7):NOT NULL:出発経度:Origin lng',
+  'dest_lat:DECIMAL(10,7):NOT NULL:目的緯度:Dest lat',
+  'dest_lng:DECIMAL(10,7):NOT NULL:目的経度:Dest lng',
+  'recommended_route:JSONB::推奨ルート:Recommended route',
+  'estimated_time_min:INT::推定時間(分):Estimated time (min)',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];
+ENTITY_COLUMNS['ScientificTwin']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'twin_name:VARCHAR(255):NOT NULL:ツイン名:Twin name',
+  'science_domain:VARCHAR(100):NOT NULL:科学領域:Science domain',
+  'model_type:VARCHAR(100):NOT NULL:モデル種別:Model type',
+  'parameters_schema:JSONB::パラメータスキーマ:Parameters schema',
+  'is_validated:BOOLEAN:DEFAULT false:検証済み:Validated',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];
+ENTITY_COLUMNS['SimulationRun']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'twin_id:UUID:FK(ScientificTwin) NOT NULL:ツインID:Twin ID',
+  'run_name:VARCHAR(255):NOT NULL:実行名:Run name',
+  'input_parameters:JSONB:NOT NULL:入力パラメータ:Input parameters',
+  'output_data:JSONB::出力データ:Output data',
+  'status:VARCHAR(20):DEFAULT \'running\':ステータス:Status',
+  'completed_at:TIMESTAMP::完了日時:Completed at',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];
+ENTITY_COLUMNS['PhysicsModel']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'model_name:VARCHAR(255):NOT NULL:モデル名:Model name',
+  'equation_type:VARCHAR(100):NOT NULL:方程式種別:Equation type',
+  'parameters:JSONB:NOT NULL:パラメータ:Parameters',
+  'validation_accuracy:DECIMAL(5,2)::検証精度:Validation accuracy',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];
+ENTITY_COLUMNS['OptimizationResult']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'twin_id:UUID:FK(ScientificTwin) NOT NULL:ツインID:Twin ID',
+  'objective:VARCHAR(200):NOT NULL:最適化目標:Objective',
+  'optimal_params:JSONB::最適パラメータ:Optimal parameters',
+  'improvement_pct:DECIMAL(5,2)::改善率(%):Improvement (%)',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];
+ENTITY_COLUMNS['AnomalyFinding']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'twin_id:UUID:FK(ScientificTwin) NOT NULL:ツインID:Twin ID',
+  'finding_type:VARCHAR(100):NOT NULL:知見種別:Finding type',
+  'description:TEXT:NOT NULL:説明:Description',
+  'confidence_pct:DECIMAL(5,2)::信頼度(%):Confidence (%)',
+  'is_confirmed:BOOLEAN:DEFAULT false:確認済み:Confirmed',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];
+ENTITY_COLUMNS['ElderPatient']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'full_name:VARCHAR(200):NOT NULL:氏名:Full name',
+  'birth_date:DATE:NOT NULL:生年月日:Birth date',
+  'medical_record_id:VARCHAR(100)::電子カルテID:Medical record ID',
+  'physician_id:UUID:FK(User)::主治医ID:Physician ID',
+  'care_plan:TEXT::ケアプラン:Care plan',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];
+ENTITY_COLUMNS['RemoteVitalReading']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'patient_id:UUID:FK(ElderPatient) NOT NULL:患者ID:Patient ID',
+  'device_type:VARCHAR(100):NOT NULL:デバイス種別:Device type',
+  'heart_rate:INT::心拍数:Heart rate',
+  'blood_pressure_sys:INT::最高血圧:Systolic BP',
+  'blood_pressure_dia:INT::最低血圧:Diastolic BP',
+  'spo2:INT::血中酸素飽和度:SpO2',
+  'recorded_at:TIMESTAMP:NOT NULL:記録日時:Recorded at',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];
+ENTITY_COLUMNS['MedComplianceLog']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'patient_id:UUID:FK(ElderPatient) NOT NULL:患者ID:Patient ID',
+  'medication_name:VARCHAR(200):NOT NULL:薬品名:Medication name',
+  'scheduled_time:TIMESTAMP:NOT NULL:服薬予定日時:Scheduled time',
+  'taken_at:TIMESTAMP::服薬日時:Taken at',
+  'is_compliant:BOOLEAN:DEFAULT false:服薬遵守:Compliant',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];
+ENTITY_COLUMNS['PhysicianAlert']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'patient_id:UUID:FK(ElderPatient) NOT NULL:患者ID:Patient ID',
+  'physician_id:UUID:FK(User) NOT NULL:主治医ID:Physician ID',
+  'alert_type:VARCHAR(100):NOT NULL:アラート種別:Alert type',
+  'message:TEXT:NOT NULL:メッセージ:Message',
+  'is_read:BOOLEAN:DEFAULT false:既読:Read',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];
+ENTITY_COLUMNS['TelehealthSession']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'patient_id:UUID:FK(ElderPatient) NOT NULL:患者ID:Patient ID',
+  'physician_id:UUID:FK(User) NOT NULL:主治医ID:Physician ID',
+  'scheduled_at:TIMESTAMP:NOT NULL:予定日時:Scheduled at',
+  'duration_min:INT:DEFAULT 30:時間(分):Duration (min)',
+  'session_notes:TEXT::セッションメモ:Session notes',
+  'status:VARCHAR(20):DEFAULT \'scheduled\':ステータス:Status',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];
+ENTITY_COLUMNS['CoachingLearner']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'full_name:VARCHAR(200):NOT NULL:氏名:Full name',
+  'learning_goal:TEXT::学習目標:Learning goal',
+  'current_level:VARCHAR(50):DEFAULT \'beginner\':現在レベル:Current level',
+  'preferred_pace:VARCHAR(50):DEFAULT \'normal\':希望ペース:Preferred pace',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];
+ENTITY_COLUMNS['AdaptiveSession']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'learner_id:UUID:FK(CoachingLearner) NOT NULL:学習者ID:Learner ID',
+  'session_type:VARCHAR(100):NOT NULL:セッション種別:Session type',
+  'ai_prompt_used:TEXT::使用AIプロンプト:AI prompt used',
+  'duration_min:INT:DEFAULT 30:時間(分):Duration (min)',
+  'comprehension_score:DECIMAL(5,2)::理解度スコア:Comprehension score',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];
+ENTITY_COLUMNS['WeaknessProfile']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'learner_id:UUID:FK(CoachingLearner) NOT NULL:学習者ID:Learner ID',
+  'topic_area:VARCHAR(200):NOT NULL:トピックエリア:Topic area',
+  'weakness_level:INT:DEFAULT 3:弱点レベル(1-5):Weakness level (1-5)',
+  'last_assessed_at:TIMESTAMP::最終評価日時:Last assessed at',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];
+ENTITY_COLUMNS['CoachingExercise']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'learner_id:UUID:FK(CoachingLearner) NOT NULL:学習者ID:Learner ID',
+  'topic_area:VARCHAR(200):NOT NULL:トピックエリア:Topic area',
+  'exercise_content:TEXT:NOT NULL:演習内容:Exercise content',
+  'difficulty:VARCHAR(20):DEFAULT \'medium\':難易度:Difficulty',
+  'ai_generated:BOOLEAN:DEFAULT true:AI生成:AI generated',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];
+ENTITY_COLUMNS['LearnerFeedback']=[
+  'tenant_id:UUID:FK(User) NOT NULL:テナントID:Tenant ID',
+  'learner_id:UUID:FK(CoachingLearner) NOT NULL:学習者ID:Learner ID',
+  'session_id:UUID:FK(AdaptiveSession)::セッションID:Session ID',
+  'feedback_body:TEXT:NOT NULL:フィードバック内容:Feedback body',
+  'rating:INT::評価(1-5):Rating (1-5)',
+  'created_at:TIMESTAMP:NOT NULL DEFAULT NOW():作成日時:Created at'
+];

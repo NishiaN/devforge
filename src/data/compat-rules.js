@@ -1,4 +1,4 @@
-/* ═══ STACK COMPATIBILITY & SEMANTIC CONSISTENCY RULES — 270 rules (ERROR×33 + WARN×136 + INFO×101) ═══ */
+/* ═══ STACK COMPATIBILITY & SEMANTIC CONSISTENCY RULES — 278 rules (ERROR×33 + WARN×135 + INFO×110) ═══ */
 const COMPAT_RULES=[
   // ── FE ↔ Mobile (2 ERROR) ──
   {id:'fe-mob-expo',p:['frontend','mobile'],lv:'error',
@@ -1770,7 +1770,7 @@ const COMPAT_RULES=[
    why_ja:'FirebaseのCloud Firestoreはリレーショナル結合クエリが苦手で、エンティティが10件以上になると複雑なビジネスロジック実装にCloud Functionsが必須になりがちです。代替としてSupabase（PostgreSQL+RLS）が複雑なロジックに適しています。',
    why_en:'Firebase Cloud Firestore struggles with relational join queries. With 10+ entities, complex business logic often forces reliance on Cloud Functions. Supabase (PostgreSQL + RLS) is a strong alternative for complex logic.'},
   {id:'cl-ai-nomonitoring',p:['ai_auto'],lv:'warn',
-   t:a=>/(フル自律|オーケストレーター|マルチAgent)/i.test(a.ai_auto||'')&&!/(Langfuse|observability|モニタリング|monitoring|AI.*ログ|トレーシング|tracing)/i.test(a.mvp_features||'')&&(a.scale||'medium')!=='solo',
+   t:a=>{var ents=(a.data_entities||'').split(',').filter(function(e){return e.trim().length>0;});return /(フル自律|オーケストレーター)/i.test(a.ai_auto||'')&&!/(Langfuse|observability|モニタリング|monitoring|AI.*ログ|トレーシング|tracing)/i.test(a.mvp_features||'')&&(a.scale||'medium')!=='solo'&&ents.length>=1;},
    ja:'高度なAI自律化（フル自律・オーケストレーター・マルチAgent）が設定されていますが、AI実行のモニタリング・トレーシングが未設定です。Langfuseなどの観測ツールを追加してください',
    en:'Advanced AI autonomy (full-auto/orchestrator/multi-agent) configured without AI execution monitoring/tracing. Add observability tools like Langfuse',
    why_ja:'フル自律・マルチAgentシステムはLLM呼び出しが連鎖するため、コスト爆発・ループ・ハルシネーション連鎖を早期に検知できないと深刻な障害につながります。Langfuse（オープンソース）はトークンコスト・レイテンシ・エラー率をトレース単位で記録します。',
@@ -2243,6 +2243,95 @@ const COMPAT_RULES=[
    fix:{f:'future_features',s:'CDN導入 (Cloudflare / CloudFront)'},
    why_ja:'SPAの静的アセット（JS/CSS/画像）をオリジンサーバーから直接配信すると、地理的に遠いユーザーのレイテンシが増大します。CDNはエッジノードでアセットをキャッシュし、世界中のユーザーに低レイテンシで配信します。Core Web VitalsのLCPスコアに直接影響します。',
    why_en:'Serving SPA static assets (JS/CSS/images) directly from origin increases latency for geographically distant users. CDNs cache assets at edge nodes for low-latency global delivery. This directly impacts LCP scores in Core Web Vitals.'},
+  // ── ext18: Testing Maturity & Quality (2 INFO) ──
+  {id:'test-no-coverage-gate',p:['scale','dev_methods'],lv:'info',
+   t:function(a){var ents=(a.data_entities||'').split(',').map(function(e){return e.trim();}).filter(Boolean);
+    var dm=a.dev_methods||'';var hasTDD=/TDD|BDD|テスト駆動/i.test(dm);
+    var hasCov=/coverage.*gate|カバレッジ.*ゲート|coverageThreshold|coverage.*threshold/i.test((a.mvp_features||'')+(a.future_features||''));
+    return hasTDD&&a.scale!=='solo'&&ents.length>=6&&!hasCov;},
+   ja:'TDD/BDD採用構成でカバレッジゲートが未設定です。CI/CDパイプラインにcoverageThreshold(Statements 80%/Branches 75%)を設定し品質ゲートとして活用してください。docs/124参照',
+   en:'TDD/BDD config without coverage gate. Set coverageThreshold (Statements 80%/Branches 75%) in CI/CD pipeline as quality gate. See docs/124',
+   fix:{f:'future_features',s:'カバレッジゲート設定 (80%)'},
+   why_ja:'TDDを採用してもカバレッジ閾値がなければ品質基準が曖昧になります。CIでcoverageThresholdを強制することで、テスト漏れを自動検出し「テストを書いたが実は未テスト」状態を防ぎます。',
+   why_en:'TDD without coverage thresholds leaves quality standards ambiguous. Enforcing coverageThreshold in CI automatically detects test gaps and prevents "tests written but actually untested" scenarios.'},
+  {id:'test-large-no-e2e',p:['scale','frontend'],lv:'info',
+   t:function(a){var ents=(a.data_entities||'').split(',').map(function(e){return e.trim();}).filter(Boolean);
+    var fe=a.frontend||'';var hasFE=fe.length>0&&fe.indexOf('なし')===-1&&fe.indexOf('None')===-1;
+    var hasE2E=/playwright|cypress|e2e|エンドツーエンド|end.to.end/i.test((a.mvp_features||'')+(a.future_features||''));
+    return hasFE&&a.scale==='large'&&ents.length>=8&&!hasE2E;},
+   ja:'大規模フロントエンド構成でE2Eテストが未設定です。PlaywrightによるE2Eテストでクリティカルユーザーフローを自動検証してください。docs/124参照',
+   en:'Large frontend config without E2E tests. Use Playwright E2E tests to automatically verify critical user flows. See docs/124',
+   fix:{f:'future_features',s:'Playwright E2Eテスト'},
+   why_ja:'大規模アプリではユニットテストだけでは統合バグを見逃します。PlaywrightのE2Eテストはブラウザで実際の操作を再現し、ログイン→決済→確認メールの全フロー検証が可能です。',
+   why_en:'In large apps, unit tests alone miss integration bugs. Playwright E2E tests reproduce real browser interactions, validating complete flows like login→payment→confirmation email.'},
+  // ── ext18: ML/AI Observability (2 INFO) ──
+  {id:'ml-no-model-monitoring',p:['scale','ai_auto'],lv:'info',
+   t:function(a){var ents=(a.data_entities||'').split(',').map(function(e){return e.trim();}).filter(Boolean);
+    var ai=a.ai_auto||'';var hasAI=ai.length>0&&ai!=='なし'&&ai!=='なし（手動）'&&/AI|Agent|LLM|ML|オーケストレーター|フル自律|マルチAgent/i.test(ai);
+    var hasMonitor=/langfuse|langsmith|helicone|braintrust|model.*monitor|モデル監視|drift|drifting/i.test((a.mvp_features||'')+(a.future_features||''));
+    return hasAI&&a.scale!=='solo'&&ents.length>=6&&!hasMonitor;},
+   ja:'AI/LLM統合構成でモデル監視が未設定です。Langfuse/LangSmith等でプロンプト品質・レイテンシ・コスト・ドリフトを継続的に監視してください。docs/115参照',
+   en:'AI/LLM integration without model monitoring. Continuously monitor prompt quality, latency, cost & drift using Langfuse/LangSmith. See docs/115',
+   fix:{f:'future_features',s:'LLMモニタリング (Langfuse)'},
+   why_ja:'LLMは同じプロンプトでも時間経過で出力品質が変化します（モデルドリフト）。Langfuseでレイテンシ・コスト・ハルシネーション率をトラッキングし、プロンプトのA/Bテストや改善を継続的に実施してください。',
+   why_en:'LLMs experience output quality drift over time even with identical prompts. Track latency, cost, and hallucination rates via Langfuse, and continuously A/B test and improve prompts.'},
+  {id:'ai-no-eval-framework',p:['scale','ai_auto'],lv:'info',
+   t:function(a){var ents=(a.data_entities||'').split(',').map(function(e){return e.trim();}).filter(Boolean);
+    var ai=a.ai_auto||'';var hasLLM=/オーケストレーター|フル自律|マルチAgent|Orchestrator|FullAuto|MultiAgent/i.test(ai);
+    var hasEval=/eval|evaluation|評価フレームワーク|golden.*test|promptfoo|braintrust/i.test((a.mvp_features||'')+(a.future_features||''));
+    return hasLLM&&a.scale!=='solo'&&ents.length>=6&&!hasEval;},
+   ja:'高度なAIエージェント構成で評価フレームワークが未設定です。Promptfoo/Braintrust等でゴールデンセットテストと回帰評価を実施してください。docs/115参照',
+   en:'Advanced AI agent config without evaluation framework. Implement golden set tests and regression evaluation using Promptfoo/Braintrust. See docs/115',
+   fix:{f:'future_features',s:'LLM評価フレームワーク (Promptfoo)'},
+   why_ja:'オーケストレーターやマルチエージェント構成では、個々のエージェントの品質低下が全体に波及します。Promptfooでゴールデンセットテストを設定し、プロンプト変更の影響を自動評価してください。',
+   why_en:'In orchestrator/multi-agent configs, quality degradation in individual agents cascades to the whole system. Use Promptfoo golden set tests to automatically evaluate the impact of prompt changes.'},
+  // ── ext18: Accessibility & Cache Strategy (2 INFO) ──
+  {id:'a11y-no-wcag-target',p:['scale','frontend'],lv:'info',
+   t:function(a){var ents=(a.data_entities||'').split(',').map(function(e){return e.trim();}).filter(Boolean);
+    var fe=a.frontend||'';var hasFE=fe.indexOf('React')!==-1||fe.indexOf('Vue')!==-1||fe.indexOf('Angular')!==-1||fe.indexOf('Next')!==-1||fe.indexOf('Nuxt')!==-1;
+    var dom=typeof detectDomain==='function'?detectDomain(a.purpose||''):'';
+    var isPublic=/education|gov|welfare|health|government|福祉|教育|行政/i.test(dom)||(a.target||'').includes('一般');
+    var hasA11y=/wcag|a11y|アクセシビリティ|axe|screen.*reader|スクリーンリーダー/i.test((a.mvp_features||'')+(a.future_features||''));
+    return hasFE&&isPublic&&a.scale!=='solo'&&ents.length>=6&&!hasA11y;},
+   ja:'公共・教育・福祉ドメインのUI構成でWCAG 2.1 AAアクセシビリティ目標が未設定です。axe-coreによる自動テスト導入とスクリーンリーダー対応を検討してください。docs/20参照',
+   en:'Public/education/welfare domain UI without WCAG 2.1 AA accessibility target. Consider axe-core automated testing and screen reader support. See docs/20',
+   fix:{f:'future_features',s:'WCAG 2.1 AA対応 (axe-core)'},
+   why_ja:'教育・行政・福祉分野では障害者差別解消法やJIS X 8341-3に基づくアクセシビリティ対応が求められます。axe-coreをCI/CDに組み込むことで、色コントラスト・ARIAラベル・キーボード操作の不備を自動検出できます。',
+   why_en:'Education, government, and welfare sectors require accessibility compliance under disability discrimination laws and WCAG standards. Integrating axe-core in CI/CD automatically detects color contrast, ARIA label, and keyboard navigation issues.'},
+  {id:'cache-large-no-redis',p:['scale','backend'],lv:'info',
+   t:function(a){var ents=(a.data_entities||'').split(',').map(function(e){return e.trim();}).filter(Boolean);
+    var be=a.backend||'';var isBaaS=be.indexOf('Firebase')!==-1||be.indexOf('Supabase')!==-1||be.indexOf('Amplify')!==-1;
+    var isStatic=be.indexOf('なし')!==-1||be.indexOf('None')!==-1;
+    var dom=typeof detectDomain==='function'?detectDomain(a.purpose||''):'';
+    var isHighTraffic=/ec|saas|content|community|marketplace|analytics/i.test(dom);
+    var hasCache=/redis|memcached|キャッシュ|cache.*layer|upstash/i.test((a.mvp_features||'')+(a.future_features||''));
+    return !isBaaS&&!isStatic&&isHighTraffic&&a.scale==='large'&&ents.length>=8&&!hasCache;},
+   ja:'高トラフィックドメインの大規模構成でキャッシュ層が未設定です。Redis/Upstash等によるセッション・APIレスポンス・データキャッシュを実装してください。docs/120参照',
+   en:'High-traffic domain large config without cache layer. Implement session, API response & data caching via Redis/Upstash. See docs/120',
+   fix:{f:'future_features',s:'Redisキャッシュ層 (Upstash)'},
+   why_ja:'ECサイトやSaaSの大規模構成では、DBへの同一クエリが秒間数百回発生することがあります。Redisでセッションとよく使うAPIレスポンスをキャッシュすることで、DBレイテンシを90%以上削減できます。',
+   why_en:'Large-scale e-commerce and SaaS systems can receive hundreds of identical DB queries per second. Caching sessions and frequently-used API responses in Redis reduces DB latency by 90%+.'},
+  // ── ext18: Message Queue & Feature Flag (2 INFO) ──
+  {id:'queue-no-deadletter',p:['scale','backend'],lv:'info',
+   t:function(a){var ents=(a.data_entities||'').split(',').map(function(e){return e.trim();}).filter(Boolean);
+    var hasMQ=/queue|bullmq|rabbitmq|kafka|sqs|pubsub|キュー|メッセージ/i.test((a.mvp_features||'')+(a.future_features||''));
+    var hasDLQ=/dead.?letter|dlq|デッドレター/i.test((a.mvp_features||'')+(a.future_features||''));
+    return hasMQ&&a.scale!=='solo'&&ents.length>=6&&!hasDLQ;},
+   ja:'メッセージキュー構成でDead Letter Queue(DLQ)が未設定です。処理失敗メッセージの隔離・再試行戦略としてDLQを必ず設定してください。docs/120参照',
+   en:'Message queue config without Dead Letter Queue (DLQ). Always configure DLQ for isolating and retrying failed messages. See docs/120',
+   fix:{f:'future_features',s:'Dead Letter Queue (DLQ) 設定'},
+   why_ja:'DLQなしのキュー構成では、処理失敗メッセージが無限再試行ループに入り、後続メッセージをブロックします。DLQで失敗メッセージを隔離し、アラートを受けて手動調査・再送信を行うことで信頼性が向上します。',
+   why_en:'Queue configs without DLQ cause failed messages to enter infinite retry loops, blocking subsequent messages. Isolating failed messages in DLQ, receiving alerts, and enabling manual investigation/resubmission improves reliability.'},
+  {id:'feat-flag-no-cleanup',p:['scale','dev_methods'],lv:'info',
+   t:function(a){var ents=(a.data_entities||'').split(',').map(function(e){return e.trim();}).filter(Boolean);
+    var hasFeatFlag=/feature.flag|feature.*toggle|フィーチャーフラグ|LaunchDarkly|flagsmith|unleash/i.test((a.mvp_features||'')+(a.future_features||''));
+    var hasCleanup=/flag.*cleanup|フラグ.*削除|フラグ.*ライフサイクル|stale.*flag|flag.*lifecycle/i.test((a.mvp_features||'')+(a.future_features||''));
+    return hasFeatFlag&&a.scale!=='solo'&&ents.length>=6&&!hasCleanup;},
+   ja:'フィーチャーフラグ使用構成でフラグライフサイクル管理が未設定です。古いフラグの定期削除ルールを設定しコードの複雑性増大を防いでください。',
+   en:'Feature flag config without flag lifecycle management. Set up regular stale flag removal rules to prevent code complexity growth.',
+   fix:{f:'future_features',s:'フィーチャーフラグ ライフサイクル管理'},
+   why_ja:'フィーチャーフラグを削除せず放置すると、条件分岐が積み重なりコードの認知負荷が増大します（Martin Fowler "Feature Toggle" アンチパターン）。各フラグにTTLと所有者を設定し、四半期ごとに棚卸しを実施してください。',
+   why_en:'Unremoved feature flags accumulate conditional branches, increasing cognitive load (Martin Fowler\'s "Feature Toggle" anti-pattern). Set TTL and owners for each flag and conduct quarterly inventory reviews.'},
 ];
 // helpers
 function inc(v,k){return v&&typeof v==='string'&&v.indexOf(k)!==-1;}
