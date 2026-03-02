@@ -1,4 +1,4 @@
-/* ═══ STACK COMPATIBILITY & SEMANTIC CONSISTENCY RULES — 234 rules (ERROR×33 + WARN×127 + INFO×74) ═══ */
+/* ═══ STACK COMPATIBILITY & SEMANTIC CONSISTENCY RULES — 240 rules (ERROR×33 + WARN×130 + INFO×77) ═══ */
 const COMPAT_RULES=[
   // ── FE ↔ Mobile (2 ERROR) ──
   {id:'fe-mob-expo',p:['frontend','mobile'],lv:'error',
@@ -1819,6 +1819,68 @@ const COMPAT_RULES=[
    en:'Only social login configured. Provider outages will block all logins. Consider adding Email/Password as a fallback',
    why_ja:'Googleログインのみに依存した場合、Google OAuth障害やプロバイダーによるアカウント停止時にユーザーが完全にログインできなくなります。Email/Passwordをフォールバックとして提供することでリスクを分散できます。',
    why_en:'Relying solely on a social provider means any OAuth outage or provider account suspension locks all users out. Adding Email/Password as a fallback distributes this risk effectively.'},
+  // ── Scaling & Architecture (6 rules) ──
+  {id:'scale-serverless-nopool',p:['deploy','database'],lv:'warn',
+   t:a=>{var dep=a.deploy||'';var db=a.database||'';var be=a.backend||'';
+    var isServerless=/Vercel|Netlify|Cloudflare\s*Workers?|Lambda|Functions/i.test(dep);
+    var isSQLdb=/(PostgreSQL|MySQL|Neon|PlanetScale)/i.test(db)&&!/(Supabase|Firebase|Firestore|Convex)/i.test(db);
+    var isBaaS=/(Firebase|Supabase|Convex)/i.test(be);
+    var hasPool=/(PgBouncer|connection.?pool|Prisma\s*Accelerate|Neon.?pool)/i.test((a.mvp_features||'')+(a.backend||''));
+    return isServerless&&isSQLdb&&!isBaaS&&!hasPool&&(a.scale||'medium')!=='solo';},
+   ja:'サーバーレス環境でSQL DBへ直接接続するとリクエスト毎にDB接続が生成されmax_connectionsが枯渇します。PgBouncer/Prisma Accelerate/Neon poolingの導入を推奨します',
+   en:'Direct SQL DB connections from serverless environments create a new connection per request, exhausting max_connections. Use PgBouncer/Prisma Accelerate/Neon pooling',
+   why_ja:'Vercel/Netlify/CF WorkersなどのサーバーレスFunctionはリクエスト毎にコールドスタートし、DB接続を都度確立します。PostgreSQLのデフォルトmax_connections=100では、同時接続数が増えると即座に枯渇します。解決策: Prisma Accelerate（接続プール + グローバルキャッシュ）またはNeon Serverless Driver（HTTP経由でコネクション不要）を使用してください。詳細: docs/120_system_design_guide.md',
+   why_en:'Serverless functions (Vercel/Netlify/CF Workers) cold-start on each request and establish a new DB connection. With PostgreSQL default max_connections=100, concurrent requests quickly exhaust the pool. Fix: Use Prisma Accelerate (connection pooling + global cache) or Neon Serverless Driver (HTTP-based, no pool needed). See: docs/120_system_design_guide.md'},
+  {id:'scale-large-single-db',p:['scale','data_entities','database'],lv:'warn',
+   t:a=>{var be=a.backend||'';var db=a.database||'';
+    var entities=(a.data_entities||'').split(/[,、]\s*/).filter(Boolean);
+    var hasReplica=/(Read\s*Replica|レプリカ|クラスタ|cluster|partition|パーティション|Citus|Aurora)/i.test(a.mvp_features||'');
+    var isBaaS=/(Firebase|Supabase|Convex)/i.test(be);
+    var isSQLdb=/(PostgreSQL|MySQL|Neon|PlanetScale)/i.test(db)&&!/(Supabase|Firebase|Firestore)/i.test(db);
+    var isServerBE=/(Express|NestJS|FastAPI|Django|Spring|Hono|Fastify)/i.test(be);
+    return a.scale==='large'&&entities.length>=8&&!hasReplica&&!isBaaS&&isSQLdb&&isServerBE;},
+   ja:'大規模アプリ（8エンティティ以上）でSQLDBが単一インスタンス構成です。SPOFになるためRead Replica/クラスタリング/パーティショニングの導入を検討してください',
+   en:'Large-scale app (8+ entities) with single SQL DB instance is a SPOF. Consider Read Replica/clustering/partitioning',
+   why_ja:'エンティティ数が8以上かつscale=largeの場合、読み取り負荷の集中によりDB応答が劣化します。PostgreSQL Read Replicaを追加することで読み取りを分散しプライマリの書き込み性能を維持できます。さらに大規模な場合はCitusによるシャーディングやAurora Global Databaseも選択肢です。詳細: docs/120_system_design_guide.md §3',
+   why_en:'With 8+ entities at large scale, read-heavy workloads degrade DB response. Adding PostgreSQL Read Replicas distributes reads and preserves primary write performance. For even larger scale, consider Citus sharding or Aurora Global Database. See: docs/120_system_design_guide.md §3'},
+  {id:'scale-large-no-lb',p:['scale','backend'],lv:'info',
+   t:a=>{var isBaaS=/(Firebase|Supabase|Convex)/i.test(a.backend||'');
+    var hasLB=/(LB|ロードバランス|Load\s*Balanc|auto.?scal|オートスケール|k8s|kubernetes|ECS|ALB)/i.test(a.mvp_features||'');
+    var isManaged=/Vercel|Netlify|Railway|Fly\.io|Cloudflare/i.test(a.deploy||'');
+    return a.scale==='large'&&!isBaaS&&!hasLB&&!isManaged;},
+   ja:'大規模アプリでロードバランシング・オートスケーリング戦略が未設定です。水平スケールアーキテクチャの検討を推奨します。docs/120参照',
+   en:'Large-scale app without load balancing/auto-scaling strategy. Consider horizontal scale architecture. See docs/120',
+   why_ja:'scale=largeで単一バックエンドサーバーはSPOFになります。ALB(Application Load Balancer) + Auto Scaling Group、またはk8s + HPA（Horizontal Pod Autoscaler）を組み合わせることで高可用性を実現できます。アルゴリズム: Least ConnectionsまたはConsistent Hashingが一般的なWebアプリに適しています。詳細: docs/120_system_design_guide.md §3',
+   why_en:'A single backend server at large scale is a SPOF. Combine ALB + Auto Scaling Group, or k8s + HPA (Horizontal Pod Autoscaler) for high availability. Algorithm: Least Connections or Consistent Hashing suits most web apps. See: docs/120_system_design_guide.md §3'},
+  {id:'scale-realtime-large',p:['scale','purpose','backend'],lv:'warn',
+   t:a=>{var be=a.backend||'';
+    var isRT=/リアルタイム|realtime|chat|チャット|WebSocket|ライブ.*配信|live.*stream/i.test(a.purpose||'');
+    var hasRedisAdapter=/(Redis\s*Adapter|redis-adapter|@socket\.io\/redis)/i.test(a.mvp_features||'');
+    var isBaaS=/(Firebase|Supabase|Convex)/i.test(be);
+    var isNodeBE=/(Express|NestJS|Hono|Fastify)/i.test(be);
+    return a.scale==='large'&&isRT&&!hasRedisAdapter&&!isBaaS&&isNodeBE;},
+   ja:'大規模リアルタイム機能（WebSocket/チャット）で水平スケール時にSocket.io Redis Adapterが必要です（@socket.io/redis-adapter）',
+   en:'Large-scale realtime features (WebSocket/chat) require Socket.io Redis Adapter for horizontal scaling (@socket.io/redis-adapter)',
+   why_ja:'WebSocketは永続接続を維持するため、水平スケール時に「同じサーバーへの接続」を保証する仕組みが必要です。Redis Adapter（@socket.io/redis-adapter）を使うことで複数のSocket.ioサーバー間でイベントをブロードキャスト共有できます。BaaSのSupabase Realtimeを使用する場合はこの問題は自動的に解決されます。詳細: docs/120_system_design_guide.md §4',
+   why_en:'WebSocket maintains persistent connections, so horizontal scaling requires a mechanism to share messages across servers. Redis Adapter (@socket.io/redis-adapter) broadcasts events between multiple Socket.io instances. Using Supabase Realtime (BaaS) automatically solves this. See: docs/120_system_design_guide.md §4'},
+  {id:'api-graphql-no-persisted',p:['backend','scale'],lv:'info',
+   t:a=>{var _be=a.backend||'';var _fe=a.frontend||'';
+    var isGQL=/GraphQL/i.test(_be)||/GraphQL/i.test(_fe);
+    var hasPersisted=/(Persisted\s*Quer|APQ|Automatic\s*Persisted|パーシステッド)/i.test(a.mvp_features||'');
+    return isGQL&&(a.scale||'medium')!=='solo'&&!hasPersisted;},
+   ja:'GraphQL APIでPersisted Queriesが未設定です。帯域削減・DoS対策のためAPQ（Automatic Persisted Queries）の導入を推奨します',
+   en:'GraphQL API without Persisted Queries. Use APQ (Automatic Persisted Queries) for bandwidth reduction and DoS protection',
+   why_ja:'GraphQLクエリは文字列で送信されるため複雑なクエリは大きなリクエストボディになります。Automatic Persisted Queries（APQ）はクエリをハッシュ値で参照することで帯域を最大70%削減できます。また任意のクエリを受け付けるエンドポイントはDoS攻撃の標的になりやすく、APQのホワイトリスト機能が防御に有効です。詳細: docs/120_system_design_guide.md §1',
+   why_en:'GraphQL queries are sent as strings, making complex queries large request bodies. APQ (Automatic Persisted Queries) references queries by hash, reducing bandwidth up to 70%. Endpoints accepting arbitrary queries are DoS targets — APQ allowlisting provides effective defense. See: docs/120_system_design_guide.md §1'},
+  {id:'db-nosql-acid-risk',p:['database','purpose'],lv:'info',
+   t:a=>{var db=a.database||'';
+    var isNoSQL=/MongoDB|Firestore|DynamoDB/i.test(db);
+    var isFinDomain=/決済|金融|fintech|保険|insurance|法務|legal|銀行|bank|証券|securities/i.test(a.purpose||'');
+    return isNoSQL&&isFinDomain;},
+   ja:'NoSQL DB（MongoDB/Firestore等）と金融/保険/法務ドメインの組み合わせです。NoSQLはACIDトランザクション保証が限定的で金融データの整合性確保が複雑になります。PostgreSQL等のRDB推奨。docs/120参照',
+   en:'NoSQL DB with finance/insurance/legal domain. NoSQL has limited ACID transaction guarantees, complicating financial data consistency. Consider PostgreSQL or another RDBMS. See docs/120',
+   why_ja:'MongoDBはマルチドキュメントトランザクションをサポートしますがデフォルトは結果整合性（BASE）です。金融取引・保険契約・法務文書では「ある操作が成功したか失敗したか」の厳密な保証（ACID）が必要です。PostgreSQLのSERIALIZABLEトランザクションとROW LEVEL SECURITYを組み合わせることで高い整合性を実現できます。詳細: docs/120_system_design_guide.md §2',
+   why_en:'MongoDB supports multi-document transactions but defaults to eventual consistency (BASE). Financial transactions, insurance contracts, and legal documents require strict ACID guarantees. PostgreSQL SERIALIZABLE transactions + Row Level Security achieves the required consistency. See: docs/120_system_design_guide.md §2'},
 ];
 // helpers
 function inc(v,k){return v&&typeof v==='string'&&v.indexOf(k)!==-1;}

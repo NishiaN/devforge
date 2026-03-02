@@ -541,7 +541,8 @@ function buildFileTree(){
    '103_observability_architecture','104_structured_logging','105_metrics_alerting','106_distributed_tracing',
    '107_project_governance','108_uat_acceptance',
    '113_ai_collaboration_guide','114_domain_knowledge_guide','115_skill_portfolio',
-   '116_estimation_prerequisites','118_project_operations_pack','119_auth_architecture_guide'].forEach(f=>
+   '116_estimation_prerequisites','118_project_operations_pack','119_auth_architecture_guide',
+   '120_system_design_guide'].forEach(f=>
     files.push({name:'  '+f+'.md',path:'docs/'+f+'.md'}));
   files.push({name:'───────────',path:''});
   ['README.md','.gitignore','package.json','LICENSE'].forEach(f=>files.push({name:f,path:f}));

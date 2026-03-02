@@ -121,7 +121,7 @@ function genDocs21(a,pn){
       const bodyObj=bodyFields.length?bodyFields.map(c=>`"${c.col}": "${c.type.includes('INT')?'number':c.type.includes('BOOLEAN')?'boolean':'string'}"`).join(', '):`"name": "string"`;
       const methods=getEntityMethods(e);
       const parts=[`\n### /api/v1/${lower}`];
-      if(methods.includes('GET')) parts.push(`\n#### GET /api/v1/${lower}\n- ${G?'説明':'Desc'}: ${G?e+'一覧取得 (ページネーション対応)':'List '+e+' (paginated)'}\n- クエリ: \`?page=1&limit=20&sort=created_at&order=desc\`\n- レスポンス:\n\`\`\`json\n{ "data": [{ "id": "uuid", ${bodyObj} }], "meta": { "total": 100, "page": 1 } }\n\`\`\`\n- ${G?'ステータス':'Status'}: 200 / 401 / 500`);
+      if(methods.includes('GET')) parts.push(`\n#### GET /api/v1/${lower}\n- ${G?'説明':'Desc'}: ${G?e+'一覧取得 (カーソルページネーション対応)':'List '+e+' (cursor-paginated)'}\n- クエリ: \`?cursor=&limit=20&sort=created_at&order=desc\`\n- レスポンス:\n\`\`\`json\n{ "data": [{ "id": "uuid", ${bodyObj} }], "meta": { "total": 100, "cursor": "eyJpZCI6IjEyMyJ9", "hasNextPage": true } }\n\`\`\`\n- ${G?'ステータス':'Status'}: 200 / 401 / 500`);
       if(methods.includes('GET/:id')) parts.push(`\n#### GET /api/v1/${lower}/:id\n- ${G?'説明':'Desc'}: ${G?e+'詳細取得':'Get '+e+' detail'}\n- ${G?'ステータス':'Status'}: 200 / 404`);
       if(methods.includes('POST')) parts.push(`\n#### POST /api/v1/${lower}\n- ${G?'リクエスト':'Request'}: \`{ ${bodyObj} }\`\n- ${G?'ステータス':'Status'}: 201 / 400 / 422`);
       if(methods.includes('PUT/:id')) parts.push(`\n#### PUT /api/v1/${lower}/:id\n- ${G?'リクエスト':'Request'}: \`{ ${bodyObj} }\`\n- ${G?'ステータス':'Status'}: 200 / 404 / 422`);
@@ -1183,6 +1183,129 @@ Steps:
     S.files['docs/119_auth_architecture_guide.md']=doc119;
   })();
 
+  // ═══ docs/120_system_design_guide.md ═══
+  (function(){
+    function _inc(v,k){return v&&v.indexOf(k)!==-1;}
+    var be120=be;var db120=a.database||'PostgreSQL';
+    var _isBaas=_inc(be120,'Firebase')||_inc(be120,'Supabase')||_inc(be120,'Convex');
+    var _isGQL=_inc(be120,'GraphQL')||_inc(fe,'GraphQL');
+    var _isGRPC=_inc(be120,'gRPC');
+    var apiStyle=_isBaas?'BaaS SDK':_isGQL?'GraphQL':_isGRPC?'gRPC':'REST';
+    var dbKey=(_inc(db120,'MongoDB')?'MongoDB':_inc(db120,'MySQL')?'MySQL':_inc(db120,'SQLite')?'SQLite':_inc(db120,'Firestore')?'Firestore':'PostgreSQL');
+    var _isNoSQL=_inc(db120,'MongoDB')||_inc(db120,'Firestore')||_inc(db120,'DynamoDB');
+    var sc=a.scale||'medium';
+    var _hasRT=/リアルタイム|realtime|chat|チャット|WebSocket/i.test(a.purpose||'');
+    var _hasIoT=/IoT|sensor|センサー|MQTT/i.test(a.purpose||'');
+    function chk(s,sel){return s===sel?'✅ **'+s+'**':s;}
+    var d='# '+pn+' — '+(G?'システムデザイン意思決定ガイド':'System Design Decision Guide')+'\n> '+date+'\n\n';
+    d+='> '+(G?'ウィザード入力から自動生成。ADR詳細: [docs/82-2_architecture_decision_records.md](./82-2_architecture_decision_records.md)':'Auto-generated from wizard inputs. ADR details: [docs/82-2_architecture_decision_records.md](./82-2_architecture_decision_records.md)')+'\n\n';
+    // §1 API Style
+    d+='## '+(G?'§1 APIスタイル選定':'§1 API Style Selection')+'\n\n';
+    d+='**'+(G?'選定スタイル: ':'Selected Style: ')+apiStyle+'**\n\n';
+    d+='| '+(G?'スタイル':'Style')+' | '+(G?'プロトコル':'Protocol')+' | '+(G?'形式':'Format')+' | '+(G?'主なメリット':'Benefits')+' | '+(G?'主なデメリット':'Drawbacks')+' | '+(G?'推奨ユースケース':'Use Cases')+' |\n';
+    d+='|------|---------|-----|----------|----------|------------------|\n';
+    d+='| '+chk('REST',apiStyle)+' | HTTP/1.1 | JSON | '+(G?'標準的・キャッシュ可能・互換性高':'Standard, cacheable, high compatibility')+' | '+(G?'Over/Under-fetch問題':'Over/under-fetching')+' | '+(G?'汎用CRUD・モバイルAPI':'General CRUD, mobile API')+' |\n';
+    d+='| '+chk('GraphQL',apiStyle)+' | HTTP/1.1 | JSON | '+(G?'必要フィールドのみ取得・型安全':'Fetch only needed fields, type-safe')+' | '+(G?'クエリ複雑・キャッシュ困難':'Complex queries, caching difficult')+' | '+(G?'複雑なSPA・BFF・ダッシュボード':'Complex SPA, BFF, dashboard')+' |\n';
+    d+='| '+chk('gRPC',apiStyle)+' | HTTP/2 | Protobuf | '+(G?'低レイテンシ・双方向ストリーミング':'Low latency, bidirectional streaming')+' | '+(G?'ブラウザ直接利用に制限':'Browser support limited')+' | '+(G?'マイクロサービス間・ML推論':'Microservices, ML inference')+' |\n';
+    d+='| '+chk('BaaS SDK',apiStyle)+' | HTTPS | JSON/WS | '+(G?'認証・RLS・リアルタイム組み込み':'Auth, RLS, realtime built-in')+' | '+(G?'ベンダーロックイン':'Vendor lock-in')+' | '+(G?'MVP・RAD・スタートアップ':'MVP, RAD, startups')+' |\n\n';
+    d+='### '+(G?'選定理由':'Rationale')+'\n\n';
+    if(_isBaas){d+=(G?'**BaaS SDK**: '+be120+'が認証・DB・リアルタイムを統合提供。REST自前実装より開発速度が大幅に向上。':'**BaaS SDK**: '+be120+' provides integrated auth, DB, and realtime. Much faster than building REST APIs from scratch.')+'\n\n';}
+    else if(_isGQL){d+=(G?'**GraphQL**: クライアントが必要フィールドのみ指定取得。N+1問題には必ずDataLoaderを使用。APQ（Automatic Persisted Queries）でDoS対策も実施。':'**GraphQL**: Client specifies only needed fields. Always use DataLoader for N+1. Implement APQ (Automatic Persisted Queries) for DoS protection.')+'\n\n';}
+    else if(_isGRPC){d+=(G?'**gRPC**: HTTP/2+Protobufで低レイテンシを実現。ブラウザ対応にはgRPC-Webゲートウェイが必要。':'**gRPC**: Low latency via HTTP/2+Protobuf. gRPC-Web gateway required for browser access.')+'\n\n';}
+    else{d+=(G?'**REST**: HTTPの標準セマンティクスとキャッシュ機構を活用。OpenAPI/Swaggerでドキュメント自動生成。/api/v1/バージョニングを設計時から組み込む。':'**REST**: Leverages standard HTTP semantics and caching. Auto-generate docs via OpenAPI/Swagger. Embed /api/v1/ versioning from design phase.')+'\n\n';}
+    d+='> '+(G?'参照: [ADR-008](./82-2_architecture_decision_records.md)':'Reference: [ADR-008](./82-2_architecture_decision_records.md)')+'\n\n';
+    // §2 Database
+    d+='## '+(G?'§2 データベース選定・CAP定理':'§2 Database Selection & CAP Theorem')+'\n\n';
+    d+='**'+(G?'選定DB: ':'Selected DB: ')+dbKey+'**\n\n';
+    d+='| DB | '+(G?'種別':'Type')+' | CAP | '+(G?'整合性':'Consistency')+' | '+(G?'スケーリング':'Scaling')+' | '+(G?'推奨ドメイン':'Recommended For')+' |\n';
+    d+='|------|------|-----|------------|---------|------------------|\n';
+    d+='| '+chk('PostgreSQL',dbKey)+' | Relational | CP | ACID | '+(G?'垂直+Read Replica':'Vertical + Read Replica')+' | '+(G?'金融・EC・SaaS':'Finance, EC, SaaS')+' |\n';
+    d+='| '+chk('MySQL',dbKey)+' | Relational | CP | ACID | '+(G?'垂直+Galera':'Vertical + Galera')+' | '+(G?'汎用Webアプリ':'General web apps')+' |\n';
+    d+='| '+chk('MongoDB',dbKey)+' | Document | AP | BASE | '+(G?'水平シャーディング':'Horizontal sharding')+' | '+(G?'CMS・カタログ':'CMS, catalog')+' |\n';
+    d+='| '+chk('SQLite',dbKey)+' | Relational | — | ACID | '+(G?'単一ノード':'Single node')+' | '+(G?'ローカル・組み込み':'Local, embedded')+' |\n';
+    d+='| '+chk('Firestore',dbKey)+' | Document | AP | BASE | '+(G?'自動マルチリージョン':'Auto multi-region')+' | '+(G?'モバイル・リアルタイム':'Mobile, realtime')+' |\n\n';
+    d+='### '+(G?'CAP定理 & ACID vs BASE':'CAP Theorem & ACID vs BASE')+'\n\n';
+    d+='> **CAP定理**: '+(G?'分散システムはC(一貫性)/A(可用性)/P(分断耐性)を同時に3つ満たせない。':'A distributed system cannot simultaneously guarantee C(Consistency)/A(Availability)/P(Partition tolerance).')+'\n\n';
+    d+='- **CP** (Consistency + Partition): '+(G?'パーティション時はエラーを返す（一貫性優先）→ PostgreSQL/MySQL':'Returns error on partition (consistency first) → PostgreSQL/MySQL')+'\n';
+    d+='- **AP** (Availability + Partition): '+(G?'パーティション時も応答するが結果整合性（可用性優先）→ MongoDB/Firestore':'Responds on partition but eventual consistency (availability first) → MongoDB/Firestore')+'\n\n';
+    d+='| '+(G?'特性':'Property')+' | ACID | BASE |\n|------|------|------|\n';
+    d+='| '+(G?'一貫性':'Consistency')+' | '+(G?'強一貫性（即時）':'Strong / immediate')+' | '+(G?'結果整合性':'Eventual')+' |\n';
+    d+='| '+(G?'適合DB':'DB')+' | PostgreSQL/MySQL | MongoDB/Firestore |\n';
+    d+='| '+(G?'適用ドメイン':'Domain')+' | '+(G?'金融・決済・医療・法務':'Finance, payment, healthcare, legal')+' | '+(G?'SNS・CMS・カタログ・IoT':'SNS, CMS, catalog, IoT')+' |\n\n';
+    d+='### '+(G?'NoSQL 4種分類':'NoSQL Type Classification')+'\n\n';
+    d+='| '+(G?'種別':'Type')+' | '+(G?'代表製品':'Products')+' | '+(G?'ユースケース':'Use Cases')+' |\n|------|---------|----------|\n';
+    d+='| Document | MongoDB, Firestore | '+(G?'CMS・プロフィール・カタログ':'CMS, profiles, catalog')+' |\n';
+    d+='| Wide-Column | Cassandra, BigTable | '+(G?'時系列・IoT・大規模ログ':'Time-series, IoT, large-scale logs')+' |\n';
+    d+='| Key-Value | Redis, DynamoDB | '+(G?'キャッシュ・セッション・カート':'Cache, sessions, carts')+' |\n';
+    d+='| Graph | Neo4j, Neptune | '+(G?'SNS・推薦・詐欺検出':'SNS, recommendations, fraud detection')+' |\n\n';
+    if(_isNoSQL){d+='> ⚠️ **'+(G?'注意: '+dbKey+'（NoSQL）はACIDトランザクションが限定的。決済・金融データには追加の整合性保証が必要。':'Note: '+dbKey+' (NoSQL) has limited ACID transactions. Financial/payment data requires additional consistency guarantees.')+'**\n\n';}
+    // §3 Scaling
+    d+='## '+(G?'§3 スケーリング戦略':'§3 Scaling Strategy')+'\n\n';
+    d+='### '+(G?'垂直 vs 水平スケーリング':'Vertical vs Horizontal Scaling')+'\n\n';
+    d+='| '+(G?'観点':'Aspect')+' | '+(G?'垂直 (Scale Up)':'Vertical (Scale Up)')+' | '+(G?'水平 (Scale Out)':'Horizontal (Scale Out)')+' |\n|------|------------|------------|\n';
+    d+='| '+(G?'方法':'Method')+' | '+(G?'CPU/RAM増強':'Upgrade CPU/RAM')+' | '+(G?'ノード追加':'Add nodes')+' |\n';
+    d+='| '+(G?'上限':'Limit')+' | '+(G?'ハード上限あり':'Hardware ceiling')+' | '+(G?'理論上無制限':'Unlimited')+' |\n';
+    d+='| '+(G?'複雑さ':'Complexity')+' | '+(G?'低':'Low')+' | '+(G?'高（LB・分散状態管理）':'High (LB, distributed state)')+' |\n';
+    d+='| SPOF | '+(G?'あり（単一ノード）':'Yes (single node)')+' | '+(G?'なし（冗長化）':'No (redundant)')+' |\n';
+    d+='| '+(G?'推奨フェーズ':'Phase')+' | '+(G?'初期・MVP':'Early/MVP')+' | '+(G?'成長・大規模':'Growth/Large')+' |\n\n';
+    d+='### '+(G?'ロードバランシングアルゴリズム (6種)':'Load Balancing Algorithms (6 types)')+'\n\n';
+    d+='| '+(G?'アルゴリズム':'Algorithm')+' | '+(G?'仕組み':'Mechanism')+' | '+(G?'適用シーン':'Best For')+' |\n|-----------|------|----------|\n';
+    d+='| Round Robin | '+(G?'順番に均等分散':'Distribute evenly in turn')+' | '+(G?'均一リクエスト':'Uniform requests')+' |\n';
+    d+='| Least Connections | '+(G?'接続数最小ノードに転送':'Route to fewest connections')+' | '+(G?'処理時間が不均一（WebSocket）':'Uneven time, WebSocket')+' |\n';
+    d+='| Consistent Hashing | '+(G?'ハッシュで同一サーバーに固定':'Same server via hash key')+' | '+(G?'キャッシュ・セッション共有':'Cache/session sharing')+' |\n';
+    d+='| IP Hash | '+(G?'クライアントIPでサーバー固定':'Stick by client IP')+' | '+(G?'セッション固定が必要な場合':'When sticky session required')+' |\n';
+    d+='| Geographic | '+(G?'地理的に近いサーバーへ転送':'Route to nearest region')+' | '+(G?'グローバルサービス・CDN併用':'Global services with CDN')+' |\n';
+    d+='| Weighted Round Robin | '+(G?'重みに応じて分散（スペック差対応）':'Distribute by weight for mixed specs')+' | '+(G?'異種スペックサーバー混在':'Heterogeneous server specs')+' |\n\n';
+    d+='### '+(G?'SPOF チェックリスト (プロジェクト固有)':'SPOF Checklist (Project-Specific)')+'\n\n';
+    d+='| '+(G?'コンポーネント':'Component')+' | '+(G?'現状':'Status')+' | '+(G?'対策':'Mitigation')+' |\n|-----------|---------|----------|\n';
+    var _dbSpof=_isBaas?'✅ '+(G?'BaaS管理（冗長化済み）':'BaaS-managed (redundant)'):(sc==='large'?'⚠️ '+(G?'Read Replica推奨':'Read Replica recommended'):'✅ '+(G?'現スケールで適切':'Appropriate for current scale'));
+    d+='| DB: '+db120+' | '+_dbSpof+' | '+(sc==='large'&&!_isBaas?G?'Read Replica + PgBouncer追加':'Add Read Replica + PgBouncer':G?'現状維持':'Current setup OK')+' |\n';
+    var _depVal=a.deploy||'Vercel';
+    var _depSpof=/Vercel|Firebase|Railway|Netlify|Fly|Cloudflare/i.test(_depVal)?'✅ '+(G?'マネージド（冗長化済み）':'Managed (redundant)'):'⚠️ '+(G?'自己管理 → LB設定推奨':'Self-managed → LB recommended');
+    d+='| '+(G?'デプロイ: '+_depVal:'Deploy: '+_depVal)+' | '+_depSpof+' | '+(/Vercel|Firebase|Railway|Netlify|Fly|Cloudflare/i.test(_depVal)?G?'プラットフォームが管理':'Platform handles it':G?'ALB + Auto Scalingを設定':'Configure ALB + Auto Scaling')+' |\n';
+    d+='| Auth | '+(_isBaas?'✅ '+(G?'BaaS管理':'BaaS-managed'):'ℹ️ '+(G?'冗長化を確認':'Verify redundancy'))+' | '+(_isBaas?G?'SDK管理のため不要':'Managed by SDK':G?'セッションストア（Redis）を検討':'Consider session store (Redis)')+' |\n\n';
+    d+='### '+(G?'スケール別推奨構成':'Recommended Setup by Scale')+'\n\n';
+    if(sc==='solo'){d+=(G?'**Solo**: シングルノード + 無料枠を活用。Supabase/Firebase無料枠 + Vercel/Netlify Hobby。':'**Solo**: Single node + free tiers. Supabase/Firebase free + Vercel/Netlify Hobby.')+'\n\n';}
+    else if(sc==='small'){d+=(G?'**Small**: マネージドDB + 単一BE。Neon/Supabase Pro + Railway。垂直スケールで対応。':'**Small**: Managed DB + single BE. Neon/Supabase Pro + Railway. Vertical scaling.')+'\n\n';}
+    else if(sc==='medium'){d+=(G?'**Medium**: 垂直スケール + Read Replica検討。Redis (Upstash) でAPIキャッシュ最適化。Sentry/Datadog監視。':'**Medium**: Vertical scaling + consider Read Replica. Redis (Upstash) for API cache. Sentry/Datadog monitoring.')+'\n\n';}
+    else{d+=(G?'**Large**: 水平スケール必須。LB + Read Replica (×2) + Redis Cluster + PgBouncer。k8s/ECS + Auto Scaling Group。CDNエッジキャッシュ。':'**Large**: Horizontal scaling required. LB + Read Replica (×2) + Redis Cluster + PgBouncer. k8s/ECS + Auto Scaling Group. CDN edge cache.')+'\n\n';}
+    // §4 Protocols
+    d+='## '+(G?'§4 通信プロトコル選定':'§4 Communication Protocol Selection')+'\n\n';
+    d+='| '+(G?'プロトコル':'Protocol')+' | Transport | '+(G?'通信方向':'Direction')+' | '+(G?'接続性':'Connection')+' | '+(G?'レイテンシ':'Latency')+' | '+(G?'主なユースケース':'Use Cases')+' |\n';
+    d+='|----------|---------|---------|---------|---------|----------|\n';
+    d+='| HTTP/REST | TCP | '+(G?'Req/Res':'Req/Res')+' | '+(G?'ステートレス':'Stateless')+' | '+(G?'中':'Medium')+' | '+(G?'汎用API':'General API')+' |\n';
+    d+='| WebSocket | TCP | '+(G?'双方向全二重':'Full-duplex')+' | '+(G?'永続接続':'Persistent')+' | '+(G?'低':'Low')+' | '+(G?'チャット・ゲーム':'Chat, gaming')+' |\n';
+    d+='| SSE | TCP | '+(G?'サーバー→クライアント':'Server→Client')+' | '+(G?'永続接続':'Persistent')+' | '+(G?'低':'Low')+' | '+(G?'通知・ライブフィード':'Notifications, live feed')+' |\n';
+    d+='| gRPC Stream | HTTP/2 | '+(G?'双方向ストリーム':'Bidirectional')+' | '+(G?'多重化':'Multiplexed')+' | '+(G?'最低':'Lowest')+' | '+(G?'マイクロサービス':'Microservices')+' |\n';
+    d+='| MQTT | TCP/WS | '+(G?'Pub/Sub非同期':'Pub/Sub async')+' | '+(G?'ブローカー経由':'Via broker')+' | '+(G?'低（軽量）':'Low (lightweight)')+' | '+(G?'IoT・センサー':'IoT, sensors')+' |\n';
+    d+='| AMQP | TCP | '+(G?'Pub/Sub+キュー':'Pub/Sub + Queue')+' | '+(G?'ブローカー経由':'Via broker')+' | '+(G?'中（信頼性保証）':'Medium (guaranteed)')+' | '+(G?'非同期ジョブ・MQ':'Async jobs, MQ')+' |\n\n';
+    d+='### TCP vs UDP\n\n';
+    d+='| '+(G?'観点':'Aspect')+' | TCP | UDP |\n|------|-----|-----|\n';
+    d+='| '+(G?'接続確立':'Connection')+' | '+(G?'3-wayハンドシェイク (SYN→SYN-ACK→ACK)':'3-way handshake (SYN→SYN-ACK→ACK)')+' | '+(G?'コネクションレス':'Connectionless')+' |\n';
+    d+='| '+(G?'信頼性':'Reliability')+' | '+(G?'順序保証・再送あり':'Ordered + retransmit')+' | '+(G?'ベストエフォート':'Best effort')+' |\n';
+    d+='| '+(G?'速度':'Speed')+' | '+(G?'中（ハンドシェイクオーバーヘッド）':'Medium (handshake overhead)')+' | '+(G?'高速':'Fast')+' |\n';
+    d+='| '+(G?'用途':'Use')+' | HTTP/HTTPS, WebSocket, DB | '+(G?'DNS・ゲーム・映像配信':'DNS, gaming, video streaming')+' |\n\n';
+    d+='### '+(G?'本プロジェクトへの推奨':'Project Recommendations')+'\n\n';
+    if(_hasRT){d+='- ✅ **WebSocket**: '+(G?'リアルタイム要件に対応。Socket.io + Redis Adapter (@socket.io/redis-adapter) で水平スケール対応。':'Meets realtime requirements. Socket.io + Redis Adapter (@socket.io/redis-adapter) for horizontal scaling.')+'\n';}
+    if(_hasIoT){d+='- ✅ **MQTT**: '+(G?'IoT/センサー収集に最適。ブローカー: EMQX/Mosquitto/HiveMQ。MQTT over WebSocketでブラウザ接続も可能。':'Optimal for IoT/sensor collection. Brokers: EMQX/Mosquitto/HiveMQ. MQTT over WebSocket for browser.')+'\n';}
+    if(_isBaas){d+='- ✅ '+(G?'BaaSリアルタイム: '+be120+' のリアルタイム機能（Supabase Realtime/Firebase onSnapshot）を活用。WebSocket自前実装は不要。':'BaaS Realtime: Leverage '+be120+'\'s realtime features (Supabase Realtime/Firebase onSnapshot). No need to implement WebSocket yourself.')+'\n';}
+    if(!_hasRT&&!_hasIoT&&!_isBaas){d+='- ✅ **HTTP/REST**: '+(G?'本プロジェクトの用途に最適。SSEを追加すると通知機能を低コストで実装可能。':'Optimal for this project\'s use case. Adding SSE enables notifications at low cost.')+'\n';}
+    d+='\n';
+    // §5 Summary
+    d+='## '+(G?'§5 プロジェクト固有推奨サマリ':'§5 Project-Specific Recommendation Summary')+'\n\n';
+    d+='| '+(G?'観点':'Aspect')+' | '+(G?'選定':'Selected')+' | '+(G?'理由':'Reason')+' |\n|------|------|------|\n';
+    d+='| API Style | '+apiStyle+' | '+(_isBaas?G?'BaaS SDKで開発速度最大化':'BaaS SDK maximizes dev speed':_isGQL?G?'柔軟なデータ取得でSPA最適化':'Flexible data fetching for SPA':_isGRPC?G?'低レイテンシマイクロサービス通信':'Low-latency microservice communication':G?'HTTP標準・広い互換性':'HTTP standard, broad compatibility')+'|\n';
+    d+='| Database | '+dbKey+' | '+(_isNoSQL?G?'スキーマレスで柔軟なデータ構造':'Flexible schema-less structure':G?'ACID準拠・型安全・豊富なエコシステム':'ACID compliant, type-safe, rich ecosystem')+'|\n';
+    d+='| '+(G?'スケーリング':'Scaling')+' | '+(sc==='large'?G?'水平+LB':'Horizontal+LB':sc==='medium'?G?'垂直+ReadReplica検討':'Vertical+ReadReplica':G?'シングルノード':'Single node')+' | '+(sc==='large'?G?'大規模要件・冗長化必須':'Large scale, redundancy required':sc==='medium'?G?'成長フェーズ対応':'Growth phase readiness':G?'初期フェーズ最適':'Early phase optimal')+'|\n';
+    d+='| '+(G?'主要プロトコル':'Protocol')+' | '+(_hasRT?'WebSocket':_hasIoT?'MQTT':'HTTP/REST')+' | '+(_hasRT?G?'リアルタイム要件':'Realtime requirements':_hasIoT?G?'IoT軽量プロトコル':'IoT lightweight':G?'汎用標準':'General standard')+'|\n\n';
+    d+='### '+(G?'参照ドキュメント':'Reference Documents')+'\n\n';
+    d+='- [ADR-008 '+(G?'APIスタイル選定':'API Style')+' → ADR-003 '+(G?'DB選定':'DB Selection')+'](./82-2_architecture_decision_records.md)\n';
+    d+='- ['+(G?'アーキテクチャ整合性チェック':'Architecture Integrity Check')+'](./82_architecture_integrity_check.md)\n';
+    d+='- ['+(G?'インフラ・DevOps':'Infra/DevOps')+'](./71_devops.md)\n';
+    d+='- ['+(G?'パフォーマンスバジェット':'Performance Budget')+'](./94_performance_budget.md)\n';
+    S.files['docs/120_system_design_guide.md']=d;
+  })();
+
   // ═══ docs/108_uat_acceptance.md ═══
   const uatFeatures=features.slice(0,Math.min(features.length,6));
   let uat108='# '+pn+' — '+(G?'UAT受入テスト・リリース判定':'UAT Acceptance Test & Release Judgment')+'\n> '+date+'\n\n';
@@ -1711,6 +1834,23 @@ Steps:
     const payAlt=G?'- PAY.JP（日本市場特化）\n- Square（実店舗連携が必要な場合）\n- PayPal（グローバルユーザー基盤）':'- PAY.JP (Japan market-specific)\n- Square (physical store integration)\n- PayPal (global user base)';
     adrDoc+=mkAdr(adrIdx,G?'決済統合: '+(a.payment||'Stripe'):'Payment Integration: '+(a.payment||'Stripe'),G?'採択済み':'Accepted',payCtx,payDec,payConseq,payAlt);
   }
+
+  // ADR-008: API Style
+  (function(){
+    var apiAdrIdx=(ormName&&ormName!=='N/A'&&!isBaaS?1:0)+(hasPay?1:0)+6;
+    var _isGQLa=inc2(be,'GraphQL')||inc2(fe,'GraphQL');
+    var _isGRPCa=inc2(be,'gRPC');
+    var apiStyleName=isBaaS?'BaaS SDK':_isGQLa?'GraphQL':_isGRPCa?'gRPC':'RESTful API';
+    var apiCtx=G?'クライアント-サーバー間の通信スタイルを、データ取得効率・キャッシュ戦略・ツールチェーン成熟度の観点で選定しました。':'Selected client-server communication style considering data fetching efficiency, caching strategy, and toolchain maturity.';
+    var apiDec;
+    if(isBaaS){apiDec=G?'**BaaS SDK** を採用します。\n\n選定理由:\n- '+be+'のSDKが認証・DB・リアルタイムを統合提供\n- REST API自前実装より開発速度が大幅に向上\n- クライアントから直接DBを操作でき中間層の実装コストを削減':'Adopt **BaaS SDK**.\n\nReasons:\n- '+be+' SDK provides integrated auth, DB, and realtime\n- Significantly faster than building REST APIs from scratch\n- Direct DB access from client reduces middleware implementation cost';}
+    else if(_isGQLa){apiDec=G?'**GraphQL** を採用します。\n\n選定理由:\n- クライアントが必要フィールドのみを指定取得（Over-fetch解消）\n- 強力な型システムとイントロスペクション機能\n- 単一エンドポイントで複数リソースを一括取得':'Adopt **GraphQL**.\n\nReasons:\n- Client specifies only needed fields (eliminates over-fetching)\n- Strong type system with introspection\n- Single endpoint for multiple resources';}
+    else if(_isGRPCa){apiDec=G?'**gRPC** を採用します。\n\n選定理由:\n- HTTP/2 + Protobufによる低レイテンシ通信\n- 双方向ストリーミングと多重化によるスループット最大化\n- 厳格なスキーマ定義による型安全なAPI契約':'Adopt **gRPC**.\n\nReasons:\n- Low latency via HTTP/2 + Protobuf\n- Maximum throughput with bidirectional streaming and multiplexing\n- Type-safe API contracts via strict schema definitions';}
+    else{apiDec=G?'**RESTful API** を採用します。\n\n選定理由:\n- HTTPの標準セマンティクス（GET/POST/PUT/DELETE）を活用\n- ステートレスアーキテクチャによる水平スケールの容易さ\n- OpenAPI/SwaggerによるAPIドキュメントの自動生成':'Adopt **RESTful API**.\n\nReasons:\n- Leverages standard HTTP semantics (GET/POST/PUT/DELETE)\n- Stateless architecture enables easy horizontal scaling\n- Automatic API documentation via OpenAPI/Swagger';}
+    var apiConseq=G?'- スタイル詳細比較: docs/120_system_design_guide.md §1 を参照\n- '+(apiStyleName==='GraphQL'?'N+1問題対策: DataLoaderを必ず導入すること':apiStyleName==='gRPC'?'ブラウザ対応: gRPC-Webゲートウェイが必要な場合があります':apiStyleName==='BaaS SDK'?'複雑ビジネスロジック: Edge Functionsで実装':'バージョニング: /api/v1/ プレフィックスを設計時から組み込む'):'- Style comparison: see docs/120_system_design_guide.md §1\n- '+(apiStyleName==='GraphQL'?'N+1 mitigation: Always use DataLoader':apiStyleName==='gRPC'?'Browser support: gRPC-Web gateway may be needed':apiStyleName==='BaaS SDK'?'Complex business logic: Implement in Edge Functions':'Versioning: Embed /api/v1/ prefix from design phase');
+    var apiAlt=G?'- '+(apiStyleName==='RESTful API'?'GraphQL（データ取得が複雑な場合）\n- gRPC（マイクロサービス間通信の場合）\n- tRPC（TypeScript Full-stackの場合）':apiStyleName==='GraphQL'?'REST（シンプルなCRUD APIの場合）\n- tRPC（TypeScript Full-stackの場合）':apiStyleName==='gRPC'?'REST（クライアント互換性重視の場合）\n- GraphQL（フロントエンド主導のデータ取得の場合）':'Node.js + Express（カスタムロジック重視）\n- GraphQL（データ取得最適化が必要な場合）'):'- '+(apiStyleName==='RESTful API'?'GraphQL (complex data fetching)\n- gRPC (microservice-to-service)\n- tRPC (TypeScript full-stack)':apiStyleName==='GraphQL'?'REST (simple CRUD API)\n- tRPC (TypeScript full-stack)':apiStyleName==='gRPC'?'REST (client compatibility priority)\n- GraphQL (frontend-driven data fetching)':'Node.js + Express (custom logic focus)\n- GraphQL (data fetching optimization)');
+    adrDoc+=mkAdr(apiAdrIdx,G?'APIスタイル: '+apiStyleName:'API Style: '+apiStyleName,G?'採択済み':'Accepted',apiCtx,apiDec,apiConseq,apiAlt);
+  })();
 
   S.files['docs/82-2_architecture_decision_records.md']=adrDoc;
 

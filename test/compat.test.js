@@ -1,4 +1,4 @@
-// Compat rules functional test (234 rules: 33 ERROR + 127 WARN + 74 INFO)
+// Compat rules functional test (240 rules: 33 ERROR + 130 WARN + 77 INFO)
 const assert=require('node:assert/strict');
 const S={lang:'ja',skill:'pro'};
 eval(require('fs').readFileSync('src/data/compat-rules.js','utf-8'));
@@ -534,6 +534,28 @@ const tests=[
   {name:'GoogleOnly+noEmail=INFO',a:{auth:'Google OAuth'},expect:'info',id:'auth-oauth-no-fallback'},
   {name:'Google+Email=noOAuthFallbackINFO',a:{auth:'Google OAuth + Email/Password'},expect:'none',id:'auth-oauth-no-fallback'},
   {name:'Google+solo=noOAuthFallbackINFO',a:{auth:'Google OAuth',scale:'solo'},expect:'none',id:'auth-oauth-no-fallback'},
+  // ── Scaling & Architecture (6 rules) ──
+  // scale-serverless-nopool (WARN) — serverless + SQL DB + no pool
+  {name:'Vercel+PG+noPool=WARN',a:{deploy:'Vercel',database:'PostgreSQL (Neon)',backend:'Node.js + Express'},expect:'warn',id:'scale-serverless-nopool'},
+  {name:'Railway+PG+noPool=noWARN',a:{deploy:'Railway',database:'PostgreSQL (Neon)',backend:'Node.js + Express'},expect:'none',id:'scale-serverless-nopool'},
+  {name:'Vercel+PG+Supabase=noWARN',a:{deploy:'Vercel',database:'Supabase (PostgreSQL)',backend:'Supabase'},expect:'none',id:'scale-serverless-nopool'},
+  // scale-large-single-db (WARN) — large scale + 8+ entities + SQL DB + server BE + no replica
+  {name:'large+8entities+PG+noReplica=WARN',a:{scale:'large',data_entities:'User, Team, Project, Task, Comment, Tag, File, Notification',database:'PostgreSQL (Neon)',backend:'Node.js + Express'},expect:'warn',id:'scale-large-single-db'},
+  {name:'large+8entities+PG+withReplica=noWARN',a:{scale:'large',data_entities:'User, Team, Project, Task, Comment, Tag, File, Notification',database:'PostgreSQL (Neon)',backend:'Node.js + Express',mvp_features:'Read Replica構成'},expect:'none',id:'scale-large-single-db'},
+  {name:'medium+8entities+PG+noReplica=noWARN',a:{scale:'medium',data_entities:'User, Team, Project, Task, Comment, Tag, File, Notification',database:'PostgreSQL'},expect:'none',id:'scale-large-single-db'},
+  // scale-large-no-lb (INFO) — large + non-BaaS + no managed platform + no LB
+  {name:'large+Express+noLB=INFO',a:{scale:'large',backend:'Node.js + Express'},expect:'info',id:'scale-large-no-lb'},
+  {name:'large+Express+Vercel=noLBINFO',a:{scale:'large',backend:'Node.js + Express',deploy:'Vercel'},expect:'none',id:'scale-large-no-lb'},
+  // scale-realtime-large (WARN) — large + realtime purpose + Node.js backend + no Redis adapter
+  {name:'large+realtime+Express+noRedisAdapter=WARN',a:{scale:'large',purpose:'リアルタイムチャットコラボレーションサービス',backend:'Node.js + Express'},expect:'warn',id:'scale-realtime-large'},
+  {name:'large+realtime+Supabase=noWARN',a:{scale:'large',purpose:'リアルタイムチャット',backend:'Supabase'},expect:'none',id:'scale-realtime-large'},
+  // api-graphql-no-persisted (INFO) — GraphQL + non-solo + no APQ
+  {name:'GraphQL+medium+noAPQ=INFO',a:{backend:'Node.js + NestJS + GraphQL',scale:'medium'},expect:'info',id:'api-graphql-no-persisted'},
+  {name:'GraphQL+solo+noAPQ=noINFO',a:{backend:'Node.js + NestJS + GraphQL',scale:'solo'},expect:'none',id:'api-graphql-no-persisted'},
+  // db-nosql-acid-risk (INFO) — MongoDB/Firestore + finance domain
+  {name:'MongoDB+fintech=INFO',a:{database:'MongoDB',purpose:'金融取引プラットフォームオンライン決済管理'},expect:'info',id:'db-nosql-acid-risk'},
+  {name:'PostgreSQL+fintech=noACIDINFO',a:{database:'PostgreSQL',purpose:'金融取引プラットフォームオンライン決済管理'},expect:'none',id:'db-nosql-acid-risk'},
+  {name:'MongoDB+general=noACIDINFO',a:{database:'MongoDB',purpose:'タスク管理ツール'},expect:'none',id:'db-nosql-acid-risk'},
 ];
 
 let pass=0,fail=0;

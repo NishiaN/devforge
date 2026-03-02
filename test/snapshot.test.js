@@ -93,9 +93,9 @@ describe('Snapshot A: LMS/Supabase/Stripe', () => {
     assert.ok(count >= 140 && count <= 198, `Expected 140-198 files (P21-P27 each +4 docs, +7 agents/docs113-114, +11 agentskills.io, +2 estimation/ops), got ${count}`);
   });
 
-  test('total tokens in range 12000-100000 (P21-P26 each add ~4-6K tokens, +agentskills.io skills)', () => {
+  test('total tokens in range 12000-120000 (P21-P26 each add ~4-6K tokens, +agentskills.io skills, +docs/119+120)', () => {
     const total = Object.values(files).reduce((s, v) => s + tokens(v), 0);
-    assert.ok(total >= 12000 && total <= 100000, `Expected 12K-100K tokens (P21-P26 each +4-6K + agentskills.io), got ${total}`);
+    assert.ok(total >= 12000 && total <= 120000, `Expected 12K-120K tokens (P21-P26 each +4-6K + agentskills.io + docs/119+120), got ${total}`);
   });
 
   // Core files existence
