@@ -113,6 +113,9 @@ const NEW_RULE_IDS = [
   'scale-booking-no-idempotency','fe-spa-payment-no-csp','scale-large-no-circuit-breaker',
   'scale-write-heavy-no-queue','fe-large-no-codesplit','org-rls-large-no-audit',
   'dev-tdd-no-coverage','ai-prompt-no-version',
+  // Observability rules (+6)
+  'obs-large-no-structured-log','obs-no-error-tracking','obs-no-alerting-config',
+  'obs-no-health-endpoint','obs-production-no-sla','obs-no-log-retention',
 ];
 
 const errorRules = Object.entries(hits).filter(([,v])=>v.level==='error');
@@ -143,9 +146,9 @@ if (errorRules.length === 0 && warnRules.length === 0) {
 
 // New-rule summary
 const newHits = NEW_RULE_IDS.filter(id => hits[id]);
-console.log('── New rules (20 added today) ──');
+console.log('── New rules ('+NEW_RULE_IDS.length+' tracked) ──');
 if (newHits.length === 0) {
-  console.log('✅ None of the 20 new rules fire on any existing preset.\n');
+  console.log('✅ None of the '+NEW_RULE_IDS.length+' new rules fire on any existing preset.\n');
 } else {
   for (const id of newHits) {
     const {level, entries} = hits[id];

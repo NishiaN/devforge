@@ -525,6 +525,14 @@ mark{background:var(--accent-soft);color:var(--accent);padding:0 2px;border-radi
 .dash-backup-red{background:color-mix(in srgb,var(--danger) 9%,transparent);border:1px solid color-mix(in srgb,var(--danger) 25%,transparent);color:var(--danger);}
 .dash-backup-yellow{background:color-mix(in srgb,var(--warn) 9%,transparent);border:1px solid color-mix(in srgb,var(--warn) 25%,transparent);color:var(--warn);}
 .dash-guide{background:var(--accent-soft);border:1px solid color-mix(in srgb,var(--accent) 25%,transparent);color:var(--accent);}
+.dash-scorecard{background:var(--bg-3);border:1px solid var(--border);border-radius:var(--radius);padding:10px 12px;margin-bottom:10px;}
+.dash-sc-head{display:flex;justify-content:space-between;align-items:center;font-size:12px;font-weight:600;color:var(--text-2);margin-bottom:8px;}
+.dash-sc-pct{font-size:15px;font-weight:700;}
+.dash-sc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:4px;}
+.dash-sc-item{display:flex;align-items:center;gap:5px;font-size:11px;padding:3px 6px;border-radius:4px;}
+.dash-sc-pass{color:var(--text-2);}
+.dash-sc-fail{color:var(--text-3);opacity:0.7;}
+.dash-sc-icon{font-size:12px;flex-shrink:0;}
 .guide-action-p{margin-top:16px;}
 .cx-mini{margin-left:6px;font-size:10px;font-weight:700;opacity:0.9;}
 .dash-advanced{margin:12px 0;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;}

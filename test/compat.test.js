@@ -654,6 +654,24 @@ const tests=[
   {name:'multiAgent+large+noPromptVersion=INFO',a:{ai_auto:'orchestrator (マルチエージェント)',scale:'large'},expect:'info',id:'ai-prompt-no-version'},
   {name:'multiAgent+large+withPromptVersion=noPVINFO',a:{ai_auto:'orchestrator (マルチエージェント)',scale:'large',mvp_features:'プロンプトバージョン管理, Langfuse'},expect:'none',id:'ai-prompt-no-version'},
   {name:'rag+large+noPromptVersion=noPVINFO',a:{ai_auto:'RAG (検索拡張生成)',scale:'large'},expect:'none',id:'ai-prompt-no-version'},
+  // obs-large-no-structured-log (INFO) — large + 10ents + !BaaS + !static + no structured log
+  {name:'obs-structlog: large+10ents+Express+noLog=INFO',a:{scale:'large',backend:'Node.js + Express',data_entities:'A,B,C,D,E,F,G,H,I,J'},expect:'info',id:'obs-large-no-structured-log'},
+  {name:'obs-structlog: large+10ents+Express+withLog=none',a:{scale:'large',backend:'Node.js + Express',data_entities:'A,B,C,D,E,F,G,H,I,J',mvp_features:'構造化ログ (Pino)'},expect:'none',id:'obs-large-no-structured-log'},
+  // obs-no-error-tracking (INFO) — large + 10ents + no sentry
+  {name:'obs-errtrack: large+10ents+noSentry=INFO',a:{scale:'large',data_entities:'A,B,C,D,E,F,G,H,I,J'},expect:'info',id:'obs-no-error-tracking'},
+  {name:'obs-errtrack: large+10ents+withSentry=none',a:{scale:'large',data_entities:'A,B,C,D,E,F,G,H,I,J',mvp_features:'Sentry エラー追跡'},expect:'none',id:'obs-no-error-tracking'},
+  // obs-no-alerting-config (INFO) — large + 10ents + no alerting
+  {name:'obs-alert: large+10ents+noAlert=INFO',a:{scale:'large',data_entities:'A,B,C,D,E,F,G,H,I,J'},expect:'info',id:'obs-no-alerting-config'},
+  {name:'obs-alert: large+10ents+withAlert=none',a:{scale:'large',data_entities:'A,B,C,D,E,F,G,H,I,J',mvp_features:'アラート設定 (PagerDuty)'},expect:'none',id:'obs-no-alerting-config'},
+  // obs-no-health-endpoint (INFO) — large + !BaaS + !static + 10ents + no health
+  {name:'obs-health: large+10ents+Express+noHealth=INFO',a:{scale:'large',backend:'Node.js + Express',data_entities:'A,B,C,D,E,F,G,H,I,J'},expect:'info',id:'obs-no-health-endpoint'},
+  {name:'obs-health: large+10ents+Express+withHealth=none',a:{scale:'large',backend:'Node.js + Express',data_entities:'A,B,C,D,E,F,G,H,I,J',mvp_features:'/health エンドポイント'},expect:'none',id:'obs-no-health-endpoint'},
+  // obs-production-no-sla (INFO) — large + 10ents + regulated domain + no SLA
+  {name:'obs-sla: large+10ents+fintech+noSLA=INFO',a:{scale:'large',data_entities:'A,B,C,D,E,F,G,H,I,J',purpose:'金融取引プラットフォーム fintech'},expect:'info',id:'obs-production-no-sla'},
+  {name:'obs-sla: large+10ents+fintech+withSLA=none',a:{scale:'large',data_entities:'A,B,C,D,E,F,G,H,I,J',purpose:'金融取引プラットフォーム fintech',success:'可用性 99.9%'},expect:'none',id:'obs-production-no-sla'},
+  // obs-no-log-retention (INFO) — large + 10ents + regulated domain + no retention policy
+  {name:'obs-logret: large+10ents+health+noRetention=INFO',a:{scale:'large',data_entities:'A,B,C,D,E,F,G,H,I,J',purpose:'医療記録・患者管理システム health'},expect:'info',id:'obs-no-log-retention'},
+  {name:'obs-logret: large+10ents+health+withRetention=none',a:{scale:'large',data_entities:'A,B,C,D,E,F,G,H,I,J',purpose:'医療記録・患者管理システム health',mvp_features:'ログ保持ポリシー (7年)'},expect:'none',id:'obs-no-log-retention'},
 ];
 
 let pass=0,fail=0;

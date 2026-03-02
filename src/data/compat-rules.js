@@ -1,4 +1,4 @@
-/* ═══ STACK COMPATIBILITY & SEMANTIC CONSISTENCY RULES — 258 rules (ERROR×33 + WARN×136 + INFO×89) ═══ */
+/* ═══ STACK COMPATIBILITY & SEMANTIC CONSISTENCY RULES — 264 rules (ERROR×33 + WARN×136 + INFO×95) ═══ */
 const COMPAT_RULES=[
   // ── FE ↔ Mobile (2 ERROR) ──
   {id:'fe-mob-expo',p:['frontend','mobile'],lv:'error',
@@ -2112,6 +2112,75 @@ const COMPAT_RULES=[
    fix:{f:'mvp_features',s:'プロンプトバージョン管理'},
    why_ja:'マルチエージェント・オーケストレーター構成では、プロンプトの変更が出力品質に直接影響します。バージョン管理なしでプロンプトを変更すると、どの変更が品質劣化を引き起こしたか追跡できません。Langfuse等のプロンプト管理ツールを導入し、バージョニング・A/Bテスト・品質メトリクスの記録を行うことを推奨します。詳細: docs/115_skill_portfolio.md',
    why_en:'In multi-agent/orchestrator configs, prompt changes directly affect output quality. Without version control, changes cannot be traced to quality degradation. Recommend adopting prompt management tools like Langfuse for versioning, A/B testing, and quality metric recording. See docs/115_skill_portfolio.md'},
+  // ── Observability / Monitoring (6 INFO) ──
+  {id:'obs-large-no-structured-log',p:['scale','backend'],lv:'info',
+   t:function(a){
+    var ents=(a.data_entities||'').split(/[,、]/).filter(function(e){return e.trim();});
+    var isBaaS=inc(a.backend,'Firebase')||inc(a.backend,'Supabase')||inc(a.backend,'Convex');
+    var isStatic=inc(a.backend,'なし')||inc(a.backend,'None')||inc(a.backend,'static');
+    var hasStructLog=/struct.*log|winston|pino|structured/i.test((a.mvp_features||'')+(a.data_entities||''));
+    return a.scale==='large'&&ents.length>=10&&!isBaaS&&!isStatic&&!hasStructLog;},
+   ja:'大規模構成で構造化ログが未設定です。非構造化ログは検索・集計が困難でインシデント対応時間が増大します。docs/17参照',
+   en:'Large-scale config without structured logging. Unstructured logs make search/aggregation hard and increase incident response time. See docs/17',
+   fix:{f:'mvp_features',s:'構造化ログ (Winston/Pino)'},
+   why_ja:'大規模サービスでは1秒間に数千件のログが出力されます。非構造化テキストログは grep 検索しかできず、障害時の原因特定に数時間かかることがあります。Winston/Pino 等で JSON 形式の構造化ログを出力し、Datadog/CloudWatch Logs Insights等で高速集計することを推奨します。',
+   why_en:'Large services emit thousands of log lines per second. Unstructured text logs require grep searches, taking hours to identify root causes during incidents. Use Winston/Pino for JSON structured logging and aggregate efficiently with Datadog/CloudWatch Logs Insights.'},
+  {id:'obs-no-error-tracking',p:['scale','data_entities'],lv:'info',
+   t:function(a){
+    var ents=(a.data_entities||'').split(/[,、]/).filter(function(e){return e.trim();});
+    var hasErrorTrack=/sentry|bugsnag|rollbar|エラー追跡|error.track/i.test((a.mvp_features||'')+(a.data_entities||''));
+    return a.scale==='large'&&ents.length>=10&&!hasErrorTrack;},
+   ja:'大規模構成でエラー追跡ツール (Sentry等) が未設定です。本番エラーの検知が遅延しSLAに影響します。docs/17参照',
+   en:'Large-scale config without error tracking tool (Sentry etc.). Production error detection delays impact SLA. See docs/17',
+   fix:{f:'mvp_features',s:'Sentry エラー追跡'},
+   why_ja:'Sentry等のエラー追跡ツールがない場合、本番エラーはユーザーからの問い合わせで初めて検知されます。大規模サービスでは1日数百件のエラーが発生することがあり、早期検知なしでは SLA 99.9% の維持が困難です。',
+   why_en:'Without Sentry-type error tracking, production errors are only discovered via user complaints. Large services can generate hundreds of errors per day, making it difficult to maintain 99.9% SLA without early detection.'},
+  {id:'obs-no-alerting-config',p:['scale','data_entities'],lv:'info',
+   t:function(a){
+    var ents=(a.data_entities||'').split(/[,、]/).filter(function(e){return e.trim();});
+    var hasAlert=/alert|アラート|pagerduty|opsgenie|slack.*webhook/i.test((a.mvp_features||'')+(a.data_entities||''));
+    return a.scale==='large'&&ents.length>=10&&!hasAlert;},
+   ja:'大規模構成でアラート設定が未定義です。閾値超過時の自動通知がなければインシデント対応が遅延します。docs/17参照',
+   en:'Large-scale config without alerting configuration. No automatic notification on threshold breach delays incident response. See docs/17',
+   fix:{f:'mvp_features',s:'アラート設定 (PagerDuty/Slack)'},
+   why_ja:'CPU 85%超過やエラーレート 1%超過時に自動アラートがなければ、担当者が手動で監視ダッシュボードを確認するまで問題が放置されます。PagerDuty/OpsGenie/Slack Webhook を組み合わせた on-call ローテーションの設定を推奨します。',
+   why_en:'Without automatic alerts on CPU 85%+ or error rate 1%+, issues go unnoticed until someone manually checks dashboards. Recommend configuring PagerDuty/OpsGenie/Slack Webhook with on-call rotation.'},
+  {id:'obs-no-health-endpoint',p:['scale','backend'],lv:'info',
+   t:function(a){
+    var ents=(a.data_entities||'').split(/[,、]/).filter(function(e){return e.trim();});
+    var isBaaS=inc(a.backend,'Firebase')||inc(a.backend,'Supabase')||inc(a.backend,'Convex');
+    var isStatic=inc(a.backend,'なし')||inc(a.backend,'None')||inc(a.backend,'static');
+    var hasHealth=/health|ヘルスチェック|\/health|readiness|liveness/i.test((a.mvp_features||'')+(a.data_entities||''));
+    return a.scale==='large'&&ents.length>=10&&!isBaaS&&!isStatic&&!hasHealth;},
+   ja:'大規模構成で /health エンドポイントが未定義です。ロードバランサーや k8s の死活監視に必須です。docs/17参照',
+   en:'Large-scale config without /health endpoint. Required for load balancer and k8s liveness/readiness probes. See docs/17',
+   fix:{f:'mvp_features',s:'/health エンドポイント'},
+   why_ja:'ロードバランサーや Kubernetes は /health エンドポイントの応答でサービスの正常稼働を判断します。このエンドポイントが存在しない場合、障害時にトラフィックが異常なインスタンスに送られ続けます。DB接続確認・キュー疎通確認を含むヘルスチェックを実装することを推奨します。',
+   why_en:'Load balancers and Kubernetes use /health responses to determine service health. Without it, traffic continues to be routed to unhealthy instances during failures. Implement health checks including DB connection and queue connectivity verification.'},
+  {id:'obs-production-no-sla',p:['scale','purpose'],lv:'info',
+   t:function(a){
+    var ents=(a.data_entities||'').split(/[,、]/).filter(function(e){return e.trim();});
+    var dom=typeof detectDomain==='function'?detectDomain(a.purpose||''):'';
+    var isRegulated=/fintech|health|legal|government|insurance/i.test(dom);
+    var hasSLA=/sla|slo|可用性.*99|availability.*99/i.test((a.mvp_features||'')+(a.success||''));
+    return a.scale==='large'&&ents.length>=10&&isRegulated&&!hasSLA;},
+   ja:'規制ドメインの大規模構成でSLA目標が未定義です。金融・医療等では可用性・RTO/RPOの明示が規制要件となります。docs/17参照',
+   en:'Regulated domain large-scale config without defined SLA targets. In finance/health, availability and RTO/RPO must be explicit per regulations. See docs/17',
+   fix:{f:'success',s:'可用性 99.9% / RTO 30分 / RPO 1時間'},
+   why_ja:'金融・医療・法務・行政ドメインでは、SLA（可用性目標）・RTO（目標復旧時間）・RPO（目標復旧時点）を契約や規制文書で明示する義務があります。未定義のまま運用を開始すると、障害時の責任範囲が不明確になり法的リスクが発生します。',
+   why_en:'In finance, health, legal, and government domains, SLA (availability), RTO (recovery time), and RPO (recovery point) must be documented in contracts or regulatory filings. Operating without defined targets creates legal risk when outages occur.'},
+  {id:'obs-no-log-retention',p:['scale','purpose'],lv:'info',
+   t:function(a){
+    var ents=(a.data_entities||'').split(/[,、]/).filter(function(e){return e.trim();});
+    var dom=typeof detectDomain==='function'?detectDomain(a.purpose||''):'';
+    var isRegulated=/fintech|health|legal|government|insurance/i.test(dom);
+    var hasRetention=/log.*retent|ログ保持|log.*polic|保管期間|retention.*polic/i.test((a.mvp_features||'')+(a.data_entities||''));
+    return a.scale==='large'&&ents.length>=10&&isRegulated&&!hasRetention;},
+   ja:'規制ドメインの大規模構成でログ保持ポリシーが未定義です。金融・医療等では監査ログを数年間保持する規制要件があります。docs/17参照',
+   en:'Regulated domain large-scale config without log retention policy. Finance/health regulations require audit log retention for multiple years. See docs/17',
+   fix:{f:'mvp_features',s:'ログ保持ポリシー (7年/3年)'},
+   why_ja:'金融業界（金融商品取引法）では取引記録を7年、医療（HIPAA）では患者記録を6年以上保持する義務があります。ログを自動削除するデフォルト設定のまま運用すると、監査時に証拠が提出できず行政指導の対象になります。',
+   why_en:'Finance regulations (e.g., Securities Exchange Act) require 7-year transaction record retention; healthcare (HIPAA) requires 6+ years. Default auto-delete settings can eliminate required evidence, leading to regulatory violations during audits.'},
 ];
 // helpers
 function inc(v,k){return v&&typeof v==='string'&&v.indexOf(k)!==-1;}

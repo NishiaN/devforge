@@ -129,7 +129,31 @@ function showDashboard(){
     <div class="ctx-stat"><div class="num">${answered}</div><div class="lbl">${_ja?'回答済み質問':'Answered'}</div></div>
     <div class="ctx-stat"><div class="num">${TECH_DB.length}</div><div class="lbl">${_ja?'技術DB':'Tech DB'}</div></div>
   </div>`;
-  
+
+  // Quality Scorecard
+  if(fileCount>0){
+    const _qcItems=[
+      {path:'.spec/specification.md',minLen:500,ja:'SDD仕様書',en:'SDD Specification'},
+      {path:'docs/08_security.md',minLen:300,ja:'セキュリティ設計',en:'Security Design'},
+      {path:'docs/17_monitoring.md',minLen:200,ja:'監視設計',en:'Monitoring Design'},
+      {path:'.github/workflows/ci.yml',minLen:100,ja:'CI/CD',en:'CI/CD'},
+      {path:'scaffolding/SETUP.md',minLen:200,ja:'セットアップ',en:'Setup Guide'},
+      {path:'docs/04_er_diagram.md',minLen:200,ja:'ER図',en:'ER Diagram'},
+      {path:'docs/05_api_design.md',minLen:200,ja:'API設計',en:'API Design'},
+    ];
+    const _qcPassed=_qcItems.filter(function(it){var c=S.files[it.path];return c&&c.length>=it.minLen;});
+    const _qcPct=Math.round(_qcPassed.length/_qcItems.length*100);
+    const _qcColor=_qcPct>=85?'#4caf50':_qcPct>=57?'#ff9800':'#f44336';
+    h+='<div class="dash-scorecard">';
+    h+='<div class="dash-sc-head"><span>📋 '+(  _ja?'品質スコアカード':'Quality Scorecard')+'</span><span class="dash-sc-pct" style="color:'+_qcColor+'">'+_qcPct+'%</span></div>';
+    h+='<div class="dash-sc-grid">';
+    _qcItems.forEach(function(it){
+      var _ok=S.files[it.path]&&S.files[it.path].length>=it.minLen;
+      h+='<div class="dash-sc-item'+(_ok?' dash-sc-pass':' dash-sc-fail')+'"><span class="dash-sc-icon">'+(_ok?'✅':'⬜')+'</span><span class="dash-sc-lbl">'+(_ja?it.ja:it.en)+'</span></div>';
+    });
+    h+='</div></div>';
+  }
+
   // Lv3+ Power Shortcuts
   if(_adv){
     const _scs=_ja?[

@@ -415,6 +415,7 @@ function doSubmit(qid,val){
   S.answers[qid]=sanitize(val.trim?val.trim():String(val));
   addMsg('user',String(val),null,qid);
   showCompatAlert(S.answers);
+  if(qid==='purpose')showDomainHint(S.answers[qid]);
   if(typeof renderCompatBadge==='function')renderCompatBadge();
   S.step++;save();
   setTimeout(()=>{
@@ -422,6 +423,33 @@ function doSubmit(qid,val){
     if(!ph||S.step>=ph.questions.length)phaseEnd();
     else showQ();
   },300);
+}
+function showDomainHint(purposeVal){
+  if(!purposeVal||typeof detectDomain!=='function')return;
+  const _ja=S.lang==='ja';
+  const dom=detectDomain(purposeVal);
+  if(!dom)return;
+  const _hints={
+    fintech:{ja:'💡 fintechドメイン: MFA・AuditLog・コンプライアンス対応が必須です。後の質問でこれらを設定できます。docs/121参照',en:'💡 Fintech domain: MFA, AuditLog, and compliance are required. You can configure these in later questions. See docs/121'},
+    health:{ja:'💡 healthドメイン: PHI暗号化・厳格なアクセス制御・監査ログが規制要件です。個人情報保護の設定を必ず確認してください。docs/08参照',en:'💡 Health domain: PHI encryption, strict access control, and audit logs are regulatory requirements. Be sure to configure data protection. See docs/08'},
+    ec:{ja:'💡 ecドメイン: 決済セキュリティ・在庫管理の同時更新競合・高負荷対策が重要です。楽観ロックとStripe Webhook署名を設定してください。docs/05参照',en:'💡 E-commerce domain: Payment security, inventory concurrency, and high-load handling are key. Configure optimistic locking and Stripe Webhook validation. See docs/05'},
+    education:{ja:'💡 educationドメイン: 未成年ユーザーのCOPPA/GDPR対応・LTI連携・コンテンツ著作権確認が重要です。年齢確認フローを検討してください。docs/20参照',en:'💡 Education domain: COPPA/GDPR for minors, LTI integration, and content copyright are key. Consider age verification flows. See docs/20'},
+    legal:{ja:'💡 legalドメイン: 電子署名の法的有効性・契約書バージョン管理・改ざん不可の監査ログが必要です。docs/08参照',en:'💡 Legal domain: E-signature validity, contract version control, and tamper-proof audit logs are required. See docs/08'},
+    government:{ja:'💡 governmentドメイン: WCAG 2.1 AAアクセシビリティ・個人情報の目的外利用防止・申請フロー全経路のE2Eテストが必要です。docs/20参照',en:'💡 Government domain: WCAG 2.1 AA accessibility, purpose-limitation for personal data, and full E2E test coverage of application flows are required. See docs/20'},
+    manufacturing:{ja:'💡 manufacturingドメイン: IoT連携・リアルタイム設備監視・監査ログが重要です。データ収集の信頼性設計を検討してください。docs/03参照',en:'💡 Manufacturing domain: IoT integration, real-time equipment monitoring, and audit logs are key. Design for data collection reliability. See docs/03'},
+    iot:{ja:'💡 iotドメイン: エッジ・クラウド間の通信プロトコル (MQTT/AMQP)・デバイス認証・障害時のデータバッファリングが必要です。docs/120参照',en:'💡 IoT domain: Edge-cloud protocols (MQTT/AMQP), device authentication, and data buffering on failures are required. See docs/120'},
+    ai:{ja:'💡 aiドメイン: プロンプトインジェクション対策・出力フィルタリング・コスト管理（トークン上限）が重要です。docs/115参照',en:'💡 AI domain: Prompt injection protection, output filtering, and cost control (token limits) are important. See docs/115'},
+    travel:{ja:'💡 travelドメイン: 予約の冪等性設計・在庫競合・決済フロー統合が重要です。二重予約防止ロジックを実装してください。docs/122参照',en:'💡 Travel domain: Booking idempotency, inventory concurrency, and payment flow integration are key. Implement double-booking prevention. See docs/122'},
+    insurance:{ja:'💡 insuranceドメイン: 保険規制コンプライアンス・保険料計算ロジックの監査・長期データ保持ポリシーが必要です。docs/121参照',en:'💡 Insurance domain: Regulatory compliance, audit of premium calculation logic, and long-term data retention policy are required. See docs/121'},
+    booking:{ja:'💡 bookingドメイン: 予約の冪等性（二重予約防止）・TimeSlot競合排他制御・キャンセルポリシーのビジネスルールが重要です。docs/122参照',en:'💡 Booking domain: Idempotency (prevent double-booking), TimeSlot exclusive control, and cancellation policy rules are key. See docs/122'}
+  };
+  const hint=_hints[dom];
+  if(!hint)return;
+  const body=$('cbody');if(!body)return;
+  const d=document.createElement('div');d.className='msg';
+  d.innerHTML='<div class="compat-info"><span class="compat-icon">ℹ️</span><span class="compat-msg">'+esc(_ja?hint.ja:hint.en)+'</span></div>';
+  body.appendChild(d);
+  body.scrollTop=body.scrollHeight;
 }
 function ackCompat(btn,ruleId){
   if(!S.compatAcked.includes(ruleId))S.compatAcked.push(ruleId);

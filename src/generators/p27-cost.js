@@ -160,6 +160,38 @@ function gen110(a,pn){
   doc+='| '+(G?'メモリ':'Memory')+' <30% (7日平均) | '+(G?'RAMを半減してコスト削減':'Halve RAM to reduce cost')+' |\n';
   doc+='| DB接続 <10% (ピーク) | '+(G?'接続プール縮小':'Reduce connection pool size')+' |\n';
 
+  const _sc110=a.scale||'medium';
+  if(_sc110!=='solo'){
+    const _ents110=(a.data_entities||'User, Item').split(/[,、]\s*/).map(function(e){return e.trim().replace(/\[P[0-2]\]\s*/g,'');}).filter(Boolean);
+    doc+='\n## '+(G?'エンティティ別コスト見積もり':'Per-Entity Cost Estimate')+'\n\n';
+    doc+='| '+(G?'エンティティ':'Entity')+' | CRUD API (4eps) | '+(G?'月間想定レコード':'Est. Records/Month')+' | '+(G?'ストレージ':'Storage')+'  |\n';
+    doc+='|--------|------------|-------------|--------|\n';
+    _ents110.forEach(function(e){
+      var _recs=e.match(/Log|Event|Audit|監査|履歴|History/i)?'50,000+':e.match(/User|Profile/i)?'1,000-10,000':'5,000-20,000';
+      var _sz=e.match(/Log|Event|Audit/i)?'~50MB/月':'~5MB/月';
+      doc+='| '+e+' | 4 | '+_recs+' | '+_sz+'  |\n';
+    });
+    doc+='\n> '+(G?'合計エンティティ: '+_ents110.length+' / 推定DB使用量: ~'+(Math.ceil(_ents110.length*10))+'MB/月 (初期)':'Total entities: '+_ents110.length+' / Est. DB usage: ~'+Math.ceil(_ents110.length*10)+'MB/month (initial)')+'\n';
+    doc+='\n## '+(G?'API呼び出しコスト予測':'API Call Cost Forecast')+'\n\n';
+    doc+='| '+(G?'シナリオ':'Scenario')+' | '+(G?'月間API呼び出し':'API Calls/Month')+' | '+(G?'推定コスト':'Est. Cost')+'  |\n';
+    doc+='|----------|------------|--------|\n';
+    doc+='| Conservative | 10,000 | '+(dep==='aws'?'~$1 (Lambda)':dep==='gcp'?'~$0 (free tier)':'~$0 (free tier)')+'  |\n';
+    doc+='| Moderate | 100,000 | '+(dep==='aws'?'~$10':dep==='gcp'?'~$4':'~$5-15')+'  |\n';
+    doc+='| Aggressive | 1,000,000 | '+(dep==='aws'?'~$100':dep==='gcp'?'~$40':'~$50-150')+'  |\n';
+    doc+='\n## '+(G?'ストレージ成長曲線 (6ヶ月予測)':'Storage Growth Curve (6-Month Forecast)')+'\n\n';
+    doc+='| '+(G?'月':'Month')+' | DB | '+(G?'ファイルストレージ':'File Storage')+' | '+(G?'合計':'Total')+' | '+(G?'無料枠超過':'Free Tier Exceeded?')+'  |\n';
+    doc+='|-----|-----|--------|-------|----|\n';
+    var _base=_ents110.length*10;
+    [1,2,3,4,5,6].forEach(function(mo){
+      var _db=Math.ceil(_base*Math.pow(1.2,mo-1));
+      var _fs=Math.ceil(50*mo);
+      var _tot=_db+_fs;
+      var _exc=_tot>500?'⚠️ YES':'✅ NO';
+      doc+='| M'+mo+' | '+_db+'MB | '+_fs+'MB | '+_tot+'MB | '+_exc+'  |\n';
+    });
+    doc+='\n> '+(G?'⚠️ 500MB超過後は有料プランへの移行を検討してください。':'⚠️ Plan for paid tier after exceeding 500MB.')+'\n';
+  }
+
   S.files['docs/110_resource_optimization.md']=doc;
 }
 

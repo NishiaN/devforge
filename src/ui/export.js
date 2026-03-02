@@ -205,12 +205,12 @@ function exportConcatenatedFallback(){
 /* ═══ ROLE-BASED EXPORT ═══ */
 var EXPORT_ROLES={
   developer:{ja:'👨‍💻 開発者',en:'👨‍💻 Developer',
-    prefixes:['CLAUDE.md','.spec/','.cursorrules','.clinerules','.windsurfrules','docs/03_','docs/06_','docs/07_','docs/22_','docs/82_','docs/119_','docs/120_','docs/121_','docs/122_','docs/123_','.devcontainer/','.github/','scaffolding/'],
-    priority:['CLAUDE.md','.spec/specification.md','.spec/technical-plan.md','.spec/tasks.md','docs/03_architecture.md','docs/06_api_design.md','docs/07_db_design.md','docs/22_security.md','docs/119_auth_architecture_guide.md','docs/120_system_design_guide.md','docs/121_security_design_guide.md','docs/122_concurrency_consistency_guide.md','docs/123_frontend_architecture_guide.md','scaffolding/SETUP.md','.cursorrules'],
+    prefixes:['CLAUDE.md','.spec/','.cursorrules','.clinerules','.windsurfrules','docs/03_','docs/06_','docs/07_','docs/22_','docs/82_','docs/117_','docs/119_','docs/120_','docs/121_','docs/122_','docs/123_','.devcontainer/','.github/','scaffolding/'],
+    priority:['CLAUDE.md','.spec/specification.md','.spec/technical-plan.md','.spec/tasks.md','docs/03_architecture.md','docs/06_api_design.md','docs/07_db_design.md','docs/22_security.md','docs/117_deployment_environment_guide.md','docs/119_auth_architecture_guide.md','docs/120_system_design_guide.md','docs/121_security_design_guide.md','docs/122_concurrency_consistency_guide.md','docs/123_frontend_architecture_guide.md','scaffolding/SETUP.md','.cursorrules'],
   },
   pm:{ja:'📋 PM',en:'📋 PM',
-    prefixes:['docs/01_','docs/02_','docs/05_','docs/14_','docs/09_','docs/15_','docs/107_','docs/116_','docs/118_','docs/24_','.spec/tasks.md'],
-    priority:['docs/01_project_overview.md','docs/02_requirements.md','docs/116_estimation_prerequisites.md','docs/05_roadmap.md','docs/14_risk_management.md','docs/107_project_governance.md','docs/108_uat_acceptance.md','docs/118_project_operations_pack.md','docs/09_release_checklist.md','.spec/tasks.md'],
+    prefixes:['docs/01_','docs/02_','docs/05_','docs/14_','docs/09_','docs/15_','docs/107_','docs/116_','docs/117_','docs/118_','docs/24_','.spec/tasks.md'],
+    priority:['docs/01_project_overview.md','docs/02_requirements.md','docs/116_estimation_prerequisites.md','docs/117_deployment_environment_guide.md','docs/05_roadmap.md','docs/14_risk_management.md','docs/107_project_governance.md','docs/108_uat_acceptance.md','docs/118_project_operations_pack.md','docs/09_release_checklist.md','.spec/tasks.md'],
   },
   qa:{ja:'🧪 QA',en:'🧪 QA',
     prefixes:['docs/17_','docs/18_','docs/19_','docs/22_','docs/108_','docs/118_','docs/33_','docs/20_','docs/121_'],
