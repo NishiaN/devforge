@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 # DevForge v9.6.0
 
-**AI Development OS** — 85 JS modules in `src/` → single `devforge-v9.html` (~5005KB / 6000KB limit).
+**AI Development OS** — 85 JS modules in `src/` → single `devforge-v9.html` (~4970KB / 5000KB CI limit / 6000KB build limit).
 Generates **218+ files** across **27 pillars** from a wizard-driven Q&A session.
 
 ## Documentation Map
@@ -18,7 +18,7 @@ Generates **218+ files** across **27 pillars** from a wizard-driven Q&A session.
 ## Build & Test
 
 ```bash
-node build.js                          # → devforge-v9.html (~5005KB, limit 6000KB)
+node build.js                          # → devforge-v9.html (~4970KB, CI limit 5000KB, build limit 6000KB)
 node build.js --no-minify              # debug (skip minification)
 node build.js --report                 # build + size breakdown by module
 npm test                               # 7262 tests, all passing
@@ -31,6 +31,8 @@ node scripts/compat-check-all-presets.js  # verify 0 ERROR / 0 WARN across all p
 ```
 
 **Minification:** CSS via esbuild; JS via legacy regex minifier (comment removal DISABLED — generated docs contain `/* */` and `//` inside strings).
+
+**⚠️ entity-ext.js dead-code bug**: `legacyMinJS` regex `/\/\*[ \t]*[═=]{3}[\s\S]*?[═=]{3}[ \t]*\*\//` lazily matches from the `/* ═══ ENTITY_COLUMNS EXTENSION ═══ */` header at the top of `entity-ext.js` all the way to the next `/* === ... === */` module separator — swallowing the entire file (~287KB). `ENTITY_COLUMNS` entries from `entity-ext.js` therefore never reach the built HTML. `getEntityColumns()` silently falls back to defaults. **Do not attempt to fix** — restoring the content would add ~280KB and exceed the CI 5000KB limit. The source file is compressed for repo/test speed only.
 
 ## Architecture
 
@@ -171,7 +173,7 @@ Full 6-step process in `docs/CLAUDE-REFERENCE.md`. Key steps often missed:
 File: `src/data/compat-rules.js` — currently 280 rules (33E+135W+112I). All rules have `why_ja`/`why_en`.
 **Launcher templates**: `src/ui/launcher.js` — currently 70 templates. When adding: register in `TEMPLATE_SCOPE`, both ja+en PT blocks, `AI_REC`, `templateOrder`, `LAUNCH_CAT_MAP`, `LAUNCH_SKILL_REC`; update button text count; update `test/skill-level.test.js` templateOrder.length assertion.
 Structure: `{id, p:['field1','field2'], lv:'error'|'warn'|'info', t:conditionFn, ja, en, fix, fixFn, why_ja, why_en}`
-`why_ja`/`why_en`: When set, shows "▶ なぜ？" expandable card in wizard alerts.
+`why_ja`/`why_en`: When set, shows "▶ なぜ？" expandable card in wizard alerts. **Size limits: `why_ja` ≤350B, `why_en` ≤270B** (UTF-8 bytes; CI 5000KB budget). Japanese is 3 bytes/char — keep to ≤115 characters.
 After adding: update header comment totals, add tests to `test/compat.test.js`, update CLAUDE.md rule count.
 
 ## Test Architecture
