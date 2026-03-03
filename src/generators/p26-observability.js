@@ -475,6 +475,16 @@ function gen105(a,pn){
     manufacturing:[{name:'oee_ratio',ja:'設備総合効率 (OEE)',threshold:'>85%'},{name:'defect_rate',ja:'不良率',threshold:'<1%'}],
     iot:[{name:'device_heartbeat_total',ja:'デバイス死活監視',threshold:'Alert on missing 2+ beats'},{name:'sensor_error_rate',ja:'センサーエラー率',threshold:'<0.1%'}],
     booking:[{name:'booking_conversion_rate',ja:'予約コンバージョン率',threshold:'>15%'},{name:'cancellation_rate',ja:'キャンセル率',threshold:'<20%'}],
+    hr:[{name:'turnover_rate',ja:'離職率',threshold:'<15%'},{name:'hiring_lead_days',ja:'採用リードタイム（日）',threshold:'<30d'}],
+    realestate:[{name:'deal_close_rate',ja:'物件成約率',threshold:'>10%'},{name:'avg_listing_days',ja:'平均掲載日数',threshold:'<60d'}],
+    insurance:[{name:'claim_processing_days',ja:'請求処理日数',threshold:'<5d'},{name:'loss_ratio',ja:'損害率',threshold:'<70%'}],
+    energy:[{name:'plant_uptime',ja:'設備稼働率',threshold:'>99%'},{name:'energy_efficiency',ja:'エネルギー効率',threshold:'Monitor'}],
+    gov:[{name:'application_completion_rate',ja:'申請処理完了率',threshold:'>95%'},{name:'avg_processing_days',ja:'平均処理日数',threshold:'<10d'}],
+    travel:[{name:'booking_completion_rate',ja:'予約完了率',threshold:'>20%'},{name:'cancellation_rate',ja:'キャンセル率',threshold:'<15%'}],
+    gaming:[{name:'concurrent_users',ja:'同時接続数',threshold:'Monitor'},{name:'matchmaking_p95',ja:'マッチング待ち時間 P95',threshold:'<30s'}],
+    media:[{name:'cdn_latency_p95',ja:'コンテンツ配信レイテンシ P95',threshold:'<200ms'},{name:'buffering_rate',ja:'バッファリング率',threshold:'<1%'}],
+    legal:[{name:'document_completion_rate',ja:'文書処理完了率',threshold:'>98%'},{name:'review_turnaround_hours',ja:'レビュー平均時間（時）',threshold:'<48h'}],
+    automation:[{name:'workflow_success_rate',ja:'ワークフロー成功率',threshold:'>99%'},{name:'avg_execution_seconds',ja:'平均実行時間（秒）',threshold:'<30s'}],
   };
   var dm=domainMetrics[domain]||(domainMetrics.saas);
   doc+='## '+(G?'ドメイン固有ビジネスメトリクス'+(domain?' ('+domain+')':''):'Domain Business Metrics'+(domain?' ('+domain+')':''))+'\n\n';

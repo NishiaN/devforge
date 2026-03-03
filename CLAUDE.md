@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 # DevForge v9.6.0
 
-**AI Development OS** — 86 JS modules in `src/` → single `devforge-v9.html` (~4534KB / 6000KB limit).
+**AI Development OS** — 86 JS modules in `src/` → single `devforge-v9.html` (~5580KB / 6000KB limit).
 Generates **225+ files** across **28 pillars** from a wizard-driven Q&A session.
 
 ## Documentation Map
@@ -21,7 +21,7 @@ Generates **225+ files** across **28 pillars** from a wizard-driven Q&A session.
 node build.js                          # → devforge-v9.html (~4970KB, limit 6000KB)
 node build.js --no-minify              # debug (skip minification)
 node build.js --report                 # build + size breakdown by module
-npm test                               # 7269 tests, all passing (v9.10)
+npm test                               # 7269 tests, all passing (v9.11)
 node --test test/gen-quality.test.js   # single test file
 npm run dev                            # build + live-server :3000
 npm run check                          # syntax-check extracted JS
@@ -170,8 +170,8 @@ Full 6-step process in `docs/CLAUDE-REFERENCE.md`. Key steps often missed:
 
 ## Adding Compat Rules
 
-File: `src/data/compat-rules.js` — currently 298 rules (33E+140W+125I). All rules have `why_ja`/`why_en`.
-**Launcher templates**: `src/ui/launcher.js` — currently 90 templates. When adding: register in `TEMPLATE_SCOPE`, both ja+en PT blocks, `AI_REC`, `templateOrder`, `LAUNCH_CAT_MAP`, `LAUNCH_SKILL_REC`; update button text count; update `test/skill-level.test.js` templateOrder.length assertion.
+File: `src/data/compat-rules.js` — currently 302 rules (33E+141W+128I). All rules have `why_ja`/`why_en`.
+**Launcher templates**: `src/ui/launcher.js` — currently 92 templates. When adding: register in `TEMPLATE_SCOPE`, both ja+en PT blocks, `AI_REC`, `templateOrder`, `LAUNCH_CAT_MAP`, `LAUNCH_SKILL_REC`; update button text count; update `test/skill-level.test.js` templateOrder.length assertion.
 Structure: `{id, p:['field1','field2'], lv:'error'|'warn'|'info', t:conditionFn, ja, en, fix, fixFn, why_ja, why_en}`
 `why_ja`/`why_en`: When set, shows "▶ なぜ？" expandable card in wizard alerts. **Size limits: `why_ja` ≤350B, `why_en` ≤270B** (UTF-8 bytes; CI 5000KB budget). Japanese is 3 bytes/char — keep to ≤115 characters.
 After adding: update header comment totals, add tests to `test/compat.test.js`, update CLAUDE.md rule count.

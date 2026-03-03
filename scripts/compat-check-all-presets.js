@@ -134,6 +134,8 @@ const NEW_RULE_IDS = [
   // v9.10 Phase D: CSS conflict, serverless, test framework, auth, CSP rules (+6)
   'fe-css-framework-conflict','be-serverless-cold-start','be-serverless-db-pool',
   'test-framework-conflict','auth-clerk-flutter-mismatch','fe-ssr-missing-csp',
+  // v9.11 Phase E: domain coverage & DB partitioning rules (+4)
+  'db-mongo-no-schema-validation','test-no-contract-test','obs-no-domain-metrics','db-large-no-partitioning',
 ];
 
 const errorRules = Object.entries(hits).filter(([,v])=>v.level==='error');

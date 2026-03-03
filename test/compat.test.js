@@ -1,4 +1,4 @@
-// Compat rules functional test (298 rules: 33 ERROR + 140 WARN + 125 INFO)
+// Compat rules functional test (302 rules: 33 ERROR + 141 WARN + 128 INFO)
 const assert=require('node:assert/strict');
 const S={lang:'ja',skill:'pro'};
 eval(require('fs').readFileSync('src/data/compat-rules.js','utf-8'));
@@ -812,6 +812,22 @@ const tests=[
   {name:'NextJS+noCSP=INFO',a:{frontend:'React + Next.js'},expect:'info',id:'fe-ssr-missing-csp'},
   {name:'NextJS+CSP=noINFO',a:{frontend:'React + Next.js',future_features:'Content Security Policy CSP設定'},expect:'none',id:'fe-ssr-missing-csp'},
   {name:'Vite+noCSP=noINFO',a:{frontend:'React + Vite'},expect:'none',id:'fe-ssr-missing-csp'},
+  // db-mongo-no-schema-validation (INFO)
+  {name:'MongoDB+noSchema=INFO',a:{database:'MongoDB'},expect:'info',id:'db-mongo-no-schema-validation'},
+  {name:'MongoDB+Mongoose=noINFO',a:{database:'MongoDB',mvp_features:'mongoose スキーマ定義'},expect:'none',id:'db-mongo-no-schema-validation'},
+  {name:'PostgreSQL+noSchema=noINFO',a:{database:'PostgreSQL'},expect:'none',id:'db-mongo-no-schema-validation'},
+  // test-no-contract-test (INFO)
+  {name:'NestJS+large+noContract=INFO',a:{backend:'NestJS',scale:'large'},expect:'info',id:'test-no-contract-test'},
+  {name:'NestJS+large+Pact=noINFO',a:{backend:'NestJS',scale:'large',future_features:'コントラクトテスト Pact'},expect:'none',id:'test-no-contract-test'},
+  {name:'NestJS+medium+noContract=noINFO',a:{backend:'NestJS',scale:'medium'},expect:'none',id:'test-no-contract-test'},
+  // obs-no-domain-metrics (INFO) — requires purpose+backend+scale
+  {name:'purpose+BE+scale+noKPI=INFO',a:{purpose:'SaaSプロジェクト',backend:'NestJS',scale:'medium'},expect:'info',id:'obs-no-domain-metrics'},
+  {name:'purpose+BE+scale+KPI=noINFO',a:{purpose:'SaaSプロジェクト',backend:'NestJS',scale:'medium',future_features:'KPIダッシュボード SLO監視'},expect:'none',id:'obs-no-domain-metrics'},
+  {name:'noPurpose=noINFO',a:{},expect:'none',id:'obs-no-domain-metrics'},
+  // db-large-no-partitioning (WARN)
+  {name:'PG+large+AuditLog+noPartition=WARN',a:{database:'PostgreSQL',scale:'large',data_entities:'User,AuditLog,Order'},expect:'warn',id:'db-large-no-partitioning'},
+  {name:'PG+large+AuditLog+Partition=noWARN',a:{database:'PostgreSQL',scale:'large',data_entities:'User,AuditLog',future_features:'DBパーティショニング戦略'},expect:'none',id:'db-large-no-partitioning'},
+  {name:'PG+medium+AuditLog=noWARN',a:{database:'PostgreSQL',scale:'medium',data_entities:'User,AuditLog'},expect:'none',id:'db-large-no-partitioning'},
 ];
 
 let pass=0,fail=0;

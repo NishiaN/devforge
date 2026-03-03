@@ -1,4 +1,4 @@
-/* ═══ STACK COMPATIBILITY & SEMANTIC CONSISTENCY RULES — 298 rules (ERROR×33 + WARN×140 + INFO×125) ═══ */
+/* ═══ STACK COMPATIBILITY & SEMANTIC CONSISTENCY RULES — 302 rules (ERROR×33 + WARN×141 + INFO×128) ═══ */
 const COMPAT_RULES=[
   // ── FE ↔ Mobile (2 ERROR) ──
   {id:'fe-mob-expo',p:['frontend','mobile'],lv:'error',
@@ -2583,6 +2583,54 @@ const COMPAT_RULES=[
    fix:{f:'future_features',s:'Content Security Policy (CSP) 設定'},
    why_ja:'SSRアプリはクライアント/サーバー両サイドでスクリプト実行が発生します。CSPヘッダーでインラインスクリプト・外部スクリプトを制限し、XSSの影響範囲を最小化します。',
    why_en:'SSR apps execute scripts on both client and server sides. CSP headers restrict inline and external scripts, minimizing XSS attack surface.'},
+  // v9.11 Phase E: domain coverage & DB partitioning rules (+4)
+  {id:'db-mongo-no-schema-validation',p:['database'],lv:'info',
+   t:function(a){
+    var db=(a.database||'');
+    var feats=(a.mvp_features||'')+(a.future_features||'');
+    return /MongoDB|Mongo/i.test(db)&&!/schema.validat|スキーマバリデーション|mongoose|zod|yup/i.test(feats);},
+   ja:'MongoDBを使用していますがスキーマバリデーション設定が見当たりません。Mongooseのスキーマ定義またはアプリ層のバリデーションを推奨します',
+   en:'MongoDB detected but no schema validation found. Mongoose schema definitions or app-layer validation (Zod/Yup) recommended',
+   fix:{f:'future_features',s:'MongoDBスキーマバリデーション (Mongoose / Zod)'},
+   why_ja:'MongoDBのスキーマレス設計は柔軟ですが、バリデーションなしでは不正データがDBに混入します。Mongooseスキーマ+カスタムバリデーターで整合性を確保できます。',
+   why_en:'MongoDB\'s schema-less design is flexible, but without validation, invalid data enters the DB. Mongoose schema + custom validators ensure integrity.'},
+  {id:'test-no-contract-test',p:['backend','scale'],lv:'info',
+   t:function(a){
+    var scale=a.scale||'medium';
+    var be=(a.backend||'');
+    var feats=(a.mvp_features||'')+(a.future_features||'');
+    var isMicro=/NestJS|Express|Spring|FastAPI|Django/i.test(be);
+    var hasContract=/contract.test|Pact|コントラクト/i.test(feats);
+    return scale==='large'&&isMicro&&!hasContract;},
+   ja:'マイクロサービス構成 (large規模) でコントラクトテストが未設定です。サービス間APIの結合破損を早期検出するためPactの導入を推奨します',
+   en:'Microservice setup (large scale) lacks contract testing. Recommend Pact to detect cross-service API contract breaks early',
+   fix:{f:'future_features',s:'コントラクトテスト (Pact)'},
+   why_ja:'マイクロサービスが増えるとAPIの変更がConsumerを静かに壊します。PactのConsumer-Driven Contractで変更前に結合破損を検出できます。',
+   why_en:'As microservices grow, API changes silently break consumers. Pact Consumer-Driven Contracts detect breakage before deployment.'},
+  {id:'obs-no-domain-metrics',p:['purpose','backend','scale'],lv:'info',
+   t:function(a){
+    var feats=(a.mvp_features||'')+(a.future_features||'');
+    var hasDomainMetrics=/KPI|SLO|SLI|ビジネスメトリクス|business.metric|domain.metric|ドメインメトリクス/i.test(feats);
+    return !hasDomainMetrics;},
+   ja:'ドメイン固有ビジネスメトリクスの設定が見当たりません。技術メトリクスに加えてKPI監視を設定することでシステム価値を可視化できます',
+   en:'No domain-specific business metrics detected. Adding KPI monitoring alongside technical metrics makes system value visible',
+   fix:{f:'future_features',s:'ドメインKPIダッシュボード (Grafana / Datadog)'},
+   why_ja:'技術メトリクス (CPU/メモリ) だけでは事業インパクトが見えません。コンバージョン率・成約率などのKPIを監視することで障害の事業影響を即座に把握できます。',
+   why_en:'Technical metrics (CPU/memory) don\'t show business impact. Monitoring KPIs like conversion rate enables instant assessment of business impact from incidents.'},
+  {id:'db-large-no-partitioning',p:['database','scale'],lv:'warn',
+   t:function(a){
+    var scale=a.scale||'medium';
+    var db=(a.database||'');
+    var feats=(a.mvp_features||'')+(a.future_features||'');
+    var isRDB=/PostgreSQL|MySQL|MariaDB/i.test(db);
+    var hasPartition=/partition|sharding|シャーディング|パーティシ/i.test(feats);
+    var hasHighVol=/audit.log|AuditLog|event.log|EventLog|センサー|IoT|ログ収集/i.test((a.data_entities||'')+(feats));
+    return scale==='large'&&isRDB&&!hasPartition&&hasHighVol;},
+   ja:'large規模 + 高ボリュームエンティティ (監査ログ/イベント/センサー) でDBパーティショニング戦略が未定義です',
+   en:'Large-scale high-volume entities (audit logs/events/sensors) detected but no DB partitioning strategy defined',
+   fix:{f:'future_features',s:'DBパーティショニング戦略 (Range/Hash)'},
+   why_ja:'監査ログ・イベントテーブルはGB/月単位で増加します。Rangeパーティションで古いデータを自動アーカイブし、クエリはパーティション刈り込みで高速化されます。',
+   why_en:'Audit log and event tables grow GB/month. Range partitioning auto-archives old data; queries accelerate via partition pruning.'},
 ];
 // helpers
 function inc(v,k){return v&&typeof v==='string'&&v.indexOf(k)!==-1;}

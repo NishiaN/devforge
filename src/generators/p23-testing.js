@@ -75,6 +75,62 @@ var DOMAIN_TEST_EXTRA={
     e2e_en:['Chat send→streaming response E2E','API timeout handling (>30s) validation','Conversation history persistence and restore flow'],
     perf_ja:['LLM API レイテンシ P95 ≤ 5s (ストリーミング除く)','同時チャット 50セッション→エラー率 < 1%'],
     perf_en:['LLM API latency P95 ≤ 5s (excl. streaming)','50 concurrent chat sessions → error rate < 1%']},
+  education:{
+    cov_ja:['コース完了フロー → ≥90% カバレッジ','受講者進捗計算ロジックの完全テスト','クイズ/テスト採点エンジンのユニットテスト','LMS API認証・権限チェックのテスト'],
+    cov_en:['Course completion flow coverage ≥ 90%','Learner progress calculation logic full coverage','Quiz/test scoring engine unit tests','LMS API auth and permission check tests'],
+    e2e_ja:['コース受講開始→進捗更新→修了証発行フロー','クイズ回答→採点→成績記録フロー','受講者ダッシュボード表示・フィルタのE2E','期限切れコースのアクセス制限確認'],
+    e2e_en:['Course enroll→progress→certificate issuance flow','Quiz answer→score→grade recording flow','Learner dashboard display and filter E2E','Expired course access restriction check'],
+    perf_ja:['同時1000受講者→動画ストリーミング安定性テスト','クイズ一斉開始 (500並列) → P95 ≤ 2s'],
+    perf_en:['1000 concurrent learners → video streaming stability','Mass quiz start (500 parallel) → P95 ≤ 2s']},
+  saas:{
+    cov_ja:['テナント分離ロジック → 100% カバレッジ','プラン変更・ダウングレードの課金計算テスト','APIクォータ計量・超過検知ロジックのテスト','マルチテナントRLS境界値テスト'],
+    cov_en:['Tenant isolation logic → 100% coverage','Plan upgrade/downgrade billing calculation tests','API quota metering and overage detection tests','Multi-tenant RLS boundary tests'],
+    e2e_ja:['テナント作成→メンバー招待→権限確認フロー','プラン変更→請求更新→機能制限切替のE2E','APIキー発行→クォータ管理→超過アラートフロー','テナントAのデータがテナントBから見えないことの確認'],
+    e2e_en:['Tenant create→member invite→permission check flow','Plan change→billing update→feature limit switch E2E','API key issue→quota management→overage alert flow','Verify tenant A data not visible from tenant B'],
+    perf_ja:['10テナント同時APIリクエスト → テナント間干渉なし確認','クォータ集計クエリ P95 ≤ 200ms (1万テナント規模)'],
+    perf_en:['10 tenants concurrent API requests → no cross-tenant interference','Quota aggregation query P95 ≤ 200ms (10K tenant scale)']},
+  booking:{
+    cov_ja:['予約競合検出ロジック (ダブルブッキング防止) → 100%','キャンセル・返金計算ロジックの完全テスト','カレンダー同期・空室計算アルゴリズムのテスト'],
+    cov_en:['Booking conflict detection (double booking prevention) → 100%','Cancellation and refund calculation logic full coverage','Calendar sync and availability calculation tests'],
+    e2e_ja:['空室検索→予約確定→確認メール送信フロー','同時予約競合 (2ユーザー同一枠) → 一方のみ成功確認','キャンセル→返金ポリシー適用→払戻処理フロー','カレンダー連携 (Google/iCal) 同期確認'],
+    e2e_en:['Availability search→booking confirm→email notification flow','Concurrent booking conflict (2 users, same slot) → only one succeeds','Cancel→refund policy apply→refund processing flow','Calendar sync (Google/iCal) verification'],
+    perf_ja:['フラッシュセール予約: 500並列→先着処理のデータ整合性確認','空室検索クエリ P95 ≤ 500ms (6ヶ月先まで)'],
+    perf_en:['Flash sale booking: 500 parallel → first-come data integrity check','Availability query P95 ≤ 500ms (6 months ahead)']},
+  logistics:{
+    cov_ja:['配送ステータス状態遷移ロジック → 100%','ルート最適化アルゴリズムのユニットテスト','在庫引当・引落処理の境界値テスト'],
+    cov_en:['Delivery status state transition logic → 100%','Route optimization algorithm unit tests','Inventory allocation and deduction boundary tests'],
+    e2e_ja:['注文受付→ピッキング→発送→配達完了フロー','配送遅延アラート発報→顧客通知E2E','ドライバーアプリ: 配達確認→署名取得→完了フロー','返品受付→在庫戻し→払戻処理フロー'],
+    e2e_en:['Order receive→picking→shipment→delivery complete flow','Delivery delay alert→customer notification E2E','Driver app: delivery confirm→signature→complete flow','Return receive→stock restore→refund flow'],
+    perf_ja:['日次バッチ配送ルート最適化: 1000件/分 処理能力テスト','リアルタイム位置更新: 500台同時→P95 ≤ 300ms'],
+    perf_en:['Daily batch route optimization: 1000 orders/min throughput','Real-time location update: 500 vehicles concurrent → P95 ≤ 300ms']},
+  manufacturing:{
+    cov_ja:['生産計画→実績差異計算ロジック → 100%','品質検査合否判定アルゴリズムのテスト','OEE計算 (稼働率×性能率×品質率) の検証'],
+    cov_en:['Production plan vs actual deviation logic → 100%','Quality inspection pass/fail algorithm tests','OEE calculation (availability×performance×quality) validation'],
+    e2e_ja:['作業指示発行→生産実績登録→OEE算出フロー','不良品検出→ロット隔離→是正処置フロー','設備故障アラート→保全作業票発行→復旧確認'],
+    e2e_en:['Work order issue→production actuals→OEE calculation flow','Defect detect→lot quarantine→corrective action flow','Equipment failure alert→maintenance order→recovery confirm'],
+    perf_ja:['センサーデータ収集: 10000点/秒の取込みテスト','OEEダッシュボード更新 P95 ≤ 1s (1000設備)'],
+    perf_en:['Sensor data ingestion: 10000 points/sec throughput test','OEE dashboard update P95 ≤ 1s (1000 machines)']},
+  hr:{
+    cov_ja:['勤怠打刻バリデーション (二重打刻防止) → 100%','給与計算ロジック (残業/深夜/休日割増) の完全テスト','有給残日数計算・繰越ロジックのテスト'],
+    cov_en:['Attendance punch validation (double punch prevention) → 100%','Payroll calculation (overtime/late-night/holiday premium) full coverage','Paid leave balance and carryover logic tests'],
+    e2e_ja:['出勤打刻→勤務時間集計→勤怠確認申請フロー','給与計算実行→明細生成→承認ワークフロー','有給申請→残日数チェック→上長承認→カレンダー反映'],
+    e2e_en:['Clock-in→work hours aggregation→attendance confirm flow','Payroll run→payslip generation→approval workflow','Leave request→balance check→manager approve→calendar update'],
+    perf_ja:['月次給与一括計算: 1000名/30秒以内','勤怠集計レポート P95 ≤ 2s (年次データ)'],
+    perf_en:['Monthly batch payroll: 1000 employees within 30 seconds','Attendance aggregation report P95 ≤ 2s (annual data)']},
+  realestate:{
+    cov_ja:['物件検索フィルタロジック → ≥90%','仲介手数料計算 (上限規定込み) の完全テスト','契約書生成テンプレートエンジンのテスト'],
+    cov_en:['Property search filter logic ≥ 90%','Brokerage commission calculation (cap rules) full coverage','Contract document generation template engine tests'],
+    e2e_ja:['物件検索→詳細閲覧→内覧予約フロー','申込→審査→契約書生成→電子署名フロー','仲介手数料見積→契約成立→請求書発行フロー'],
+    e2e_en:['Property search→detail view→showing reservation flow','Application→screening→contract generation→e-signature flow','Commission estimate→deal close→invoice generation flow'],
+    perf_ja:['物件検索クエリ P95 ≤ 500ms (100万件)','地図ビュー: 同時500ユーザー→タイル取得 P95 ≤ 1s'],
+    perf_en:['Property search query P95 ≤ 500ms (1M listings)','Map view: 500 concurrent users → tile fetch P95 ≤ 1s']},
+  insurance:{
+    cov_ja:['リスクスコアリングアルゴリズム → 100%','保険金請求バリデーション (二重請求防止) の完全テスト','引受判断ロジック (ルールエンジン) のユニットテスト'],
+    cov_en:['Risk scoring algorithm → 100%','Insurance claim validation (duplicate claim prevention) full coverage','Underwriting decision logic (rule engine) unit tests'],
+    e2e_ja:['見積入力→リスク算出→申込→引受判断フロー','事故報告→請求審査→支払承認→振込処理フロー','保険料改定→既契約への適用→通知送信フロー'],
+    e2e_en:['Quote input→risk calculation→application→underwriting flow','Incident report→claim review→payment approval→transfer flow','Premium revision→apply to existing contracts→notification flow'],
+    perf_ja:['リスクスコアリング P95 ≤ 300ms (複合条件100項目)','請求一括審査バッチ: 1000件/時間'],
+    perf_en:['Risk scoring P95 ≤ 300ms (100 composite conditions)','Batch claim review: 1000 claims/hour']},
 };
 
 // ============================================================================
@@ -126,6 +182,7 @@ function gen91(a,pn,G,feType,beType){
   var isBaaS=beType==='baas';
   var isPy=beType==='python';
   var isJava=beType==='java';
+  var lv91=S.skillLv||0; var isPro91=lv91>=5; var isBeg91=lv91<=1;
 
   var doc='';
   doc+='# '+(G?'テスト戦略':'Testing Strategy')+'\n\n';
@@ -185,6 +242,38 @@ function gen91(a,pn,G,feType,beType){
     :'1. RED   — Write failing tests first (pass spec to Claude Code)\n2. GREEN — Write minimal code to pass tests\n3. REFACTOR — Improve code while keeping tests green\n4. COMMIT — Commit only when CI is GREEN\n'
   );
   doc+='```\n\n';
+
+  // Beginner: テスト実行ベストプラクティス
+  if(isBeg91){
+    doc+='## '+(G?'🌱 テスト基本プラクティス (Beginner)':'🌱 Testing Basic Practices (Beginner)')+'\n\n';
+    var begPractices=G
+      ?['**AAAパターン**: Arrange (準備) → Act (実行) → Assert (検証) の順に書く','**テスト粒度**: 1テスト = 1つの振る舞いのみ検証する','**命名規則**: `it(\'should [動詞] when [条件]\')` 形式で意図を明示する','**独立性**: テスト間でデータを共有しない。各テストで独自のセットアップを行う','**外部依存はモック**: DB/API/ファイルシステムはモックやスタブで置き換える']
+      :['**AAA Pattern**: Arrange (setup) → Act (execute) → Assert (verify) order','**Test Granularity**: 1 test = verify exactly 1 behavior','**Naming**: Use `it(\'should [verb] when [condition]\')` to state intent clearly','**Independence**: Never share data between tests. Each test sets up its own state','**Mock external deps**: Replace DB/API/filesystem with mocks or stubs'];
+    begPractices.forEach(function(p){doc+='- '+p+'\n';});
+    doc+='\n';
+  }
+
+  // Pro: Contract Testing + Chaos Engineering
+  if(isPro91){
+    doc+='## '+(G?'🔬 高度なテスト技法 (Pro)':'🔬 Advanced Testing Techniques (Pro)')+'\n\n';
+    doc+='### '+(G?'コントラクトテスト (Pact)':'Contract Testing (Pact)')+'\n\n';
+    doc+=(G
+      ?'マイクロサービス間のAPIインタフェースを自動検証します。Consumer-Driven Contract Testingパターン。\n\n'
+      :'Automatically verify API interfaces between microservices using Consumer-Driven Contract Testing.\n\n'
+    );
+    doc+='```typescript\n// consumer/src/tests/user-api.pact.test.ts\nimport { Pact } from \'@pact-foundation/pact\';\n\nconst provider = new Pact({ consumer: \'frontend\', provider: \'user-service\' });\n\nbefore(() => provider.setup());\nafter(() => provider.finalize());\n\nit(\'returns user by id\', async () => {\n  await provider.addInteraction({\n    state: \'user 123 exists\',\n    uponReceiving: \'GET /users/123\',\n    withRequest: { method: \'GET\', path: \'/users/123\' },\n    willRespondWith: {\n      status: 200,\n      body: { id: \'123\', email: like(\'test@example.com\') }\n    }\n  });\n  const result = await fetchUser(\'123\');\n  expect(result.id).toBe(\'123\');\n});\n```\n\n';
+    doc+='### '+(G?'カオスエンジニアリング (Chaos Engineering)':'Chaos Engineering')+'\n\n';
+    doc+=(G
+      ?'意図的に障害を注入してシステムの回復性を検証します。\n\n'
+      :'Deliberately inject failures to verify system resilience.\n\n'
+    );
+    doc+='| '+(G?'ツール':'Tool')+' | '+(G?'用途':'Use')+' | '+(G?'規模':'Scale')+'|\n';
+    doc+='|---|---|---|\n';
+    doc+='| LitmusChaos | '+(G?'Kubernetes向けカオス実験':'Kubernetes chaos experiments')+' | '+(G?'クラウドネイティブ':'Cloud-native')+'|\n';
+    doc+='| Gremlin | '+(G?'マネージドカオスプラットフォーム':'Managed chaos platform')+' | '+(G?'エンタープライズ':'Enterprise')+'|\n';
+    doc+='| Chaos Monkey | '+(G?'AWSインスタンス無作為停止':'Random AWS instance termination')+' | '+(G?'AWS環境':'AWS env')+'|\n\n';
+    doc+='```yaml\n# LitmusChaos: Pod delete experiment\napiVersion: litmuschaos.io/v1alpha1\nkind: ChaosEngine\nmetadata:\n  name: pod-delete-test\nspec:\n  appinfo:\n    appns: production\n    applabel: \'app=user-service\'\n  experiments:\n    - name: pod-delete\n      spec:\n        components:\n          env:\n            - name: TOTAL_CHAOS_DURATION\n              value: \'60\'  # 60 seconds\n            - name: CHAOS_INTERVAL\n              value: \'10\'\n```\n\n';
+  }
 
   // Domain-specific test focus (DOMAIN_QA_MAP)
   var domainQ=detectDomain(a.purpose||'');
@@ -298,6 +387,20 @@ function gen92(a,pn,G,feType,beType){
     :'After reaching 80% coverage, use mutation testing to verify test quality.\n\n'
   );
   doc+='```bash\n'+(isPy?'# mutmut (Python)\npip install mutmut\nmutmut run\nmutmut results':'# Stryker (JavaScript/TypeScript)\nnpm install -D @stryker-mutator/core @stryker-mutator/jest-runner\nnpx stryker run')+'\n```\n\n';
+
+  // Pro: Property-Based Testing
+  var lv92=S.skillLv||0; var isPro92=lv92>=5;
+  if(isPro92){
+    doc+='## '+(G?'🔬 プロパティベーステスト (Pro)':'🔬 Property-Based Testing (Pro)')+'\n\n';
+    doc+=(G
+      ?'任意の入力データを自動生成してテストします。エッジケースを人間が思いつかない組み合わせで発見できます。\n\n'
+      :'Automatically generate arbitrary input data for testing. Discover edge cases from combinations humans would never think of.\n\n'
+    );
+    doc+=(isPy
+      ?'```python\n# Hypothesis (Python)\nfrom hypothesis import given, strategies as st\n\n@given(st.integers(min_value=0, max_value=1000), st.integers(min_value=1))\ndef test_divide_never_exceeds_input(numerator, denominator):\n    result = safe_divide(numerator, denominator)\n    assert result <= numerator\n\n@given(st.text(min_size=1, max_size=100))\ndef test_sanitize_always_safe(raw_input):\n    result = sanitize(raw_input)\n    assert \'<script>\' not in result\n    assert len(result) <= 100\n```\n\n'
+      :'```typescript\n// fast-check (JavaScript/TypeScript)\nimport * as fc from \'fast-check\';\n\ntest(\'addition is commutative\', () => {\n  fc.assert(fc.property(\n    fc.integer(), fc.integer(),\n    (a, b) => add(a, b) === add(b, a)\n  ));\n});\n\ntest(\'pagination never returns more than limit\', () => {\n  fc.assert(fc.property(\n    fc.integer({ min: 0, max: 10000 }),  // offset\n    fc.integer({ min: 1, max: 100 }),    // limit\n    async (offset, limit) => {\n      const result = await paginate({ offset, limit });\n      return result.items.length <= limit;\n    }\n  ));\n});\n\n// Run: npx fast-check\n```\n\n'
+    );
+  }
 
   // Domain-specific coverage priorities
   var _d92=detectDomain(a.purpose||'');
@@ -438,6 +541,18 @@ function gen94(a,pn,G,feType,beType){
   doc+='| '+(G?'APIレスポンス (p95)':'API response (p95)')+' | < 500ms | k6 / Locust |\n';
   doc+='| '+(G?'DBクエリ':'DB query')+' (p95) | < 100ms | pg_stat_statements |\n';
   doc+='\n';
+
+  // Pro: Distributed load testing + SLA template
+  var lv94=S.skillLv||0; var isPro94=lv94>=5;
+  if(isPro94){
+    doc+='## '+(G?'🔬 分散負荷テスト構成 (Pro)':'🔬 Distributed Load Testing (Pro)')+'\n\n';
+    doc+='### '+(G?'k6 Cloud / 分散実行':'k6 Cloud / Distributed Execution')+'\n\n';
+    doc+='```javascript\n// k6/distributed-test.js\nimport http from \'k6/http\';\nimport { check } from \'k6\';\n\nexport const options = {\n  scenarios: {\n    ramp_up: {\n      executor: \'ramping-arrival-rate\',\n      startRate: 10,\n      timeUnit: \'1s\',\n      preAllocatedVUs: 50,\n      maxVUs: 500,\n      stages: [\n        { target: 100, duration: \'2m\' },  // '+(G?'ランプアップ':'Ramp up')+'\n        { target: 500, duration: \'5m\' },  // '+(G?'ピーク負荷':'Peak load')+'\n        { target: 0,   duration: \'1m\' },  // '+(G?'ランプダウン':'Ramp down')+'\n      ],\n    },\n  },\n  thresholds: {\n    http_req_duration: [\'p(95)<500\', \'p(99)<1000\'],\n    http_req_failed:   [\'rate<0.005\'],  // 0.5% error rate\n  },\n};\n\n// '+(G?'k6 Cloud で実行 (複数リージョン)':'Run on k6 Cloud (multi-region)')+'\n// k6 cloud k6/distributed-test.js\n```\n\n';
+    doc+='### '+(G?'Locust 分散モード (Python)':'Locust Distributed Mode (Python)')+'\n\n';
+    doc+='```bash\n# Master node\nlocust -f locustfile.py --master --users 1000 --spawn-rate 50\n\n# Worker nodes (each machine)\nlocust -f locustfile.py --worker --master-host=<master-ip>\n```\n\n';
+    doc+='### SLA '+(G?'定義テンプレート':'Definition Template')+'\n\n';
+    doc+='```yaml\n# sla.yml\nsla:\n  availability:\n    target: 99.9%          # 8.7h/year downtime\n    measurement: monthly\n  performance:\n    api_p95: 500ms\n    api_p99: 1000ms\n    error_rate: "<0.5%"\n  capacity:\n    peak_rps: 500          # '+(G?'ピーク時リクエスト/秒':'Peak requests/second')+'\n    concurrent_users: 1000\n  incidents:\n    p1_response: 15min     # '+(G?'重大障害の初動':'Critical incident response time')+'\n    p2_response: 1h\n    postmortem: 48h\n```\n\n';
+  }
 
   // Domain-specific load test scenarios
   var _d94=detectDomain(a.purpose||'');

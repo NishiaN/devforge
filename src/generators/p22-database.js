@@ -101,6 +101,7 @@ function gen87(a,pn,G){
   var isMongo=dbType==='mongodb';
   var isBaaS=orm.isBaaS;
   var isPy=orm.isPython;
+  var lv87=S.skillLv||0; var isPro87=lv87>=5;
 
   var doc='';
   doc+='# '+(G?'データベース設計原則':'Database Design Principles')+'\n\n';
@@ -213,6 +214,24 @@ function gen87(a,pn,G){
     });
   }
 
+  // ── Pro: Partitioning Strategy ──
+  if(isPro87&&!isMongo&&!isBaaS){
+    doc+='## '+(G?'⚡ パーティショニング戦略 (Pro)':'⚡ Partitioning Strategy (Pro)')+'\n\n';
+    doc+=(G
+      ?'大規模テーブル (>1億行) のクエリ性能を維持するためにテーブルパーティショニングを活用します。\n\n'
+      :'Use table partitioning to maintain query performance on large tables (>100M rows).\n\n'
+    );
+    doc+='### '+(G?'パターン選定':'Pattern Selection')+'\n\n';
+    doc+='| '+(G?'パターン':'Pattern')+' | '+(G?'適用条件':'Use When')+' | '+(G?'例':'Example')+'|\n';
+    doc+='|---|---|---|\n';
+    doc+='| Range | '+(G?'時系列データ (日付/タイムスタンプ)':'Time-series data (date/timestamp)')+' | '+(G?'月次アーカイブ':'Monthly archive')+'|\n';
+    doc+='| Hash | '+(G?'均等分散が必要な書込み重視テーブル':'Write-heavy table needing even distribution')+' | '+(G?'ユーザーIDハッシュ':'user_id hash')+'|\n';
+    doc+='| List | '+(G?'カテゴリ/地域など有限の列挙値':'Finite enum values (category, region)')+' | '+(G?'地域別テナント':'Regional tenant')+'|\n\n';
+    doc+='```sql\n-- '+(G?'PostgreSQL: Rangeパーティション (月次)':'PostgreSQL: Range partition (monthly)')+'\nCREATE TABLE events (\n  id         UUID NOT NULL,\n  created_at TIMESTAMPTZ NOT NULL,\n  payload    JSONB\n) PARTITION BY RANGE (created_at);\n\nCREATE TABLE events_2024_01\n  PARTITION OF events\n  FOR VALUES FROM (\'2024-01-01\') TO (\'2024-02-01\');\n\nCREATE TABLE events_2024_02\n  PARTITION OF events\n  FOR VALUES FROM (\'2024-02-01\') TO (\'2024-03-01\');\n\n-- '+(G?'pg_partman で自動管理 (推奨)':'Auto-manage with pg_partman (recommended)')+'\n-- SELECT partman.create_parent(\'public.events\', \'created_at\', \'range\', \'monthly\');\n```\n\n';
+    doc+='```sql\n-- '+(G?'Hashパーティション (均等分散)':'Hash partition (even distribution)')+'\nCREATE TABLE orders (\n  id      UUID NOT NULL,\n  user_id UUID NOT NULL\n) PARTITION BY HASH (user_id);\n\nCREATE TABLE orders_p0 PARTITION OF orders FOR VALUES WITH (modulus 4, remainder 0);\nCREATE TABLE orders_p1 PARTITION OF orders FOR VALUES WITH (modulus 4, remainder 1);\nCREATE TABLE orders_p2 PARTITION OF orders FOR VALUES WITH (modulus 4, remainder 2);\nCREATE TABLE orders_p3 PARTITION OF orders FOR VALUES WITH (modulus 4, remainder 3);\n```\n\n';
+    doc+='> '+(G?'**注意**: パーティションキーを含まないクエリはすべてのパーティションをスキャンします。WHERE句に必ずパーティションキーを含めてください。':'**Note**: Queries without the partition key scan all partitions. Always include the partition key in WHERE clauses.')+'\n\n';
+  }
+
   // ── Replication & Sharding Patterns (solo以外) ──
   if((a.scale||'medium')!=='solo'){
     doc+='---\n\n';
@@ -255,6 +274,7 @@ function gen88(a,pn,G){
   var isMongo=dbType==='mongodb';
   var isPy=orm.isPython;
   var isBaaS=orm.isBaaS;
+  var lv88=S.skillLv||0; var isPro88=lv88>=5;
 
   var doc='';
   doc+='# '+(G?'クエリ最適化ガイド':'Query Optimization Guide')+'\n\n';
@@ -324,6 +344,26 @@ function gen88(a,pn,G){
   doc+='- [ ] '+(G?'EXPLAIN ANALYZE でスロークエリを確認済み':'Verified slow queries with EXPLAIN ANALYZE')+'\n';
   doc+='- [ ] '+(G?'本番データに近いボリュームでテスト済み':'Tested with production-scale data volume')+'\n\n';
 
+  // Pro: EXPLAIN ANALYZE reading guide
+  if(isPro88&&!isBaaS){
+    doc+='## '+(G?'🔬 EXPLAIN ANALYZE 読み方ガイド (Pro)':'🔬 EXPLAIN ANALYZE Reading Guide (Pro)')+'\n\n';
+    doc+='| '+(G?'ノードタイプ':'Node Type')+' | '+(G?'意味':'Meaning')+' | '+(G?'対処':'Action')+' |\n';
+    doc+='|---|---|---|\n';
+    doc+='| `Seq Scan` | '+(G?'フルテーブルスキャン':'Full table scan')+' | '+(G?'インデックス追加を検討':'Consider adding index')+' |\n';
+    doc+='| `Index Scan` | '+(G?'インデックス使用 (良好)':'Index used (good)')+' | '+(G?'そのまま維持':'Maintain as is')+' |\n';
+    doc+='| `Index Only Scan` | '+(G?'カバリングインデックス (最良)':'Covering index (best)')+' | '+(G?'理想的な状態':'Ideal state')+' |\n';
+    doc+='| `Hash Join` | '+(G?'大テーブルのJOINに有効':'Efficient for large table JOINs')+' | '+(G?'通常は問題なし':'Usually OK')+' |\n';
+    doc+='| `Nested Loop` | '+(G?'小テーブルのJOINに有効。大テーブルでは危険':'Good for small tables. Dangerous for large tables')+' | '+(G?'rows数を確認':'Check row count')+' |\n';
+    doc+='| `Bitmap Heap Scan` | '+(G?'複数インデックスのOR検索':'OR search across multiple indexes')+' | '+(G?'条件を見直す':'Review conditions')+' |\n\n';
+    doc+='```sql\n-- '+(G?'実践: actual time と rows を比較する':'Practice: Compare actual time vs rows')+'\nEXPLAIN (ANALYZE, BUFFERS, FORMAT TEXT)\nSELECT * FROM orders WHERE user_id = $1 AND status = \'pending\';\n\n-- '+(G?'チェックポイント:':'Checkpoints:')+'\n-- 1. actual rows vs estimated rows '+(G?'(大きな乖離はインデックス統計が古い)':'(large gap = stale index statistics)')+'\n-- 2. Seq Scan '+(G?'かつ rows > 1000 → インデックス検討':'with rows > 1000 → consider index')+'\n-- 3. total actual time '+(G?'が':'is')+' > 100ms → '+(G?'最適化が必要':'needs optimization')+'\n\n-- '+(G?'統計情報を更新する':'Update statistics')+'\nANALYZE orders;\nANALYZE users;\n```\n\n';
+    doc+='### '+(G?'最適化チェックリスト':'Optimization Checklist')+'\n\n';
+    var proChecks=G
+      ?['EXPLAIN ANALYZEで Seq Scan (rows>1000) を排除','actual rows / estimated rows の乖離が10倍以上 → ANALYZE実行','Hash Join の rows が予想外に多い → JOIN順序を見直す','Nested Loop + 大テーブル → enable_nestloop=off で代替プランを確認','Buffers: shared hit/read 比率が低い → ページキャッシュ不足']
+      :['Eliminate Seq Scan (rows>1000) via EXPLAIN ANALYZE','actual rows / estimated rows diverges 10x → run ANALYZE','Hash Join rows unexpectedly large → review JOIN order','Nested Loop + large table → check alternate plan with enable_nestloop=off','Low shared hit/read ratio in Buffers → insufficient page cache'];
+    proChecks.forEach(function(c){doc+='- [ ] '+c+'\n';});
+    doc+='\n';
+  }
+
   doc+='---\n*'+(G?'DevForge v9 自動生成':'Generated by DevForge v9')+'*\n';
   S.files['docs/88_query_optimization_guide.md']=doc;
 }
@@ -333,6 +373,7 @@ function gen89(a,pn,G){
   var orm=_dbORM(a);
   var isPy=orm.isPython;
   var isBaaS=orm.isBaaS;
+  var lv89=S.skillLv||0; var isBeg89=lv89<=1;
 
   var doc='';
   doc+='# '+(G?'マイグレーション戦略':'Migration Strategy')+'\n\n';
@@ -402,6 +443,23 @@ function gen89(a,pn,G){
   doc+='- [ ] '+(G?'NOT NULL追加はデフォルト値設定後に実行':'NOT NULL constraint added only after default value set')+'\n';
   doc+='- [ ] '+(G?'インデックス追加は CONCURRENTLY オプションを使用':'Use CONCURRENTLY option for index creation')+'\n';
   doc+='  ```sql\n  CREATE INDEX CONCURRENTLY idx_posts_user_id ON posts(user_id);\n  ```\n\n';
+
+  // Beginner: 初めてのマイグレーション3ステップガイド
+  if(isBeg89){
+    doc+='## '+(G?'🌱 初めてのマイグレーション — 3ステップガイド (Beginner)':'🌱 Your First Migration — 3-Step Guide (Beginner)')+'\n\n';
+    doc+=(G
+      ?'マイグレーションを初めて使う方向けの最短手順です。\n\n'
+      :'Minimal steps for first-time migration users.\n\n'
+    );
+    if(isBaaS){
+      doc+='```bash\n# Step 1: '+(G?'マイグレーションファイルを作成':'Create migration file')+'\nsupabase db diff --file my_first_migration\n\n# Step 2: '+(G?'ローカルDBに適用して動作確認':'Apply to local DB and verify')+'\nsupabase db reset\n\n# Step 3: '+(G?'本番に適用':'Apply to production')+'\nsupabase db push\n```\n\n';
+    } else if(isPy){
+      doc+='```bash\n# Step 1: '+(G?'マイグレーションファイルを自動生成':'Auto-generate migration file')+'\nalembic revision --autogenerate -m "add_users_table"\n\n# Step 2: '+(G?'ローカルDBに適用':'Apply to local DB')+'\nalembic upgrade head\n\n# Step 3: '+(G?'間違えたら1つ戻す':'Roll back one step if wrong')+'\nalembic downgrade -1\n```\n\n';
+    } else {
+      doc+='```bash\n# Step 1: '+(G?'マイグレーションファイルを生成':'Generate migration file')+'\nnpx prisma migrate dev --name add_users_table\n\n# Step 2: '+(G?'適用状況を確認':'Check migration status')+'\nnpx prisma migrate status\n\n# Step 3: '+(G?'ロールバックが必要な場合は開発DBをリセット':'Reset dev DB if rollback needed')+'\nnpx prisma migrate reset  # '+(G?'開発環境のみ！':'Dev only!')+'\n```\n\n';
+    }
+    doc+='> ⚠️ '+(G?'`reset`・`downgrade` は **本番環境では使わない** でください。本番はバックアップを取ってから `deploy`/`upgrade head` のみ実行します。':'Never run `reset`/`downgrade` in **production**. In production, always take a backup first, then run only `deploy`/`upgrade head`.')+'\n\n';
+  }
 
   doc+='---\n*'+(G?'DevForge v9 自動生成':'Generated by DevForge v9')+'*\n';
   S.files['docs/89_migration_strategy.md']=doc;
