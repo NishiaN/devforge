@@ -205,7 +205,7 @@ function exportConcatenatedFallback(){
 /* ═══ ROLE-BASED EXPORT ═══ */
 var EXPORT_ROLES={
   developer:{ja:'👨‍💻 開発者',en:'👨‍💻 Developer',
-    prefixes:['CLAUDE.md','.spec/','.cursorrules','.clinerules','.windsurfrules','docs/03_','docs/06_','docs/07_','docs/22_','docs/82_','docs/98-2_','docs/106-2_','docs/117_','docs/119_','docs/120_','docs/121_','docs/122_','docs/123_','docs/125_','docs/126_','docs/127_','docs/128_','docs/129_','docs/130_','docs/131_','.devcontainer/','.github/','scaffolding/'],
+    prefixes:['CLAUDE.md','.spec/','.cursorrules','.clinerules','.windsurfrules','docs/03_','docs/06_','docs/07_','docs/22_','docs/82_','docs/98-2_','docs/106-2_','docs/117_','docs/119_','docs/120_','docs/121_','docs/122_','docs/123_','docs/125_','docs/126_','docs/127_','docs/128_','docs/129_','docs/130_','docs/131_','docs/132_','.devcontainer/','.github/','scaffolding/'],
     priority:['CLAUDE.md','.spec/specification.md','.spec/technical-plan.md','.spec/tasks.md','docs/03_architecture.md','docs/06_api_design.md','docs/07_db_design.md','docs/22_security.md','docs/98-2_xai_transparency_guide.md','docs/106-2_ai_runtime_monitoring.md','docs/128_xai_intelligence_architecture.md','docs/129_fairness_bias_pipeline.md','docs/130_ai_governance_framework.md','docs/117_deployment_environment_guide.md','docs/119_auth_architecture_guide.md','docs/120_system_design_guide.md','docs/121_security_design_guide.md','docs/122_concurrency_consistency_guide.md','docs/123_frontend_architecture_guide.md','docs/125_healthcare_compliance_guide.md','docs/126_fintech_fraud_prevention.md','docs/127_manufacturing_iot_guide.md','scaffolding/SETUP.md','.cursorrules'],
   },
   pm:{ja:'📋 PM',en:'📋 PM',

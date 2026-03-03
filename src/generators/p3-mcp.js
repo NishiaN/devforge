@@ -185,6 +185,55 @@ ${G?'- 環境変数が正しく設定されているか確認してください\
 - [MCP Documentation](https://modelcontextprotocol.io/)
 - [Available MCP Servers](https://github.com/modelcontextprotocol/servers)
 `;
+  gen132(a,pn);
+}
+
+function gen132(a,pn){
+  const G=S.genLang==='ja';
+  let doc='# '+(G?'MCPインテグレーションガイド':'MCP Integration Guide')+'\n';
+  doc+='> '+pn+' | '+(G?'Model Context Protocol 完全ガイド':'Complete Guide to Model Context Protocol')+'\n\n';
+
+  doc+='## §1 '+(G?'MCPアーキテクチャ概要':'MCP Architecture Overview')+'\n\n';
+  doc+=(G?'Model Context Protocol (MCP) は AI エージェントとツール/データソースを安全に接続するオープンプロトコルです。':'Model Context Protocol (MCP) is an open protocol that safely connects AI agents with tools and data sources.')+'\n\n';
+  doc+='```\n'+(G?'AIクライアント':'AI Client')+'  ←──MCP──→  MCPサーバー  ←──→  データソース\n(Claude/Cursor)          (stdio/SSE)           (DB/API/FS)\n```\n\n';
+  doc+='### '+(G?'トランスポート方式':'Transport Types')+'\n';
+  doc+='| '+(G?'方式':'Type')+' | '+(G?'用途':'Use Case')+' | '+(G?'特徴':'Characteristics')+'|\n';
+  doc+='|---|---|---|\n';
+  doc+='| **stdio** | '+(G?'ローカルプロセス':'Local process')+' | '+(G?'低遅延・シンプル':'Low latency, simple')+' |\n';
+  doc+='| **SSE** | '+(G?'リモートサーバー':'Remote server')+' | '+(G?'HTTP経由・スケーラブル':'Over HTTP, scalable')+' |\n';
+  doc+='| **Streamable HTTP** | '+(G?'クラウドデプロイ':'Cloud deploy')+' | '+(G?'ステートレス・MCP v2':'Stateless, MCP v2')+' |\n\n';
+
+  doc+='### '+(G?'メッセージフロー':'Message Flow')+'\n```\n';
+  doc+='1. initialize    → '+(G?'ケーパビリティ交換':'Capability exchange')+'\n';
+  doc+='2. tools/list    → '+(G?'利用可能ツール一覧取得':'Get available tools')+'\n';
+  doc+='3. tools/call    → '+(G?'ツール実行':'Execute tool')+'\n';
+  doc+='4. resources/read→ '+(G?'リソース読み取り':'Read resource')+'\n```\n\n';
+
+  doc+='## §2 '+(G?'カスタムMCPサーバー開発':'Custom MCP Server Development')+'\n\n';
+  doc+='```typescript\n// '+pn+' MCP Server\nimport { Server } from "@modelcontextprotocol/sdk/server/index.js";\nimport { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";\n\nconst server = new Server(\n  { name: "'+pn.toLowerCase().replace(/\s+/g,'-')+'-mcp", version: "1.0.0" },\n  { capabilities: { tools: {}, resources: {} } }\n);\n\nserver.setRequestHandler("tools/call", async (req) => {\n  const { name, arguments: args } = req.params;\n  switch (name) {\n    case "get_project_context":\n      return { content: [{ type: "text", text: JSON.stringify(projectContext) }] };\n    default:\n      throw new Error(`Unknown tool: ${name}`);\n  }\n});\n\nconst transport = new StdioServerTransport();\nawait server.connect(transport);\n```\n\n';
+
+  doc+='## §3 '+(G?'MCPセキュリティモデル':'MCP Security Model')+'\n\n';
+  doc+='### '+(G?'ツール承認フロー':'Tool Approval Flow')+'\n';
+  doc+=(G?'- **ユーザー確認**: 破壊的操作 (DELETE/WRITE) は必ず確認ダイアログ表示\n- **スコープ制限**: ツールごとに最小権限を定義\n- **サンドボックス**: ファイルシステムアクセスはワークスペースに限定\n- **監査ログ**: 全ツール呼び出しをログ記録':'- **User confirmation**: Destructive operations (DELETE/WRITE) always show confirmation dialog\n- **Scope restriction**: Define minimum permissions per tool\n- **Sandbox**: File system access limited to workspace directory\n- **Audit log**: Log all tool invocations')+'\n\n';
+  doc+='### '+(G?'権限境界マトリクス':'Permission Boundary Matrix')+'\n';
+  doc+='| '+(G?'操作':'Operation')+' | '+(G?'リスク':'Risk')+' | '+(G?'要確認':'Confirm Required')+'|\n';
+  doc+='|---|---|---|\n';
+  doc+='| '+(G?'ファイル読み取り':'File read')+' | Low | No |\n';
+  doc+='| '+(G?'ファイル書き込み':'File write')+' | Medium | Yes |\n';
+  doc+='| DB '+(G?'読み取り':'read')+' | Low | No |\n';
+  doc+='| DB '+(G?'更新・削除':'update/delete')+' | High | Yes |\n';
+  doc+='| '+(G?'外部API呼び出し':'External API call')+' | Medium | Yes |\n\n';
+
+  doc+='## §4 '+(G?'MCPデバッグ・テスト':'MCP Debug & Testing')+'\n\n';
+  doc+='```bash\n# '+(G?'MCP Inspector でサーバーをテスト':'Test server with MCP Inspector')+'\nnpx @modelcontextprotocol/inspector\n\n# '+(G?'stdio接続テスト':'stdio connection test')+'\necho \'{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2024-11-05","capabilities":{}}}\' | node mcp-server.js\n\n# '+(G?'ログ監視 (Claude Code)':'Log monitoring (Claude Code)')+'\ntail -f ~/.config/claude/logs/mcp*.log\n```\n\n';
+  doc+='### '+(G?'よくあるトラブル':'Common Troubleshooting')+'\n';
+  doc+=(G?'| 症状 | 原因 | 解決策 |\n|---|---|---|\n| サーバー起動しない | Node.jsバージョン不一致 | Node.js 18+ 確認 |\n| tools/list が空 | ハンドラ未登録 | setRequestHandler確認 |\n| 接続タイムアウト | stdio バッファリング | process.stdout.setBlocking(true) |\n| 権限エラー | ファイルパス制限 | allowedPaths設定確認 |':'| Symptom | Cause | Solution |\n|---|---|---|\n| Server does not start | Node.js version mismatch | Verify Node.js 18+ |\n| tools/list is empty | Handler not registered | Check setRequestHandler |\n| Connection timeout | stdio buffering | process.stdout.setBlocking(true) |\n| Permission error | File path restriction | Check allowedPaths config |')+'\n\n';
+
+  doc+='## §5 MCP + CI/CD '+(G?'統合':'Integration')+'\n\n';
+  doc+='```yaml\n# .github/workflows/mcp-test.yml\nname: MCP Server Tests\non: [push, pull_request]\njobs:\n  mcp-test:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - uses: actions/setup-node@v4\n        with: { node-version: "20" }\n      - run: npm ci\n      - name: '+(G?'MCPサーバー起動テスト':'Test MCP server startup')+'\n        run: timeout 5 node mcp-server.js <<< \'{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2024-11-05","capabilities":{}}}\' || true\n      - name: '+(G?'ツール一覧テスト':'Test tools list')+'\n        run: node test/mcp-integration.test.js\n```\n\n';
+  doc+='### '+(G?'MCPサーバー統合テスト例':'MCP Server Integration Test Example')+'\n```typescript\nimport { Client } from "@modelcontextprotocol/sdk/client/index.js";\nimport { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";\n\nconst transport = new StdioClientTransport({\n  command: "node", args: ["mcp-server.js"]\n});\nconst client = new Client({ name: "test-client", version: "1.0.0" }, { capabilities: {} });\nawait client.connect(transport);\nconst tools = await client.listTools();\nconsole.assert(tools.tools.length > 0, "Should have at least one tool");\nawait client.close();\n```\n\n';
+  doc+='---\n'+(G?'*DevForge v9 生成 | MCPインテグレーションガイド*':'*Generated by DevForge v9 | MCP Integration Guide*');
+  S.files['docs/132_mcp_integration_guide.md']=doc;
 }
 
 // Helper: Domain-specific focus points

@@ -338,6 +338,17 @@ describe('Build System', () => {
     assert.strictEqual(dupes.length, 0, `No duplicate @keyframes: ${dupes.map(([n,c]) => n+'='+c).join(', ')}`);
   });
 
+  it('entity-ext.js ENTITY_COLUMNS definitions survive minification', () => {
+    const html = fs.readFileSync(OUTPUT, 'utf-8');
+    // entity-ext.js defines ENTITY_COLUMNS entries for 80+ entities.
+    // The legacyMinJS regex previously stripped them via multi-line header match.
+    // Verify representative entries from entity-ext.js survive into the build.
+    const markers = ['ClaimLog', 'ThreeDModelVersion', 'LandParcel', 'InsurancePolicy'];
+    for (const marker of markers) {
+      assert.ok(html.includes(marker), `entity-ext.js entity "${marker}" should survive build minification`);
+    }
+  });
+
   it('no legacy dfv8_ keys in production code', () => {
     const html = fs.readFileSync(OUTPUT, 'utf-8');
     const js = html.match(/<script>([\s\S]*?)<\/script>/)[1];

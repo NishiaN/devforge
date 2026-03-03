@@ -142,6 +142,9 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:1
 .sb-pillar-icon.processing{border-color:var(--accent);animation:pillarPulse 1s infinite;opacity:1;}
 .sb-pillar-icon.completed{border-color:var(--success);opacity:1;}
 .sb-pillar-icon.completed:hover{background:color-mix(in srgb,var(--success) 10%,transparent);}
+.sb-pillar-showall{grid-column:1/-1;background:none;border:1px dashed var(--border);border-radius:6px;padding:2px 4px;cursor:pointer;font-size:11px;color:var(--text-3);text-align:center;transition:all .2s;width:100%;}
+.sb-pillar-showall:hover{background:var(--bg-3);border-color:var(--accent);color:var(--text);}
+.sb-pillar-showless{border-style:solid;color:var(--text-2);}
 .sb-iconbar{width:40px;flex-shrink:0;background:var(--bg-2);display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 0;}
 .sb-icon-btn{background:none;border:none;border-radius:6px;padding:6px;cursor:pointer;font-size:14px;color:var(--text-3);transition:all 0.15s;width:32px;height:32px;display:flex;align-items:center;justify-content:center;}
 .sb-icon-btn:hover{background:var(--bg-3);color:var(--text);}

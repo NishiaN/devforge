@@ -692,10 +692,10 @@ describe('Q7: domain-specific KPI fallback in constitution §3', () => {
    ════════════════════════════════════════════════════════════════ */
 describe('Q8: Full E2E generation — file count, tokens, 25 vs 11 delta', () => {
 
-  it('A25 full generation: file count in 116-218 range', () => {
+  it('A25 full generation: file count in 117-219 range', () => {
     const f = gFull(A25);
     const count = Object.keys(f).length;
-    assert.ok(count >= 116 && count <= 218, `A25 full gen file count should be 116-218, got ${count}`);
+    assert.ok(count >= 117 && count <= 219, `A25 full gen file count should be 117-219, got ${count}`);
   });
 
   it('A25 full generation: total tokens ≥ 14000 (rich content across 24 pillars)', () => {

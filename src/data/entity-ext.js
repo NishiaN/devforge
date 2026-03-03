@@ -1,9 +1,8 @@
-/* ═══ ENTITY_COLUMNS EXTENSION ═══
- * Top-80 missing entity column definitions (frequency-ranked).
- * + ext12 entities (presets-ext12.js business SaaS categories).
- * Extends the ENTITY_COLUMNS object defined in generators/common.js.
- * Load order: after generators/common.js, before generator pillar files.
- */
+/* ═══ ENTITY_COLUMNS EXTENSION ═══ */
+// Top-80 missing entity column definitions (frequency-ranked).
+// + ext12 entities (presets-ext12.js business SaaS categories).
+// Extends the ENTITY_COLUMNS object defined in generators/common.js.
+// Load order: after generators/common.js, before generator pillar files.
 
 // ── ext12: presets-ext12.js new entity columns ────────────────────────────────
 

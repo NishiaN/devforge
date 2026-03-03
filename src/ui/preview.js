@@ -389,6 +389,8 @@ function buildFileTree(){
     ['project-context.md','tools-manifest.json','README.md'].forEach(f=>
       files.push({name:'  '+f,path:'.mcp/'+f}));
     files.push({name:'mcp-config.json',path:'mcp-config.json'});
+    files.push({folder:true,name:'docs'});
+    files.push({name:'  132_mcp_integration_guide.md',path:'docs/132_mcp_integration_guide.md'});
   } else if(pillar===3){ // AI Rules
     ['.cursor/rules','.github/copilot-instructions.md','.windsurfrules','.clinerules',
      '.kiro/spec.md','CLAUDE.md','.claude/rules/spec.md','.claude/rules/frontend.md',

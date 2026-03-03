@@ -90,9 +90,9 @@ describe('Snapshot A: LMS/Supabase/Stripe', () => {
     ai_auto: 'マルチAgent協調'
   }, 'LMS');
 
-  test('file count in range 144-211 (P21-P28 each +4-5 docs; +7 agents/docs113-114; +11 agentskills.io; +2 docs/116+118; +2 docs/122+123; +1 docs/117; +1 docs/124; +2 docs/98-2+106-2 AI; +5 P28 XAI)', () => {
+  test('file count in range 145-212 (P21-P28 each +4-5 docs; +7 agents/docs113-114; +11 agentskills.io; +2 docs/116+118; +2 docs/122+123; +1 docs/117; +1 docs/124; +2 docs/98-2+106-2 AI; +5 P28 XAI; +1 docs/132 MCP)', () => {
     const count = Object.keys(files).length;
-    assert.ok(count >= 144 && count <= 211, `Expected 144-211 files (P21-P28 +4-5 docs each, +7 agents/docs113-114, +11 agentskills.io, +2 estimation/ops, +2 docs/122+123, +1 docs/117, +1 docs/124, +2 XAI/AI-monitor, +5 P28), got ${count}`);
+    assert.ok(count >= 145 && count <= 212, `Expected 145-212 files (P21-P28 +4-5 docs each, +7 agents/docs113-114, +11 agentskills.io, +2 estimation/ops, +2 docs/122+123, +1 docs/117, +1 docs/124, +2 XAI/AI-monitor, +5 P28, +1 docs/132), got ${count}`);
   });
 
   test('total tokens in range 12000-120000 (P21-P26 each add ~4-6K tokens, +agentskills.io skills, +docs/119+120)', () => {
@@ -767,9 +767,9 @@ describe('Snapshot B: Blog/Vite/Netlify', () => {
     dev_methods: 'TDD', ai_tools: 'Cursor', orm: ''
   }, 'Blog');
 
-  test('file count in range 134-200 (P21-P28 each add +4 docs; +2 docs/107-108; +7 agents/docs113-114; +13 agentskills.io; +2 docs/116+118; +2 docs/122+123; +1 docs/117; +1 docs/124; +4 P28 XAI)', () => {
+  test('file count in range 135-201 (P21-P28 each add +4 docs; +2 docs/107-108; +7 agents/docs113-114; +13 agentskills.io; +2 docs/116+118; +2 docs/122+123; +1 docs/117; +1 docs/124; +4 P28 XAI; +1 docs/132 MCP)', () => {
     const count = Object.keys(files).length;
-    assert.ok(count >= 134 && count <= 200, `Expected 134-200 files (P21-P28 each +4 docs, +2 governance/UAT, +7 agents/docs113-114, +13 agentskills.io, +2 estimation/ops, +2 docs/122+123, +1 docs/117, +1 docs/124, +4 P28), got ${count}`);
+    assert.ok(count >= 135 && count <= 201, `Expected 135-201 files (P21-P28 each +4 docs, +2 governance/UAT, +7 agents/docs113-114, +13 agentskills.io, +2 estimation/ops, +2 docs/122+123, +1 docs/117, +1 docs/124, +4 P28, +1 docs/132), got ${count}`);
   });
 
   test('no AI docs when no ai_auto (docs/98-2 and docs/106-2 absent)', () => {

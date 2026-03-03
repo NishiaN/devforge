@@ -167,7 +167,7 @@ function legacyMinJS(s) {
   // Regex-based removal doesn't understand string context and breaks syntax
   // Safe whitespace optimization: remove indentation + trailing whitespace + collapse blank lines
   return s
-    .replace(/\/\*[ \t]*[═=]{3}[\s\S]*?[═=]{3}[ \t]*\*\/\n?/g, '') // Remove module headers (ASCII === and Unicode ═══)
+    .replace(/\/\*[ \t]*[═=]{3}[^\n]*[═=]{3}[ \t]*\*\/\n?/g, '') // Remove module headers (ASCII === and Unicode ═══) — single-line only
     .replace(/\r/g, '')                     // Normalize line endings
     .replace(/^[ \t]+/gm, '')               // Remove line-leading whitespace (indentation)
     .replace(/[ \t]+$/gm, '')               // Remove trailing whitespace on each line

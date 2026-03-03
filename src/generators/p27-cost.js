@@ -54,6 +54,78 @@ var DOMAIN_COST_FACTORS={
   education:{
     ja:['動画配信CDN (コース動画で帯域大)','ユーザー急増期(入学シーズン)のスケーリングコスト','LMS認定・セキュリティ監査 ($200-1000/年)','無料枠ユーザーのコスト配分戦略が重要'],
     en:['Video CDN (course videos drive bandwidth)','Seasonal scaling cost (enrollment periods)','LMS certification & security audit ($200-1000/yr)','Free-tier user cost allocation strategy critical']},
+  marketplace:{
+    ja:['Stripe Connect手数料 (プラットフォーム2-3% + Stripe 2.9%)','不正検知・紛争解決APIコスト','エスクロー保留期間中の資金ホールドコスト','セラー検証 (KYC) サービス料'],
+    en:['Stripe Connect fees (platform 2-3% + Stripe 2.9%)','Fraud detection & dispute resolution API cost','Escrow hold cost during pending period','Seller verification (KYC) service fees']},
+  community:{
+    ja:['コンテンツモデレーションAPI (AWS Rekognition $0.001/画像)','通知配信 (FCM/APNs + SendGrid)','スパム対策サービス','大量ユーザーの読み取り負荷によるDB費用増'],
+    en:['Content moderation API (AWS Rekognition $0.001/image)','Notification delivery (FCM/APNs + SendGrid)','Spam prevention services','High read-load DB cost from large user base']},
+  booking:{
+    ja:['カレンダー同期API (Google/Outlook)','SMS通知コスト (Twilio $0.0079/SMS)','リマインダーメール配信費用','決済キャンセル・返金手数料'],
+    en:['Calendar sync API (Google/Outlook)','SMS notification cost (Twilio $0.0079/SMS)','Reminder email delivery cost','Payment cancellation & refund fees']},
+  saas:{
+    ja:['マルチテナント分離コスト (スキーマ×テナント数)','Stripe Billing手数料 ($0-0.5%/MRR)','オンボーディングメール配信費','テナント別使用量モニタリングコスト'],
+    en:['Multi-tenant isolation cost (schema per tenant)','Stripe Billing fees ($0-0.5%/MRR)','Onboarding email delivery cost','Per-tenant usage monitoring cost']},
+  realestate:{
+    ja:['物件写真ストレージ (S3 $0.023/GB)','地図API (Google Maps $7/1000リクエスト)','電子契約サービス (DocuSign $10-25/封筒)','SMS・メール通知費用'],
+    en:['Property photo storage (S3 $0.023/GB)','Maps API (Google Maps $7/1K req)','E-signature service (DocuSign $10-25/envelope)','SMS & email notification costs']},
+  legal:{
+    ja:['電子署名 (DocuSign $25/封筒 or Adobe Sign)','ドキュメントバージョン管理ストレージ','コンプライアンス監査ログ保存','機密文書暗号化ストレージコスト'],
+    en:['E-signature (DocuSign $25/envelope or Adobe Sign)','Document version management storage','Compliance audit log retention','Confidential document encrypted storage']},
+  hr:{
+    ja:['求人広告費 (Indeed/LinkedIn連携)','バックグラウンドチェックAPI','面接ビデオ録画ストレージ','給与計算連携API費用'],
+    en:['Job posting fees (Indeed/LinkedIn integration)','Background check API','Interview video recording storage','Payroll integration API costs']},
+  content:{
+    ja:['全文検索 Algolia ($0.50/1000検索)','メディアストレージ (S3 + CloudFront)','CDN帯域 (コンテンツ配信)','バージョン履歴ストレージコスト'],
+    en:['Full-text search: Algolia ($0.50/1K searches)','Media storage (S3 + CloudFront)','CDN bandwidth (content delivery)','Version history storage cost']},
+  portfolio:{
+    ja:['ドメイン・SSL証明書 (年$10-15)','静的ホスティング (Vercel/Netlify無料枠で十分)','お問い合わせ送信 (Resend無料枠200/日)','画像最適化CDN'],
+    en:['Domain & SSL certificate ($10-15/yr)','Static hosting (Vercel/Netlify free tier sufficient)','Contact form submission (Resend free 200/day)','Image optimization CDN']},
+  tool:{
+    ja:['API使用量メータリング (Stripe Metered)','レート制限インフラ (Redis)','Webhook配信・リトライコスト','SDK生成・配布インフラ'],
+    en:['API usage metering (Stripe Metered Billing)','Rate limiting infrastructure (Redis)','Webhook delivery & retry cost','SDK generation & distribution infrastructure']},
+  event:{
+    ja:['チケット決済手数料 (Stripe 2.9%+)','QRコード生成ストレージ','ライブストリーミングインフラ','メール招待・リマインダー配信費'],
+    en:['Ticket payment fees (Stripe 2.9%+)','QR code generation & storage','Live streaming infrastructure','Email invitation & reminder delivery']},
+  creator:{
+    ja:['サブスク決済 Stripe Connect手数料','動画・音声コンテンツストレージ','DRM配信ライセンス費用','ペイアウト処理手数料'],
+    en:['Subscription payment Stripe Connect fees','Video & audio content storage','DRM delivery license costs','Payout processing fees']},
+  newsletter:{
+    ja:['メール配信API (SendGrid $19.95〜 or Resend)','配信レピュテーション管理ツール','開封率追跡ピクセルコスト','大量配信時のサーバーコスト増'],
+    en:['Email delivery API (SendGrid $19.95+ or Resend)','Delivery reputation management tools','Open tracking pixel cost','Server cost increase for bulk sending']},
+  gamify:{
+    ja:['Redis Sorted Set (リアルタイムランキング) $30〜/月','バッジ画像ストレージ・CDN','ポイント集計のDB書き込み負荷','プッシュ通知配信コスト'],
+    en:['Redis Sorted Set (leaderboard) $30+/mo','Badge image storage & CDN','Point aggregation DB write load','Push notification delivery cost']},
+  collab:{
+    ja:['リアルタイム同期 (Ably/Liveblocks $0.002/接続時間)','WebSocketサーバー常時稼働コスト','OT/CRDT処理サーバーコスト','ドキュメントバージョン履歴ストレージ'],
+    en:['Real-time sync (Ably/Liveblocks $0.002/conn-min)','WebSocket server always-on cost','OT/CRDT processing server cost','Document version history storage']},
+  devtool:{
+    ja:['使用量メータリング (Stripe Metered Billing)','APIゲートウェイコスト','開発者向けドキュメントホスティング','Webhook配信インフラ'],
+    en:['API usage metering (Stripe Metered Billing)','API gateway cost (Kong / AWS API GW)','Developer documentation hosting','Webhook delivery infrastructure']},
+  travel:{
+    ja:['GDS API接続費用 (Amadeus/Sabre)','複数通貨為替レートAPI ($12〜/月)','地図・ルート表示API費用','ホテル・フライト在庫キャッシュDB'],
+    en:['GDS API connection (Amadeus / Sabre fees)','Multi-currency exchange rate API ($12+/mo)','Maps & routing API costs','Hotel & flight inventory cache DB']},
+  insurance:{
+    ja:['保険料計算エンジン (アクチュアリーDB)','クレーム処理ワークフロー','コンプライアンス監査ログ (7年保存)','電子契約・証券発行コスト'],
+    en:['Premium calculation engine (actuarial DB)','Claims processing workflow infrastructure','Compliance audit log (7-year retention)','Electronic policy issuance cost']},
+  government:{
+    ja:['セキュリティ審査・ISMAP認定費用 (年$5000〜)','電子申請フォームアクセシビリティ対応','住民データ暗号化ストレージ (国内リージョン)','オンプレミス要件によるインフラコスト増'],
+    en:['Security certification & ISMAP audit ($5000+/yr)','Electronic form accessibility compliance cost','Citizen data encrypted storage (domestic region)','On-premise requirements increasing infra cost']},
+  manufacturing:{
+    ja:['MES/ERP連携ミドルウェア (SAP等)','IoTデバイスデータ収集 (AWS IoT Core)','品質管理データストレージ (長期保存)','OTAファームウェア配信コスト'],
+    en:['MES/ERP integration middleware (SAP etc.)','IoT device data collection (AWS IoT Core)','Quality data long-term storage','OTA firmware distribution cost']},
+  logistics:{
+    ja:['GPS追跡API (Google Maps $5/1000更新)','ルート最適化エンジン','配送ドライバー通知 (SMS/プッシュ)','倉庫管理システム連携コスト'],
+    en:['GPS tracking API (Google Maps $5/1K updates)','Route optimization engine cost','Driver notifications (SMS/push)','WMS integration cost']},
+  agriculture:{
+    ja:['農業センサー通信 (LPWA/LoRa $1-5/デバイス/月)','衛星リモートセンシングAPI (年$1000〜)','収穫予測MLモデル推論コスト','農薬記録データ長期保存'],
+    en:['Agricultural sensor comm (LPWA/LoRa $1-5/device/mo)','Satellite remote sensing API ($1000+/yr)','Harvest forecasting ML inference cost','Pesticide record long-term storage']},
+  energy:{
+    ja:['スマートメーターデータ収集 (電力会社API)','リアルタイム電力データDB (時系列特化)','需要予測MLモデル推論コスト','規制報告書生成・提出システム'],
+    en:['Smart meter data collection (utility API)','Real-time power data DB (time-series)','Demand forecasting ML inference cost','Regulatory report generation & submission']},
+  automation:{
+    ja:['ジョブキューインフラ (BullMQ+Redis $30〜)','ワークフローオーケストレーター (Temporal Cloud $0.01/アクション)','外部API呼び出し失敗リトライコスト','実行ログ・監査証跡ストレージ'],
+    en:['Job queue infrastructure (BullMQ+Redis $30+)','Workflow orchestrator (Temporal Cloud $0.01/action)','External API call failure retry cost','Execution log & audit trail storage']},
 };
 function _costDomain(domain,G){
   var d=DOMAIN_COST_FACTORS[domain];
