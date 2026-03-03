@@ -3815,6 +3815,21 @@ function genArchIntegrityCheck(files,a,compatResults,auditFindings){
     }
   }
 
+  // C-L: Performance monitoring for production apps (P25)
+  const isProduction=/production|本番|Vercel|Netlify|AWS|GCP|Azure|Railway|Fly\.io/i.test(a.deploy||'');
+  if(isProduction){
+    const hasAPM=Object.values(files).some(function(v){
+      return (v||'').includes('Sentry')||(v||'').includes('OpenTelemetry')||(v||'').includes('Datadog')||(v||'').includes('監視');
+    });
+    if(!hasAPM){
+      yellowCount++;
+      rows.push({loc:'docs/102_performance_monitoring.md',src:G?'アーキテクチャチェック':'Architecture check',
+        issue:G?'本番デプロイ構成ですが、APM/可観測性設定(Sentry/OpenTelemetry等)が確認できません':
+               'Production deployment configured but no APM/observability setup (Sentry/OpenTelemetry) found',
+        sev:'🟡 INFO',fix:G?'docs/102のAPM設定例を参照してください':'See docs/102 for APM configuration examples'});
+    }
+  }
+
   // C-M: XAI準備度チェック (AI有効 + 高リスクドメイン)
   if(hasAIFeature){
     var _ai82dom=typeof detectDomain==='function'?detectDomain(a.purpose||''):'';
@@ -3861,21 +3876,6 @@ function genArchIntegrityCheck(files,a,compatResults,auditFindings){
                  'Multi-agent/orchestrator configuration detected but no agent permission boundary, zero-trust principles, or audit trail design found',
           sev:'🟡 INFO',fix:G?'docs/43のゼロトラストAIエージェントゲートウェイを参照してください':'See Zero Trust AI Agent Gateway in docs/43'});
       }
-    }
-  }
-
-  // C-L: Performance monitoring for production apps (P25)
-  const isProduction=/production|本番|Vercel|Netlify|AWS|GCP|Azure|Railway|Fly\.io/i.test(a.deploy||'');
-  if(isProduction){
-    const hasAPM=Object.values(files).some(function(v){
-      return (v||'').includes('Sentry')||(v||'').includes('OpenTelemetry')||(v||'').includes('Datadog')||(v||'').includes('監視');
-    });
-    if(!hasAPM){
-      yellowCount++;
-      rows.push({loc:'docs/102_performance_monitoring.md',src:G?'アーキテクチャチェック':'Architecture check',
-        issue:G?'本番デプロイ構成ですが、APM/可観測性設定(Sentry/OpenTelemetry等)が確認できません':
-               'Production deployment configured but no APM/observability setup (Sentry/OpenTelemetry) found',
-        sev:'🟡 INFO',fix:G?'docs/102のAPM設定例を参照してください':'See docs/102 for APM configuration examples'});
     }
   }
 
