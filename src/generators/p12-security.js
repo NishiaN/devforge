@@ -760,6 +760,24 @@ function genPillar12_SecurityIntelligence(a,pn){
     doc43+=(G?'- [ ] org_idでのINDEX設定 (`(org_id, id)`) が完了しているか\n':'- [ ] Index on `(org_id, id)` created for performance\n');
   }
 
+  // ── 7 Defense Layers (全プロジェクト共通) ──
+  doc43+='\n---\n\n';
+  doc43+='## '+(G?'🛡️ 7層防御アーキテクチャ':'🛡️ 7 Defense Layers Architecture')+'\n\n';
+  doc43+=(G
+    ?'> すべてのWebアプリケーションが実装すべき7層の多層防御を示します。\n\n'
+    :'> Seven layers of defense-in-depth every web application should implement.\n\n');
+  doc43+='| '+(G?'層':'Layer')+' | '+(G?'ツール/技術':'Tool/Technology')+' | '+(G?'目的':'Purpose')+' | '+(G?'優先度':'Priority')+'|\n';
+  doc43+='|---|---|---|---|\n';
+  doc43+='| WAF | Cloudflare WAF / AWS WAF | '+(G?'SQLi・XSS・DDoS遮断':'Block SQLi, XSS, DDoS')+' | CRITICAL |\n';
+  doc43+='| '+(G?'レートリミット':'Rate Limiting')+' | express-rate-limit / Upstash | '+(G?'ブルートフォース防止':'Brute force prevention')+' | HIGH |\n';
+  doc43+='| CORS | cors middleware | '+(G?'オリジン制限':'Origin restriction')+' | HIGH |\n';
+  doc43+='| '+(G?'インジェクション防止':'Injection Prevention')+' | ORM / Parameterized queries | '+(G?'SQLi・NoSQLi防止':'SQLi/NoSQLi prevention')+' | CRITICAL |\n';
+  doc43+='| CSRF | csurf / SameSite Cookie | '+(G?'クロスサイトリクエスト偽造防止':'CSRF protection')+' | HIGH |\n';
+  doc43+='| XSS | CSP / DOMPurify / esc() | '+(G?'スクリプトインジェクション防止':'Script injection prevention')+' | HIGH |\n';
+  doc43+='| mTLS / VPN | Cloudflare Zero Trust | '+(G?'内部サービス間通信保護':'Internal service communication')+' | MEDIUM |\n\n';
+  doc43+='### '+(G?'3段階レートリミットパターン':'3-Tier Rate Limit Pattern')+'\n\n';
+  doc43+='```'+(G?'typescript\n// Express: 3段階レートリミット\nimport rateLimit from \'express-rate-limit\';\n\n// 第1層: グローバル (全エンドポイント)\nconst globalLimit = rateLimit({ windowMs: 15*60*1000, max: 500 });\n\n// 第2層: API (認証不要)\nconst apiLimit = rateLimit({ windowMs: 15*60*1000, max: 100 });\n\n// 第3層: 認証 (ブルートフォース対策)\nconst authLimit = rateLimit({ windowMs: 15*60*1000, max: 10,\n  message: { error: \'Too many attempts\' } });\n\napp.use(globalLimit);\napp.use(\'/api/\', apiLimit);\napp.use(\'/api/auth/\', authLimit);':'typescript\n// Express: 3-tier rate limiting\nimport rateLimit from \'express-rate-limit\';\n\n// Tier 1: Global (all endpoints)\nconst globalLimit = rateLimit({ windowMs: 15*60*1000, max: 500 });\n\n// Tier 2: API (public)\nconst apiLimit = rateLimit({ windowMs: 15*60*1000, max: 100 });\n\n// Tier 3: Auth (brute force protection)\nconst authLimit = rateLimit({ windowMs: 15*60*1000, max: 10,\n  message: { error: \'Too many attempts\' } });\n\napp.use(globalLimit);\napp.use(\'/api/\', apiLimit);\napp.use(\'/api/auth/\', authLimit);')+'```\n\n';
+
   // ── Zero Trust AI Agent Gateway (AI有効時のみ) ──
   if(hasAI){
     doc43+='\n---\n\n';

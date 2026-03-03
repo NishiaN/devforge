@@ -1,4 +1,4 @@
-// Compat rules functional test (278 rules: 33 ERROR + 136 WARN + 109 INFO)
+// Compat rules functional test (292 rules: 33 ERROR + 137 WARN + 122 INFO)
 const assert=require('node:assert/strict');
 const S={lang:'ja',skill:'pro'};
 eval(require('fs').readFileSync('src/data/compat-rules.js','utf-8'));
@@ -762,6 +762,31 @@ const tests=[
   {name:'drift: medium+AI+hasDrift=none',a:{ai_auto:'RAG検索',scale:'medium',future_features:'drift detection Evidently AI再学習'},expect:'none',id:'ai-no-drift-monitoring'},
   {name:'drift: solo+AI+noDrift=none (solo)',a:{ai_auto:'RAG検索',scale:'solo'},expect:'none',id:'ai-no-drift-monitoring'},
   {name:'drift: medium+noAI=none',a:{ai_auto:'なし',scale:'medium'},expect:'none',id:'ai-no-drift-monitoring'},
+  // ── v9.9 Phase D: 6 new rules (+18 tests) ──
+  // mob-flutter-firebase-auth-mismatch (WARN)
+  {name:'Flutter+FirebaseAuth+Express=WARN',a:{mobile:'Flutter',auth:'Firebase Auth',backend:'Node.js + Express'},expect:'warn',id:'mob-flutter-firebase-auth-mismatch'},
+  {name:'Flutter+FirebaseAuth+customJWT=noWARN',a:{mobile:'Flutter',auth:'Firebase Auth',backend:'Node.js + Express',mvp_features:'custom auth jwt検証'},expect:'none',id:'mob-flutter-firebase-auth-mismatch'},
+  {name:'Flutter+FirebaseAuth+Firebase=noWARN',a:{mobile:'Flutter',auth:'Firebase Auth',backend:'Firebase'},expect:'none',id:'mob-flutter-firebase-auth-mismatch'},
+  // fe-spa-baas-realtime-scale (INFO)
+  {name:'ReactVite+Supabase+large=INFO',a:{frontend:'React (Vite SPA)',backend:'Supabase',scale:'large'},expect:'info',id:'fe-spa-baas-realtime-scale'},
+  {name:'ReactVite+Supabase+large+pool=noINFO',a:{frontend:'React (Vite SPA)',backend:'Supabase',scale:'large',future_features:'WebSocket接続プール管理'},expect:'none',id:'fe-spa-baas-realtime-scale'},
+  {name:'ReactVite+Supabase+medium=noINFO',a:{frontend:'React (Vite SPA)',backend:'Supabase',scale:'medium'},expect:'none',id:'fe-spa-baas-realtime-scale'},
+  // ai-large-no-rate-limit (INFO)
+  {name:'AIOrchestrator+large+noRL=INFO',a:{ai_auto:'AIオーケストレーター',scale:'large'},expect:'info',id:'ai-large-no-rate-limit'},
+  {name:'AIOrchestrator+large+hasRL=noINFO',a:{ai_auto:'AIオーケストレーター',scale:'large',future_features:'LLMエンドポイントレートリミット'},expect:'none',id:'ai-large-no-rate-limit'},
+  {name:'AIOrchestrator+medium+noRL=noINFO',a:{ai_auto:'AIオーケストレーター',scale:'medium'},expect:'none',id:'ai-large-no-rate-limit'},
+  // ai-agent-no-fallback (INFO)
+  {name:'AIOrchestrator+Express+noFallback=INFO',a:{ai_auto:'AIオーケストレーター',backend:'Node.js + Express'},expect:'info',id:'ai-agent-no-fallback'},
+  {name:'AIOrchestrator+Express+hasFallback=noINFO',a:{ai_auto:'AIオーケストレーター',backend:'Node.js + Express',future_features:'フォールバック・リトライ戦略'},expect:'none',id:'ai-agent-no-fallback'},
+  {name:'RAG+Express+noFallback=noINFO',a:{ai_auto:'RAG検索拡張生成',backend:'Node.js + Express'},expect:'none',id:'ai-agent-no-fallback'},
+  // fe-large-no-ssr (INFO)
+  {name:'ReactVite+large+noSSR=INFO',a:{frontend:'React (Vite SPA)',scale:'large'},expect:'info',id:'fe-large-no-ssr'},
+  {name:'ReactNext+large=noSSRINFO',a:{frontend:'React + Next.js',scale:'large'},expect:'none',id:'fe-large-no-ssr'},
+  {name:'ReactVite+medium+noSSR=noINFO',a:{frontend:'React (Vite SPA)',scale:'medium'},expect:'none',id:'fe-large-no-ssr'},
+  // mob-payment-no-ssl-pin (INFO)
+  {name:'Flutter+Stripe+noPin=INFO',a:{mobile:'Flutter',payment:'Stripe決済'},expect:'info',id:'mob-payment-no-ssl-pin'},
+  {name:'Flutter+Stripe+hasPin=noINFO',a:{mobile:'Flutter',payment:'Stripe決済',future_features:'SSL Certificate Pinning モバイル決済保護'},expect:'none',id:'mob-payment-no-ssl-pin'},
+  {name:'Flutter+noPay+noPin=noINFO',a:{mobile:'Flutter',payment:'なし'},expect:'none',id:'mob-payment-no-ssl-pin'},
 ];
 
 let pass=0,fail=0;

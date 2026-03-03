@@ -1,4 +1,4 @@
-/* ═══ STACK COMPATIBILITY & SEMANTIC CONSISTENCY RULES — 286 rules (ERROR×33 + WARN×136 + INFO×117) ═══ */
+/* ═══ STACK COMPATIBILITY & SEMANTIC CONSISTENCY RULES — 292 rules (ERROR×33 + WARN×137 + INFO×122) ═══ */
 const COMPAT_RULES=[
   // ── FE ↔ Mobile (2 ERROR) ──
   {id:'fe-mob-expo',p:['frontend','mobile'],lv:'error',
@@ -2433,6 +2433,83 @@ const COMPAT_RULES=[
    fix:{f:'future_features',s:'ドリフト検出・自動再学習 (Evidently AI)'},
    why_ja:'AIモデルは時間経過とともに性能が劣化します（コンセプトドリフト）。PSI>0.2などの閾値監視と自動再学習パイプラインにより、モデル品質を持続的に維持できます。',
    why_en:'AI model performance degrades over time (concept drift). Threshold monitoring like PSI>0.2 with automated retraining pipelines enables sustained model quality maintenance.'},
+  // ── v9.9 Phase D: Mobile / Frontend / AI boundary rules (+6) ──
+  {id:'mob-flutter-firebase-auth-mismatch',p:['mobile','auth','backend'],lv:'warn',
+   t:function(a){
+    if(!inc(a.mobile,'Flutter'))return false;
+    if(!inc(a.auth,'Firebase Auth'))return false;
+    if(inc(a.backend,'Firebase')||inc(a.backend,'Supabase'))return false;
+    var feats=(a.mvp_features||'')+(a.future_features||'');
+    if(/custom auth|jwt/i.test(feats))return false;
+    return true;},
+   ja:'Flutter + Firebase AuthをBaaS以外のバックエンドで使用しています。カスタムトークン検証が必要です',
+   en:'Flutter + Firebase Auth used with non-BaaS backend. Custom token verification required',
+   fix:{f:'auth',s:'Better Auth (JWT)'},
+   why_ja:'Firebase AuthのIDトークンはバックエンドでfirebase-admin SDKによる検証が必要です。BaaS以外ではこの検証実装が漏れやすく、認証バイパス脆弱性につながります。',
+   why_en:'Firebase Auth ID tokens require backend verification via firebase-admin SDK. Without BaaS, this verification is often missed, leading to auth bypass vulnerabilities.'},
+  {id:'fe-spa-baas-realtime-scale',p:['frontend','backend','scale'],lv:'info',
+   t:function(a){
+    if(!/vite|vue.*vite|svelte.*kit/i.test(a.frontend||''))return false;
+    if(!/supabase|firebase/i.test(a.backend||''))return false;
+    if((a.scale||'medium')!=='large')return false;
+    var feats=(a.mvp_features||'')+(a.future_features||'');
+    if(/connection pool|fan.out|接続プール|ファンアウト/i.test(feats))return false;
+    return true;},
+   ja:'大規模SPA + BaaS構成ではリアルタイム接続のファンアウト問題が発生する可能性があります',
+   en:'Large-scale SPA + BaaS: realtime fan-out issues possible at scale',
+   fix:{f:'future_features',s:'WebSocket接続プール管理'},
+   why_ja:'Supabase/FirebaseのリアルタイムリスナーはクライアントごとにWebSocket接続を確立します。大規模では接続数爆発 (10k+)が発生し、レート制限やコスト増大の原因になります。',
+   why_en:'Supabase/Firebase realtime listeners open one WebSocket per client. At scale, connection explosion (10k+) causes rate-limiting and cost spikes.'},
+  {id:'ai-large-no-rate-limit',p:['ai_auto','scale'],lv:'info',
+   t:function(a){
+    var aiAuto=a.ai_auto||'';
+    if(!aiAuto||/なし|none/i.test(aiAuto))return false;
+    if((a.scale||'medium')!=='large')return false;
+    var feats=(a.mvp_features||'')+(a.future_features||'');
+    if(/rate.?limit|throttl|レートリミット|スロットル/i.test(feats))return false;
+    return true;},
+   ja:'大規模AI機能にレートリミットが設定されていません。LLMエンドポイントのコスト爆発を防ぐため設定を推奨します',
+   en:'Large-scale AI without rate limiting. Recommend configuring LLM endpoint rate limits to prevent cost explosion',
+   fix:{f:'future_features',s:'LLMエンドポイントレートリミット'},
+   why_ja:'LLMエンドポイントへの無制限リクエストは月数万ドルのコスト爆発を招きます。ユーザーごとのリクエスト数制限とトークンバジェット管理で予防できます。',
+   why_en:'Unrestricted LLM endpoint requests can cause cost explosion running thousands of dollars/month. Per-user request limits and token budget management prevent this.'},
+  {id:'ai-agent-no-fallback',p:['ai_auto','backend'],lv:'info',
+   t:function(a){
+    var aiAuto=a.ai_auto||'';
+    if(!aiAuto||/なし|none/i.test(aiAuto))return false;
+    if(!/agent|orchestrat|オーケストレ|マルチ/i.test(aiAuto))return false;
+    var feats=(a.mvp_features||'')+(a.future_features||'');
+    if(/fallback|retry|circuit.?breaker|フォールバック|リトライ/i.test(feats))return false;
+    return true;},
+   ja:'AIエージェント/オーケストレーターにフォールバック・リトライ戦略が設定されていません',
+   en:'AI agent/orchestrator without fallback or retry strategy configured',
+   fix:{f:'future_features',s:'AIエージェントフォールバック・リトライ戦略'},
+   why_ja:'LLM APIは断続的な障害(タイムアウト/レート制限/モデル過負荷)が発生します。エクスポネンシャルバックオフとサーキットブレーカーで信頼性を確保してください。',
+   why_en:'LLM APIs have intermittent failures (timeouts, rate limits, model overload). Exponential backoff and circuit breakers ensure reliability.'},
+  {id:'fe-large-no-ssr',p:['frontend','scale'],lv:'info',
+   t:function(a){
+    if((a.scale||'medium')!=='large')return false;
+    if(!/react.*vite|vite.*react|vue.*vite|vite.*vue/i.test(a.frontend||''))return false;
+    if(/next|nuxt|astro/i.test(a.frontend||''))return false;
+    return true;},
+   ja:'大規模SPAにSSRフレームワーク(Next.js/Nuxt/Astro)がありません。SEO・初期ロードパフォーマンスの改善を検討してください',
+   en:'Large-scale SPA without SSR framework (Next.js/Nuxt/Astro). Consider for SEO & initial load performance',
+   fix:{f:'frontend',s:'React + Next.js'},
+   why_ja:'大規模SPA (React/Vue Vite) は初回コンテンツ表示が遅く、SEOスコアが低下します。Next.js/Nuxt等のSSRはFCP・LCPメトリクスを大幅改善します。',
+   why_en:'Large SPAs (React/Vue Vite) suffer slow first content paint and poor SEO scores. Next.js/Nuxt SSR significantly improves FCP/LCP metrics.'},
+  {id:'mob-payment-no-ssl-pin',p:['mobile','payment'],lv:'info',
+   t:function(a){
+    if(!a.mobile||/なし|none|PWA/i.test(a.mobile))return false;
+    if(!/flutter|expo|react.native/i.test(a.mobile))return false;
+    if(!a.payment||/なし|none/i.test(a.payment))return false;
+    var feats=(a.mvp_features||'')+(a.future_features||'');
+    if(/ssl.pin|certificate.pin|証明書ピン/i.test(feats))return false;
+    return true;},
+   ja:'モバイル決済アプリにSSL Pinningが設定されていません。中間者攻撃対策を推奨します',
+   en:'Mobile payment app without SSL Certificate Pinning. Recommend MITM protection',
+   fix:{f:'future_features',s:'SSL Certificate Pinning (モバイル決済保護)'},
+   why_ja:'モバイル決済アプリはMITM攻撃の標的になります。SSL/TLS証明書ピンニングにより、偽証明書による通信傍受を防止できます。Flutter: security_pinningパッケージ。',
+   why_en:'Mobile payment apps are MITM targets. SSL certificate pinning prevents interception via forged certificates. Flutter: security_pinning package.'},
 ];
 // helpers
 function inc(v,k){return v&&typeof v==='string'&&v.indexOf(k)!==-1;}

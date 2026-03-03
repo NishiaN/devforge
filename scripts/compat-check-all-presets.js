@@ -126,6 +126,11 @@ const NEW_RULE_IDS = [
   'api-realtime-http-polling','sec-large-no-authz-model',
   // XAI/AIランタイム監視/ゼロトラストエージェント (+3)
   'ai-high-risk-no-xai','ai-no-cost-monitoring','ai-agent-no-boundary',
+  // P28 XAI Intelligence pillar (+3)
+  'ai-no-fairness-pipeline','ai-large-no-governance','ai-no-drift-monitoring',
+  // v9.9 Phase D: mobile/frontend/AI boundary rules (+6)
+  'mob-flutter-firebase-auth-mismatch','fe-spa-baas-realtime-scale',
+  'ai-large-no-rate-limit','ai-agent-no-fallback','fe-large-no-ssr','mob-payment-no-ssl-pin',
 ];
 
 const errorRules = Object.entries(hits).filter(([,v])=>v.level==='error');
