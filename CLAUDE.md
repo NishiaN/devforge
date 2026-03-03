@@ -6,8 +6,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 # DevForge v9.6.0
 
-**AI Development OS** — 85 JS modules in `src/` → single `devforge-v9.html` (~4970KB / 6000KB limit).
-Generates **218+ files** across **27 pillars** from a wizard-driven Q&A session.
+**AI Development OS** — 86 JS modules in `src/` → single `devforge-v9.html` (~5089KB / 6000KB limit).
+Generates **222+ files** across **28 pillars** from a wizard-driven Q&A session.
 
 ## Documentation Map
 
@@ -47,9 +47,9 @@ Never reorder without checking dependencies.
 | Category | Purpose |
 |----------|---------|
 | `core/` | State (`S`), i18n (`t()`), keyboard events, wizard tour, app init |
-| `data/` | 257 standard presets (`PR`/`_mp()`), 603 field presets (`PR_FIELD`/`_fpd()`), questions, techdb (478 entries), compat-rules (283 rules), gen-templates (bilingual GT dict), helpdata |
+| `data/` | 257 standard presets (`PR`/`_mp()`), 603 field presets (`PR_FIELD`/`_fpd()`), questions, techdb (478 entries), compat-rules (286 rules), gen-templates (bilingual GT dict), helpdata |
 | `ui/launcher.js` | 70 prompt templates; `templateOrder[70]`, `AI_REC`, `LAUNCH_CAT_MAP`, `TEMPLATE_SCOPE`, `LAUNCH_SKILL_REC` maps; `DOC_GROUPS` for semantic doc grouping |
-| `generators/` | `index.js` orchestrator + `p1`–`p26` pillars + `docs.js` + `common.js` |
+| `generators/` | `index.js` orchestrator + `p1`–`p28` pillars + `docs.js` + `common.js` |
 | `ui/` | wizard, render, presets, preview, sidebar, editor, diff, export, explorer, dashboard, launcher, templates, qbar, cmdpalette, help, voice |
 | `styles/all.css` | Theme (dark/light), responsive; CSS custom properties only |
 
@@ -170,7 +170,7 @@ Full 6-step process in `docs/CLAUDE-REFERENCE.md`. Key steps often missed:
 
 ## Adding Compat Rules
 
-File: `src/data/compat-rules.js` — currently 283 rules (33E+136W+114I). All rules have `why_ja`/`why_en`.
+File: `src/data/compat-rules.js` — currently 286 rules (33E+136W+117I). All rules have `why_ja`/`why_en`.
 **Launcher templates**: `src/ui/launcher.js` — currently 70 templates. When adding: register in `TEMPLATE_SCOPE`, both ja+en PT blocks, `AI_REC`, `templateOrder`, `LAUNCH_CAT_MAP`, `LAUNCH_SKILL_REC`; update button text count; update `test/skill-level.test.js` templateOrder.length assertion.
 Structure: `{id, p:['field1','field2'], lv:'error'|'warn'|'info', t:conditionFn, ja, en, fix, fixFn, why_ja, why_en}`
 `why_ja`/`why_en`: When set, shows "▶ なぜ？" expandable card in wizard alerts. **Size limits: `why_ja` ≤350B, `why_en` ≤270B** (UTF-8 bytes; CI 5000KB budget). Japanese is 3 bytes/char — keep to ≤115 characters.
@@ -199,7 +199,7 @@ After adding: update header comment totals, add tests to `test/compat.test.js`, 
 
 `docs/82_architecture_integrity_check.md` — always generated; scores ORM/Auth/CORS/async/soft-delete integrity (10.0 scale).
 
-**File count ranges** (used in tests): `snapshot.test.js` A:140–204/B:130–195; `gen-quality.test.js` A25 112–209.
+**File count ranges** (used in tests): `snapshot.test.js` A:144–211/B:134–200; `gen-quality.test.js` A25 116–218.
 
 Key output structure:
 - `.spec/` — constitution, specification, technical-plan, tasks, verification

@@ -106,6 +106,7 @@ const jsFiles = [
   'generators/p25-performance.js',
   'generators/p26-observability.js',
   'generators/p27-cost.js',
+  'generators/p28-xai.js',
   'generators/docs.js',
   'generators/common.js',
   'data/entity-ext.js',

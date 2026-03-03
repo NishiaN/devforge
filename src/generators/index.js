@@ -1,4 +1,4 @@
-/* ═══ FILE GENERATION ENGINE — 26 PILLARS ═══ */
+/* ═══ FILE GENERATION ENGINE — 28 PILLARS ═══ */
 function generateAll(){
   const _be=S.answers.backend||'';
   const _minKeys=(/なし|None|static/i.test(_be))?['frontend','backend']:['frontend','backend','database'];
@@ -47,10 +47,10 @@ function doGenerate(lang){
   addMsg('bot',S.lang==='ja'?'🔨 ファイルを生成中...':'🔨 Generating files...');
 
   // Smart loading UI (HCD: ⑤感情体験 ③認知負荷)
-  const pillarIcons=['📋','🐳','🔌','🤖','✅','🗺️','🎨','🔍','💡','🔒','📊','⚙️','🔮','🧬','🧩','🔧','🏢','🚀','🌐','🗄️','📄','📦','🧪','🛡️','⚡','🔭','💰'];
-  const pillarNames=_j?['SDD','DevContainer','MCP','AIルール','品質','ロードマップ','デザイン','リバース','実装','セキュリティ','戦略','運用','未来','開発IQ','ゲノム','Prompt Ops','Enterprise','CI/CD','API','DB','仕様書','共通','テスト','AI安全','パフォ','可観測','コスト']:['SDD','DevContainer','MCP','AI Rules','Quality','Roadmap','Design','Reverse','Impl','Security','Strategy','Ops','Future','Dev IQ','Genome','Prompt Ops','Enterprise','CI/CD','API','DB','Docs','Common','Testing','AI Safety','Perf','Observ','Cost'];
+  const pillarIcons=['📋','🐳','🔌','🤖','✅','🗺️','🎨','🔍','💡','🔒','📊','⚙️','🔮','🧬','🧩','🔧','🏢','🚀','🌐','🗄️','📄','📦','🧪','🛡️','⚡','🔭','💰','🧠'];
+  const pillarNames=_j?['SDD','DevContainer','MCP','AIルール','品質','ロードマップ','デザイン','リバース','実装','セキュリティ','戦略','運用','未来','開発IQ','ゲノム','Prompt Ops','Enterprise','CI/CD','API','DB','仕様書','共通','テスト','AI安全','パフォ','可観測','コスト','XAI']:['SDD','DevContainer','MCP','AI Rules','Quality','Roadmap','Design','Reverse','Impl','Security','Strategy','Ops','Future','Dev IQ','Genome','Prompt Ops','Enterprise','CI/CD','API','DB','Docs','Common','Testing','AI Safety','Perf','Observ','Cost','XAI'];
   let pillarGrid='<div class="gen-pillar-grid">';
-  for(let i=0;i<27;i++){
+  for(let i=0;i<28;i++){
     pillarGrid+=`<div class="gen-pillar-card" id="genPillar${i}" data-status="pending">
       <div class="gen-pillar-icon">${pillarIcons[i]}</div>
       <div class="gen-pillar-name">${pillarNames[i]}</div>
@@ -98,6 +98,7 @@ function doGenerate(lang){
     {fn:()=>genPillar25_Performance(a,pn),lbl:_j?'柱㉕ パフォーマンスインテリジェンス':'Pillar ㉕ Performance Intelligence',err:'P25-Perf'},
     {fn:()=>genPillar26_Observability(a,pn),lbl:_j?'柱㉖ オブザーバビリティ':'Pillar ㉖ Observability',err:'P26-Obs'},
     {fn:()=>genPillar27_CostOptimization(a,pn),lbl:_j?'柱㉗ コスト最適化':'Pillar ㉗ Cost Optimization',err:'P27-Cost'},
+    {fn:()=>genPillar28_XAIIntelligence(a,pn),lbl:_j?'柱㉘ XAIインテリジェンス':'Pillar ㉘ XAI Intelligence',err:'P28-XAI'},
     {fn:()=>genDocs21(a,pn),lbl:_j?'仕様書28種':'28 Spec Docs',err:'Docs'},
     {fn:()=>genOpenAPISpec(a,pn,_j),lbl:_j?'OpenAPI仕様':'OpenAPI Spec',err:'OpenAPI'},
     {fn:()=>genSeedData(a,pn,_j),lbl:_j?'シードデータ':'Seed Data',err:'Seed'},
@@ -415,6 +416,7 @@ function regenSinglePillar(pillarIdx){
     function(){genPillar25_Performance(a,pn);},
     function(){genPillar26_Observability(a,pn);},
     function(){genPillar27_CostOptimization(a,pn);},
+    function(){genPillar28_XAIIntelligence(a,pn);},
     function(){genDocs21(a,pn);},
     function(){genOpenAPISpec(a,pn,S.genLang==='ja');},
     function(){genSeedData(a,pn,S.genLang==='ja');},

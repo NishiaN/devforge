@@ -3879,6 +3879,38 @@ function genArchIntegrityCheck(files,a,compatResults,auditFindings){
     }
   }
 
+  // C-P: バイアス/フェアネスパイプラインチェック (AI有効 + 高リスクドメイン)
+  if(hasAIFeature){
+    var _cpDom=typeof detectDomain==='function'?detectDomain(a.purpose||''):'';
+    var _cpHighRisk=/health|fintech|insurance|legal|hr/i.test(_cpDom||'');
+    if(_cpHighRisk){
+      var hasFairness=Object.values(files).some(function(v){
+        return (v||'').includes('fairness')||(v||'').includes('公平性')||(v||'').includes('Fairlearn')||(v||'').includes('bias detection')||(v||'').includes('バイアス検出')||(v||'').includes('demographic parity');
+      });
+      if(!hasFairness){
+        orangeCount++;
+        rows.push({loc:'docs/129_fairness_bias_pipeline.md',src:G?'アーキテクチャチェック':'Architecture check',
+          issue:G?'高リスクドメイン ('+_cpDom+') のAI機能にバイアス/フェアネスパイプラインが確認できません。Fairlearnによる定量的フェアネス評価が推奨されます':
+                 'AI features in high-risk domain ('+_cpDom+'). No bias/fairness pipeline detected. Quantitative fairness evaluation via Fairlearn is recommended',
+          sev:'🟠 WARN',fix:G?'docs/129のフェアネスメトリクス参照とFairlearnパイプラインを実装してください':'Implement Fairlearn pipeline and fairness metrics from docs/129'});
+      }
+    }
+  }
+
+  // C-Q: AIガバナンスチェック (AI有効 + large規模)
+  if(hasAIFeature&&(a.scale||'medium')==='large'){
+    var hasAIGov=Object.values(files).some(function(v){
+      return (v||'').includes('AI Review Board')||(v||'').includes('AI審査委員会')||(v||'').includes('risk classification')||(v||'').includes('リスク分類')||(v||'').includes('AI governance')||(v||'').includes('AIガバナンス');
+    });
+    if(!hasAIGov){
+      yellowCount++;
+      rows.push({loc:'docs/130_ai_governance_framework.md',src:G?'アーキテクチャチェック':'Architecture check',
+        issue:G?'large規模のAI機能にAIガバナンスフレームワーク (AI審査委員会・リスク分類・影響評価) が確認できません':
+               'Large-scale AI features detected but no AI governance framework (AI Review Board, risk classification, impact assessment) found',
+        sev:'🟡 INFO',fix:G?'docs/130のAI審査委員会憲章とリスク分類ワークフローを参照してください':'See AI Review Board Charter and risk classification workflow in docs/130'});
+    }
+  }
+
   // C-F: MongoDB × Prisma (experimental support warning)
   const db=a.database||'';
   if(/MongoDB|Mongo/i.test(db)&&orm.includes('Prisma')&&!isBaaS){

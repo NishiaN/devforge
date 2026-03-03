@@ -1,4 +1,4 @@
-/* ═══ STACK COMPATIBILITY & SEMANTIC CONSISTENCY RULES — 283 rules (ERROR×33 + WARN×136 + INFO×114) ═══ */
+/* ═══ STACK COMPATIBILITY & SEMANTIC CONSISTENCY RULES — 286 rules (ERROR×33 + WARN×136 + INFO×117) ═══ */
 const COMPAT_RULES=[
   // ── FE ↔ Mobile (2 ERROR) ──
   {id:'fe-mob-expo',p:['frontend','mobile'],lv:'error',
@@ -2396,6 +2396,43 @@ const COMPAT_RULES=[
    fix:{f:'future_features',s:'エージェント権限境界・ゼロトラスト設計'},
    why_ja:'エージェントは自律的に行動するため、従来の認証モデルでは不十分です。各エージェントを「信頼しない」原則で設計し、全アクションを監査証跡に記録することが重要です。',
    why_en:'Agents act autonomously, making traditional auth models insufficient. Design each agent with "never trust" principles and log all actions to an immutable audit trail.'},
+  {id:'ai-no-fairness-pipeline',p:['ai_auto','purpose'],lv:'info',
+   t:function(a){
+    var aiAuto=a.ai_auto||'';
+    if(!aiAuto||/なし|none/i.test(aiAuto))return false;
+    var purpose=(a.purpose||'').toLowerCase();
+    var isHighRisk=/医療|health|病院|クリニック|fintech|金融|保険|insurance|法務|legal|弁護士|採用|hiring/.test(purpose);
+    var hasFairness=/fairness|公平性|fairlearn|bias.detection|バイアス検出|demographic.parity/i.test((a.mvp_features||'')+(a.future_features||''));
+    return isHighRisk&&!hasFairness;},
+   ja:'高リスクドメインのAI機能にバイアス/フェアネスパイプラインが未設定です。Fairlearnによる定量的フェアネス評価とCI/CDフェアネスゲートの実装を推奨します。docs/129参照',
+   en:'AI features in high-risk domain without bias/fairness pipeline. Recommend Fairlearn-based quantitative fairness evaluation and CI/CD fairness gates. See docs/129',
+   fix:{f:'future_features',s:'フェアネスパイプライン (Fairlearn) 実装'},
+   why_ja:'医療・金融・採用ドメインのAIは差別的結果を生む可能性があります。Demographic Parityなどの定量指標で定期検証し、閾値超過時に自動再学習トリガーを設けることが重要です。',
+   why_en:'AI in medical/financial/hiring domains can produce discriminatory outcomes. Regular quantitative checks with metrics like Demographic Parity and automated retraining triggers are essential.'},
+  {id:'ai-large-no-governance',p:['ai_auto','scale'],lv:'info',
+   t:function(a){
+    var aiAuto=a.ai_auto||'';
+    if(!aiAuto||/なし|none/i.test(aiAuto))return false;
+    if(a.scale!=='large')return false;
+    var hasGov=/ai.?governance|aiガバナンス|ai.?review.?board|ai審査委員会|risk.?classification|リスク分類/i.test((a.mvp_features||'')+(a.future_features||'')+(a.purpose||''));
+    return !hasGov;},
+   ja:'large構成のAI機能にAIガバナンスフレームワークが未設定です。AI審査委員会・リスク分類・AI影響評価 (AIA) の実装を推奨します。docs/130参照',
+   en:'Large-scale AI without AI governance framework. Recommend AI Review Board, risk classification, and AI Impact Assessment (AIA). See docs/130',
+   fix:{f:'future_features',s:'AIガバナンスフレームワーク (AI Review Board)'},
+   why_ja:'大規模AIシステムは単一障害点になりえます。AI審査委員会で承認プロセスを標準化し、ISO/IEC 42001やNIST AI RMFに準拠した管理体制を構築することが組織リスク管理の基盤です。',
+   why_en:'Large-scale AI systems can become single points of failure. Standardize approval via an AI Review Board and build management aligned with ISO/IEC 42001 and NIST AI RMF.'},
+  {id:'ai-no-drift-monitoring',p:['ai_auto','scale'],lv:'info',
+   t:function(a){
+    var aiAuto=a.ai_auto||'';
+    if(!aiAuto||/なし|none/i.test(aiAuto))return false;
+    if(a.scale==='solo')return false;
+    var hasDrift=/drift|retraining|再学習|evidently|psi|distribution.shift|分布変化|concept.drift/i.test((a.mvp_features||'')+(a.future_features||''));
+    return !hasDrift;},
+   ja:'AI機能にドリフト検出・自動再学習パイプラインが未設定です。Evidently AIによる定期的なデータ/コンセプトドリフト監視を推奨します。docs/131参照',
+   en:'AI features without drift detection or automated retraining pipeline. Recommend periodic data/concept drift monitoring via Evidently AI. See docs/131',
+   fix:{f:'future_features',s:'ドリフト検出・自動再学習 (Evidently AI)'},
+   why_ja:'AIモデルは時間経過とともに性能が劣化します（コンセプトドリフト）。PSI>0.2などの閾値監視と自動再学習パイプラインにより、モデル品質を持続的に維持できます。',
+   why_en:'AI model performance degrades over time (concept drift). Threshold monitoring like PSI>0.2 with automated retraining pipelines enables sustained model quality maintenance.'},
 ];
 // helpers
 function inc(v,k){return v&&typeof v==='string'&&v.indexOf(k)!==-1;}

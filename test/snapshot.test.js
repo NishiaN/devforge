@@ -38,6 +38,7 @@ eval(fs.readFileSync('src/generators/p24-aisafety.js','utf-8'));
 eval(fs.readFileSync('src/generators/p25-performance.js','utf-8'));
 eval(fs.readFileSync('src/generators/p26-observability.js','utf-8'));
 eval(fs.readFileSync('src/generators/p27-cost.js','utf-8').replace(/const (COST_PLATFORM)/g,'var $1'));
+eval(fs.readFileSync('src/generators/p28-xai.js','utf-8'));
 
 // ═══ Helper ═══
 function generate(answers, name, lang) {
@@ -70,6 +71,7 @@ function generate(answers, name, lang) {
   genPillar25_Performance(answers, name);
   genPillar26_Observability(answers, name);
   genPillar27_CostOptimization(answers, name);
+  genPillar28_XAIIntelligence(answers, name);
   return { ...S.files };
 }
 
@@ -88,9 +90,9 @@ describe('Snapshot A: LMS/Supabase/Stripe', () => {
     ai_auto: 'マルチAgent協調'
   }, 'LMS');
 
-  test('file count in range 140-206 (P21-P27 each +4 docs; +7 agents/docs113-114; +11 agentskills.io; +2 docs/116+118; +2 docs/122+123; +1 docs/117; +1 docs/124; +2 docs/98-2+106-2 AI)', () => {
+  test('file count in range 144-211 (P21-P28 each +4-5 docs; +7 agents/docs113-114; +11 agentskills.io; +2 docs/116+118; +2 docs/122+123; +1 docs/117; +1 docs/124; +2 docs/98-2+106-2 AI; +5 P28 XAI)', () => {
     const count = Object.keys(files).length;
-    assert.ok(count >= 140 && count <= 206, `Expected 140-206 files (P21-P27 each +4 docs, +7 agents/docs113-114, +11 agentskills.io, +2 estimation/ops, +2 docs/122+123, +1 docs/117, +1 docs/124, +2 XAI/AI-monitor), got ${count}`);
+    assert.ok(count >= 144 && count <= 211, `Expected 144-211 files (P21-P28 +4-5 docs each, +7 agents/docs113-114, +11 agentskills.io, +2 estimation/ops, +2 docs/122+123, +1 docs/117, +1 docs/124, +2 XAI/AI-monitor, +5 P28), got ${count}`);
   });
 
   test('total tokens in range 12000-120000 (P21-P26 each add ~4-6K tokens, +agentskills.io skills, +docs/119+120)', () => {
@@ -765,9 +767,9 @@ describe('Snapshot B: Blog/Vite/Netlify', () => {
     dev_methods: 'TDD', ai_tools: 'Cursor', orm: ''
   }, 'Blog');
 
-  test('file count in range 130-195 (P21-P27 each add +4 docs; +2 docs/107-108; +7 agents/docs113-114; +13 agentskills.io; +2 docs/116+118; +2 docs/122+123; +1 docs/117; +1 docs/124)', () => {
+  test('file count in range 134-200 (P21-P28 each add +4 docs; +2 docs/107-108; +7 agents/docs113-114; +13 agentskills.io; +2 docs/116+118; +2 docs/122+123; +1 docs/117; +1 docs/124; +4 P28 XAI)', () => {
     const count = Object.keys(files).length;
-    assert.ok(count >= 130 && count <= 195, `Expected 130-195 files (P21-P27 each +4 docs, +2 governance/UAT, +7 agents/docs113-114, +13 agentskills.io, +2 estimation/ops, +2 docs/122+123, +1 docs/117, +1 docs/124), got ${count}`);
+    assert.ok(count >= 134 && count <= 200, `Expected 134-200 files (P21-P28 each +4 docs, +2 governance/UAT, +7 agents/docs113-114, +13 agentskills.io, +2 estimation/ops, +2 docs/122+123, +1 docs/117, +1 docs/124, +4 P28), got ${count}`);
   });
 
   test('no AI docs when no ai_auto (docs/98-2 and docs/106-2 absent)', () => {

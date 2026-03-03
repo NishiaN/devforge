@@ -102,16 +102,16 @@ describe('Build System', () => {
     assert.deepStrictEqual(missingInJA, [], `Keys in EN but not JA: ${missingInJA.join(', ')}`);
   });
 
-  it('27 pillars consistency across all references', () => {
+  it('28 pillars consistency across all references', () => {
     const html = fs.readFileSync(OUTPUT, 'utf-8');
-    // Check hero description has 27 pillars
-    assert.ok(html.includes('27の柱') || html.includes('26の柱'), 'Should contain "27の柱" or "26の柱" in Japanese hero');
-    assert.ok(html.includes('27 pillars') || html.includes('26 pillars') || html.includes('27 Pillars'), 'Should contain "27 pillars" in English');
-    // Check pillar arrays have 27 items
+    // Check hero description has 28 pillars
+    assert.ok(html.includes('28の柱') || html.includes('27の柱'), 'Should contain "28の柱" or "27の柱" in Japanese hero');
+    assert.ok(html.includes('28 pillars') || html.includes('27 pillars') || html.includes('28 Pillars'), 'Should contain "28 pillars" in English');
+    // Check pillar arrays have 28 items
     const pillarJA = html.match(/pillar:\[([^\]]+)\]/);
     if (pillarJA) {
       const items = pillarJA[1].split(',').length;
-      assert.ok(items === 27, `Pillar array should have 27 items, got ${items}`);
+      assert.ok(items === 28, `Pillar array should have 28 items, got ${items}`);
     }
     // Check P14 & P15 references exist
     assert.ok(html.includes('⑭運用インテリジェンス') || html.includes('⑭Ops Intelligence'), 'Should have ⑭Ops badge');
@@ -151,6 +151,8 @@ describe('Build System', () => {
     assert.ok(html.includes('genPillar24_AISafety'), 'Should have P24 generator function');
     assert.ok(html.includes('㉕パフォーマンス') || html.includes('㉕Performance'), 'Should have ㉕Performance badge');
     assert.ok(html.includes('genPillar25_Performance'), 'Should have P25 generator function');
+    assert.ok(html.includes('㉘XAI') || html.includes('㉘XAI Intelligence'), 'Should have ㉘XAI badge');
+    assert.ok(html.includes('genPillar28_XAIIntelligence'), 'Should have P28 generator function');
   });
 
   it('tour has correct number of steps', () => {
@@ -324,7 +326,7 @@ describe('Build System', () => {
   it('has correct number of pillar badges', () => {
     const html = fs.readFileSync(OUTPUT, 'utf-8');
     const pbadgeCount = (html.match(/class="pbadge"/g) || []).length;
-    assert.strictEqual(pbadgeCount, 27, `pbadge count should be 27 (one per pillar), got ${pbadgeCount}`);
+    assert.strictEqual(pbadgeCount, 28, `pbadge count should be 28 (one per pillar), got ${pbadgeCount}`);
   });
 
   it('no duplicate @keyframes definitions', () => {
@@ -374,15 +376,15 @@ describe('Build System', () => {
     const icons = js.match(/var PILLAR_ICONS=\[([^\]]+)\]/);
     assert.ok(icons, 'PILLAR_ICONS should be defined');
     const iconCount = (icons[1].match(/'/g) || []).length / 2;
-    assert.strictEqual(iconCount, 27, `PILLAR_ICONS should have 27 entries, got ${iconCount}`);
+    assert.strictEqual(iconCount, 28, `PILLAR_ICONS should have 28 entries, got ${iconCount}`);
     const gtp = js.match(/var GEN_TO_PILLAR=\[([^\]]+)\]/);
     assert.ok(gtp, 'GEN_TO_PILLAR should be defined');
     const gtpCount = gtp[1].split(',').length;
-    assert.strictEqual(gtpCount, 27, `GEN_TO_PILLAR should have 27 entries, got ${gtpCount}`);
+    assert.strictEqual(gtpCount, 28, `GEN_TO_PILLAR should have 28 entries, got ${gtpCount}`);
     const pff = js.match(/var PILLAR_FIRST_FILE=\[([^\]]+)\]/);
     assert.ok(pff, 'PILLAR_FIRST_FILE should be defined');
     const pffCount = pff[1].split(',').length;
-    assert.strictEqual(pffCount, 27, `PILLAR_FIRST_FILE should have 27 entries, got ${pffCount}`);
+    assert.strictEqual(pffCount, 28, `PILLAR_FIRST_FILE should have 28 entries, got ${pffCount}`);
   });
 
   it('all t() calls reference valid i18n keys', () => {

@@ -745,6 +745,23 @@ const tests=[
   {name:'agent-boundary: orchestrator+medium+hasBoundary=none',a:{ai_auto:'orchestrator',scale:'medium',mvp_features:'Zero Trust エージェント権限境界'},expect:'none',id:'ai-agent-no-boundary'},
   {name:'agent-boundary: solo+orchestrator+noBoundary=none (solo)',a:{ai_auto:'orchestrator',scale:'solo'},expect:'none',id:'ai-agent-no-boundary'},
   {name:'agent-boundary: RAG+medium+noBoundary=none (not orchestrator)',a:{ai_auto:'RAG検索',scale:'medium'},expect:'none',id:'ai-agent-no-boundary'},
+  // ── ai-no-fairness-pipeline (INFO) ──
+  {name:'fairness: health+AI+noFairness=info',a:{ai_auto:'RAG検索',purpose:'医療診断AIシステム'},expect:'info',id:'ai-no-fairness-pipeline'},
+  {name:'fairness: fintech+AI+noFairness=info',a:{ai_auto:'RAG検索',purpose:'fintech loan approval'},expect:'info',id:'ai-no-fairness-pipeline'},
+  {name:'fairness: health+AI+hasFairness=none',a:{ai_auto:'RAG検索',purpose:'医療診断',mvp_features:'fairness pipeline Fairlearn'},expect:'none',id:'ai-no-fairness-pipeline'},
+  {name:'fairness: noAI+health=none',a:{ai_auto:'なし',purpose:'医療診断'},expect:'none',id:'ai-no-fairness-pipeline'},
+  {name:'fairness: AI+general+noFairness=none (not high-risk)',a:{ai_auto:'RAG検索',purpose:'ブログプラットフォーム'},expect:'none',id:'ai-no-fairness-pipeline'},
+  // ── ai-large-no-governance (INFO) ──
+  {name:'governance: large+AI+noGov=info',a:{ai_auto:'RAG検索',scale:'large'},expect:'info',id:'ai-large-no-governance'},
+  {name:'governance: large+AI+hasGov=none',a:{ai_auto:'RAG検索',scale:'large',future_features:'AIガバナンス AI Review Board'},expect:'none',id:'ai-large-no-governance'},
+  {name:'governance: medium+AI+noGov=none (not large)',a:{ai_auto:'RAG検索',scale:'medium'},expect:'none',id:'ai-large-no-governance'},
+  {name:'governance: large+noAI=none',a:{ai_auto:'なし',scale:'large'},expect:'none',id:'ai-large-no-governance'},
+  // ── ai-no-drift-monitoring (INFO) ──
+  {name:'drift: medium+AI+noDrift=info',a:{ai_auto:'RAG検索',scale:'medium'},expect:'info',id:'ai-no-drift-monitoring'},
+  {name:'drift: large+AI+noDrift=info',a:{ai_auto:'マルチAgent協調',scale:'large'},expect:'info',id:'ai-no-drift-monitoring'},
+  {name:'drift: medium+AI+hasDrift=none',a:{ai_auto:'RAG検索',scale:'medium',future_features:'drift detection Evidently AI再学習'},expect:'none',id:'ai-no-drift-monitoring'},
+  {name:'drift: solo+AI+noDrift=none (solo)',a:{ai_auto:'RAG検索',scale:'solo'},expect:'none',id:'ai-no-drift-monitoring'},
+  {name:'drift: medium+noAI=none',a:{ai_auto:'なし',scale:'medium'},expect:'none',id:'ai-no-drift-monitoring'},
 ];
 
 let pass=0,fail=0;

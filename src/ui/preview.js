@@ -499,6 +499,10 @@ function buildFileTree(){
     files.push({folder:true,name:'docs'});
     ['109_cost_architecture','110_resource_optimization','111_finops_strategy','112_cost_monitoring'].forEach(f=>
       files.push({name:'  '+f+'.md',path:'docs/'+f+'.md'}));
+  } else if(pillar===27){ // XAI Intelligence (P28)
+    files.push({folder:true,name:'docs'});
+    ['128_xai_intelligence_architecture','129_fairness_bias_pipeline','130_ai_governance_framework','131_model_lifecycle_intelligence','131-2_ai_red_team_adversarial'].forEach(f=>
+      files.push({name:'  '+f+'.md',path:'docs/'+f+'.md'}));
   }
   // Common files
   files.push({name:'───────────',path:''});

@@ -67,6 +67,7 @@ eval(fs.readFileSync('src/generators/p24-aisafety.js','utf-8'));
 eval(fs.readFileSync('src/generators/p25-performance.js','utf-8'));
 eval(fs.readFileSync('src/generators/p26-observability.js','utf-8'));
 eval(fs.readFileSync('src/generators/p27-cost.js','utf-8').replace(/const (COST_PLATFORM)/g,'var $1'));
+eval(fs.readFileSync('src/generators/p28-xai.js','utf-8'));
 
 /* ═══ Generation helpers ═══ */
 
@@ -115,6 +116,7 @@ function gFull(answers, lang, skill) {
   genPillar25_Performance(answers,'QTest');
   genPillar26_Observability(answers,'QTest');
   genPillar27_CostOptimization(answers,'QTest');
+  genPillar28_XAIIntelligence(answers,'QTest');
   return Object.assign({},S.files);
 }
 
@@ -690,10 +692,10 @@ describe('Q7: domain-specific KPI fallback in constitution §3', () => {
    ════════════════════════════════════════════════════════════════ */
 describe('Q8: Full E2E generation — file count, tokens, 25 vs 11 delta', () => {
 
-  it('A25 full generation: file count in 112-213 range', () => {
+  it('A25 full generation: file count in 116-218 range', () => {
     const f = gFull(A25);
     const count = Object.keys(f).length;
-    assert.ok(count >= 112 && count <= 213, `A25 full gen file count should be 112-213, got ${count}`);
+    assert.ok(count >= 116 && count <= 218, `A25 full gen file count should be 116-218, got ${count}`);
   });
 
   it('A25 full generation: total tokens ≥ 14000 (rich content across 24 pillars)', () => {
