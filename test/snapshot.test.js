@@ -95,9 +95,9 @@ describe('Snapshot A: LMS/Supabase/Stripe', () => {
     assert.ok(count >= 148 && count <= 215, `Expected 148-215 files (P21-P28 +4-5 docs each, +7 agents/docs113-114, +11 agentskills.io, +2 estimation/ops, +2 docs/122+123, +1 docs/117, +1 docs/124, +2 XAI/AI-monitor, +5 P28, +1 docs/132, +3 v9.8), got ${count}`);
   });
 
-  test('total tokens in range 12000-120000 (P21-P26 each add ~4-6K tokens, +agentskills.io skills, +docs/119+120)', () => {
+  test('total tokens in range 12000-140000 (P21-P26 each add ~4-6K tokens, +agentskills.io skills, +docs/119+120, +v9.10 P25/P21/P12 enhancements)', () => {
     const total = Object.values(files).reduce((s, v) => s + tokens(v), 0);
-    assert.ok(total >= 12000 && total <= 120000, `Expected 12K-120K tokens (P21-P26 each +4-6K + agentskills.io + docs/119+120), got ${total}`);
+    assert.ok(total >= 12000 && total <= 140000, `Expected 12K-140K tokens (P21-P26 each +4-6K + agentskills.io + docs/119+120 + v9.10), got ${total}`);
   });
 
   test('AI docs generated when ai_auto enabled (docs/98-2 and docs/106-2)', () => {

@@ -1,4 +1,4 @@
-// Compat rules functional test (292 rules: 33 ERROR + 137 WARN + 122 INFO)
+// Compat rules functional test (298 rules: 33 ERROR + 140 WARN + 125 INFO)
 const assert=require('node:assert/strict');
 const S={lang:'ja',skill:'pro'};
 eval(require('fs').readFileSync('src/data/compat-rules.js','utf-8'));
@@ -30,7 +30,7 @@ const tests=[
   {name:'Static+Stripe=WARN',a:{backend:'なし（静的サイト）',payment:'Stripe決済'},expect:'warn'},
   {name:'Saleor+Express=WARN',a:{backend:'Node.js + Express',payment:'Saleor (Python EC)'},expect:'warn'},
   // OK cases (should have no issues)
-  {name:'React+Expo=OK',a:{frontend:'React + Next.js',mobile:'Expo (React Native)'},expect:'none'},
+  {name:'React+Expo=OK',a:{frontend:'React + Next.js',mobile:'Expo (React Native)'},expect:'none',id:'fe-mob-expo'},
   {name:'Express+Prisma=OK',a:{backend:'Node.js + Express',orm:'Prisma'},expect:'info'},
   {name:'Next+Vercel=OK',a:{frontend:'React + Next.js',deploy:'Vercel'},expect:'info'},
   {name:'Supabase+SupaDB=OK',a:{backend:'Supabase',database:'Supabase (PostgreSQL)'},expect:'none'},
@@ -787,6 +787,31 @@ const tests=[
   {name:'Flutter+Stripe+noPin=INFO',a:{mobile:'Flutter',payment:'Stripe決済'},expect:'info',id:'mob-payment-no-ssl-pin'},
   {name:'Flutter+Stripe+hasPin=noINFO',a:{mobile:'Flutter',payment:'Stripe決済',future_features:'SSL Certificate Pinning モバイル決済保護'},expect:'none',id:'mob-payment-no-ssl-pin'},
   {name:'Flutter+noPay+noPin=noINFO',a:{mobile:'Flutter',payment:'なし'},expect:'none',id:'mob-payment-no-ssl-pin'},
+  // ── v9.10 Phase D: 6 new rules (+18 tests) ──
+  // fe-css-framework-conflict (WARN)
+  {name:'Tailwind+Bootstrap=WARN',a:{frontend:'React + Vite',mvp_features:'TailwindCSS, Bootstrap スタイリング'},expect:'warn',id:'fe-css-framework-conflict'},
+  {name:'Tailwind+noBootstrap=noWARN',a:{frontend:'React + Vite',mvp_features:'TailwindCSS スタイリング'},expect:'none',id:'fe-css-framework-conflict'},
+  {name:'Vue+TailwindBootstrap=WARN',a:{frontend:'Vue 3 + Nuxt',mvp_features:'tailwind Bootstrap integration'},expect:'warn',id:'fe-css-framework-conflict'},
+  // be-serverless-cold-start (INFO)
+  {name:'Lambda+NestJS=INFO',a:{backend:'Node.js + NestJS',deploy:'AWS Lambda'},expect:'info',id:'be-serverless-cold-start'},
+  {name:'Vercel+Hono=noINFO',a:{backend:'Node.js + Hono',deploy:'Vercel'},expect:'none',id:'be-serverless-cold-start'},
+  {name:'Railway+NestJS=noINFO',a:{backend:'Node.js + NestJS',deploy:'Railway'},expect:'none',id:'be-serverless-cold-start'},
+  // be-serverless-db-pool (WARN)
+  {name:'Vercel+PostgreSQL+noPool=WARN',a:{backend:'Node.js + Express',deploy:'Vercel',database:'PostgreSQL'},expect:'warn',id:'be-serverless-db-pool'},
+  {name:'Vercel+PostgreSQL+PrismaAccel=noWARN',a:{backend:'Node.js + Express',deploy:'Vercel',database:'PostgreSQL',mvp_features:'Prisma Accelerate コネクションプール'},expect:'none',id:'be-serverless-db-pool'},
+  {name:'Vercel+Supabase+noPool=noWARN',a:{backend:'Supabase',deploy:'Vercel',database:'PostgreSQL'},expect:'none',id:'be-serverless-db-pool'},
+  // test-framework-conflict (WARN)
+  {name:'Jest+Vitest=WARN',a:{dev_methods:'TDD, Jest, Vitest'},expect:'warn',id:'test-framework-conflict'},
+  {name:'Vitest+noJest=noWARN',a:{dev_methods:'TDD, Vitest'},expect:'none',id:'test-framework-conflict'},
+  {name:'Jest+noVitest=noWARN',a:{dev_methods:'TDD, Jest'},expect:'none',id:'test-framework-conflict'},
+  // auth-clerk-flutter-mismatch (INFO)
+  {name:'Clerk+Flutter=INFO',a:{auth:'Clerk',mobile:'Flutter'},expect:'info',id:'auth-clerk-flutter-mismatch'},
+  {name:'Firebase+Flutter=noINFO',a:{auth:'Firebase Authentication',mobile:'Flutter'},expect:'none',id:'auth-clerk-flutter-mismatch'},
+  {name:'Clerk+noFlutter=noINFO',a:{auth:'Clerk',mobile:'PWA'},expect:'none',id:'auth-clerk-flutter-mismatch'},
+  // fe-ssr-missing-csp (INFO)
+  {name:'NextJS+noCSP=INFO',a:{frontend:'React + Next.js'},expect:'info',id:'fe-ssr-missing-csp'},
+  {name:'NextJS+CSP=noINFO',a:{frontend:'React + Next.js',future_features:'Content Security Policy CSP設定'},expect:'none',id:'fe-ssr-missing-csp'},
+  {name:'Vite+noCSP=noINFO',a:{frontend:'React + Vite'},expect:'none',id:'fe-ssr-missing-csp'},
 ];
 
 let pass=0,fail=0;

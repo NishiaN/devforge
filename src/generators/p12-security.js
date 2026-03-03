@@ -514,6 +514,32 @@ function genPillar12_SecurityIntelligence(a,pn){
     doc43+='```\n\n';
   }
 
+  if(/Cloudflare/i.test(a.deploy||'')){
+    doc43+=(G?'**Cloudflare Workers CSP ミドルウェア実装例:**\n\n':'**Cloudflare Workers CSP middleware implementation:**\n\n');
+    doc43+='```typescript\n';
+    doc43+='// Cloudflare Workers: CSP middleware (Hono)\n';
+    doc43+='import { Hono } from \'hono\';\n';
+    doc43+='import { secureHeaders } from \'hono/secure-headers\';\n\n';
+    doc43+='const app = new Hono();\n\n';
+    doc43+='app.use(\'*\', secureHeaders({\n';
+    doc43+='  contentSecurityPolicy: {\n';
+    doc43+='    defaultSrc: ["\'self\'"],\n';
+    doc43+='    scriptSrc: ["\'self\'", "\'strict-dynamic\'"],\n';
+    doc43+='    styleSrc: ["\'self\'", "\'unsafe-inline\'"],\n';
+    doc43+='    imgSrc: ["\'self\'", "data:", "https:"],\n';
+    doc43+='    connectSrc: ["\'self\'"],\n';
+    doc43+='    fontSrc: ["\'self\'"],\n';
+    doc43+='    objectSrc: ["\'none\'"],\n';
+    doc43+='    frameAncestors: ["\'none\'"],\n';
+    doc43+='    upgradeInsecureRequests: [],\n';
+    doc43+='  },\n';
+    doc43+='  xFrameOptions: \'DENY\',\n';
+    doc43+='  xContentTypeOptions: \'nosniff\',\n';
+    doc43+='  referrerPolicy: \'strict-origin-when-cross-origin\',\n';
+    doc43+='}));\n';
+    doc43+='```\n\n';
+  }
+
   doc43+=(G?'### その他の必須ヘッダー\n\n':'### Other Essential Headers\n\n');
   doc43+='```http\n';
   doc43+='Strict-Transport-Security: max-age=63072000; includeSubDomains; preload\n';
@@ -696,6 +722,45 @@ function genPillar12_SecurityIntelligence(a,pn){
     if(_isLarge43){doc43+=_chk('認可ルールのバージョン管理と変更監査ログを実装する','Implement versioned authorization rules with change audit logs');}
     doc43+='\n> '+(G?'参照: docs/119_auth_architecture_guide.md / docs/82-2_architecture_decision_records.md (ADR-004)':'See also: docs/119_auth_architecture_guide.md / docs/82-2_architecture_decision_records.md (ADR-004)')+'\n\n';
   })();
+
+  // C1: OAuth 2.0 + PKCE フロー (non-solo)
+  if((a.scale||'medium')!=='solo'){
+    doc43+='## '+(G?'🔐 OAuth 2.0 + PKCE 認可フロー':'🔐 OAuth 2.0 + PKCE Authorization Flow')+'\n\n';
+    doc43+=(G
+      ?'> PKCE (Proof Key for Code Exchange) は SPA・モバイルアプリの認可コード横取り攻撃を防ぎます。クライアントシークレット不要でセキュアです。\n\n'
+      :'> PKCE (Proof Key for Code Exchange) prevents authorization code interception attacks in SPAs and mobile apps. No client secret required.\n\n'
+    );
+    doc43+='```\n';
+    doc43+=(G
+      ?'SPA/Mobile                 Authorization Server            Resource Server\n│                              │                               │\n│ 1. code_verifier = random()  │                               │\n│    code_challenge = SHA256(code_verifier) → Base64URL         │\n│                              │                               │\n│ 2. GET /authorize?           │                               │\n│    response_type=code        │                               │\n│    &code_challenge={hash}    │                               │\n│    &code_challenge_method=S256                               │\n│ ────────────────────────────>│                               │\n│                              │                               │\n│ 3. (ユーザーログイン・同意)  │                               │\n│ <──────────────── code ──────│                               │\n│                              │                               │\n│ 4. POST /token               │                               │\n│    code={code}               │                               │\n│    code_verifier={verifier}  │ ← サーバーが SHA256 で検証   │\n│ ────────────────────────────>│                               │\n│ <──────── access_token ──────│                               │\n│                              │                               │\n│ 5. GET /api/resource         │                               │\n│    Authorization: Bearer {token}                             │\n│ ───────────────────────────────────────────────────────────>│\n'
+      :'SPA/Mobile                 Authorization Server            Resource Server\n│                              │                               │\n│ 1. code_verifier = random()  │                               │\n│    code_challenge = SHA256(code_verifier) → Base64URL         │\n│                              │                               │\n│ 2. GET /authorize?           │                               │\n│    response_type=code        │                               │\n│    &code_challenge={hash}    │                               │\n│    &code_challenge_method=S256                               │\n│ ────────────────────────────>│                               │\n│                              │                               │\n│ 3. (User login + consent)    │                               │\n│ <──────────────── code ──────│                               │\n│                              │                               │\n│ 4. POST /token               │                               │\n│    code={code}               │                               │\n│    code_verifier={verifier}  │ ← Server verifies SHA256     │\n│ ────────────────────────────>│                               │\n│ <──────── access_token ──────│                               │\n│                              │                               │\n│ 5. GET /api/resource         │                               │\n│    Authorization: Bearer {token}                             │\n│ ───────────────────────────────────────────────────────────>│\n'
+    );
+    doc43+='```\n\n';
+    doc43+='```typescript\n// PKCE: Generate code_verifier and code_challenge (SPA side)\nfunction generatePKCE(): { verifier: string; challenge: string } {\n  const verifier = btoa(String.fromCharCode(...crypto.getRandomValues(new Uint8Array(32))))\n    .replace(/\\+/g, \'-\').replace(/\\//g, \'_\').replace(/=/g, \'\');\n  return crypto.subtle\n    .digest(\'SHA-256\', new TextEncoder().encode(verifier))\n    .then(buf => ({\n      verifier,\n      challenge: btoa(String.fromCharCode(...new Uint8Array(buf)))\n        .replace(/\\+/g, \'-\').replace(/\\//g, \'_\').replace(/=/g, \'\')\n    })) as unknown as { verifier: string; challenge: string };\n}\n\n// Step 1: Initiate authorization\nasync function startOAuthFlow(clientId: string, redirectUri: string) {\n  const { verifier, challenge } = await generatePKCE();\n  sessionStorage.setItem(\'pkce_verifier\', verifier); // store securely\n\n  const params = new URLSearchParams({\n    response_type: \'code\',\n    client_id: clientId,\n    redirect_uri: redirectUri,\n    code_challenge: challenge,\n    code_challenge_method: \'S256\',\n    scope: \'openid profile email\',\n    state: crypto.randomUUID(), // CSRF protection\n  });\n  window.location.href = `${AUTH_SERVER}/authorize?${params}`;\n}\n\n// Step 2: Exchange code for token\nasync function exchangeCode(code: string, redirectUri: string): Promise<string> {\n  const verifier = sessionStorage.getItem(\'pkce_verifier\')!;\n  sessionStorage.removeItem(\'pkce_verifier\');\n\n  const res = await fetch(`${AUTH_SERVER}/token`, {\n    method: \'POST\',\n    headers: { \'Content-Type\': \'application/x-www-form-urlencoded\' },\n    body: new URLSearchParams({\n      grant_type: \'authorization_code\',\n      code, redirect_uri: redirectUri,\n      code_verifier: verifier,\n      client_id: CLIENT_ID,\n    }),\n  });\n  const { access_token } = await res.json();\n  return access_token;\n}\n```\n\n';
+  }
+
+  // C2: 認証5つの誤解 (常時生成)
+  doc43+='## '+(G?'⚠️ 認証・認可の5つの誤解':'⚠️ 5 Common Auth Misconceptions')+'\n\n';
+  doc43+=(G
+    ?'> これらの誤解はセキュリティインシデントの主要原因です。チーム全体で共有してください。\n\n'
+    :'> These misconceptions are a leading cause of security incidents. Share them with your whole team.\n\n'
+  );
+  doc43+='| '+(G?'誤解':'Misconception')+' | '+(G?'正しい理解':'Correct Understanding')+' | '+(G?'影響':'Impact')+' |\n';
+  doc43+='|------|------|------|\n';
+  doc43+=(G?
+    '| JWT = 認証 | JWT は **認可トークン**。認証は Identity Provider が担う | JWTを信じすぎてIDPの検証をスキップするリスク |\n'+
+    '| OAuth = 認証 | OAuth は **認可プロトコル**。認証は OpenID Connect (OIDC) が担う | 「Googleでログイン」はOAuth+OIDCの組合せ |\n'+
+    '| SSO = セキュリティ強化 | SSO は **UXパターン**。SSO 単独ではセキュリティは向上しない | SSOだけでMFAを省略するのは危険 |\n'+
+    '| HTTPS = 完全な安全 | HTTPS はあくまで**通信路の暗号化**。アプリ層の脆弱性は別問題 | SQLインジェクション・XSSはHTTPSでは防げない |\n'+
+    '| パスワードハッシュだけで十分 | bcrypt+ソルトは必要だが**MFA・レートリミット**も必須 | Rainbow table対策にはなるが辞書攻撃に弱い |\n'
+    :
+    '| JWT = Authentication | JWT is an **authorization token**. Authentication is done by the Identity Provider | Risk of skipping IDP validation by over-trusting JWTs |\n'+
+    '| OAuth = Authentication | OAuth is an **authorization protocol**. Authentication is handled by OpenID Connect (OIDC) | "Login with Google" combines OAuth + OIDC |\n'+
+    '| SSO = Security Enhancement | SSO is a **UX pattern**. SSO alone does not improve security | Skipping MFA because SSO is in place is dangerous |\n'+
+    '| HTTPS = Fully Secure | HTTPS only **encrypts the transport layer**. App-layer vulnerabilities are separate | SQL injection and XSS cannot be prevented by HTTPS |\n'+
+    '| Password hashing is enough | bcrypt + salt is required but **MFA + rate limiting** are also mandatory | Protects against rainbow tables but weak to dictionary attacks |\n'
+  );
+  doc43+='\n';
 
   doc43+='## '+(G?'NIST SSDF (SP 800-218) セキュア開発フレームワーク':'NIST SSDF (SP 800-218) Secure Software Development Framework')+'\n\n';
   doc43+=(G?

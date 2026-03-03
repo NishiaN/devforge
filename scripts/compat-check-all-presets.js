@@ -131,6 +131,9 @@ const NEW_RULE_IDS = [
   // v9.9 Phase D: mobile/frontend/AI boundary rules (+6)
   'mob-flutter-firebase-auth-mismatch','fe-spa-baas-realtime-scale',
   'ai-large-no-rate-limit','ai-agent-no-fallback','fe-large-no-ssr','mob-payment-no-ssl-pin',
+  // v9.10 Phase D: CSS conflict, serverless, test framework, auth, CSP rules (+6)
+  'fe-css-framework-conflict','be-serverless-cold-start','be-serverless-db-pool',
+  'test-framework-conflict','auth-clerk-flutter-mismatch','fe-ssr-missing-csp',
 ];
 
 const errorRules = Object.entries(hits).filter(([,v])=>v.level==='error');

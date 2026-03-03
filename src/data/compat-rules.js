@@ -1,4 +1,4 @@
-/* ═══ STACK COMPATIBILITY & SEMANTIC CONSISTENCY RULES — 292 rules (ERROR×33 + WARN×137 + INFO×122) ═══ */
+/* ═══ STACK COMPATIBILITY & SEMANTIC CONSISTENCY RULES — 298 rules (ERROR×33 + WARN×140 + INFO×125) ═══ */
 const COMPAT_RULES=[
   // ── FE ↔ Mobile (2 ERROR) ──
   {id:'fe-mob-expo',p:['frontend','mobile'],lv:'error',
@@ -2510,6 +2510,79 @@ const COMPAT_RULES=[
    fix:{f:'future_features',s:'SSL Certificate Pinning (モバイル決済保護)'},
    why_ja:'モバイル決済アプリはMITM攻撃の標的になります。SSL/TLS証明書ピンニングにより、偽証明書による通信傍受を防止できます。Flutter: security_pinningパッケージ。',
    why_en:'Mobile payment apps are MITM targets. SSL certificate pinning prevents interception via forged certificates. Flutter: security_pinning package.'},
+  {id:'fe-css-framework-conflict',p:['frontend'],lv:'warn',
+   t:function(a){
+    var fe=(a.frontend||'').toLowerCase();
+    var feats=(a.mvp_features||'').toLowerCase();
+    var hasTailwind=/tailwind/i.test(fe)||/tailwind/i.test(feats);
+    var hasBootstrap=/bootstrap/i.test(fe)||/bootstrap/i.test(feats);
+    return hasTailwind&&hasBootstrap;},
+   ja:'TailwindCSSとBootstrapを同時使用するとCSS競合が発生します。いずれか一方に統一してください',
+   en:'Using Tailwind CSS and Bootstrap together causes CSS conflicts. Unify to one framework',
+   fix:{f:'mvp_features',s:'TailwindCSS (Bootstrap 削除)'},
+   why_ja:'TailwindのユーティリティクラスとBootstrapのコンポーネントスタイルはCSS優先度で競合し、意図しないスタイル崩れが発生します。バンドルサイズも不必要に増加します。',
+   why_en:'Tailwind utility classes and Bootstrap component styles conflict in CSS specificity, causing unintended style breakage and unnecessary bundle size increase.'},
+  {id:'be-serverless-cold-start',p:['backend','deploy'],lv:'info',
+   t:function(a){
+    var deploy=(a.deploy||'').toLowerCase();
+    var be=(a.backend||'').toLowerCase();
+    var isServerless=/lambda|workers|vercel|netlify|cloud.function/i.test(deploy);
+    var isHeavyFW=/nestjs|spring|django/i.test(be);
+    return isServerless&&isHeavyFW;},
+   ja:'サーバーレス環境でNestJS/Spring/Djangoを使うとコールドスタート遅延が発生します (1-5秒)',
+   en:'NestJS/Spring/Django on serverless causes cold start latency (1-5 seconds)',
+   fix:{f:'backend',s:'Hono (軽量・コールドスタート最小)'},
+   why_ja:'NestJS等の重量フレームワークは起動時に大量のDIコンテナ初期化が走り、コールドスタートが1-5秒になります。Honoは5-50msで起動します。',
+   why_en:'Heavy frameworks like NestJS initialize large DI containers at startup, causing 1-5s cold starts. Hono starts in 5-50ms.'},
+  {id:'be-serverless-db-pool',p:['backend','deploy','database'],lv:'warn',
+   t:function(a){
+    var deploy=(a.deploy||'');
+    var db=(a.database||'');
+    var isServerless=/lambda|workers|Vercel|Netlify|Cloud Function/i.test(deploy);
+    var isRDB=/PostgreSQL|MySQL|Neon|Supabase/i.test(db);
+    var isBaaS=/Supabase|Firebase|Convex/i.test(a.backend||'');
+    if(isBaaS)return false;
+    var feats=(a.mvp_features||'')+(a.future_features||'');
+    var hasPool=/pgbouncer|prisma.accelerate|connection.pool|接続プール/i.test(feats);
+    return isServerless&&isRDB&&!hasPool;},
+   ja:'サーバーレス環境でRDBを使用する際はコネクションプールが必要です (PgBouncer / Prisma Accelerate)',
+   en:'RDB on serverless requires connection pooling (PgBouncer / Prisma Accelerate)',
+   fix:{f:'future_features',s:'Prisma Accelerate (コネクションプール)'},
+   why_ja:'サーバーレス関数は各リクエストで新規DBコネクションを張るため、コネクション枯渇が発生します。PgBouncer/Prisma Accelerateで接続を再利用してください。',
+   why_en:'Serverless functions open a new DB connection per request, causing connection exhaustion. Use PgBouncer or Prisma Accelerate to pool connections.'},
+  {id:'test-framework-conflict',p:['dev_methods'],lv:'warn',
+   t:function(a){
+    var methods=(a.dev_methods||'').toLowerCase();
+    var hasJest=/jest/i.test(methods);
+    var hasVitest=/vitest/i.test(methods);
+    return hasJest&&hasVitest;},
+   ja:'JestとVitestを同時指定しています。テストフレームワークは1つに統一してください',
+   en:'Both Jest and Vitest are specified. Unify to a single test framework',
+   fix:{f:'dev_methods',s:'Vitest (Viteプロジェクト推奨)'},
+   why_ja:'JestとVitestは設定・モジュール解決が異なり、同時使用するとトランスパイル競合やCI設定の重複が発生します。Viteを使う場合はVitestに統一してください。',
+   why_en:'Jest and Vitest differ in config and module resolution. Concurrent use causes transpile conflicts and CI config duplication. Unify to Vitest for Vite projects.'},
+  {id:'auth-clerk-flutter-mismatch',p:['auth','mobile'],lv:'info',
+   t:function(a){
+    var hasClerk=/clerk/i.test(a.auth||'');
+    var hasFlutter=/flutter/i.test(a.mobile||'');
+    return hasClerk&&hasFlutter;},
+   ja:'ClerkはFlutter向けの公式SDKが限定的です。Firebase Auth / Supabase Authの使用を検討してください',
+   en:'Clerk has limited official Flutter SDK support. Consider Firebase Auth or Supabase Auth',
+   fix:{f:'auth',s:'Firebase Authentication'},
+   why_ja:'ClerkはWebフレームワーク(Next.js等)向けに最適化されており、Flutter向けSDKはサードパーティ依存です。公式サポートのFirebase Auth/Supabase Authを推奨します。',
+   why_en:'Clerk is optimized for web (Next.js etc.) and Flutter SDK relies on third parties. Firebase Auth / Supabase Auth offer full official Flutter support.'},
+  {id:'fe-ssr-missing-csp',p:['frontend'],lv:'info',
+   t:function(a){
+    var fe=(a.frontend||'');
+    var isSSR=/Next\.js|Nuxt/i.test(fe);
+    var feats=(a.mvp_features||'')+(a.future_features||'');
+    var hasCsp=/CSP|content.security|コンテンツセキュリティ/i.test(feats);
+    return isSSR&&!hasCsp;},
+   ja:'Next.js/NuxtのSSRアプリにCSP設定が見当たりません。XSS防止のため設定を推奨します',
+   en:'No CSP configuration found for Next.js/Nuxt SSR app. Recommended for XSS prevention',
+   fix:{f:'future_features',s:'Content Security Policy (CSP) 設定'},
+   why_ja:'SSRアプリはクライアント/サーバー両サイドでスクリプト実行が発生します。CSPヘッダーでインラインスクリプト・外部スクリプトを制限し、XSSの影響範囲を最小化します。',
+   why_en:'SSR apps execute scripts on both client and server sides. CSP headers restrict inline and external scripts, minimizing XSS attack surface.'},
 ];
 // helpers
 function inc(v,k){return v&&typeof v==='string'&&v.indexOf(k)!==-1;}

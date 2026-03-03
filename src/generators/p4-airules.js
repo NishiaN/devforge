@@ -40,7 +40,23 @@ var SKILL_DEFS=[
    covers_ja:'SOLID原則, 重複排除, パフォーマンス, 可読性',covers_en:'SOLID principles, dedup, performance, readability',
    input:'src/ (target code), docs/16_review.md',
    judgment_ja:'重複率≤10%',judgment_en:'Duplication ≤10%',
-   next:'spec-review',tok1:60,tok2:2000}
+   next:'spec-review',tok1:60,tok2:2000},
+  {id:'security-review',role:'Operations',phase:3,
+   name_ja:'セキュリティレビュー',name_en:'Security Review',
+   what_ja:'OWASP Top 10・依存関係CVE・シークレットスキャンの包括監査',what_en:'Comprehensive audit: OWASP Top 10, dependency CVEs, secret scanning',
+   when_ja:'リリース前・新エンドポイント追加時・依存関係更新時',when_en:'Before release, on new endpoint addition, on dependency update',
+   covers_ja:'OWASP Top 10, npm audit, シークレット漏洩, 認可不備',covers_en:'OWASP Top 10, npm audit, secret leakage, broken authorization',
+   input:'src/ (API routes, auth), docs/43_security_intelligence.md, package.json',
+   judgment_ja:'CRITICAL 0件, HIGH 0件 (未承認除く)',judgment_en:'0 CRITICAL, 0 HIGH (excluding approved exceptions)',
+   next:'deploy-verify',tok1:80,tok2:4000},
+  {id:'deploy-verify',role:'Operations',phase:3,
+   name_ja:'デプロイ前検証',name_en:'Deploy Verification',
+   what_ja:'デプロイ前チェックリスト・ロールバック手順・ヘルスチェック確認',what_en:'Pre-deploy checklist, rollback procedure, and health check validation',
+   when_ja:'本番リリース前・インフラ変更前・DBマイグレーション前',when_en:'Before production release, infra change, or DB migration',
+   covers_ja:'環境変数確認, マイグレーション dry-run, ヘルスエンドポイント, ロールバック計画',covers_en:'Env var check, migration dry-run, health endpoint, rollback plan',
+   input:'.env.production (masked), docs/scaffolding/SETUP.md, docs/34_incident_response.md',
+   judgment_ja:'全ヘルスチェック200 OK, ロールバック手順文書化済',judgment_en:'All health checks 200 OK, rollback procedure documented',
+   next:'spec-review',tok1:80,tok2:3500}
 ];
 function genPillar4_AIRules(a,pn){
   const G=S.genLang==='ja';
@@ -220,6 +236,44 @@ ${coreRules}`;
     skBody+='## '+(G?'トークン見積':'Token Estimate')+'\n\n';
     skBody+='- Stage 1 (YAML frontmatter): ~'+sk.tok1+' tok\n';
     skBody+='- Stage 2 ('+(G?'スキル本文':'Skill body')+'): ~'+sk.tok2+' tok\n';
+    // Domain-specific appendix for security-review and deploy-verify
+    var _dom4=typeof detectDomain==='function'?detectDomain(a.purpose||''):'';
+    if(sk.id==='security-review'&&_dom4){
+      if(_dom4==='fintech'){
+        skBody+='\n## '+(G?'ドメイン固有チェック (Fintech)':'Domain-Specific Checks (Fintech)')+'\n\n';
+        skBody+='- '+(G?'PCI DSS SAQ-A/D 準拠確認 (カード番号・CVV の非保存)':'PCI DSS SAQ-A/D compliance: confirm no card number/CVV storage')+'\n';
+        skBody+='- '+(G?'決済API の TLS 1.2+ 強制・証明書ピンニング確認':'Payment API: enforce TLS 1.2+, verify certificate pinning')+'\n';
+        skBody+='- '+(G?'AuditLog テーブル改ざん防止 (append-only + hash chain)':'AuditLog tamper prevention (append-only + hash chain)')+'\n';
+      } else if(_dom4==='health'){
+        skBody+='\n## '+(G?'ドメイン固有チェック (Health / Medical)':'Domain-Specific Checks (Health / Medical)')+'\n\n';
+        skBody+='- '+(G?'HIPAA PHI 項目の暗号化・アクセスログ確認':'HIPAA PHI: verify encryption and access logs for all PHI fields')+'\n';
+        skBody+='- '+(G?'最小権限原則: 医師/看護師/管理者ロール分離を検証':'Least privilege: validate doctor/nurse/admin role separation')+'\n';
+        skBody+='- '+(G?'ブレイクグラス手順 (緊急アクセス) のログ監査':'Break-glass (emergency access) audit log verification')+'\n';
+      } else if(_dom4==='insurance'){
+        skBody+='\n## '+(G?'ドメイン固有チェック (Insurance)':'Domain-Specific Checks (Insurance)')+'\n\n';
+        skBody+='- '+(G?'保険契約データの暗号化 + RLS ポリシー確認':'Insurance policy data encryption + RLS policy verification')+'\n';
+        skBody+='- '+(G?'請求処理の二重承認フロー実装確認':'Claims processing dual-approval flow implementation check')+'\n';
+      } else if(_dom4==='legal'){
+        skBody+='\n## '+(G?'ドメイン固有チェック (Legal)':'Domain-Specific Checks (Legal)')+'\n\n';
+        skBody+='- '+(G?'弁護士-依頼人特権データの厳格アクセス制御確認':'Attorney-client privileged data strict access control verification')+'\n';
+        skBody+='- '+(G?'電子署名の法的有効性 (eIDAS / 電子署名法) 確認':'Electronic signature legal validity (eIDAS / e-Sign Act) check')+'\n';
+      } else if(_dom4==='ec'){
+        skBody+='\n## '+(G?'ドメイン固有チェック (EC)':'Domain-Specific Checks (EC)')+'\n\n';
+        skBody+='- '+(G?'PCI DSS: カード情報の非保存・Stripe トークン化確認':'PCI DSS: confirm no card data stored, Stripe tokenization verified')+'\n';
+        skBody+='- '+(G?'在庫ロック競合: SELECT FOR UPDATE SKIP LOCKED の実装確認':'Inventory lock: verify SELECT FOR UPDATE SKIP LOCKED implementation')+'\n';
+      }
+    }
+    if(sk.id==='deploy-verify'&&_dom4){
+      if(_dom4==='fintech'){
+        skBody+='\n## '+(G?'ドメイン固有デプロイチェック (Fintech)':'Domain-Specific Deploy Checks (Fintech)')+'\n\n';
+        skBody+='- '+(G?'決済ゲートウェイ接続テスト (Stripe Webhook 疎通確認)':'Payment gateway connectivity test (Stripe Webhook reachability)')+'\n';
+        skBody+='- '+(G?'AuditLog テーブルへの書込確認 (テスト決済トランザクション)':'AuditLog write verification (test payment transaction)')+'\n';
+      } else if(_dom4==='ec'){
+        skBody+='\n## '+(G?'ドメイン固有デプロイチェック (EC)':'Domain-Specific Deploy Checks (EC)')+'\n\n';
+        skBody+='- '+(G?'在庫同期確認: キャッシュ (Redis) と DB の整合性チェック':'Inventory sync check: Redis cache vs DB consistency validation')+'\n';
+        skBody+='- '+(G?'決済フロー E2E テスト (ステージング環境で必須)':'Payment flow E2E test (mandatory in staging environment)')+'\n';
+      }
+    }
     S.files['skills/'+sk.id+'/SKILL.md']=yFm+skBody;
   });
   // ═══ skills/README.md — スキルレジストリ (常時生成) ═══

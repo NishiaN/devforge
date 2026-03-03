@@ -106,6 +106,7 @@ function gen83(a,pn,G){
   const isGRPC=/gRPC/i.test(be);
   const isPython=/Python|Django|FastAPI/i.test(be);
   const isBaaS=/Supabase|Firebase|Convex/i.test(be);
+  var isPro83=(a.skill_level||'').includes('Professional');
 
   var doc='';
   doc+='# '+(G?'APIデザイン原則':'API Design Principles')+'\n\n';
@@ -305,6 +306,14 @@ function gen83(a,pn,G){
     doc+='| L3 '+(G?'システム全体':'System-Wide')+' | '+(G?'全エンドポイント':'All endpoints')+' | nginx / Cloudflare | 1000 req/min | `Retry-After` |\n';
     doc+='\n';
     doc+='```typescript\nimport rateLimit from \'express-rate-limit\';\nimport RedisStore from \'rate-limit-redis\';\n\n// L1: Strict limit for auth endpoints\nconst authLimiter = rateLimit({ windowMs: 60_000, limit: 10,\n  message: { error: \'Too many auth attempts\' } });\n\n// L2: Per-user limit with Redis (distributed)\nconst userLimiter = rateLimit({ windowMs: 15 * 60_000, limit: 100,\n  keyGenerator: (req) => req.user?.id || req.ip,\n  store: new RedisStore({ client: redis }) });\n\n// L3: System-wide fallback\nconst globalLimiter = rateLimit({ windowMs: 60_000, limit: 1000 });\n\n// Apply in order: global → user → endpoint\napp.use(globalLimiter);\napp.use(\'/api\', userLimiter);\napp.post(\'/api/auth/login\', authLimiter, loginHandler);\n```\n\n';
+    if(isPro83){
+      doc+='### '+(G?'⚙️ Sliding Window Counter (Redis ZSET)':'⚙️ Sliding Window Counter (Redis ZSET)')+'\n\n';
+      doc+=(G
+        ?'> Fixed Window では境界付近のバースト (2倍リクエスト) が発生します。Sliding Window Counter は正確な時間窓でリクエストを制限します。\n\n'
+        :'> Fixed Window allows burst (2× requests) near boundaries. Sliding Window Counter enforces a precise rolling window.\n\n'
+      );
+      doc+='```typescript\n// Redis ZSET-based Sliding Window Counter\nasync function slidingWindowRateLimit(\n  redis: Redis,\n  key: string,\n  limit: number,\n  windowMs: number\n): Promise<{ allowed: boolean; remaining: number }> {\n  const now = Date.now();\n  const windowStart = now - windowMs;\n\n  // Remove expired entries and count current window in one pipeline\n  const pipeline = redis.pipeline();\n  pipeline.zremrangebyscore(key, 0, windowStart);       // remove old\n  pipeline.zadd(key, now, `${now}-${Math.random()}`);   // add current\n  pipeline.zcard(key);                                   // count window\n  pipeline.pexpire(key, windowMs);                       // TTL cleanup\n  const results = await pipeline.exec();\n\n  const count = (results?.[2]?.[1] as number) ?? 0;\n  return { allowed: count <= limit, remaining: Math.max(0, limit - count) };\n}\n\n// Usage in Express middleware\napp.use(\'/api/\', async (req, res, next) => {\n  const key = `rl:${req.user?.id ?? req.ip}`;\n  const { allowed, remaining } = await slidingWindowRateLimit(redis, key, 100, 60_000);\n  res.setHeader(\'X-RateLimit-Remaining\', remaining);\n  if (!allowed) return res.status(429).json({ error: \'Rate limit exceeded\' });\n  next();\n});\n```\n\n';
+    }
   }
 
   if(!isBaaS){
@@ -351,6 +360,14 @@ function gen83(a,pn,G){
       doc+='```typescript\n// Bull/BullMQ: Payment webhook queue\nimport { Queue, Worker } from \'bullmq\';\n\nconst paymentQueue = new Queue(\'payment-events\', { connection: redis });\n\n// Producer: enqueue on webhook receipt\nawait paymentQueue.add(\'stripe-webhook\', {\n  event: stripeEvent,\n  receivedAt: new Date().toISOString()\n}, { attempts: 3, backoff: { type: \'exponential\', delay: 2000 } });\n\n// Consumer: idempotent processing\nnew Worker(\'payment-events\', async (job) => {\n  await processPaymentEvent(job.data);\n}, { connection: redis, concurrency: 5 });\n```\n\n';
     }
     doc+='> '+(G?'参照: docs/120 システム設計ガイド / docs/122 並行性・整合性ガイド':'See also: docs/120 System Design Guide / docs/122 Concurrency Guide')+'\n\n';
+    // Webhook delivery pattern (non-BaaS)
+    doc+='## '+(G?'🔗 Webhook 配信パターン — 信頼性設計':'🔗 Webhook Delivery Pattern — Reliability Design')+'\n\n';
+    doc+=(G
+      ?'> Webhook 配信では指数バックオフリトライ・HMAC署名検証・冪等キーの3つが信頼性の柱です。\n\n'
+      :'> Reliable webhook delivery rests on three pillars: exponential backoff retry, HMAC signature verification, and idempotency keys.\n\n'
+    );
+    doc+='```typescript\n// ① Webhook sender: exponential backoff + HMAC-SHA256\nimport crypto from \'crypto\';\n\nasync function deliverWebhook(\n  url: string, payload: object, secret: string,\n  maxAttempts = 5\n): Promise<void> {\n  const body = JSON.stringify(payload);\n  const sig = crypto.createHmac(\'sha256\', secret).update(body).digest(\'hex\');\n  const idempotencyKey = crypto.randomUUID();\n\n  for (let attempt = 1; attempt <= maxAttempts; attempt++) {\n    try {\n      const res = await fetch(url, {\n        method: \'POST\',\n        headers: {\n          \'Content-Type\': \'application/json\',\n          \'X-Webhook-Signature\': `sha256=${sig}`,\n          \'X-Idempotency-Key\': idempotencyKey,\n        },\n        body,\n        signal: AbortSignal.timeout(10_000), // 10s timeout\n      });\n      if (res.ok) return; // success\n      throw new Error(`HTTP ${res.status}`);\n    } catch (err) {\n      if (attempt === maxAttempts) throw err;\n      const delay = Math.min(1000 * 2 ** attempt, 32_000); // 2s, 4s, 8s, 16s, 32s\n      await new Promise(r => setTimeout(r, delay + Math.random() * 500)); // jitter\n    }\n  }\n}\n```\n\n';
+    doc+='```typescript\n// ② Webhook receiver: HMAC verification + idempotency guard\nimport crypto from \'crypto\';\n\nasync function handleWebhook(req: Request, res: Response): Promise<void> {\n  const sig = req.headers[\'x-webhook-signature\'] as string;\n  const idempotencyKey = req.headers[\'x-idempotency-key\'] as string;\n  const rawBody = req.rawBody; // must use raw body for HMAC\n\n  // ② -a: HMAC verification (constant-time compare prevents timing attacks)\n  const expected = `sha256=${crypto.createHmac(\'sha256\', WEBHOOK_SECRET).update(rawBody).digest(\'hex\')}`;\n  if (!crypto.timingSafeEqual(Buffer.from(sig), Buffer.from(expected))) {\n    return res.status(401).json({ error: \'Invalid signature\' });\n  }\n\n  // ② -b: Idempotency guard (skip duplicate deliveries)\n  const alreadyProcessed = await redis.set(`wh:${idempotencyKey}`, \'1\', \'NX\', \'EX\', 86400);\n  if (!alreadyProcessed) return res.status(200).json({ status: \'duplicate_ignored\' });\n\n  await processWebhookPayload(req.body);\n  res.status(200).json({ status: \'ok\' });\n}\n```\n\n';
   }
 
   // ── API Style Selection Decision Flow (全プロジェクト) ──
@@ -496,6 +513,7 @@ function gen85(a,pn,G){
   const hasPayment=/Stripe|決済|payment/i.test(a.payment||'');
   const isPython=/Python|Django|FastAPI/i.test(be);
   const isBaaS=/Supabase|Firebase|Convex/i.test(be);
+  var isPro85=(a.skill_level||'').includes('Professional');
 
   var doc='';
   doc+='# '+(G?'APIセキュリティチェックリスト':'API Security Checklist')+'\n\n';
@@ -596,6 +614,17 @@ function gen85(a,pn,G){
     doc+='| `'+item[0]+'` | '+item[1]+' | '+item[2]+' |\n';
   });
   doc+='\n';
+  if(isPro85){
+    doc+='## '+(G?'🔑 冪等性 (Idempotency) 実装パターン':'🔑 Idempotency Implementation Patterns')+'\n\n';
+    doc+=(G
+      ?'> 決済・注文作成など「一度だけ実行すべき」APIは、ネットワーク再試行によって重複実行されるリスクがあります。冪等キーで防止します。\n\n'
+      :'> APIs that must execute exactly once (payment, order creation) risk duplicate execution from network retries. Prevent with idempotency keys.\n\n'
+    );
+    doc+='### '+(G?'パターン 1: Redis ベース (高速・TTL 管理)':'Pattern 1: Redis-based (fast, TTL management)')+'\n\n';
+    doc+='```typescript\n// middleware/idempotency.ts — Redis-based idempotency\nimport { redis } from \'../lib/redis\';\n\nexport async function idempotencyGuard(\n  req: Request, res: Response, next: NextFunction\n): Promise<void> {\n  const key = req.headers[\'idempotency-key\'] as string | undefined;\n  if (!key) return next(); // optional for non-mutating routes\n\n  const cacheKey = `idp:${req.user!.id}:${key}`;\n  const cached = await redis.get(cacheKey);\n  if (cached) {\n    res.status(200).json(JSON.parse(cached)); // replay cached response\n    return;\n  }\n\n  // Intercept response to cache it\n  const originalJson = res.json.bind(res);\n  res.json = (body: unknown) => {\n    if (res.statusCode < 300) {\n      redis.set(cacheKey, JSON.stringify(body), \'EX\', 86400); // 24h TTL\n    }\n    return originalJson(body);\n  };\n  next();\n}\n\n// Apply to mutation endpoints\napp.post(\'/api/orders\', idempotencyGuard, createOrder);\napp.post(\'/api/payments\', idempotencyGuard, processPayment);\n```\n\n';
+    doc+='### '+(G?'パターン 2: DB ベース (PostgreSQL — 永続化・監査向き)':'Pattern 2: DB-based (PostgreSQL — durable, audit-friendly)')+'\n\n';
+    doc+='```typescript\n// DB-based idempotency with PostgreSQL unique constraint\n// Migration: CREATE UNIQUE INDEX ON idempotency_keys (user_id, key);\n\nasync function withIdempotency<T>(\n  userId: string,\n  key: string,\n  fn: () => Promise<T>\n): Promise<T> {\n  // Try to claim the key atomically\n  const existing = await prisma.idempotencyKey.findUnique({\n    where: { userId_key: { userId, key } },\n  });\n  if (existing?.result) return JSON.parse(existing.result) as T;\n\n  const result = await fn();\n\n  // Upsert result (handles race conditions via unique constraint)\n  await prisma.idempotencyKey.upsert({\n    where: { userId_key: { userId, key } },\n    create: { userId, key, result: JSON.stringify(result), expiresAt: new Date(Date.now() + 86_400_000) },\n    update: {},\n  });\n  return result;\n}\n\n// Usage\nconst order = await withIdempotency(\n  req.user.id,\n  req.headers[\'idempotency-key\'] as string,\n  () => orderService.create(req.body)\n);\n```\n\n';
+  }
   doc+='---\n*'+(G?'DevForge v9 自動生成':'Generated by DevForge v9')+'*\n';
   S.files['docs/85_api_security_checklist.md']=doc;
 }

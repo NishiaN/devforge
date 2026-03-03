@@ -31,6 +31,62 @@ var DOMAIN_PERF_EXTRA={
     cache_en:['Cache LLM API responses for identical prompts (Redis TTL 1h)','Persist embedding vectors in DB (avoid regeneration cost)','Context window management to minimize unnecessary tokens'],
     alert_ja:['LLM APIエラー率 > 1% → 🔴 Critical','レスポンスP95 > 10s → 🟠 Warning','月次APIコスト > 予算の80% → 🟡 Info'],
     alert_en:['LLM API error rate > 1% → 🔴 Critical','Response P95 > 10s → 🟠 Warning','Monthly API cost > 80% of budget → 🟡 Info']},
+  education:{
+    db_ja:['学習履歴テーブルに (user_id, course_id, created_at) 複合インデックス','コース検索: pg_trgm 全文検索インデックス (タイトル・説明文)','進捗集計はマテリアライズドビューで週次更新 (重いSUM回避)'],
+    db_en:['Learning history: composite index (user_id, course_id, created_at)','Course search: pg_trgm full-text index (title, description)','Progress aggregation: materialized view refreshed weekly (avoid heavy SUM)'],
+    cache_ja:['コース一覧・シラバス: CDN + 15分キャッシュ (更新時Purge)','学習者の進捗データ: Redis TTL 5分 (頻繁更新対応)','修了証PDF: S3事前生成 + CDN配信'],
+    cache_en:['Course catalog/syllabus: CDN + 15min cache (purge on update)','Learner progress: Redis TTL 5min (frequent update tolerance)','Certificate PDFs: pre-generated on S3 + CDN delivery'],
+    alert_ja:['動画配信エラー率 > 0.5% → 🔴 Critical','ページ読込P95 > 4s → 🟠 Warning','同時受講者急増 +50% → 🟡 Info'],
+    alert_en:['Video delivery error rate > 0.5% → 🔴 Critical','Page load P95 > 4s → 🟠 Warning','Concurrent learner spike +50% → 🟡 Info']},
+  saas:{
+    db_ja:['テナントIDを全テーブルの複合インデックス先頭に配置 (RLS効率化)','プランの機能フラグ: JSONBカラム + GINインデックス (plan_features)','使用量メトリクス: TimescaleDB 時系列集計 (月次請求計算)'],
+    db_en:['Place tenant_id first in all composite indexes (RLS efficiency)','Plan feature flags: JSONB column + GIN index (plan_features)','Usage metrics: TimescaleDB time-series aggregation (monthly billing)'],
+    cache_ja:['テナント設定・プラン情報: Redis TTL 1h (変更時即時無効化)','ダッシュボード集計: 5分ごとバックグラウンド更新 (リアルタイム不要)','セッション: Redis Cluster (マルチリージョン対応)'],
+    cache_en:['Tenant config/plan info: Redis TTL 1h (invalidate on change)','Dashboard aggregations: background refresh every 5min (no real-time needed)','Session: Redis Cluster (multi-region support)'],
+    alert_ja:['API可用性 < 99.9% → 🔴 Critical (SLA違反)','P95 > 500ms → 🟠 Warning','テナントあたりDB接続 > 50 → 🟠 Warning'],
+    alert_en:['API availability < 99.9% → 🔴 Critical (SLA breach)','P95 > 500ms → 🟠 Warning','Connections per tenant > 50 → 🟠 Warning']},
+  booking:{
+    db_ja:['空き枠検索: GIST インデックス (timestamp range) + 行ロック最適化','予約競合検知: SELECT FOR UPDATE SKIP LOCKED (オーバーブッキング防止)','キャンセル待ちキュー: PostgreSQL LISTEN/NOTIFY でリアルタイム通知'],
+    db_en:['Availability search: GIST index (timestamp range) + row lock optimization','Booking conflict: SELECT FOR UPDATE SKIP LOCKED (prevent overbooking)','Waitlist queue: PostgreSQL LISTEN/NOTIFY for real-time notification'],
+    cache_ja:['空き状況カレンダー: Redis TTL 60秒 (高頻度参照)','料金マスタ: CDN + 1h キャッシュ (日次更新)','ユーザーセッション: Redis TTL 30分'],
+    cache_en:['Availability calendar: Redis TTL 60sec (high-frequency read)','Pricing master: CDN + 1h cache (daily update)','User session: Redis TTL 30min'],
+    alert_ja:['予約API P95 > 2s → 🔴 Critical','競合エラー率 > 0.1% → 🟠 Warning (ロック競合増大)','同時予約リクエスト > 100/sec → 🟡 Info'],
+    alert_en:['Booking API P95 > 2s → 🔴 Critical','Conflict error rate > 0.1% → 🟠 Warning (lock contention)','Concurrent booking requests > 100/sec → 🟡 Info']},
+  logistics:{
+    db_ja:['荷物追跡イベント: 追記専用テーブル + (tracking_id, created_at) インデックス','配送ルート計算: PostGIS 地理空間インデックス (GIST)','在庫位置情報: Redis Geo (GEOADD/GEODIST) でリアルタイム管理'],
+    db_en:['Shipment tracking events: append-only table + (tracking_id, created_at) index','Route calculation: PostGIS geospatial index (GIST)','Inventory location: Redis Geo (GEOADD/GEODIST) for real-time management'],
+    cache_ja:['追跡ステータス: Redis TTL 30秒 (高頻度更新)','配送会社API応答: Redis TTL 5分 (外部API節約)','集計レポート: 夜間バッチ生成 + S3保存'],
+    cache_en:['Tracking status: Redis TTL 30sec (high-frequency update)','Carrier API response: Redis TTL 5min (save external API calls)','Aggregated reports: nightly batch generation + S3 storage'],
+    alert_ja:['追跡API P95 > 1s → 🔴 Critical','配送会社API エラー率 > 2% → 🟠 Warning','キュー滞留 > 10,000件 → 🟠 Warning'],
+    alert_en:['Tracking API P95 > 1s → 🔴 Critical','Carrier API error rate > 2% → 🟠 Warning','Queue backlog > 10,000 items → 🟠 Warning']},
+  manufacturing:{
+    db_ja:['センサーデータ: TimescaleDB ハイパーテーブル (時系列最適化)','製品ロット追跡: (lot_id, process_step) 複合インデックス + ビットマップスキャン','設備稼働ログ: パーティションテーブル (月次) + 自動アーカイブ'],
+    db_en:['Sensor data: TimescaleDB hypertable (time-series optimized)','Product lot tracking: (lot_id, process_step) composite index + bitmap scan','Equipment operation log: monthly partitioned table + auto archive'],
+    cache_ja:['リアルタイムセンサー値: Redis Pub/Sub (TTL 10秒)','工程マスタ・BOM: Redis TTL 30分 (変更時無効化)','品質KPI: 5分集計バッファ + ダッシュボード更新'],
+    cache_en:['Real-time sensor values: Redis Pub/Sub (TTL 10sec)','Process master/BOM: Redis TTL 30min (invalidate on change)','Quality KPI: 5min aggregation buffer + dashboard update'],
+    alert_ja:['センサー欠損 > 5秒 → 🔴 Critical (設備異常疑い)','製品不良率 > 閾値 → 🔴 Critical','DBディスク使用率 > 80% → 🟠 Warning'],
+    alert_en:['Sensor data gap > 5sec → 🔴 Critical (equipment anomaly suspected)','Product defect rate > threshold → 🔴 Critical','DB disk usage > 80% → 🟠 Warning']},
+  hr:{
+    db_ja:['従業員検索: 部署/役職/スキルの複合インデックス + 全文検索','給与履歴: Partitioned Table (年次) + 暗号化カラム','勤怠ログ: 追記専用テーブル + (employee_id, date) インデックス'],
+    db_en:['Employee search: composite index (dept/title/skill) + full-text','Salary history: partitioned table (yearly) + encrypted columns','Attendance log: append-only table + (employee_id, date) index'],
+    cache_ja:['組織図: Redis TTL 10分 (変更反映遅延許容)','給与明細PDF: S3事前生成 + 認証付きURL (1h有効)','在籍確認API: Redis TTL 5分'],
+    cache_en:['Org chart: Redis TTL 10min (minor delay acceptable)','Payslip PDFs: pre-generated on S3 + signed URL (1h validity)','Employment verification API: Redis TTL 5min'],
+    alert_ja:['給与計算バッチ 遅延 > 1h → 🔴 Critical','個人情報テーブル 異常アクセス → 🔴 Critical (セキュリティ)','API P95 > 3s → 🟠 Warning'],
+    alert_en:['Payroll batch delay > 1h → 🔴 Critical','PII table abnormal access → 🔴 Critical (security)','API P95 > 3s → 🟠 Warning']},
+  realestate:{
+    db_ja:['物件検索: PostGIS + GIST インデックス (エリア・距離絞込)','物件画像メタデータ: JSONB + GINインデックス (属性検索)','閲覧履歴: (user_id, listing_id, viewed_at) 複合インデックス'],
+    db_en:['Property search: PostGIS + GIST index (area/distance filtering)','Property image metadata: JSONB + GIN index (attribute search)','View history: composite index (user_id, listing_id, viewed_at)'],
+    cache_ja:['物件リスト: CDN + 60秒キャッシュ (価格変動対応)','地図タイル: CDN長期キャッシュ (変更なし)','お気に入り・比較リスト: Redis TTL 24h'],
+    cache_en:['Property listings: CDN + 60sec cache (price change tolerance)','Map tiles: CDN long-term cache (static)','Favorites/comparison list: Redis TTL 24h'],
+    alert_ja:['物件検索 P95 > 2s → 🟠 Warning (PostGIS最適化)','画像配信エラー率 > 0.5% → 🔴 Critical','同時地図クエリ > 500/sec → 🟡 Info'],
+    alert_en:['Property search P95 > 2s → 🟠 Warning (PostGIS optimization)','Image delivery error rate > 0.5% → 🔴 Critical','Concurrent map queries > 500/sec → 🟡 Info']},
+  insurance:{
+    db_ja:['保険契約: (policy_id, status, expiry_date) インデックス + パーティション','請求履歴: 追記専用 + AuditLog (改ざん検知)','リスク評価スコア: マテリアライズドビュー (夜間再計算)'],
+    db_en:['Insurance policies: index (policy_id, status, expiry_date) + partition','Claim history: append-only + AuditLog (tamper detection)','Risk score: materialized view (nightly recalculation)'],
+    cache_ja:['保険料計算: Redis TTL 1h (レート表キャッシュ)','契約照会: Redis TTL 5分 (高頻度参照)','帳票PDF: S3事前生成 + 認証付きURL'],
+    cache_en:['Premium calculation: Redis TTL 1h (rate table cache)','Policy lookup: Redis TTL 5min (high-frequency read)','Document PDFs: pre-generated on S3 + signed URL'],
+    alert_ja:['請求処理バッチ 遅延 > 2h → 🔴 Critical','保険料計算エラー率 > 0.01% → 🔴 Critical (財務影響)','DB応答P99 > 2s → 🟠 Warning'],
+    alert_en:['Claims batch delay > 2h → 🔴 Critical','Premium calc error rate > 0.01% → 🔴 Critical (financial impact)','DB response P99 > 2s → 🟠 Warning']},
 };
 
 const CORE_WEB_VITALS=[
@@ -199,6 +255,40 @@ function gen99(a,pn){
         doc+='```typescript\n// Prisma: select only needed fields\nconst users = await prisma.user.findMany({\n  select: { id: true, name: true, email: true }, // avoid SELECT *\n  take: 20, // pagination\n  skip: (page - 1) * 20,\n  orderBy: { createdAt: \'desc\' },\n});\n```\n';
       }
     }
+  }
+
+  // Capacity planning section (non-solo)
+  if((a.scale||'medium')!=='solo'){
+    var _isLargeScale=/large/i.test(a.scale||'');
+    var _mau=_isLargeScale?'100,000':'10,000';
+    var _qps=_isLargeScale?'60':'6';
+    var _ents99=(a.entities||a.data_entities||'User, Post').split(',').map(function(e){return e.trim();}).filter(Boolean);
+    doc+='\n## '+(G?'📐 キャパシティ見積り (Little\'s Law)':'📐 Capacity Planning (Little\'s Law)')+'\n\n';
+    doc+=(G
+      ?'> **Little\'s Law**: L = λ × W（システム内平均リクエスト数 = スループット × 平均応答時間）\n\n'
+      :'> **Little\'s Law**: L = λ × W (avg requests in system = throughput × avg response time)\n\n'
+    );
+    doc+='### '+(G?'ファネルベース QPS / TPS 試算 ('+_mau+' MAU)':'Funnel-Based QPS / TPS Estimate ('+_mau+' MAU)')+'\n\n';
+    doc+='| '+(G?'指標':'Metric')+' | '+(G?'値':'Value')+' | '+(G?'計算式':'Formula')+' |\n';
+    doc+='|------|------|------|\n';
+    doc+='| MAU | '+_mau+' | '+(G?'月間アクティブユーザー':'Monthly Active Users')+' |\n';
+    doc+='| DAU | '+(_isLargeScale?'30,000':'3,000')+' | MAU × 30% |\n';
+    doc+='| '+(G?'平均セッション/日':'Avg sessions/day')+' | 3 | '+(G?'行動分析ベース':'Based on behavior analysis')+' |\n';
+    doc+='| '+(G?'リクエスト/セッション':'Requests/session')+' | 10 | '+(G?'ページ遷移・API呼出':'Page nav + API calls')+' |\n';
+    doc+='| '+(G?'ピーク係数':'Peak factor')+' | 3× | '+(G?'日次ピーク÷平均':'Daily peak ÷ average')+' |\n';
+    doc+='| **'+(G?'平均 QPS':'Avg QPS')+'** | **'+_qps+'** | DAU × 3 × 10 ÷ 86400 |\n';
+    doc+='| **'+(G?'ピーク QPS':'Peak QPS')+'** | **'+(_isLargeScale?'180':'18')+'** | '+(G?'平均':'Avg')+' × 3× |\n';
+    doc+='\n> '+(G?'💡 ピーク QPS が **'+(_isLargeScale?'180':'18')+'** であれば、シングルサーバー (4 vCPU) で対応可能です。スケールアップは QPS > 200 を目安に検討してください。':
+      '💡 Peak QPS of **'+(_isLargeScale?'180':'18')+'** is handleable on a single server (4 vCPU). Consider scaling up when QPS > 200.')+'\n\n';
+    doc+='### '+(G?'ストレージ見積り':'Storage Estimate')+'\n\n';
+    doc+='| '+(G?'エンティティ':'Entity')+' | '+(G?'行サイズ目安':'Row size')+' | '+(G?'年間レコード数':'Records/year')+' | '+(G?'年間容量':'Annual size')+' |\n';
+    doc+='|------|------|------|------|\n';
+    _ents99.slice(0,4).forEach(function(e){
+      doc+='| '+e+' | ~500 B | ~'+(_isLargeScale?'360K':'36K')+' | ~'+(_isLargeScale?'180MB':'18MB')+' |\n';
+    });
+    doc+='| '+(G?'添付ファイル (S3)':'Attachments (S3)')+' | ~2MB/件 | ~'+(_isLargeScale?'120K':'12K')+' | ~'+(_isLargeScale?'240GB':'24GB')+' |\n';
+    doc+='\n> '+(G?'📌 DB は 3年分でも数GB規模。ストレージコストはオブジェクトストレージ (S3/GCS) が支配的になります。':
+      '📌 DB stays in GB range even over 3 years. Object storage (S3/GCS) will dominate storage cost.')+'\n';
   }
 
   S.files['docs/99_performance_strategy.md']=doc;
