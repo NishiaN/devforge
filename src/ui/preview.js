@@ -485,7 +485,7 @@ function buildFileTree(){
       files.push({name:'  '+f+'.md',path:'docs/'+f+'.md'}));
   } else if(pillar===23){ // AI Safety Intelligence (P24)
     files.push({folder:true,name:'docs'});
-    ['95_ai_safety_framework','96_ai_guardrail_implementation','97_ai_model_evaluation','98_prompt_injection_defense'].forEach(f=>
+    ['95_ai_safety_framework','96_ai_guardrail_implementation','97_ai_model_evaluation','98_prompt_injection_defense','98-2_xai_transparency_guide'].forEach(f=>
       files.push({name:'  '+f+'.md',path:'docs/'+f+'.md'}));
   } else if(pillar===24){ // Performance Intelligence (P25)
     files.push({folder:true,name:'docs'});
@@ -493,7 +493,7 @@ function buildFileTree(){
       files.push({name:'  '+f+'.md',path:'docs/'+f+'.md'}));
   } else if(pillar===25){ // Observability Intelligence (P26)
     files.push({folder:true,name:'docs'});
-    ['103_observability_architecture','104_structured_logging','105_metrics_alerting','106_distributed_tracing'].forEach(f=>
+    ['103_observability_architecture','104_structured_logging','105_metrics_alerting','106_distributed_tracing','106-2_ai_runtime_monitoring'].forEach(f=>
       files.push({name:'  '+f+'.md',path:'docs/'+f+'.md'}));
   } else if(pillar===26){ // Cost Optimization Intelligence (P27)
     files.push({folder:true,name:'docs'});
@@ -536,9 +536,9 @@ function buildFileTree(){
    '83_api_design_principles','84_openapi_specification','85_api_security_checklist','86_api_testing_strategy',
    '87_database_design_principles','88_query_optimization_guide','89_migration_strategy','90_backup_disaster_recovery',
    '91_testing_strategy','92_coverage_design','93_e2e_test_architecture','94_performance_testing',
-   '95_ai_safety_framework','96_ai_guardrail_implementation','97_ai_model_evaluation','98_prompt_injection_defense',
+   '95_ai_safety_framework','96_ai_guardrail_implementation','97_ai_model_evaluation','98_prompt_injection_defense','98-2_xai_transparency_guide',
    '99_performance_strategy','100_database_performance','101_cache_strategy','102_performance_monitoring',
-   '103_observability_architecture','104_structured_logging','105_metrics_alerting','106_distributed_tracing',
+   '103_observability_architecture','104_structured_logging','105_metrics_alerting','106_distributed_tracing','106-2_ai_runtime_monitoring',
    '107_project_governance','108_uat_acceptance',
    '113_ai_collaboration_guide','114_domain_knowledge_guide','115_skill_portfolio',
    '116_estimation_prerequisites','117_deployment_environment_guide','118_project_operations_pack','119_auth_architecture_guide',

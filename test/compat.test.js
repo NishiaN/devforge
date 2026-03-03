@@ -727,6 +727,24 @@ const tests=[
   {name:'authz-model: large+10ents+hasRBAC=none',a:{scale:'large',backend:'Node.js + Express',data_entities:'A,B,C,D,E,F,G,H,I,J',mvp_features:'RBAC権限設計'},expect:'none',id:'sec-large-no-authz-model'},
   {name:'authz-model: large+9ents+noModel=none (< 10 ents)',a:{scale:'large',backend:'Node.js + Express',data_entities:'A,B,C,D,E,F,G,H,I'},expect:'none',id:'sec-large-no-authz-model'},
   {name:'authz-model: large+10ents+BaaS+noModel=none (BaaS)',a:{scale:'large',backend:'Supabase',data_entities:'A,B,C,D,E,F,G,H,I,J'},expect:'none',id:'sec-large-no-authz-model'},
+  // ── XAI/AIランタイム監視/ゼロトラストエージェント: ai-high-risk-no-xai (INFO) ──
+  {name:'xai: highRisk+AI+6ents+noXAI=info',a:{ai_auto:'RAG検索',purpose:'医療診断AIシステム',data_entities:'A,B,C,D,E,F'},expect:'info',id:'ai-high-risk-no-xai'},
+  {name:'xai: highRisk+AI+6ents+hasXAI=none',a:{ai_auto:'RAG検索',purpose:'医療診断AIシステム',data_entities:'A,B,C,D,E,F',mvp_features:'SHAP説明可能性'},expect:'none',id:'ai-high-risk-no-xai'},
+  {name:'xai: highRisk+noAI=none',a:{ai_auto:'なし',purpose:'医療診断システム',data_entities:'A,B,C,D,E,F'},expect:'none',id:'ai-high-risk-no-xai'},
+  {name:'xai: lowRisk+AI+6ents+noXAI=none (not high-risk)',a:{ai_auto:'RAG検索',purpose:'一般的なタスク管理',data_entities:'A,B,C,D,E,F'},expect:'none',id:'ai-high-risk-no-xai'},
+  {name:'xai: highRisk+AI+5ents+noXAI=none (< 6 ents)',a:{ai_auto:'RAG検索',purpose:'医療診断AIシステム',data_entities:'A,B,C,D,E'},expect:'none',id:'ai-high-risk-no-xai'},
+  // ── ai-no-cost-monitoring (INFO) ──
+  {name:'ai-cost: large+AI+8ents+noMonitor=info',a:{ai_auto:'RAG検索',scale:'large',data_entities:'A,B,C,D,E,F,G,H'},expect:'info',id:'ai-no-cost-monitoring'},
+  {name:'ai-cost: large+AI+8ents+hasLangfuse=none',a:{ai_auto:'RAG検索',scale:'large',data_entities:'A,B,C,D,E,F,G,H',mvp_features:'Langfuse monitoring'},expect:'none',id:'ai-no-cost-monitoring'},
+  {name:'ai-cost: small+AI+8ents+noMonitor=none (not large)',a:{ai_auto:'RAG検索',scale:'small',data_entities:'A,B,C,D,E,F,G,H'},expect:'none',id:'ai-no-cost-monitoring'},
+  {name:'ai-cost: large+noAI+8ents=none',a:{ai_auto:'なし',scale:'large',data_entities:'A,B,C,D,E,F,G,H'},expect:'none',id:'ai-no-cost-monitoring'},
+  {name:'ai-cost: large+AI+7ents+noMonitor=none (< 8 ents)',a:{ai_auto:'RAG検索',scale:'large',data_entities:'A,B,C,D,E,F,G'},expect:'none',id:'ai-no-cost-monitoring'},
+  // ── ai-agent-no-boundary (WARN) ──
+  {name:'agent-boundary: orchestrator+medium+noBoundary=warn',a:{ai_auto:'orchestrator',scale:'medium'},expect:'warn',id:'ai-agent-no-boundary'},
+  {name:'agent-boundary: multi-agent+large+noBoundary=warn',a:{ai_auto:'マルチエージェント協調',scale:'large'},expect:'warn',id:'ai-agent-no-boundary'},
+  {name:'agent-boundary: orchestrator+medium+hasBoundary=none',a:{ai_auto:'orchestrator',scale:'medium',mvp_features:'Zero Trust エージェント権限境界'},expect:'none',id:'ai-agent-no-boundary'},
+  {name:'agent-boundary: solo+orchestrator+noBoundary=none (solo)',a:{ai_auto:'orchestrator',scale:'solo'},expect:'none',id:'ai-agent-no-boundary'},
+  {name:'agent-boundary: RAG+medium+noBoundary=none (not orchestrator)',a:{ai_auto:'RAG検索',scale:'medium'},expect:'none',id:'ai-agent-no-boundary'},
 ];
 
 let pass=0,fail=0;

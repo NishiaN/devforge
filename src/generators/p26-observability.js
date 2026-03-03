@@ -59,6 +59,8 @@ function _obsTarget(a){
 
 function genPillar26_Observability(a,pn){
   gen103(a,pn);gen104(a,pn);gen105(a,pn);gen106(a,pn);
+  const _aiAuto=a.ai_auto||'';
+  if(_aiAuto&&!/なし|none/i.test(_aiAuto))gen106_2(a,pn);
 }
 
 function gen103(a,pn){
@@ -787,4 +789,270 @@ function gen106(a,pn){
   doc+=G?'- [ ] 障害ポストモーテム: 5 Whys + トレースからタイムライン再構築\n\n':'- [ ] Post-incident: 5 Whys + timeline reconstructed from traces\n\n';
 
   S.files['docs/106_distributed_tracing.md']=doc;
+}
+
+/* ── doc106-2: AIランタイム監視ガイド ── */
+function gen106_2(a,pn){
+  const G=S.genLang==='ja';
+  const provider=typeof _aiProvider==='function'?_aiProvider(a):'generic';
+  const dep=_obsTarget(a);
+  const scale=a.scale||'medium';
+  const isLarge=/large|大規模/i.test(scale);
+  const isCritical=isLarge||/health|medical|fintech|insurance/i.test(a.purpose||'');
+  const aiAuto=a.ai_auto||'';
+  const isOrchestrator=/orchestrator|オーケストレーター/i.test(aiAuto);
+  const isMultiAgent=/multi.?agent|マルチ.?エージェント/i.test(aiAuto);
+
+  let doc=G?
+    '# AIランタイム監視ガイド / AI Runtime Monitoring Guide\n\n':
+    '# AI Runtime Monitoring Guide\n\n';
+
+  doc+=G?
+    '> AI機能の本番運用における品質・コスト・安全性を継続的に監視するための専用ガイドです。\n> LLMコスト管理、ハルシネーション検出、ガードレール監視のベストプラクティスを提供します。\n\n':
+    '> Dedicated guide for continuous quality, cost, and safety monitoring of AI features in production.\n> Best practices for LLM cost management, hallucination detection, and guardrail monitoring.\n\n';
+
+  // §1 AI専用SLI/SLO定義
+  doc+='## '+(G?'§1 AI専用SLI/SLO定義':'§1 AI-Specific SLI/SLO Definitions')+'\n\n';
+  doc+='| '+(G?'メトリクス':'Metric')+' | SLO ('+(G?'重要':'Critical')+') | SLO ('+(G?'一般':'General')+') | '+(G?'計測方法':'Measurement')+'|\n';
+  doc+='|---|---|---|---|\n';
+  doc+='| '+(G?'ハルシネーション率':'Hallucination Rate')+' | '+(isCritical?'≤2%':'≤3%')+' | ≤5% | RAGAS / '+(G?'リファレンス照合':'Reference cross-check')+'|\n';
+  doc+='| P95 '+(G?'レイテンシ':'Latency')+' | ≤2000ms | ≤5000ms | OTel histogram |\n';
+  doc+='| '+(G?'リクエスト当たりトークン使用量':'Tokens per Request')+' | ≤4096 avg | ≤8192 avg | Provider API |\n';
+  doc+='| '+(G?'インタラクション単価':'Cost per Interaction')+' | ≤$0.05 | ≤$0.20 | Token × pricing |\n';
+  doc+='| '+(G?'ガードレール発火率':'Guardrail Fire Rate')+' | ≤5% | ≤10% | Custom metric |\n';
+  doc+='| '+(G?'モデル可用性':'Model Availability')+' | ≥99.5% | ≥99.0% | Uptime check |\n';
+  doc+='| '+(G?'ユーザー満足度':'User Satisfaction')+' | ≥80% 👍 | ≥60% 👍 | Feedback API |\n';
+  doc+='| API'+(G?'エラー率':'Error Rate')+' | ≤0.5% | ≤2% | HTTP status |\n\n';
+
+  doc+='```yaml\n';
+  doc+='# ai-slos.yaml (OpenSLO format)\n';
+  doc+='slos:\n';
+  doc+='  - name: ai_hallucination_rate\n';
+  doc+='    objective: '+(isCritical?'98.0':'95.0')+'\n';
+  doc+='    sli:\n';
+  doc+='      raw:\n';
+  doc+='        good_events_query: "ai_responses_faithful_total"\n';
+  doc+='        total_events_query: "ai_responses_total"\n';
+  doc+='  - name: ai_latency_p95\n';
+  doc+='    objective: 95.0\n';
+  doc+='    sli:\n';
+  doc+='      raw:\n';
+  doc+='        error_ratio_query: |\n';
+  doc+='          histogram_quantile(0.95, rate(ai_request_duration_ms_bucket[5m])) > 2000\n';
+  doc+='  - name: ai_cost_per_interaction\n';
+  doc+='    objective: 95.0\n';
+  doc+='    sli:\n';
+  doc+='      raw:\n';
+  doc+='        error_ratio_query: "avg(ai_cost_per_request_usd) > 0.05"\n';
+  doc+='```\n\n';
+
+  // §2 LLMコスト追跡
+  doc+='## '+(G?'§2 LLMコスト追跡ダッシュボード':'§2 LLM Cost Tracking Dashboard')+'\n\n';
+
+  if(provider==='claude'){
+    doc+='```typescript\n';
+    doc+='// lib/ai/cost-tracker.ts (Claude/Anthropic)\n';
+    doc+='const CLAUDE_PRICING = {\n';
+    doc+='  \'claude-opus-4-6\':  { input: 0.000015, output: 0.000075 },  // per token\n';
+    doc+='  \'claude-sonnet-4-6\': { input: 0.000003, output: 0.000015 },\n';
+    doc+='  \'claude-haiku-4-5\': { input: 0.00000025, output: 0.00000125 },\n';
+    doc+='};\n\n';
+  } else if(provider==='openai'){
+    doc+='```typescript\n';
+    doc+='// lib/ai/cost-tracker.ts (OpenAI)\n';
+    doc+='const OPENAI_PRICING = {\n';
+    doc+='  \'gpt-4o\':      { input: 0.0000025, output: 0.00001 },\n';
+    doc+='  \'gpt-4o-mini\': { input: 0.00000015, output: 0.0000006 },\n';
+    doc+='  \'gpt-4-turbo\': { input: 0.00001, output: 0.00003 },\n';
+    doc+='};\n\n';
+  } else {
+    doc+='```typescript\n';
+    doc+='// lib/ai/cost-tracker.ts\n';
+    doc+='const AI_PRICING: Record<string, { input: number; output: number }> = {\n';
+    doc+='  // Add your LLM provider pricing here (cost per token)\n';
+    doc+='  \'default\': { input: 0.000001, output: 0.000002 },\n';
+    doc+='};\n\n';
+  }
+
+  doc+='// Middleware: intercept all AI calls\n';
+  doc+='export function createCostTrackingMiddleware(registry: Registry) {\n';
+  doc+='  const tokenCounter = new Counter({\n';
+  doc+='    name: \'ai_tokens_total\',\n';
+  doc+='    help: \'Total LLM tokens consumed\',\n';
+  doc+='    labelNames: [\'model\', \'type\', \'endpoint\'] as const,\n';
+  doc+='    registers: [registry],\n';
+  doc+='  });\n';
+  doc+='  const costGauge = new Gauge({\n';
+  doc+='    name: \'ai_cost_usd_total\',\n';
+  doc+='    help: \'Cumulative LLM cost in USD\',\n';
+  doc+='    labelNames: [\'model\', \'endpoint\'] as const,\n';
+  doc+='    registers: [registry],\n';
+  doc+='  });\n\n';
+  doc+='  return async function trackCost<T>(fn: () => Promise<T & { usage?: { input_tokens: number; output_tokens: number }; model?: string }>) {\n';
+  doc+='    const result = await fn();\n';
+  doc+='    if (result.usage && result.model) {\n';
+  doc+='      const pricing = AI_PRICING[result.model] || AI_PRICING[\'default\'];\n';
+  doc+='      const cost = result.usage.input_tokens * pricing.input +\n';
+  doc+='                   result.usage.output_tokens * pricing.output;\n';
+  doc+='      tokenCounter.inc({ model: result.model, type: \'input\', endpoint: \'api\' }, result.usage.input_tokens);\n';
+  doc+='      tokenCounter.inc({ model: result.model, type: \'output\', endpoint: \'api\' }, result.usage.output_tokens);\n';
+  doc+='      costGauge.inc({ model: result.model, endpoint: \'api\' }, cost);\n';
+  doc+='      // Alert if cost anomaly: >2x baseline\n';
+  doc+='      if (cost > COST_BASELINE * 2) logger.warn({ cost, model: result.model }, \'ai_cost_spike\');\n';
+  doc+='    }\n';
+  doc+='    return result;\n';
+  doc+='  };\n';
+  doc+='}\n';
+  doc+='```\n\n';
+
+  doc+='### '+(G?'日次コスト集計クエリ (Prometheus)':'Daily Cost Aggregation Query (Prometheus)')+'\n\n';
+  doc+='```promql\n';
+  doc+='# '+(G?'本日のAIコスト総額 (USD)':'Total AI cost today (USD)')+'\n';
+  doc+='sum(increase(ai_cost_usd_total[24h]))\n\n';
+  doc+='# '+(G?'モデル別コスト分布':'Cost breakdown by model')+'\n';
+  doc+='sum by (model) (increase(ai_cost_usd_total[24h]))\n\n';
+  doc+='# '+(G?'コスト異常検知: 過去7日平均の2倍超':'Anomaly: >2x 7-day average')+'\n';
+  doc+='sum(rate(ai_cost_usd_total[1h])) * 24\n';
+  doc+='  > 2 * sum(rate(ai_cost_usd_total[7d])) * 24\n';
+  doc+='```\n\n';
+
+  // §3 本番ハルシネーション検出
+  doc+='## '+(G?'§3 本番ハルシネーション検出':'§3 Production Hallucination Detection')+'\n\n';
+  doc+='```typescript\n';
+  doc+='// lib/ai/hallucination-detector.ts\n\n';
+  doc+='// Strategy 1: Reference-based (RAG contexts)\n';
+  doc+='export async function detectHallucinationByRAG(\n';
+  doc+='  response: string,\n';
+  doc+='  retrievedContexts: string[]\n';
+  doc+='): Promise<{ isHallucination: boolean; faithfulnessScore: number }> {\n';
+  doc+='  // Use RAGAS faithfulness metric\n';
+  doc+='  const contextText = retrievedContexts.join(\'\\n\');\n';
+  doc+='  const supportedClaims = countSupportedClaims(response, contextText);\n';
+  doc+='  const totalClaims = countTotalClaims(response);\n';
+  doc+='  const faithfulnessScore = totalClaims > 0 ? supportedClaims / totalClaims : 1;\n';
+  doc+='  return { isHallucination: faithfulnessScore < 0.85, faithfulnessScore };\n';
+  doc+='}\n\n';
+  doc+='// Strategy 2: Self-consistency (sample multiple responses)\n';
+  doc+='export async function detectHallucinationByConsistency(\n';
+  doc+='  prompt: string,\n';
+  doc+='  sampleCount: number = 3\n';
+  doc+='): Promise<{ consistent: boolean; agreement: number }> {\n';
+  doc+='  const responses = await Promise.all(\n';
+  doc+='    Array.from({ length: sampleCount }, () => llmClient.complete(prompt))\n';
+  doc+='  );\n';
+  doc+='  const agreement = computeSemanticSimilarity(responses);\n';
+  doc+='  return { consistent: agreement > 0.8, agreement };\n';
+  doc+='}\n\n';
+  doc+='// Record metric for Prometheus\n';
+  doc+='export function recordHallucinationMetric(detected: boolean) {\n';
+  doc+='  hallucinationCounter.inc({ detected: detected ? \'yes\' : \'no\' });\n';
+  doc+='  if (detected) logger.warn(\'hallucination_detected\');\n';
+  doc+='}\n';
+  doc+='```\n\n';
+
+  // §4 プロンプト品質モニタリング
+  doc+='## '+(G?'§4 プロンプト品質モニタリング & ドリフト検出':'§4 Prompt Quality Monitoring & Drift Detection')+'\n\n';
+  doc+='```typescript\n';
+  doc+='// lib/ai/prompt-monitor.ts\n\n';
+  doc+='interface PromptVersion {\n';
+  doc+='  id: string;\n';
+  doc+='  hash: string;\n';
+  doc+='  deployedAt: string;\n';
+  doc+='  metrics: {\n';
+  doc+='    avgLatencyMs: number;\n';
+  doc+='    hallucinationRate: number;\n';
+  doc+='    userSatisfaction: number;\n';
+  doc+='    costPerRequest: number;\n';
+  doc+='  };\n';
+  doc+='}\n\n';
+  doc+='export class PromptMonitor {\n';
+  doc+='  private versions = new Map<string, PromptVersion>();\n\n';
+  doc+='  trackPromptPerformance(promptHash: string, metrics: PromptVersion[\'metrics\']) {\n';
+  doc+='    const existing = this.versions.get(promptHash);\n';
+  doc+='    if (!existing) return;\n';
+  doc+='    // Detect performance degradation\n';
+  doc+='    const degraded = (\n';
+  doc+='      metrics.hallucinationRate > existing.metrics.hallucinationRate * 1.5 ||\n';
+  doc+='      metrics.avgLatencyMs > existing.metrics.avgLatencyMs * 2 ||\n';
+  doc+='      metrics.userSatisfaction < existing.metrics.userSatisfaction * 0.8\n';
+  doc+='    );\n';
+  doc+='    if (degraded) {\n';
+  doc+='      logger.warn({ promptHash, metrics }, \'prompt_performance_degraded\');\n';
+  doc+='      // Trigger rollback alert\n';
+  doc+='      alertingService.fire(\'prompt_rollback_recommended\', { promptHash });\n';
+  doc+='    }\n';
+  doc+='  }\n';
+  doc+='}\n';
+  doc+='```\n\n';
+
+  // §5 ガードレール分析
+  doc+='## '+(G?'§5 ガードレール分析':'§5 Guardrail Analytics')+'\n\n';
+  doc+='```typescript\n';
+  doc+='// lib/ai/guardrail-analytics.ts\n\n';
+  doc+='export class GuardrailAnalytics {\n';
+  doc+='  recordEvent(type: \'input_filter\' | \'output_reject\' | \'content_block\' | \'false_positive\' | \'escalation\') {\n';
+  doc+='    guardrailCounter.inc({ type });\n';
+  doc+='    if (type === \'escalation\') {\n';
+  doc+='      logger.error(\'guardrail_escalation\', { type, ts: Date.now() });\n';
+  doc+='    }\n';
+  doc+='  }\n\n';
+  doc+='  getFireRate(window = \'1h\'): Promise<number> {\n';
+  doc+='    // Returns: blocked / total requests in window\n';
+  doc+='    return metricsClient.query(\n';
+  doc+='      `sum(rate(guardrail_events_total{type!="false_positive"}[${window}]))\n';
+  doc+='       / sum(rate(ai_requests_total[${window}]))`\n';
+  doc+='    );\n';
+  doc+='  }\n';
+  doc+='}\n';
+  doc+='```\n\n';
+
+  doc+='### '+(G?'ガードレールダッシュボードパネル (Grafana)':'Guardrail Dashboard Panels (Grafana)')+'\n\n';
+  doc+='```promql\n';
+  doc+='# '+(G?'入力フィルタ発火率 (5分ウィンドウ)':'Input filter fire rate (5min window)')+'\n';
+  doc+='sum(rate(guardrail_events_total{type="input_filter"}[5m]))\n';
+  doc+='/ sum(rate(ai_requests_total[5m]))\n\n';
+  doc+='# '+(G?'出力バリデーション拒否率':'Output validation rejection rate')+'\n';
+  doc+='sum(rate(guardrail_events_total{type="output_reject"}[5m]))\n';
+  doc+='/ sum(rate(ai_requests_total[5m]))\n\n';
+  doc+='# '+(G?'偽陽性率 (精度指標)':'False positive rate (precision metric)')+'\n';
+  doc+='sum(rate(guardrail_events_total{type="false_positive"}[24h]))\n';
+  doc+='/ sum(rate(guardrail_events_total[24h]))\n';
+  doc+='```\n\n';
+
+  // §6 AI運用ランブック
+  doc+='## '+(G?'§6 AI運用ランブック':'§6 AI Operations Runbook')+'\n\n';
+
+  var runbook=[
+    {title:G?'モデル劣化対応':'Model Degradation Response',
+     steps:G?
+       ['ハルシネーション率アラートを確認','RAGAS スコアの傾向をグラフで分析','プロンプトバージョン履歴を確認','前バージョンへのロールバックを実行','原因分析後にプロンプト修正版をデプロイ']:
+       ['Confirm hallucination rate alert','Analyze RAGAS score trend graph','Check prompt version history','Execute rollback to previous version','Deploy fixed prompt after root cause analysis']},
+    {title:G?'コストスパイク対応':'Cost Spike Response',
+     steps:G?
+       ['ai_cost_usd_total メトリクスでスパイク原因モデルを特定','異常に長いプロンプト/レスポンスのリクエストを特定','レート制限の閾値を一時引き下げ','コスト起因モデルをコスト効率の良いモデルに切り替え','根本原因修正後に閾値を元に戻す']:
+       ['Identify spiking model via ai_cost_usd_total metric','Identify requests with abnormally long prompts/responses','Temporarily lower rate limit thresholds','Switch offending model to cost-efficient alternative','Restore thresholds after root cause fix']},
+    {title:G?'ハルシネーション多発対応':'Frequent Hallucination Response',
+     steps:G?
+       ['影響エンドポイントと入力パターンを特定','RAGコンテキストの品質を確認 (retrieval precision)','システムプロンプトに追加制約を一時追加','Human-in-the-loop の閾値を引き上げ (>0.7 → レビュー必須)','モデル変更またはRAGパイプライン改修']:
+       ['Identify affected endpoints and input patterns','Verify RAG context quality (retrieval precision)','Add temporary constraints to system prompt','Raise human-in-the-loop threshold (>0.7 → review required)','Change model or revamp RAG pipeline']},
+    {title:G?'プロバイダー障害フォールバック':'Provider Failure Fallback',
+     steps:G?
+       ['プロバイダーステータスページ確認','フォールバックモデルへの自動切り替えを確認','Circuit Breaker の状態を確認','ユーザーへの機能縮退通知を検討','SLA記録の更新']:
+       ['Check provider status page','Verify automatic failover to fallback model','Confirm circuit breaker state','Consider degraded feature notice to users','Update SLA records']},
+  ];
+
+  runbook.forEach(function(r){
+    doc+='### '+r.title+'\n\n';
+    r.steps.forEach(function(s,i){doc+=(i+1)+'. '+s+'\n';});
+    doc+='\n';
+  });
+
+  doc+=G?'## 📚 関連ドキュメント\n\n':'## 📚 Related Documents\n\n';
+  doc+='- [AI Safety Framework](./95_ai_safety_framework.md)\n';
+  doc+='- [XAI & AI Transparency](./98-2_xai_transparency_guide.md)\n';
+  doc+='- [Observability Architecture](./103_observability_architecture.md)\n';
+  doc+='- [Metrics & Alerting](./105_metrics_alerting.md)\n';
+  doc+='- [Distributed Tracing](./106_distributed_tracing.md)\n';
+
+  S.files['docs/106-2_ai_runtime_monitoring.md']=doc;
 }

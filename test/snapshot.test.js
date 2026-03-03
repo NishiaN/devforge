@@ -88,14 +88,19 @@ describe('Snapshot A: LMS/Supabase/Stripe', () => {
     ai_auto: 'マルチAgent協調'
   }, 'LMS');
 
-  test('file count in range 140-204 (P21-P27 each +4 docs; +7 agents/docs113-114; +11 agentskills.io; +2 docs/116+118; +2 docs/122+123; +1 docs/117; +1 docs/124)', () => {
+  test('file count in range 140-206 (P21-P27 each +4 docs; +7 agents/docs113-114; +11 agentskills.io; +2 docs/116+118; +2 docs/122+123; +1 docs/117; +1 docs/124; +2 docs/98-2+106-2 AI)', () => {
     const count = Object.keys(files).length;
-    assert.ok(count >= 140 && count <= 204, `Expected 140-204 files (P21-P27 each +4 docs, +7 agents/docs113-114, +11 agentskills.io, +2 estimation/ops, +2 docs/122+123, +1 docs/117, +1 docs/124), got ${count}`);
+    assert.ok(count >= 140 && count <= 206, `Expected 140-206 files (P21-P27 each +4 docs, +7 agents/docs113-114, +11 agentskills.io, +2 estimation/ops, +2 docs/122+123, +1 docs/117, +1 docs/124, +2 XAI/AI-monitor), got ${count}`);
   });
 
   test('total tokens in range 12000-120000 (P21-P26 each add ~4-6K tokens, +agentskills.io skills, +docs/119+120)', () => {
     const total = Object.values(files).reduce((s, v) => s + tokens(v), 0);
     assert.ok(total >= 12000 && total <= 120000, `Expected 12K-120K tokens (P21-P26 each +4-6K + agentskills.io + docs/119+120), got ${total}`);
+  });
+
+  test('AI docs generated when ai_auto enabled (docs/98-2 and docs/106-2)', () => {
+    assert.ok(files['docs/98-2_xai_transparency_guide.md'], 'docs/98-2_xai_transparency_guide.md must be generated when ai_auto is set');
+    assert.ok(files['docs/106-2_ai_runtime_monitoring.md'], 'docs/106-2_ai_runtime_monitoring.md must be generated when ai_auto is set');
   });
 
   // Core files existence
@@ -763,6 +768,11 @@ describe('Snapshot B: Blog/Vite/Netlify', () => {
   test('file count in range 130-195 (P21-P27 each add +4 docs; +2 docs/107-108; +7 agents/docs113-114; +13 agentskills.io; +2 docs/116+118; +2 docs/122+123; +1 docs/117; +1 docs/124)', () => {
     const count = Object.keys(files).length;
     assert.ok(count >= 130 && count <= 195, `Expected 130-195 files (P21-P27 each +4 docs, +2 governance/UAT, +7 agents/docs113-114, +13 agentskills.io, +2 estimation/ops, +2 docs/122+123, +1 docs/117, +1 docs/124), got ${count}`);
+  });
+
+  test('no AI docs when no ai_auto (docs/98-2 and docs/106-2 absent)', () => {
+    assert.ok(!files['docs/98-2_xai_transparency_guide.md'], 'docs/98-2 must NOT be generated when ai_auto absent');
+    assert.ok(!files['docs/106-2_ai_runtime_monitoring.md'], 'docs/106-2 must NOT be generated when ai_auto absent');
   });
 
   test('no Stripe content when payment absent', () => {

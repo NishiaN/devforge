@@ -760,6 +760,105 @@ function genPillar12_SecurityIntelligence(a,pn){
     doc43+=(G?'- [ ] org_idでのINDEX設定 (`(org_id, id)`) が完了しているか\n':'- [ ] Index on `(org_id, id)` created for performance\n');
   }
 
+  // ── Zero Trust AI Agent Gateway (AI有効時のみ) ──
+  if(hasAI){
+    doc43+='\n---\n\n';
+    doc43+='## '+(G?'🤖 ゼロトラストAIエージェントゲートウェイ':'🤖 Zero Trust AI Agent Gateway')+'\n\n';
+    doc43+=(G?
+      '> AIエージェントを「信頼しない — 常に検証する」原則でセキュリティを設計します。\n> MCP (Model Context Protocol) を使用する場合は特に重要です。\n\n':
+      '> Apply "never trust, always verify" principle to AI agent security design.\n> Especially critical when using MCP (Model Context Protocol).\n\n');
+
+    // エージェント権限マトリクス
+    doc43+='### '+(G?'エージェント権限マトリクス':'Agent Permission Matrix')+'\n\n';
+    doc43+='| '+(G?'権限':'Permission')+' | '+(G?'デフォルト':'Default')+' | '+(G?'昇格条件':'Elevation')+' | '+(G?'監査要件':'Audit Requirement')+'|\n';
+    doc43+='|---|---|---|---|\n';
+    doc43+='| '+(G?'ファイル読取':'File Read')+' | ✅ Read-Only | — | '+(G?'ログ記録':'Log access')+'|\n';
+    doc43+='| '+(G?'ファイル書込':'File Write')+' | ❌ | '+(G?'明示的承認':'Explicit approval')+' | '+(G?'承認ログ必須':'Approval log required')+'|\n';
+    doc43+='| DB '+(G?'読取':'Read')+' | ✅ ('+( G?'スコープ限定':'Scope limited')+') | — | '+(G?'クエリログ':'Query log')+'|\n';
+    doc43+='| DB '+(G?'書込':'Write')+' | ❌ | '+(G?'明示的承認+レビュー':'Approval + review')+' | '+(G?'変更ログ必須':'Change log required')+'|\n';
+    doc43+='| '+(G?'外部API呼出':'External API Call')+' | ❌ | '+(G?'ホワイトリスト':'Whitelist only')+' | '+(G?'全リクエストログ':'Full request log')+'|\n';
+    doc43+='| '+(G?'他エージェント委任':'Agent Delegation')+' | ❌ | '+(G?'ポリシー承認':'Policy approval')+' | '+(G?'委任チェーンログ':'Delegation chain log')+'|\n\n';
+
+    // Toxic Agent Flow検出
+    doc43+='### '+(G?'Toxic Agent Flow 検出パターン':'Toxic Agent Flow Detection Patterns')+'\n\n';
+    var toxicPatterns=G?[
+      {name:'データ漏洩 (Data Exfiltration)',desc:'チェーンツール呼出による機密データ抽出',detect:'連続ツール呼出 > 5回 / 分 + 外部送信の組合せ'},
+      {name:'権限昇格 (Privilege Escalation)',desc:'エージェント委任による権限バイパス',detect:'委任チェーン深度 > 3 / 未承認スコープへのアクセス試行'},
+      {name:'コンテキスト汚染 (Context Poisoning)',desc:'偽コンテキスト注入によるシステムプロンプト操作',detect:'システムロール以外からのinstructionパターン検知'},
+      {name:'リソース枯渇 (Resource Exhaustion)',desc:'無限ループ/過剰トークン消費',detect:'単一セッション内トークン > 100K / ループ回数 > 10'},
+      {name:'サイドチャネル (Side Channel)',desc:'メタデータ・タイミングによる情報漏洩',detect:'レスポンスタイミングパターン異常 / メタデータ差分分析'},
+    ]:[
+      {name:'Data Exfiltration',desc:'Extracting sensitive data via chained tool calls',detect:'Chain of >5 tool calls/min + outbound data combination'},
+      {name:'Privilege Escalation',desc:'Permission bypass via agent delegation',detect:'Delegation chain depth >3 / Unauthorized scope access attempts'},
+      {name:'Context Poisoning',desc:'System prompt manipulation via fake context injection',detect:'Instruction pattern detected from non-system roles'},
+      {name:'Resource Exhaustion',desc:'Infinite loops / excessive token consumption',detect:'Single session tokens >100K / Loop count >10'},
+      {name:'Side Channel',desc:'Information leakage via metadata and timing',detect:'Response timing pattern anomalies / metadata diff analysis'},
+    ];
+    toxicPatterns.forEach(function(p){
+      doc43+='**'+p.name+'**\n';
+      doc43+='- '+(G?'攻撃手法':'Attack')+': '+p.desc+'\n';
+      doc43+='- '+(G?'検出方法':'Detection')+': '+p.detect+'\n\n';
+    });
+
+    // MCPセキュリティ強化チェックリスト
+    doc43+='### '+(G?'MCPセキュリティ強化チェックリスト':'MCP Security Hardening Checklist')+'\n\n';
+    var mcpChecks=G?[
+      '[ ] MCPツールのホワイトリストを明示的に定義 (許可リスト方式)',
+      '[ ] 全ツール入力にJSON Schema バリデーション実装',
+      '[ ] 全ツール出力のサニタイゼーション (XSS/Injection対策)',
+      '[ ] エージェント別レート制限 (ツール呼出回数/分)',
+      '[ ] 全エージェントアクション の構造化監査ログ (agent_id/action/target/result)',
+      '[ ] ファイルシステムアクセスのサンドボックス化 (chroot/Docker)',
+      '[ ] ネットワークアクセスのホワイトリスト制限',
+      '[ ] エージェントセッション最大時間の設定 (TTL)',
+    ]:[
+      '[ ] Explicitly define MCP tool whitelist (allowlist approach)',
+      '[ ] Implement JSON Schema validation on all tool inputs',
+      '[ ] Sanitize all tool outputs (XSS/Injection prevention)',
+      '[ ] Per-agent rate limiting (tool calls per minute)',
+      '[ ] Structured audit log for all agent actions (agent_id/action/target/result)',
+      '[ ] Sandbox file system access (chroot/Docker)',
+      '[ ] Whitelist-based network access restriction',
+      '[ ] Set maximum agent session duration (TTL)',
+    ];
+    mcpChecks.forEach(function(c){doc43+=c+'\n';});
+    doc43+='\n';
+
+    // エージェント監査証跡スキーマ
+    doc43+='### '+(G?'エージェント監査証跡スキーマ':'Agent Audit Trail Schema')+'\n\n';
+    doc43+='```typescript\n';
+    doc43+='// types/agent-audit.ts\n';
+    doc43+='interface AgentAuditEntry {\n';
+    doc43+='  agent_id: string;        // Unique agent instance ID\n';
+    doc43+='  session_id: string;\n';
+    doc43+='  timestamp: string;       // ISO 8601\n';
+    doc43+='  action: string;          // Tool name / operation\n';
+    doc43+='  target: string;          // Resource accessed (file path / API endpoint / DB table)\n';
+    doc43+='  input_hash: string;      // SHA-256 of tool input (not raw)\n';
+    doc43+='  result: \'success\' | \'denied\' | \'error\';\n';
+    doc43+='  rationale: string;       // Why this action was taken (from agent reasoning)\n';
+    doc43+='  permissions_used: string[];\n';
+    doc43+='  parent_agent_id?: string; // For delegation chains\n';
+    doc43+='  compliance_flags: {\n';
+    doc43+='    requires_human_review: boolean;\n';
+    doc43+='    sensitive_data_accessed: boolean;\n';
+    doc43+='    external_network_called: boolean;\n';
+    doc43+='  };\n';
+    doc43+='}\n\n';
+    doc43+='// Append-only audit store implementation\n';
+    doc43+='export async function appendAgentAudit(entry: AgentAuditEntry): Promise<void> {\n';
+    doc43+='  await db.agentAuditLog.create({ data: entry });\n';
+    doc43+='  if (entry.compliance_flags.requires_human_review) {\n';
+    doc43+='    await notifyComplianceTeam(entry);\n';
+    doc43+='  }\n';
+    doc43+='}\n';
+    doc43+='```\n\n';
+
+    doc43+=G?
+      '> 📎 **関連**: [P3 MCP設定](../../.claude/settings.json) / [AI Safety Framework](./95_ai_safety_framework.md) / [AI Runtime Monitoring](./106-2_ai_runtime_monitoring.md)\n':
+      '> 📎 **Related**: [P3 MCP Configuration](../../.claude/settings.json) / [AI Safety Framework](./95_ai_safety_framework.md) / [AI Runtime Monitoring](./106-2_ai_runtime_monitoring.md)\n';
+  }
+
   S.files['docs/43_security_intelligence.md']=doc43;
 
   // ═══ DOC 44: STRIDE Threat Model ═══

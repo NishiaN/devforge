@@ -124,6 +124,8 @@ const NEW_RULE_IDS = [
   'a11y-no-wcag-target','cache-large-no-redis','queue-no-deadletter','feat-flag-no-cleanup',
   // 参考資料ベース品質改善 (+2)
   'api-realtime-http-polling','sec-large-no-authz-model',
+  // XAI/AIランタイム監視/ゼロトラストエージェント (+3)
+  'ai-high-risk-no-xai','ai-no-cost-monitoring','ai-agent-no-boundary',
 ];
 
 const errorRules = Object.entries(hits).filter(([,v])=>v.level==='error');

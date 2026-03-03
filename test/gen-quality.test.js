@@ -690,10 +690,10 @@ describe('Q7: domain-specific KPI fallback in constitution §3', () => {
    ════════════════════════════════════════════════════════════════ */
 describe('Q8: Full E2E generation — file count, tokens, 25 vs 11 delta', () => {
 
-  it('A25 full generation: file count in 112-209 range', () => {
+  it('A25 full generation: file count in 112-213 range', () => {
     const f = gFull(A25);
     const count = Object.keys(f).length;
-    assert.ok(count >= 112 && count <= 211, `A25 full gen file count should be 112-211, got ${count}`);
+    assert.ok(count >= 112 && count <= 213, `A25 full gen file count should be 112-213, got ${count}`);
   });
 
   it('A25 full generation: total tokens ≥ 14000 (rich content across 24 pillars)', () => {
@@ -40921,6 +40921,30 @@ describe('Suite 352: presets-ext18 ai_agent_saas — Express/Vercel/stripe', () 
   it('payment stripe: ai_agent_saas generates business_model.md', () => {
     const f = gFull(g352_ai_agent);
     assert.ok(f['docs/38_business_model.md'], 'ai_agent_saas with stripe must generate business_model.md');
+  });
+
+  it('AI enabled: ai_agent_saas generates docs/98-2_xai_transparency_guide.md', () => {
+    const f = gFull(g352_ai_agent);
+    assert.ok(f['docs/98-2_xai_transparency_guide.md'], 'ai_agent_saas must generate XAI transparency guide (AI enabled)');
+  });
+
+  it('AI enabled: ai_agent_saas generates docs/106-2_ai_runtime_monitoring.md', () => {
+    const f = gFull(g352_ai_agent);
+    assert.ok(f['docs/106-2_ai_runtime_monitoring.md'], 'ai_agent_saas must generate AI runtime monitoring guide (AI enabled)');
+  });
+
+  it('XAI doc: contains SHAP and EU AI Act content', () => {
+    const f = gFull(g352_ai_agent);
+    const xai = f['docs/98-2_xai_transparency_guide.md'] || '';
+    assert.ok(xai.includes('SHAP'), 'XAI doc must mention SHAP technique');
+    assert.ok(xai.includes('EU AI Act') || xai.includes('Article 13'), 'XAI doc must reference EU AI Act Article 13');
+  });
+
+  it('AI monitoring doc: contains SLO and cost tracking content', () => {
+    const f = gFull(g352_ai_agent);
+    const mon = f['docs/106-2_ai_runtime_monitoring.md'] || '';
+    assert.ok(mon.includes('SLO') || mon.includes('SLI'), 'AI monitoring doc must define AI-specific SLI/SLO');
+    assert.ok(mon.includes('cost') || mon.includes('コスト'), 'AI monitoring doc must cover LLM cost tracking');
   });
 });
 

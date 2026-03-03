@@ -1,4 +1,4 @@
-/* ═══ STACK COMPATIBILITY & SEMANTIC CONSISTENCY RULES — 280 rules (ERROR×33 + WARN×135 + INFO×112) ═══ */
+/* ═══ STACK COMPATIBILITY & SEMANTIC CONSISTENCY RULES — 283 rules (ERROR×33 + WARN×136 + INFO×114) ═══ */
 const COMPAT_RULES=[
   // ── FE ↔ Mobile (2 ERROR) ──
   {id:'fe-mob-expo',p:['frontend','mobile'],lv:'error',
@@ -2355,6 +2355,47 @@ const COMPAT_RULES=[
    fix:{f:'future_features',s:'RBAC + ABAC 認可モデル設計'},
    why_ja:'エンティティ数が10を超えると、単純なロールベース管理では「ロール爆発」が発生します。RBAC（粗粒度のロール制御）とABAC（細粒度の属性ベース制御）を組み合わせることで、柔軟かつ管理可能な権限設計が実現できます。',
    why_en:'With 10+ entities, pure role-based management causes "role explosion". Combining RBAC (coarse-grained role control) with ABAC (fine-grained attribute-based control) achieves flexible yet manageable permission design.'},
+  {id:'ai-high-risk-no-xai',p:['ai_auto','purpose'],lv:'info',
+   t:function(a){
+    var aiAuto=a.ai_auto||'';
+    if(!aiAuto||/なし|none/i.test(aiAuto))return false;
+    var ents=(a.data_entities||'').split(',').map(function(e){return e.trim();}).filter(Boolean);
+    if(ents.length<6)return false;
+    var purpose=(a.purpose||'').toLowerCase();
+    var isHighRisk=/医療|health|病院|クリニック|fintech|金融|保険|insurance|法務|legal|弁護士/.test(purpose);
+    var hasXAI=/xai|shap|lime|説明可能|explainab|interpret/i.test((a.mvp_features||'')+(a.future_features||'')+(purpose));
+    return isHighRisk&&!hasXAI;},
+   ja:'高リスクドメインのAI機能にXAI/説明可能性設計がありません。EU AI Act Article 13により高リスクAIは意思決定の透明性・説明が義務付けられます。docs/98-2参照',
+   en:'AI features in high-risk domain without XAI/explainability design. EU AI Act Article 13 mandates transparency and explanation for high-risk AI decisions. See docs/98-2',
+   fix:{f:'future_features',s:'XAI/説明可能性 (SHAP/LIME) 実装'},
+   why_ja:'医療・金融・法務ドメインのAIは「高リスク」に分類され、EU AI ActはSHAP等の技術的手段による判断根拠の提供を義務付けます。未対応は規制違反リスクとなります。',
+   why_en:'AI in medical/financial/legal domains is classified "high-risk" under EU AI Act, requiring explanation of decisions via SHAP etc. Non-compliance creates regulatory risk.'},
+  {id:'ai-no-cost-monitoring',p:['ai_auto','scale'],lv:'info',
+   t:function(a){
+    var aiAuto=a.ai_auto||'';
+    if(!aiAuto||/なし|none/i.test(aiAuto))return false;
+    var ents=(a.data_entities||'').split(',').map(function(e){return e.trim();}).filter(Boolean);
+    var hasMonitoring=/langfuse|helicone|cost.track|token.count|ai_cost|コスト監視|トークン/i.test((a.mvp_features||'')+(a.future_features||''));
+    return a.scale==='large'&&ents.length>=8&&!hasMonitoring;},
+   ja:'large構成のAI機能にLLMコスト監視・予算アラート設定が確認できません。大規模運用ではトークンコストが急増するリスクがあります。docs/106-2参照',
+   en:'Large-scale AI features without LLM cost monitoring or budget alerts. Token costs can spike rapidly at scale. See docs/106-2',
+   fix:{f:'future_features',s:'LLMコスト監視 (Langfuse/Helicone)'},
+   why_ja:'AI機能は使用量に比例してコストが線形増加します。大規模システムでは月次コストが予算の10倍を超えることがあり、早期の監視体制構築が不可欠です。',
+   why_en:'AI costs scale linearly with usage. At large scale, monthly costs can exceed 10x budget. Early monitoring infrastructure is essential to prevent cost runaway.'},
+  {id:'ai-agent-no-boundary',p:['ai_auto','scale'],lv:'warn',
+   t:function(a){
+    var aiAuto=a.ai_auto||'';
+    var isAgent=/orchestrator|オーケストレーター|multi.?agent|マルチ.?エージェント/i.test(aiAuto);
+    if(!isAgent)return false;
+    var isSolo=a.scale==='solo';
+    if(isSolo)return false;
+    var hasBoundary=/agent.?boundary|permission.?matrix|zero.?trust|read.?only|権限境界|最小権限|エージェント.*監査/i.test((a.mvp_features||'')+(a.future_features||''));
+    return !hasBoundary;},
+   ja:'マルチエージェント/オーケストレーター構成に権限境界・監査設定が未定義です。エージェントの権限昇格・データ漏洩リスクを防ぐためゼロトラスト設計が必要です。docs/43参照',
+   en:'Multi-agent/orchestrator configuration without permission boundaries or audit settings. Zero-trust design required to prevent privilege escalation and data leakage. See docs/43',
+   fix:{f:'future_features',s:'エージェント権限境界・ゼロトラスト設計'},
+   why_ja:'エージェントは自律的に行動するため、従来の認証モデルでは不十分です。各エージェントを「信頼しない」原則で設計し、全アクションを監査証跡に記録することが重要です。',
+   why_en:'Agents act autonomously, making traditional auth models insufficient. Design each agent with "never trust" principles and log all actions to an immutable audit trail.'},
 ];
 // helpers
 function inc(v,k){return v&&typeof v==='string'&&v.indexOf(k)!==-1;}

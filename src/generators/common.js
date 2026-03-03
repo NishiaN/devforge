@@ -3815,6 +3815,55 @@ function genArchIntegrityCheck(files,a,compatResults,auditFindings){
     }
   }
 
+  // C-M: XAI準備度チェック (AI有効 + 高リスクドメイン)
+  if(hasAIFeature){
+    var _ai82dom=typeof detectDomain==='function'?detectDomain(a.purpose||''):'';
+    var _isHighRiskDom=/health|fintech|insurance|legal/i.test(_ai82dom||'');
+    if(_isHighRiskDom){
+      var hasXAI=Object.values(files).some(function(v){
+        return (v||'').includes('XAI')||(v||'').includes('SHAP')||(v||'').includes('LIME')||(v||'').includes('explainab')||(v||'').includes('説明可能');
+      });
+      if(!hasXAI){
+        orangeCount++;
+        rows.push({loc:'docs/98-2_xai_transparency_guide.md',src:G?'アーキテクチャチェック':'Architecture check',
+          issue:G?'高リスクドメイン ('+_ai82dom+') でAI機能が有効ですが、XAI/説明可能性 (SHAP/LIME) の実装が確認できません。EU AI Act Article 13 で透明性が要求されます':
+                 'AI features enabled in high-risk domain ('+_ai82dom+'). No XAI/explainability (SHAP/LIME) implementation detected. EU AI Act Article 13 requires transparency',
+          sev:'🟠 WARN',fix:G?'docs/98-2のXAI技法選定マトリクスを参照してください':'Refer to XAI Technique Selection Matrix in docs/98-2'});
+      }
+    }
+  }
+
+  // C-N: AIランタイム監視チェック (AI有効 + 本番デプロイ)
+  if(hasAIFeature&&isProduction){
+    var hasAIMonitoring=Object.values(files).some(function(v){
+      return (v||'').includes('Langfuse')||(v||'').includes('Helicone')||(v||'').includes('ai_cost')||(v||'').includes('hallucination')||(v||'').includes('ハルシネーション');
+    });
+    if(!hasAIMonitoring){
+      yellowCount++;
+      rows.push({loc:'docs/106-2_ai_runtime_monitoring.md',src:G?'アーキテクチャチェック':'Architecture check',
+        issue:G?'AI機能が本番環境で有効ですが、LLMコスト追跡・ハルシネーション検出・AI専用SLI/SLOの設定が確認できません':
+               'AI features enabled in production but no LLM cost tracking, hallucination detection, or AI-specific SLI/SLO configuration found',
+        sev:'🟡 INFO',fix:G?'docs/106-2のAI専用SLI/SLO定義を参照してください':'See AI-specific SLI/SLO Definitions in docs/106-2'});
+    }
+  }
+
+  // C-O: エージェント境界チェック (マルチエージェント時)
+  if(hasAIFeature){
+    var _isAgentMode=/orchestrator|オーケストレーター|multi.?agent|マルチ.?エージェント/i.test(aiAuto);
+    if(_isAgentMode){
+      var hasAgentBoundary=Object.values(files).some(function(v){
+        return (v||'').includes('agent_id')||(v||'').includes('read.?only')||(v||'').includes('permission matrix')||(v||'').includes('権限マトリクス')||(v||'').includes('Zero Trust');
+      });
+      if(!hasAgentBoundary){
+        yellowCount++;
+        rows.push({loc:'docs/43_security_intelligence.md',src:G?'アーキテクチャチェック':'Architecture check',
+          issue:G?'マルチエージェント/オーケストレーター構成ですが、エージェント権限境界・ゼロトラスト原則・監査証跡の設計が確認できません':
+                 'Multi-agent/orchestrator configuration detected but no agent permission boundary, zero-trust principles, or audit trail design found',
+          sev:'🟡 INFO',fix:G?'docs/43のゼロトラストAIエージェントゲートウェイを参照してください':'See Zero Trust AI Agent Gateway in docs/43'});
+      }
+    }
+  }
+
   // C-L: Performance monitoring for production apps (P25)
   const isProduction=/production|本番|Vercel|Netlify|AWS|GCP|Azure|Railway|Fly\.io/i.test(a.deploy||'');
   if(isProduction){

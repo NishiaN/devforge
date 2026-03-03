@@ -92,6 +92,7 @@ function genPillar24_AISafety(a,pn){
   gen96(a,pn);
   gen97(a,pn);
   gen98(a,pn);
+  if(_hasAI(a))gen98_2(a,pn);
 }
 
 /* ── doc95: AI安全性フレームワーク ── */
@@ -473,4 +474,326 @@ function gen98(a,pn){
     '1. **Detection** — Detect attack via audit logs and anomaly detection alerts\n2. **Isolation** — Immediately block the affected user/IP\n3. **Investigation** — Analyze prompt logs to identify attack vector\n4. **Remediation** — Update sanitization rules and system prompt\n5. **Reporting** — Notify security team and users as required\n6. **Prevention** — Add attack pattern to red-team test suite\n';
 
   S.files['docs/98_prompt_injection_defense.md']=doc;
+}
+
+/* ── doc98-2: XAI & AI透明性ガイド ── */
+function gen98_2(a,pn){
+  const G=S.genLang==='ja';
+  const provider=_aiProvider(a);
+  const dom=typeof detectDomain==='function'?detectDomain(a.purpose||''):'';
+  const isMedical=dom==='health'||dom==='medical';
+  const isFintech=dom==='fintech'||dom==='insurance';
+  const isLegal=dom==='legal';
+  const isHighRisk=isMedical||isFintech||isLegal;
+  const fe=a.frontend||'';
+  const isReact=/React|Next/i.test(fe);
+  const isVue=/Vue|Nuxt/i.test(fe);
+  const isSvelte=/Svelte/i.test(fe);
+
+  let doc=G?
+    '# XAI & AI透明性ガイド / XAI & AI Transparency Guide\n\n':
+    '# XAI & AI Transparency Guide\n\n';
+
+  doc+=G?
+    '> AI意思決定の説明可能性・透明性・監査可能性を確保するための実装ガイドです。\n> EU AI Act Article 13、NIST AI RMF、ISO/IEC 42001 に準拠した設計を支援します。\n\n':
+    '> Implementation guide for AI decision explainability, transparency, and auditability.\n> Supports compliance with EU AI Act Article 13, NIST AI RMF, ISO/IEC 42001.\n\n';
+
+  if(isHighRisk){
+    doc+=G?
+      '> ⚠️ **高リスクドメイン検出 ('+dom+')**: EU AI Act では医療・金融・法務ドメインのAIは「高リスク」に分類されます。XAI実装は法的要件です。\n\n':
+      '> ⚠️ **High-risk domain detected ('+dom+')**: EU AI Act classifies AI in medical/financial/legal domains as "high-risk". XAI implementation is a legal requirement.\n\n';
+  }
+
+  // §1 XAI技法選定マトリクス
+  doc+='## '+(G?'§1 XAI技法選定マトリクス':'§1 XAI Technique Selection Matrix')+'\n\n';
+  doc+='| '+(G?'技法':'Technique')+' | '+(G?'モデル種別':'Model Type')+' | '+(G?'速度':'Speed')+' | '+(G?'解釈性':'Interpretability')+' | '+(G?'用途':'Use Case')+' |\n';
+  doc+='|---|---|---|---|---|\n';
+  doc+='| **SHAP** | '+(G?'モデル非依存':'Model-agnostic')+' | '+(G?'中':'Med')+' | '+(G?'高':'High')+' | '+(G?'フィーチャー重要度':'Feature importance')+' |\n';
+  doc+='| **LIME** | '+(G?'モデル非依存':'Model-agnostic')+' | '+(G?'速':'Fast')+' | '+(G?'高':'High')+' | '+(G?'個別予測説明':'Individual prediction explanation')+' |\n';
+  doc+='| **Integrated Gradients** | '+(G?'ディープラーニング':'Deep learning')+' | '+(G?'中':'Med')+' | '+(G?'中':'Med')+' | '+(G?'勾配ベース帰属':'Gradient-based attribution')+' |\n';
+  doc+='| **Attention Visualization** | Transformer | '+(G?'速':'Fast')+' | '+(G?'中':'Med')+' | '+(G?'トークン重要度':'Token importance')+' |\n';
+  doc+='| **Counterfactual Explanations** | '+(G?'分類モデル':'Classification')+' | '+(G?'遅':'Slow')+' | '+(G?'最高':'Highest')+' | What-if '+(G?'シナリオ':'scenarios')+' |\n';
+  doc+='| **Feature Importance** | '+(G?'木系モデル':'Tree-based')+' | '+(G?'最速':'Fastest')+' | '+(G?'高':'High')+' | '+(G?'特徴量ランキング':'Feature ranking')+' |\n\n';
+
+  doc+='### '+(G?'ドメイン別推奨技法':'Domain-Specific Recommendations')+'\n\n';
+  if(isMedical){
+    doc+=G?
+      '- **医療ドメイン**: **SHAP**推奨 — 診断根拠をフィーチャー貢献度として医師に説明できます。例: 「血圧+0.3点、年齢+0.2点が高リスク判定に寄与」\n':
+      '- **Medical domain**: **SHAP** recommended — explains diagnostic basis as feature contributions to clinicians. E.g., "BP +0.3, Age +0.2 contributed to high-risk classification"\n';
+  } else if(isFintech){
+    doc+=G?
+      '- **金融・保険ドメイン**: **Feature Importance + Counterfactual**推奨 — 信用スコア要因開示 (EU GDPR Art.22) と「スコアを改善するには？」の説明に対応\n':
+      '- **Fintech/Insurance domain**: **Feature Importance + Counterfactual** recommended — credit score factor disclosure (EU GDPR Art.22) and "how to improve score" explanations\n';
+  } else if(isLegal){
+    doc+=G?
+      '- **法務ドメイン**: **Counterfactual Explanations**推奨 — 判定理由を「もし〇〇だったら結論が変わる」形式で説明することで法的説明責任を果たせます\n':
+      '- **Legal domain**: **Counterfactual Explanations** recommended — explain judgment rationale in "if X were different, the outcome would change" format for legal accountability\n';
+  } else {
+    doc+=G?
+      '- **一般ドメイン**: **LIME**推奨 — 実装が容易でモデル非依存。個別予測の説明をユーザーに提示するUIに適しています\n':
+      '- **General domain**: **LIME** recommended — easy to implement, model-agnostic. Suitable for UI presenting individual prediction explanations to users\n';
+  }
+  doc+='\n';
+
+  // §2 Model Card テンプレート
+  doc+='## '+(G?'§2 Model Card テンプレート (Google/HuggingFace標準準拠)':'§2 Model Card Template (Google/HuggingFace Standard)')+'\n\n';
+  doc+='```markdown\n';
+  doc+='# Model Card: ['+pn+' AI Model]\n\n';
+  doc+='## '+(G?'モデル概要':'Model Overview')+'\n';
+  doc+='- **'+(G?'名前':'Name')+'**: [model-name]\n';
+  doc+='- **'+(G?'バージョン':'Version')+'**: [v1.0.0]\n';
+  doc+='- **'+(G?'タイプ':'Type')+'**: [LLM / Classifier / Regressor / Multi-modal]\n';
+  doc+='- **'+(G?'意図された用途':'Intended Use')+'**: '+(G?'[ユーザーグループへのユースケース説明]':'[Use case description for target user group]')+'\n';
+  doc+='- **'+(G?'意図されない用途':'Out-of-scope Use')+'**: '+(G?'[使用してはいけないシナリオ]':'[Scenarios where this model must not be used]')+'\n\n';
+  doc+='## '+(G?'学習データ':'Training Data')+'\n';
+  doc+='- **'+(G?'ソース':'Source')+'**: [Dataset name / version]\n';
+  doc+='- **'+(G?'サイズ':'Size')+'**: [N examples]\n';
+  doc+='- **'+(G?'前処理':'Preprocessing')+'**: [Normalization / tokenization details]\n';
+  doc+='- **'+(G?'バイアス考慮':'Bias Consideration')+'**: [Known data biases and mitigations]\n\n';
+  doc+='## '+(G?'パフォーマンスメトリクス':'Performance Metrics')+'\n';
+  doc+='| '+(G?'メトリクス':'Metric')+' | '+(G?'値':'Value')+' | '+(G?'評価データセット':'Eval Dataset')+'|\n';
+  doc+='|---|---|---|\n';
+  doc+='| Accuracy | XX% | test_set_v1 |\n';
+  doc+='| '+(G?'適合率 (Precision)':'Precision')+' | XX% | test_set_v1 |\n';
+  doc+='| '+(G?'再現率 (Recall)':'Recall')+' | XX% | test_set_v1 |\n';
+  doc+='| '+(G?'公平性 (Equalized Odds)':'Fairness (Equalized Odds)')+' | XX | demographic_test |\n\n';
+  doc+='## '+(G?'倫理的考慮事項':'Ethical Considerations')+'\n';
+  doc+='- '+(G?'バイアスリスク: [対応策を記載]':'Bias risk: [describe mitigations]')+'\n';
+  doc+='- '+(G?'公平性評価: [人口統計グループ間の性能差]':'Fairness evaluation: [performance gap across demographic groups]')+'\n\n';
+  doc+='## '+(G?'制限と既知バイアス':'Limitations & Known Biases')+'\n';
+  doc+='- '+(G?'[制限1: 例) 学習データの言語バイアス]':'[Limitation 1: e.g., language bias in training data]')+'\n';
+  doc+='- '+(G?'[制限2: 例) 稀なエッジケースでの性能低下]':'[Limitation 2: e.g., degraded performance on rare edge cases]')+'\n\n';
+  doc+='## '+(G?'プロジェクト固有情報':'Project-Specific Information')+'\n';
+  doc+='- **'+(G?'エンティティ':'Entities')+'**: '+(a.data_entities||'[entities]')+'\n';
+  doc+='- **'+(G?'目的':'Purpose')+'**: '+(a.purpose||pn)+'\n';
+  doc+='```\n\n';
+
+  // §3 EU AI Act Article 13
+  doc+='## '+(G?'§3 EU AI Act Article 13 透明性チェックリスト':'§3 EU AI Act Article 13 Transparency Checklist')+'\n\n';
+  var riskLevel=isHighRisk?(G?'🔴 高リスク':'🔴 High Risk'):(G?'🟡 限定リスク':'🟡 Limited Risk');
+  doc+=(G?'**リスク分類**: '+riskLevel+'\n\n':'**Risk Classification**: '+riskLevel+'\n\n');
+  doc+='| '+(G?'項目':'Item')+' | '+(G?'要件':'Requirement')+' | '+(G?'ステータス':'Status')+'|\n';
+  doc+='|---|---|---|\n';
+  doc+='| 1. '+(G?'技術文書':'Technical Documentation')+' | '+(G?'設計・学習・テスト全工程の文書化':'Document all design, training, testing phases')+' | '+(G?'[ ] 対応中':'[ ] In Progress')+'|\n';
+  doc+='| 2. '+(G?'人間による監督':'Human Oversight')+' | '+(G?'高リスク判断への人間介入メカニズム':'Human intervention mechanism for high-risk decisions')+' | '+(isHighRisk?G?'⚠️ 必須':'⚠️ Required':G?'[ ] 推奨':'[ ] Recommended')+'|\n';
+  doc+='| 3. '+(G?'精度・ロバスト性':'Accuracy & Robustness')+' | '+(G?'定量的性能指標の継続測定':'Continuous measurement of quantitative performance metrics')+' | '+(G?'[ ] 対応中':'[ ] In Progress')+'|\n';
+  doc+='| 4. '+(G?'データガバナンス':'Data Governance')+' | '+(G?'学習データの品質・適切性・バイアス対策':'Training data quality, appropriateness, bias mitigation')+' | '+(G?'[ ] 対応中':'[ ] In Progress')+'|\n';
+  doc+='| 5. '+(G?'登録要件':'Registration')+' | '+(G?'高リスクAIはEUデータベースへの登録が必要':'High-risk AI must be registered in EU database')+' | '+(isHighRisk?G?'⚠️ 要確認':'⚠️ Check Required':G?'— 適用外':'— N/A')+'|\n';
+  doc+='| 6. '+(G?'適合性評価':'Conformity Assessment')+' | '+(G?'第三者機関による評価 (医療機器等)':'Third-party assessment required (medical devices etc.)')+' | '+(isMedical?G?'⚠️ 必須':'⚠️ Required':G?'— 適用外':'— N/A')+'|\n';
+  doc+='| 7. '+(G?'ユーザー通知':'User Notification')+' | '+(G?'AIシステムと対話していることをユーザーに通知':'Notify users they are interacting with an AI system')+' | '+(G?'[ ] 対応中':'[ ] In Progress')+'|\n';
+  doc+='| 8. '+(G?'説明提供':'Explanation Provision')+' | '+(G?'ユーザーの求めに応じた個別決定の説明':'Provide explanation of individual decisions on request')+' | '+(G?'[ ] 対応中':'[ ] In Progress')+'|\n\n';
+
+  // §4 説明UI実装パターン
+  doc+='## '+(G?'§4 説明UI実装パターン':'§4 Explanation UI Implementation Patterns')+'\n\n';
+
+  doc+='### '+(G?'パターン1: Feature Attribution Dashboard':'Pattern 1: Feature Attribution Dashboard')+'\n\n';
+  if(isReact){
+    doc+='```tsx\n';
+    doc+='// components/ExplanationPanel.tsx\n';
+    doc+='import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from \'recharts\';\n\n';
+    doc+='interface FeatureContribution {\n';
+    doc+='  feature: string;\n';
+    doc+='  value: number;\n';
+    doc+='  impact: \'positive\' | \'negative\';\n';
+    doc+='}\n\n';
+    doc+='export function ExplanationPanel({ contributions, confidence }: {\n';
+    doc+='  contributions: FeatureContribution[];\n';
+    doc+='  confidence: number;\n';
+    doc+='}) {\n';
+    doc+='  return (\n';
+    doc+='    <div className="explanation-panel">\n';
+    doc+='      <div className="confidence-meter">\n';
+    doc+='        <span>'+( G?'信頼度':'Confidence')+'</span>\n';
+    doc+='        <progress value={confidence} max={1} />\n';
+    doc+='        <span>{(confidence * 100).toFixed(1)}%</span>\n';
+    doc+='      </div>\n';
+    doc+='      <h4>'+( G?'判断根拠 (SHAP値)':'Decision Basis (SHAP values)')+'</h4>\n';
+    doc+='      <ResponsiveContainer width="100%" height={200}>\n';
+    doc+='        <BarChart data={contributions} layout="vertical">\n';
+    doc+='          <XAxis type="number" />\n';
+    doc+='          <YAxis type="category" dataKey="feature" />\n';
+    doc+='          <Tooltip />\n';
+    doc+='          <Bar dataKey="value" fill={(entry) => entry.impact === \'positive\' ? \'#22c55e\' : \'#ef4444\'} />\n';
+    doc+='        </BarChart>\n';
+    doc+='      </ResponsiveContainer>\n';
+    doc+='    </div>\n';
+    doc+='  );\n';
+    doc+='}\n';
+    doc+='```\n\n';
+  } else if(isVue){
+    doc+='```vue\n';
+    doc+='<!-- components/ExplanationPanel.vue -->\n';
+    doc+='<template>\n';
+    doc+='  <div class="explanation-panel">\n';
+    doc+='    <div class="confidence-meter">\n';
+    doc+='      <span>{{ $t(\'confidence\') }}</span>\n';
+    doc+='      <progress :value="confidence" :max="1"></progress>\n';
+    doc+='      <span>{{ (confidence * 100).toFixed(1) }}%</span>\n';
+    doc+='    </div>\n';
+    doc+='    <h4>{{ $t(\'decision_basis\') }}</h4>\n';
+    doc+='    <div v-for="c in contributions" :key="c.feature"\n';
+    doc+='         :class="[\'feature-bar\', c.impact]">\n';
+    doc+='      <span>{{ c.feature }}</span>\n';
+    doc+='      <div class="bar" :style="{ width: Math.abs(c.value) * 100 + \'%\' }"></div>\n';
+    doc+='      <span>{{ c.value.toFixed(3) }}</span>\n';
+    doc+='    </div>\n';
+    doc+='  </div>\n';
+    doc+='</template>\n';
+    doc+='```\n\n';
+  } else {
+    doc+='```typescript\n';
+    doc+='// explanation-panel.ts (Web Component / vanilla)\n';
+    doc+='function renderExplanationPanel(contributions: {feature:string;value:number}[], confidence: number) {\n';
+    doc+='  const container = document.getElementById(\'explanation\')!;\n';
+    doc+='  container.innerHTML = `\n';
+    doc+='    <div class="confidence">'+(G?'信頼度':'Confidence')+': ${(confidence*100).toFixed(1)}%</div>\n';
+    doc+='    <ul class="features">\n';
+    doc+='      ${contributions.map(c => `\n';
+    doc+='        <li class="${c.value>0?\'positive\':\'negative\'}">\n';
+    doc+='          <span>${c.feature}</span><span>${c.value.toFixed(3)}</span>\n';
+    doc+='        </li>`).join(\'\')}\n';
+    doc+='    </ul>`;\n';
+    doc+='}\n';
+    doc+='```\n\n';
+  }
+
+  doc+='### '+(G?'パターン2: 自然言語説明 (LLM Reasoning Chain)':'Pattern 2: Natural Language Explanation (LLM Reasoning Chain)')+'\n\n';
+  doc+='```typescript\n';
+  doc+='// lib/ai/explain.ts\n';
+  doc+='export async function generateNaturalExplanation(\n';
+  doc+='  prediction: Record<string, unknown>,\n';
+  doc+='  context: string\n';
+  doc+='): Promise<string> {\n';
+  if(provider==='claude'){
+    doc+='  const client = new Anthropic();\n';
+    doc+='  const response = await client.messages.create({\n';
+    doc+='    model: \'claude-opus-4-6\',\n';
+    doc+='    max_tokens: 256,\n';
+    doc+='    system: \'You are an AI explainability assistant. Provide clear, non-technical explanations for AI decisions in 2-3 sentences.\',\n';
+    doc+='    messages: [{ role: \'user\', content:\n';
+    doc+='      `Explain this AI decision: ${JSON.stringify(prediction)}\\nContext: ${context}` }]\n';
+    doc+='  });\n';
+    doc+='  return response.content[0].type === \'text\' ? response.content[0].text : \'\';\n';
+  } else {
+    doc+='  // Adapt to your LLM provider\n';
+    doc+='  const response = await llmClient.complete({\n';
+    doc+='    prompt: `Explain this AI decision: ${JSON.stringify(prediction)}\\nContext: ${context}`,\n';
+    doc+='    systemPrompt: \'Provide clear, non-technical explanations in 2-3 sentences.\',\n';
+    doc+='    maxTokens: 256,\n';
+    doc+='  });\n';
+    doc+='  return response.text;\n';
+  }
+  doc+='}\n';
+  doc+='```\n\n';
+
+  doc+='### '+(G?'パターン3: キャリブレーション済み信頼度インジケータ':'Pattern 3: Calibrated Confidence Indicator')+'\n\n';
+  doc+='```typescript\n';
+  doc+='// lib/ai/calibrate.ts\n';
+  doc+='// Platt Scaling for confidence calibration\n';
+  doc+='export function calibrateConfidence(rawScore: number, a: number = 0.8, b: number = 0.1): number {\n';
+  doc+='  // Sigmoid calibration: prevents overconfident near 0/1 predictions\n';
+  doc+='  return 1 / (1 + Math.exp(-(a * rawScore - b)));\n';
+  doc+='}\n\n';
+  doc+='export function confidenceLabel(calibrated: number): { label: string; color: string } {\n';
+  doc+='  if (calibrated >= 0.90) return { label: \''+( G?'高信頼度':'High confidence')+'\', color: \'#22c55e\' };\n';
+  doc+='  if (calibrated >= 0.70) return { label: \''+( G?'中信頼度':'Medium confidence')+'\', color: \'#f59e0b\' };\n';
+  doc+='  return { label: \''+( G?'低信頼度 — 人間レビュー推奨':'Low confidence — human review recommended')+'\', color: \'#ef4444\' };\n';
+  doc+='}\n';
+  doc+='```\n\n';
+
+  // §5 AI意思決定監査証跡
+  doc+='## '+(G?'§5 AI意思決定監査証跡':'§5 AI Decision Audit Trail')+'\n\n';
+  doc+='### '+(G?'監査ログスキーマ':'Audit Log Schema')+'\n\n';
+  doc+='```typescript\n';
+  doc+='// types/ai-audit.ts\n';
+  doc+='interface AIAuditLog {\n';
+  doc+='  id: string;               // UUID\n';
+  doc+='  timestamp: string;         // ISO 8601\n';
+  doc+='  session_id: string;\n';
+  doc+='  user_id: string;\n';
+  doc+='  model_name: string;        // e.g. "claude-opus-4-6"\n';
+  doc+='  model_version: string;\n';
+  doc+='  request_context: {\n';
+  doc+='    input_features: Record<string, unknown>;\n';
+  doc+='    prompt_hash: string;     // SHA-256 of prompt (not raw prompt)\n';
+  doc+='    token_count: number;\n';
+  doc+='  };\n';
+  doc+='  output: {\n';
+  doc+='    decision: string;\n';
+  doc+='    confidence: number;\n';
+  doc+='    explanation: string;     // Natural language explanation\n';
+  doc+='    shap_values?: Record<string, number>;\n';
+  doc+='  };\n';
+  doc+='  latency_ms: number;\n';
+  doc+='  metadata: {\n';
+  doc+='    domain: string;\n';
+  doc+='    risk_level: \'low\' | \'medium\' | \'high\';\n';
+  doc+='    human_review_required: boolean;\n';
+  doc+='  };\n';
+  doc+='}\n';
+  doc+='```\n\n';
+
+  doc+='### '+(G?'保持ポリシー (ドメイン別)':'Retention Policy (Domain-specific)')+'\n\n';
+  doc+='| '+(G?'ドメイン':'Domain')+' | '+(G?'保持期間':'Retention')+' | '+(G?'根拠':'Basis')+'|\n';
+  doc+='|---|---|---|\n';
+  doc+='| '+(G?'医療':'Medical')+'(health) | **7'+(G?'年':'years')+'** | '+(G?'医療記録保存法':'Medical Records Law')+'|\n';
+  doc+='| '+(G?'金融・保険':'Finance/Insurance')+'(fintech/insurance) | **5'+(G?'年':'years')+'** | '+(G?'金商法・保険業法':'Financial Instruments and Exchange Act')+'|\n';
+  doc+='| '+(G?'法務':'Legal')+'(legal) | **5'+(G?'年':'years')+'** | '+(G?'文書保存要件':'Document Retention Requirements')+'|\n';
+  doc+='| '+(G?'一般 SaaS':'General SaaS')+' | **1'+(G?'年':'year')+'** | '+(G?'内部ガバナンスポリシー':'Internal governance policy')+'|\n\n';
+
+  doc+='### '+(G?'監査ログ実装例':'Audit Log Implementation')+'\n\n';
+  doc+='```typescript\n';
+  doc+='// lib/ai/audit.ts\n';
+  doc+='import { createHash } from \'crypto\';\n\n';
+  doc+='export async function logAIDecision(params: {\n';
+  doc+='  userId: string;\n';
+  doc+='  sessionId: string;\n';
+  doc+='  modelName: string;\n';
+  doc+='  inputFeatures: Record<string, unknown>;\n';
+  doc+='  prompt: string;\n';
+  doc+='  decision: string;\n';
+  doc+='  confidence: number;\n';
+  doc+='  explanation: string;\n';
+  doc+='  latencyMs: number;\n';
+  doc+='}) {\n';
+  doc+='  const auditEntry: AIAuditLog = {\n';
+  doc+='    id: crypto.randomUUID(),\n';
+  doc+='    timestamp: new Date().toISOString(),\n';
+  doc+='    session_id: params.sessionId,\n';
+  doc+='    user_id: params.userId,\n';
+  doc+='    model_name: params.modelName,\n';
+  doc+='    model_version: \'v1.0\',\n';
+  doc+='    request_context: {\n';
+  doc+='      input_features: params.inputFeatures,\n';
+  doc+='      prompt_hash: createHash(\'sha256\').update(params.prompt).digest(\'hex\'),\n';
+  doc+='      token_count: params.prompt.length / 4, // rough estimate\n';
+  doc+='    },\n';
+  doc+='    output: {\n';
+  doc+='      decision: params.decision,\n';
+  doc+='      confidence: params.confidence,\n';
+  doc+='      explanation: params.explanation,\n';
+  doc+='    },\n';
+  doc+='    latency_ms: params.latencyMs,\n';
+  doc+='    metadata: {\n';
+  doc+='      domain: \''+dom+'\',\n';
+  doc+='      risk_level: '+( isHighRisk?'\'high\'':'\'low\'')+',\n';
+  doc+='      human_review_required: params.confidence < 0.9,\n';
+  doc+='    },\n';
+  doc+='  };\n';
+  doc+='  // Persist to append-only audit store (e.g. TimescaleDB / S3 / BigQuery)\n';
+  doc+='  await auditStore.append(auditEntry);\n';
+  doc+='  return auditEntry.id;\n';
+  doc+='}\n';
+  doc+='```\n\n';
+
+  doc+=G?
+    '## 📚 関連ドキュメント\n\n':
+    '## 📚 Related Documents\n\n';
+  doc+='- [AI Safety Framework](./95_ai_safety_framework.md)\n';
+  doc+='- [AI Guardrail Implementation](./96_ai_guardrail_implementation.md)\n';
+  doc+='- [AI Runtime Monitoring](./106-2_ai_runtime_monitoring.md)\n';
+  doc+='- [Security Intelligence](./43_security_intelligence.md)\n';
+  doc+='- [Agent Audit Trail](./103_observability_architecture.md)\n';
+
+  S.files['docs/98-2_xai_transparency_guide.md']=doc;
 }
