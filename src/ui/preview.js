@@ -408,6 +408,7 @@ function buildFileTree(){
      '.codex/skills/spec-review/SKILL.md','.codex/skills/code-gen/SKILL.md',
      '.codex/skills/test-gen/SKILL.md','.codex/skills/doc-gen/SKILL.md','.codex/skills/refactor/SKILL.md',
      'docs/115_skill_portfolio.md',
+     'docs/133_ai_team_orchestration.md',
      '.ai/hooks.yml','.gemini/settings.json'
     ].forEach(f=>files.push({name:f,path:f}));
   } else if(pillar===4){ // Explorer
@@ -417,7 +418,8 @@ function buildFileTree(){
   } else if(pillar===6){ // Roadmap
     files.push({folder:true,name:'roadmap'});
     ['LEARNING_PATH.md','TECH_STACK_GUIDE.md','MOBILE_GUIDE.md','TOOLS_SETUP.md',
-     'RESOURCES.md','MILESTONES.md','AI_WORKFLOW.md','AI_AUTONOMOUS.md','SAAS_COMMERCE_GUIDE.md'
+     'RESOURCES.md','MILESTONES.md','AI_WORKFLOW.md','AI_AUTONOMOUS.md','SAAS_COMMERCE_GUIDE.md',
+     'AI_ONBOARDING.md'
     ].forEach(f=>files.push({name:'  '+f,path:'roadmap/'+f}));
   } else if(pillar===7){ // AI Launcher
     files.push({name:_ja?'(AIランチャー — UIのみ)':'(AI Launcher — UI only)',path:'_launcher'});
@@ -471,7 +473,7 @@ function buildFileTree(){
       files.push({name:'  '+f+'.md',path:'docs/'+f+'.md'}));
   } else if(pillar===19){ // CI/CD Intelligence (P20)
     files.push({folder:true,name:'docs'});
-    ['77_cicd_pipeline_design','78_deployment_strategy','79_quality_gate_matrix','80_release_engineering'].forEach(f=>
+    ['77_cicd_pipeline_design','78_deployment_strategy','79_quality_gate_matrix','80_release_engineering','134_git_ai_workflow'].forEach(f=>
       files.push({name:'  '+f+'.md',path:'docs/'+f+'.md'}));
   } else if(pillar===20){ // API Intelligence (P21)
     files.push({folder:true,name:'docs'});
@@ -550,7 +552,8 @@ function buildFileTree(){
    '116_estimation_prerequisites','117_deployment_environment_guide','118_project_operations_pack','119_auth_architecture_guide',
    '120_system_design_guide','121_security_design_guide',
    '122_concurrency_consistency_guide','123_frontend_architecture_guide','124_test_quality_guide',
-   '125_healthcare_compliance_guide','126_fintech_fraud_prevention','127_manufacturing_iot_guide'].forEach(f=>
+   '125_healthcare_compliance_guide','126_fintech_fraud_prevention','127_manufacturing_iot_guide',
+   '133_ai_team_orchestration','134_git_ai_workflow'].forEach(f=>
     files.push({name:'  '+f+'.md',path:'docs/'+f+'.md'}));
   files.push({name:'───────────',path:''});
   ['README.md','.gitignore','package.json','LICENSE'].forEach(f=>files.push({name:f,path:f}));

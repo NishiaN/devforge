@@ -771,4 +771,94 @@ function genPillar20_CICDIntelligence(a, pn) {
   S.files['docs/78_deployment_strategy.md'] = gen78(G, domain, dtCfg, a, pn);
   S.files['docs/79_quality_gate_matrix.md'] = gen79(G, domain, dtCfg, a, pn);
   S.files['docs/80_release_engineering.md'] = gen80(G, domain, dtCfg, a, pn);
+  S.files['docs/134_git_ai_workflow.md'] = gen134(G, a);
+}
+
+function gen134(G,a){
+  var doc='';
+  var lv=S.skillLv||0;
+  var isB=lv<=1;
+  var isPro=lv>=5;
+  doc+='# '+(G?'docs/134: AI時代のGit・GitHubワークフロー':'docs/134: Git & GitHub Workflow for the AI Era')+'\n\n';
+  doc+='> '+(G?'DevForge v9 生成 | スキルLv: '+lv:'DevForge v9 Generated | Skill Lv: '+lv)+'\n\n';
+  doc+='## '+(G?'§1 AI開発のブランチ戦略':'§1 Branch Strategy for AI Development')+'\n\n';
+  doc+='### '+(G?'ブランチ命名規則':'Branch Naming Convention')+'\n\n';
+  doc+='```\n';
+  doc+=(G?'# 通常の機能ブランチ':'# Regular feature branches')+'\n';
+  doc+='feature/user-authentication\n';
+  doc+='fix/login-redirect-bug\n\n';
+  doc+=(G?'# AI生成コード専用ブランチ (実験・隔離)':'# AI-generated code branches (experimental, isolated)')+'\n';
+  doc+='ai/claude-refactor-auth-2024-01-15\n';
+  doc+='ai-exp/codex-new-payment-flow\n';
+  doc+='sandbox/explore-graphql-migration\n';
+  doc+='```\n\n';
+  doc+='### '+(G?'main保護ルール':'main Branch Protection Rules')+'\n\n';
+  doc+='- '+(G?'**AI直接push禁止**: `ai/`と`ai-exp/`ブランチからのdirect pushを禁止':'**No AI direct push**: Block direct push from `ai/` and `ai-exp/` branches')+'\n';
+  doc+='- '+(G?'**必須レビュー**: AI生成PRは最低1名の人間レビューが必要':'**Required review**: AI-generated PRs require at least 1 human review')+'\n';
+  doc+='- '+(G?'**ステータスチェック必須**: CI/CD全通過がマージ条件':'**Required status checks**: All CI/CD must pass before merge')+'\n\n';
+  doc+='```yaml\n# .github/branch-protection.yml\nprotection_rules:\n  main:\n    required_reviews: 1\n    dismiss_stale_reviews: true\n    require_status_checks: [ci, lint, test]\n    restrict_pushes:\n      - pattern: "ai/**"\n      - pattern: "ai-exp/**"\n```\n\n';
+  if(!isB){
+    doc+='## '+(G?'§2 AI生成コードのPR品質ゲート':'§2 PR Quality Gates for AI-Generated Code')+'\n\n';
+    doc+='### '+(G?'PRテンプレート (.github/PULL_REQUEST_TEMPLATE.md)':'PR Template (.github/PULL_REQUEST_TEMPLATE.md)')+'\n\n';
+    doc+='```markdown\n## '+(G?'変更概要':'Summary')+'\n\n';
+    doc+='- [ ] '+(G?'このPRにAI生成コードが含まれている':'This PR contains AI-generated code')+'\n';
+    doc+='- **AI Tool**: <!-- Claude Code / Cursor / Copilot -->\n\n';
+    doc+='## '+(G?'レビューチェックリスト':'Review Checklist')+'\n\n';
+    doc+=(G?'### セキュリティ':'### Security')+'\n';
+    doc+='- [ ] '+(G?'シークレット・認証情報のハードコードなし':'No hardcoded secrets or credentials')+'\n';
+    doc+='- [ ] '+(G?'SQLインジェクション・XSS脆弱性なし':'No SQL injection or XSS vulnerabilities')+'\n';
+    doc+='- [ ] '+(G?'ライセンス互換性の確認済み':'License compatibility verified')+'\n\n';
+    doc+=(G?'### 品質':'### Quality')+'\n';
+    doc+='- [ ] '+(G?'テストが追加・更新されている':'Tests added or updated')+'\n';
+    doc+='- [ ] '+(G?'カバレッジ率が低下していない':'Coverage rate has not decreased')+'\n';
+    doc+='```\n\n';
+  }
+  doc+='## '+(G?'§3 .gitignore AI拡張':'§3 AI-Enhanced .gitignore')+'\n\n';
+  doc+='```gitignore\n';
+  doc+=(G?'# APIキー・認証情報の保護':'# API Keys & Credentials Protection')+'\n';
+  doc+='.env\n.env.local\n.env.*.local\n*.pem\n*.key\n\n';
+  doc+=(G?'# AI生成中間ファイルの除外':'# AI-Generated Intermediate Files')+'\n';
+  doc+='.ai-context/\nai-drafts/\n*.ai-backup\n.claude/cache/\n\n';
+  doc+=(G?'# 環境別設定ファイル':'# Environment-Specific Config Files')+'\n';
+  doc+='.env.production\n.env.staging\nconfig/secrets.yml\n```\n\n';
+  doc+='## '+(G?'§4 災害復旧ガイド (AI生成コードのリカバリ)':'§4 Disaster Recovery (AI-Generated Code Recovery)')+'\n\n';
+  if(isB){
+    doc+='### '+(G?'GitHub Desktop操作手順 (初心者向け)':'GitHub Desktop Steps (Beginner-Friendly)')+'\n\n';
+    doc+='#### '+(G?'パターン1: 未コミット変更を破棄する':'Pattern 1: Discard Uncommitted Changes')+'\n';
+    doc+='1. '+(G?'GitHub Desktopで「Changes」タブを開く':'Open "Changes" tab in GitHub Desktop')+'\n';
+    doc+='2. '+(G?'破棄したいファイルを右クリック → "Discard Changes"':'Right-click file to discard → "Discard Changes"')+'\n';
+    doc+='3. '+(G?'確認ダイアログで "Discard Changes" ボタンをクリック':'Click "Discard Changes" in confirmation dialog')+'\n\n';
+    doc+='#### '+(G?'パターン2: コミット済み変更を取り消す':'Pattern 2: Revert a Committed Change')+'\n';
+    doc+='1. '+(G?'GitHub Desktopで「History」タブを開く':'Open "History" tab in GitHub Desktop')+'\n';
+    doc+='2. '+(G?'取り消したいコミットを右クリック → "Revert Commit"':'Right-click commit to revert → "Revert Commit"')+'\n';
+    doc+='3. '+(G?'新しい「revert commit」が自動作成される':'A new "revert commit" is automatically created')+'\n\n';
+  }else{
+    doc+='```bash\n';
+    doc+=(G?'# 未コミット変更の破棄':'# Discard uncommitted changes')+'\n';
+    doc+='git restore .  '+(G?'# 全変更を破棄':'# Discard all changes')+'\n';
+    doc+='git restore src/api/users.ts  '+(G?'# 特定ファイルのみ':'# Specific file only')+'\n\n';
+    doc+=(G?'# コミット済み変更の取り消し':'# Revert committed change')+'\n';
+    doc+='git revert HEAD  '+(G?'# 直前コミットをrevert':'# Revert last commit')+'\n';
+    doc+='git revert <commit-hash>\n\n';
+    doc+=(G?'# AI生成コード同士のコンフリクト解消':'# Resolve conflicts between AI-generated code')+'\n';
+    doc+='git mergetool\n';
+    doc+='# claude "このconflictを解消してください"\n```\n\n';
+  }
+  if(!isB){
+    doc+='## '+(G?'§5 AI協業のコミットプラクティス':'§5 Commit Practices for AI Collaboration')+'\n\n';
+    doc+='### '+(G?'コミットメッセージ規約':'Commit Message Convention')+'\n\n';
+    doc+='```\n<type>(<scope>): <subject>\n\n[optional body]\n\n';
+    doc+='Co-Authored-By: Claude Sonnet <noreply@anthropic.com>\n\n';
+    doc+=(G?'# type: feat|fix|docs|style|refactor|test|chore':'# type: feat|fix|docs|style|refactor|test|chore')+'\n\n';
+    doc+=(G?'# AI生成コードの明示例':'# Example with AI-generated code declaration')+'\n';
+    doc+='feat(auth): add JWT refresh token rotation\n\nAI-generated via Claude Code. Reviewed by: @username\n\nCo-Authored-By: Claude Sonnet <noreply@anthropic.com>\n```\n\n';
+    doc+='### '+(G?'コミット粒度の最適化 (1機能1コミット)':'Commit Granularity (1 Feature = 1 Commit)')+'\n\n';
+    doc+='- '+(G?'❌ 悪い例: AIに全部やってもらった結果を1コミット':'❌ Bad: All AI results in one giant commit')+'\n';
+    doc+='- '+(G?'✅ 良い例: 機能単位でコミット分割、各コミットにテスト含む':'✅ Good: Split commits by feature, include tests in each')+'\n\n';
+    if(isPro){
+      doc+='### '+(G?'CI統合: コミット品質の自動検証':'CI Integration: Automated Commit Quality Checks')+'\n\n';
+      doc+='```yaml\n# .github/workflows/commit-check.yml\nname: Commit Quality Check\non: [pull_request]\njobs:\n  commitlint:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - uses: wagoid/commitlint-github-action@v5\n```\n\n';
+    }
+  }
+  return doc;
 }

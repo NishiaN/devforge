@@ -902,6 +902,7 @@ CLAUDE.md        → ${G?'Claude Code用ルール':'Claude Code rules'}
     // ═══ Phase 4: AGENTS.md enhancement ═══
     S.files['AGENTS.md']+=`\n\n## Pipeline Coordination\n- Pipelines: skills/pipelines.md\n- Catalog: skills/catalog.md\n- Gates: ${aiLevel==='vibe'||aiLevel==='agentic'?'human':'auto'}\n- Error: docs/25 → retry → escalate\n- Context: AI_BRIEF.md only\n`;
   }
+  S.files['docs/133_ai_team_orchestration.md']=gen133(G,a);
 }
 
 // ═══ Phase 4: Helper Functions for CLAUDE.md 3-Layer Split ═══
@@ -1282,5 +1283,75 @@ alwaysApply: false
 - \`git reset --hard\`, \`git clean -f\`, \`DROP TABLE\`, \`DELETE\` ${G?'等は承認後のみ実行':'etc. Execute only after approval'}
 - ${G?'参照':'Reference'}: \`.claude/settings.json\` \`requireConfirmation\` ${G?'リスト':'list'}
 `;
+}
+
+function gen133(G,a){
+  var doc='';
+  var lv=S.skillLv||0;
+  var isB=lv<=1;
+  var isPro=lv>=5;
+  doc+='# '+(G?'docs/133: AIチームオーケストレーション戦略':'docs/133: AI Team Orchestration Strategy')+'\n\n';
+  doc+='> '+(G?'DevForge v9 生成 | スキルLv: '+lv+' | AI: '+(a.ai_auto||'none'):'DevForge v9 Generated | Skill Lv: '+lv+' | AI: '+(a.ai_auto||'none'))+'\n\n';
+  doc+='## '+(G?'§1 AIチーム構成戦略':'§1 AI Team Configuration Strategy')+'\n\n';
+  doc+='### '+(G?'Creator vs Operator — 役割分離マトリクス':'Creator vs Operator — Role Separation Matrix')+'\n\n';
+  doc+='| '+(G?'役割':'Role')+' | '+(G?'ツール例':'Tool Examples')+' | '+(G?'主な責務':'Primary Responsibility')+' | '+(G?'コスト最適化':'Cost Optimization')+' |\n';
+  doc+='|------|------------|------------|----------------|\n';
+  doc+='| Creator | Claude Code, Cursor | '+(G?'設計・実装・コードレビュー':'Design, implementation, code review')+' | '+(G?'Sonnet: 日常 / Opus: 複雑タスク':'Sonnet: daily / Opus: complex tasks')+' |\n';
+  doc+='| Operator | Codex, Devin, GitHub Actions | '+(G?'反復実行・CI/CD・監視':'Iterative execution, CI/CD, monitoring')+' | '+(G?'安価モデル / APIコール最小化':'Cheap models / minimize API calls')+' |\n';
+  doc+='| Reviewer | Claude (review role) | '+(G?'PR審査・品質ゲート':'PR review, quality gates')+' | '+(G?'Haiku: 定型チェック':'Haiku: routine checks')+' |\n\n';
+  doc+='### '+(G?'1人AIカンパニーのCEOマインドセット':'Solo AI Company CEO Mindset')+'\n\n';
+  doc+='- '+(G?'**戦略的委任**: タスクを「創造」「実行」「検証」に分類してAgent選定':'**Strategic delegation**: Classify tasks as Create/Execute/Verify to select agents')+'\n';
+  doc+='- '+(G?'**90/10コスト最適化**: 90%はSonnet/Haiku、残り10%の複雑タスクのみOpus':'**90/10 cost rule**: 90% Sonnet/Haiku, only 10% complex tasks use Opus')+'\n';
+  doc+='- '+(G?'**人間の役割**: 仕様承認・品質判断・倫理チェックの最終決定者':'**Human role**: Final decision-maker for spec approval, quality judgment, ethics')+'\n';
+  doc+='- '+(G?'**ROI測定**: コスト/品質/速度の3軸で週次測定':'**ROI measurement**: Weekly measurement on cost/quality/speed axes')+'\n\n';
+  if(!isB){
+    doc+='## '+(G?'§2 マルチAgent通信プロトコル':'§2 Multi-Agent Communication Protocol')+'\n\n';
+    doc+='### '+(G?'plan.md テキストベース通信':'plan.md Text-Based Communication')+'\n\n';
+    doc+='```markdown\n# Agent Handoff Plan\n## Task: [タスク名]\n## From: Creator Agent\n## To: Operator Agent\n\n### Completed\n- [x] 実装完了: src/api/users.ts\n- [x] テスト追加: test/users.test.ts (coverage 85%)\n\n### Next Steps\n- [ ] CI実行確認\n- [ ] ステージング環境デプロイ\n```\n\n';
+    doc+='### '+(G?'疎結合アーキテクチャ原則':'Loose Coupling Architecture Principles')+'\n\n';
+    doc+='- '+(G?'**直接依存禁止**: Agent間でAPIを直接呼ばない — plan.md/PRを介する':'**No direct dependencies**: Agents never call each other via API — use plan.md/PR')+'\n';
+    doc+='- '+(G?'**コンテキスト分離**: 各Agentは自分のコンテキストウィンドウのみ参照':'**Context isolation**: Each agent only references its own context window')+'\n';
+    doc+='- '+(G?'**副作用の宣言**: タスク開始時に変更対象ファイルを明示':'**Declare side effects**: Explicitly state files to be changed at task start')+'\n\n';
+    doc+='## '+(G?'§3 Agent別MCP設計':'§3 MCP Design per Agent')+'\n\n';
+    doc+='### Creator Agent MCP\n\n```json\n{\n  "mcpServers": {\n    "database": { "command": "npx", "args": ["@modelcontextprotocol/server-postgres"] },\n    "filesystem": { "command": "npx", "args": ["@modelcontextprotocol/server-filesystem", "./src"] },\n    "docs": { "command": "npx", "args": ["@modelcontextprotocol/server-fetch"] }\n  }\n}\n```\n\n';
+    doc+='### Operator Agent MCP\n\n```json\n{\n  "mcpServers": {\n    "github": { "command": "npx", "args": ["@modelcontextprotocol/server-github"] },\n    "monitoring": { "command": "npx", "args": ["@modelcontextprotocol/server-grafana"] }\n  }\n}\n```\n\n';
+    doc+='### '+(G?'セキュリティ境界 (最小権限原則)':'Security Boundaries (Principle of Least Privilege)')+'\n\n';
+    doc+='| Agent | '+(G?'読み取り':'Read')+' | '+(G?'書き込み':'Write')+' | '+(G?'実行禁止':'Forbidden')+'|\n';
+    doc+='|-------|------|-------|----------|\n';
+    doc+='| Creator | src/, docs/ | src/, docs/ | '+(G?'DB直接操作・本番':'Direct DB, production')+'|\n';
+    doc+='| Operator | '+(G?'全リポジトリ':'Full repo')+' | .github/, scripts/ | '+(G?'src/ビジネスロジック変更':'Changing src/ business logic')+'|\n';
+    doc+='| Reviewer | '+(G?'全リポジトリ(読取専用)':'Full repo (read-only)')+' | '+(G?'PRコメントのみ':'PR comments only')+' | '+(G?'コードコミット':'Code commits')+'|\n\n';
+    doc+='## '+(G?'§4 段階的導入ロードマップ':'§4 Phased Adoption Roadmap')+'\n\n';
+    doc+='### Step 1: '+(G?'単一Agent運用 (Week 1-2)':'Single Agent (Week 1-2)')+'\n';
+    doc+='- '+(G?'Claude Code単体でCreate/Execute/Reviewを担当':'Claude Code handles Create/Execute/Review alone')+'\n';
+    doc+='- '+(G?'`.claude/settings.json` でパーミッション設定を確立':'Establish permission settings in `.claude/settings.json`')+'\n\n';
+    doc+='### Step 2: Creator + Reviewer (Week 3-4)\n';
+    doc+='- '+(G?'Creator: 実装担当 | Reviewer: PR審査専用インスタンス':'Creator: Implementation | Reviewer: Dedicated PR review')+'\n';
+    doc+='- '+(G?'目標: コードレビューの自動化率 80%以上':'Goal: 80%+ code review automation')+'\n\n';
+    doc+='### Step 3: '+(G?'フルチーム (Month 2+)':'Full Team (Month 2+)')+'\n';
+    doc+='- '+(G?'Creator + Operator + Reviewer + 専門Agent (Security/Performance)':'Creator + Operator + Reviewer + Specialist Agents')+'\n';
+    doc+='- '+(G?'目標: 1人でエンタープライズ品質のリリース':'Goal: Solo enterprise-quality release')+'\n\n';
+    doc+='### '+(G?'ROI測定指標':'ROI Metrics')+'\n\n';
+    doc+='| '+(G?'指標':'Metric')+' | '+(G?'ベースライン':'Baseline')+' | Step1 | Step3 |\n';
+    doc+='|------|-----------|-------|-------|\n';
+    doc+='| '+(G?'コスト/機能':'Cost/Feature')+' | 100% | 70% | 30% |\n';
+    doc+='| '+(G?'リードタイム':'Lead Time')+' | 100% | 60% | 20% |\n';
+    doc+='| '+(G?'バグ率':'Bug Rate')+' | 100% | 80% | 50% |\n\n';
+  }
+  if(isPro){
+    doc+='## '+(G?'§5 トラブルシューティング':'§5 Troubleshooting')+'\n\n';
+    doc+='### '+(G?'Agent間コンフリクト解消':'Resolving Inter-Agent Conflicts')+'\n\n';
+    doc+='```bash\n# Creator と Operator が同じファイルを変更した場合\ngit stash\ngit pull --rebase\ngit stash pop\n```\n\n';
+    doc+='### '+(G?'コンテキスト汚染防止':'Preventing Context Contamination')+'\n\n';
+    doc+='- '+(G?'各AgentセッションはAI_BRIEF.mdのみをコンテキストとして渡す':'Pass only AI_BRIEF.md as context to each agent session')+'\n';
+    doc+='- '+(G?'セッション開始時に `/clear` でコンテキストをリセット':'Reset context with `/clear` at session start')+'\n\n';
+    doc+='### '+(G?'コスト暴走検知':'Cost Runaway Detection')+'\n\n';
+    doc+='```javascript\nconst COST_THRESHOLDS = {\n  warn: 50,   // USD/month\n  alert: 100, // USD/month\n  stop: 200,  // USD/month\n};\n```\n\n';
+    doc+='### '+(G?'高度なMCP設計パターン':'Advanced MCP Design Patterns')+'\n\n';
+    doc+='- '+(G?'**MCPゲートウェイ**: 全AgentのMCPリクエストをプロキシで一元管理':'**MCP Gateway**: Centralize all agent MCP requests through a proxy')+'\n';
+    doc+='- '+(G?'**Circuit Breaker**: 外部MCP失敗時の自動フォールバック':'**Circuit Breaker**: Auto-fallback on external MCP failures')+'\n';
+    doc+='- '+(G?'**Request Queue**: 並列実行時のMCPレートリミット管理':'**Request Queue**: Manage MCP rate limits during parallel execution')+'\n';
+  }
+  return doc;
 }
 

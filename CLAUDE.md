@@ -6,8 +6,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 # DevForge v9.6.0
 
-**AI Development OS** — 86 JS modules in `src/` → single `devforge-v9.html` (~5428KB / 6000KB limit).
-Generates **222+ files** across **28 pillars** from a wizard-driven Q&A session.
+**AI Development OS** — 86 JS modules in `src/` → single `devforge-v9.html` (~5450KB / 6000KB limit).
+Generates **225+ files** across **28 pillars** from a wizard-driven Q&A session.
 
 ## Documentation Map
 
@@ -199,7 +199,7 @@ After adding: update header comment totals, add tests to `test/compat.test.js`, 
 
 `docs/82_architecture_integrity_check.md` — always generated; scores ORM/Auth/CORS/async/soft-delete integrity (10.0 scale).
 
-**File count ranges** (used in tests): `snapshot.test.js` A:145–212/B:135–201; `gen-quality.test.js` A25 117–219.
+**File count ranges** (used in tests): `snapshot.test.js` A:148–215/B:138–204; `gen-quality.test.js` A25 120–222.
 
 Key output structure:
 - `.spec/` — constitution, specification, technical-plan, tasks, verification
