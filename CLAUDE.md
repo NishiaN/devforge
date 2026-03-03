@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 # DevForge v9.6.0
 
-**AI Development OS** — 85 JS modules in `src/` → single `devforge-v9.html` (~4970KB / 5000KB CI limit / 6000KB build limit).
+**AI Development OS** — 85 JS modules in `src/` → single `devforge-v9.html` (~4970KB / 6000KB limit).
 Generates **218+ files** across **27 pillars** from a wizard-driven Q&A session.
 
 ## Documentation Map
@@ -18,7 +18,7 @@ Generates **218+ files** across **27 pillars** from a wizard-driven Q&A session.
 ## Build & Test
 
 ```bash
-node build.js                          # → devforge-v9.html (~4970KB, CI limit 5000KB, build limit 6000KB)
+node build.js                          # → devforge-v9.html (~4970KB, limit 6000KB)
 node build.js --no-minify              # debug (skip minification)
 node build.js --report                 # build + size breakdown by module
 npm test                               # 7262 tests, all passing
@@ -32,7 +32,7 @@ node scripts/compat-check-all-presets.js  # verify 0 ERROR / 0 WARN across all p
 
 **Minification:** CSS via esbuild; JS via legacy regex minifier (comment removal DISABLED — generated docs contain `/* */` and `//` inside strings).
 
-**⚠️ entity-ext.js dead-code bug**: `legacyMinJS` regex `/\/\*[ \t]*[═=]{3}[\s\S]*?[═=]{3}[ \t]*\*\//` lazily matches from the `/* ═══ ENTITY_COLUMNS EXTENSION ═══ */` header at the top of `entity-ext.js` all the way to the next `/* === ... === */` module separator — swallowing the entire file (~287KB). `ENTITY_COLUMNS` entries from `entity-ext.js` therefore never reach the built HTML. `getEntityColumns()` silently falls back to defaults. **Do not attempt to fix** — restoring the content would add ~280KB and exceed the CI 5000KB limit. The source file is compressed for repo/test speed only.
+**⚠️ entity-ext.js dead-code bug**: `legacyMinJS` regex `/\/\*[ \t]*[═=]{3}[\s\S]*?[═=]{3}[ \t]*\*\//` lazily matches from the `/* ═══ ENTITY_COLUMNS EXTENSION ═══ */` header at the top of `entity-ext.js` all the way to the next `/* === ... === */` module separator — swallowing the entire file (~287KB). `ENTITY_COLUMNS` entries from `entity-ext.js` therefore never reach the built HTML. `getEntityColumns()` silently falls back to defaults. **Fixable now that CI limit is 6000KB** — fixing would add ~280KB (4970→5250KB, well within limit). The source file is currently compressed for repo/test speed only.
 
 ## Architecture
 
