@@ -2329,6 +2329,50 @@ const DOMAIN_QA_MAP={
   }
 };
 
+// ── Domain Invariants: 高リスクドメイン×不変条件 (Property-Based Test対象) ──
+var DOMAIN_INVARIANTS={
+  fintech:[
+    {ja:'残高 >= 0（負残高禁止）',en:'Balance >= 0 (no negative balance)',verify:'property-based test'},
+    {ja:'送金額 <= 送金元残高',en:'Transfer amount <= sender balance',verify:'unit + integration test'},
+    {ja:'取引ログは append-only（改竄不可）',en:'Transaction log is append-only (immutable)',verify:'DB trigger + audit'}
+  ],
+  ec:[
+    {ja:'在庫数 >= 0（マイナス在庫禁止）',en:'Stock quantity >= 0 (no negative stock)',verify:'property-based test'},
+    {ja:'カート内合計 == 各明細の積算',en:'Cart total == sum of all line items',verify:'unit test'},
+    {ja:'決済完了後のみ注文確定',en:'Order confirmed only after payment success',verify:'integration test'}
+  ],
+  health:[
+    {ja:'患者データは暗号化済みでのみ保存',en:'Patient data stored encrypted at rest only',verify:'infra audit + integration test'},
+    {ja:'アクセスログは削除不可（監査要件）',en:'Access logs are immutable (audit requirement)',verify:'DB policy + audit'},
+    {ja:'投薬量 > 0 かつ承認済みレンジ内',en:'Dosage > 0 and within approved range',verify:'property-based test'}
+  ],
+  booking:[
+    {ja:'同一枠に重複予約なし',en:'No duplicate bookings for same slot',verify:'concurrency test + DB constraint'},
+    {ja:'予約開始 < 予約終了',en:'Booking start < booking end',verify:'unit test'},
+    {ja:'キャンセル後に枠が解放される',en:'Slot released after cancellation',verify:'integration test'}
+  ],
+  saas:[
+    {ja:'テナント間データ漏洩なし（RLS必須）',en:'No cross-tenant data leakage (RLS required)',verify:'tenant isolation test'},
+    {ja:'プラン上限を超えたリソース作成不可',en:'Cannot create resources beyond plan limits',verify:'unit + integration test'},
+    {ja:'解約後は本番データにアクセス不可',en:'Production data inaccessible after cancellation',verify:'integration test'}
+  ],
+  insurance:[
+    {ja:'保険料 > 0（ゼロ保険料禁止）',en:'Premium > 0 (zero premium prohibited)',verify:'property-based test'},
+    {ja:'補償額 <= 契約上限額',en:'Coverage amount <= policy limit',verify:'unit test'},
+    {ja:'契約ステータス遷移は定義済みフローのみ',en:'Policy state transitions follow defined workflow only',verify:'state machine test'}
+  ],
+  legal:[
+    {ja:'文書バージョンは単調増加（デクリメント不可）',en:'Document version monotonically increases (no decrement)',verify:'unit test'},
+    {ja:'署名済み文書の内容は変更不可',en:'Signed document content is immutable',verify:'DB trigger + audit'},
+    {ja:'アクセス権限は明示的付与のみ（暗黙拒否）',en:'Access requires explicit grant (implicit deny)',verify:'authorization test'}
+  ],
+  hr:[
+    {ja:'給与 > 0（ゼロ給与禁止）',en:'Salary > 0 (zero salary prohibited)',verify:'property-based test'},
+    {ja:'従業員IDはシステム全体で一意',en:'Employee ID unique across entire system',verify:'DB constraint + unit test'},
+    {ja:'在職者のみ給与計算対象',en:'Payroll computed only for active employees',verify:'integration test'}
+  ]
+};
+
 // ── Cross-cutting QA Patterns ──
 const QA_CROSS_CUTTING={
   concurrency:{ja:'同時アクセス競合テスト',en:'Concurrent access race condition test',domains:['fintech','ec','booking','community','saas']},
@@ -3923,6 +3967,37 @@ function genArchIntegrityCheck(files,a,compatResults,auditFindings){
         issue:G?'large規模のAI機能にAIガバナンスフレームワーク (AI審査委員会・リスク分類・影響評価) が確認できません':
                'Large-scale AI features detected but no AI governance framework (AI Review Board, risk classification, impact assessment) found',
         sev:'🟡 INFO',fix:G?'docs/130のAI審査委員会憲章とリスク分類ワークフローを参照してください':'See AI Review Board Charter and risk classification workflow in docs/130'});
+    }
+  }
+
+  // C-R: 高リスクドメイン + ドメイン不変条件 verification.md未含
+  var _crDom=typeof detectDomain==='function'?detectDomain(a.purpose||''):'';
+  var highRiskDomains=['fintech','ec','health','insurance','legal','booking'];
+  if(highRiskDomains.indexOf(_crDom)!==-1){
+    var hasInvSection=Object.values(files).some(function(v){
+      return (v||'').includes('Domain Invariants')||(v||'').includes('ドメイン不変条件');
+    });
+    if(!hasInvSection){
+      yellowCount++;
+      rows.push({loc:'.spec/verification.md §6',src:G?'アーキテクチャチェック':'Architecture check',
+        issue:G?'高リスクドメイン ('+_crDom+') ですがドメイン不変条件セクションが確認できません。プロパティテストで残高・在庫・予約の不変性を保証してください':
+               'High-risk domain ('+domain+') detected but no domain invariants section found. Use property-based tests to guarantee balance/stock/booking invariants',
+        sev:'🟡 INFO',fix:G?'.spec/verification.md §6のドメイン不変条件テーブルを確認し、fast-check/Hypothesisでプロパティテストを実装してください':'Review domain invariant table in .spec/verification.md §6 and implement property-based tests with fast-check/Hypothesis'});
+    }
+  }
+
+  // C-S: SOREサイクル/エラーバジェットデプロイゲート参照チェック (scale!=solo, 非BaaS)
+  var isBaaSBackend=/Supabase|Firebase|Pocketbase/i.test(a.backend||'');
+  if((a.scale||'medium')!=='solo'&&!isBaaSBackend){
+    var hasSORERef=Object.values(files).some(function(v){
+      return (v||'').includes('SORE')||(v||'').includes('Ship→Observe')||(v||'').includes('Error Budget Deploy');
+    });
+    if(!hasSORERef){
+      yellowCount++;
+      rows.push({loc:'docs/78_deployment_strategy.md',src:G?'アーキテクチャチェック':'Architecture check',
+        issue:G?'medium規模以上の構成ですがSOREサイクル（Ship→Observe→Revert→Evolve）とエラーバジェットデプロイゲートが確認できません':
+               'Medium+ scale configuration detected but no SORE cycle (Ship→Observe→Revert→Evolve) or error budget deploy gate found',
+        sev:'🟡 INFO',fix:G?'docs/78のSOREサイクルセクションとエラーバジェットデプロイゲートを参照し、SLOバーンレートに連動したデプロイポリシーを設定してください':'See SORE cycle section and error budget deploy gate in docs/78, configure deploy policy linked to SLO burn rate'});
     }
   }
 

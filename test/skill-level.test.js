@@ -206,9 +206,9 @@ describe('[SkillLevel] Migration from old skill string', () => {
 });
 
 describe('[SkillLevel] templateOrder count', () => {
-  test('launcher templateOrder has 97 entries', () => {
+  test('launcher templateOrder has 99 entries', () => {
     assert.ok(templateOrder !== null, 'templateOrder should be parseable from launcher.js');
-    assert.strictEqual(templateOrder.length, 97, `templateOrder.length should be 97, got ${templateOrder ? templateOrder.length : 'null'}`);
+    assert.strictEqual(templateOrder.length, 99, `templateOrder.length should be 99, got ${templateOrder ? templateOrder.length : 'null'}`);
   });
 });
 

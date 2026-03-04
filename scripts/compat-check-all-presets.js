@@ -140,6 +140,8 @@ const NEW_RULE_IDS = [
   'ds-no-dark-mode','test-no-framework','scale-solo-enterprise',
   // v9.13 Phase E: WS+serverless, i18n global, mobile token storage (+3)
   'be-ws-serverless-incompatible','fe-no-i18n-needed','mob-insecure-token-storage',
+  // v9.14 Phase D: domain invariants, staged deploy (+2)
+  'qa-high-risk-no-invariant-test','ops-scale-no-staged-deploy',
 ];
 
 const errorRules = Object.entries(hits).filter(([,v])=>v.level==='error');

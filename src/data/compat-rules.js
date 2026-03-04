@@ -1,4 +1,4 @@
-/* ═══ STACK COMPATIBILITY & SEMANTIC CONSISTENCY RULES — 308 rules (ERROR×33 + WARN×143 + INFO×132) ═══ */
+/* ═══ STACK COMPATIBILITY & SEMANTIC CONSISTENCY RULES — 310 rules (ERROR×33 + WARN×143 + INFO×134) ═══ */
 const COMPAT_RULES=[
   // ── FE ↔ Mobile (2 ERROR) ──
   {id:'fe-mob-expo',p:['frontend','mobile'],lv:'error',
@@ -2704,6 +2704,33 @@ const COMPAT_RULES=[
    fix:{f:'mvp_features',s:'expo-secure-store でトークン保管'},
    why_ja:'AsyncStorageはOSのプレーンテキストストレージに保存されます。ルート化デバイスでトークンが盗取される可能性があり、JWTは必ずSecureStoreで管理してください。',
    why_en:'AsyncStorage writes to plaintext OS storage. Tokens can be stolen on rooted devices. Always store JWTs in SecureStore (iOS Keychain / Android Keystore).'},
+  // ── Domain Invariants + SORE (2 INFO) ──
+  {id:'qa-high-risk-no-invariant-test',p:['purpose','dev_methods'],lv:'info',
+   t:function(a){
+    var dom=detectDomain(a.purpose||'');
+    var highRisk=['fintech','ec','health','insurance','legal','booking'];
+    if(highRisk.indexOf(dom)===-1) return false;
+    var devM=(a.dev_methods||'')+(a.mvp_features||'');
+    var hasPropertyTest=/property.?based|fast-check|Hypothesis|invariant|不変条件/i.test(devM);
+    var hasTDD=/TDD|テスト駆動/i.test(devM);
+    return !hasPropertyTest&&!hasTDD;},
+   ja:'高リスクドメインですがプロパティテストやTDDが確認されません。不変条件（残高・在庫等）をfast-check/Hypothesisで自動検証することを推奨します',
+   en:'High-risk domain detected but no property-based testing or TDD found. Recommend validating invariants (balance, stock, etc.) automatically with fast-check/Hypothesis',
+   fix:{f:'dev_methods',s:'TDD + property-based test (fast-check)'},
+   why_ja:'高リスクドメインの不変条件違反（例：残高マイナス）は重大インシデントに直結します。プロパティテストで網羅的に検証してください。',
+   why_en:'Invariant violations in high-risk domains (e.g. negative balance) lead directly to critical incidents. Use property-based tests for exhaustive validation.'},
+  {id:'ops-scale-no-staged-deploy',p:['purpose','deploy','scale'],lv:'info',
+   t:function(a){
+    var sc=a.scale||'medium';
+    var feats=(a.mvp_features||'')+(a.deploy||'');
+    var isLarge=/^(large|enterprise)$/.test(sc);
+    var hasStaged=/canary|カナリア|blue.?green|段階的|progressive|staged|feature.?flag/i.test(feats);
+    return isLarge&&!hasStaged;},
+   ja:'large/enterprise規模ですが段階的デプロイ戦略（カナリア/Blue-Green/Feature Flag）が確認されません。SOREサイクルと組み合わせることでリスクを低減できます',
+   en:'Large/enterprise scale detected but no staged deploy strategy (canary/blue-green/feature flags) found. Combining with SORE cycle reduces deployment risk',
+   fix:{f:'mvp_features',s:'カナリアデプロイ + Feature Flag'},
+   why_ja:'大規模環境での一括デプロイは障害時の影響範囲が広くなります。5%→25%→100%の段階的ロールアウトで早期検知できます。',
+   why_en:'Full deployment in large environments maximizes blast radius. Use 5%→25%→100% canary rollout for early detection and rapid rollback.'},
 ];
 // helpers
 function inc(v,k){return v&&typeof v==='string'&&v.indexOf(k)!==-1;}

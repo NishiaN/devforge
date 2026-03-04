@@ -369,6 +369,36 @@ function gen78(G, domain, dtCfg, a, pn) {
   doc += 'notify: ["slack:#deploy-alerts", "pagerduty"]\n';
   doc += '```\n\n';
 
+  doc += '## ' + (G ? 'SOREサイクル：Ship→Observe→Revert→Evolve' : 'SORE Cycle: Ship→Observe→Revert→Evolve') + '\n\n';
+  doc += (G ? '> デプロイを「完了」ではなく「仮説検証の開始」として捉える反復サイクル。SLO違反時は即Revert、問題なければEvolveへ進む。' :
+    '> Treat each deployment as the start of hypothesis validation, not completion. Revert on SLO breach; advance to Evolve when stable.') + '\n\n';
+  doc += '| ' + (G ? 'フェーズ' : 'Phase') + ' | ' + (G ? '目的' : 'Purpose') + ' | ' + (G ? '成功条件' : 'Success Criteria') + ' | ' + (G ? '主要ツール' : 'Key Tools') + ' |\n';
+  doc += '|-------|-------|---------|--------|\n';
+  doc += '| 🚀 Ship | ' + (G ? '最小単位のデプロイ（機能フラグで制御）' : 'Deploy minimal unit (controlled by feature flags)') + ' | ' + (G ? 'ヘルスチェックOK' : 'Health check passes') + ' | Feature Flags (P14) |\n';
+  doc += '| 👀 Observe | ' + (G ? 'SLI/SLOメトリクスを1〜4時間監視' : 'Monitor SLI/SLO metrics for 1–4 hours') + ' | ' + (G ? 'エラーバジェット消費 < 閾値' : 'Error budget burn < threshold') + ' | Grafana/Datadog/Prometheus |\n';
+  doc += '| ↩️ Revert | ' + (G ? 'SLO違反を検出したら即座にロールバック' : 'Immediate rollback on SLO breach detection') + ' | ' + (G ? '旧バージョンに5分以内に復帰' : 'Restored to previous version within 5 min') + ' | Auto-rollback triggers |\n';
+  doc += '| 🔄 Evolve | ' + (G ? '学習を反映し次イテレーションの品質を向上' : 'Apply learnings to improve next iteration quality') + ' | ' + (G ? 'レトロスペクティブ完了' : 'Retrospective completed') + ' | docs/32 QA Blueprint |\n';
+  doc += '\n```mermaid\nflowchart LR\n  S([🚀 Ship])-->O([👀 Observe])\n  O-->|SLO OK|E([🔄 Evolve])\n  O-->|SLO Breach|R([↩️ Revert])\n  R-->|Root Cause Fix|S\n  E-->|Next Feature|S\n```\n\n';
+  var isSolo = (a.scale || 'medium') === 'solo';
+  var isBaaSOnly = /Supabase|Firebase|Pocketbase/i.test(a.backend || '');
+  if (!isSolo && !isBaaSOnly) {
+    doc += '### ' + (G ? 'エラーバジェットデプロイゲート' : 'Error Budget Deploy Gate') + '\n\n';
+    doc += (G ? '> P26 docs/103のSLOバーンレート（`burn_rate_alert: 14.4`）と連動したデプロイ制御：' :
+      '> Deploy control linked to SLO burn rate from P26 docs/103 (`burn_rate_alert: 14.4`):') + '\n\n';
+    doc += '| ' + (G ? 'バーンレート' : 'Burn Rate') + ' | ' + (G ? 'デプロイ判定' : 'Deploy Decision') + ' | ' + (G ? 'アクション' : 'Action') + ' |\n';
+    doc += '|-----------|-----------|--------|\n';
+    doc += '| > 14.4x | 🔴 ' + (G ? 'デプロイ凍結' : 'Deploy Freeze') + ' | ' + (G ? '全デプロイ停止・インシデント対応優先' : 'Stop all deploys, prioritize incident response') + ' |\n';
+    doc += '| 1x〜14.4x | 🟡 ' + (G ? '要承認' : 'Approval Required') + ' | ' + (G ? '上長承認 + 監視強化デプロイ' : 'Manager approval + enhanced monitoring deploy') + ' |\n';
+    doc += '| < 1x | 🟢 ' + (G ? '通常デプロイ' : 'Normal Deploy') + ' | ' + (G ? '標準SOREサイクルを実行' : 'Execute standard SORE cycle') + ' |\n\n';
+  }
+  doc += '### ' + (G ? 'SOREフェーズ × ドキュメントマップ' : 'SORE Phase × Document Map') + '\n\n';
+  doc += '| ' + (G ? 'SOREフェーズ' : 'SORE Phase') + ' | ' + (G ? '参照ドキュメント' : 'Reference Document') + ' | ' + (G ? '主要ツール' : 'Key Tools') + ' |\n';
+  doc += '|-------------|-----------------|--------|\n';
+  doc += '| 🚀 Ship | docs/78_deployment_strategy.md + docs/80_release_management.md | Feature Flags (P14) |\n';
+  doc += '| 👀 Observe | docs/103_observability_architecture.md + docs/105_metrics_catalog.md | SLI/SLO + Error Budget |\n';
+  doc += '| ↩️ Revert | docs/78_deployment_strategy.md (Rollback Automation) | Auto-rollback triggers |\n';
+  doc += '| 🔄 Evolve | docs/32_qa_blueprint.md + docs/91_testing_strategy.md | ' + (G ? 'レトロスペクティブ + テスト更新' : 'Retrospective + Test updates') + ' |\n\n';
+
   doc += '## ' + (G ? 'シークレット管理' : 'Secrets Management') + '\n\n';
   doc += '| ' + (G ? 'シークレット' : 'Secret') + ' | ' + (G ? '保管場所' : 'Storage') + ' | ' + (G ? 'ローテーション' : 'Rotation') + ' |\n';
   doc += '|---|---|---|\n';

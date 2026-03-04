@@ -663,6 +663,38 @@ function genPillar1_SDD(a,pn){
       const criteria=(G?fd.criteria_ja:fd.criteria_en).map(c=>c.replace(/\{auth\}/g,a.auth||'OAuth'));
       return ['### '+f,...criteria.map(c=>'- [ ] '+c),''];
     }),
+    // §6: Domain Invariants
+    ...(()=>{
+      const inv=typeof DOMAIN_INVARIANTS!=='undefined'?DOMAIN_INVARIANTS[domain]:null;
+      if(!inv) return [];
+      const isPro6=(S.skillLv||0)>=5;
+      const rows=inv.map(function(r){return '| '+(G?r.ja:r.en)+' | '+r.verify+' | P0 |';}).join('\n');
+      const proEx=isPro6?(G?
+        '\n\n### Property-Based Test 実装例 (fast-check)\n```typescript\nimport * as fc from \'fast-check\';\n// 不変条件: '+inv[0].ja+'\nfc.assert(fc.property(fc.integer({min:0,max:1000000}), fc.integer({min:1,max:500000}), (bal, amt) => {\n  if(amt <= bal) { return transfer(bal, amt) >= 0; }\n  return true; // skip invalid input\n}));\n```':
+        '\n\n### Property-Based Test Example (fast-check)\n```typescript\nimport * as fc from \'fast-check\';\n// Invariant: '+inv[0].en+'\nfc.assert(fc.property(fc.integer({min:0,max:1000000}), fc.integer({min:1,max:500000}), (bal, amt) => {\n  if(amt <= bal) { return transfer(bal, amt) >= 0; }\n  return true;\n}));\n```'):'';
+      return [
+        G?'## 6. ドメイン不変条件':'## 6. Domain Invariants',
+        G?'> **不変条件**はシステムが常に満たすべき制約。CI/CDパイプラインで自動検証することで、デプロイごとに保証されます。':
+          '> **Invariants** are constraints the system must always satisfy. Verify automatically in CI/CD to guarantee with every deployment.',
+        '',
+        '| '+(G?'不変条件':'Invariant')+' | '+(G?'検証手法':'Verification')+' | '+(G?'優先度':'Priority')+' |',
+        '|---------|---------|-------|',
+        rows+proEx,''
+      ];
+    })(),
+    // §7: Cross-Reference Map (always)
+    G?'## 7. 検証クロスリファレンスマップ':'## 7. Verification Cross-Reference Map',
+    G?'> このファイルは**検証ハブ**として機能します。各検証領域の詳細は下記ドキュメントを参照してください。':
+      '> This file acts as the **verification hub**. See the documents below for details on each verification area.',
+    '',
+    '| '+(G?'検証カテゴリ':'Verification Category')+' | '+(G?'詳細ドキュメント':'Reference Document')+' | '+(G?'主な内容':'Key Content')+' |',
+    '|-------------|-----------------|------|',
+    '| '+(G?'QA戦略':'QA Strategy')+' | docs/32_qa_blueprint.md | '+(G?'リスク優先マトリクス・QAゲート':'Risk priority matrix, QA gates')+' |',
+    '| '+(G?'品質ゲート':'Quality Gate')+' | docs/79_quality_gate_matrix.md | '+(G?'CI/CDパイプラインゲート':'CI/CD pipeline gates')+' |',
+    '| '+(G?'テスト設計':'Test Design')+' | docs/91_testing_strategy.md | '+(G?'テストピラミッド・TDD':'Test pyramid, TDD')+' |',
+    '| '+(G?'カバレッジ':'Coverage')+' | docs/92_coverage_design.md | '+(G?'カバレッジ目標 (Stmt 80%/Branch 75%/Fn 85%)':'Coverage targets (Stmt 80%/Branch 75%/Fn 85%)')+' |',
+    '| SLO/SLI | docs/103_observability_architecture.md | '+(G?'エラーバジェット監視':'Error budget monitoring')+' |',
+    '',
   ].join('\n');
 }
 

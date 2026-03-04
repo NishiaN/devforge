@@ -852,6 +852,16 @@ const tests=[
   {name:'Expo+Auth+noSecureStore=INFO',a:{mobile:'Expo (React Native)',mvp_features:'JWT認証 ログイン機能'},expect:'info',id:'mob-insecure-token-storage'},
   {name:'Expo+Auth+SecureStore=noINFO',a:{mobile:'Expo (React Native)',mvp_features:'認証 expo-secure-store トークン'},expect:'none',id:'mob-insecure-token-storage'},
   {name:'Flutter+Auth=noINFO',a:{mobile:'Flutter',mvp_features:'JWT認証 ログイン'},expect:'none',id:'mob-insecure-token-storage'},
+  // qa-high-risk-no-invariant-test (INFO)
+  {name:'Fintech+noTDD+noPropertyTest=INFO',a:{purpose:'送金・決済処理fintechサービス',dev_methods:'スクラム'},expect:'info',id:'qa-high-risk-no-invariant-test'},
+  {name:'Fintech+TDD=noINFO',a:{purpose:'送金・決済処理fintechサービス',dev_methods:'TDD スクラム'},expect:'none',id:'qa-high-risk-no-invariant-test'},
+  {name:'ToolDomain+noTDD=noINFO',a:{purpose:'汎用メモ帳ツール',dev_methods:'スクラム'},expect:'none',id:'qa-high-risk-no-invariant-test'},
+  {name:'EC+propertyBasedTest=noINFO',a:{purpose:'ECショッピングサイト',dev_methods:'property-based testing スクラム'},expect:'none',id:'qa-high-risk-no-invariant-test'},
+  // ops-scale-no-staged-deploy (INFO)
+  {name:'Large+noCanary=INFO',a:{purpose:'企業向けSaaS',deploy:'Railway',scale:'large',mvp_features:'ユーザー認証 CRUD'},expect:'info',id:'ops-scale-no-staged-deploy'},
+  {name:'Large+Canary=noINFO',a:{purpose:'企業向けSaaS',deploy:'Railway',scale:'large',mvp_features:'カナリアデプロイ ユーザー認証'},expect:'none',id:'ops-scale-no-staged-deploy'},
+  {name:'Medium+noCanary=noINFO',a:{purpose:'タスク管理アプリ',deploy:'Vercel',scale:'medium',mvp_features:'ユーザー認証 CRUD'},expect:'none',id:'ops-scale-no-staged-deploy'},
+  {name:'Enterprise+featureFlag=noINFO',a:{purpose:'企業向けHRシステム',deploy:'AWS',scale:'enterprise',mvp_features:'feature flag ユーザー管理'},expect:'none',id:'ops-scale-no-staged-deploy'},
 ];
 
 let pass=0,fail=0;

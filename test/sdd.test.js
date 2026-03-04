@@ -122,4 +122,57 @@ describe('Pillar ① SDD 仕様書生成', () => {
     );
   });
 
+  test('verification.md §6: fintechドメインで不変条件テーブルが生成される', () => {
+    S.files = {};
+    S.skillLv = 3;
+    genPillar1_SDD({ ...BASE_ANSWERS, purpose: '送金・決済処理fintechサービス' }, 'FintechApp');
+    const doc = S.files['.spec/verification.md'];
+    assert.ok(doc, 'verification.md should be generated');
+    assert.ok(
+      doc.includes('Domain Invariants') || doc.includes('ドメイン不変条件'),
+      'verification.md should contain domain invariants section for fintech'
+    );
+    assert.ok(
+      doc.includes('property-based') || doc.includes('Balance') || doc.includes('残高'),
+      'verification.md should contain invariant content for fintech'
+    );
+  });
+
+  test('verification.md §6: toolドメインでは不変条件セクションが生成されない', () => {
+    S.files = {};
+    S.skillLv = 3;
+    genPillar1_SDD({ ...BASE_ANSWERS, purpose: '汎用ユーティリティツール' }, 'ToolApp');
+    const doc = S.files['.spec/verification.md'];
+    assert.ok(doc, 'verification.md should be generated');
+    const hasInvariantSec = doc.includes('Domain Invariants') || doc.includes('ドメイン不変条件');
+    assert.ok(!hasInvariantSec, 'tool domain should NOT have domain invariants section');
+  });
+
+  test('verification.md §7: クロスリファレンスマップが常時生成される', () => {
+    S.files = {};
+    S.skillLv = 3;
+    genPillar1_SDD(BASE_ANSWERS, 'TestProject');
+    const doc = S.files['.spec/verification.md'];
+    assert.ok(
+      doc.includes('Cross-Reference Map') || doc.includes('クロスリファレンスマップ'),
+      'verification.md should contain cross-reference map section'
+    );
+    assert.ok(
+      doc.includes('docs/32_qa_blueprint') || doc.includes('docs/91_testing_strategy'),
+      'cross-reference map should link to QA documents'
+    );
+  });
+
+  test('verification.md §6 Pro: fast-check property-based test例が生成される (skillLv=5)', () => {
+    S.files = {};
+    S.skillLv = 5;
+    genPillar1_SDD({ ...BASE_ANSWERS, purpose: '送金・決済処理fintechサービス' }, 'FintechPro');
+    const doc = S.files['.spec/verification.md'];
+    assert.ok(doc, 'verification.md should be generated');
+    assert.ok(
+      doc.includes('fast-check') || doc.includes('fc.assert'),
+      'Pro mode verification.md should include fast-check property-based test example'
+    );
+  });
+
 });
