@@ -114,6 +114,9 @@ const DOMAIN_SEQ_FLOWS={
 
 function genPillar9_DesignSystem(a,pn){
   const G=S.genLang==='ja';
+  const lv9=S.skillLv!=null?S.skillLv:(S.skill==='beginner'?1:S.skill==='pro'?5:3);
+  const isPro9=lv9>=5;
+  const isBeg9=lv9<=1;
   const fe=a.frontend||'React + Next.js';
   const be=a.backend||'Node.js + Express';
   const auth=resolveAuth(a);
@@ -143,6 +146,24 @@ function genPillar9_DesignSystem(a,pn){
 
   let designDoc='# '+(G?'デザインシステム':'Design System')+'\n\n';
   designDoc+=G?'**重要**: AIエージェントは、UI実装時に必ずこのデザインシステムを参照し、一貫性を保ってください。\n\n':'**IMPORTANT**: AI agents MUST reference this design system when implementing UI to maintain consistency.\n\n';
+
+  if(isBeg9){
+    designDoc+=(G?
+      '## デザインシステムとは？\n\n'+
+      'デザインシステムとは、UI実装の「共通言語」です。色・余白・タイポグラフィなどのルールを一元管理することで、複数の画面・コンポーネント間の一貫性を自動的に保てます。\n\n'+
+      '### 最初の3ステップ\n\n'+
+      '- [ ] Step 1: カラートークンをコード化する（下記の CSS/Tailwind config をコピーして適用）\n'+
+      '- [ ] Step 2: ボタン・入力欄など共通コンポーネントを1つ作る（後で全画面で使い回す）\n'+
+      '- [ ] Step 3: ダークモードの CSS変数を設定する（`:root` と `[data-theme="dark"]` の2セット）\n\n'
+      :
+      '## What is a Design System?\n\n'+
+      'A design system is a shared "common language" for UI implementation. By centralizing rules for colors, spacing, and typography, you automatically maintain consistency across screens and components.\n\n'+
+      '### First 3 Steps\n\n'+
+      '- [ ] Step 1: Encode color tokens (copy the CSS/Tailwind config below and apply)\n'+
+      '- [ ] Step 2: Create one shared component like Button or Input (reuse across all screens)\n'+
+      '- [ ] Step 3: Set up dark mode CSS variables (two sets: `:root` and `[data-theme="dark"]`)\n\n'
+    );
+  }
 
   // Color Palette
   designDoc+=colorSection+'\n\n'+colorPalette+'\n\n';
@@ -284,7 +305,8 @@ function genPillar9_DesignSystem(a,pn){
   designDoc+=(G?'### 禁止アクション\n\n':'### Prohibited Actions\n\n');
   designDoc+=(G?'- ❌ トークンにない色を使う（例: `#1a2b3c`）\n- ❌ 独自の余白値（例: `margin: 13px`）\n- ❌ 仕様外のシャドウ追加（例: `box-shadow: 0 8px 16px ...`）\n- ❌ グラデーション追加（例: `background: linear-gradient(...)`）\n- ❌ フォントサイズの独自設定（例: `font-size: 17px`）\n- ❌ コンポーネントライブラリの独自改変\n- ❌ レイアウト構造の変更（例: Grid → Flexbox）\n\n':'- ❌ Using colors not in tokens (e.g., `#1a2b3c`)\n- ❌ Custom spacing values (e.g., `margin: 13px`)\n- ❌ Adding shadows not in spec (e.g., `box-shadow: 0 8px 16px ...`)\n- ❌ Adding gradients (e.g., `background: linear-gradient(...)`)\n- ❌ Custom font sizes (e.g., `font-size: 17px`)\n- ❌ Modifying component library defaults\n- ❌ Changing layout structure (e.g., Grid → Flexbox)\n\n');
 
-  // Figma Design Fidelity Protocol
+  // Figma Design Fidelity Protocol (intermediate+ only)
+  if(!isBeg9){
   designDoc+=(G?'### デザイン忠実度プロトコル（Figma MCP連携）\n\n':'### Design Fidelity Protocol (Figma MCP Integration)\n\n');
   designDoc+=(G?
     '**原則: Design as Single Source of Truth（SSOT）**\n\n'+
@@ -313,7 +335,9 @@ function genPillar9_DesignSystem(a,pn){
     '- **Option A**: Export from Figma → save to local `/images` → rewrite paths\n'+
     '- **Option B**: Replace with Unsplash API persistent links\n\n'
   );
+  } // end !isBeg9 (Figma MCP)
 
+  if(!isBeg9){
   // Anti-AI Quality Checklist
   designDoc+=(G?'### Anti-AI品質チェックリスト\n\n':'### Anti-AI Quality Checklist\n\n');
   designDoc+=(G?
@@ -339,12 +363,50 @@ function genPillar9_DesignSystem(a,pn){
     '- [ ] Font sizes use defined scale only\n'+
     '- [ ] Pixel-perfect match with Figma design\n\n'
   );
+  } // end !isBeg9 (Anti-AI checklist)
+
+  if(isPro9){
+    designDoc+=(G?'## Design Token CI Pipeline\n\n':'## Design Token CI Pipeline\n\n');
+    designDoc+=(G?
+      'Style Dictionaryを使ったトークンの自動配信パイプラインを構築することで、デザインとコードの乖離を防ぎます。\n\n'+
+      '```yaml\n# .github/workflows/design-tokens.yml\njobs:\n  build-tokens:\n    steps:\n      - uses: actions/checkout@v4\n      - run: npm install style-dictionary\n      - run: style-dictionary build --config sd.config.json\n      - run: npm run tokens:lint\n      - uses: actions/upload-artifact@v4\n        with: {name: tokens, path: dist/tokens/}\n```\n\n'+
+      '```json\n{"source":["tokens/**/*.json"],"platforms":{"css":{"transformGroup":"css","buildPath":"dist/tokens/","files":[{"destination":"variables.css","format":"css/variables"}]},"js":{"transformGroup":"js","buildPath":"dist/tokens/","files":[{"destination":"tokens.js","format":"javascript/esm"}]}}}\n```\n\n'
+      :
+      'Build an automated token delivery pipeline with Style Dictionary to prevent design-code drift.\n\n'+
+      '```yaml\n# .github/workflows/design-tokens.yml\njobs:\n  build-tokens:\n    steps:\n      - uses: actions/checkout@v4\n      - run: npm install style-dictionary\n      - run: style-dictionary build --config sd.config.json\n      - run: npm run tokens:lint\n      - uses: actions/upload-artifact@v4\n        with: {name: tokens, path: dist/tokens/}\n```\n\n'+
+      '```json\n{"source":["tokens/**/*.json"],"platforms":{"css":{"transformGroup":"css","buildPath":"dist/tokens/","files":[{"destination":"variables.css","format":"css/variables"}]},"js":{"transformGroup":"js","buildPath":"dist/tokens/","files":[{"destination":"tokens.js","format":"javascript/esm"}]}}}\n```\n\n'
+    );
+    designDoc+=(G?'## Visual Regression Testing\n\n':'## Visual Regression Testing\n\n');
+    designDoc+=(G?
+      'ChromaticまたはPercyを使ったビジュアルリグレッションテストで、UIの予期しない変更を自動検知します。\n\n'+
+      '```yaml\n# Chromatic CI integration\n- name: Publish Storybook to Chromatic\n  uses: chromaui/action@latest\n  with:\n    projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}\n    exitOnceUploaded: true\n```\n\n'+
+      '| ツール | 特徴 | 価格 |\n|--------|------|------|\n| Chromatic | Storybook統合・コンポーネント単位 | Free〜 |\n| Percy | E2Eスクリーンショット対応 | Free〜 |\n| Playwright | セルフホスト・スナップショット | 無料 |\n\n'
+      :
+      'Use Chromatic or Percy for visual regression testing to automatically detect unexpected UI changes.\n\n'+
+      '```yaml\n# Chromatic CI integration\n- name: Publish Storybook to Chromatic\n  uses: chromaui/action@latest\n  with:\n    projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}\n    exitOnceUploaded: true\n```\n\n'+
+      '| Tool | Feature | Pricing |\n|------|---------|--------|\n| Chromatic | Storybook integration, component-level | Free+ |\n| Percy | E2E screenshot support | Free+ |\n| Playwright | Self-hosted, snapshot | Free |\n\n'
+    );
+  }
 
   S.files['docs/26_design_system.md']=designDoc;
 
   // Sequence Diagrams
   let seqDoc='# '+(G?'シーケンス図':'Sequence Diagrams')+'\n\n';
   seqDoc+=G?'**重要**: AIエージェントは、複雑なフローを実装する前にこのシーケンス図を参照してください。\n\n':'**IMPORTANT**: AI agents MUST reference these sequence diagrams before implementing complex flows.\n\n';
+
+  if(isBeg9){
+    seqDoc+=(G?
+      '## シーケンス図の読み方\n\n'+
+      'シーケンス図は「誰が・誰に・何を」の流れを時系列で表します。\n\n'+
+      '| 記号 | 意味 |\n|------|------|\n| `A->>B: text` | AがBにメッセージを送る |\n| `B-->>A: text` | BがAに返答する（非同期） |\n| `participant A as 名前` | 登場人物の定義 |\n| `alt 条件` | 条件分岐 |\n| `loop N回` | 繰り返し |\n\n'+
+      '> 上から下に向かって時間が流れます。左右の「参加者」間の矢印でデータの流れを追ってください。\n\n'
+      :
+      '## How to Read Sequence Diagrams\n\n'+
+      'Sequence diagrams show "who does what to whom" in chronological order.\n\n'+
+      '| Symbol | Meaning |\n|--------|--------|\n| `A->>B: text` | A sends message to B |\n| `B-->>A: text` | B responds to A (async) |\n| `participant A as Name` | Define participant |\n| `alt condition` | Conditional branch |\n| `loop N times` | Repetition |\n\n'+
+      '> Time flows top to bottom. Follow the arrows between "participants" to trace data flow.\n\n'
+    );
+  }
 
   // Auth Flow
   seqDoc+=(G?'## 認証フロー':'## Authentication Flow')+'\n\n```mermaid\nsequenceDiagram\n  participant U as User\n  participant C as Client\n  participant ';

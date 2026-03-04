@@ -1,6 +1,9 @@
 /* ── Pillar ② DevContainer (Phase B: BaaS-Aware) ── */
 function genPillar2_DevContainer(a,pn){
   const G=S.genLang==='ja';
+  const lv2=S.skillLv||0;
+  const isPro2=lv2>=5;
+  const isBeg2=lv2<=1;
   const fe=a.frontend||'React';
   const be=a.backend||'Node.js + Express';
   const db=a.database||'PostgreSQL';
@@ -163,6 +166,29 @@ function genPillar2_DevContainer(a,pn){
   // docs/64_cross_platform_guide.md
   const cpg=[];
   cpg.push(G?'# クロスプラットフォーム開発ガイド':'# Cross-Platform Development Guide','');
+
+  if(isBeg2){
+    cpg.push(G?'## DevContainerとは？':'## What is DevContainer?','');
+    cpg.push(G?
+      'DevContainerは、VSCodeとDockerを組み合わせた開発環境のコンテナ化技術です。「私のマシンでは動く」問題を完全に解消し、チーム全員が同じ環境で開発できます。':
+      'DevContainer is a containerized development environment combining VS Code and Docker. It eliminates "works on my machine" issues and ensures the entire team develops in identical environments.','');
+    cpg.push(G?'### 初回セットアップ手順':'### First-Time Setup Steps','');
+    cpg.push(
+      G?'1. **Docker Desktop をインストール**: https://www.docker.com/products/docker-desktop':'1. **Install Docker Desktop**: https://www.docker.com/products/docker-desktop',
+      G?'2. **VS Code に Dev Containers 拡張を追加**: `ms-vscode-remote.remote-containers`':'2. **Install VS Code Dev Containers extension**: `ms-vscode-remote.remote-containers`',
+      G?'3. **プロジェクトを VS Code で開く**: コマンドパレットから `Reopen in Container` を選択':'3. **Open project in VS Code**: Select `Reopen in Container` from Command Palette',
+      G?'4. **初回ビルドを待つ**: Dockerイメージのビルドに数分かかります（2回目以降は高速）':'4. **Wait for initial build**: First build takes a few minutes (subsequent builds are fast)',
+      '');
+    cpg.push(G?'### よくあるエラー':'### Common Errors','');
+    cpg.push(
+      G?'| エラー | 原因 | 解決策 |':'| Error | Cause | Solution |',
+      G?'|--------|------|--------|':'|-------|-------|---------|',
+      G?'| Docker daemon not running | Dockerが起動していない | Docker Desktopを起動 |':'| Docker daemon not running | Docker not started | Start Docker Desktop |',
+      G?'| Port already in use | ポートが他プロセスに使用中 | `lsof -i :3000` で確認 |':'| Port already in use | Port used by another process | Check with `lsof -i :3000` |',
+      G?'| Image build failed | Dockerfileエラー | docker logs で詳細確認 |':'| Image build failed | Dockerfile error | Check with docker logs |',
+      '');
+  }
+
   cpg.push(G?'## 概要':'## Overview','');
   cpg.push(G?'このプロジェクトは、Windows/Mac/Linux のどの環境でも同じように動作するよう設計されています。':'This project is designed to work consistently across Windows, Mac, and Linux.','');
   cpg.push(G?'## 改行コード統一 (.gitattributes)':'## Line Ending Normalization (.gitattributes)','');
@@ -200,6 +226,20 @@ function genPillar2_DevContainer(a,pn){
   cpg.push(G?'**確認項目**:':'**Checklist**:',G?'1. Dockerデーモンが起動しているか':'1. Docker daemon running?',G?'2. WSL2が有効か（Windows）':'2. WSL2 enabled? (Windows)',G?'3. `.devcontainer/devcontainer.json` が正しいか':'3. `.devcontainer/devcontainer.json` valid?','');
   cpg.push(G?'## 関連ドキュメント':'## Related Documents','');
   cpg.push(G?'- `.devcontainer/README.md` — DevContainer詳細設定':'- `.devcontainer/README.md` — DevContainer details',G?'- `docs/34_devops_guide.md` — CI/CD設定':'- `docs/34_devops_guide.md` — CI/CD setup',G?'- `docs/02_architecture.md` — システムアーキテクチャ':'- `docs/02_architecture.md` — System architecture');
+  if(isPro2){
+    cpg.push('',G?'## マルチステージビルド最適化':'## Multi-Stage Build Optimization','');
+    cpg.push(G?
+      'マルチステージビルドにより、本番Dockerイメージを最小化し、セキュリティを向上させます。':
+      'Multi-stage builds minimize production Docker image size and improve security.','');
+    cpg.push('```dockerfile','# Build stage','FROM node:22-alpine AS builder','WORKDIR /app','COPY package*.json ./','RUN npm ci --only=production','COPY . .','RUN npm run build','','# Production stage','FROM node:22-alpine AS runner','WORKDIR /app','COPY --from=builder /app/dist ./dist','COPY --from=builder /app/node_modules ./node_modules','USER node','CMD ["node", "dist/index.js"]','```','');
+    cpg.push(G?'## Dev/Staging/Prod Parity':'## Dev/Staging/Prod Parity','');
+    cpg.push(G?
+      'Docker Composeプロファイルを使って環境間の差異を最小化します。':
+      'Use Docker Compose profiles to minimize differences between environments.','');
+    cpg.push('```yaml','# docker-compose.yml','services:','  app:','    build: .','    profiles: ["dev", "staging", "prod"]','  db:','    image: postgres:16','    profiles: ["dev", "staging"]  # prod uses managed DB','  redis:','    image: redis:7-alpine','    profiles: ["dev", "staging", "prod"]','```','');
+    cpg.push(G?'**起動例**: `docker compose --profile dev up`':'**Example**: `docker compose --profile dev up`','');
+  }
+
   S.files['docs/64_cross_platform_guide.md']=cpg.join('\n')+'\n';
 
   // ── セキュアビルドマニフェスト (②-A) ──

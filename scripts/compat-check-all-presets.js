@@ -136,6 +136,8 @@ const NEW_RULE_IDS = [
   'test-framework-conflict','auth-clerk-flutter-mismatch','fe-ssr-missing-csp',
   // v9.11 Phase E: domain coverage & DB partitioning rules (+4)
   'db-mongo-no-schema-validation','test-no-contract-test','obs-no-domain-metrics','db-large-no-partitioning',
+  // v9.12 Phase E: design system, test framework, scale rules (+3)
+  'ds-no-dark-mode','test-no-framework','scale-solo-enterprise',
 ];
 
 const errorRules = Object.entries(hits).filter(([,v])=>v.level==='error');

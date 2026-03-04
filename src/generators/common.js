@@ -3713,6 +3713,21 @@ function genArchIntegrityCheck(files,a,compatResults,auditFindings){
     }
   }
 
+  // C-B: Serverless connection pooling check
+  const isServerlessDeploy=/Vercel|Netlify|Cloudflare/i.test(a.deploy||'');
+  if(isServerlessDeploy&&!isBaaS&&orm&&/Prisma/i.test(orm)){
+    const hasPool=Object.values(files).some(function(v){
+      return (v||'').includes('PgBouncer')||(v||'').includes('Prisma Accelerate')||(v||'').includes('pgbouncer')||(v||'').includes('@prisma/accelerate');
+    });
+    if(!hasPool){
+      orangeCount++;
+      rows.push({loc:'docs/',src:G?'アーキテクチャチェック':'Architecture check',
+        issue:G?'サーバーレス+Prisma構成でコネクションプーリング (PgBouncer/Prisma Accelerate) の設定がありません。コールドスタート時に接続数が枯渇します':
+               'Serverless+Prisma deployment without connection pooling (PgBouncer/Prisma Accelerate). Cold starts may exhaust DB connections',
+        sev:'🟠 WARN',fix:G?'Prisma Accelerateまたはpgbouncerを追加してください':'Add Prisma Accelerate or pgbouncer'});
+    }
+  }
+
   // C-C: CORS configuration for split deployment
   if(arch.pattern==='split'){
     const corsPresent=Object.values(files).some(function(v){return (v||'').includes('CORS')||(v||'').includes('cors');});

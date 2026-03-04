@@ -828,6 +828,18 @@ const tests=[
   {name:'PG+large+AuditLog+noPartition=WARN',a:{database:'PostgreSQL',scale:'large',data_entities:'User,AuditLog,Order'},expect:'warn',id:'db-large-no-partitioning'},
   {name:'PG+large+AuditLog+Partition=noWARN',a:{database:'PostgreSQL',scale:'large',data_entities:'User,AuditLog',future_features:'DBパーティショニング戦略'},expect:'none',id:'db-large-no-partitioning'},
   {name:'PG+medium+AuditLog=noWARN',a:{database:'PostgreSQL',scale:'medium',data_entities:'User,AuditLog'},expect:'none',id:'db-large-no-partitioning'},
+  // ds-no-dark-mode (INFO)
+  {name:'React+medium+noDark=INFO',a:{frontend:'React + Vite',scale:'medium'},expect:'info',id:'ds-no-dark-mode'},
+  {name:'React+medium+hasDark=noINFO',a:{frontend:'React + Vite',scale:'medium',future_features:'ダークモード切替機能'},expect:'none',id:'ds-no-dark-mode'},
+  {name:'React+solo+noDark=noINFO',a:{frontend:'React + Vite',scale:'solo'},expect:'none',id:'ds-no-dark-mode'},
+  // test-no-framework (WARN)
+  {name:'TDD+noFW=WARN',a:{mvp_features:'TDD開発 ユニットテスト'},expect:'warn',id:'test-no-framework'},
+  {name:'TDD+Jest=noWARN',a:{mvp_features:'TDD開発',backend:'Express + Jest'},expect:'none',id:'test-no-framework'},
+  {name:'noTDD=noWARN',a:{mvp_features:'REST API CRUD操作'},expect:'none',id:'test-no-framework'},
+  // scale-solo-enterprise (INFO)
+  {name:'solo+SSO=INFO',a:{scale:'solo',mvp_features:'SSO認証 マルチテナント'},expect:'info',id:'scale-solo-enterprise'},
+  {name:'solo+noEnterprise=noINFO',a:{scale:'solo',mvp_features:'ユーザー認証 CRUD'},expect:'none',id:'scale-solo-enterprise'},
+  {name:'medium+SSO=noINFO',a:{scale:'medium',mvp_features:'SSO認証'},expect:'none',id:'scale-solo-enterprise'},
 ];
 
 let pass=0,fail=0;

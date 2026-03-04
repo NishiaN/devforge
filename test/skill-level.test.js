@@ -206,9 +206,9 @@ describe('[SkillLevel] Migration from old skill string', () => {
 });
 
 describe('[SkillLevel] templateOrder count', () => {
-  test('launcher templateOrder has 92 entries', () => {
+  test('launcher templateOrder has 95 entries', () => {
     assert.ok(templateOrder !== null, 'templateOrder should be parseable from launcher.js');
-    assert.strictEqual(templateOrder.length, 92, `templateOrder.length should be 92, got ${templateOrder ? templateOrder.length : 'null'}`);
+    assert.strictEqual(templateOrder.length, 95, `templateOrder.length should be 95, got ${templateOrder ? templateOrder.length : 'null'}`);
   });
 });
 
@@ -331,6 +331,83 @@ describe('[SkillLevel] new templates in templateOrder', () => {
   test('templateOrder contains test_intel', () => {
     assert.ok(templateOrder !== null, 'templateOrder should be parseable');
     assert.ok(templateOrder.includes('test_intel'), 'templateOrder should include test_intel');
+  });
+  test('templateOrder contains adr_template', () => {
+    assert.ok(templateOrder !== null, 'templateOrder should be parseable');
+    assert.ok(templateOrder.includes('adr_template'), 'templateOrder should include adr_template');
+  });
+  test('templateOrder contains devcontainer_customize', () => {
+    assert.ok(templateOrder !== null, 'templateOrder should be parseable');
+    assert.ok(templateOrder.includes('devcontainer_customize'), 'templateOrder should include devcontainer_customize');
+  });
+  test('templateOrder contains finops_estimate', () => {
+    assert.ok(templateOrder !== null, 'templateOrder should be parseable');
+    assert.ok(templateOrder.includes('finops_estimate'), 'templateOrder should include finops_estimate');
+  });
+});
+
+// ═══ Source scan helpers for P9/P2/P27 skill adaptation ═══
+const p9Code = fs.readFileSync(path.join(__dirname, '../src/generators/p9-designsystem.js'), 'utf8');
+const p2Code = fs.readFileSync(path.join(__dirname, '../src/generators/p2-devcontainer.js'), 'utf8');
+const p27Code = fs.readFileSync(path.join(__dirname, '../src/generators/p27-cost.js'), 'utf8');
+
+describe('[SkillLevel] P9 design system skill adaptation', () => {
+  test('p9-designsystem.js declares isBeg9 and isPro9 flags', () => {
+    assert.ok(p9Code.includes('const isBeg9=lv9<=1'), 'p9 should declare isBeg9');
+    assert.ok(p9Code.includes('const isPro9=lv9>=5'), 'p9 should declare isPro9');
+  });
+  test('p9-designsystem.js has beginner intro content', () => {
+    assert.ok(p9Code.includes('デザインシステムとは？') || p9Code.includes('What is a Design System'), 'p9 should have beginner intro');
+  });
+  test('p9-designsystem.js has beginner first 3 steps', () => {
+    assert.ok(p9Code.includes('最初の3ステップ') || p9Code.includes('First 3 Steps'), 'p9 should have first 3 steps');
+  });
+  test('p9-designsystem.js has Pro Design Token CI Pipeline', () => {
+    assert.ok(p9Code.includes('Design Token CI Pipeline'), 'p9 should have CI pipeline for Pro');
+  });
+  test('p9-designsystem.js has Pro Visual Regression Testing', () => {
+    assert.ok(p9Code.includes('Visual Regression Testing'), 'p9 should have visual regression for Pro');
+  });
+  test('p9-designsystem.js has beginner sequence diagram reading guide', () => {
+    assert.ok(p9Code.includes('シーケンス図の読み方') || p9Code.includes('How to Read Sequence'), 'p9 should have sequence diagram guide');
+  });
+});
+
+describe('[SkillLevel] P27 cost skill adaptation', () => {
+  test('p27-cost.js declares isBeg27 and isPro27 flags', () => {
+    assert.ok(p27Code.includes('const isBeg27=lv27<=1'), 'p27 should declare isBeg27');
+    assert.ok(p27Code.includes('const isPro27=lv27>=5'), 'p27 should declare isPro27');
+  });
+  test('p27-cost.js has beginner cloud billing intro', () => {
+    assert.ok(p27Code.includes('クラウド課金とは？') || p27Code.includes('What is Cloud Billing'), 'p27 should have beginner cloud billing intro');
+  });
+  test('p27-cost.js has beginner billing warning checklist', () => {
+    assert.ok(p27Code.includes('課金警告サイン') || p27Code.includes('Billing Warning Signs'), 'p27 should have billing warning checklist');
+  });
+  test('p27-cost.js has Pro RI/CUD break-even calculation', () => {
+    assert.ok(p27Code.includes('RI/CUD') || p27Code.includes('Break-Even'), 'p27 should have RI/CUD for Pro');
+  });
+  test('p27-cost.js has Pro Showback/Chargeback model', () => {
+    assert.ok(p27Code.includes('Showback') && p27Code.includes('Chargeback'), 'p27 should have Showback/Chargeback for Pro');
+  });
+  test('p27-cost.js has LLM cost tracking for Pro+AI', () => {
+    assert.ok(p27Code.includes('LLM / AIコスト追跡') || p27Code.includes('LLM / AI Cost Tracking'), 'p27 should have LLM cost tracking');
+  });
+});
+
+describe('[SkillLevel] P2 devcontainer skill adaptation', () => {
+  test('p2-devcontainer.js declares isBeg2 and isPro2 flags', () => {
+    assert.ok(p2Code.includes('const isBeg2=lv2<=1'), 'p2 should declare isBeg2');
+    assert.ok(p2Code.includes('const isPro2=lv2>=5'), 'p2 should declare isPro2');
+  });
+  test('p2-devcontainer.js has beginner DevContainer intro', () => {
+    assert.ok(p2Code.includes('DevContainerとは？') || p2Code.includes('What is DevContainer'), 'p2 should have beginner intro');
+  });
+  test('p2-devcontainer.js has beginner setup steps', () => {
+    assert.ok(p2Code.includes('初回セットアップ手順') || p2Code.includes('First-Time Setup'), 'p2 should have setup steps');
+  });
+  test('p2-devcontainer.js has Pro multi-stage build', () => {
+    assert.ok(p2Code.includes('マルチステージビルド最適化') || p2Code.includes('Multi-Stage Build'), 'p2 should have multi-stage build for Pro');
   });
 });
 

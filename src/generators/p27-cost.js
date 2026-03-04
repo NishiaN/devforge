@@ -139,12 +139,33 @@ function genPillar27_CostOptimization(a,pn){
 
 function gen109(a,pn){
   const G=S.genLang==='ja';
+  const lv27=S.skillLv||0;
+  const isBeg27=lv27<=1;
+  const isPro27=lv27>=5;
   const dep=_costPlatform(a);
   const plt=COST_PLATFORM[dep]||COST_PLATFORM.default;
   const db=_costDB(a);
   const scale=a.scale||'medium';
   let doc='# '+pn+' — '+(G?'コストアーキテクチャ設計書':'Cost Architecture')+'\n';
   doc+='> '+(G?'FinOps原則に基づくクラウドコスト最適化設計':'Cloud cost optimization design based on FinOps principles')+'\n\n';
+
+  if(isBeg27){
+    doc+='## '+(G?'クラウド課金とは？':'What is Cloud Billing?')+'\n\n';
+    doc+=G?'クラウドは「使った分だけ課金」されます。固定費型（サーバー常時起動）と従量課金型（リクエスト数・データ転送量ベース）の2種類があります。\n\n':'Cloud billing works on "pay for what you use." There are two types: fixed-cost (always-on servers) and usage-based (per request/data transfer).\n\n';
+    doc+='## '+(G?'無料枠フル活用戦略':'Free Tier Maximization Strategy')+'\n\n';
+    doc+='| '+(G?'サービス':'Service')+' | '+(G?'無料枠':'Free Tier')+' | '+(G?'超過単価':'Overage')+'|\n|---|---|---|\n';
+    doc+='| Vercel Hobby | 100GB帯域・100K関数実行/月 | $20/月〜 |\n';
+    doc+='| Supabase Free | 500MB DB・2GB帯域 | $25/月〜 |\n';
+    doc+='| GitHub Actions | 2000分/月 | $0.008/分 |\n';
+    doc+='| Sentry Free | 5K events/月 | $26/月〜 |\n';
+    doc+='| Cloudflare Free | CDN・DDoS保護 | $20/月〜 |\n\n';
+    doc+='## '+(G?'⚠️ 課金警告サイン チェックリスト':'⚠️ Billing Warning Signs Checklist')+'\n\n';
+    doc+='- [ ] '+(G?'予期しないトラフィックスパイク (DDoS / クローラー)':'Unexpected traffic spike (DDoS / crawlers)')+'\n';
+    doc+='- [ ] '+(G?'ログ出力が大量 (Cloudwatch / Logging API過多)':'Excessive log output (Cloudwatch / Logging API)')+'\n';
+    doc+='- [ ] '+(G?'テスト環境のリソースが本番と同じサイズ':'Test environment same size as production')+'\n';
+    doc+='- [ ] '+(G?'N+1クエリによるDB API呼び出し爆発':'N+1 queries causing DB API call explosion')+'\n';
+    doc+='- [ ] '+(G?'CDNキャッシュ未設定で全リクエストがオリジンに到達':'No CDN cache — all requests hitting origin')+'\n\n';
+  }
 
   doc+='## '+(G?'コスト概要 ('+(a.deploy||'クラウド')+')':'Cost Overview ('+(a.deploy||'Cloud')+')')+'\n\n';
   doc+='| '+(G?'コンポーネント':'Component')+' | '+(G?'モデル':'Model')+' | '+(G?'想定コスト':'Est. Cost')+' | '+(G?'最適化ポイント':'Optimization')+'|\n';
@@ -269,6 +290,8 @@ function gen110(a,pn){
 
 function gen111(a,pn){
   const G=S.genLang==='ja';
+  const lv27b=S.skillLv||0;
+  const isPro27b=lv27b>=5;
   const scale=a.scale||'medium';
   const budget=scale==='solo'?50:scale==='large'?2000:500;
   const phase=scale==='solo'?(G?'🐛 Crawl':'🐛 Crawl'):scale==='large'?(G?'🏃 Run':'🏃 Run'):(G?'🚶 Walk':'🚶 Walk');
@@ -298,11 +321,26 @@ function gen111(a,pn){
   doc+='| '+(G?'月次':'Monthly')+' | '+(G?'予算 vs 実績・最適化バックログ更新':'Budget vs actual, update backlog')+' |\n';
   doc+='| '+(G?'四半期':'Quarterly')+' | '+(G?'RI/Committed Use見直し・アーキレビュー':'Review RIs, architecture review')+' |\n';
 
+  if(isPro27b){
+    doc+='\n## '+(G?'コミット利用割引 (RI/CUD) 損益分岐計算':'Committed Use Discount (RI/CUD) Break-Even')+'\n\n';
+    doc+='| '+(G?'期間':'Term')+' | '+(G?'割引率':'Discount')+' | '+(G?'月額 (例: $500 OD)':'Monthly (e.g., $500 OD)')+' | '+(G?'損益分岐':'Break-even')+'|\n|---|---|---|---|\n';
+    doc+='| On-Demand | 0% | $500 | — |\n';
+    doc+='| 1yr RI ('+(G?'部分前払':'partial upfront')+') | 40% | $300 | '+(G?'~3ヶ月':'~3 months')+' |\n';
+    doc+='| 3yr RI ('+(G?'部分前払':'partial upfront')+') | 60% | $200 | '+(G?'~4ヶ月':'~4 months')+' |\n\n';
+    doc+='> '+(G?'RI推奨条件: CPU使用率 >60% が3ヶ月以上継続するワークロード':'RI recommended for workloads with >60% CPU utilization for 3+ months')+'\n\n';
+    doc+='## '+(G?'Showback / Chargeback モデル':'Showback / Chargeback Model')+'\n\n';
+    doc+=(G?'| モデル | 説明 | 適用シーン |\n|--------|------|----------|\n':'| Model | Description | Use Case |\n|-------|-------------|----------|\n');
+    doc+=(G?'| Showback | コストを可視化して通知するが回収しない | チーム内コスト意識向上 |\n':'| Showback | Visibility without charging back | Cost awareness within team |\n');
+    doc+=(G?'| Chargeback | 実際のコストを各チーム/テナントに課金 | マルチテナント・BU独立採算 |\n\n':'| Chargeback | Actually bill each team/tenant | Multi-tenant BU cost accountability |\n\n');
+  }
+
   S.files['docs/111_finops_strategy.md']=doc;
 }
 
 function gen112(a,pn){
   const G=S.genLang==='ja';
+  const lv27c=S.skillLv||0;
+  const isPro27c=lv27c>=5;
   const dep=_costPlatform(a);
   let doc='# '+pn+' — '+(G?'コスト監視・アラート':'Cost Monitoring & Alerting')+'\n';
   doc+='> '+(G?'リアルタイムコスト監視と異常検知の設定ガイド':'Real-time cost monitoring and anomaly detection')+'\n\n';
@@ -332,6 +370,21 @@ function gen112(a,pn){
   doc+='## '+(G?'AI コスト分析プロンプト':'AI Cost Analysis Prompt')+'\n\n```\n';
   doc+=G?'以下のコスト請求データを分析して最適化提案を出してください。\n[先月の請求書サマリーを貼り付け]\n\n分析:\n1. コストドライバー TOP3 の特定\n2. 前月比異常増加サービスのフラグ\n3. 即時削減施策と推定削減額\n4. docs/111_finops_strategy.md バックログへの追加項目':'Analyze the following cloud cost data and provide optimization recommendations.\n[Paste last month\'s billing summary]\n\nAnalyze:\n1. Identify TOP 3 cost drivers\n2. Flag services with abnormal MoM increases\n3. Immediate actions with estimated savings\n4. Items to add to docs/111_finops_strategy.md backlog';
   doc+='\n```\n';
+
+  const hasAI112=a.ai_auto&&!/なし|None|none/i.test(a.ai_auto);
+  if(isPro27c&&hasAI112){
+    doc+='\n## '+(G?'LLM / AIコスト追跡':'LLM / AI Cost Tracking')+'\n\n';
+    doc+='| '+(G?'モデル':'Model')+' | '+(G?'入力単価':'Input')+' | '+(G?'出力単価':'Output')+' | '+(G?'キャッシュ割引':'Cache Discount')+'|\n|---|---|---|---|\n';
+    doc+='| Claude 3.5 Sonnet | $3/1M tok | $15/1M tok | 90% (Prompt Cache) |\n';
+    doc+='| GPT-4o | $2.5/1M tok | $10/1M tok | 50% (cache) |\n';
+    doc+='| GPT-4o mini | $0.15/1M tok | $0.6/1M tok | 50% (cache) |\n';
+    doc+='| Gemini 1.5 Flash | $0.075/1M tok | $0.3/1M tok | — |\n\n';
+    doc+=G?'### AI APIコスト削減戦略\n\n':'### AI API Cost Reduction Strategies\n\n';
+    doc+='1. '+(G?'**プロンプトキャッシュ有効化**: 反復プレフィックスのキャッシュで最大90%削減':'**Enable prompt caching**: Up to 90% cost reduction for repeated prefixes')+'\n';
+    doc+='2. '+(G?'**モデルルーティング**: 簡単なタスクはminiモデルに自動振り分け':'**Model routing**: Auto-route simple tasks to mini models')+'\n';
+    doc+='3. '+(G?'**レスポンスキャッシュ**: 同一プロンプトはRedisキャッシュから返す':'**Response caching**: Return Redis-cached responses for identical prompts')+'\n';
+    doc+='4. '+(G?'**バッチ処理**: 非リアルタイムタスクはBatch API (50%割引) を使用':'**Batch processing**: Use Batch API (50% discount) for non-realtime tasks')+'\n\n';
+  }
 
   S.files['docs/112_cost_monitoring.md']=doc;
 }

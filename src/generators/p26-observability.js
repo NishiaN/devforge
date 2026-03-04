@@ -481,7 +481,7 @@ function gen105(a,pn){
     energy:[{name:'plant_uptime',ja:'設備稼働率',threshold:'>99%'},{name:'energy_efficiency',ja:'エネルギー効率',threshold:'Monitor'}],
     gov:[{name:'application_completion_rate',ja:'申請処理完了率',threshold:'>95%'},{name:'avg_processing_days',ja:'平均処理日数',threshold:'<10d'}],
     travel:[{name:'booking_completion_rate',ja:'予約完了率',threshold:'>20%'},{name:'cancellation_rate',ja:'キャンセル率',threshold:'<15%'}],
-    gaming:[{name:'concurrent_users',ja:'同時接続数',threshold:'Monitor'},{name:'matchmaking_p95',ja:'マッチング待ち時間 P95',threshold:'<30s'}],
+    gamify:[{name:'concurrent_users',ja:'同時接続数',threshold:'Monitor'},{name:'matchmaking_p95',ja:'マッチング待ち時間 P95',threshold:'<30s'}],
     media:[{name:'cdn_latency_p95',ja:'コンテンツ配信レイテンシ P95',threshold:'<200ms'},{name:'buffering_rate',ja:'バッファリング率',threshold:'<1%'}],
     legal:[{name:'document_completion_rate',ja:'文書処理完了率',threshold:'>98%'},{name:'review_turnaround_hours',ja:'レビュー平均時間（時）',threshold:'<48h'}],
     automation:[{name:'workflow_success_rate',ja:'ワークフロー成功率',threshold:'>99%'},{name:'avg_execution_seconds',ja:'平均実行時間（秒）',threshold:'<30s'}],

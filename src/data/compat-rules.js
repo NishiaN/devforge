@@ -1,4 +1,4 @@
-/* ═══ STACK COMPATIBILITY & SEMANTIC CONSISTENCY RULES — 302 rules (ERROR×33 + WARN×141 + INFO×128) ═══ */
+/* ═══ STACK COMPATIBILITY & SEMANTIC CONSISTENCY RULES — 305 rules (ERROR×33 + WARN×142 + INFO×130) ═══ */
 const COMPAT_RULES=[
   // ── FE ↔ Mobile (2 ERROR) ──
   {id:'fe-mob-expo',p:['frontend','mobile'],lv:'error',
@@ -2631,6 +2631,43 @@ const COMPAT_RULES=[
    fix:{f:'future_features',s:'DBパーティショニング戦略 (Range/Hash)'},
    why_ja:'監査ログ・イベントテーブルはGB/月単位で増加します。Rangeパーティションで古いデータを自動アーカイブし、クエリはパーティション刈り込みで高速化されます。',
    why_en:'Audit log and event tables grow GB/month. Range partitioning auto-archives old data; queries accelerate via partition pruning.'},
+  {id:'ds-no-dark-mode',p:['frontend'],lv:'info',
+   t:function(a){
+    var fe=(a.frontend||'');
+    var scale=a.scale||'medium';
+    var feats=(a.mvp_features||'')+(a.future_features||'');
+    var isSPA=/React|Vue|Angular|Svelte|Next\.js|Nuxt/i.test(fe);
+    var hasDark=/dark.?mode|ダークモード|テーマ切替|theme.?switch/i.test(feats);
+    return isSPA&&scale!=='solo'&&!hasDark;},
+   ja:'SPA構成でダークモード/テーマ切替の設定が見当たりません。ユーザー体験の向上に有効です',
+   en:'SPA configuration found but no dark mode/theme switching detected. Consider adding for improved UX',
+   fix:{f:'future_features',s:'ダークモード切替機能'},
+   why_ja:'ダークモードはユーザー満足度と視覚的アクセシビリティを高めます。CSS変数ベースなら追加コストが低く、UXスコア向上に直結します。',
+   why_en:'Dark mode improves user satisfaction and visual accessibility. CSS variable-based theming has low implementation cost with direct UX score impact.'},
+  {id:'test-no-framework',p:['mvp_features'],lv:'warn',
+   t:function(a){
+    var feats=(a.mvp_features||'');
+    var be=(a.backend||'');
+    var fe=(a.frontend||'');
+    var hasTDD=/\bTDD\b|test.driven/i.test(feats);
+    var hasTestFW=/Jest|Vitest|pytest|Mocha|Jasmine|Cypress|Playwright|RSpec|JUnit|PHPUnit/i.test(feats+be+fe);
+    return hasTDD&&!hasTestFW;},
+   ja:'TDD要件が記載されていますがテストフレームワークが特定されていません。FW選定が先決です',
+   en:'TDD requirement found but no test framework specified. Framework selection should precede TDD adoption',
+   fix:{f:'mvp_features',s:'テストフレームワーク (Jest / Vitest / pytest)'},
+   why_ja:'TDDはテストFWなしでは実践できません。技術スタック (JS→Vitest/Jest, Python→pytest) に合ったFWを先に決定してください。',
+   why_en:'TDD cannot be practiced without a test framework. Select a framework matching your stack (JS→Vitest/Jest, Python→pytest) first.'},
+  {id:'scale-solo-enterprise',p:['scale'],lv:'info',
+   t:function(a){
+    var scale=a.scale||'medium';
+    var feats=(a.mvp_features||'')+(a.future_features||'')+(a.purpose||'');
+    var hasEnterprise=/enterprise|エンタープライズ|multi.?tenant|マルチテナント|\bSSO\b|\bSAML\b|\bSCIM\b|audit.log|監査ログ/i.test(feats);
+    return scale==='solo'&&hasEnterprise;},
+   ja:'スケール設定がsoloですがエンタープライズパターン (マルチテナント/SSO/監査ログ) が含まれています。スケール設定の見直しを推奨します',
+   en:'Scale is set to solo but enterprise patterns (multi-tenant/SSO/audit log) detected. Consider reviewing scale setting',
+   fix:{f:'scale',s:'medium または large'},
+   why_ja:'soloスケールはシングルユーザー向け最小構成を前提とします。マルチテナント/SSOはmedium以上の構成が必要です。',
+   why_en:'Solo scale assumes minimal single-user configuration. Multi-tenant/SSO patterns require medium or larger scale.'},
 ];
 // helpers
 function inc(v,k){return v&&typeof v==='string'&&v.indexOf(k)!==-1;}
