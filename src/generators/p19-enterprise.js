@@ -305,6 +305,34 @@ function gen73(G, domain, orgModel, isMultiTenant, a, pn) {
     d += '\n';
   }
 
+  // Domain-specific regulatory compliance section
+  var _g73reg = {
+    health: G ?
+      {title:'HIPAA/医療データ規制準拠要件',items:['PHI最小限開示原則 (Minimum Necessary Rule) の実装','BAA (Business Associate Agreement) 締結管理','保存時・転送中PHI暗号化 (AES-256/TLS 1.3+)','アクセス制御: Role-Based Access + Audit Trail','侵害通知手順: 60日以内の規制当局報告']} :
+      {title:'HIPAA / Healthcare Data Compliance',items:['PHI Minimum Necessary Rule implementation','BAA (Business Associate Agreement) management','PHI encryption at rest & in transit (AES-256/TLS 1.3+)','Access control: Role-Based Access + Audit Trail','Breach notification: regulatory report within 60 days']},
+    government: G ?
+      {title:'政府・行政システムセキュリティ要件',items:['NIST SP 800-53 / FISMA 準拠','個人情報保護法・行政機関個人情報保護法対応','アクセスログ完全保存 (最低5年間)','多要素認証 (MFA) 必須化','クラウド採用基準: FedRAMP相当の認証確認']} :
+      {title:'Government / Public Sector Security Requirements',items:['NIST SP 800-53 / FISMA compliance','Personal data protection law compliance','Complete access log retention (minimum 5 years)','Multi-factor authentication (MFA) mandatory','Cloud adoption criteria: FedRAMP-equivalent certification']},
+    education: G ?
+      {title:'教育データ規制準拠要件',items:['FERPA: 学生教育記録の開示制限とアクセス権','未成年者データ保護: COPPA/GDPR Article 8 対応','保護者同意フロー設計 (18歳未満)','学籍データ保持ポリシー (在学中+卒業後5年)','第三者サービスへの学生データ提供制限']} :
+      {title:'Education Data Compliance Requirements',items:['FERPA: Student education record disclosure restrictions and access rights','Minor data protection: COPPA/GDPR Article 8 compliance','Parental consent flow design (under 18)','Student record retention policy (enrollment + 5 years post-graduation)','Restrictions on sharing student data with third-party services']},
+    energy: G ?
+      {title:'エネルギー・電力インフラ規制要件',items:['電気事業法・電力システム改革への対応','NERC CIP: 重要インフラ保護基準への適合','OT/ITネットワーク分離設計','緊急停止プロトコル: 人員・設備の安全確保手順','監査ログ: 運転記録・点検記録の長期保存 (10年以上)']} :
+      {title:'Energy / Power Infrastructure Compliance',items:['Electricity Business Act and power system reform compliance','NERC CIP: Critical infrastructure protection standards','OT/IT network segregation design','Emergency shutdown protocol: personnel and equipment safety procedures','Audit log: long-term retention of operational and inspection records (10+ years)']},
+    manufacturing: G ?
+      {title:'製造業セキュリティ・品質規制要件',items:['ISO 27001: 情報セキュリティマネジメントシステム','サプライチェーンセキュリティ: 取引先リスク評価','品質管理システム: ISO 9001 / IATF 16949 対応','製造データのトレーサビリティ保証 (lot番号・工程記録)','輸出管理規制 (EAR/ITAR) 対象品目のアクセス制御']} :
+      {title:'Manufacturing Security & Quality Compliance',items:['ISO 27001: Information Security Management System','Supply chain security: third-party risk assessment','Quality management system: ISO 9001/IATF 16949 compliance','Manufacturing data traceability (lot numbers, process records)','Export control regulations (EAR/ITAR) access control for controlled items']},
+    insurance: G ?
+      {title:'保険業法・アクチュアリー規制準拠要件',items:['保険業法: 顧客情報管理・ソルベンシーII対応','アクチュアリー計算の監査証跡保存','クレームデータの長期保存 (最低7年)','反マネーロンダリング (AML) スクリーニング','個人情報の第三者提供: 同意管理システム']} :
+      {title:'Insurance Law & Actuarial Compliance',items:['Insurance Business Act: customer data management, Solvency II compliance','Audit trail retention for actuarial calculations','Long-term claim data retention (minimum 7 years)','Anti-money laundering (AML) screening','Third-party personal data sharing: consent management system']}
+  };
+  var _regEntry = _g73reg[domain] || null;
+  if(_regEntry){
+    d += '## 📋 ' + (G ? _regEntry.title : _regEntry.title) + '\n\n';
+    _regEntry.items.forEach(function(item){ d += '- ✅ ' + item + '\n'; });
+    d += '\n';
+  }
+
   return d;
 }
 
@@ -419,7 +447,17 @@ function gen74(G, domain, orgModel, isMultiTenant, a, pn) {
     logistics: G ? ['配送ルート変更承認', '特急配送エスカレーション', '倉庫キャパシティ超過申請'] :
                    ['Delivery route change approval', 'Express shipping escalation', 'Warehouse capacity overflow request'],
     tool: G ? ['APIキー発行承認ワークフロー', 'レート制限引き上げ申請', 'Webhook エンドポイント登録承認'] :
-              ['API key issuance approval workflow', 'Rate limit raise request', 'Webhook endpoint registration approval']
+              ['API key issuance approval workflow', 'Rate limit raise request', 'Webhook endpoint registration approval'],
+    education: G ? ['学生進捗承認フロー', '教材公開レビュー', '成績異議申立て処理'] :
+                   ['Student progress approval flow', 'Learning material publish review', 'Grade dispute resolution'],
+    travel: G ? ['予約変更承認フロー', 'キャンセルエスカレーション', '料金調整承認チェーン'] :
+                ['Booking change approval flow', 'Cancellation escalation', 'Fare adjustment approval chain'],
+    realestate: G ? ['契約締結承認チェーン', '物件公開レビューフロー', '家賃改定承認プロセス'] :
+                    ['Contract signing approval chain', 'Property listing review flow', 'Rent revision approval process'],
+    energy: G ? ['設備メンテナンス承認フロー', '安全検査完了確認', '緊急停止プロトコル承認'] :
+                ['Equipment maintenance approval flow', 'Safety inspection completion confirmation', 'Emergency shutdown protocol approval'],
+    manufacturing: G ? ['品質検査承認フロー', '設備変更管理承認', '出荷判定ワークフロー'] :
+                       ['Quality inspection approval flow', 'Equipment change management approval', 'Shipment go/no-go workflow']
   };
   var domCustom = customizations[domain] || (G ? ['承認ワークフロー', 'オンボーディング自動化', '状態変更通知'] :
                                                   ['Approval workflow', 'Onboarding automation', 'State change notifications']);
@@ -679,7 +717,7 @@ function genPillar19_EnterpriseSaaS(a, pn) {
                       /マルチテナント|Multi-tenant|RBAC/i.test(mvpFeatures);
 
   // Only generate for relevant domains
-  var relevantDomain = /saas|analytics|hr|collab|tool|automation|fintech|legal|ec|marketplace|logistics|insurance/i.test(domain);
+  var relevantDomain = /saas|analytics|hr|collab|tool|automation|fintech|legal|ec|marketplace|logistics|insurance|health|government|education|booking|travel|realestate|energy|manufacturing/i.test(domain);
   if (!relevantDomain && !isMultiTenant) return;
 
   S.files['docs/73_enterprise_architecture.md'] = gen73(G, domain, orgModel, isMultiTenant, a, pn);

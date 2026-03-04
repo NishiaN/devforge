@@ -142,6 +142,8 @@ const NEW_RULE_IDS = [
   'be-ws-serverless-incompatible','fe-no-i18n-needed','mob-insecure-token-storage',
   // v9.14 Phase D: domain invariants, staged deploy (+2)
   'qa-high-risk-no-invariant-test','ops-scale-no-staged-deploy',
+  // v9.15 Phase 1: N+1 guard, mixed auth, runbook, deep link, preview deploy (+5)
+  'db-no-n1-guard','be-mixed-auth-provider','ops-large-no-runbook','mob-large-no-deep-link','ci-no-preview-deploy',
 ];
 
 const errorRules = Object.entries(hits).filter(([,v])=>v.level==='error');

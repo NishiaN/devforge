@@ -1,4 +1,4 @@
-/* ═══ STACK COMPATIBILITY & SEMANTIC CONSISTENCY RULES — 310 rules (ERROR×33 + WARN×143 + INFO×134) ═══ */
+/* ═══ STACK COMPATIBILITY & SEMANTIC CONSISTENCY RULES — 315 rules (ERROR×33 + WARN×143 + INFO×139) ═══ */
 const COMPAT_RULES=[
   // ── FE ↔ Mobile (2 ERROR) ──
   {id:'fe-mob-expo',p:['frontend','mobile'],lv:'error',
@@ -2731,6 +2731,75 @@ const COMPAT_RULES=[
    fix:{f:'mvp_features',s:'カナリアデプロイ + Feature Flag'},
    why_ja:'大規模環境での一括デプロイは障害時の影響範囲が広くなります。5%→25%→100%の段階的ロールアウトで早期検知できます。',
    why_en:'Full deployment in large environments maximizes blast radius. Use 5%→25%→100% canary rollout for early detection and rapid rollback.'},
+  // ── Additional Quality Rules (5 INFO) ──
+  {id:'db-no-n1-guard',p:['database','backend','orm'],lv:'info',
+   t:function(a){
+    var db=a.database||'';var be=a.backend||'';var orm=a.orm||'';var sc=a.scale||'medium';
+    var isRelDB=/PostgreSQL|MySQL|MariaDB/i.test(db);
+    var hasORM=/Prisma|Drizzle|TypeORM|SQLAlchemy|Kysely/i.test(orm);
+    var isLarge=/^(large|enterprise)$/.test(sc);
+    var ents=(a.entities||'').split(',').filter(function(e){return e.trim();});
+    var manyEnts=ents.length>=7;
+    var feats=(a.mvp_features||'')+(a.dev_methods||'');
+    var hasN1Guard=/N\+1|eager.?load|include|dataloader|バッチ|select_related/i.test(feats);
+    return isRelDB&&hasORM&&isLarge&&manyEnts&&!hasN1Guard;},
+   ja:'大規模+7エンティティ以上でORMを使用していますが、N+1問題への対策（include/eager load/DataLoader等）が確認されません',
+   en:'Large scale with ORM and 7+ entities detected, but no N+1 mitigation (include/eager load/DataLoader) found',
+   fix:{f:'dev_methods',s:'N+1対策: Prisma include / DataLoader バッチ'},
+   why_ja:'ORMのデフォルト挙動はN+1クエリを生成しがちです。本番環境では深刻なDB負荷になります。',
+   why_en:'ORM defaults easily generate N+1 queries. In production this causes serious DB load spikes.'},
+  {id:'be-mixed-auth-provider',p:['auth','backend'],lv:'info',
+   t:function(a){
+    var auth=a.auth||'';var be=a.backend||'';
+    var hasBaaSAuth=/Firebase Auth|Supabase Auth|Clerk|Auth0/i.test(auth);
+    var hasCustomAuth=/JWT|カスタム|custom|middleware|独自/i.test(auth);
+    var isNotBaaS=!/Firebase|Supabase|Convex/i.test(be);
+    return hasBaaSAuth&&hasCustomAuth&&isNotBaaS;},
+   ja:'BaaS認証とカスタム認証ミドルウェアが混在しています。認証パスが複数存在するとセキュリティホールになりやすいです',
+   en:'BaaS authentication and custom auth middleware appear mixed. Multiple auth paths increase the risk of security gaps',
+   fix:{f:'auth',s:'認証プロバイダーを1つに統一'},
+   why_ja:'認証経路の混在は検証漏れやバイパス脆弱性の温床です。単一プロバイダーに統一してください。',
+   why_en:'Mixed auth paths breed validation gaps and bypass vulnerabilities. Consolidate to a single provider.'},
+  {id:'ops-large-no-runbook',p:['scale','backend'],lv:'info',
+   t:function(a){
+    var sc=a.scale||'medium';
+    var isLarge=/^(large|enterprise)$/.test(sc);
+    var isBaaS=inc(a.backend,'Firebase')||inc(a.backend,'Supabase')||inc(a.backend,'Convex');
+    var feats=(a.mvp_features||'')+(a.dev_methods||'');
+    var hasRunbook=/runbook|playbook|incident|障害対応|手順書/i.test(feats);
+    return isLarge&&!isBaaS&&!hasRunbook;},
+   ja:'large/enterprise規模ですがRunbook/インシデント対応手順が確認されません。障害時の対応手順を整備することを推奨します',
+   en:'Large/enterprise scale detected but no runbook or incident response procedure found. Recommend creating incident response documentation',
+   fix:{f:'mvp_features',s:'Runbook / インシデント対応手順書'},
+   why_ja:'大規模システムでRunbookがないと障害時の対応が属人化し、MTTR(平均復旧時間)が増大します。',
+   why_en:'Without runbooks in large systems, incident response becomes ad hoc, increasing MTTR significantly.'},
+  {id:'mob-large-no-deep-link',p:['mobile','scale'],lv:'info',
+   t:function(a){
+    var mob=a.mobile||'';var sc=a.scale||'medium';
+    var hasExpFlutter=/Expo|Flutter/i.test(mob);
+    var isLarge=/^(large|enterprise)$/.test(sc);
+    var feats=(a.mvp_features||'')+(a.dev_methods||'');
+    var hasDeepLink=/deep.?link|universal.?link|App Links|ディープリンク|ユニバーサルリンク/i.test(feats);
+    return hasExpFlutter&&isLarge&&!hasDeepLink;},
+   ja:'Expo/Flutterの大規模モバイルアプリですがDeep Link/Universal Linkの設定が確認されません。ユーザー誘導やプッシュ通知連携に必須です',
+   en:'Large Expo/Flutter mobile app detected but no deep link or universal link configuration found. Essential for user routing and push notification integration',
+   fix:{f:'mvp_features',s:'Deep Link / Universal Link 設定'},
+   why_ja:'Deep Linkなしではプッシュ通知から画面遷移できず、ユーザーエクスペリエンスが著しく低下します。',
+   why_en:'Without deep links, push notifications cannot navigate to specific screens, severely degrading user experience.'},
+  {id:'ci-no-preview-deploy',p:['deploy','scale'],lv:'info',
+   t:function(a){
+    var sc=a.scale||'medium';
+    var dep=a.deploy||'';
+    var isLarge=/^(large|enterprise)$/.test(sc);
+    var hasPreviewPlatform=/Vercel|Netlify|Cloudflare/i.test(dep);
+    var feats=(a.mvp_features||'')+(a.dev_methods||'');
+    var hasPreview=/preview|staging|プレビュー|ステージング/i.test(feats);
+    return isLarge&&hasPreviewPlatform&&!hasPreview;},
+   ja:'Vercel/Netlify/CFを使用した大規模プロジェクトですがプレビューデプロイ/ステージング環境が確認されません。PR毎のプレビューで品質を向上できます',
+   en:'Large project on Vercel/Netlify/CF but no preview deploy or staging environment found. Per-PR preview deployments improve quality',
+   fix:{f:'mvp_features',s:'プレビューデプロイ / ステージング環境'},
+   why_ja:'プレビューデプロイにより、PRマージ前に実環境での動作確認が可能になり、本番障害を予防します。',
+   why_en:'Preview deployments allow validating behavior in production-like environments before merging, preventing production incidents.'},
 ];
 // helpers
 function inc(v,k){return v&&typeof v==='string'&&v.indexOf(k)!==-1;}

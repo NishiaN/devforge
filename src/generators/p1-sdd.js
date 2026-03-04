@@ -696,5 +696,41 @@ function genPillar1_SDD(a,pn){
     '| SLO/SLI | docs/103_observability_architecture.md | '+(G?'エラーバジェット監視':'Error budget monitoring')+' |',
     '',
   ].join('\n');
+
+  // ── invariants.test.ts (when DOMAIN_INVARIANTS[domain] exists) ──
+  const _inv=typeof DOMAIN_INVARIANTS!=='undefined'?DOMAIN_INVARIANTS[domain]:null;
+  if(_inv){
+    const lv=S.skillLv!=null?S.skillLv:(S.skill==='beginner'?1:S.skill==='pro'?5:3);
+    const isBegInv=lv<=1;
+    const isProInv=lv>=5;
+    const _invTests=_inv.map(function(r,i){
+      const name=G?r.ja:r.en;
+      const verif=r.verify||'';
+      const argName='val'+(i+1);
+      if(isBegInv){
+        return '  // TODO: Implement invariant test for: '+name+'\n  // Verification method: '+verif+'\n  it.todo(\''+name.replace(/'/g,"\\'")+'\');';
+      } else if(isProInv){
+        return '  it(\''+name.replace(/'/g,"\\'")+'\', () => {\n    fc.assert(\n      fc.property(\n        fc.integer({ min: 0, max: 1_000_000 }),\n        fc.integer({ min: 1, max: 100_000 }),\n        (a, b) => {\n          // '+verif+'\n          // TODO: call your domain function and assert the invariant\n          return true; // replace with actual assertion\n        }\n      )\n    );\n  });';
+      } else {
+        return '  it(\''+name.replace(/'/g,"\\'")+'\', () => {\n    // '+verif+'\n    fc.assert(\n      fc.property(fc.integer({ min: 0, max: 1_000_000 }), ('+argName+') => {\n        // TODO: implement domain logic call and assertion\n        return true;\n      })\n    );\n  });';
+      }
+    }).join('\n\n');
+    const _begHdr=isBegInv?
+      '// '+domain+' domain invariant tests\n// This file verifies business rules that must ALWAYS hold true.\n// Run: npx vitest run test/invariants.test.ts\n\n':
+      '';
+    const _proImports=isProInv?
+      'import * as fc from \'fast-check\';\nimport { fc as fcNs } from \'fast-check\';\n':
+      'import * as fc from \'fast-check\';\n';
+    S.files['test/invariants.test.ts']=[
+      _begHdr+'import { describe, it, expect } from \'vitest\';',
+      _proImports,
+      (G?'// ドメイン不変条件テスト — '+pn:'// Domain Invariant Tests — '+pn),
+      (G?'// 生成元: .spec/verification.md §6':'// Generated from: .spec/verification.md §6'),
+      '',
+      'describe(\''+(G?'ドメイン不変条件: ':'Domain Invariants: ')+domain+'\', () => {',
+      _invTests,
+      '});',
+    ].join('\n');
+  }
 }
 

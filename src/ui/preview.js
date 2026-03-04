@@ -372,6 +372,10 @@ function buildFileTree(){
     files.push({folder:true,name:'.spec'});
     ['constitution.md','specification.md','technical-plan.md','tasks.md','verification.md'].forEach(f=>
       files.push({name:'  '+f,path:'.spec/'+f}));
+    if(S.files['test/invariants.test.ts']){
+      files.push({folder:true,name:'test'});
+      files.push({name:'  invariants.test.ts',path:'test/invariants.test.ts'});
+    }
   } else if(pillar===1){ // DevContainer
     files.push({folder:true,name:'.devcontainer'});
     ['devcontainer.json','Dockerfile','docker-compose.yml','post-create.sh'].forEach(f=>

@@ -175,4 +175,33 @@ describe('Pillar ① SDD 仕様書生成', () => {
     );
   });
 
+  test('invariants.test.ts: 高リスクドメイン(fintech)でtest/invariants.test.tsが生成される', () => {
+    S.files = {};
+    S.skillLv = 3;
+    genPillar1_SDD({ ...BASE_ANSWERS, purpose: '送金・決済処理fintechサービス' }, 'FintechApp');
+    assert.ok(
+      S.files['test/invariants.test.ts'],
+      'test/invariants.test.ts should be generated for fintech domain'
+    );
+    const inv = S.files['test/invariants.test.ts'];
+    assert.ok(
+      inv.includes('describe') && (inv.includes('fintech') || inv.includes('Domain Invariants')),
+      'invariants.test.ts should contain describe block with domain name'
+    );
+    assert.ok(
+      inv.includes('fast-check') || inv.includes('fc'),
+      'invariants.test.ts should import fast-check'
+    );
+  });
+
+  test('invariants.test.ts: 汎用ドメイン(tool)ではtest/invariants.test.tsが生成されない', () => {
+    S.files = {};
+    S.skillLv = 3;
+    genPillar1_SDD({ ...BASE_ANSWERS, purpose: '汎用ユーティリティツール' }, 'ToolApp');
+    assert.ok(
+      !S.files['test/invariants.test.ts'],
+      'test/invariants.test.ts should NOT be generated for generic tool domain'
+    );
+  });
+
 });

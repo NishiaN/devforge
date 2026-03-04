@@ -862,6 +862,21 @@ const tests=[
   {name:'Large+Canary=noINFO',a:{purpose:'企業向けSaaS',deploy:'Railway',scale:'large',mvp_features:'カナリアデプロイ ユーザー認証'},expect:'none',id:'ops-scale-no-staged-deploy'},
   {name:'Medium+noCanary=noINFO',a:{purpose:'タスク管理アプリ',deploy:'Vercel',scale:'medium',mvp_features:'ユーザー認証 CRUD'},expect:'none',id:'ops-scale-no-staged-deploy'},
   {name:'Enterprise+featureFlag=noINFO',a:{purpose:'企業向けHRシステム',deploy:'AWS',scale:'enterprise',mvp_features:'feature flag ユーザー管理'},expect:'none',id:'ops-scale-no-staged-deploy'},
+  // db-no-n1-guard (INFO)
+  {name:'Large+ORM+7ents+noN1=INFO',a:{database:'PostgreSQL',backend:'Node.js + Express',orm:'Prisma',scale:'large',entities:'User,Post,Comment,Tag,Category,Team,Role,Permission',mvp_features:'CRUD ユーザー管理'},expect:'info',id:'db-no-n1-guard'},
+  {name:'Large+ORM+7ents+hasInclude=noINFO',a:{database:'PostgreSQL',backend:'Node.js + Express',orm:'Prisma',scale:'large',entities:'User,Post,Comment,Tag,Category,Team,Role,Permission',mvp_features:'CRUD include eager load'},expect:'none',id:'db-no-n1-guard'},
+  // be-mixed-auth-provider (INFO)
+  {name:'Clerk+JWT+CustomBE=INFO',a:{auth:'Clerk JWT カスタムミドルウェア',backend:'Node.js + Express'},expect:'info',id:'be-mixed-auth-provider'},
+  {name:'Supabase+JWT+BaaSBE=noINFO',a:{auth:'Supabase Auth JWT',backend:'Supabase'},expect:'none',id:'be-mixed-auth-provider'},
+  // ops-large-no-runbook (INFO)
+  {name:'Large+NoBaaS+noRunbook=INFO',a:{scale:'large',backend:'Node.js + Express',mvp_features:'ユーザー管理 CRUD'},expect:'info',id:'ops-large-no-runbook'},
+  {name:'Large+NoBaaS+hasRunbook=noINFO',a:{scale:'large',backend:'Node.js + Express',mvp_features:'ユーザー管理 runbook インシデント対応'},expect:'none',id:'ops-large-no-runbook'},
+  // mob-large-no-deep-link (INFO)
+  {name:'Expo+Large+noDeepLink=INFO',a:{mobile:'Expo (React Native)',scale:'large',mvp_features:'プッシュ通知 CRUD'},expect:'info',id:'mob-large-no-deep-link'},
+  {name:'Expo+Large+hasDeepLink=noINFO',a:{mobile:'Expo (React Native)',scale:'large',mvp_features:'deep link プッシュ通知'},expect:'none',id:'mob-large-no-deep-link'},
+  // ci-no-preview-deploy (INFO)
+  {name:'Large+Vercel+noPreview=INFO',a:{deploy:'Vercel',scale:'large',mvp_features:'ユーザー認証 CRUD'},expect:'info',id:'ci-no-preview-deploy'},
+  {name:'Large+Vercel+hasPreview=noINFO',a:{deploy:'Vercel',scale:'large',mvp_features:'プレビューデプロイ staging ユーザー認証'},expect:'none',id:'ci-no-preview-deploy'},
 ];
 
 let pass=0,fail=0;

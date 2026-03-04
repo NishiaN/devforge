@@ -90,9 +90,9 @@ describe('Snapshot A: LMS/Supabase/Stripe', () => {
     ai_auto: 'マルチAgent協調'
   }, 'LMS');
 
-  test('file count in range 148-215 (P21-P28 each +4-5 docs; +7 agents/docs113-114; +11 agentskills.io; +2 docs/116+118; +2 docs/122+123; +1 docs/117; +1 docs/124; +2 docs/98-2+106-2 AI; +5 P28 XAI; +1 docs/132 MCP; +3 v9.8 docs/133+134+roadmap/AI_ONBOARDING)', () => {
+  test('file count in range 152-219 (P21-P28 each +4-5 docs; +7 agents/docs113-114; +11 agentskills.io; +2 docs/116+118; +2 docs/122+123; +1 docs/117; +1 docs/124; +2 docs/98-2+106-2 AI; +5 P28 XAI; +1 docs/132 MCP; +3 v9.8 docs/133+134+roadmap/AI_ONBOARDING; +4 P19 education v9.15)', () => {
     const count = Object.keys(files).length;
-    assert.ok(count >= 148 && count <= 215, `Expected 148-215 files (P21-P28 +4-5 docs each, +7 agents/docs113-114, +11 agentskills.io, +2 estimation/ops, +2 docs/122+123, +1 docs/117, +1 docs/124, +2 XAI/AI-monitor, +5 P28, +1 docs/132, +3 v9.8), got ${count}`);
+    assert.ok(count >= 152 && count <= 219, `Expected 152-219 files (P21-P28 +4-5 docs each, +7 agents/docs113-114, +11 agentskills.io, +2 estimation/ops, +2 docs/122+123, +1 docs/117, +1 docs/124, +2 XAI/AI-monitor, +5 P28, +1 docs/132, +3 v9.8, +4 P19 education), got ${count}`);
   });
 
   test('total tokens in range 12000-140000 (P21-P26 each add ~4-6K tokens, +agentskills.io skills, +docs/119+120, +v9.10 P25/P21/P12 enhancements)', () => {
