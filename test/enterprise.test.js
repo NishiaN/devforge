@@ -195,11 +195,11 @@ test('[P19] genPillar19: EN output for analytics domain', () => {
   assert.ok(doc73.includes('Organization') || doc73.includes('RLS'), 'doc 73 has enterprise content');
 });
 
-test('[P19] genPillar19: skips irrelevant domains (portfolio)', () => {
+test('[P19] genPillar19: generates for portfolio domain (v9.16: 32/32 domains)', () => {
   global.S = {genLang: 'ja', files: {}};
   const a = {purpose: 'portfolio website for designer', org_model: ''};
   genPillar19_EnterpriseSaaS(a, 'PortfolioSite');
-  assert.ok(!('docs/73_enterprise_architecture.md' in S.files), 'skips for portfolio domain');
+  assert.ok('docs/73_enterprise_architecture.md' in S.files, 'generates for portfolio domain (now 32/32)');
 });
 
 test('[P19] genPillar19: mvp_features multi-tenant triggers generation', () => {

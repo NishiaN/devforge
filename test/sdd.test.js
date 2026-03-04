@@ -204,4 +204,34 @@ describe('Pillar ① SDD 仕様書生成', () => {
     );
   });
 
+  test('invariants.test.ts: educationドメインでtest/invariants.test.tsが生成される', () => {
+    S.files = {};
+    S.skillLv = 3;
+    genPillar1_SDD({ ...BASE_ANSWERS, purpose: 'オンライン学習管理システム LMS education' }, 'EduApp');
+    assert.ok(
+      S.files['test/invariants.test.ts'],
+      'test/invariants.test.ts should be generated for education domain'
+    );
+    const inv = S.files['test/invariants.test.ts'];
+    assert.ok(
+      inv.includes('education') || inv.includes('Domain Invariants'),
+      'invariants.test.ts should reference education domain'
+    );
+  });
+
+  test('invariants.test.ts: manufacturingドメインでtest/invariants.test.tsが生成される', () => {
+    S.files = {};
+    S.skillLv = 3;
+    genPillar1_SDD({ ...BASE_ANSWERS, purpose: '工場生産管理システム manufacturing' }, 'MfgApp');
+    assert.ok(
+      S.files['test/invariants.test.ts'],
+      'test/invariants.test.ts should be generated for manufacturing domain'
+    );
+    const inv = S.files['test/invariants.test.ts'];
+    assert.ok(
+      inv.includes('manufacturing') || inv.includes('Domain Invariants'),
+      'invariants.test.ts should reference manufacturing domain'
+    );
+  });
+
 });

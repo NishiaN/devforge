@@ -2370,6 +2370,46 @@ var DOMAIN_INVARIANTS={
     {ja:'給与 > 0（ゼロ給与禁止）',en:'Salary > 0 (zero salary prohibited)',verify:'property-based test'},
     {ja:'従業員IDはシステム全体で一意',en:'Employee ID unique across entire system',verify:'DB constraint + unit test'},
     {ja:'在職者のみ給与計算対象',en:'Payroll computed only for active employees',verify:'integration test'}
+  ],
+  education:[
+    {ja:'成績は有効範囲内（0-100点またはA-F）',en:'Grade within valid range (0-100 or A-F)',verify:'property-based test'},
+    {ja:'学習進捗は後退しない（単調増加）',en:'Learning progress never regresses (monotonically increases)',verify:'unit test'},
+    {ja:'受講登録日 <= コース開始日',en:'Enrollment date <= course start date',verify:'DB constraint + unit test'}
+  ],
+  logistics:[
+    {ja:'配送ステータス遷移は定義済みフローのみ',en:'Shipment status transitions follow defined workflow only',verify:'state machine test'},
+    {ja:'GPS座標は有効範囲内（緯度±90、経度±180）',en:'GPS coordinates within valid range (lat ±90, lng ±180)',verify:'property-based test'},
+    {ja:'在庫数 >= 0（マイナス在庫禁止）',en:'Inventory quantity >= 0 (no negative stock)',verify:'DB constraint + unit test'}
+  ],
+  manufacturing:[
+    {ja:'OEE構成要素は有効範囲内（0-100%）',en:'OEE components within valid range (0-100%)',verify:'property-based test'},
+    {ja:'不良品数 >= 0（マイナス不良禁止）',en:'Defect count >= 0 (no negative defect count)',verify:'DB constraint + unit test'},
+    {ja:'生産スケジュールに時間重複なし',en:'Production schedule has no overlapping time slots',verify:'concurrency test + DB constraint'}
+  ],
+  government:[
+    {ja:'監査ログは削除不可（append-only）',en:'Audit logs are immutable (append-only)',verify:'DB policy + audit'},
+    {ja:'申請ステータス遷移は定義済みフローのみ',en:'Application status transitions follow defined workflow only',verify:'state machine test'},
+    {ja:'PIIアクセスは明示的権限のみ（暗黙拒否）',en:'PII access requires explicit permission only (implicit deny)',verify:'authorization test'}
+  ],
+  iot:[
+    {ja:'センサー値はキャリブレーション範囲内',en:'Sensor values within calibrated range',verify:'property-based test'},
+    {ja:'デバイスハートビート間隔は設定上限内',en:'Device heartbeat interval within configured maximum',verify:'unit + integration test'},
+    {ja:'ファームウェアバージョンは単調増加',en:'Firmware version monotonically increases (no downgrade)',verify:'unit test'}
+  ],
+  energy:[
+    {ja:'グリッド供給量 == 需要量（電力バランス）',en:'Grid supply == demand (power balance maintained)',verify:'integration test'},
+    {ja:'排出量 >= 0（マイナス排出禁止）',en:'Emissions value >= 0 (no negative emissions)',verify:'property-based test'},
+    {ja:'安全閾値は常に遵守（緊急停止連動）',en:'Safety thresholds always enforced (emergency stop linked)',verify:'integration test + safety audit'}
+  ],
+  realestate:[
+    {ja:'物件掲載価格 > 0（ゼロ価格禁止）',en:'Property listing price > 0 (zero price prohibited)',verify:'property-based test'},
+    {ja:'契約ステータス遷移は定義済みフローのみ',en:'Contract status transitions follow defined workflow only',verify:'state machine test'},
+    {ja:'家賃計算が契約条件と一致',en:'Rent calculation matches contract terms',verify:'unit test + integration test'}
+  ],
+  travel:[
+    {ja:'同一日程・同一リソースに重複予約なし',en:'No duplicate bookings for same dates and resource',verify:'concurrency test + DB constraint'},
+    {ja:'旅行代金 > 0（ゼロ料金禁止）',en:'Travel price > 0 (zero price prohibited)',verify:'property-based test'},
+    {ja:'キャンセル料はポリシー定義範囲内',en:'Cancellation fee within policy-defined range',verify:'unit test'}
   ]
 };
 

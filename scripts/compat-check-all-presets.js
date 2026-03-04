@@ -144,6 +144,8 @@ const NEW_RULE_IDS = [
   'qa-high-risk-no-invariant-test','ops-scale-no-staged-deploy',
   // v9.15 Phase 1: N+1 guard, mixed auth, runbook, deep link, preview deploy (+5)
   'db-no-n1-guard','be-mixed-auth-provider','ops-large-no-runbook','mob-large-no-deep-link','ci-no-preview-deploy',
+  // v9.16 Phase C: a11y, api versioning, health check, db backup, prompt injection (+5)
+  'fe-no-a11y-tool','api-no-versioning','ops-no-health-check','db-no-backup-strategy','ai-no-prompt-injection',
 ];
 
 const errorRules = Object.entries(hits).filter(([,v])=>v.level==='error');

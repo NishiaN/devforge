@@ -324,7 +324,19 @@ function gen73(G, domain, orgModel, isMultiTenant, a, pn) {
       {title:'Manufacturing Security & Quality Compliance',items:['ISO 27001: Information Security Management System','Supply chain security: third-party risk assessment','Quality management system: ISO 9001/IATF 16949 compliance','Manufacturing data traceability (lot numbers, process records)','Export control regulations (EAR/ITAR) access control for controlled items']},
     insurance: G ?
       {title:'保険業法・アクチュアリー規制準拠要件',items:['保険業法: 顧客情報管理・ソルベンシーII対応','アクチュアリー計算の監査証跡保存','クレームデータの長期保存 (最低7年)','反マネーロンダリング (AML) スクリーニング','個人情報の第三者提供: 同意管理システム']} :
-      {title:'Insurance Law & Actuarial Compliance',items:['Insurance Business Act: customer data management, Solvency II compliance','Audit trail retention for actuarial calculations','Long-term claim data retention (minimum 7 years)','Anti-money laundering (AML) screening','Third-party personal data sharing: consent management system']}
+      {title:'Insurance Law & Actuarial Compliance',items:['Insurance Business Act: customer data management, Solvency II compliance','Audit trail retention for actuarial calculations','Long-term claim data retention (minimum 7 years)','Anti-money laundering (AML) screening','Third-party personal data sharing: consent management system']},
+    media: G ?
+      {title:'メディア・コンテンツ配信規制準拠要件',items:['DMCA: デジタルミレニアム著作権法対応・テイクダウン手続き','DSA (Digital Services Act): コンテンツモデレーション透明性報告','放送法・著作権法: 二次利用ライセンス管理','未成年者保護: 年齢確認・有害コンテンツフィルタリング','著作権侵害検知: コンテンツフィンガープリンティング導入']} :
+      {title:'Media / Content Distribution Compliance',items:['DMCA: Digital Millennium Copyright Act compliance and takedown procedures','DSA (Digital Services Act): content moderation transparency reporting','Broadcasting Act / Copyright Act: secondary use license management','Minor protection: age verification and harmful content filtering','Copyright infringement detection: content fingerprinting implementation']},
+    agriculture: G ?
+      {title:'農業・食品安全規制準拠要件',items:['HACCP: 危害分析重要管理点の記録管理','FSMA (食品安全近代化法): 予防的管理・トレーサビリティ','GAP認証: 農業生産工程管理の文書化','農薬取締法: 使用記録・残留農薬データ管理','有機JAS: 有機農産物の認証記録・第三者審査対応']} :
+      {title:'Agriculture / Food Safety Compliance',items:['HACCP: Hazard analysis and critical control point record management','FSMA (Food Safety Modernization Act): preventive controls and traceability','GAP certification: agricultural production process management documentation','Pesticide Control Act: usage records and residue data management','Organic JAS: organic produce certification records and third-party audit support']},
+    iot: G ?
+      {title:'IoTデバイスセキュリティ規制準拠要件',items:['ETSI EN 303 645: コンシューマーIoTサイバーセキュリティ基準','デフォルトパスワード禁止: 固有認証情報の強制','FW署名検証: セキュアブート・ファームウェア完全性確認','通信暗号化: TLS 1.3+必須 (ペイロード含む)','脆弱性開示ポリシー: 協調開示プログラム (CVD) の整備']} :
+      {title:'IoT Device Security Compliance Requirements',items:['ETSI EN 303 645: Consumer IoT cybersecurity baseline standard','No default passwords: unique credential enforcement','Firmware signature verification: secure boot and firmware integrity check','Communication encryption: TLS 1.3+ required (including payload)','Vulnerability disclosure policy: coordinated vulnerability disclosure (CVD) program']},
+    community: G ?
+      {title:'コミュニティ・プラットフォーム規制準拠要件',items:['DSA (Digital Services Act): ユーザー報告機能・モデレーション透明性報告','COPPA / GDPR Article 8: 13歳未満ユーザーの保護者同意管理','GDPR: コンテンツ削除要求 (忘れられる権利) の対応手順','モデレーション透明性: 削除・制限理由の説明義務','通報メカニズム: 違法コンテンツの規制当局報告フロー']} :
+      {title:'Community Platform Compliance Requirements',items:['DSA (Digital Services Act): user reporting functionality and moderation transparency reporting','COPPA / GDPR Article 8: parental consent management for users under 13','GDPR: content deletion requests (right to be forgotten) handling procedures','Moderation transparency: obligation to explain removal and restriction reasons','Reporting mechanism: regulatory authority reporting flow for illegal content']}
   };
   var _regEntry = _g73reg[domain] || null;
   if(_regEntry){
@@ -457,7 +469,31 @@ function gen74(G, domain, orgModel, isMultiTenant, a, pn) {
     energy: G ? ['設備メンテナンス承認フロー', '安全検査完了確認', '緊急停止プロトコル承認'] :
                 ['Equipment maintenance approval flow', 'Safety inspection completion confirmation', 'Emergency shutdown protocol approval'],
     manufacturing: G ? ['品質検査承認フロー', '設備変更管理承認', '出荷判定ワークフロー'] :
-                       ['Quality inspection approval flow', 'Equipment change management approval', 'Shipment go/no-go workflow']
+                       ['Quality inspection approval flow', 'Equipment change management approval', 'Shipment go/no-go workflow'],
+    gamify: G ? ['ポイント付与承認ワークフロー', 'リーダーボードリセット承認', 'リワードキャンペーン承認'] :
+                ['Point reward approval workflow', 'Leaderboard reset approval', 'Reward campaign approval'],
+    event: G ? ['イベント公開承認フロー', 'チケット払戻し承認', 'スピーカー登録レビュー'] :
+               ['Event publish approval flow', 'Ticket refund approval', 'Speaker registration review'],
+    newsletter: G ? ['ニュースレター配信承認ワークフロー', '購読者セグメント変更承認', '一括配信スケジュール承認'] :
+                    ['Newsletter delivery approval workflow', 'Subscriber segment change approval', 'Bulk send schedule approval'],
+    creator: G ? ['コンテンツ収益化承認フロー', 'クリエイター審査ワークフロー', '投げ銭引き出し承認'] :
+                 ['Content monetization approval flow', 'Creator verification workflow', 'Tip withdrawal approval'],
+    community: G ? ['コンテンツモデレーション承認ワークフロー', 'ユーザー報告エスカレーション', 'ガイドライン更新承認'] :
+                   ['Content moderation approval workflow', 'User report escalation', 'Community guideline update approval'],
+    agriculture: G ? ['収穫計画承認フロー', '農薬散布承認ワークフロー', 'トレーサビリティ記録承認'] :
+                     ['Harvest plan approval flow', 'Pesticide application approval workflow', 'Traceability record approval'],
+    media: G ? ['記事公開レビューワークフロー', '広告掲載承認フロー', 'コンテンツ取下げ承認'] :
+               ['Article publish review workflow', 'Ad placement approval flow', 'Content takedown approval'],
+    iot: G ? ['デバイスFW更新承認ワークフロー', 'アラート閾値変更承認', 'デバイスプロビジョニング承認'] :
+             ['Device firmware update approval workflow', 'Alert threshold change approval', 'Device provisioning approval'],
+    content: G ? ['コンテンツ公開承認フロー', 'SEOメタデータレビューワークフロー', 'コンテンツアーカイブ承認'] :
+                 ['Content publish approval flow', 'SEO metadata review workflow', 'Content archive approval'],
+    ai: G ? ['AIモデルデプロイ承認ワークフロー', 'プロンプトテンプレート更新承認', 'APIキー発行承認'] :
+            ['AI model deploy approval workflow', 'Prompt template update approval', 'API key issuance approval'],
+    devtool: G ? ['APIキー発行承認ワークフロー', 'レート制限引き上げ申請', 'SDK公開レビュー'] :
+                 ['API key issuance approval workflow', 'Rate limit raise request', 'SDK publish review'],
+    portfolio: G ? ['ポートフォリオ公開承認フロー', 'プロジェクト掲載レビュー', 'カスタムドメイン設定承認'] :
+                   ['Portfolio publish approval flow', 'Project listing review', 'Custom domain configuration approval']
   };
   var domCustom = customizations[domain] || (G ? ['承認ワークフロー', 'オンボーディング自動化', '状態変更通知'] :
                                                   ['Approval workflow', 'Onboarding automation', 'State change notifications']);
@@ -717,7 +753,7 @@ function genPillar19_EnterpriseSaaS(a, pn) {
                       /マルチテナント|Multi-tenant|RBAC/i.test(mvpFeatures);
 
   // Only generate for relevant domains
-  var relevantDomain = /saas|analytics|hr|collab|tool|automation|fintech|legal|ec|marketplace|logistics|insurance|health|government|education|booking|travel|realestate|energy|manufacturing/i.test(domain);
+  var relevantDomain = /saas|analytics|hr|collab|tool|automation|fintech|legal|ec|marketplace|logistics|insurance|health|government|education|booking|travel|realestate|energy|manufacturing|gamify|event|newsletter|creator|community|agriculture|media|iot|content|ai|devtool|portfolio/i.test(domain);
   if (!relevantDomain && !isMultiTenant) return;
 
   S.files['docs/73_enterprise_architecture.md'] = gen73(G, domain, orgModel, isMultiTenant, a, pn);

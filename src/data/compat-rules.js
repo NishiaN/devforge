@@ -1,4 +1,4 @@
-/* ═══ STACK COMPATIBILITY & SEMANTIC CONSISTENCY RULES — 315 rules (ERROR×33 + WARN×143 + INFO×139) ═══ */
+/* ═══ STACK COMPATIBILITY & SEMANTIC CONSISTENCY RULES — 320 rules (ERROR×33 + WARN×143 + INFO×144) ═══ */
 const COMPAT_RULES=[
   // ── FE ↔ Mobile (2 ERROR) ──
   {id:'fe-mob-expo',p:['frontend','mobile'],lv:'error',
@@ -2800,6 +2800,69 @@ const COMPAT_RULES=[
    fix:{f:'mvp_features',s:'プレビューデプロイ / ステージング環境'},
    why_ja:'プレビューデプロイにより、PRマージ前に実環境での動作確認が可能になり、本番障害を予防します。',
    why_en:'Preview deployments allow validating behavior in production-like environments before merging, preventing production incidents.'},
+  // ── v9.16 Quality & Best Practices (5 INFO) ──
+  {id:'fe-no-a11y-tool',p:['frontend','scale'],lv:'info',
+   t:function(a){
+    var sc=a.scale||'medium';
+    var isLarge=/^(large|enterprise)$/.test(sc);
+    var feats=(a.mvp_features||'')+(a.dev_methods||'');
+    var hasA11y=/a11y|WCAG|axe|アクセシビリティ|wcag/i.test(feats);
+    return isLarge&&!hasA11y;},
+   ja:'large/enterprise規模ですがアクセシビリティ対応（WCAG/axe等）が確認されません。法的要件や利用者層の拡大のために対応を検討してください',
+   en:'Large/enterprise scale but no accessibility tooling (WCAG/axe) found. Consider compliance for legal requirements and broader user reach',
+   fix:{f:'mvp_features',s:'アクセシビリティ対応 (WCAG 2.1 AA / axe-core)'},
+   why_ja:'WCAGへの準拠は多くの国で法的義務です。large規模なら監査リスクを早期に排除すべきです。',
+   why_en:'WCAG compliance is legally required in many countries. At large scale, eliminate audit risk early.'},
+  {id:'api-no-versioning',p:['backend','scale'],lv:'info',
+   t:function(a){
+    var sc=a.scale||'medium';
+    var isLarge=/^(large|enterprise)$/.test(sc);
+    var isBaaS=/Firebase|Supabase|Convex/i.test(a.backend||'');
+    var feats=(a.mvp_features||'')+(a.dev_methods||'');
+    var hasVersioning=/api.?version|\/v1|\/v2|versioning|バージョニング/i.test(feats);
+    return isLarge&&!isBaaS&&!hasVersioning;},
+   ja:'large/enterprise規模の非BaaSバックエンドですがAPIバージョニング戦略が確認されません。破壊的変更からクライアントを保護するために必要です',
+   en:'Large/enterprise non-BaaS backend but no API versioning strategy found. Required to protect clients from breaking changes',
+   fix:{f:'mvp_features',s:'APIバージョニング (URL prefix /v1 or header)'},
+   why_ja:'APIバージョニングがないと破壊的変更がクライアントに即影響します。large規模では修正コストが膨大になります。',
+   why_en:'Without API versioning, breaking changes immediately impact clients. At large scale, remediation costs become enormous.'},
+  {id:'ops-no-health-check',p:['backend','deploy'],lv:'info',
+   t:function(a){
+    var isBaaS=/Firebase|Supabase|Convex/i.test(a.backend||'');
+    var isStatic=/なし|None|static/i.test(a.backend||'');
+    var feats=(a.mvp_features||'')+(a.dev_methods||'');
+    var hasHealthCheck=/health.?check|readiness|liveness|ヘルスチェック|死活監視/i.test(feats);
+    return !isBaaS&&!isStatic&&!hasHealthCheck;},
+   ja:'カスタムバックエンドを使用していますがヘルスチェック/Readiness Probe/Liveness Probeが確認されません。ロードバランサーやKubernetesとの連携に必要です',
+   en:'Custom backend detected but no health check, readiness probe, or liveness probe found. Required for load balancer and Kubernetes integration',
+   fix:{f:'mvp_features',s:'ヘルスチェックエンドポイント GET /health'},
+   why_ja:'ヘルスチェックがないと、起動失敗や応答不能のインスタンスにトラフィックが流れ続けます。',
+   why_en:'Without health checks, traffic continues routing to failed or unresponsive instances, causing cascading failures.'},
+  {id:'db-no-backup-strategy',p:['database','scale'],lv:'info',
+   t:function(a){
+    var sc=a.scale||'medium';
+    var isLarge=/^(large|enterprise)$/.test(sc);
+    var isRDB=/PostgreSQL|MySQL|MariaDB|SQLite/i.test(a.database||'');
+    var feats=(a.mvp_features||'')+(a.dev_methods||'');
+    var hasBackup=/backup|snapshot|PITR|バックアップ|point.in.time/i.test(feats);
+    return isLarge&&isRDB&&!hasBackup;},
+   ja:'large/enterprise規模のRDBですがバックアップ戦略（snapshot/PITR等）が確認されません。データ損失リスクを最小化するために策定してください',
+   en:'Large/enterprise RDB but no backup strategy (snapshot/PITR) found. Define a backup strategy to minimize data loss risk',
+   fix:{f:'mvp_features',s:'DBバックアップ戦略 (PITR / 日次スナップショット)'},
+   why_ja:'大規模RDBにバックアップ戦略がないと、障害時のデータ損失が事業継続に致命的な影響を与えます。',
+   why_en:'Without a backup strategy on large RDB, data loss during incidents can be catastrophic to business continuity.'},
+  {id:'ai-no-prompt-injection',p:['ai_auto','backend'],lv:'info',
+   t:function(a){
+    var hasAI=a.ai_auto&&!/none|なし/i.test(a.ai_auto);
+    var isBaaS=/Firebase|Supabase|Convex/i.test(a.backend||'');
+    var feats=(a.mvp_features||'')+(a.dev_methods||'');
+    var hasGuard=/prompt.?inject|guardrail|ガードレール|インジェクション|input.?sanit/i.test(feats);
+    return hasAI&&!isBaaS&&!hasGuard;},
+   ja:'AI機能を有効にしていますがプロンプトインジェクション対策/ガードレールが確認されません。悪意あるユーザー入力によるシステム悪用を防ぐ対策が必要です',
+   en:'AI features enabled but no prompt injection protection or guardrail found. Measures to prevent system abuse via malicious user input are required',
+   fix:{f:'mvp_features',s:'プロンプトインジェクション対策 / ガードレール実装'},
+   why_ja:'プロンプトインジェクションはAIシステムの重大な脆弱性です。ガードレールなしの本番運用はリスクが高すぎます。',
+   why_en:'Prompt injection is a critical AI system vulnerability. Production operation without guardrails carries unacceptable risk.'},
 ];
 // helpers
 function inc(v,k){return v&&typeof v==='string'&&v.indexOf(k)!==-1;}

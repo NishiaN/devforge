@@ -877,6 +877,21 @@ const tests=[
   // ci-no-preview-deploy (INFO)
   {name:'Large+Vercel+noPreview=INFO',a:{deploy:'Vercel',scale:'large',mvp_features:'ユーザー認証 CRUD'},expect:'info',id:'ci-no-preview-deploy'},
   {name:'Large+Vercel+hasPreview=noINFO',a:{deploy:'Vercel',scale:'large',mvp_features:'プレビューデプロイ staging ユーザー認証'},expect:'none',id:'ci-no-preview-deploy'},
+  // fe-no-a11y-tool (INFO)
+  {name:'Large+FE+noA11y=INFO',a:{frontend:'React',scale:'large',mvp_features:'ダッシュボード CRUD'},expect:'info',id:'fe-no-a11y-tool'},
+  {name:'Large+FE+hasA11y=noINFO',a:{frontend:'React',scale:'large',mvp_features:'axe WCAG アクセシビリティ'},expect:'none',id:'fe-no-a11y-tool'},
+  // api-no-versioning (INFO)
+  {name:'Large+NestJS+noVersioning=INFO',a:{backend:'NestJS',scale:'large',mvp_features:'REST API CRUD'},expect:'info',id:'api-no-versioning'},
+  {name:'Large+NestJS+hasVersioning=noINFO',a:{backend:'NestJS',scale:'large',mvp_features:'APIバージョニング /v1 REST API'},expect:'none',id:'api-no-versioning'},
+  // ops-no-health-check (INFO)
+  {name:'Express+noHealthCheck=INFO',a:{backend:'Express',deploy:'Railway',mvp_features:'CRUD API'},expect:'info',id:'ops-no-health-check'},
+  {name:'Express+hasHealthCheck=noINFO',a:{backend:'Express',deploy:'Railway',mvp_features:'ヘルスチェック /health CRUD'},expect:'none',id:'ops-no-health-check'},
+  // db-no-backup-strategy (INFO)
+  {name:'Large+PostgreSQL+noBackup=INFO',a:{database:'PostgreSQL',scale:'large',mvp_features:'データ管理 CRUD'},expect:'info',id:'db-no-backup-strategy'},
+  {name:'Large+PostgreSQL+hasBackup=noINFO',a:{database:'PostgreSQL',scale:'large',mvp_features:'バックアップ PITR スナップショット'},expect:'none',id:'db-no-backup-strategy'},
+  // ai-no-prompt-injection (INFO)
+  {name:'AI+Express+noGuardrail=INFO',a:{ai_auto:'RAGベース回答',backend:'Express',mvp_features:'AI回答生成'},expect:'info',id:'ai-no-prompt-injection'},
+  {name:'AI+Express+hasGuardrail=noINFO',a:{ai_auto:'RAGベース回答',backend:'Express',mvp_features:'プロンプトインジェクション対策 ガードレール'},expect:'none',id:'ai-no-prompt-injection'},
 ];
 
 let pass=0,fail=0;
