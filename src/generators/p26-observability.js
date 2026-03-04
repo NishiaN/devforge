@@ -485,6 +485,18 @@ function gen105(a,pn){
     media:[{name:'cdn_latency_p95',ja:'コンテンツ配信レイテンシ P95',threshold:'<200ms'},{name:'buffering_rate',ja:'バッファリング率',threshold:'<1%'}],
     legal:[{name:'document_completion_rate',ja:'文書処理完了率',threshold:'>98%'},{name:'review_turnaround_hours',ja:'レビュー平均時間（時）',threshold:'<48h'}],
     automation:[{name:'workflow_success_rate',ja:'ワークフロー成功率',threshold:'>99%'},{name:'avg_execution_seconds',ja:'平均実行時間（秒）',threshold:'<30s'}],
+    agriculture:[{name:'crop_yield_rate',ja:'作物収穫率',threshold:'Monitor'},{name:'irrigation_efficiency',ja:'灌漑効率',threshold:'Monitor'}],
+    ai:[{name:'model_accuracy',ja:'モデル精度',threshold:'>95%'},{name:'inference_latency_p95',ja:'推論レイテンシP95',threshold:'<200ms'}],
+    collab:[{name:'concurrent_editors',ja:'同時編集者数',threshold:'Monitor'},{name:'sync_conflict_rate',ja:'同期コンフリクト率',threshold:'<0.1%'}],
+    community:[{name:'daily_active_users',ja:'DAU',threshold:'Monitor growth'},{name:'content_report_rate',ja:'コンテンツ報告率',threshold:'<0.5%'}],
+    content:[{name:'publish_success_rate',ja:'公開成功率',threshold:'>99%'},{name:'avg_time_to_publish',ja:'平均公開時間（秒）',threshold:'<5s'}],
+    creator:[{name:'creator_retention_rate',ja:'クリエイター継続率',threshold:'>70%'},{name:'payout_success_rate',ja:'支払成功率',threshold:'>99.5%'}],
+    devtool:[{name:'api_response_p95',ja:'APIレスポンスP95',threshold:'<100ms'},{name:'sdk_error_rate',ja:'SDKエラー率',threshold:'<0.1%'}],
+    event:[{name:'registration_completion_rate',ja:'参加登録完了率',threshold:'>80%'},{name:'checkin_success_rate',ja:'チェックイン成功率',threshold:'>99%'}],
+    marketplace:[{name:'transaction_success_rate',ja:'取引成功率',threshold:'>99%'},{name:'seller_response_time',ja:'出品者応答時間（時）',threshold:'<24h'}],
+    newsletter:[{name:'delivery_rate',ja:'配信到達率',threshold:'>99%'},{name:'open_rate',ja:'開封率',threshold:'>20%'}],
+    portfolio:[{name:'page_load_p95',ja:'ページ読込P95',threshold:'<1s'},{name:'uptime',ja:'稼働率',threshold:'>99.9%'}],
+    tool:[{name:'task_completion_rate',ja:'タスク完了率',threshold:'>95%'},{name:'error_rate',ja:'エラー率',threshold:'<1%'}],
   };
   var dm=domainMetrics[domain]||(domainMetrics.saas);
   doc+='## '+(G?'ドメイン固有ビジネスメトリクス'+(domain?' ('+domain+')':''):'Domain Business Metrics'+(domain?' ('+domain+')':''))+'\n\n';

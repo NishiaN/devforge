@@ -840,6 +840,18 @@ const tests=[
   {name:'solo+SSO=INFO',a:{scale:'solo',mvp_features:'SSO認証 マルチテナント'},expect:'info',id:'scale-solo-enterprise'},
   {name:'solo+noEnterprise=noINFO',a:{scale:'solo',mvp_features:'ユーザー認証 CRUD'},expect:'none',id:'scale-solo-enterprise'},
   {name:'medium+SSO=noINFO',a:{scale:'medium',mvp_features:'SSO認証'},expect:'none',id:'scale-solo-enterprise'},
+  // be-ws-serverless-incompatible (WARN)
+  {name:'Vercel+WebSocket+Express=WARN',a:{backend:'Node.js + Express',deploy:'Vercel',mvp_features:'WebSocketリアルタイムチャット'},expect:'warn',id:'be-ws-serverless-incompatible'},
+  {name:'Railway+WebSocket=noWARN',a:{backend:'Node.js + Express',deploy:'Railway',mvp_features:'WebSocketリアルタイムチャット'},expect:'none',id:'be-ws-serverless-incompatible'},
+  {name:'Vercel+Supabase+WebSocket=noWARN',a:{backend:'Supabase',deploy:'Vercel',mvp_features:'リアルタイム更新'},expect:'none',id:'be-ws-serverless-incompatible'},
+  // fe-no-i18n-needed (INFO)
+  {name:'Global+React+noI18n=INFO',a:{purpose:'グローバル展開するSaaSアプリ',frontend:'React + Next.js',mvp_features:'ユーザー認証 CRUD'},expect:'info',id:'fe-no-i18n-needed'},
+  {name:'Global+React+i18next=noINFO',a:{purpose:'グローバル展開するSaaS',frontend:'React + Next.js',mvp_features:'i18next 多言語対応'},expect:'none',id:'fe-no-i18n-needed'},
+  {name:'domestic+React=noINFO',a:{purpose:'国内向けタスク管理アプリ',frontend:'React + Next.js',mvp_features:'ユーザー認証'},expect:'none',id:'fe-no-i18n-needed'},
+  // mob-insecure-token-storage (INFO)
+  {name:'Expo+Auth+noSecureStore=INFO',a:{mobile:'Expo (React Native)',mvp_features:'JWT認証 ログイン機能'},expect:'info',id:'mob-insecure-token-storage'},
+  {name:'Expo+Auth+SecureStore=noINFO',a:{mobile:'Expo (React Native)',mvp_features:'認証 expo-secure-store トークン'},expect:'none',id:'mob-insecure-token-storage'},
+  {name:'Flutter+Auth=noINFO',a:{mobile:'Flutter',mvp_features:'JWT認証 ログイン'},expect:'none',id:'mob-insecure-token-storage'},
 ];
 
 let pass=0,fail=0;

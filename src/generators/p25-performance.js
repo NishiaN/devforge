@@ -187,6 +187,8 @@ function gen99(a,pn){
   const isBaaS=/Supabase|Firebase|Convex/i.test(be);
   const isPy=/Python|FastAPI|Django/i.test(be);
   const isNext=/Next\.js/i.test(a.frontend||'');
+  var lv99=S.skillLv!=null?S.skillLv:(S.skill==='beginner'?1:S.skill==='pro'?5:3);
+  var isBeg99=(lv99<=1);var isPro99=(lv99>=5);
 
   let doc='# '+pn+' — '+(G?'パフォーマンス戦略書':'Performance Strategy')+'\n';
   doc+='> '+(G?'Core Web Vitals・バンドル最適化・レスポンスタイム設計':'Core Web Vitals · Bundle Optimization · Response Time Design')+'\n\n';
@@ -289,6 +291,29 @@ function gen99(a,pn){
     doc+='| '+(G?'添付ファイル (S3)':'Attachments (S3)')+' | ~2MB/件 | ~'+(_isLargeScale?'120K':'12K')+' | ~'+(_isLargeScale?'240GB':'24GB')+' |\n';
     doc+='\n> '+(G?'📌 DB は 3年分でも数GB規模。ストレージコストはオブジェクトストレージ (S3/GCS) が支配的になります。':
       '📌 DB stays in GB range even over 3 years. Object storage (S3/GCS) will dominate storage cost.')+'\n';
+  }
+
+  // ─── Beginner: パフォーマンスの基本 ───
+  if(isBeg99){
+    doc+='\n---\n\n## '+(G?'🔰 パフォーマンス入門: 必須の3ルール':'🔰 Performance Basics: 3 Essential Rules')+'\n\n';
+    doc+=(G?'まず用語を理解しましょう。**レイテンシ**はリクエストが完了するまでの時間（例: 200ms）、**スループット**は単位時間あたりのリクエスト処理数（例: 100 req/s）です。\n\n':'First, learn the terms: **Latency** is the time for a single request to complete (e.g., 200ms); **Throughput** is requests processed per second (e.g., 100 req/s).\n\n');
+    doc+=(G?'**Rule 1: まず計測、次に最適化** — 感覚でコードを書き直すのは禁物です。Chrome DevTools の Network タブ、Lighthouse を使って現状を数値で把握してください。\n\n':'**Rule 1: Measure first, then optimize** — Never rewrite code by gut feeling. Use Chrome DevTools Network tab and Lighthouse to measure baseline numbers.\n\n');
+    doc+=(G?'**Rule 2: 画像を最適化する** — Webパフォーマンス問題の多くは画像サイズが原因です。`next/image`や`<img loading="lazy">`を使い、WebP/AVIF形式に変換してください。\n\n':'**Rule 2: Optimize images** — Most web performance issues come from oversized images. Use `next/image` or `<img loading="lazy">` and convert to WebP/AVIF.\n\n');
+    doc+=(G?'**Rule 3: キャッシュを活用する** — 同じデータを何度もDBから取得しないでください。`Cache-Control`ヘッダーとCDNを設定するだけで応答速度が劇的に改善します。\n\n':'**Rule 3: Use caching** — Avoid repeated DB fetches for the same data. Just configuring `Cache-Control` headers and a CDN can dramatically improve response times.\n\n');
+  }
+
+  // ─── Pro: Flame Graph + パフォーマンスバジェット ───
+  if(isPro99){
+    doc+='\n---\n\n## '+(G?'⚙️ Flame Graph 分析':'⚙️ Flame Graph Analysis')+'\n\n';
+    doc+='```bash\n# Node.js CPU profiling with clinic flame\nnpx clinic flame -- node server.js\n\n# 0x — flamegraph for Node.js\nnpx 0x -o -- node server.js\n# Then load test:\nnpx autocannon -c 100 -d 30 http://localhost:3000/api/heavy-endpoint\n```\n\n';
+    doc+='| '+(G?'シグナル':'Signal')+' | '+(G?'意味':'Meaning')+' | '+(G?'対処':'Action')+'|\n';
+    doc+='|------|------|------|\n';
+    doc+='| '+( G?'細長い塔（同期ブロック）':'Tall narrow towers (sync block)')+' | '+( G?'イベントループをブロック中':'Blocking event loop')+' | '+( G?'非同期化 or Worker Threads':'Make async or use Worker Threads')+'|\n';
+    doc+='| '+( G?'幅広いフレーム（CPU多消費）':'Wide frames (CPU-heavy)')+' | '+( G?'ホットパスの最適化余地あり':'Hot path needs optimization')+' | '+( G?'アルゴリズム改善 / キャッシュ':'Improve algorithm / add cache')+'|\n';
+    doc+='| '+( G?'JSON.parse/stringify 多発':'Frequent JSON.parse/stringify')+' | '+( G?'シリアライズがボトルネック':'Serialization bottleneck')+' | '+( G?'fast-json-stringify / MessagePack':'fast-json-stringify / MessagePack')+'|\n\n';
+    doc+='## '+(G?'パフォーマンスバジェット自動化 (Lighthouse CI)':'Performance Budget Automation (Lighthouse CI)')+'\n\n';
+    doc+='```yaml\n# lighthouserc.yml\nci:\n  collect:\n    url: [\'http://localhost:3000\']\n    numberOfRuns: 3\n  assert:\n    assertions:\n      first-contentful-paint: [\'warn\', {maxNumericValue: 1800}]\n      largest-contentful-paint: [\'error\', {maxNumericValue: 2500}]\n      total-blocking-time: [\'error\', {maxNumericValue: 200}]\n      cumulative-layout-shift: [\'error\', {maxNumericValue: 0.1}]\n      performance-score: [\'error\', {minScore: 0.9}]\n```\n\n';
+    doc+='```bash\n# Run in CI\nnpx lhci autorun --config=lighthouserc.yml\n```\n\n';
   }
 
   S.files['docs/99_performance_strategy.md']=doc;

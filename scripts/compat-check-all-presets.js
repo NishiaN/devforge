@@ -138,6 +138,8 @@ const NEW_RULE_IDS = [
   'db-mongo-no-schema-validation','test-no-contract-test','obs-no-domain-metrics','db-large-no-partitioning',
   // v9.12 Phase E: design system, test framework, scale rules (+3)
   'ds-no-dark-mode','test-no-framework','scale-solo-enterprise',
+  // v9.13 Phase E: WS+serverless, i18n global, mobile token storage (+3)
+  'be-ws-serverless-incompatible','fe-no-i18n-needed','mob-insecure-token-storage',
 ];
 
 const errorRules = Object.entries(hits).filter(([,v])=>v.level==='error');

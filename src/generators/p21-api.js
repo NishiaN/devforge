@@ -106,7 +106,7 @@ function gen83(a,pn,G){
   const isGRPC=/gRPC/i.test(be);
   const isPython=/Python|Django|FastAPI/i.test(be);
   const isBaaS=/Supabase|Firebase|Convex/i.test(be);
-  var isPro83=(a.skill_level||'').includes('Professional');
+  var lv83=S.skillLv!=null?S.skillLv:(S.skill==='beginner'?1:S.skill==='pro'?5:3);var isPro83=(lv83>=5);
 
   var doc='';
   doc+='# '+(G?'APIデザイン原則':'API Design Principles')+'\n\n';
@@ -513,7 +513,7 @@ function gen85(a,pn,G){
   const hasPayment=/Stripe|決済|payment/i.test(a.payment||'');
   const isPython=/Python|Django|FastAPI/i.test(be);
   const isBaaS=/Supabase|Firebase|Convex/i.test(be);
-  var isPro85=(a.skill_level||'').includes('Professional');
+  var lv85=S.skillLv!=null?S.skillLv:(S.skill==='beginner'?1:S.skill==='pro'?5:3);var isPro85=(lv85>=5);
 
   var doc='';
   doc+='# '+(G?'APIセキュリティチェックリスト':'API Security Checklist')+'\n\n';

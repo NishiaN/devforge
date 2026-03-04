@@ -441,6 +441,8 @@ function genPillar12_SecurityIntelligence(a,pn){
   const hasPayment=a.payment&&!(typeof isNone==='function'?isNone(a.payment):/なし|none/i.test(a.payment));
   const hasAI=a.ai_auto&&!(typeof isNone==='function'?isNone(a.ai_auto):/なし|none/i.test(a.ai_auto));
   const hasMobile=!!(a.mobile&&!/なし|none/i.test(a.mobile)&&/expo|react.?native|flutter/i.test(a.mobile));
+  var lv12=S.skillLv!=null?S.skillLv:(S.skill==='beginner'?1:S.skill==='pro'?5:3);
+  var isBeg12=(lv12<=1);var isPro12=(lv12>=5);
 
   // ═══ DOC 43: Security Intelligence Report ═══
   let doc43='';
@@ -940,6 +942,35 @@ function genPillar12_SecurityIntelligence(a,pn){
     doc43+=G?
       '> 📎 **関連**: [P3 MCP設定](../../.claude/settings.json) / [AI Safety Framework](./95_ai_safety_framework.md) / [AI Runtime Monitoring](./106-2_ai_runtime_monitoring.md)\n':
       '> 📎 **Related**: [P3 MCP Configuration](../../.claude/settings.json) / [AI Safety Framework](./95_ai_safety_framework.md) / [AI Runtime Monitoring](./106-2_ai_runtime_monitoring.md)\n';
+  }
+
+  // ─── Beginner: セキュリティの基本5ステップ ───
+  if(isBeg12){
+    doc43+='\n---\n\n## '+(G?'🔰 セキュリティ入門: 最初の5ステップ':'🔰 Security Basics: First 5 Steps')+'\n\n';
+    doc43+=(G?'セキュリティは難しく見えますが、まず以下の5ステップから始めましょう。\n\n':'Security looks complex, but start with these 5 steps.\n\n');
+    doc43+=(G?'**Step 1: HTTPS必須** — HTTP通信は盗聴される危険があります。本番環境では必ずHTTPS (TLS 1.3) を使用してください。\n\n':'**Step 1: Always use HTTPS** — HTTP traffic can be intercepted. Always use HTTPS (TLS 1.3) in production.\n\n');
+    doc43+=(G?'**Step 2: 環境変数で秘密管理** — APIキーやDBパスワードをコードに書かないでください。`.env`ファイルを使い、`.gitignore`に追加します。\n\n':'**Step 2: Use environment variables** — Never hardcode API keys or passwords. Use `.env` files and add them to `.gitignore`.\n\n');
+    doc43+=(G?'**Step 3: 秘密をコミットしない** — `git log`で流出した秘密は取り消せません。`git-secrets`や`trufflehog`で事前にスキャンしましょう。\n\n':'**Step 3: Never commit secrets** — Secrets leaked via `git log` cannot be undone. Use `git-secrets` or `trufflehog` to pre-scan.\n\n');
+    doc43+=(G?'**Step 4: 入力バリデーション** — ユーザーの入力は必ずサーバー側で検証します。`zod`や`joi`などのスキーマバリデーションを活用してください。\n\n':'**Step 4: Validate all input** — Always validate user input on the server side. Use schema validation (zod, joi).\n\n');
+    doc43+=(G?'**Step 5: 認証設定を確認** — Supabase/FirebaseのRLSルールが有効になっているか確認します。認証なしのAPIエンドポイントがないか必ずチェックしてください。\n\n':'**Step 5: Verify auth configuration** — Confirm Supabase/Firebase RLS rules are enabled. Always check for unauthenticated API endpoints.\n\n');
+  }
+
+  // ─── Pro: サプライチェーンセキュリティ + セキュリティメトリクス ───
+  if(isPro12){
+    doc43+='\n---\n\n## '+(G?'⚙️ サプライチェーンセキュリティ (SLSA + SBOM)':'⚙️ Supply Chain Security (SLSA + SBOM)')+'\n\n';
+    doc43+='```yaml\n# .github/workflows/supply-chain.yml\nname: Supply Chain Security\non: [push]\njobs:\n  sbom:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - uses: anchore/sbom-action@v0\n        with:\n          artifact-name: sbom.spdx.json\n          output-file: sbom.spdx.json\n      - uses: anchore/scan-action@v3\n        with:\n          sbom: sbom.spdx.json\n          fail-build: true\n          severity-cutoff: high\n  slsa:\n    uses: slsa-framework/slsa-github-generator/.github/workflows/builder_nodejs_slsa3.yml@v2\n    with:\n      node-version: "20"\n```\n\n';
+    doc43+='| '+(G?'SLSA レベル':'SLSA Level')+' | '+(G?'要件':'Requirements')+' | '+(G?'対象':'Target')+'|\n';
+    doc43+='|------|------|------|\n';
+    doc43+='| L1 | '+( G?'ビルドスクリプト文書化':'Build script documented')+' | '+( G?'個人プロジェクト':'Personal projects')+'|\n';
+    doc43+='| L2 | '+( G?'バージョン管理+CI':'Version-controlled + CI')+' | '+( G?'小規模チーム':'Small teams')+'|\n';
+    doc43+='| L3 | '+( G?'再現可能ビルド+署名':'Reproducible build + signing')+' | '+( G?'本番SaaS':'Production SaaS')+'|\n\n';
+    doc43+='## '+(G?'セキュリティメトリクスダッシュボード':'Security Metrics Dashboard')+'\n\n';
+    doc43+='| '+(G?'メトリクス':'Metric')+' | '+(G?'目標値':'Target')+' | '+(G?'計測方法':'How to Measure')+'|\n';
+    doc43+='|------|------|------|\n';
+    doc43+='| MTTR ('+( G?'平均修復時間':'Mean Time to Remediate')+') | '+( G?'高: <24h / 中: <7日':'High: <24h / Med: <7d')+' | Jira/Linear bug age |\n';
+    doc43+='| '+( G?'脆弱性密度':'Vulnerability Density')+' | <0.5 / KLOC | SonarQube report |\n';
+    doc43+='| '+( G?'パッチ適用頻度':'Patch Frequency')+' | '+( G?'週1回以上':'≥ weekly')+' | Dependabot PRs |\n';
+    doc43+='| '+( G?'シークレット漏洩件数':'Secret Leak Count')+' | 0 | trufflehog CI scan |\n\n';
   }
 
   S.files['docs/43_security_intelligence.md']=doc43;

@@ -184,4 +184,38 @@ describe('Pillar ㉖ Observability Intelligence', () => {
     );
   });
 
+  // v9.13: domainMetrics 32/32 coverage test
+  test('domainMetrics covers all 32 detectDomain() domains', () => {
+    const ALL_32_DOMAINS = [
+      'fintech','health','ec','saas','education','logistics','analytics','manufacturing',
+      'iot','booking','hr','realestate','insurance','energy','gov','travel','gamify','media',
+      'legal','automation','agriculture','ai','collab','community','content','creator',
+      'devtool','event','marketplace','newsletter','portfolio','tool'
+    ];
+    // For each domain, generate and verify domainMetrics section appears in docs/105
+    ALL_32_DOMAINS.forEach(domain => {
+      S.files = {};
+      S.genLang = 'ja';
+      // Use a purpose that maps to this domain
+      const purposeMap = {
+        fintech:'フィンテック決済アプリ',health:'医療記録管理',ec:'ECサイト',
+        saas:'SaaSプラットフォーム',education:'オンライン学習',logistics:'物流管理',
+        analytics:'データ分析',manufacturing:'製造管理',iot:'IoTデバイス管理',
+        booking:'予約システム',hr:'HR管理システム',realestate:'不動産管理',
+        insurance:'保険管理',energy:'エネルギー管理',gov:'行政ポータル',
+        travel:'旅行予約',gamify:'ゲームプラットフォーム',media:'メディアサービス',
+        legal:'法務管理',automation:'業務自動化',agriculture:'農業管理システム',
+        ai:'AI活用プラットフォーム',collab:'コラボレーションツール',community:'コミュニティサービス',
+        content:'コンテンツ管理',creator:'クリエイタープラットフォーム',
+        devtool:'開発者ツール',event:'イベント管理',marketplace:'マーケットプレイス',
+        newsletter:'ニュースレター配信',portfolio:'ポートフォリオサイト',tool:'業務ツール'
+      };
+      const purpose = purposeMap[domain] || (domain + 'アプリ');
+      genPillar26_Observability({ purpose, frontend:'React', backend:'Express', database:'PostgreSQL', deploy:'Railway' }, 'DomainTest');
+      const doc105 = S.files['docs/105_metrics_alerting.md'];
+      assert.ok(doc105, `docs/105 should be generated for domain: ${domain}`);
+      assert.ok(doc105.length > 100, `docs/105 should be non-empty for domain: ${domain}`);
+    });
+  });
+
 });

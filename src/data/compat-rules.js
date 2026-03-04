@@ -1,4 +1,4 @@
-/* ═══ STACK COMPATIBILITY & SEMANTIC CONSISTENCY RULES — 305 rules (ERROR×33 + WARN×142 + INFO×130) ═══ */
+/* ═══ STACK COMPATIBILITY & SEMANTIC CONSISTENCY RULES — 308 rules (ERROR×33 + WARN×143 + INFO×132) ═══ */
 const COMPAT_RULES=[
   // ── FE ↔ Mobile (2 ERROR) ──
   {id:'fe-mob-expo',p:['frontend','mobile'],lv:'error',
@@ -2668,6 +2668,42 @@ const COMPAT_RULES=[
    fix:{f:'scale',s:'medium または large'},
    why_ja:'soloスケールはシングルユーザー向け最小構成を前提とします。マルチテナント/SSOはmedium以上の構成が必要です。',
    why_en:'Solo scale assumes minimal single-user configuration. Multi-tenant/SSO patterns require medium or larger scale.'},
+  {id:'be-ws-serverless-incompatible',p:['backend','deploy'],lv:'warn',
+   t:function(a){
+    var be=a.backend||'';var dep=a.deploy||'';var feats=(a.mvp_features||'')+(a.purpose||'');
+    var isBaaS=/Supabase|Firebase|Convex/i.test(be);
+    var isServerless=/Vercel|Cloudflare/i.test(dep);
+    var hasWS=/WebSocket|リアルタイム|realtime|チャット|chat|Socket\.io/i.test(feats);
+    return isServerless&&hasWS&&!isBaaS;},
+   ja:'Vercel/Cloudflare Workersは最大30秒の実行制限があり永続WebSocket接続に非対応です。Partykit・Ably・Pusherなどマネージドリアルタイムサービスの利用を検討してください',
+   en:'Vercel/Cloudflare Workers have a 30-second execution limit and do not support persistent WebSocket connections. Consider managed realtime services like Partykit, Ably, or Pusher',
+   fix:{f:'deploy',s:'Railway または Fly.io (常時起動)'},
+   why_ja:'サーバーレス関数はリクエスト完了で終了します。永続TCP接続 (WebSocket) はマネージドサービスかRailway/Fly.io等の常時起動環境が必要です。',
+   why_en:'Serverless functions terminate after request completion. Persistent TCP connections (WebSocket) require managed services or always-on hosts like Railway/Fly.io.'},
+  {id:'fe-no-i18n-needed',p:['purpose'],lv:'info',
+   t:function(a){
+    var purpose=(a.purpose||'')+(a.target||'');var fe=a.frontend||'';var feats=(a.mvp_features||'');
+    var hasFE=/React|Vue|Next|Nuxt|Svelte|Angular/i.test(fe);
+    var isGlobal=/グローバル|海外|overseas|global|international|多言語|multilingual/i.test(purpose);
+    var hasI18n=/i18n|i18next|react-intl|lingui|format\.js|翻訳/i.test(feats+fe);
+    return isGlobal&&hasFE&&!hasI18n;},
+   ja:'グローバル向けサービスですがi18nライブラリが未設定です。初期から多言語対応を組み込むと後の改修コストを大幅に削減できます',
+   en:'Global-targeted service detected but no i18n library configured. Integrating localization early greatly reduces future refactoring cost',
+   fix:{f:'mvp_features',s:'i18next または react-intl 多言語対応'},
+   why_ja:'後からi18n対応する場合、文字列の抽出・RTLレイアウト対応・翻訳フローの整備で数週間の工数が発生します。初期に組み込むのが最善策です。',
+   why_en:'Adding i18n after launch requires extracting strings, RTL layout support, and translation workflow setup — often weeks of work. Build it in from the start.'},
+  {id:'mob-insecure-token-storage',p:['mobile','mvp_features'],lv:'info',
+   t:function(a){
+    var mob=a.mobile||'';var feats=(a.mvp_features||'')+(a.backend||'');
+    var isRN=/Expo|React.?Native/i.test(mob);
+    var hasAuth=/auth|認証|login|ログイン|JWT|token/i.test(feats);
+    var hasSecure=/SecureStore|expo-secure-store|Keychain|keystore/i.test(feats);
+    return isRN&&hasAuth&&!hasSecure;},
+   ja:'Expo/RN+認証構成でSecureStore未使用が確認されました。AsyncStorageは暗号化されておらずトークン保存に不適です',
+   en:'Expo/RN with auth detected but SecureStore not mentioned. AsyncStorage is unencrypted and unsuitable for storing auth tokens',
+   fix:{f:'mvp_features',s:'expo-secure-store でトークン保管'},
+   why_ja:'AsyncStorageはOSのプレーンテキストストレージに保存されます。ルート化デバイスでトークンが盗取される可能性があり、JWTは必ずSecureStoreで管理してください。',
+   why_en:'AsyncStorage writes to plaintext OS storage. Tokens can be stolen on rooted devices. Always store JWTs in SecureStore (iOS Keychain / Android Keystore).'},
 ];
 // helpers
 function inc(v,k){return v&&typeof v==='string'&&v.indexOf(k)!==-1;}
