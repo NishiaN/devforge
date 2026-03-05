@@ -2410,6 +2410,31 @@ var DOMAIN_INVARIANTS={
     {ja:'同一日程・同一リソースに重複予約なし',en:'No duplicate bookings for same dates and resource',verify:'concurrency test + DB constraint'},
     {ja:'旅行代金 > 0（ゼロ料金禁止）',en:'Travel price > 0 (zero price prohibited)',verify:'property-based test'},
     {ja:'キャンセル料はポリシー定義範囲内',en:'Cancellation fee within policy-defined range',verify:'unit test'}
+  ],
+  ai:[
+    {ja:'LLMレスポンスはガードレール通過後のみ返却',en:'LLM response returned only after guardrail pass',verify:'integration test + safety audit'},
+    {ja:'トークン消費量 >= 0（マイナス消費禁止）',en:'Token consumption >= 0 (no negative usage)',verify:'unit test'},
+    {ja:'プロンプトインジェクション検出でリクエスト拒否',en:'Request rejected on prompt injection detection',verify:'adversarial test'}
+  ],
+  agriculture:[
+    {ja:'収穫量 >= 0（マイナス収穫禁止）',en:'Harvest quantity >= 0 (no negative harvest)',verify:'property-based test'},
+    {ja:'センサーデータのタイムスタンプは単調増加',en:'Sensor data timestamps monotonically increase',verify:'unit test'},
+    {ja:'農薬使用量は法定上限以下',en:'Pesticide usage within legal maximum limits',verify:'integration test + audit'}
+  ],
+  media:[
+    {ja:'コンテンツは著作権チェック後のみ公開',en:'Content published only after copyright check',verify:'integration test'},
+    {ja:'視聴カウントは非負整数',en:'View count is non-negative integer',verify:'property-based test'},
+    {ja:'サブスクリプション期間中は常にコンテンツアクセス可',en:'Content accessible throughout active subscription period',verify:'integration test'}
+  ],
+  content:[
+    {ja:'公開コンテンツは承認フロー通過必須',en:'Published content must pass approval workflow',verify:'state machine test'},
+    {ja:'コンテンツバージョンは単調増加',en:'Content version monotonically increases (no rollback without explicit action)',verify:'unit test'},
+    {ja:'削除済みコンテンツへのリンクは自動無効化',en:'Links to deleted content auto-invalidated',verify:'integration test'}
+  ],
+  analytics:[
+    {ja:'集計値は元データから再現可能（冪等性）',en:'Aggregate values reproducible from source data (idempotent)',verify:'unit + integration test'},
+    {ja:'レポートデータはテナント境界内のみ',en:'Report data scoped within tenant boundary only',verify:'tenant isolation test'},
+    {ja:'メトリクス値は定義済み型に準拠（型バリデーション）',en:'Metric values conform to defined types (type validation)',verify:'property-based test'}
   ]
 };
 

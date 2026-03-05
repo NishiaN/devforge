@@ -171,6 +171,42 @@ function goToQ(phase,step){
   if(typeof updProgress==='function')updProgress();
 }
 
+/* ═══ WIZARD LIVE PREVIEW CARD ═══ */
+function renderWizPreviewCard(){
+  const sbProg=$('sbProgress');if(!sbProg)return;
+  // Only show during active wizard (phase>=1, no generated files)
+  const hasFiles=Object.keys(S.files||{}).length>0;
+  let card=$('wizPreviewCard');
+  if(hasFiles||S.phase<1){if(card)card.remove();return;}
+  if(!card){card=document.createElement('div');card.id='wizPreviewCard';card.className='wiz-preview-card';sbProg.appendChild(card);}
+  const _ja=S.lang==='ja';
+  // Count answered questions
+  const qs=typeof getQ==='function'?getQ():null;
+  let totalQ=0,doneQ=0;
+  if(qs){for(let p=1;p<=3;p++){const ph=qs[p];if(!ph)continue;ph.questions.forEach(q=>{if(typeof isQActive==='function'&&!isQActive(q))return;totalQ++;if(S.answers[q.id])doneQ++;});}}
+  // Detect domain
+  const domain=(typeof detectDomain==='function'&&S.answers.purpose)?detectDomain(S.answers.purpose):'';
+  // Compat issues
+  let warns=0,errors=0;
+  if(typeof checkCompat==='function'){
+    const issues=checkCompat(S.answers||{}).filter(i=>!S.compatAcked.includes(i.id));
+    errors=issues.filter(i=>i.level==='error').length;
+    warns=issues.filter(i=>i.level==='warn').length;
+  }
+  // Estimate file count (rough: base 150 + extra)
+  const estFiles=150+(S.answers.payment&&!/none|なし/i.test(S.answers.payment)?5:0)+(S.answers.ai_auto&&!/none|なし/i.test(S.answers.ai_auto)?4:0);
+  let h='<div class="wpc-title">'+(_ja?'📊 生成プレビュー':'📊 Generation Preview')+'</div>';
+  h+='<div class="wpc-rows">';
+  if(domain)h+='<div class="wpc-row"><span class="wpc-lbl">'+(_ja?'ドメイン':'Domain')+'</span><span class="wpc-val wpc-domain">'+esc(domain)+'</span></div>';
+  h+='<div class="wpc-row"><span class="wpc-lbl">'+(_ja?'回答済み':'Answered')+'</span><span class="wpc-val">'+doneQ+' / '+totalQ+'</span></div>';
+  h+='<div class="wpc-row"><span class="wpc-lbl">'+(_ja?'推定ファイル':'Est. Files')+'</span><span class="wpc-val">~'+estFiles+'+</span></div>';
+  if(errors||warns){
+    h+='<div class="wpc-row"><span class="wpc-lbl">'+(_ja?'警告':'Alerts')+'</span><span class="wpc-val">'+(errors?'<span class="wpc-err">❌'+errors+'</span>':'')+(warns?'<span class="wpc-warn"> ⚠️'+warns+'</span>':'')+'</span></div>';
+  }
+  h+='</div>';
+  card.innerHTML=h;
+}
+
 function renderSidebarSummary(){
   const el=$('sbSummary');if(!el)return;
   const _ja=S.lang==='ja';
@@ -206,6 +242,7 @@ function updateSidebarLabels(){
   if(sfEl&&sfEl.style.display!=='none')renderSidebarFiles();
   const ssEl=$('sbSummary');if(ssEl&&ssEl.style.display!=='none')renderSidebarSummary();
   renderCompatBadge();
+  renderWizPreviewCard();
   // Update toggle button tooltip
   const tog=$('sbToggle');
   if(tog)tog.title=_ja?'サイドバー切替 (Ctrl+B)':'Toggle Sidebar (Ctrl+B)';
@@ -217,11 +254,15 @@ var PILLAR_ICONS=['📋','🐳','🔌','🤖','✅','🗺️','🎨','🔍','�
 var GEN_TO_PILLAR=[0,1,2,3,0,6,8,9,10,11,12,13,14,15,16,17,18,19,20,21,0,0,22,23,24,25,26,27];
 var PILLAR_FIRST_FILE=['.spec/constitution.md','.devcontainer/devcontainer.json','.mcp/project-context.md',null,null,null,'roadmap/LEARNING_PATH.md',null,'docs/26_design_system.md','docs/29_reverse_engineering.md','docs/39_implementation_playbook.md','docs/43_security_intelligence.md','docs/48_industry_blueprint.md','docs/53_ops_runbook.md','docs/56_market_positioning.md','docs/60_methodology_intelligence.md','docs/65_prompt_genome.md','docs/69_prompt_ops_pipeline.md','docs/73_enterprise_architecture.md','docs/77_cicd_pipeline_design.md','docs/83_api_design_principles.md','docs/87_database_design_principles.md','docs/91_testing_strategy.md','docs/95_ai_safety_framework.md','docs/99_performance_strategy.md','docs/103_observability_architecture.md','docs/109_cost_architecture.md','docs/128_xai_intelligence_architecture.md'];
 
-// Pillar visibility sets by skill level (grid indices 0-27)
-// Beginner: SDD/DevContainer/MCP/AIRules/Roadmap/Design
-var _PILLAR_FILTER_B=new Set([0,1,2,3,5,6]);
-// Intermediate: +Quality/Reverse/Impl/Security/Strategy/Ops/Future/DevIQ/CI-CD/API/DB/Testing
+// Pillar visibility sets by skill level (grid indices 0-27) — 5-tier staged disclosure
+// Lv0-1 (4): Core essentials — SDD/DevContainer/MCP/AIRules
+var _PILLAR_FILTER_B=new Set([0,1,2,3]);
+// Lv2 (10): +Quality/Roadmap/Design/Reverse/Impl/Security
+var _PILLAR_FILTER_L2=new Set([0,1,2,3,4,5,6,7,8,9]);
+// Lv3 (18): +Strategy/Ops/Future/DevIQ/CI-CD/API/DB/Testing
 var _PILLAR_FILTER_I=new Set([0,1,2,3,4,5,6,7,8,9,10,11,12,13,17,18,19,22]);
+// Lv4 (24): +Genome/PromptOps/Enterprise/Docs/Common/AISafety
+var _PILLAR_FILTER_L4=new Set([0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23]);
 var _showAllPillars=false;
 function toggleAllPillars(){
   _showAllPillars=!_showAllPillars;
@@ -232,11 +273,13 @@ function renderPillarGrid(){
   const _ja=S.lang==='ja';
   const hasFiles=Object.keys(S.files||{}).length>0;
   const names=_ja?['SDD','DevContainer','MCP','AIルール','品質','ロードマップ','デザイン','リバース','実装','セキュリティ','戦略','運用','未来','開発IQ','ゲノム','Prompt Ops','Enterprise','CI/CD','API','DB','仕様書','共通','テスト','AI安全','パフォ','可観測','コスト','XAI']:['SDD','DevContainer','MCP','AI Rules','Quality','Roadmap','Design','Reverse','Impl','Security','Strategy','Ops','Future','Dev IQ','Genome','Prompt Ops','Enterprise','CI/CD','API','DB','Docs','Common','Testing','AI Safety','Perf','Observ','Cost','XAI'];
-  // Skill-adaptive pillar filter
+  // 5-tier skill-adaptive pillar filter
   var _filter=null;
   if(!_showAllPillars){
     if(S.skillLv<=1)_filter=_PILLAR_FILTER_B;
-    else if(S.skillLv<=4)_filter=_PILLAR_FILTER_I;
+    else if(S.skillLv===2)_filter=_PILLAR_FILTER_L2;
+    else if(S.skillLv===3)_filter=_PILLAR_FILTER_I;
+    else if(S.skillLv===4)_filter=_PILLAR_FILTER_L4;
   }
   let h='';
   for(let i=0;i<28;i++){
@@ -247,7 +290,7 @@ function renderPillarGrid(){
   if(_filter){
     const shown=_filter.size;
     h+='<button class="sb-pillar-showall" onclick="toggleAllPillars()" title="'+escAttr(_ja?'全28柱を表示':'Show all 28 pillars')+'">'+(_ja?'+ '+(28-shown)+'柱':'+ '+(28-shown)+' more')+'</button>';
-  } else if(S.skillLv<=4){
+  } else if(S.skillLv<=5){
     h+='<button class="sb-pillar-showall sb-pillar-showless" onclick="toggleAllPillars()" title="'+escAttr(_ja?'推奨柱のみ表示':'Show recommended pillars')+'">'+(_ja?'折りたたむ':'Collapse')+'</button>';
   }
   g.innerHTML=h;

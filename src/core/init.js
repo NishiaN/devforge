@@ -233,8 +233,22 @@ if(S.projectName&&S.phase>0){
   $('ws').style.display='flex';
   if(typeof initSidebar==='function')initSidebar();
   initPills();updProgress();
-  if(Object.keys(S.files).length>0){initPrevTabs();initPillarTabs();showFileTree();createQbar();if(typeof renderPillarGrid==='function')renderPillarGrid();}
+  const _hasFiles=Object.keys(S.files).length>0;
+  if(_hasFiles){initPrevTabs();initPillarTabs();showFileTree();createQbar();if(typeof renderPillarGrid==='function')renderPillarGrid();}
   findNext();
+  // Welcome-back toast for returning users with generated files
+  if(_hasFiles){
+    setTimeout(()=>{
+      const _ja=S.lang==='ja';
+      const _fc=Object.keys(S.files).length;
+      const _pn=S.projectName||(_ja?'プロジェクト':'project');
+      toast({
+        message:(_ja?'👋 おかえり！「'+_pn+'」— '+_fc+'ファイル生成済み':'👋 Welcome back! "'+_pn+'" — '+_fc+' files ready'),
+        type:'info',duration:4000,
+        action:()=>showCommandPalette(),actionLabel:_ja?'コマンド':'Commands'
+      });
+    },800);
+  }
 }
 
 // What's New indicator (HCD: C継続利用)

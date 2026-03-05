@@ -19,7 +19,7 @@ function showCommandPalette(){
     <div class="cmdpalette-box">
       <div class="cmdpalette-input-wrap">
         <span class="cmdpalette-icon">⌘</span>
-        <input type="text" id="cmdpaletteInput" class="cmdpalette-input" placeholder="${_ja?'コマンドまたはファイルを検索...':'Search commands or files...'}" autocomplete="off" />
+        <input type="text" id="cmdpaletteInput" class="cmdpalette-input" placeholder="${_ja?'コマンド・ファイル検索 / > で本文検索':'Search commands, files / > for content search'}" autocomplete="off" />
       </div>
       <div id="cmdpaletteResults" class="cmdpalette-results" role="listbox"></div>
     </div>
@@ -120,18 +120,43 @@ function updateCmdResults(query,_ja,input,resultsDiv){
     return lbl.includes(query);
   });
 
-  // File search
+  // File path search or content search (> prefix)
   let files=[];
+  let contentMatches=[];
+  const isContentSearch=query.startsWith('>');
   if(hasFiles&&query.length>0){
-    files=Object.keys(S.files).filter(path=>path.toLowerCase().includes(query)).slice(0,20);
+    if(isContentSearch){
+      const cq=query.slice(1).trim().toLowerCase();
+      if(cq.length>1){
+        Object.entries(S.files).forEach(([path,content])=>{
+          if(typeof content!=='string')return;
+          const ci=content.toLowerCase().indexOf(cq);
+          if(ci!==-1){
+            const st=Math.max(0,ci-25);
+            const en=Math.min(content.length,ci+60);
+            const snip=(st>0?'…':'')+content.slice(st,en).replace(/\n/g,' ')+(en<content.length?'…':'');
+            contentMatches.push({path,snip});
+          }
+        });
+        contentMatches=contentMatches.slice(0,15);
+      }
+    }else{
+      files=Object.keys(S.files).filter(path=>path.toLowerCase().includes(query)).slice(0,20);
+    }
   }
 
   // Combine results
-  _cpResults=[...filtered,...files.map(path=>({cat:'file',icon:'📄',label:path,action:()=>previewFile(path)}))];
+  _cpResults=[
+    ...filtered,
+    ...files.map(path=>({cat:'file',icon:'📄',label:path,action:()=>previewFile(path)})),
+    ...contentMatches.map(m=>({cat:'content',icon:'🔍',label:m.path,sub:m.snip,action:()=>previewFile(m.path)}))
+  ];
 
   // Render
   let html='';
-  if(_cpResults.length===0){
+  if(isContentSearch&&query.slice(1).trim().length<=1){
+    html=`<div class="cmdpalette-empty">${_ja?'「> キーワード」で本文検索':'Type \"> keyword\" to search file content'}</div>`;
+  }else if(_cpResults.length===0){
     html=`<div class="cmdpalette-empty">${_ja?'一致する結果がありません':'No results found'}</div>`;
   }else{
     _cpResults.forEach((r,i)=>{
@@ -141,6 +166,7 @@ function updateCmdResults(query,_ja,input,resultsDiv){
       html+=`<div class="cmdpalette-item${selected}" role="option"${aria} data-idx="${i}">`;
       html+=`<span class="cmdpalette-item-icon">${r.icon}</span>`;
       html+=`<span class="cmdpalette-item-label">${esc(r.label)}</span>`;
+      if(r.sub)html+=`<span class="cmdpalette-item-sub">${esc(r.sub)}</span>`;
       html+=`<span class="cmdpalette-item-cat">${catLabel}</span>`;
       if(r.kb)html+=`<span class="cmdpalette-item-kb">${esc(r.kb)}</span>`;
       html+=`</div>`;
@@ -193,7 +219,8 @@ function getCatLabel(cat,_ja){
     navigate:_ja?'ナビゲート':'Navigate',
     app:_ja?'アプリ':'App',
     create:_ja?'作成':'Create',
-    file:_ja?'ファイル':'File'
+    file:_ja?'ファイル':'File',
+    content:_ja?'本文':'Content'
   };
   return labels[cat]||cat;
 }

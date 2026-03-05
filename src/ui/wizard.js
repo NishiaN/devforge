@@ -417,6 +417,7 @@ function doSubmit(qid,val){
   showCompatAlert(S.answers);
   if(qid==='purpose')showDomainHint(S.answers[qid]);
   if(typeof renderCompatBadge==='function')renderCompatBadge();
+  if(typeof renderWizPreviewCard==='function')renderWizPreviewCard();
   S.step++;save();
   setTimeout(()=>{
     const ph=getQ()[S.phase];

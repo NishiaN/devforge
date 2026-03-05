@@ -131,6 +131,55 @@ var DOMAIN_TEST_EXTRA={
     e2e_en:['Quote input→risk calculation→application→underwriting flow','Incident report→claim review→payment approval→transfer flow','Premium revision→apply to existing contracts→notification flow'],
     perf_ja:['リスクスコアリング P95 ≤ 300ms (複合条件100項目)','請求一括審査バッチ: 1000件/時間'],
     perf_en:['Risk scoring P95 ≤ 300ms (100 composite conditions)','Batch claim review: 1000 claims/hour']},
+  government:{
+    cov_ja:['申請ステータス遷移ロジック → 100%','個人情報マスキング/匿名化処理の完全テスト','WCAG 2.1 AAアクセシビリティ自動検査 (axe-core)'],
+    cov_en:['Application status transition logic → 100%','PII masking/anonymization logic full coverage','WCAG 2.1 AA accessibility automated check (axe-core)'],
+    e2e_ja:['市民申請→受付確認→審査→決定通知フロー','電子署名・本人確認フローのE2E','書類アップロード→ウイルスチェック→保存フロー'],
+    e2e_en:['Citizen application→receipt→review→decision notification flow','Electronic signature and identity verification E2E','Document upload→virus check→storage flow'],
+    perf_ja:['確定申告ピーク: 10K同時接続→P95 ≤ 3s','証明書発行バッチ: 5000件/時間処理能力'],
+    perf_en:['Tax season peak: 10K concurrent → P95 ≤ 3s','Certificate issuance batch: 5000/hour throughput']},
+  legal:{
+    cov_ja:['文書バージョン単調増加バリデーション → 100%','電子署名検証ロジックの完全テスト','アクセス権限暗黙拒否ロジックのユニットテスト'],
+    cov_en:['Document version monotonic increase validation → 100%','E-signature verification logic full coverage','Access permission implicit deny logic unit tests'],
+    e2e_ja:['契約書作成→条項編集→署名依頼→締結フロー','文書共有権限管理→閲覧ログ記録のE2E','期限切れ契約のアクセス無効化確認'],
+    e2e_en:['Contract create→clause edit→signature request→execution flow','Document sharing permissions→access log recording E2E','Expired contract access invalidation check'],
+    perf_ja:['契約書全文検索 P95 ≤ 1s (10万件)','電子署名検証 P95 ≤ 500ms (RSA-2048)'],
+    perf_en:['Contract full-text search P95 ≤ 1s (100K docs)','E-signature verification P95 ≤ 500ms (RSA-2048)']},
+  iot:{
+    cov_ja:['センサーデータバリデーション (範囲チェック) → 100%','デバイス認証フローの完全テスト','エッジ→クラウド同期ロジックのユニットテスト'],
+    cov_en:['Sensor data validation (range check) → 100%','Device authentication flow full coverage','Edge-to-cloud sync logic unit tests'],
+    e2e_ja:['デバイス登録→ファームウェア更新→ステータス確認フロー','アラート閾値超過→通知→自動復旧フロー','オフライン時のデータバッファリング→再接続時同期確認'],
+    e2e_en:['Device register→firmware update→status check flow','Alert threshold exceed→notification→auto-recovery flow','Offline data buffering→sync on reconnect verification'],
+    perf_ja:['センサーデータ取込 P95 ≤ 100ms (10K デバイス同時)','アラート処理: 100件/秒→P95 ≤ 500ms'],
+    perf_en:['Sensor data ingestion P95 ≤ 100ms (10K devices concurrent)','Alert processing: 100/sec → P95 ≤ 500ms']},
+  energy:{
+    cov_ja:['電力バランス計算ロジック → 100%','安全閾値バリデーション (緊急停止連動) の完全テスト','排出量レポート計算のユニットテスト'],
+    cov_en:['Power balance calculation logic → 100%','Safety threshold validation (emergency stop) full coverage','Emissions report calculation unit tests'],
+    e2e_ja:['電力需要予測→供給計画→グリッド制御フロー','再生可能エネルギー超過→蓄電→放電サイクルE2E','障害検知→自動遮断→復旧通知フロー'],
+    e2e_en:['Power demand forecast→supply plan→grid control flow','Renewable surplus→storage→discharge cycle E2E','Fault detection→auto shutdown→recovery notification flow'],
+    perf_ja:['グリッド状態更新 P95 ≤ 50ms (リアルタイム制御)','年次エネルギーレポート生成: ≤ 30秒'],
+    perf_en:['Grid state update P95 ≤ 50ms (real-time control)','Annual energy report generation: ≤ 30 seconds']},
+  travel:{
+    cov_ja:['旅行代金計算ロジック (税込/シーズン変動) → 100%','二重予約防止ロジックの完全テスト','キャンセルポリシー適用計算のユニットテスト'],
+    cov_en:['Travel price calculation (tax/seasonal) → 100%','Double booking prevention logic full coverage','Cancellation policy application calculation unit tests'],
+    e2e_ja:['フライト+ホテル検索→選択→決済→確認書発行フロー','同時予約競合 (2ユーザー同一座席) → 一方のみ成功確認','旅程変更→差額計算→再決済→更新通知フロー'],
+    e2e_en:['Flight+hotel search→select→payment→voucher issue flow','Concurrent booking conflict (2 users same seat) → only one succeeds','Itinerary change→price diff→repayment→update notification flow'],
+    perf_ja:['フライト検索 P95 ≤ 1s (全路線)','ピーク予約期: 1K同時ユーザー→エラー率 < 0.5%'],
+    perf_en:['Flight search P95 ≤ 1s (all routes)','Peak booking: 1K concurrent users → error rate < 0.5%']},
+  agriculture:{
+    cov_ja:['収穫量バリデーション (非負整数) → 100%','農薬使用量上限チェックロジックの完全テスト','作付けスケジュール競合検出のユニットテスト'],
+    cov_en:['Harvest quantity validation (non-negative) → 100%','Pesticide usage limit check logic full coverage','Crop schedule conflict detection unit tests'],
+    e2e_ja:['圃場登録→作付計画→センサー監視→収穫記録フロー','農薬散布→使用量記録→法定上限アラートE2E','収穫量レポート生成→農業共済申請連携フロー'],
+    e2e_en:['Field register→crop plan→sensor monitor→harvest record flow','Pesticide application→usage log→legal limit alert E2E','Harvest report generation→agriculture mutual aid linkage flow'],
+    perf_ja:['センサーデータ収集: 500センサー同時→P95 ≤ 200ms','年次農業報告書生成: ≤ 60秒'],
+    perf_en:['Sensor data collection: 500 sensors concurrent → P95 ≤ 200ms','Annual farm report generation: ≤ 60 seconds']},
+  media:{
+    cov_ja:['コンテンツ権限チェックロジック → 100%','視聴ログ記録の完全テスト','サブスクリプション有効期限バリデーションのユニットテスト'],
+    cov_en:['Content permission check logic → 100%','View log recording full coverage','Subscription expiry validation unit tests'],
+    e2e_ja:['コンテンツ登録→著作権チェック→公開承認→配信フロー','サブスク登録→決済→コンテンツアクセス解放フロー','コンテンツ検索→推薦→視聴→進捗保存フロー'],
+    e2e_en:['Content register→copyright check→publication approval→delivery flow','Subscribe→payment→content access unlock flow','Content search→recommend→view→progress save flow'],
+    perf_ja:['動画ストリーミング: 500同時視聴→バッファリングなし確認','コンテンツ検索 P95 ≤ 500ms (100万コンテンツ)'],
+    perf_en:['Video streaming: 500 concurrent views → no buffering','Content search P95 ≤ 500ms (1M content items)']},
 };
 
 // ============================================================================
