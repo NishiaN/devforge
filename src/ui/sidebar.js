@@ -267,6 +267,7 @@ var _showAllPillars=false;
 function toggleAllPillars(){
   _showAllPillars=!_showAllPillars;
   renderPillarGrid();
+  if(typeof initPillarTabs==='function')initPillarTabs();
 }
 function renderPillarGrid(){
   const g=$('sbPillarGrid');if(!g)return;

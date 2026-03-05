@@ -198,8 +198,17 @@ function initPillarTabs(){
   const _ja=S.lang==='ja';
   const tabs=$('pillarTabs');tabs.innerHTML='';
   const names=t('pillar');
+  // Use same filter sets as sidebar.js (loaded before preview.js)
+  var _ptFilter=null;
+  if(!_showAllPillars){
+    if(S.skillLv<=1)_ptFilter=_PILLAR_FILTER_B;
+    else if(S.skillLv===2)_ptFilter=_PILLAR_FILTER_L2;
+    else if(S.skillLv===3)_ptFilter=_PILLAR_FILTER_I;
+    else if(S.skillLv===4)_ptFilter=_PILLAR_FILTER_L4;
+  }
   names.forEach((n,i)=>{
     const wrap=document.createElement('div');wrap.className='piltab-wrap';
+    if(_ptFilter&&!_ptFilter.has(i)){wrap.style.display='none';}
     const b=document.createElement('button');b.className='piltab'+(i===0?' on':'');
     b.setAttribute('role','tab');b.setAttribute('aria-selected',String(i===0));
     b.textContent=n;b.onclick=()=>{
@@ -274,6 +283,18 @@ function updatePreview(){
   showFileTree();
 }
 
+function _fileIcon(p){
+  if(/\.(yml|yaml)$/.test(p))return '⚙️';
+  if(/\.json$/.test(p))return '📋';
+  if(/^\.spec\//.test(p))return '📐';
+  if(/^docs\//.test(p))return '📝';
+  if(/\.sh$/.test(p))return '🔧';
+  if(/Dockerfile|docker-compose/.test(p))return '🐳';
+  if(/CLAUDE\.md|\.cursorrules|\.clinerules|\.windsurfrules|AGENTS\.md/.test(p))return '🤖';
+  if(/^skills\//.test(p))return '🎯';
+  if(/\.(ts|js)$/.test(p))return '📜';
+  return '📄';
+}
 function showFileTree(){
   const _ja=S.lang==='ja';
   const body=$('prevBody');
@@ -339,7 +360,7 @@ function showFileTree(){
       const isPinned=S.pinnedFiles&&S.pinnedFiles.includes(f.path);
       const pinBtn=isGen?`<button class="ft-pin${isPinned?' ft-pin-active':''}" onclick="event.stopPropagation();togglePin('${escAttr(f.path)}')" title="${_ja?(isPinned?'ピン留め解除':'ピン留め'):(isPinned?'Unpin':'Pin')}">${isPinned?'📌':'○'}</button>`:'';
       h+=`<li data-path="${esc(f.path)}" data-folder="${esc(_curFtFid)}" onclick="previewFile('${escAttr(f.path)}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();previewFile('${escAttr(f.path)}')}" class="tree-item${isActive?' active':''}${f.name.startsWith('  ')?' tree-indent':''}${isGen?'':' tree-disabled'}" role="treeitem" tabindex="0">
-        ${isGen?'📄':'⬜'} ${esc(f.name.trim())}${isEdited?'<span class="tree-edited" title="Edited">●</span>':''}${isGen?'<span class="tree-gen">✓</span>':''}${pinBtn}
+        ${isGen?_fileIcon(f.path):'⬜'} ${esc(f.name.trim())}${isEdited?'<span class="tree-edited" title="Edited">●</span>':''}${isGen?'<span class="tree-gen">✓</span>':''}${pinBtn}
       </li>`;
     }
   });
@@ -413,6 +434,8 @@ function buildFileTree(){
      '.codex/skills/test-gen/SKILL.md','.codex/skills/doc-gen/SKILL.md','.codex/skills/refactor/SKILL.md',
      'docs/115_skill_portfolio.md',
      'docs/133_ai_team_orchestration.md',
+     'docs/135_memory_architecture.md',
+     'docs/136_harness_engineering_guide.md',
      '.ai/hooks.yml','.gemini/settings.json'
     ].forEach(f=>files.push({name:f,path:f}));
   } else if(pillar===4){ // Explorer
@@ -557,7 +580,8 @@ function buildFileTree(){
    '120_system_design_guide','121_security_design_guide',
    '122_concurrency_consistency_guide','123_frontend_architecture_guide','124_test_quality_guide',
    '125_healthcare_compliance_guide','126_fintech_fraud_prevention','127_manufacturing_iot_guide',
-   '133_ai_team_orchestration','134_git_ai_workflow'].forEach(f=>
+   '133_ai_team_orchestration','134_git_ai_workflow',
+   '135_memory_architecture','136_harness_engineering_guide'].forEach(f=>
     files.push({name:'  '+f+'.md',path:'docs/'+f+'.md'}));
   files.push({name:'───────────',path:''});
   ['README.md','.gitignore','package.json','LICENSE'].forEach(f=>files.push({name:f,path:f}));

@@ -154,6 +154,44 @@ function showDashboard(){
     h+='</div></div>';
   }
 
+  // Persistent Next Steps checklist
+  if(fileCount>0){
+    const _nsKey='devforge-ns-prog';
+    const _nsData=_jp(_lsGet(_nsKey),{});
+    const _dom=typeof detectDomain==='function'&&S.answers&&S.answers.purpose?detectDomain(S.answers.purpose):'';
+    const _nsItems=_ja?[
+      {k:'zip',t:'📦 ZIPダウンロード済み',d:'ブラウザデータ消失への最重要対策。今すぐ保存してください',action:'exportZIP()'},
+      {k:'claude',t:'🤖 CLAUDE.mdをAIに投入済み',d:'AIツールがプロジェクト全体を把握できるようになります',action:'previewFile(\'CLAUDE.md\')'},
+      {k:'integrity',t:'📐 整合性スコア確認済み (docs/82)',d:'スコア8.0+で「良好」。WARNがあればcompat-rulesで修正',action:'previewFile(\'docs/82_architecture_integrity_check.md\')'},
+      {k:'compat',t:'✅ compat警告を解消済み',d:'上の「スタック相性 & 整合性チェック」のWARN/ERRORを解消してください',action:'exportCompatReport()'},
+    ]:[
+      {k:'zip',t:'📦 ZIP downloaded',d:'Critical protection against browser data loss. Save now.',action:'exportZIP()'},
+      {k:'claude',t:'🤖 CLAUDE.md fed to AI',d:'Lets your AI tool understand the full project context.',action:'previewFile(\'CLAUDE.md\')'},
+      {k:'integrity',t:'📐 Integrity score checked (docs/82)',d:'Score 8.0+ is Good. Fix WARNs via compat-rules if needed.',action:'previewFile(\'docs/82_architecture_integrity_check.md\')'},
+      {k:'compat',t:'✅ Compat warnings resolved',d:'Resolve WARN/ERROR in "Stack Compatibility" section above.',action:'exportCompatReport()'},
+    ];
+    const _domExtra={
+      fintech:_ja?{k:'dom',t:'🏦 コンプライアンス確認済み (docs/121)',d:'PCI-DSS/AML要件と監査ログの完全性を確認',action:'previewFile(\'docs/121_fintech_compliance.md\')'}:{k:'dom',t:'🏦 Compliance checked (docs/121)',d:'Verify PCI-DSS/AML requirements and audit log completeness',action:'previewFile(\'docs/121_fintech_compliance.md\')'},
+      health:_ja?{k:'dom',t:'🏥 PHI保護設定確認済み (docs/08)',d:'PHI暗号化とアクセス制御ログを確認',action:'previewFile(\'docs/08_security.md\')'}:{k:'dom',t:'🏥 PHI protection checked (docs/08)',d:'Verify PHI encryption and access control logs',action:'previewFile(\'docs/08_security.md\')'},
+      ec:_ja?{k:'dom',t:'🛒 決済フロー検証済み (docs/05)',d:'Stripe Webhook署名検証と在庫競合テストを確認',action:'previewFile(\'docs/05_api_design.md\')'}:{k:'dom',t:'🛒 Payment flow verified (docs/05)',d:'Verify Stripe Webhook validation and inventory concurrency tests',action:'previewFile(\'docs/05_api_design.md\')'},
+      saas:_ja?{k:'dom',t:'🏢 テナント分離確認済み (docs/73)',d:'マルチテナントデータ分離と課金管理を確認',action:'previewFile(\'docs/73_enterprise_saas_architecture.md\')'}:{k:'dom',t:'🏢 Tenant isolation checked (docs/73)',d:'Verify multi-tenant data isolation and billing management',action:'previewFile(\'docs/73_enterprise_saas_architecture.md\')'},
+      booking:_ja?{k:'dom',t:'📅 予約冪等性確認済み (docs/122)',d:'二重予約防止とキャンセルポリシーを検証',action:'previewFile(\'docs/122_booking_system_guide.md\')'}:{k:'dom',t:'📅 Booking idempotency checked (docs/122)',d:'Verify double-booking prevention and cancellation policy',action:'previewFile(\'docs/122_booking_system_guide.md\')'},
+    };
+    const _domItem=_domExtra[_dom];
+    const _allNs=_domItem?[..._nsItems,_domItem]:_nsItems;
+    const _nsDone=_allNs.filter(function(it){return _nsData[it.k];}).length;
+    const _nsPct=Math.round(_nsDone/_allNs.length*100);
+    h+='<details class="dash-advanced"'+((_nsDone<_allNs.length)?' open':'')+'><summary class="dash-adv-toggle">✅ '+(_ja?'次のステップ ('+_nsDone+'/'+_allNs.length+')':'Next Steps ('+_nsDone+'/'+_allNs.length+')')+'</summary>';
+    h+='<div class="guide-prog"><div class="guide-prog-bar"><div class="guide-prog-fill" style="width:'+_nsPct+'%"></div></div><span class="guide-prog-txt">'+_nsDone+'/'+_allNs.length+'</span></div>';
+    h+='<div class="dash-ns-list">';
+    _allNs.forEach(function(it){
+      const done=!!_nsData[it.k];
+      h+='<div class="dash-ns-item'+(done?' dash-ns-done':'')+'"><label class="guide-ck"><input type="checkbox"'+(done?' checked':'')+'onchange="(function(k,c){var d=_jp(_lsGet(\'devforge-ns-prog\'),{});if(c)d[k]=1;else delete d[k];_lsSet(\'devforge-ns-prog\',JSON.stringify(d));showDashboard();})(\''+it.k+'\',this.checked)"><span class="guide-ckbox">'+(done?'✓':'')+'</span></label>';
+      h+='<div class="dash-ns-body"><div class="dash-ns-title">'+it.t+'</div><div class="dash-ns-desc">'+it.d+'</div></div>';
+      h+='<button class="btn btn-xs btn-s" onclick="'+it.action+'">→</button></div>';
+    });
+    h+='</div></details>';
+  }
   // Lv3+ Power Shortcuts
   if(_adv){
     const _scs=_ja?[
@@ -321,6 +359,25 @@ function showDashboard(){
       h+='</div></details>';
       h+='</div>';
     });
+  }
+  // Integrity Score Guide (collapsible)
+  if(fileCount>0){
+    h+='<details class="dash-advanced"><summary class="dash-adv-toggle">📐 '+(_ja?'整合性スコアの読み方 (docs/82)':'Integrity Score Guide (docs/82)')+'</summary>';
+    h+='<div class="dash-ic-guide">';
+    const _icRows=_ja?[
+      ['✅ 10.0','完全整合 — ERROR/WARN/INFOゼロ'],
+      ['✅  8.0+','良好 — INFO項目のみ。実装時に参照推奨'],
+      ['⚠️  6.0+','要注意 — WARNが複数。compat-rulesで修正を'],
+      ['❌  6.0未満','要対策 — ERRORあり。スタック設定を優先修正']
+    ]:[
+      ['✅ 10.0','Perfect — Zero ERROR/WARN/INFO'],
+      ['✅  8.0+','Good — INFO items only. Review during implementation'],
+      ['⚠️  6.0+','Needs Attention — Multiple WARNs. Fix via compat-rules'],
+      ['❌  <6.0','Critical — ERRORs present. Prioritize stack config fixes']
+    ];
+    _icRows.forEach(function(r){h+='<div class="dash-ic-row"><span class="dash-ic-score">'+r[0]+'</span><span class="dash-ic-desc">'+r[1]+'</span></div>';});
+    h+='<div class="dash-ic-action"><button class="btn btn-xs btn-s" onclick="previewFile(\'docs/82_architecture_integrity_check.md\')">→ '+(_ja?'docs/82を開く':'Open docs/82')+'</button></div>';
+    h+='</div></details>';
   }
   h+='<h4 class="dash-h4-mt">'+(_ja?'📐 プロジェクト複雑度':'📐 Project Complexity')+'</h4>';
   h+=getComplexityHTML();

@@ -53,6 +53,26 @@ function showPostGenGuide(force){
     ['.claude/rules/ Customization','Edit 5 path-specific rules (spec.md/frontend.md/backend.md/test.md/ops.md) for your project. Auto-loaded by path.'],
     ['9-Expert Brainstorm','Use Pillar ⑧ "🎭 9-Expert Brainstorm" for multi-perspective ideas. Check at minimum 4 viewpoints: Business, Technical, User, and Disruptor.'],
   ]);
+  // Domain-specific bonus step
+  if(typeof detectDomain==='function'&&S.answers&&S.answers.purpose){
+    const _gdom=detectDomain(S.answers.purpose);
+    const _gdomSteps={
+      fintech:_ja?['コンプライアンス確認','docs/121でPCI-DSS/AML要件を確認し、監査ログの完全性を検証してください']:['Compliance Check','Review PCI-DSS/AML requirements in docs/121 and verify audit log completeness'],
+      health:_ja?['PHI暗号化確認','docs/08でPHI暗号化設定とアクセス制御ログを確認してください']:['PHI Encryption Check','Verify PHI encryption settings and access control logs in docs/08'],
+      ec:_ja?['決済フロー検証','Stripe Webhook署名検証とinventory競合テストをdocs/05で確認してください']:['Payment Flow Verify','Check Stripe Webhook signature validation and inventory concurrency tests in docs/05'],
+      legal:_ja?['電子署名確認','docs/08で電子署名の法的有効性と改ざん不可監査ログを確認してください']:['E-signature Verify','Check e-signature legal validity and tamper-proof audit logs in docs/08'],
+      insurance:_ja?['規制コンプライアンス確認','docs/121で保険規制・保険料計算監査・データ保持ポリシーを確認してください']:['Regulatory Compliance','Review insurance regulations, premium calculation audit, and data retention in docs/121'],
+      saas:_ja?['マルチテナント分離確認','docs/73,74でテナントデータ分離とサブスクリプション管理を確認してください']:['Multi-tenant Check','Verify tenant isolation and subscription management in docs/73,74'],
+      booking:_ja?['予約冪等性確認','docs/122で二重予約防止ロジックとキャンセルポリシーを検証してください']:['Booking Idempotency','Verify double-booking prevention and cancellation policy in docs/122'],
+      travel:_ja?['在庫競合確認','docs/122で在庫競合とオーバーブッキング防止ロジックを確認してください']:['Inventory Concurrency','Check inventory concurrency and overbooking prevention in docs/122'],
+      ai:_ja?['AIガードレール確認','docs/96,98でプロンプトインジェクション防御とガードレールを確認してください']:['AI Guardrails Check','Verify prompt injection defense and guardrails in docs/96,98'],
+      iot:_ja?['デバイス認証確認','docs/120でデバイス認証とMQTT/AMQPプロトコル設定を確認してください']:['Device Auth Check','Verify device authentication and MQTT/AMQP protocol config in docs/120'],
+      government:_ja?['アクセシビリティ確認','WCAG 2.1 AA準拠とdocs/20の個人情報保護設定を確認してください']:['Accessibility Check','Verify WCAG 2.1 AA compliance and personal data protection in docs/20'],
+      hr:_ja?['個人情報保護確認','docs/08で従業員データ暗号化・GDPR対応・RBACを確認してください']:['Privacy Check','Verify employee data encryption, GDPR compliance, and RBAC in docs/08'],
+    };
+    const _ds=_gdomSteps[_gdom];
+    if(_ds)steps.push([(_gdom?'🎯 ':'')+_ds[0],_ds[1]]);
+  }
   // Lv6 community sharing step — visible for Evangelists only
   if(S.skillLv>=6){
     steps.push([

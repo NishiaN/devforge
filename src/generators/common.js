@@ -3843,7 +3843,7 @@ function postGenerationAudit(files,a){
     _mermaidRe.lastIndex=0;
   });
   if(_mermaidBad.length>0){
-    findings.push({level:'warn',msg:G?'Mermaid構文異常: '+_mermaidBad.slice(0,3).join(', ')+((_mermaidBad.length>3)?'...他':''):'Mermaid syntax issue: '+_mermaidBad.slice(0,3).join(', ')+((_mermaidBad.length>3)?'...':'')});
+    findings.push({level:'warn',msg:G?'Mermaid構文異常: '+_mermaidBad.slice(0,3).join(', ')+((_mermaidBad.length>3)?'...他':''):'Mermaid syntax issue: '+_mermaidBad.slice(0,3).join(', ')+((_mermaidBad.length>3)?'...':''),fix:G?'Mermaidブロックが空/無効。有効な開始キーワード: graph/flowchart/sequenceDiagram/erDiagram/gantt/classDiagram/stateDiagram/pie。`+=`演算子の漏れを確認':'Mermaid block empty/invalid. Valid starts: graph/flowchart/sequenceDiagram/erDiagram/gantt/classDiagram/stateDiagram/pie. Check for missing `+=`'});
   }
 
   // C13: Cross-reference integrity — detect docs/XX_ references pointing to non-existent files
@@ -3861,7 +3861,7 @@ function postGenerationAudit(files,a){
     _xrefRe.lastIndex=0;
   });
   if(_xrefBroken.length>0){
-    findings.push({level:'warn',msg:G?'未生成ドキュメントへの参照: '+_xrefBroken.slice(0,3).join(', ')+((_xrefBroken.length>3)?'...他':''):'Cross-reference to non-existent doc(s): '+_xrefBroken.slice(0,3).join(', ')+((_xrefBroken.length>3)?'...':'')});
+    findings.push({level:'warn',msg:G?'未生成ドキュメントへの参照: '+_xrefBroken.slice(0,3).join(', ')+((_xrefBroken.length>3)?'...他':''):'Cross-reference to non-existent doc(s): '+_xrefBroken.slice(0,3).join(', ')+((_xrefBroken.length>3)?'...':''),fix:G?'ドメイン/scale条件で対象ドキュメントの生成がスキップされた可能性があります。参照元ファイルを確認し、参照を更新または削除してください':'Referenced doc may be skipped by domain/scale conditions. Check the source file and update or remove the cross-reference'});
   }
 
   return findings;
@@ -3891,11 +3891,11 @@ function genArchIntegrityCheck(files,a,compatResults,auditFindings){
     if(f.level==='error'){
       redCount++;
       rows.push({loc:'docs/*.md',src:'postGenerationAudit',issue:f.msg,
-        sev:'🔴 ERROR',fix:G?'生成後チェック参照':'See post-generation audit'});
+        sev:'🔴 ERROR',fix:f.fix||(G?'生成後チェック参照':'See post-generation audit')});
     }else if(f.level==='warn'){
       orangeCount++;
       rows.push({loc:'docs/*.md',src:'postGenerationAudit',issue:f.msg,
-        sev:'🟠 WARN',fix:G?'生成後チェック参照':'See post-generation audit'});
+        sev:'🟠 WARN',fix:f.fix||(G?'生成後チェック参照':'See post-generation audit')});
     }
   });
 
@@ -4272,9 +4272,68 @@ function genArchIntegrityCheck(files,a,compatResults,auditFindings){
   const titleJa='アーキテクチャ整合性チェック報告書';
   const titleEn='Architecture Integrity Check Report';
 
+  const _checkRef=G?
+    '## チェック項目リファレンス\n\n'+
+    '| チェック | 概要 | 深刻度 |\n'+
+    '|---------|------|--------|\n'+
+    '| Compat Rules | スタック設定の互換性・意味的整合を332ルールで検証 | ERROR/WARN/INFO |\n'+
+    '| Post-gen (C1-C14) | 文書間クロスリファレンス・Mermaid構文・Stack整合を検証 | ERROR/WARN |\n'+
+    '| C-A: ORM互換性 | バックエンド言語とORMの整合性確認 | ERROR/WARN |\n'+
+    '| C-B: 接続プール | サーバーレス+Prisma構成でのDB接続枯渇リスク評価 | WARN |\n'+
+    '| C-C: CORS設定 | フロント/バック分離構成でのCORSポリシー確認 | WARN |\n'+
+    '| C-D: 非同期インフラ | バックグラウンドタスク向けキューシステムの必要性評価 | INFO |\n'+
+    '| C-E: 論理削除MW | deleted_atスキーマとソフトデリートミドルウェアの一貫性 | INFO |\n'+
+    '| C-F: MongoDB×Prisma | PrismaのMongoDB実験的サポートリスク警告 | WARN |\n'+
+    '| C-G: SQLite×本番 | クラウドデプロイ環境へのSQLite利用リスク評価 | WARN |\n'+
+    '| C-H: モバイルE2E | Expo/React NativeでのDetox/Maestro適合性確認 | WARN |\n'+
+    '| C-I: 認証E2E | storageStateによるセッション再利用の推奨 | INFO |\n'+
+    '| C-J: カバレッジ閾値 | CIパイプラインへのカバレッジ設定推奨 | INFO |\n'+
+    '| C-K: AIガードレール | AI機能の入力/出力バリデーション実装確認 | INFO |\n'+
+    '| C-L: APM監視 | 本番デプロイ環境でのAPM/可観測性設定確認 | INFO |\n'+
+    '| C-M: XAI準備度 | 高リスクドメインでのAI説明可能性(SHAP/LIME)評価 | WARN |\n'+
+    '| C-N: AIランタイム監視 | LLMコスト追跡・ハルシネーション検出設定確認 | INFO |\n'+
+    '| C-O: エージェント境界 | マルチエージェント時の権限境界・ゼロトラスト確認 | INFO |\n'+
+    '| C-P: フェアネス評価 | 高リスクドメインのバイアス検出パイプライン評価 | WARN |\n'+
+    '| C-Q: AIガバナンス | large規模AI機能のガバナンスフレームワーク確認 | INFO |\n'+
+    '| C-R: ドメイン不変条件 | 高リスクドメインの不変条件テスト定義確認 | INFO |\n'+
+    '| C-S: SOREサイクル | medium+規模のSOREデプロイサイクル参照確認 | INFO |\n'+
+    '| C-T: メモリアーキテクチャ | AI機能のエージェントメモリ設計定義確認 | INFO |\n'+
+    '| C-U: GCTMSハーネス | AI機能の5層ハーネス(Guard/Context/Tool/Memory/Supervision)完全性確認 | INFO |\n\n'+
+    '> スコア計算: 10.0 − ERROR×1.0 − WARN×0.5 − INFO×0.25\n'+
+    '> 評価基準: **10.0** = 完全整合 ✅ / **8.0+** = 良好 ✅ / **6.0+** = 要注意 ⚠️ / **6.0未満** = 要対策 ❌\n\n':
+    '## Check Reference\n\n'+
+    '| Check | Description | Severity |\n'+
+    '|-------|-------------|----------|\n'+
+    '| Compat Rules | Validates stack compatibility and semantic consistency across 332 rules | ERROR/WARN/INFO |\n'+
+    '| Post-gen (C1-C14) | Validates cross-references between docs, Mermaid syntax, and stack consistency | ERROR/WARN |\n'+
+    '| C-A: ORM Compatibility | Confirms backend language and ORM alignment | ERROR/WARN |\n'+
+    '| C-B: Connection Pool | Evaluates DB connection exhaustion risk for serverless+Prisma | WARN |\n'+
+    '| C-C: CORS Policy | Confirms CORS configuration for split deployment | WARN |\n'+
+    '| C-D: Async Infrastructure | Evaluates need for queue system for background tasks | INFO |\n'+
+    '| C-E: Soft Delete MW | Checks consistency of deleted_at schema and soft-delete middleware | INFO |\n'+
+    '| C-F: MongoDB×Prisma | Warns about Prisma experimental MongoDB support risks | WARN |\n'+
+    '| C-G: SQLite×Production | Evaluates risk of using SQLite for cloud deployments | WARN |\n'+
+    '| C-H: Mobile E2E | Confirms Detox/Maestro compatibility for Expo/React Native | WARN |\n'+
+    '| C-I: Auth E2E | Recommends storageState session reuse for authenticated tests | INFO |\n'+
+    '| C-J: Coverage Threshold | Recommends adding coverage thresholds to CI pipeline | INFO |\n'+
+    '| C-K: AI Guardrails | Confirms input/output validation implementation for AI features | INFO |\n'+
+    '| C-L: APM Monitoring | Confirms APM/observability setup for production deployments | INFO |\n'+
+    '| C-M: XAI Readiness | Evaluates AI explainability (SHAP/LIME) for high-risk domains | WARN |\n'+
+    '| C-N: AI Runtime Monitoring | Confirms LLM cost tracking and hallucination detection setup | INFO |\n'+
+    '| C-O: Agent Boundary | Confirms permission boundary and zero-trust for multi-agent mode | INFO |\n'+
+    '| C-P: Fairness Evaluation | Evaluates bias detection pipeline for high-risk domain AI | WARN |\n'+
+    '| C-Q: AI Governance | Confirms governance framework for large-scale AI features | INFO |\n'+
+    '| C-R: Domain Invariants | Confirms invariant test definitions for high-risk domains | INFO |\n'+
+    '| C-S: SORE Cycle | Confirms SORE deploy cycle references for medium+ scale | INFO |\n'+
+    '| C-T: Memory Architecture | Confirms agent memory design for AI features | INFO |\n'+
+    '| C-U: GCTMS Harness | Confirms completeness of 5-layer harness (Guard/Context/Tool/Memory/Supervision) | INFO |\n\n'+
+    '> Score formula: 10.0 − ERROR×1.0 − WARN×0.5 − INFO×0.25\n'+
+    '> Rating: **10.0** = Perfect ✅ / **8.0+** = Good ✅ / **6.0+** = Needs Attention ⚠️ / **<6.0** = Critical ❌\n\n';
+
   files['docs/82_architecture_integrity_check.md']=
     '# '+titleJa+' / '+titleEn+'\n\n'+
     '> '+(G?'生成日: ':'Generated: ')+now+' | '+(G?'プロジェクト: ':'Project: ')+proj+'\n\n'+
+    _checkRef+
     '## '+(G?'違反テーブル / Violation Table':'Violation Table / 違反テーブル')+'\n\n'+
     '| # | '+hdr1+' | '+hdr2+' | '+hdr3+' | '+hdr4+' | '+hdr5+' |\n'+
     '|---|------------|-------------|----------------|----------|-----------|\n'+
