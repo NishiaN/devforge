@@ -565,6 +565,82 @@ const TECH_DB=[
 // Build & Frontend
 {name:'tsdown',cat:'build',sub:'bundler',req:'optional',level:'int',price:'free-oss'},
 {name:'Motion One',cat:'front',sub:'animation',req:'optional',level:'int',price:'free-oss'},
+// Frontend Frameworks & Tools
+{name:'Remix',cat:'front',sub:'framework',req:'optional',level:'int',price:'free-oss'},
+{name:'React Compiler',cat:'front',sub:'compiler',req:'optional',level:'pro',price:'free-oss'},
+{name:'StyleX',cat:'front',sub:'css',req:'optional',level:'int',price:'free-oss'},
+{name:'Lightning CSS',cat:'front',sub:'css',req:'optional',level:'int',price:'free-oss'},
+{name:'Vanilla Extract',cat:'front',sub:'css',req:'optional',level:'int',price:'free-oss'},
+{name:'Partytown',cat:'front',sub:'perf',req:'optional',level:'pro',price:'free-oss'},
+{name:'Mitosis',cat:'front',sub:'compiler',req:'optional',level:'pro',price:'free-oss'},
+// Backend Frameworks
+{name:'Wasp',cat:'back',sub:'framework',req:'optional',level:'beg',price:'free-oss'},
+{name:'AdonisJS',cat:'back',sub:'framework',req:'optional',level:'int',price:'free-oss'},
+{name:'Ktor',cat:'back',sub:'framework',req:'optional',level:'int',price:'free-oss'},
+{name:'Actix Web',cat:'back',sub:'framework',req:'optional',level:'pro',price:'free-oss'},
+{name:'Deno Fresh',cat:'back',sub:'framework',req:'optional',level:'int',price:'free-oss'},
+{name:'H3',cat:'back',sub:'framework',req:'optional',level:'int',price:'free-oss'},
+// AI Frameworks & Tools
+{name:'DSPy',cat:'ai',sub:'framework',req:'optional',level:'pro',price:'free-oss'},
+{name:'Instructor',cat:'ai',sub:'structured',req:'optional',level:'int',price:'free-oss'},
+{name:'Outlines',cat:'ai',sub:'structured',req:'optional',level:'int',price:'free-oss'},
+{name:'Guardrails AI',cat:'ai',sub:'safety',req:'optional',level:'int',price:'free-tier'},
+{name:'Pydantic AI',cat:'ai',sub:'framework',req:'optional',level:'int',price:'free-oss'},
+{name:'Semantic Kernel',cat:'ai',sub:'framework',req:'optional',level:'int',price:'free-oss'},
+{name:'Smolagents',cat:'ai',sub:'agent',req:'optional',level:'int',price:'free-oss'},
+{name:'Haystack',cat:'ai',sub:'rag',req:'optional',level:'int',price:'free-oss'},
+// AI Agents
+{name:'Magentic-One',cat:'ai_auto',sub:'multi',req:'optional',level:'pro',price:'free-oss'},
+{name:'AG2',cat:'ai_auto',sub:'multi',req:'optional',level:'pro',price:'free-oss'},
+{name:'Phidata',cat:'ai_auto',sub:'agent',req:'optional',level:'int',price:'free-oss'},
+{name:'Atomic Agents',cat:'ai_auto',sub:'agent',req:'optional',level:'int',price:'free-oss'},
+{name:'TaskWeaver',cat:'ai_auto',sub:'agent',req:'optional',level:'pro',price:'free-oss'},
+// DevOps & Infrastructure
+{name:'Dagger',cat:'devops',sub:'cicd',req:'optional',level:'int',price:'free-oss'},
+{name:'OpenTofu',cat:'devops',sub:'iac',req:'optional',level:'int',price:'free-oss'},
+{name:'Depot',cat:'devops',sub:'build',req:'optional',level:'int',price:'paid'},
+{name:'Argo CD',cat:'devops',sub:'gitops',req:'optional',level:'pro',price:'free-oss'},
+{name:'Traefik',cat:'devops',sub:'proxy',req:'optional',level:'int',price:'free-oss'},
+{name:'Portainer',cat:'devops',sub:'container',req:'optional',level:'int',price:'free-tier'},
+{name:'Garden',cat:'devops',sub:'cicd',req:'optional',level:'pro',price:'free-tier'},
+// Data & Streaming
+{name:'Apache Kafka',cat:'data',sub:'stream',req:'optional',level:'pro',price:'free-oss'},
+{name:'NATS',cat:'data',sub:'stream',req:'optional',level:'int',price:'free-oss'},
+{name:'Dagster',cat:'data',sub:'pipeline',req:'optional',level:'pro',price:'free-oss'},
+{name:'Cube.js',cat:'data',sub:'analytics',req:'optional',level:'int',price:'free-oss'},
+{name:'Apache Druid',cat:'data',sub:'olap',req:'optional',level:'pro',price:'free-oss'},
+// Build Tools
+{name:'tsup',cat:'build',sub:'bundler',req:'optional',level:'int',price:'free-oss'},
+{name:'unbuild',cat:'build',sub:'bundler',req:'optional',level:'int',price:'free-oss'},
+{name:'pkgroll',cat:'build',sub:'bundler',req:'optional',level:'int',price:'free-oss'},
+// Testing
+{name:'Testcontainers',cat:'test',sub:'integration',req:'optional',level:'int',price:'free-oss'},
+{name:'happy-dom',cat:'test',sub:'dom',req:'optional',level:'int',price:'free-oss'},
+{name:'Bun test',cat:'test',sub:'unit',req:'optional',level:'int',price:'free-oss'},
+// API
+{name:'ts-rest',cat:'api',sub:'rpc',req:'optional',level:'int',price:'free-oss'},
+{name:'Connect-RPC',cat:'api',sub:'rpc',req:'optional',level:'pro',price:'free-oss'},
+{name:'Zodios',cat:'api',sub:'client',req:'optional',level:'int',price:'free-oss'},
+// Security
+{name:'Cosign',cat:'devops',sub:'security',req:'optional',level:'pro',price:'free-oss'},
+{name:'SOPS',cat:'devops',sub:'security',req:'optional',level:'int',price:'free-oss'},
+{name:'Bearer',cat:'devops',sub:'security',req:'optional',level:'int',price:'free-oss'},
+// BaaS & DB (new entries; Convex/Turso/Neon already exist above)
+// Specialist (Three.js already exists; new additions below)
+{name:'Observable Framework',cat:'front',sub:'dataviz',req:'optional',level:'int',price:'free-oss'},
+{name:'Mapbox GL',cat:'front',sub:'map',req:'optional',level:'int',price:'paid'},
+// Mobile (Capacitor already exists; new additions below)
+{name:'Lynx',cat:'mobile',sub:'framework',req:'optional',level:'pro',price:'free-oss'},
+// Payment (Polar/Paddle already exist; new additions below)
+{name:'LemonSqueezy',cat:'payment',sub:'platform',req:'optional',level:'int',price:'paid'},
+// Method & Process
+{name:'Event Storming',cat:'method',sub:'modeling',req:'optional',level:'int',price:'free'},
+{name:'C4 Model',cat:'method',sub:'arch',req:'optional',level:'int',price:'free'},
+{name:'DORA Metrics',cat:'method',sub:'devops',req:'optional',level:'int',price:'free'},
+// Languages
+{name:'Gleam',cat:'lang',sub:'functional',req:'optional',level:'pro',price:'free-oss'},
+{name:'Zig',cat:'lang',sub:'systems',req:'optional',level:'pro',price:'free-oss'},
+{name:'Mojo',cat:'lang',sub:'ai',req:'optional',level:'pro',price:'free-tier'},
 ];
 const _TECH_COUNT=TECH_DB.length;
 

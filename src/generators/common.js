@@ -1595,6 +1595,15 @@ const ENTITY_COLUMNS={
   SequenceData:['sample_id:UUID:FK(GenomeSample) NOT NULL:サンプルID:Sample ID','data_type:VARCHAR(30):NOT NULL:データ種別:Data type','file_url:TEXT:NOT NULL:ファイルURL:File URL','file_size_mb:DECIMAL(10,2)::ファイルサイズ(MB):File size MB','read_count:BIGINT::リード数:Read count','quality_score:DECIMAL(5,2)::品質スコア:Quality score','pipeline_id:UUID:FK(AnalysisPipeline)::パイプラインID:Pipeline ID','processed_at:TIMESTAMP::処理日時:Processed at'],
   GenomicVariant:['sample_id:UUID:FK(GenomeSample) NOT NULL:サンプルID:Sample ID','chromosome:VARCHAR(10):NOT NULL:染色体:Chromosome','position:BIGINT:NOT NULL:位置:Position','ref_allele:VARCHAR(100):NOT NULL:参照アレル:Ref allele','alt_allele:VARCHAR(100):NOT NULL:代替アレル:Alt allele','variant_type:VARCHAR(30):NOT NULL:変異種別:Variant type','classification:VARCHAR(30):DEFAULT \'VUS\':分類:Classification','clinical_significance:TEXT::臨床的意義:Clinical significance','detected_at:TIMESTAMP:DEFAULT NOW:検出日時:Detected at'],
   AnalysisPipeline:[_U,_T,_D,'pipeline_type:VARCHAR(50):NOT NULL:パイプライン種別:Pipeline type','tools:JSONB::使用ツール:Tools','version:VARCHAR(30):NOT NULL:バージョン:Version','parameters:JSONB::パラメータ:Parameters',_IA,'last_run_at:TIMESTAMP::最終実行日時:Last run at','success_rate:DECIMAL(5,2):DEFAULT 100:成功率(%):Success rate'],
+  // ── Theme Overlay Entities ──
+  CompliancePolicy:[_U,_T,_D,'framework:VARCHAR(50):NOT NULL:準拠フレームワーク:Framework','version:VARCHAR(20):NOT NULL:バージョン:Version','scope:TEXT:NOT NULL:スコープ:Scope','owner_id:UUID:FK(User) NOT NULL:オーナーID:Owner ID','review_date:DATE::次回審査日:Next review date','is_active:BOOLEAN:DEFAULT true:有効:Is active'],
+  AuditTrail:[_U,'entity_type:VARCHAR(100):NOT NULL:エンティティ種別:Entity type','entity_id:UUID:NOT NULL:エンティティID:Entity ID','action:VARCHAR(50):NOT NULL:アクション:Action','actor_id:UUID:FK(User) NOT NULL:実行者ID:Actor ID','changes:JSONB::変更内容:Changes','ip_address:INET::IPアドレス:IP address','performed_at:TIMESTAMP:DEFAULT NOW:実行日時:Performed at'],
+  DataProcessingRecord:[_U,'purpose:VARCHAR(255):NOT NULL:処理目的:Purpose','data_category:VARCHAR(100):NOT NULL:データカテゴリ:Data category','legal_basis:VARCHAR(100):NOT NULL:法的根拠:Legal basis','processor_id:UUID:FK(User)::担当者ID:Processor ID','retention_days:INT:NOT NULL:保持期間(日):Retention days','created_at:TIMESTAMP:DEFAULT NOW:作成日時:Created at'],
+  OfflineCache:[_U,'cache_key:VARCHAR(500):NOT NULL:キャッシュキー:Cache key','entity_type:VARCHAR(100):NOT NULL:エンティティ種別:Entity type','data:JSONB:NOT NULL:データ:Data','version:INT:DEFAULT 1:バージョン:Version','cached_at:TIMESTAMP:DEFAULT NOW:キャッシュ日時:Cached at','expires_at:TIMESTAMP::有効期限:Expires at','is_dirty:BOOLEAN:DEFAULT false:同期待ち:Is dirty'],
+  RealtimeChannel:[_U,_T,'channel_type:VARCHAR(50):NOT NULL:チャンネル種別:Channel type','topic:VARCHAR(255):NOT NULL:トピック:Topic','is_public:BOOLEAN:DEFAULT false:公開:Is public','max_members:INT::最大メンバー数:Max members',_SA],
+  PresenceState:['channel_id:UUID:FK(RealtimeChannel) NOT NULL:チャンネルID:Channel ID','user_id:UUID:FK(User) NOT NULL:ユーザーID:User ID','status:VARCHAR(20):DEFAULT \'online\':ステータス:Status','metadata:JSONB::メタデータ:Metadata','last_seen_at:TIMESTAMP:DEFAULT NOW:最終確認日時:Last seen at'],
+  TenantConfig:[_U,'tenant_id:UUID:NOT NULL UNIQUE:テナントID:Tenant ID','plan:VARCHAR(50):DEFAULT \'free\':プラン:Plan','settings:JSONB::設定:Settings','feature_flags:JSONB::機能フラグ:Feature flags','custom_domain:VARCHAR(255)::カスタムドメイン:Custom domain','updated_at:TIMESTAMP:DEFAULT NOW:更新日時:Updated at'],
+  TenantBilling:[_U,'tenant_id:UUID:NOT NULL:テナントID:Tenant ID','subscription_id:TEXT::サブスクリプションID:Subscription ID','plan:VARCHAR(50):NOT NULL:プラン:Plan','seats:INT:DEFAULT 1:席数:Seats','mrr:DECIMAL(10,2):DEFAULT 0:MRR:MRR','trial_ends_at:TIMESTAMP::トライアル終了日:Trial ends at','cancelled_at:TIMESTAMP::解約日時:Cancelled at'],
 };
 
 // ═══ Entity REST method restrictions ═══
@@ -2435,6 +2444,61 @@ var DOMAIN_INVARIANTS={
     {ja:'集計値は元データから再現可能（冪等性）',en:'Aggregate values reproducible from source data (idempotent)',verify:'unit + integration test'},
     {ja:'レポートデータはテナント境界内のみ',en:'Report data scoped within tenant boundary only',verify:'tenant isolation test'},
     {ja:'メトリクス値は定義済み型に準拠（型バリデーション）',en:'Metric values conform to defined types (type validation)',verify:'property-based test'}
+  ],
+  marketplace:[
+    {ja:'セラー評価スコアは0-5の範囲内',en:'Seller rating score within range 0-5',verify:'property-based test'},
+    {ja:'商品掲載価格 > 0（ゼロ価格禁止）',en:'Listing price > 0 (zero price prohibited)',verify:'DB constraint + unit test'},
+    {ja:'手数料 = 売上 × 料率（計算整合性）',en:'Commission = sale amount × rate (calculation consistency)',verify:'unit test'}
+  ],
+  gamify:[
+    {ja:'ポイント/XP >= 0（マイナス禁止）',en:'Points/XP >= 0 (no negative values)',verify:'DB constraint + unit test'},
+    {ja:'バッジ取得は条件充足時のみ（不正取得禁止）',en:'Badge awarded only upon condition fulfillment (no unauthorized grant)',verify:'integration test'},
+    {ja:'リーダーボードのランキングとスコアが一致',en:'Leaderboard ranking consistent with actual scores',verify:'integration test'}
+  ],
+  event:[
+    {ja:'空き座席数 >= 0（オーバーセリング禁止）',en:'Available seats >= 0 (no overselling)',verify:'concurrency test + DB constraint'},
+    {ja:'イベント開始日時 < 終了日時',en:'Event start datetime < end datetime',verify:'unit test'},
+    {ja:'チケットは購入済みイベントに対してのみ有効',en:'Ticket valid only for purchased event',verify:'integration test'}
+  ],
+  newsletter:[
+    {ja:'購読者数 >= 0（マイナス禁止）',en:'Subscriber count >= 0 (no negative count)',verify:'DB constraint + unit test'},
+    {ja:'退会リクエストは即時反映（遅延配信不可）',en:'Unsubscribe request reflected immediately (no delayed send)',verify:'integration test'},
+    {ja:'配信はopt-in確認済みユーザーのみ',en:'Delivery only to confirmed opt-in subscribers',verify:'integration test + audit'}
+  ],
+  creator:[
+    {ja:'収益金額 >= 0（マイナス収益禁止）',en:'Revenue amount >= 0 (no negative revenue)',verify:'property-based test'},
+    {ja:'収益分配は契約レート通り（過不足禁止）',en:'Revenue split matches contracted rate (no over/under payment)',verify:'unit test'},
+    {ja:'著作権確認後のみ収益化が有効',en:'Monetization enabled only after copyright verification',verify:'integration test'}
+  ],
+  community:[
+    {ja:'投稿表示はprivacy設定に従う（漏洩禁止）',en:'Post visibility follows privacy settings (no leakage)',verify:'authorization test'},
+    {ja:'ユーザーは自分の投稿をモデレーションできない',en:'User cannot moderate their own posts (conflict of interest)',verify:'unit test'},
+    {ja:'モデレーションキューはFIFO（先入れ先出し）',en:'Moderation queue processes in FIFO order',verify:'integration test'}
+  ],
+  automation:[
+    {ja:'ワークフロー実行は冪等（重複実行で副作用なし）',en:'Workflow execution is idempotent (no side effects on duplicate run)',verify:'idempotency test'},
+    {ja:'リトライ回数は設定上限以内',en:'Retry count within configured maximum limit',verify:'unit + integration test'},
+    {ja:'トリガー条件はアトミックに評価（競合状態禁止）',en:'Trigger conditions evaluated atomically (no race conditions)',verify:'concurrency test'}
+  ],
+  collab:[
+    {ja:'同時編集は収束する（CRDT/OT保証）',en:'Concurrent edits converge (CRDT/OT guaranteed)',verify:'property-based test'},
+    {ja:'書き込み前に権限チェック必須',en:'Permission check required before any write operation',verify:'authorization test'},
+    {ja:'バージョン履歴はappend-only（改竄不可）',en:'Version history is append-only (immutable)',verify:'DB trigger + audit'}
+  ],
+  devtool:[
+    {ja:'APIキーは宣言されたスコープ内でのみ有効',en:'API key valid only within declared scope',verify:'unit test'},
+    {ja:'レート制限はAPIキー単位で適用',en:'Rate limiting enforced per API key',verify:'integration test'},
+    {ja:'使用量メトリクス >= 0（マイナス使用量禁止）',en:'Usage metrics >= 0 (no negative usage count)',verify:'property-based test'}
+  ],
+  portfolio:[
+    {ja:'掲載項目のURLは有効（404禁止）',en:'Portfolio item URLs must be valid (no 404)',verify:'link check + integration test'},
+    {ja:'表示順序は決定的（ランダム変動禁止）',en:'Display order is deterministic (no random variation)',verify:'unit test'},
+    {ja:'公開状態はboolean（中間状態禁止）',en:'Visibility state is boolean (no intermediate state)',verify:'unit test'}
+  ],
+  tool:[
+    {ja:'ユーザーデータエクスポートは全データを含む（欠損禁止）',en:'User data export includes all data (no omission)',verify:'integration test + audit'},
+    {ja:'設定変更はすべて監査ログに記録',en:'All setting changes recorded in audit log',verify:'integration test'},
+    {ja:'セッションタイムアウトは設定値通りに強制',en:'Session timeout enforced as configured (no bypass)',verify:'integration test'}
   ]
 };
 
@@ -4125,6 +4189,37 @@ function genArchIntegrityCheck(files,a,compatResults,auditFindings){
       issue:G?'SQLiteはサーバーレス/クラウドデプロイには不向きです。PostgreSQL (Neon/Supabase) またはTursoを推奨':
              'SQLite is not recommended for serverless/cloud deployment. Use PostgreSQL (Neon/Supabase) or Turso',
       sev:'🟠 WARN',fix:G?'PostgreSQL (Neon/Supabase) またはTurso (SQLite互換) に移行':'Migrate to PostgreSQL (Neon/Supabase) or Turso (SQLite-compatible)'});
+  }
+
+  // C-T: Memory Architecture check
+  if(hasAIFeature){
+    var hasMemoryArch=Object.values(files).some(function(v){
+      return (v||'').includes('Memory Architecture')||(v||'').includes('メモリアーキテクチャ')||
+             (v||'').includes('short-term memory')||(v||'').includes('短期記憶');
+    });
+    if(!hasMemoryArch){
+      yellowCount++;
+      rows.push({loc:'docs/135_memory_architecture.md',src:G?'アーキテクチャチェック':'Architecture check',
+        issue:G?'AI機能が有効ですがメモリアーキテクチャガイドが見つかりません。エージェントメモリの設計が未定義の可能性があります':
+               'AI features enabled but no Memory Architecture guide found. Agent memory design may be undefined',
+        sev:'🟡 INFO',fix:G?'docs/135_memory_architecture.mdでエージェントメモリの短期/長期設計を定義してください':'Define short-term/long-term agent memory in docs/135_memory_architecture.md'});
+    }
+  }
+
+  // C-U: GCTMS Harness Completeness check
+  if(hasAIFeature&&(a.scale||'medium')!=='solo'){
+    var _gctmsEn=['Guard','Context','Tool','Memory','Supervision'];
+    var _gctmsJa=['ガード','コンテキスト','ツール','メモリ','スーパービジョン'];
+    var _allContent=Object.values(files).join(' ');
+    var _gctmsEnCount=_gctmsEn.filter(function(k){return _allContent.includes(k);}).length;
+    var _gctmsJaCount=_gctmsJa.filter(function(k){return _allContent.includes(k);}).length;
+    if(Math.max(_gctmsEnCount,_gctmsJaCount)<3){
+      yellowCount++;
+      rows.push({loc:'docs/136_harness_engineering_guide.md',src:G?'アーキテクチャチェック':'Architecture check',
+        issue:G?'AI機能が有効ですがGCTMSハーネス (Guard/Context/Tool/Memory/Supervision) の定義が不完全です':
+               'AI features enabled but GCTMS harness (Guard/Context/Tool/Memory/Supervision) definition is incomplete',
+        sev:'🟡 INFO',fix:G?'docs/136_harness_engineering_guide.mdでGCTMS全5層の設計を確認してください':'Review all 5 GCTMS layers in docs/136_harness_engineering_guide.md'});
+    }
   }
 
   // Score calculation

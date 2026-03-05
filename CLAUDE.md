@@ -4,10 +4,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ---
 
-# DevForge v9.18
+# DevForge v9.20
 
-**AI Development OS** — 86 JS modules in `src/` → single `devforge-v9.html` (~5738KB / 6500KB limit).
-Generates **225+ files** across **28 pillars** from a wizard-driven Q&A session.
+**AI Development OS** — 86 JS modules in `src/` → single `devforge-v9.html` (~4752KB / 6500KB limit).
+Generates **227+ files** across **28 pillars** from a wizard-driven Q&A session.
 
 ## Documentation Map
 
@@ -18,10 +18,10 @@ Generates **225+ files** across **28 pillars** from a wizard-driven Q&A session.
 ## Build & Test
 
 ```bash
-node build.js                          # → devforge-v9.html (~5738KB, limit 6500KB)
+node build.js                          # → devforge-v9.html (~4712KB, limit 6500KB)
 node build.js --no-minify              # debug (skip minification)
 node build.js --report                 # build + size breakdown by module
-npm test                               # ~7388 tests, all passing (v9.18)
+npm test                               # ~7391 tests, all passing (v9.20)
 node --test test/gen-quality.test.js   # single test file
 npm run dev                            # build + live-server :3000
 npm run check                          # syntax-check extracted JS
@@ -45,7 +45,7 @@ Never reorder without checking dependencies.
 | Category | Purpose |
 |----------|---------|
 | `core/` | State (`S`), i18n (`t()`), keyboard events, wizard tour, app init |
-| `data/` | 257 standard presets (`PR`/`_mp()`), 603 field presets (`PR_FIELD`/`_fpd()`), questions, techdb (463 entries), compat-rules (320 rules), gen-templates (bilingual GT dict), helpdata |
+| `data/` | 257 standard presets (`PR`/`_mp()`), 603 field presets (`PR_FIELD`/`_fpd()`), questions, techdb (538 entries), compat-rules (332 rules), gen-templates (bilingual GT dict), helpdata |
 | `ui/launcher.js` | 109 prompt templates; `templateOrder[109]`, `AI_REC`, `LAUNCH_CAT_MAP`, `TEMPLATE_SCOPE`, `LAUNCH_SKILL_REC` maps; `DOC_GROUPS` for semantic doc grouping |
 | `generators/` | `index.js` orchestrator + `p1`–`p28` pillars + `docs.js` + `common.js` |
 | `ui/` | wizard, render, presets, preview, sidebar, editor, diff, export, explorer, dashboard, launcher, templates, qbar, cmdpalette, help, voice |
@@ -170,8 +170,8 @@ Full 6-step process in `docs/CLAUDE-REFERENCE.md`. Key steps often missed:
 
 ## Adding Compat Rules
 
-File: `src/data/compat-rules.js` — currently 320 rules (33E+143W+144I). All rules have `why_ja`/`why_en`.
-**Launcher templates**: `src/ui/launcher.js` — currently 109 templates. When adding: register in `TEMPLATE_SCOPE`, both ja+en PT blocks, `AI_REC`, `templateOrder`, `LAUNCH_CAT_MAP`, `LAUNCH_SKILL_REC`; update button text count; update `test/skill-level.test.js` templateOrder.length assertion.
+File: `src/data/compat-rules.js` — currently 332 rules (33E+145W+154I). All rules have `why_ja`/`why_en`.
+**Launcher templates**: `src/ui/launcher.js` — currently 115 templates. When adding: register in `TEMPLATE_SCOPE`, both ja+en PT blocks, `AI_REC`, `templateOrder`, `LAUNCH_CAT_MAP`, `LAUNCH_SKILL_REC`; update button text count; update `test/skill-level.test.js` templateOrder.length assertion.
 Structure: `{id, p:['field1','field2'], lv:'error'|'warn'|'info', t:conditionFn, ja, en, fix, fixFn, why_ja, why_en}`
 `why_ja`/`why_en`: When set, shows "▶ なぜ？" expandable card in wizard alerts. **Size limits: `why_ja` ≤350B, `why_en` ≤270B** (UTF-8 bytes; build limit 6500KB). Japanese is 3 bytes/char — keep to ≤115 characters.
 After adding: update header comment totals, add tests to `test/compat.test.js`, update CLAUDE.md rule count.
@@ -189,7 +189,7 @@ After adding: update header comment totals, add tests to `test/compat.test.js`, 
 | Preset matching | phase-n (N-1〜N-9 + G-1〜G-7, 68 tests) | ~68 |
 | Other | i18n, state, techdb, utils, complexity, mermaid (30 tests, all 28 pillars), help-hints | ~62 |
 
-**Total: 7388 tests** | Test harness pattern: `eval(fs.readFileSync(...))` to load src files; global `S` mock at top.
+**Total: 7391 tests** | Test harness pattern: `eval(fs.readFileSync(...))` to load src files; global `S` mock at top.
 
 **When adding domains**, update: `test/data-coverage.test.js` (4 arrays), `test/gen-coherence.test.js`, `test/ops.test.js`.
 
@@ -199,7 +199,7 @@ After adding: update header comment totals, add tests to `test/compat.test.js`, 
 
 `docs/82_architecture_integrity_check.md` — always generated; scores ORM/Auth/CORS/async/soft-delete integrity (10.0 scale).
 
-**File count ranges** (used in tests): `snapshot.test.js` A:152–219/B:142–208; `gen-quality.test.js` A25 120–222.
+**File count ranges** (used in tests): `snapshot.test.js` A:154–221/B:144–210; `gen-quality.test.js` A25 120–224.
 
 Key output structure:
 - `.spec/` — constitution, specification, technical-plan, tasks, verification

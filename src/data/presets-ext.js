@@ -246,5 +246,37 @@ var THEME_OVERLAYS={
     addScreens:['オンデバイスAI設定'],
     addScreensEn:['On-Device AI Settings'],
     metaOverride:{}
+  },
+  theme_compliance:{
+    addFeatures:['GDPR準拠管理','HIPAA対応','SOC2監査証跡','PCI-DSS準拠チェック'],
+    addFeaturesEn:['GDPR Compliance Management','HIPAA Compliance','SOC2 Audit Trail','PCI-DSS Compliance Check'],
+    addEntities:'CompliancePolicy,AuditTrail,DataProcessingRecord',
+    addScreens:['コンプライアンスダッシュボード'],
+    addScreensEn:['Compliance Dashboard'],
+    metaOverride:{regulation:'high'}
+  },
+  theme_offline_first:{
+    addFeatures:['PWAオフライン対応','Service Worker戦略','バックグラウンド同期','競合解決ロジック'],
+    addFeaturesEn:['PWA Offline Support','Service Worker Strategy','Background Sync','Conflict Resolution Logic'],
+    addEntities:'SyncQueue,OfflineCache',
+    addScreens:['オフライン状態インジケーター'],
+    addScreensEn:['Offline Status Indicator'],
+    metaOverride:{}
+  },
+  theme_realtime:{
+    addFeatures:['WebSocketリアルタイム通信','SSEフォールバック','プレゼンス検知','CRDTデータ収束'],
+    addFeaturesEn:['WebSocket Real-time Communication','SSE Fallback','Presence Detection','CRDT Data Convergence'],
+    addEntities:'RealtimeChannel,PresenceState',
+    addScreens:['リアルタイムコラボレーション'],
+    addScreensEn:['Real-time Collaboration'],
+    metaOverride:{}
+  },
+  theme_multi_tenancy:{
+    addFeatures:['RLSテナント分離','テナント設定管理','テナントルーティング','テナント別課金'],
+    addFeaturesEn:['RLS Tenant Isolation','Tenant Config Management','Tenant Routing','Per-Tenant Billing'],
+    addEntities:'TenantConfig,TenantBilling',
+    addScreens:['テナント管理コンソール'],
+    addScreensEn:['Tenant Management Console'],
+    metaOverride:{regulation:'moderate'}
   }
 };

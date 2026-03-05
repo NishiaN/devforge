@@ -3,8 +3,8 @@ const assert = require('node:assert/strict');
 const h = require('./harness.js');
 
 describe('TechDB', () => {
-  it('has 478 entries', () => {
-    assert.equal(h.TECH_DB.length, 478);
+  it('has 538 entries', () => {
+    assert.equal(h.TECH_DB.length, 538);
   });
 
   it('all entries have required fields', () => {

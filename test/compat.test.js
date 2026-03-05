@@ -892,6 +892,43 @@ const tests=[
   // ai-no-prompt-injection (INFO)
   {name:'AI+Express+noGuardrail=INFO',a:{ai_auto:'RAGベース回答',backend:'Express',mvp_features:'AI回答生成'},expect:'info',id:'ai-no-prompt-injection'},
   {name:'AI+Express+hasGuardrail=noINFO',a:{ai_auto:'RAGベース回答',backend:'Express',mvp_features:'プロンプトインジェクション対策 ガードレール'},expect:'none',id:'ai-no-prompt-injection'},
+  // ── v9.20: Theme Overlay & Modern Stack Rules (+24 tests) ──
+  // compliance-no-audit-trail (WARN)
+  {name:'health+noAuditTrail=WARN',a:{purpose:'医療記録管理システム health clinic',entities:'Patient,Record'},expect:'warn',id:'compliance-no-audit-trail'},
+  {name:'health+hasAuditTrail=noWARN',a:{purpose:'医療記録管理システム health clinic',entities:'Patient,AuditTrail,Record'},expect:'none',id:'compliance-no-audit-trail'},
+  // compliance-no-dpa (INFO)
+  {name:'GDPRfeat+noDPA=INFO',a:{purpose:'EU向けサービス',mvp_features:'GDPR準拠対応'},expect:'info',id:'compliance-no-dpa'},
+  {name:'GDPRfeat+hasDPA=noINFO',a:{purpose:'EU向けサービス',mvp_features:'GDPR準拠 DataProcessingRecord処理記録'},expect:'none',id:'compliance-no-dpa'},
+  // offline-no-sw (INFO)
+  {name:'PWA+noSW=INFO',a:{purpose:'PWAアプリ',mvp_features:'PWAオフライン対応'},expect:'info',id:'offline-no-sw'},
+  {name:'PWA+hasSW=noINFO',a:{purpose:'PWAアプリ',mvp_features:'PWAオフライン対応 Service Worker戦略'},expect:'none',id:'offline-no-sw'},
+  // offline-no-conflict (INFO)
+  {name:'offlineFirst+noConflict=INFO',a:{purpose:'同期アプリ',mvp_features:'オフライン・ファースト対応'},expect:'info',id:'offline-no-conflict'},
+  {name:'offlineFirst+hasCRDT=noINFO',a:{purpose:'同期アプリ',mvp_features:'オフライン・ファースト対応 CRDT競合解決'},expect:'none',id:'offline-no-conflict'},
+  // realtime-no-ws-fallback (INFO)
+  {name:'WebSocket+noSSE=INFO',a:{purpose:'チャットアプリ',mvp_features:'WebSocketリアルタイム通信'},expect:'info',id:'realtime-no-ws-fallback'},
+  {name:'WebSocket+SSE=noINFO',a:{purpose:'チャットアプリ',mvp_features:'WebSocketリアルタイム通信 SSEフォールバック'},expect:'none',id:'realtime-no-ws-fallback'},
+  // realtime-crdt-no-lib (INFO)
+  {name:'CRDTnoLib=INFO',a:{purpose:'コラボアプリ',mvp_features:'CRDT同時編集対応'},expect:'info',id:'realtime-crdt-no-lib'},
+  {name:'CRDTwithYjs=noINFO',a:{purpose:'コラボアプリ',mvp_features:'CRDT同時編集対応 Yjs ライブラリ導入'},expect:'none',id:'realtime-crdt-no-lib'},
+  // tenant-no-rls (WARN)
+  {name:'multiTenant+PG+noRLS=WARN',a:{purpose:'SaaSアプリ',database:'PostgreSQL',mvp_features:'マルチテナント対応 TenantConfig'},expect:'warn',id:'tenant-no-rls'},
+  {name:'multiTenant+PG+hasRLS=noWARN',a:{purpose:'SaaSアプリ',database:'PostgreSQL',mvp_features:'マルチテナント対応 TenantConfig RLSテナント分離'},expect:'none',id:'tenant-no-rls'},
+  // tenant-shared-db-large (INFO)
+  {name:'largeMultiTenant+noSeparate=INFO',a:{purpose:'大規模SaaS',scale:'large',mvp_features:'マルチテナント TenantConfig'},expect:'info',id:'tenant-shared-db-large'},
+  {name:'largeMultiTenant+dedicated=noINFO',a:{purpose:'大規模SaaS',scale:'large',mvp_features:'マルチテナント TenantConfig dedicated DB per tenant'},expect:'none',id:'tenant-shared-db-large'},
+  // ai-no-eval-pipeline (INFO)
+  {name:'AI+noEval=INFO',a:{purpose:'AIアプリ',ai_auto:'RAGエージェント'},expect:'info',id:'ai-no-eval-pipeline'},
+  {name:'AI+Promptfoo=noINFO',a:{purpose:'AIアプリ',ai_auto:'RAGエージェント',mvp_features:'Promptfoo評価パイプライン'},expect:'none',id:'ai-no-eval-pipeline'},
+  // be-no-graceful-shutdown (INFO)
+  {name:'Railway+noGS=INFO',a:{purpose:'Webサービス',backend:'Node.js Express',deploy:'Railway'},expect:'info',id:'be-no-graceful-shutdown'},
+  {name:'Railway+hasGS=noINFO',a:{purpose:'Webサービス',backend:'Node.js Express',deploy:'Railway',mvp_features:'Graceful shutdown SIGTERM対応'},expect:'none',id:'be-no-graceful-shutdown'},
+  // fe-bundle-no-analysis (INFO)
+  {name:'largeReact+noAnalysis=INFO',a:{purpose:'大規模Webアプリ',frontend:'React + Vite',scale:'large'},expect:'info',id:'fe-bundle-no-analysis'},
+  {name:'largeReact+hasAnalysis=noINFO',a:{purpose:'大規模Webアプリ',frontend:'React + Vite',scale:'large',mvp_features:'バンドル分析 rollup-plugin-visualizer'},expect:'none',id:'fe-bundle-no-analysis'},
+  // ops-no-sli-definition (INFO)
+  {name:'mediumBE+noSLI=INFO',a:{purpose:'Webサービス',backend:'Node.js Express',scale:'medium'},expect:'info',id:'ops-no-sli-definition'},
+  {name:'mediumBE+hasSLI=noINFO',a:{purpose:'Webサービス',backend:'Node.js Express',scale:'medium',mvp_features:'SLI/SLO定義 エラーバジェット'},expect:'none',id:'ops-no-sli-definition'},
 ];
 
 let pass=0,fail=0;

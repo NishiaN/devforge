@@ -1,4 +1,4 @@
-/* ═══ STACK COMPATIBILITY & SEMANTIC CONSISTENCY RULES — 320 rules (ERROR×33 + WARN×143 + INFO×144) ═══ */
+/* ═══ STACK COMPATIBILITY & SEMANTIC CONSISTENCY RULES — 332 rules (ERROR×33 + WARN×145 + INFO×154) ═══ */
 const COMPAT_RULES=[
   // ── FE ↔ Mobile (2 ERROR) ──
   {id:'fe-mob-expo',p:['frontend','mobile'],lv:'error',
@@ -2863,6 +2863,152 @@ const COMPAT_RULES=[
    fix:{f:'mvp_features',s:'プロンプトインジェクション対策 / ガードレール実装'},
    why_ja:'プロンプトインジェクションはAIシステムの重大な脆弱性です。ガードレールなしの本番運用はリスクが高すぎます。',
    why_en:'Prompt injection is a critical AI system vulnerability. Production operation without guardrails carries unacceptable risk.'},
+  // ── Theme Overlay & Modern Stack Rules (v9.20) ──
+  {id:'compliance-no-audit-trail',p:['purpose','entities'],lv:'warn',
+   t:function(a){
+    var dom=typeof detectDomain==='function'?detectDomain(a.purpose||''):'';
+    var isHigh=/health|fintech|insurance|legal|government/.test(dom);
+    var feats=(a.mvp_features||'')+(a.entities||'');
+    var hasAudit=/AuditTrail|audit.?trail|監査証跡|audit.?log/i.test(feats);
+    return isHigh&&!hasAudit;},
+   ja:'高規制ドメインですが監査証跡（AuditTrail）エンティティが確認されません。コンプライアンス要件として監査ログの実装が必要です',
+   en:'High-regulation domain but no AuditTrail entity found. Audit log implementation is required for compliance',
+   fix:{f:'entities',s:'AuditTrail'},
+   why_ja:'金融・医療・法務等の高規制ドメインでは監査証跡が法定要件です。未実装は規制違反リスクとなります。',
+   why_en:'In high-regulation domains like fintech/health/legal, audit trails are legally required. Missing implementation creates compliance risk.'},
+  {id:'compliance-no-dpa',p:['purpose','mvp_features'],lv:'info',
+   t:function(a){
+    var feats=(a.mvp_features||'')+(a.entities||'')+(a.dev_methods||'');
+    var hasGDPR=/GDPR|gdpr|個人情報保護|DPA|データ処理契約/.test(feats);
+    var hasDPA=/DataProcessingRecord|data.?processing.?agreement|データ処理契約|処理記録/.test(feats);
+    return hasGDPR&&!hasDPA;},
+   ja:'GDPR対応を設定していますがデータ処理記録（DataProcessingRecord）が確認されません。EU規則第30条準拠のため処理活動記録が必要です',
+   en:'GDPR compliance enabled but no DataProcessingRecord found. Records of processing activities required under GDPR Article 30',
+   fix:{f:'entities',s:'DataProcessingRecord'},
+   why_ja:'GDPR第30条はデータ処理活動の記録を義務付けています。記録なしの運用はGDPR違反のリスクがあります。',
+   why_en:'GDPR Article 30 mandates records of processing activities. Operation without records risks GDPR violations.'},
+  {id:'offline-no-sw',p:['mvp_features'],lv:'info',
+   t:function(a){
+    var feats=(a.mvp_features||'')+(a.dev_methods||'');
+    var hasPWA=/PWA|pwa|オフライン|offline.?first/i.test(feats);
+    var hasSW=/service.?worker|Service Worker|SW戦略|workbox/i.test(feats);
+    return hasPWA&&!hasSW;},
+   ja:'PWA/オフライン対応を設定していますがService Worker戦略が確認されません。オフライン機能の実装にはSW戦略の明確化が必要です',
+   en:'PWA/offline support enabled but no Service Worker strategy found. SW strategy definition required for offline functionality',
+   fix:{f:'mvp_features',s:'Service Worker戦略 (Cache-first / Network-first)'},
+   why_ja:'Service Worker戦略なしのPWAはオフライン時に正しく動作しない場合があります。',
+   why_en:'PWA without a Service Worker strategy may fail to function correctly when offline.'},
+  {id:'offline-no-conflict',p:['mvp_features'],lv:'info',
+   t:function(a){
+    var feats=(a.mvp_features||'')+(a.dev_methods||'');
+    var hasOffline=/オフライン.?ファースト|offline.?first|背景同期|background.?sync/i.test(feats);
+    var hasConflict=/競合解決|conflict.?resol|CRDT|OT|operational.?transform/i.test(feats);
+    return hasOffline&&!hasConflict;},
+   ja:'オフラインファーストを設定していますが競合解決戦略が確認されません。複数デバイス同期時のデータ競合への対処が必要です',
+   en:'Offline-first enabled but no conflict resolution strategy found. Data conflict handling required for multi-device sync',
+   fix:{f:'mvp_features',s:'競合解決戦略 (Last-Write-Wins / CRDT)'},
+   why_ja:'オフライン変更が複数デバイスで発生すると同期時にデータ競合が起きます。解決戦略がないとデータ損失につながります。',
+   why_en:'Offline changes from multiple devices cause conflicts on sync. Without a resolution strategy, data loss is possible.'},
+  {id:'realtime-no-ws-fallback',p:['mvp_features'],lv:'info',
+   t:function(a){
+    var feats=(a.mvp_features||'')+(a.dev_methods||'');
+    var hasWS=/WebSocket|websocket|リアルタイム通信|real.?time/i.test(feats);
+    var hasSSE=/SSE|server.?sent|EventSource|フォールバック|fallback/i.test(feats);
+    return hasWS&&!hasSSE;},
+   ja:'WebSocketリアルタイム通信を設定していますがSSEフォールバックが確認されません。接続障害時の代替手段としてSSEまたはポーリング戦略を検討してください',
+   en:'WebSocket real-time communication enabled but no SSE fallback found. Consider SSE or polling as fallback for connection failures',
+   fix:{f:'mvp_features',s:'SSEフォールバック / ロングポーリング戦略'},
+   why_ja:'WebSocketはファイアウォールやプロキシでブロックされることがあります。フォールバックなしは一部ユーザーが接続できないリスクがあります。',
+   why_en:'WebSockets can be blocked by firewalls or proxies. Without a fallback, some users may fail to connect.'},
+  {id:'realtime-crdt-no-lib',p:['mvp_features'],lv:'info',
+   t:function(a){
+    var feats=(a.mvp_features||'')+(a.dev_methods||'');
+    var hasCRDT=/CRDT|crdt/.test(feats);
+    var hasLib=/Yjs|Automerge|yjs|automerge|diamond.?type/.test(feats);
+    return hasCRDT&&!hasLib;},
+   ja:'CRDTを利用すると設定していますがCRDTライブラリ（Yjs/Automerge等）が確認されません。ライブラリを選定して実装計画を明確にしてください',
+   en:'CRDT usage mentioned but no CRDT library (Yjs/Automerge etc.) found. Select a library and clarify implementation plan',
+   fix:{f:'mvp_features',s:'CRDTライブラリ: Yjs (推奨) または Automerge'},
+   why_ja:'CRDTをゼロから実装するのは極めて困難です。YjsやAutomergeなどの実証済みライブラリを使用することを強く推奨します。',
+   why_en:'Implementing CRDT from scratch is extremely difficult. Using a proven library like Yjs or Automerge is strongly recommended.'},
+  {id:'tenant-no-rls',p:['purpose','database'],lv:'warn',
+   t:function(a){
+    var feats=(a.mvp_features||'')+(a.entities||'')+(a.dev_methods||'');
+    var isMT=/マルチテナント|multi.?tenant|TenantConfig|テナント管理/i.test(feats);
+    var hasRLS=/RLS|row.?level.?security|行レベルセキュリティ|tenant.?isolat/i.test(feats);
+    var isPG=/PostgreSQL|Supabase/.test(a.database||'');
+    return isMT&&isPG&&!hasRLS;},
+   ja:'マルチテナント構成でPostgreSQLを使用していますがRLS（行レベルセキュリティ）が確認されません。テナント間データ漏洩防止のためRLSの実装が必要です',
+   en:'Multi-tenant setup with PostgreSQL but no RLS (Row Level Security) found. RLS implementation required to prevent cross-tenant data leakage',
+   fix:{f:'mvp_features',s:'PostgreSQL RLS / テナント分離ポリシー'},
+   why_ja:'RLSなしのマルチテナントDBでは、バグ1つでテナント間のデータ漏洩が発生します。これはセキュリティ上の重大なリスクです。',
+   why_en:'Multi-tenant DB without RLS risks cross-tenant data leakage from a single bug. This is a critical security vulnerability.'},
+  {id:'tenant-shared-db-large',p:['purpose','scale'],lv:'info',
+   t:function(a){
+    var feats=(a.mvp_features||'')+(a.entities||'');
+    var isMT=/マルチテナント|multi.?tenant|TenantConfig/i.test(feats);
+    var sc=a.scale||'medium';
+    var isLarge=/^(large|enterprise)$/.test(sc);
+    var hasDedicatedDB=/dedicated.?db|テナント専用DB|database.?per.?tenant/i.test(feats);
+    return isMT&&isLarge&&!hasDedicatedDB;},
+   ja:'large/enterprise規模のマルチテナントで共有DBを使用している可能性があります。パフォーマンスとセキュリティのためにDB分離戦略（テナント専用DB等）を検討してください',
+   en:'Large/enterprise multi-tenant likely using shared DB. Consider DB isolation strategy (dedicated DB per tenant) for performance and security',
+   fix:{f:'mvp_features',s:'テナントDB分離戦略 (shared schema / dedicated DB)'},
+   why_ja:'大規模マルチテナントでは共有DBが「うるさい隣人」問題を引き起こします。パフォーマンス低下やデータ漏洩リスクが増大します。',
+   why_en:'Shared DB in large multi-tenant setups causes the "noisy neighbor" problem, degrading performance and increasing data leakage risk.'},
+  {id:'ai-no-eval-pipeline',p:['ai_auto'],lv:'info',
+   t:function(a){
+    var hasAI=a.ai_auto&&!/none|なし/i.test(a.ai_auto);
+    var feats=(a.mvp_features||'')+(a.dev_methods||'');
+    var hasEval=/eval.?pipeline|評価パイプライン|LLM eval|evals|Braintrust|Promptfoo|Ragas/i.test(feats);
+    return hasAI&&!hasEval;},
+   ja:'AI機能を有効にしていますがLLM評価パイプライン（eval）が確認されません。モデル品質の継続的な評価・モニタリング体制を構築してください',
+   en:'AI features enabled but no LLM eval pipeline found. Build continuous evaluation and monitoring for model quality',
+   fix:{f:'mvp_features',s:'LLM評価パイプライン (Promptfoo / Braintrust / Ragas)'},
+   why_ja:'eval파イプラインなしでは、プロンプト変更やモデル更新の品質劣化を検知できません。本番AI品質の維持に必須です。',
+   why_en:'Without an eval pipeline, you cannot detect quality regressions from prompt changes or model updates. Essential for production AI quality.'},
+  {id:'be-no-graceful-shutdown',p:['backend','deploy'],lv:'info',
+   t:function(a){
+    var be=a.backend||'';
+    var dep=a.deploy||'';
+    var isBaaS=/Firebase|Supabase|Convex/i.test(be);
+    var isProd=/Vercel|Netlify|Railway|Render|GCP|AWS|Azure|Kubernetes|Docker/i.test(dep);
+    var feats=(a.mvp_features||'')+(a.dev_methods||'');
+    var hasGS=/graceful.?shutdown|グレースフルシャットダウン|SIGTERM|drain/i.test(feats);
+    return !isBaaS&&isProd&&!hasGS;},
+   ja:'本番デプロイ構成ですがgraceful shutdown（SIGTERM処理）が確認されません。デプロイ中の接続断絶によるデータ損失防止のために実装してください',
+   en:'Production deploy configured but no graceful shutdown (SIGTERM handling) found. Implement to prevent data loss from connection drops during deploy',
+   fix:{f:'mvp_features',s:'Graceful shutdown / SIGTERM ハンドラー実装'},
+   why_ja:'graceful shutdownなしでは、デプロイ時にリクエスト処理中のコネクションが強制切断され、データ損失やエラーが発生します。',
+   why_en:'Without graceful shutdown, in-flight requests are forcefully terminated during deploys, causing data loss and errors.'},
+  {id:'fe-bundle-no-analysis',p:['frontend','scale'],lv:'info',
+   t:function(a){
+    var fe=a.frontend||'';
+    var sc=a.scale||'medium';
+    var isLarge=/^(large|enterprise)$/.test(sc);
+    var isSPA=/React|Vue|Svelte|Angular/i.test(fe);
+    var feats=(a.mvp_features||'')+(a.dev_methods||'');
+    var hasAnalysis=/bundle.?analyz|バンドル分析|webpack.?bundle|rollup.?visualiz|vite.?bundle|source.?map.?explorer/i.test(feats);
+    return isLarge&&isSPA&&!hasAnalysis;},
+   ja:'large規模SPAですがバンドルサイズ分析ツールが確認されません。初期ロード時間最適化のためバンドル分析を導入してください',
+   en:'Large SPA but no bundle analysis tool found. Introduce bundle analysis for initial load time optimization',
+   fix:{f:'mvp_features',s:'バンドル分析 (rollup-plugin-visualizer / webpack-bundle-analyzer)'},
+   why_ja:'バンドル分析なしでは、不必要に大きいバンドルに気づかずユーザー体験が悪化します。',
+   why_en:'Without bundle analysis, unnecessarily large bundles go unnoticed, degrading user experience.'},
+  {id:'ops-no-sli-definition',p:['backend','scale'],lv:'info',
+   t:function(a){
+    var be=a.backend||'';
+    var sc=a.scale||'medium';
+    var isBaaS=/Firebase|Supabase|Convex/i.test(be);
+    var isSmall=/^(solo|small)$/.test(sc);
+    var feats=(a.mvp_features||'')+(a.dev_methods||'');
+    var hasSLI=/SLI|SLO|SLA|エラーバジェット|error.?budget|可用性目標/i.test(feats);
+    return !isBaaS&&!isSmall&&!hasSLI;},
+   ja:'本番バックエンドですがSLI/SLO定義が確認されません。可用性・信頼性目標を定義してエラーバジェット管理を導入してください',
+   en:'Production backend but no SLI/SLO definition found. Define availability/reliability targets and introduce error budget management',
+   fix:{f:'mvp_features',s:'SLI/SLO定義 + エラーバジェットポリシー'},
+   why_ja:'SLI/SLO定義なしでは、どの程度の可用性を目指すべきか不明瞭となり、インシデント対応の優先順位付けが困難になります。',
+   why_en:'Without SLI/SLO definitions, availability targets are unclear, making it difficult to prioritize incident response.'},
 ];
 // helpers
 function inc(v,k){return v&&typeof v==='string'&&v.indexOf(k)!==-1;}

@@ -138,14 +138,14 @@ describe('Pillar ① SDD 仕様書生成', () => {
     );
   });
 
-  test('verification.md §6: toolドメインでは不変条件セクションが生成されない', () => {
+  test('verification.md §6: toolドメインで不変条件セクションが生成される（32/32完結）', () => {
     S.files = {};
     S.skillLv = 3;
     genPillar1_SDD({ ...BASE_ANSWERS, purpose: '汎用ユーティリティツール' }, 'ToolApp');
     const doc = S.files['.spec/verification.md'];
     assert.ok(doc, 'verification.md should be generated');
     const hasInvariantSec = doc.includes('Domain Invariants') || doc.includes('ドメイン不変条件');
-    assert.ok(!hasInvariantSec, 'tool domain should NOT have domain invariants section');
+    assert.ok(hasInvariantSec, 'tool domain should have domain invariants section (32/32 DOMAIN_INVARIANTS complete)');
   });
 
   test('verification.md §7: クロスリファレンスマップが常時生成される', () => {
@@ -194,13 +194,13 @@ describe('Pillar ① SDD 仕様書生成', () => {
     );
   });
 
-  test('invariants.test.ts: 汎用ドメイン(tool)ではtest/invariants.test.tsが生成されない', () => {
+  test('invariants.test.ts: toolドメインでもtest/invariants.test.tsが生成される（32/32完結）', () => {
     S.files = {};
     S.skillLv = 3;
     genPillar1_SDD({ ...BASE_ANSWERS, purpose: '汎用ユーティリティツール' }, 'ToolApp');
     assert.ok(
-      !S.files['test/invariants.test.ts'],
-      'test/invariants.test.ts should NOT be generated for generic tool domain'
+      S.files['test/invariants.test.ts'],
+      'test/invariants.test.ts should be generated for tool domain (32/32 DOMAIN_INVARIANTS complete)'
     );
   });
 
@@ -232,6 +232,28 @@ describe('Pillar ① SDD 仕様書生成', () => {
       inv.includes('manufacturing') || inv.includes('Domain Invariants'),
       'invariants.test.ts should reference manufacturing domain'
     );
+  });
+
+  test('DOMAIN_INVARIANTS: marketplaceドメインに3不変条件が定義されている', () => {
+    assert.ok(DOMAIN_INVARIANTS.marketplace, 'marketplace should have invariants');
+    assert.strictEqual(DOMAIN_INVARIANTS.marketplace.length, 3, 'marketplace should have 3 invariants');
+    assert.ok(DOMAIN_INVARIANTS.marketplace[0].en.includes('0-5') || DOMAIN_INVARIANTS.marketplace[0].ja.includes('0-5'), 'first invariant should reference rating range');
+  });
+
+  test('DOMAIN_INVARIANTS: gamifyドメインに3不変条件が定義されている', () => {
+    assert.ok(DOMAIN_INVARIANTS.gamify, 'gamify should have invariants');
+    assert.strictEqual(DOMAIN_INVARIANTS.gamify.length, 3, 'gamify should have 3 invariants');
+    assert.ok(DOMAIN_INVARIANTS.gamify.some(i => /Points|XP|ポイント/.test(i.ja + i.en)), 'gamify invariants should include points/XP rule');
+  });
+
+  test('DOMAIN_INVARIANTS: 32ドメインすべてが定義されている', () => {
+    const expected = ['fintech','ec','health','booking','saas','insurance','legal','hr','education','logistics',
+      'manufacturing','government','iot','energy','realestate','travel','ai','agriculture','media','content',
+      'analytics','marketplace','gamify','event','newsletter','creator','community','automation','collab','devtool','portfolio','tool'];
+    expected.forEach(d => {
+      assert.ok(DOMAIN_INVARIANTS[d], `DOMAIN_INVARIANTS missing domain: ${d}`);
+      assert.strictEqual(DOMAIN_INVARIANTS[d].length, 3, `${d} should have exactly 3 invariants`);
+    });
   });
 
 });

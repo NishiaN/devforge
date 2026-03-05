@@ -429,15 +429,16 @@ describe('Phase L: 14 new domain categories', () => {
 
 describe('THEME_OVERLAYS', () => {
   const EXPECTED_THEMES = ['theme_security','theme_a11y','theme_sustainability',
-    'theme_agent','theme_analytics','theme_on_device'];
+    'theme_agent','theme_analytics','theme_on_device',
+    'theme_compliance','theme_offline_first','theme_realtime','theme_multi_tenancy'];
   const OVERLAY_FIELDS = ['addFeatures','addFeaturesEn','addEntities','addScreens','addScreensEn','metaOverride'];
 
-  it('has 6 theme overlay entries', () => {
+  it('has 10 theme overlay entries', () => {
     assert.ok(THEME_OVERLAYS, 'THEME_OVERLAYS not defined');
-    assert.equal(Object.keys(THEME_OVERLAYS).length, 6);
+    assert.equal(Object.keys(THEME_OVERLAYS).length, 10);
   });
 
-  it('all 6 expected themes exist', () => {
+  it('all 10 expected themes exist', () => {
     for (const theme of EXPECTED_THEMES) {
       assert.ok(THEME_OVERLAYS[theme], `Missing theme overlay: ${theme}`);
     }
