@@ -479,7 +479,7 @@ function gen105(a,pn){
     realestate:[{name:'deal_close_rate',ja:'物件成約率',threshold:'>10%'},{name:'avg_listing_days',ja:'平均掲載日数',threshold:'<60d'}],
     insurance:[{name:'claim_processing_days',ja:'請求処理日数',threshold:'<5d'},{name:'loss_ratio',ja:'損害率',threshold:'<70%'}],
     energy:[{name:'plant_uptime',ja:'設備稼働率',threshold:'>99%'},{name:'energy_efficiency',ja:'エネルギー効率',threshold:'Monitor'}],
-    gov:[{name:'application_completion_rate',ja:'申請処理完了率',threshold:'>95%'},{name:'avg_processing_days',ja:'平均処理日数',threshold:'<10d'}],
+    government:[{name:'application_completion_rate',ja:'申請処理完了率',threshold:'>95%'},{name:'avg_processing_days',ja:'平均処理日数',threshold:'<10d'}],
     travel:[{name:'booking_completion_rate',ja:'予約完了率',threshold:'>20%'},{name:'cancellation_rate',ja:'キャンセル率',threshold:'<15%'}],
     gamify:[{name:'concurrent_users',ja:'同時接続数',threshold:'Monitor'},{name:'matchmaking_p95',ja:'マッチング待ち時間 P95',threshold:'<30s'}],
     media:[{name:'cdn_latency_p95',ja:'コンテンツ配信レイテンシ P95',threshold:'<200ms'},{name:'buffering_rate',ja:'バッファリング率',threshold:'<1%'}],

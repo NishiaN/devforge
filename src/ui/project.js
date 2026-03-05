@@ -10,7 +10,7 @@ function saveProject(){
 function switchProject(name){
   const ps=getProjects();const p=ps[name];
   if(p&&p.state){
-    _SAFE_KEYS.forEach(k=>{if(Object.prototype.hasOwnProperty.call(p.state,k))S[k]=p.state[k];});
+    _SAFE_KEYS.forEach(k=>{if(Object.prototype.hasOwnProperty.call(p.state,k)){const v=p.state[k];S[k]=(v&&typeof v==='object'&&!Array.isArray(v))?_filterProto(v):v;}});
     save();location.reload();
   }
 }
@@ -41,7 +41,7 @@ function importProject(){
     const reader=new FileReader();
     reader.onload=ev=>{
       try{
-        const data=JSON.parse(ev.target.result);
+        const data=_jp(ev.target.result,null);
         if(!data.state||!data.state.projectName){toast(_ja?'❌ 無効なファイル形式':'❌ Invalid file format');return;}
         data.state.projectName=sanitizeName(data.state.projectName);
         if(data.state.answers){

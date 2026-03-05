@@ -3687,7 +3687,7 @@ function postGenerationAudit(files,a){
   }
 
   // C7: Package.json dependencies match stack
-  const pkg=files['package.json']?JSON.parse(files['package.json']):{};
+  let pkg={};try{pkg=JSON.parse(files['package.json']||'{}')}catch(e){}
   const deps=pkg.dependencies||{};
   if(be.includes('Supabase')&&!deps['@supabase/supabase-js']){
     findings.push({level:'warn',msg:G?'Supabase使用なのにpackage.jsonに@supabase/supabase-jsがありません':'Supabase stack but @supabase/supabase-js missing from package.json'});

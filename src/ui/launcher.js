@@ -1182,7 +1182,7 @@ function showAILauncher(){
     </div>`;
   });
   h+=`</div>`;
-  if(S.skillLv<=1){h+='<button class="btn btn-xs btn-g launch-showall" onclick="document.querySelectorAll(\'.launch-tpl-hidden\').forEach(function(e){e.style.display=\'\'});this.remove()">'+(_ja?'🔽 全50テンプレートを表示':'🔽 Show all 50 templates')+'</button>';}
+  if(S.skillLv<=1){h+='<button class="btn btn-xs btn-g launch-showall" onclick="document.querySelectorAll(\'.launch-tpl-hidden\').forEach(function(e){e.style.display=\'\'});this.remove()">'+(_ja?'🔽 全109テンプレートを表示':'🔽 Show all 109 templates')+'</button>';}
   h+=`</div>`;
 
   /* ── Output area ── */

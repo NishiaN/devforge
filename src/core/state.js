@@ -262,7 +262,7 @@ function load(){
   // Migrate legacy dfv8_ keys to devforge- namespace
   const _legacyTpl=_lsGet('dfv8_templates');if(_legacyTpl){_lsSet('devforge-templates',_legacyTpl);_lsRm('dfv8_templates');}
   // Migrate dfv8_road_* keys
-  try{const ps=JSON.parse(_lsGet('devforge-projects')||'{}');Object.keys(ps).forEach(n=>{const lk='dfv8_road_'+n;const nk='devforge-road-'+n;const v=_lsGet(lk);if(v&&!_lsGet(nk)){_lsSet(nk,v);}_lsRm(lk);});}catch(e){}
+  try{const ps=_jp(_lsGet('devforge-projects'),{});Object.keys(ps).forEach(n=>{const lk='dfv8_road_'+n;const nk='devforge-road-'+n;const v=_lsGet(lk);if(v&&!_lsGet(nk)){_lsSet(nk,v);}_lsRm(lk);});}catch(e){}
   if(!d)return;
   try{
     const o=JSON.parse(d);
