@@ -1,6 +1,6 @@
 // mermaid.test.js — Validates Mermaid diagram syntax in generated documentation
 // Ensures all ```mermaid blocks are well-formed and properly closed
-// ~9 tests
+// ~21 tests
 
 const { test, describe } = require('node:test');
 const assert = require('node:assert/strict');
@@ -38,10 +38,22 @@ eval(fs.readFileSync('src/generators/p13-strategy.js', 'utf-8').replace(/const (
 eval(fs.readFileSync('src/generators/p14-ops.js', 'utf-8'));
 eval(fs.readFileSync('src/generators/p15-future.js', 'utf-8').replace(/const (DOMAIN_MARKET|PERSONA_ARCHETYPES|GTM_STRATEGY|REGULATORY_HORIZON)/g, 'var $1'));
 eval(fs.readFileSync('src/generators/p16-deviq.js', 'utf-8').replace(/const (DEV_METHODOLOGY_MAP|PHASE_PROMPTS|INDUSTRY_STRATEGY|NEXT_GEN_UX|mapDomainToIndustry|gen60|gen61|gen62|gen63|genPillar16_DevIQ)/g, 'var $1'));
+eval(fs.readFileSync('src/generators/p17-promptgenome.js', 'utf-8').replace(/const (CRITERIA_FRAMEWORK|AI_MATURITY_MODEL|APPROACH_KPI|_APPROACHES|_SYNERGY_RAW)/g, 'var $1'));
+eval(fs.readFileSync('src/generators/p18-promptops.js', 'utf-8'));
+eval(fs.readFileSync('src/generators/p19-enterprise.js', 'utf-8'));
+eval(fs.readFileSync('src/generators/p20-cicd.js', 'utf-8'));
+eval(fs.readFileSync('src/generators/p21-api.js', 'utf-8'));
+eval(fs.readFileSync('src/generators/p22-database.js', 'utf-8'));
+eval(fs.readFileSync('src/generators/p23-testing.js', 'utf-8'));
+eval(fs.readFileSync('src/generators/p24-aisafety.js', 'utf-8').replace(/const (AI_RISK_CATEGORIES|GUARDRAIL_LAYERS|MODEL_EVAL_METRICS|INJECTION_DEFENSE_PATTERNS|COMPLIANCE_AI)/g, 'var $1'));
+eval(fs.readFileSync('src/generators/p25-performance.js', 'utf-8').replace(/const (CORE_WEB_VITALS|BUNDLE_TOOLS|CACHE_LAYERS|DB_PERF_PATTERNS|MONITORING_TOOLS)/g, 'var $1'));
+eval(fs.readFileSync('src/generators/p26-observability.js', 'utf-8'));
+eval(fs.readFileSync('src/generators/p27-cost.js', 'utf-8'));
+eval(fs.readFileSync('src/generators/p28-xai.js', 'utf-8'));
 
 // ── Helper ──
 function generate(answers, name, lang) {
-  S.files = {}; S.genLang = lang || 'ja'; S.skill = 'intermediate';
+  S.files = {}; S.genLang = lang || 'ja'; S.skill = 'intermediate'; S.skillLv = 3;
   S.answers = answers;
   genPillar1_SDD(answers, name);
   genPillar2_DevContainer(answers, name);
@@ -59,6 +71,18 @@ function generate(answers, name, lang) {
   genPillar14_OpsIntelligence(answers, name);
   genPillar15(answers);
   genPillar16_DevIQ(answers, name);
+  genPillar17_PromptGenome(answers, name);
+  genPillar18_PromptOps(answers, name);
+  genPillar19_EnterpriseSaaS(answers, name);
+  genPillar20_CICDIntelligence(answers, name);
+  genPillar21_APIIntelligence(answers, name);
+  genPillar22_DatabaseIntelligence(answers, name);
+  genPillar23_TestingIntelligence(answers, name);
+  genPillar24_AISafety(answers, name);
+  genPillar25_Performance(answers, name);
+  genPillar26_Observability(answers, name);
+  genPillar27_CostOptimization(answers, name);
+  genPillar28_XAIIntelligence(answers, name);
   return { ...S.files };
 }
 
@@ -202,5 +226,81 @@ describe('Mermaid: Growth Intelligence (docs/41_growth_intelligence.md)', () => 
 
   test('growth intelligence mermaid blocks are properly closed', () => {
     assert.ok(allMermaidBlocksClosed(content), 'Unclosed mermaid block in growth intelligence');
+  });
+});
+
+// ══════════════════════════════════════════════
+// P17-P28: Broad Mermaid validity check
+// ══════════════════════════════════════════════
+
+// Valid Mermaid diagram start keywords
+const VALID_MERMAID_STARTS = /^(graph|flowchart|sequenceDiagram|erDiagram|gantt|pie|classDiagram|stateDiagram|gitGraph|journey|quadrantChart|timeline|block-beta|xychart)/;
+
+/**
+ * Check that all mermaid blocks in content have valid start keywords
+ */
+function allMermaidBlocksValid(content) {
+  const re = /```mermaid\s*\n([\s\S]*?)\n```/g;
+  let m;
+  while ((m = re.exec(content)) !== null) {
+    const body = (m[1] || '').trim();
+    if (!body) return false;
+    if (!VALID_MERMAID_STARTS.test(body)) return false;
+  }
+  return true;
+}
+
+describe('Mermaid: P20 CI/CD (deployment strategy)', () => {
+  const content = files['docs/78_deployment_strategy.md'];
+  test('P20 deployment doc exists', () => { assert.ok(content, 'docs/78_deployment_strategy.md missing'); });
+  test('P20 all mermaid blocks closed', () => { assert.ok(allMermaidBlocksClosed(content || ''), 'Unclosed mermaid in P20'); });
+  test('P20 all mermaid blocks have valid start keywords', () => { assert.ok(allMermaidBlocksValid(content || ''), 'Invalid mermaid start keyword in P20'); });
+});
+
+describe('Mermaid: P22 Database', () => {
+  const content = files['docs/87_database_design_principles.md'];
+  test('P22 DB doc exists', () => { assert.ok(content, 'docs/87_database_design_principles.md missing'); });
+  test('P22 all mermaid blocks closed', () => { assert.ok(allMermaidBlocksClosed(content || ''), 'Unclosed mermaid in P22'); });
+});
+
+describe('Mermaid: P26 Observability', () => {
+  const content = files['docs/103_observability_architecture.md'];
+  test('P26 observability doc exists', () => { assert.ok(content, 'docs/103_observability_architecture.md missing'); });
+  test('P26 all mermaid blocks closed', () => { assert.ok(allMermaidBlocksClosed(content || ''), 'Unclosed mermaid in P26'); });
+  test('P26 all mermaid blocks have valid start keywords', () => { assert.ok(allMermaidBlocksValid(content || ''), 'Invalid mermaid start keyword in P26'); });
+});
+
+describe('Mermaid: P27 Cost (new Mermaid cycle diagram)', () => {
+  const content = files['docs/109_cost_architecture.md'];
+  test('P27 cost doc exists', () => { assert.ok(content, 'docs/109_cost_architecture.md missing'); });
+  test('P27 cost doc contains mermaid block', () => { assert.ok(countMermaidBlocks(content || '') >= 1, 'No mermaid block in P27 cost doc'); });
+  test('P27 all mermaid blocks closed', () => { assert.ok(allMermaidBlocksClosed(content || ''), 'Unclosed mermaid in P27'); });
+  test('P27 mermaid uses flowchart', () => {
+    const types = getMermaidDiagramTypes(content || '');
+    const hasFlowchart = types.some(t => t === 'flowchart' || t.startsWith('graph'));
+    assert.ok(hasFlowchart, `Expected flowchart in P27, got: ${types.join(', ')}`);
+  });
+});
+
+describe('Mermaid: P3 MCP (new sequence diagram)', () => {
+  const content = files['docs/132_mcp_integration_guide.md'];
+  test('P3 MCP integration guide exists', () => { assert.ok(content, 'docs/132_mcp_integration_guide.md missing'); });
+  test('P3 MCP doc has sequenceDiagram', () => {
+    const types = getMermaidDiagramTypes(content || '');
+    assert.ok(types.includes('sequenceDiagram'), `Expected sequenceDiagram in P3, got: ${types.join(', ')}`);
+  });
+  test('P3 all mermaid blocks closed', () => { assert.ok(allMermaidBlocksClosed(content || ''), 'Unclosed mermaid in P3 MCP'); });
+});
+
+describe('Mermaid: All files — no invalid blocks', () => {
+  test('no empty mermaid blocks across all generated files', () => {
+    const allContent = Object.values(files).join('\n');
+    const re = /```mermaid\s*\n([\s\S]*?)\n```/g;
+    const emptyBlocks = [];
+    let m;
+    while ((m = re.exec(allContent)) !== null) {
+      if (!(m[1] || '').trim()) emptyBlocks.push('empty block found');
+    }
+    assert.strictEqual(emptyBlocks.length, 0, `Found ${emptyBlocks.length} empty mermaid block(s)`);
   });
 });

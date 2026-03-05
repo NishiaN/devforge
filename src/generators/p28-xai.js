@@ -407,7 +407,7 @@ function gen130(a,pn){
   doc+='| '+(G?'機密情報漏洩':'Data Leakage')+' | '+(G?'出力監視フィルター':'Output monitoring filter')+' | '+(G?'即座シャットダウン→フォレンジック→パッチ':'Immediate shutdown→Forensics→Patch')+' | docs/34 |\n';
   doc+='| '+(G?('敵対的攻撃 (プロンプトインジェクション)'):'Adversarial Attack (Prompt Injection)')+' | '+(G?'インジェクション検知':'Injection detection')+' | '+(G?'ブロック→ログ→パターン更新':'Block→Log→Update patterns')+' | docs/131-2 |\n';
   doc+='| '+(G?'モデル性能劣化':'Model Performance Degradation')+' | '+(G?'ドリフトアラート':'Drift alert')+' | '+(G?'ドリフト分析→再学習トリガー':'Drift analysis→Retrain trigger')+' | docs/131 |\n\n';
-  doc+='> '+(G?'📘 セキュリティインシデント対応の詳細は `docs/34_security_incident.md` を参照':'📘 See `docs/34_security_incident.md` for security incident response details')+'\n\n';
+  doc+='> '+(G?'📘 セキュリティインシデント対応の詳細は `docs/34_incident_response.md` を参照':'📘 See `docs/34_incident_response.md` for security incident response details')+'\n\n';
 
   S.files['docs/130_ai_governance_framework.md']=doc;
 }

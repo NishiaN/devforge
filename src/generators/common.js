@@ -3761,6 +3761,45 @@ function postGenerationAudit(files,a){
     }
   }
 
+  // C14: Mermaid syntax audit — detect empty or invalid mermaid blocks
+  var _mermaidRe=/```mermaid\s*\n([\s\S]*?)\n```/g;
+  var _validStarts=/^(graph|flowchart|sequenceDiagram|erDiagram|gantt|pie|classDiagram|stateDiagram|gitGraph|journey|quadrantChart|timeline|block-beta|xychart)/;
+  var _mermaidBad=[];
+  Object.keys(files).forEach(function(k){
+    var content=files[k]||'';
+    var m2;
+    while((m2=_mermaidRe.exec(content))!==null){
+      var body=(m2[1]||'').trim();
+      if(!body){
+        if(_mermaidBad.indexOf(k+'(empty)')<0)_mermaidBad.push(k+'(empty)');
+      }else if(!_validStarts.test(body)){
+        if(_mermaidBad.indexOf(k+'(invalid)')<0)_mermaidBad.push(k+'(invalid)');
+      }
+    }
+    _mermaidRe.lastIndex=0;
+  });
+  if(_mermaidBad.length>0){
+    findings.push({level:'warn',msg:G?'Mermaid構文異常: '+_mermaidBad.slice(0,3).join(', ')+((_mermaidBad.length>3)?'...他':''):'Mermaid syntax issue: '+_mermaidBad.slice(0,3).join(', ')+((_mermaidBad.length>3)?'...':'')});
+  }
+
+  // C13: Cross-reference integrity — detect docs/XX_ references pointing to non-existent files
+  var _xrefBroken=[];
+  var _xrefRe=/docs\/(\d+[_-][^`'\s")\]]+\.md)/g;
+  Object.keys(files).forEach(function(k){
+    var content=files[k]||'';
+    var m;
+    while((m=_xrefRe.exec(content))!==null){
+      var ref='docs/'+m[1];
+      if(!files[ref]&&_xrefBroken.indexOf(ref)<0){
+        _xrefBroken.push(ref);
+      }
+    }
+    _xrefRe.lastIndex=0;
+  });
+  if(_xrefBroken.length>0){
+    findings.push({level:'warn',msg:G?'未生成ドキュメントへの参照: '+_xrefBroken.slice(0,3).join(', ')+((_xrefBroken.length>3)?'...他':''):'Cross-reference to non-existent doc(s): '+_xrefBroken.slice(0,3).join(', ')+((_xrefBroken.length>3)?'...':'')});
+  }
+
   return findings;
 }
 

@@ -1287,14 +1287,14 @@ Steps:
       {name:'Gate 3: 実装完了',checks:['[ ] コードレビュー完了（PRごと）','[ ] テストカバレッジ 80%+ → docs/17_test_strategy.md','[ ] Lint・型チェッククリーン','[ ] セキュリティスキャン完了 → docs/22_prompt_playbook.md',hasPay?'[ ] 決済E2Eテスト通過':'[ ] 認証E2Eテスト通過','[ ] compat警告ゼロ確認']},
       {name:'Gate 4: テスト完了',checks:['[ ] UATシート全項目完了 → docs/108_uat_acceptance.md','[ ] P0不具合ゼロ','[ ] P1不具合は対応済みまたは計画策定','[ ] 非機能テスト（LCP/可用性）通過 → docs/108_uat_acceptance.md §3','[ ] リリースチェックリスト確認 → docs/09_release_checklist.md']},
       {name:'Gate 5: リリース判定',checks:['[ ] Go/No-Go判定会議実施 → docs/108_uat_acceptance.md §5','[ ] ステークホルダー承認取得 → docs/107_project_governance.md','[ ] ロールバック手順確認 → docs/09_release_checklist.md','[ ] '+deployTarget+'デプロイ手順確認 → scaffolding/SETUP.md','[ ] CI/CDパイプライン動作確認 → .github/workflows/ci.yml']},
-      {name:'Gate 6: 運用開始',checks:['[ ] 監視・アラート設定 → docs/17_monitoring.md','[ ] RunBook整備 → docs/'+deployTarget.toLowerCase().replace(/[^a-z]/g,'_')+'（参照: §5）','[ ] 問い合わせ対応フロー確認 → 本文書 §4','[ ] バックアップ確認 → docs/90_backup_disaster_recovery.md','[ ] チーム引き継ぎ完了']}
+      {name:'Gate 6: 運用開始',checks:['[ ] 監視・アラート設定 → docs/103_observability_architecture.md','[ ] RunBook整備 → docs/'+deployTarget.toLowerCase().replace(/[^a-z]/g,'_')+'（参照: §5）','[ ] 問い合わせ対応フロー確認 → 本文書 §4','[ ] バックアップ確認 → docs/90_backup_disaster_recovery.md','[ ] チーム引き継ぎ完了']}
     ]:[
       {name:'Gate 1: Requirements Complete',checks:['[ ] All MVP features have Acceptance Criteria → .spec/specification.md','[ ] Non-functional requirements are quantitative → docs/02_requirements.md','[ ] Scope-out is documented → docs/116_estimation_prerequisites.md §2','[ ] Estimation assumptions confirmed → docs/116_estimation_prerequisites.md §4']},
       {name:'Gate 2: Design Complete',checks:['[ ] ER diagram reviewed → docs/04_er_diagram.md','[ ] API design reviewed → docs/05_api_design.md','[ ] Screen design reviewed → docs/06_screen_design.md','[ ] Security design confirmed → docs/08_security.md','[ ] Design review record → this doc §2',hasPay?'[ ] Payment flow design reviewed → docs/38_business_model.md':'[ ] Auth flow design reviewed → .spec/specification.md']},
       {name:'Gate 3: Implementation Complete',checks:['[ ] Code review done (per PR)','[ ] Test coverage 80%+ → docs/17_test_strategy.md','[ ] Lint & type checks clean','[ ] Security scan complete → docs/22_prompt_playbook.md',hasPay?'[ ] Payment E2E tests pass':'[ ] Auth E2E tests pass','[ ] Zero compat warnings']},
       {name:'Gate 4: Testing Complete',checks:['[ ] UAT sheet all items done → docs/108_uat_acceptance.md','[ ] P0 bugs = 0','[ ] P1 bugs resolved or planned','[ ] NFR tests pass (LCP/availability) → docs/108_uat_acceptance.md §3','[ ] Release checklist confirmed → docs/09_release_checklist.md']},
       {name:'Gate 5: Release Judgment',checks:['[ ] Go/No-Go meeting held → docs/108_uat_acceptance.md §5','[ ] Stakeholder approval obtained → docs/107_project_governance.md','[ ] Rollback procedure confirmed → docs/09_release_checklist.md','[ ] '+deployTarget+' deploy procedure confirmed → scaffolding/SETUP.md','[ ] CI/CD pipeline verified → .github/workflows/ci.yml']},
-      {name:'Gate 6: Operations Start',checks:['[ ] Monitoring & alerts configured → docs/17_monitoring.md','[ ] RunBook prepared (see §5)','[ ] Inquiry handling flow confirmed → this doc §4','[ ] Backup verified → docs/90_backup_disaster_recovery.md','[ ] Team handover complete']}
+      {name:'Gate 6: Operations Start',checks:['[ ] Monitoring & alerts configured → docs/103_observability_architecture.md','[ ] RunBook prepared (see §5)','[ ] Inquiry handling flow confirmed → this doc §4','[ ] Backup verified → docs/90_backup_disaster_recovery.md','[ ] Team handover complete']}
     ];
     _gates.forEach(g=>{
       doc+='\n### '+g.name+'\n';
@@ -2296,7 +2296,7 @@ Steps:
     d+='| MTBF (平均故障間隔) | 稼働時間 ÷ 故障回数 | 最大化 |\n';
     d+='| MTTR (平均修理時間) | 修理時間 ÷ 故障回数 | 最小化 |\n';
     d+='| 不良率 | 不良品数 ÷ 総生産数 | < 0.1% |\n\n';
-    d+='> '+(G?'参照':'See also')+': docs/120_system_design_guide.md | docs/17_monitoring.md | docs/109_cost_intelligence.md';
+    d+='> '+(G?'参照':'See also')+': docs/120_system_design_guide.md | docs/103_observability_architecture.md | docs/109_cost_architecture.md';
     S.files['docs/127_manufacturing_iot_guide.md']=d;
   })();}}
 
@@ -2986,8 +2986,8 @@ function genDevForgeGuide(a,pn,G){
   doc+=(G?'### AI開発ループ\n\n1. **ZIPをダウンロード**してCursor / Windsurf / Claude Codeで開く\n2. **CLAUDE.md を読ませる**: `@CLAUDE.md` または `Read CLAUDE.md and understand the project`\n3. **tasks.md の最優先タスクを実装させる**: `tasks.mdの最優先タスクを実装してください`\n4. 実装後、**compat警告**を確認（wizard画面 → Compatタブ）\n5. **AI Launcher**でドメイン固有プロンプトを活用（pillar 7タブ）\n':
     '### AI Development Loop\n\n1. **Download ZIP** and open in Cursor / Windsurf / Claude Code\n2. **Feed CLAUDE.md**: `@CLAUDE.md` or `Read CLAUDE.md and understand the project`\n3. **Implement from tasks.md**: `Implement the top-priority task from tasks.md`\n4. After implementation, **check compat warnings** (wizard screen → Compat tab)\n5. **Use AI Launcher** for domain-specific prompts (pillar 7 tab)\n')+'\n';
 
-  doc+=(G?'### ロール別の読み方\n\n- **開発者**: CLAUDE.md → .spec/ → docs/03_architecture.md → scaffolding/SETUP.md\n- **PM**: docs/01_project_overview.md → docs/02_requirements.md → docs/107_project_governance.md\n- **QA**: docs/108_uat_acceptance.md → docs/17_test_strategy.md → docs/22_security.md\n- **アーキテクト**: docs/03_architecture.md → docs/82_architecture_integrity_check.md → .spec/technical-plan.md\n':
-    '### Reading Guide by Role\n\n- **Developer**: CLAUDE.md → .spec/ → docs/03_architecture.md → scaffolding/SETUP.md\n- **PM**: docs/01_project_overview.md → docs/02_requirements.md → docs/107_project_governance.md\n- **QA**: docs/108_uat_acceptance.md → docs/17_test_strategy.md → docs/22_security.md\n- **Architect**: docs/03_architecture.md → docs/82_architecture_integrity_check.md → .spec/technical-plan.md\n')+'\n';
+  doc+=(G?'### ロール別の読み方\n\n- **開発者**: CLAUDE.md → .spec/ → docs/03_architecture.md → scaffolding/SETUP.md\n- **PM**: docs/01_project_overview.md → docs/02_requirements.md → docs/107_project_governance.md\n- **QA**: docs/108_uat_acceptance.md → docs/91_test_strategy.md → docs/22_prompt_playbook.md\n- **アーキテクト**: docs/03_architecture.md → docs/82_architecture_integrity_check.md → .spec/technical-plan.md\n':
+    '### Reading Guide by Role\n\n- **Developer**: CLAUDE.md → .spec/ → docs/03_architecture.md → scaffolding/SETUP.md\n- **PM**: docs/01_project_overview.md → docs/02_requirements.md → docs/107_project_governance.md\n- **QA**: docs/108_uat_acceptance.md → docs/91_test_strategy.md → docs/22_prompt_playbook.md\n- **Architect**: docs/03_architecture.md → docs/82_architecture_integrity_check.md → .spec/technical-plan.md\n')+'\n';
 
   // Section 3: Warnings / caveats
   doc+='## 3. '+(G?'注意点':'Important Caveats')+'\n\n';

@@ -224,8 +224,17 @@ function genPillar2_DevContainer(a,pn){
   cpg.push(G?'**解決策**: エディタにEditorConfig拡張をインストール':'**Solution**: Install EditorConfig extension in your editor','- VS Code: `EditorConfig.EditorConfig`','- JetBrains: Built-in','- Vim: `editorconfig/editorconfig-vim`','');
   cpg.push(G?'### DevContainerが起動しない':'### DevContainer fails to start','');
   cpg.push(G?'**確認項目**:':'**Checklist**:',G?'1. Dockerデーモンが起動しているか':'1. Docker daemon running?',G?'2. WSL2が有効か（Windows）':'2. WSL2 enabled? (Windows)',G?'3. `.devcontainer/devcontainer.json` が正しいか':'3. `.devcontainer/devcontainer.json` valid?','');
+  cpg.push(G?'## DevContainerライフサイクル':'## DevContainer Lifecycle','');
+  cpg.push('```mermaid','sequenceDiagram','  participant D as Developer','  participant DC as DevContainer','  participant E as Editor','  D->>DC: docker build (.devcontainer/)','  DC-->>D: Image ready','  D->>DC: Attach (VS Code Remote)','  DC->>DC: postCreateCommand','  DC-->>E: Extensions installed','  E-->>D: Workspace ready','  D->>E: Develop & Test','```','');
+  if((a.scale||'medium')!=='solo'){
+    cpg.push(G?'## チーム開発DevContainer標準化':'## Team DevContainer Standardization','');
+    cpg.push(G?'チームで統一されたDevContainerを使うことで環境差分をゼロにできます。':'Using a unified DevContainer across the team eliminates environment discrepancies.','');
+    cpg.push(G?'### 共有設定 (devcontainer.json)':'### Shared Settings (devcontainer.json)','');
+    cpg.push('```json','{','  "customizations": {','    "vscode": {','      "settings": {','        "editor.formatOnSave": true,','        "editor.defaultFormatter": "esbenp.prettier-vscode",','        "typescript.tsdk": "node_modules/typescript/lib"','      },','      "extensions": [','        "esbenp.prettier-vscode",','        "dbaeumer.vscode-eslint",','        "bradlc.vscode-tailwindcss"','      ]','    }','  }','}','```','');
+    cpg.push(G?'**ポイント**: `.devcontainer/` をGit管理することで全員が同じ拡張機能・設定を使用できます。':'**Key**: Commit `.devcontainer/` to Git so all team members share the same extensions and settings.','');
+  }
   cpg.push(G?'## 関連ドキュメント':'## Related Documents','');
-  cpg.push(G?'- `.devcontainer/README.md` — DevContainer詳細設定':'- `.devcontainer/README.md` — DevContainer details',G?'- `docs/34_devops_guide.md` — CI/CD設定':'- `docs/34_devops_guide.md` — CI/CD setup',G?'- `docs/02_architecture.md` — システムアーキテクチャ':'- `docs/02_architecture.md` — System architecture');
+  cpg.push(G?'- `.devcontainer/README.md` — DevContainer詳細設定':'- `.devcontainer/README.md` — DevContainer details',G?'- `docs/34_incident_response.md` — インシデント対応':'- `docs/34_incident_response.md` — Incident response',G?'- `docs/02_architecture.md` — システムアーキテクチャ':'- `docs/02_architecture.md` — System architecture');
   if(isPro2){
     cpg.push('',G?'## マルチステージビルド最適化':'## Multi-Stage Build Optimization','');
     cpg.push(G?

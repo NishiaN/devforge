@@ -207,6 +207,9 @@ function gen109(a,pn){
     _cf.forEach(function(f){doc+='- '+f+'\n';});
   }
 
+  doc+='\n## '+(G?'コスト最適化サイクル':'Cost Optimization Cycle')+'\n\n';
+  doc+='```mermaid\nflowchart LR\n  M[Measure] --> A[Analyze]\n  A --> O[Optimize]\n  O --> V[Verify]\n  V --> M\n```\n\n';
+  doc+='> '+(G?'FinOps原則: 計測 → 分析 → 最適化 → 検証 のサイクルを継続的に回してください。':'FinOps principle: continuously run the Measure → Analyze → Optimize → Verify cycle.')+'\n';
   S.files['docs/109_cost_architecture.md']=doc;
 }
 

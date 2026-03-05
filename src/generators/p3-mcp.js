@@ -190,8 +190,21 @@ ${G?'- 環境変数が正しく設定されているか確認してください\
 
 function gen132(a,pn){
   const G=S.genLang==='ja';
+  const lv132=S.skillLv!=null?S.skillLv:(S.skill==='beginner'?1:S.skill==='pro'?5:3);
+  const isBeg132=lv132<=1;
+  const isPro132=lv132>=5;
+  const scale132=a.scale||'medium';
   let doc='# '+(G?'MCPインテグレーションガイド':'MCP Integration Guide')+'\n';
   doc+='> '+pn+' | '+(G?'Model Context Protocol 完全ガイド':'Complete Guide to Model Context Protocol')+'\n\n';
+
+  if(isBeg132){
+    doc+='## '+(G?'§0 MCPとは？（入門）':'§0 What is MCP? (Introduction)')+'\n\n';
+    doc+=(G?'**MCP (Model Context Protocol)** は AI アシスタント (Claude / Cursor など) が外部ツールやデータに安全にアクセスするための標準プロトコルです。':'**MCP (Model Context Protocol)** is a standard protocol that lets AI assistants (Claude, Cursor, etc.) safely access external tools and data.')+'\n\n';
+    doc+='### '+(G?'最初の3ステップ':'First 3 Steps')+'\n\n';
+    doc+='1. **'+(G?'設定ファイルを確認':'Check config')+`**: \`mcp-config.json\` ${G?'がルートディレクトリにあることを確認':'exists in the root directory'}\n`;
+    doc+='2. **'+(G?'AIツールに接続':'Connect AI tool')+`**: ${G?'Claude Code / Cursor の設定で `mcp-config.json` を読み込む':'Load `mcp-config.json` in Claude Code / Cursor settings'}\n`;
+    doc+='3. **'+(G?'ツールを試す':'Try a tool')+`**: ${G?'「プロジェクトのファイル一覧を表示して」とAIに依頼':'Ask AI: "Show me the file list for this project"'}\n\n`;
+  }
 
   doc+='## §1 '+(G?'MCPアーキテクチャ概要':'MCP Architecture Overview')+'\n\n';
   doc+=(G?'Model Context Protocol (MCP) は AI エージェントとツール/データソースを安全に接続するオープンプロトコルです。':'Model Context Protocol (MCP) is an open protocol that safely connects AI agents with tools and data sources.')+'\n\n';
@@ -208,6 +221,9 @@ function gen132(a,pn){
   doc+='2. tools/list    → '+(G?'利用可能ツール一覧取得':'Get available tools')+'\n';
   doc+='3. tools/call    → '+(G?'ツール実行':'Execute tool')+'\n';
   doc+='4. resources/read→ '+(G?'リソース読み取り':'Read resource')+'\n```\n\n';
+
+  doc+='### '+(G?'MCPシーケンス図':'MCP Sequence Diagram')+'\n\n';
+  doc+='```mermaid\nsequenceDiagram\n  participant L as LLM\n  participant C as MCP Client\n  participant S as MCP Server\n  participant D as Data Source\n  L->>C: tools/call (tool_name, args)\n  C->>S: JSON-RPC request\n  S->>D: Query / Execute\n  D-->>S: Result\n  S-->>C: JSON-RPC response\n  C-->>L: Tool result\n```\n\n';
 
   doc+='## §2 '+(G?'カスタムMCPサーバー開発':'Custom MCP Server Development')+'\n\n';
   doc+='```typescript\n// '+pn+' MCP Server\nimport { Server } from "@modelcontextprotocol/sdk/server/index.js";\nimport { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";\n\nconst server = new Server(\n  { name: "'+pn.toLowerCase().replace(/\s+/g,'-')+'-mcp", version: "1.0.0" },\n  { capabilities: { tools: {}, resources: {} } }\n);\n\nserver.setRequestHandler("tools/call", async (req) => {\n  const { name, arguments: args } = req.params;\n  switch (name) {\n    case "get_project_context":\n      return { content: [{ type: "text", text: JSON.stringify(projectContext) }] };\n    default:\n      throw new Error(`Unknown tool: ${name}`);\n  }\n});\n\nconst transport = new StdioServerTransport();\nawait server.connect(transport);\n```\n\n';
@@ -232,6 +248,31 @@ function gen132(a,pn){
   doc+='## §5 MCP + CI/CD '+(G?'統合':'Integration')+'\n\n';
   doc+='```yaml\n# .github/workflows/mcp-test.yml\nname: MCP Server Tests\non: [push, pull_request]\njobs:\n  mcp-test:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - uses: actions/setup-node@v4\n        with: { node-version: "20" }\n      - run: npm ci\n      - name: '+(G?'MCPサーバー起動テスト':'Test MCP server startup')+'\n        run: timeout 5 node mcp-server.js <<< \'{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2024-11-05","capabilities":{}}}\' || true\n      - name: '+(G?'ツール一覧テスト':'Test tools list')+'\n        run: node test/mcp-integration.test.js\n```\n\n';
   doc+='### '+(G?'MCPサーバー統合テスト例':'MCP Server Integration Test Example')+'\n```typescript\nimport { Client } from "@modelcontextprotocol/sdk/client/index.js";\nimport { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";\n\nconst transport = new StdioClientTransport({\n  command: "node", args: ["mcp-server.js"]\n});\nconst client = new Client({ name: "test-client", version: "1.0.0" }, { capabilities: {} });\nawait client.connect(transport);\nconst tools = await client.listTools();\nconsole.assert(tools.tools.length > 0, "Should have at least one tool");\nawait client.close();\n```\n\n';
+  if(scale132!=='solo'){
+    doc+='## §6 '+(G?'マルチエージェントMCPオーケストレーション':'Multi-Agent MCP Orchestration')+'\n\n';
+    doc+=(G?'チーム規模のプロジェクトでは、複数のAIエージェントが同一MCPサーバーを共有・協調します。':'In team-scale projects, multiple AI agents share and collaborate through the same MCP server.')+'\n\n';
+    doc+='```mermaid\nflowchart TD\n  O[Orchestrator Agent] --> A1[Agent: Planner]\n  O --> A2[Agent: Coder]\n  O --> A3[Agent: Reviewer]\n  A1 --> MCP[MCP Server]\n  A2 --> MCP\n  A3 --> MCP\n  MCP --> DB[(Database)]\n  MCP --> FS[File System]\n  MCP --> API[External API]\n```\n\n';
+    doc+='### '+(G?'オーケストレーション設計パターン':'Orchestration Design Patterns')+'\n\n';
+    doc+='| '+(G?'パターン':'Pattern')+' | '+(G?'用途':'Use Case')+' | '+(G?'実装':'Implementation')+'|\n';
+    doc+='|---|---|---|\n';
+    doc+='| Sequential | '+(G?'依存タスク':'Dependent tasks')+' | plan.md → code → review |\n';
+    doc+='| Parallel | '+(G?'独立タスク':'Independent tasks')+' | FE + BE 同時開発 |\n';
+    doc+='| Hierarchical | '+(G?'複雑なプロジェクト':'Complex projects')+' | '+(G?'オーケストレーター → サブエージェント':'Orchestrator → Sub-agents')+'|\n\n';
+  }
+
+  if(isPro132){
+    doc+='## §7 '+(G?'OAuth 2.1スコープとMCPセキュリティ境界':'OAuth 2.1 Scopes & MCP Security Boundaries')+'\n\n';
+    doc+=(G?'プロダクション環境では、MCPサーバーへのアクセスをOAuth 2.1スコープで細粒度制御します。':'In production, control MCP server access at fine granularity using OAuth 2.1 scopes.')+'\n\n';
+    doc+='```typescript\n// MCP OAuth 2.1 scope definitions\nconst MCP_SCOPES = {\n  "mcp:read":    "Read-only access to resources",\n  "mcp:write":   "Create and update resources",\n  "mcp:delete":  "Delete resources (requires approval)",\n  "mcp:admin":   "Full administrative access",\n  "mcp:tools":   "Execute registered tools",\n  "mcp:audit":   "Read audit logs"\n};\n\n// Scope validation middleware\nfunction validateMCPScope(required: string) {\n  return (req: Request) => {\n    const token = req.headers.authorization?.split(" ")[1];\n    const payload = jwt.verify(token, process.env.JWT_SECRET!);\n    if (!payload.scopes?.includes(required)) {\n      throw new Error(`Missing scope: ${required}`);\n    }\n  };\n}\n```\n\n';
+    doc+='### '+(G?'最小権限の原則 (MCP適用例)':'Principle of Least Privilege (MCP Application)')+'\n\n';
+    doc+='| '+(G?'エージェントタイプ':'Agent Type')+' | '+(G?'付与スコープ':'Granted Scopes')+'|\n';
+    doc+='|---|---|\n';
+    doc+='| Planner | mcp:read |\n';
+    doc+='| Coder | mcp:read, mcp:write, mcp:tools |\n';
+    doc+='| Reviewer | mcp:read, mcp:audit |\n';
+    doc+='| Orchestrator | mcp:read, mcp:write, mcp:tools, mcp:audit |\n\n';
+  }
+
   doc+='---\n'+(G?'*DevForge v9 生成 | MCPインテグレーションガイド*':'*Generated by DevForge v9 | MCP Integration Guide*');
   S.files['docs/132_mcp_integration_guide.md']=doc;
 }
