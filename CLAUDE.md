@@ -4,9 +4,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ---
 
-# DevForge v9.6.0
+# DevForge v9.18
 
-**AI Development OS** — 86 JS modules in `src/` → single `devforge-v9.html` (~5716KB / 6500KB limit).
+**AI Development OS** — 86 JS modules in `src/` → single `devforge-v9.html` (~5738KB / 6500KB limit).
 Generates **225+ files** across **28 pillars** from a wizard-driven Q&A session.
 
 ## Documentation Map
@@ -18,10 +18,10 @@ Generates **225+ files** across **28 pillars** from a wizard-driven Q&A session.
 ## Build & Test
 
 ```bash
-node build.js                          # → devforge-v9.html (~5716KB, limit 6500KB)
+node build.js                          # → devforge-v9.html (~5738KB, limit 6500KB)
 node build.js --no-minify              # debug (skip minification)
 node build.js --report                 # build + size breakdown by module
-npm test                               # ~7372 tests, all passing (v9.16)
+npm test                               # ~7388 tests, all passing (v9.18)
 node --test test/gen-quality.test.js   # single test file
 npm run dev                            # build + live-server :3000
 npm run check                          # syntax-check extracted JS
@@ -30,9 +30,7 @@ node scripts/compat-check-all-presets.js  # verify 0 ERROR / 0 WARN across all p
 # Workflow: Edit src/ → npm test → node build.js → npm run open → commit
 ```
 
-**Minification:** CSS via esbuild; JS via legacy regex minifier (comment removal DISABLED — generated docs contain `/* */` and `//` inside strings).
-
-**✅ entity-ext.js dead-code bug FIXED (v9.7)**: `legacyMinJS` regex was changed from `[\s\S]*?` to `[^\n]*` (single-line only) and entity-ext.js header was converted to single-line, preventing the ~287KB of `ENTITY_COLUMNS` definitions from being stripped. `getEntityColumns()` now returns full 858-entry column data. Build size increased ~280KB (5089→5369KB) after fix.
+**Minification:** CSS via esbuild; JS via legacy regex minifier (comment removal DISABLED — generated docs contain `/* */` and `//` inside strings). `legacyMinJS` regex uses `[^\n]*` (single-line only) to avoid stripping `ENTITY_COLUMNS` data.
 
 ## Architecture
 
@@ -47,7 +45,7 @@ Never reorder without checking dependencies.
 | Category | Purpose |
 |----------|---------|
 | `core/` | State (`S`), i18n (`t()`), keyboard events, wizard tour, app init |
-| `data/` | 257 standard presets (`PR`/`_mp()`), 602 field presets (`PR_FIELD`/`_fpd()`), questions, techdb (478 entries), compat-rules (320 rules), gen-templates (bilingual GT dict), helpdata |
+| `data/` | 257 standard presets (`PR`/`_mp()`), 603 field presets (`PR_FIELD`/`_fpd()`), questions, techdb (463 entries), compat-rules (320 rules), gen-templates (bilingual GT dict), helpdata |
 | `ui/launcher.js` | 109 prompt templates; `templateOrder[109]`, `AI_REC`, `LAUNCH_CAT_MAP`, `TEMPLATE_SCOPE`, `LAUNCH_SKILL_REC` maps; `DOC_GROUPS` for semantic doc grouping |
 | `generators/` | `index.js` orchestrator + `p1`–`p28` pillars + `docs.js` + `common.js` |
 | `ui/` | wizard, render, presets, preview, sidebar, editor, diff, export, explorer, dashboard, launcher, templates, qbar, cmdpalette, help, voice |
@@ -105,6 +103,8 @@ Key helpers (all globally scoped): `save()`, `esc(s)`, `escAttr(s)`, `_jp(s,d)`,
 **XSS**: `esc()` for display text, `escAttr()` for attribute values, `textContent` (not `innerHTML`) for Mermaid, `_jp()` instead of `JSON.parse()` for localStorage.
 
 **`@keyframes pillarPulse`** — already declared in `all.css`; do NOT add a duplicate.
+
+**Post-generation audit (C13/C14)** — `postGenerationAudit()` in `common.js` runs after generation and checks: C13 detects `docs/XX_` cross-references pointing to non-existent files (warn); C14 detects empty or invalid Mermaid blocks (warn). Both surface in `docs/82_architecture_integrity_check.md`. When adding new doc cross-references, use file keys that are actually assigned to `S.files`.
 
 ## Preset → Wizard System
 
@@ -173,7 +173,7 @@ Full 6-step process in `docs/CLAUDE-REFERENCE.md`. Key steps often missed:
 File: `src/data/compat-rules.js` — currently 320 rules (33E+143W+144I). All rules have `why_ja`/`why_en`.
 **Launcher templates**: `src/ui/launcher.js` — currently 109 templates. When adding: register in `TEMPLATE_SCOPE`, both ja+en PT blocks, `AI_REC`, `templateOrder`, `LAUNCH_CAT_MAP`, `LAUNCH_SKILL_REC`; update button text count; update `test/skill-level.test.js` templateOrder.length assertion.
 Structure: `{id, p:['field1','field2'], lv:'error'|'warn'|'info', t:conditionFn, ja, en, fix, fixFn, why_ja, why_en}`
-`why_ja`/`why_en`: When set, shows "▶ なぜ？" expandable card in wizard alerts. **Size limits: `why_ja` ≤350B, `why_en` ≤270B** (UTF-8 bytes; CI 5000KB budget). Japanese is 3 bytes/char — keep to ≤115 characters.
+`why_ja`/`why_en`: When set, shows "▶ なぜ？" expandable card in wizard alerts. **Size limits: `why_ja` ≤350B, `why_en` ≤270B** (UTF-8 bytes; build limit 6500KB). Japanese is 3 bytes/char — keep to ≤115 characters.
 After adding: update header comment totals, add tests to `test/compat.test.js`, update CLAUDE.md rule count.
 
 ## Test Architecture
@@ -187,9 +187,9 @@ After adding: update header comment totals, add tests to `test/compat.test.js`, 
 | Generator tests | airules, strategy, reverse, observability | ~75 |
 | Gen quality | gen-quality (Suites 1-400, ~6184 tests) | ~6184 |
 | Preset matching | phase-n (N-1〜N-9 + G-1〜G-7, 68 tests) | ~68 |
-| Other | i18n, state, techdb, utils, complexity, mermaid, help-hints | ~46 |
+| Other | i18n, state, techdb, utils, complexity, mermaid (30 tests, all 28 pillars), help-hints | ~62 |
 
-**Total: 7372 tests** | Test harness pattern: `eval(fs.readFileSync(...))` to load src files; global `S` mock at top.
+**Total: 7388 tests** | Test harness pattern: `eval(fs.readFileSync(...))` to load src files; global `S` mock at top.
 
 **When adding domains**, update: `test/data-coverage.test.js` (4 arrays), `test/gen-coherence.test.js`, `test/ops.test.js`.
 
