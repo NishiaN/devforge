@@ -18,7 +18,7 @@ Generates **225+ files** across **28 pillars** from a wizard-driven Q&A session.
 ## Build & Test
 
 ```bash
-node build.js                          # → devforge-v9.html (~5679KB, limit 6500KB)
+node build.js                          # → devforge-v9.html (~5716KB, limit 6500KB)
 node build.js --no-minify              # debug (skip minification)
 node build.js --report                 # build + size breakdown by module
 npm test                               # ~7372 tests, all passing (v9.16)
@@ -47,7 +47,7 @@ Never reorder without checking dependencies.
 | Category | Purpose |
 |----------|---------|
 | `core/` | State (`S`), i18n (`t()`), keyboard events, wizard tour, app init |
-| `data/` | 257 standard presets (`PR`/`_mp()`), 602 field presets (`PR_FIELD`/`_fpd()`), questions, techdb (478 entries), compat-rules (298 rules), gen-templates (bilingual GT dict), helpdata |
+| `data/` | 257 standard presets (`PR`/`_mp()`), 602 field presets (`PR_FIELD`/`_fpd()`), questions, techdb (478 entries), compat-rules (320 rules), gen-templates (bilingual GT dict), helpdata |
 | `ui/launcher.js` | 109 prompt templates; `templateOrder[109]`, `AI_REC`, `LAUNCH_CAT_MAP`, `TEMPLATE_SCOPE`, `LAUNCH_SKILL_REC` maps; `DOC_GROUPS` for semantic doc grouping |
 | `generators/` | `index.js` orchestrator + `p1`–`p28` pillars + `docs.js` + `common.js` |
 | `ui/` | wizard, render, presets, preview, sidebar, editor, diff, export, explorer, dashboard, launcher, templates, qbar, cmdpalette, help, voice |
@@ -189,7 +189,7 @@ After adding: update header comment totals, add tests to `test/compat.test.js`, 
 | Preset matching | phase-n (N-1〜N-9 + G-1〜G-7, 68 tests) | ~68 |
 | Other | i18n, state, techdb, utils, complexity, mermaid, help-hints | ~46 |
 
-**Total: 7269 tests** | Test harness pattern: `eval(fs.readFileSync(...))` to load src files; global `S` mock at top.
+**Total: 7372 tests** | Test harness pattern: `eval(fs.readFileSync(...))` to load src files; global `S` mock at top.
 
 **When adding domains**, update: `test/data-coverage.test.js` (4 arrays), `test/gen-coherence.test.js`, `test/ops.test.js`.
 
@@ -199,7 +199,7 @@ After adding: update header comment totals, add tests to `test/compat.test.js`, 
 
 `docs/82_architecture_integrity_check.md` — always generated; scores ORM/Auth/CORS/async/soft-delete integrity (10.0 scale).
 
-**File count ranges** (used in tests): `snapshot.test.js` A:148–215/B:138–204; `gen-quality.test.js` A25 120–222.
+**File count ranges** (used in tests): `snapshot.test.js` A:152–219/B:142–208; `gen-quality.test.js` A25 120–222.
 
 Key output structure:
 - `.spec/` — constitution, specification, technical-plan, tasks, verification
