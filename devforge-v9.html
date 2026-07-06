@@ -5332,7 +5332,7 @@ fix:{f:'deploy',s:'Deno Deploy'}},
 t:a=>inc(a.backend,'Bun')&&inc(a.deploy,'Netlify'),
 ja:'NetlifyはBunランタイムをサポートしません（Node.js/Goのみ）。RailwayでBunを動かしてください',
 en:'Netlify does not support the Bun runtime (Node.js/Go only). Use Railway to run Bun instead',
-why_ja:'NetlifyのFunctionsはAWS Lambda互換でNode.jsとGoを公式サポートします。BunはJavaScriptCoreエンジンとRust製I/Oレイヤーを持つ独立ランタイムであり、Netlifyのビルドインフラはnpmパッケージとしてのbunをサポートしておらず、Bun固有のAPI（Bun.serve・Bun.file等）はNetlify環境で動作しません。RailwayはBunのDockerコンテナを直接実行でき最も簡単な移行先です。',
+why_ja:'NetlifyのFunctionsはNode.jsとGoのみ公式サポートし、独立ランタイムのBunは動作しません。Bun固有API（Bun.serve・Bun.file等）が使えず、ビルドインフラもbunを認識しません。RailwayならBunのDockerコンテナを直接実行でき最も簡単な移行先です。',
 why_en:'Netlify Functions are AWS Lambda-compatible, officially supporting Node.js and Go.',
 fix:{f:'deploy',s:'Railway'}},
 {id:'be-dep-hono-cf',p:['backend','deploy'],lv:'info',
@@ -5720,7 +5720,7 @@ fix:{f:'deploy',s:'Railway'}},
 t:a=>(inc(a.backend,'Express')||inc(a.backend,'Fastify'))&&inc(a.deploy,'Netlify')&&!inc(a.frontend,'Next'),
 ja:'Express/FastifyのNetlifyデプロイは制限があります。Railway/Renderを推奨します',
 en:'Express/Fastify on Netlify has serverless limitations. Railway/Render recommended',
-why_ja:'NetlifyのFunctionsはリクエストごとに起動・終了するサーバーレス環境です。Expressを`netlify-lambda`でラップすることは可能ですが、WebSocket・セッション保持・ファイルシステム書込などのステートフル機能が動作せず、関数実行時間の上限（10秒）も多くのExpressユースケースには不十分です。',
+why_ja:'NetlifyのFunctionsはリクエストごとに起動・終了するサーバーレス環境です。Expressは`netlify-lambda`でラップ可能ですが、WebSocket・セッション保持・FS書込などのステートフル機能が動作せず、実行時間上限（10秒）も多くの用途に不十分です。',
 why_en:'Netlify Functions are serverless — they start and stop per request. Wrapping Express with `netlify-lambda` is possible but stateful features (WebSockets, session state, filesystem writes) won\'t work.',
 fix:{f:'deploy',s:'Railway'}},
 {id:'be-dep-java-netlify',p:['backend','deploy'],lv:'error',
@@ -6307,7 +6307,7 @@ why_en:'Firebase Functions and Supabase Edge Functions are managed environments 
 t:a=>isPyBE(a),
 ja:'PythonバックエンドにはStructlog + `opentelemetry-sdk` (pip) の組み合わせを推奨します。`[REDACTED]` プロセッサでPII自動マスキングを設定してください',
 en:'For Python backends, use structlog + `opentelemetry-sdk` (pip). Configure the `[REDACTED]` processor for automatic PII masking in logs',
-why_ja:'Pythonの標準`logging`モジュールはJSON構造化ログに対応していません。`structlog` はコンテキスト変数・プロセッサチェーン・JSONレンダラーをサポートし、`opentelemetry-sdk` と組み合わせることでOTelトレース連携 (trace_id/span_idの自動インジェクション) が可能になります。`mask_sensitive()` プロセッサを追加してemail/token等のPIIを `[REDACTED]` に置換することでGDPR/個人情報保護法への対応が容易になります。',
+why_ja:'Pythonの標準`logging`はJSON構造化ログに非対応です。`structlog`はプロセッサチェーンとJSONレンダラーを備え、`opentelemetry-sdk`と組合せOTelトレース連携（trace_id/span_id自動注入）が可能。`mask_sensitive()`でemail/token等PIIを`[REDACTED]`に置換すればGDPR対応も容易です。',
 why_en:'Python\'s standard `logging` module lacks JSON structured logging support. `structlog` provides context variables, processor chains, and JSON renderer, and when combined with `opentelemetry-sdk`, enables OTel trace correlation (automatic trace_id/span_id injection).'},
 {id:'obs-java-javaagent',p:['backend'],lv:'info',
 t:a=>inc(a.backend,'Spring')||inc(a.backend,'Java'),
@@ -35538,8 +35538,8 @@ doc+=(G?'### ロール別の読み方\n\n- **開発者**: CLAUDE.md → .spec/ �
 '### Reading Guide by Role\n\n- **Developer**: CLAUDE.md → .spec/ → docs/03_architecture.md → scaffolding/SETUP.md\n- **PM**: docs/01_project_overview.md → docs/02_requirements.md → docs/107_project_governance.md\n- **QA**: docs/108_uat_acceptance.md → docs/91_testing_strategy.md → docs/22_prompt_playbook.md\n- **Architect**: docs/03_architecture.md → docs/82_architecture_integrity_check.md → .spec/technical-plan.md\n')+'\n';
 // Section 3: Warnings / caveats
 doc+='## 3. '+(G?'注意点':'Important Caveats')+'\n\n';
-doc+=(G?'- **localStorage は揮発性**: ブラウザのデータは消える場合があります。必ずZIPエクスポートしてから閉じてください\n- **再生成すると上書き**: ウィザード回答を変更して再生成すると、手動編集ファイルが上書きされます（編集済みファイルは●マークで識別可能）\n- **CDN依存**: JSZip / mermaid.js はCDNから読み込みます。オフライン環境ではZIPのかわりに結合MDファイルがダウンロードされます\n- **スタック互換性**: compat警告（217ルール）を無視すると、生成ドキュメントと実装が乖離する可能性があります\n- **バージョン固定なし**: 生成されるpackage.jsonは最新バージョンを使用します。本番環境では`package-lock.json`で固定してください\n':
-'- **localStorage is volatile**: Browser data can be lost. Always export ZIP before closing\n- **Regeneration overwrites**: Changing wizard answers and regenerating will overwrite manually edited files (edited files are marked with ●)\n- **CDN dependency**: JSZip / mermaid.js are loaded from CDN. Offline: combined .md fallback is used instead of ZIP\n- **Stack compatibility**: Ignoring compat warnings (217 rules) can cause misalignment between docs and implementation\n- **No version pinning**: Generated package.json uses latest versions. Pin with package-lock.json in production\n')+'\n';
+doc+=(G?'- **localStorage は揮発性**: ブラウザのデータは消える場合があります。必ずZIPエクスポートしてから閉じてください\n- **再生成すると上書き**: ウィザード回答を変更して再生成すると、手動編集ファイルが上書きされます（編集済みファイルは●マークで識別可能）\n- **CDN依存**: JSZip / mermaid.js はCDNから読み込みます。オフライン環境ではZIPのかわりに結合MDファイルがダウンロードされます\n- **スタック互換性**: compat警告（332ルール）を無視すると、生成ドキュメントと実装が乖離する可能性があります\n- **バージョン固定なし**: 生成されるpackage.jsonは最新バージョンを使用します。本番環境では`package-lock.json`で固定してください\n':
+'- **localStorage is volatile**: Browser data can be lost. Always export ZIP before closing\n- **Regeneration overwrites**: Changing wizard answers and regenerating will overwrite manually edited files (edited files are marked with ●)\n- **CDN dependency**: JSZip / mermaid.js are loaded from CDN. Offline: combined .md fallback is used instead of ZIP\n- **Stack compatibility**: Ignoring compat warnings (332 rules) can cause misalignment between docs and implementation\n- **No version pinning**: Generated package.json uses latest versions. Pin with package-lock.json in production\n')+'\n';
 // Section 4: Limitations
 doc+='## 4. '+(G?'このアプリでは不可能なこと':'What This App Cannot Do')+'\n\n';
 doc+=(G?'- ❌ **実行可能なソースコード** (TypeScript / Python等) の生成 → AIツール (Cursor, Windsurf等) を使用してください\n- ❌ **外部サービスとの連携** (API呼出、DB接続、デプロイ実行)\n- ❌ **チーム同時編集** / リアルタイムコラボレーション\n- ❌ **Go / Rust / Java / .NET スタック**の深い最適化（JS/TSエコシステム中心）\n- ❌ **カスタムビジネスロジック**の自動推論（テンプレートベース。必ず仕様書を見直してください）\n- ❌ **5,000KBを超えるコンテンツ**の追加（ビルドサイズ制限）\n- ❌ **マルチプロジェクト管理** / リアルタイムDB同期\n':
