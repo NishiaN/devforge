@@ -210,7 +210,7 @@ function gen128(a,pn){
 
   doc+='### TypeScript Interface\n\n';
   doc+='```typescript\ninterface ExplanationRequest {\n  modelId: string;\n  inputData: Record<string, unknown>;\n  explanationType: \'shap\' | \'lime\' | \'integrated_gradients\';\n  userContext?: { role: string; domain: string };\n}\n\ninterface ExplanationResponse {\n  predictionId: string;\n  score: number;\n  confidence: number;\n  featureImportance: Array<{ feature: string; value: number; impact: number }>;\n  explanation: string;\n  regulatoryMetadata?: { euAiActArticle: string; timestamp: string };\n}\n```\n\n';
-  doc+='> '+(G?'📘 XAI技法選定マトリクスの詳細は `docs/98-2_xai_transparency_guide.md §1` を参照':'📘 See `docs/98-2_xai_transparency_guide.md §1` for XAI technique selection matrix')+'\n\n';
+  if(hasAI)doc+='> '+(G?'📘 XAI技法選定マトリクスの詳細は `docs/98-2_xai_transparency_guide.md §1` を参照':'📘 See `docs/98-2_xai_transparency_guide.md §1` for XAI technique selection matrix')+'\n\n';
 
   doc+='## '+(G?'§3 グローバルAI規制比較マトリクス':'§3 Global AI Regulation Comparison Matrix')+'\n\n';
   doc+='| '+(G?'規制':'Regulation')+' | '+(G?'管轄':'Jurisdiction')+' | '+(G?'対象':'Scope')+' | '+(G?'主要要件':'Key Requirements')+' | '+(G?'施行':'Enforcement')+'|\n';

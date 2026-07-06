@@ -394,8 +394,8 @@ function gen78(G, domain, dtCfg, a, pn) {
   doc += '### ' + (G ? 'SOREフェーズ × ドキュメントマップ' : 'SORE Phase × Document Map') + '\n\n';
   doc += '| ' + (G ? 'SOREフェーズ' : 'SORE Phase') + ' | ' + (G ? '参照ドキュメント' : 'Reference Document') + ' | ' + (G ? '主要ツール' : 'Key Tools') + ' |\n';
   doc += '|-------------|-----------------|--------|\n';
-  doc += '| 🚀 Ship | docs/78_deployment_strategy.md + docs/80_release_management.md | Feature Flags (P14) |\n';
-  doc += '| 👀 Observe | docs/103_observability_architecture.md + docs/105_metrics_catalog.md | SLI/SLO + Error Budget |\n';
+  doc += '| 🚀 Ship | docs/78_deployment_strategy.md + docs/80_release_engineering.md | Feature Flags (P14) |\n';
+  doc += '| 👀 Observe | docs/103_observability_architecture.md + docs/105_metrics_alerting.md | SLI/SLO + Error Budget |\n';
   doc += '| ↩️ Revert | docs/78_deployment_strategy.md (Rollback Automation) | Auto-rollback triggers |\n';
   doc += '| 🔄 Evolve | docs/32_qa_blueprint.md + docs/91_testing_strategy.md | ' + (G ? 'レトロスペクティブ + テスト更新' : 'Retrospective + Test updates') + ' |\n\n';
 

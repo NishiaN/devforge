@@ -234,7 +234,7 @@ function genPillar2_DevContainer(a,pn){
     cpg.push(G?'**ポイント**: `.devcontainer/` をGit管理することで全員が同じ拡張機能・設定を使用できます。':'**Key**: Commit `.devcontainer/` to Git so all team members share the same extensions and settings.','');
   }
   cpg.push(G?'## 関連ドキュメント':'## Related Documents','');
-  cpg.push(G?'- `.devcontainer/README.md` — DevContainer詳細設定':'- `.devcontainer/README.md` — DevContainer details',G?'- `docs/34_incident_response.md` — インシデント対応':'- `docs/34_incident_response.md` — Incident response',G?'- `docs/02_architecture.md` — システムアーキテクチャ':'- `docs/02_architecture.md` — System architecture');
+  cpg.push(G?'- `.devcontainer/README.md` — DevContainer詳細設定':'- `.devcontainer/README.md` — DevContainer details',G?'- `docs/34_incident_response.md` — インシデント対応':'- `docs/34_incident_response.md` — Incident response',G?'- `docs/03_architecture.md` — システムアーキテクチャ':'- `docs/03_architecture.md` — System architecture');
   if(isPro2){
     cpg.push('',G?'## マルチステージビルド最適化':'## Multi-Stage Build Optimization','');
     cpg.push(G?

@@ -883,7 +883,7 @@ function _genDoc41(G, domain, a, pn) {
   // Section 7: Cross-references
   doc+='## '+(G?'7. 関連ドキュメント':'7. Related Documents')+'\n\n';
   doc+='- **docs/30_goal_decomposition.md** — '+(G?'目標分解とKPI':'Goal decomposition & KPIs')+'\n';
-  doc+='- **docs/38_business_model.md** — '+(G?'ビジネスモデル詳細（決済設定時）':'Business model details (when payment configured)')+'\n';
+  if(a.payment&&!isNone(a.payment))doc+='- **docs/38_business_model.md** — '+(G?'ビジネスモデル詳細':'Business model details')+'\n';
   doc+='- **docs/24_progress.md** — '+(G?'進捗追跡':'Progress tracking')+'\n';
   doc+='- **docs/28_qa_strategy.md** — '+(G?'品質戦略':'QA strategy')+'\n\n';
 

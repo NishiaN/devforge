@@ -649,9 +649,9 @@ ${G?
     (G?['サーバーCPU/メモリ','APIレスポンス時間P50/P95','エラーレート・5xxカウント','DBクエリ時間・スロークエリ','アクティブユーザー数']:['Server CPU/memory','API response time P50/P95','Error rate & 5xx count','DB query time & slow queries','Active user count']);
   _panels.forEach((p,i)=>{ d+=(i+1)+'. '+p+'\n'; });
   d+='\n## '+(G?'クロスリファレンス':'Cross Reference')+'\n';
-  d+='- docs/105_cost_intelligence.md — '+(G?'コスト最適化':'Cost optimization')+'\n';
-  d+='- docs/106_tech_debt_intelligence.md — '+(G?'技術的負債':'Tech debt')+'\n';
-  d+='- docs/112_cost_optimization_runbook.md — '+(G?'コスト削減ランブック':'Cost reduction runbook')+'\n';
+  d+='- docs/109_cost_architecture.md — '+(G?'コスト最適化':'Cost optimization')+'\n';
+  d+='- docs/111_finops_strategy.md — '+(G?'技術的負債':'Tech debt')+'\n';
+  d+='- docs/112_cost_monitoring.md — '+(G?'コスト削減ランブック':'Cost reduction runbook')+'\n';
   return d;
 })()],
     ['18_data_migration',G?'データ移行計画書':'Data Migration Plan',(()=>{
@@ -748,10 +748,10 @@ ${G?
     d+=(G?'**React SPA 固有**\n- [ ] `React.lazy` + Suspense でコード分割\n- [ ] `useMemo` / `useCallback` で不要再レンダリング防止\n- [ ] TanStack Query でサーバー状態のキャッシュ\n- [ ] `React.memo` でコンポーネントメモ化\n- [ ] Vite Bundle Analyzer で依存確認':'**React SPA Specific**\n- [ ] Code-split with `React.lazy` + Suspense\n- [ ] Prevent unnecessary re-renders with `useMemo` / `useCallback`\n- [ ] Cache server state with TanStack Query\n- [ ] Memoize components with `React.memo`\n- [ ] Check dependencies with Vite Bundle Analyzer');
   }
   d+='\n\n## '+(G?'P25クロスリファレンス (パフォーマンス詳細)':'P25 Cross Reference (Performance Details)')+'\n\n';
-  d+='- docs/99_performance_budget.md — '+(G?'詳細バジェット設定とCI計測':'Detailed budget config and CI measurement')+'\n';
-  d+='- docs/100_web_vitals_optimization.md — '+(G?'CWV最適化実装例':'CWV optimization examples')+'\n';
-  d+='- docs/101_caching_strategy.md — '+(G?'CDN・APIキャッシュ戦略':'CDN & API caching strategy')+'\n';
-  d+='- docs/102_database_performance.md — '+(G?'DBインデックス・クエリ最適化':'DB index & query optimization')+'\n';
+  d+='- docs/99_performance_strategy.md — '+(G?'詳細バジェット設定とCI計測':'Detailed budget config and CI measurement')+'\n';
+  d+='- docs/102_performance_monitoring.md — '+(G?'CWV最適化実装例':'CWV optimization examples')+'\n';
+  d+='- docs/101_cache_strategy.md — '+(G?'CDN・APIキャッシュ戦略':'CDN & API caching strategy')+'\n';
+  d+='- docs/100_database_performance.md — '+(G?'DBインデックス・クエリ最適化':'DB index & query optimization')+'\n';
   return d;
 })()],
     ['20_a11y',G?'アクセシビリティ設計書':'Accessibility Design',(()=>{const _a11yDom=detectDomain(a.purpose||'');const _a11ySpec=_a11yDom==='fintech'?(G?'- 取引完了・エラーは aria-live="assertive" で即時通知\n- 認証フォームは autocomplete 属性付与 (current-password等)\n- 色だけでリスク情報を伝えない（アイコン+テキスト併用）':'- Transaction status/errors must use aria-live="assertive"\n- Auth forms require autocomplete attributes\n- Never convey risk via color alone (use icon+text)'):_a11yDom==='health'?(G?'- 緊急・警告情報は aria-live="assertive" で即時通知\n- 重要情報のコントラスト比は 7:1+ (AAA目標)\n- 医療用語には <abbr> タグと説明テキスト付与':'- Critical alerts must use aria-live="assertive"\n- Target 7:1+ (AAA) contrast for critical info\n- Use <abbr> with expansion for medical terms'):_a11yDom==='education'?(G?'- 動画コンテンツには字幕・文字起こし必須\n- キーボードのみでコース全体を完結できること\n- 認知負荷軽減: 1ページ1タスク原則':'- Videos require captions and transcripts\n- Full keyboard-only course completion required\n- One task per page to reduce cognitive load'):_a11yDom==='ec'?(G?'- カートへの追加操作後は aria-live でフィードバック通知\n- 商品フィルタはキーボードで操作可能\n- 購入フローの全ステップでエラー回復が可能':'- Cart updates must trigger aria-live feedback\n- Product filters must be keyboard operable\n- All checkout steps support error recovery'):(G?'- フォームフィールドには aria-label または <label> 必須\n- エラーメッセージは aria-describedby でフィールドに関連付け\n- モーダルはフォーカストラップを実装必須':'- Every form field needs aria-label or <label>\n- Error messages linked via aria-describedby\n- Modals must implement focus trap');return `## WCAG 2.2 AA ${G?'チェックリスト':'Checklist'}\n\n| ${G?'基準':'Criteria'} | ${G?'詳細':'Detail'} | ${G?'テスト方法':'Test Method'} |\n|---|---|---|\n| 1.1.1 ${G?'代替テキスト':'Alt Text'} | ${G?'全画像にalt属性':'alt on all images'} | axe-core |\n| 1.4.3 ${G?'コントラスト':'Contrast'} | ${G?'通常テキスト 4.5:1+':'Normal text 4.5:1+'} | Lighthouse |\n| 2.1.1 ${G?'キーボード':'Keyboard'} | ${G?'全機能キーボード操作可':'All functions keyboard accessible'} | ${G?'手動テスト':'Manual'} |\n| 2.4.3 ${G?'フォーカス順序':'Focus Order'} | ${G?'論理的なタブ順序':'Logical tab order'} | ${G?'手動テスト':'Manual'} |\n| 3.3.1 ${G?'エラー通知':'Error ID'} | ${G?'エラー箇所を明示':'Identify input errors'} | axe-core |\n| 4.1.3 ${G?'ステータス通知':'Status Msg'} | aria-live | axe-core |\n\n## ${G?'ドメイン固有 A11y 要件':'Domain-Specific A11y Requirements'} (${_a11yDom||G?'汎用':'generic'})\n\n${_a11ySpec}${(a.mobile&&!/なし|none/i.test(a.mobile)&&/expo|react.?native|flutter/i.test(a.mobile))?'\n\n## '+(G?'モバイル HIG / Android Quality Guidelines':'Mobile HIG / Android Quality Guidelines')+'\n- '+(G?'Apple HIG: ネイティブコントロール使用・セーフエリア対応・最小タップターゲット 44×44pt':'Apple HIG: use native controls, support safe area, min tap target 44×44pt')+'\n- '+(G?'Material Design 3: 最小タップターゲット 48×48dp・バックジェスチャー対応':'Material Design 3: min tap target 48×48dp, support back gesture'):''}\n\n## ${G?'スクリーンリーダーテスト手順':'Screen Reader Test Procedures'}\n\n| ${G?'ツール':'Tool'} | ${G?'対象':'Platform'} | ${G?'テスト観点':'Test Points'} |\n|------|--------|----------|\n| VoiceOver | iOS / macOS | ${G?'読み上げ順序・アクション確認':'Reading order & action confirmation'} |\n| TalkBack | Android | ${G?'タップジェスチャー・フォーカス移動':'Tap gestures & focus navigation'} |\n| NVDA | Windows | ${G?'フォームラベル・エラー通知':'Form labels & error announcements'} |\n\n## ${G?'自動テストツール':'Automated A11y Testing'}\n\n\`\`\`bash\n# axe-core (${G?'ユニットテスト統合':'unit test integration'})\nnpm install @axe-core/react --save-dev\n\n# Lighthouse ${G?'アクセシビリティスコア確認':'accessibility score'}\nnpx lighthouse http://localhost:3000 --only-categories=accessibility\n\n# pa11y ${G?'バッチ検証':'batch validation'}\nnpx pa11y http://localhost:3000\n\`\`\`\n\n## ${G?'AI アクセシビリティ監査プロンプト':'AI Accessibility Audit Prompt'}\n\n\`\`\`\n${G?'以下のコンポーネントを WCAG 2.2 AA 基準で診断してください。\n[コードを貼り付け]\n確認項目: aria属性の不足・キーボードフォーカス・コントラスト・エラー関連付け・aria-live\n修正コードも合わせて提示してください。':'Diagnose this component for WCAG 2.2 AA compliance.\n[Paste component code]\nCheck: missing aria attrs, keyboard focus, contrast, error associations, aria-live\nProvide corrected code for each issue found.'}\n\`\`\``;})()],
@@ -1042,7 +1042,7 @@ Steps:
     {id:'DEC-006',content:'駆動開発手法確定 ('+_devMethods+')',doc:'.spec/specification.md'},
     {id:'DEC-007',content:'モバイル戦略確定 ('+_mobile+')',doc:'.spec/technical-plan.md'},
     {id:'DEC-008',content:'AI開発レベル確定 ('+_aiAuto+')',doc:'docs/22_prompt_playbook.md'},
-    {id:'DEC-009',content:'決済方式確定 ('+_pay+')',doc:'docs/38_business_model.md'},
+    {id:'DEC-009',content:'決済方式確定 ('+_pay+')',doc:/なし/.test(_pay)?'.spec/specification.md':'docs/38_business_model.md'},
     {id:'DEC-010',content:'スコープ外確定 ('+String(_scopeOut).slice(0,40)+')',doc:'docs/02_requirements.md'},
     {id:'DEC-011',content:'成功指標確定 ('+String(_successGoal).slice(0,40)+')',doc:'docs/01_project_overview.md'},
     {id:'DEC-012',content:'リリース目標確定 ('+_deadlineGoal+')',doc:'docs/10_gantt.md'},
@@ -1055,7 +1055,7 @@ Steps:
     {id:'DEC-006',content:'Dev methodology finalized ('+_devMethods+')',doc:'.spec/specification.md'},
     {id:'DEC-007',content:'Mobile strategy finalized ('+_mobile+')',doc:'.spec/technical-plan.md'},
     {id:'DEC-008',content:'AI dev level finalized ('+_aiAuto+')',doc:'docs/22_prompt_playbook.md'},
-    {id:'DEC-009',content:'Payment method finalized ('+_pay+')',doc:'docs/38_business_model.md'},
+    {id:'DEC-009',content:'Payment method finalized ('+_pay+')',doc:/None/i.test(_pay)?'.spec/specification.md':'docs/38_business_model.md'},
     {id:'DEC-010',content:'Scope-out finalized ('+String(_scopeOut).slice(0,40)+')',doc:'docs/02_requirements.md'},
     {id:'DEC-011',content:'Success metrics finalized ('+String(_successGoal).slice(0,40)+')',doc:'docs/01_project_overview.md'},
     {id:'DEC-012',content:'Release target finalized ('+_deadlineGoal+')',doc:'docs/10_gantt.md'},
@@ -1284,14 +1284,14 @@ Steps:
     const _gates=G?[
       {name:'Gate 1: 要件定義完了',checks:['[ ] 全MVP機能にAC（受入基準）定義 → .spec/specification.md','[ ] 非機能要件が定量値で記述 → docs/02_requirements.md','[ ] スコープ外が明文化 → docs/116_estimation_prerequisites.md §2','[ ] 見積前提確認 → docs/116_estimation_prerequisites.md §4']},
       {name:'Gate 2: 設計完了',checks:['[ ] ER図レビュー完了 → docs/04_er_diagram.md','[ ] API設計レビュー完了 → docs/05_api_design.md','[ ] 画面設計レビュー完了 → docs/06_screen_design.md','[ ] セキュリティ設計確認 → docs/08_security.md','[ ] 設計レビュー記録 → 本文書 §2',hasPay?'[ ] 決済フロー設計確認 → docs/38_business_model.md':'[ ] 認証フロー設計確認 → .spec/specification.md']},
-      {name:'Gate 3: 実装完了',checks:['[ ] コードレビュー完了（PRごと）','[ ] テストカバレッジ 80%+ → docs/17_test_strategy.md','[ ] Lint・型チェッククリーン','[ ] セキュリティスキャン完了 → docs/22_prompt_playbook.md',hasPay?'[ ] 決済E2Eテスト通過':'[ ] 認証E2Eテスト通過','[ ] compat警告ゼロ確認']},
+      {name:'Gate 3: 実装完了',checks:['[ ] コードレビュー完了（PRごと）','[ ] テストカバレッジ 80%+ → docs/36_test_strategy.md','[ ] Lint・型チェッククリーン','[ ] セキュリティスキャン完了 → docs/22_prompt_playbook.md',hasPay?'[ ] 決済E2Eテスト通過':'[ ] 認証E2Eテスト通過','[ ] compat警告ゼロ確認']},
       {name:'Gate 4: テスト完了',checks:['[ ] UATシート全項目完了 → docs/108_uat_acceptance.md','[ ] P0不具合ゼロ','[ ] P1不具合は対応済みまたは計画策定','[ ] 非機能テスト（LCP/可用性）通過 → docs/108_uat_acceptance.md §3','[ ] リリースチェックリスト確認 → docs/09_release_checklist.md']},
       {name:'Gate 5: リリース判定',checks:['[ ] Go/No-Go判定会議実施 → docs/108_uat_acceptance.md §5','[ ] ステークホルダー承認取得 → docs/107_project_governance.md','[ ] ロールバック手順確認 → docs/09_release_checklist.md','[ ] '+deployTarget+'デプロイ手順確認 → scaffolding/SETUP.md','[ ] CI/CDパイプライン動作確認 → .github/workflows/ci.yml']},
       {name:'Gate 6: 運用開始',checks:['[ ] 監視・アラート設定 → docs/103_observability_architecture.md','[ ] RunBook整備 → docs/'+deployTarget.toLowerCase().replace(/[^a-z]/g,'_')+'（参照: §5）','[ ] 問い合わせ対応フロー確認 → 本文書 §4','[ ] バックアップ確認 → docs/90_backup_disaster_recovery.md','[ ] チーム引き継ぎ完了']}
     ]:[
       {name:'Gate 1: Requirements Complete',checks:['[ ] All MVP features have Acceptance Criteria → .spec/specification.md','[ ] Non-functional requirements are quantitative → docs/02_requirements.md','[ ] Scope-out is documented → docs/116_estimation_prerequisites.md §2','[ ] Estimation assumptions confirmed → docs/116_estimation_prerequisites.md §4']},
       {name:'Gate 2: Design Complete',checks:['[ ] ER diagram reviewed → docs/04_er_diagram.md','[ ] API design reviewed → docs/05_api_design.md','[ ] Screen design reviewed → docs/06_screen_design.md','[ ] Security design confirmed → docs/08_security.md','[ ] Design review record → this doc §2',hasPay?'[ ] Payment flow design reviewed → docs/38_business_model.md':'[ ] Auth flow design reviewed → .spec/specification.md']},
-      {name:'Gate 3: Implementation Complete',checks:['[ ] Code review done (per PR)','[ ] Test coverage 80%+ → docs/17_test_strategy.md','[ ] Lint & type checks clean','[ ] Security scan complete → docs/22_prompt_playbook.md',hasPay?'[ ] Payment E2E tests pass':'[ ] Auth E2E tests pass','[ ] Zero compat warnings']},
+      {name:'Gate 3: Implementation Complete',checks:['[ ] Code review done (per PR)','[ ] Test coverage 80%+ → docs/36_test_strategy.md','[ ] Lint & type checks clean','[ ] Security scan complete → docs/22_prompt_playbook.md',hasPay?'[ ] Payment E2E tests pass':'[ ] Auth E2E tests pass','[ ] Zero compat warnings']},
       {name:'Gate 4: Testing Complete',checks:['[ ] UAT sheet all items done → docs/108_uat_acceptance.md','[ ] P0 bugs = 0','[ ] P1 bugs resolved or planned','[ ] NFR tests pass (LCP/availability) → docs/108_uat_acceptance.md §3','[ ] Release checklist confirmed → docs/09_release_checklist.md']},
       {name:'Gate 5: Release Judgment',checks:['[ ] Go/No-Go meeting held → docs/108_uat_acceptance.md §5','[ ] Stakeholder approval obtained → docs/107_project_governance.md','[ ] Rollback procedure confirmed → docs/09_release_checklist.md','[ ] '+deployTarget+' deploy procedure confirmed → scaffolding/SETUP.md','[ ] CI/CD pipeline verified → .github/workflows/ci.yml']},
       {name:'Gate 6: Operations Start',checks:['[ ] Monitoring & alerts configured → docs/103_observability_architecture.md','[ ] RunBook prepared (see §5)','[ ] Inquiry handling flow confirmed → this doc §4','[ ] Backup verified → docs/90_backup_disaster_recovery.md','[ ] Team handover complete']}
@@ -2855,31 +2855,31 @@ Steps:
 
   // Build pillar activation list based on answers
   const cpPillars=[
-    {n:1, label:G?'SDD仕様書':'SDD Spec', file:'docs/51_specification.md', deps:[], always:true},
+    {n:1, label:G?'SDD仕様書':'SDD Spec', file:'.spec/specification.md', deps:[], always:true},
     {n:2, label:G?'タスク管理':'Task Plan', file:'.spec/tasks.md', deps:[1], always:true},
     {n:3, label:G?'テクノロジー':'Tech Stack', file:'docs/03_architecture.md', deps:[1], always:true},
-    {n:4, label:G?'UI/UX設計':'UI/UX Design', file:'docs/05_ui_design.md', deps:[1,3], always:true},
-    {n:5, label:G?'API設計':'API Design', file:'docs/21_api_overview.md', deps:[3], active:!isBaaS||inc2(cpFe,'Next')},
-    {n:6, label:G?'DB設計':'DB Schema', file:'docs/31_db_design.md', deps:[3,5], always:true},
-    {n:7, label:G?'ロードマップ':'Roadmap', file:'docs/roadmap/ROADMAP.md', deps:[1,2], always:true},
-    {n:8, label:G?'認証・認可':'Auth & RBAC', file:'docs/43_security_checklist.md', deps:[3,6], active:!!(cpAuth&&cpAuth!=='なし')},
-    {n:9, label:G?'決済':'Payment', file:'docs/payment_flow.md', deps:[5,8], active:hasPay},
-    {n:10, label:G?'リバースフロー':'Reverse Flow', file:'docs/reverse_flow.md', deps:[1,7], always:true},
-    {n:11, label:G?'エラー処理':'Error Handling', file:'docs/55_error_handling.md', deps:[5], always:true},
-    {n:12, label:G?'国際化':'i18n/l10n', file:'docs/i18n.md', deps:[4], active:/i18n|国際化|多言語/i.test(a.mvp_features||'')},
-    {n:13, label:G?'ビジネス戦略':'Business', file:'docs/41_business_model.md', deps:[1], active:hasPay||cpDomain==='saas'||cpDomain==='ec'},
-    {n:14, label:G?'OpsDevOps':'Ops/DevOps', file:'docs/71_devops.md', deps:[3,7], always:true},
-    {n:15, label:G?'将来設計':'Future Design', file:'docs/81_future_design.md', deps:[1,7,13], always:true},
+    {n:4, label:G?'UI/UX設計':'UI/UX Design', file:'docs/06_screen_design.md', deps:[1,3], always:true},
+    {n:5, label:G?'API設計':'API Design', file:'docs/05_api_design.md', deps:[3], active:!isBaaS||inc2(cpFe,'Next')},
+    {n:6, label:G?'DB設計':'DB Schema', file:'docs/04_er_diagram.md', deps:[3,5], always:true},
+    {n:7, label:G?'ロードマップ':'Roadmap', file:'roadmap/MILESTONES.md', deps:[1,2], always:true},
+    {n:8, label:G?'認証・認可':'Auth & RBAC', file:'docs/43_security_intelligence.md', deps:[3,6], active:!!(cpAuth&&cpAuth!=='なし')},
+    {n:9, label:G?'決済':'Payment', file:'docs/38_business_model.md', deps:[5,8], active:hasPay},
+    {n:10, label:G?'リバースフロー':'Reverse Flow', file:'docs/29_reverse_engineering.md', deps:[1,7], always:true},
+    {n:11, label:G?'エラー処理':'Error Handling', file:'docs/25_error_logs.md', deps:[5], always:true},
+    {n:12, label:G?'国際化':'i18n/l10n', file:'docs/06_screen_design.md', deps:[4], active:/i18n|国際化|多言語/i.test(a.mvp_features||'')},
+    {n:13, label:G?'ビジネス戦略':'Business', file:'docs/50_stakeholder_strategy.md', deps:[1], active:hasPay||cpDomain==='saas'||cpDomain==='ec'},
+    {n:14, label:G?'OpsDevOps':'Ops/DevOps', file:'docs/77_cicd_pipeline_design.md', deps:[3,7], always:true},
+    {n:15, label:G?'将来設計':'Future Design', file:'docs/56_market_positioning.md', deps:[1,7,13], always:true},
     {n:16, label:G?'アーキテクチャ品質':'Arch Quality', file:'docs/82_architecture_integrity_check.md', deps:[3,5,6,8], always:true},
     {n:17, label:G?'Promptゲノム':'Prompt Genome', file:'AI_BRIEF.md', deps:[1,3], always:true},
-    {n:18, label:G?'Promptオペレーション':'Prompt Ops', file:'.claude/CLAUDE.md', deps:[17], always:true},
-    {n:19, label:G?'エンタープライズ':'Enterprise', file:'docs/enterprise_overview.md', deps:[8,13], active:cpDomain==='saas'||cpDomain==='fintech'||cpDomain==='health'||cpDomain==='hr'||cpDomain==='legal'},
+    {n:18, label:G?'Promptオペレーション':'Prompt Ops', file:'CLAUDE.md', deps:[17], always:true},
+    {n:19, label:G?'エンタープライズ':'Enterprise', file:'docs/73_enterprise_architecture.md', deps:[8,13], active:cpDomain==='saas'||cpDomain==='fintech'||cpDomain==='health'||cpDomain==='hr'||cpDomain==='legal'},
     {n:20, label:'CI/CD', file:'.github/workflows/ci.yml', deps:[14], always:true},
-    {n:21, label:G?'API品質':'API Quality', file:'docs/22_api_versioning.md', deps:[5], active:!isBaaS},
-    {n:22, label:G?'データベース最適化':'DB Optimization', file:'docs/33_migration_strategy.md', deps:[6], always:true},
-    {n:23, label:G?'テスト戦略':'Testing', file:'docs/91_test_strategy.md', deps:[5,6], always:true},
-    {n:24, label:G?'AI安全性':'AI Safety', file:'docs/ai_safety.md', deps:[3,8], active:!!(a.ai_auto&&!/なし|None|none/.test(a.ai_auto))},
-    {n:25, label:G?'パフォーマンス':'Performance', file:'docs/94_performance_budget.md', deps:[3,22,23], always:true},
+    {n:21, label:G?'API品質':'API Quality', file:'docs/83_api_design_principles.md', deps:[5], active:!isBaaS},
+    {n:22, label:G?'データベース最適化':'DB Optimization', file:'docs/89_migration_strategy.md', deps:[6], always:true},
+    {n:23, label:G?'テスト戦略':'Testing', file:'docs/91_testing_strategy.md', deps:[5,6], always:true},
+    {n:24, label:G?'AI安全性':'AI Safety', file:'docs/95_ai_safety_framework.md', deps:[3,8], active:!!(a.ai_auto&&!/なし|None|none/.test(a.ai_auto))},
+    {n:25, label:G?'パフォーマンス':'Performance', file:'docs/94_performance_testing.md', deps:[3,22,23], always:true},
   ];
 
   const activePillars=cpPillars.filter(p=>p.always||p.active);
@@ -2986,8 +2986,8 @@ function genDevForgeGuide(a,pn,G){
   doc+=(G?'### AI開発ループ\n\n1. **ZIPをダウンロード**してCursor / Windsurf / Claude Codeで開く\n2. **CLAUDE.md を読ませる**: `@CLAUDE.md` または `Read CLAUDE.md and understand the project`\n3. **tasks.md の最優先タスクを実装させる**: `tasks.mdの最優先タスクを実装してください`\n4. 実装後、**compat警告**を確認（wizard画面 → Compatタブ）\n5. **AI Launcher**でドメイン固有プロンプトを活用（pillar 7タブ）\n':
     '### AI Development Loop\n\n1. **Download ZIP** and open in Cursor / Windsurf / Claude Code\n2. **Feed CLAUDE.md**: `@CLAUDE.md` or `Read CLAUDE.md and understand the project`\n3. **Implement from tasks.md**: `Implement the top-priority task from tasks.md`\n4. After implementation, **check compat warnings** (wizard screen → Compat tab)\n5. **Use AI Launcher** for domain-specific prompts (pillar 7 tab)\n')+'\n';
 
-  doc+=(G?'### ロール別の読み方\n\n- **開発者**: CLAUDE.md → .spec/ → docs/03_architecture.md → scaffolding/SETUP.md\n- **PM**: docs/01_project_overview.md → docs/02_requirements.md → docs/107_project_governance.md\n- **QA**: docs/108_uat_acceptance.md → docs/91_test_strategy.md → docs/22_prompt_playbook.md\n- **アーキテクト**: docs/03_architecture.md → docs/82_architecture_integrity_check.md → .spec/technical-plan.md\n':
-    '### Reading Guide by Role\n\n- **Developer**: CLAUDE.md → .spec/ → docs/03_architecture.md → scaffolding/SETUP.md\n- **PM**: docs/01_project_overview.md → docs/02_requirements.md → docs/107_project_governance.md\n- **QA**: docs/108_uat_acceptance.md → docs/91_test_strategy.md → docs/22_prompt_playbook.md\n- **Architect**: docs/03_architecture.md → docs/82_architecture_integrity_check.md → .spec/technical-plan.md\n')+'\n';
+  doc+=(G?'### ロール別の読み方\n\n- **開発者**: CLAUDE.md → .spec/ → docs/03_architecture.md → scaffolding/SETUP.md\n- **PM**: docs/01_project_overview.md → docs/02_requirements.md → docs/107_project_governance.md\n- **QA**: docs/108_uat_acceptance.md → docs/91_testing_strategy.md → docs/22_prompt_playbook.md\n- **アーキテクト**: docs/03_architecture.md → docs/82_architecture_integrity_check.md → .spec/technical-plan.md\n':
+    '### Reading Guide by Role\n\n- **Developer**: CLAUDE.md → .spec/ → docs/03_architecture.md → scaffolding/SETUP.md\n- **PM**: docs/01_project_overview.md → docs/02_requirements.md → docs/107_project_governance.md\n- **QA**: docs/108_uat_acceptance.md → docs/91_testing_strategy.md → docs/22_prompt_playbook.md\n- **Architect**: docs/03_architecture.md → docs/82_architecture_integrity_check.md → .spec/technical-plan.md\n')+'\n';
 
   // Section 3: Warnings / caveats
   doc+='## 3. '+(G?'注意点':'Important Caveats')+'\n\n';
