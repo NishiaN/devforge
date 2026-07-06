@@ -155,7 +155,7 @@ function applyLang(){
   if($('presetRow'))initPresets();
   // Update html lang attribute and document title (D3)
   document.documentElement.lang=S.lang;
-  document.title=ja?'DevForge v9.22 — AI駆動開発 統合プラットフォーム':'DevForge v9.22 — AI-Driven Development Platform';
+  document.title=ja?'DevForge v9.39 — AI駆動開発 統合プラットフォーム':'DevForge v9.39 — AI-Driven Development Platform';
   // Compare button translation (D4)
   const cl=$('compareLbl');if(cl)cl.textContent=ja?'テンプレート比較':'Compare Templates';
   // Hearing sheet DL button (Lv2+)
@@ -254,7 +254,7 @@ if(S.projectName&&S.phase>0){
 }
 
 // What's New indicator (HCD: C継続利用)
-const CURRENT_VERSION='9.22.0';
+const CURRENT_VERSION='9.39.0';
 const lastSeenVersion=_lsGet('devforge-last-version');
 if(lastSeenVersion!==CURRENT_VERSION){
   const helpBtn=$('helpBtn')||document.querySelector('[onclick*="showManual"]');
