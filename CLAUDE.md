@@ -4,9 +4,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ---
 
-# DevForge v9.21
+# DevForge v9.22
 
-**AI Development OS** — 86 JS modules in `src/` → single `devforge-v9.html` (~5835KB / 6500KB limit).
+**AI Development OS** — 86 JS modules in `src/` → single `devforge-v9.html` (~5843KB / 6500KB limit).
 Generates **227+ files** across **28 pillars** from a wizard-driven Q&A session.
 
 ## Documentation Map
@@ -18,10 +18,10 @@ Generates **227+ files** across **28 pillars** from a wizard-driven Q&A session.
 ## Build & Test
 
 ```bash
-node build.js                          # → devforge-v9.html (~4712KB, limit 6500KB)
+node build.js                          # → devforge-v9.html (~5843KB, limit 6500KB)
 node build.js --no-minify              # debug (skip minification)
 node build.js --report                 # build + size breakdown by module
-npm test                               # ~7391 tests, all passing (v9.21)
+npm test                               # ~7411 tests, all passing (v9.22)
 node --test test/gen-quality.test.js   # single test file
 npm run dev                            # build + live-server :3000
 npm run check                          # syntax-check extracted JS
@@ -189,7 +189,7 @@ After adding: update header comment totals, add tests to `test/compat.test.js`, 
 | Preset matching | phase-n (N-1〜N-9 + G-1〜G-7, 68 tests) | ~68 |
 | Other | i18n, state, techdb, utils, complexity, mermaid (30 tests, all 28 pillars), help-hints | ~62 |
 
-**Total: 7391 tests** | Test harness pattern: `eval(fs.readFileSync(...))` to load src files; global `S` mock at top.
+**Total: 7411 tests** | Test harness pattern: `eval(fs.readFileSync(...))` to load src files; global `S` mock at top.
 
 **When adding domains**, update: `test/data-coverage.test.js` (4 arrays), `test/gen-coherence.test.js`, `test/ops.test.js`.
 
@@ -199,7 +199,7 @@ After adding: update header comment totals, add tests to `test/compat.test.js`, 
 
 `docs/82_architecture_integrity_check.md` — always generated; scores ORM/Auth/CORS/async/soft-delete integrity (10.0 scale).
 
-**File count ranges** (used in tests): `snapshot.test.js` A:154–221/B:144–210; `gen-quality.test.js` A25 120–224.
+**File count ranges** (used in tests): `snapshot.test.js` A:155–222/B:145–211; `gen-quality.test.js` A25 120–224.
 
 Key output structure:
 - `.spec/` — constitution, specification, technical-plan, tasks, verification
@@ -208,7 +208,7 @@ Key output structure:
 - `docs/` — 127 documents (00_devforge_guide … 127_manufacturing_iot_guide)
   - `docs/107_project_governance.md` — always generated; governance, decisions log, issue/CR management
   - `docs/108_uat_acceptance.md` — always generated; UAT scenarios (from features), Go/No-Go, defect mgmt
-- AI rules — AI_BRIEF.md, .cursorrules, .clinerules, .windsurfrules, AGENTS.md, skills/
+- AI rules — AI_BRIEF.md, .cursor/rules/main.mdc, .cursorrules, .clinerules, .windsurfrules, AGENTS.md, skills/
 - CI/CD — .github/workflows/ci.yml
 
 ## Forbidden

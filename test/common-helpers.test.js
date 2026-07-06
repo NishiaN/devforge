@@ -265,7 +265,7 @@ describe('getEntityColumns()', () => {
     assert.ok(Array.isArray(colsJa));
   });
 
-  it('returns empty array for unknown entity', () => {
+  it('returns synthesized fallback columns for unknown entity (v9.22)', () => {
     const cols = getEntityColumns('FooBarBaz123Unknown', true, []);
     assert.ok(Array.isArray(cols));
   });
