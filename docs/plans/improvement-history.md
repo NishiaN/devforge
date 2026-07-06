@@ -283,7 +283,14 @@ techdb本体照査後、「その他の鮮度敏感箇所」を洗い出し4Tier
 - **Tier3（外部照会・ビルド影響）**: GH Actions `@v4→@v5`世代（checkout/setup-node/upload-artifact/codecov/dependency-review, attest `v2→v4`; 11生成file）+ codecov v5の `file:→files:` 入力改名。MCP protocolVersion `2024-11-05→2025-11-25`（最新確定spec）。**CDNはHOLD判断**: marked(cdnjs上限16.3)/mermaid(cdnjs 11.12=v11破壊的default.*API+ラベル修正11.13.0未達で高リスク)/jszip(既に最新)
 - **Tier4（prose選別）**: presets scaleHint 45箇所の `GPT-4→GPT-5`（GPT-4o先処理で誤変換回避）、`Claude 4.5/4.6→Opus 4.8/Sonnet 5`、UI/tour/common の GPT-4o→GPT-5。**test fixtureのGPT-4はユーザー入力シミュレーションのため意図的維持**
 
-テスト追随: cicd.test(checkout@v5)、gen-quality(claude-opus-4-8/gpt-5.4)。検証: 各Tierでbuild+7525 tests全合格、実生成で全反映確認。src全体でstale AIモデル残存ゼロ。教訓「①外部照会は3並列で領域分担 ②CDNはcdnjs配信上限と破壊的変更で"最新化せずHOLD"が正解のこともある ③旧値アサートするテストの追随を忘れない（cicd/gen-quality 3件）」。**別途観測: tour.jsの「109テンプレート」は実116で未更新（AIモデル鮮度と別カテゴリ=次回）**
+テスト追随: cicd.test(checkout@v5)、gen-quality(claude-opus-4-8/gpt-5.4)。検証: 各Tierでbuild+7525 tests全合格、実生成で全反映確認。src全体でstale AIモデル残存ゼロ。教訓「①外部照会は3並列で領域分担 ②CDNはcdnjs配信上限と破壊的変更で"最新化せずHOLD"が正解のこともある ③旧値アサートするテストの追随を忘れない（cicd/gen-quality 3件）」
+
+**Tier5（機能カウント・日付・doc数の鮮度、追加実施）**:
+- ランチャーテンプレ数 `109→116`（init/tour/guide/sidebar/templates; templateOrder.length実測=116）。docs/109_cost_architecture.md等のファイル番号109は文脈分離で無傷
+- 分野別プリセット `603→602`、合計 `860→859`（257標準+602）
+- wizard仕様書skeletonの記入例日付 `2025年9月/12月→2026年12末MVP/2027年3末本番`（ja+en、過去日付=陳腐化）
+- CLAUDE.md docs数 `127(00…127)→134(00…137_loop_engineering_guide)`（実測134ユニーク番号; 128 XAI/135-137 GCTMS-loopが未反映だった）。templates.jsの「134仕様書」は実測一致で正=維持
+- 規制施行日(EAA2025/DORA2025)・「2024年問題」等の固有名詞は事実として維持。教訓「カウント鮮度は"実測で正値確定"してから置換（134はむしろ正・127が誤だった）／同一数値でも文脈分離(テンプレ数109 vs docs/109ファイル番号)」
 
 ---
 
