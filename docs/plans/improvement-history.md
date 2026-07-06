@@ -1,0 +1,102 @@
+# DevForge 改善履歴
+
+**最終更新**: 2026-07-06 | **現在値**: v9.27 / 7449 tests / 5906KB (6500KB上限) / 116 launcher templates / 28 pillars / 227+ generated files
+
+このドキュメントは DevForge の改善バッチ履歴の正典です。各バッチの詳細設計・実施報告は `docs/plans/` 配下、過去バッチ(ext5〜v9.18)の詳細はプロジェクトメモリ `memory/history.md` を参照。
+
+---
+
+## サマリ: 品質改善の到達点
+
+2026-07-06 のセッションで v9.19（履歴欠落の追いコミット）から v9.27 まで9バッチを実施。**生成物の信頼性を「動かない・嘘・矛盾・壊れた参照・レンダリング欠陥ゼロ」まで引き上げ、スキルLv適応を全28柱で完結、AI開発の4層（Prompt→Context→Harness→Loop）を揃えた。**
+
+| 指標 | v9.19開始時 | v9.27現在 | 変化 |
+|------|-----------|----------|------|
+| テスト | 7391 | **7449** | +58（全て回帰網） |
+| ビルドサイズ | 5835KB | 5906KB | +71KB（残594KB） |
+| スキルLv適応 | 16/28柱(実態) | **28/28柱** | 完結 |
+| launcher テンプレート | 115 | **116** | +1 |
+| 生成物の致命傷 | 多数 | **ゼロ** | — |
+
+---
+
+## セッション履歴（2026-07-06）
+
+### v9.19 — GCTMSハーネスエンジニアリング統合（追いコミット） `5f3aec9`
+MEMORY.md では完了記録があったが git 履歴から欠落していた変更を確定。docs/135 メモリアーキテクチャ + docs/136 GCTMSガイド + settings.json 3ゾーンパーミッション。**発見経緯**: セッション冒頭の状況確認で、v9.20/v9.21 が v9.19 を含まずにコミットされていたことを検出。
+
+### v9.22 — 信頼性ファーストバッチ（4観点監査 45件） `f1a0b8b`〜`bcddf68`
+4体の探索エージェントを並列起動し、初心者UX / プロ+EN / アプリ品質 / 生成物実用価値 の4観点で55件を発見、45件を修正。
+
+- **Phase A（生成物クリティカル 15件）**: 実在しないMCPパッケージ→実在名、Claude Code導入手順を現行仕様（`.mcp.json`/`claude mcp add`）、`.cursor/rules/*.mdc` 現行形式、CLAUDE.md虚偽説明修正、detectDomain「機械学習→education誤検出」解消、Jest無言無効化キー修正、モデル/価格鮮度更新
+- **Phase B（EN・整合性 4件）**: EN専用5テンプレート解放、壊れた文書参照14件解消、JP-in-EN混入修正
+- **Phase C（初心者UX 9件）**: スキル質問重複解消、v9.6→v9.22全域統一、エラー文言平易化、用語「柱」統一
+- **Phase D（アプリ品質 6件）**: save()デバウンス、キーボード完全対応、marked CDN失敗時のXSS経路遮断、noopener強制
+- **Phase E**: 回帰テスト20件
+
+詳細: `docs/plans/v922-reliability-design.md`, `docs/plans/v922-implementation-report.md`
+
+### v9.23 — Pro深度バッチ（スキルLv適応 28/28完結） `bbdedb8`〜`87a5f1c`
+適応ゼロだった12柱すべてに Pro セクション（skillLv≥5）+ 4柱に Beg入門を追加。**ADD-only原則**で既存コンテンツ無改変、snapshot完全無影響。
+
+| Group | 柱 | Pro深度 |
+|-------|-----|---------|
+| G1 | p19/p14/p26 | SSO/SCIM+テナント分離テスト / プログレッシブデリバリー / テールサンプリング+マルチバーンレート |
+| G2 | p24/p28/p5 | レッドチームCI / Counterfactual実装 / フレーキー隔離+ミューテーションゲート |
+| G3 | p13/p15/p16 | RICE+70-20-10ポートフォリオ / シナリオプランニング2×2 / DORA 4メトリクス |
+| G4 | p17/p18/p10 | 評価ハーネス3層 / 回帰テストCI / アーキテクチャ適応度関数 |
+
+詳細: `docs/plans/v923-pro-depth-design.md`, `docs/plans/v923-implementation-report.md`
+
+### v9.24 — 体感性能+モバイルバッチ `8ee365f`
+- Mermaid SVGキャッシュ（テーマ別キー、再訪時の再レンダリングスキップ）
+- サイドバー差分更新（ファイルクリック毎の227件全再構築を解消 → 「最近」節のみ差分）
+- ナビ系 save() のデバウンス化 9箇所（データ操作系は即時保存を堅持）
+- 小画面UX（qbar max-height+スクロール、ヘルプポップアップ実測高さクランプ）
+
+### v9.25 — 生成物クロスリファレンス完全解消 `bc1ab6a`
+フル生成の生成md内に存在した壊れた相互参照 約27件をソース根絶。最大の発生源は `docs/00_pillar_dependency_map` の25ノードの `file:` 定義（旧名・変種名）。条件付きファイル（docs/38決済 / docs/98-2 XAI）への無条件参照を4箇所ガード。2シナリオ×2言語の xref-zero 回帰テスト新設。
+
+### v9.26 — E2E成果物完全性 `fa35b1b`
+先送りリスト2件（launcher圧縮・ダッシュボード差分化）を着手前に再評価し、どちらも非優先と判断（前者=残614KBで低緊急・高リスク、後者=filterTechDBが既にdisplayトグル最適化済）。方針転換し、**実バンドルをE2E検査**して実バグを発見: `docs/41` の互換性アラートが `checkCompat()` の存在しないフィールド（`r.severity`/`r.msg_ja`）を読み `undefined` を出力していた。checkCompatの実shape `{level, msg}` に修正。コードフェンス除外のテンプレ漏洩検出+JSON有効性+crown-jewel非空の回帰テスト新設。
+
+### v9.27 — ループエンジニアリング統合（参考資料活用） `4536a4f`
+参考資料「ループエンジニアリング」を DevForge の GCTMS(docs/136)の**真上の層**として統合。読むだけでなく**動くループ資産を生成**:
+
+- **docs/137_loop_engineering_guide.md**: Prompt→Context→Harness→Loop 4層 / 5アクション / 6パーツ / 評価役分離。skillLv適応
+- **`.claude/settings.json` フック**: PostToolUse=型チェック / Stop=フルテスト。スタック適応（Node→tsc+npm test, Python→pyright+pytest, Vite→vitest, Rust→cargo）
+- **`.claude/agents/fixer.md`**: 2回失敗時の行き詰まり打破エージェント（推測禁止/model:opus）
+- **CLAUDE.md ループ協議節**: 完了の再定義+停止条件+2つの禁止+@fixer
+- launcher `loop_design🔁` テンプレ（116個目）
+
+これで docs/135(Memory)→136(GCTMS Harness)→137(Loop) の4層が揃った。
+
+---
+
+## 手法上の教訓（横断）
+
+- **ADD-only原則**: スキルLv/Pro深度追加は「追加のみ・非表示化なし」でsnapshot（intermediate想定）を壊さない。v9.23/v9.27で全面適用
+- **E2E検査の価値**: ユニットテスト（構造検証）は「実際にレンダリングされた成果物」の欠陥（undefined出力・テンプレ漏洩）を見逃す。v9.26で実証
+- **先送りの再評価**: バックログ項目も着手前に価値を測る。v9.26で「既に最適化済み/低緊急」を発見し方針転換
+- **テストはビルド後に実行**: security等がdevforge-v9.htmlを読むため、古いビルドで誤検出
+- **snapshot harness流用**: `const S`→`var S` 置換が必須（constはevalスコープ外に漏れない）、generate()第3引数がgenLang
+
+---
+
+## 過去バッチ（v9.18以前）
+
+ext5〜ext22（プリセット257/603到達）、P28 XAI（86番目モジュール）、v9.7（entity-ext復活 +280KB）〜v9.21（UX改善）の詳細は `memory/history.md` に記録。主要マイルストーン:
+
+- **v9.7**: entity-ext dead-codeバグ修正で858 ENTITY_COLUMNS復活
+- **v9.14〜v9.16**: DOMAIN_INVARIANTS拡張、P19 Enterprise 32/32完結
+- **v9.19**: GCTMS（Guard/Context/Tool/Memory/Supervision）ハーネス導入
+- **v9.20**: DOMAIN_INVARIANTS 32/32・TechDB 538完結
+- **v9.21**: ドメインヒント32/32・UX改善
+
+---
+
+## 先送り事項（v9.28+ 候補）
+
+- **launcher.js ja/en 圧縮**（393KB）: サイズ逼迫時に着手。v9.22で確立した共有ブロック方式の全面展開
+- **doc番号レジストリ**: 同番号異名の全面解消（1生成内の重複は既にゼロ、複数プリセット横断の名前空間化）
+- **7アンチパターン明示チェックリスト**: 参考資料の残り題材（既存設計と重複多く保留中）
