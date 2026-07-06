@@ -124,7 +124,8 @@ ${coreRules}
 - Follow Plan→Act loop for each task
 - After task completion: run npm test
 - Update docs/24_progress.md after completing tasks
-- Log errors to docs/25_error_logs.md`;
+- Log errors to docs/25_error_logs.md
+- Note: newer Cline versions also support the .clinerules/ directory format`;
 
   // Windsurf-specific rules
   const windsurfRules=`You are an AI assistant for "${pn}".
@@ -137,7 +138,8 @@ ${coreRules}
 - Leverage Cascade for context-aware coding
 - Create Flows for repetitive tasks
 - Keep context focused: AI_BRIEF.md + current task only
-- Use Flows to automate test generation`;
+- Use Flows to automate test generation
+- Note: newer Windsurf versions also support the .windsurf/rules/ directory format`;
 
   // Copilot (generic rules only)
   const copilotRules=`You are an AI assistant for "${pn}".
@@ -146,7 +148,9 @@ ${core}
 ## Rules
 ${coreRules}`;
 
-  S.files['.cursor/rules']=cursorRules;
+  // Current Cursor format: .cursor/rules/*.mdc (glob frontmatter) + legacy .cursorrules for older versions
+  S.files['.cursor/rules/main.mdc']='---\ndescription: '+(G?'プロジェクト全体AIルール':'Project-wide AI rules')+' — '+pn+'\nalwaysApply: true\n---\n\n'+cursorRules;
+  S.files['.cursorrules']=cursorRules;
   S.files['.github/copilot-instructions.md']=`# GitHub Copilot Instructions\n${copilotRules}`;
   S.files['.windsurfrules']=windsurfRules;
   S.files['.clinerules']=clineRules;
@@ -397,7 +401,7 @@ hooks:
   if(a.payment&&(a.payment||'').includes('Stripe')){
     stripeCompact=`
 ## Payment (Stripe)
-Plans: Free(¥0) / Pro(¥980/mo) / Enterprise(¥9,800/mo)
+Plans (${G?'価格は例示':'example pricing'}): ${G?'Free(¥0) / Pro(¥980/月) / Enterprise(¥9,800/月)':'Free($0) / Pro($10/mo) / Enterprise($98/mo)'}
 Webhook: POST /api/webhook/stripe
   invoice.paid → subscription.status=active
   customer.subscription.deleted → status=canceled
@@ -503,7 +507,7 @@ ${stripeCompact}${rbacCompact}${briefDomainRisk}${briefTechRadar}
 docs/            → ${G?'設計ドキュメント':'Design documents'} (ER, API, screen, test cases, security, etc.)
 .devcontainer/   → ${G?'開発環境':'Dev environment'}
 CLAUDE.md        → ${G?'Claude Code用ルール':'Claude Code rules'}
-.cursor/rules    → ${G?'Cursor用ルール':'Cursor rules'}
+.cursor/rules/   → ${G?'Cursor用ルール (.mdc)':'Cursor rules (.mdc)'}
 
 ## Quick Start
 1. \`npm install\` → setup dependencies
@@ -1011,7 +1015,7 @@ ${G?'パス別の詳細ルールは以下を参照:':'For path-specific detailed
 - \`.claude/rules/test.md\` ${G?'— テスト手法ルール':'— Testing methodology'}
 - \`.claude/rules/ops.md\` ${G?'— 運用・デプロイルール':'— Operations & deployment'}
 
-${G?'**特定のパスで作業する際**、Claudeは関連するルールファイルを自動読み込みします。':'**When working on specific paths**, Claude will automatically load the relevant rule file.'}
+${G?'**パス別ルールの参照**: 該当パスで作業する際は `@.claude/rules/frontend.md` のように明示的に参照してください（Claude Codeはこれらを自動読込しません。常時必要なルールはこのCLAUDE.md本体に記載します）。':'**Referencing path rules**: When working on a matching path, reference explicitly, e.g. `@.claude/rules/frontend.md` (Claude Code does not auto-load these files; always-needed rules live in this CLAUDE.md itself).'}
 
 ## ${G?'ワークフロー':'Workflow'}
 1. **${G?'機能':'Feature'}** → \`.spec/\` ${G?'確認':'check'} → ${G?'実装':'implement'} → ${G?'テスト':'test'} → ${G?'コミット':'commit'}

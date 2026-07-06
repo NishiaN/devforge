@@ -53,18 +53,19 @@ ${_domainFocus(domain,G)}
   // Backend-specific MCP server selection
   const mcpServers={
     filesystem:{command:'npx',args:['-y','@modelcontextprotocol/server-filesystem','/workspace']},
-    context7:{command:'npx',args:['-y','@anthropic/mcp-context7']},
-    playwright:{command:'npx',args:['-y','@anthropic/mcp-playwright']},
+    context7:{command:'npx',args:['-y','@upstash/context7-mcp']},
+    playwright:{command:'npx',args:['-y','@playwright/mcp@latest']},
   };
 
   // Add backend-specific servers
   if(be.includes('Supabase')){
-    mcpServers.supabase={command:'npx',args:['-y','@modelcontextprotocol/server-supabase']};
+    mcpServers.supabase={command:'npx',args:['-y','@supabase/mcp-server-supabase@latest']};
   }
   if(be.includes('Firebase')){
-    mcpServers.firebase={command:'npx',args:['-y','firebase-mcp-server']};
+    mcpServers.firebase={command:'npx',args:['-y','firebase-tools@latest','experimental:mcp']};
   }
   if(be.includes('Express')&&(a.database||'').includes('PostgreSQL')){
+    // NOTE: @modelcontextprotocol/server-postgres is archived (reference impl) — still works via npx but unmaintained
     mcpServers.postgres={command:'npx',args:['-y','@modelcontextprotocol/server-postgres']};
   }
   if(be.includes('Express')&&(a.database||'').includes('MongoDB')){
@@ -124,18 +125,21 @@ ${(a.dev_methods||'').includes('Docker')?'- Docker (for docker MCP server)\n':''
 ${G?'AI ツールの設定ファイルに `mcp-config.json` を追加してください:':'Add `mcp-config.json` to your AI tool config:'}
 
 **Claude Code:**
+${G?'プロジェクトルートに `.mcp.json` として配置すると自動認識されます:':'Place as `.mcp.json` in the project root (auto-detected):'}
 \`\`\`bash
-cp mcp-config.json ~/.config/claude/mcp-config.json
+cp mcp-config.json .mcp.json
+# ${G?'または CLI で個別追加:':'Or add servers individually via CLI:'}
+# claude mcp add context7 -- npx -y @upstash/context7-mcp
 \`\`\`
 
 **Cursor:**
 \`\`\`bash
-# Cursor settings → MCP → Import mcp-config.json
+# ${G?'`.cursor/mcp.json` に配置、または Cursor Settings → MCP から追加':'Place as `.cursor/mcp.json`, or add via Cursor Settings → MCP'}
 \`\`\`
 
 ### 3. Set Environment Variables
 \`\`\`bash
-${be.includes('Supabase')?'export SUPABASE_URL="https://xxx.supabase.co"\nexport SUPABASE_ANON_KEY="eyJ..."\n':''}${be.includes('Firebase')?'export FIREBASE_PROJECT_ID="your-project-id"\n':''}\${(a.database||'').includes('PostgreSQL')?'export DATABASE_URL="postgresql://..."\n':''}${(a.database||'').includes('MongoDB')?'export MONGODB_URI="mongodb://..."\n':''}
+${be.includes('Supabase')?'export SUPABASE_URL="https://xxx.supabase.co"\nexport SUPABASE_ANON_KEY="eyJ..."\n':''}${be.includes('Firebase')?'export FIREBASE_PROJECT_ID="your-project-id"\n':''}${(a.database||'').includes('PostgreSQL')?'export DATABASE_URL="postgresql://..."\n':''}${(a.database||'').includes('MongoDB')?'export MONGODB_URI="mongodb://..."\n':''}
 \`\`\`
 
 ## Usage Examples
@@ -241,7 +245,7 @@ function gen132(a,pn){
   doc+='| '+(G?'外部API呼び出し':'External API call')+' | Medium | Yes |\n\n';
 
   doc+='## §4 '+(G?'MCPデバッグ・テスト':'MCP Debug & Testing')+'\n\n';
-  doc+='```bash\n# '+(G?'MCP Inspector でサーバーをテスト':'Test server with MCP Inspector')+'\nnpx @modelcontextprotocol/inspector\n\n# '+(G?'stdio接続テスト':'stdio connection test')+'\necho \'{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2024-11-05","capabilities":{}}}\' | node mcp-server.js\n\n# '+(G?'ログ監視 (Claude Code)':'Log monitoring (Claude Code)')+'\ntail -f ~/.config/claude/logs/mcp*.log\n```\n\n';
+  doc+='```bash\n# '+(G?'MCP Inspector でサーバーをテスト':'Test server with MCP Inspector')+'\nnpx @modelcontextprotocol/inspector\n\n# '+(G?'stdio接続テスト':'stdio connection test')+'\necho \'{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2024-11-05","capabilities":{}}}\' | node mcp-server.js\n\n# '+(G?'接続確認・デバッグ (Claude Code)':'Connection check & debugging (Claude Code)')+'\nclaude mcp list\nclaude --debug   # '+(G?'MCP接続ログを表示':'shows MCP connection logs')+'\n```\n\n';
   doc+='### '+(G?'よくあるトラブル':'Common Troubleshooting')+'\n';
   doc+=(G?'| 症状 | 原因 | 解決策 |\n|---|---|---|\n| サーバー起動しない | Node.jsバージョン不一致 | Node.js 18+ 確認 |\n| tools/list が空 | ハンドラ未登録 | setRequestHandler確認 |\n| 接続タイムアウト | stdio バッファリング | process.stdout.setBlocking(true) |\n| 権限エラー | ファイルパス制限 | allowedPaths設定確認 |':'| Symptom | Cause | Solution |\n|---|---|---|\n| Server does not start | Node.js version mismatch | Verify Node.js 18+ |\n| tools/list is empty | Handler not registered | Check setRequestHandler |\n| Connection timeout | stdio buffering | process.stdout.setBlocking(true) |\n| Permission error | File path restriction | Check allowedPaths config |')+'\n\n';
 

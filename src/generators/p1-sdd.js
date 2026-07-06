@@ -181,9 +181,10 @@ function genPillar1_SDD(a,pn){
       G?'### 5.1 プラン設計':'### 5.1 Plan Design',
       '| '+(G?'プラン':'Plan')+' | '+(G?'価格':'Price')+' | '+(G?'制限':'Limits')+' |',
       '|--------|-------|------|',
-      '| Free | ¥0 | '+(G?'基本機能のみ':'Basic features only')+' |',
-      '| Pro | ¥980/'+(G?'月':'mo')+' | '+(G?'全機能・優先サポート':'All features, priority support')+' |',
-      '| Enterprise | ¥9,800/'+(G?'月':'mo')+' | '+(G?'全機能+SLA+専用サポート':'All features + SLA + dedicated support')+' |','',
+      '| Free | '+(G?'¥0':'$0')+' | '+(G?'基本機能のみ':'Basic features only')+' |',
+      '| Pro | '+(G?'¥980/月':'$10/mo')+' | '+(G?'全機能・優先サポート':'All features, priority support')+' |',
+      '| Enterprise | '+(G?'¥9,800/月':'$98/mo')+' | '+(G?'全機能+SLA+専用サポート':'All features + SLA + dedicated support')+' |','',
+      G?'> ⚠️ 上記価格は**例示**です。実際の価格・プラン構成はビジネス要件に合わせて必ず見直してください。':'> ⚠️ Prices above are **placeholders** — review pricing and plan structure against your actual business requirements.','',
       G?'### 5.2 決済フロー':'### 5.2 Payment Flow',
       '```',
       G?'1. ユーザーがプラン選択':'1. User selects plan',
@@ -315,9 +316,10 @@ function genPillar1_SDD(a,pn){
       (G?'### サブスクリプションモデル':'### Subscription Model')+'\n'+
       '| '+(G?'プラン':'Plan')+' | '+(G?'価格':'Price')+' | '+(G?'機能制限':'Limits')+' |\n'+
       '|------|------|------|\n'+
-      '| Free | ¥0 | '+(G?'基本機能のみ':'Basic features only')+' |\n'+
-      '| Pro | ¥980/'+(G?'月':'mo')+' | '+(G?'全機能+優先サポート':'All features + priority support')+' |\n'+
-      '| Enterprise | ¥9,800/'+(G?'月':'mo')+' | '+(G?'全機能+SLA+専用サポート':'All features + SLA + dedicated support')+' |\n\n'+
+      '| Free | '+(G?'¥0':'$0')+' | '+(G?'基本機能のみ':'Basic features only')+' |\n'+
+      '| Pro | '+(G?'¥980/月':'$10/mo')+' | '+(G?'全機能+優先サポート':'All features + priority support')+' |\n'+
+      '| Enterprise | '+(G?'¥9,800/月':'$98/mo')+' | '+(G?'全機能+SLA+専用サポート':'All features + SLA + dedicated support')+' |\n\n'+
+      (G?'> ⚠️ 価格は例示です。実際のプラン・価格はビジネス要件に合わせて設定してください。':'> ⚠️ Prices are placeholders — set actual plans and pricing per your business requirements.')+'\n\n'+
       (G?'### Webhook処理フロー':'### Webhook Flow')+'\n```\n'+
       'Stripe → POST /api/webhook/stripe → '+(G?'署名検証':'Verify signature')+'\n'+
       '  ├── invoice.paid → subscription.status = active\n'+
@@ -669,9 +671,11 @@ function genPillar1_SDD(a,pn){
       if(!inv) return [];
       const isPro6=(S.skillLv||0)>=5;
       const rows=inv.map(function(r){return '| '+(G?r.ja:r.en)+' | '+r.verify+' | P0 |';}).join('\n');
+      // Domain-appropriate function name for the PBT example (keeps example consistent with inv[0])
+      const _fnHint6={fintech:'transfer(state, input)',ec:'reserveStock(state, input)',health:'grantRecordAccess(state, input)',booking:'reserveSlot(state, input)',education:'recordProgress(state, input)',logistics:'assignShipment(state, input)'}[domain]||'applyDomainOperation(state, input)';
       const proEx=isPro6?(G?
-        '\n\n### Property-Based Test 実装例 (fast-check)\n```typescript\nimport * as fc from \'fast-check\';\n// 不変条件: '+inv[0].ja+'\nfc.assert(fc.property(fc.integer({min:0,max:1000000}), fc.integer({min:1,max:500000}), (bal, amt) => {\n  if(amt <= bal) { return transfer(bal, amt) >= 0; }\n  return true; // skip invalid input\n}));\n```':
-        '\n\n### Property-Based Test Example (fast-check)\n```typescript\nimport * as fc from \'fast-check\';\n// Invariant: '+inv[0].en+'\nfc.assert(fc.property(fc.integer({min:0,max:1000000}), fc.integer({min:1,max:500000}), (bal, amt) => {\n  if(amt <= bal) { return transfer(bal, amt) >= 0; }\n  return true;\n}));\n```'):'';
+        '\n\n### Property-Based Test 実装例 (fast-check)\n```typescript\nimport * as fc from \'fast-check\';\n// 不変条件: '+inv[0].ja+'\nfc.assert(fc.property(fc.integer({min:0,max:1000000}), fc.integer({min:1,max:500000}), (state, input) => {\n  // TODO: 実装関数に置換 — 例: '+_fnHint6+'\n  const result = '+_fnHint6+';\n  return checkInvariant(result); // '+inv[0].ja+'\n}));\n```':
+        '\n\n### Property-Based Test Example (fast-check)\n```typescript\nimport * as fc from \'fast-check\';\n// Invariant: '+inv[0].en+'\nfc.assert(fc.property(fc.integer({min:0,max:1000000}), fc.integer({min:1,max:500000}), (state, input) => {\n  // TODO: replace with your implementation — e.g. '+_fnHint6+'\n  const result = '+_fnHint6+';\n  return checkInvariant(result); // '+inv[0].en+'\n}));\n```'):'';
       return [
         G?'## 6. ドメイン不変条件':'## 6. Domain Invariants',
         G?'> **不変条件**はシステムが常に満たすべき制約。CI/CDパイプラインで自動検証することで、デプロイごとに保証されます。':
@@ -710,9 +714,9 @@ function genPillar1_SDD(a,pn){
       if(isBegInv){
         return '  // TODO: Implement invariant test for: '+name+'\n  // Verification method: '+verif+'\n  it.todo(\''+name.replace(/'/g,"\\'")+'\');';
       } else if(isProInv){
-        return '  it(\''+name.replace(/'/g,"\\'")+'\', () => {\n    fc.assert(\n      fc.property(\n        fc.integer({ min: 0, max: 1_000_000 }),\n        fc.integer({ min: 1, max: 100_000 }),\n        (a, b) => {\n          // '+verif+'\n          // TODO: call your domain function and assert the invariant\n          return true; // replace with actual assertion\n        }\n      )\n    );\n  });';
+        return '  it(\''+name.replace(/'/g,"\\'")+'\', () => {\n    fc.assert(\n      fc.property(\n        fc.integer({ min: 0, max: 1_000_000 }),\n        fc.integer({ min: 1, max: 100_000 }),\n        (state, input) => {\n          // '+verif+'\n          // Reference model — REPLACE `apply` with your real domain function.\n          // With the reference model this test passes; wire your impl to make it meaningful.\n          const apply = (s: number, i: number) => (i <= s ? s - i : s);\n          const result = apply(state, input);\n          return result >= 0; // invariant: '+name.replace(/'/g,"\\'")+'\n        }\n      )\n    );\n  });';
       } else {
-        return '  it(\''+name.replace(/'/g,"\\'")+'\', () => {\n    // '+verif+'\n    fc.assert(\n      fc.property(fc.integer({ min: 0, max: 1_000_000 }), ('+argName+') => {\n        // TODO: implement domain logic call and assertion\n        return true;\n      })\n    );\n  });';
+        return '  it(\''+name.replace(/'/g,"\\'")+'\', () => {\n    // '+verif+'\n    fc.assert(\n      fc.property(fc.integer({ min: 0, max: 1_000_000 }), ('+argName+') => {\n        // Reference model — REPLACE with a call to your real domain function.\n        const apply = (v: number) => Math.max(0, v);\n        return apply('+argName+') >= 0; // invariant: '+name.replace(/'/g,"\\'")+'\n      })\n    );\n  });';
       }
     }).join('\n\n');
     const _begHdr=isBegInv?

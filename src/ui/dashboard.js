@@ -242,7 +242,7 @@ function showDashboard(){
       else if(p.includes('mcp'))cats['MCP']+=len;
       else if(p.startsWith('roadmap/'))cats['Roadmap']+=len;
       else if(p.startsWith('docs/'))cats['Docs']+=len;
-      else if(['.cursor/rules','.windsurfrules','.clinerules','CLAUDE.md','AGENTS.md'].some(x=>p.includes(x)))cats[_ja?'AIルール':'AI Rules']+=len;
+      else if(['.cursor/rules','.cursorrules','.windsurfrules','.clinerules','CLAUDE.md','AGENTS.md'].some(x=>p.includes(x)))cats[_ja?'AIルール':'AI Rules']+=len;
       else cats['Common']+=len;
     });
     const maxLen=Math.max(...Object.values(cats),1);
@@ -401,7 +401,7 @@ function showDashboard(){
         {p:'CLAUDE.md',l:_ja?'AI設定(自動読込)':'AI config',d:0},
         {p:'AI_BRIEF.md',l:_ja?'要約(最初の投入)':'Brief',d:1},
         {p:'AGENTS.md',l:_ja?'Agent役割定義':'Agent roles',d:1},
-        {p:'.cursor/rules',l:_ja?'Cursorルール':'Cursor rules',d:1},
+        {p:'.cursor/rules/main.mdc',l:_ja?'Cursorルール':'Cursor rules',d:1},
         {p:'.claude/agents/requirements-agent.md',l:_ja?'要件Agent':'Requirements Agent',d:2},
         {p:'.claude/agents/review-agent.md',l:_ja?'レビューAgent':'Review Agent',d:2},
         {p:'skills/spec-review/SKILL.md',l:_ja?'スキル定義(agentskills.io)':'Skills (agentskills.io)',d:2},

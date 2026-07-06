@@ -333,7 +333,7 @@ check('P4: CLAUDE.md has auth SoT',claude.includes('Supabase Auth'));
 check('P4: CLAUDE.md has architecture',claude.includes('BaaS'));
 check('P4: CLAUDE.md has Supabase Client',claude.includes('Supabase Client'));
 check('P4: CLAUDE.md forbidden has no Express',claude.includes('No separate Express'));
-const cursorR=S.files['.cursor/rules']||'';
+const cursorR=S.files['.cursor/rules/main.mdc']||'';
 check('P4: cursor rules has auth SoT',cursorR.includes('Supabase Auth'));
 check('P4: cursor rules has architecture',cursorR.includes('BaaS'));
 

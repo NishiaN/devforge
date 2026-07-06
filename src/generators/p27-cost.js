@@ -378,10 +378,11 @@ function gen112(a,pn){
   if(isPro27c&&hasAI112){
     doc+='\n## '+(G?'LLM / AIコスト追跡':'LLM / AI Cost Tracking')+'\n\n';
     doc+='| '+(G?'モデル':'Model')+' | '+(G?'入力単価':'Input')+' | '+(G?'出力単価':'Output')+' | '+(G?'キャッシュ割引':'Cache Discount')+'|\n|---|---|---|---|\n';
-    doc+='| Claude 3.5 Sonnet | $3/1M tok | $15/1M tok | 90% (Prompt Cache) |\n';
-    doc+='| GPT-4o | $2.5/1M tok | $10/1M tok | 50% (cache) |\n';
-    doc+='| GPT-4o mini | $0.15/1M tok | $0.6/1M tok | 50% (cache) |\n';
-    doc+='| Gemini 1.5 Flash | $0.075/1M tok | $0.3/1M tok | — |\n\n';
+    doc+='| Claude Sonnet 4.5 | $3/1M tok | $15/1M tok | 90% (Prompt Cache) |\n';
+    doc+='| Claude Haiku 4.5 | $1/1M tok | $5/1M tok | 90% (Prompt Cache) |\n';
+    doc+='| GPT-5.2 | $1.25/1M tok | $10/1M tok | 90% (cache) |\n';
+    doc+='| Gemini 2.5 Flash | $0.3/1M tok | $2.5/1M tok | 75% (implicit cache) |\n\n';
+    doc+=(G?'> ⚠️ 単価は改定されます。契約前に各社の公式料金ページで最新値を確認してください。\n\n':'> ⚠️ Rates change over time. Verify on each provider\'s official pricing page before committing.\n\n');
     doc+=G?'### AI APIコスト削減戦略\n\n':'### AI API Cost Reduction Strategies\n\n';
     doc+='1. '+(G?'**プロンプトキャッシュ有効化**: 反復プレフィックスのキャッシュで最大90%削減':'**Enable prompt caching**: Up to 90% cost reduction for repeated prefixes')+'\n';
     doc+='2. '+(G?'**モデルルーティング**: 簡単なタスクはminiモデルに自動振り分け':'**Model routing**: Auto-route simple tasks to mini models')+'\n';

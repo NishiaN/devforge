@@ -1653,7 +1653,21 @@ function getEntityMethods(entityName){
 // Parse entity column definition string
 function getEntityColumns(entityName,G,knownEntities){
   const cols=ENTITY_COLUMNS[entityName];
-  if(!cols) return [];
+  if(!cols){
+    // Fallback: synthesize minimal useful columns for user-defined entities
+    // (prevents AI_BRIEF/ER schemas from degrading to id+timestamps only)
+    const n=(entityName||'').toLowerCase();
+    const fb=[
+      {col:'name',type:'TEXT',constraint:'NOT NULL',desc:G?'名称':'Name'},
+      {col:'description',type:'TEXT',constraint:'',desc:G?'説明':'Description'},
+      {col:'status',type:'TEXT',constraint:"DEFAULT 'active'",desc:G?'状態':'Status'}
+    ];
+    if(/log|history|event|record|履歴|ログ/.test(n))fb.push({col:'occurred_at',type:'TIMESTAMPTZ',constraint:'NOT NULL',desc:G?'発生日時':'Occurred at'});
+    if(/user|member|customer|staff|person|会員|顧客|担当/.test(n))fb.push({col:'email',type:'TEXT',constraint:'UNIQUE',desc:G?'メールアドレス':'Email'});
+    if(/order|payment|invoice|transaction|fee|注文|決済|請求|料金/.test(n))fb.push({col:'amount',type:'INTEGER',constraint:'NOT NULL',desc:G?'金額':'Amount'});
+    if(knownEntities&&knownEntities.includes('User')&&!/user|会員/.test(n))fb.push({col:'user_id',type:'UUID',constraint:'FK(User)',desc:G?'所有ユーザー':'Owner user'});
+    return fb;
+  }
   return cols.map(c=>{
     const [col,type,constraint,descJa,descEn]=c.split(':');
     return {col,type:type||'TEXT',constraint:constraint||'',desc:G?(descJa||col):(descEn||col)};
@@ -1673,6 +1687,8 @@ function detectDomain(purpose){
     [/新薬|新薬候補|drug.?discovery|臨床試験.*機械学習|機械学習.*新薬|ソーシャルワーク|ケースロード|福祉.*支援/i,'health'],
     // ── Highest priority: manufacturing-specific (before 教育 matches education) ──
     [/多能工|製造業.*HRMS|製造.*人材管理/i,'manufacturing'],
+    // ── Highest priority: ML/AI platforms (before 学習/learning matches education) ──
+    [/機械学習|深層学習|強化学習|ディープラーニング|machine.?learning|deep.?learning|MLOps|異常検知|anomaly.?detection/i,'ai'],
     // Specific patterns first (higher priority)
     [/教育|学習|education|learning|lms|コース|course|tutoring|家庭教師|教材/i,'education'],
     [/\bEC\b|eコマース|e-commerce|ショップ|\bshop\b|\bcommerce\b/i,'ec'],
@@ -1698,12 +1714,12 @@ function detectDomain(purpose){
     [/保険|insurance|保険テック|insurtech|契約管理|claim.?management/i,'insurance'],
     // ── high-priority medical terms (before analytics/booking/iot/automation) ──
     [/認知症|リハビリ|遠隔診療|telehealth|telemedicine|動物病院|獣医|栄養管理|疾患|処方|介護|ケアプラン|治験|臨床試験|ゲノム|タンパク質|抗体|創薬|産業医|電子カルテ|神経疾患|産後|メンタルヘルス|mental.?health|認知行動療法|CBT|バーンアウト|ストレスレベル|睡眠品質|睡眠データ|セルフケア.*症状/i,'health'],
-    // ── high-priority fintech terms (before analytics/automation/insurance) ──
-    [/マネーロンダリング|AML\b|KYC|暗号資産|与信審査|資産形成|エンベデッドファイナンス|embedded.?finance|組み込み.*ファイナンス/i,'fintech'],
+    // ── high-priority fintech terms (before analytics/automation/insurance; embedded finance covered above) ──
+    [/マネーロンダリング|AML\b|KYC|暗号資産|与信審査|資産形成/i,'fintech'],
     // ── high-priority IoT (before analytics) ──
     [/\bIoT\b/i,'iot'],
-    // ── high-priority realestate (before booking and insurance) ──
-    [/物件検索|不動産ポータル|商業不動産|不動産管理/i,'realestate'],
+    // ── high-priority realestate (before booking; 商業不動産/不動産管理 covered above) ──
+    [/物件検索|不動産ポータル/i,'realestate'],
     // ── content pattern (media/メディア removed to prevent collision) ──
     [/コンテンツ|content|ブログ|blog|knowledge.?base|ナレッジベース|ナレッジ/i,'content'],
     [/分析|analytics|可視化|ダッシュボード/i,'analytics'],
@@ -1712,14 +1728,14 @@ function detectDomain(purpose){
     [/自動化|automation|workflow|ワークフロー|RPA|ノーコード/i,'automation'],
     [/共同編集|collaboration|collab|リアルタイム編集|共同作業/i,'collab'],
     [/開発者ツール|dev.?tool|API管理|APIキー|ユーティリティ/i,'devtool'],
-    [/IoT|デバイス|device|sensor|センサー|field.?service|フィールドサービス/i,'iot'],
+    [/デバイス|device|sensor|センサー|field.?service|フィールドサービス/i,'iot'],
     [/不動産|物件|real.?estate|property.?mgmt|property.?management/i,'realestate'],
     [/法務|契約|legal|contract.?mgmt|contract.?management|コンプライアンス/i,'legal'],
     [/人事|HR|採用|recruit|hiring|求人|スカウト/i,'hr'],
     [/金融|fintech|フィンテック|銀行|bank|決済処理|決済管理|construction.?pay|工事代金|建設.*支払/i,'fintech'],
     [/医療|ヘルスケア|health|medical|clinic|病院|patient|患者|veterinary|動物病院|ペット|健康|フィットネス|ウェルネス|wellness|fitness/i,'health'],
-    [/コミュニティ|community|フォーラム|forum|ソーシャルネットワーク/i,'community'],
-    [/ゲーミ|gamification|gamify|バッジ|ポイント|リーダーボード|ゲーム要素/i,'gamify'],
+    [/ソーシャルネットワーク|social.?network/i,'community'],
+    [/ゲーム要素/i,'gamify'],
     [/ポートフォリオ|portfolio|link.?in.?bio|linkbio/i,'portfolio'],
     [/pwa|progressive.?web|オフライン|offline/i,'tool'],
     // Generic patterns last (lower priority)

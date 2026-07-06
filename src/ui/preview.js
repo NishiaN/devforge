@@ -417,7 +417,7 @@ function buildFileTree(){
     files.push({folder:true,name:'docs'});
     files.push({name:'  132_mcp_integration_guide.md',path:'docs/132_mcp_integration_guide.md'});
   } else if(pillar===3){ // AI Rules
-    ['.cursor/rules','.github/copilot-instructions.md','.windsurfrules','.clinerules',
+    ['.cursor/rules/main.mdc','.cursorrules','.github/copilot-instructions.md','.windsurfrules','.clinerules',
      '.kiro/spec.md','CLAUDE.md','.claude/rules/spec.md','.claude/rules/frontend.md',
      '.claude/rules/backend.md','.claude/rules/test.md','.claude/rules/ops.md',
      '.claude/settings.json','.claude/agents/requirements-agent.md','.claude/agents/design-agent.md',

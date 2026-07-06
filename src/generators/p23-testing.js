@@ -416,8 +416,10 @@ function gen92(a,pn,G,feType,beType){
     doc+='```yaml\n# GitHub Actions\n- name: Run tests with coverage\n  run: pytest\n- name: Upload coverage to Codecov\n  uses: codecov/codecov-action@v4\n  with:\n    file: ./coverage.xml\n    fail_ci_if_error: true\n```\n\n';
   } else if(isJava){
     doc+='```kotlin\n// build.gradle.kts\ntasks.jacocoTestCoverageVerification {\n    violationRules {\n        rule {\n            limit {\n                minimum = "0.80".toBigDecimal()\n            }\n        }\n    }\n}\ntasks.check { dependsOn(tasks.jacocoTestCoverageVerification) }\n```\n\n';
+  } else if(/vite|vue|svelte/i.test(a.frontend||'')){
+    doc+='```typescript\n// vitest.config.ts\nimport { defineConfig } from \'vitest/config\';\n\nexport default defineConfig({\n  test: {\n    coverage: {\n      provider: \'v8\',\n      include: [\'src/**/*.{ts,tsx}\'],\n      exclude: [\'src/**/*.d.ts\', \'src/**/index.ts\'],\n      thresholds: { branches: 75, functions: 85, lines: 80, statements: 80 },\n      reporter: [\'text\', \'lcov\', \'html\'],\n    },\n  },\n});\n```\n\n';
   } else {
-    doc+='```javascript\n// jest.config.js\nmodule.exports = {\n  coverageProvider: \'v8\',\n  collectCoverageFrom: [\'src/**/*.{ts,tsx}\', \'!src/**/*.d.ts\', \'!src/**/index.ts\'],\n  coverageThresholds: {\n    global: { branches: 70, functions: 80, lines: 80, statements: 80 }\n  },\n  coverageReporters: [\'text\', \'lcov\', \'html\'],\n};\n```\n\n';
+    doc+='```javascript\n// jest.config.js\nmodule.exports = {\n  coverageProvider: \'v8\',\n  collectCoverageFrom: [\'src/**/*.{ts,tsx}\', \'!src/**/*.d.ts\', \'!src/**/index.ts\'],\n  coverageThreshold: {\n    global: { branches: 75, functions: 85, lines: 80, statements: 80 }\n  },\n  coverageReporters: [\'text\', \'lcov\', \'html\'],\n};\n```\n\n';
     doc+='```yaml\n# .github/workflows/ci.yml\n- name: Test with coverage\n  run: '+covTool.en_cmd+'\n- name: Upload coverage\n  uses: codecov/codecov-action@v4\n  with:\n    fail_ci_if_error: true\n```\n\n';
   }
 
@@ -435,7 +437,7 @@ function gen92(a,pn,G,feType,beType){
     ?'カバレッジ80%を達成後、ミューテーションテストでテスト品質を検証します。\n\n'
     :'After reaching 80% coverage, use mutation testing to verify test quality.\n\n'
   );
-  doc+='```bash\n'+(isPy?'# mutmut (Python)\npip install mutmut\nmutmut run\nmutmut results':'# Stryker (JavaScript/TypeScript)\nnpm install -D @stryker-mutator/core @stryker-mutator/jest-runner\nnpx stryker run')+'\n```\n\n';
+  doc+='```bash\n'+(isPy?'# mutmut (Python)\npip install mutmut\nmutmut run\nmutmut results':/vite|vue|svelte/i.test(a.frontend||'')?'# Stryker (JavaScript/TypeScript + Vitest)\nnpm install -D @stryker-mutator/core @stryker-mutator/vitest-runner\nnpx stryker run':'# Stryker (JavaScript/TypeScript + Jest)\nnpm install -D @stryker-mutator/core @stryker-mutator/jest-runner\nnpx stryker run')+'\n```\n\n';
 
   // Pro: Property-Based Testing
   var lv92=S.skillLv||0; var isPro92=lv92>=5;

@@ -27,8 +27,8 @@ describe('Pillar ④ AI Rules', () => {
       deploy: 'Vercel'
     };
     genPillar4_AIRules(answers, 'TestProject');
-    assert.ok(S.files['.cursor/rules'], 'Should generate .cursor/rules');
-    assert.ok(S.files['.cursor/rules'].length > 0, '.cursor/rules should not be empty');
+    assert.ok(S.files['.cursor/rules/main.mdc'], 'Should generate .cursor/rules');
+    assert.ok(S.files['.cursor/rules/main.mdc'].length > 0, '.cursor/rules should not be empty');
   });
 
   test('generates all 5 .claude/rules/* files', () => {
@@ -141,7 +141,7 @@ describe('Pillar ④ AI Rules', () => {
       deploy: 'Vercel'
     };
     genPillar4_AIRules(answers, 'TestBaaS');
-    assert.ok(S.files['.cursor/rules'], 'BaaS: should generate .cursor/rules');
+    assert.ok(S.files['.cursor/rules/main.mdc'], 'BaaS: should generate .cursor/rules');
     assert.ok(S.files['CLAUDE.md'], 'BaaS: should generate CLAUDE.md');
     assert.ok(S.files['AGENTS.md'], 'BaaS: should generate AGENTS.md');
     assert.ok(S.files['AI_BRIEF.md'], 'BaaS: should generate AI_BRIEF.md');
@@ -265,7 +265,7 @@ describe('Pillar ④ AI Rules', () => {
       deploy: 'Vercel'
     };
     genPillar4_AIRules(answers, 'TestBFF');
-    assert.ok(S.files['.cursor/rules'], 'BFF: should generate .cursor/rules');
+    assert.ok(S.files['.cursor/rules/main.mdc'], 'BFF: should generate .cursor/rules');
     assert.ok(S.files['CLAUDE.md'], 'BFF: should generate CLAUDE.md');
     assert.ok(S.files['.claude/rules/backend.md'], 'BFF: should generate .claude/rules/backend.md');
     const backend = S.files['.claude/rules/backend.md'];

@@ -882,10 +882,11 @@ function gen106_2(a,pn){
   } else if(provider==='openai'){
     doc+='```typescript\n';
     doc+='// lib/ai/cost-tracker.ts (OpenAI)\n';
+    doc+='// NOTE: '+(G?'単価は改定されるため公式料金ページで最新値を確認':'Verify latest rates on the official pricing page')+'\n';
     doc+='const OPENAI_PRICING = {\n';
+    doc+='  \'gpt-5.2\':     { input: 0.00000125, output: 0.00001 },\n';
     doc+='  \'gpt-4o\':      { input: 0.0000025, output: 0.00001 },\n';
     doc+='  \'gpt-4o-mini\': { input: 0.00000015, output: 0.0000006 },\n';
-    doc+='  \'gpt-4-turbo\': { input: 0.00001, output: 0.00003 },\n';
     doc+='};\n\n';
   } else {
     doc+='```typescript\n';
