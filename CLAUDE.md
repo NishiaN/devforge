@@ -47,7 +47,7 @@ Never reorder without checking dependencies.
 | Category | Purpose |
 |----------|---------|
 | `core/` | State (`S`), i18n (`t()`), keyboard events, wizard tour, app init |
-| `data/` | 257 standard presets (`PR`/`_mp()`), 602 field presets (`PR_FIELD`/`_fpd()`), questions, techdb (538 entries), compat-rules (332 rules), gen-templates (bilingual GT dict), helpdata |
+| `data/` | 257 standard presets (`PR`/`_mp()`), 602 field presets (`PR_FIELD`/`_fpd()`), questions, techdb (551 entries), compat-rules (332 rules), gen-templates (bilingual GT dict), helpdata |
 | `ui/launcher.js` | 109 prompt templates; `templateOrder[109]`, `AI_REC`, `LAUNCH_CAT_MAP`, `TEMPLATE_SCOPE`, `LAUNCH_SKILL_REC` maps; `DOC_GROUPS` for semantic doc grouping |
 | `generators/` | `index.js` orchestrator + `p1`–`p28` pillars + `docs.js` + `common.js` |
 | `ui/` | wizard, render, presets, preview, sidebar, editor, diff, export, explorer, dashboard, launcher, templates, qbar, cmdpalette, help, voice |

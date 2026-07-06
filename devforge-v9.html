@@ -3911,7 +3911,7 @@ const TECH_DB=[
 // BaaS (8)
 {name:'Firebase',cat:'baas',sub:'full',req:'recommended',level:'mvp'},
 {name:'Supabase',cat:'baas',sub:'full',req:'recommended',level:'sql'},
-{name:'Vercel Edge Functions',cat:'baas',sub:'serverless',req:'optional',level:'front'},
+{name:'Vercel Functions',cat:'baas',sub:'serverless',req:'optional',level:'front'},
 {name:'Cloudflare Workers',cat:'baas',sub:'edge',req:'optional',level:'global'},
 {name:'Neon',cat:'baas',sub:'db',req:'optional',level:'pg'},
 // Payment/CMS/EC (22)
@@ -3920,8 +3920,8 @@ const TECH_DB=[
 {name:'Stripe Connect',cat:'payment',sub:'marketplace',req:'optional',level:'pro',price:'usage'},
 {name:'Paddle',cat:'payment',sub:'mor',req:'optional',level:'int',price:'5%+50¢'},
 {name:'Lemon Squeezy (Stripe)',cat:'payment',sub:'mor',req:'optional',level:'beg',price:'5%+50¢'},
-{name:'Polar',cat:'payment',sub:'mor',req:'optional',level:'int',price:'5%+40¢'},
-{name:'PayPal',cat:'payment',sub:'payment',req:'optional',level:'beg',price:'2.9%+30¢'},
+{name:'Polar',cat:'payment',sub:'mor',req:'optional',level:'int',price:'5%+50¢'},
+{name:'PayPal',cat:'payment',sub:'payment',req:'optional',level:'beg',price:'3.49%+49¢'},
 {name:'microCMS',cat:'payment',sub:'cms',req:'rec-jp',level:'beg',price:'¥0〜¥4,900'},
 {name:'Strapi',cat:'payment',sub:'cms',req:'rec-oss',level:'int',price:'free-15'},
 {name:'Sanity',cat:'payment',sub:'cms',req:'optional',level:'int',price:'free-99'},
@@ -3949,11 +3949,11 @@ const TECH_DB=[
 // AI Tools (22)
 {name:'Cursor',cat:'ai',sub:'ide',req:'top1',level:'int',price:'$20'},
 {name:'Claude Code',cat:'ai',sub:'cli',req:'recommended',level:'int',price:'$20〜$200'},
-{name:'GitHub Copilot',cat:'ai',sub:'ext',req:'recommended',level:'beg',price:'$10〜$39'},
-{name:'Windsurf',cat:'ai',sub:'ide',req:'optional',level:'int',price:'free-15'},
-{name:'Gemini CLI',cat:'ai',sub:'cli',req:'optional',level:'int',price:'free'},
+{name:'GitHub Copilot',cat:'ai',sub:'ext',req:'recommended',level:'beg',price:'$10〜$100'},
+{name:'Devin Desktop (旧Windsurf)',cat:'ai',sub:'ide',req:'optional',level:'int',price:'free-20'},
+{name:'Gemini CLI',cat:'ai',sub:'cli',req:'optional',level:'int',price:'usage'},
 {name:'Cline / RooCode',cat:'ai',sub:'ext',req:'optional',level:'pro',price:'usage'},
-{name:'Kiro',cat:'ai',sub:'ide',req:'optional',level:'int',price:'$20'},
+{name:'Kiro',cat:'ai',sub:'ide',req:'optional',level:'int',price:'free-20'},
 {name:'Codex (OpenAI)',cat:'ai',sub:'cli',req:'optional',level:'pro',price:'$20'},
 {name:'CLAUDE.md',cat:'ai',sub:'config',req:'recommended',level:'int'},
 {name:'.cursor/rules',cat:'ai',sub:'config',req:'recommended',level:'int'},
@@ -3962,12 +3962,12 @@ const TECH_DB=[
 {name:'Spec Kit',cat:'ai',sub:'sdd',req:'recommended',level:'int'},
 // AI Autonomous (18)
 {name:'Devin',cat:'ai_auto',sub:'autonomous',req:'optional',level:'pro',price:'$20〜$500'},
-{name:'Replit Agent',cat:'ai_auto',sub:'browser',req:'optional',level:'beg',price:'$25'},
+{name:'Replit Agent',cat:'ai_auto',sub:'browser',req:'optional',level:'beg',price:'free-20'},
 {name:'Claude Code Subagents',cat:'ai_auto',sub:'parallel',req:'optional',level:'pro'},
 {name:'Claude Code Tasks',cat:'ai_auto',sub:'dag',req:'optional',level:'pro'},
 {name:'Claude-Flow',cat:'ai_auto',sub:'orchestrator',req:'optional',level:'pro'},
 {name:'Lovable',cat:'ai_auto',sub:'app-gen',req:'optional',level:'beg',price:'free-tier'},
-{name:'Bolt.new',cat:'ai_auto',sub:'generator',req:'optional',level:'beg',price:'free-oss'},
+{name:'Bolt.new',cat:'ai_auto',sub:'generator',req:'optional',level:'beg',price:'free-tier'},
 {name:'v0 (Vercel)',cat:'ai_auto',sub:'ui-gen',req:'optional',level:'int',price:'$20'},
 {name:'Codex App (OpenAI)',cat:'ai_auto',sub:'agentic',req:'optional',level:'pro',price:'$20'},
 {name:'FlutterFlow',cat:'ai_auto',sub:'no-code',req:'optional',level:'beg',price:'free-tier'},
@@ -3983,7 +3983,7 @@ const TECH_DB=[
 // ── Additional Frontend (12) ──
 {name:'Bootstrap',cat:'front',sub:'css-fw',req:'optional',level:'legacy'},
 {name:'Radix UI',cat:'front',sub:'ui',req:'optional',level:'a11y'},
-{name:'Framer Motion',cat:'front',sub:'animation',req:'optional',level:'pro'},
+{name:'Motion',cat:'front',sub:'animation',req:'optional',level:'pro'},
 {name:'GSAP',cat:'front',sub:'animation',req:'optional',level:'pro'},
 {name:'React Testing Library',cat:'front',sub:'test',req:'recommended',level:'int'},
 {name:'Figma',cat:'front',sub:'design',req:'recommended',level:'int'},
@@ -4017,7 +4017,7 @@ const TECH_DB=[
 {name:'Jest / Pytest',cat:'back',sub:'test',req:'recommended',level:'int'},
 {name:'Bun',cat:'back',sub:'runtime',req:'optional',level:'int'},
 {name:'Deno',cat:'back',sub:'runtime',req:'optional',level:'int'},
-{name:'Better Auth',cat:'back',sub:'auth',req:'optional',level:'int'},
+{name:'Better Auth',cat:'back',sub:'auth',req:'recommended',level:'int'},
 {name:'Kysely',cat:'back',sub:'orm',req:'optional',level:'int'},
 {name:'Valkey',cat:'back',sub:'cache',req:'optional',level:'int'},
 // ── Additional BaaS (6) ──
@@ -4026,7 +4026,7 @@ const TECH_DB=[
 {name:'Convex',cat:'baas',sub:'reactive',req:'optional',level:'rt'},
 {name:'Turso',cat:'baas',sub:'db',req:'optional',level:'edge'},
 {name:'PGlite',cat:'baas',sub:'db',req:'optional',level:'int',price:'free-oss'},
-{name:'Xata',cat:'baas',sub:'db',req:'optional',level:'int',price:'free-tier'},
+{name:'Xata',cat:'baas',sub:'db',req:'optional',level:'int',price:'usage'},
 {name:'Upstash',cat:'baas',sub:'serverless',req:'optional',level:'int',price:'free-tier'},
 // ── Additional Payment/CMS/EC (5) ──
 {name:'Prismic',cat:'payment',sub:'cms',req:'optional',level:'int',price:'free-100'},
@@ -4076,16 +4076,16 @@ const TECH_DB=[
 {name:'OpenRouter',cat:'ai',sub:'router',req:'optional',level:'int',price:'pay-as-you-go'},
 {name:'Augment Code',cat:'ai',sub:'ide',req:'optional',level:'pro',price:'$20〜$250'},
 {name:'Aider',cat:'ai',sub:'cli',req:'optional',level:'int',price:'free-oss'},
-{name:'Jules (Google)',cat:'ai_auto',sub:'async-agent',req:'optional',level:'int',price:'free'},
+{name:'Jules (Google)',cat:'ai_auto',sub:'async-agent',req:'optional',level:'int',price:'free-tier'},
 {name:'Amazon Q Developer',cat:'ai',sub:'ext',req:'optional',level:'int',price:'free-19'},
 {name:'Gemini Code Assist',cat:'ai',sub:'ext',req:'optional',level:'int',price:'free-19'},
 {name:'JetBrains Junie',cat:'ai',sub:'ext',req:'optional',level:'int',price:'bundled'},
 {name:'Tabnine',cat:'ai',sub:'ext',req:'optional',level:'int',price:'free-39'},
 {name:'Trae',cat:'ai',sub:'ide',req:'optional',level:'int',price:'free'},
-{name:'Copilot Workspace',cat:'ai',sub:'agent',req:'optional',level:'pro'},
+{name:'Copilot Coding Agent',cat:'ai',sub:'agent',req:'optional',level:'pro'},
 {name:'Serena MCP',cat:'ai',sub:'mcp-server',req:'optional',level:'pro'},
 {name:'Qwen3-Coder',cat:'ai_auto',sub:'oss-model',req:'optional',level:'pro',price:'free-oss'},
-{name:'DeepSeek V3.2',cat:'ai_auto',sub:'oss-model',req:'optional',level:'pro',price:'free-oss'},
+{name:'DeepSeek V4',cat:'ai_auto',sub:'oss-model',req:'optional',level:'pro',price:'free-oss'},
 {name:'Poolside',cat:'ai_auto',sub:'autonomous',req:'optional',level:'pro',price:'paid'},
 {name:'Cursor Composer',cat:'ai_auto',sub:'agent',req:'optional',level:'int'},
 {name:'OpenHands',cat:'ai_auto',sub:'agent-fw',req:'optional',level:'pro',price:'free-oss'},
@@ -4141,7 +4141,7 @@ const TECH_DB=[
 {name:'Drizzle Studio',cat:'data',sub:'gui',req:'optional',level:'int'},
 {name:'Prisma Studio',cat:'data',sub:'gui',req:'recommended',level:'int'},
 {name:'PostHog',cat:'data',sub:'analytics',req:'optional',level:'int',price:'free-tier'},
-{name:'Plausible',cat:'data',sub:'analytics',req:'optional',level:'int',price:'$9〜'},
+{name:'Plausible',cat:'data',sub:'analytics',req:'optional',level:'int',price:'paid'},
 {name:'Vercel Analytics',cat:'data',sub:'analytics',req:'recommended',level:'int',price:'free-tier'},
 {name:'OpenTelemetry',cat:'data',sub:'observability',req:'optional',level:'pro'},
 {name:'Tinybird',cat:'data',sub:'analytics',req:'optional',level:'int',price:'free-tier'},
@@ -4220,8 +4220,8 @@ const TECH_DB=[
 {name:'Autodesk Civil 3D',cat:'specialist',sub:'civeng',req:'top1',level:'pro',price:'paid'},
 {name:'Bentley iTwin',cat:'specialist',sub:'civeng',req:'recommended',level:'pro',price:'paid'},
 // ── ML Vision (2) ──
-{name:'YOLOv8',cat:'specialist',sub:'ml_vision',req:'top1',level:'int',price:'free-oss'},
-{name:'Azure Video Analyzer',cat:'specialist',sub:'ml_vision',req:'recommended',level:'pro',price:'pay-as-you-go'},
+{name:'YOLO11',cat:'specialist',sub:'ml_vision',req:'top1',level:'int',price:'free-oss'},
+{name:'Azure AI Video Indexer',cat:'specialist',sub:'ml_vision',req:'recommended',level:'pro',price:'pay-as-you-go'},
 // ── BI & Reporting (3) ──
 {name:'Power BI',cat:'specialist',sub:'analytics',req:'recommended',level:'int',price:'free-tier'},
 {name:'ReportLab',cat:'specialist',sub:'reporting',req:'recommended',level:'int',price:'free-oss'},
@@ -4243,7 +4243,6 @@ const TECH_DB=[
 {name:'CQRS',cat:'method',sub:'pattern',req:'optional',level:'pro',price:'free-oss'},
 // ── Build — ext9 (2) ──
 {name:'Nx',cat:'build',sub:'monorepo',req:'optional',level:'pro',price:'free-oss'},
-{name:'changesets',cat:'build',sub:'release',req:'optional',level:'int',price:'free-oss'},
 // ── Backend — ext9 (2) ──
 {name:'BullMQ',cat:'back',sub:'queue',req:'optional',level:'int',price:'free-oss'},
 {name:'Temporal',cat:'back',sub:'orchestration',req:'optional',level:'pro',price:'free-tier'},
@@ -4252,9 +4251,8 @@ const TECH_DB=[
 {name:'Great Expectations',cat:'data',sub:'quality',req:'optional',level:'pro',price:'free-oss'},
 // ── DevOps — ext9 (2) ──
 {name:'Doppler',cat:'devops',sub:'secrets',req:'optional',level:'int',price:'free-tier'},
-{name:'Earthly',cat:'devops',sub:'build',req:'optional',level:'pro',price:'free-oss'},
 // ── Test — email (1) ──
-{name:'MailHog',cat:'test',sub:'email',req:'optional',level:'int',price:'free-oss'},
+{name:'Mailpit',cat:'test',sub:'email',req:'optional',level:'int',price:'free-oss'},
 // ── ext11: Backend Frameworks (2) ──
 {name:'Elysia',cat:'back',sub:'fw',req:'optional',level:'int',price:'free-oss'},
 {name:'Axum',cat:'back',sub:'fw',req:'optional',level:'sys',price:'free-oss'},
@@ -4290,7 +4288,7 @@ const TECH_DB=[
 // ── ext-de2: Databases (5) ──
 {name:'PlanetScale',cat:'baas',sub:'db',req:'optional',level:'int',price:'free-tier'},
 {name:'CockroachDB',cat:'back',sub:'db',req:'optional',level:'pro',price:'free-tier'},
-{name:'EdgeDB',cat:'back',sub:'db',req:'optional',level:'pro',price:'free-oss'},
+{name:'Gel (旧EdgeDB)',cat:'back',sub:'db',req:'optional',level:'pro',price:'free-oss'},
 {name:'SurrealDB',cat:'back',sub:'db',req:'optional',level:'pro',price:'free-oss'},
 // ── ext-de2: Vector DBs (3) ──
 {name:'Pinecone',cat:'back',sub:'vector',req:'optional',level:'int',price:'free-tier'},
@@ -4309,7 +4307,7 @@ const TECH_DB=[
 // ── ext-de2: Monitoring / Observability (3) ──
 {name:'Axiom',cat:'devops',sub:'logging',req:'optional',level:'int',price:'free-tier'},
 {name:'BetterStack',cat:'devops',sub:'monitor',req:'optional',level:'int',price:'free-tier'},
-{name:'Highlight.io',cat:'test',sub:'monitor',req:'optional',level:'int',price:'free-tier'},
+{name:'LaunchDarkly Observability',cat:'test',sub:'monitor',req:'optional',level:'int',price:'free-tier'},
 // ── ext-de2: Infra / Deployment (2) ──
 {name:'Kamal',cat:'devops',sub:'deploy',req:'optional',level:'pro',price:'free-oss'},
 {name:'Dokku',cat:'devops',sub:'paas',req:'optional',level:'int',price:'free-oss'},
@@ -4338,7 +4336,7 @@ const TECH_DB=[
 {name:'Nuqs',cat:'front',sub:'state',req:'optional',level:'int',price:'free-oss'},
 {name:'Encore.ts',cat:'back',sub:'fw',req:'optional',level:'pro',price:'free-tier'},
 {name:'Million.js',cat:'front',sub:'perf',req:'optional',level:'int',price:'free-oss'},
-{name:'Directus',cat:'baas',sub:'cms',req:'optional',level:'int',price:'free-oss'},
+{name:'Directus',cat:'baas',sub:'cms',req:'optional',level:'int',price:'free-tier'},
 // ── ext17 batch: 20 new tools ──
 // Observability & Tracing
 {name:'Grafana Tempo',cat:'devops',sub:'tracing',req:'optional',level:'pro',price:'free-oss'},
@@ -4352,8 +4350,7 @@ const TECH_DB=[
 // Data & Storage
 {name:'Nile',cat:'data',sub:'multi-tenant',req:'optional',level:'pro',price:'free-tier'},
 {name:'Vercel Blob',cat:'data',sub:'storage',req:'optional',level:'int',price:'free-tier'},
-{name:'Vercel KV',cat:'data',sub:'cache',req:'optional',level:'int',price:'free-tier'},
-{name:'Astro DB',cat:'data',sub:'db',req:'optional',level:'int',price:'free-tier'},
+{name:'Upstash Redis',cat:'data',sub:'cache',req:'optional',level:'int',price:'free-tier'},
 // Backend & Realtime
 {name:'PartyKit',cat:'back',sub:'realtime',req:'optional',level:'int',price:'free-tier'},
 {name:'Val Town',cat:'back',sub:'serverless',req:'optional',level:'int',price:'free-tier'},
@@ -4414,9 +4411,8 @@ const TECH_DB=[
 // AI Agents
 {name:'Magentic-One',cat:'ai_auto',sub:'multi',req:'optional',level:'pro',price:'free-oss'},
 {name:'AG2',cat:'ai_auto',sub:'multi',req:'optional',level:'pro',price:'free-oss'},
-{name:'Phidata',cat:'ai_auto',sub:'agent',req:'optional',level:'int',price:'free-oss'},
+{name:'Agno',cat:'ai_auto',sub:'agent',req:'optional',level:'int',price:'free-oss'},
 {name:'Atomic Agents',cat:'ai_auto',sub:'agent',req:'optional',level:'int',price:'free-oss'},
-{name:'TaskWeaver',cat:'ai_auto',sub:'agent',req:'optional',level:'pro',price:'free-oss'},
 // DevOps & Infrastructure
 {name:'Dagger',cat:'devops',sub:'cicd',req:'optional',level:'int',price:'free-oss'},
 {name:'OpenTofu',cat:'devops',sub:'iac',req:'optional',level:'int',price:'free-oss'},
@@ -4454,7 +4450,6 @@ const TECH_DB=[
 // Mobile (Capacitor already exists; new additions below)
 {name:'Lynx',cat:'mobile',sub:'framework',req:'optional',level:'pro',price:'free-oss'},
 // Payment (Polar/Paddle already exist; new additions below)
-{name:'LemonSqueezy',cat:'payment',sub:'platform',req:'optional',level:'int',price:'paid'},
 // Method & Process
 {name:'Event Storming',cat:'method',sub:'modeling',req:'optional',level:'int',price:'free'},
 {name:'C4 Model',cat:'method',sub:'arch',req:'optional',level:'int',price:'free'},
@@ -4463,6 +4458,25 @@ const TECH_DB=[
 {name:'Gleam',cat:'lang',sub:'functional',req:'optional',level:'pro',price:'free-oss'},
 {name:'Zig',cat:'lang',sub:'systems',req:'optional',level:'pro',price:'free-oss'},
 {name:'Mojo',cat:'lang',sub:'ai',req:'optional',level:'pro',price:'free-tier'},
+// v9.40 2026-07 鮮度監査で補完した標準技術
+{name:'Helm',cat:'devops',sub:'k8s',req:'recommended',level:'pro',price:'free-oss'},
+{name:'Datadog',cat:'devops',sub:'monitor',req:'optional',level:'int',price:'free-tier'},
+{name:'Gitleaks',cat:'security',sub:'secret-scan',req:'recommended',level:'int',price:'free-oss'},
+{name:'Google ADK',cat:'ai_auto',sub:'agent-fw',req:'recommended',level:'pro',price:'free-oss'},
+{name:'Amp (Sourcegraph)',cat:'ai',sub:'agent',req:'optional',level:'int',price:'usage'},
+{name:'MUI',cat:'front',sub:'ui',req:'optional',level:'int',price:'free-oss'},
+{name:'React Hook Form',cat:'front',sub:'form',req:'recommended',level:'int',price:'free-oss'},
+{name:'D3.js',cat:'front',sub:'dataviz',req:'optional',level:'pro',price:'free-oss'},
+{name:'Nitro Modules',cat:'mobile',sub:'native',req:'optional',level:'pro',price:'free-oss'},
+{name:'React Navigation',cat:'mobile',sub:'routing',req:'recommended',level:'int',price:'free-oss'},
+{name:'ArkType',cat:'api',sub:'validation',req:'optional',level:'int',price:'free-oss'},
+{name:'Appwrite',cat:'baas',sub:'full',req:'recommended',level:'int',price:'free-tier'},
+{name:'PocketBase',cat:'baas',sub:'db',req:'optional',level:'int',price:'free-oss'},
+{name:'KOMOJU',cat:'payment',sub:'payment',req:'rec-jp',level:'int',price:'3.25%'},
+{name:'PAY.JP',cat:'payment',sub:'payment',req:'rec-jp',level:'int',price:'3.3%'},
+{name:'Trunk-Based Development',cat:'method',sub:'process',req:'recommended',level:'int',price:'free'},
+{name:'Pix4Dmapper',cat:'specialist',sub:'survey',req:'optional',level:'pro',price:'paid'},
+{name:'Agisoft Metashape',cat:'specialist',sub:'survey',req:'optional',level:'pro',price:'paid'},
 ];
 const _TECH_COUNT=TECH_DB.length;
 const HELP_DATA={
