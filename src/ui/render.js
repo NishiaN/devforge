@@ -57,6 +57,7 @@ function renderInputFor(q,onSubmit,allowSkip){
 function renderChips(zone,q,multi,onSubmit,withVoice){
   const _ja=S.lang==='ja';
   const sel=new Set();
+  let _stInpRef=null; // chip-text: chip click fills the input (edit encouraged) instead of instant submit
   var _preAns=(S.answers&&S.answers[q.id])?String(S.answers[q.id]):'';
   // Strip [P0]/[P1]/[P2] prefixes from saved sortable answers before populating sel
   if(multi&&_preAns){_preAns.split(',').map(v=>v.trim().replace(/^(\[P\d+\]\s*)+/,'')).filter(Boolean).forEach(v=>sel.add(v));}
@@ -82,7 +83,8 @@ function renderChips(zone,q,multi,onSubmit,withVoice){
         if(sel.has(ch)){sel.delete(ch);c.classList.remove('on');c.setAttribute('aria-checked','false');}
         else{sel.add(ch);c.classList.add('on');c.setAttribute('aria-checked','true');}
         updCount();
-      }else{onSubmit(ch);}
+      }else if(_stInpRef){_stInpRef.value=ch;_stInpRef.focus();}
+      else{onSubmit(ch);}
     };
     c.onkeydown=(e)=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();c.click();}};
     gr.appendChild(c);
@@ -131,9 +133,10 @@ function renderChips(zone,q,multi,onSubmit,withVoice){
     ft.appendChild(countBadge);ft.appendChild(inp);ft.appendChild(btn);
     if(withVoice&&voiceRec){const vb=document.createElement('button');vb.className='voice-btn';vb.textContent='🎙️';vb.title=_ja?'音声入力':'Voice Input';vb.setAttribute('aria-label',_ja?'音声入力':'Voice Input');vb.onclick=()=>toggleVoice(vb);ft.appendChild(vb);}
   } else {
-    inp.addEventListener('keypress',e=>{if(e.key==='Enter'&&inp.value.trim())onSubmit(inp.value.trim());});
+    _stInpRef=inp;
+    inp.addEventListener('keypress',e=>{if(e.key==='Enter'){if(inp.value.trim())onSubmit(inp.value.trim());else toast(t('inputRequired'));}});
     const btn=document.createElement('button');btn.className='btn btn-p btn-sm';btn.textContent=t('send');
-    btn.onclick=()=>{if(inp.value.trim())onSubmit(inp.value.trim());};
+    btn.onclick=()=>{if(inp.value.trim())onSubmit(inp.value.trim());else toast(t('inputRequired'));};
     ft.appendChild(inp);ft.appendChild(btn);
     if(withVoice&&voiceRec){const vb=document.createElement('button');vb.className='voice-btn';vb.textContent='🎙️';vb.title=_ja?'音声入力':'Voice Input';vb.setAttribute('aria-label',_ja?'音声入力':'Voice Input');vb.onclick=()=>toggleVoice(vb);ft.appendChild(vb);}
   }

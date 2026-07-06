@@ -11,14 +11,14 @@ function showPostGenGuide(force){
   overlay.onclick=e=>{if(e.target===overlay)overlay.remove();};
   const level=isB?{em:'🌱',name:_ja?'Beginner':'Beginner',cls:'guide-lv-b'}:isP?{em:'⚡',name:_ja?'Professional':'Professional',cls:'guide-lv-p'}:{em:'🔥',name:_ja?'Intermediate':'Intermediate',cls:'guide-lv-i'};
   const steps=isB?(_ja?[
-    ['生成物は設計書',`<strong>最重要:</strong> 生成された${Object.keys(S.files||{}).length||175}+ファイルは「設計ドキュメント」。npm installで動くコードではない。AIツールに投入することで実コードが生成される。`],
+    ['生成物は設計書',`<strong>最重要:</strong> 生成された${Object.keys(S.files||{}).length||227}+ファイルは「設計ドキュメント」。npm installで動くコードではない。AIツールに投入することで実コードが生成される。`],
     ['まずZIPを保存','📦 ZIPダウンロード → ローカルに保存。ブラウザのデータは消えることがある。この1ステップが全財産を守る。'],
     ['3ファイルだけ覚える','<code>CLAUDE.md</code>(AIに全仕様を理解させる) / <code>.cursorrules</code>(Cursor自動読込) / <code>tasks.md</code>(やることリスト)'],
     ['AIに丸ごと渡す','「全ファイルコピー」(Ctrl+Shift+C)でAIに貼り付け → 仕様を把握した状態で開発スタート。'],
     ['ロードマップに従う','ダッシュボード柱⑦のロードマップUIがそのまま学習計画。Layer 1から順にチェック。📖で公式ドキュメントにジャンプ。'],
     ['AIで発想を広げる','AIランチャー柱⑧の「🎭 9人の専門家ブレスト」で、9つの視点からアイデアを生成。「平凡な答え」から脱却しましょう。'],
   ]:[
-    ['Files are Design Docs',`<strong>Key fact:</strong> The ${Object.keys(S.files||{}).length||175}+ generated files are design documents, not executable code. Feed them to an AI tool to generate real code.`],
+    ['Files are Design Docs',`<strong>Key fact:</strong> The ${Object.keys(S.files||{}).length||227}+ generated files are design documents, not executable code. Feed them to an AI tool to generate real code.`],
     ['Save ZIP First','📦 ZIP Download → save locally. Browser data can be lost. This one step protects everything you just created.'],
     ['Remember 3 Files','<code>CLAUDE.md</code>(AI understands your project) / <code>.cursorrules</code>(Cursor auto-loads) / <code>tasks.md</code>(your todo list)'],
     ['Feed Everything to AI','"Copy All" (Ctrl+Shift+C) → Paste into AI → Start coding with full context.'],
@@ -105,7 +105,7 @@ function showPostGenGuide(force){
     ${progBar}
     <div class="guide-steps">${stepsHtml}</div>
     ${S.skillLv===2?`<div class="guide-bridge">
-      <div class="guide-bridge-title">${_ja?'🔭 次に探索すべき3つのピラー — Lv.2 → 3 へ':'🔭 3 Pillars to Explore Next — Lv.2 → 3'}</div>
+      <div class="guide-bridge-title">${_ja?'🔭 次に探索すべき3つの柱 — Lv.2 → 3 へ':'🔭 3 Pillars to Explore Next — Lv.2 → 3'}</div>
       <div class="guide-bridge-cards">
         <button class="guide-bridge-card" onclick="this.closest('.guide-overlay').remove();var _t=document.querySelectorAll('.piltab');if(_t[3])_t[3].click();">
           <span class="bridge-icon">🤖</span>
@@ -125,7 +125,7 @@ function showPostGenGuide(force){
       </div>
     </div>`:''}
     ${S.skillLv===3?`<div class="guide-bridge">
-      <div class="guide-bridge-title">${_ja?'🛡️ 次に探索すべき3つのピラー — Lv.3 → 4 へ':'🛡️ 3 Pillars to Level Up — Lv.3 → 4'}</div>
+      <div class="guide-bridge-title">${_ja?'🛡️ 次に探索すべき3つの柱 — Lv.3 → 4 へ':'🛡️ 3 Pillars to Level Up — Lv.3 → 4'}</div>
       <div class="guide-bridge-cards">
         <button class="guide-bridge-card" onclick="this.closest('.guide-overlay').remove();var _t=document.querySelectorAll('.piltab');if(_t[11])_t[11].click();">
           <span class="bridge-icon">🛡️</span>

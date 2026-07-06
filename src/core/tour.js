@@ -6,22 +6,22 @@ function _getTourSteps(){
     'Beginner / Intermediate / Pro の3段階。<br>💡 Beginner: Phase 2（技術質問）を自動スキップ＆⭐推奨技術をハイライト。<br>💡 Pro: 企業向けドキュメント・高度な監査ログ・RFC 2119セキュリティ分析を追加生成。<br>設定後もいつでも変更可能。変更時は回答が一部リセットされる場合があります。':
     'Three tiers: Beginner / Intermediate / Pro.<br>💡 Beginner: Phase 2 (tech questions) auto-skipped & ⭐ recommended tech highlighted.<br>💡 Pro: Adds enterprise docs, advanced audit logs, RFC 2119 security analysis.<br>You can change level anytime — some answers may reset on change.'},
   {title:_ja?'📝 テンプレート':'📝 Templates',desc:_ja?
-    '📦 標準257種 ＋ 🎓 分野別602種のプリセットを選択できます。<br>💡 「モード切替」で標準↔分野を切り替え。⚔️ 比較ボタンで2プリセットを並べて比較。<br>💡 「おすすめ」フィルターで選択肢を絞り込み。選ぶと25項目の回答が自動入力。<br>間違えて選んだ場合は Ctrl+Z（Cmd+Z）で直前のプリセット適用を取り消せます。':
-    '📦 257 standard + 🎓 602 field presets available.<br>💡 Use "Mode Toggle" to switch standard ↔ field. ⚔️ Compare button shows 2 presets side-by-side.<br>💡 "Recommended" filter narrows choices. Selecting auto-fills 25 answers.<br>Changed your mind? Ctrl+Z (Cmd+Z) undoes the last preset application.'},
+    '📦 標準257種 ＋ 🎓 分野別603種のプリセットを選択できます。<br>💡 「モード切替」で標準↔分野を切り替え。⚔️ 比較ボタンで2プリセットを並べて比較。<br>💡 「おすすめ」フィルターで選択肢を絞り込み。選ぶと25項目の回答が自動入力。<br>間違えて選んだ場合は Ctrl+Z（Cmd+Z）で直前のプリセット適用を取り消せます。':
+    '📦 257 standard + 🎓 603 field presets available.<br>💡 Use "Mode Toggle" to switch standard ↔ field. ⚔️ Compare button shows 2 presets side-by-side.<br>💡 "Recommended" filter narrows choices. Selecting auto-fills 25 answers.<br>Changed your mind? Ctrl+Z (Cmd+Z) undoes the last preset application.'},
   {title:_ja?'💬 質問フロー':'💬 Q&A Flow',desc:_ja?
-    'Phase 1（ビジネス）→ Phase 2（技術スタック）→ Phase 3（開発方針）の3段階。<br>💡 Enter キーで送信。「あとで」ボタンでスキップも可。<br>💡 互換性チェックはリアルタイムに自動実行。矛盾があれば赤いアラートで通知。<br>Lv2以上では全ERROR解消まで次フェーズに進めない保護モード（ガードレール）が有効。':
-    'Three phases: Phase 1 (Business) → Phase 2 (Tech stack) → Phase 3 (Dev policy).<br>💡 Press Enter to submit. Use "Skip" to answer later.<br>💡 Compatibility checks run automatically in real time — red alerts for conflicts.<br>Lv2+ enables guardrail mode: must resolve all ERRORs before proceeding.'},
+    'Phase 1（プロジェクト定義）→ Phase 2（技術選定）→ Phase 3（機能・データ設計）の3段階。<br>💡 Enter キーで送信。「あとで」ボタンでスキップも可。<br>💡 互換性チェックはリアルタイムに自動実行。矛盾があれば赤いアラートで通知。<br>Lv2以上では全ERROR解消まで次フェーズに進めない保護モード（ガードレール）が有効。':
+    'Three phases: Phase 1 (Project Definition) → Phase 2 (Tech Stack) → Phase 3 (Feature & Data Design).<br>💡 Press Enter to submit. Use "Skip" to answer later.<br>💡 Compatibility checks run automatically in real time — red alerts for conflicts.<br>Lv2+ enables guardrail mode: must resolve all ERRORs before proceeding.'},
   {title:_ja?'✎ 回答編集':'✎ Edit Answers',desc:_ja?
     '送信済みの回答に表示される ✎ ボタンで修正できます。<br>💡 編集後は互換性チェックが自動再実行されます。<br>💡 Phase 1（ビジネス要件）を変更すると、Phase 2・3の技術選択に連鎖影響が出る場合があります。<br>特にドメイン（目的文）変更はAPIルール・エンティティ構成に大きな影響を与えます。':
     'Click the ✎ button on submitted answers to edit.<br>💡 Compatibility checks re-run automatically after edits.<br>💡 Changing Phase 1 (business requirements) can cascade to Phase 2 & 3 tech choices.<br>Especially, changing the domain (purpose text) heavily affects API rules & entity structure.'},
-  {title:_ja?'📦 225+ファイル生成':'📦 225+ File Generation',desc:_ja?
-    '全質問回答後、28の柱で225+ファイルを自動生成。<br>💡 生成内訳: .spec/（仕様書5点）/ docs/（134ドキュメント）/ .claude/（AIエージェント設定）/ .github/（CI/CDワークフロー）/ db/（シードデータ）など。<br>💡 ピラータブの 🔄 ボタンで個別ピラーのみ再生成可能。回答を微調整したあとの部分更新に便利。':
-    'All answers collected → 225+ files auto-generate across 28 pillars.<br>💡 Breakdown: .spec/ (5 specs) / docs/ (134 docs) / .claude/ (AI agent configs) / .github/ (CI/CD) / db/ (seed data) & more.<br>💡 Click 🔄 on any pillar tab to regenerate just that pillar — perfect for partial updates after tweaking answers.'},
+  {title:_ja?'📦 227+ファイル生成':'📦 227+ File Generation',desc:_ja?
+    '全質問回答後、28の柱で227+ファイルを自動生成。<br>💡 生成内訳: .spec/（仕様書5点）/ docs/（134ドキュメント）/ .claude/（AIエージェント設定）/ .github/（CI/CDワークフロー）/ db/（シードデータ）など。<br>💡 ピラータブの 🔄 ボタンで個別ピラーのみ再生成可能。回答を微調整したあとの部分更新に便利。':
+    'All answers collected → 227+ files auto-generate across 28 pillars.<br>💡 Breakdown: .spec/ (5 specs) / docs/ (134 docs) / .claude/ (AI agent configs) / .github/ (CI/CD) / db/ (seed data) & more.<br>💡 Click 🔄 on any pillar tab to regenerate just that pillar — perfect for partial updates after tweaking answers.'},
   {title:_ja?'⚡ 並列探索':'⚡ Parallel Explorer',desc:_ja?
-    'Pillar ⑤ では7つのスタック構成を一画面で比較できます。<br>💡 各スタックにはPros/Consと採用理由が表示され、あなたの回答に基づいたおすすめランキングも確認できます。<br>💡 フロントエンド・バックエンド・DB・インフラなど層別にフィルタリング可能。技術選定の判断材料として活用してください。':
+    '柱⑤ では7つのスタック構成を一画面で比較できます。<br>💡 各スタックにはPros/Consと採用理由が表示され、あなたの回答に基づいたおすすめランキングも確認できます。<br>💡 フロントエンド・バックエンド・DB・インフラなど層別にフィルタリング可能。技術選定の判断材料として活用してください。':
     'Pillar ⑤ lets you compare 7 stack configurations side-by-side.<br>💡 Each stack shows Pros/Cons and reasoning, plus a recommendation ranking based on your answers.<br>💡 Filter by layer: frontend / backend / DB / infra. Use it as input for your tech selection decisions.'},
   {title:'📊 Dashboard',desc:_ja?
-    'Pillar ⑥ ではプロジェクトのコンテキスト可視化と技術DBを閲覧できます。<br>💡 TechDB: '+_TECH_COUNT+'以上の技術エントリーを15カテゴリに分類。フリーワード＋カテゴリでフィルタ可能。<br>💡 ドメイン・スコープ・ペルソナなどを一画面でレビュー。仕様書作成前の確認に最適。':
+    '柱⑥ ではプロジェクトのコンテキスト可視化と技術DBを閲覧できます。<br>💡 TechDB: '+_TECH_COUNT+'以上の技術エントリーを15カテゴリに分類。フリーワード＋カテゴリでフィルタ可能。<br>💡 ドメイン・スコープ・ペルソナなどを一画面でレビュー。仕様書作成前の確認に最適。':
     'Pillar ⑥: Project context visualization + tech DB explorer.<br>💡 TechDB: '+_TECH_COUNT+'+ entries across 15 categories. Filter by free text + category.<br>💡 Review domain, scope, personas on one screen — ideal before writing specs.'},
   {title:_ja?'🤖 AIランチャー':'🤖 AI Launcher',desc:_ja?
     'Pillar ⑧ の AIランチャーで仕様書をAIツールにワンクリック投入。<br>💡 109テンプレートをコード生成・レビュー・ドキュメント・ブレストなどのカテゴリで整理。<br>💡 あなたのスキルレベルに合わせたテンプレートを優先表示（スキル適応レコメンド）。<br>💡 トークン推定・モデル選択・出力プレビューも搭載。Claude / GPT-4o / Gemini に対応。':

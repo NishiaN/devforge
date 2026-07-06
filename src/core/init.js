@@ -1,7 +1,7 @@
 /* ═══ INIT ═══ */
 /* Global error handler */
-window.onerror=(msg,src,line)=>{console.error('DevForge error:',{msg,src,line});toast('⚠️ '+msg);};
-window.onunhandledrejection=e=>{console.error('Unhandled:',e.reason);toast('⚠️ '+(e.reason?.message||e.reason));};
+window.onerror=(msg,src,line)=>{console.error('DevForge error:',{msg,src,line});toast(S.lang==='ja'?'⚠️ 一時的な問題が発生しました。入力データは保存されています（詳細はコンソール参照）':'⚠️ A temporary issue occurred. Your data is saved (see console for details)');};
+window.onunhandledrejection=e=>{console.error('Unhandled:',e.reason);toast(S.lang==='ja'?'⚠️ 一時的な問題が発生しました。入力データは保存されています（詳細はコンソール参照）':'⚠️ A temporary issue occurred. Your data is saved (see console for details)');};
 let _mermaidReady=false;let _mermaidLoading=false;
 // OS theme auto-detection (HCD: ⑥文脈適合)
 let theme=_lsGet('devforge-theme');
@@ -71,8 +71,8 @@ function applyLang(){
   statLbls.forEach((el,i)=>{if(i<4)el.textContent=ja?slJa[i]:slEn[i];});
   // Info cards
   const icards=document.querySelectorAll('.icard');
-  const icJa=[['😱 3つの悪夢を解決','真っ白な画面の絶望・終わらない連携地獄・「俺の環境では動く」症候群…DevForgeが全て自動解決'],['🧪 28の柱×225+ファイル','設計書を自動生成 → AIに投入 → 実コード。質問に答えるだけで仕様・環境・AIルール全てを自動生成。'],['📱 モバイル対応','Expo / React Native 開発パス・EAS Build・OTA更新'],['🤖 AI自律開発','Vibe Coding・マルチAgent・Claude Code Subagents'],['💳 決済・CMS・EC','Stripe・microCMS・Medusa・Shopify Hydrogen'],['📦 フルエクスポート','ZIP・PDF・全ファイル結合コピー・URLシェア']];
-  const icEn=[['😱 Solve 3 Dev Nightmares','Blank screen paralysis, endless integration hell, "works on my machine" syndrome… DevForge auto-resolves all'],['🧪 28 Pillars × 225+ Files','Auto-generate specs → Feed to AI → Real code. Answer questions to auto-generate specs, env, AI rules & strategy.'],['📱 Mobile Support','Expo / React Native dev path, EAS Build, OTA updates'],['🤖 AI Autonomous Dev','Vibe Coding, Multi-Agent, Claude Code Subagents'],['💳 Payment/CMS/EC','Stripe, microCMS, Medusa, Shopify Hydrogen'],['📦 Full Export','ZIP, PDF, Copy All Files, URL Share']];
+  const icJa=[['😱 3つの悪夢を解決','真っ白な画面の絶望・終わらない連携地獄・「俺の環境では動く」症候群…DevForgeが全て自動解決'],['🧪 28の柱×227+ファイル','設計書を自動生成 → AIに投入 → 実コード。質問に答えるだけで仕様・環境・AIルール全てを自動生成。'],['📱 モバイル対応','Expo / React Native 開発パス・EAS Build・OTA更新'],['🤖 AI自律開発','Vibe Coding・マルチAgent・Claude Code Subagents'],['💳 決済・CMS・EC','Stripe・microCMS・Medusa・Shopify Hydrogen'],['📦 フルエクスポート','ZIP・PDF・全ファイル結合コピー・URLシェア']];
+  const icEn=[['😱 Solve 3 Dev Nightmares','Blank screen paralysis, endless integration hell, "works on my machine" syndrome… DevForge auto-resolves all'],['🧪 28 Pillars × 227+ Files','Auto-generate specs → Feed to AI → Real code. Answer questions to auto-generate specs, env, AI rules & strategy.'],['📱 Mobile Support','Expo / React Native dev path, EAS Build, OTA updates'],['🤖 AI Autonomous Dev','Vibe Coding, Multi-Agent, Claude Code Subagents'],['💳 Payment/CMS/EC','Stripe, microCMS, Medusa, Shopify Hydrogen'],['📦 Full Export','ZIP, PDF, Copy All Files, URL Share']];
   icards.forEach((el,i)=>{if(i<6){const d=ja?icJa[i]:icEn[i];const h3=el.querySelector('h3');const p=el.querySelector('p');if(h3)h3.textContent=d[0];if(p)p.textContent=d[1];}});
   // P1: Lv0-1 beginner icard simplification — show only 3 simple cards
   if(S.skillLv<=1){
@@ -155,7 +155,7 @@ function applyLang(){
   if($('presetRow'))initPresets();
   // Update html lang attribute and document title (D3)
   document.documentElement.lang=S.lang;
-  document.title=ja?'DevForge v9.6 — AI駆動開発 統合プラットフォーム':'DevForge v9.6 — AI-Driven Development Platform';
+  document.title=ja?'DevForge v9.22 — AI駆動開発 統合プラットフォーム':'DevForge v9.22 — AI-Driven Development Platform';
   // Compare button translation (D4)
   const cl=$('compareLbl');if(cl)cl.textContent=ja?'テンプレート比較':'Compare Templates';
   // Hearing sheet DL button (Lv2+)
@@ -173,11 +173,13 @@ function applyLang(){
     h0.textContent=ja?'難しい知識は不要。質問に答えるだけ':'No technical knowledge needed. Just answer questions.';
   }
   // Hero flow labels (bilingual)
-  var _hf={hfLbl1:ja?'25問に回答':'Answer 25 Qs',hfLbl2:ja?'225+ファイル生成':'225+ Files Generated',hfLbl3:ja?'AIツールに投入':'Feed to AI Tools',hfLbl4:ja?'開発スタート':'Start Coding'};
+  // Beginner (Lv0-1) auto-skips Phase 2 → shows ~15 questions instead of 25
+  var _qLbl=S.skillLv<=1?(ja?'約15問に回答':'Answer ~15 Qs'):(ja?'25問に回答':'Answer 25 Qs');
+  var _hf={hfLbl1:_qLbl,hfLbl2:ja?'227+ファイル生成':'227+ Files Generated',hfLbl3:ja?'AIツールに投入':'Feed to AI Tools',hfLbl4:ja?'開発スタート':'Start Coding'};
   Object.keys(_hf).forEach(function(id){var el=$(id);if(el)el.textContent=_hf[id];});
   // F2: hero stats skill-adaptation (Lv0-1 shows 4 pillars / key files to reduce info shock)
   var _spn=$('statPillarNum');if(_spn)_spn.textContent=S.skillLv<=1?'4':'28';
-  var _sfn=$('statFileNum');if(_sfn&&!Object.keys(S.files||{}).length)_sfn.textContent=S.skillLv<=1?(ja?'主要':'Key'):'225+';
+  var _sfn=$('statFileNum');if(_sfn&&!Object.keys(S.files||{}).length)_sfn.textContent=S.skillLv<=1?(ja?'主要':'Key'):'227+';
   var _hd=$('heroDesc');
   if(_hd){
     if(S.skillLv<=1)_hd.textContent=ja?'質問に答えるだけで設計書を自動生成。AIにそのまま渡せば開発スタート。':'Answer questions to auto-generate design docs. Feed to AI to start coding.';
@@ -252,7 +254,7 @@ if(S.projectName&&S.phase>0){
 }
 
 // What's New indicator (HCD: C継続利用)
-const CURRENT_VERSION='9.6.0';
+const CURRENT_VERSION='9.22.0';
 const lastSeenVersion=_lsGet('devforge-last-version');
 if(lastSeenVersion!==CURRENT_VERSION){
   const helpBtn=$('helpBtn')||document.querySelector('[onclick*="showManual"]');

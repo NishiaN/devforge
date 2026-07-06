@@ -502,7 +502,7 @@ function showDashboard(){
       {l:'⑫ Security',p:'docs/43_,docs/44_,docs/45_,docs/46_,docs/47_'},
       {l:'All docs/',p:'docs/'},
     ];
-    h+='<h4 class="dash-h4-mt">📦 '+(_ja?'ピラー別エクスポート (Lv.4+)':'Pillar Export (Lv.4+)')+'</h4>';
+    h+='<h4 class="dash-h4-mt">📦 '+(_ja?'柱別エクスポート (Lv.4+)':'Pillar Export (Lv.4+)')+'</h4>';
     h+='<div class="dash-pex-grid">';
     _pg.forEach(function(g){
       var _prefs=g.p.split(',');
