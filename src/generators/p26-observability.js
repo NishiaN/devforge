@@ -891,8 +891,8 @@ function gen106_2(a,pn){
     doc+='```typescript\n';
     doc+='// lib/ai/cost-tracker.ts (Claude/Anthropic)\n';
     doc+='const CLAUDE_PRICING = {\n';
-    doc+='  \'claude-opus-4-6\':  { input: 0.000015, output: 0.000075 },  // per token\n';
-    doc+='  \'claude-sonnet-4-6\': { input: 0.000003, output: 0.000015 },\n';
+    doc+='  \'claude-opus-4-8\':  { input: 0.000015, output: 0.000075 },  // per token\n';
+    doc+='  \'claude-sonnet-5\': { input: 0.000003, output: 0.000015 },\n';
     doc+='  \'claude-haiku-4-5\': { input: 0.00000025, output: 0.00000125 },\n';
     doc+='};\n\n';
   } else if(provider==='openai'){

@@ -141,8 +141,8 @@ function gen95(a,pn){
   doc+=G?'## AIプロバイダー別安全設定\n\n':'## Provider-Specific Safety Configuration\n\n';
   if(provider==='claude'){
     doc+=G?
-      '### Claude (Anthropic)\n\n```python\nimport anthropic\nclient = anthropic.Anthropic()\n\nresponse = client.messages.create(\n    model="claude-opus-4-6",\n    max_tokens=1024,\n    system="""あなたは[ドメイン]専門のアシスタントです。\n以下の制約を厳守してください:\n- 個人情報を絶対に出力しない\n- 医療・法律・金融の確定的アドバイスをしない\n- 不確実な情報は必ず「確認が必要です」と明示する\n""",\n    messages=[{"role": "user", "content": sanitize(user_input)}]\n)\n```\n\n':
-      '### Claude (Anthropic)\n\n```python\nimport anthropic\nclient = anthropic.Anthropic()\n\nresponse = client.messages.create(\n    model="claude-opus-4-6",\n    max_tokens=1024,\n    system="""You are a specialized assistant for [domain].\nStrict constraints:\n- Never output personal information\n- Never give definitive medical/legal/financial advice\n- Always indicate "Needs verification" for uncertain information\n""",\n    messages=[{"role": "user", "content": sanitize(user_input)}]\n)\n```\n\n';
+      '### Claude (Anthropic)\n\n```python\nimport anthropic\nclient = anthropic.Anthropic()\n\nresponse = client.messages.create(\n    model="claude-opus-4-8",\n    max_tokens=1024,\n    system="""あなたは[ドメイン]専門のアシスタントです。\n以下の制約を厳守してください:\n- 個人情報を絶対に出力しない\n- 医療・法律・金融の確定的アドバイスをしない\n- 不確実な情報は必ず「確認が必要です」と明示する\n""",\n    messages=[{"role": "user", "content": sanitize(user_input)}]\n)\n```\n\n':
+      '### Claude (Anthropic)\n\n```python\nimport anthropic\nclient = anthropic.Anthropic()\n\nresponse = client.messages.create(\n    model="claude-opus-4-8",\n    max_tokens=1024,\n    system="""You are a specialized assistant for [domain].\nStrict constraints:\n- Never output personal information\n- Never give definitive medical/legal/financial advice\n- Always indicate "Needs verification" for uncertain information\n""",\n    messages=[{"role": "user", "content": sanitize(user_input)}]\n)\n```\n\n';
   }else if(provider==='openai'){
     doc+=G?
       '### OpenAI GPT\n\n```typescript\nimport OpenAI from \'openai\';\nconst openai = new OpenAI();\n\nconst completion = await openai.chat.completions.create({\n  model: \'gpt-5.2\',\n  max_tokens: 1024,\n  temperature: 0.2, // 低温で安定した出力\n  messages: [\n    { role: \'system\', content: SYSTEM_PROMPT },\n    { role: \'user\',   content: sanitize(userInput) }\n  ],\n  // JSON出力強制でインジェクション防御\n  response_format: { type: \'json_object\' },\n});\n```\n\n':
@@ -380,7 +380,7 @@ function gen97(a,pn){
     doc+='  const generation = trace.generation({\n';
     doc+='    name: \'llm-call\',\n';
     doc+='    input: { system: systemPrompt, user: prompt },\n';
-    doc+='    model: \'claude-opus-4-6\',\n';
+    doc+='    model: \'claude-opus-4-8\',\n';
     doc+='  });\n';
     doc+='  try {\n';
     doc+='    const result = await callLLM(prompt, systemPrompt);\n';
@@ -680,7 +680,7 @@ function gen98_2(a,pn){
   if(provider==='claude'){
     doc+='  const client = new Anthropic();\n';
     doc+='  const response = await client.messages.create({\n';
-    doc+='    model: \'claude-opus-4-6\',\n';
+    doc+='    model: \'claude-opus-4-8\',\n';
     doc+='    max_tokens: 256,\n';
     doc+='    system: \'You are an AI explainability assistant. Provide clear, non-technical explanations for AI decisions in 2-3 sentences.\',\n';
     doc+='    messages: [{ role: \'user\', content:\n';
@@ -724,7 +724,7 @@ function gen98_2(a,pn){
   doc+='  timestamp: string;         // ISO 8601\n';
   doc+='  session_id: string;\n';
   doc+='  user_id: string;\n';
-  doc+='  model_name: string;        // e.g. "claude-opus-4-6"\n';
+  doc+='  model_name: string;        // e.g. "claude-opus-4-8"\n';
   doc+='  model_version: string;\n';
   doc+='  request_context: {\n';
   doc+='    input_features: Record<string, unknown>;\n';

@@ -378,7 +378,7 @@ function gen112(a,pn){
   if(isPro27c&&hasAI112){
     doc+='\n## '+(G?'LLM / AIコスト追跡':'LLM / AI Cost Tracking')+'\n\n';
     doc+='| '+(G?'モデル':'Model')+' | '+(G?'入力単価':'Input')+' | '+(G?'出力単価':'Output')+' | '+(G?'キャッシュ割引':'Cache Discount')+'|\n|---|---|---|---|\n';
-    doc+='| Claude Sonnet 4.5 | $3/1M tok | $15/1M tok | 90% (Prompt Cache) |\n';
+    doc+='| Claude Sonnet 5 | $3/1M tok | $15/1M tok | 90% (Prompt Cache) |\n';
     doc+='| Claude Haiku 4.5 | $1/1M tok | $5/1M tok | 90% (Prompt Cache) |\n';
     doc+='| GPT-5.2 | $1.25/1M tok | $10/1M tok | 90% (cache) |\n';
     doc+='| Gemini 2.5 Flash | $0.3/1M tok | $2.5/1M tok | 75% (implicit cache) |\n\n';

@@ -150,8 +150,8 @@ const TEMPLATE_SCOPE={
 
 /* ── Model list (module-level for reuse in updateLaunchPreview) ── */
 const _LAUNCH_MODELS=[
-  {name:'Claude Opus 4.6',ctx:1000000,icon:'🟣'},
-  {name:'Claude Sonnet 4.5',ctx:200000,icon:'🔵'},
+  {name:'Claude Opus 4.8',ctx:1000000,icon:'🟣'},
+  {name:'Claude Sonnet 5',ctx:200000,icon:'🔵'},
   {name:'GPT-5.2',ctx:400000,icon:'🟢'},
   {name:'Gemini 2.5 Pro',ctx:1000000,icon:'🟡'},
   {name:'Claude Haiku 4.5',ctx:200000,icon:'🟣'},

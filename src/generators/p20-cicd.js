@@ -249,7 +249,7 @@ function gen77(G, domain, dtCfg, a, pn) {
   doc += '  pull_request:\n';
   doc += '    branches: [main]\n\n';
   doc += 'env:\n';
-  doc += '  NODE_VERSION: "20"\n';
+  doc += '  NODE_VERSION: "22"\n';
   doc += '  ' + dtCfg.env.split(',')[0].trim() + ': ${{ secrets.' + dtCfg.env.split(',')[0].trim() + ' }}\n\n';
   doc += 'jobs:\n';
   doc += '  ci:\n';

@@ -212,8 +212,8 @@ function showDashboard(){
   // Model fit analysis (advanced — collapsed for beginners)
   h+=(_adv?'<details class="dash-advanced" open>':'<details class="dash-advanced">')+'<summary class="dash-adv-toggle">'+(_ja?'🔬 AI モデル & スタック分析':'🔬 AI Model & Stack Analysis')+'</summary>';
   const models=[
-    {name:'Claude Opus 4.6',ctx:1000000,color:'var(--accent)'},
-    {name:'Claude Sonnet 4.5',ctx:200000,color:'var(--accent-2)'},
+    {name:'Claude Opus 4.8',ctx:1000000,color:'var(--accent)'},
+    {name:'Claude Sonnet 5',ctx:200000,color:'var(--accent-2)'},
     {name:'GPT-5.2',ctx:400000,color:'var(--success)'},
     {name:'Gemini 2.5 Pro',ctx:1000000,color:'var(--warn)'},
     {name:'Claude Haiku 4.5',ctx:200000,color:'var(--accent)'},
