@@ -121,7 +121,7 @@ function genDocs21(a,pn){
       const bodyObj=bodyFields.length?bodyFields.map(c=>`"${c.col}": "${c.type.includes('INT')?'number':c.type.includes('BOOLEAN')?'boolean':'string'}"`).join(', '):`"name": "string"`;
       const methods=getEntityMethods(e);
       const parts=[`\n### /api/v1/${lower}`];
-      if(methods.includes('GET')) parts.push(`\n#### GET /api/v1/${lower}\n- ${G?'説明':'Desc'}: ${G?e+'一覧取得 (カーソルページネーション対応)':'List '+e+' (cursor-paginated)'}\n- クエリ: \`?cursor=&limit=20&sort=created_at&order=desc\`\n- レスポンス:\n\`\`\`json\n{ "data": [{ "id": "uuid", ${bodyObj} }], "meta": { "total": 100, "cursor": "eyJpZCI6IjEyMyJ9", "hasNextPage": true } }\n\`\`\`\n- ${G?'ステータス':'Status'}: 200 / 401 / 500`);
+      if(methods.includes('GET')) parts.push(`\n#### GET /api/v1/${lower}\n- ${G?'説明':'Desc'}: ${G?e+'一覧取得 (カーソルページネーション対応)':'List '+e+' (cursor-paginated)'}\n- ${G?'クエリ':'Query'}: \`?cursor=&limit=20&sort=created_at&order=desc\`\n- ${G?'レスポンス':'Response'}:\n\`\`\`json\n{ "data": [{ "id": "uuid", ${bodyObj} }], "meta": { "total": 100, "cursor": "eyJpZCI6IjEyMyJ9", "hasNextPage": true } }\n\`\`\`\n- ${G?'ステータス':'Status'}: 200 / 401 / 500`);
       if(methods.includes('GET/:id')) parts.push(`\n#### GET /api/v1/${lower}/:id\n- ${G?'説明':'Desc'}: ${G?e+'詳細取得':'Get '+e+' detail'}\n- ${G?'ステータス':'Status'}: 200 / 404`);
       if(methods.includes('POST')) parts.push(`\n#### POST /api/v1/${lower}\n- ${G?'リクエスト':'Request'}: \`{ ${bodyObj} }\`\n- ${G?'ステータス':'Status'}: 201 / 400 / 422`);
       if(methods.includes('PUT/:id')) parts.push(`\n#### PUT /api/v1/${lower}/:id\n- ${G?'リクエスト':'Request'}: \`{ ${bodyObj} }\`\n- ${G?'ステータス':'Status'}: 200 / 404 / 422`);
@@ -346,7 +346,7 @@ app.use('/api/', limiter);
       s+='> '+(G?'ドメイン用語は境界を越えて一貫して使う（DDD原則）':'Use domain terms consistently across boundaries (DDD principle)')+'\n\n';
       s+='| '+(G?'用語':'Term')+' | '+(G?'定義':'Definition')+' | '+(G?'境界コンテキスト':'Bounded Context')+' |\n';
       s+='|--------|---------|----------|\n';
-      glossTerms.forEach(function(t){s+='| **'+t[0]+'** | '+(G?t[1]:t[2])+' | '+t[3]+' |\n';});
+      glossTerms.forEach(function(t){var tm=t[0];if(!G&&tm.indexOf('/')!==-1&&/[぀-ヿ一-鿿]/.test(tm))tm=tm.slice(tm.indexOf('/')+1);s+='| **'+tm+'** | '+(G?t[1]:t[2])+' | '+t[3]+' |\n';});
       s+='\n';
     }
     // §3 Bounded context map
@@ -389,7 +389,7 @@ app.use('/api/', limiter);
   }
 
   const docTemplates=[
-    ['05_api_design',G?(arch.isBaaS?'データアクセス設計書 (SDK)':'API設計書 (OpenAPI準拠)'):(arch.isBaaS?'Data Access Design (SDK)':'API Design (OpenAPI)'),`${G?'## 認証':'## Authentication'}\n- ${G?'方式':'Method'}: ${auth.tokenType}\n- ${arch.isBaaS?(G?'アクセス方式: '+orm+' SDK':'Access: '+orm+' SDK'):'ヘッダー: \\`Authorization: Bearer <token>\\`'}\n\n${arch.isBaaS?'':(G?'## 共通レスポンス':'## Common Responses')+'\\n| '+(G?'ステータス':'Status')+' | '+(G?'意味':'Meaning')+' |\\n|-----------|------|\\n| 200 | OK |\\n| 201 | Created |\\n| 400 | Bad Request |\\n| 401 | Unauthorized |\\n| 403 | Forbidden |\\n| 404 | Not Found |\\n| 422 | Validation Error |\\n| 500 | Internal Error |\\n\\n'}\n${G?(arch.isBaaS?'## データアクセスパターン':'## エンドポイント一覧'):(arch.isBaaS?'## Data Access Patterns':'## Endpoints')}\n${apiEndpoints}`],
+    ['05_api_design',G?(arch.isBaaS?'データアクセス設計書 (SDK)':'API設計書 (OpenAPI準拠)'):(arch.isBaaS?'Data Access Design (SDK)':'API Design (OpenAPI)'),`${G?'## 認証':'## Authentication'}\n- ${G?'方式':'Method'}: ${auth.tokenType}\n- ${arch.isBaaS?(G?'アクセス方式: '+orm+' SDK':'Access: '+orm+' SDK'):(G?'ヘッダー':'Header')+': \\`Authorization: Bearer <token>\\`'}\n\n${arch.isBaaS?'':(G?'## 共通レスポンス':'## Common Responses')+'\\n| '+(G?'ステータス':'Status')+' | '+(G?'意味':'Meaning')+' |\\n|-----------|------|\\n| 200 | OK |\\n| 201 | Created |\\n| 400 | Bad Request |\\n| 401 | Unauthorized |\\n| 403 | Forbidden |\\n| 404 | Not Found |\\n| 422 | Validation Error |\\n| 500 | Internal Error |\\n\\n'}\n${G?(arch.isBaaS?'## データアクセスパターン':'## エンドポイント一覧'):(arch.isBaaS?'## Data Access Patterns':'## Endpoints')}\n${apiEndpoints}`],
     ['06_screen_design',G?'画面設計書 & 画面遷移図':'Screen Design & Flow',`${G?'## 画面遷移図':'## Screen Flow'}\n\n\`\`\`mermaid\nflowchart LR\n${sNodes}\n${sLinks.join('\n')}\n\`\`\`\n\n${G?'## 画面一覧':'## Screen List'}\n${screens.map((s,i)=>{const isPublic=s.match(/ログイン|Login|Register|登録|ランディング|Landing|LP|トップ|Top|ホーム|Home|About|概要|利用規約|Terms|料金|Pricing|お問い合わせ|Contact/i);const comps=getScreenComponents(s,G);const compList=comps?'\n- '+(G?'主要コンポーネント':'Key Components')+':\n'+comps.map(c=>'  - '+c).join('\n'):'\n- '+(G?'コンポーネント':'Components')+': Header, '+(isPublic?'':'Sidebar, ')+'Content, Footer';return `\n### ${i+1}. ${s}\n- URL: \`${(genRoutes(a).find(r=>r.name===s.replace(/\(P[0-2]\)/gi,'').trim())||{path:'/'+(s.toLowerCase().replace(/[^a-z0-9]/g,'-'))}).path}\`\n- ${G?'認証':'Auth'}: ${isPublic?(G?'不要':'Not required'):(G?'必要':'Required')}${compList}`;}).join('\n')}`],
     ['07_test_cases',G?'テストケース定義書':'Test Cases',`${G?'## テスト戦略':'## Test Strategy'}\n- ${G?'ユニット':'Unit'}: Vitest (80%+)\n- E2E: Playwright\n- ${G?'コンポーネント':'Component'}: Testing Library\n\n${G?'## テストケースマトリクス':'## Test Case Matrix'}\n${testMatrix}\n\n${G?'## 実行コマンド':'## Run Commands'}\n\`\`\`bash\nnpm run test\nnpm run test:e2e\nnpm run test:coverage\n\`\`\``],
     ['08_security',G?'セキュリティ設計書':'Security Design',`${G?'## セキュリティ対策':'## Security Measures'}\n- ${G?'認証':'Auth'}: ${auth.sot}\n- HTTPS${G?'必須':' required'}\n- CSP (Content Security Policy)\n- CORS (Cross-Origin Resource Sharing)\n- Rate Limiting\n- Input Validation${hasAdmin?'\n\n'+(G?'## RBAC（ロールベースアクセス制御）':'## RBAC (Role-Based Access Control)')+'\n\n| '+(G?'ロール':'Role')+' | '+(G?'権限':'Permissions')+' |\n|--------|----------|\n| user | '+(G?'自分のデータの読取・更新':'Read/update own data')+' |\n'+(hasInstructor?'| instructor | '+(G?'コンテンツ作成・編集・自分の受講者管理':'Create/edit content, manage own students')+' |\n':'')+'| admin | '+(G?'全データの読取・更新・削除、ユーザー管理、システム設定':'Full CRUD, user management, system settings')+' |\n\n'+(G?'### RBACポリシー実装':'### RBAC Policy Implementation')+'\n- profiles.role '+(G?'カラムでロール管理':'column for role management')+'\n- '+(arch.isBaaS&&be.includes('Supabase')?'RLS: auth.uid() = user_id AND role check via profiles':'Middleware: role check before protected routes')+'\n- '+(G?'管理画面ルート':'Admin routes')+': /admin/ → role=admin '+(G?'チェック必須':'check required'):''}${hasPay&&(a.payment||'').includes('Stripe')?'\n\n'+(G?'## 決済セキュリティ':'## Payment Security')+'\n- Stripe Webhook '+(G?'署名検証':'signature verification')+' (STRIPE_WEBHOOK_SECRET)\n- '+(G?'冪等キーによる重複処理防止':'Idempotency key for duplicate prevention')+'\n- PCI DSS '+(G?'準拠':'compliance')+' (Stripe Elements '+(G?'使用で対応':'handles this')+')\n- '+(G?'サーバーサイドのみで':'Server-side only for')+' stripe.customers / stripe.subscriptions '+(G?'操作':'operations'):''}\n\n${G?'## CSPヘッダー設定例':'## CSP Header Examples'}\n\n${cspExamples}\n\n${G?'## CORS設定例':'## CORS Configuration Examples'}\n\n${corsExamples}\n\n${G?'## レート制限実装例':'## Rate Limiting Implementation'}\n\n${rateLimitExamples}`],
@@ -1257,7 +1257,7 @@ Steps:
     } else if(_isRailway117){
       doc+='> **Railway**: Staging service → Production service via `railway up --environment production`\n';
     } else if(_isAWS117){
-      doc+='> **AWS**: CodePipeline stagingステージ → manualApproval → productionステージ\n';
+      doc+=G?'> **AWS**: CodePipeline stagingステージ → manualApproval → productionステージ\n':'> **AWS**: CodePipeline staging stage → manualApproval → production stage\n';
     }
     doc+='\n## '+(G?'クロスリファレンス':'Cross Reference')+'\n';
     doc+='- docs/116_estimation_prerequisites.md — '+(G?'技術前提条件':'Technical prerequisites')+'\n';
@@ -1272,8 +1272,8 @@ Steps:
     const _scrs=(stripPri(a.screens)||(G?'ダッシュボード':'Dashboard')).split(', ').filter(Boolean);
     const _ents=(stripPri(a.data_entities)||'User').split(/[,、]\s*/).map(e=>e.trim()).filter(Boolean);
     // SLA defaults by deploy target
-    const _slaMap={'Vercel':{avail:'99.99%',rto:'5分/5m',rpo:'0',support:'コミュニティ/community'},'Firebase Hosting':{avail:'99.95%',rto:'10分/10m',rpo:'0',support:'Google support'},'Railway':{avail:'99.9%',rto:'15分/15m',rpo:'1h',support:'Railway Discord'},'Fly.io':{avail:'99.9%',rto:'10分/10m',rpo:'1h',support:'Fly.io community'},'AWS':{avail:'99.99%',rto:'5分/5m',rpo:'1h',support:'AWS Support'},'Cloudflare':{avail:'99.99%',rto:'5分/5m',rpo:'0',support:'Cloudflare support'},'Netlify':{avail:'99.99%',rto:'5分/5m',rpo:'0',support:'Netlify support'}};
-    const _sla=_slaMap[deployTarget]||_slaMap[Object.keys(_slaMap).find(k=>deployTarget.includes(k))]||{avail:'99.9%',rto:'15分/15m',rpo:'1h',support:'ベンダー/vendor'};
+    const _slaMap={'Vercel':{avail:'99.99%',rto:'5分/5m',rpo:'0',support:G?'コミュニティ/community':'Community'},'Firebase Hosting':{avail:'99.95%',rto:'10分/10m',rpo:'0',support:'Google support'},'Railway':{avail:'99.9%',rto:'15分/15m',rpo:'1h',support:'Railway Discord'},'Fly.io':{avail:'99.9%',rto:'10分/10m',rpo:'1h',support:'Fly.io community'},'AWS':{avail:'99.99%',rto:'5分/5m',rpo:'1h',support:'AWS Support'},'Cloudflare':{avail:'99.99%',rto:'5分/5m',rpo:'0',support:'Cloudflare support'},'Netlify':{avail:'99.99%',rto:'5分/5m',rpo:'0',support:'Netlify support'}};
+    const _sla=_slaMap[deployTarget]||_slaMap[Object.keys(_slaMap).find(k=>deployTarget.includes(k))]||{avail:'99.9%',rto:'15分/15m',rpo:'1h',support:G?'ベンダー/vendor':'Vendor'};
     // Deploy-specific ops checks
     const _deployOps={'Vercel':[G?'Vercel Analyticsダッシュボード確認':'Check Vercel Analytics dashboard',G?'Edge Functions エラーレート監視':'Monitor Edge Functions error rate',G?'Deployment Protection設定確認':'Verify Deployment Protection config'],'Railway':[G?'Railway Metrics CPU/メモリ確認':'Check Railway Metrics CPU/memory',G?'PostgreSQL接続プール使用率監視':'Monitor PostgreSQL connection pool usage',G?'Railway sleeping設定確認':'Check Railway sleeping settings'],'AWS':[G?'CloudWatch Logs確認':'Check CloudWatch Logs',G?'RDS Performance Insights確認':'Review RDS Performance Insights',G?'Cost Explorer予算アラート確認':'Verify Cost Explorer budget alerts'],'Cloudflare':[G?'Workers Analytics確認':'Check Workers Analytics',G?'D1/KV使用量確認':'Monitor D1/KV usage',G?'ゼロトラストポリシー確認':'Review Zero Trust policies']};
     const _dops=_deployOps[deployTarget]||_deployOps[Object.keys(_deployOps).find(k=>deployTarget&&k&&deployTarget.includes(k))]||[G?'デプロイログ確認':'Check deployment logs',G?'エラーレート監視':'Monitor error rate',G?'ストレージ使用量確認':'Monitor storage usage'];
@@ -1690,8 +1690,8 @@ Steps:
       d+='#### '+(G?'段階的スケーリングロードマップ':'Incremental Scaling Roadmap')+'\n\n';
       d+='| '+(G?'フェーズ':'Phase')+' | '+(G?'構成':'Config')+' | '+(G?'目安QPS':'Target QPS')+' | '+(G?'主な作業':'Key Tasks')+' |\n|------|------|------|------|\n';
       d+='| Phase 1 | Leader + Read Replica ×2 + PgBouncer | ~2,000 QPS | '+(G?'Replica追加・コネクションプール設定':'Add replica, configure connection pool')+' |\n';
-      d+='| Phase 2 | Phase 1 + Redis Cluster (L2キャッシュ) | ~10,000 QPS | '+(G?'キャッシュ層追加・TTL設計':'Add cache layer, TTL design')+' |\n';
-      d+='| Phase 3 | Phase 2 + Hash Sharding ('+_shardKey+'ベース) | ~50,000 QPS | '+(G?'シャードキー設計・アプリ改修':'Shard key design, app refactor')+' |\n';
+      d+='| Phase 2 | Phase 1 + Redis Cluster ('+(G?'L2キャッシュ':'L2 cache')+') | ~10,000 QPS | '+(G?'キャッシュ層追加・TTL設計':'Add cache layer, TTL design')+' |\n';
+      d+='| Phase 3 | Phase 2 + Hash Sharding ('+_shardKey+(G?'ベース':'-based')+') | ~50,000 QPS | '+(G?'シャードキー設計・アプリ改修':'Shard key design, app refactor')+' |\n';
       d+='| Phase 4 | Phase 3 + Multi-Region + CQRS | 100,000+ QPS | '+(G?'リージョン分散・読み書き分離':'Regional distribution, read-write split')+' |\n\n';
       d+='#### '+(G?'競合解決戦略 (Leader-Leader / 分散書き込み時)':'Conflict Resolution (Leader-Leader / Distributed Writes)')+'\n\n';
       d+='| '+(G?'戦略':'Strategy')+' | '+(G?'仕組み':'Mechanism')+' | '+(G?'適用シーン':'Use Case')+' | '+(G?'注意点':'Caveat')+' |\n|------|------|------|------|\n';
@@ -1928,10 +1928,10 @@ Steps:
       d+='```\n'+(G?'ユーザーA: 在庫読取(残1) ─────────────────── 予約書込(残0)\nユーザーB:          在庫読取(残1) ── 予約書込(残0) ← 二重予約！':'User A: Read stock(1) ──────────────────── Write booking(0)\nUser B:          Read stock(1) ── Write booking(0) ← Double booking!')+'\n```\n\n';
       d+='### '+(G?'楽観的ロック (Optimistic Lock)':'Optimistic Locking')+'\n\n';
       d+=(G?'読取→変更→書込のフローで、書込時に競合を検出する。Read-Heavy なシステムに最適。':'Detect conflicts at write time in read-change-write flow. Best for read-heavy systems.')+'\n\n';
-      d+='```typescript\n// Prisma: version フィールドで楽観的ロック\nawait prisma.item.update({\n  where: { id: itemId, version: currentVersion }, // version不一致 → エラー\n  data: { stock: newStock, version: { increment: 1 } },\n});\n```\n\n';
+      d+='```typescript\n// '+(G?'Prisma: version フィールドで楽観的ロック':'Prisma: optimistic locking with version field')+'\nawait prisma.item.update({\n  where: { id: itemId, version: currentVersion }, // '+(G?'version不一致 → エラー':'version mismatch → error')+'\n  data: { stock: newStock, version: { increment: 1 } },\n});\n```\n\n';
       d+='### '+(G?'悲観的ロック (Pessimistic Lock)':'Pessimistic Locking')+'\n\n';
       d+=(G?'読取時にロックを取得し、他のトランザクションをブロックする。Write-Heavy・金融系に最適。':'Acquire lock at read time to block other transactions. Best for write-heavy and financial systems.')+'\n\n';
-      d+='```sql\nBEGIN;\nSELECT * FROM inventory WHERE id = $1 FOR UPDATE; -- 他TXをブロック\nUPDATE inventory SET stock = stock - 1 WHERE id = $1;\nINSERT INTO bookings (item_id, user_id) VALUES ($1, $2);\nCOMMIT;\n```\n\n';
+      d+='```sql\nBEGIN;\nSELECT * FROM inventory WHERE id = $1 FOR UPDATE; -- '+(G?'他TXをブロック':'blocks other TXs')+'\nUPDATE inventory SET stock = stock - 1 WHERE id = $1;\nINSERT INTO bookings (item_id, user_id) VALUES ($1, $2);\nCOMMIT;\n```\n\n';
       d+='### '+(G?'選定チャート':'Selection Chart')+'\n\n';
       d+='| '+(G?'シナリオ':'Scenario')+' | '+(G?'推奨アプローチ':'Recommended Approach')+' |\n|---------|--------------------|\n';
       d+='| '+(G?'読取多・書込少 (SNS、ブログ)':'Read-heavy, write-light (SNS, blog)')+' | '+(G?'楽観的ロック + version カラム':'Optimistic lock + version column')+' |\n';
@@ -2066,14 +2066,14 @@ Steps:
     d+='```\nsrc/\n  features/\n    auth/\n      components/   '+(G?'# UI コンポーネント':'# UI components')+'\n      hooks/        '+(G?'# カスタムフック (React)':'# Custom hooks (React)')+'\n      api/          '+(G?'# API呼び出し':'# API calls')+'\n      types.ts\n    dashboard/\n    products/\n  shared/\n    ui/             '+(G?'# 汎用UIコンポーネント':'# Shared UI components')+'\n    utils/\n```\n\n';
     if(isReact){
       d+='### '+(G?'Custom Hooks でロジック分離':'Custom Hooks for Logic Separation')+'\n\n';
-      d+='```tsx\n// NG: コンポーネントに直接ロジック\nfunction ProductPage() { /* 20行のfetch/state管理ロジック */ }\n\n// OK: hooks でロジック分離\nfunction useProduct(id: string) {\n  const { data, isLoading } = useQuery([\'product\', id], () => fetchProduct(id));\n  return { product: data, isLoading };\n}\nfunction ProductPage({ id }: { id: string }) {\n  const { product, isLoading } = useProduct(id);\n  return isLoading ? <Skeleton /> : <ProductView product={product} />;\n}\n```\n\n';
+      d+='```tsx\n// NG: '+(G?'コンポーネントに直接ロジック':'logic directly in component')+'\nfunction ProductPage() { /* '+(G?'20行のfetch/state管理ロジック':'20 lines of fetch/state management logic')+' */ }\n\n// OK: '+(G?'hooks でロジック分離':'separate logic into hooks')+'\nfunction useProduct(id: string) {\n  const { data, isLoading } = useQuery([\'product\', id], () => fetchProduct(id));\n  return { product: data, isLoading };\n}\nfunction ProductPage({ id }: { id: string }) {\n  const { product, isLoading } = useProduct(id);\n  return isLoading ? <Skeleton /> : <ProductView product={product} />;\n}\n```\n\n';
     }
     // §5 Frontend Security
     d+='## '+(G?'§5 フロントエンドセキュリティ':'§5 Frontend Security')+'\n\n';
     d+='### CSP (Content Security Policy)\n\n';
     d+='```http\nContent-Security-Policy:\n  default-src \'self\';\n  script-src \'self\' \'nonce-{RANDOM}\';\n  style-src \'self\' \'unsafe-inline\';\n  img-src \'self\' data: https:;\n  connect-src \'self\' https://api.example.com\n```\n\n';
     d+='### '+(G?'XSS防止 (DOMPurify)':'XSS Prevention (DOMPurify)')+'\n\n';
-    d+='```typescript\n// NG: innerHTML でユーザー入力レンダリング\nelement.innerHTML = userInput;\n\n// OK: DOMPurify でサニタイズ\nimport DOMPurify from \'dompurify\';\nelement.innerHTML = DOMPurify.sanitize(userInput);\n```\n\n';
+    d+='```typescript\n// NG: '+(G?'innerHTML でユーザー入力レンダリング':'rendering user input via innerHTML')+'\nelement.innerHTML = userInput;\n\n// OK: '+(G?'DOMPurify でサニタイズ':'sanitize with DOMPurify')+'\nimport DOMPurify from \'dompurify\';\nelement.innerHTML = DOMPurify.sanitize(userInput);\n```\n\n';
     if(hasPay){
       d+='### '+(G?'決済フロントエンド追加対策 (PCI DSS)':'Payment Frontend Measures (PCI DSS)')+'\n\n';
       d+='| '+(G?'対策':'Measure')+' | '+(G?'実装':'Implementation')+' | '+(G?'目的':'Purpose')+' |\n|------|---------|------|\n';
@@ -2166,15 +2166,15 @@ Steps:
     d+='## '+(G?'1. 適用規制フレームワーク':'1. Applicable Regulatory Framework')+'\n\n';
     d+='| '+(G?'規制':'Regulation')+' | '+(G?'適用地域':'Region')+' | '+(G?'主要要件':'Key Requirements')+' | '+(G?'ペナルティ':'Penalty')+' |\n';
     d+='|------|--------|----------|----------|\n';
-    d+='| HIPAA | USA | PHI保護・アクセス制御・監査ログ | $100〜$50,000/件 |\n';
-    d+='| GDPR | EU/EEA | 個人データ同意・削除権・DPA | 年収4%/€2,000万 |\n';
-    d+='| 医療法 | 日本 | 電子カルテ・診療記録5年保存 | 業務停止 |\n';
-    d+='| HL7 FHIR | 国際 | 標準医療データ交換フォーマット | — |\n\n';
+    d+=G?'| HIPAA | USA | PHI保護・アクセス制御・監査ログ | $100〜$50,000/件 |\n':'| HIPAA | USA | PHI protection, access control, audit logs | $100–$50,000 per violation |\n';
+    d+=G?'| GDPR | EU/EEA | 個人データ同意・削除権・DPA | 年収4%/€2,000万 |\n':'| GDPR | EU/EEA | Personal data consent, right to erasure, DPA | 4% of annual revenue / €20M |\n';
+    d+=G?'| 医療法 | 日本 | 電子カルテ・診療記録5年保存 | 業務停止 |\n':'| Medical Care Act (JP) | Japan | Electronic medical records, 5-year retention of clinical records | Business suspension |\n';
+    d+=G?'| HL7 FHIR | 国際 | 標準医療データ交換フォーマット | — |\n\n':'| HL7 FHIR | International | Standard healthcare data exchange format | — |\n\n';
     d+='## '+(G?'2. PHI（保護医療情報）管理':'2. PHI (Protected Health Information) Management')+'\n\n';
     d+='### '+(G?'データ分類':'Data Classification')+'\n';
-    d+='- **PHI (高)**: 氏名+診断名+処方薬 → AES-256暗号化必須\n';
-    d+='- **PHI (中)**: 年齢+性別+地域 → 仮名化推奨\n';
-    d+='- **非PHI**: 匿名統計データ → 標準保護\n\n';
+    d+=G?'- **PHI (高)**: 氏名+診断名+処方薬 → AES-256暗号化必須\n':'- **PHI (High)**: Name + diagnosis + prescriptions → AES-256 encryption required\n';
+    d+=G?'- **PHI (中)**: 年齢+性別+地域 → 仮名化推奨\n':'- **PHI (Medium)**: Age + gender + region → pseudonymization recommended\n';
+    d+=G?'- **非PHI**: 匿名統計データ → 標準保護\n\n':'- **Non-PHI**: Anonymized statistical data → standard protection\n\n';
     d+='### '+(G?'実装チェックリスト':'Implementation Checklist')+'\n';
     d+='- [ ] '+(G?'保存時暗号化 (AES-256 / TDE)':'Encryption at rest (AES-256 / TDE)')+'\n';
     d+='- [ ] '+(G?'転送時暗号化 (TLS 1.3)':'Encryption in transit (TLS 1.3)')+'\n';
@@ -2186,20 +2186,20 @@ Steps:
     d+='## '+(G?'3. 医療システムセキュリティ設計':'3. Healthcare System Security Design')+'\n\n';
     d+='```\n';
     d+=(G?'患者データフロー（最小化原則）':'Patient Data Flow (Minimization Principle)')+'\n';
-    d+='UI Layer     → 表示前にPHIマスキング適用\n';
-    d+='API Layer    → エンドポイント別アクセス制御 (RBAC)\n';
-    d+='Service Layer→ PHI処理ログ自動記録\n';
-    d+='DB Layer     → 列レベル暗号化 + RLS\n';
-    d+='Backup Layer → 暗号化バックアップ + 保持期間ポリシー\n';
+    d+=G?'UI Layer     → 表示前にPHIマスキング適用\n':'UI Layer     → Apply PHI masking before display\n';
+    d+=G?'API Layer    → エンドポイント別アクセス制御 (RBAC)\n':'API Layer    → Per-endpoint access control (RBAC)\n';
+    d+=G?'Service Layer→ PHI処理ログ自動記録\n':'Service Layer→ Automatic PHI processing logs\n';
+    d+=G?'DB Layer     → 列レベル暗号化 + RLS\n':'DB Layer     → Column-level encryption + RLS\n';
+    d+=G?'Backup Layer → 暗号化バックアップ + 保持期間ポリシー\n':'Backup Layer → Encrypted backups + retention policy\n';
     d+='```\n\n';
     d+='## '+(G?'4. インシデント対応計画':'4. Incident Response Plan')+'\n\n';
     d+='| '+(G?'フェーズ':'Phase')+' | '+(G?'アクション':'Action')+' | '+(G?'期限':'Deadline')+' |\n';
     d+='|--------|----------|------|\n';
-    d+='| 検知 | 異常アクセスアラート → SOC通知 | 即時 |\n';
-    d+='| 封じ込め | 影響システム隔離・証拠保全 | 1時間以内 |\n';
-    d+='| 通知 | 監督機関・患者通知 | 72時間以内 |\n';
-    d+='| 復旧 | バックアップ復元・脆弱性修正 | 24〜48時間 |\n';
-    d+='| 再発防止 | RCA・セキュリティ強化 | 30日以内 |\n\n';
+    d+=G?'| 検知 | 異常アクセスアラート → SOC通知 | 即時 |\n':'| Detection | Anomalous access alert → SOC notification | Immediate |\n';
+    d+=G?'| 封じ込め | 影響システム隔離・証拠保全 | 1時間以内 |\n':'| Containment | Isolate affected systems, preserve evidence | Within 1 hour |\n';
+    d+=G?'| 通知 | 監督機関・患者通知 | 72時間以内 |\n':'| Notification | Notify regulators & patients | Within 72 hours |\n';
+    d+=G?'| 復旧 | バックアップ復元・脆弱性修正 | 24〜48時間 |\n':'| Recovery | Restore from backup, patch vulnerabilities | 24–48 hours |\n';
+    d+=G?'| 再発防止 | RCA・セキュリティ強化 | 30日以内 |\n\n':'| Prevention | RCA & security hardening | Within 30 days |\n\n';
     d+='> '+(G?'参照':'See also')+': docs/121_security_design_guide.md | docs/44_threat_model.md | docs/45_compliance_matrix.md';
     S.files['docs/125_healthcare_compliance_guide.md']=d;
   })();}}
@@ -2212,38 +2212,38 @@ Steps:
     d+='## '+(G?'1. 不正パターン分類':'1. Fraud Pattern Classification')+'\n\n';
     d+='| '+(G?'不正種別':'Fraud Type')+' | '+(G?'説明':'Description')+' | '+(G?'検知手法':'Detection Method')+' |\n';
     d+='|----------|------|----------|\n';
-    d+='| カード不正利用 | 盗難カード・番号詐取 | Velocity Check + IP地理フィルタ |\n';
-    d+='| アカウント乗っ取り (ATO) | 認証情報窃取・不正ログイン | デバイスフィンガープリント + MFA |\n';
-    d+='| 資金洗浄 (AML) | 不正資金隠匿・多段転送 | トランザクション監視 + CTF報告 |\n';
-    d+='| フィッシング | 偽サイト・メール詐欺 | CSP + DMARC + 教育 |\n';
-    d+='| インサイダー脅威 | 内部者による不正操作 | AuditLog + 異常行動検知 |\n\n';
+    d+=G?'| カード不正利用 | 盗難カード・番号詐取 | Velocity Check + IP地理フィルタ |\n':'| Card fraud | Stolen cards, number theft | Velocity check + IP geolocation filter |\n';
+    d+=G?'| アカウント乗っ取り (ATO) | 認証情報窃取・不正ログイン | デバイスフィンガープリント + MFA |\n':'| Account takeover (ATO) | Credential theft, unauthorized login | Device fingerprinting + MFA |\n';
+    d+=G?'| 資金洗浄 (AML) | 不正資金隠匿・多段転送 | トランザクション監視 + CTF報告 |\n':'| Money laundering (AML) | Illicit fund concealment, multi-hop transfers | Transaction monitoring + CTF reporting |\n';
+    d+=G?'| フィッシング | 偽サイト・メール詐欺 | CSP + DMARC + 教育 |\n':'| Phishing | Fake sites, email scams | CSP + DMARC + user education |\n';
+    d+=G?'| インサイダー脅威 | 内部者による不正操作 | AuditLog + 異常行動検知 |\n\n':'| Insider threat | Fraudulent operations by insiders | AuditLog + anomalous behavior detection |\n\n';
     d+='## '+(G?'2. リアルタイム不正検知アーキテクチャ':'2. Real-Time Fraud Detection Architecture')+'\n\n';
     d+='```\n';
-    d+='決済リクエスト\n';
+    d+=G?'決済リクエスト\n':'Payment request\n';
     d+='    ↓\n';
-    d+='[L1] ルールエンジン (< 50ms)\n';
-    d+='  • Velocity Check (同一カード 5回/分)\n';
-    d+='  • 金額閾値 (¥500,000超→要確認)\n';
-    d+='  • ブラックリスト照合\n';
+    d+=G?'[L1] ルールエンジン (< 50ms)\n':'[L1] Rule engine (< 50ms)\n';
+    d+=G?'  • Velocity Check (同一カード 5回/分)\n':'  • Velocity check (same card 5x/min)\n';
+    d+=G?'  • 金額閾値 (¥500,000超→要確認)\n':'  • Amount threshold (>¥500,000 → manual review)\n';
+    d+=G?'  • ブラックリスト照合\n':'  • Blacklist matching\n';
     d+='    ↓\n';
-    d+='[L2] MLスコアリング (< 200ms)\n';
-    d+='  • 行動バイオメトリクス\n';
-    d+='  • デバイスフィンガープリント\n';
-    d+='  • 地理的異常検知\n';
+    d+=G?'[L2] MLスコアリング (< 200ms)\n':'[L2] ML scoring (< 200ms)\n';
+    d+=G?'  • 行動バイオメトリクス\n':'  • Behavioral biometrics\n';
+    d+=G?'  • デバイスフィンガープリント\n':'  • Device fingerprinting\n';
+    d+=G?'  • 地理的異常検知\n':'  • Geographic anomaly detection\n';
     d+='    ↓\n';
-    d+='[L3] 人間レビュー (高リスクのみ)\n';
-    d+='  • フラグ付きトランザクション\n';
-    d+='  • チャージバック分析\n';
+    d+=G?'[L3] 人間レビュー (高リスクのみ)\n':'[L3] Human review (high-risk only)\n';
+    d+=G?'  • フラグ付きトランザクション\n':'  • Flagged transactions\n';
+    d+=G?'  • チャージバック分析\n':'  • Chargeback analysis\n';
     d+='```\n\n';
     d+='## '+(G?'3. PCI DSS 要件チェックリスト':'3. PCI DSS Requirements Checklist')+'\n\n';
     d+='| '+(G?'要件':'Requirement')+' | '+(G?'内容':'Description')+' | '+(G?'対応':'Action')+' |\n';
     d+='|------|------|------|\n';
-    d+='| Req 3 | カードデータ保護 | トークン化 (never store PAN) |\n';
-    d+='| Req 4 | 転送時暗号化 | TLS 1.3 専用エンドポイント |\n';
-    d+='| Req 6 | セキュア開発 | SAST/DAST + 定期ペンテスト |\n';
-    d+='| Req 7 | アクセス制御 | 最小権限 + MFA |\n';
-    d+='| Req 10 | ログ監視 | 監査ログ + SIEM連携 |\n';
-    d+='| Req 12 | 情報セキュリティポリシー | 年次レビュー + 訓練 |\n\n';
+    d+=G?'| Req 3 | カードデータ保護 | トークン化 (never store PAN) |\n':'| Req 3 | Cardholder data protection | Tokenization (never store PAN) |\n';
+    d+=G?'| Req 4 | 転送時暗号化 | TLS 1.3 専用エンドポイント |\n':'| Req 4 | Encryption in transit | TLS 1.3-only endpoints |\n';
+    d+=G?'| Req 6 | セキュア開発 | SAST/DAST + 定期ペンテスト |\n':'| Req 6 | Secure development | SAST/DAST + periodic pentests |\n';
+    d+=G?'| Req 7 | アクセス制御 | 最小権限 + MFA |\n':'| Req 7 | Access control | Least privilege + MFA |\n';
+    d+=G?'| Req 10 | ログ監視 | 監査ログ + SIEM連携 |\n':'| Req 10 | Log monitoring | Audit logs + SIEM integration |\n';
+    d+=G?'| Req 12 | 情報セキュリティポリシー | 年次レビュー + 訓練 |\n\n':'| Req 12 | InfoSec policy | Annual review + training |\n\n';
     d+='## '+(G?'4. Stripe Radar 活用パターン':'4. Stripe Radar Usage Patterns')+'\n\n';
     d+='```javascript\n// Stripe Radar custom rule example\n';
     d+="// Block high-risk countries for large amounts\n// Rule: block_if :amount_in_usd: > 1000 AND :ip_country: IN ['XX', 'YY']\n\n";
@@ -2260,42 +2260,42 @@ Steps:
     d+='> '+(G?'生成日':'Generated')+': '+new Date().toISOString().split('T')[0]+' | '+(G?'ドメイン':'Domain')+': manufacturing\n\n';
     d+='## '+(G?'1. Industry 4.0 アーキテクチャ':'1. Industry 4.0 Architecture')+'\n\n';
     d+='```\n';
-    d+='Edge Layer     → センサー/PLC/SCADA (OPC-UA/MQTT)\n';
-    d+='Fog Layer      → エッジコンピューティング (AWS Greengrass / Azure IoT Edge)\n';
-    d+='Cloud Layer    → IoTプラットフォーム (AWS IoT Core / Azure IoT Hub)\n';
-    d+='Application    → MES/ERP 統合 + AI分析ダッシュボード\n';
+    d+=G?'Edge Layer     → センサー/PLC/SCADA (OPC-UA/MQTT)\n':'Edge Layer     → Sensors/PLC/SCADA (OPC-UA/MQTT)\n';
+    d+=G?'Fog Layer      → エッジコンピューティング (AWS Greengrass / Azure IoT Edge)\n':'Fog Layer      → Edge computing (AWS Greengrass / Azure IoT Edge)\n';
+    d+=G?'Cloud Layer    → IoTプラットフォーム (AWS IoT Core / Azure IoT Hub)\n':'Cloud Layer    → IoT platform (AWS IoT Core / Azure IoT Hub)\n';
+    d+=G?'Application    → MES/ERP 統合 + AI分析ダッシュボード\n':'Application    → MES/ERP integration + AI analytics dashboard\n';
     d+='```\n\n';
     d+='## '+(G?'2. IoT プロトコル選定マトリクス':'2. IoT Protocol Selection Matrix')+'\n\n';
     d+='| '+(G?'プロトコル':'Protocol')+' | '+(G?'レイテンシ':'Latency')+' | '+(G?'帯域':'Bandwidth')+' | '+(G?'ユースケース':'Use Case')+' |\n';
     d+='|----------|----------|------|----------|\n';
-    d+='| MQTT | 低 (< 1ms) | 低 | センサーデータ収集・設備監視 |\n';
-    d+='| OPC-UA | 中 | 中 | PLC/CNC通信・安全制御 |\n';
-    d+='| AMQP | 中 | 高 | エンタープライズMQ統合 |\n';
-    d+='| HTTP/REST | 高 | 高 | クラウドAPI・ダッシュボード |\n';
-    d+='| WebSocket | 低-中 | 中 | リアルタイムモニタリング |\n\n';
+    d+=G?'| MQTT | 低 (< 1ms) | 低 | センサーデータ収集・設備監視 |\n':'| MQTT | Low (< 1ms) | Low | Sensor data collection, equipment monitoring |\n';
+    d+=G?'| OPC-UA | 中 | 中 | PLC/CNC通信・安全制御 |\n':'| OPC-UA | Medium | Medium | PLC/CNC communication, safety control |\n';
+    d+=G?'| AMQP | 中 | 高 | エンタープライズMQ統合 |\n':'| AMQP | Medium | High | Enterprise MQ integration |\n';
+    d+=G?'| HTTP/REST | 高 | 高 | クラウドAPI・ダッシュボード |\n':'| HTTP/REST | High | High | Cloud APIs, dashboards |\n';
+    d+=G?'| WebSocket | 低-中 | 中 | リアルタイムモニタリング |\n\n':'| WebSocket | Low-Med | Medium | Real-time monitoring |\n\n';
     d+='## '+(G?'3. 予知保全 (Predictive Maintenance) 設計':'3. Predictive Maintenance Design')+'\n\n';
     d+='```\n';
-    d+='データ収集\n';
-    d+='  振動センサー → FFT解析 → 異常振動パターン検出\n';
-    d+='  温度センサー → 閾値監視 → オーバーヒート予測\n';
-    d+='  電流センサー → 負荷分析 → モーター劣化予測\n\n';
-    d+='MLパイプライン\n';
-    d+='  生データ → 前処理/正規化 → 特徴量エンジニアリング\n';
-    d+='  → Isolation Forest (異常検知) → 残寿命予測モデル\n';
-    d+='  → アラート → 保全作業オーダー自動生成\n';
+    d+=G?'データ収集\n':'Data collection\n';
+    d+=G?'  振動センサー → FFT解析 → 異常振動パターン検出\n':'  Vibration sensor → FFT analysis → abnormal vibration pattern detection\n';
+    d+=G?'  温度センサー → 閾値監視 → オーバーヒート予測\n':'  Temperature sensor → threshold monitoring → overheat prediction\n';
+    d+=G?'  電流センサー → 負荷分析 → モーター劣化予測\n\n':'  Current sensor → load analysis → motor degradation prediction\n\n';
+    d+=G?'MLパイプライン\n':'ML pipeline\n';
+    d+=G?'  生データ → 前処理/正規化 → 特徴量エンジニアリング\n':'  Raw data → preprocessing/normalization → feature engineering\n';
+    d+=G?'  → Isolation Forest (異常検知) → 残寿命予測モデル\n':'  → Isolation Forest (anomaly detection) → remaining-useful-life prediction model\n';
+    d+=G?'  → アラート → 保全作業オーダー自動生成\n':'  → Alerts → auto-generate maintenance work orders\n';
     d+='```\n\n';
     d+='## '+(G?'4. セキュリティ考慮事項 (OT/IT 融合)':'4. Security Considerations (OT/IT Convergence)')+'\n\n';
-    d+='- **ネットワーク分離**: OTネットワークとITネットワークのDMZ設置\n';
-    d+='- **ファームウェア管理**: IoTデバイスの定期アップデート・脆弱性スキャン\n';
-    d+='- **認証**: デバイス証明書 + mTLS (相互TLS)\n';
-    d+='- **監査ログ**: 制御コマンドの全ログ保存 (改ざん防止)\n\n';
+    d+=G?'- **ネットワーク分離**: OTネットワークとITネットワークのDMZ設置\n':'- **Network segmentation**: DMZ between OT and IT networks\n';
+    d+=G?'- **ファームウェア管理**: IoTデバイスの定期アップデート・脆弱性スキャン\n':'- **Firmware management**: Regular IoT device updates & vulnerability scanning\n';
+    d+=G?'- **認証**: デバイス証明書 + mTLS (相互TLS)\n':'- **Authentication**: Device certificates + mTLS (mutual TLS)\n';
+    d+=G?'- **監査ログ**: 制御コマンドの全ログ保存 (改ざん防止)\n\n':'- **Audit logs**: Retain all control command logs (tamper-proof)\n\n';
     d+='## '+(G?'5. データ品質・品質管理 (QC) 統合':'5. Data Quality & Quality Control (QC) Integration')+'\n\n';
     d+='| '+(G?'KPI':'KPI')+' | '+(G?'計算式':'Formula')+' | '+(G?'目標':'Target')+' |\n';
     d+='|-----|----------|------|\n';
-    d+='| OEE (設備総合効率) | 可用性×性能×品質 | ≥ 85% |\n';
-    d+='| MTBF (平均故障間隔) | 稼働時間 ÷ 故障回数 | 最大化 |\n';
-    d+='| MTTR (平均修理時間) | 修理時間 ÷ 故障回数 | 最小化 |\n';
-    d+='| 不良率 | 不良品数 ÷ 総生産数 | < 0.1% |\n\n';
+    d+=G?'| OEE (設備総合効率) | 可用性×性能×品質 | ≥ 85% |\n':'| OEE (Overall Equipment Effectiveness) | Availability × Performance × Quality | ≥ 85% |\n';
+    d+=G?'| MTBF (平均故障間隔) | 稼働時間 ÷ 故障回数 | 最大化 |\n':'| MTBF (Mean Time Between Failures) | Uptime ÷ failure count | Maximize |\n';
+    d+=G?'| MTTR (平均修理時間) | 修理時間 ÷ 故障回数 | 最小化 |\n':'| MTTR (Mean Time To Repair) | Repair time ÷ failure count | Minimize |\n';
+    d+=G?'| 不良率 | 不良品数 ÷ 総生産数 | < 0.1% |\n\n':'| Defect rate | Defective units ÷ total production | < 0.1% |\n\n';
     d+='> '+(G?'参照':'See also')+': docs/120_system_design_guide.md | docs/103_observability_architecture.md | docs/109_cost_architecture.md';
     S.files['docs/127_manufacturing_iot_guide.md']=d;
   })();}}
@@ -2441,9 +2441,9 @@ Steps:
         prvs114.slice(0,4).forEach(function(p,i){
           var parts=p.split('|対策:');if(parts.length<2)parts=p.split('|Fix: ');
           doc114+='### BR-'+(i+1).toString().padStart(2,'0')+'\n';
-          doc114+='- '+(G?'条件':'Condition')+': もし `'+parts[0].trim()+'` が発生したならば\n';
-          doc114+='- '+(G?'アクション':'Action')+': '+(parts[1]?parts[1].trim():'（要定義）')+'\n';
-          doc114+='- '+(G?'受入基準':'AC')+': （Givenー前提 / Whenーアクション / Thenー期待結果 を記入）\n\n';
+          doc114+='- '+(G?'条件':'Condition')+': '+(G?'もし':'If')+' `'+parts[0].trim()+'` '+(G?'が発生したならば':'occurs, then')+'\n';
+          doc114+='- '+(G?'アクション':'Action')+': '+(parts[1]?parts[1].trim():(G?'（要定義）':'(to be defined)'))+'\n';
+          doc114+='- '+(G?'受入基準':'AC')+': '+(G?'（Givenー前提 / Whenーアクション / Thenー期待結果 を記入）':'(Fill in: Given = precondition / When = action / Then = expected result)')+'\n\n';
         });
       }
     } else {

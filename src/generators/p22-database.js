@@ -292,16 +292,22 @@ function gen88(a,pn,G){
 
   if(isPy||orm.name==='SQLAlchemy'){
     doc+='### '+(G?'SQLAlchemy: joinedload / selectinload':'SQLAlchemy: joinedload / selectinload')+'\n\n';
-    doc+='```python\n# ❌ N+1 問題\nposts = await db.execute(select(Post))\nfor post in posts:  # N クエリ発生\n    print(post.user.name)  # user を個別取得\n\n# ✅ selectinload で解決\nstmt = select(Post).options(selectinload(Post.user))\nposts = (await db.execute(stmt)).scalars().all()\n\n# ✅ joinedload (JOIN が最適な場合)\nstmt = select(Post).options(joinedload(Post.user))\n```\n\n';
+    doc+=G
+      ?'```python\n# ❌ N+1 問題\nposts = await db.execute(select(Post))\nfor post in posts:  # N クエリ発生\n    print(post.user.name)  # user を個別取得\n\n# ✅ selectinload で解決\nstmt = select(Post).options(selectinload(Post.user))\nposts = (await db.execute(stmt)).scalars().all()\n\n# ✅ joinedload (JOIN が最適な場合)\nstmt = select(Post).options(joinedload(Post.user))\n```\n\n'
+      :'```python\n# ❌ N+1 problem\nposts = await db.execute(select(Post))\nfor post in posts:  # N queries fired\n    print(post.user.name)  # fetches each user individually\n\n# ✅ Solve with selectinload\nstmt = select(Post).options(selectinload(Post.user))\nposts = (await db.execute(stmt)).scalars().all()\n\n# ✅ joinedload (when JOIN is optimal)\nstmt = select(Post).options(joinedload(Post.user))\n```\n\n';
   } else if(orm.name==='Prisma ORM'){
     doc+='### '+(G?'Prisma: include / select':'Prisma: include / select')+'\n\n';
-    doc+='```typescript\n// ❌ N+1 問題\nconst posts = await prisma.post.findMany();\nfor (const post of posts) {\n  const user = await prisma.user.findUnique({ where: { id: post.userId } }); // N クエリ\n}\n\n// ✅ include でリレーションを一括取得\nconst posts = await prisma.post.findMany({\n  include: { user: true },  // LEFT JOIN に変換\n  where: { deletedAt: null },\n  orderBy: { createdAt: \'desc\' },\n  take: 20,\n});\n\n// ✅ select で必要フィールドのみ取得 (パフォーマンス向上)\nconst posts = await prisma.post.findMany({\n  select: { id: true, title: true, user: { select: { name: true } } },\n});\n```\n\n';
+    doc+=G
+      ?'```typescript\n// ❌ N+1 問題\nconst posts = await prisma.post.findMany();\nfor (const post of posts) {\n  const user = await prisma.user.findUnique({ where: { id: post.userId } }); // N クエリ\n}\n\n// ✅ include でリレーションを一括取得\nconst posts = await prisma.post.findMany({\n  include: { user: true },  // LEFT JOIN に変換\n  where: { deletedAt: null },\n  orderBy: { createdAt: \'desc\' },\n  take: 20,\n});\n\n// ✅ select で必要フィールドのみ取得 (パフォーマンス向上)\nconst posts = await prisma.post.findMany({\n  select: { id: true, title: true, user: { select: { name: true } } },\n});\n```\n\n'
+      :'```typescript\n// ❌ N+1 problem\nconst posts = await prisma.post.findMany();\nfor (const post of posts) {\n  const user = await prisma.user.findUnique({ where: { id: post.userId } }); // N queries\n}\n\n// ✅ Fetch relations in one query with include\nconst posts = await prisma.post.findMany({\n  include: { user: true },  // converted to a LEFT JOIN\n  where: { deletedAt: null },\n  orderBy: { createdAt: \'desc\' },\n  take: 20,\n});\n\n// ✅ Fetch only needed fields with select (better performance)\nconst posts = await prisma.post.findMany({\n  select: { id: true, title: true, user: { select: { name: true } } },\n});\n```\n\n';
   } else if(orm.name==='Drizzle ORM'){
     doc+='### '+(G?'Drizzle ORM: with / leftJoin':'Drizzle ORM: with / leftJoin')+'\n\n';
-    doc+='```typescript\n// ✅ Drizzle: リレーション一括取得\nconst result = await db.query.posts.findMany({\n  with: { user: true },\n  where: isNull(posts.deletedAt),\n  orderBy: [desc(posts.createdAt)],\n  limit: 20,\n});\n\n// ✅ 明示的 JOIN\nconst result = await db\n  .select({ post: posts, userName: users.name })\n  .from(posts)\n  .leftJoin(users, eq(posts.userId, users.id))\n  .where(isNull(posts.deletedAt))\n  .limit(20);\n```\n\n';
+    doc+=G
+      ?'```typescript\n// ✅ Drizzle: リレーション一括取得\nconst result = await db.query.posts.findMany({\n  with: { user: true },\n  where: isNull(posts.deletedAt),\n  orderBy: [desc(posts.createdAt)],\n  limit: 20,\n});\n\n// ✅ 明示的 JOIN\nconst result = await db\n  .select({ post: posts, userName: users.name })\n  .from(posts)\n  .leftJoin(users, eq(posts.userId, users.id))\n  .where(isNull(posts.deletedAt))\n  .limit(20);\n```\n\n'
+      :'```typescript\n// ✅ Drizzle: fetch relations in one query\nconst result = await db.query.posts.findMany({\n  with: { user: true },\n  where: isNull(posts.deletedAt),\n  orderBy: [desc(posts.createdAt)],\n  limit: 20,\n});\n\n// ✅ Explicit JOIN\nconst result = await db\n  .select({ post: posts, userName: users.name })\n  .from(posts)\n  .leftJoin(users, eq(posts.userId, users.id))\n  .where(isNull(posts.deletedAt))\n  .limit(20);\n```\n\n';
   } else {
     doc+='### '+(G?'クエリ最適化 ('+orm.name+')':'Query Optimization ('+orm.name+')')+'\n\n';
-    doc+='```sql\n-- ✅ JOIN で N+1 を回避\nSELECT p.*, u.name AS user_name\nFROM posts p\nLEFT JOIN users u ON p.user_id = u.id\nWHERE p.deleted_at IS NULL\nORDER BY p.created_at DESC\nLIMIT 20;\n```\n\n';
+    doc+='```sql\n-- ✅ '+(G?'JOIN で N+1 を回避':'Avoid N+1 with a JOIN')+'\nSELECT p.*, u.name AS user_name\nFROM posts p\nLEFT JOIN users u ON p.user_id = u.id\nWHERE p.deleted_at IS NULL\nORDER BY p.created_at DESC\nLIMIT 20;\n```\n\n';
   }
 
   // EXPLAIN ANALYZE
@@ -508,14 +514,14 @@ function gen90(a,pn,G){
       ?'Neon はデフォルトで **継続的バックアップ** と **PITR** (7日間) を提供します。\n\n'
       :'Neon provides **continuous backup** and **PITR** (7 days) by default.\n\n'
     );
-    doc+='```bash\n# Neon CLI: ブランチを使ったバックアップとリストア\nnpx neonctl branches create --name backup/$(date +%Y%m%d)  # '+(G?'スナップショット代わりのブランチ作成':'Create branch as snapshot')+'\nnpx neonctl branches list\nnpx neonctl restore <main> --timestamp "2024-01-15T10:00:00Z"  # '+(G?'特定時点に復元':'Restore to specific point')+'\n```\n\n';
+    doc+='```bash\n# Neon CLI: '+(G?'ブランチを使ったバックアップとリストア':'Backup and restore using branches')+'\nnpx neonctl branches create --name backup/$(date +%Y%m%d)  # '+(G?'スナップショット代わりのブランチ作成':'Create branch as snapshot')+'\nnpx neonctl branches list\nnpx neonctl restore <main> --timestamp "2024-01-15T10:00:00Z"  # '+(G?'特定時点に復元':'Restore to specific point')+'\n```\n\n';
   } else if(isSupabase||isBaaS){
     doc+='### Supabase\n\n';
     doc+=(G
       ?'Supabase は **プロジェクトバックアップ** を毎日自動実行します (Pro以上)。\n\n'
       :'Supabase automatically performs **project backups** daily (Pro plan and above).\n\n'
     );
-    doc+='```bash\n# Supabase CLI: バックアップとリストア\nsupabase db dump -f backup.sql                # '+(G?'論理バックアップ':'Logical backup')+'\nsupabase db restore -f backup.sql             # '+(G?'リストア':'Restore')+'\n\n# Dashboard: Settings > Database > Backups\n# Pro: '+(G?'日次バックアップ + PITR 7日間':'Daily backup + PITR 7 days')+'\n```\n\n';
+    doc+='```bash\n# Supabase CLI: '+(G?'バックアップとリストア':'Backup and restore')+'\nsupabase db dump -f backup.sql                # '+(G?'論理バックアップ':'Logical backup')+'\nsupabase db restore -f backup.sql             # '+(G?'リストア':'Restore')+'\n\n# Dashboard: Settings > Database > Backups\n# Pro: '+(G?'日次バックアップ + PITR 7日間':'Daily backup + PITR 7 days')+'\n```\n\n';
   } else {
     doc+='### '+(G?'セルフホスト PostgreSQL':'Self-hosted PostgreSQL')+'\n\n';
     doc+='```bash\n# '+(G?'論理バックアップ (pg_dump)':'Logical backup (pg_dump)')+'\npg_dump --format=custom --compress=9 \\\n  --file=backup_$(date +%Y%m%d_%H%M%S).dump \\\n  $DATABASE_URL\n\n# '+(G?'圧縮バックアップをS3に保存':'Store compressed backup to S3')+'\naws s3 cp backup_*.dump s3://your-bucket/db-backups/\n\n# '+(G?'WAL-G で継続的バックアップ':'Continuous backup with WAL-G')+'\n# https://github.com/wal-g/wal-g\nwal-g backup-push $PGDATA\nwal-g wal-push $WAL_FILE\n\n# '+(G?'リストア':'Restore')+'\npg_restore --dbname=mydb --format=custom backup.dump\n```\n\n';

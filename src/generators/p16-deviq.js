@@ -1006,7 +1006,7 @@ function gen63b(G, a, pn) {
   doc += '| ' + (G ? '分類' : 'Category') + ' | ' + (G ? '説明' : 'Description') + ' | ' + (G ? '典型例' : 'Examples') + ' |\n';
   doc += '|' + (G ? '------|------|------' : '------|------|------') + '|\n';
   doc += '| ' + (G ? 'コード品質' : 'Code Quality') + ' | ' + (G ? '重複・複雑すぎる関数・長いファイル' : 'Duplication, overly complex functions, long files') + ' | DRY違反, God Class |\n';
-  doc += '| ' + (G ? '設計' : 'Design') + ' | ' + (G ? 'アーキテクチャの不整合・依存循環' : 'Architecture inconsistency, circular dependencies') + ' | 密結合モジュール |\n';
+  doc += '| ' + (G ? '設計' : 'Design') + ' | ' + (G ? 'アーキテクチャの不整合・依存循環' : 'Architecture inconsistency, circular dependencies') + ' | ' + (G ? '密結合モジュール' : 'Tightly coupled modules') + ' |\n';
   doc += '| ' + (G ? 'テスト' : 'Testing') + ' | ' + (G ? 'カバレッジ不足・フラキーテスト' : 'Insufficient coverage, flaky tests') + ' | E2E未整備 |\n';
   doc += '| ' + (G ? 'ドキュメント' : 'Documentation') + ' | ' + (G ? '仕様書の陳腐化・コメント欠如' : 'Outdated specs, missing comments') + ' | ADR欠落 |\n\n';
 

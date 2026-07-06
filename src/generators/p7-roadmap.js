@@ -527,7 +527,7 @@ function gen_ai_onboarding(G,a){
   doc+='- [ ] '+(G?'AI提案コードをレビューして安全にマージできる':'Can review and safely merge AI-suggested code')+'\n\n';
   doc+='### Step 2: '+(G?'CLI移行・Plan Mode活用 (Week 3-4)':'CLI Migration, Plan Mode (Week 3-4)')+'\n\n';
   doc+='**'+(G?'推奨ツール':'Recommended Tool')+'**: Claude Code\n\n';
-  doc+='```bash\n# Plan Modeでリスクなく設計を相談\nclaude --plan "ユーザー認証機能を追加したい"\n\n# 承認後に実行\nclaude "認証機能を実装してください"\n```\n\n';
+  doc+='```bash\n'+(G?'# Plan Modeでリスクなく設計を相談\nclaude --plan "ユーザー認証機能を追加したい"\n\n# 承認後に実行\nclaude "認証機能を実装してください"':'# Discuss the design risk-free in Plan Mode\nclaude --plan "I want to add user authentication"\n\n# Execute after approval\nclaude "Please implement the authentication feature"')+'\n```\n\n';
   doc+=(G?'#### 到達基準チェックリスト':'#### Achievement Criteria Checklist')+'\n';
   doc+='- [ ] '+(G?'Plan Modeで実装方針を確認してから作業を始められる':'Can confirm implementation via Plan Mode before working')+'\n';
   doc+='- [ ] '+(G?'CLAUDE.mdでプロジェクト固有ルールをAIに伝えられる':'Can communicate project rules to AI via CLAUDE.md')+'\n';

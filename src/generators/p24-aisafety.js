@@ -44,12 +44,12 @@ const GUARDRAIL_LAYERS=[
 ];
 
 const MODEL_EVAL_METRICS=[
-  {metric:'Accuracy',ja:'正確性',threshold:'≥ 95%',tool:'HellaSwag / TruthfulQA',category:'Quality'},
-  {metric:'Hallucination Rate',ja:'ハルシネーション率',threshold:'≤ 2%',tool:'RAGAS / TruLens',category:'Safety'},
-  {metric:'Toxicity Score',ja:'有害性スコア',threshold:'≤ 0.1',tool:'Perspective API / Detoxify',category:'Safety'},
-  {metric:'Latency P95',ja:'P95レイテンシ',threshold:'≤ 2000ms',tool:'OpenTelemetry / Langfuse',category:'Performance'},
-  {metric:'Cost per 1K tokens',ja:'1Kトークンコスト',threshold:'Budget-defined',tool:'LangSmith / Helicone',category:'Economics'},
-  {metric:'Instruction Following',ja:'指示追従率',threshold:'≥ 90%',tool:'MT-Bench / Evals',category:'Quality'},
+  {metric:'Accuracy',ja:'正確性',en:'Factual correctness',threshold:'≥ 95%',tool:'HellaSwag / TruthfulQA',category:'Quality'},
+  {metric:'Hallucination Rate',ja:'ハルシネーション率',en:'Rate of fabricated output',threshold:'≤ 2%',tool:'RAGAS / TruLens',category:'Safety'},
+  {metric:'Toxicity Score',ja:'有害性スコア',en:'Harmful content score',threshold:'≤ 0.1',tool:'Perspective API / Detoxify',category:'Safety'},
+  {metric:'Latency P95',ja:'P95レイテンシ',en:'95th percentile latency',threshold:'≤ 2000ms',tool:'OpenTelemetry / Langfuse',category:'Performance'},
+  {metric:'Cost per 1K tokens',ja:'1Kトークンコスト',en:'Cost per 1K tokens',threshold:'Budget-defined',tool:'LangSmith / Helicone',category:'Economics'},
+  {metric:'Instruction Following',ja:'指示追従率',en:'Instruction adherence rate',threshold:'≥ 90%',tool:'MT-Bench / Evals',category:'Quality'},
 ];
 
 const INJECTION_DEFENSE_PATTERNS=[
@@ -320,25 +320,25 @@ function gen97(a,pn){
 
   // Evaluation metrics table
   doc+=G?'## 評価メトリクス一覧\n\n':'## Evaluation Metrics\n\n';
-  doc+='| '+(G?'メトリクス':'Metric')+' | '+(G?'日本語名':'Name')+' | '+(G?'目標値':'Target')+' | '+(G?'ツール':'Tool')+' | '+(G?'カテゴリ':'Category')+' |\n';
+  doc+='| '+(G?'メトリクス':'Metric')+' | '+(G?'日本語名':'Description')+' | '+(G?'目標値':'Target')+' | '+(G?'ツール':'Tool')+' | '+(G?'カテゴリ':'Category')+' |\n';
   doc+='|---|---|---|---|---|\n';
   MODEL_EVAL_METRICS.forEach(function(m){
-    doc+='| `'+m.metric+'` | '+m.ja+' | '+m.threshold+' | '+m.tool+' | '+m.category+' |\n';
+    doc+='| `'+m.metric+'` | '+(G?m.ja:m.en)+' | '+m.threshold+' | '+m.tool+' | '+m.category+' |\n';
   });
   doc+='\n';
 
   // Evaluation pipeline
   doc+=G?'## 評価パイプライン\n\n':'## Evaluation Pipeline\n\n';
   doc+='```mermaid\ngraph LR\n';
-  doc+='  A["モデル候補"] --> B["オフライン評価"]\n';
-  doc+='  B --> C{"品質基準クリア?"}\n';
-  doc+='  C -->|No| D["モデル調整"]\n';
+  doc+='  A["'+(G?'モデル候補':'Model Candidates')+'"] --> B["'+(G?'オフライン評価':'Offline Evaluation')+'"]\n';
+  doc+='  B --> C{"'+(G?'品質基準クリア?':'Quality Bar Met?')+'"}\n';
+  doc+='  C -->|No| D["'+(G?'モデル調整':'Model Tuning')+'"]\n';
   doc+='  D --> B\n';
-  doc+='  C -->|Yes| E["A/Bテスト"]\n';
-  doc+='  E --> F["プロダクション評価"]\n';
-  doc+='  F --> G["継続モニタリング"]\n';
-  doc+='  G --> H{"品質劣化?"}\n';
-  doc+='  H -->|Yes| I["アラート & ロールバック"]\n';
+  doc+='  C -->|Yes| E["'+(G?'A/Bテスト':'A/B Testing')+'"]\n';
+  doc+='  E --> F["'+(G?'プロダクション評価':'Production Evaluation')+'"]\n';
+  doc+='  F --> G["'+(G?'継続モニタリング':'Continuous Monitoring')+'"]\n';
+  doc+='  G --> H{"'+(G?'品質劣化?':'Quality Degradation?')+'"}\n';
+  doc+='  H -->|Yes| I["'+(G?'アラート & ロールバック':'Alert & Rollback')+'"]\n';
   doc+='  H -->|No| G\n';
   doc+='```\n\n';
 
@@ -437,19 +437,19 @@ function gen98(a,pn){
   // Privilege separation
   doc+=G?'## 権限分離アーキテクチャ\n\n':'## Privilege Separation Architecture\n\n';
   doc+='```mermaid\ngraph TD\n';
-  doc+='  A["ユーザー入力"] --> B["入力サニタイズ"]\n';
-  doc+='  B --> C["PII検出"]\n';
-  doc+='  C --> D["インジェクション検知"]\n';
-  doc+='  D --> E{"検知?"}\n';
-  doc+='  E -->|Yes| F["ブロック & ログ"]\n';
-  doc+='  E -->|No| G["LLMリクエスト構築"]\n';
-  doc+='  G --> H["システムプロンプト:trusted"]\n';
-  doc+='  G --> I["ユーザーメッセージ:untrusted"]\n';
+  doc+='  A["'+(G?'ユーザー入力':'User Input')+'"] --> B["'+(G?'入力サニタイズ':'Input Sanitization')+'"]\n';
+  doc+='  B --> C["'+(G?'PII検出':'PII Detection')+'"]\n';
+  doc+='  C --> D["'+(G?'インジェクション検知':'Injection Detection')+'"]\n';
+  doc+='  D --> E{"'+(G?'検知?':'Detected?')+'"}\n';
+  doc+='  E -->|Yes| F["'+(G?'ブロック & ログ':'Block & Log')+'"]\n';
+  doc+='  E -->|No| G["'+(G?'LLMリクエスト構築':'Build LLM Request')+'"]\n';
+  doc+='  G --> H["'+(G?'システムプロンプト:trusted':'System Prompt: trusted')+'"]\n';
+  doc+='  G --> I["'+(G?'ユーザーメッセージ:untrusted':'User Message: untrusted')+'"]\n';
   doc+='  H --> J["LLM API"]\n';
   doc+='  I --> J\n';
-  doc+='  J --> K["出力バリデーション"]\n';
-  doc+='  K --> L["コンテンツモデレーション"]\n';
-  doc+='  L --> M["ユーザーへのレスポンス"]\n';
+  doc+='  J --> K["'+(G?'出力バリデーション':'Output Validation')+'"]\n';
+  doc+='  K --> L["'+(G?'コンテンツモデレーション':'Content Moderation')+'"]\n';
+  doc+='  L --> M["'+(G?'ユーザーへのレスポンス':'Response to User')+'"]\n';
   doc+='```\n\n';
 
   // Defense checklist

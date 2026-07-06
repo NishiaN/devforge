@@ -1055,7 +1055,7 @@ ${G?'1.要件漏れ 2.依存見落とし 3.運用負荷 4.UI不明瞭 5.拡張�
 ## ${G?'文章品質ルール (Anti-AI Language)':'Output Quality Rules (Anti-AI Language)'}
 ${G?'以下のLLM典型フレーズを禁止する。曖昧表現を使わず、結論を先に出し、具体的な数値・表・コードで示せ。':'Prohibit LLM boilerplate. Lead with conclusions. Show concrete numbers, tables, and code — never vague qualifiers.'}
 
-${G?'禁止: 「〜と言えるでしょう」「適切に」「柔軟に」「しっかりと」/ "It\'s worth noting" "Certainly!" "Great question"':'Banned: "It\'s worth noting" "Certainly!" "Great question" / 「適切に」「柔軟に」「しっかりと」'}
+${G?'禁止: 「〜と言えるでしょう」「適切に」「柔軟に」「しっかりと」/ "It\'s worth noting" "Certainly!" "Great question"':'Banned: "It\'s worth noting" "Certainly!" "Great question" / "properly" "seamlessly" "robustly"'}
 ${G?'出力ルール: 結論先出し・仮説/確定を明示・数値と表を使う':'Output rules: Lead with conclusion · Distinguish hypothesis/fact · Use numbers and tables'}
 
 ## ${G?'クイックリファレンス':'Quick Reference'}

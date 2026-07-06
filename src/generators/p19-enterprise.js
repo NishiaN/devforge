@@ -103,56 +103,80 @@ var ADMIN_DASHBOARD_SPECS = {
 };
 
 // Factory: Enterprise UI Component
-function _ec(name, props_ja, variants_ja, a11y_ja, framework) {
-  return {name, props_ja, variants_ja, a11y_ja, framework};
+function _ec(name, props_ja, variants_ja, a11y_ja, framework, variants_en, a11y_en, framework_en) {
+  return {name, props_ja, variants_ja, a11y_ja, framework, variants_en, a11y_en, framework_en};
 }
 var ENTERPRISE_COMPONENTS = {
   StatusBadge: _ec('StatusBadge',
     ['status: string (draft|pending|approved|rejected|active|expired)', 'size?: sm|md|lg', 'variant?: solid|outline|subtle'],
     ['pending → 黄色 (⏳)', 'approved → 緑 (✅)', 'rejected → 赤 (❌)', 'active → 青 (🔵)', 'expired → グレー'],
     ['role="status" aria-label="{status}"', 'カラーだけでなくアイコン+テキストで状態を伝達'],
-    'shadcn/ui Badge + カスタムバリアント / Vuetify v-chip / Angular Material chip'
+    'shadcn/ui Badge + カスタムバリアント / Vuetify v-chip / Angular Material chip',
+    ['pending → yellow (⏳)', 'approved → green (✅)', 'rejected → red (❌)', 'active → blue (🔵)', 'expired → gray'],
+    ['role="status" aria-label="{status}"', 'Convey state via icon + text, never color alone'],
+    'shadcn/ui Badge + custom variants / Vuetify v-chip / Angular Material chip'
   ),
   ApprovalBar: _ec('ApprovalBar',
     ['request: ApprovalRequest', 'onApprove: (id) => void', 'onReject: (id, reason) => void', 'currentUserRole: string'],
     ['pending (承認待ち: 承認/却下ボタン表示)', 'approved (完了: 緑バナー)', 'rejected (却下: 理由表示)'],
     ['button aria-label="承認"/"却下"', '却下時はモーダルでreason入力必須', 'aria-disabled={!canApprove}'],
+    'shadcn/ui AlertDialog + Button / Headless UI Dialog',
+    ['pending (awaiting approval: show approve/reject buttons)', 'approved (done: green banner)', 'rejected (shows rejection reason)'],
+    ['button aria-label="Approve"/"Reject"', 'Rejection requires reason input via modal', 'aria-disabled={!canApprove}'],
     'shadcn/ui AlertDialog + Button / Headless UI Dialog'
   ),
   DataTable: _ec('DataTable',
     ['data: T[]', 'columns: ColumnDef<T>[]', 'sortable?: boolean', 'filterable?: boolean', 'paginated?: boolean', 'onRowSelect?: (rows) => void', 'bulkActions?: Action[]'],
     ['基本テーブル', 'ソート有効', 'フィルタ有効', 'ページネーション', '行選択+一括操作'],
     ['role="table" + aria-sort', 'ページネーション aria-label="ページ {n}"', 'フィルタ label 対応'],
+    'TanStack Table v8 + shadcn/ui / AG Grid Community / Vuetify v-data-table',
+    ['Basic table', 'Sortable', 'Filterable', 'Paginated', 'Row selection + bulk actions'],
+    ['role="table" + aria-sort', 'Pagination aria-label="Page {n}"', 'Labels on all filter controls'],
     'TanStack Table v8 + shadcn/ui / AG Grid Community / Vuetify v-data-table'
   ),
   NotificationBell: _ec('NotificationBell',
     ['count: number', 'items: Notification[]', 'onRead: (id) => void', 'onReadAll: () => void', 'maxDisplay?: number'],
     ['未読あり (赤バッジ+数字)', '未読なし (通常アイコン)', 'ドロップダウン展開 (最新5件)'],
     ['aria-label="通知 {count}件未読"', 'role="alert" aria-live="polite" (新着時)', '通知リスト role="list"'],
+    'shadcn/ui Popover + Badge / Radix UI Popover',
+    ['Unread (red badge + count)', 'No unread (default icon)', 'Dropdown expanded (latest 5)'],
+    ['aria-label="Notifications: {count} unread"', 'role="alert" aria-live="polite" (on new arrival)', 'Notification list role="list"'],
     'shadcn/ui Popover + Badge / Radix UI Popover'
   ),
   OrgSwitcher: _ec('OrgSwitcher',
     ['orgs: Organization[]', 'current: Organization', 'onChange: (org) => void', 'canCreate?: boolean'],
     ['単一組織 (表示のみ)', '複数組織 (切替ドロップダウン)', '組織作成ボタン付き'],
     ['combobox role + aria-expanded', '選択中組織に aria-selected="true"', 'キーボードナビゲーション対応'],
+    'shadcn/ui Command + Popover / Headless UI Combobox',
+    ['Single org (display only)', 'Multiple orgs (switch dropdown)', 'With create-org button'],
+    ['combobox role + aria-expanded', 'aria-selected="true" on current org', 'Keyboard navigation support'],
     'shadcn/ui Command + Popover / Headless UI Combobox'
   ),
   OnboardingStepper: _ec('OnboardingStepper',
     ['steps: Step[]', 'current: number', 'onComplete: () => void', 'onStepClick?: (n) => void'],
     ['水平ステッパー (デスクトップ)', '垂直ステッパー (モバイル)', '進捗バー付き'],
     ['aria-current="step" for active', 'completed steps aria-label="{step} 完了"', 'progress bar aria-valuenow'],
+    'shadcn/ui Steps (custom) / Vuetify v-stepper / Angular Material stepper',
+    ['Horizontal stepper (desktop)', 'Vertical stepper (mobile)', 'With progress bar'],
+    ['aria-current="step" for active', 'completed steps aria-label="{step} completed"', 'progress bar aria-valuenow'],
     'shadcn/ui Steps (custom) / Vuetify v-stepper / Angular Material stepper'
   ),
   AuditTimeline: _ec('AuditTimeline',
     ['events: AuditEvent[]', 'filter?: { action, user, dateRange }', 'maxItems?: number'],
     ['コンパクト (アイコン+サマリー)', '詳細 (フルメタデータ表示)', 'フィルタパネル付き'],
     ['role="feed" aria-label="監査ログ"', '各エントリ role="article"', 'time datetime="{ISO}"'],
-    'カスタムコンポーネント (shadcn/ui Card) / Vuetify v-timeline'
+    'カスタムコンポーネント (shadcn/ui Card) / Vuetify v-timeline',
+    ['Compact (icon + summary)', 'Detailed (full metadata)', 'With filter panel'],
+    ['role="feed" aria-label="Audit log"', 'Each entry role="article"', 'time datetime="{ISO}"'],
+    'Custom component (shadcn/ui Card) / Vuetify v-timeline'
   ),
   InviteManager: _ec('InviteManager',
     ['invites: OrgInvite[]', 'onCreate: (email, role) => void', 'onRevoke: (id) => void', 'onResend: (id) => void'],
     ['招待一覧テーブル (保留中/期限切れ)', '招待作成フォーム (メール+ロール選択)', '一括招待 (CSVインポート)'],
     ['フォーム label 対応', '削除確認 AlertDialog', 'aria-live="polite" (招待送信完了)'],
+    'shadcn/ui Table + Dialog + Form / React Hook Form + Zod validation',
+    ['Invite list table (pending/expired)', 'Invite creation form (email + role select)', 'Bulk invite (CSV import)'],
+    ['Labels on all form fields', 'Delete confirmation AlertDialog', 'aria-live="polite" (invite sent)'],
     'shadcn/ui Table + Dialog + Form / React Hook Form + Zod validation'
   )
 };
@@ -647,13 +671,15 @@ function gen76(G, domain, orgModel, isMultiTenant, a, pn) {
     comp.props_ja.forEach(function(p) { d += '- `' + p + '`\n'; });
     d += '\n';
     d += G ? '**バリアント:**\n\n' : '**Variants:**\n\n';
-    comp.variants_ja.forEach(function(v) { d += '- ' + v + '\n'; });
+    var _cv = G ? comp.variants_ja : (comp.variants_en || comp.variants_ja);
+    _cv.forEach(function(v) { d += '- ' + v + '\n'; });
     d += '\n';
     d += G ? '**アクセシビリティ:**\n\n' : '**Accessibility:**\n\n';
-    comp.a11y_ja.forEach(function(a) { d += '- ' + a + '\n'; });
+    var _ca = G ? comp.a11y_ja : (comp.a11y_en || comp.a11y_ja);
+    _ca.forEach(function(a) { d += '- ' + a + '\n'; });
     d += '\n';
     d += G ? '**フレームワーク対応:** ' + comp.framework + '\n\n' :
-             '**Framework mapping:** ' + comp.framework + '\n\n';
+             '**Framework mapping:** ' + (comp.framework_en || comp.framework) + '\n\n';
     d += '---\n\n';
   });
 

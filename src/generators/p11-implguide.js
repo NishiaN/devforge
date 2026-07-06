@@ -177,20 +177,20 @@ function genPillar11_ImplIntelligence(a,pn){
     doc40+='4. '+(G?'デプロイ':'Deploy')+'\n';
   }else{
     doc40+='### '+(G?'Write → Select → Compress → Isolate サイクル':'Write → Select → Compress → Isolate Cycle')+'\n\n';
-    doc40+='#### Phase 1: Write (仕様生成)\n';
+    doc40+='#### Phase 1: Write ('+(G?'仕様生成':'Spec Generation')+')\n';
     doc40+=(G?'- AI Brief (`AI_BRIEF.md`) を読み込み\n':'- Load AI Brief (`AI_BRIEF.md`)\n');
     doc40+=(G?'- SDD仕様書 (`.spec/constitution.md`) を確認\n':'- Review SDD specs (`.spec/constitution.md`)\n');
     doc40+=(G?'- 実装プレイブック (`docs/39_implementation_playbook.md`) で業種別パターン確認\n':'- Check domain patterns in Implementation Playbook (`docs/39_implementation_playbook.md`)\n');
     doc40+=(G?'- タスク分解：`docs/30_goal_decomposition.md` 参照\n':'- Task decomposition: refer to `docs/30_goal_decomposition.md`\n');
-    doc40+='\n#### Phase 2: Select (ファイル選択)\n';
+    doc40+='\n#### Phase 2: Select ('+(G?'ファイル選択':'File Selection')+')\n';
     doc40+=(G?'- **タスク別ファイル選択マトリクス**を使用（下記参照）\n':'- Use **Task-Specific File Selection Matrix** (see below)\n');
     doc40+=(G?'- トークン見積もり：1ファイル = 平均500-2000トークン\n':'- Token estimate: 1 file = avg 500-2000 tokens\n');
     doc40+=(G?'- 優先度：仕様書 > エンティティ定義 > 実装ガイド > テストケース\n':'- Priority: Specs > Entity definitions > Impl guide > Test cases\n');
-    doc40+='\n#### Phase 3: Compress (コンテキスト圧縮)\n';
+    doc40+='\n#### Phase 3: Compress ('+(G?'コンテキスト圧縮':'Context Compression')+')\n';
     doc40+=(G?'- コンテキスト使用量80%超過時に発動\n':'- Activate when context usage exceeds 80%\n');
     doc40+=(G?'- 圧縮対象：過去の会話履歴、参照済みファイルの要約化\n':'- Compress: past conversation history, summarize referenced files\n');
     doc40+=(G?'- 保持対象：現在のタスク、直近のエラーログ\n':'- Preserve: current task, recent error logs\n');
-    doc40+='\n#### Phase 4: Isolate (サブエージェント分離)\n';
+    doc40+='\n#### Phase 4: Isolate ('+(G?'サブエージェント分離':'Sub-agent Isolation')+')\n';
     doc40+=(G?'- 独立タスクは専用エージェントに委譲\n':'- Delegate independent tasks to specialized agents\n');
     doc40+=(G?'- ハンドオフ時はサマリーのみ共有（詳細は不要）\n':'- Share only summary on handoff (details unnecessary)\n');
     doc40+=(G?'- エージェント間引継ぎ：YAMLフォーマット（`AGENTS.md`参照）\n':'- Inter-agent handoff: YAML format (see `AGENTS.md`)\n');

@@ -403,7 +403,7 @@ function gen92(a,pn,G,feType,beType){
   doc+='| '+(G?'層':'Layer')+' | '+(G?'対象':'Target')+' | '+(G?'目標':'Goal')+' | '+(G?'備考':'Notes')+' |\n';
   doc+='|------|------|------|------|\n';
   COVERAGE_TARGETS.forEach(function(c){
-    var tgt=G?(c.target+(c.en_target?'':'')):c.target;
+    var tgt=G?c.target:(c.en_target||c.target);
     doc+='| '+(G?c.layer:c.layer)+' | '+(G?c.ja:c.en)+' | '+tgt+' | '+(G?c.ja_note:c.en_note)+' |\n';
   });
   doc+='\n';
@@ -479,8 +479,8 @@ function gen93(a,pn,G,feType,beType){
   doc+='| '+(G?'観点':'Aspect')+' | Playwright | Cypress |\n';
   doc+='|------|------------|--------|\n';
   doc+='| '+(G?'クロスブラウザ':'Cross-browser')+' | ✅ Chrome/Firefox/Safari | ⚠️ Chrome/Firefox |\n';
-  doc+='| '+(G?'並列実行':'Parallel')+' | ✅ ネイティブサポート | 💰 有料プランのみ |\n';
-  doc+='| '+(G?'モバイルエミュレーション':'Mobile emulation')+' | ✅ | ⚠️ 限定的 |\n';
+  doc+='| '+(G?'並列実行':'Parallel')+' | ✅ '+(G?'ネイティブサポート':'Native support')+' | 💰 '+(G?'有料プランのみ':'Paid plans only')+' |\n';
+  doc+='| '+(G?'モバイルエミュレーション':'Mobile emulation')+' | ✅ | ⚠️ '+(G?'限定的':'Limited')+' |\n';
   doc+='| '+(G?'セットアップ':'Setup')+' | '+(G?'やや複雑':'Slightly complex')+' | '+(G?'シンプル':'Simple')+' |\n';
   doc+='| '+(G?'推奨用途':'Best for')+' | '+(G?'本番環境E2E':'Production E2E')+' | '+(G?'開発中の素早いテスト':'Dev-time quick tests')+' |\n';
   doc+='\n';

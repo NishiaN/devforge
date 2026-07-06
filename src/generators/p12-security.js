@@ -21,6 +21,11 @@ const OWASP_2025=[
      supabase:['RLSポリシー全テーブル確認','service_roleキー隔離','anon keyのみクライアント公開'],
      firebase:['Firestore Rules全コレクション確認','Admin SDK使用最小化','カスタムクレーム活用'],
      express:['認可ミドルウェア全ルート適用','JWTスコープ検証','RBAC実装']
+   },
+   stack_en:{
+     supabase:['Verify RLS policies on all tables','Isolate service_role key','Expose only the anon key to clients'],
+     firebase:['Verify Firestore Rules on all collections','Minimize Admin SDK usage','Leverage custom claims'],
+     express:['Apply authorization middleware to all routes','Verify JWT scopes','Implement RBAC']
    }},
   {id:'A02',ja:'セキュリティ設定ミス',en:'Security Misconfiguration',
    checks_ja:[
@@ -41,6 +46,11 @@ const OWASP_2025=[
      supabase:['Database settings→RLS確認','API settings→制限設定','PostgREST API評価'],
      firebase:['Firebase Console→Rules確認','App Check有効化','API key制限設定'],
      vercel:['Environment Variables設定','Preview deployments保護','Edge Config活用']
+   },
+   stack_en:{
+     supabase:['Database settings→verify RLS','API settings→configure restrictions','Evaluate PostgREST API exposure'],
+     firebase:['Firebase Console→verify Rules','Enable App Check','Configure API key restrictions'],
+     vercel:['Configure Environment Variables','Protect preview deployments','Leverage Edge Config']
    }},
   {id:'A03',ja:'ソフトウェアサプライチェーン',en:'Software Supply Chain',
    checks_ja:[
@@ -61,6 +71,11 @@ const OWASP_2025=[
      github:['Dependabot有効化','Secret scanning有効化','actions/attest-build-provenance使用'],
      npm:['package-lock.json必須','npm audit fix定期実行','--ignore-scripts使用'],
      docker:['ベースイメージ署名検証','Trivy脆弱性スキャン','multi-stage build']
+   },
+   stack_en:{
+     github:['Enable Dependabot','Enable secret scanning','Use actions/attest-build-provenance'],
+     npm:['Require package-lock.json','Run npm audit fix regularly','Use --ignore-scripts'],
+     docker:['Verify base image signatures','Trivy vulnerability scanning','Multi-stage builds']
    }},
   {id:'A04',ja:'サーバサイドリクエストフォージェリ',en:'Server-Side Request Forgery',
    checks_ja:[
@@ -81,6 +96,11 @@ const OWASP_2025=[
      nextjs:['Server Actions入力検証','fetch制限実装','middleware活用'],
      cloudflare:['Workers制限設定','env.ALLOWED_HOSTS定義'],
      supabase:['Edge Functions制限','Deno.permissions確認']
+   },
+   stack_en:{
+     nextjs:['Validate Server Actions input','Implement fetch restrictions','Leverage middleware'],
+     cloudflare:['Configure Workers limits','Define env.ALLOWED_HOSTS'],
+     supabase:['Restrict Edge Functions','Verify Deno.permissions']
    }},
   {id:'A05',ja:'安全でない設計',en:'Insecure Design',
    checks_ja:[
@@ -100,6 +120,10 @@ const OWASP_2025=[
    stack:{
      design:['STRIDE分析実施','Trust Boundary定義','Attack Surface最小化'],
      arch:['認証/認可分離','暗号化デフォルト','監査ログ設計']
+   },
+   stack_en:{
+     design:['Run STRIDE analysis','Define trust boundaries','Minimize attack surface'],
+     arch:['Separate authentication/authorization','Encryption by default','Design audit logging']
    }},
   {id:'A06',ja:'脆弱で古いコンポーネント',en:'Vulnerable and Outdated Components',
    checks_ja:[
@@ -120,6 +144,11 @@ const OWASP_2025=[
      renovate:['自動PR作成','vulnerabilityAlerts有効'],
      npm:['npm outdated定期確認','npx npm-check-updates'],
      docker:['ベースイメージ更新','distroless推奨']
+   },
+   stack_en:{
+     renovate:['Automated PR creation','Enable vulnerabilityAlerts'],
+     npm:['Check npm outdated regularly','npx npm-check-updates'],
+     docker:['Update base images','Prefer distroless images']
    }},
   {id:'A07',ja:'識別と認証の失敗',en:'Identification and Authentication Failures',
    checks_ja:[
@@ -140,6 +169,11 @@ const OWASP_2025=[
      supabase:['Auth policies設定','MFA有効化','Email confirmations強制'],
      firebase:['Firebase Auth MFA','reCAPTCHA統合','passwordPolicyOptions設定'],
      nextauth:['session strategy設定','maxAge適切化','secret強化']
+   },
+   stack_en:{
+     supabase:['Configure Auth policies','Enable MFA','Enforce email confirmations'],
+     firebase:['Firebase Auth MFA','Integrate reCAPTCHA','Configure passwordPolicyOptions'],
+     nextauth:['Configure session strategy','Tune session maxAge','Strengthen secret']
    }},
   {id:'A08',ja:'ソフトウェアとデータの整合性の不備',en:'Software and Data Integrity Failures',
    checks_ja:[
@@ -160,6 +194,11 @@ const OWASP_2025=[
      cdn:['SRI hashesすべてのCDN','integrity属性必須'],
      github:['Branch protection有効','Signed commits推奨','CODEOWNERS設定'],
      webhook:['HMAC署名検証','タイムスタンプ検証','replay attack防御']
+   },
+   stack_en:{
+     cdn:['SRI hashes for all CDN assets','Require integrity attribute'],
+     github:['Enable branch protection','Recommend signed commits','Configure CODEOWNERS'],
+     webhook:['Verify HMAC signatures','Verify timestamps','Defend against replay attacks']
    }},
   {id:'A09',ja:'セキュリティログと監視の不備',en:'Security Logging and Monitoring Failures',
    checks_ja:[
@@ -180,6 +219,11 @@ const OWASP_2025=[
      supabase:['pgAudit有効化','Log drains設定','Webhooks活用'],
      datadog:['APM統合','Security Monitoring','Anomaly Detection'],
      sentry:['Error tracking','Performance monitoring','Session Replay']
+   },
+   stack_en:{
+     supabase:['Enable pgAudit','Configure log drains','Leverage webhooks'],
+     datadog:['APM integration','Security Monitoring','Anomaly Detection'],
+     sentry:['Error tracking','Performance monitoring','Session Replay']
    }},
   {id:'A10',ja:'サーバサイドリクエストフォージェリ',en:'Server-Side Request Forgery',
    checks_ja:[
@@ -198,6 +242,11 @@ const OWASP_2025=[
    ],
    stack:{
      cloud:['VPC設定','Security Groups','Private subnets'],
+     k8s:['Network Policies','Egress rules','Service mesh'],
+     serverless:['VPC integration','Outbound allowlist']
+   },
+   stack_en:{
+     cloud:['VPC configuration','Security Groups','Private subnets'],
      k8s:['Network Policies','Egress rules','Service mesh'],
      serverless:['VPC integration','Outbound allowlist']
    }}
@@ -403,8 +452,9 @@ function _owaspSection(item,backend,domain){
               bk.toLowerCase().includes('github')?'github':
               bk.toLowerCase().includes('npm')?'npm':
               bk.toLowerCase().includes('vercel')?'vercel':'express';
-    if(item.stack[key]){
-      item.stack[key].forEach(s=>out+='- '+s+'\n');
+    const _st=G?item.stack:(item.stack_en||item.stack);
+    if(_st[key]){
+      _st[key].forEach(s=>out+='- '+s+'\n');
     }
   }
   return out+'\n';
@@ -1191,7 +1241,7 @@ function genPillar12_SecurityIntelligence(a,pn){
   doc45+='## '+(G?'🍪 Cookie / トラッキング同意管理':'🍪 Cookie / Tracking Consent Management')+'\n\n';
   doc45+='| '+(G?'カテゴリ':'Category')+' | '+(G?'例':'Examples')+' | '+(G?'同意要否':'Consent Required')+' |\n';
   doc45+='|----------|------|----------|\n';
-  doc45+='| '+(G?'必須':'Strictly Necessary')+' | セッションID, CSRF token | '+(G?'不要 (常に有効)':'Not required (always on)')+' |\n';
+  doc45+='| '+(G?'必須':'Strictly Necessary')+' | '+(G?'セッションID, CSRF token':'Session ID, CSRF token')+' | '+(G?'不要 (常に有効)':'Not required (always on)')+' |\n';
   doc45+='| '+(G?'分析':'Analytics')+' | GA4, Plausible, PostHog | '+(G?'必要 (オプトイン)':'Required (opt-in)')+' |\n';
   doc45+='| '+(G?'マーケティング':'Marketing')+' | Facebook Pixel, LinkedIn Insight | '+(G?'必要 (オプトイン)':'Required (opt-in)')+' |\n\n';
   doc45+=_chk(G?'同意バナー実装 (初回訪問時表示)':'Implement consent banner (shown on first visit)')+'\n';

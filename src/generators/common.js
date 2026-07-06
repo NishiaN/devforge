@@ -335,10 +335,14 @@ function buildScaffoldingSteps(a){
 
   // Step 8: AI tool integration
   steps.push({title_ja:'AIツールとの連携',title_en:'AI Tool Integration',
-    cmds:['# 1. ZIPを展開してプロジェクトフォルダをCursor/Windsurf/Claude Codeで開く',
+    cmds:(S.genLang==='ja')?['# 1. ZIPを展開してプロジェクトフォルダをCursor/Windsurf/Claude Codeで開く',
            '# 2. CLAUDE.md を読ませる (@CLAUDE.md または drag-and-drop)',
            '# 3. tasks.md の最優先タスクを実装させる',
            '# 例: "tasks.mdの最上位タスクを実装してください"',
+           '# Example: "Implement the top-priority task from tasks.md"']
+         :['# 1. Extract the ZIP and open the project folder in Cursor/Windsurf/Claude Code',
+           '# 2. Have the AI read CLAUDE.md (@CLAUDE.md or drag-and-drop)',
+           '# 3. Have it implement the top-priority task in tasks.md',
            '# Example: "Implement the top-priority task from tasks.md"']});
 
   return steps;

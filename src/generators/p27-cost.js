@@ -2,11 +2,11 @@
 /* Generates: docs/109-112 — Cost Architecture, Resource Optimization, FinOps Strategy, Cost Monitoring */
 
 var COST_PLATFORM={
-  vercel:{model_ja:'従量課金 (Function呼び出し・帯域)',model_en:'Usage-based (function calls + bandwidth)',free:'Hobby (100GB帯域/月)',pro:'Pro $20/月',opt_ja:'Edge Functions活用・画像最適化・キャッシュヘッダー設定',opt_en:'Use Edge Functions, image optimization, cache headers'},
-  railway:{model_ja:'リソース従量課金 (CPU・メモリ・転送量)',model_en:'Resource usage (CPU, memory, transfer)',free:'Starter $5クレジット/月',pro:'Pro $0.000463/vCPU秒',opt_ja:'不要サービスのsuspend・小サイズインスタンス選択',opt_en:'Suspend idle services, right-size instances'},
-  aws:{model_ja:'EC2/ECS: インスタンス時間 + データ転送',model_en:'EC2/ECS: instance hours + data transfer',free:'Free Tier (t2.micro 750h/月)',pro:'Reserved Instances (最大72%割引)',opt_ja:'RI活用・Auto Scaling・S3 Intelligent-Tiering',opt_en:'Use RIs, Auto Scaling, S3 Intelligent-Tiering'},
-  gcp:{model_ja:'Cloud Run: リクエスト + CPU秒 + メモリ',model_en:'Cloud Run: requests + CPU-seconds + memory',free:'Always Free (2M req/月)',pro:'Committed Use Discounts (最大57%)',opt_ja:'min-instances=0設定・Committed Use Discount活用',opt_en:'Set min-instances=0, use Committed Use Discounts'},
-  netlify:{model_ja:'帯域 + ビルド分',model_en:'Bandwidth + build minutes',free:'Starter (100GB帯域・300min)',pro:'Pro $19/月',opt_ja:'大型アセットはCDN別出し・ビルドキャッシュ活用',opt_en:'Offload large assets to CDN, use build cache'},
+  vercel:{model_ja:'従量課金 (Function呼び出し・帯域)',model_en:'Usage-based (function calls + bandwidth)',free:'Hobby (100GB帯域/月)',free_en:'Hobby (100GB bandwidth/mo)',pro:'Pro $20/月',pro_en:'Pro $20/mo',opt_ja:'Edge Functions活用・画像最適化・キャッシュヘッダー設定',opt_en:'Use Edge Functions, image optimization, cache headers'},
+  railway:{model_ja:'リソース従量課金 (CPU・メモリ・転送量)',model_en:'Resource usage (CPU, memory, transfer)',free:'Starter $5クレジット/月',free_en:'Starter $5 credit/mo',pro:'Pro $0.000463/vCPU秒',pro_en:'Pro $0.000463/vCPU-sec',opt_ja:'不要サービスのsuspend・小サイズインスタンス選択',opt_en:'Suspend idle services, right-size instances'},
+  aws:{model_ja:'EC2/ECS: インスタンス時間 + データ転送',model_en:'EC2/ECS: instance hours + data transfer',free:'Free Tier (t2.micro 750h/月)',free_en:'Free Tier (t2.micro 750h/mo)',pro:'Reserved Instances (最大72%割引)',pro_en:'Reserved Instances (up to 72% off)',opt_ja:'RI活用・Auto Scaling・S3 Intelligent-Tiering',opt_en:'Use RIs, Auto Scaling, S3 Intelligent-Tiering'},
+  gcp:{model_ja:'Cloud Run: リクエスト + CPU秒 + メモリ',model_en:'Cloud Run: requests + CPU-seconds + memory',free:'Always Free (2M req/月)',free_en:'Always Free (2M req/mo)',pro:'Committed Use Discounts (最大57%)',pro_en:'Committed Use Discounts (up to 57%)',opt_ja:'min-instances=0設定・Committed Use Discount活用',opt_en:'Set min-instances=0, use Committed Use Discounts'},
+  netlify:{model_ja:'帯域 + ビルド分',model_en:'Bandwidth + build minutes',free:'Starter (100GB帯域・300min)',free_en:'Starter (100GB bandwidth + 300min)',pro:'Pro $19/月',pro_en:'Pro $19/mo',opt_ja:'大型アセットはCDN別出し・ビルドキャッシュ活用',opt_en:'Offload large assets to CDN, use build cache'},
   default:{model_ja:'クラウド従量課金',model_en:'Cloud usage-based pricing',free:'Free tier available',pro:'Pro plan',opt_ja:'不要リソースの削除・自動スケーリング設定',opt_en:'Remove unused resources, configure auto-scaling'},
 };
 
@@ -21,11 +21,11 @@ function _costPlatform(a){
 }
 function _costDB(a){
   var db=(a.database||'').toLowerCase();
-  if(/supabase/i.test(db))return {name:'Supabase',free:'Free (500MB DB)',pro:'Pro $25/月 (8GB DB)',opt_ja:'pgBouncer接続プール・不要RLSポリシーの削除',opt_en:'Use pgBouncer pooling, remove unused RLS policies'};
-  if(/firebase/i.test(db))return {name:'Firebase',free:'Spark (1GB)',pro:'Blaze (従量課金)',opt_ja:'Firestoreルール最適化・インデックス管理',opt_en:'Optimize Firestore rules, manage indexes'};
-  if(/mongodb/i.test(db))return {name:'MongoDB Atlas',free:'Free (512MB)',pro:'Flex $9〜/月',opt_ja:'不要インデックスの削除・コンパクション実行',opt_en:'Remove unused indexes, run compaction'};
-  if(/neon/i.test(db))return {name:'Neon',free:'Free (0.5GB)',pro:'Launch $19/月',opt_ja:'Auto-suspend有効化・コンピュートサイズ最小化',opt_en:'Enable auto-suspend, minimize compute size'};
-  return {name:'PostgreSQL',free:'Self-hosted (free)',pro:'Managed DB from $20/月',opt_ja:'接続プール・vacuum定期実行・クエリ最適化',opt_en:'Connection pooling, regular vacuum, query optimization'};
+  if(/supabase/i.test(db))return {name:'Supabase',free:'Free (500MB DB)',pro:'Pro $25/月 (8GB DB)',pro_en:'Pro $25/mo (8GB DB)',opt_ja:'pgBouncer接続プール・不要RLSポリシーの削除',opt_en:'Use pgBouncer pooling, remove unused RLS policies'};
+  if(/firebase/i.test(db))return {name:'Firebase',free:'Spark (1GB)',pro:'Blaze (従量課金)',pro_en:'Blaze (pay-as-you-go)',opt_ja:'Firestoreルール最適化・インデックス管理',opt_en:'Optimize Firestore rules, manage indexes'};
+  if(/mongodb/i.test(db))return {name:'MongoDB Atlas',free:'Free (512MB)',pro:'Flex $9〜/月',pro_en:'Flex from $9/mo',opt_ja:'不要インデックスの削除・コンパクション実行',opt_en:'Remove unused indexes, run compaction'};
+  if(/neon/i.test(db))return {name:'Neon',free:'Free (0.5GB)',pro:'Launch $19/月',pro_en:'Launch $19/mo',opt_ja:'Auto-suspend有効化・コンピュートサイズ最小化',opt_en:'Enable auto-suspend, minimize compute size'};
+  return {name:'PostgreSQL',free:'Self-hosted (free)',pro:'Managed DB from $20/月',pro_en:'Managed DB from $20/mo',opt_ja:'接続プール・vacuum定期実行・クエリ最適化',opt_en:'Connection pooling, regular vacuum, query optimization'};
 }
 
 /* ── Domain-specific cost factor map ── */
@@ -170,8 +170,8 @@ function gen109(a,pn){
   doc+='## '+(G?'コスト概要 ('+(a.deploy||'クラウド')+')':'Cost Overview ('+(a.deploy||'Cloud')+')')+'\n\n';
   doc+='| '+(G?'コンポーネント':'Component')+' | '+(G?'モデル':'Model')+' | '+(G?'想定コスト':'Est. Cost')+' | '+(G?'最適化ポイント':'Optimization')+'|\n';
   doc+='|---|---|---|---|\n';
-  doc+='| '+(G?'ホスティング':'Hosting')+' | '+(G?plt.model_ja:plt.model_en)+' | '+plt.pro+' | '+(G?plt.opt_ja:plt.opt_en)+' |\n';
-  doc+='| DB | '+db.name+' | '+db.pro+' | '+(G?db.opt_ja:db.opt_en)+' |\n';
+  doc+='| '+(G?'ホスティング':'Hosting')+' | '+(G?plt.model_ja:plt.model_en)+' | '+(G?plt.pro:(plt.pro_en||plt.pro))+' | '+(G?plt.opt_ja:plt.opt_en)+' |\n';
+  doc+='| DB | '+db.name+' | '+(G?db.pro:(db.pro_en||db.pro))+' | '+(G?db.opt_ja:db.opt_en)+' |\n';
   doc+='| CDN / Cache | Cloudflare / Vercel Edge | $0-10/月 | '+(G?'静的アセットを最大限キャッシュ':'Cache static assets aggressively')+' |\n';
   doc+='| '+(G?'モニタリング':'Monitoring')+' | Grafana Cloud / Sentry | $0-29/月 | '+(G?'Freeプランで十分か確認':'Check if Free tier is sufficient')+' |\n';
   doc+='| CI/CD | GitHub Actions | 2000 min/月無料 | '+(G?'キャッシュで実行時間短縮':'Use caching to reduce build time')+' |\n\n';
@@ -192,8 +192,8 @@ function gen109(a,pn){
   doc+='cost-center: [engineering | product]\n```\n\n';
 
   doc+='## '+(G?'無料枠チェックリスト':'Free Tier Checklist')+'\n\n';
-  doc+='- [ ] '+plt.free+' ('+(a.deploy||'hosting')+')\n';
-  doc+='- [ ] '+db.free+' ('+db.name+')\n';
+  doc+='- [ ] '+(G?plt.free:(plt.free_en||plt.free))+' ('+(a.deploy||'hosting')+')\n';
+  doc+='- [ ] '+(G?db.free:(db.free_en||db.free))+' ('+db.name+')\n';
   doc+='- [ ] GitHub Actions 2000 min/月\n';
   doc+='- [ ] Cloudflare Free (CDN, DDoS保護)\n';
   doc+='- [ ] Sentry Free (5K events/月)\n';
@@ -252,9 +252,9 @@ function gen110(a,pn){
 
   doc+='## '+(G?'右サイジング推奨':'Right-Sizing Recommendations')+'\n\n';
   doc+='| '+(G?'メトリクス':'Metric')+' | '+(G?'推奨アクション':'Action')+'|\n|---|---|\n';
-  doc+='| CPU <20% (7日平均) | '+(G?'1段階下のインスタンスへダウングレード':'Downgrade one instance size')+' |\n';
-  doc+='| '+(G?'メモリ':'Memory')+' <30% (7日平均) | '+(G?'RAMを半減してコスト削減':'Halve RAM to reduce cost')+' |\n';
-  doc+='| DB接続 <10% (ピーク) | '+(G?'接続プール縮小':'Reduce connection pool size')+' |\n';
+  doc+='| CPU <20% ('+(G?'7日平均':'7-day avg')+') | '+(G?'1段階下のインスタンスへダウングレード':'Downgrade one instance size')+' |\n';
+  doc+='| '+(G?'メモリ':'Memory')+' <30% ('+(G?'7日平均':'7-day avg')+') | '+(G?'RAMを半減してコスト削減':'Halve RAM to reduce cost')+' |\n';
+  doc+='| '+(G?'DB接続':'DB connections')+' <10% ('+(G?'ピーク':'peak')+') | '+(G?'接続プール縮小':'Reduce connection pool size')+' |\n';
 
   const _sc110=a.scale||'medium';
   if(_sc110!=='solo'){

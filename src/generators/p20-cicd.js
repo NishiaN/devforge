@@ -23,26 +23,34 @@ var PIPELINE_STAGES = [
 ];
 
 // Factory: Deploy strategy
-function _ds(id, name_ja, name_en, desc_ja, desc_en, pros_ja, cons_ja, when_ja, rollback_ja) {
-  return {id, name_ja, name_en, desc_ja, desc_en, pros_ja, cons_ja, when_ja, rollback_ja};
+function _ds(id, name_ja, name_en, desc_ja, desc_en, pros_ja, cons_ja, when_ja, rollback_ja, pros_en, cons_en, when_en, rollback_en) {
+  return {id, name_ja, name_en, desc_ja, desc_en, pros_ja, cons_ja, when_ja, rollback_ja, pros_en, cons_en, when_en, rollback_en};
 }
 var DEPLOY_STRATEGIES = [
   _ds('blue_green', 'ブルーグリーン', 'Blue-Green',
     '2環境を並列維持しトラフィックを瞬時切替', 'Maintain 2 envs, instant traffic switch',
     'ゼロダウンタイム・瞬時ロールバック', 'インフラコスト×2・データ同期必要',
-    'fintech/healthcare/EC 本番デプロイ', 'ロードバランサーを旧環境に戻す（秒単位）'),
+    'fintech/healthcare/EC 本番デプロイ', 'ロードバランサーを旧環境に戻す（秒単位）',
+    'Zero downtime, instant rollback', '2x infrastructure cost, data sync required',
+    'fintech/healthcare/EC production deploys', 'Switch load balancer back to old env (seconds)'),
   _ds('canary', 'カナリアリリース', 'Canary',
     '一部トラフィック(5-20%)から段階的に展開', 'Gradually expand from 5-20% traffic',
     'リスク最小化・メトリクス監視で早期検知', 'ロールアウト期間が長い・複雑なルーティング',
-    'SaaS新機能・リスク軽減重視', 'カナリア割合を0%に戻しデプロイ削除'),
+    'SaaS新機能・リスク軽減重視', 'カナリア割合を0%に戻しデプロイ削除',
+    'Minimized risk, early detection via metrics monitoring', 'Long rollout period, complex routing',
+    'New SaaS features, risk-mitigation focus', 'Reset canary ratio to 0% and delete the deploy'),
   _ds('rolling', 'ローリング', 'Rolling',
     'インスタンスを順次置換（ダウンタイム最小）', 'Replace instances sequentially (minimal downtime)',
     'リソース効率◎・シンプル', '部分的バージョン混在・ロールバック遅め',
-    '標準Webアプリ・Kubernetes標準戦略', '前リビジョンにロールアウト'),
+    '標準Webアプリ・Kubernetes標準戦略', '前リビジョンにロールアウト',
+    'Resource-efficient, simple', 'Mixed versions during rollout, slower rollback',
+    'Standard web apps, Kubernetes default strategy', 'Roll out the previous revision'),
   _ds('recreate', 'Recreate', 'Recreate',
     '旧版を全停止してから新版を起動', 'Stop all old, then start all new',
     '実装シンプル・バージョン混在なし', 'ダウンタイム発生',
-    '開発/ステージング環境・非重要サービス', '旧イメージで再デプロイ'),
+    '開発/ステージング環境・非重要サービス', '旧イメージで再デプロイ',
+    'Simple to implement, no version mixing', 'Causes downtime',
+    'Dev/staging environments, non-critical services', 'Redeploy the old image'),
 ];
 
 // Factory: Quality gate
@@ -327,8 +335,8 @@ function gen78(G, domain, dtCfg, a, pn) {
   doc += '  PR["🔀 PR ' + (G ? 'プレビュー<br/>自動生成URL' : 'Preview<br/>Auto-generated URL') + '"]\n';
   doc += '  Stg["🧪 Staging<br/>' + (G ? 'main→staging' : 'main→staging') + '"]\n';
   doc += '  Prod["🌐 Production<br/>' + (G ? 'タグ/承認後' : 'Tag/Approval') + '"]\n';
-  doc += '  Dev -->|PR作成| PR\n';
-  doc += '  PR -->|マージ| Stg\n';
+  doc += '  Dev -->|' + (G ? 'PR作成' : 'Open PR') + '| PR\n';
+  doc += '  PR -->|' + (G ? 'マージ' : 'Merge') + '| Stg\n';
   doc += '  Stg -->|' + (isFintechOrInsurance ? G ? '承認×2' : '2× Approval' : G ? '自動昇格' : 'Auto-promote') + '| Prod\n';
   doc += '```\n\n';
 
@@ -340,22 +348,22 @@ function gen78(G, domain, dtCfg, a, pn) {
   doc += '| Production | ' + (G ? 'エンドユーザー向け本番稼動' : 'End-user production') + ' | ' + (G ? 'タグ付け/承認' : 'Tag/approval') + ' | ' + (G ? '本番データ' : 'Live data') + ' |\n\n';
 
   doc += '## ' + (G ? 'デプロイ戦略選択' : 'Deploy Strategy Selection') + '\n\n';
-  doc += '### ' + (G ? '推奨: ' : 'Recommended: ') + rec.name_ja + ' (' + rec.name_en + ')\n\n';
+  doc += '### ' + (G ? '推奨: ' + rec.name_ja + ' (' + rec.name_en + ')' : 'Recommended: ' + rec.name_en) + '\n\n';
   doc += '> ' + (G ? rec.desc_ja : rec.desc_en) + '\n\n';
   doc += '| ' + (G ? '項目' : 'Item') + ' | ' + (G ? '内容' : 'Detail') + ' |\n';
   doc += '|---|---|\n';
-  doc += '| ' + (G ? 'メリット' : 'Pros') + ' | ' + rec.pros_ja + ' |\n';
-  doc += '| ' + (G ? 'デメリット' : 'Cons') + ' | ' + rec.cons_ja + ' |\n';
-  doc += '| ' + (G ? '適用場面' : 'When') + ' | ' + rec.when_ja + ' |\n';
-  doc += '| ' + (G ? 'ロールバック' : 'Rollback') + ' | ' + rec.rollback_ja + ' |\n\n';
+  doc += '| ' + (G ? 'メリット' : 'Pros') + ' | ' + (G ? rec.pros_ja : rec.pros_en) + ' |\n';
+  doc += '| ' + (G ? 'デメリット' : 'Cons') + ' | ' + (G ? rec.cons_ja : rec.cons_en) + ' |\n';
+  doc += '| ' + (G ? '適用場面' : 'When') + ' | ' + (G ? rec.when_ja : rec.when_en) + ' |\n';
+  doc += '| ' + (G ? 'ロールバック' : 'Rollback') + ' | ' + (G ? rec.rollback_ja : rec.rollback_en) + ' |\n\n';
 
   doc += '### ' + (G ? '全戦略比較' : 'All Strategies Comparison') + '\n\n';
   doc += '| ' + (G ? '戦略' : 'Strategy') + ' | ' + (G ? 'ダウンタイム' : 'Downtime') + ' | ' + (G ? 'コスト' : 'Cost') + ' | ' + (G ? 'ロールバック速度' : 'Rollback Speed') + ' | ' + (G ? '推奨ドメイン' : 'Best for') + ' |\n';
   doc += '|---|---|---|---|---|\n';
-  doc += '| ' + (G ? 'ブルーグリーン' : 'Blue-Green') + ' | なし/None | 高/High | 秒/Seconds | ' + (G ? 'fintech/EC/healthcare' : 'fintech/EC/healthcare') + ' |\n';
-  doc += '| ' + (G ? 'カナリア' : 'Canary') + ' | なし/None | 中/Med | 分/Minutes | SaaS/SNS |\n';
-  doc += '| ' + (G ? 'ローリング' : 'Rolling') + ' | ' + (G ? '最小' : 'Min') + ' | 低/Low | 分/Minutes | ' + (G ? '一般Webアプリ' : 'General web apps') + ' |\n';
-  doc += '| Recreate | あり/Yes | 最低/Min | ' + (G ? '即時' : 'Instant') + ' | ' + (G ? '開発/ステージング' : 'Dev/Staging') + ' |\n\n';
+  doc += '| ' + (G ? 'ブルーグリーン' : 'Blue-Green') + ' | ' + (G ? 'なし/None' : 'None') + ' | ' + (G ? '高/High' : 'High') + ' | ' + (G ? '秒/Seconds' : 'Seconds') + ' | ' + (G ? 'fintech/EC/healthcare' : 'fintech/EC/healthcare') + ' |\n';
+  doc += '| ' + (G ? 'カナリア' : 'Canary') + ' | ' + (G ? 'なし/None' : 'None') + ' | ' + (G ? '中/Med' : 'Med') + ' | ' + (G ? '分/Minutes' : 'Minutes') + ' | SaaS/SNS |\n';
+  doc += '| ' + (G ? 'ローリング' : 'Rolling') + ' | ' + (G ? '最小' : 'Min') + ' | ' + (G ? '低/Low' : 'Low') + ' | ' + (G ? '分/Minutes' : 'Minutes') + ' | ' + (G ? '一般Webアプリ' : 'General web apps') + ' |\n';
+  doc += '| Recreate | ' + (G ? 'あり/Yes' : 'Yes') + ' | ' + (G ? '最低/Min' : 'Min') + ' | ' + (G ? '即時' : 'Instant') + ' | ' + (G ? '開発/ステージング' : 'Dev/Staging') + ' |\n\n';
 
   doc += '## ' + (G ? 'ロールバック自動化' : 'Rollback Automation') + '\n\n';
   doc += '```yaml\n';
@@ -598,7 +606,7 @@ function gen80(G, domain, dtCfg, a, pn) {
   doc += '> **Project:** ' + pn + ' | **Domain:** ' + domain + '\n\n';
 
   doc += '## ' + (G ? 'ブランチモデル' : 'Branch Model') + '\n\n';
-  doc += '### ' + (G ? '推奨: ' : 'Recommended: ') + rec.name_ja + '\n\n';
+  doc += '### ' + (G ? '推奨: ' : 'Recommended: ') + (G ? rec.name_ja : rec.name_en) + '\n\n';
   doc += '> ' + (G ? rec.branches_ja : rec.branches_en) + '\n\n';
   doc += '**' + (G ? '最適なケース:' : 'Best for:') + '** ' + (G ? rec.best_for_ja : rec.best_for_en) + '\n\n';
 
@@ -646,9 +654,9 @@ function gen80(G, domain, dtCfg, a, pn) {
   doc += 'MINOR: ' + (G ? '新機能追加（後方互換）' : 'New features (backward-compatible)') + '\n';
   doc += 'PATCH: ' + (G ? 'バグ修正（後方互換）' : 'Bug fixes (backward-compatible)') + '\n\n';
   doc += G ? '例:' : 'Example:';
-  doc += '\n  1.0.0 → 1.0.1  (バグ修正/bugfix)\n';
-  doc += '  1.0.1 → 1.1.0  (新機能/feature)\n';
-  doc += '  1.1.0 → 2.0.0  (破壊的変更/breaking)\n';
+  doc += '\n  1.0.0 → 1.0.1  (' + (G ? 'バグ修正/bugfix' : 'bugfix') + ')\n';
+  doc += '  1.0.1 → 1.1.0  (' + (G ? '新機能/feature' : 'feature') + ')\n';
+  doc += '  1.1.0 → 2.0.0  (' + (G ? '破壊的変更/breaking' : 'breaking') + ')\n';
   doc += '```\n\n';
 
   doc += '```yaml\n';

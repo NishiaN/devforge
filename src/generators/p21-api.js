@@ -75,15 +75,15 @@ var API_TEST_TYPES=[
   {id:'contract',ja:'コントラクトテスト',en:'Contract Tests',
    ja_desc:'OpenAPI仕様とレスポンスの整合性を自動検証',en_desc:'Auto-verify response conformance to OpenAPI spec',
    tools:'dredd | schemathesis (Python) | openapi-backend',
-   ja_when:'外部クライアントが存在する場合',en_when:'When external clients exist',coverage:'全エンドポイント/All endpoints'},
+   ja_when:'外部クライアントが存在する場合',en_when:'When external clients exist',coverage:'全エンドポイント/All endpoints',en_coverage:'All endpoints'},
   {id:'e2e',ja:'E2Eテスト',en:'E2E Tests',
    ja_desc:'フロントエンドからAPIまでの完全なユーザーフローをテスト',en_desc:'Test complete user flows from frontend through API',
    tools:'playwright | cypress',
-   ja_when:'主要ユーザーフロー',en_when:'Critical user flows',coverage:'主要フロー/Critical flows'},
+   ja_when:'主要ユーザーフロー',en_when:'Critical user flows',coverage:'主要フロー/Critical flows',en_coverage:'Critical flows'},
   {id:'load',ja:'負荷テスト',en:'Load Tests',
    ja_desc:'想定トラフィック×10倍でのスループット・レイテンシ確認',en_desc:'Verify throughput & latency under 10x expected traffic',
    tools:'k6 | Artillery | Locust (Python)',
-   ja_when:'本番リリース前',en_when:'Before production release',coverage:'全主要エンドポイント/All major endpoints'},
+   ja_when:'本番リリース前',en_when:'Before production release',coverage:'全主要エンドポイント/All major endpoints',en_coverage:'All major endpoints'},
 ];
 
 // ============================================================================
@@ -660,7 +660,7 @@ function gen86(a,pn,G){
   doc+='| '+(G?'種別':'Type')+' | '+(G?'説明':'Description')+' | '+(G?'ツール':'Tools')+' | '+(G?'対象':'Target')+' | '+(G?'カバレッジ目標':'Coverage')+' |\n';
   doc+='|------|---------|------|------|------|\n';
   API_TEST_TYPES.forEach(function(t){
-    doc+='| **'+(G?t.ja:t.en)+'** | '+(G?t.ja_desc:t.en_desc)+' | `'+t.tools+'` | '+(G?t.ja_when:t.en_when)+' | '+t.coverage+' |\n';
+    doc+='| **'+(G?t.ja:t.en)+'** | '+(G?t.ja_desc:t.en_desc)+' | `'+t.tools+'` | '+(G?t.ja_when:t.en_when)+' | '+(G?t.coverage:(t.en_coverage||t.coverage))+' |\n';
   });
   doc+='\n';
 
@@ -729,7 +729,7 @@ function gen86(a,pn,G){
     doc+='\n';
     doc+='### '+(G?'回帰必須バグシナリオ':'Regression-Required Bug Scenarios')+'\n\n';
     var _q86bugs=G?_api86qa.bugs_ja:_api86qa.bugs_en;
-    _q86bugs.forEach(function(b){doc+='- ⚠️ `'+b+'` のエンドポイントテスト\n';});
+    _q86bugs.forEach(function(b){doc+='- ⚠️ '+(G?'`'+b+'` のエンドポイントテスト':'Endpoint tests for `'+b+'`')+'\n';});
     doc+='\n';
   }
 

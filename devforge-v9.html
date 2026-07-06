@@ -12737,7 +12737,7 @@ G?'全エンティティが継承する共通 Mixin — `deleted_at IS NULL` を
 'from sqlalchemy.orm import Session',
 '',
 'class SoftDeleteMixin:',
-'    """論理削除対応 Mixin — 全エンティティに継承させる"""',
+G?'    """論理削除対応 Mixin — 全エンティティに継承させる"""':'    """Soft delete Mixin — inherited by all entities"""',
 '    @declared_attr',
 '    def deleted_at(cls):',
 '        return Column(DateTime(timezone=True), nullable=True, index=True)',
@@ -12748,14 +12748,14 @@ G?'全エンティティが継承する共通 Mixin — `deleted_at IS NULL` を
 '    def restore(self):',
 '        self.deleted_at = None',
 '',
-'# Repository Base — アクティブレコードのみ取得',
+G?'# Repository Base — アクティブレコードのみ取得':'# Repository Base — fetch active records only',
 'class BaseRepository:',
 '    def __init__(self, db: Session, model):',
 '        self.db = db',
 '        self.model = model',
 '',
 '    def active_query(self):',
-'        """論理削除済みを除外したクエリ (デフォルト)"""',
+G?'        """論理削除済みを除外したクエリ (デフォルト)"""':'        """Query excluding soft-deleted records (default)"""',
 '        return self.db.query(self.model).filter(',
 '            self.model.deleted_at.is_(None)',
 '        )',
@@ -12826,7 +12826,7 @@ G?'### FastAPI BackgroundTasks（軽量タスク）':'### FastAPI BackgroundTask
 '```python','# routes/export.py','from fastapi import BackgroundTasks','from uuid import uuid4','',
 '@router.post("/export/csv")',
 'async def start_csv_export(background_tasks: BackgroundTasks, db: Session = Depends(get_db)):',
-'    """即時 job_id を返し、バックグラウンドでエクスポートを開始"""',
+G?'    """即時 job_id を返し、バックグラウンドでエクスポートを開始"""':'    """Return job_id immediately and start the export in the background"""',
 '    job_id = str(uuid4())',
 '    background_tasks.add_task(generate_csv_export, db, job_id)',
 '    return {"job_id": job_id, "status": "processing"}',
@@ -13387,7 +13387,7 @@ cl.push(G?'- `npm audit fix` または `npm update` で解消可能か確認':'-
 cl.push(G?'### G2: シークレットスキャン':'### G2: Secret Scan');
 cl.push('```bash');
 cl.push('gitleaks detect --source=. --no-git');
-cl.push('# または / or: git-secrets --scan');
+cl.push(G?'# または / or: git-secrets --scan':'# or: git-secrets --scan');
 cl.push('```');
 cl.push(G?'- APIキー/トークン/パスワードがコードに混入していないか確認':'- Verify no API keys, tokens, or passwords in source code');
 cl.push(G?'- `.env*` ファイルが `.gitignore` に含まれているか確認':'- Verify `.env*` files are in `.gitignore`','');
@@ -13628,7 +13628,7 @@ doc+='3. **'+(G?'ツールを試す':'Try a tool')+`**: ${G?'「プロジェク�
 }
 doc+='## §1 '+(G?'MCPアーキテクチャ概要':'MCP Architecture Overview')+'\n\n';
 doc+=(G?'Model Context Protocol (MCP) は AI エージェントとツール/データソースを安全に接続するオープンプロトコルです。':'Model Context Protocol (MCP) is an open protocol that safely connects AI agents with tools and data sources.')+'\n\n';
-doc+='```\n'+(G?'AIクライアント':'AI Client')+'  ←──MCP──→  MCPサーバー  ←──→  データソース\n(Claude/Cursor)          (stdio/SSE)           (DB/API/FS)\n```\n\n';
+doc+='```\n'+(G?'AIクライアント':'AI Client')+'  ←──MCP──→  '+(G?'MCPサーバー':'MCP Server')+'  ←──→  '+(G?'データソース':'Data Sources')+'\n(Claude/Cursor)          (stdio/SSE)           (DB/API/FS)\n```\n\n';
 doc+='### '+(G?'トランスポート方式':'Transport Types')+'\n';
 doc+='| '+(G?'方式':'Type')+' | '+(G?'用途':'Use Case')+' | '+(G?'特徴':'Characteristics')+'|\n';
 doc+='|---|---|---|\n';
@@ -14715,7 +14715,7 @@ ${G?'各タスクは「直線」ではなく「ループ」として走らせる
 ${G?'1.要件漏れ 2.依存見落とし 3.運用負荷 4.UI不明瞭 5.拡張破綻 → 反証点があれば指摘してから進める':'1.Missing req 2.Broken deps 3.Ops burden 4.UX unclear 5.Extensibility → Raise before proceeding'}
 ## ${G?'文章品質ルール (Anti-AI Language)':'Output Quality Rules (Anti-AI Language)'}
 ${G?'以下のLLM典型フレーズを禁止する。曖昧表現を使わず、結論を先に出し、具体的な数値・表・コードで示せ。':'Prohibit LLM boilerplate. Lead with conclusions. Show concrete numbers, tables, and code — never vague qualifiers.'}
-${G?'禁止: 「〜と言えるでしょう」「適切に」「柔軟に」「しっかりと」/ "It\'s worth noting" "Certainly!" "Great question"':'Banned: "It\'s worth noting" "Certainly!" "Great question" / 「適切に」「柔軟に」「しっかりと」'}
+${G?'禁止: 「〜と言えるでしょう」「適切に」「柔軟に」「しっかりと」/ "It\'s worth noting" "Certainly!" "Great question"':'Banned: "It\'s worth noting" "Certainly!" "Great question" / "properly" "seamlessly" "robustly"'}
 ${G?'出力ルール: 結論先出し・仮説/確定を明示・数値と表を使う':'Output rules: Lead with conclusion · Distinguish hypothesis/fact · Use numbers and tables'}
 ## ${G?'クイックリファレンス':'Quick Reference'}
 - ${G?'仕様ディレクトリ':'Spec Dir'}: \`.spec/\`
@@ -16539,7 +16539,7 @@ doc+='- [ ] '+(G?'チャットでエラーの原因を説明してもらえる':
 doc+='- [ ] '+(G?'AI提案コードをレビューして安全にマージできる':'Can review and safely merge AI-suggested code')+'\n\n';
 doc+='### Step 2: '+(G?'CLI移行・Plan Mode活用 (Week 3-4)':'CLI Migration, Plan Mode (Week 3-4)')+'\n\n';
 doc+='**'+(G?'推奨ツール':'Recommended Tool')+'**: Claude Code\n\n';
-doc+='```bash\n# Plan Modeでリスクなく設計を相談\nclaude --plan "ユーザー認証機能を追加したい"\n\n# 承認後に実行\nclaude "認証機能を実装してください"\n```\n\n';
+doc+='```bash\n'+(G?'# Plan Modeでリスクなく設計を相談\nclaude --plan "ユーザー認証機能を追加したい"\n\n# 承認後に実行\nclaude "認証機能を実装してください"':'# Discuss the design risk-free in Plan Mode\nclaude --plan "I want to add user authentication"\n\n# Execute after approval\nclaude "Please implement the authentication feature"')+'\n```\n\n';
 doc+=(G?'#### 到達基準チェックリスト':'#### Achievement Criteria Checklist')+'\n';
 doc+='- [ ] '+(G?'Plan Modeで実装方針を確認してから作業を始められる':'Can confirm implementation via Plan Mode before working')+'\n';
 doc+='- [ ] '+(G?'CLAUDE.mdでプロジェクト固有ルールをAIに伝えられる':'Can communicate project rules to AI via CLAUDE.md')+'\n';
@@ -17772,8 +17772,11 @@ const dimNames=G?['FE↔BE親和性','エコシステム統一性','ドメイン
 doc+='| '+dimNames[i]+' | '+s+'/100 | '+(s>=80?(G?'✅ 良好':'✅ Good'):s>=60?(G?'⚠️ 改善余地':'⚠️ Room to improve'):(G?'❌ 要対策':'❌ Action needed'))+' |\n';
 });
 doc+='\n'+(G?'**総合スタックスコア**: ':'**Overall Stack Score**: ')+syn.overall+'/100\n\n';
-// Compat warnings
+// Compat warnings — checkCompat picks msg language from S.lang, so align it with genLang for the call
+const _prevLang=S.lang;
+S.lang=G?'ja':'en';
 const cw=checkCompat(a);
+S.lang=_prevLang;
 if(cw.length>0){
 doc+='### '+(G?'互換性アラート':'Compatibility Alerts')+'\n\n';
 cw.slice(0,8).forEach(r=>{
@@ -18031,20 +18034,20 @@ doc40+='3. '+(G?'テスト実行':'Run tests')+'\n';
 doc40+='4. '+(G?'デプロイ':'Deploy')+'\n';
 }else{
 doc40+='### '+(G?'Write → Select → Compress → Isolate サイクル':'Write → Select → Compress → Isolate Cycle')+'\n\n';
-doc40+='#### Phase 1: Write (仕様生成)\n';
+doc40+='#### Phase 1: Write ('+(G?'仕様生成':'Spec Generation')+')\n';
 doc40+=(G?'- AI Brief (`AI_BRIEF.md`) を読み込み\n':'- Load AI Brief (`AI_BRIEF.md`)\n');
 doc40+=(G?'- SDD仕様書 (`.spec/constitution.md`) を確認\n':'- Review SDD specs (`.spec/constitution.md`)\n');
 doc40+=(G?'- 実装プレイブック (`docs/39_implementation_playbook.md`) で業種別パターン確認\n':'- Check domain patterns in Implementation Playbook (`docs/39_implementation_playbook.md`)\n');
 doc40+=(G?'- タスク分解：`docs/30_goal_decomposition.md` 参照\n':'- Task decomposition: refer to `docs/30_goal_decomposition.md`\n');
-doc40+='\n#### Phase 2: Select (ファイル選択)\n';
+doc40+='\n#### Phase 2: Select ('+(G?'ファイル選択':'File Selection')+')\n';
 doc40+=(G?'- **タスク別ファイル選択マトリクス**を使用（下記参照）\n':'- Use **Task-Specific File Selection Matrix** (see below)\n');
 doc40+=(G?'- トークン見積もり：1ファイル = 平均500-2000トークン\n':'- Token estimate: 1 file = avg 500-2000 tokens\n');
 doc40+=(G?'- 優先度：仕様書 > エンティティ定義 > 実装ガイド > テストケース\n':'- Priority: Specs > Entity definitions > Impl guide > Test cases\n');
-doc40+='\n#### Phase 3: Compress (コンテキスト圧縮)\n';
+doc40+='\n#### Phase 3: Compress ('+(G?'コンテキスト圧縮':'Context Compression')+')\n';
 doc40+=(G?'- コンテキスト使用量80%超過時に発動\n':'- Activate when context usage exceeds 80%\n');
 doc40+=(G?'- 圧縮対象：過去の会話履歴、参照済みファイルの要約化\n':'- Compress: past conversation history, summarize referenced files\n');
 doc40+=(G?'- 保持対象：現在のタスク、直近のエラーログ\n':'- Preserve: current task, recent error logs\n');
-doc40+='\n#### Phase 4: Isolate (サブエージェント分離)\n';
+doc40+='\n#### Phase 4: Isolate ('+(G?'サブエージェント分離':'Sub-agent Isolation')+')\n';
 doc40+=(G?'- 独立タスクは専用エージェントに委譲\n':'- Delegate independent tasks to specialized agents\n');
 doc40+=(G?'- ハンドオフ時はサマリーのみ共有（詳細は不要）\n':'- Share only summary on handoff (details unnecessary)\n');
 doc40+=(G?'- エージェント間引継ぎ：YAMLフォーマット（`AGENTS.md`参照）\n':'- Inter-agent handoff: YAML format (see `AGENTS.md`)\n');
@@ -18672,6 +18675,11 @@ stack:{
 supabase:['RLSポリシー全テーブル確認','service_roleキー隔離','anon keyのみクライアント公開'],
 firebase:['Firestore Rules全コレクション確認','Admin SDK使用最小化','カスタムクレーム活用'],
 express:['認可ミドルウェア全ルート適用','JWTスコープ検証','RBAC実装']
+},
+stack_en:{
+supabase:['Verify RLS policies on all tables','Isolate service_role key','Expose only the anon key to clients'],
+firebase:['Verify Firestore Rules on all collections','Minimize Admin SDK usage','Leverage custom claims'],
+express:['Apply authorization middleware to all routes','Verify JWT scopes','Implement RBAC']
 }},
 {id:'A02',ja:'セキュリティ設定ミス',en:'Security Misconfiguration',
 checks_ja:[
@@ -18692,6 +18700,11 @@ stack:{
 supabase:['Database settings→RLS確認','API settings→制限設定','PostgREST API評価'],
 firebase:['Firebase Console→Rules確認','App Check有効化','API key制限設定'],
 vercel:['Environment Variables設定','Preview deployments保護','Edge Config活用']
+},
+stack_en:{
+supabase:['Database settings→verify RLS','API settings→configure restrictions','Evaluate PostgREST API exposure'],
+firebase:['Firebase Console→verify Rules','Enable App Check','Configure API key restrictions'],
+vercel:['Configure Environment Variables','Protect preview deployments','Leverage Edge Config']
 }},
 {id:'A03',ja:'ソフトウェアサプライチェーン',en:'Software Supply Chain',
 checks_ja:[
@@ -18712,6 +18725,11 @@ stack:{
 github:['Dependabot有効化','Secret scanning有効化','actions/attest-build-provenance使用'],
 npm:['package-lock.json必須','npm audit fix定期実行','--ignore-scripts使用'],
 docker:['ベースイメージ署名検証','Trivy脆弱性スキャン','multi-stage build']
+},
+stack_en:{
+github:['Enable Dependabot','Enable secret scanning','Use actions/attest-build-provenance'],
+npm:['Require package-lock.json','Run npm audit fix regularly','Use --ignore-scripts'],
+docker:['Verify base image signatures','Trivy vulnerability scanning','Multi-stage builds']
 }},
 {id:'A04',ja:'サーバサイドリクエストフォージェリ',en:'Server-Side Request Forgery',
 checks_ja:[
@@ -18732,6 +18750,11 @@ stack:{
 nextjs:['Server Actions入力検証','fetch制限実装','middleware活用'],
 cloudflare:['Workers制限設定','env.ALLOWED_HOSTS定義'],
 supabase:['Edge Functions制限','Deno.permissions確認']
+},
+stack_en:{
+nextjs:['Validate Server Actions input','Implement fetch restrictions','Leverage middleware'],
+cloudflare:['Configure Workers limits','Define env.ALLOWED_HOSTS'],
+supabase:['Restrict Edge Functions','Verify Deno.permissions']
 }},
 {id:'A05',ja:'安全でない設計',en:'Insecure Design',
 checks_ja:[
@@ -18751,6 +18774,10 @@ checks_en:[
 stack:{
 design:['STRIDE分析実施','Trust Boundary定義','Attack Surface最小化'],
 arch:['認証/認可分離','暗号化デフォルト','監査ログ設計']
+},
+stack_en:{
+design:['Run STRIDE analysis','Define trust boundaries','Minimize attack surface'],
+arch:['Separate authentication/authorization','Encryption by default','Design audit logging']
 }},
 {id:'A06',ja:'脆弱で古いコンポーネント',en:'Vulnerable and Outdated Components',
 checks_ja:[
@@ -18771,6 +18798,11 @@ stack:{
 renovate:['自動PR作成','vulnerabilityAlerts有効'],
 npm:['npm outdated定期確認','npx npm-check-updates'],
 docker:['ベースイメージ更新','distroless推奨']
+},
+stack_en:{
+renovate:['Automated PR creation','Enable vulnerabilityAlerts'],
+npm:['Check npm outdated regularly','npx npm-check-updates'],
+docker:['Update base images','Prefer distroless images']
 }},
 {id:'A07',ja:'識別と認証の失敗',en:'Identification and Authentication Failures',
 checks_ja:[
@@ -18791,6 +18823,11 @@ stack:{
 supabase:['Auth policies設定','MFA有効化','Email confirmations強制'],
 firebase:['Firebase Auth MFA','reCAPTCHA統合','passwordPolicyOptions設定'],
 nextauth:['session strategy設定','maxAge適切化','secret強化']
+},
+stack_en:{
+supabase:['Configure Auth policies','Enable MFA','Enforce email confirmations'],
+firebase:['Firebase Auth MFA','Integrate reCAPTCHA','Configure passwordPolicyOptions'],
+nextauth:['Configure session strategy','Tune session maxAge','Strengthen secret']
 }},
 {id:'A08',ja:'ソフトウェアとデータの整合性の不備',en:'Software and Data Integrity Failures',
 checks_ja:[
@@ -18811,6 +18848,11 @@ stack:{
 cdn:['SRI hashesすべてのCDN','integrity属性必須'],
 github:['Branch protection有効','Signed commits推奨','CODEOWNERS設定'],
 webhook:['HMAC署名検証','タイムスタンプ検証','replay attack防御']
+},
+stack_en:{
+cdn:['SRI hashes for all CDN assets','Require integrity attribute'],
+github:['Enable branch protection','Recommend signed commits','Configure CODEOWNERS'],
+webhook:['Verify HMAC signatures','Verify timestamps','Defend against replay attacks']
 }},
 {id:'A09',ja:'セキュリティログと監視の不備',en:'Security Logging and Monitoring Failures',
 checks_ja:[
@@ -18831,6 +18873,11 @@ stack:{
 supabase:['pgAudit有効化','Log drains設定','Webhooks活用'],
 datadog:['APM統合','Security Monitoring','Anomaly Detection'],
 sentry:['Error tracking','Performance monitoring','Session Replay']
+},
+stack_en:{
+supabase:['Enable pgAudit','Configure log drains','Leverage webhooks'],
+datadog:['APM integration','Security Monitoring','Anomaly Detection'],
+sentry:['Error tracking','Performance monitoring','Session Replay']
 }},
 {id:'A10',ja:'サーバサイドリクエストフォージェリ',en:'Server-Side Request Forgery',
 checks_ja:[
@@ -18849,6 +18896,11 @@ checks_en:[
 ],
 stack:{
 cloud:['VPC設定','Security Groups','Private subnets'],
+k8s:['Network Policies','Egress rules','Service mesh'],
+serverless:['VPC integration','Outbound allowlist']
+},
+stack_en:{
+cloud:['VPC configuration','Security Groups','Private subnets'],
 k8s:['Network Policies','Egress rules','Service mesh'],
 serverless:['VPC integration','Outbound allowlist']
 }}
@@ -19047,8 +19099,9 @@ bk.toLowerCase().includes('firebase')?'firebase':
 bk.toLowerCase().includes('github')?'github':
 bk.toLowerCase().includes('npm')?'npm':
 bk.toLowerCase().includes('vercel')?'vercel':'express';
-if(item.stack[key]){
-item.stack[key].forEach(s=>out+='- '+s+'\n');
+const _st=G?item.stack:(item.stack_en||item.stack);
+if(_st[key]){
+_st[key].forEach(s=>out+='- '+s+'\n');
 }
 }
 return out+'\n';
@@ -19767,7 +19820,7 @@ doc45+='---\n\n';
 doc45+='## '+(G?'🍪 Cookie / トラッキング同意管理':'🍪 Cookie / Tracking Consent Management')+'\n\n';
 doc45+='| '+(G?'カテゴリ':'Category')+' | '+(G?'例':'Examples')+' | '+(G?'同意要否':'Consent Required')+' |\n';
 doc45+='|----------|------|----------|\n';
-doc45+='| '+(G?'必須':'Strictly Necessary')+' | セッションID, CSRF token | '+(G?'不要 (常に有効)':'Not required (always on)')+' |\n';
+doc45+='| '+(G?'必須':'Strictly Necessary')+' | '+(G?'セッションID, CSRF token':'Session ID, CSRF token')+' | '+(G?'不要 (常に有効)':'Not required (always on)')+' |\n';
 doc45+='| '+(G?'分析':'Analytics')+' | GA4, Plausible, PostHog | '+(G?'必要 (オプトイン)':'Required (opt-in)')+' |\n';
 doc45+='| '+(G?'マーケティング':'Marketing')+' | Facebook Pixel, LinkedIn Insight | '+(G?'必要 (オプトイン)':'Required (opt-in)')+' |\n\n';
 doc45+=_chk(G?'同意バナー実装 (初回訪問時表示)':'Implement consent banner (shown on first visit)')+'\n';
@@ -21734,10 +21787,43 @@ agriculture: { api: '200 req/min', sensor: '1 update/5min/device', alert: '灌�
 energy: { api: '300 req/min', meter: '1 read/15min/meter', alert: '異常消費検出 → 即時アラート' },
 _default: { api: '60 req/min/user', write: '30 req/min/user', alert: '閾値80% → アラート' }
 };
+const rateLimitAlertsEn = {
+fintech: '5 failed/min → temporary lock',
+health: '3 failed → manual review',
+education: '5 consecutive failures → cheating detection',
+ec: '10 failed → fraud detection',
+saas: 'rate limit exceeded → throttling',
+booking: 'conflict detected → lock + retry',
+iot: 'burst>200% → suspend device',
+marketplace: 'bid anomaly → manual review',
+travel: 'inventory conflict → extend lock',
+ai: 'cost threshold exceeded → temporary limit',
+analytics: 'large query → queueing',
+collab: 'sync delay>500ms → re-establish session',
+hr: 'payroll calculation error → immediate alert',
+logistics: 'tracking delay>5min → warning',
+newsletter: 'bounce rate>5% → pause sending',
+automation: 'dead letters>1% → investigate',
+creator: 'monetization error → immediate alert',
+gamify: 'fraudulent points detected → temporary freeze',
+media: 'buffering>5% → check CDN',
+content: 'publish error → immediate notification',
+realestate: 'duplicate listing detected → moderation',
+legal: 'signature error → manual review',
+event: 'duplicate ticket → immediate investigation',
+devtool: 'error rate>1% → investigate',
+portfolio: 'spam detected → strengthen CAPTCHA',
+tool: 'CPU limit exceeded → queueing',
+manufacturing: 'sensor data loss>1% → warning',
+agriculture: 'irrigation command failure → manual review',
+energy: 'abnormal consumption detected → immediate alert',
+_default: 'threshold at 80% → alert'
+};
 const limits = rateLimits[domain] || rateLimits._default;
+const alertEn = (rateLimits[domain] && rateLimitAlertsEn[domain]) || rateLimitAlertsEn._default;
 runbook += G
 ? `- **API全体**: ${limits.api}\n- **重要操作**: ${limits.write || limits.payment || limits.diagnostic || limits.quiz || limits.checkout || limits.signup}\n- **アラート**: ${limits.alert}\n\n`
-: `- **Overall API**: ${limits.api}\n- **Critical Operations**: ${limits.write || limits.payment || limits.diagnostic || limits.quiz || limits.checkout || limits.signup}\n- **Alerting**: ${limits.alert}\n\n`;
+: `- **Overall API**: ${limits.api}\n- **Critical Operations**: ${limits.write || limits.payment || limits.diagnostic || limits.quiz || limits.checkout || limits.signup}\n- **Alerting**: ${alertEn}\n\n`;
 if (!isBaaS) {
 runbook += '```typescript\n';
 runbook += '// Redis-based rate limiter (express middleware)\n';
@@ -23383,7 +23469,7 @@ doc += G ? '## 4. FinOps / クラウドコスト戦略\n\n' : '## 4. FinOps / Cl
 const finopsArch = arch === 'baas'
 ? (G ? 'BaaS（Supabase/Firebase）: 従量課金、スケール時コスト急増リスク → コスト監視必須' : 'BaaS (Supabase/Firebase): Pay-as-you-go, risk of cost surge at scale → Cost monitoring essential')
 : (G ? 'Traditional（PostgreSQL+Express）: 固定コスト（VPS/RDS）、スケール予測容易' : 'Traditional (PostgreSQL+Express): Fixed costs (VPS/RDS), easier scale prediction');
-doc += '**アーキテクチャ別コスト特性:**\n- ' + finopsArch + '\n\n';
+doc += (G ? '**アーキテクチャ別コスト特性:**' : '**Cost Characteristics by Architecture:**') + '\n- ' + finopsArch + '\n\n';
 const finopsDeploy = deploy === 'vercel'
 ? (G ? 'Vercel/Netlify: 無料枠超過後$$$、帯域課金注意' : 'Vercel/Netlify: $$$ after free tier, watch bandwidth costs')
 : deploy === 'cloudflare'
@@ -23391,7 +23477,7 @@ const finopsDeploy = deploy === 'vercel'
 : deploy === 'aws'
 ? (G ? 'AWS: 柔軟だが複雑、Reserved Instances/Savings Plans活用' : 'AWS: Flexible but complex, use Reserved Instances/Savings Plans')
 : (G ? 'VPS（$5-20/月）、予測可能' : 'VPS ($5-20/mo), predictable');
-doc += '**デプロイ先別推奨:**\n- ' + finopsDeploy + '\n\n';
+doc += (G ? '**デプロイ先別推奨:**' : '**Recommendations by Deployment Target:**') + '\n- ' + finopsDeploy + '\n\n';
 doc += G
 ? '**ドメイン別コストホットスポット:**\n- **analytics/ai:** データストレージ・計算量\n- **community/content:** CDN帯域\n- **marketplace/ec:** トランザクション・決済手数料\n\n'
 : '**Domain-specific Cost Hotspots:**\n- **analytics/ai:** Data storage & compute\n- **community/content:** CDN bandwidth\n- **marketplace/ec:** Transactions & payment fees\n\n';
@@ -23441,8 +23527,8 @@ if (useAI) {
 const aiRisk = ['fintech', 'health', 'legal', 'hr'].includes(domain);
 const riskLevel = aiRisk ? (G ? '高リスク' : 'High-Risk') : (G ? '限定リスク' : 'Limited Risk');
 const aiActDesc = G ? REGULATORY_HORIZON.ai_act_risk_ja : REGULATORY_HORIZON.ai_act_risk_en;
-doc += '**AIリスク分類:** ' + riskLevel + '\n\n';
-doc += '**該当規制:** ' + (aiRisk ? aiActDesc.high : aiActDesc.limited) + '\n\n';
+doc += (G ? '**AIリスク分類:** ' : '**AI Risk Classification:** ') + riskLevel + '\n\n';
+doc += (G ? '**該当規制:** ' : '**Applicable Regulation:** ') + (aiRisk ? aiActDesc.high : aiActDesc.limited) + '\n\n';
 if (aiRisk) {
 doc += G
 ? '**必須ドキュメント:**\n- [ ] AIシステムリスク評価書\n- [ ] データセット品質・バイアス監査\n- [ ] 透明性レポート（ユーザー向けAI使用説明）\n- [ ] 人間監視プロセス文書\n\n'
@@ -24468,7 +24554,7 @@ doc += '### ' + (G ? '分類定義' : 'Category Definitions') + '\n\n';
 doc += '| ' + (G ? '分類' : 'Category') + ' | ' + (G ? '説明' : 'Description') + ' | ' + (G ? '典型例' : 'Examples') + ' |\n';
 doc += '|' + (G ? '------|------|------' : '------|------|------') + '|\n';
 doc += '| ' + (G ? 'コード品質' : 'Code Quality') + ' | ' + (G ? '重複・複雑すぎる関数・長いファイル' : 'Duplication, overly complex functions, long files') + ' | DRY違反, God Class |\n';
-doc += '| ' + (G ? '設計' : 'Design') + ' | ' + (G ? 'アーキテクチャの不整合・依存循環' : 'Architecture inconsistency, circular dependencies') + ' | 密結合モジュール |\n';
+doc += '| ' + (G ? '設計' : 'Design') + ' | ' + (G ? 'アーキテクチャの不整合・依存循環' : 'Architecture inconsistency, circular dependencies') + ' | ' + (G ? '密結合モジュール' : 'Tightly coupled modules') + ' |\n';
 doc += '| ' + (G ? 'テスト' : 'Testing') + ' | ' + (G ? 'カバレッジ不足・フラキーテスト' : 'Insufficient coverage, flaky tests') + ' | E2E未整備 |\n';
 doc += '| ' + (G ? 'ドキュメント' : 'Documentation') + ' | ' + (G ? '仕様書の陳腐化・コメント欠如' : 'Outdated specs, missing comments') + ' | ADR欠落 |\n\n';
 // ── Section 3: Improvement Backlog ──
@@ -26074,56 +26160,80 @@ ops: _adm('Operations', '運用管理', ['sla_compliance', 'ticket_resolution', 
 )
 };
 // Factory: Enterprise UI Component
-function _ec(name, props_ja, variants_ja, a11y_ja, framework) {
-return {name, props_ja, variants_ja, a11y_ja, framework};
+function _ec(name, props_ja, variants_ja, a11y_ja, framework, variants_en, a11y_en, framework_en) {
+return {name, props_ja, variants_ja, a11y_ja, framework, variants_en, a11y_en, framework_en};
 }
 var ENTERPRISE_COMPONENTS = {
 StatusBadge: _ec('StatusBadge',
 ['status: string (draft|pending|approved|rejected|active|expired)', 'size?: sm|md|lg', 'variant?: solid|outline|subtle'],
 ['pending → 黄色 (⏳)', 'approved → 緑 (✅)', 'rejected → 赤 (❌)', 'active → 青 (🔵)', 'expired → グレー'],
 ['role="status" aria-label="{status}"', 'カラーだけでなくアイコン+テキストで状態を伝達'],
-'shadcn/ui Badge + カスタムバリアント / Vuetify v-chip / Angular Material chip'
+'shadcn/ui Badge + カスタムバリアント / Vuetify v-chip / Angular Material chip',
+['pending → yellow (⏳)', 'approved → green (✅)', 'rejected → red (❌)', 'active → blue (🔵)', 'expired → gray'],
+['role="status" aria-label="{status}"', 'Convey state via icon + text, never color alone'],
+'shadcn/ui Badge + custom variants / Vuetify v-chip / Angular Material chip'
 ),
 ApprovalBar: _ec('ApprovalBar',
 ['request: ApprovalRequest', 'onApprove: (id) => void', 'onReject: (id, reason) => void', 'currentUserRole: string'],
 ['pending (承認待ち: 承認/却下ボタン表示)', 'approved (完了: 緑バナー)', 'rejected (却下: 理由表示)'],
 ['button aria-label="承認"/"却下"', '却下時はモーダルでreason入力必須', 'aria-disabled={!canApprove}'],
+'shadcn/ui AlertDialog + Button / Headless UI Dialog',
+['pending (awaiting approval: show approve/reject buttons)', 'approved (done: green banner)', 'rejected (shows rejection reason)'],
+['button aria-label="Approve"/"Reject"', 'Rejection requires reason input via modal', 'aria-disabled={!canApprove}'],
 'shadcn/ui AlertDialog + Button / Headless UI Dialog'
 ),
 DataTable: _ec('DataTable',
 ['data: T[]', 'columns: ColumnDef<T>[]', 'sortable?: boolean', 'filterable?: boolean', 'paginated?: boolean', 'onRowSelect?: (rows) => void', 'bulkActions?: Action[]'],
 ['基本テーブル', 'ソート有効', 'フィルタ有効', 'ページネーション', '行選択+一括操作'],
 ['role="table" + aria-sort', 'ページネーション aria-label="ページ {n}"', 'フィルタ label 対応'],
+'TanStack Table v8 + shadcn/ui / AG Grid Community / Vuetify v-data-table',
+['Basic table', 'Sortable', 'Filterable', 'Paginated', 'Row selection + bulk actions'],
+['role="table" + aria-sort', 'Pagination aria-label="Page {n}"', 'Labels on all filter controls'],
 'TanStack Table v8 + shadcn/ui / AG Grid Community / Vuetify v-data-table'
 ),
 NotificationBell: _ec('NotificationBell',
 ['count: number', 'items: Notification[]', 'onRead: (id) => void', 'onReadAll: () => void', 'maxDisplay?: number'],
 ['未読あり (赤バッジ+数字)', '未読なし (通常アイコン)', 'ドロップダウン展開 (最新5件)'],
 ['aria-label="通知 {count}件未読"', 'role="alert" aria-live="polite" (新着時)', '通知リスト role="list"'],
+'shadcn/ui Popover + Badge / Radix UI Popover',
+['Unread (red badge + count)', 'No unread (default icon)', 'Dropdown expanded (latest 5)'],
+['aria-label="Notifications: {count} unread"', 'role="alert" aria-live="polite" (on new arrival)', 'Notification list role="list"'],
 'shadcn/ui Popover + Badge / Radix UI Popover'
 ),
 OrgSwitcher: _ec('OrgSwitcher',
 ['orgs: Organization[]', 'current: Organization', 'onChange: (org) => void', 'canCreate?: boolean'],
 ['単一組織 (表示のみ)', '複数組織 (切替ドロップダウン)', '組織作成ボタン付き'],
 ['combobox role + aria-expanded', '選択中組織に aria-selected="true"', 'キーボードナビゲーション対応'],
+'shadcn/ui Command + Popover / Headless UI Combobox',
+['Single org (display only)', 'Multiple orgs (switch dropdown)', 'With create-org button'],
+['combobox role + aria-expanded', 'aria-selected="true" on current org', 'Keyboard navigation support'],
 'shadcn/ui Command + Popover / Headless UI Combobox'
 ),
 OnboardingStepper: _ec('OnboardingStepper',
 ['steps: Step[]', 'current: number', 'onComplete: () => void', 'onStepClick?: (n) => void'],
 ['水平ステッパー (デスクトップ)', '垂直ステッパー (モバイル)', '進捗バー付き'],
 ['aria-current="step" for active', 'completed steps aria-label="{step} 完了"', 'progress bar aria-valuenow'],
+'shadcn/ui Steps (custom) / Vuetify v-stepper / Angular Material stepper',
+['Horizontal stepper (desktop)', 'Vertical stepper (mobile)', 'With progress bar'],
+['aria-current="step" for active', 'completed steps aria-label="{step} completed"', 'progress bar aria-valuenow'],
 'shadcn/ui Steps (custom) / Vuetify v-stepper / Angular Material stepper'
 ),
 AuditTimeline: _ec('AuditTimeline',
 ['events: AuditEvent[]', 'filter?: { action, user, dateRange }', 'maxItems?: number'],
 ['コンパクト (アイコン+サマリー)', '詳細 (フルメタデータ表示)', 'フィルタパネル付き'],
 ['role="feed" aria-label="監査ログ"', '各エントリ role="article"', 'time datetime="{ISO}"'],
-'カスタムコンポーネント (shadcn/ui Card) / Vuetify v-timeline'
+'カスタムコンポーネント (shadcn/ui Card) / Vuetify v-timeline',
+['Compact (icon + summary)', 'Detailed (full metadata)', 'With filter panel'],
+['role="feed" aria-label="Audit log"', 'Each entry role="article"', 'time datetime="{ISO}"'],
+'Custom component (shadcn/ui Card) / Vuetify v-timeline'
 ),
 InviteManager: _ec('InviteManager',
 ['invites: OrgInvite[]', 'onCreate: (email, role) => void', 'onRevoke: (id) => void', 'onResend: (id) => void'],
 ['招待一覧テーブル (保留中/期限切れ)', '招待作成フォーム (メール+ロール選択)', '一括招待 (CSVインポート)'],
 ['フォーム label 対応', '削除確認 AlertDialog', 'aria-live="polite" (招待送信完了)'],
+'shadcn/ui Table + Dialog + Form / React Hook Form + Zod validation',
+['Invite list table (pending/expired)', 'Invite creation form (email + role select)', 'Bulk invite (CSV import)'],
+['Labels on all form fields', 'Delete confirmation AlertDialog', 'aria-live="polite" (invite sent)'],
 'shadcn/ui Table + Dialog + Form / React Hook Form + Zod validation'
 )
 };
@@ -26585,13 +26695,15 @@ d += G ? '**Props:**\n\n' : '**Props:**\n\n';
 comp.props_ja.forEach(function(p) { d += '- `' + p + '`\n'; });
 d += '\n';
 d += G ? '**バリアント:**\n\n' : '**Variants:**\n\n';
-comp.variants_ja.forEach(function(v) { d += '- ' + v + '\n'; });
+var _cv = G ? comp.variants_ja : (comp.variants_en || comp.variants_ja);
+_cv.forEach(function(v) { d += '- ' + v + '\n'; });
 d += '\n';
 d += G ? '**アクセシビリティ:**\n\n' : '**Accessibility:**\n\n';
-comp.a11y_ja.forEach(function(a) { d += '- ' + a + '\n'; });
+var _ca = G ? comp.a11y_ja : (comp.a11y_en || comp.a11y_ja);
+_ca.forEach(function(a) { d += '- ' + a + '\n'; });
 d += '\n';
 d += G ? '**フレームワーク対応:** ' + comp.framework + '\n\n' :
-'**Framework mapping:** ' + comp.framework + '\n\n';
+'**Framework mapping:** ' + (comp.framework_en || comp.framework) + '\n\n';
 d += '---\n\n';
 });
 // Composition patterns
@@ -26732,26 +26844,34 @@ _ps('e2e_test', 'E2Eテスト', 'E2E Tests', 'ステージング環境でのE2E�
 _ps('deploy_prod', '本番デプロイ', 'Deploy Production', '本番環境への段階的デプロイ', 'Staged deploy to production', 'deploy CLI / kubectl apply', 'ヘルスチェック・SLO維持', 'Health check & SLO maintained'),
 ];
 // Factory: Deploy strategy
-function _ds(id, name_ja, name_en, desc_ja, desc_en, pros_ja, cons_ja, when_ja, rollback_ja) {
-return {id, name_ja, name_en, desc_ja, desc_en, pros_ja, cons_ja, when_ja, rollback_ja};
+function _ds(id, name_ja, name_en, desc_ja, desc_en, pros_ja, cons_ja, when_ja, rollback_ja, pros_en, cons_en, when_en, rollback_en) {
+return {id, name_ja, name_en, desc_ja, desc_en, pros_ja, cons_ja, when_ja, rollback_ja, pros_en, cons_en, when_en, rollback_en};
 }
 var DEPLOY_STRATEGIES = [
 _ds('blue_green', 'ブルーグリーン', 'Blue-Green',
 '2環境を並列維持しトラフィックを瞬時切替', 'Maintain 2 envs, instant traffic switch',
 'ゼロダウンタイム・瞬時ロールバック', 'インフラコスト×2・データ同期必要',
-'fintech/healthcare/EC 本番デプロイ', 'ロードバランサーを旧環境に戻す（秒単位）'),
+'fintech/healthcare/EC 本番デプロイ', 'ロードバランサーを旧環境に戻す（秒単位）',
+'Zero downtime, instant rollback', '2x infrastructure cost, data sync required',
+'fintech/healthcare/EC production deploys', 'Switch load balancer back to old env (seconds)'),
 _ds('canary', 'カナリアリリース', 'Canary',
 '一部トラフィック(5-20%)から段階的に展開', 'Gradually expand from 5-20% traffic',
 'リスク最小化・メトリクス監視で早期検知', 'ロールアウト期間が長い・複雑なルーティング',
-'SaaS新機能・リスク軽減重視', 'カナリア割合を0%に戻しデプロイ削除'),
+'SaaS新機能・リスク軽減重視', 'カナリア割合を0%に戻しデプロイ削除',
+'Minimized risk, early detection via metrics monitoring', 'Long rollout period, complex routing',
+'New SaaS features, risk-mitigation focus', 'Reset canary ratio to 0% and delete the deploy'),
 _ds('rolling', 'ローリング', 'Rolling',
 'インスタンスを順次置換（ダウンタイム最小）', 'Replace instances sequentially (minimal downtime)',
 'リソース効率◎・シンプル', '部分的バージョン混在・ロールバック遅め',
-'標準Webアプリ・Kubernetes標準戦略', '前リビジョンにロールアウト'),
+'標準Webアプリ・Kubernetes標準戦略', '前リビジョンにロールアウト',
+'Resource-efficient, simple', 'Mixed versions during rollout, slower rollback',
+'Standard web apps, Kubernetes default strategy', 'Roll out the previous revision'),
 _ds('recreate', 'Recreate', 'Recreate',
 '旧版を全停止してから新版を起動', 'Stop all old, then start all new',
 '実装シンプル・バージョン混在なし', 'ダウンタイム発生',
-'開発/ステージング環境・非重要サービス', '旧イメージで再デプロイ'),
+'開発/ステージング環境・非重要サービス', '旧イメージで再デプロイ',
+'Simple to implement, no version mixing', 'Causes downtime',
+'Dev/staging environments, non-critical services', 'Redeploy the old image'),
 ];
 // Factory: Quality gate
 function _qg(id, name_ja, name_en, tools_ja, tools_en, threshold_ja, threshold_en, blocking) {
@@ -27019,8 +27139,8 @@ doc += '  Dev["🖥️ ' + (G ? 'ローカル開発<br/>Localhost' : 'Local Dev<
 doc += '  PR["🔀 PR ' + (G ? 'プレビュー<br/>自動生成URL' : 'Preview<br/>Auto-generated URL') + '"]\n';
 doc += '  Stg["🧪 Staging<br/>' + (G ? 'main→staging' : 'main→staging') + '"]\n';
 doc += '  Prod["🌐 Production<br/>' + (G ? 'タグ/承認後' : 'Tag/Approval') + '"]\n';
-doc += '  Dev -->|PR作成| PR\n';
-doc += '  PR -->|マージ| Stg\n';
+doc += '  Dev -->|' + (G ? 'PR作成' : 'Open PR') + '| PR\n';
+doc += '  PR -->|' + (G ? 'マージ' : 'Merge') + '| Stg\n';
 doc += '  Stg -->|' + (isFintechOrInsurance ? G ? '承認×2' : '2× Approval' : G ? '自動昇格' : 'Auto-promote') + '| Prod\n';
 doc += '```\n\n';
 doc += '| ' + (G ? '環境' : 'Env') + ' | ' + (G ? '目的' : 'Purpose') + ' | ' + (G ? 'トリガー' : 'Trigger') + ' | ' + (G ? 'データ' : 'Data') + ' |\n';
@@ -27030,21 +27150,21 @@ doc += '| PR ' + (G ? 'プレビュー' : 'Preview') + ' | ' + (G ? 'コード�
 doc += '| Staging | ' + (G ? 'E2E・負荷テスト・リリース前確認' : 'E2E, load test, pre-release check') + ' | main ' + (G ? 'マージ' : 'merge') + ' | ' + (G ? '本番相当の匿名化データ' : 'Anonymized prod-equivalent data') + ' |\n';
 doc += '| Production | ' + (G ? 'エンドユーザー向け本番稼動' : 'End-user production') + ' | ' + (G ? 'タグ付け/承認' : 'Tag/approval') + ' | ' + (G ? '本番データ' : 'Live data') + ' |\n\n';
 doc += '## ' + (G ? 'デプロイ戦略選択' : 'Deploy Strategy Selection') + '\n\n';
-doc += '### ' + (G ? '推奨: ' : 'Recommended: ') + rec.name_ja + ' (' + rec.name_en + ')\n\n';
+doc += '### ' + (G ? '推奨: ' + rec.name_ja + ' (' + rec.name_en + ')' : 'Recommended: ' + rec.name_en) + '\n\n';
 doc += '> ' + (G ? rec.desc_ja : rec.desc_en) + '\n\n';
 doc += '| ' + (G ? '項目' : 'Item') + ' | ' + (G ? '内容' : 'Detail') + ' |\n';
 doc += '|---|---|\n';
-doc += '| ' + (G ? 'メリット' : 'Pros') + ' | ' + rec.pros_ja + ' |\n';
-doc += '| ' + (G ? 'デメリット' : 'Cons') + ' | ' + rec.cons_ja + ' |\n';
-doc += '| ' + (G ? '適用場面' : 'When') + ' | ' + rec.when_ja + ' |\n';
-doc += '| ' + (G ? 'ロールバック' : 'Rollback') + ' | ' + rec.rollback_ja + ' |\n\n';
+doc += '| ' + (G ? 'メリット' : 'Pros') + ' | ' + (G ? rec.pros_ja : rec.pros_en) + ' |\n';
+doc += '| ' + (G ? 'デメリット' : 'Cons') + ' | ' + (G ? rec.cons_ja : rec.cons_en) + ' |\n';
+doc += '| ' + (G ? '適用場面' : 'When') + ' | ' + (G ? rec.when_ja : rec.when_en) + ' |\n';
+doc += '| ' + (G ? 'ロールバック' : 'Rollback') + ' | ' + (G ? rec.rollback_ja : rec.rollback_en) + ' |\n\n';
 doc += '### ' + (G ? '全戦略比較' : 'All Strategies Comparison') + '\n\n';
 doc += '| ' + (G ? '戦略' : 'Strategy') + ' | ' + (G ? 'ダウンタイム' : 'Downtime') + ' | ' + (G ? 'コスト' : 'Cost') + ' | ' + (G ? 'ロールバック速度' : 'Rollback Speed') + ' | ' + (G ? '推奨ドメイン' : 'Best for') + ' |\n';
 doc += '|---|---|---|---|---|\n';
-doc += '| ' + (G ? 'ブルーグリーン' : 'Blue-Green') + ' | なし/None | 高/High | 秒/Seconds | ' + (G ? 'fintech/EC/healthcare' : 'fintech/EC/healthcare') + ' |\n';
-doc += '| ' + (G ? 'カナリア' : 'Canary') + ' | なし/None | 中/Med | 分/Minutes | SaaS/SNS |\n';
-doc += '| ' + (G ? 'ローリング' : 'Rolling') + ' | ' + (G ? '最小' : 'Min') + ' | 低/Low | 分/Minutes | ' + (G ? '一般Webアプリ' : 'General web apps') + ' |\n';
-doc += '| Recreate | あり/Yes | 最低/Min | ' + (G ? '即時' : 'Instant') + ' | ' + (G ? '開発/ステージング' : 'Dev/Staging') + ' |\n\n';
+doc += '| ' + (G ? 'ブルーグリーン' : 'Blue-Green') + ' | ' + (G ? 'なし/None' : 'None') + ' | ' + (G ? '高/High' : 'High') + ' | ' + (G ? '秒/Seconds' : 'Seconds') + ' | ' + (G ? 'fintech/EC/healthcare' : 'fintech/EC/healthcare') + ' |\n';
+doc += '| ' + (G ? 'カナリア' : 'Canary') + ' | ' + (G ? 'なし/None' : 'None') + ' | ' + (G ? '中/Med' : 'Med') + ' | ' + (G ? '分/Minutes' : 'Minutes') + ' | SaaS/SNS |\n';
+doc += '| ' + (G ? 'ローリング' : 'Rolling') + ' | ' + (G ? '最小' : 'Min') + ' | ' + (G ? '低/Low' : 'Low') + ' | ' + (G ? '分/Minutes' : 'Minutes') + ' | ' + (G ? '一般Webアプリ' : 'General web apps') + ' |\n';
+doc += '| Recreate | ' + (G ? 'あり/Yes' : 'Yes') + ' | ' + (G ? '最低/Min' : 'Min') + ' | ' + (G ? '即時' : 'Instant') + ' | ' + (G ? '開発/ステージング' : 'Dev/Staging') + ' |\n\n';
 doc += '## ' + (G ? 'ロールバック自動化' : 'Rollback Automation') + '\n\n';
 doc += '```yaml\n';
 doc += '# ' + (G ? '自動ロールバック条件' : 'Auto-rollback conditions') + '\n';
@@ -27268,7 +27388,7 @@ var doc = '';
 doc += '# ' + (G ? 'リリースエンジニアリング' : 'Release Engineering') + '\n\n';
 doc += '> **Project:** ' + pn + ' | **Domain:** ' + domain + '\n\n';
 doc += '## ' + (G ? 'ブランチモデル' : 'Branch Model') + '\n\n';
-doc += '### ' + (G ? '推奨: ' : 'Recommended: ') + rec.name_ja + '\n\n';
+doc += '### ' + (G ? '推奨: ' : 'Recommended: ') + (G ? rec.name_ja : rec.name_en) + '\n\n';
 doc += '> ' + (G ? rec.branches_ja : rec.branches_en) + '\n\n';
 doc += '**' + (G ? '最適なケース:' : 'Best for:') + '** ' + (G ? rec.best_for_ja : rec.best_for_en) + '\n\n';
 doc += '```mermaid\n';
@@ -27313,9 +27433,9 @@ doc += 'MAJOR: ' + (G ? '破壊的変更（APIの後方非互換）' : 'Breaking
 doc += 'MINOR: ' + (G ? '新機能追加（後方互換）' : 'New features (backward-compatible)') + '\n';
 doc += 'PATCH: ' + (G ? 'バグ修正（後方互換）' : 'Bug fixes (backward-compatible)') + '\n\n';
 doc += G ? '例:' : 'Example:';
-doc += '\n  1.0.0 → 1.0.1  (バグ修正/bugfix)\n';
-doc += '  1.0.1 → 1.1.0  (新機能/feature)\n';
-doc += '  1.1.0 → 2.0.0  (破壊的変更/breaking)\n';
+doc += '\n  1.0.0 → 1.0.1  (' + (G ? 'バグ修正/bugfix' : 'bugfix') + ')\n';
+doc += '  1.0.1 → 1.1.0  (' + (G ? '新機能/feature' : 'feature') + ')\n';
+doc += '  1.1.0 → 2.0.0  (' + (G ? '破壊的変更/breaking' : 'breaking') + ')\n';
 doc += '```\n\n';
 doc += '```yaml\n';
 doc += '# .github/workflows/release.yml\n';
@@ -27620,15 +27740,15 @@ ja_when:'全CRUDエンドポイント',en_when:'All CRUD endpoints',coverage:'70
 {id:'contract',ja:'コントラクトテスト',en:'Contract Tests',
 ja_desc:'OpenAPI仕様とレスポンスの整合性を自動検証',en_desc:'Auto-verify response conformance to OpenAPI spec',
 tools:'dredd | schemathesis (Python) | openapi-backend',
-ja_when:'外部クライアントが存在する場合',en_when:'When external clients exist',coverage:'全エンドポイント/All endpoints'},
+ja_when:'外部クライアントが存在する場合',en_when:'When external clients exist',coverage:'全エンドポイント/All endpoints',en_coverage:'All endpoints'},
 {id:'e2e',ja:'E2Eテスト',en:'E2E Tests',
 ja_desc:'フロントエンドからAPIまでの完全なユーザーフローをテスト',en_desc:'Test complete user flows from frontend through API',
 tools:'playwright | cypress',
-ja_when:'主要ユーザーフロー',en_when:'Critical user flows',coverage:'主要フロー/Critical flows'},
+ja_when:'主要ユーザーフロー',en_when:'Critical user flows',coverage:'主要フロー/Critical flows',en_coverage:'Critical flows'},
 {id:'load',ja:'負荷テスト',en:'Load Tests',
 ja_desc:'想定トラフィック×10倍でのスループット・レイテンシ確認',en_desc:'Verify throughput & latency under 10x expected traffic',
 tools:'k6 | Artillery | Locust (Python)',
-ja_when:'本番リリース前',en_when:'Before production release',coverage:'全主要エンドポイント/All major endpoints'},
+ja_when:'本番リリース前',en_when:'Before production release',coverage:'全主要エンドポイント/All major endpoints',en_coverage:'All major endpoints'},
 ];
 // ============================================================================
 // GENERATOR FUNCTIONS
@@ -28168,7 +28288,7 @@ doc+='## '+(G?'テスト種別':'Test Types')+'\n\n';
 doc+='| '+(G?'種別':'Type')+' | '+(G?'説明':'Description')+' | '+(G?'ツール':'Tools')+' | '+(G?'対象':'Target')+' | '+(G?'カバレッジ目標':'Coverage')+' |\n';
 doc+='|------|---------|------|------|------|\n';
 API_TEST_TYPES.forEach(function(t){
-doc+='| **'+(G?t.ja:t.en)+'** | '+(G?t.ja_desc:t.en_desc)+' | `'+t.tools+'` | '+(G?t.ja_when:t.en_when)+' | '+t.coverage+' |\n';
+doc+='| **'+(G?t.ja:t.en)+'** | '+(G?t.ja_desc:t.en_desc)+' | `'+t.tools+'` | '+(G?t.ja_when:t.en_when)+' | '+(G?t.coverage:(t.en_coverage||t.coverage))+' |\n';
 });
 doc+='\n';
 // Backend-specific test examples
@@ -28231,7 +28351,7 @@ _q86focus.forEach(function(f){doc+='- ✅ '+f+'\n';});
 doc+='\n';
 doc+='### '+(G?'回帰必須バグシナリオ':'Regression-Required Bug Scenarios')+'\n\n';
 var _q86bugs=G?_api86qa.bugs_ja:_api86qa.bugs_en;
-_q86bugs.forEach(function(b){doc+='- ⚠️ `'+b+'` のエンドポイントテスト\n';});
+_q86bugs.forEach(function(b){doc+='- ⚠️ '+(G?'`'+b+'` のエンドポイントテスト':'Endpoint tests for `'+b+'`')+'\n';});
 doc+='\n';
 }
 doc+='---\n*'+(G?'DevForge v9 自動生成':'Generated by DevForge v9')+'*\n';
@@ -28504,16 +28624,22 @@ doc+=(G
 );
 if(isPy||orm.name==='SQLAlchemy'){
 doc+='### '+(G?'SQLAlchemy: joinedload / selectinload':'SQLAlchemy: joinedload / selectinload')+'\n\n';
-doc+='```python\n# ❌ N+1 問題\nposts = await db.execute(select(Post))\nfor post in posts:  # N クエリ発生\n    print(post.user.name)  # user を個別取得\n\n# ✅ selectinload で解決\nstmt = select(Post).options(selectinload(Post.user))\nposts = (await db.execute(stmt)).scalars().all()\n\n# ✅ joinedload (JOIN が最適な場合)\nstmt = select(Post).options(joinedload(Post.user))\n```\n\n';
+doc+=G
+?'```python\n# ❌ N+1 問題\nposts = await db.execute(select(Post))\nfor post in posts:  # N クエリ発生\n    print(post.user.name)  # user を個別取得\n\n# ✅ selectinload で解決\nstmt = select(Post).options(selectinload(Post.user))\nposts = (await db.execute(stmt)).scalars().all()\n\n# ✅ joinedload (JOIN が最適な場合)\nstmt = select(Post).options(joinedload(Post.user))\n```\n\n'
+:'```python\n# ❌ N+1 problem\nposts = await db.execute(select(Post))\nfor post in posts:  # N queries fired\n    print(post.user.name)  # fetches each user individually\n\n# ✅ Solve with selectinload\nstmt = select(Post).options(selectinload(Post.user))\nposts = (await db.execute(stmt)).scalars().all()\n\n# ✅ joinedload (when JOIN is optimal)\nstmt = select(Post).options(joinedload(Post.user))\n```\n\n';
 } else if(orm.name==='Prisma ORM'){
 doc+='### '+(G?'Prisma: include / select':'Prisma: include / select')+'\n\n';
-doc+='```typescript\n// ❌ N+1 問題\nconst posts = await prisma.post.findMany();\nfor (const post of posts) {\n  const user = await prisma.user.findUnique({ where: { id: post.userId } }); // N クエリ\n}\n\n// ✅ include でリレーションを一括取得\nconst posts = await prisma.post.findMany({\n  include: { user: true },  // LEFT JOIN に変換\n  where: { deletedAt: null },\n  orderBy: { createdAt: \'desc\' },\n  take: 20,\n});\n\n// ✅ select で必要フィールドのみ取得 (パフォーマンス向上)\nconst posts = await prisma.post.findMany({\n  select: { id: true, title: true, user: { select: { name: true } } },\n});\n```\n\n';
+doc+=G
+?'```typescript\n// ❌ N+1 問題\nconst posts = await prisma.post.findMany();\nfor (const post of posts) {\n  const user = await prisma.user.findUnique({ where: { id: post.userId } }); // N クエリ\n}\n\n// ✅ include でリレーションを一括取得\nconst posts = await prisma.post.findMany({\n  include: { user: true },  // LEFT JOIN に変換\n  where: { deletedAt: null },\n  orderBy: { createdAt: \'desc\' },\n  take: 20,\n});\n\n// ✅ select で必要フィールドのみ取得 (パフォーマンス向上)\nconst posts = await prisma.post.findMany({\n  select: { id: true, title: true, user: { select: { name: true } } },\n});\n```\n\n'
+:'```typescript\n// ❌ N+1 problem\nconst posts = await prisma.post.findMany();\nfor (const post of posts) {\n  const user = await prisma.user.findUnique({ where: { id: post.userId } }); // N queries\n}\n\n// ✅ Fetch relations in one query with include\nconst posts = await prisma.post.findMany({\n  include: { user: true },  // converted to a LEFT JOIN\n  where: { deletedAt: null },\n  orderBy: { createdAt: \'desc\' },\n  take: 20,\n});\n\n// ✅ Fetch only needed fields with select (better performance)\nconst posts = await prisma.post.findMany({\n  select: { id: true, title: true, user: { select: { name: true } } },\n});\n```\n\n';
 } else if(orm.name==='Drizzle ORM'){
 doc+='### '+(G?'Drizzle ORM: with / leftJoin':'Drizzle ORM: with / leftJoin')+'\n\n';
-doc+='```typescript\n// ✅ Drizzle: リレーション一括取得\nconst result = await db.query.posts.findMany({\n  with: { user: true },\n  where: isNull(posts.deletedAt),\n  orderBy: [desc(posts.createdAt)],\n  limit: 20,\n});\n\n// ✅ 明示的 JOIN\nconst result = await db\n  .select({ post: posts, userName: users.name })\n  .from(posts)\n  .leftJoin(users, eq(posts.userId, users.id))\n  .where(isNull(posts.deletedAt))\n  .limit(20);\n```\n\n';
+doc+=G
+?'```typescript\n// ✅ Drizzle: リレーション一括取得\nconst result = await db.query.posts.findMany({\n  with: { user: true },\n  where: isNull(posts.deletedAt),\n  orderBy: [desc(posts.createdAt)],\n  limit: 20,\n});\n\n// ✅ 明示的 JOIN\nconst result = await db\n  .select({ post: posts, userName: users.name })\n  .from(posts)\n  .leftJoin(users, eq(posts.userId, users.id))\n  .where(isNull(posts.deletedAt))\n  .limit(20);\n```\n\n'
+:'```typescript\n// ✅ Drizzle: fetch relations in one query\nconst result = await db.query.posts.findMany({\n  with: { user: true },\n  where: isNull(posts.deletedAt),\n  orderBy: [desc(posts.createdAt)],\n  limit: 20,\n});\n\n// ✅ Explicit JOIN\nconst result = await db\n  .select({ post: posts, userName: users.name })\n  .from(posts)\n  .leftJoin(users, eq(posts.userId, users.id))\n  .where(isNull(posts.deletedAt))\n  .limit(20);\n```\n\n';
 } else {
 doc+='### '+(G?'クエリ最適化 ('+orm.name+')':'Query Optimization ('+orm.name+')')+'\n\n';
-doc+='```sql\n-- ✅ JOIN で N+1 を回避\nSELECT p.*, u.name AS user_name\nFROM posts p\nLEFT JOIN users u ON p.user_id = u.id\nWHERE p.deleted_at IS NULL\nORDER BY p.created_at DESC\nLIMIT 20;\n```\n\n';
+doc+='```sql\n-- ✅ '+(G?'JOIN で N+1 を回避':'Avoid N+1 with a JOIN')+'\nSELECT p.*, u.name AS user_name\nFROM posts p\nLEFT JOIN users u ON p.user_id = u.id\nWHERE p.deleted_at IS NULL\nORDER BY p.created_at DESC\nLIMIT 20;\n```\n\n';
 }
 // EXPLAIN ANALYZE
 if(!isBaaS){
@@ -28698,14 +28824,14 @@ doc+=(G
 ?'Neon はデフォルトで **継続的バックアップ** と **PITR** (7日間) を提供します。\n\n'
 :'Neon provides **continuous backup** and **PITR** (7 days) by default.\n\n'
 );
-doc+='```bash\n# Neon CLI: ブランチを使ったバックアップとリストア\nnpx neonctl branches create --name backup/$(date +%Y%m%d)  # '+(G?'スナップショット代わりのブランチ作成':'Create branch as snapshot')+'\nnpx neonctl branches list\nnpx neonctl restore <main> --timestamp "2024-01-15T10:00:00Z"  # '+(G?'特定時点に復元':'Restore to specific point')+'\n```\n\n';
+doc+='```bash\n# Neon CLI: '+(G?'ブランチを使ったバックアップとリストア':'Backup and restore using branches')+'\nnpx neonctl branches create --name backup/$(date +%Y%m%d)  # '+(G?'スナップショット代わりのブランチ作成':'Create branch as snapshot')+'\nnpx neonctl branches list\nnpx neonctl restore <main> --timestamp "2024-01-15T10:00:00Z"  # '+(G?'特定時点に復元':'Restore to specific point')+'\n```\n\n';
 } else if(isSupabase||isBaaS){
 doc+='### Supabase\n\n';
 doc+=(G
 ?'Supabase は **プロジェクトバックアップ** を毎日自動実行します (Pro以上)。\n\n'
 :'Supabase automatically performs **project backups** daily (Pro plan and above).\n\n'
 );
-doc+='```bash\n# Supabase CLI: バックアップとリストア\nsupabase db dump -f backup.sql                # '+(G?'論理バックアップ':'Logical backup')+'\nsupabase db restore -f backup.sql             # '+(G?'リストア':'Restore')+'\n\n# Dashboard: Settings > Database > Backups\n# Pro: '+(G?'日次バックアップ + PITR 7日間':'Daily backup + PITR 7 days')+'\n```\n\n';
+doc+='```bash\n# Supabase CLI: '+(G?'バックアップとリストア':'Backup and restore')+'\nsupabase db dump -f backup.sql                # '+(G?'論理バックアップ':'Logical backup')+'\nsupabase db restore -f backup.sql             # '+(G?'リストア':'Restore')+'\n\n# Dashboard: Settings > Database > Backups\n# Pro: '+(G?'日次バックアップ + PITR 7日間':'Daily backup + PITR 7 days')+'\n```\n\n';
 } else {
 doc+='### '+(G?'セルフホスト PostgreSQL':'Self-hosted PostgreSQL')+'\n\n';
 doc+='```bash\n# '+(G?'論理バックアップ (pg_dump)':'Logical backup (pg_dump)')+'\npg_dump --format=custom --compress=9 \\\n  --file=backup_$(date +%Y%m%d_%H%M%S).dump \\\n  $DATABASE_URL\n\n# '+(G?'圧縮バックアップをS3に保存':'Store compressed backup to S3')+'\naws s3 cp backup_*.dump s3://your-bucket/db-backups/\n\n# '+(G?'WAL-G で継続的バックアップ':'Continuous backup with WAL-G')+'\n# https://github.com/wal-g/wal-g\nwal-g backup-push $PGDATA\nwal-g wal-push $WAL_FILE\n\n# '+(G?'リストア':'Restore')+'\npg_restore --dbname=mydb --format=custom backup.dump\n```\n\n';
@@ -29139,7 +29265,7 @@ doc+='## '+(G?'カバレッジ目標':'Coverage Targets')+'\n\n';
 doc+='| '+(G?'層':'Layer')+' | '+(G?'対象':'Target')+' | '+(G?'目標':'Goal')+' | '+(G?'備考':'Notes')+' |\n';
 doc+='|------|------|------|------|\n';
 COVERAGE_TARGETS.forEach(function(c){
-var tgt=G?(c.target+(c.en_target?'':'')):c.target;
+var tgt=G?c.target:(c.en_target||c.target);
 doc+='| '+(G?c.layer:c.layer)+' | '+(G?c.ja:c.en)+' | '+tgt+' | '+(G?c.ja_note:c.en_note)+' |\n';
 });
 doc+='\n';
@@ -29205,8 +29331,8 @@ doc+='## '+(G?'ツール比較':'Tool Comparison')+'\n\n';
 doc+='| '+(G?'観点':'Aspect')+' | Playwright | Cypress |\n';
 doc+='|------|------------|--------|\n';
 doc+='| '+(G?'クロスブラウザ':'Cross-browser')+' | ✅ Chrome/Firefox/Safari | ⚠️ Chrome/Firefox |\n';
-doc+='| '+(G?'並列実行':'Parallel')+' | ✅ ネイティブサポート | 💰 有料プランのみ |\n';
-doc+='| '+(G?'モバイルエミュレーション':'Mobile emulation')+' | ✅ | ⚠️ 限定的 |\n';
+doc+='| '+(G?'並列実行':'Parallel')+' | ✅ '+(G?'ネイティブサポート':'Native support')+' | 💰 '+(G?'有料プランのみ':'Paid plans only')+' |\n';
+doc+='| '+(G?'モバイルエミュレーション':'Mobile emulation')+' | ✅ | ⚠️ '+(G?'限定的':'Limited')+' |\n';
 doc+='| '+(G?'セットアップ':'Setup')+' | '+(G?'やや複雑':'Slightly complex')+' | '+(G?'シンプル':'Simple')+' |\n';
 doc+='| '+(G?'推奨用途':'Best for')+' | '+(G?'本番環境E2E':'Production E2E')+' | '+(G?'開発中の素早いテスト':'Dev-time quick tests')+' |\n';
 doc+='\n';
@@ -29366,12 +29492,12 @@ ja_items:['全プロンプト/レスポンスの暗号化ログ','異常パタ�
 en_items:['Encrypted logging of all prompts/responses','Anomaly detection & alerting','Per-user usage tracking','Compliance report generation']},
 ];
 const MODEL_EVAL_METRICS=[
-{metric:'Accuracy',ja:'正確性',threshold:'≥ 95%',tool:'HellaSwag / TruthfulQA',category:'Quality'},
-{metric:'Hallucination Rate',ja:'ハルシネーション率',threshold:'≤ 2%',tool:'RAGAS / TruLens',category:'Safety'},
-{metric:'Toxicity Score',ja:'有害性スコア',threshold:'≤ 0.1',tool:'Perspective API / Detoxify',category:'Safety'},
-{metric:'Latency P95',ja:'P95レイテンシ',threshold:'≤ 2000ms',tool:'OpenTelemetry / Langfuse',category:'Performance'},
-{metric:'Cost per 1K tokens',ja:'1Kトークンコスト',threshold:'Budget-defined',tool:'LangSmith / Helicone',category:'Economics'},
-{metric:'Instruction Following',ja:'指示追従率',threshold:'≥ 90%',tool:'MT-Bench / Evals',category:'Quality'},
+{metric:'Accuracy',ja:'正確性',en:'Factual correctness',threshold:'≥ 95%',tool:'HellaSwag / TruthfulQA',category:'Quality'},
+{metric:'Hallucination Rate',ja:'ハルシネーション率',en:'Rate of fabricated output',threshold:'≤ 2%',tool:'RAGAS / TruLens',category:'Safety'},
+{metric:'Toxicity Score',ja:'有害性スコア',en:'Harmful content score',threshold:'≤ 0.1',tool:'Perspective API / Detoxify',category:'Safety'},
+{metric:'Latency P95',ja:'P95レイテンシ',en:'95th percentile latency',threshold:'≤ 2000ms',tool:'OpenTelemetry / Langfuse',category:'Performance'},
+{metric:'Cost per 1K tokens',ja:'1Kトークンコスト',en:'Cost per 1K tokens',threshold:'Budget-defined',tool:'LangSmith / Helicone',category:'Economics'},
+{metric:'Instruction Following',ja:'指示追従率',en:'Instruction adherence rate',threshold:'≥ 90%',tool:'MT-Bench / Evals',category:'Quality'},
 ];
 const INJECTION_DEFENSE_PATTERNS=[
 {pattern:'Input sanitization',ja:'入力サニタイズ',
@@ -29617,24 +29743,24 @@ doc+=G?
 '## Evaluation Purpose\n\nEstablish a systematic evaluation process for pre-production deployment and regular quality assurance of AI models.\n\n';
 // Evaluation metrics table
 doc+=G?'## 評価メトリクス一覧\n\n':'## Evaluation Metrics\n\n';
-doc+='| '+(G?'メトリクス':'Metric')+' | '+(G?'日本語名':'Name')+' | '+(G?'目標値':'Target')+' | '+(G?'ツール':'Tool')+' | '+(G?'カテゴリ':'Category')+' |\n';
+doc+='| '+(G?'メトリクス':'Metric')+' | '+(G?'日本語名':'Description')+' | '+(G?'目標値':'Target')+' | '+(G?'ツール':'Tool')+' | '+(G?'カテゴリ':'Category')+' |\n';
 doc+='|---|---|---|---|---|\n';
 MODEL_EVAL_METRICS.forEach(function(m){
-doc+='| `'+m.metric+'` | '+m.ja+' | '+m.threshold+' | '+m.tool+' | '+m.category+' |\n';
+doc+='| `'+m.metric+'` | '+(G?m.ja:m.en)+' | '+m.threshold+' | '+m.tool+' | '+m.category+' |\n';
 });
 doc+='\n';
 // Evaluation pipeline
 doc+=G?'## 評価パイプライン\n\n':'## Evaluation Pipeline\n\n';
 doc+='```mermaid\ngraph LR\n';
-doc+='  A["モデル候補"] --> B["オフライン評価"]\n';
-doc+='  B --> C{"品質基準クリア?"}\n';
-doc+='  C -->|No| D["モデル調整"]\n';
+doc+='  A["'+(G?'モデル候補':'Model Candidates')+'"] --> B["'+(G?'オフライン評価':'Offline Evaluation')+'"]\n';
+doc+='  B --> C{"'+(G?'品質基準クリア?':'Quality Bar Met?')+'"}\n';
+doc+='  C -->|No| D["'+(G?'モデル調整':'Model Tuning')+'"]\n';
 doc+='  D --> B\n';
-doc+='  C -->|Yes| E["A/Bテスト"]\n';
-doc+='  E --> F["プロダクション評価"]\n';
-doc+='  F --> G["継続モニタリング"]\n';
-doc+='  G --> H{"品質劣化?"}\n';
-doc+='  H -->|Yes| I["アラート & ロールバック"]\n';
+doc+='  C -->|Yes| E["'+(G?'A/Bテスト':'A/B Testing')+'"]\n';
+doc+='  E --> F["'+(G?'プロダクション評価':'Production Evaluation')+'"]\n';
+doc+='  F --> G["'+(G?'継続モニタリング':'Continuous Monitoring')+'"]\n';
+doc+='  G --> H{"'+(G?'品質劣化?':'Quality Degradation?')+'"}\n';
+doc+='  H -->|Yes| I["'+(G?'アラート & ロールバック':'Alert & Rollback')+'"]\n';
 doc+='  H -->|No| G\n';
 doc+='```\n\n';
 // RAGAS evaluation setup
@@ -29723,19 +29849,19 @@ doc+='### '+name+'\n\n```javascript\n'+p.code+'\n```\n\n';
 // Privilege separation
 doc+=G?'## 権限分離アーキテクチャ\n\n':'## Privilege Separation Architecture\n\n';
 doc+='```mermaid\ngraph TD\n';
-doc+='  A["ユーザー入力"] --> B["入力サニタイズ"]\n';
-doc+='  B --> C["PII検出"]\n';
-doc+='  C --> D["インジェクション検知"]\n';
-doc+='  D --> E{"検知?"}\n';
-doc+='  E -->|Yes| F["ブロック & ログ"]\n';
-doc+='  E -->|No| G["LLMリクエスト構築"]\n';
-doc+='  G --> H["システムプロンプト:trusted"]\n';
-doc+='  G --> I["ユーザーメッセージ:untrusted"]\n';
+doc+='  A["'+(G?'ユーザー入力':'User Input')+'"] --> B["'+(G?'入力サニタイズ':'Input Sanitization')+'"]\n';
+doc+='  B --> C["'+(G?'PII検出':'PII Detection')+'"]\n';
+doc+='  C --> D["'+(G?'インジェクション検知':'Injection Detection')+'"]\n';
+doc+='  D --> E{"'+(G?'検知?':'Detected?')+'"}\n';
+doc+='  E -->|Yes| F["'+(G?'ブロック & ログ':'Block & Log')+'"]\n';
+doc+='  E -->|No| G["'+(G?'LLMリクエスト構築':'Build LLM Request')+'"]\n';
+doc+='  G --> H["'+(G?'システムプロンプト:trusted':'System Prompt: trusted')+'"]\n';
+doc+='  G --> I["'+(G?'ユーザーメッセージ:untrusted':'User Message: untrusted')+'"]\n';
 doc+='  H --> J["LLM API"]\n';
 doc+='  I --> J\n';
-doc+='  J --> K["出力バリデーション"]\n';
-doc+='  K --> L["コンテンツモデレーション"]\n';
-doc+='  L --> M["ユーザーへのレスポンス"]\n';
+doc+='  J --> K["'+(G?'出力バリデーション':'Output Validation')+'"]\n';
+doc+='  K --> L["'+(G?'コンテンツモデレーション':'Content Moderation')+'"]\n';
+doc+='  L --> M["'+(G?'ユーザーへのレスポンス':'Response to User')+'"]\n';
 doc+='```\n\n';
 // Defense checklist
 doc+=G?'## 防御チェックリスト\n\n':'## Defense Checklist\n\n';
@@ -31625,11 +31751,11 @@ S.files['docs/106-2_ai_runtime_monitoring.md']=doc;
 }
 /* Generates: docs/109-112 — Cost Architecture, Resource Optimization, FinOps Strategy, Cost Monitoring */
 var COST_PLATFORM={
-vercel:{model_ja:'従量課金 (Function呼び出し・帯域)',model_en:'Usage-based (function calls + bandwidth)',free:'Hobby (100GB帯域/月)',pro:'Pro $20/月',opt_ja:'Edge Functions活用・画像最適化・キャッシュヘッダー設定',opt_en:'Use Edge Functions, image optimization, cache headers'},
-railway:{model_ja:'リソース従量課金 (CPU・メモリ・転送量)',model_en:'Resource usage (CPU, memory, transfer)',free:'Starter $5クレジット/月',pro:'Pro $0.000463/vCPU秒',opt_ja:'不要サービスのsuspend・小サイズインスタンス選択',opt_en:'Suspend idle services, right-size instances'},
-aws:{model_ja:'EC2/ECS: インスタンス時間 + データ転送',model_en:'EC2/ECS: instance hours + data transfer',free:'Free Tier (t2.micro 750h/月)',pro:'Reserved Instances (最大72%割引)',opt_ja:'RI活用・Auto Scaling・S3 Intelligent-Tiering',opt_en:'Use RIs, Auto Scaling, S3 Intelligent-Tiering'},
-gcp:{model_ja:'Cloud Run: リクエスト + CPU秒 + メモリ',model_en:'Cloud Run: requests + CPU-seconds + memory',free:'Always Free (2M req/月)',pro:'Committed Use Discounts (最大57%)',opt_ja:'min-instances=0設定・Committed Use Discount活用',opt_en:'Set min-instances=0, use Committed Use Discounts'},
-netlify:{model_ja:'帯域 + ビルド分',model_en:'Bandwidth + build minutes',free:'Starter (100GB帯域・300min)',pro:'Pro $19/月',opt_ja:'大型アセットはCDN別出し・ビルドキャッシュ活用',opt_en:'Offload large assets to CDN, use build cache'},
+vercel:{model_ja:'従量課金 (Function呼び出し・帯域)',model_en:'Usage-based (function calls + bandwidth)',free:'Hobby (100GB帯域/月)',free_en:'Hobby (100GB bandwidth/mo)',pro:'Pro $20/月',pro_en:'Pro $20/mo',opt_ja:'Edge Functions活用・画像最適化・キャッシュヘッダー設定',opt_en:'Use Edge Functions, image optimization, cache headers'},
+railway:{model_ja:'リソース従量課金 (CPU・メモリ・転送量)',model_en:'Resource usage (CPU, memory, transfer)',free:'Starter $5クレジット/月',free_en:'Starter $5 credit/mo',pro:'Pro $0.000463/vCPU秒',pro_en:'Pro $0.000463/vCPU-sec',opt_ja:'不要サービスのsuspend・小サイズインスタンス選択',opt_en:'Suspend idle services, right-size instances'},
+aws:{model_ja:'EC2/ECS: インスタンス時間 + データ転送',model_en:'EC2/ECS: instance hours + data transfer',free:'Free Tier (t2.micro 750h/月)',free_en:'Free Tier (t2.micro 750h/mo)',pro:'Reserved Instances (最大72%割引)',pro_en:'Reserved Instances (up to 72% off)',opt_ja:'RI活用・Auto Scaling・S3 Intelligent-Tiering',opt_en:'Use RIs, Auto Scaling, S3 Intelligent-Tiering'},
+gcp:{model_ja:'Cloud Run: リクエスト + CPU秒 + メモリ',model_en:'Cloud Run: requests + CPU-seconds + memory',free:'Always Free (2M req/月)',free_en:'Always Free (2M req/mo)',pro:'Committed Use Discounts (最大57%)',pro_en:'Committed Use Discounts (up to 57%)',opt_ja:'min-instances=0設定・Committed Use Discount活用',opt_en:'Set min-instances=0, use Committed Use Discounts'},
+netlify:{model_ja:'帯域 + ビルド分',model_en:'Bandwidth + build minutes',free:'Starter (100GB帯域・300min)',free_en:'Starter (100GB bandwidth + 300min)',pro:'Pro $19/月',pro_en:'Pro $19/mo',opt_ja:'大型アセットはCDN別出し・ビルドキャッシュ活用',opt_en:'Offload large assets to CDN, use build cache'},
 default:{model_ja:'クラウド従量課金',model_en:'Cloud usage-based pricing',free:'Free tier available',pro:'Pro plan',opt_ja:'不要リソースの削除・自動スケーリング設定',opt_en:'Remove unused resources, configure auto-scaling'},
 };
 function _costPlatform(a){
@@ -31643,11 +31769,11 @@ return 'default';
 }
 function _costDB(a){
 var db=(a.database||'').toLowerCase();
-if(/supabase/i.test(db))return {name:'Supabase',free:'Free (500MB DB)',pro:'Pro $25/月 (8GB DB)',opt_ja:'pgBouncer接続プール・不要RLSポリシーの削除',opt_en:'Use pgBouncer pooling, remove unused RLS policies'};
-if(/firebase/i.test(db))return {name:'Firebase',free:'Spark (1GB)',pro:'Blaze (従量課金)',opt_ja:'Firestoreルール最適化・インデックス管理',opt_en:'Optimize Firestore rules, manage indexes'};
-if(/mongodb/i.test(db))return {name:'MongoDB Atlas',free:'Free (512MB)',pro:'Flex $9〜/月',opt_ja:'不要インデックスの削除・コンパクション実行',opt_en:'Remove unused indexes, run compaction'};
-if(/neon/i.test(db))return {name:'Neon',free:'Free (0.5GB)',pro:'Launch $19/月',opt_ja:'Auto-suspend有効化・コンピュートサイズ最小化',opt_en:'Enable auto-suspend, minimize compute size'};
-return {name:'PostgreSQL',free:'Self-hosted (free)',pro:'Managed DB from $20/月',opt_ja:'接続プール・vacuum定期実行・クエリ最適化',opt_en:'Connection pooling, regular vacuum, query optimization'};
+if(/supabase/i.test(db))return {name:'Supabase',free:'Free (500MB DB)',pro:'Pro $25/月 (8GB DB)',pro_en:'Pro $25/mo (8GB DB)',opt_ja:'pgBouncer接続プール・不要RLSポリシーの削除',opt_en:'Use pgBouncer pooling, remove unused RLS policies'};
+if(/firebase/i.test(db))return {name:'Firebase',free:'Spark (1GB)',pro:'Blaze (従量課金)',pro_en:'Blaze (pay-as-you-go)',opt_ja:'Firestoreルール最適化・インデックス管理',opt_en:'Optimize Firestore rules, manage indexes'};
+if(/mongodb/i.test(db))return {name:'MongoDB Atlas',free:'Free (512MB)',pro:'Flex $9〜/月',pro_en:'Flex from $9/mo',opt_ja:'不要インデックスの削除・コンパクション実行',opt_en:'Remove unused indexes, run compaction'};
+if(/neon/i.test(db))return {name:'Neon',free:'Free (0.5GB)',pro:'Launch $19/月',pro_en:'Launch $19/mo',opt_ja:'Auto-suspend有効化・コンピュートサイズ最小化',opt_en:'Enable auto-suspend, minimize compute size'};
+return {name:'PostgreSQL',free:'Self-hosted (free)',pro:'Managed DB from $20/月',pro_en:'Managed DB from $20/mo',opt_ja:'接続プール・vacuum定期実行・クエリ最適化',opt_en:'Connection pooling, regular vacuum, query optimization'};
 }
 /* ── Domain-specific cost factor map ── */
 var DOMAIN_COST_FACTORS={
@@ -31787,8 +31913,8 @@ doc+='- [ ] '+(G?'CDNキャッシュ未設定で全リクエストがオリジ�
 doc+='## '+(G?'コスト概要 ('+(a.deploy||'クラウド')+')':'Cost Overview ('+(a.deploy||'Cloud')+')')+'\n\n';
 doc+='| '+(G?'コンポーネント':'Component')+' | '+(G?'モデル':'Model')+' | '+(G?'想定コスト':'Est. Cost')+' | '+(G?'最適化ポイント':'Optimization')+'|\n';
 doc+='|---|---|---|---|\n';
-doc+='| '+(G?'ホスティング':'Hosting')+' | '+(G?plt.model_ja:plt.model_en)+' | '+plt.pro+' | '+(G?plt.opt_ja:plt.opt_en)+' |\n';
-doc+='| DB | '+db.name+' | '+db.pro+' | '+(G?db.opt_ja:db.opt_en)+' |\n';
+doc+='| '+(G?'ホスティング':'Hosting')+' | '+(G?plt.model_ja:plt.model_en)+' | '+(G?plt.pro:(plt.pro_en||plt.pro))+' | '+(G?plt.opt_ja:plt.opt_en)+' |\n';
+doc+='| DB | '+db.name+' | '+(G?db.pro:(db.pro_en||db.pro))+' | '+(G?db.opt_ja:db.opt_en)+' |\n';
 doc+='| CDN / Cache | Cloudflare / Vercel Edge | $0-10/月 | '+(G?'静的アセットを最大限キャッシュ':'Cache static assets aggressively')+' |\n';
 doc+='| '+(G?'モニタリング':'Monitoring')+' | Grafana Cloud / Sentry | $0-29/月 | '+(G?'Freeプランで十分か確認':'Check if Free tier is sufficient')+' |\n';
 doc+='| CI/CD | GitHub Actions | 2000 min/月無料 | '+(G?'キャッシュで実行時間短縮':'Use caching to reduce build time')+' |\n\n';
@@ -31806,8 +31932,8 @@ doc+='environment: [dev | staging | prod]\n';
 doc+='team: [frontend | backend | infra]\n';
 doc+='cost-center: [engineering | product]\n```\n\n';
 doc+='## '+(G?'無料枠チェックリスト':'Free Tier Checklist')+'\n\n';
-doc+='- [ ] '+plt.free+' ('+(a.deploy||'hosting')+')\n';
-doc+='- [ ] '+db.free+' ('+db.name+')\n';
+doc+='- [ ] '+(G?plt.free:(plt.free_en||plt.free))+' ('+(a.deploy||'hosting')+')\n';
+doc+='- [ ] '+(G?db.free:(db.free_en||db.free))+' ('+db.name+')\n';
 doc+='- [ ] GitHub Actions 2000 min/月\n';
 doc+='- [ ] Cloudflare Free (CDN, DDoS保護)\n';
 doc+='- [ ] Sentry Free (5K events/月)\n';
@@ -31858,9 +31984,9 @@ doc+='- **'+(G?'画像最適化':'Image optimization')+'**: WebP/AVIF + CDN\n';
 doc+='- **Bundle**: Tree-shaking + Code Splitting → <200KB\n\n';
 doc+='## '+(G?'右サイジング推奨':'Right-Sizing Recommendations')+'\n\n';
 doc+='| '+(G?'メトリクス':'Metric')+' | '+(G?'推奨アクション':'Action')+'|\n|---|---|\n';
-doc+='| CPU <20% (7日平均) | '+(G?'1段階下のインスタンスへダウングレード':'Downgrade one instance size')+' |\n';
-doc+='| '+(G?'メモリ':'Memory')+' <30% (7日平均) | '+(G?'RAMを半減してコスト削減':'Halve RAM to reduce cost')+' |\n';
-doc+='| DB接続 <10% (ピーク) | '+(G?'接続プール縮小':'Reduce connection pool size')+' |\n';
+doc+='| CPU <20% ('+(G?'7日平均':'7-day avg')+') | '+(G?'1段階下のインスタンスへダウングレード':'Downgrade one instance size')+' |\n';
+doc+='| '+(G?'メモリ':'Memory')+' <30% ('+(G?'7日平均':'7-day avg')+') | '+(G?'RAMを半減してコスト削減':'Halve RAM to reduce cost')+' |\n';
+doc+='| '+(G?'DB接続':'DB connections')+' <10% ('+(G?'ピーク':'peak')+') | '+(G?'接続プール縮小':'Reduce connection pool size')+' |\n';
 const _sc110=a.scale||'medium';
 if(_sc110!=='solo'){
 const _ents110=(a.data_entities||'User, Item').split(/[,、]\s*/).map(function(e){return e.trim().replace(/\[P[0-2]\]\s*/g,'');}).filter(Boolean);
@@ -32053,25 +32179,25 @@ ja_desc:'人間の監視なしに人権・生命に影響する自律的AI意思
 en_desc:'Autonomous AI decisions affecting human rights or safety without human oversight',
 examples_ja:['社会スコアリングシステム','リアルタイム生体認証監視','司法判断の完全自動化'],
 examples_en:['Social scoring systems','Real-time biometric mass surveillance','Fully automated judicial decisions'],
-action:'禁止'},
+action:'禁止',action_en:'Prohibited'},
 {tier:1,level:'High-Risk',ja:'高リスク',color:'🟠',
 ja_desc:'重要インフラ・採用・信用評価・医療診断・法執行への影響',
 en_desc:'Critical infrastructure, hiring, credit, medical diagnosis, law enforcement',
 examples_ja:['医療AI診断支援','採用候補者スクリーニング','信用スコアリング','再犯リスク評価'],
 examples_en:['Medical AI diagnosis support','Hiring candidate screening','Credit scoring','Recidivism risk assessment'],
-action:'適合性評価・人間監視・透明性開示が必要'},
+action:'適合性評価・人間監視・透明性開示が必要',action_en:'Conformity assessment, human oversight, and transparency disclosure required'},
 {tier:2,level:'Limited',ja:'限定リスク',color:'🟡',
 ja_desc:'人間との対話を含むが意思決定に直接影響しないAI',
 en_desc:'AI interacting with humans but not directly impacting decisions',
 examples_ja:['チャットボット・バーチャルアシスタント','ディープフェイク検出','感情分析'],
 examples_en:['Chatbots & virtual assistants','Deepfake detection','Sentiment analysis'],
-action:'透明性開示（AIであることの通知）'},
+action:'透明性開示（AIであることの通知）',action_en:'Transparency disclosure (notify users they are interacting with AI)'},
 {tier:3,level:'Minimal',ja:'最小リスク',color:'🟢',
 ja_desc:'リスクが極めて低いAIアプリケーション',
 en_desc:'AI applications with minimal risk',
 examples_ja:['スパムフィルター','AIゲーム','在庫管理最適化'],
 examples_en:['Spam filters','AI games','Inventory optimization'],
-action:'特別な規制なし（任意の倫理ガイドライン適用を推奨）'},
+action:'特別な規制なし（任意の倫理ガイドライン適用を推奨）',action_en:'No specific regulation (voluntary ethics guidelines recommended)'},
 ];
 var RED_TEAM_ATTACKS=[
 {owasp:'LLM01',name:'Prompt Injection',ja:'プロンプトインジェクション',
@@ -32217,13 +32343,13 @@ doc+='> '+(G?'📊 Grafana テンプレートID: 18921 (Responsible AI Dashboard
 doc+='## '+(G?'§5 クロスリファレンスマップ':'§5 Cross-Reference Map')+'\n\n';
 doc+='| '+(G?'トピック':'Topic')+' | '+(G?'参照先':'Reference')+' | '+(G?'内容':'Content')+'|\n';
 doc+='|---|---|---|\n';
-doc+='| XAI技法選定 | docs/98-2 §1 | '+(G?'SHAP/LIME/IG/Attention/Counterfactual マトリクス':'SHAP/LIME/IG/Attention/Counterfactual matrix')+' |\n';
-doc+='| フェアネスパイプライン | docs/129 | '+(G?'バイアス検出・緩和・継続監視':'Bias detection, mitigation, continuous monitoring')+' |\n';
-doc+='| AIガバナンス | docs/130 | '+(G?'AI審査委員会・リスク分類・ポリシー':'AI Review Board, risk classification, policy')+' |\n';
-doc+='| モデルライフサイクル | docs/131 | '+(G?'データ来歴・ドリフト検出・再学習':'Data lineage, drift detection, retraining')+' |\n';
-doc+='| AIランタイム監視 | docs/106-2 | '+(G?'LLMコスト・ハルシネーション・SLI/SLO':'LLM cost, hallucination, SLI/SLO')+' |\n';
-doc+='| セキュリティ | docs/43 | '+(G?'ゼロトラストAIエージェントゲートウェイ':'Zero Trust AI Agent Gateway')+' |\n';
-doc+='| レッドチーム | docs/131-2 | '+(G?'OWASP LLM Top 10・敵対的テスト':'OWASP LLM Top 10, adversarial testing')+' |\n\n';
+doc+='| '+(G?'XAI技法選定':'XAI Technique Selection')+' | docs/98-2 §1 | '+(G?'SHAP/LIME/IG/Attention/Counterfactual マトリクス':'SHAP/LIME/IG/Attention/Counterfactual matrix')+' |\n';
+doc+='| '+(G?'フェアネスパイプライン':'Fairness Pipeline')+' | docs/129 | '+(G?'バイアス検出・緩和・継続監視':'Bias detection, mitigation, continuous monitoring')+' |\n';
+doc+='| '+(G?'AIガバナンス':'AI Governance')+' | docs/130 | '+(G?'AI審査委員会・リスク分類・ポリシー':'AI Review Board, risk classification, policy')+' |\n';
+doc+='| '+(G?'モデルライフサイクル':'Model Lifecycle')+' | docs/131 | '+(G?'データ来歴・ドリフト検出・再学習':'Data lineage, drift detection, retraining')+' |\n';
+doc+='| '+(G?'AIランタイム監視':'AI Runtime Monitoring')+' | docs/106-2 | '+(G?'LLMコスト・ハルシネーション・SLI/SLO':'LLM cost, hallucination, SLI/SLO')+' |\n';
+doc+='| '+(G?'セキュリティ':'Security')+' | docs/43 | '+(G?'ゼロトラストAIエージェントゲートウェイ':'Zero Trust AI Agent Gateway')+' |\n';
+doc+='| '+(G?'レッドチーム':'Red Team')+' | docs/131-2 | '+(G?'OWASP LLM Top 10・敵対的テスト':'OWASP LLM Top 10, adversarial testing')+' |\n\n';
 // v9.23 Pro: counterfactual explanation implementation (ADD-only)
 const _lv28=S.skillLv!=null?S.skillLv:(S.skill==='beginner'?1:S.skill==='pro'?5:3);
 if(_lv28>=5){
@@ -32327,7 +32453,7 @@ doc+='## '+(G?'§3 リスク分類ワークフロー (4ティア)':'§3 Risk Cla
 AI_RISK_TIERS.forEach(function(t){
 doc+='### '+t.color+' Tier '+t.tier+': '+(G?t.ja:t.level)+'\n\n';
 doc+='- **'+(G?'定義':'Definition')+'**: '+(G?t.ja_desc:t.en_desc)+'\n';
-doc+='- **'+(G?'対処':'Action')+'**: '+t.action+'\n';
+doc+='- **'+(G?'対処':'Action')+'**: '+(G?t.action:t.action_en)+'\n';
 doc+='- **'+(G?'例':'Examples')+'**: '+(G?(t.examples_ja||[]).join(', '):(t.examples_en||[]).join(', '))+'\n\n';
 });
 doc+='### '+(G?'分類フロー':'Classification Decision Flow')+'\n\n';
@@ -32340,7 +32466,7 @@ if(xd.isHighRisk){
 doc+='> ⚠️ **'+(G?'プロジェクト判定':'Project Assessment')+'**: '+(G?xd.domain+'ドメインは「高リスク (Tier 1)」に分類されます。EU AI Act 適合性評価とフェアネスパイプライン (docs/129) の実装が必要です。':xd.domain+' domain is classified as "High-Risk (Tier 1)". EU AI Act conformity assessment and fairness pipeline (docs/129) implementation required.')+'\n\n';
 }
 doc+='## '+(G?'§4 AI影響評価 (AIA) テンプレート':'§4 AI Impact Assessment (AIA) Template')+'\n\n';
-doc+='```markdown\n## AI影響評価書 / AI Impact Assessment\n\n**システム名**: '+pn+'\n**評価日**: '+new Date().toISOString().split('T')[0]+'\n**評価者**: \n\n### 1. '+(G?'システム概要':'System Description')+'\n- '+(G?'目的':'Purpose')+': \n- '+(G?'対象ユーザー':'Target Users')+': \n- '+(G?'自動化レベル':'Automation Level')+': \n\n### 2. '+(G?'ステークホルダー分析':'Stakeholder Analysis')+'\n- '+(G?'直接影響者':'Direct Impacted')+': \n- '+(G?'間接影響者':'Indirect Impacted')+': \n- '+(G?'脆弱なグループ':'Vulnerable Groups')+': \n\n### 3. '+(G?'権利・自由への影響':'Rights & Freedoms Impact')+'\n- '+(G?'プライバシーリスク':'Privacy Risk')+': '+(G?'低/中/高':'Low/Med/High')+'\n- '+(G?'差別リスク':'Discrimination Risk')+': '+(G?'低/中/高':'Low/Med/High')+'\n- '+(G?'自律性の侵害':'Autonomy Infringement')+': '+(G?'なし/あり':'None/Present')+'\n\n### 4. '+(G?'データ管理':'Data Management')+'\n- '+(G?'学習データソース':'Training Data Sources')+': \n- '+(G?'保護属性の処理':'Protected Attribute Handling')+': \n- '+(G?'データ保持期間':'Data Retention')+': \n\n### 5. '+(G?'アルゴリズム透明性':'Algorithm Transparency')+'\n- '+(G?'モデルタイプ':'Model Type')+': \n- '+(G?'説明可能性手法':'Explainability Method')+': \n- '+(G?'人間監視メカニズム':'Human Oversight Mechanism')+': \n\n### 6. '+(G?'リスク緩和策':'Risk Mitigation')+'\n- [ ] '+(G?'フェアネスメトリクス監視 (docs/129)':'Fairness metrics monitoring (docs/129)')+'\n- [ ] '+(G?'ドリフト検出 (docs/131)':'Drift detection (docs/131)')+'\n- [ ] '+(G?'インシデント対応計画 (docs/34)':'Incident response plan (docs/34)')+'\n\n### 7. '+(G?'承認':'Sign-off')+'\n- '+(G?'承認者':'Approved By')+': \n- '+(G?'承認日':'Date')+': \n- '+(G?'次回見直し':'Next Review')+': \n```\n\n';
+doc+='```markdown\n'+(G?'## AI影響評価書 / AI Impact Assessment':'## AI Impact Assessment')+'\n\n**'+(G?'システム名':'System Name')+'**: '+pn+'\n**'+(G?'評価日':'Assessment Date')+'**: '+new Date().toISOString().split('T')[0]+'\n**'+(G?'評価者':'Assessor')+'**: \n\n### 1. '+(G?'システム概要':'System Description')+'\n- '+(G?'目的':'Purpose')+': \n- '+(G?'対象ユーザー':'Target Users')+': \n- '+(G?'自動化レベル':'Automation Level')+': \n\n### 2. '+(G?'ステークホルダー分析':'Stakeholder Analysis')+'\n- '+(G?'直接影響者':'Direct Impacted')+': \n- '+(G?'間接影響者':'Indirect Impacted')+': \n- '+(G?'脆弱なグループ':'Vulnerable Groups')+': \n\n### 3. '+(G?'権利・自由への影響':'Rights & Freedoms Impact')+'\n- '+(G?'プライバシーリスク':'Privacy Risk')+': '+(G?'低/中/高':'Low/Med/High')+'\n- '+(G?'差別リスク':'Discrimination Risk')+': '+(G?'低/中/高':'Low/Med/High')+'\n- '+(G?'自律性の侵害':'Autonomy Infringement')+': '+(G?'なし/あり':'None/Present')+'\n\n### 4. '+(G?'データ管理':'Data Management')+'\n- '+(G?'学習データソース':'Training Data Sources')+': \n- '+(G?'保護属性の処理':'Protected Attribute Handling')+': \n- '+(G?'データ保持期間':'Data Retention')+': \n\n### 5. '+(G?'アルゴリズム透明性':'Algorithm Transparency')+'\n- '+(G?'モデルタイプ':'Model Type')+': \n- '+(G?'説明可能性手法':'Explainability Method')+': \n- '+(G?'人間監視メカニズム':'Human Oversight Mechanism')+': \n\n### 6. '+(G?'リスク緩和策':'Risk Mitigation')+'\n- [ ] '+(G?'フェアネスメトリクス監視 (docs/129)':'Fairness metrics monitoring (docs/129)')+'\n- [ ] '+(G?'ドリフト検出 (docs/131)':'Drift detection (docs/131)')+'\n- [ ] '+(G?'インシデント対応計画 (docs/34)':'Incident response plan (docs/34)')+'\n\n### 7. '+(G?'承認':'Sign-off')+'\n- '+(G?'承認者':'Approved By')+': \n- '+(G?'承認日':'Date')+': \n- '+(G?'次回見直し':'Next Review')+': \n```\n\n';
 doc+='## '+(G?'§5 責任あるAIポリシーテンプレート (スケール適応)':'§5 Responsible AI Policy Template (Scale-adaptive)')+'\n\n';
 if(scale==='solo'){
 doc+='```markdown\n# '+(G?'個人AI利用方針':'Personal AI Usage Policy')+'\n\n1. '+(G?'AIシステムの目的を明確にし、意図しない用途への転用を行わない':'Clearly define AI system purpose; do not repurpose for unintended uses')+'\n2. '+(G?'AIの判断を盲目的に信頼せず、人間による検証を怠らない':'Do not blindly trust AI decisions; always apply human verification')+'\n3. '+(G?'データのプライバシーと機密性を保護する':'Protect data privacy and confidentiality')+'\n4. '+(G?'フェアネスに関わる問題を発見した場合、直ちに記録・修正する':'Document and fix fairness issues immediately when discovered')+'\n```\n\n';
@@ -32437,7 +32563,7 @@ doc+='### '+(G?'チーム構成':'Team Composition')+'\n\n';
 doc+='| '+(G?'役割':'Role')+' | '+(G?'担当':'Responsibility')+' | '+(G?'必須':'Required')+'|\n';
 doc+='|---|---|---|\n';
 doc+='| Red Team Lead | '+(G?'テスト計画・スコープ定義・レポート作成':'Test plan, scope definition, reporting')+' | ✅ |\n';
-doc+='| '+(G?'ドメイン専門家':'Domain Expert')+' | '+(G?xd.isHighRisk?'医療/金融/法務の規制知識とリスク特定':'Domain-specific risk identification and regulatory knowledge':'ドメイン固有のリスク特定')+' | '+(xd.isHighRisk?'✅':G?'推奨':'Recommended')+' |\n';
+doc+='| '+(G?'ドメイン専門家':'Domain Expert')+' | '+(G?(xd.isHighRisk?'医療/金融/法務の規制知識とリスク特定':'Domain-specific risk identification and regulatory knowledge'):(xd.isHighRisk?'Medical/financial/legal regulatory knowledge and risk identification':'Domain-specific risk identification'))+' | '+(xd.isHighRisk?'✅':G?'推奨':'Recommended')+' |\n';
 doc+='| '+(G?'セキュリティエンジニア':'Security Engineer')+' | '+(G?'テクニカルアタック実行・ツール操作':'Execute technical attacks, operate tools')+' | ✅ |\n';
 doc+='| '+(G?'社会科学者/倫理専門家':'Social Scientist/Ethicist')+' | '+(G?'バイアス・差別・心理的ハームの評価':'Evaluate bias, discrimination, psychological harms')+' | '+(G?'推奨':'Recommended')+' |\n\n';
 doc+='### '+(G?'レッドチームフェーズ':'Red Team Phases')+'\n\n';
@@ -32596,7 +32722,7 @@ const bodyFields=cols.filter(c=>!c.col.endsWith('_at')&&!c.constraint.includes('
 const bodyObj=bodyFields.length?bodyFields.map(c=>`"${c.col}": "${c.type.includes('INT')?'number':c.type.includes('BOOLEAN')?'boolean':'string'}"`).join(', '):`"name": "string"`;
 const methods=getEntityMethods(e);
 const parts=[`\n### /api/v1/${lower}`];
-if(methods.includes('GET')) parts.push(`\n#### GET /api/v1/${lower}\n- ${G?'説明':'Desc'}: ${G?e+'一覧取得 (カーソルページネーション対応)':'List '+e+' (cursor-paginated)'}\n- クエリ: \`?cursor=&limit=20&sort=created_at&order=desc\`\n- レスポンス:\n\`\`\`json\n{ "data": [{ "id": "uuid", ${bodyObj} }], "meta": { "total": 100, "cursor": "eyJpZCI6IjEyMyJ9", "hasNextPage": true } }\n\`\`\`\n- ${G?'ステータス':'Status'}: 200 / 401 / 500`);
+if(methods.includes('GET')) parts.push(`\n#### GET /api/v1/${lower}\n- ${G?'説明':'Desc'}: ${G?e+'一覧取得 (カーソルページネーション対応)':'List '+e+' (cursor-paginated)'}\n- ${G?'クエリ':'Query'}: \`?cursor=&limit=20&sort=created_at&order=desc\`\n- ${G?'レスポンス':'Response'}:\n\`\`\`json\n{ "data": [{ "id": "uuid", ${bodyObj} }], "meta": { "total": 100, "cursor": "eyJpZCI6IjEyMyJ9", "hasNextPage": true } }\n\`\`\`\n- ${G?'ステータス':'Status'}: 200 / 401 / 500`);
 if(methods.includes('GET/:id')) parts.push(`\n#### GET /api/v1/${lower}/:id\n- ${G?'説明':'Desc'}: ${G?e+'詳細取得':'Get '+e+' detail'}\n- ${G?'ステータス':'Status'}: 200 / 404`);
 if(methods.includes('POST')) parts.push(`\n#### POST /api/v1/${lower}\n- ${G?'リクエスト':'Request'}: \`{ ${bodyObj} }\`\n- ${G?'ステータス':'Status'}: 201 / 400 / 422`);
 if(methods.includes('PUT/:id')) parts.push(`\n#### PUT /api/v1/${lower}/:id\n- ${G?'リクエスト':'Request'}: \`{ ${bodyObj} }\`\n- ${G?'ステータス':'Status'}: 200 / 404 / 422`);
@@ -32809,7 +32935,7 @@ s+=(G?'## 2. ユビキタス言語辞書（ドメイン固有）':'## 2. Ubiquit
 s+='> '+(G?'ドメイン用語は境界を越えて一貫して使う（DDD原則）':'Use domain terms consistently across boundaries (DDD principle)')+'\n\n';
 s+='| '+(G?'用語':'Term')+' | '+(G?'定義':'Definition')+' | '+(G?'境界コンテキスト':'Bounded Context')+' |\n';
 s+='|--------|---------|----------|\n';
-glossTerms.forEach(function(t){s+='| **'+t[0]+'** | '+(G?t[1]:t[2])+' | '+t[3]+' |\n';});
+glossTerms.forEach(function(t){var tm=t[0];if(!G&&tm.indexOf('/')!==-1&&/[぀-ヿ一-鿿]/.test(tm))tm=tm.slice(tm.indexOf('/')+1);s+='| **'+tm+'** | '+(G?t[1]:t[2])+' | '+t[3]+' |\n';});
 s+='\n';
 }
 // §3 Bounded context map
@@ -32851,7 +32977,7 @@ compliances.slice(0,3).forEach(function(c){s+='- [ ] '+c+'\n';});
 return s;
 }
 const docTemplates=[
-['05_api_design',G?(arch.isBaaS?'データアクセス設計書 (SDK)':'API設計書 (OpenAPI準拠)'):(arch.isBaaS?'Data Access Design (SDK)':'API Design (OpenAPI)'),`${G?'## 認証':'## Authentication'}\n- ${G?'方式':'Method'}: ${auth.tokenType}\n- ${arch.isBaaS?(G?'アクセス方式: '+orm+' SDK':'Access: '+orm+' SDK'):'ヘッダー: \\`Authorization: Bearer <token>\\`'}\n\n${arch.isBaaS?'':(G?'## 共通レスポンス':'## Common Responses')+'\\n| '+(G?'ステータス':'Status')+' | '+(G?'意味':'Meaning')+' |\\n|-----------|------|\\n| 200 | OK |\\n| 201 | Created |\\n| 400 | Bad Request |\\n| 401 | Unauthorized |\\n| 403 | Forbidden |\\n| 404 | Not Found |\\n| 422 | Validation Error |\\n| 500 | Internal Error |\\n\\n'}\n${G?(arch.isBaaS?'## データアクセスパターン':'## エンドポイント一覧'):(arch.isBaaS?'## Data Access Patterns':'## Endpoints')}\n${apiEndpoints}`],
+['05_api_design',G?(arch.isBaaS?'データアクセス設計書 (SDK)':'API設計書 (OpenAPI準拠)'):(arch.isBaaS?'Data Access Design (SDK)':'API Design (OpenAPI)'),`${G?'## 認証':'## Authentication'}\n- ${G?'方式':'Method'}: ${auth.tokenType}\n- ${arch.isBaaS?(G?'アクセス方式: '+orm+' SDK':'Access: '+orm+' SDK'):(G?'ヘッダー':'Header')+': \\`Authorization: Bearer <token>\\`'}\n\n${arch.isBaaS?'':(G?'## 共通レスポンス':'## Common Responses')+'\\n| '+(G?'ステータス':'Status')+' | '+(G?'意味':'Meaning')+' |\\n|-----------|------|\\n| 200 | OK |\\n| 201 | Created |\\n| 400 | Bad Request |\\n| 401 | Unauthorized |\\n| 403 | Forbidden |\\n| 404 | Not Found |\\n| 422 | Validation Error |\\n| 500 | Internal Error |\\n\\n'}\n${G?(arch.isBaaS?'## データアクセスパターン':'## エンドポイント一覧'):(arch.isBaaS?'## Data Access Patterns':'## Endpoints')}\n${apiEndpoints}`],
 ['06_screen_design',G?'画面設計書 & 画面遷移図':'Screen Design & Flow',`${G?'## 画面遷移図':'## Screen Flow'}\n\n\`\`\`mermaid\nflowchart LR\n${sNodes}\n${sLinks.join('\n')}\n\`\`\`\n\n${G?'## 画面一覧':'## Screen List'}\n${screens.map((s,i)=>{const isPublic=s.match(/ログイン|Login|Register|登録|ランディング|Landing|LP|トップ|Top|ホーム|Home|About|概要|利用規約|Terms|料金|Pricing|お問い合わせ|Contact/i);const comps=getScreenComponents(s,G);const compList=comps?'\n- '+(G?'主要コンポーネント':'Key Components')+':\n'+comps.map(c=>'  - '+c).join('\n'):'\n- '+(G?'コンポーネント':'Components')+': Header, '+(isPublic?'':'Sidebar, ')+'Content, Footer';return `\n### ${i+1}. ${s}\n- URL: \`${(genRoutes(a).find(r=>r.name===s.replace(/\(P[0-2]\)/gi,'').trim())||{path:'/'+(s.toLowerCase().replace(/[^a-z0-9]/g,'-'))}).path}\`\n- ${G?'認証':'Auth'}: ${isPublic?(G?'不要':'Not required'):(G?'必要':'Required')}${compList}`;}).join('\n')}`],
 ['07_test_cases',G?'テストケース定義書':'Test Cases',`${G?'## テスト戦略':'## Test Strategy'}\n- ${G?'ユニット':'Unit'}: Vitest (80%+)\n- E2E: Playwright\n- ${G?'コンポーネント':'Component'}: Testing Library\n\n${G?'## テストケースマトリクス':'## Test Case Matrix'}\n${testMatrix}\n\n${G?'## 実行コマンド':'## Run Commands'}\n\`\`\`bash\nnpm run test\nnpm run test:e2e\nnpm run test:coverage\n\`\`\``],
 ['08_security',G?'セキュリティ設計書':'Security Design',`${G?'## セキュリティ対策':'## Security Measures'}\n- ${G?'認証':'Auth'}: ${auth.sot}\n- HTTPS${G?'必須':' required'}\n- CSP (Content Security Policy)\n- CORS (Cross-Origin Resource Sharing)\n- Rate Limiting\n- Input Validation${hasAdmin?'\n\n'+(G?'## RBAC（ロールベースアクセス制御）':'## RBAC (Role-Based Access Control)')+'\n\n| '+(G?'ロール':'Role')+' | '+(G?'権限':'Permissions')+' |\n|--------|----------|\n| user | '+(G?'自分のデータの読取・更新':'Read/update own data')+' |\n'+(hasInstructor?'| instructor | '+(G?'コンテンツ作成・編集・自分の受講者管理':'Create/edit content, manage own students')+' |\n':'')+'| admin | '+(G?'全データの読取・更新・削除、ユーザー管理、システム設定':'Full CRUD, user management, system settings')+' |\n\n'+(G?'### RBACポリシー実装':'### RBAC Policy Implementation')+'\n- profiles.role '+(G?'カラムでロール管理':'column for role management')+'\n- '+(arch.isBaaS&&be.includes('Supabase')?'RLS: auth.uid() = user_id AND role check via profiles':'Middleware: role check before protected routes')+'\n- '+(G?'管理画面ルート':'Admin routes')+': /admin/ → role=admin '+(G?'チェック必須':'check required'):''}${hasPay&&(a.payment||'').includes('Stripe')?'\n\n'+(G?'## 決済セキュリティ':'## Payment Security')+'\n- Stripe Webhook '+(G?'署名検証':'signature verification')+' (STRIPE_WEBHOOK_SECRET)\n- '+(G?'冪等キーによる重複処理防止':'Idempotency key for duplicate prevention')+'\n- PCI DSS '+(G?'準拠':'compliance')+' (Stripe Elements '+(G?'使用で対応':'handles this')+')\n- '+(G?'サーバーサイドのみで':'Server-side only for')+' stripe.customers / stripe.subscriptions '+(G?'操作':'operations'):''}\n\n${G?'## CSPヘッダー設定例':'## CSP Header Examples'}\n\n${cspExamples}\n\n${G?'## CORS設定例':'## CORS Configuration Examples'}\n\n${corsExamples}\n\n${G?'## レート制限実装例':'## Rate Limiting Implementation'}\n\n${rateLimitExamples}`],
@@ -33659,7 +33785,7 @@ doc+='> **Vercel**: Preview → Production is one-click promotion via Dashboard 
 } else if(_isRailway117){
 doc+='> **Railway**: Staging service → Production service via `railway up --environment production`\n';
 } else if(_isAWS117){
-doc+='> **AWS**: CodePipeline stagingステージ → manualApproval → productionステージ\n';
+doc+=G?'> **AWS**: CodePipeline stagingステージ → manualApproval → productionステージ\n':'> **AWS**: CodePipeline staging stage → manualApproval → production stage\n';
 }
 doc+='\n## '+(G?'クロスリファレンス':'Cross Reference')+'\n';
 doc+='- docs/116_estimation_prerequisites.md — '+(G?'技術前提条件':'Technical prerequisites')+'\n';
@@ -33673,8 +33799,8 @@ const _feats=(stripPri(a.mvp_features)||(G?'CRUD操作':'CRUD')).split(', ').fil
 const _scrs=(stripPri(a.screens)||(G?'ダッシュボード':'Dashboard')).split(', ').filter(Boolean);
 const _ents=(stripPri(a.data_entities)||'User').split(/[,、]\s*/).map(e=>e.trim()).filter(Boolean);
 // SLA defaults by deploy target
-const _slaMap={'Vercel':{avail:'99.99%',rto:'5分/5m',rpo:'0',support:'コミュニティ/community'},'Firebase Hosting':{avail:'99.95%',rto:'10分/10m',rpo:'0',support:'Google support'},'Railway':{avail:'99.9%',rto:'15分/15m',rpo:'1h',support:'Railway Discord'},'Fly.io':{avail:'99.9%',rto:'10分/10m',rpo:'1h',support:'Fly.io community'},'AWS':{avail:'99.99%',rto:'5分/5m',rpo:'1h',support:'AWS Support'},'Cloudflare':{avail:'99.99%',rto:'5分/5m',rpo:'0',support:'Cloudflare support'},'Netlify':{avail:'99.99%',rto:'5分/5m',rpo:'0',support:'Netlify support'}};
-const _sla=_slaMap[deployTarget]||_slaMap[Object.keys(_slaMap).find(k=>deployTarget.includes(k))]||{avail:'99.9%',rto:'15分/15m',rpo:'1h',support:'ベンダー/vendor'};
+const _slaMap={'Vercel':{avail:'99.99%',rto:'5分/5m',rpo:'0',support:G?'コミュニティ/community':'Community'},'Firebase Hosting':{avail:'99.95%',rto:'10分/10m',rpo:'0',support:'Google support'},'Railway':{avail:'99.9%',rto:'15分/15m',rpo:'1h',support:'Railway Discord'},'Fly.io':{avail:'99.9%',rto:'10分/10m',rpo:'1h',support:'Fly.io community'},'AWS':{avail:'99.99%',rto:'5分/5m',rpo:'1h',support:'AWS Support'},'Cloudflare':{avail:'99.99%',rto:'5分/5m',rpo:'0',support:'Cloudflare support'},'Netlify':{avail:'99.99%',rto:'5分/5m',rpo:'0',support:'Netlify support'}};
+const _sla=_slaMap[deployTarget]||_slaMap[Object.keys(_slaMap).find(k=>deployTarget.includes(k))]||{avail:'99.9%',rto:'15分/15m',rpo:'1h',support:G?'ベンダー/vendor':'Vendor'};
 // Deploy-specific ops checks
 const _deployOps={'Vercel':[G?'Vercel Analyticsダッシュボード確認':'Check Vercel Analytics dashboard',G?'Edge Functions エラーレート監視':'Monitor Edge Functions error rate',G?'Deployment Protection設定確認':'Verify Deployment Protection config'],'Railway':[G?'Railway Metrics CPU/メモリ確認':'Check Railway Metrics CPU/memory',G?'PostgreSQL接続プール使用率監視':'Monitor PostgreSQL connection pool usage',G?'Railway sleeping設定確認':'Check Railway sleeping settings'],'AWS':[G?'CloudWatch Logs確認':'Check CloudWatch Logs',G?'RDS Performance Insights確認':'Review RDS Performance Insights',G?'Cost Explorer予算アラート確認':'Verify Cost Explorer budget alerts'],'Cloudflare':[G?'Workers Analytics確認':'Check Workers Analytics',G?'D1/KV使用量確認':'Monitor D1/KV usage',G?'ゼロトラストポリシー確認':'Review Zero Trust policies']};
 const _dops=_deployOps[deployTarget]||_deployOps[Object.keys(_deployOps).find(k=>deployTarget&&k&&deployTarget.includes(k))]||[G?'デプロイログ確認':'Check deployment logs',G?'エラーレート監視':'Monitor error rate',G?'ストレージ使用量確認':'Monitor storage usage'];
@@ -34089,8 +34215,8 @@ d+=(G
 d+='#### '+(G?'段階的スケーリングロードマップ':'Incremental Scaling Roadmap')+'\n\n';
 d+='| '+(G?'フェーズ':'Phase')+' | '+(G?'構成':'Config')+' | '+(G?'目安QPS':'Target QPS')+' | '+(G?'主な作業':'Key Tasks')+' |\n|------|------|------|------|\n';
 d+='| Phase 1 | Leader + Read Replica ×2 + PgBouncer | ~2,000 QPS | '+(G?'Replica追加・コネクションプール設定':'Add replica, configure connection pool')+' |\n';
-d+='| Phase 2 | Phase 1 + Redis Cluster (L2キャッシュ) | ~10,000 QPS | '+(G?'キャッシュ層追加・TTL設計':'Add cache layer, TTL design')+' |\n';
-d+='| Phase 3 | Phase 2 + Hash Sharding ('+_shardKey+'ベース) | ~50,000 QPS | '+(G?'シャードキー設計・アプリ改修':'Shard key design, app refactor')+' |\n';
+d+='| Phase 2 | Phase 1 + Redis Cluster ('+(G?'L2キャッシュ':'L2 cache')+') | ~10,000 QPS | '+(G?'キャッシュ層追加・TTL設計':'Add cache layer, TTL design')+' |\n';
+d+='| Phase 3 | Phase 2 + Hash Sharding ('+_shardKey+(G?'ベース':'-based')+') | ~50,000 QPS | '+(G?'シャードキー設計・アプリ改修':'Shard key design, app refactor')+' |\n';
 d+='| Phase 4 | Phase 3 + Multi-Region + CQRS | 100,000+ QPS | '+(G?'リージョン分散・読み書き分離':'Regional distribution, read-write split')+' |\n\n';
 d+='#### '+(G?'競合解決戦略 (Leader-Leader / 分散書き込み時)':'Conflict Resolution (Leader-Leader / Distributed Writes)')+'\n\n';
 d+='| '+(G?'戦略':'Strategy')+' | '+(G?'仕組み':'Mechanism')+' | '+(G?'適用シーン':'Use Case')+' | '+(G?'注意点':'Caveat')+' |\n|------|------|------|------|\n';
@@ -34325,10 +34451,10 @@ d+='### '+(G?'Read-Check-Write Gap 問題':'Read-Check-Write Gap Problem')+'\n\n
 d+='```\n'+(G?'ユーザーA: 在庫読取(残1) ─────────────────── 予約書込(残0)\nユーザーB:          在庫読取(残1) ── 予約書込(残0) ← 二重予約！':'User A: Read stock(1) ──────────────────── Write booking(0)\nUser B:          Read stock(1) ── Write booking(0) ← Double booking!')+'\n```\n\n';
 d+='### '+(G?'楽観的ロック (Optimistic Lock)':'Optimistic Locking')+'\n\n';
 d+=(G?'読取→変更→書込のフローで、書込時に競合を検出する。Read-Heavy なシステムに最適。':'Detect conflicts at write time in read-change-write flow. Best for read-heavy systems.')+'\n\n';
-d+='```typescript\n// Prisma: version フィールドで楽観的ロック\nawait prisma.item.update({\n  where: { id: itemId, version: currentVersion }, // version不一致 → エラー\n  data: { stock: newStock, version: { increment: 1 } },\n});\n```\n\n';
+d+='```typescript\n// '+(G?'Prisma: version フィールドで楽観的ロック':'Prisma: optimistic locking with version field')+'\nawait prisma.item.update({\n  where: { id: itemId, version: currentVersion }, // '+(G?'version不一致 → エラー':'version mismatch → error')+'\n  data: { stock: newStock, version: { increment: 1 } },\n});\n```\n\n';
 d+='### '+(G?'悲観的ロック (Pessimistic Lock)':'Pessimistic Locking')+'\n\n';
 d+=(G?'読取時にロックを取得し、他のトランザクションをブロックする。Write-Heavy・金融系に最適。':'Acquire lock at read time to block other transactions. Best for write-heavy and financial systems.')+'\n\n';
-d+='```sql\nBEGIN;\nSELECT * FROM inventory WHERE id = $1 FOR UPDATE; -- 他TXをブロック\nUPDATE inventory SET stock = stock - 1 WHERE id = $1;\nINSERT INTO bookings (item_id, user_id) VALUES ($1, $2);\nCOMMIT;\n```\n\n';
+d+='```sql\nBEGIN;\nSELECT * FROM inventory WHERE id = $1 FOR UPDATE; -- '+(G?'他TXをブロック':'blocks other TXs')+'\nUPDATE inventory SET stock = stock - 1 WHERE id = $1;\nINSERT INTO bookings (item_id, user_id) VALUES ($1, $2);\nCOMMIT;\n```\n\n';
 d+='### '+(G?'選定チャート':'Selection Chart')+'\n\n';
 d+='| '+(G?'シナリオ':'Scenario')+' | '+(G?'推奨アプローチ':'Recommended Approach')+' |\n|---------|--------------------|\n';
 d+='| '+(G?'読取多・書込少 (SNS、ブログ)':'Read-heavy, write-light (SNS, blog)')+' | '+(G?'楽観的ロック + version カラム':'Optimistic lock + version column')+' |\n';
@@ -34462,14 +34588,14 @@ d+='### '+(G?'Feature-based ディレクトリ構造 (推奨)':'Feature-based Di
 d+='```\nsrc/\n  features/\n    auth/\n      components/   '+(G?'# UI コンポーネント':'# UI components')+'\n      hooks/        '+(G?'# カスタムフック (React)':'# Custom hooks (React)')+'\n      api/          '+(G?'# API呼び出し':'# API calls')+'\n      types.ts\n    dashboard/\n    products/\n  shared/\n    ui/             '+(G?'# 汎用UIコンポーネント':'# Shared UI components')+'\n    utils/\n```\n\n';
 if(isReact){
 d+='### '+(G?'Custom Hooks でロジック分離':'Custom Hooks for Logic Separation')+'\n\n';
-d+='```tsx\n// NG: コンポーネントに直接ロジック\nfunction ProductPage() { /* 20行のfetch/state管理ロジック */ }\n\n// OK: hooks でロジック分離\nfunction useProduct(id: string) {\n  const { data, isLoading } = useQuery([\'product\', id], () => fetchProduct(id));\n  return { product: data, isLoading };\n}\nfunction ProductPage({ id }: { id: string }) {\n  const { product, isLoading } = useProduct(id);\n  return isLoading ? <Skeleton /> : <ProductView product={product} />;\n}\n```\n\n';
+d+='```tsx\n// NG: '+(G?'コンポーネントに直接ロジック':'logic directly in component')+'\nfunction ProductPage() { /* '+(G?'20行のfetch/state管理ロジック':'20 lines of fetch/state management logic')+' */ }\n\n// OK: '+(G?'hooks でロジック分離':'separate logic into hooks')+'\nfunction useProduct(id: string) {\n  const { data, isLoading } = useQuery([\'product\', id], () => fetchProduct(id));\n  return { product: data, isLoading };\n}\nfunction ProductPage({ id }: { id: string }) {\n  const { product, isLoading } = useProduct(id);\n  return isLoading ? <Skeleton /> : <ProductView product={product} />;\n}\n```\n\n';
 }
 // §5 Frontend Security
 d+='## '+(G?'§5 フロントエンドセキュリティ':'§5 Frontend Security')+'\n\n';
 d+='### CSP (Content Security Policy)\n\n';
 d+='```http\nContent-Security-Policy:\n  default-src \'self\';\n  script-src \'self\' \'nonce-{RANDOM}\';\n  style-src \'self\' \'unsafe-inline\';\n  img-src \'self\' data: https:;\n  connect-src \'self\' https://api.example.com\n```\n\n';
 d+='### '+(G?'XSS防止 (DOMPurify)':'XSS Prevention (DOMPurify)')+'\n\n';
-d+='```typescript\n// NG: innerHTML でユーザー入力レンダリング\nelement.innerHTML = userInput;\n\n// OK: DOMPurify でサニタイズ\nimport DOMPurify from \'dompurify\';\nelement.innerHTML = DOMPurify.sanitize(userInput);\n```\n\n';
+d+='```typescript\n// NG: '+(G?'innerHTML でユーザー入力レンダリング':'rendering user input via innerHTML')+'\nelement.innerHTML = userInput;\n\n// OK: '+(G?'DOMPurify でサニタイズ':'sanitize with DOMPurify')+'\nimport DOMPurify from \'dompurify\';\nelement.innerHTML = DOMPurify.sanitize(userInput);\n```\n\n';
 if(hasPay){
 d+='### '+(G?'決済フロントエンド追加対策 (PCI DSS)':'Payment Frontend Measures (PCI DSS)')+'\n\n';
 d+='| '+(G?'対策':'Measure')+' | '+(G?'実装':'Implementation')+' | '+(G?'目的':'Purpose')+' |\n|------|---------|------|\n';
@@ -34560,15 +34686,15 @@ d+='> '+(G?'生成日':'Generated')+': '+new Date().toISOString().split('T')[0]+
 d+='## '+(G?'1. 適用規制フレームワーク':'1. Applicable Regulatory Framework')+'\n\n';
 d+='| '+(G?'規制':'Regulation')+' | '+(G?'適用地域':'Region')+' | '+(G?'主要要件':'Key Requirements')+' | '+(G?'ペナルティ':'Penalty')+' |\n';
 d+='|------|--------|----------|----------|\n';
-d+='| HIPAA | USA | PHI保護・アクセス制御・監査ログ | $100〜$50,000/件 |\n';
-d+='| GDPR | EU/EEA | 個人データ同意・削除権・DPA | 年収4%/€2,000万 |\n';
-d+='| 医療法 | 日本 | 電子カルテ・診療記録5年保存 | 業務停止 |\n';
-d+='| HL7 FHIR | 国際 | 標準医療データ交換フォーマット | — |\n\n';
+d+=G?'| HIPAA | USA | PHI保護・アクセス制御・監査ログ | $100〜$50,000/件 |\n':'| HIPAA | USA | PHI protection, access control, audit logs | $100–$50,000 per violation |\n';
+d+=G?'| GDPR | EU/EEA | 個人データ同意・削除権・DPA | 年収4%/€2,000万 |\n':'| GDPR | EU/EEA | Personal data consent, right to erasure, DPA | 4% of annual revenue / €20M |\n';
+d+=G?'| 医療法 | 日本 | 電子カルテ・診療記録5年保存 | 業務停止 |\n':'| Medical Care Act (JP) | Japan | Electronic medical records, 5-year retention of clinical records | Business suspension |\n';
+d+=G?'| HL7 FHIR | 国際 | 標準医療データ交換フォーマット | — |\n\n':'| HL7 FHIR | International | Standard healthcare data exchange format | — |\n\n';
 d+='## '+(G?'2. PHI（保護医療情報）管理':'2. PHI (Protected Health Information) Management')+'\n\n';
 d+='### '+(G?'データ分類':'Data Classification')+'\n';
-d+='- **PHI (高)**: 氏名+診断名+処方薬 → AES-256暗号化必須\n';
-d+='- **PHI (中)**: 年齢+性別+地域 → 仮名化推奨\n';
-d+='- **非PHI**: 匿名統計データ → 標準保護\n\n';
+d+=G?'- **PHI (高)**: 氏名+診断名+処方薬 → AES-256暗号化必須\n':'- **PHI (High)**: Name + diagnosis + prescriptions → AES-256 encryption required\n';
+d+=G?'- **PHI (中)**: 年齢+性別+地域 → 仮名化推奨\n':'- **PHI (Medium)**: Age + gender + region → pseudonymization recommended\n';
+d+=G?'- **非PHI**: 匿名統計データ → 標準保護\n\n':'- **Non-PHI**: Anonymized statistical data → standard protection\n\n';
 d+='### '+(G?'実装チェックリスト':'Implementation Checklist')+'\n';
 d+='- [ ] '+(G?'保存時暗号化 (AES-256 / TDE)':'Encryption at rest (AES-256 / TDE)')+'\n';
 d+='- [ ] '+(G?'転送時暗号化 (TLS 1.3)':'Encryption in transit (TLS 1.3)')+'\n';
@@ -34580,20 +34706,20 @@ d+='- [ ] '+(G?'定期リスクアセスメント (年1回以上)':'Regular risk
 d+='## '+(G?'3. 医療システムセキュリティ設計':'3. Healthcare System Security Design')+'\n\n';
 d+='```\n';
 d+=(G?'患者データフロー（最小化原則）':'Patient Data Flow (Minimization Principle)')+'\n';
-d+='UI Layer     → 表示前にPHIマスキング適用\n';
-d+='API Layer    → エンドポイント別アクセス制御 (RBAC)\n';
-d+='Service Layer→ PHI処理ログ自動記録\n';
-d+='DB Layer     → 列レベル暗号化 + RLS\n';
-d+='Backup Layer → 暗号化バックアップ + 保持期間ポリシー\n';
+d+=G?'UI Layer     → 表示前にPHIマスキング適用\n':'UI Layer     → Apply PHI masking before display\n';
+d+=G?'API Layer    → エンドポイント別アクセス制御 (RBAC)\n':'API Layer    → Per-endpoint access control (RBAC)\n';
+d+=G?'Service Layer→ PHI処理ログ自動記録\n':'Service Layer→ Automatic PHI processing logs\n';
+d+=G?'DB Layer     → 列レベル暗号化 + RLS\n':'DB Layer     → Column-level encryption + RLS\n';
+d+=G?'Backup Layer → 暗号化バックアップ + 保持期間ポリシー\n':'Backup Layer → Encrypted backups + retention policy\n';
 d+='```\n\n';
 d+='## '+(G?'4. インシデント対応計画':'4. Incident Response Plan')+'\n\n';
 d+='| '+(G?'フェーズ':'Phase')+' | '+(G?'アクション':'Action')+' | '+(G?'期限':'Deadline')+' |\n';
 d+='|--------|----------|------|\n';
-d+='| 検知 | 異常アクセスアラート → SOC通知 | 即時 |\n';
-d+='| 封じ込め | 影響システム隔離・証拠保全 | 1時間以内 |\n';
-d+='| 通知 | 監督機関・患者通知 | 72時間以内 |\n';
-d+='| 復旧 | バックアップ復元・脆弱性修正 | 24〜48時間 |\n';
-d+='| 再発防止 | RCA・セキュリティ強化 | 30日以内 |\n\n';
+d+=G?'| 検知 | 異常アクセスアラート → SOC通知 | 即時 |\n':'| Detection | Anomalous access alert → SOC notification | Immediate |\n';
+d+=G?'| 封じ込め | 影響システム隔離・証拠保全 | 1時間以内 |\n':'| Containment | Isolate affected systems, preserve evidence | Within 1 hour |\n';
+d+=G?'| 通知 | 監督機関・患者通知 | 72時間以内 |\n':'| Notification | Notify regulators & patients | Within 72 hours |\n';
+d+=G?'| 復旧 | バックアップ復元・脆弱性修正 | 24〜48時間 |\n':'| Recovery | Restore from backup, patch vulnerabilities | 24–48 hours |\n';
+d+=G?'| 再発防止 | RCA・セキュリティ強化 | 30日以内 |\n\n':'| Prevention | RCA & security hardening | Within 30 days |\n\n';
 d+='> '+(G?'参照':'See also')+': docs/121_security_design_guide.md | docs/44_threat_model.md | docs/45_compliance_matrix.md';
 S.files['docs/125_healthcare_compliance_guide.md']=d;
 })();}}
@@ -34605,38 +34731,38 @@ d+='> '+(G?'生成日':'Generated')+': '+new Date().toISOString().split('T')[0]+
 d+='## '+(G?'1. 不正パターン分類':'1. Fraud Pattern Classification')+'\n\n';
 d+='| '+(G?'不正種別':'Fraud Type')+' | '+(G?'説明':'Description')+' | '+(G?'検知手法':'Detection Method')+' |\n';
 d+='|----------|------|----------|\n';
-d+='| カード不正利用 | 盗難カード・番号詐取 | Velocity Check + IP地理フィルタ |\n';
-d+='| アカウント乗っ取り (ATO) | 認証情報窃取・不正ログイン | デバイスフィンガープリント + MFA |\n';
-d+='| 資金洗浄 (AML) | 不正資金隠匿・多段転送 | トランザクション監視 + CTF報告 |\n';
-d+='| フィッシング | 偽サイト・メール詐欺 | CSP + DMARC + 教育 |\n';
-d+='| インサイダー脅威 | 内部者による不正操作 | AuditLog + 異常行動検知 |\n\n';
+d+=G?'| カード不正利用 | 盗難カード・番号詐取 | Velocity Check + IP地理フィルタ |\n':'| Card fraud | Stolen cards, number theft | Velocity check + IP geolocation filter |\n';
+d+=G?'| アカウント乗っ取り (ATO) | 認証情報窃取・不正ログイン | デバイスフィンガープリント + MFA |\n':'| Account takeover (ATO) | Credential theft, unauthorized login | Device fingerprinting + MFA |\n';
+d+=G?'| 資金洗浄 (AML) | 不正資金隠匿・多段転送 | トランザクション監視 + CTF報告 |\n':'| Money laundering (AML) | Illicit fund concealment, multi-hop transfers | Transaction monitoring + CTF reporting |\n';
+d+=G?'| フィッシング | 偽サイト・メール詐欺 | CSP + DMARC + 教育 |\n':'| Phishing | Fake sites, email scams | CSP + DMARC + user education |\n';
+d+=G?'| インサイダー脅威 | 内部者による不正操作 | AuditLog + 異常行動検知 |\n\n':'| Insider threat | Fraudulent operations by insiders | AuditLog + anomalous behavior detection |\n\n';
 d+='## '+(G?'2. リアルタイム不正検知アーキテクチャ':'2. Real-Time Fraud Detection Architecture')+'\n\n';
 d+='```\n';
-d+='決済リクエスト\n';
+d+=G?'決済リクエスト\n':'Payment request\n';
 d+='    ↓\n';
-d+='[L1] ルールエンジン (< 50ms)\n';
-d+='  • Velocity Check (同一カード 5回/分)\n';
-d+='  • 金額閾値 (¥500,000超→要確認)\n';
-d+='  • ブラックリスト照合\n';
+d+=G?'[L1] ルールエンジン (< 50ms)\n':'[L1] Rule engine (< 50ms)\n';
+d+=G?'  • Velocity Check (同一カード 5回/分)\n':'  • Velocity check (same card 5x/min)\n';
+d+=G?'  • 金額閾値 (¥500,000超→要確認)\n':'  • Amount threshold (>¥500,000 → manual review)\n';
+d+=G?'  • ブラックリスト照合\n':'  • Blacklist matching\n';
 d+='    ↓\n';
-d+='[L2] MLスコアリング (< 200ms)\n';
-d+='  • 行動バイオメトリクス\n';
-d+='  • デバイスフィンガープリント\n';
-d+='  • 地理的異常検知\n';
+d+=G?'[L2] MLスコアリング (< 200ms)\n':'[L2] ML scoring (< 200ms)\n';
+d+=G?'  • 行動バイオメトリクス\n':'  • Behavioral biometrics\n';
+d+=G?'  • デバイスフィンガープリント\n':'  • Device fingerprinting\n';
+d+=G?'  • 地理的異常検知\n':'  • Geographic anomaly detection\n';
 d+='    ↓\n';
-d+='[L3] 人間レビュー (高リスクのみ)\n';
-d+='  • フラグ付きトランザクション\n';
-d+='  • チャージバック分析\n';
+d+=G?'[L3] 人間レビュー (高リスクのみ)\n':'[L3] Human review (high-risk only)\n';
+d+=G?'  • フラグ付きトランザクション\n':'  • Flagged transactions\n';
+d+=G?'  • チャージバック分析\n':'  • Chargeback analysis\n';
 d+='```\n\n';
 d+='## '+(G?'3. PCI DSS 要件チェックリスト':'3. PCI DSS Requirements Checklist')+'\n\n';
 d+='| '+(G?'要件':'Requirement')+' | '+(G?'内容':'Description')+' | '+(G?'対応':'Action')+' |\n';
 d+='|------|------|------|\n';
-d+='| Req 3 | カードデータ保護 | トークン化 (never store PAN) |\n';
-d+='| Req 4 | 転送時暗号化 | TLS 1.3 専用エンドポイント |\n';
-d+='| Req 6 | セキュア開発 | SAST/DAST + 定期ペンテスト |\n';
-d+='| Req 7 | アクセス制御 | 最小権限 + MFA |\n';
-d+='| Req 10 | ログ監視 | 監査ログ + SIEM連携 |\n';
-d+='| Req 12 | 情報セキュリティポリシー | 年次レビュー + 訓練 |\n\n';
+d+=G?'| Req 3 | カードデータ保護 | トークン化 (never store PAN) |\n':'| Req 3 | Cardholder data protection | Tokenization (never store PAN) |\n';
+d+=G?'| Req 4 | 転送時暗号化 | TLS 1.3 専用エンドポイント |\n':'| Req 4 | Encryption in transit | TLS 1.3-only endpoints |\n';
+d+=G?'| Req 6 | セキュア開発 | SAST/DAST + 定期ペンテスト |\n':'| Req 6 | Secure development | SAST/DAST + periodic pentests |\n';
+d+=G?'| Req 7 | アクセス制御 | 最小権限 + MFA |\n':'| Req 7 | Access control | Least privilege + MFA |\n';
+d+=G?'| Req 10 | ログ監視 | 監査ログ + SIEM連携 |\n':'| Req 10 | Log monitoring | Audit logs + SIEM integration |\n';
+d+=G?'| Req 12 | 情報セキュリティポリシー | 年次レビュー + 訓練 |\n\n':'| Req 12 | InfoSec policy | Annual review + training |\n\n';
 d+='## '+(G?'4. Stripe Radar 活用パターン':'4. Stripe Radar Usage Patterns')+'\n\n';
 d+='```javascript\n// Stripe Radar custom rule example\n';
 d+="// Block high-risk countries for large amounts\n// Rule: block_if :amount_in_usd: > 1000 AND :ip_country: IN ['XX', 'YY']\n\n";
@@ -34652,42 +34778,42 @@ let d='# '+(G?'製造業 IoT・Industry 4.0 統合ガイド':'Manufacturing IoT 
 d+='> '+(G?'生成日':'Generated')+': '+new Date().toISOString().split('T')[0]+' | '+(G?'ドメイン':'Domain')+': manufacturing\n\n';
 d+='## '+(G?'1. Industry 4.0 アーキテクチャ':'1. Industry 4.0 Architecture')+'\n\n';
 d+='```\n';
-d+='Edge Layer     → センサー/PLC/SCADA (OPC-UA/MQTT)\n';
-d+='Fog Layer      → エッジコンピューティング (AWS Greengrass / Azure IoT Edge)\n';
-d+='Cloud Layer    → IoTプラットフォーム (AWS IoT Core / Azure IoT Hub)\n';
-d+='Application    → MES/ERP 統合 + AI分析ダッシュボード\n';
+d+=G?'Edge Layer     → センサー/PLC/SCADA (OPC-UA/MQTT)\n':'Edge Layer     → Sensors/PLC/SCADA (OPC-UA/MQTT)\n';
+d+=G?'Fog Layer      → エッジコンピューティング (AWS Greengrass / Azure IoT Edge)\n':'Fog Layer      → Edge computing (AWS Greengrass / Azure IoT Edge)\n';
+d+=G?'Cloud Layer    → IoTプラットフォーム (AWS IoT Core / Azure IoT Hub)\n':'Cloud Layer    → IoT platform (AWS IoT Core / Azure IoT Hub)\n';
+d+=G?'Application    → MES/ERP 統合 + AI分析ダッシュボード\n':'Application    → MES/ERP integration + AI analytics dashboard\n';
 d+='```\n\n';
 d+='## '+(G?'2. IoT プロトコル選定マトリクス':'2. IoT Protocol Selection Matrix')+'\n\n';
 d+='| '+(G?'プロトコル':'Protocol')+' | '+(G?'レイテンシ':'Latency')+' | '+(G?'帯域':'Bandwidth')+' | '+(G?'ユースケース':'Use Case')+' |\n';
 d+='|----------|----------|------|----------|\n';
-d+='| MQTT | 低 (< 1ms) | 低 | センサーデータ収集・設備監視 |\n';
-d+='| OPC-UA | 中 | 中 | PLC/CNC通信・安全制御 |\n';
-d+='| AMQP | 中 | 高 | エンタープライズMQ統合 |\n';
-d+='| HTTP/REST | 高 | 高 | クラウドAPI・ダッシュボード |\n';
-d+='| WebSocket | 低-中 | 中 | リアルタイムモニタリング |\n\n';
+d+=G?'| MQTT | 低 (< 1ms) | 低 | センサーデータ収集・設備監視 |\n':'| MQTT | Low (< 1ms) | Low | Sensor data collection, equipment monitoring |\n';
+d+=G?'| OPC-UA | 中 | 中 | PLC/CNC通信・安全制御 |\n':'| OPC-UA | Medium | Medium | PLC/CNC communication, safety control |\n';
+d+=G?'| AMQP | 中 | 高 | エンタープライズMQ統合 |\n':'| AMQP | Medium | High | Enterprise MQ integration |\n';
+d+=G?'| HTTP/REST | 高 | 高 | クラウドAPI・ダッシュボード |\n':'| HTTP/REST | High | High | Cloud APIs, dashboards |\n';
+d+=G?'| WebSocket | 低-中 | 中 | リアルタイムモニタリング |\n\n':'| WebSocket | Low-Med | Medium | Real-time monitoring |\n\n';
 d+='## '+(G?'3. 予知保全 (Predictive Maintenance) 設計':'3. Predictive Maintenance Design')+'\n\n';
 d+='```\n';
-d+='データ収集\n';
-d+='  振動センサー → FFT解析 → 異常振動パターン検出\n';
-d+='  温度センサー → 閾値監視 → オーバーヒート予測\n';
-d+='  電流センサー → 負荷分析 → モーター劣化予測\n\n';
-d+='MLパイプライン\n';
-d+='  生データ → 前処理/正規化 → 特徴量エンジニアリング\n';
-d+='  → Isolation Forest (異常検知) → 残寿命予測モデル\n';
-d+='  → アラート → 保全作業オーダー自動生成\n';
+d+=G?'データ収集\n':'Data collection\n';
+d+=G?'  振動センサー → FFT解析 → 異常振動パターン検出\n':'  Vibration sensor → FFT analysis → abnormal vibration pattern detection\n';
+d+=G?'  温度センサー → 閾値監視 → オーバーヒート予測\n':'  Temperature sensor → threshold monitoring → overheat prediction\n';
+d+=G?'  電流センサー → 負荷分析 → モーター劣化予測\n\n':'  Current sensor → load analysis → motor degradation prediction\n\n';
+d+=G?'MLパイプライン\n':'ML pipeline\n';
+d+=G?'  生データ → 前処理/正規化 → 特徴量エンジニアリング\n':'  Raw data → preprocessing/normalization → feature engineering\n';
+d+=G?'  → Isolation Forest (異常検知) → 残寿命予測モデル\n':'  → Isolation Forest (anomaly detection) → remaining-useful-life prediction model\n';
+d+=G?'  → アラート → 保全作業オーダー自動生成\n':'  → Alerts → auto-generate maintenance work orders\n';
 d+='```\n\n';
 d+='## '+(G?'4. セキュリティ考慮事項 (OT/IT 融合)':'4. Security Considerations (OT/IT Convergence)')+'\n\n';
-d+='- **ネットワーク分離**: OTネットワークとITネットワークのDMZ設置\n';
-d+='- **ファームウェア管理**: IoTデバイスの定期アップデート・脆弱性スキャン\n';
-d+='- **認証**: デバイス証明書 + mTLS (相互TLS)\n';
-d+='- **監査ログ**: 制御コマンドの全ログ保存 (改ざん防止)\n\n';
+d+=G?'- **ネットワーク分離**: OTネットワークとITネットワークのDMZ設置\n':'- **Network segmentation**: DMZ between OT and IT networks\n';
+d+=G?'- **ファームウェア管理**: IoTデバイスの定期アップデート・脆弱性スキャン\n':'- **Firmware management**: Regular IoT device updates & vulnerability scanning\n';
+d+=G?'- **認証**: デバイス証明書 + mTLS (相互TLS)\n':'- **Authentication**: Device certificates + mTLS (mutual TLS)\n';
+d+=G?'- **監査ログ**: 制御コマンドの全ログ保存 (改ざん防止)\n\n':'- **Audit logs**: Retain all control command logs (tamper-proof)\n\n';
 d+='## '+(G?'5. データ品質・品質管理 (QC) 統合':'5. Data Quality & Quality Control (QC) Integration')+'\n\n';
 d+='| '+(G?'KPI':'KPI')+' | '+(G?'計算式':'Formula')+' | '+(G?'目標':'Target')+' |\n';
 d+='|-----|----------|------|\n';
-d+='| OEE (設備総合効率) | 可用性×性能×品質 | ≥ 85% |\n';
-d+='| MTBF (平均故障間隔) | 稼働時間 ÷ 故障回数 | 最大化 |\n';
-d+='| MTTR (平均修理時間) | 修理時間 ÷ 故障回数 | 最小化 |\n';
-d+='| 不良率 | 不良品数 ÷ 総生産数 | < 0.1% |\n\n';
+d+=G?'| OEE (設備総合効率) | 可用性×性能×品質 | ≥ 85% |\n':'| OEE (Overall Equipment Effectiveness) | Availability × Performance × Quality | ≥ 85% |\n';
+d+=G?'| MTBF (平均故障間隔) | 稼働時間 ÷ 故障回数 | 最大化 |\n':'| MTBF (Mean Time Between Failures) | Uptime ÷ failure count | Maximize |\n';
+d+=G?'| MTTR (平均修理時間) | 修理時間 ÷ 故障回数 | 最小化 |\n':'| MTTR (Mean Time To Repair) | Repair time ÷ failure count | Minimize |\n';
+d+=G?'| 不良率 | 不良品数 ÷ 総生産数 | < 0.1% |\n\n':'| Defect rate | Defective units ÷ total production | < 0.1% |\n\n';
 d+='> '+(G?'参照':'See also')+': docs/120_system_design_guide.md | docs/103_observability_architecture.md | docs/109_cost_architecture.md';
 S.files['docs/127_manufacturing_iot_guide.md']=d;
 })();}}
@@ -34830,9 +34956,9 @@ if(prvs114&&prvs114.length){
 prvs114.slice(0,4).forEach(function(p,i){
 var parts=p.split('|対策:');if(parts.length<2)parts=p.split('|Fix: ');
 doc114+='### BR-'+(i+1).toString().padStart(2,'0')+'\n';
-doc114+='- '+(G?'条件':'Condition')+': もし `'+parts[0].trim()+'` が発生したならば\n';
-doc114+='- '+(G?'アクション':'Action')+': '+(parts[1]?parts[1].trim():'（要定義）')+'\n';
-doc114+='- '+(G?'受入基準':'AC')+': （Givenー前提 / Whenーアクション / Thenー期待結果 を記入）\n\n';
+doc114+='- '+(G?'条件':'Condition')+': '+(G?'もし':'If')+' `'+parts[0].trim()+'` '+(G?'が発生したならば':'occurs, then')+'\n';
+doc114+='- '+(G?'アクション':'Action')+': '+(parts[1]?parts[1].trim():(G?'（要定義）':'(to be defined)'))+'\n';
+doc114+='- '+(G?'受入基準':'AC')+': '+(G?'（Givenー前提 / Whenーアクション / Thenー期待結果 を記入）':'(Fill in: Given = precondition / When = action / Then = expected result)')+'\n\n';
 });
 }
 } else {
@@ -36024,10 +36150,14 @@ else if(fe.includes('Astro'))devCmds.push('npm run dev','# Open http://localhost
 if(devCmds.length)steps.push({title_ja:'開発サーバー起動',title_en:'Start Dev Server',cmds:devCmds});
 // Step 8: AI tool integration
 steps.push({title_ja:'AIツールとの連携',title_en:'AI Tool Integration',
-cmds:['# 1. ZIPを展開してプロジェクトフォルダをCursor/Windsurf/Claude Codeで開く',
+cmds:(S.genLang==='ja')?['# 1. ZIPを展開してプロジェクトフォルダをCursor/Windsurf/Claude Codeで開く',
 '# 2. CLAUDE.md を読ませる (@CLAUDE.md または drag-and-drop)',
 '# 3. tasks.md の最優先タスクを実装させる',
 '# 例: "tasks.mdの最上位タスクを実装してください"',
+'# Example: "Implement the top-priority task from tasks.md"']
+:['# 1. Extract the ZIP and open the project folder in Cursor/Windsurf/Claude Code',
+'# 2. Have the AI read CLAUDE.md (@CLAUDE.md or drag-and-drop)',
+'# 3. Have it implement the top-priority task in tasks.md',
 '# Example: "Implement the top-priority task from tasks.md"']});
 return steps;
 }

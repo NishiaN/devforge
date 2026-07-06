@@ -454,10 +454,43 @@ function genPillar14_OpsIntelligence(a, pn) {
     _default: { api: '60 req/min/user', write: '30 req/min/user', alert: '閾値80% → アラート' }
   };
 
+  const rateLimitAlertsEn = {
+    fintech: '5 failed/min → temporary lock',
+    health: '3 failed → manual review',
+    education: '5 consecutive failures → cheating detection',
+    ec: '10 failed → fraud detection',
+    saas: 'rate limit exceeded → throttling',
+    booking: 'conflict detected → lock + retry',
+    iot: 'burst>200% → suspend device',
+    marketplace: 'bid anomaly → manual review',
+    travel: 'inventory conflict → extend lock',
+    ai: 'cost threshold exceeded → temporary limit',
+    analytics: 'large query → queueing',
+    collab: 'sync delay>500ms → re-establish session',
+    hr: 'payroll calculation error → immediate alert',
+    logistics: 'tracking delay>5min → warning',
+    newsletter: 'bounce rate>5% → pause sending',
+    automation: 'dead letters>1% → investigate',
+    creator: 'monetization error → immediate alert',
+    gamify: 'fraudulent points detected → temporary freeze',
+    media: 'buffering>5% → check CDN',
+    content: 'publish error → immediate notification',
+    realestate: 'duplicate listing detected → moderation',
+    legal: 'signature error → manual review',
+    event: 'duplicate ticket → immediate investigation',
+    devtool: 'error rate>1% → investigate',
+    portfolio: 'spam detected → strengthen CAPTCHA',
+    tool: 'CPU limit exceeded → queueing',
+    manufacturing: 'sensor data loss>1% → warning',
+    agriculture: 'irrigation command failure → manual review',
+    energy: 'abnormal consumption detected → immediate alert',
+    _default: 'threshold at 80% → alert'
+  };
   const limits = rateLimits[domain] || rateLimits._default;
+  const alertEn = (rateLimits[domain] && rateLimitAlertsEn[domain]) || rateLimitAlertsEn._default;
   runbook += G
     ? `- **API全体**: ${limits.api}\n- **重要操作**: ${limits.write || limits.payment || limits.diagnostic || limits.quiz || limits.checkout || limits.signup}\n- **アラート**: ${limits.alert}\n\n`
-    : `- **Overall API**: ${limits.api}\n- **Critical Operations**: ${limits.write || limits.payment || limits.diagnostic || limits.quiz || limits.checkout || limits.signup}\n- **Alerting**: ${limits.alert}\n\n`;
+    : `- **Overall API**: ${limits.api}\n- **Critical Operations**: ${limits.write || limits.payment || limits.diagnostic || limits.quiz || limits.checkout || limits.signup}\n- **Alerting**: ${alertEn}\n\n`;
 
   if (!isBaaS) {
     runbook += '```typescript\n';

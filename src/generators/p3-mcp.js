@@ -212,7 +212,7 @@ function gen132(a,pn){
 
   doc+='## §1 '+(G?'MCPアーキテクチャ概要':'MCP Architecture Overview')+'\n\n';
   doc+=(G?'Model Context Protocol (MCP) は AI エージェントとツール/データソースを安全に接続するオープンプロトコルです。':'Model Context Protocol (MCP) is an open protocol that safely connects AI agents with tools and data sources.')+'\n\n';
-  doc+='```\n'+(G?'AIクライアント':'AI Client')+'  ←──MCP──→  MCPサーバー  ←──→  データソース\n(Claude/Cursor)          (stdio/SSE)           (DB/API/FS)\n```\n\n';
+  doc+='```\n'+(G?'AIクライアント':'AI Client')+'  ←──MCP──→  '+(G?'MCPサーバー':'MCP Server')+'  ←──→  '+(G?'データソース':'Data Sources')+'\n(Claude/Cursor)          (stdio/SSE)           (DB/API/FS)\n```\n\n';
   doc+='### '+(G?'トランスポート方式':'Transport Types')+'\n';
   doc+='| '+(G?'方式':'Type')+' | '+(G?'用途':'Use Case')+' | '+(G?'特徴':'Characteristics')+'|\n';
   doc+='|---|---|---|\n';

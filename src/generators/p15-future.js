@@ -1125,7 +1125,7 @@ function gen58Ecosystem(G, domain, mkt, arch, deploy, answers) {
   const finopsArch = arch === 'baas'
     ? (G ? 'BaaS（Supabase/Firebase）: 従量課金、スケール時コスト急増リスク → コスト監視必須' : 'BaaS (Supabase/Firebase): Pay-as-you-go, risk of cost surge at scale → Cost monitoring essential')
     : (G ? 'Traditional（PostgreSQL+Express）: 固定コスト（VPS/RDS）、スケール予測容易' : 'Traditional (PostgreSQL+Express): Fixed costs (VPS/RDS), easier scale prediction');
-  doc += '**アーキテクチャ別コスト特性:**\n- ' + finopsArch + '\n\n';
+  doc += (G ? '**アーキテクチャ別コスト特性:**' : '**Cost Characteristics by Architecture:**') + '\n- ' + finopsArch + '\n\n';
 
   const finopsDeploy = deploy === 'vercel'
     ? (G ? 'Vercel/Netlify: 無料枠超過後$$$、帯域課金注意' : 'Vercel/Netlify: $$$ after free tier, watch bandwidth costs')
@@ -1134,7 +1134,7 @@ function gen58Ecosystem(G, domain, mkt, arch, deploy, answers) {
     : deploy === 'aws'
     ? (G ? 'AWS: 柔軟だが複雑、Reserved Instances/Savings Plans活用' : 'AWS: Flexible but complex, use Reserved Instances/Savings Plans')
     : (G ? 'VPS（$5-20/月）、予測可能' : 'VPS ($5-20/mo), predictable');
-  doc += '**デプロイ先別推奨:**\n- ' + finopsDeploy + '\n\n';
+  doc += (G ? '**デプロイ先別推奨:**' : '**Recommendations by Deployment Target:**') + '\n- ' + finopsDeploy + '\n\n';
 
   doc += G
     ? '**ドメイン別コストホットスポット:**\n- **analytics/ai:** データストレージ・計算量\n- **community/content:** CDN帯域\n- **marketplace/ec:** トランザクション・決済手数料\n\n'
@@ -1194,8 +1194,8 @@ function gen59Regulatory(G, domain, mkt, answers) {
     const aiRisk = ['fintech', 'health', 'legal', 'hr'].includes(domain);
     const riskLevel = aiRisk ? (G ? '高リスク' : 'High-Risk') : (G ? '限定リスク' : 'Limited Risk');
     const aiActDesc = G ? REGULATORY_HORIZON.ai_act_risk_ja : REGULATORY_HORIZON.ai_act_risk_en;
-    doc += '**AIリスク分類:** ' + riskLevel + '\n\n';
-    doc += '**該当規制:** ' + (aiRisk ? aiActDesc.high : aiActDesc.limited) + '\n\n';
+    doc += (G ? '**AIリスク分類:** ' : '**AI Risk Classification:** ') + riskLevel + '\n\n';
+    doc += (G ? '**該当規制:** ' : '**Applicable Regulation:** ') + (aiRisk ? aiActDesc.high : aiActDesc.limited) + '\n\n';
 
     if (aiRisk) {
       doc += G

@@ -73,25 +73,25 @@ var AI_RISK_TIERS=[
    en_desc:'Autonomous AI decisions affecting human rights or safety without human oversight',
    examples_ja:['社会スコアリングシステム','リアルタイム生体認証監視','司法判断の完全自動化'],
    examples_en:['Social scoring systems','Real-time biometric mass surveillance','Fully automated judicial decisions'],
-   action:'禁止'},
+   action:'禁止',action_en:'Prohibited'},
   {tier:1,level:'High-Risk',ja:'高リスク',color:'🟠',
    ja_desc:'重要インフラ・採用・信用評価・医療診断・法執行への影響',
    en_desc:'Critical infrastructure, hiring, credit, medical diagnosis, law enforcement',
    examples_ja:['医療AI診断支援','採用候補者スクリーニング','信用スコアリング','再犯リスク評価'],
    examples_en:['Medical AI diagnosis support','Hiring candidate screening','Credit scoring','Recidivism risk assessment'],
-   action:'適合性評価・人間監視・透明性開示が必要'},
+   action:'適合性評価・人間監視・透明性開示が必要',action_en:'Conformity assessment, human oversight, and transparency disclosure required'},
   {tier:2,level:'Limited',ja:'限定リスク',color:'🟡',
    ja_desc:'人間との対話を含むが意思決定に直接影響しないAI',
    en_desc:'AI interacting with humans but not directly impacting decisions',
    examples_ja:['チャットボット・バーチャルアシスタント','ディープフェイク検出','感情分析'],
    examples_en:['Chatbots & virtual assistants','Deepfake detection','Sentiment analysis'],
-   action:'透明性開示（AIであることの通知）'},
+   action:'透明性開示（AIであることの通知）',action_en:'Transparency disclosure (notify users they are interacting with AI)'},
   {tier:3,level:'Minimal',ja:'最小リスク',color:'🟢',
    ja_desc:'リスクが極めて低いAIアプリケーション',
    en_desc:'AI applications with minimal risk',
    examples_ja:['スパムフィルター','AIゲーム','在庫管理最適化'],
    examples_en:['Spam filters','AI games','Inventory optimization'],
-   action:'特別な規制なし（任意の倫理ガイドライン適用を推奨）'},
+   action:'特別な規制なし（任意の倫理ガイドライン適用を推奨）',action_en:'No specific regulation (voluntary ethics guidelines recommended)'},
 ];
 
 var RED_TEAM_ATTACKS=[
@@ -251,13 +251,13 @@ function gen128(a,pn){
   doc+='## '+(G?'§5 クロスリファレンスマップ':'§5 Cross-Reference Map')+'\n\n';
   doc+='| '+(G?'トピック':'Topic')+' | '+(G?'参照先':'Reference')+' | '+(G?'内容':'Content')+'|\n';
   doc+='|---|---|---|\n';
-  doc+='| XAI技法選定 | docs/98-2 §1 | '+(G?'SHAP/LIME/IG/Attention/Counterfactual マトリクス':'SHAP/LIME/IG/Attention/Counterfactual matrix')+' |\n';
-  doc+='| フェアネスパイプライン | docs/129 | '+(G?'バイアス検出・緩和・継続監視':'Bias detection, mitigation, continuous monitoring')+' |\n';
-  doc+='| AIガバナンス | docs/130 | '+(G?'AI審査委員会・リスク分類・ポリシー':'AI Review Board, risk classification, policy')+' |\n';
-  doc+='| モデルライフサイクル | docs/131 | '+(G?'データ来歴・ドリフト検出・再学習':'Data lineage, drift detection, retraining')+' |\n';
-  doc+='| AIランタイム監視 | docs/106-2 | '+(G?'LLMコスト・ハルシネーション・SLI/SLO':'LLM cost, hallucination, SLI/SLO')+' |\n';
-  doc+='| セキュリティ | docs/43 | '+(G?'ゼロトラストAIエージェントゲートウェイ':'Zero Trust AI Agent Gateway')+' |\n';
-  doc+='| レッドチーム | docs/131-2 | '+(G?'OWASP LLM Top 10・敵対的テスト':'OWASP LLM Top 10, adversarial testing')+' |\n\n';
+  doc+='| '+(G?'XAI技法選定':'XAI Technique Selection')+' | docs/98-2 §1 | '+(G?'SHAP/LIME/IG/Attention/Counterfactual マトリクス':'SHAP/LIME/IG/Attention/Counterfactual matrix')+' |\n';
+  doc+='| '+(G?'フェアネスパイプライン':'Fairness Pipeline')+' | docs/129 | '+(G?'バイアス検出・緩和・継続監視':'Bias detection, mitigation, continuous monitoring')+' |\n';
+  doc+='| '+(G?'AIガバナンス':'AI Governance')+' | docs/130 | '+(G?'AI審査委員会・リスク分類・ポリシー':'AI Review Board, risk classification, policy')+' |\n';
+  doc+='| '+(G?'モデルライフサイクル':'Model Lifecycle')+' | docs/131 | '+(G?'データ来歴・ドリフト検出・再学習':'Data lineage, drift detection, retraining')+' |\n';
+  doc+='| '+(G?'AIランタイム監視':'AI Runtime Monitoring')+' | docs/106-2 | '+(G?'LLMコスト・ハルシネーション・SLI/SLO':'LLM cost, hallucination, SLI/SLO')+' |\n';
+  doc+='| '+(G?'セキュリティ':'Security')+' | docs/43 | '+(G?'ゼロトラストAIエージェントゲートウェイ':'Zero Trust AI Agent Gateway')+' |\n';
+  doc+='| '+(G?'レッドチーム':'Red Team')+' | docs/131-2 | '+(G?'OWASP LLM Top 10・敵対的テスト':'OWASP LLM Top 10, adversarial testing')+' |\n\n';
 
   // v9.23 Pro: counterfactual explanation implementation (ADD-only)
   const _lv28=S.skillLv!=null?S.skillLv:(S.skill==='beginner'?1:S.skill==='pro'?5:3);
@@ -380,7 +380,7 @@ function gen130(a,pn){
   AI_RISK_TIERS.forEach(function(t){
     doc+='### '+t.color+' Tier '+t.tier+': '+(G?t.ja:t.level)+'\n\n';
     doc+='- **'+(G?'定義':'Definition')+'**: '+(G?t.ja_desc:t.en_desc)+'\n';
-    doc+='- **'+(G?'対処':'Action')+'**: '+t.action+'\n';
+    doc+='- **'+(G?'対処':'Action')+'**: '+(G?t.action:t.action_en)+'\n';
     doc+='- **'+(G?'例':'Examples')+'**: '+(G?(t.examples_ja||[]).join(', '):(t.examples_en||[]).join(', '))+'\n\n';
   });
 
@@ -396,7 +396,7 @@ function gen130(a,pn){
   }
 
   doc+='## '+(G?'§4 AI影響評価 (AIA) テンプレート':'§4 AI Impact Assessment (AIA) Template')+'\n\n';
-  doc+='```markdown\n## AI影響評価書 / AI Impact Assessment\n\n**システム名**: '+pn+'\n**評価日**: '+new Date().toISOString().split('T')[0]+'\n**評価者**: \n\n### 1. '+(G?'システム概要':'System Description')+'\n- '+(G?'目的':'Purpose')+': \n- '+(G?'対象ユーザー':'Target Users')+': \n- '+(G?'自動化レベル':'Automation Level')+': \n\n### 2. '+(G?'ステークホルダー分析':'Stakeholder Analysis')+'\n- '+(G?'直接影響者':'Direct Impacted')+': \n- '+(G?'間接影響者':'Indirect Impacted')+': \n- '+(G?'脆弱なグループ':'Vulnerable Groups')+': \n\n### 3. '+(G?'権利・自由への影響':'Rights & Freedoms Impact')+'\n- '+(G?'プライバシーリスク':'Privacy Risk')+': '+(G?'低/中/高':'Low/Med/High')+'\n- '+(G?'差別リスク':'Discrimination Risk')+': '+(G?'低/中/高':'Low/Med/High')+'\n- '+(G?'自律性の侵害':'Autonomy Infringement')+': '+(G?'なし/あり':'None/Present')+'\n\n### 4. '+(G?'データ管理':'Data Management')+'\n- '+(G?'学習データソース':'Training Data Sources')+': \n- '+(G?'保護属性の処理':'Protected Attribute Handling')+': \n- '+(G?'データ保持期間':'Data Retention')+': \n\n### 5. '+(G?'アルゴリズム透明性':'Algorithm Transparency')+'\n- '+(G?'モデルタイプ':'Model Type')+': \n- '+(G?'説明可能性手法':'Explainability Method')+': \n- '+(G?'人間監視メカニズム':'Human Oversight Mechanism')+': \n\n### 6. '+(G?'リスク緩和策':'Risk Mitigation')+'\n- [ ] '+(G?'フェアネスメトリクス監視 (docs/129)':'Fairness metrics monitoring (docs/129)')+'\n- [ ] '+(G?'ドリフト検出 (docs/131)':'Drift detection (docs/131)')+'\n- [ ] '+(G?'インシデント対応計画 (docs/34)':'Incident response plan (docs/34)')+'\n\n### 7. '+(G?'承認':'Sign-off')+'\n- '+(G?'承認者':'Approved By')+': \n- '+(G?'承認日':'Date')+': \n- '+(G?'次回見直し':'Next Review')+': \n```\n\n';
+  doc+='```markdown\n'+(G?'## AI影響評価書 / AI Impact Assessment':'## AI Impact Assessment')+'\n\n**'+(G?'システム名':'System Name')+'**: '+pn+'\n**'+(G?'評価日':'Assessment Date')+'**: '+new Date().toISOString().split('T')[0]+'\n**'+(G?'評価者':'Assessor')+'**: \n\n### 1. '+(G?'システム概要':'System Description')+'\n- '+(G?'目的':'Purpose')+': \n- '+(G?'対象ユーザー':'Target Users')+': \n- '+(G?'自動化レベル':'Automation Level')+': \n\n### 2. '+(G?'ステークホルダー分析':'Stakeholder Analysis')+'\n- '+(G?'直接影響者':'Direct Impacted')+': \n- '+(G?'間接影響者':'Indirect Impacted')+': \n- '+(G?'脆弱なグループ':'Vulnerable Groups')+': \n\n### 3. '+(G?'権利・自由への影響':'Rights & Freedoms Impact')+'\n- '+(G?'プライバシーリスク':'Privacy Risk')+': '+(G?'低/中/高':'Low/Med/High')+'\n- '+(G?'差別リスク':'Discrimination Risk')+': '+(G?'低/中/高':'Low/Med/High')+'\n- '+(G?'自律性の侵害':'Autonomy Infringement')+': '+(G?'なし/あり':'None/Present')+'\n\n### 4. '+(G?'データ管理':'Data Management')+'\n- '+(G?'学習データソース':'Training Data Sources')+': \n- '+(G?'保護属性の処理':'Protected Attribute Handling')+': \n- '+(G?'データ保持期間':'Data Retention')+': \n\n### 5. '+(G?'アルゴリズム透明性':'Algorithm Transparency')+'\n- '+(G?'モデルタイプ':'Model Type')+': \n- '+(G?'説明可能性手法':'Explainability Method')+': \n- '+(G?'人間監視メカニズム':'Human Oversight Mechanism')+': \n\n### 6. '+(G?'リスク緩和策':'Risk Mitigation')+'\n- [ ] '+(G?'フェアネスメトリクス監視 (docs/129)':'Fairness metrics monitoring (docs/129)')+'\n- [ ] '+(G?'ドリフト検出 (docs/131)':'Drift detection (docs/131)')+'\n- [ ] '+(G?'インシデント対応計画 (docs/34)':'Incident response plan (docs/34)')+'\n\n### 7. '+(G?'承認':'Sign-off')+'\n- '+(G?'承認者':'Approved By')+': \n- '+(G?'承認日':'Date')+': \n- '+(G?'次回見直し':'Next Review')+': \n```\n\n';
 
   doc+='## '+(G?'§5 責任あるAIポリシーテンプレート (スケール適応)':'§5 Responsible AI Policy Template (Scale-adaptive)')+'\n\n';
   if(scale==='solo'){
@@ -514,7 +514,7 @@ function gen131_2(a,pn){
   doc+='| '+(G?'役割':'Role')+' | '+(G?'担当':'Responsibility')+' | '+(G?'必須':'Required')+'|\n';
   doc+='|---|---|---|\n';
   doc+='| Red Team Lead | '+(G?'テスト計画・スコープ定義・レポート作成':'Test plan, scope definition, reporting')+' | ✅ |\n';
-  doc+='| '+(G?'ドメイン専門家':'Domain Expert')+' | '+(G?xd.isHighRisk?'医療/金融/法務の規制知識とリスク特定':'Domain-specific risk identification and regulatory knowledge':'ドメイン固有のリスク特定')+' | '+(xd.isHighRisk?'✅':G?'推奨':'Recommended')+' |\n';
+  doc+='| '+(G?'ドメイン専門家':'Domain Expert')+' | '+(G?(xd.isHighRisk?'医療/金融/法務の規制知識とリスク特定':'Domain-specific risk identification and regulatory knowledge'):(xd.isHighRisk?'Medical/financial/legal regulatory knowledge and risk identification':'Domain-specific risk identification'))+' | '+(xd.isHighRisk?'✅':G?'推奨':'Recommended')+' |\n';
   doc+='| '+(G?'セキュリティエンジニア':'Security Engineer')+' | '+(G?'テクニカルアタック実行・ツール操作':'Execute technical attacks, operate tools')+' | ✅ |\n';
   doc+='| '+(G?'社会科学者/倫理専門家':'Social Scientist/Ethicist')+' | '+(G?'バイアス・差別・心理的ハームの評価':'Evaluate bias, discrimination, psychological harms')+' | '+(G?'推奨':'Recommended')+' |\n\n';
 

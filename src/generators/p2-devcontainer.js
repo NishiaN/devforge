@@ -307,7 +307,7 @@ function genPillar2_DevContainer(a,pn){
   cl.push(G?'### G2: シークレットスキャン':'### G2: Secret Scan');
   cl.push('```bash');
   cl.push('gitleaks detect --source=. --no-git');
-  cl.push('# または / or: git-secrets --scan');
+  cl.push(G?'# または / or: git-secrets --scan':'# or: git-secrets --scan');
   cl.push('```');
   cl.push(G?'- APIキー/トークン/パスワードがコードに混入していないか確認':'- Verify no API keys, tokens, or passwords in source code');
   cl.push(G?'- `.env*` ファイルが `.gitignore` に含まれているか確認':'- Verify `.env*` files are in `.gitignore`','');

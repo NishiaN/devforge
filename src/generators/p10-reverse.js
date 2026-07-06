@@ -819,8 +819,11 @@ function _genDoc41(G, domain, a, pn) {
   });
   doc+='\n'+(G?'**総合スタックスコア**: ':'**Overall Stack Score**: ')+syn.overall+'/100\n\n';
 
-  // Compat warnings
+  // Compat warnings — checkCompat picks msg language from S.lang, so align it with genLang for the call
+  const _prevLang=S.lang;
+  S.lang=G?'ja':'en';
   const cw=checkCompat(a);
+  S.lang=_prevLang;
   if(cw.length>0){
     doc+='### '+(G?'互換性アラート':'Compatibility Alerts')+'\n\n';
     cw.slice(0,8).forEach(r=>{
