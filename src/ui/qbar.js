@@ -253,7 +253,7 @@ function showAIMarkdown(){
   // Generate AI-optimized markdown combining all key files
   let md='# '+S.projectName+' — AI Context\n\n';
 
-  const keyFiles=['.spec/constitution.md','.spec/specification.md','CLAUDE.md','docs/01_architecture.md','docs/02_er.md','docs/03_api.md'];
+  const keyFiles=['.spec/constitution.md','.spec/specification.md','CLAUDE.md','docs/03_architecture.md','docs/04_er_diagram.md','docs/05_api_design.md'];
   keyFiles.forEach(path=>{
     if(S.files[path]){
       md+='## '+path+'\n\n';

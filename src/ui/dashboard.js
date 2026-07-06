@@ -171,11 +171,11 @@ function showDashboard(){
       {k:'compat',t:'✅ Compat warnings resolved',d:'Resolve WARN/ERROR in "Stack Compatibility" section above.',action:'exportCompatReport()'},
     ];
     const _domExtra={
-      fintech:_ja?{k:'dom',t:'🏦 コンプライアンス確認済み (docs/121)',d:'PCI-DSS/AML要件と監査ログの完全性を確認',action:'previewFile(\'docs/121_fintech_compliance.md\')'}:{k:'dom',t:'🏦 Compliance checked (docs/121)',d:'Verify PCI-DSS/AML requirements and audit log completeness',action:'previewFile(\'docs/121_fintech_compliance.md\')'},
+      fintech:_ja?{k:'dom',t:'🏦 コンプライアンス確認済み (docs/45)',d:'PCI-DSS/AML要件と監査ログの完全性を確認',action:'previewFile(\'docs/45_compliance_matrix.md\')'}:{k:'dom',t:'🏦 Compliance checked (docs/45)',d:'Verify PCI-DSS/AML requirements and audit log completeness',action:'previewFile(\'docs/45_compliance_matrix.md\')'},
       health:_ja?{k:'dom',t:'🏥 PHI保護設定確認済み (docs/08)',d:'PHI暗号化とアクセス制御ログを確認',action:'previewFile(\'docs/08_security.md\')'}:{k:'dom',t:'🏥 PHI protection checked (docs/08)',d:'Verify PHI encryption and access control logs',action:'previewFile(\'docs/08_security.md\')'},
       ec:_ja?{k:'dom',t:'🛒 決済フロー検証済み (docs/05)',d:'Stripe Webhook署名検証と在庫競合テストを確認',action:'previewFile(\'docs/05_api_design.md\')'}:{k:'dom',t:'🛒 Payment flow verified (docs/05)',d:'Verify Stripe Webhook validation and inventory concurrency tests',action:'previewFile(\'docs/05_api_design.md\')'},
-      saas:_ja?{k:'dom',t:'🏢 テナント分離確認済み (docs/73)',d:'マルチテナントデータ分離と課金管理を確認',action:'previewFile(\'docs/73_enterprise_saas_architecture.md\')'}:{k:'dom',t:'🏢 Tenant isolation checked (docs/73)',d:'Verify multi-tenant data isolation and billing management',action:'previewFile(\'docs/73_enterprise_saas_architecture.md\')'},
-      booking:_ja?{k:'dom',t:'📅 予約冪等性確認済み (docs/122)',d:'二重予約防止とキャンセルポリシーを検証',action:'previewFile(\'docs/122_booking_system_guide.md\')'}:{k:'dom',t:'📅 Booking idempotency checked (docs/122)',d:'Verify double-booking prevention and cancellation policy',action:'previewFile(\'docs/122_booking_system_guide.md\')'},
+      saas:_ja?{k:'dom',t:'🏢 テナント分離確認済み (docs/73)',d:'マルチテナントデータ分離と課金管理を確認',action:'previewFile(\'docs/73_enterprise_architecture.md\')'}:{k:'dom',t:'🏢 Tenant isolation checked (docs/73)',d:'Verify multi-tenant data isolation and billing management',action:'previewFile(\'docs/73_enterprise_architecture.md\')'},
+      booking:_ja?{k:'dom',t:'📅 予約冪等性確認済み (docs/122)',d:'二重予約防止とキャンセルポリシーを検証',action:'previewFile(\'docs/122_concurrency_consistency_guide.md\')'}:{k:'dom',t:'📅 Booking idempotency checked (docs/122)',d:'Verify double-booking prevention and cancellation policy',action:'previewFile(\'docs/122_concurrency_consistency_guide.md\')'},
     };
     const _domItem=_domExtra[_dom];
     const _allNs=_domItem?[..._nsItems,_domItem]:_nsItems;

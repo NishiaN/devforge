@@ -71,6 +71,19 @@ MEMORY.md では完了記録があったが git 履歴から欠落していた�
 
 これで docs/135(Memory)→136(GCTMS Harness)→137(Loop) の4層が揃った。
 
+### v9.28 — UI層クロスリファレンス整合
+先送り3件を再評価（launcher圧縮=非優先据置 / 7アンチパターン=保留据置 / **doc番号レジストリ=着手**）。調査の結果、生成md内（v9.25で解消済み）ではなく **UI層に旧命名スキームの参照が大量残存**していたことが判明:
+
+- **qbar `showAIMarkdown`**: `docs/01_architecture` 等の旧名3件 → AIコンテキスト出力からアーキテクチャ/ER/API設計が無言で欠落していた実バグ。実名（03/04/05）に修正
+- **dashboard ドメイン別チェックリスト**: fintech/saas/booking の3ボタンが存在しないファイルを `previewFile` → docs/45・73_enterprise_architecture・122_concurrency_consistency_guide に修正
+- **export `EXPORT_ROLES`**: 4ロールの priority 9件+prefixes 8件が旧名（06_api_design/07_db_design/22_security/05_roadmap/10_design_system 等）→ ロール別パネル・ZIPから意図ファイルが欠落・誤混入していたのを全面実名化
+- **templates.js P22/P23/P24 説明文**: 87-96 の旧名 9件（ja+en 6行）を実名化し、説明内容も実docに対応付け直し
+- **compat-rules why文**: `docs/13_payment.md`（存在しない）→ `docs/38_business_model.md` 4件 + 「生成されず」の実挙動に文言正確化
+- **docs.js 条件付きパス**: fintech限定 docs/126 の `08_auth` 参照、BDD手法選択時の `93_bdd_scenarios` 参照（いずれもv9.25の2シナリオでは発火せず残存）を修正
+- **回帰テスト新設** `test/v928-ui-xref.test.js`（10件）: 5ドメインシナリオ×2言語の生成ユニバースに対し ①UI 6ファイルの docs 参照実在 ②templates 裸名 ③EXPORT_ROLES prefix 生存 ④fintech+payment+BDD の生成物xref を保証
+
+7459 tests / 5906KB。同番号異名の実害（08/93）はこれで解消（00 の3ファイルは意図的なメタ番号）。
+
 ---
 
 ## 手法上の教訓（横断）
@@ -95,8 +108,9 @@ ext5〜ext22（プリセット257/603到達）、P28 XAI（86番目モジュー�
 
 ---
 
-## 先送り事項（v9.28+ 候補）
+## 先送り事項（v9.29+ 候補）
 
 - **launcher.js ja/en 圧縮**（393KB）: サイズ逼迫時に着手。v9.22で確立した共有ブロック方式の全面展開
-- **doc番号レジストリ**: 同番号異名の全面解消（1生成内の重複は既にゼロ、複数プリセット横断の名前空間化）
 - **7アンチパターン明示チェックリスト**: 参考資料の残り題材（既存設計と重複多く保留中）
+- **scope_out時の生成物文言検証**: compat `scope_out×決済` の why文が主張する「docs/38/45に非実装明記」が実挙動と一致するかの確認（v9.28で文言側は実名化済み）
+- ~~doc番号レジストリ~~: v9.28で解消（UI層残存参照の根絶+v928-ui-xref回帰テストで再発防止）

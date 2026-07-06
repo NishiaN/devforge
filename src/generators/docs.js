@@ -448,7 +448,7 @@ ${(G?['Lighthouse 90+','LCP < 2.5s','画像最適化','バンドルサイズ確�
     ['12_driven_dev',G?'駆動開発ガイド':'Dev Methods Guide',(()=>{
   const _methMap={
     tdd:{wfJa:'Red (失敗テスト) → Green (最小実装) → Refactor (改善) → CI (自動実行)',wfEn:'Red (failing test) → Green (minimal impl) → Refactor (improve) → CI (auto run)',toolsJa:'Vitest / Jest / Testing Library',toolsEn:'Vitest / Jest / Testing Library',refJa:'docs/91_testing_strategy.md §1',refEn:'docs/91_testing_strategy.md §1',pat:/TDD|テスト駆動/i},
-    bdd:{wfJa:'Feature文書作成 → Given-When-Then Steps → 実装 → シナリオ自動実行',wfEn:'Write Feature doc → Given-When-Then Steps → Implement → Run scenarios',toolsJa:'Cucumber / Playwright / Vitest',toolsEn:'Cucumber / Playwright / Vitest',refJa:'docs/93_bdd_scenarios.md',refEn:'docs/93_bdd_scenarios.md',pat:/BDD|振舞/i},
+    bdd:{wfJa:'Feature文書作成 → Given-When-Then Steps → 実装 → シナリオ自動実行',wfEn:'Write Feature doc → Given-When-Then Steps → Implement → Run scenarios',toolsJa:'Cucumber / Playwright / Vitest',toolsEn:'Cucumber / Playwright / Vitest',refJa:'docs/93_e2e_test_architecture.md',refEn:'docs/93_e2e_test_architecture.md',pat:/BDD|振舞/i},
     ddd:{wfJa:'ドメインモデリング → 境界コンテキスト設定 → Entity+VO定義 → Repositoryパターン実装',wfEn:'Domain modeling → Bounded Context → Entity+VO definition → Repository pattern',toolsJa:'TypeBox / Zod (VO validation)',toolsEn:'TypeBox / Zod (VO validation)',refJa:'docs/13_glossary.md + docs/114_domain_knowledge_guide.md',refEn:'docs/13_glossary.md + docs/114_domain_knowledge_guide.md',pat:/DDD|ドメイン駆動/i},
     sdd:{wfJa:'spec/specification.md 作成 → AI生成 → レビュー → テスト確認',wfEn:'Write .spec/specification.md → AI generate → Review → Confirm tests',toolsJa:'.spec/ + Claude Code / Cursor',toolsEn:'.spec/ + Claude Code / Cursor',refJa:'.spec/constitution.md + AI_BRIEF.md',refEn:'.spec/constitution.md + AI_BRIEF.md',pat:/SDD|仕様駆動/i}
   };
@@ -2249,7 +2249,7 @@ Steps:
     d+="// Block high-risk countries for large amounts\n// Rule: block_if :amount_in_usd: > 1000 AND :ip_country: IN ['XX', 'YY']\n\n";
     d+='// Webhook signature verification (MUST)\nconst sig = req.headers["stripe-signature"];\n';
     d+="const event = stripe.webhooks.constructEvent(payload, sig, process.env.STRIPE_WEBHOOK_SECRET);\n```\n\n";
-    d+='> '+(G?'参照':'See also')+': docs/121_security_design_guide.md | docs/45_compliance_matrix.md | docs/08_auth.md';
+    d+='> '+(G?'参照':'See also')+': docs/121_security_design_guide.md | docs/45_compliance_matrix.md | docs/08_security.md';
     S.files['docs/126_fintech_fraud_prevention.md']=d;
   })();}}
 
