@@ -442,7 +442,7 @@ function showDashboard(){
     }
     groups.forEach(g=>{
       const count=g.files.filter(f=>S.files[f.p]).length;
-      h+=`<div class="fdep-group"><div class="fdep-header" onclick="toggleFdep('${g.id}')"><span class="fdep-icon">▶</span><span class="fdep-title">${g.icon} ${g.title}</span><span class="fdep-count">${count}/${g.files.length}</span></div>`;
+      h+=`<div class="fdep-group"><div class="fdep-header" role="button" tabindex="0" onclick="toggleFdep('${g.id}')"><span class="fdep-icon">▶</span><span class="fdep-title">${g.icon} ${g.title}</span><span class="fdep-count">${count}/${g.files.length}</span></div>`;
       h+=`<div class="fdep-body" id="fdep-${g.id}">`;
       g.files.forEach(f=>{
         const exists=!!S.files[f.p];

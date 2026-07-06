@@ -1,5 +1,15 @@
 /* ═══ KEYBOARD & ACCESSIBILITY ═══ */
 
+/* Delegated keyboard activation for clickable divs with role="button" (Enter/Space → click) */
+document.addEventListener('keydown',function(e){
+  if(e.key!=='Enter'&&e.key!==' ')return;
+  const t=e.target;
+  if(!t||!t.matches||!t.matches('[role="button"]'))return;
+  const tag=t.tagName;
+  if(tag==='BUTTON'||tag==='A'||tag==='INPUT'||tag==='TEXTAREA'||tag==='SELECT')return; // native handling
+  e.preventDefault();t.click();
+});
+
 /* Focus trap for modals */
 function trapFocus(modalEl){
   const focusable=modalEl.querySelectorAll('button,input,select,textarea,a[href],[tabindex]:not([tabindex="-1"])');

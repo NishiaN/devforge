@@ -22,6 +22,8 @@ function _sanitizeHTML(html){
         else if(!v.startsWith('http://')&&!v.startsWith('https://')&&!v.startsWith('mailto:')&&!v.startsWith('#')&&!v.startsWith('./')&&!v.startsWith('../')){el.removeAttribute(a.name);}
       }
     });
+    // target="_blank" must always carry noopener (any scheme)
+    if(tag==='a'&&el.getAttribute('target')==='_blank'){el.setAttribute('rel','noopener noreferrer');}
     Array.from(el.children).forEach(c=>clean(c));
   }
   Array.from(temp.children).forEach(c=>clean(c));
@@ -29,18 +31,19 @@ function _sanitizeHTML(html){
 }
 function _miniMD(raw){
   if(!raw)return '';
-  const escH=(s)=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  const escH=(s)=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   const lines=raw.split('\n');
   let html='',inCode=false,inList=false,listType='',inTable=false,tableHeaders=[],inQuote=false,para='';
   const flushPara=()=>{if(para.trim()){html+='<p>'+_procInline(para.trim())+'</p>';para='';}};
   const _procInline=(s)=>{
+    s=escH(s); // escape raw HTML FIRST — closes the marked-CDN-fallback XSS path
     s=s.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>');
     s=s.replace(/\*(.+?)\*/g,'<em>$1</em>');
     s=s.replace(/`(.+?)`/g,'<code>$1</code>');
     s=s.replace(/\[([^\]]+)\]\(([^)]+)\)/g,(m,txt,url)=>{
       const u=url.trim().toLowerCase();
       if(!u.startsWith('http://')&&!u.startsWith('https://')&&!u.startsWith('./')&&!u.startsWith('../')&&!u.startsWith('#'))return m;
-      return '<a href="'+escH(url)+'">'+escH(txt)+'</a>';
+      return '<a href="'+url+'">'+txt+'</a>'; // already escaped at entry (incl. quotes)
     });
     return s;
   };
@@ -344,12 +347,12 @@ function showFileTree(){
 
   if((S.pinnedFiles&&S.pinnedFiles.length>0)||(S.recentFiles&&S.recentFiles.length>0)){
     h+='<li class="ft-clear-history"><button class="ft-clear-btn" onclick="clearFileHistory()" title="'+(_ja?'履歴をクリア':'Clear history')+'">🗑️ '+(_ja?'履歴クリア':'Clear')+'</button></li>';
-    h+='<li class="ft-separator">────────────────</li>';
+    h+='<li class="ft-separator" aria-hidden="true">────────────────</li>';
   }
 
   let _curFtFid='';let _ftFidN=0;
   tree.forEach(f=>{
-    if(!f.name||f.name==='───────────'){h+='<li class="ft-separator">────────────────</li>';return;}
+    if(!f.name||f.name==='───────────'){h+='<li class="ft-separator" aria-hidden="true">────────────────</li>';return;}
     if(f.folder){
       const fid='ftf'+(++_ftFidN);_curFtFid=fid;
       h+=`<li class="folder" data-fid="${fid}" onclick="toggleFolderCollapse('${fid}')" tabindex="0" role="button" aria-expanded="true" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFolderCollapse('${fid}');}"><span class="ft-fold-icon">▼</span> 📁 ${esc(f.name)}/</li>`;
@@ -607,7 +610,7 @@ function previewFile(path){
   S.recentFiles.unshift(path); // Add to front
   if(S.recentFiles.length>10)S.recentFiles=S.recentFiles.slice(0,10); // Max 10
 
-  save();
+  saveDebounced(); // browse-only mutation — debounced to avoid multi-MB sync write per file click
   if(typeof renderSidebarFiles==='function')renderSidebarFiles();
   // Update QBar to show file actions (Edit/Copy)
   if(typeof updateQbar==='function')updateQbar();

@@ -98,7 +98,7 @@ function showPM(){
       const isCurrent=name===S.projectName;
       const meta=ps[name].date?new Date(ps[name].date).toLocaleDateString():'';
       const estKB=Math.round(JSON.stringify(ps[name]).length/512);
-      html+='<div class="pm-item'+(isCurrent?' current':'')+'" onclick="switchProject(\''+escAttr(name)+'\')"><div><div class="pm-item-name">'+esc(name)+(isCurrent?' ✓':'')+'</div><div class="pm-item-meta">'+meta+' · ~'+estKB+'KB</div></div><div class="pm-item-acts"><button onclick="event.stopPropagation();deleteProject(\''+escAttr(name)+'\')" aria-label="'+(escAttr(_ja?'削除':'Delete'))+'">🗑️</button></div></div>';
+      html+='<div class="pm-item'+(isCurrent?' current':'')+'" role="button" tabindex="0" onclick="switchProject(\''+escAttr(name)+'\')"><div><div class="pm-item-name">'+esc(name)+(isCurrent?' ✓':'')+'</div><div class="pm-item-meta">'+meta+' · ~'+estKB+'KB</div></div><div class="pm-item-acts"><button onclick="event.stopPropagation();deleteProject(\''+escAttr(name)+'\')" aria-label="'+(escAttr(_ja?'削除':'Delete'))+'">🗑️</button></div></div>';
     });
   }
   const usg=typeof _lsUsage==='function'?_lsUsage():{used:0,pct:0};

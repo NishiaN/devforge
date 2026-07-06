@@ -19,11 +19,14 @@ function showGenLangChooser(){
     <h3>${_j?'📄 生成ファイルの言語':'📄 File Language'}</h3>
     <p>${_j?'生成するドキュメントの言語を選択してください':'Choose the language for generated documents'}</p>
     <div class="gen-lang-btns">
-      <div class="gen-lang-btn" onclick="doGenerate('ja')"><span class="flag">🇯🇵</span>日本語</div>
-      <div class="gen-lang-btn" onclick="doGenerate('en')"><span class="flag">🇺🇸</span>English</div>
+      <div class="gen-lang-btn" onclick="doGenerate('ja')" role="button" tabindex="0"><span class="flag">🇯🇵</span>日本語</div>
+      <div class="gen-lang-btn" onclick="doGenerate('en')" role="button" tabindex="0"><span class="flag">🇺🇸</span>English</div>
     </div>
   </div>`;
   document.body.appendChild(ov);
+  // Keyboard access: focus first choice, Escape closes
+  const _fb=ov.querySelector('.gen-lang-btn');if(_fb)_fb.focus();
+  ov.addEventListener('keydown',e=>{if(e.key==='Escape')ov.remove();});
 }
 function doGenerate(lang){
   // Minimum answer safeguard
@@ -214,7 +217,7 @@ function showExportGrid(){
   // Hero card for ZIP (HCD: ③認知負荷 ①目的達成)
   // C2: Lv0-1向け urgency wrapper で視覚的に強調
   const heroCard=(S.skillLv<=1?
-    `<div class="export-hero export-hero-urgent" onclick="exportZIP()">
+    `<div class="export-hero export-hero-urgent" onclick="exportZIP()" role="button" tabindex="0">
       <div class="export-hero-urgent-label">💾 ${_ja?'データ消失防止のため今すぐ保存！':'Save now to prevent data loss!'}</div>
       <div class="export-hero-badge">${_ja?'推奨':'Recommended'}</div>
       <div class="export-hero-icon">📦</div>
@@ -224,7 +227,7 @@ function showExportGrid(){
       </div>
     </div>`
   :
-    `<div class="export-hero" onclick="exportZIP()">
+    `<div class="export-hero" onclick="exportZIP()" role="button" tabindex="0">
       <div class="export-hero-badge">${_ja?'推奨':'Recommended'}</div>
       <div class="export-hero-icon">📦</div>
       <div class="export-hero-content">
