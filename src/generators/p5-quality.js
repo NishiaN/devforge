@@ -147,6 +147,19 @@ function genPillar5_QualityIntelligence(a,pn){
     doc32+='- [ ] '+(G?'インシデント対応手順':'Incident response procedures')+'\n\n';
   }
 
+  // v9.23: skill-level depth (ADD-only) — Beg intro prepended, Pro section appended
+  const _lv5=S.skillLv!=null?S.skillLv:(S.skill==='beginner'?1:S.skill==='pro'?5:3);
+  if(_lv5<=1){
+    doc32=(G
+      ?'> **🔰 品質保証はじめの3ステップ**\n> 1. 「動いた」で終わらせない: 機能を作ったら壊し方を1つ試す (空入力・長すぎる入力・連打)\n> 2. テストは1機能1本から: AIに「この関数のテストを書いて」と頼むだけでよい\n> 3. バグを見つけたら: 直す前に「そのバグを再現するテスト」を書いてもらう — 同じバグは二度と起きない\n\n'
+      :'> **🔰 QA First 3 Steps**\n> 1. Don\'t stop at "it works": after building a feature, try one way to break it (empty input, oversized input, rapid clicks)\n> 2. Start with one test per feature: just ask your AI "write a test for this function"\n> 3. Found a bug? Before fixing, have a test written that reproduces it — that bug can never return\n\n')+doc32;
+  }
+  if(_lv5>=5){
+    doc32+='\n---\n\n## '+(G?'🎓 Pro: フレーキーテスト隔離とミューテーションゲート':'🎓 Pro: Flaky Test Quarantine & Mutation Gates')+'\n\n';
+    doc32+=(G
+      ?'### フレーキーテスト隔離プロセス\n\n| ステップ | 内容 | SLA |\n|---------|------|-----|\n| 1. 検出 | 同一コミットで pass/fail が混在したテストを自動タグ付け | CI が自動 |\n| 2. 隔離 | `@flaky` タグで本流ゲートから除外 (削除はしない) — 別ジョブで継続実行 | 検出から1日 |\n| 3. 修正 | 隔離キューを週次でトリアージ。根本原因の8割は 待機不足 / テスト間の状態共有 / 時刻依存 | 隔離から2週間 |\n| 4. 復帰 | 50回連続パスで本流に戻す | 自動 |\n\n**隔離の鉄則**: 隔離数に上限を設ける (全テストの2%)。超えたら新機能開発より修正を優先。\n\n### ミューテーションスコアゲート\n\nカバレッジ80%でも「アサーションが弱い」テストは通り抜けます。Strykerでテストの検出力自体を測定:\n\n```json\n// stryker.conf.json (段階導入)\n{\n  "thresholds": { "high": 80, "low": 65, "break": 50 },\n  "mutate": ["src/core/**/*.ts"]  // まず課金・認証等の中核のみ\n}\n```\n\n- `break: 50` から開始し、四半期ごとに +10。全体適用はCI時間と相談 (incremental modeを活用)\n- 生き残ったミュータント上位10件を月次レビュー — テストの盲点マップとして活用\n'
+      :'### Flaky Test Quarantine Process\n\n| Step | Action | SLA |\n|------|--------|-----|\n| 1. Detect | Auto-tag tests with mixed pass/fail on the same commit | CI-automated |\n| 2. Quarantine | Exclude from the main gate via `@flaky` tag (never delete) — keep running in a side job | 1 day from detection |\n| 3. Fix | Weekly triage of the quarantine queue. ~80% of root causes: missing waits / shared state between tests / clock dependence | 2 weeks from quarantine |\n| 4. Reinstate | Return to main gate after 50 consecutive passes | automated |\n\n**Golden rule**: cap the quarantine size (2% of all tests). Above the cap, fixing outranks feature work.\n\n### Mutation Score Gate\n\n80% coverage still passes weak assertions. Stryker measures whether your tests can actually *detect* defects:\n\n```json\n// stryker.conf.json (staged adoption)\n{\n  "thresholds": { "high": 80, "low": 65, "break": 50 },\n  "mutate": ["src/core/**/*.ts"]  // start with billing/auth core only\n}\n```\n\n- Start at `break: 50`, raise +10 per quarter. Use incremental mode to keep CI time sane\n- Review the top-10 surviving mutants monthly — they map your test blind spots\n');
+  }
   S.files['docs/32_qa_blueprint.md']=doc32;
 
   // ═══ docs/33_test_matrix.md ═══

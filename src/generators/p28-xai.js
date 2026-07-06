@@ -259,6 +259,14 @@ function gen128(a,pn){
   doc+='| セキュリティ | docs/43 | '+(G?'ゼロトラストAIエージェントゲートウェイ':'Zero Trust AI Agent Gateway')+' |\n';
   doc+='| レッドチーム | docs/131-2 | '+(G?'OWASP LLM Top 10・敵対的テスト':'OWASP LLM Top 10, adversarial testing')+' |\n\n';
 
+  // v9.23 Pro: counterfactual explanation implementation (ADD-only)
+  const _lv28=S.skillLv!=null?S.skillLv:(S.skill==='beginner'?1:S.skill==='pro'?5:3);
+  if(_lv28>=5){
+    doc+='\n---\n\n## '+(G?'🎓 Pro: 反実仮想説明 (Counterfactual) の実装':'🎓 Pro: Implementing Counterfactual Explanations')+'\n\n';
+    doc+=(G
+      ?'「なぜ拒否されたか」より「何を変えれば承認されるか」— ユーザーが行動できる説明を返します。\n\n```python\n# DiCE (Diverse Counterfactual Explanations)\nimport dice_ml\n\nd = dice_ml.Data(dataframe=df, continuous_features=[\'income\',\'age\'], outcome_name=\'approved\')\nm = dice_ml.Model(model=model, backend=\'sklearn\')\nexp = dice_ml.Dice(d, m)\n\ncf = exp.generate_counterfactuals(\n    query_instance, total_CFs=3,\n    features_to_vary=[\'income\',\'tenure\'],   # 変更可能な特徴のみ (年齢等は固定)\n    permitted_range={\'income\': [0, 200000]}  # 現実的な範囲に制約\n)\n```\n\n| 品質基準 | 意味 | 目標 |\n|---------|------|------|\n| Proximity | 元の入力からの距離が近い | 最小限の変更で到達 |\n| Sparsity | 変更する特徴数が少ない | ≤3特徴 |\n| Actionability | ユーザーが実際に変えられる | 不変特徴 (年齢・性別) を除外 |\n| Diversity | 複数の代替案を提示 | 3案以上 |\n\n**UI統合**: 「あと¥50,000の年収証明、または6ヶ月の取引履歴で承認基準に到達します」のように、具体的な行動として表示。docs/98-2 §4 の説明UIコンポーネントと接続。\n'
+      :'Better than "why was I rejected": tell users **what change would flip the decision** — an explanation they can act on.\n\n```python\n# DiCE (Diverse Counterfactual Explanations)\nimport dice_ml\n\nd = dice_ml.Data(dataframe=df, continuous_features=[\'income\',\'age\'], outcome_name=\'approved\')\nm = dice_ml.Model(model=model, backend=\'sklearn\')\nexp = dice_ml.Dice(d, m)\n\ncf = exp.generate_counterfactuals(\n    query_instance, total_CFs=3,\n    features_to_vary=[\'income\',\'tenure\'],   # only mutable features (fix age etc.)\n    permitted_range={\'income\': [0, 200000]}  # constrain to realistic ranges\n)\n```\n\n| Quality criterion | Meaning | Target |\n|-------------------|---------|--------|\n| Proximity | Close to the original input | Minimal change |\n| Sparsity | Few features changed | ≤3 features |\n| Actionability | User can actually change them | Exclude immutables (age, gender) |\n| Diversity | Multiple alternatives offered | ≥3 options |\n\n**UI integration**: render as concrete actions — "You would meet the approval criteria with $5,000 more documented income, or 6 months of transaction history." Wire into the explanation UI components in docs/98-2 §4.\n');
+  }
   S.files['docs/128_xai_intelligence_architecture.md']=doc;
 }
 

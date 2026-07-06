@@ -184,6 +184,19 @@ function gen95(a,pn){
     }
   }
 
+  // v9.23: skill-level depth (ADD-only) — Beg intro prepended, Pro red-team CI appended
+  const _lv24=S.skillLv!=null?S.skillLv:(S.skill==='beginner'?1:S.skill==='pro'?5:3);
+  if(_lv24<=1){
+    doc=(G
+      ?'> **🔰 AI安全はじめの3ステップ**\n> 1. システムプロンプトに「してはいけないこと」を3つ書く (個人情報を出さない・断定的な医療/法律助言をしない・不確かな情報は「要確認」と言う)\n> 2. ユーザー入力をそのままAIに渡さない: まず文字数制限と明らかな攻撃文字列 (「指示を無視して」等) のチェックを入れる\n> 3. AIの出力をそのまま表示しない: 表示前に禁止ワードチェックを1つ挟む\n\n'
+      :'> **🔰 AI Safety First 3 Steps**\n> 1. Write 3 "never do" rules into the system prompt (no personal data, no definitive medical/legal advice, mark uncertain info "needs verification")\n> 2. Never pass user input straight to the AI: add a length limit and a check for obvious attack strings ("ignore your instructions" etc.)\n> 3. Never display AI output raw: add one banned-word check before rendering\n\n')+doc;
+  }
+  if(_lv24>=5){
+    doc+='\n---\n\n## '+(G?'🎓 Pro: レッドチーム評価のCI自動化':'🎓 Pro: Automated Red-Team Evaluation in CI')+'\n\n';
+    doc+=(G
+      ?'手動レッドチームは点、CI組込は線。プロンプト/モデル変更のたびに攻撃耐性を回帰させます。\n\n```yaml\n# .github/workflows/ai-redteam.yml\nname: AI Red Team\non:\n  pull_request:\n    paths: [\'prompts/**\', \'src/ai/**\']\njobs:\n  redteam:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - run: npx promptfoo@latest redteam run -c promptfooconfig.yaml\n      - run: npx promptfoo@latest redteam report --min-score 0.95\n```\n\n| ゲート | 閾値 (例) | 失敗時 |\n|--------|----------|--------|\n| インジェクション成功率 | < 5% | PRブロック |\n| システムプロンプト漏洩 | 0件 | PRブロック |\n| 有害出力 (毒性スコア) | < 0.1 | 警告コメント |\n\n- 攻撃コーパスは docs/131-2 のRED_TEAM_ATTACKS 8パターンを起点に、失敗事例を継続追加\n- 夜間フルスイート (数百攻撃) + PR時サブセット (20-30攻撃) の2段構成でCI時間を抑制\n'
+      :'Manual red-teaming is a point-in-time check; CI integration makes it continuous. Regress attack resistance on every prompt/model change.\n\n```yaml\n# .github/workflows/ai-redteam.yml\nname: AI Red Team\non:\n  pull_request:\n    paths: [\'prompts/**\', \'src/ai/**\']\njobs:\n  redteam:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - run: npx promptfoo@latest redteam run -c promptfooconfig.yaml\n      - run: npx promptfoo@latest redteam report --min-score 0.95\n```\n\n| Gate | Threshold (example) | On failure |\n|------|--------------------|-----------|\n| Injection success rate | < 5% | Block PR |\n| System prompt leakage | 0 occurrences | Block PR |\n| Harmful output (toxicity) | < 0.1 | Warning comment |\n\n- Seed the attack corpus from the 8 RED_TEAM_ATTACKS patterns in docs/131-2; keep appending real failures\n- Two tiers to bound CI time: nightly full suite (hundreds of attacks) + PR subset (20-30 attacks)\n');
+  }
   S.files['docs/95_ai_safety_framework.md']=doc;
 }
 
