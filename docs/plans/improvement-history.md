@@ -1,6 +1,6 @@
 # DevForge 改善履歴
 
-**最終更新**: 2026-07-06 | **現在値**: v9.39 / 7524 tests / 5957KB (6500KB上限) / 116 launcher templates / 28 pillars / 227+ generated files
+**最終更新**: 2026-07-06 | **現在値**: v9.39 / 7525 tests / 5957KB (6500KB上限) / 116 launcher templates / 28 pillars / 227+ generated files
 
 このドキュメントは DevForge の改善バッチ履歴の正典です。各バッチの詳細設計・実施報告は `docs/plans/` 配下、過去バッチ(ext5〜v9.18)の詳細はプロジェクトメモリ `memory/history.md` を参照。
 
@@ -244,8 +244,9 @@ v9.38実測3で発見した features:[] のままの後期バッチ84件（eng5_
 - **手順**: v9.38の教訓どおり「1件サンプル（eng5_digital_twin）充填→compat-check/sweepで影響確認→残83件を一括展開」の順。対象は `Object.keys(PR_FIELD).filter(k=>!(PR_FIELD[k].features||[]).length)` で84件確定、全件が `entities:'...'})` を最終フィールドに持つことを確認してからアンカー置換
 - **UPP-Hとの合成**: 追加機能はUPP-H衛生機能（MFA/CORS/RLS等）とマージされ実回答 mvp_features に伝播（例: eng5_digital_twin → ドメイン5件＋CORS＋MFA）。衛生機能は「最低限」の担保、本バッチは「ドメイン価値」の付与という役割分担
 - **効果**: 全フィールドプリセット602件が features 非空に。実アプリでウィザードに入る mvp_features がUPP-H衛生機能のみだった84件が、ドメイン固有の機能リストを持つように
+- **回帰固定**: `test/field-presets.test.js` に「全602件が features/featuresEn 非空 + ja/en 長一致」ガードを1件追加（+1 test）。v9.38の教訓（不可視な欠落が5ヶ月続いた）と同型リスクを、今後のフィールドプリセット追加に対して静的に封じる
 
-検証: npm run check（構文OK）+ compat-check 0/0（2665組合せ）+ sweep 5330生成ゼロ + 7524 tests 全合格。5957KB（+22KB）。src変更は `presets-ext5.js` のみ
+検証: npm run check（構文OK）+ compat-check 0/0（2665組合せ）+ sweep 5330生成ゼロ + 7525 tests 全合格。5957KB（+22KB）。src変更は `presets-ext5.js` のみ（+テスト1件）
 
 ---
 

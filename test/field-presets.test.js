@@ -59,6 +59,17 @@ describe('Field Presets (PR_FIELD)', () => {
     }
   });
 
+  // v9.39: features空のプリセットは実回答のmvp_featuresがUPP-H衛生機能のみになる。
+  // 84件充填(v9.39)後、全602件がドメイン機能を持つことを固定して再混入を防ぐ。
+  it('every field preset has non-empty bilingual features', () => {
+    for (const k of fieldKeys) {
+      const p = PR_FIELD[k];
+      assert.ok(Array.isArray(p.features) && p.features.length > 0, `${k} has empty features`);
+      assert.ok(Array.isArray(p.featuresEn) && p.featuresEn.length > 0, `${k} has empty featuresEn`);
+      assert.equal(p.features.length, p.featuresEn.length, `${k} features/featuresEn length mismatch`);
+    }
+  });
+
   it('every field preset has a valid field category', () => {
     for (const k of fieldKeys) {
       const p = PR_FIELD[k];
