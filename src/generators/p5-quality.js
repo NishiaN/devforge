@@ -431,14 +431,14 @@ function genPillar5_QualityIntelligence(a,pn){
 
   doc34+=(G?'### 4. 根本原因分析 (Root Cause Analysis)':'### 4. Root Cause Analysis')+'\n\n';
   doc34+=(G?'復旧後に実施:':'After recovery:')+'\n';
-  doc34+='- **'+(G?'ログ分析':'Log Analysis')+'**: docs/25_error_logs.md'+(G?'に記録':'に記録')+'\n';
+  doc34+='- **'+(G?'ログ分析':'Log Analysis')+'**: docs/25_error_logs.md'+(G?'に記録':' — log findings here')+'\n';
   doc34+='- **5 Whys**: '+(G?'根本原因まで深掘り':'Dig deep until root cause')+'\n';
   doc34+='- **'+(G?'タイムライン作成':'Timeline')+'**: '+(G?'発生→検知→対応→復旧の時系列':'Occurrence → Detection → Response → Recovery')+'\n\n';
 
   doc34+=(G?'### 5. 再発防止 (Prevention)':'### 5. Prevention')+'\n\n';
-  doc34+='- **'+(G?'修正チケット作成':'Fix Ticket')+'**: .spec/tasks.md'+(G?'に追加':'に追加')+'\n';
+  doc34+='- **'+(G?'修正チケット作成':'Fix Ticket')+'**: .spec/tasks.md'+(G?'に追加':' — add ticket here')+'\n';
   doc34+='- **'+(G?'監視追加':'Add Monitoring')+'**: '+(G?'同様の障害を早期検知できるアラート追加':'Add alerts to detect similar issues early')+'\n';
-  doc34+='- **'+(G?'テスト追加':'Add Tests')+'**: docs/33_test_matrix.md'+(G?'にリグレッションテスト追加':'に追加')+'\n';
+  doc34+='- **'+(G?'テスト追加':'Add Tests')+'**: docs/33_test_matrix.md'+(G?'にリグレッションテスト追加':' — add regression test here')+'\n';
   doc34+='- **'+(G?'ドキュメント更新':'Update Docs')+'**: '+(G?'本プレイブックに新たな対処法追加':'Add new procedures to this playbook')+'\n\n';
 
   // Escalation Matrix
