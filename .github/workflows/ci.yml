@@ -69,6 +69,13 @@ jobs:
     needs: test
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
 
+    # Serialize Pages deployments so concurrent pushes never race the
+    # github-pages environment ("Deployment failed, try again later").
+    # Requires repo Settings → Pages → Source = "GitHub Actions".
+    concurrency:
+      group: "pages"
+      cancel-in-progress: false
+
     permissions:
       contents: read
       pages: write
