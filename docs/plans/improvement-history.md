@@ -260,6 +260,18 @@ v9.38実測3で発見した features:[] のままの後期バッチ84件（eng5_
 
 検証: 7525 tests 全合格（en-purity/kanji-purity含む）+ 実生成でimpl guide/README両言語の版数・著作権を実出力確認 + 旧版数/旧著作権の残存ゼロ
 
+### v9.40 — 技術マスターテーブル(techdb)鮮度刷新（2026-07外部照査）
+
+「techdbの内容は全て最新か」というユーザー問いに対し、正直に「未実施＋知識カットオフ(2026-01)では実世界の鮮度を断言不可」と回答した上で、**12並列サブエージェント(WebSearch/context7)で全538件を2026年7月時点に外部照査**。
+
+- **手法**: 538件を16カテゴリ→12チャンクに分割し並列照査。各エージェントが name(改称/廃止)・price(料金)・req(推奨度)・カバレッジ欠落を検証しソースURL付き構造化JSONを返却。AI/ai_auto/paymentを鮮度重点。baas+build初回が12/37しか照査せず→build/baas分離で再照査
+- **適用(既存)**: 改称12・料金改定11・推奨度1・削除5(重複2+廃止3)。改称は現行名/後継へ(EdgeDB→Gel, Windsurf→Devin Desktop, Phidata→Agno, DeepSeek V3.2→V4, MailHog→Mailpit 等)
+- **追加18**: Helm/Datadog/Gitleaks/Google ADK/Amp/MUI/React Hook Form/D3.js/Nitro Modules/React Navigation/ArkType/Appwrite/PocketBase/KOMOJU/PAY.JP/Trunk-Based Dev/Pix4Dmapper/Agisoft Metashape
+- **偽gap除外の教訓**: エージェントが「欠落」と報告した28件中14件が既存だった（各エージェントが担当チャンク外を見られず既存のtRPC/Kafka/pgvector/Qdrant/Trivy/Google Antigravity/Pydantic AI/Mastra/Devin/smolagents等を欠落と誤報）。**実データ突合(techdb-all.json)で全gap・全rename先を照合してから適用**することで誤追加・重複を防止。これは並列照査の必須後処理
+- **保留(ユーザー判断待ち)**: PlanetScale(2026料金が情報矛盾=Hobby無料再導入説) / Lucia・Remix・Garden・AutoGen・tsup・Zodios(非推奨だが実在=改称/削除は判断要) / Architect(存在確認できず=要調査)
+
+検証: 重複name ゼロ + 全エントリ name/cat/req/level 具備 + 日本語price ゼロ + 7525 tests 全合格。538→**551**。教訓「並列照査は各体が全体を見られない→実データ突合を後処理必須化」
+
 ---
 
 ## 手法上の教訓（横断）
