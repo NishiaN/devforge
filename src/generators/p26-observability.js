@@ -139,6 +139,14 @@ function gen103(a,pn){
   doc+=(G?'3. **Week 3**: 分散トレーシング (OpenTelemetry auto-instrumentation)\n':'3. **Week 3**: Distributed tracing (OpenTelemetry auto-instrumentation)\n');
   doc+=(G?'4. **Week 4**: ダッシュボード & アラートルール (Grafana as-code)\n\n':'4. **Week 4**: Dashboard & alert rules (Grafana as-code)\n\n');
 
+  // v9.23 Pro: tail-based sampling strategy (ADD-only)
+  const _lv26a=S.skillLv!=null?S.skillLv:(S.skill==='beginner'?1:S.skill==='pro'?5:3);
+  if(_lv26a>=5){
+    doc+='\n---\n\n## '+(G?'🎓 Pro: サンプリング戦略 (Head vs Tail)':'🎓 Pro: Sampling Strategy (Head vs Tail)')+'\n\n';
+    doc+=(G
+      ?'| 方式 | 判定タイミング | 長所 | 短所 |\n|------|--------------|------|------|\n| Head-based | トレース開始時に確率で決定 | 実装容易・低コスト | エラー/遅延トレースを取り逃す |\n| Tail-based | トレース完了後に内容を見て決定 | エラー100%保持・遅延選別可 | Collector必須・メモリ消費 |\n\n**推奨構成 (OpenTelemetry Collector)**: エラーは100%・p99超遅延は100%・正常系は1-10% を保持。\n\n```yaml\nprocessors:\n  tail_sampling:\n    decision_wait: 10s\n    policies:\n      - name: errors\n        type: status_code\n        status_code: { status_codes: [ERROR] }\n      - name: slow\n        type: latency\n        latency: { threshold_ms: 2000 }\n      - name: baseline\n        type: probabilistic\n        probabilistic: { sampling_percentage: 5 }\n```\n\n- コスト試算: 保持率5%でトレースストレージは約1/20。まずHead 10%で開始し、月次でTailへ移行判断\n'
+      :'| Method | Decision point | Pros | Cons |\n|--------|---------------|------|------|\n| Head-based | Probabilistic at trace start | Simple, cheap | Misses error/slow traces |\n| Tail-based | After trace completes, content-aware | Keeps 100% of errors, latency-aware | Requires Collector, memory cost |\n\n**Recommended (OpenTelemetry Collector)**: keep 100% of errors, 100% of p99-slow traces, 1-10% of healthy traffic.\n\n```yaml\nprocessors:\n  tail_sampling:\n    decision_wait: 10s\n    policies:\n      - name: errors\n        type: status_code\n        status_code: { status_codes: [ERROR] }\n      - name: slow\n        type: latency\n        latency: { threshold_ms: 2000 }\n      - name: baseline\n        type: probabilistic\n        probabilistic: { sampling_percentage: 5 }\n```\n\n- Cost note: 5% retention ≈ 1/20 trace storage. Start with Head 10%, review monthly for Tail migration\n');
+  }
   S.files['docs/103_observability_architecture.md']=doc;
 }
 
@@ -568,6 +576,14 @@ function gen105(a,pn){
   doc+="      - routing_key: '${PAGERDUTY_KEY}'\n";
   doc+='```\n\n';
 
+  // v9.23 Pro: multi-window multi-burn-rate SLO alerts (ADD-only)
+  const _lv26b=S.skillLv!=null?S.skillLv:(S.skill==='beginner'?1:S.skill==='pro'?5:3);
+  if(_lv26b>=5){
+    doc+='\n---\n\n## '+(G?'🎓 Pro: マルチウィンドウ・マルチバーンレートアラート':'🎓 Pro: Multi-Window Multi-Burn-Rate Alerts')+'\n\n';
+    doc+=(G
+      ?'単一閾値アラートは「一瞬のスパイクで誤報」か「緩慢な劣化を見逃す」かの二択になります。Google SRE Workbook方式の多段バーンレートで両立させます (SLO 99.9%/30日の例):\n\n| 深刻度 | バーンレート | 長窓 | 短窓 (誤報抑制) | 意味 |\n|--------|------------|------|---------------|------|\n| 🔴 Page | 14.4x | 1h | 5m | 3日でエラーバジェット枯渇ペース |\n| 🟠 Page | 6x | 6h | 30m | 5日で枯渇ペース |\n| 🟡 Ticket | 1x | 3d | 6h | 30日ちょうどで枯渇 (緩慢な劣化) |\n\n```yaml\n# Prometheus (99.9% SLO)\n- alert: SLOBurnRateCritical\n  expr: |\n    (slo:error_ratio:rate1h > 14.4 * 0.001)\n    and\n    (slo:error_ratio:rate5m > 14.4 * 0.001)\n  labels: { severity: page }\n```\n\n- 短窓とのAND条件が誤報を抑制: 過ぎ去ったスパイクではページしない\n- docs/78 SOREサイクルのデプロイゲート (14.4x凍結) と同じ閾値系で統一\n'
+      :'Single-threshold alerts force a choice between spike false-pages and missing slow degradation. Multi-burn-rate (Google SRE Workbook) covers both — example for a 99.9%/30d SLO:\n\n| Severity | Burn rate | Long window | Short window (anti-flap) | Meaning |\n|----------|-----------|-------------|--------------------------|--------|\n| 🔴 Page | 14.4x | 1h | 5m | Budget exhausted in ~3 days |\n| 🟠 Page | 6x | 6h | 30m | Exhausted in ~5 days |\n| 🟡 Ticket | 1x | 3d | 6h | Exhausted in exactly 30 days (slow burn) |\n\n```yaml\n# Prometheus (99.9% SLO)\n- alert: SLOBurnRateCritical\n  expr: |\n    (slo:error_ratio:rate1h > 14.4 * 0.001)\n    and\n    (slo:error_ratio:rate5m > 14.4 * 0.001)\n  labels: { severity: page }\n```\n\n- The short-window AND suppresses false pages for spikes that already passed\n- Aligns with the docs/78 SORE deploy gate (14.4x freeze) threshold family\n');
+  }
   S.files['docs/105_metrics_alerting.md']=doc;
 }
 

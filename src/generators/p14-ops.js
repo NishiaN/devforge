@@ -480,6 +480,19 @@ function genPillar14_OpsIntelligence(a, pn) {
   runbook += G ? '**対応:** ' : '**Response:** ';
   runbook += '[Incident Response](./34_incident_response.md)\n\n';
 
+  // v9.23: skill-level depth (ADD-only) — Beg intro prepended, Pro section appended
+  const _lv14 = S.skillLv != null ? S.skillLv : (S.skill === 'beginner' ? 1 : S.skill === 'pro' ? 5 : 3);
+  if (_lv14 <= 1) {
+    runbook = (G
+      ? '> **🔰 運用はじめの3ステップ**\n> 1. まず「監視」から: デプロイ先のダッシュボード (Vercel/Supabase等) を週1回見る習慣をつける\n> 2. エラーが出たら: このランブックの該当症状の節を開いて手順どおりに対応する\n> 3. 対応したら記録: 何が起きて何をしたかを docs/25_error_logs.md に1行残す\n\n'
+      : '> **🔰 Ops First 3 Steps**\n> 1. Start with watching: check your deploy dashboard (Vercel/Supabase etc.) once a week\n> 2. When an error appears: open the matching symptom section in this runbook and follow it\n> 3. After responding: leave a one-line record of what happened in docs/25_error_logs.md\n\n') + runbook;
+  }
+  if (_lv14 >= 5) {
+    runbook += '\n---\n\n## ' + (G ? '🎓 Pro: プログレッシブデリバリー' : '🎓 Pro: Progressive Delivery') + '\n\n';
+    runbook += G
+      ? '### カナリア分析メトリクス\n\n| メトリクス | 比較方法 | 自動ロールバック条件 (例) |\n|-----------|---------|------------------------|\n| エラー率 | canary vs baseline (同時刻比較) | baseline比 +0.5pt 超過が5分継続 |\n| p99レイテンシ | 同上 | baseline比 +20% 超過が5分継続 |\n| ビジネスKPI (注文成功率等) | 同上 | baseline比 -1% 超過 |\n\n**段階昇格**: 1% → 5% → 25% → 50% → 100%。各段階で最低10分観測し、全メトリクスがグリーンなら自動昇格。\n\n**実装**: Argo Rollouts (K8s) / Flagger / 単純構成なら feature flag + 加重ルーティングで代替可。\n\n### ランブック自動化 (Runbook as Code)\n\n- 頻出手順 (キャッシュクリア・再起動・スケール変更) はスクリプト化し、ランブックにはコマンド1行を記載\n- 自動化レベルを3段階で管理: L1=手順書のみ → L2=半自動 (人が実行判断) → L3=全自動 (アラート駆動)\n- L3化の条件: 誤発動しても被害が可逆 + 過去3回以上人手で同一手順を実行済み\n'
+      : '### Canary Analysis Metrics\n\n| Metric | Comparison | Auto-rollback trigger (example) |\n|--------|-----------|--------------------------------|\n| Error rate | canary vs baseline (same window) | +0.5pt over baseline for 5 min |\n| p99 latency | same | +20% over baseline for 5 min |\n| Business KPI (e.g. order success) | same | −1% vs baseline |\n\n**Staged promotion**: 1% → 5% → 25% → 50% → 100%. Observe each stage ≥10 min; auto-promote when all metrics stay green.\n\n**Tooling**: Argo Rollouts (K8s) / Flagger; for simpler stacks, feature flags + weighted routing.\n\n### Runbook as Code\n\n- Script recurring procedures (cache clear, restart, scaling) — the runbook shows a single command\n- Track automation levels: L1=documented → L2=semi-auto (human triggers) → L3=fully automated (alert-driven)\n- Promote to L3 only when misfires are reversible AND the same manual procedure ran 3+ times\n';
+  }
   S.files['docs/53_ops_runbook.md'] = runbook;
 
   // ═══ File 54: Ops Checklist (Day-1 Operations) ═══

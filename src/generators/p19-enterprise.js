@@ -760,4 +760,26 @@ function genPillar19_EnterpriseSaaS(a, pn) {
   S.files['docs/74_workflow_engine.md'] = gen74(G, domain, orgModel, isMultiTenant, a, pn);
   S.files['docs/75_admin_dashboard_spec.md'] = gen75(G, domain, orgModel, isMultiTenant, a, pn);
   S.files['docs/76_enterprise_components.md'] = gen76(G, domain, orgModel, isMultiTenant, a, pn);
+
+  // v9.23: Pro depth (skillLv>=5) — ADD-only, appended after base docs
+  var _lv19 = S.skillLv != null ? S.skillLv : (S.skill === 'beginner' ? 1 : S.skill === 'pro' ? 5 : 3);
+  if (_lv19 >= 5) S.files['docs/73_enterprise_architecture.md'] += _p19pro(G);
+}
+
+// v9.23 Pro: enterprise auth integration (SSO/SCIM) + tenant isolation testing
+function _p19pro(G) {
+  var d = '\n---\n\n## ' + (G ? '🎓 Pro: エンタープライズ認証統合 (SSO / SCIM)' : '🎓 Pro: Enterprise Auth Integration (SSO / SCIM)') + '\n\n';
+  d += '### ' + (G ? 'SSO実装チェックリスト' : 'SSO Implementation Checklist') + '\n\n';
+  d += G
+    ? '| 項目 | SAML 2.0 | OIDC |\n|------|----------|------|\n| 主用途 | レガシーIdP (AD FS 等) | モダンIdP (Okta / Entra ID / Google) |\n| 必須実装 | SP metadata公開・AuthnRequest署名・Assertion検証 (署名+Audience+NotOnOrAfter) | PKCE・state/nonce検証・JWKSキャッシュ+キーローテーション追従 |\n| 負のテスト | 署名なしAssertion拒否・Recipient不一致拒否 | `alg:none` 拒否・aud不一致拒否・期限切れid_token拒否 |\n\n- [ ] JITプロビジョニング: 初回SSOログインでユーザー自動作成+デフォルトロール付与\n- [ ] IdPグループ → アプリロールのマッピングテーブル (組織ごとに設定可能)\n- [ ] SSO強制モード: 組織単位でパスワードログインを無効化できる設計\n- [ ] SLO (シングルログアウト) の要否を組織要件として明文化\n\n'
+    : '| Item | SAML 2.0 | OIDC |\n|------|----------|------|\n| Primary use | Legacy IdPs (AD FS etc.) | Modern IdPs (Okta / Entra ID / Google) |\n| Must implement | SP metadata, signed AuthnRequest, Assertion validation (signature+Audience+NotOnOrAfter) | PKCE, state/nonce validation, JWKS caching + key-rotation handling |\n| Negative tests | Reject unsigned assertions, recipient mismatch | Reject `alg:none`, aud mismatch, expired id_token |\n\n- [ ] JIT provisioning: auto-create user + default role on first SSO login\n- [ ] IdP-group → app-role mapping table (configurable per org)\n- [ ] SSO-enforced mode: allow orgs to disable password login\n- [ ] Document whether SLO (single logout) is required per org\n\n';
+  d += '### ' + (G ? 'SCIM 2.0 プロビジョニング' : 'SCIM 2.0 Provisioning') + '\n\n';
+  d += G
+    ? '| エンドポイント | 動作 |\n|--------------|------|\n| `POST /scim/v2/Users` | ユーザー作成 (userName=email) |\n| `PATCH /scim/v2/Users/:id` | `active:false` → ソフト無効化 (物理削除しない) |\n| `GET /scim/v2/Users?filter=` | `eq` フィルタを最低限サポート |\n\n- 認証: 組織ごとの長期Bearerトークン (ローテーション可能に)\n- 冪等性: 同一 `externalId` の再POSTは409ではなく既存リソース返却も検討\n\n'
+    : '| Endpoint | Behavior |\n|----------|----------|\n| `POST /scim/v2/Users` | Create user (userName=email) |\n| `PATCH /scim/v2/Users/:id` | `active:false` → soft-deactivate (never hard-delete) |\n| `GET /scim/v2/Users?filter=` | Support `eq` filter at minimum |\n\n- Auth: long-lived per-org Bearer token (rotatable)\n- Idempotency: consider returning the existing resource instead of 409 for duplicate `externalId`\n\n';
+  d += '### ' + (G ? 'テナント分離テスト戦略' : 'Tenant Isolation Testing Strategy') + '\n\n';
+  d += G
+    ? '- **クロステナント漏洩テスト**: 全list系APIに「他orgのリソースIDが混入しない」自動テストを用意\n- **RLSバイパス検査**: `service_role` 使用箇所を棚卸しし、直SQL (`SET ROLE`) でRLS有効を確認\n- **侵入テスト観点**: IDOR (`/orders/123` → 他社の123)・JWTの `org_id` 改ざん・検索インデックスの越境ヒット\n'
+    : '- **Cross-tenant leak tests**: automated tests asserting list APIs never return another org\'s resource IDs\n- **RLS bypass audit**: inventory all `service_role` usages; verify RLS via direct SQL (`SET ROLE`)\n- **Pentest angles**: IDOR (`/orders/123` → another org\'s 123), tampered `org_id` in JWT, cross-tenant hits in search indexes\n';
+  return d;
 }
