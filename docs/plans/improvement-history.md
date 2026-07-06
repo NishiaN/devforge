@@ -272,6 +272,8 @@ v9.38実測3で発見した features:[] のままの後期バッチ84件（eng5_
 
 検証: 重複name ゼロ + 全エントリ name/cat/req/level 具備 + 日本語price ゼロ + 7525 tests 全合格。538→551→**548**。教訓「並列照査は各体が全体を見られない→実データ突合を後処理必須化」「後継名改称は後継の既存チェック必須（既存なら改称=重複、削除が正しい帰結）」
 
+**影響機能の照査（改称の下流波及）**: techdb選択→回答の経路 `render.js _TECHDB_MAP`（11質問→8カテゴリ: front/back/mobile/ai_auto/payment/ai/devops/method）を精査。回答注入されうる旧名14件のロジック分岐を全grep→**Remixのみ該当**（common.jsのSSR判定2箇所 `fe.includes('Remix')`）。改称後'React Router v7'選択でSSRフレームワークがSPA誤判定される実バグを修正（両分岐に'React Router v7'追加、'Remix'も後方互換維持）。残る8カテゴリ外の改称/削除は質問非接続=表示のみでロジック無影響。カテゴリ空化なし（全16カテゴリ健在）。frontend=React Router v7実生成でSSR扱い確認。教訓「8カテゴリのtechdb改称は生成器の旧名分岐を必ずgrep確認」
+
 ---
 
 ## 手法上の教訓（横断）
