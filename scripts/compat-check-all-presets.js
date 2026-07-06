@@ -1,65 +1,30 @@
 #!/usr/bin/env node
 /**
- * Compat check against all 625 presets (133 standard + 492 field × 4 scales)
- * Applies _applyUniversalPostProcess() then runs checkCompat() on each.
- * Reports any ERROR or WARN hits grouped by rule ID.
+ * Compat check against all presets (standard + field × 4 scales).
+ * v9.38: answers are built via the APP's real apply path (ui/presets.js start(),
+ * through test/app-answers.js) instead of hand-rolled Object.assign injection.
+ * 手組み注入はアプリ実回答と乖離する（v9.36: scale欠落が不可視 / v9.38実測:
+ * フィールドプリセット16キー欠落・7キー値相違 → 46 ERROR + 4063 WARN が見えていなかった）。
+ * Reports any ERROR or WARN hits grouped by rule ID. Expected: 0 / 0.
  */
-const h = require('../test/harness.js');
-
-// Load additional modules into the sandbox
-h.loadModule('data/compat-rules.js');
-h.loadModule('generators/common.js');   // detectDomain
-h.loadModule('ui/presets.js');          // _applyUniversalPostProcess
-
-const sb = h.sandbox;
+const app = require('../test/app-answers.js');
+const sb = app.sb;
 const SCALES = ['solo', 'small', 'medium', 'large'];
 
 const hits = {};  // { ruleId: { level, entries: [{presetKey, scale}] } }
 let totalChecked = 0;
-
-function resetS(overrides) {
-  sb.S = Object.assign({
-    phase:0, step:0, answers:{}, projectName:'Test Project',
-    skill:'intermediate', preset:'custom', lang:'ja',
-    genLang:'ja', theme:'dark', pillar:0, previewFile:null,
-    files:{}, skipped:[], progress:{},
-    editedFiles:{}, prevFiles:{}, _v:9, skillLv:3,
-    pinnedFiles:[], recentFiles:[], exportedOnce:false, compatAcked:[]
-  }, overrides||{});
-}
 
 function record(ruleId, level, presetKey, scale) {
   if (!hits[ruleId]) hits[ruleId] = { level, entries: [] };
   hits[ruleId].entries.push({ presetKey, scale });
 }
 
-// ── Standard presets (63) ──
+// ── Standard presets ──
 process.stdout.write('Checking standard presets…');
 const PR = sb.PR;
 for (const key of Object.keys(PR)) {
-  resetS({ preset: key, skillLv: 3 });
-  sb.S.answers = {};
-  const p = PR[key];
-  Object.assign(sb.S.answers, {
-    purpose:      p.purpose       || '',
-    target:       Array.isArray(p.target)   ? p.target.join(', ')   : (p.target||''),
-    mvp_features: Array.isArray(p.features) ? p.features.join(', ') : (p.features||''),
-    data_entities:p.entities      || '',
-    frontend:     p.frontend      || '',
-    backend:      p.backend       || '',
-    database:     p.database      || '',
-    auth:         p.auth          || '',
-    orm:          p.orm           || '',
-    deploy:       p.deploy        || '',
-    payment:      p.payment       || '',
-    mobile:       p.mobile        || '',
-    scale:        p.scale         || 'medium',
-    ai_auto:      p.ai_auto       || '',
-    ai_tools:     p.ai_tools      || '',
-    org_model:    p.org_model     || '',
-  });
-  sb._applyUniversalPostProcess(false);
-  const results = sb.checkCompat(sb.S.answers);
+  const answers = app.answersForStandard(key);
+  const results = sb.checkCompat(answers);
   for (const r of results) {
     if (r.level === 'error' || r.level === 'warn') {
       record(r.id, r.level, key, 'standard');
@@ -69,22 +34,13 @@ for (const key of Object.keys(PR)) {
 }
 console.log(` ${Object.keys(PR).length} done.`);
 
-// ── Field presets (266 × 4 scales) ──
+// ── Field presets × 4 scales ──
 process.stdout.write('Checking field presets × 4 scales…');
 const PR_FIELD = sb.PR_FIELD;
 for (const key of Object.keys(PR_FIELD)) {
   for (const scale of SCALES) {
-    resetS({ preset: 'field:' + key, skillLv: 3 });
-    sb.S.answers = { scale };
-    const fp = PR_FIELD[key];
-    const fields = ['purpose','frontend','backend','database','auth','orm','deploy',
-                    'payment','mobile','ai_auto','ai_tools','org_model'];
-    for (const f of fields) { if (fp[f]) sb.S.answers[f] = fp[f]; }
-    if (fp.features) sb.S.answers.mvp_features = Array.isArray(fp.features) ? fp.features.join(', ') : fp.features;
-    if (fp.entities) sb.S.answers.data_entities = fp.entities;
-    if (fp.meta && fp.meta.regulation) sb.S.answers._meta_regulation = fp.meta.regulation;  // mirrors presets.js field apply
-    sb._applyUniversalPostProcess(false);
-    const results = sb.checkCompat(sb.S.answers);
+    const answers = app.answersForField(key, scale);
+    const results = sb.checkCompat(answers);
     for (const r of results) {
       if (r.level === 'error' || r.level === 'warn') {
         record(r.id, r.level, key, scale);

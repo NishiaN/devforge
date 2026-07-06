@@ -6027,7 +6027,7 @@ en:'Serverless + PostgreSQL without connection pooling. Neon Pooler/Supabase Poo
 why_ja:'Serverless関数は起動のたびに新規DB接続を作成します。PgBouncer等のプーリングなしでは数百の同時接続が発生しPostgreSQLの接続上限（通常100）を超えてサービス停止します。',
 why_en:'Serverless functions create new DB connections on each invocation. Without pooling, hundreds of simultaneous connections exceed PostgreSQL\'s limit (typically 100), causing service outages.'},
 {id:'be-python-sync-driver',p:['backend','database'],lv:'warn',
-t:a=>inc(a.backend,'FastAPI')&&/(PostgreSQL|Neon)/i.test(a.database||''),
+t:a=>inc(a.backend,'FastAPI')&&/(PostgreSQL|Neon)/i.test(a.database||'')&&!/(asyncpg|psycopg3)/i.test((a.orm||'')+(a.mvp_features||'')),
 ja:'FastAPI + PostgreSQL: 非同期ドライバ（asyncpg または psycopg3）を使用してください。psycopg2はFastAPIのasync処理をブロックします',
 en:'FastAPI + PostgreSQL: use async driver (asyncpg or psycopg3). psycopg2 blocks FastAPI async handlers',
 why_ja:'FastAPIはasync/awaitベースです。同期ドライバのpsycopg2を使うとDBクエリ中にイベントループがブロックされ、他のリクエストが全て待機状態になります。asyncpgなら並行処理を維持できます。',
@@ -10681,6 +10681,73 @@ S.answers.dev_methods=_en
 ?'TDD (Test-Driven), SDD (Spec-Driven)'
 :'TDD（テスト駆動）, SDD（仕様駆動）';
 }
+}
+// UPP-H (v9.38): スタック・規模が要求する衛生機能の追記。プリセット機能リストと
+// _SCALE_DEFAULTS スタックの組合せが生む compat 警告を、警告自身が推奨する緩和策の
+// 明記で解消する（実アプリ回答での 0 ERROR / 0 WARN を保つ）。各条件は対応する
+// compat ルールの検出条件・脱出条件のミラー。
+var _hF=S.answers.mvp_features||'';
+{
+var _hAdd=[];
+var _hBe=S.answers.backend||'', _hDb=S.answers.database||'', _hSc=S.answers.scale||'';
+var _hPay=S.answers.payment||'', _hAuth=S.answers.auth||'', _hAi=S.answers.ai_auto||'';
+var _hPur=S.answers.purpose||'', _hEnt=S.answers.data_entities||'', _hOrg=S.answers.org_model||'';
+var _hasPay=!!_hPay&&!/none|なし/i.test(_hPay);
+var _hasAi=!!_hAi&&!/none|なし/i.test(_hAi);
+// api-cors-wildcard: 非BaaSのAPIサーバー構成にCORS明示
+if(/(Express|Fastify|NestJS|Hono|FastAPI|Django|Spring)/i.test(_hBe)&&!/(CORS|cross.?origin)/i.test(_hF))
+_hAdd.push(_en?'CORS Whitelist Configuration':'CORSホワイトリスト設定');
+// be-python-sync-driver: FastAPI+PostgreSQLは非同期ドライバ
+if(/FastAPI/i.test(_hBe)&&/(PostgreSQL|Neon)/i.test(_hDb)&&!/(asyncpg|psycopg3)/i.test(_hF+(S.answers.orm||'')))
+_hAdd.push(_en?'Async DB Driver (asyncpg)':'非同期DBドライバ（asyncpg）');
+// auth-no-mfa-payment / dom-childcare-minors: 決済あり×非solo規模はMFA
+if(_hasPay&&_hSc&&_hSc!=='solo'&&!/(MFA|2FA|多要素|二要素|TOTP|FIDO|WebAuthn)/i.test(_hF+_hAuth))
+_hAdd.push(_en?'MFA (Multi-Factor Auth)':'MFA（多要素認証）');
+// cl-payment-nowebhook: 決済あり×largeはWebhook受信
+if(_hasPay&&_hSc==='large'&&!/(webhook|署名検証|決済.*イベント)/i.test(_hF))
+_hAdd.push(_en?'Stripe Webhook (signature verification & idempotency)':'Stripe Webhook（署名検証・冪等性）');
+// ai-canary-deploy: AI×largeは段階的ロールアウト
+if(_hasAi&&_hSc==='large'&&!/(カナリア|canary|blue.*green|feature.?flag|段階的.*ロールアウト|gradual.*rollout)/i.test(_hF))
+_hAdd.push(_en?'Feature Flags & Gradual Rollout':'フィーチャーフラグ・段階的ロールアウト');
+// db-large-no-partitioning: large×RDB×高ボリュームエンティティ
+if(_hSc==='large'&&/PostgreSQL|MySQL|MariaDB/i.test(_hDb)
+&&!/partition|sharding|シャーディング|パーティシ/i.test(_hF+(S.answers.future_features||''))
+&&/audit.log|AuditLog|event.log|EventLog|センサー|IoT|ログ収集/i.test(_hEnt+_hF))
+_hAdd.push(_en?'DB Partitioning Strategy (high-volume data)':'DBパーティショニング戦略（高ボリュームデータ）');
+// mt-supabase-no-rls: Supabase×マルチテナントはRLS必須（error級）
+if(/Supabase/i.test(_hBe)&&/(company|b2b|チーム|team|組織|enterprise)/i.test(_hOrg)&&!/(RLS|Row Level Security|行単位セキュリティ)/i.test(_hF))
+_hAdd.push('RLS (Row Level Security)');
+// scale-realtime-large: large×リアルタイム×Node系はRedis Adapter
+if(_hSc==='large'&&/リアルタイム|realtime|chat|チャット|WebSocket|ライブ.*配信|live.*stream/i.test(_hPur)
+&&/(Express|NestJS|Hono|Fastify)/i.test(_hBe)&&!/(Redis\s*Adapter|redis-adapter|@socket\.io\/redis)/i.test(_hF))
+_hAdd.push(_en?'Socket.io Redis Adapter (horizontal scaling)':'Socket.io Redis Adapter（水平スケール）');
+// ai-pii-masking: AI×PIIエンティティはマスキング
+if(_hasAi&&/(Patient|MedicalRecord|Transaction|BankAccount|CreditCard|Prescription|Diagnosis|PersonalInfo)/i.test(_hEnt)
+&&!/(PII|仮名化|匿名化|個人情報マスク|pii.?mask|pseudonym)/i.test(_hF))
+_hAdd.push(_en?'PII Masking (before LLM calls)':'PIIマスキング（LLM送信前）');
+// web3-nowalletauth: Web3系はウォレット認証
+if(/(NFT|ブロックチェーン|blockchain|web3|仮想通貨|crypto|DeFi|decentrali)/i.test(_hPur)
+&&!/(wallet|ウォレット|MetaMask|WalletConnect|web3.auth|Privy|RainbowKit)/i.test(_hAuth+_hF))
+_hAdd.push(_en?'Wallet Auth (WalletConnect/SIWE)':'ウォレット認証（WalletConnect/SIWE）');
+// sec-no-secrets-mgr: large×機密エンティティはシークレット管理
+if(_hSc==='large'&&!/Firebase|Supabase|Convex/i.test(_hBe)&&!/なし（静的|None|static/i.test(_hBe)
+&&/MedicalRecord|PatientRecord|ClinicalData|FinancialTransaction|CreditCard|BankAccount/i.test(_hEnt)
+&&!/Vault|Doppler|SOPS|Secrets Manager|Secret Manager/i.test(_hF))
+_hAdd.push(_en?'Secrets Manager (Vault/Doppler)':'シークレット管理（Vault/Doppler）');
+// ai-medical-legal-noguard: AI医療診断・法律判断はガードレール
+if(_hasAi&&/(医療.*AI.*診断|AI.*医療.*診断|法律.*AI.*判断|AI.*法律.*判断|medical.*AI.*diagnosis|legal.*AI.*decision)/i.test(_hPur)
+&&(_hSc||'medium')!=='solo'&&!/(ガードレール|guardrail|HITL|human.in.the.loop|免責|disclaimer)/i.test(_hF))
+_hAdd.push(_en?'AI Guardrails (HITL & disclaimer)':'AIガードレール（HITL・免責表示）');
+// lims-noregulation: large×LIMSは規制対応の明記
+if(_hSc==='large'&&/(LIMS|検査.*機関|臨床.*検査|medical.*lab|clinical.*lab)/i.test(_hPur)
+&&!/(PMDA|GxP|GLP|GMP|FDA.*21CFR|ISO.*13485|CLIA)/i.test(_hF))
+_hAdd.push(_en?'Regulatory Compliance (PMDA / ISO 13485 audit trail)':'規制対応（PMDA・ISO 13485 監査証跡）');
+if(_hAdd.length)S.answers.mvp_features=_hF?(_hF+', '+_hAdd.join(', ')):_hAdd.join(', ');
+}
+// UPP-H2 (v9.38): SEO重要ドメイン×soloはCSR-onlyを避ける (fe-seo-nossr のfix値を適用)
+if(S.answers.scale==='solo'&&/(React|Vue|Angular|Svelte)\b/i.test(S.answers.frontend||'')&&!/(Next|Nuxt|SvelteKit|Astro)/i.test(S.answers.frontend||'')){
+var _hDom=(typeof detectDomain==='function')?detectDomain(S.answers.purpose||''):'';
+if(['content','media','ec','creator','newsletter','portfolio','travel'].indexOf(_hDom)>=0)S.answers.frontend='React + Next.js';
 }
 }
 /* Auto-fill Phase 2 (tech stack) defaults for Beginner mode */
@@ -40324,8 +40391,8 @@ return all.filter(x=>!be.includes(x.split(' ')[0])&&!be.includes(x.split('+')[0]
 doc+=_adrBlock(n++,
 G?'バックエンド/BaaS選定':'Backend / BaaS Selection',
 G?'✅ 承認済':'✅ Accepted',
-G?'APIサーバーまたはBaaSを選定した。要件: '+a.purpose
-:'API server or BaaS selected. Project purpose: '+a.purpose,
+G?'APIサーバーまたはBaaSを選定した。要件: '+(a.purpose||'（未記入）')
+:'API server or BaaS selected. Project purpose: '+(a.purpose||'(not specified)'),
 be,_beRationale(),beAlts,
 G?['バックエンドの一貫したアーキテクチャが維持できる','チームの学習コストが最小化される','-選定外技術は生成コードに含まれない','-将来のマイグレーションにはコストが発生する可能性']
 :['Consistent backend architecture','Minimizes team learning cost','-Alternative tech excluded from generated code','-Future migration may incur cost']

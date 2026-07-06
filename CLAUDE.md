@@ -4,9 +4,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ---
 
-# DevForge v9.37
+# DevForge v9.38
 
-**AI Development OS** — 86 JS modules in `src/` → single `devforge-v9.html` (~5930KB / 6500KB limit).
+**AI Development OS** — 86 JS modules in `src/` → single `devforge-v9.html` (~5935KB / 6500KB limit).
 Generates **227+ files** across **28 pillars** from a wizard-driven Q&A session.
 
 ## Documentation Map
@@ -22,7 +22,7 @@ node build.js                          # → devforge-v9.html (~5930KB, limit 65
 node build.js --no-minify              # debug (skip minification)
 node build.js --report                 # build + size breakdown by module
 node build.js --out=path               # write bundle to alternate path (used by build.test.js to avoid racing bundle readers)
-npm test                               # ~7505 tests, all passing (v9.37)
+npm test                               # ~7524 tests, all passing (v9.38)
 node --test test/gen-quality.test.js   # single test file
 npm run dev                            # build + live-server :3000
 npm run check                          # syntax-check extracted JS
@@ -128,6 +128,10 @@ Key helpers (all globally scoped): `save()`, `esc(s)`, `escAttr(s)`, `_jp(s,d)`,
 
 Field presets use a 4-layer merge: `_SCALE_DEFAULTS[scale]` → `FIELD_CAT_DEFAULTS[field]` → direct preset fields → meta inference. Field-preset apply also sets `S.answers.scale=_fieldScale` and `S.answers._meta_regulation=fp.meta.regulation` (v9.36) — standard presets/custom flow leave both unset (generators fall back to 'medium').
 
+**UPP-H hygiene appends (v9.38)** — end of `_applyUniversalPostProcess()`: appends stack/scale-required mitigations to `mvp_features` (CORS whitelist for non-BaaS API servers, asyncpg for FastAPI+PostgreSQL, MFA for payment×non-solo, Stripe Webhook + feature flags + partitioning + secrets manager for large, RLS for Supabase×multi-tenant, PII masking for AI×PII entities, etc.). Each condition mirrors a compat rule — this keeps **real app answers at 0 ERROR / 0 WARN**. UPP-H2 swaps CSR-only frontend → Next.js for SEO domains at solo scale. When adding a compat rule that fires on preset-derived answers, either add its mitigation to UPP-H or fix the presets.
+
+**Harness answers must go through the app path (v9.38)** — `test/app-answers.js` builds answers via the real `start()` (DOM stubbed). sweep/compat-check use it; `test/v938-harness-app-alignment.test.js` statically rejects hand-rolled `Object.assign(sb.S.answers` injection in those scripts. Hand-built answers diverge from real ones (16 missing keys / 7 value diffs for field presets) and hid 46 ERROR + 4063 WARN for 5+ months.
+
 **N-8 `scope_out` condition**: only explicitly-set `'none'`/`'なし'` values add to scope_out — empty/unset does NOT. (`_pa&&/none|なし/i.test(_pa)`, not `!_pa||...`)
 
 **PR key ≠ UI display name** — standard preset keys differ from their UI labels. Key examples:
@@ -191,9 +195,9 @@ After adding: update header comment totals, add tests to `test/compat.test.js`, 
 | Generator tests | airules, strategy, reverse, observability | ~75 |
 | Gen quality | gen-quality (Suites 1-400, ~6184 tests) | ~6184 |
 | Preset matching | phase-n (N-1〜N-9 + G-1〜G-7, 68 tests) | ~68 |
-| Other | i18n, state, techdb, utils, complexity, mermaid (30 tests, all 28 pillars), help-hints, ui-xref, en/kanji-purity, preset-integrity, answer-keys, scale-propagation | ~104 |
+| Other | i18n, state, techdb, utils, complexity, mermaid (30 tests, all 28 pillars), help-hints, ui-xref, en/kanji-purity, preset-integrity, answer-keys, scale-propagation, harness-app-alignment | ~123 |
 
-**Total: 7505 tests** | Test harness pattern: `eval(fs.readFileSync(...))` to load src files; global `S` mock at top.
+**Total: 7524 tests** | Test harness pattern: `eval(fs.readFileSync(...))` to load src files; global `S` mock at top.
 Run `node build.js` before `npm test` — security.test.js reads the built bundle. build.test.js builds to a temp file (`--out=`), so the suite itself never rewrites `devforge-v9.html`.
 
 **When adding domains**, update: `test/data-coverage.test.js` (4 arrays), `test/gen-coherence.test.js`, `test/ops.test.js`.

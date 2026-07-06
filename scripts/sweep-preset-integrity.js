@@ -17,51 +17,13 @@ const fs = require('fs');
 const path = require('path');
 process.chdir(path.join(__dirname, '..'));
 
-// ── sandbox for preset→answers conversion (same as compat-check-all-presets.js) ──
-const h = require('../test/harness.js');
-h.loadModule('data/compat-rules.js');
-h.loadModule('generators/common.js');
-h.loadModule('ui/presets.js');
-const sb = h.sandbox;
-
-function resetS(overrides) {
-  sb.S = Object.assign({
-    phase:0, step:0, answers:{}, projectName:'Test Project',
-    skill:'intermediate', preset:'custom', lang:'ja',
-    genLang:'ja', theme:'dark', pillar:0, previewFile:null,
-    files:{}, skipped:[], progress:{},
-    editedFiles:{}, prevFiles:{}, _v:9, skillLv:3,
-    pinnedFiles:[], recentFiles:[], exportedOnce:false, compatAcked:[]
-  }, overrides||{});
-}
-
-function answersForStandard(key) {
-  resetS({ preset: key });
-  const p = sb.PR[key];
-  Object.assign(sb.S.answers, {
-    purpose: p.purpose||'', target: Array.isArray(p.target)?p.target.join(', '):(p.target||''),
-    mvp_features: Array.isArray(p.features)?p.features.join(', '):(p.features||''),
-    data_entities: p.entities||'', frontend: p.frontend||'', backend: p.backend||'',
-    database: p.database||'', auth: p.auth||'', orm: p.orm||'', deploy: p.deploy||'',
-    payment: p.payment||'', mobile: p.mobile||'', scale: p.scale||'medium',
-    ai_auto: p.ai_auto||'', ai_tools: p.ai_tools||'', org_model: p.org_model||'',
-  });
-  sb._applyUniversalPostProcess(false);
-  return JSON.parse(JSON.stringify(sb.S.answers));
-}
-
-function answersForField(key, scale) {
-  resetS({ preset: 'field:'+key });
-  sb.S.answers = { scale };
-  const fp = sb.PR_FIELD[key];
-  const fields = ['purpose','frontend','backend','database','auth','orm','deploy',
-                  'payment','mobile','ai_auto','ai_tools','org_model'];
-  for (const f of fields) { if (fp[f]) sb.S.answers[f] = fp[f]; }
-  if (fp.features) sb.S.answers.mvp_features = Array.isArray(fp.features)?fp.features.join(', '):fp.features;
-  if (fp.entities) sb.S.answers.data_entities = fp.entities;
-  sb._applyUniversalPostProcess(false);
-  return JSON.parse(JSON.stringify(sb.S.answers));
-}
+// ── preset→answers via the APP's real apply path (v9.38) ──
+// 手組み注入はアプリ実回答と乖離する（_SCALE_DEFAULTS 4層マージ不通過で
+// フィールドプリセット16キー欠落・7キー値相違 — v9.38実測）。start() 経由に統一。
+const app = require('../test/app-answers.js');
+const sb = app.sb;
+const answersForStandard = (key) => app.answersForStandard(key);
+const answersForField = (key, scale) => app.answersForField(key, scale);
 
 // ── generate() context (snapshot harness prefix) ──
 const _snapSrc = fs.readFileSync('test/snapshot.test.js', 'utf8');

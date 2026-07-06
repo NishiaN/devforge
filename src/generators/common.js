@@ -4588,8 +4588,8 @@ function genADR(a,pn){
   doc+=_adrBlock(n++,
     G?'バックエンド/BaaS選定':'Backend / BaaS Selection',
     G?'✅ 承認済':'✅ Accepted',
-    G?'APIサーバーまたはBaaSを選定した。要件: '+a.purpose
-     :'API server or BaaS selected. Project purpose: '+a.purpose,
+    G?'APIサーバーまたはBaaSを選定した。要件: '+(a.purpose||'（未記入）')
+     :'API server or BaaS selected. Project purpose: '+(a.purpose||'(not specified)'),
     be,_beRationale(),beAlts,
     G?['バックエンドの一貫したアーキテクチャが維持できる','チームの学習コストが最小化される','-選定外技術は生成コードに含まれない','-将来のマイグレーションにはコストが発生する可能性']
      :['Consistent backend architecture','Minimizes team learning cost','-Alternative tech excluded from generated code','-Future migration may incur cost']
