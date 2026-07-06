@@ -4696,7 +4696,7 @@ function genADR(a,pn){
 
   // ADR-009: AI Integration (if applicable)
   if(!isNone(ai)){
-    const aiAlts=['OpenAI GPT-4','Claude API','Gemini API','Ollama (local)'].filter(x=>!ai.includes(x.split(' ')[0])&&!ai.includes('Claude')!==x.includes('Claude')).slice(0,3);
+    const aiAlts=['OpenAI GPT-5','Claude API','Gemini API','Ollama (local)'].filter(x=>!ai.includes(x.split(' ')[0])&&!ai.includes('Claude')!==x.includes('Claude')).slice(0,3);
     const aiRationale=G
       ?['自然言語インターフェースでUXを劇的に改善','既存ワークフローのAI拡張が可能','プロンプトエンジニアリングで機能調整が容易','API経由で最新モデルを利用可能']
       :['Natural language interface dramatically improves UX','AI-augment existing workflows','Fine-tune behavior via prompt engineering','Access latest models via API'];

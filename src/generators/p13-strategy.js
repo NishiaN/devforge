@@ -668,7 +668,7 @@ const TECH_RADAR_BASE = {
     hold: ['Heroku','AWS Elastic Beanstalk','Self-hosted without automation']
   },
   ai: {
-    adopt: ['Claude 4.5/4.6','GPT-4o','Vercel AI SDK','OpenAI SDK'],
+    adopt: ['Claude Opus 4.8/Sonnet 5','GPT-5','Vercel AI SDK','OpenAI SDK'],
     trial: ['Claude Code','Cursor','Anthropic MCP','AI Agents'],
     assess: ['Local LLMs (Ollama)','Fine-tuning','Vector DBs (Pinecone/Weaviate)'],
     hold: ['GPT-3.5 (outdated)','Non-streaming responses','Prompt without streaming']
