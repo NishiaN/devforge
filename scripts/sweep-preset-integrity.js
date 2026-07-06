@@ -7,6 +7,9 @@
  *  - [object Object] / NaN in prose
  *  - template-literal leaks (${...}) outside code fences
  *  - invalid .json files, near-empty files
+ *  - broken docs/XX_ cross-references (C13-equivalent, all presets)   [v9.35]
+ *  - empty/invalid mermaid blocks (C14-equivalent, all presets)       [v9.35]
+ *  - unclosed code fences in .md files                                [v9.35]
  * Usage: node scripts/sweep-preset-integrity.js   (run from repo root; ~5300 generations, few minutes)
  * Expected result: 0 findings. Non-zero exit on findings.
  */
@@ -75,17 +78,43 @@ const CHECKS = [
   { id:'tpl',    test:(prose)=>{ const m = prose.match(/\$\{[a-zA-Z_][^}]*\}/); return m && m[0]; } },
 ];
 
+// v9.35: C14-equivalent mermaid validity (same valid-start list as postGenerationAudit)
+const MERMAID_RE = /```mermaid\s*\n([\s\S]*?)\n```/g;
+const MERMAID_VALID = /^(graph|flowchart|sequenceDiagram|erDiagram|gantt|pie|classDiagram|stateDiagram|gitGraph|journey|quadrantChart|timeline|block-beta|xychart|mindmap)/;
+// v9.35: C13-equivalent cross-reference (same regex as postGenerationAudit)
+// docs/82 is built after generate() in the app flow (finishGen) — always exists in real output
+const XREF_RE = /docs\/(\d+[_-][^`'\s")\]]+\.md)/g;
+const XREF_ALLOW = new Set(['docs/82_architecture_integrity_check.md']);
+
 const findings = [];
 function scanFiles(files, tag) {
   for (const [p, c] of Object.entries(files)) {
     const raw = String(c);
     if (raw.trim().length < 10) { findings.push({tag, file:p, id:'empty', sample:'len='+raw.length}); continue; }
+    // xref integrity — all file types, matching C13 behavior
+    let xm;
+    while ((xm = XREF_RE.exec(raw)) !== null) {
+      const ref = 'docs/' + xm[1];
+      if (!files[ref] && !XREF_ALLOW.has(ref)) findings.push({tag, file:p, id:'xref', sample:ref});
+    }
+    XREF_RE.lastIndex = 0;
     if (p.endsWith('.json')) {
       try { JSON.parse(raw); } catch (e) { findings.push({tag, file:p, id:'badjson', sample:String(e.message).slice(0,80)}); }
       continue;
     }
     if (/\[object Object\]/.test(raw)) { findings.push({tag, file:p, id:'objobj', sample:'[object Object]'}); continue; }
     if (!p.endsWith('.md')) continue;
+    // mermaid block validity
+    let mm;
+    while ((mm = MERMAID_RE.exec(raw)) !== null) {
+      const body = (mm[1] || '').trim();
+      if (!body) findings.push({tag, file:p, id:'mmd-empty', sample:'(empty block)'});
+      else if (!MERMAID_VALID.test(body)) findings.push({tag, file:p, id:'mmd-invalid', sample:body.slice(0,60)});
+    }
+    MERMAID_RE.lastIndex = 0;
+    // unclosed code fence — odd count of fence-delimiter lines
+    const fenceCount = raw.split('\n').filter(l => /^\s{0,3}(`{3,}|~{3,})/.test(l)).length;
+    if (fenceCount % 2 !== 0) findings.push({tag, file:p, id:'fence-odd', sample:'fence lines='+fenceCount});
     const prose = stripCode(raw);
     for (const chk of CHECKS) {
       const hit = chk.test(prose, raw);

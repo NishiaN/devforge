@@ -317,7 +317,7 @@ function gen83(a,pn,G){
   }
 
   if(!isBaaS){
-    const _feats83=(a.features||'').toLowerCase();
+    const _feats83=(a.features||a.mvp_features||'').toLowerCase();
     const _hasRT=/realtime|chat|notification|リアルタイム|チャット|通知|push/i.test(_feats83);
     const _hasPay=/payment|stripe|決済/i.test(a.payment||'');
     const _isLarge83=/large/i.test(a.scale||'');
@@ -396,7 +396,7 @@ function gen83(a,pn,G){
 // doc 84: OpenAPI Specification
 function gen84(a,pn,G){
   const be=a.backend||'';
-  const entities=(a.entities||'User, Post').split(',').map(function(e){return e.trim();}).filter(Boolean);
+  const entities=(a.entities||a.data_entities||'User, Post').split(',').map(function(e){return e.trim();}).filter(Boolean);
   var _authObj21=(typeof resolveAuth==='function')?resolveAuth(a):null;
   var hasAuth=_authObj21?(_authObj21.provider!=='none'):!/なし|None|public/i.test(a.auth||'JWT');
   const isPython=/Python|Django|FastAPI/i.test(be);
@@ -488,8 +488,9 @@ function gen84(a,pn,G){
     doc+='      requestBody:\n        content:\n          application/json:\n            schema: {}\n';
     doc+='      responses:\n        "200":\n          description: "'+(G?'成功':'Success')+'"\n        "404":\n          description: "'+(G?'未検出':'Not Found')+'"\n\n';
     doc+='    delete:\n      summary: "'+ent+' '+(G?'削除':'Delete')+'"\n      tags: ["'+ent+'"]\n';
-    doc+='      responses:\n        "204":\n          description: "'+(G?'削除成功':'Deleted')+'"\n        "404":\n          description: "'+(G?'未検出':'Not Found')+'"\n```\n\n';
+    doc+='      responses:\n        "204":\n          description: "'+(G?'削除成功':'Deleted')+'"\n        "404":\n          description: "'+(G?'未検出':'Not Found')+'"\n\n';
   });
+  doc+='```\n\n';
 
   doc+='## '+(G?'ツールチェーン':'Toolchain')+'\n\n';
   doc+='| '+(G?'用途':'Purpose')+' | '+(G?'ツール':'Tool')+' | '+(G?'設定':'Config')+' |\n';

@@ -189,7 +189,7 @@ function gen87(a,pn,G){
   }
 
   // Entity-specific CREATE TABLE examples
-  var _p87ents=(a.entities||'').split(',').map(function(e){return e.trim();}).filter(Boolean);
+  var _p87ents=(a.entities||a.data_entities||'').split(',').map(function(e){return e.trim();}).filter(Boolean);
   if(_p87ents.length&&!isMongo&&!isBaaS){
     doc+='## '+(G?'エンティティ別テーブル定義例':'Entity Table Definitions')+'\n\n';
     doc+=(G

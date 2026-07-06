@@ -1042,7 +1042,7 @@ Steps:
     {id:'DEC-006',content:'駆動開発手法確定 ('+_devMethods+')',doc:'.spec/specification.md'},
     {id:'DEC-007',content:'モバイル戦略確定 ('+_mobile+')',doc:'.spec/technical-plan.md'},
     {id:'DEC-008',content:'AI開発レベル確定 ('+_aiAuto+')',doc:'docs/22_prompt_playbook.md'},
-    {id:'DEC-009',content:'決済方式確定 ('+_pay+')',doc:/なし/.test(_pay)?'.spec/specification.md':'docs/38_business_model.md'},
+    {id:'DEC-009',content:'決済方式確定 ('+_pay+')',doc:/なし|none/i.test(_pay)?'.spec/specification.md':'docs/38_business_model.md'},
     {id:'DEC-010',content:'スコープ外確定 ('+String(_scopeOut).slice(0,40)+')',doc:'docs/02_requirements.md'},
     {id:'DEC-011',content:'成功指標確定 ('+String(_successGoal).slice(0,40)+')',doc:'docs/01_project_overview.md'},
     {id:'DEC-012',content:'リリース目標確定 ('+_deadlineGoal+')',doc:'docs/10_gantt.md'},
@@ -1055,7 +1055,7 @@ Steps:
     {id:'DEC-006',content:'Dev methodology finalized ('+_devMethods+')',doc:'.spec/specification.md'},
     {id:'DEC-007',content:'Mobile strategy finalized ('+_mobile+')',doc:'.spec/technical-plan.md'},
     {id:'DEC-008',content:'AI dev level finalized ('+_aiAuto+')',doc:'docs/22_prompt_playbook.md'},
-    {id:'DEC-009',content:'Payment method finalized ('+_pay+')',doc:/None/i.test(_pay)?'.spec/specification.md':'docs/38_business_model.md'},
+    {id:'DEC-009',content:'Payment method finalized ('+_pay+')',doc:/なし|none/i.test(_pay)?'.spec/specification.md':'docs/38_business_model.md'},
     {id:'DEC-010',content:'Scope-out finalized ('+String(_scopeOut).slice(0,40)+')',doc:'docs/02_requirements.md'},
     {id:'DEC-011',content:'Success metrics finalized ('+String(_successGoal).slice(0,40)+')',doc:'docs/01_project_overview.md'},
     {id:'DEC-012',content:'Release target finalized ('+_deadlineGoal+')',doc:'docs/10_gantt.md'},
@@ -1550,7 +1550,7 @@ Steps:
       :'> Authorization controls "what an authenticated user is allowed to do".\n> Do not confuse with Authentication.\n\n'
     );
     var _sc119=a.scale||'medium';
-    var _ents119=(a.entities||'User').split(',').filter(function(e){return e.trim();}).length;
+    var _ents119=(a.entities||a.data_entities||'User').split(',').filter(function(e){return e.trim();}).length;
     var _isBaaS119=/Supabase|Firebase|Convex/i.test(be);
     doc119+='### '+(G?'モデル比較':'Model Comparison')+'\n\n';
     doc119+='| '+(G?'モデル':'Model')+' | '+(G?'判断基準':'Criteria')+' | '+(G?'メリット':'Pros')+' | '+(G?'デメリット':'Cons')+' |\n';
@@ -1675,7 +1675,7 @@ Steps:
       d+='| '+(G?'レイテンシ':'Latency')+' | '+(G?'高い（Follower確認待ち）':'High (waits for Follower ack)')+' | '+(G?'低い（Leader即レスポンス）':'Low (Leader responds immediately)')+' |\n';
       d+='| '+(G?'障害時データロス':'Data loss on failure')+' | '+(G?'なし':'None')+' | '+(G?'最大: レプリケーション遅延分':'Up to: replication lag')+' |\n';
       d+='| '+(G?'推奨用途':'Recommended For')+' | '+(G?'決済・金融・医療データ':'Payment, finance, healthcare')+' | '+(G?'ログ・解析・コンテンツ配信':'Logs, analytics, CDN')+' |\n\n';
-      var _entList120=(a.entities||'User, Post').split(',').map(function(e){return e.trim();}).filter(Boolean);
+      var _entList120=(a.entities||a.data_entities||'User, Post').split(',').map(function(e){return e.trim();}).filter(Boolean);
       var _shardCandidates=_entList120.filter(function(e){return /User|Order|Event|Log|Message|Record|Transaction/i.test(e);});
       var _shardKey=_shardCandidates.length>0?_shardCandidates[0]+'Id':'userId';
       d+='#### '+(G?'シャーディング戦略':'Sharding Strategy')+'\n\n';

@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ---
 
-# DevForge v9.34
+# DevForge v9.35
 
 **AI Development OS** — 86 JS modules in `src/` → single `devforge-v9.html` (~5927KB / 6500KB limit).
 Generates **227+ files** across **28 pillars** from a wizard-driven Q&A session.
@@ -22,12 +22,12 @@ node build.js                          # → devforge-v9.html (~5927KB, limit 65
 node build.js --no-minify              # debug (skip minification)
 node build.js --report                 # build + size breakdown by module
 node build.js --out=path               # write bundle to alternate path (used by build.test.js to avoid racing bundle readers)
-npm test                               # ~7483 tests, all passing (v9.34)
+npm test                               # ~7493 tests, all passing (v9.35)
 node --test test/gen-quality.test.js   # single test file
 npm run dev                            # build + live-server :3000
 npm run check                          # syntax-check extracted JS
 node scripts/compat-check-all-presets.js  # verify 0 ERROR / 0 WARN across all preset combos
-node scripts/sweep-preset-integrity.js    # generate ALL presets ×langs×scales, scan output for undefined/NaN/tpl-leak/bad JSON (expect 0)
+node scripts/sweep-preset-integrity.js    # generate ALL presets ×langs×scales, scan output for undefined/NaN/tpl-leak/bad JSON/broken-xref/invalid-mermaid/unclosed-fence (expect 0)
 
 # Workflow: Edit src/ → npm test → node build.js → npm run open → commit
 ```
@@ -47,7 +47,7 @@ Never reorder without checking dependencies.
 | Category | Purpose |
 |----------|---------|
 | `core/` | State (`S`), i18n (`t()`), keyboard events, wizard tour, app init |
-| `data/` | 257 standard presets (`PR`/`_mp()`), 603 field presets (`PR_FIELD`/`_fpd()`), questions, techdb (538 entries), compat-rules (332 rules), gen-templates (bilingual GT dict), helpdata |
+| `data/` | 257 standard presets (`PR`/`_mp()`), 602 field presets (`PR_FIELD`/`_fpd()`), questions, techdb (538 entries), compat-rules (332 rules), gen-templates (bilingual GT dict), helpdata |
 | `ui/launcher.js` | 109 prompt templates; `templateOrder[109]`, `AI_REC`, `LAUNCH_CAT_MAP`, `TEMPLATE_SCOPE`, `LAUNCH_SKILL_REC` maps; `DOC_GROUPS` for semantic doc grouping |
 | `generators/` | `index.js` orchestrator + `p1`–`p28` pillars + `docs.js` + `common.js` |
 | `ui/` | wizard, render, presets, preview, sidebar, editor, diff, export, explorer, dashboard, launcher, templates, qbar, cmdpalette, help, voice |
@@ -191,7 +191,7 @@ After adding: update header comment totals, add tests to `test/compat.test.js`, 
 | Preset matching | phase-n (N-1〜N-9 + G-1〜G-7, 68 tests) | ~68 |
 | Other | i18n, state, techdb, utils, complexity, mermaid (30 tests, all 28 pillars), help-hints, ui-xref, en/kanji-purity, preset-integrity | ~92 |
 
-**Total: 7483 tests** | Test harness pattern: `eval(fs.readFileSync(...))` to load src files; global `S` mock at top.
+**Total: 7493 tests** | Test harness pattern: `eval(fs.readFileSync(...))` to load src files; global `S` mock at top.
 Run `node build.js` before `npm test` — security.test.js reads the built bundle. build.test.js builds to a temp file (`--out=`), so the suite itself never rewrites `devforge-v9.html`.
 
 **When adding domains**, update: `test/data-coverage.test.js` (4 arrays), `test/gen-coherence.test.js`, `test/ops.test.js`.

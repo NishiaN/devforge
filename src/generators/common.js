@@ -3847,7 +3847,7 @@ function postGenerationAudit(files,a){
 
   // C14: Mermaid syntax audit — detect empty or invalid mermaid blocks
   var _mermaidRe=/```mermaid\s*\n([\s\S]*?)\n```/g;
-  var _validStarts=/^(graph|flowchart|sequenceDiagram|erDiagram|gantt|pie|classDiagram|stateDiagram|gitGraph|journey|quadrantChart|timeline|block-beta|xychart)/;
+  var _validStarts=/^(graph|flowchart|sequenceDiagram|erDiagram|gantt|pie|classDiagram|stateDiagram|gitGraph|journey|quadrantChart|timeline|block-beta|xychart|mindmap)/;
   var _mermaidBad=[];
   Object.keys(files).forEach(function(k){
     var content=files[k]||'';
@@ -3874,6 +3874,8 @@ function postGenerationAudit(files,a){
     var m;
     while((m=_xrefRe.exec(content))!==null){
       var ref='docs/'+m[1];
+      // docs/82 is built AFTER this audit (it consumes these findings) — always exists in final output
+      if(ref==='docs/82_architecture_integrity_check.md')continue;
       if(!files[ref]&&_xrefBroken.indexOf(ref)<0){
         _xrefBroken.push(ref);
       }

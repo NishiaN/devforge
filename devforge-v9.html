@@ -15556,7 +15556,7 @@ doc33+=G?
 '4. Auth: All endpoints reject unauthenticated requests\n\n'+
 'Coverage target: 80%+ (P0 functions: 100%)\n'+
 'Output: src/__tests__/ or tests/';
-doc33+='```\n\n';
+doc33+='\n```\n\n';
 S.files['docs/33_test_matrix.md']=doc33;
 // ═══ B1: docs/34_incident_response.md (~10KB) ═══
 let doc34='# '+(G?'インシデント対応プレイブック':'Incident Response Playbook')+'\n\n';
@@ -19056,7 +19056,7 @@ const STRIDE_PATTERNS={
 hasUserId:{S:'HIGH',T:'MED',R:'MED',I:'HIGH',D:'LOW',E:'HIGH'},
 isPayment:{S:'CRITICAL',T:'CRITICAL',R:'HIGH',I:'HIGH',D:'MED',E:'CRITICAL'},
 isPublic:{S:'LOW',T:'LOW',R:'LOW',I:'MED',D:'MED',E:'LOW'},
-hasFile:{S:'MED',T:'HIGH',I:'HIGH',D:'MED',E:'MED'},
+hasFile:{S:'MED',T:'HIGH',R:'MED',I:'HIGH',D:'MED',E:'MED'},
 default:{S:'MED',T:'MED',R:'LOW',I:'MED',D:'LOW',E:'MED'}
 };
 // Helper: Checkbox
@@ -19512,7 +19512,7 @@ doc43+='| CSRF | csurf / SameSite Cookie | '+(G?'クロスサイトリクエス�
 doc43+='| XSS | CSP / DOMPurify / esc() | '+(G?'スクリプトインジェクション防止':'Script injection prevention')+' | HIGH |\n';
 doc43+='| mTLS / VPN | Cloudflare Zero Trust | '+(G?'内部サービス間通信保護':'Internal service communication')+' | MEDIUM |\n\n';
 doc43+='### '+(G?'3段階レートリミットパターン':'3-Tier Rate Limit Pattern')+'\n\n';
-doc43+='```'+(G?'typescript\n// Express: 3段階レートリミット\nimport rateLimit from \'express-rate-limit\';\n\n// 第1層: グローバル (全エンドポイント)\nconst globalLimit = rateLimit({ windowMs: 15*60*1000, max: 500 });\n\n// 第2層: API (認証不要)\nconst apiLimit = rateLimit({ windowMs: 15*60*1000, max: 100 });\n\n// 第3層: 認証 (ブルートフォース対策)\nconst authLimit = rateLimit({ windowMs: 15*60*1000, max: 10,\n  message: { error: \'Too many attempts\' } });\n\napp.use(globalLimit);\napp.use(\'/api/\', apiLimit);\napp.use(\'/api/auth/\', authLimit);':'typescript\n// Express: 3-tier rate limiting\nimport rateLimit from \'express-rate-limit\';\n\n// Tier 1: Global (all endpoints)\nconst globalLimit = rateLimit({ windowMs: 15*60*1000, max: 500 });\n\n// Tier 2: API (public)\nconst apiLimit = rateLimit({ windowMs: 15*60*1000, max: 100 });\n\n// Tier 3: Auth (brute force protection)\nconst authLimit = rateLimit({ windowMs: 15*60*1000, max: 10,\n  message: { error: \'Too many attempts\' } });\n\napp.use(globalLimit);\napp.use(\'/api/\', apiLimit);\napp.use(\'/api/auth/\', authLimit);')+'```\n\n';
+doc43+='```'+(G?'typescript\n// Express: 3段階レートリミット\nimport rateLimit from \'express-rate-limit\';\n\n// 第1層: グローバル (全エンドポイント)\nconst globalLimit = rateLimit({ windowMs: 15*60*1000, max: 500 });\n\n// 第2層: API (認証不要)\nconst apiLimit = rateLimit({ windowMs: 15*60*1000, max: 100 });\n\n// 第3層: 認証 (ブルートフォース対策)\nconst authLimit = rateLimit({ windowMs: 15*60*1000, max: 10,\n  message: { error: \'Too many attempts\' } });\n\napp.use(globalLimit);\napp.use(\'/api/\', apiLimit);\napp.use(\'/api/auth/\', authLimit);':'typescript\n// Express: 3-tier rate limiting\nimport rateLimit from \'express-rate-limit\';\n\n// Tier 1: Global (all endpoints)\nconst globalLimit = rateLimit({ windowMs: 15*60*1000, max: 500 });\n\n// Tier 2: API (public)\nconst apiLimit = rateLimit({ windowMs: 15*60*1000, max: 100 });\n\n// Tier 3: Auth (brute force protection)\nconst authLimit = rateLimit({ windowMs: 15*60*1000, max: 10,\n  message: { error: \'Too many attempts\' } });\n\napp.use(globalLimit);\napp.use(\'/api/\', apiLimit);\napp.use(\'/api/auth/\', authLimit);')+'\n```\n\n';
 // ── Zero Trust AI Agent Gateway (AI有効時のみ) ──
 if(hasAI){
 doc43+='\n---\n\n';
@@ -21822,9 +21822,11 @@ _default: 'threshold at 80% → alert'
 };
 const limits = rateLimits[domain] || rateLimits._default;
 const alertEn = (rateLimits[domain] && rateLimitAlertsEn[domain]) || rateLimitAlertsEn._default;
+// each domain names its critical-op key differently (payment/booking/bid/…) — pick the non-api/alert key
+const critOp = limits[Object.keys(limits).find(k => k !== 'api' && k !== 'alert')] || rateLimits._default.write;
 runbook += G
-? `- **API全体**: ${limits.api}\n- **重要操作**: ${limits.write || limits.payment || limits.diagnostic || limits.quiz || limits.checkout || limits.signup}\n- **アラート**: ${limits.alert}\n\n`
-: `- **Overall API**: ${limits.api}\n- **Critical Operations**: ${limits.write || limits.payment || limits.diagnostic || limits.quiz || limits.checkout || limits.signup}\n- **Alerting**: ${alertEn}\n\n`;
+? `- **API全体**: ${limits.api}\n- **重要操作**: ${critOp}\n- **アラート**: ${limits.alert}\n\n`
+: `- **Overall API**: ${limits.api}\n- **Critical Operations**: ${critOp}\n- **Alerting**: ${alertEn}\n\n`;
 if (!isBaaS) {
 runbook += '```typescript\n';
 runbook += '// Redis-based rate limiter (express middleware)\n';
@@ -27970,7 +27972,7 @@ doc+='```typescript\n// Redis ZSET-based Sliding Window Counter\nasync function 
 }
 }
 if(!isBaaS){
-const _feats83=(a.features||'').toLowerCase();
+const _feats83=(a.features||a.mvp_features||'').toLowerCase();
 const _hasRT=/realtime|chat|notification|リアルタイム|チャット|通知|push/i.test(_feats83);
 const _hasPay=/payment|stripe|決済/i.test(a.payment||'');
 const _isLarge83=/large/i.test(a.scale||'');
@@ -28046,7 +28048,7 @@ S.files['docs/83_api_design_principles.md']=doc;
 // doc 84: OpenAPI Specification
 function gen84(a,pn,G){
 const be=a.backend||'';
-const entities=(a.entities||'User, Post').split(',').map(function(e){return e.trim();}).filter(Boolean);
+const entities=(a.entities||a.data_entities||'User, Post').split(',').map(function(e){return e.trim();}).filter(Boolean);
 var _authObj21=(typeof resolveAuth==='function')?resolveAuth(a):null;
 var hasAuth=_authObj21?(_authObj21.provider!=='none'):!/なし|None|public/i.test(a.auth||'JWT');
 const isPython=/Python|Django|FastAPI/i.test(be);
@@ -28131,8 +28133,9 @@ doc+='    patch:\n      summary: "'+ent+' '+(G?'更新':'Update')+'"\n      tags
 doc+='      requestBody:\n        content:\n          application/json:\n            schema: {}\n';
 doc+='      responses:\n        "200":\n          description: "'+(G?'成功':'Success')+'"\n        "404":\n          description: "'+(G?'未検出':'Not Found')+'"\n\n';
 doc+='    delete:\n      summary: "'+ent+' '+(G?'削除':'Delete')+'"\n      tags: ["'+ent+'"]\n';
-doc+='      responses:\n        "204":\n          description: "'+(G?'削除成功':'Deleted')+'"\n        "404":\n          description: "'+(G?'未検出':'Not Found')+'"\n```\n\n';
+doc+='      responses:\n        "204":\n          description: "'+(G?'削除成功':'Deleted')+'"\n        "404":\n          description: "'+(G?'未検出':'Not Found')+'"\n\n';
 });
+doc+='```\n\n';
 doc+='## '+(G?'ツールチェーン':'Toolchain')+'\n\n';
 doc+='| '+(G?'用途':'Purpose')+' | '+(G?'ツール':'Tool')+' | '+(G?'設定':'Config')+' |\n';
 doc+='|------|------|------|\n';
@@ -28530,7 +28533,7 @@ _h87.forEach(function(h){doc+='- ✅ '+h+'\n';});
 doc+='\n> '+(G?'これらのルールは '+_db87dom+' ドメインの規制・リスク要件から自動導出されています。':'These rules are auto-derived from regulatory/risk requirements of the '+_db87dom+' domain.')+'\n\n';
 }
 // Entity-specific CREATE TABLE examples
-var _p87ents=(a.entities||'').split(',').map(function(e){return e.trim();}).filter(Boolean);
+var _p87ents=(a.entities||a.data_entities||'').split(',').map(function(e){return e.trim();}).filter(Boolean);
 if(_p87ents.length&&!isMongo&&!isBaaS){
 doc+='## '+(G?'エンティティ別テーブル定義例':'Entity Table Definitions')+'\n\n';
 doc+=(G
@@ -29216,7 +29219,7 @@ bugs.forEach(function(b){doc+='- ⚠️ '+b+'\n';});
 doc+='\n';
 }
 // Entity-specific test fixtures
-var _p91ents=(a.entities||'').split(',').map(function(e){return e.trim();}).filter(Boolean);
+var _p91ents=(a.entities||a.data_entities||'').split(',').map(function(e){return e.trim();}).filter(Boolean);
 if(_p91ents.length){
 var _p91ent=_p91ents[0];
 var _p91cols=getEntityColumns(_p91ent,G,_p91ents);
@@ -33574,7 +33577,7 @@ const initDecs=G?[
 {id:'DEC-006',content:'駆動開発手法確定 ('+_devMethods+')',doc:'.spec/specification.md'},
 {id:'DEC-007',content:'モバイル戦略確定 ('+_mobile+')',doc:'.spec/technical-plan.md'},
 {id:'DEC-008',content:'AI開発レベル確定 ('+_aiAuto+')',doc:'docs/22_prompt_playbook.md'},
-{id:'DEC-009',content:'決済方式確定 ('+_pay+')',doc:/なし/.test(_pay)?'.spec/specification.md':'docs/38_business_model.md'},
+{id:'DEC-009',content:'決済方式確定 ('+_pay+')',doc:/なし|none/i.test(_pay)?'.spec/specification.md':'docs/38_business_model.md'},
 {id:'DEC-010',content:'スコープ外確定 ('+String(_scopeOut).slice(0,40)+')',doc:'docs/02_requirements.md'},
 {id:'DEC-011',content:'成功指標確定 ('+String(_successGoal).slice(0,40)+')',doc:'docs/01_project_overview.md'},
 {id:'DEC-012',content:'リリース目標確定 ('+_deadlineGoal+')',doc:'docs/10_gantt.md'},
@@ -33587,7 +33590,7 @@ const initDecs=G?[
 {id:'DEC-006',content:'Dev methodology finalized ('+_devMethods+')',doc:'.spec/specification.md'},
 {id:'DEC-007',content:'Mobile strategy finalized ('+_mobile+')',doc:'.spec/technical-plan.md'},
 {id:'DEC-008',content:'AI dev level finalized ('+_aiAuto+')',doc:'docs/22_prompt_playbook.md'},
-{id:'DEC-009',content:'Payment method finalized ('+_pay+')',doc:/None/i.test(_pay)?'.spec/specification.md':'docs/38_business_model.md'},
+{id:'DEC-009',content:'Payment method finalized ('+_pay+')',doc:/なし|none/i.test(_pay)?'.spec/specification.md':'docs/38_business_model.md'},
 {id:'DEC-010',content:'Scope-out finalized ('+String(_scopeOut).slice(0,40)+')',doc:'docs/02_requirements.md'},
 {id:'DEC-011',content:'Success metrics finalized ('+String(_successGoal).slice(0,40)+')',doc:'docs/01_project_overview.md'},
 {id:'DEC-012',content:'Release target finalized ('+_deadlineGoal+')',doc:'docs/10_gantt.md'},
@@ -34078,7 +34081,7 @@ doc119+=(G
 :'> Authorization controls "what an authenticated user is allowed to do".\n> Do not confuse with Authentication.\n\n'
 );
 var _sc119=a.scale||'medium';
-var _ents119=(a.entities||'User').split(',').filter(function(e){return e.trim();}).length;
+var _ents119=(a.entities||a.data_entities||'User').split(',').filter(function(e){return e.trim();}).length;
 var _isBaaS119=/Supabase|Firebase|Convex/i.test(be);
 doc119+='### '+(G?'モデル比較':'Model Comparison')+'\n\n';
 doc119+='| '+(G?'モデル':'Model')+' | '+(G?'判断基準':'Criteria')+' | '+(G?'メリット':'Pros')+' | '+(G?'デメリット':'Cons')+' |\n';
@@ -34202,7 +34205,7 @@ d+='| '+(G?'一貫性':'Consistency')+' | ✅ '+(G?'完全一貫 (RPO=0)':'Full 
 d+='| '+(G?'レイテンシ':'Latency')+' | '+(G?'高い（Follower確認待ち）':'High (waits for Follower ack)')+' | '+(G?'低い（Leader即レスポンス）':'Low (Leader responds immediately)')+' |\n';
 d+='| '+(G?'障害時データロス':'Data loss on failure')+' | '+(G?'なし':'None')+' | '+(G?'最大: レプリケーション遅延分':'Up to: replication lag')+' |\n';
 d+='| '+(G?'推奨用途':'Recommended For')+' | '+(G?'決済・金融・医療データ':'Payment, finance, healthcare')+' | '+(G?'ログ・解析・コンテンツ配信':'Logs, analytics, CDN')+' |\n\n';
-var _entList120=(a.entities||'User, Post').split(',').map(function(e){return e.trim();}).filter(Boolean);
+var _entList120=(a.entities||a.data_entities||'User, Post').split(',').map(function(e){return e.trim();}).filter(Boolean);
 var _shardCandidates=_entList120.filter(function(e){return /User|Order|Event|Log|Message|Record|Transaction/i.test(e);});
 var _shardKey=_shardCandidates.length>0?_shardCandidates[0]+'Id':'userId';
 d+='#### '+(G?'シャーディング戦略':'Sharding Strategy')+'\n\n';
@@ -39627,7 +39630,7 @@ findings.push({level:'warn',msg:G?'docs/87のORM記述が選択ORM ('+ormR.name+
 }
 // C14: Mermaid syntax audit — detect empty or invalid mermaid blocks
 var _mermaidRe=/```mermaid\s*\n([\s\S]*?)\n```/g;
-var _validStarts=/^(graph|flowchart|sequenceDiagram|erDiagram|gantt|pie|classDiagram|stateDiagram|gitGraph|journey|quadrantChart|timeline|block-beta|xychart)/;
+var _validStarts=/^(graph|flowchart|sequenceDiagram|erDiagram|gantt|pie|classDiagram|stateDiagram|gitGraph|journey|quadrantChart|timeline|block-beta|xychart|mindmap)/;
 var _mermaidBad=[];
 Object.keys(files).forEach(function(k){
 var content=files[k]||'';
@@ -39653,6 +39656,8 @@ var content=files[k]||'';
 var m;
 while((m=_xrefRe.exec(content))!==null){
 var ref='docs/'+m[1];
+// docs/82 is built AFTER this audit (it consumes these findings) — always exists in final output
+if(ref==='docs/82_architecture_integrity_check.md')continue;
 if(!files[ref]&&_xrefBroken.indexOf(ref)<0){
 _xrefBroken.push(ref);
 }

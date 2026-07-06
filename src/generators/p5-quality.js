@@ -325,7 +325,7 @@ function genPillar5_QualityIntelligence(a,pn){
     '4. Auth: All endpoints reject unauthenticated requests\n\n'+
     'Coverage target: 80%+ (P0 functions: 100%)\n'+
     'Output: src/__tests__/ or tests/';
-  doc33+='```\n\n';
+  doc33+='\n```\n\n';
 
   S.files['docs/33_test_matrix.md']=doc33;
 
