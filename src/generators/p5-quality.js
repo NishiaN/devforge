@@ -621,9 +621,9 @@ function genPillar5_QualityIntelligence(a,pn){
     doc36+='- **'+(G?'カゴ落ち率':'Cart Abandonment')+'**: ≤30%\n';
   }else if(domain==='fintech'){
     doc36+='- **'+(G?'取引処理時間':'Transaction Processing Time')+'**: ≤2s\n';
-    doc36+='- **'+(G?'残高不整合':'Balance Inconsistency')+'**: 0 件/日\n';
+    doc36+='- **'+(G?'残高不整合':'Balance Inconsistency')+'**: '+(G?'0 件/日':'0/day')+'\n';
   }else if(domain==='booking'||domain==='realestate'){
-    doc36+='- **'+(G?'予約重複':'Booking Duplicates')+'**: 0 件/日\n';
+    doc36+='- **'+(G?'予約重複':'Booking Duplicates')+'**: '+(G?'0 件/日':'0/day')+'\n';
     doc36+='- **'+(G?'通知到達率':'Notification Delivery')+'**: ≥95%\n';
   }else if(domain==='iot'){
     doc36+='- **'+(G?'デバイス接続率':'Device Connection Rate')+'**: ≥99%\n';

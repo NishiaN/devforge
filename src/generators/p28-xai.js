@@ -215,10 +215,10 @@ function gen128(a,pn){
   doc+='## '+(G?'§3 グローバルAI規制比較マトリクス':'§3 Global AI Regulation Comparison Matrix')+'\n\n';
   doc+='| '+(G?'規制':'Regulation')+' | '+(G?'管轄':'Jurisdiction')+' | '+(G?'対象':'Scope')+' | '+(G?'主要要件':'Key Requirements')+' | '+(G?'施行':'Enforcement')+'|\n';
   doc+='|---|---|---|---|---|\n';
-  doc+='| EU AI Act | EU | '+(G?'高リスクAI':'High-risk AI')+' | '+(G?'適合性評価・透明性・人間監視':'Conformity assessment, transparency, human oversight')+' | 2026施行 (2024/8公布) |\n';
+  doc+='| EU AI Act | EU | '+(G?'高リスクAI':'High-risk AI')+' | '+(G?'適合性評価・透明性・人間監視':'Conformity assessment, transparency, human oversight')+' | '+(G?'2026施行 (2024/8公布)':'effective 2026 (promulgated 2024/8)')+' |\n';
   doc+='| US EO 14110 | USA | '+(G?'基盤モデル':'Foundation models')+' | '+(G?'安全性評価報告・AI識別ウォーターマーク':'Safety eval reporting, AI watermarking')+' | '+(G?'行政命令（拘束力あり）':'Executive order (binding)')+' |\n';
   doc+='| '+(G?'AI戦略会議ガイドライン':'Japan AI Strategy Council')+' | '+(G?'日本':'Japan')+' | '+(G?'汎用AI':'General AI')+' | '+(G?'透明性・公平性・安全性の自主的遵守':'Voluntary compliance: transparency, fairness, safety')+' | '+(G?'任意（法制化検討中）':'Voluntary (legislation under review)')+' |\n';
-  doc+='| '+(G?'アルゴリズム規制':'Algorithmic Regulation')+' | '+(G?'中国':'China')+' | '+(G?'レコメンドAI':'Recommendation AI')+' | '+(G?'アルゴリズム透明性・利用者通知義務':'Algorithm transparency, user notification')+' | 2022施行 |\n';
+  doc+='| '+(G?'アルゴリズム規制':'Algorithmic Regulation')+' | '+(G?'中国':'China')+' | '+(G?'レコメンドAI':'Recommendation AI')+' | '+(G?'アルゴリズム透明性・利用者通知義務':'Algorithm transparency, user notification')+' | '+(G?'2022施行':'effective 2022')+' |\n';
   doc+='| AIDA (draft) | '+(G?'カナダ':'Canada')+' | '+(G?'高影響AI':'High-impact AI')+' | '+(G?'説明可能性・バイアス対策・インシデント報告':'Explainability, bias mitigation, incident reporting')+' | '+(G?'審議中':'Under review')+' |\n\n';
 
   if(xd.isMedical){
@@ -361,9 +361,9 @@ function gen130(a,pn){
     doc+='| '+(G?'役職':'Role')+' | '+(G?'責任':'Responsibilities')+' | '+(G?'必須':'Required')+'|\n';
     doc+='|---|---|---|\n';
     doc+='| AI '+(G?'倫理責任者':'Ethics Officer')+' | '+(G?'倫理方針策定・外部コンプライアンス':'Ethics policy, external compliance')+' | ✅ |\n';
-    doc+='| '+(G?'最高データ責任者 (CDO)':'Chief Data Officer (CDO)')+' | '+(G?'データ品質・プライバシー・カード管理':'Data quality, privacy, data cards')+' | '+(scale==='large'?'✅':'推奨')+' |\n';
+    doc+='| '+(G?'最高データ責任者 (CDO)':'Chief Data Officer (CDO)')+' | '+(G?'データ品質・プライバシー・カード管理':'Data quality, privacy, data cards')+' | '+(scale==='large'?'✅':G?'推奨':'Recommended')+' |\n';
     doc+='| '+(G?'ML/AIエンジニアリングリード':'ML/AI Engineering Lead')+' | '+(G?'技術実装・テスト・デプロイ監視':'Technical implementation, testing, deployment')+' | ✅ |\n';
-    doc+='| '+(G?'法務・コンプライアンス':'Legal & Compliance')+' | '+(G?'規制対応・契約レビュー':'Regulatory compliance, contract review')+' | '+(scale==='large'?'✅':'推奨')+' |\n';
+    doc+='| '+(G?'法務・コンプライアンス':'Legal & Compliance')+' | '+(G?'規制対応・契約レビュー':'Regulatory compliance, contract review')+' | '+(scale==='large'?'✅':G?'推奨':'Recommended')+' |\n';
     doc+='| '+(G?'ドメイン専門家 (外部)':'Domain Expert (External)')+' | '+(G?'独立した第三者視点でのレビュー':'Independent third-party review')+' | '+(xd.isHighRisk?'✅':G?'任意':'Optional')+' |\n\n';
 
     doc+='### '+(G?'審査サイクル':'Review Cadence')+'\n\n';
@@ -402,7 +402,7 @@ function gen130(a,pn){
   if(scale==='solo'){
     doc+='```markdown\n# '+(G?'個人AI利用方針':'Personal AI Usage Policy')+'\n\n1. '+(G?'AIシステムの目的を明確にし、意図しない用途への転用を行わない':'Clearly define AI system purpose; do not repurpose for unintended uses')+'\n2. '+(G?'AIの判断を盲目的に信頼せず、人間による検証を怠らない':'Do not blindly trust AI decisions; always apply human verification')+'\n3. '+(G?'データのプライバシーと機密性を保護する':'Protect data privacy and confidentiality')+'\n4. '+(G?'フェアネスに関わる問題を発見した場合、直ちに記録・修正する':'Document and fix fairness issues immediately when discovered')+'\n```\n\n';
   }else if(scale==='large'){
-    doc+='```markdown\n# '+(G?'エンタープライズAI倫理・ガバナンス方針':'Enterprise AI Ethics & Governance Policy')+'\n\n## '+(G?'原則':'Principles')+'\n1. '+(G?'人間中心設計: AIは人間の意思決定を補完し、代替しない':'Human-centered: AI augments, not replaces, human decision-making')+'\n2. '+(G?'透明性: すべての高リスクAI意思決定に説明を提供する':'Transparency: provide explanations for all high-risk AI decisions')+'\n3. '+(G?'公平性: 保護属性に基づく差別的結果を防止する':'Fairness: prevent discriminatory outcomes based on protected attributes')+'\n4. '+(G?'安全性: リスクに比例した保護措置を実装する':'Safety: implement protections proportional to risks')+'\n5. '+(G?'説明責任: AIシステムのオーナーシップと責任を明確にする':'Accountability: clearly define AI system ownership and responsibility')+'\n\n## '+(G?'適用範囲':'Scope')+'\n- '+(G?'本方針はすべての本番AIシステムに適用される':'This policy applies to all production AI systems')+'\n- '+(G?'外部委託AIサービスも含む':'Includes outsourced AI services')+'\n\n## '+(G?'コンプライアンス':'Compliance')+'\n- EU AI Act (2026施行)\n- ISO/IEC 42001\n- NIST AI RMF\n```\n\n';
+    doc+='```markdown\n# '+(G?'エンタープライズAI倫理・ガバナンス方針':'Enterprise AI Ethics & Governance Policy')+'\n\n## '+(G?'原則':'Principles')+'\n1. '+(G?'人間中心設計: AIは人間の意思決定を補完し、代替しない':'Human-centered: AI augments, not replaces, human decision-making')+'\n2. '+(G?'透明性: すべての高リスクAI意思決定に説明を提供する':'Transparency: provide explanations for all high-risk AI decisions')+'\n3. '+(G?'公平性: 保護属性に基づく差別的結果を防止する':'Fairness: prevent discriminatory outcomes based on protected attributes')+'\n4. '+(G?'安全性: リスクに比例した保護措置を実装する':'Safety: implement protections proportional to risks')+'\n5. '+(G?'説明責任: AIシステムのオーナーシップと責任を明確にする':'Accountability: clearly define AI system ownership and responsibility')+'\n\n## '+(G?'適用範囲':'Scope')+'\n- '+(G?'本方針はすべての本番AIシステムに適用される':'This policy applies to all production AI systems')+'\n- '+(G?'外部委託AIサービスも含む':'Includes outsourced AI services')+'\n\n## '+(G?'コンプライアンス':'Compliance')+'\n- EU AI Act ('+(G?'2026施行':'effective 2026')+')\n- ISO/IEC 42001\n- NIST AI RMF\n```\n\n';
   }else{
     doc+='```markdown\n# '+(G?'AI利用ガバナンス方針':'AI Usage Governance Policy')+'\n\n## '+(G?'目的':'Purpose')+'\n'+(G?'本方針は、AIシステムの責任ある開発・運用のための基準を定める':'This policy establishes standards for responsible AI development and operation')+'\n\n## '+(G?'適用原則':'Applied Principles')+'\n1. '+(G?'透明性: AI意思決定の根拠を説明可能にする':'Transparency: make AI decision rationale explainable')+'\n2. '+(G?'公平性: 定期的なフェアネス評価を実施する':'Fairness: conduct regular fairness evaluations')+'\n3. '+(G?'安全性: インシデント対応計画を整備する':'Safety: maintain incident response plan')+'\n\n## '+(G?'レビューサイクル':'Review Cycle')+'\n- '+(G?'四半期ごとにフェアネスレポートをレビュー':'Review fairness reports quarterly')+'\n- '+(G?'年次でAIA (AI影響評価) を更新':'Update AIA annually')+'\n```\n\n';
   }

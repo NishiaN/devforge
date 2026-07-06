@@ -125,7 +125,7 @@ function gen87(a,pn,G){
     doc+='### '+(G?'正規化方針':'Normalization Policy')+'\n\n';
     doc+='| '+(G?'ルール':'Rule')+' | '+(G?'内容':'Description')+' | '+(G?'例外':'Exception')+' |\n';
     doc+='|------|---------|------|\n';
-    doc+='| 3NF原則 | '+(G?'原則として第三正規形まで正規化':'Normalize to 3NF by default')+' | '+(G?'集計テーブルは意図的に非正規化':'Intentional denormalization for aggregation tables')+' |\n';
+    doc+='| '+(G?'3NF原則':'3NF principle')+' | '+(G?'原則として第三正規形まで正規化':'Normalize to 3NF by default')+' | '+(G?'集計テーブルは意図的に非正規化':'Intentional denormalization for aggregation tables')+' |\n';
     doc+='| Soft Delete | '+(G?'deleted_at TIMESTAMPTZ で論理削除':'Soft delete with deleted_at TIMESTAMPTZ')+' | '+(G?'監査ログは物理削除しない':'Audit logs never hard-deleted')+' |\n';
     doc+='| Timestamps | '+(G?'全テーブルに created_at・updated_at を追加':'Add created_at, updated_at to all tables')+' | - |\n';
     doc+='| UUID | '+(G?'主キーはUUID v7 (時系列ソート可能)':'Use UUID v7 for PKs (time-sortable)')+' | '+(G?'外部連携は auto-increment でも可':'Auto-increment OK for external integrations')+' |\n';
@@ -331,8 +331,8 @@ function gen88(a,pn,G){
     doc+='```python\n# SQLAlchemy: connection pool config\nengine = create_async_engine(\n    DATABASE_URL,\n    pool_size=10,\n    max_overflow=5,\n    pool_pre_ping=True,\n    pool_recycle=3600,\n    echo=False,  # '+(G?'本番ではFalse':'False in production')+'\n)\n```\n\n';
   } else {
     doc+='| Pool Size | 10-25 | '+(G?'サーバーCPUコア数の2-3倍':'2-3× server CPU cores')+' |\n';
-    doc+='| Connection Limit | DB側で管理 | PostgreSQL: `max_connections=100` |\n';
-    doc+='| Idle Timeout | 10秒/10s | '+(G?'アイドル接続を解放':'Release idle connections')+' |\n\n';
+    doc+='| Connection Limit | '+(G?'DB側で管理':'Managed by DB')+' | PostgreSQL: `max_connections=100` |\n';
+    doc+='| Idle Timeout | '+(G?'10秒/10s':'10s')+' | '+(G?'アイドル接続を解放':'Release idle connections')+' |\n\n';
     if(orm.name==='Prisma ORM'){
       doc+='```typescript\n// Prisma: datasource url with pool params\n// DATABASE_URL="postgresql://...?connection_limit=10&pool_timeout=20"\n\n// '+(G?'Prisma Accelerate (サーバーレス推奨)':'Prisma Accelerate (recommended for serverless)')+'\n// https://console.prisma.io/\n```\n\n';
     } else {

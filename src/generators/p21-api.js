@@ -15,7 +15,7 @@ var API_REST_PRINCIPLES=[
    ja_ex:'PATCH /users/123 (部分更新)',en_ex:'PATCH /users/123 (partial update)'},
   {id:'status_codes',ja:'HTTPステータスコード',en:'HTTP Status Codes',
    ja_desc:'200 OK・201 Created・204 No Content・400 Bad Request・401 Unauthorized・403 Forbidden・404 Not Found・409 Conflict・422 Unprocessable・429 Too Many Requests・500 Internal Server Error',
-   en_desc:'200 OK・201 Created・204 No Content・400 Bad Request・401 Unauthorized・403 Forbidden・404 Not Found・409 Conflict・422 Unprocessable・429 Too Many Requests・500 Internal Server Error',
+   en_desc:'200 OK, 201 Created, 204 No Content, 400 Bad Request, 401 Unauthorized, 403 Forbidden, 404 Not Found, 409 Conflict, 422 Unprocessable, 429 Too Many Requests, 500 Internal Server Error',
    ja_ex:'POST /sessions → 201, DELETE /items/99 (not found) → 404',
    en_ex:'POST /sessions → 201, DELETE /items/99 (not found) → 404'},
   {id:'versioning',ja:'バージョニング',en:'Versioning',

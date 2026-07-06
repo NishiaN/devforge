@@ -62,7 +62,7 @@ const INJECTION_DEFENSE_PATTERNS=[
 ];
 
 const COMPLIANCE_AI=[
-  {name:'EU AI Act',scope:'EU市場',level:'risk-based',
+  {name:'EU AI Act',scope:'EU市場',scopeEn:'EU market',level:'risk-based',
    ja:'高リスクAIシステム (医療/採用/信用評価等) は適合性評価・人間監視・透明性開示が義務',
    en:'High-risk AI systems (medical/hiring/credit) require conformity assessment, human oversight, transparency disclosure'},
   {name:'NIST AI RMF',scope:'Global',level:'voluntary',
@@ -158,7 +158,7 @@ function gen95(a,pn){
   doc+='| '+(G?'規制':'Regulation')+' | '+(G?'適用範囲':'Scope')+' | '+(G?'レベル':'Level')+' | '+(G?'要求事項':'Requirements')+' |\n';
   doc+='|---|---|---|---|\n';
   COMPLIANCE_AI.forEach(function(c){
-    doc+='| **'+c.name+'** | '+c.scope+' | '+c.level+' | '+(G?c.ja:c.en)+' |\n';
+    doc+='| **'+c.name+'** | '+(G?c.scope:(c.scopeEn||c.scope))+' | '+c.level+' | '+(G?c.ja:c.en)+' |\n';
   });
   doc+='\n';
 

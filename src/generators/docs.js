@@ -408,8 +408,8 @@ ${(G?['Lighthouse 90+','LCP < 2.5s','画像最適化','バンドルサイズ確�
     :_sc==='small'
     ?'| '+(G?'役割':'Role')+' | '+(G?'人数':'Count')+' | '+(G?'稼働率':'Utilization')+'|\n|------|-----|------|\n| '+(G?'フロントエンド':'Frontend')+' | 1 | 100% |\n| '+(G?'バックエンド':'Backend')+' | 1 | 100% |'
     :'| '+(G?'役割':'Role')+' | '+(G?'人数':'Count')+' | '+(G?'稼働率':'Utilization')+'|\n|------|-----|------|\n| '+(G?'フロントエンド':'Frontend')+' | 1-2 | 100% |\n| '+(G?'バックエンド':'Backend')+' | 1-2 | 100% |\n| '+(G?'QA':'QA')+' | 1 | 50% |';
-  let d='## '+(G?'WBS — 総工数:':'WBS — Total Hours:')+' 約'+(totalH+26)+'h';
-  d+=' ('+(G?'バッファ込み':'with buffer')+' '+_buf+'%: 約'+_totalWithBuf+'h)\n\n';
+  let d='## '+(G?'WBS — 総工数:':'WBS — Total Hours:')+' '+(G?'約':'~')+(totalH+26)+'h';
+  d+=' ('+(G?'バッファ込み':'with buffer')+' '+_buf+'%: '+(G?'約':'~')+_totalWithBuf+'h)\n\n';
   d+='### 1. '+(G?'プロジェクト管理':'Project Management')+' (8h)\n';
   d+='- 1.1 '+(G?'要件定義・SDD作成':'Requirements & SDD')+' (3h)\n';
   d+='- 1.2 '+(G?'技術選定・環境構築':'Tech selection & setup')+' (3h)\n';
@@ -603,8 +603,8 @@ ${G?
   const _isStatic17=/なし（静的|None|static/i.test(be);
   const _slaMap17={solo:'99%',small:'99.5%',medium:'99.9%',large:'99.95%'};
   const _sla=_slaMap17[_sc]||'99.9%';
-  const _rtoMap={solo:'4h/4h',small:'2h/2h',medium:'30分/30m',large:'5分/5m'};
-  const _rpoMap={solo:'24h',small:'4h',medium:'1h',large:'15分/15m'};
+  const _rtoMap={solo:G?'4h/4h':'4h',small:G?'2h/2h':'2h',medium:G?'30分/30m':'30m',large:G?'5分/5m':'5m'};
+  const _rpoMap={solo:'24h',small:'4h',medium:'1h',large:G?'15分/15m':'15m'};
   let d='## '+(G?'監視項目':'Monitoring Items')+'\n';
   d+='- '+(G?'アプリケーションログ':'Application logs')+'\n';
   d+='- '+(G?'エラーレート':'Error rate')+'\n';
@@ -636,7 +636,7 @@ ${G?
     d+='\n## '+(G?'インシデントエスカレーション':'Incident Escalation')+'\n\n';
     d+='| Severity | '+(G?'定義':'Definition')+' | '+(G?'応答時間':'Response')+' | '+(G?'エスカレーション先':'Escalation')+'  |\n';
     d+='|----------|--------|---------|----------------|\n';
-    d+='| Sev 1 | '+(G?'本番サービス全停止':'Full prod outage')+' | 15分/15m | '+(G?'PL → PM → 顧客':'TL → PM → Customer')+'  |\n';
+    d+='| Sev 1 | '+(G?'本番サービス全停止':'Full prod outage')+' | '+(G?'15分/15m':'15m')+' | '+(G?'PL → PM → 顧客':'TL → PM → Customer')+'  |\n';
     d+='| Sev 2 | '+(G?'主要機能障害':'Major feature down')+' | 1h | '+(G?'担当 → PL':'Assignee → TL')+'  |\n';
     d+='| Sev 3 | '+(G?'パフォーマンス劣化':'Performance degradation')+' | 4h | '+(G?'担当 → PL':'Assignee → TL')+'  |\n';
     d+='| Sev 4 | '+(G?'軽微な問題':'Minor issue')+' | '+(G?'翌営業日':'Next business day')+' | '+(G?'担当':'Assignee')+'  |\n';
@@ -754,7 +754,7 @@ ${G?
   d+='- docs/100_database_performance.md — '+(G?'DBインデックス・クエリ最適化':'DB index & query optimization')+'\n';
   return d;
 })()],
-    ['20_a11y',G?'アクセシビリティ設計書':'Accessibility Design',(()=>{const _a11yDom=detectDomain(a.purpose||'');const _a11ySpec=_a11yDom==='fintech'?(G?'- 取引完了・エラーは aria-live="assertive" で即時通知\n- 認証フォームは autocomplete 属性付与 (current-password等)\n- 色だけでリスク情報を伝えない（アイコン+テキスト併用）':'- Transaction status/errors must use aria-live="assertive"\n- Auth forms require autocomplete attributes\n- Never convey risk via color alone (use icon+text)'):_a11yDom==='health'?(G?'- 緊急・警告情報は aria-live="assertive" で即時通知\n- 重要情報のコントラスト比は 7:1+ (AAA目標)\n- 医療用語には <abbr> タグと説明テキスト付与':'- Critical alerts must use aria-live="assertive"\n- Target 7:1+ (AAA) contrast for critical info\n- Use <abbr> with expansion for medical terms'):_a11yDom==='education'?(G?'- 動画コンテンツには字幕・文字起こし必須\n- キーボードのみでコース全体を完結できること\n- 認知負荷軽減: 1ページ1タスク原則':'- Videos require captions and transcripts\n- Full keyboard-only course completion required\n- One task per page to reduce cognitive load'):_a11yDom==='ec'?(G?'- カートへの追加操作後は aria-live でフィードバック通知\n- 商品フィルタはキーボードで操作可能\n- 購入フローの全ステップでエラー回復が可能':'- Cart updates must trigger aria-live feedback\n- Product filters must be keyboard operable\n- All checkout steps support error recovery'):(G?'- フォームフィールドには aria-label または <label> 必須\n- エラーメッセージは aria-describedby でフィールドに関連付け\n- モーダルはフォーカストラップを実装必須':'- Every form field needs aria-label or <label>\n- Error messages linked via aria-describedby\n- Modals must implement focus trap');return `## WCAG 2.2 AA ${G?'チェックリスト':'Checklist'}\n\n| ${G?'基準':'Criteria'} | ${G?'詳細':'Detail'} | ${G?'テスト方法':'Test Method'} |\n|---|---|---|\n| 1.1.1 ${G?'代替テキスト':'Alt Text'} | ${G?'全画像にalt属性':'alt on all images'} | axe-core |\n| 1.4.3 ${G?'コントラスト':'Contrast'} | ${G?'通常テキスト 4.5:1+':'Normal text 4.5:1+'} | Lighthouse |\n| 2.1.1 ${G?'キーボード':'Keyboard'} | ${G?'全機能キーボード操作可':'All functions keyboard accessible'} | ${G?'手動テスト':'Manual'} |\n| 2.4.3 ${G?'フォーカス順序':'Focus Order'} | ${G?'論理的なタブ順序':'Logical tab order'} | ${G?'手動テスト':'Manual'} |\n| 3.3.1 ${G?'エラー通知':'Error ID'} | ${G?'エラー箇所を明示':'Identify input errors'} | axe-core |\n| 4.1.3 ${G?'ステータス通知':'Status Msg'} | aria-live | axe-core |\n\n## ${G?'ドメイン固有 A11y 要件':'Domain-Specific A11y Requirements'} (${_a11yDom||G?'汎用':'generic'})\n\n${_a11ySpec}${(a.mobile&&!/なし|none/i.test(a.mobile)&&/expo|react.?native|flutter/i.test(a.mobile))?'\n\n## '+(G?'モバイル HIG / Android Quality Guidelines':'Mobile HIG / Android Quality Guidelines')+'\n- '+(G?'Apple HIG: ネイティブコントロール使用・セーフエリア対応・最小タップターゲット 44×44pt':'Apple HIG: use native controls, support safe area, min tap target 44×44pt')+'\n- '+(G?'Material Design 3: 最小タップターゲット 48×48dp・バックジェスチャー対応':'Material Design 3: min tap target 48×48dp, support back gesture'):''}\n\n## ${G?'スクリーンリーダーテスト手順':'Screen Reader Test Procedures'}\n\n| ${G?'ツール':'Tool'} | ${G?'対象':'Platform'} | ${G?'テスト観点':'Test Points'} |\n|------|--------|----------|\n| VoiceOver | iOS / macOS | ${G?'読み上げ順序・アクション確認':'Reading order & action confirmation'} |\n| TalkBack | Android | ${G?'タップジェスチャー・フォーカス移動':'Tap gestures & focus navigation'} |\n| NVDA | Windows | ${G?'フォームラベル・エラー通知':'Form labels & error announcements'} |\n\n## ${G?'自動テストツール':'Automated A11y Testing'}\n\n\`\`\`bash\n# axe-core (${G?'ユニットテスト統合':'unit test integration'})\nnpm install @axe-core/react --save-dev\n\n# Lighthouse ${G?'アクセシビリティスコア確認':'accessibility score'}\nnpx lighthouse http://localhost:3000 --only-categories=accessibility\n\n# pa11y ${G?'バッチ検証':'batch validation'}\nnpx pa11y http://localhost:3000\n\`\`\`\n\n## ${G?'AI アクセシビリティ監査プロンプト':'AI Accessibility Audit Prompt'}\n\n\`\`\`\n${G?'以下のコンポーネントを WCAG 2.2 AA 基準で診断してください。\n[コードを貼り付け]\n確認項目: aria属性の不足・キーボードフォーカス・コントラスト・エラー関連付け・aria-live\n修正コードも合わせて提示してください。':'Diagnose this component for WCAG 2.2 AA compliance.\n[Paste component code]\nCheck: missing aria attrs, keyboard focus, contrast, error associations, aria-live\nProvide corrected code for each issue found.'}\n\`\`\``;})()],
+    ['20_a11y',G?'アクセシビリティ設計書':'Accessibility Design',(()=>{const _a11yDom=detectDomain(a.purpose||'');const _a11ySpec=_a11yDom==='fintech'?(G?'- 取引完了・エラーは aria-live="assertive" で即時通知\n- 認証フォームは autocomplete 属性付与 (current-password等)\n- 色だけでリスク情報を伝えない（アイコン+テキスト併用）':'- Transaction status/errors must use aria-live="assertive"\n- Auth forms require autocomplete attributes\n- Never convey risk via color alone (use icon+text)'):_a11yDom==='health'?(G?'- 緊急・警告情報は aria-live="assertive" で即時通知\n- 重要情報のコントラスト比は 7:1+ (AAA目標)\n- 医療用語には <abbr> タグと説明テキスト付与':'- Critical alerts must use aria-live="assertive"\n- Target 7:1+ (AAA) contrast for critical info\n- Use <abbr> with expansion for medical terms'):_a11yDom==='education'?(G?'- 動画コンテンツには字幕・文字起こし必須\n- キーボードのみでコース全体を完結できること\n- 認知負荷軽減: 1ページ1タスク原則':'- Videos require captions and transcripts\n- Full keyboard-only course completion required\n- One task per page to reduce cognitive load'):_a11yDom==='ec'?(G?'- カートへの追加操作後は aria-live でフィードバック通知\n- 商品フィルタはキーボードで操作可能\n- 購入フローの全ステップでエラー回復が可能':'- Cart updates must trigger aria-live feedback\n- Product filters must be keyboard operable\n- All checkout steps support error recovery'):(G?'- フォームフィールドには aria-label または <label> 必須\n- エラーメッセージは aria-describedby でフィールドに関連付け\n- モーダルはフォーカストラップを実装必須':'- Every form field needs aria-label or <label>\n- Error messages linked via aria-describedby\n- Modals must implement focus trap');return `## WCAG 2.2 AA ${G?'チェックリスト':'Checklist'}\n\n| ${G?'基準':'Criteria'} | ${G?'詳細':'Detail'} | ${G?'テスト方法':'Test Method'} |\n|---|---|---|\n| 1.1.1 ${G?'代替テキスト':'Alt Text'} | ${G?'全画像にalt属性':'alt on all images'} | axe-core |\n| 1.4.3 ${G?'コントラスト':'Contrast'} | ${G?'通常テキスト 4.5:1+':'Normal text 4.5:1+'} | Lighthouse |\n| 2.1.1 ${G?'キーボード':'Keyboard'} | ${G?'全機能キーボード操作可':'All functions keyboard accessible'} | ${G?'手動テスト':'Manual'} |\n| 2.4.3 ${G?'フォーカス順序':'Focus Order'} | ${G?'論理的なタブ順序':'Logical tab order'} | ${G?'手動テスト':'Manual'} |\n| 3.3.1 ${G?'エラー通知':'Error ID'} | ${G?'エラー箇所を明示':'Identify input errors'} | axe-core |\n| 4.1.3 ${G?'ステータス通知':'Status Msg'} | aria-live | axe-core |\n\n## ${G?'ドメイン固有 A11y 要件':'Domain-Specific A11y Requirements'} (${G?'汎用':(_a11yDom||'generic')})\n\n${_a11ySpec}${(a.mobile&&!/なし|none/i.test(a.mobile)&&/expo|react.?native|flutter/i.test(a.mobile))?'\n\n## '+(G?'モバイル HIG / Android Quality Guidelines':'Mobile HIG / Android Quality Guidelines')+'\n- '+(G?'Apple HIG: ネイティブコントロール使用・セーフエリア対応・最小タップターゲット 44×44pt':'Apple HIG: use native controls, support safe area, min tap target 44×44pt')+'\n- '+(G?'Material Design 3: 最小タップターゲット 48×48dp・バックジェスチャー対応':'Material Design 3: min tap target 48×48dp, support back gesture'):''}\n\n## ${G?'スクリーンリーダーテスト手順':'Screen Reader Test Procedures'}\n\n| ${G?'ツール':'Tool'} | ${G?'対象':'Platform'} | ${G?'テスト観点':'Test Points'} |\n|------|--------|----------|\n| VoiceOver | iOS / macOS | ${G?'読み上げ順序・アクション確認':'Reading order & action confirmation'} |\n| TalkBack | Android | ${G?'タップジェスチャー・フォーカス移動':'Tap gestures & focus navigation'} |\n| NVDA | Windows | ${G?'フォームラベル・エラー通知':'Form labels & error announcements'} |\n\n## ${G?'自動テストツール':'Automated A11y Testing'}\n\n\`\`\`bash\n# axe-core (${G?'ユニットテスト統合':'unit test integration'})\nnpm install @axe-core/react --save-dev\n\n# Lighthouse ${G?'アクセシビリティスコア確認':'accessibility score'}\nnpx lighthouse http://localhost:3000 --only-categories=accessibility\n\n# pa11y ${G?'バッチ検証':'batch validation'}\nnpx pa11y http://localhost:3000\n\`\`\`\n\n## ${G?'AI アクセシビリティ監査プロンプト':'AI Accessibility Audit Prompt'}\n\n\`\`\`\n${G?'以下のコンポーネントを WCAG 2.2 AA 基準で診断してください。\n[コードを貼り付け]\n確認項目: aria属性の不足・キーボードフォーカス・コントラスト・エラー関連付け・aria-live\n修正コードも合わせて提示してください。':'Diagnose this component for WCAG 2.2 AA compliance.\n[Paste component code]\nCheck: missing aria attrs, keyboard focus, contrast, error associations, aria-live\nProvide corrected code for each issue found.'}\n\`\`\``;})()],
     ['21_changelog',G?'変更履歴':'Changelog',(()=>{
   const _sc=a.scale||'medium';
   const _cadence=_sc==='solo'?( G?'アドホック (機能完成時)':'Ad-hoc (on feature complete)'):_sc==='large'?( G?'継続的デプロイ (CI/CD自動)':'Continuous deployment (CI/CD auto)'):( G?'週次スプリント毎':'Weekly per sprint');
@@ -1079,7 +1079,7 @@ Steps:
   const initIssues=[..._baseIssues,..._extraIssues];
   let gov107='# '+pn+' — '+(G?'プロジェクトガバナンス':'Project Governance')+'\n> '+date+'\n\n';
   gov107+='## '+(G?'1. 文書管理ルール':'1. Document Management Rules')+'\n';
-  gov107+='- '+(G?'文書ID体系':'Doc ID scheme')+': '+pn.replace(/\s/g,'').substring(0,6)+'-{種別}-{連番}\n';
+  gov107+='- '+(G?'文書ID体系':'Doc ID scheme')+': '+pn.replace(/\s/g,'').substring(0,6)+(G?'-{種別}-{連番}':'-{type}-{seq}')+'\n';
   gov107+='- '+(G?'保存場所':'Storage')+': docs/ '+(G?'(技術文書)':'(technical docs)')+' / .spec/ '+(G?'(仕様書)':'(specs)')+'\n';
   gov107+='- '+(G?'版数管理':'Version control')+': Git + CHANGELOG\n\n';
   gov107+='## '+(G?'2. コミュニケーション計画':'2. Communication Plan')+'\n';
@@ -1096,7 +1096,7 @@ Steps:
   gov107+='\n## '+(G?'5. 変更管理 (CR)':'5. Change Management (CR)')+'\n\n### '+(G?'5.1 変更管理フロー':'5.1 CR Flow')+'\n';
   gov107+=G?'起票 → 影響分析 → 承認 → 実施 → 検証 → 完了\n':'Submit → Impact analysis → Approve → Implement → Verify → Close\n';
   gov107+='\n### '+(G?'5.2 変更要求テンプレート':'5.2 CR Template')+'\n';
-  gov107+='- **'+(G?'CR番号':'CR#')+'**: CR-{連番}\n';
+  gov107+='- **'+(G?'CR番号':'CR#')+'**: '+(G?'CR-{連番}':'CR-{seq}')+'\n';
   gov107+='- **'+(G?'要求内容':'Request')+' **:\n- **'+(G?'変更理由':'Reason')+' **:\n';
   gov107+='- **'+(G?'影響範囲':'Impact scope')+'**: '+(G?'機能/スケジュール/コスト/品質':'function/schedule/cost/quality')+'\n';
   gov107+='- **'+(G?'影響度':'Impact level')+'**: '+(G?'高/中/低':'High/Med/Low')+'\n';
@@ -1272,8 +1272,8 @@ Steps:
     const _scrs=(stripPri(a.screens)||(G?'ダッシュボード':'Dashboard')).split(', ').filter(Boolean);
     const _ents=(stripPri(a.data_entities)||'User').split(/[,、]\s*/).map(e=>e.trim()).filter(Boolean);
     // SLA defaults by deploy target
-    const _slaMap={'Vercel':{avail:'99.99%',rto:'5分/5m',rpo:'0',support:G?'コミュニティ/community':'Community'},'Firebase Hosting':{avail:'99.95%',rto:'10分/10m',rpo:'0',support:'Google support'},'Railway':{avail:'99.9%',rto:'15分/15m',rpo:'1h',support:'Railway Discord'},'Fly.io':{avail:'99.9%',rto:'10分/10m',rpo:'1h',support:'Fly.io community'},'AWS':{avail:'99.99%',rto:'5分/5m',rpo:'1h',support:'AWS Support'},'Cloudflare':{avail:'99.99%',rto:'5分/5m',rpo:'0',support:'Cloudflare support'},'Netlify':{avail:'99.99%',rto:'5分/5m',rpo:'0',support:'Netlify support'}};
-    const _sla=_slaMap[deployTarget]||_slaMap[Object.keys(_slaMap).find(k=>deployTarget.includes(k))]||{avail:'99.9%',rto:'15分/15m',rpo:'1h',support:G?'ベンダー/vendor':'Vendor'};
+    const _slaMap={'Vercel':{avail:'99.99%',rto:G?'5分/5m':'5m',rpo:'0',support:G?'コミュニティ/community':'Community'},'Firebase Hosting':{avail:'99.95%',rto:G?'10分/10m':'10m',rpo:'0',support:'Google support'},'Railway':{avail:'99.9%',rto:G?'15分/15m':'15m',rpo:'1h',support:'Railway Discord'},'Fly.io':{avail:'99.9%',rto:G?'10分/10m':'10m',rpo:'1h',support:'Fly.io community'},'AWS':{avail:'99.99%',rto:G?'5分/5m':'5m',rpo:'1h',support:'AWS Support'},'Cloudflare':{avail:'99.99%',rto:G?'5分/5m':'5m',rpo:'0',support:'Cloudflare support'},'Netlify':{avail:'99.99%',rto:G?'5分/5m':'5m',rpo:'0',support:'Netlify support'}};
+    const _sla=_slaMap[deployTarget]||_slaMap[Object.keys(_slaMap).find(k=>deployTarget.includes(k))]||{avail:'99.9%',rto:G?'15分/15m':'15m',rpo:'1h',support:G?'ベンダー/vendor':'Vendor'};
     // Deploy-specific ops checks
     const _deployOps={'Vercel':[G?'Vercel Analyticsダッシュボード確認':'Check Vercel Analytics dashboard',G?'Edge Functions エラーレート監視':'Monitor Edge Functions error rate',G?'Deployment Protection設定確認':'Verify Deployment Protection config'],'Railway':[G?'Railway Metrics CPU/メモリ確認':'Check Railway Metrics CPU/memory',G?'PostgreSQL接続プール使用率監視':'Monitor PostgreSQL connection pool usage',G?'Railway sleeping設定確認':'Check Railway sleeping settings'],'AWS':[G?'CloudWatch Logs確認':'Check CloudWatch Logs',G?'RDS Performance Insights確認':'Review RDS Performance Insights',G?'Cost Explorer予算アラート確認':'Verify Cost Explorer budget alerts'],'Cloudflare':[G?'Workers Analytics確認':'Check Workers Analytics',G?'D1/KV使用量確認':'Monitor D1/KV usage',G?'ゼロトラストポリシー確認':'Review Zero Trust policies']};
     const _dops=_deployOps[deployTarget]||_deployOps[Object.keys(_deployOps).find(k=>deployTarget&&k&&deployTarget.includes(k))]||[G?'デプロイログ確認':'Check deployment logs',G?'エラーレート監視':'Monitor error rate',G?'ストレージ使用量確認':'Monitor storage usage'];
@@ -1325,7 +1325,7 @@ Steps:
     doc+='\n## §3 '+(G?'変更要求票 (CR)':'Change Request (CR)')+'\n\n';
     doc+='### '+(G?'3.1 CR詳細テンプレート':'3.1 CR Template')+'\n';
     doc+='| '+(G?'項目':'Field')+' | '+(G?'内容':'Content')+' |\n|------|--------|\n';
-    doc+='| CR番号 | CR-001 |\n';
+    doc+='| '+(G?'CR番号':'CR No.')+' | CR-001 |\n';
     doc+='| '+(G?'起票日':'Submitted')+' | '+date+' |\n';
     doc+='| '+(G?'起票者':'Submitter')+' | |\n';
     doc+='| '+(G?'変更タイトル':'Change Title')+' | |\n';
@@ -1618,7 +1618,7 @@ Steps:
     d+='| '+chk('SQLite',dbKey)+' | Relational | — | ACID | '+(G?'単一ノード':'Single node')+' | '+(G?'ローカル・組み込み':'Local, embedded')+' |\n';
     d+='| '+chk('Firestore',dbKey)+' | Document | AP | BASE | '+(G?'自動マルチリージョン':'Auto multi-region')+' | '+(G?'モバイル・リアルタイム':'Mobile, realtime')+' |\n\n';
     d+='### '+(G?'CAP定理 & ACID vs BASE':'CAP Theorem & ACID vs BASE')+'\n\n';
-    d+='> **CAP定理**: '+(G?'分散システムはC(一貫性)/A(可用性)/P(分断耐性)を同時に3つ満たせない。':'A distributed system cannot simultaneously guarantee C(Consistency)/A(Availability)/P(Partition tolerance).')+'\n\n';
+    d+='> **'+(G?'CAP定理':'CAP theorem')+'**: '+(G?'分散システムはC(一貫性)/A(可用性)/P(分断耐性)を同時に3つ満たせない。':'A distributed system cannot simultaneously guarantee C(Consistency)/A(Availability)/P(Partition tolerance).')+'\n\n';
     d+='- **CP** (Consistency + Partition): '+(G?'パーティション時はエラーを返す（一貫性優先）→ PostgreSQL/MySQL':'Returns error on partition (consistency first) → PostgreSQL/MySQL')+'\n';
     d+='- **AP** (Availability + Partition): '+(G?'パーティション時も応答するが結果整合性（可用性優先）→ MongoDB/Firestore':'Responds on partition but eventual consistency (availability first) → MongoDB/Firestore')+'\n\n';
     d+='| '+(G?'特性':'Property')+' | ACID | BASE |\n|------|------|------|\n';
@@ -1790,7 +1790,7 @@ Steps:
     d+='| 5. Revoke | '+(G?'\u5931\u52b9\u30fb\u5ec3\u68c4':'Revoke / retire')+' | '+(G?'\u5373\u6642\u5931\u52b9\u30fb\u76e3\u67fb\u30ed\u30b0\u8a18\u9332':'Immediate revocation + audit log')+' |\n\n';
     d+='### '+(G?'\u30c4\u30fc\u30eb\u6bd4\u8f03 (6\u7a2e)':'Tool Comparison (6 tools)')+'\n\n';
     d+='| '+(G?'\u30c4\u30fc\u30eb':'Tool')+' | '+(G?'\u30ed\u30fc\u30c6\u30fc\u30b7\u30e7\u30f3':'Rotation')+' | '+(G?'\u76e3\u67fb':'Audit')+' | '+(G?'\u9069\u5408\u74b0\u5883':'Best For')+' | '+(G?'\u30b3\u30b9\u30c8\u76ee\u5b89':'Cost')+' |\n|------|-----------|------|----------|------|\n';
-    d+='| **Doppler** | \u2705'+(G?'\u81ea\u52d5':'auto')+' | \u2705 | '+(G?'\u3042\u3089\u3086\u308b\u74b0\u5883':'Any environment')+' | Free\u301c |\n';
+    d+='| **Doppler** | \u2705'+(G?'\u81ea\u52d5':'auto')+' | \u2705 | '+(G?'\u3042\u3089\u3086\u308b\u74b0\u5883':'Any environment')+' | '+(G?'Free\u301c':'Free+')+' |\n';
     d+='| **HashiCorp Vault** | \u2705'+(G?'\u52d5\u7684':'dynamic')+' | \u2705 | '+(G?'\u5927\u898f\u6a21\u30fb\u30aa\u30f3\u30d7\u30ec':'Large scale / on-premise')+' | OSS/Enterprise |\n';
     d+='| **SOPS** | \u26a0\ufe0f'+(G?'\u624b\u52d5':'manual')+' | \u2705Git | '+(G?'GitOps\u30fb\u30d5\u30a1\u30a4\u30eb\u30d9\u30fc\u30b9':'GitOps, file-based')+' | Free |\n';
     d+='| **AWS Secrets Manager** | \u2705'+(G?'\u81ea\u52d5':'auto')+' | \u2705CloudTrail | '+(G?'AWS\u74b0\u5883':'AWS environments')+' | $0.40/secret/mo |\n';
@@ -1823,16 +1823,16 @@ Steps:
     d+='- **npm provenance**: '+(G?'`npm publish --provenance` \u3067SBOM\u3092\u81ea\u52d5\u751f\u6210':'Auto-generate SBOM with `npm publish --provenance`')+'\n';
     d+='- **lockfile**: '+(G?'`package-lock.json`/`pnpm-lock.yaml`\u3092\u5fc5\u305a\u30b3\u30df\u30c3\u30c8\u3002CI\u3067lockfile checksum\u691c\u8a3c':'Always commit lockfile. Verify lockfile checksum in CI')+'\n';
     d+='- **--ignore-scripts**: '+(G?'npm\u30a4\u30f3\u30b9\u30c8\u30fc\u30eb\u6642\u306bpostinstall\u30b9\u30af\u30ea\u30d7\u30c8\u5b9f\u884c\u3092\u7981\u6b62\uff08SolarWinds\u578b\u653b\u6483\u9632\u6b62\uff09':'Prevent postinstall script execution on npm install (prevents SolarWinds-type attacks)')+'\n\n';
-    if(_isNode){d+='**Node.js**: `npm audit` (weekly CI) + Snyk (PR gate) + `npm-audit-resolver` (suppression\u7ba1\u7406)\n\n';}
+    if(_isNode){d+='**Node.js**: `npm audit` (weekly CI) + Snyk (PR gate) + `npm-audit-resolver` (suppression'+(G?'\u7ba1\u7406':' management')+')\n\n';}
     if(_isPy){d+='**Python**: `pip-audit` + Bandit (`bandit -r src/`) + Safety (dependency check)\n\n';}
-    if(!_isNode&&!_isPy&&!_isBaas){d+='**'+be121+'**: Trivy (universal scanner) + \u30d7\u30e9\u30c3\u30c8\u30d5\u30a9\u30fc\u30e0\u56fa\u6709SCA tool\u3092\u4f75\u7528\n\n';}
+    if(!_isNode&&!_isPy&&!_isBaas){d+='**'+be121+'**: Trivy (universal scanner) + '+(G?'\u30d7\u30e9\u30c3\u30c8\u30d5\u30a9\u30fc\u30e0\u56fa\u6709SCA tool\u3092\u4f75\u7528':'platform-specific SCA tool')+'\n\n';}
     d+='> '+(G?'\u53c2\u7167: [A03 \u30a4\u30f3\u30b8\u30a7\u30af\u30b7\u30e7\u30f3](./43_security_intelligence.md)':'Reference: [A03 Injection](./43_security_intelligence.md)')+'\n\n';
     // §4 Data Classification
     d+='## '+(G?'§4 \u30c7\u30fc\u30bf\u5206\u985e\u30d5\u30ec\u30fc\u30e0\u30ef\u30fc\u30af':'§4 Data Classification Framework')+'\n\n';
     d+=(G?'\u5168\u30c7\u30fc\u30bf\u3092\u30d53\u30a4\u30a2\u306b\u5206\u985e\u3057\u3001\u30c6\u30a3\u30a2\u306b\u5fdc\u3058\u305f\u4fdd\u8b77\u8981\u4ef6\u3092\u9069\u7528\u3059\u308b\u3002':'Classify all data into 4 tiers and apply protection requirements per tier.')+'\n\n';
     d+='| '+(G?'\u30c6\u30a3\u30a2':'Tier')+' | '+(G?'\u5b9a\u7fa9':'Definition')+' | '+(G?'\u6697\u53f7\u5316':'Encryption')+' | '+(G?'\u30a2\u30af\u30bb\u30b9\u5236\u5fa1':'Access Control')+' | '+(G?'\u4fdd\u5b58\u671f\u9593':'Retention')+' | '+(G?'\u76e3\u67fb':'Audit')+' |\n|------|------|---------|------------|---------|------|\n';
     d+='| **Restricted** | PII/PHI/PCI | AES-256 | '+(G?'\u6700\u5c0f\u6a29\u9650 + MFA':'Least privilege + MFA')+' | '+(G?'\u6cd5\u5b9a\u671f\u9593':'Legal req')+' | \u2705 '+(G?'\u5fc5\u9808':'Required')+' |\n';
-    d+='| **Confidential** | '+(G?'\u696d\u52d9\u6a5f\u5bc6':'Business confidential')+' | TLS 1.3 + DB\u6697\u53f7\u5316 | RBAC | 3'+(G?'\u5e74':'y')+' | \u2705 '+(G?'\u63a8\u5968':'Recommended')+' |\n';
+    d+='| **Confidential** | '+(G?'\u696d\u52d9\u6a5f\u5bc6':'Business confidential')+' | TLS 1.3 + '+(G?'DB\u6697\u53f7\u5316':'DB encryption')+' | RBAC | 3'+(G?'\u5e74':'y')+' | \u2705 '+(G?'\u63a8\u5968':'Recommended')+' |\n';
     d+='| **Internal** | '+(G?'\u793e\u5185\u5229\u7528\u30c7\u30fc\u30bf':'Internal use data')+' | TLS 1.3 | '+(G?'\u8a8d\u8a3c\u6e08\u307f\u30e6\u30fc\u30b6\u30fc':'Authenticated users')+' | 1'+(G?'\u5e74':'y')+' | \u26a0\ufe0f '+(G?'\u4efb\u610f':'Optional')+' |\n';
     d+='| **Public** | '+(G?'\u516c\u958b\u60c5\u5831':'Public information')+' | TLS 1.3 | '+(G?'\u306a\u3057':'None')+' | '+(G?'\u4e0d\u8981':'N/A')+' | \u2014 |\n\n';
     if(entities&&entities.length>0){
@@ -2978,7 +2978,7 @@ function genDevForgeGuide(a,pn,G){
   doc+='| '+(G?'層':'Layer')+' | '+(G?'ファイル例':'Key Files')+' | '+(G?'効果':'Effect')+'|\n';
   doc+='|------|----------|------|\n';
   doc+='| **AI Context** | CLAUDE.md, .cursorrules, skills/ | '+(G?'AIツールがプロジェクト全体を理解し、一貫したコードを生成':'AI tools understand the full project and generate consistent code')+'|\n';
-  doc+='| **Specification** | .spec/, docs/ (108文書) | '+(G?'アーキテクチャ・セキュリティ・テスト・運用の全設計を網羅':'Full design coverage for architecture, security, testing, operations')+'|\n';
+  doc+='| **Specification** | .spec/, docs/ ('+(G?'108文書':'108 docs')+') | '+(G?'アーキテクチャ・セキュリティ・テスト・運用の全設計を網羅':'Full design coverage for architecture, security, testing, operations')+'|\n';
   doc+='| **Infrastructure** | .devcontainer/, .github/ | '+(G?'開発環境とCI/CDを即座に構築':'Development environment and CI/CD ready to use')+'|\n\n';
 
   // Section 2: Optimal usage

@@ -776,7 +776,7 @@ CLAUDE.md        → ${G?'Claude Code用ルール':'Claude Code rules'}
     factoryMd+='- \u274c **'+(G?'曖昧な説明':'Vague description')+'**: `do stuff` '+(G?'→ 何をするか不明':'→ unclear what it does')+'\n';
     factoryMd+='- \u274c **'+(G?'山括弧テンプレート':'Angle-bracket templates')+'**: `<your task here>` '+(G?'→ AI混乱の原因':'→ confuses AI')+'\n';
     factoryMd+='- \u274c **'+(G?'モノリシックスキル':'Monolithic skill')+'**: '+(G?'1スキルに複数判断を詰め込む':'Packing multiple judgments into 1 skill')+'\n';
-    factoryMd+='- \u274c **MCP混同**: '+(G?'ツールアクセス(MCP)をスキルに書く':'Writing tool access (MCP) inside skills')+'\n\n';
+    factoryMd+='- \u274c **'+(G?'MCP混同':'MCP confusion')+'**: '+(G?'ツールアクセス(MCP)をスキルに書く':'Writing tool access (MCP) inside skills')+'\n\n';
     factoryMd+='### '+(G?'マイクロスキル設計原則':'Micro-Skill Design Principles')+'\n\n';
     factoryMd+='- \u2705 '+(G?'1スキル = 1判断 (PASS/FAIL または数値目標)':'1 Skill = 1 Judgment (PASS/FAIL or numeric target)')+'\n';
     factoryMd+='- \u2705 '+(G?'スキル名はkebab-case (spec-review, code-gen)':'Skill name in kebab-case (spec-review, code-gen)')+'\n';

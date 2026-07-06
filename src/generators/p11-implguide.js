@@ -98,7 +98,7 @@ function genPillar11_ImplIntelligence(a,pn){
     const cols=getEntityColumns(ent,G,entities);
     if(!cols||cols.length===0){
       doc39+='### '+ent+'\n';
-      doc39+=(G?'※ 未定義エンティティ。ENTITY_COLUMNSに追加してください。\n\n':'※ Undefined entity. Add to ENTITY_COLUMNS.\n\n');
+      doc39+=(G?'※ 未定義エンティティ。ENTITY_COLUMNSに追加してください。\n\n':'Note: Undefined entity. Add to ENTITY_COLUMNS.\n\n');
       return;
     }
     const methods=getEntityMethods(ent)||['GET','POST','PUT','DELETE'];
@@ -169,7 +169,7 @@ function genPillar11_ImplIntelligence(a,pn){
   // 1. AI Operation Workflow
   doc40+='## '+(G?'1. AI運用ワークフロー':'1. AI Operation Workflow')+'\n\n';
   if(isNone(aiLevel)){
-    doc40+=(G?'※ AIレベルが「なし」のため、基本的なフローのみ記載します。\n\n':'※ AI level is "none", only basic flow described.\n\n');
+    doc40+=(G?'※ AIレベルが「なし」のため、基本的なフローのみ記載します。\n\n':'Note: AI level is "none", only basic flow described.\n\n');
     doc40+='### '+(G?'基本フロー':'Basic Flow')+'\n';
     doc40+='1. '+(G?'仕様書レビュー（手動）':'Manual spec review')+'\n';
     doc40+='2. '+(G?'実装（コード記述）':'Implementation (coding)')+'\n';

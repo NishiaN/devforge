@@ -288,7 +288,7 @@ function gen99(a,pn){
     _ents99.slice(0,4).forEach(function(e){
       doc+='| '+e+' | ~500 B | ~'+(_isLargeScale?'360K':'36K')+' | ~'+(_isLargeScale?'180MB':'18MB')+' |\n';
     });
-    doc+='| '+(G?'添付ファイル (S3)':'Attachments (S3)')+' | ~2MB/件 | ~'+(_isLargeScale?'120K':'12K')+' | ~'+(_isLargeScale?'240GB':'24GB')+' |\n';
+    doc+='| '+(G?'添付ファイル (S3)':'Attachments (S3)')+' | '+(G?'~2MB/件':'~2MB each')+' | ~'+(_isLargeScale?'120K':'12K')+' | ~'+(_isLargeScale?'240GB':'24GB')+' |\n';
     doc+='\n> '+(G?'📌 DB は 3年分でも数GB規模。ストレージコストはオブジェクトストレージ (S3/GCS) が支配的になります。':
       '📌 DB stays in GB range even over 3 years. Object storage (S3/GCS) will dominate storage cost.')+'\n';
   }

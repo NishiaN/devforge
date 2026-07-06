@@ -396,7 +396,7 @@ function gen78(G, domain, dtCfg, a, pn) {
     doc += '| ' + (G ? 'バーンレート' : 'Burn Rate') + ' | ' + (G ? 'デプロイ判定' : 'Deploy Decision') + ' | ' + (G ? 'アクション' : 'Action') + ' |\n';
     doc += '|-----------|-----------|--------|\n';
     doc += '| > 14.4x | 🔴 ' + (G ? 'デプロイ凍結' : 'Deploy Freeze') + ' | ' + (G ? '全デプロイ停止・インシデント対応優先' : 'Stop all deploys, prioritize incident response') + ' |\n';
-    doc += '| 1x〜14.4x | 🟡 ' + (G ? '要承認' : 'Approval Required') + ' | ' + (G ? '上長承認 + 監視強化デプロイ' : 'Manager approval + enhanced monitoring deploy') + ' |\n';
+    doc += '| ' + (G ? '1x〜14.4x' : '1x~14.4x') + ' | 🟡 ' + (G ? '要承認' : 'Approval Required') + ' | ' + (G ? '上長承認 + 監視強化デプロイ' : 'Manager approval + enhanced monitoring deploy') + ' |\n';
     doc += '| < 1x | 🟢 ' + (G ? '通常デプロイ' : 'Normal Deploy') + ' | ' + (G ? '標準SOREサイクルを実行' : 'Execute standard SORE cycle') + ' |\n\n';
   }
   doc += '### ' + (G ? 'SOREフェーズ × ドキュメントマップ' : 'SORE Phase × Document Map') + '\n\n';
@@ -460,12 +460,13 @@ function gen79(G, domain, dtCfg, a, pn) {
   doc += '## ' + (G ? 'パイプラインステージ × 品質ゲート' : 'Pipeline Stage × Quality Gate Matrix') + '\n\n';
   doc += '| ' + (G ? 'ステージ' : 'Stage') + ' | ' + (G ? 'コード品質' : 'Code Quality') + ' | ' + (G ? 'テストカバレッジ' : 'Test Coverage') + ' | ' + (G ? 'セキュリティ' : 'Security') + ' | ' + (G ? 'パフォーマンス' : 'Performance') + ' | A11y |\n';
   doc += '|---|:---:|:---:|:---:|:---:|:---:|\n';
-  doc += '| ' + (G ? 'Lint/型チェック' : 'Lint & Type Check') + ' | 🔴必須 | - | - | - | - |\n';
-  doc += '| ' + (G ? 'テスト' : 'Test') + ' | ✅ | 🔴必須 | 🔴必須 | - | - |\n';
+  const _req = G ? '🔴必須' : '🔴 Required';
+  doc += '| ' + (G ? 'Lint/型チェック' : 'Lint & Type Check') + ' | ' + _req + ' | - | - | - | - |\n';
+  doc += '| ' + (G ? 'テスト' : 'Test') + ' | ✅ | ' + _req + ' | ' + _req + ' | - | - |\n';
   doc += '| ' + (G ? 'ビルド' : 'Build') + ' | ✅ | ✅ | ✅ | ⚠️ | - |\n';
-  doc += '| ' + (G ? 'ステージングデプロイ後' : 'Post Staging') + ' | ✅ | ✅ | 🔴必須 | 🔴必須 | ⚠️ |\n';
-  doc += '| E2E | ✅ | ✅ | ✅ | 🔴必須 | 🔴必須 |\n';
-  doc += '| ' + (G ? '本番デプロイ後' : 'Post Production') + ' | ✅ | ✅ | ✅ | 🔴必須 | ✅ |\n\n';
+  doc += '| ' + (G ? 'ステージングデプロイ後' : 'Post Staging') + ' | ✅ | ✅ | ' + _req + ' | ' + _req + ' | ⚠️ |\n';
+  doc += '| E2E | ✅ | ✅ | ✅ | ' + _req + ' | ' + _req + ' |\n';
+  doc += '| ' + (G ? '本番デプロイ後' : 'Post Production') + ' | ✅ | ✅ | ✅ | ' + _req + ' | ✅ |\n\n';
   doc += '🔴 = ' + (G ? 'ブロッキング (失敗時デプロイ停止)' : 'Blocking (stop deploy on fail)') + '  ⚠️ = ' + (G ? '警告 (継続可)' : 'Warning (continue OK)') + '\n\n';
 
   doc += '## ' + (G ? '品質ゲート詳細' : 'Quality Gate Details') + '\n\n';

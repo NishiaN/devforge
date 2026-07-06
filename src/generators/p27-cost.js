@@ -154,11 +154,11 @@ function gen109(a,pn){
     doc+=G?'クラウドは「使った分だけ課金」されます。固定費型（サーバー常時起動）と従量課金型（リクエスト数・データ転送量ベース）の2種類があります。\n\n':'Cloud billing works on "pay for what you use." There are two types: fixed-cost (always-on servers) and usage-based (per request/data transfer).\n\n';
     doc+='## '+(G?'無料枠フル活用戦略':'Free Tier Maximization Strategy')+'\n\n';
     doc+='| '+(G?'サービス':'Service')+' | '+(G?'無料枠':'Free Tier')+' | '+(G?'超過単価':'Overage')+'|\n|---|---|---|\n';
-    doc+='| Vercel Hobby | 100GB帯域・100K関数実行/月 | $20/月〜 |\n';
-    doc+='| Supabase Free | 500MB DB・2GB帯域 | $25/月〜 |\n';
-    doc+='| GitHub Actions | 2000分/月 | $0.008/分 |\n';
-    doc+='| Sentry Free | 5K events/月 | $26/月〜 |\n';
-    doc+='| Cloudflare Free | CDN・DDoS保護 | $20/月〜 |\n\n';
+    doc+=G?'| Vercel Hobby | 100GB帯域・100K関数実行/月 | $20/月〜 |\n':'| Vercel Hobby | 100GB bandwidth + 100K function invocations/mo | from $20/mo |\n';
+    doc+=G?'| Supabase Free | 500MB DB・2GB帯域 | $25/月〜 |\n':'| Supabase Free | 500MB DB + 2GB bandwidth | from $25/mo |\n';
+    doc+=G?'| GitHub Actions | 2000分/月 | $0.008/分 |\n':'| GitHub Actions | 2,000 min/mo | $0.008/min |\n';
+    doc+=G?'| Sentry Free | 5K events/月 | $26/月〜 |\n':'| Sentry Free | 5K events/mo | from $26/mo |\n';
+    doc+=G?'| Cloudflare Free | CDN・DDoS保護 | $20/月〜 |\n\n':'| Cloudflare Free | CDN + DDoS protection | from $20/mo |\n\n';
     doc+='## '+(G?'⚠️ 課金警告サイン チェックリスト':'⚠️ Billing Warning Signs Checklist')+'\n\n';
     doc+='- [ ] '+(G?'予期しないトラフィックスパイク (DDoS / クローラー)':'Unexpected traffic spike (DDoS / crawlers)')+'\n';
     doc+='- [ ] '+(G?'ログ出力が大量 (Cloudwatch / Logging API過多)':'Excessive log output (Cloudwatch / Logging API)')+'\n';
@@ -172,9 +172,9 @@ function gen109(a,pn){
   doc+='|---|---|---|---|\n';
   doc+='| '+(G?'ホスティング':'Hosting')+' | '+(G?plt.model_ja:plt.model_en)+' | '+(G?plt.pro:(plt.pro_en||plt.pro))+' | '+(G?plt.opt_ja:plt.opt_en)+' |\n';
   doc+='| DB | '+db.name+' | '+(G?db.pro:(db.pro_en||db.pro))+' | '+(G?db.opt_ja:db.opt_en)+' |\n';
-  doc+='| CDN / Cache | Cloudflare / Vercel Edge | $0-10/月 | '+(G?'静的アセットを最大限キャッシュ':'Cache static assets aggressively')+' |\n';
-  doc+='| '+(G?'モニタリング':'Monitoring')+' | Grafana Cloud / Sentry | $0-29/月 | '+(G?'Freeプランで十分か確認':'Check if Free tier is sufficient')+' |\n';
-  doc+='| CI/CD | GitHub Actions | 2000 min/月無料 | '+(G?'キャッシュで実行時間短縮':'Use caching to reduce build time')+' |\n\n';
+  doc+='| CDN / Cache | Cloudflare / Vercel Edge | '+(G?'$0-10/月':'$0-10/mo')+' | '+(G?'静的アセットを最大限キャッシュ':'Cache static assets aggressively')+' |\n';
+  doc+='| '+(G?'モニタリング':'Monitoring')+' | Grafana Cloud / Sentry | '+(G?'$0-29/月':'$0-29/mo')+' | '+(G?'Freeプランで十分か確認':'Check if Free tier is sufficient')+' |\n';
+  doc+='| CI/CD | GitHub Actions | '+(G?'2000 min/月無料':'2,000 min/mo free')+' | '+(G?'キャッシュで実行時間短縮':'Use caching to reduce build time')+' |\n\n';
 
   doc+='## '+(G?'スケール別コスト試算':'Cost Estimate by Scale')+'\n\n';
   doc+='| '+(G?'フェーズ':'Phase')+' | '+(G?'ユーザー規模':'Users')+' | '+(G?'月額目安 (USD)':'Monthly Est. (USD)')+' | '+(G?'主なコスト':'Main Cost')+'|\n';
@@ -194,9 +194,9 @@ function gen109(a,pn){
   doc+='## '+(G?'無料枠チェックリスト':'Free Tier Checklist')+'\n\n';
   doc+='- [ ] '+(G?plt.free:(plt.free_en||plt.free))+' ('+(a.deploy||'hosting')+')\n';
   doc+='- [ ] '+(G?db.free:(db.free_en||db.free))+' ('+db.name+')\n';
-  doc+='- [ ] GitHub Actions 2000 min/月\n';
-  doc+='- [ ] Cloudflare Free (CDN, DDoS保護)\n';
-  doc+='- [ ] Sentry Free (5K events/月)\n';
+  doc+=G?'- [ ] GitHub Actions 2000 min/月\n':'- [ ] GitHub Actions 2,000 min/mo\n';
+  doc+=G?'- [ ] Cloudflare Free (CDN, DDoS保護)\n':'- [ ] Cloudflare Free (CDN, DDoS protection)\n';
+  doc+=G?'- [ ] Sentry Free (5K events/月)\n':'- [ ] Sentry Free (5K events/mo)\n';
 
   /* Domain-specific cost factors */
   var _cd=detectDomain(a.purpose);
@@ -221,7 +221,7 @@ function gen110(a,pn){
 
   doc+='## '+(G?'コンピュート最適化':'Compute Optimization')+'\n\n';
   if(dep==='aws'){
-    doc+='### Auto Scaling (ECS / EC2)\n```yaml\nTargetTrackingScalingPolicy:\n  TargetValue: 70  # CPU 70%目標\n  ScaleOutCooldown: 60\n  ScaleInCooldown: 300\n```\n\n';
+    doc+='### Auto Scaling (ECS / EC2)\n```yaml\nTargetTrackingScalingPolicy:\n  TargetValue: 70  # '+(G?'CPU 70%目標':'70% CPU target')+'\n  ScaleOutCooldown: 60\n  ScaleInCooldown: 300\n```\n\n';
   }else if(dep==='gcp'){
     doc+='### Cloud Run Auto Scaling\n```yaml\nspec:\n  template:\n    metadata:\n      annotations:\n        autoscaling.knative.dev/minScale: "0"\n        autoscaling.knative.dev/maxScale: "100"\n```\n\n';
   }else{
@@ -264,7 +264,7 @@ function gen110(a,pn){
     doc+='|--------|------------|-------------|--------|\n';
     _ents110.forEach(function(e){
       var _recs=e.match(/Log|Event|Audit|監査|履歴|History/i)?'50,000+':e.match(/User|Profile/i)?'1,000-10,000':'5,000-20,000';
-      var _sz=e.match(/Log|Event|Audit/i)?'~50MB/月':'~5MB/月';
+      var _sz=(e.match(/Log|Event|Audit/i)?'~50MB':'~5MB')+(G?'/月':'/mo');
       doc+='| '+e+' | 4 | '+_recs+' | '+_sz+'  |\n';
     });
     doc+='\n> '+(G?'合計エンティティ: '+_ents110.length+' / 推定DB使用量: ~'+(Math.ceil(_ents110.length*10))+'MB/月 (初期)':'Total entities: '+_ents110.length+' / Est. DB usage: ~'+Math.ceil(_ents110.length*10)+'MB/month (initial)')+'\n';
@@ -352,7 +352,7 @@ function gen112(a,pn){
   doc+='| '+(G?'ツール':'Tool')+' | '+(G?'用途':'Use')+' | '+(G?'コスト':'Cost')+'|\n|---|---|---|\n';
   if(dep==='aws'){
     doc+='| AWS Cost Explorer | '+(G?'コスト分析・予測':'Cost analysis + forecast')+' | $0.01/API call |\n';
-    doc+='| AWS Budgets | '+(G?'予算アラート':'Budget alerts')+' | $0.02/budget/月 |\n';
+    doc+='| AWS Budgets | '+(G?'予算アラート':'Budget alerts')+' | $0.02/budget/'+(G?'月':'mo')+' |\n';
     doc+='| CloudWatch | '+(G?'リソース使用率監視':'Resource monitoring')+' | Free (basic) |\n';
   }else{
     doc+='| Grafana Cloud | '+(G?'コスト可視化':'Cost visualization')+' | Free (3 users) |\n';

@@ -260,7 +260,7 @@ function gen132(a,pn){
     doc+='| '+(G?'パターン':'Pattern')+' | '+(G?'用途':'Use Case')+' | '+(G?'実装':'Implementation')+'|\n';
     doc+='|---|---|---|\n';
     doc+='| Sequential | '+(G?'依存タスク':'Dependent tasks')+' | plan.md → code → review |\n';
-    doc+='| Parallel | '+(G?'独立タスク':'Independent tasks')+' | FE + BE 同時開発 |\n';
+    doc+='| Parallel | '+(G?'独立タスク':'Independent tasks')+' | '+(G?'FE + BE 同時開発':'FE + BE in parallel')+' |\n';
     doc+='| Hierarchical | '+(G?'複雑なプロジェクト':'Complex projects')+' | '+(G?'オーケストレーター → サブエージェント':'Orchestrator → Sub-agents')+'|\n\n';
   }
 

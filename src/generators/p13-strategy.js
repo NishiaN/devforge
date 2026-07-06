@@ -1113,10 +1113,10 @@ function genPillar13_StrategicIntelligence(a, pn) {
   docCost+='\n## '+(G?'6. スケーリングコスト予測':'6. Scaling Cost Projection')+'\n\n';
   docCost+='| '+(G?'月間アクティブユーザー':'Monthly Active Users')+' | '+(G?'推定月額インフラ費':'Est. Monthly Infra')+' | '+(G?'主なスケーリング要因':'Main Scaling Factor')+' |\n';
   docCost+='|------|------|------|\n';
-  docCost+='| ~1,000 | $0〜$25 | '+(G?'Free tier内':'Within free tier')+' |\n';
-  docCost+='| ~10,000 | $25〜$100 | '+(G?'DB・帯域コスト増':'DB + bandwidth growth')+' |\n';
-  docCost+='| ~100,000 | $200〜$500 | '+(G?'CDN・DBスケールアップ':'CDN + DB scale-up')+' |\n';
-  docCost+='| ~1,000,000 | $1,000〜$5,000 | '+(G?'マルチリージョン・専用DB':'Multi-region + dedicated DB')+' |\n';
+  docCost+='| ~1,000 | '+(G?'$0〜$25':'$0~$25')+' | '+(G?'Free tier内':'Within free tier')+' |\n';
+  docCost+='| ~10,000 | '+(G?'$25〜$100':'$25~$100')+' | '+(G?'DB・帯域コスト増':'DB + bandwidth growth')+' |\n';
+  docCost+='| ~100,000 | '+(G?'$200〜$500':'$200~$500')+' | '+(G?'CDN・DBスケールアップ':'CDN + DB scale-up')+' |\n';
+  docCost+='| ~1,000,000 | '+(G?'$1,000〜$5,000':'$1,000~$5,000')+' | '+(G?'マルチリージョン・専用DB':'Multi-region + dedicated DB')+' |\n';
   docCost+='\n## '+(G?'📚 関連ドキュメント':'📚 Related Documents')+'\n\n';
   docCost+='- [Industry Blueprint](./48_industry_blueprint.md)\n';
   docCost+='- [Tech Radar](./49_tech_radar.md)\n';

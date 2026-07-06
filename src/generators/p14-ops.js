@@ -694,7 +694,7 @@ function genPillar14_OpsIntelligence(a, pn) {
     health: [
       { metric: G ? 'データ暗号化エラー率' : 'Data Encryption Error Rate', warn: '0%', crit: '0%', action: G ? '即時調査+通知' : 'Immediate investigate+notify' },
       { metric: G ? 'アップタイム' : 'Uptime', warn: '99.9%', crit: '99%', action: G ? 'インシデント宣言' : 'Declare incident' },
-      { metric: G ? 'PHIアクセス異常' : 'PHI Access Anomaly', warn: '任意', crit: '任意', action: G ? 'ゼロトレランス調査' : 'Zero tolerance investigation' }
+      { metric: G ? 'PHIアクセス異常' : 'PHI Access Anomaly', warn: G ? '任意' : 'Any', crit: G ? '任意' : 'Any', action: G ? 'ゼロトレランス調査' : 'Zero tolerance investigation' }
     ],
     ec: [
       { metric: G ? '決済失敗率' : 'Payment Failure Rate', warn: '1%', crit: '3%', action: G ? '決済プロバイダ確認' : 'Check payment provider' },
@@ -728,8 +728,8 @@ function genPillar14_OpsIntelligence(a, pn) {
     ],
     government: [
       { metric: G ? '申請処理SLA違反' : 'Application SLA Breach', warn: '5%', crit: '10%', action: G ? 'ワークフロー再割当て' : 'Reassign workflow' },
-      { metric: G ? 'アクセシビリティエラー' : 'Accessibility Error', warn: '1件', crit: '3件', action: G ? '即時修正' : 'Immediate fix' },
-      { metric: G ? '個人情報アクセス異常' : 'Personal Data Access Anomaly', warn: '任意', crit: '任意', action: G ? 'ゼロトレランス調査' : 'Zero tolerance investigation' }
+      { metric: G ? 'アクセシビリティエラー' : 'Accessibility Error', warn: G ? '1件' : '1', crit: G ? '3件' : '3', action: G ? '即時修正' : 'Immediate fix' },
+      { metric: G ? '個人情報アクセス異常' : 'Personal Data Access Anomaly', warn: G ? '任意' : 'Any', crit: G ? '任意' : 'Any', action: G ? 'ゼロトレランス調査' : 'Zero tolerance investigation' }
     ],
     insurance: [
       { metric: G ? '請求処理SLA違反' : 'Claim SLA Breach', warn: '2%', crit: '5%', action: G ? 'エスカレーション' : 'Escalation' },
@@ -819,7 +819,7 @@ function genPillar14_OpsIntelligence(a, pn) {
     tool: [
       { metric: G ? 'ツール実行エラー率' : 'Tool Execution Error Rate', warn: '1%', crit: '3%', action: G ? 'ジョブキュー確認' : 'Check job queue' },
       { metric: G ? 'API遅延 (P95)' : 'API Latency (P95)', warn: '1s', crit: '3s', action: G ? 'スケールアウト' : 'Scale out' },
-      { metric: G ? 'APIキー不正使用疑い' : 'API Key Abuse Detected', warn: '任意', crit: '任意', action: G ? '即時無効化+調査' : 'Immediate revoke+investigate' }
+      { metric: G ? 'APIキー不正使用疑い' : 'API Key Abuse Detected', warn: G ? '任意' : 'Any', crit: G ? '任意' : 'Any', action: G ? '即時無効化+調査' : 'Immediate revoke+investigate' }
     ],
     manufacturing: [
       { metric: G ? '生産ライン停止時間' : 'Production Line Downtime', warn: '1min', crit: '5min', action: G ? '現場確認+緊急対応' : 'On-site check+emergency response' },

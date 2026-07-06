@@ -362,6 +362,7 @@ const COMPLIANCE_DB={
   },
   appi:{
     name:'APPI (個人情報保護法)',
+    nameEn:'APPI (Japan Personal Information Protection Act)',
     domains:['default','saas','hr','health','education','fintech','ec','marketplace','community','legal','government','realestate','insurance'],
     reqs_ja:[
       {id:'Art.17',title:'利用目的特定',desc:'個人情報の利用目的を特定し、本人に通知・公表',impl:'プライバシーポリシー + 同意取得フロー'},
@@ -463,7 +464,7 @@ function _owaspSection(item,backend,domain){
 // Helper: Compliance section
 function _compSection(comp,G){
   const reqs=G?comp.reqs_ja:comp.reqs_en;
-  let out='## '+comp.name+'\n\n';
+  let out='## '+(G?comp.name:(comp.nameEn||comp.name))+'\n\n';
   out+=(G?'**適用対象ドメイン:** ':'**Applicable Domains:** ')+comp.domains.join(', ')+'\n\n';
   out+=(G?'### 必須要件チェックリスト\n\n':'### Required Compliance Checklist\n\n');
 
@@ -1230,7 +1231,7 @@ function genPillar12_SecurityIntelligence(a,pn){
   }
 
   doc45+='## '+(G?'適用フレームワーク':'Applicable Frameworks')+'\n\n';
-  applicableComp.forEach(c=>doc45+='- **'+c.name+'** ('+c.domains.join(', ')+')\n');
+  applicableComp.forEach(c=>doc45+='- **'+(G?c.name:(c.nameEn||c.name))+'** ('+c.domains.join(', ')+')\n');
   doc45+='\n---\n\n';
 
   applicableComp.forEach(comp=>{
@@ -1488,7 +1489,7 @@ function genPillar12_SecurityIntelligence(a,pn){
     if(COMPLIANCE_DB[key].domains.includes(domain)) compFrameworks.push(COMPLIANCE_DB[key]);
   });
   if(compFrameworks.length>0){
-    const fwNames=compFrameworks.map(c=>c.name).join(', ');
+    const fwNames=compFrameworks.map(c=>G?c.name:(c.nameEn||c.name)).join(', ');
     prompts.push(G?
       'コンプライアンス監査: '+fwNames+'\n\n'+
       'このプロジェクトのドメイン ('+domain+') では以下のコンプライアンスフレームワークが該当します。\n\n'+
@@ -1526,7 +1527,7 @@ function genPillar12_SecurityIntelligence(a,pn){
     doc46+='- '+(G?'データベース削除・マイグレーション':'Database deletion/migration')+'\n';
     doc46+='- '+(G?'外部API課金操作':'External API billing operations')+'\n';
     doc46+='- '+(G?'本番シークレット変更':'Production secret changes')+'\n';
-    doc46+='- Git force push / branch削除\n\n';
+    doc46+='- '+(G?'Git force push / branch削除':'Git force push / branch deletion')+'\n\n';
 
     doc46+='```mermaid\n';
     doc46+='flowchart TD\n';
@@ -1578,7 +1579,7 @@ function genPillar12_SecurityIntelligence(a,pn){
   doc46+=(G?'### AI開発ツールのプライバシーモード設定\n\n':'### AI Development Tool Privacy Mode\n\n');
   doc46+='- **GitHub Copilot:** Settings → Suggestions matching public code: Block\n';
   doc46+='- **Cursor:** Settings → Privacy Mode: Enabled\n';
-  doc46+='- **Cline:** Privacy settings確認\n\n';
+  doc46+='- **Cline:** '+(G?'Privacy settings確認':'Check privacy settings')+'\n\n';
 
   doc46+=_chk('コード学習データ除外設定を有効化','Enable code training data exclusion')+'\n';
   doc46+=_chk('機密リポジトリでAI機能を無効化検討','Consider disabling AI features for sensitive repos')+'\n';
