@@ -272,6 +272,22 @@ function genPillar11_ImplIntelligence(a,pn){
   doc40+='- '+(G?'95%超：サブエージェント分離またはタスク分割':'> 95%: Isolate sub-agent or split task')+'\n';
   doc40+='\n';
 
+  // 4b. Context Overload Anti-pattern + Phase-based loading
+  doc40+='### '+(G?'コンテキスト過負荷 アンチパターン':'Context Overload Anti-pattern')+'\n\n';
+  doc40+=(G
+    ?'**引算設計 (Subtraction Design)**: 何を「加えるか」でなく何を「削るか」を考えます。\n\n'
+    :'**Subtraction Design**: Think about what to *remove*, not just what to add.\n\n');
+  doc40+=(G
+    ?'| アンチパターン | 症状 | 対策 |\n|------------|-----|------|\n| ファイル投げ込み | 関係ないファイルをすべてインポート | 必要なセクションのみ抽出して渡す |\n| 会話履歴保持 | 古いエラーログを削除しない | 50%超えたら要約・削除 |\n| 冗長ルール | CLAUDE.md が3000トークン超え | 3層分割 (root/rules/settings) |\n| 全体スキャン | 毎回全ファイルを検索 | フェーズ別インデックスを使用 |\n\n'
+    :'| Anti-pattern | Symptom | Solution |\n|-------------|---------|----------|\n| File dumping | Importing all files regardless of relevance | Extract only needed sections |\n| History retention | Old error logs not removed | Summarize/delete past 50% threshold |\n| Verbose rules | CLAUDE.md exceeds 3000 tokens | 3-layer split (root/rules/settings) |\n| Full scan | Searching all files every time | Use phase-based index |\n\n');
+  doc40+='### '+(G?'フェーズ別コンテキスト読み込み':'Phase-Based Context Loading')+'\n\n';
+  doc40+=(G
+    ?'| フェーズ | 優先ファイル | トークン目安 |\n|---------|-----------|------------|\n| Ph0: 開始 | `AI_BRIEF.md`, `.spec/constitution.md` | ~2K |\n| Ph1: 計画 | `+ .spec/tasks.md`, `docs/05_roadmap.md` | ~4K |\n| Ph2: 実装 | `+ docs/04_er_diagram.md`, `docs/06_screen_design.md`, `.claude/rules/` | ~6K |\n| Ph3: テスト | `+ docs/07_test_cases.md`, `docs/33_test_matrix.md` | ~6K |\n| Ph4: デプロイ | `+ docs/09_release_checklist.md`, `.github/workflows/` | ~4K |\n\n'
+    :'| Phase | Priority Files | Token Budget |\n|-------|--------------|-------------|\n| Ph0: Start | `AI_BRIEF.md`, `.spec/constitution.md` | ~2K |\n| Ph1: Plan | `+ .spec/tasks.md`, `docs/05_roadmap.md` | ~4K |\n| Ph2: Impl | `+ docs/04_er_diagram.md`, `docs/06_screen_design.md`, `.claude/rules/` | ~6K |\n| Ph3: Test | `+ docs/07_test_cases.md`, `docs/33_test_matrix.md` | ~6K |\n| Ph4: Deploy | `+ docs/09_release_checklist.md`, `.github/workflows/` | ~4K |\n\n');
+  doc40+=(G
+    ?'**参照**: `AI_BRIEF.md` (全フェーズ共通), `.cursorrules` (フロントエンド), `docs/136_harness_engineering_guide.md` (GCTMS全体)\n\n'
+    :'**Reference**: `AI_BRIEF.md` (all phases), `.cursorrules` (frontend), `docs/136_harness_engineering_guide.md` (full GCTMS)\n\n');
+
   // 5. Agent Handoff Protocol
   if(aiLevel==='multi'||aiLevel==='full'||aiLevel==='orch'){
     doc40+='## '+(G?'5. エージェント間ハンドオフ手順':'5. Agent Handoff Protocol')+'\n\n';

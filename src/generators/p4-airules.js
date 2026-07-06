@@ -195,6 +195,11 @@ ${coreRules}`;
       allowedTools:['Read','Write','Edit','Bash','Glob','Grep','WebFetch'],
       dangerousCommands:{
         requireConfirmation:['rm -rf','git push --force','git reset --hard','DROP TABLE','DELETE FROM']
+      },
+      zones:{
+        autoExecute:['npm test','npm run lint','npm run typecheck','eslint','prettier','jest','vitest'],
+        requireApproval:['git push','git commit','prisma migrate','npm publish','kubectl apply','docker push'],
+        forbidden:['DROP TABLE','git push --force main','rm -rf /','git reset --hard HEAD~','DELETE FROM production']
       }
     },
     context:{
@@ -957,6 +962,8 @@ CLAUDE.md        → ${G?'Claude Code用ルール':'Claude Code rules'}
     S.files['AGENTS.md']+=`\n\n## Pipeline Coordination\n- Pipelines: skills/pipelines.md\n- Catalog: skills/catalog.md\n- Gates: ${aiLevel==='vibe'||aiLevel==='agentic'?'human':'auto'}\n- Error: docs/25 → retry → escalate\n- Context: AI_BRIEF.md only\n`;
   }
   S.files['docs/133_ai_team_orchestration.md']=gen133(G,a);
+  S.files['docs/135_memory_architecture.md']=gen135(G,a);
+  S.files['docs/136_harness_engineering_guide.md']=gen136(G,a);
 }
 
 // ═══ Phase 4: Helper Functions for CLAUDE.md 3-Layer Split ═══
@@ -1406,6 +1413,155 @@ function gen133(G,a){
     doc+='- '+(G?'**Circuit Breaker**: 外部MCP失敗時の自動フォールバック':'**Circuit Breaker**: Auto-fallback on external MCP failures')+'\n';
     doc+='- '+(G?'**Request Queue**: 並列実行時のMCPレートリミット管理':'**Request Queue**: Manage MCP rate limits during parallel execution')+'\n';
   }
+  return doc;
+}
+
+function gen135(G,a){
+  const isBeg=S.skillLv!=null?S.skillLv<=1:(S.skill==='beginner');
+  const isPro=S.skillLv!=null?S.skillLv>=5:(S.skill==='professional'||S.skill==='pro');
+  let doc='';
+  doc+='# '+(G?'エージェントメモリアーキテクチャ':'Agent Memory Architecture')+'\n\n';
+  if(isBeg){
+    doc+='> '+(G?'**エージェントメモリとは？** AIエージェントが「何を覚えているか」を設計する技術です。':'**What is Agent Memory?** The art of designing what your AI agent remembers across sessions.')+'\n\n';
+    doc+='## '+(G?'はじめの3ステップ':'3-Step Getting Started')+'\n\n';
+    doc+='1. '+(G?'`MEMORY.md` を `.claude/memory/` に作成する':'Create `MEMORY.md` in `.claude/memory/`')+'\n';
+    doc+='2. '+(G?'エンティティ（人・物・概念）を箇条書きで記録する':'Record entities (people, things, concepts) as bullet points')+'\n';
+    doc+='3. '+(G?'セッション終了時に「覚えておくべきこと」を3行で追記する':'At session end, append 3 lines of "things to remember"')+'\n\n';
+  }
+  doc+='## '+(G?'§ 1. 短期記憶 vs 長期記憶':'§ 1. Short-Term vs Long-Term Memory')+'\n\n';
+  doc+=(G
+    ?'| 種別 | 保存場所 | 寿命 | 例 |\n|------|---------|------|----|\n| 短期記憶 | コンテキストウィンドウ内 | セッション中のみ | 現在の会話、ファイル内容 |\n| 作業記憶 | `MEMORY.md` (軽量) | プロジェクト期間 | 現在のタスク、直近の決定 |\n| 長期記憶 | `memory/*.md` (構造化) | 永続 | アーキテクチャ決定、ユーザー嗜好 |\n| エピソード記憶 | `memory/history.md` | 永続 | 過去バッチ履歴、問題解決パターン |\n\n'
+    :'| Type | Storage | Lifetime | Examples |\n|------|---------|----------|----------|\n| Short-term | Context window | Session only | Current conversation, file contents |\n| Working | `MEMORY.md` (lightweight) | Project duration | Current task, recent decisions |\n| Long-term | `memory/*.md` (structured) | Persistent | Architecture decisions, preferences |\n| Episodic | `memory/history.md` | Persistent | Past batch history, problem patterns |\n\n');
+  doc+='## '+(G?'§ 2. MEMORY.md テンプレート':'§ 2. MEMORY.md Template')+'\n\n';
+  doc+=(G?'推奨ファイルパス: `.claude/memory/MEMORY.md`\n\n':'Recommended path: `.claude/memory/MEMORY.md`\n\n');
+  doc+='```markdown\n';
+  doc+='# Project Memory\n\n';
+  doc+='## '+(G?'エンティティ':'Entities')+'\n';
+  doc+='- '+(G?'**ユーザー**: Alice — フロントエンド担当, React推奨':'**User**: Alice — frontend lead, prefers React')+'\n';
+  doc+='- '+(G?'**プロジェクト**: MyApp v2.0 (Node.js + PostgreSQL)':'**Project**: MyApp v2.0 (Node.js + PostgreSQL)')+'\n\n';
+  doc+='## '+(G?'重要な決定':'Key Decisions')+'\n';
+  doc+='- '+(G?'2026-01-15: PostgreSQL採用 (MySQL却下理由: JSON演算子の優位性)':'2026-01-15: Chose PostgreSQL (rejected MySQL: JSON operator advantages)')+'\n\n';
+  doc+='## '+(G?'進行中のタスク':'Active Tasks')+'\n';
+  doc+='- '+(G?'[ ] 認証フロー実装':'[ ] Implement auth flow')+'\n\n';
+  doc+='## '+(G?'注意事項':'Watch Out')+'\n';
+  doc+='- '+(G?'エンティティ名の衝突に注意 (User vs AdminUser)':'Watch for entity name collisions (User vs AdminUser)')+'\n';
+  doc+='```\n\n';
+  if(isPro){
+    doc+='### '+(G?'構造化メモリスキーマ (Pro)':'Structured Memory Schema (Pro)')+'\n\n';
+    doc+='```typescript\ninterface MemoryEntry {\n';
+    doc+='  id: string;           // '+(G?'一意識別子':'Unique identifier')+'\n';
+    doc+='  type: \'entity\' | \'decision\' | \'pattern\' | \'warning\';\n';
+    doc+='  content: string;\n';
+    doc+='  created: string;      // ISO 8601\n';
+    doc+='  updated: string;\n';
+    doc+='  tags: string[];\n';
+    doc+='  confidence: number;   // 0.0 - 1.0\n';
+    doc+='  source: string;       // '+(G?'どのセッションで記録されたか':'Which session recorded this')+'\n';
+    doc+='}\n```\n\n';
+  }
+  doc+='## '+(G?'§ 3. メモリ永続化戦略':'§ 3. Memory Persistence Strategy')+'\n\n';
+  doc+='### '+(G?'保存すべきもの':'What to Save')+'\n\n';
+  doc+=(G
+    ?'- ✅ **安定したパターン**: 複数セッションで確認されたアーキテクチャ決定\n- ✅ **ユーザー嗜好**: ツール、スタイル、ワークフローの選択\n- ✅ **既知の落とし穴**: 繰り返す問題とその解決策\n- ❌ **セッション固有の状態**: 現在のタスク詳細、一時的な変数\n- ❌ **不完全な情報**: 検証前の推測や仮説\n\n'
+    :'- ✅ **Stable patterns**: Architecture decisions confirmed across multiple sessions\n- ✅ **User preferences**: Tool choices, style, workflow preferences\n- ✅ **Known pitfalls**: Recurring problems and their solutions\n- ❌ **Session-specific state**: Current task details, temporary variables\n- ❌ **Incomplete info**: Unverified guesses or hypotheses\n\n');
+  doc+='### '+(G?'メモリ廃棄/クリーンアップ':'Memory Decay / Cleanup')+'\n\n';
+  doc+=(G
+    ?'| トリガー | アクション |\n|---------|----------|\n| 決定が覆された | 古いエントリを削除/更新 |\n| 30日以上未参照 | アーカイブまたは削除 |\n| `MEMORY.md` が200行超え | 詳細を別ファイルに移動 |\n| 矛盾する情報 | 最新の情報に統一 |\n\n'
+    :'| Trigger | Action |\n|---------|--------|\n| Decision reversed | Delete/update old entry |\n| Not referenced 30+ days | Archive or delete |\n| `MEMORY.md` exceeds 200 lines | Move details to separate file |\n| Contradicting information | Unify with latest info |\n\n');
+  doc+='## '+(G?'§ 4. セッション引継ぎメモリパターン':'§ 4. Session Handoff Memory Pattern')+'\n\n';
+  doc+=(G
+    ?'セッション終了前に、次のエージェントへの引継ぎ情報をメモリに記録します。\n\n'
+    :'Before ending a session, record handoff information in memory for the next agent.\n\n');
+  doc+='```markdown\n';
+  doc+='## '+(G?'直近セッション引継ぎ (YYYY-MM-DD)':'Latest Session Handoff (YYYY-MM-DD)')+'\n';
+  doc+='- **'+(G?'完了':'Completed')+'**: '+(G?'[実装内容]':'[what was implemented]')+'\n';
+  doc+='- **'+(G?'進行中':'In Progress')+'**: '+(G?'[未完了タスク]':'[unfinished task]')+'\n';
+  doc+='- **'+(G?'ブロッカー':'Blocker')+'**: '+(G?'[問題があれば]':'[any issues]')+'\n';
+  doc+='- **'+(G?'次のアクション':'Next Action')+'**: '+(G?'[推奨される次のステップ]':'[recommended next steps]')+'\n';
+  doc+='```\n\n';
+  doc+=(G
+    ?'**参照**: `AGENTS.md` のHandoff Protocol + `docs/40_ai_dev_runbook.md §5`\n\n'
+    :'**Reference**: Handoff Protocol in `AGENTS.md` + `docs/40_ai_dev_runbook.md §5`\n\n');
+  if(isPro){
+    doc+='## '+(G?'§ 5. 検索拡張メモリ (RAG Memory) — Pro':'§ 5. Retrieval-Augmented Memory (RAG) — Pro')+'\n\n';
+    doc+=(G
+      ?'大規模プロジェクトでは、メモリファイルが肥大化します。RAGパターンで効率的に検索します。\n\n'
+      :'For large projects, memory files grow unwieldy. Use RAG patterns for efficient retrieval.\n\n');
+    doc+='```python\n# Memory retrieval pattern (pseudo-code)\nfrom memory_store import MemoryStore\n\nstore = MemoryStore(".claude/memory/")\nstore.index()  # '+(G?'セッション開始時に実行':'Run at session start')+'\n\nrelevant = store.search(\n    query="PostgreSQL migration strategy",\n    top_k=5,\n    filters={"type": "decision"}\n)\n```\n\n';
+    doc+='### '+(G?'検索戦略':'Retrieval Strategies')+'\n\n';
+    doc+=(G
+      ?'| 戦略 | 用途 | 実装 |\n|------|------|------|\n| キーワード検索 | 特定のエンティティ | `grep -r "entity" .claude/memory/` |\n| セマンティック | 概念的な関連 | ベクトル埋め込み (OpenAI/local) |\n| 時系列 | 最近の決定 | 日付ソート + head |\n| タグフィルタ | カテゴリ別 | メタデータフィルタリング |\n\n'
+      :'| Strategy | Use Case | Implementation |\n|----------|----------|---------------|\n| Keyword | Specific entities | `grep -r "entity" .claude/memory/` |\n| Semantic | Conceptual relations | Vector embeddings (OpenAI/local) |\n| Chronological | Recent decisions | Date sort + head |\n| Tag filter | By category | Metadata filtering |\n\n');
+  }
+  doc+='---\n\n';
+  doc+=(G
+    ?'**関連ドキュメント**: `AGENTS.md`, `docs/40_ai_dev_runbook.md`, `docs/136_harness_engineering_guide.md`\n'
+    :'**Related**: `AGENTS.md`, `docs/40_ai_dev_runbook.md`, `docs/136_harness_engineering_guide.md`\n');
+  return doc;
+}
+
+function gen136(G,a){
+  const isBeg=S.skillLv!=null?S.skillLv<=1:(S.skill==='beginner');
+  const isPro=S.skillLv!=null?S.skillLv>=5:(S.skill==='professional'||S.skill==='pro');
+  let doc='';
+  doc+='# '+(G?'GCTMSハーネスエンジニアリングガイド':'GCTMS Harness Engineering Guide')+'\n\n';
+  if(isBeg){
+    doc+='> '+(G?'**GCTMSとは？** AIエージェントを安全・確実に動かす5層フレームワークです。':'**What is GCTMS?** A 5-layer framework for safe and reliable AI agent operation.')+'\n\n';
+    doc+='## '+(G?'はじめの3ステップ':'3-Step Getting Started')+'\n\n';
+    doc+='1. '+(G?'**Guard** (G): 危険コマンドを `.claude/settings.json` でブロック':'**Guard** (G): Block dangerous commands in `.claude/settings.json`')+'\n';
+    doc+='2. '+(G?'**Context** (C): `AI_BRIEF.md` を1ファイルにまとめてAIに渡す':'**Context** (C): Consolidate context into `AI_BRIEF.md` for the AI')+'\n';
+    doc+='3. '+(G?'**Memory** (M): セッションの気づきを `MEMORY.md` に記録':'**Memory** (M): Record session insights in `MEMORY.md`')+'\n\n';
+    doc+=(G?'残りのT/Sは中級以降で設定します。\n\n':'Set up T/S layers at intermediate level.\n\n');
+  }
+  doc+='## '+(G?'§ 1. GCTMSフレームワーク概要':'§ 1. GCTMS Framework Overview')+'\n\n';
+  doc+=(G?'GCTMSは、AIエージェントを自動車に例えると：\n\n':'GCTMS maps to a car metaphor:\n\n');
+  doc+=(G
+    ?'| 層 | 名称 | 自動車の例え | 役割 |\n|---|------|------------|------|\n| G | Guard | ブレーキ / 安全ガード | 危険な操作を防ぐ |\n| C | Context | ナビゲーション | 目的地と現在地を把握 |\n| T | Tool | エンジン / 変速機 | 実際の作業を実行 |\n| M | Memory | ブラックボックス / GPS履歴 | 過去の走行データを保持 |\n| S | Supervision | ドライバー / オートパイロット | 全体を監視・制御 |\n\n'
+    :'| Layer | Name | Car Analogy | Role |\n|-------|------|------------|------|\n| G | Guard | Brakes / Safety guard | Prevent dangerous operations |\n| C | Context | Navigation | Know destination and position |\n| T | Tool | Engine / Transmission | Execute actual work |\n| M | Memory | Black box / GPS history | Retain past session data |\n| S | Supervision | Driver / Autopilot | Monitor and control overall |\n\n');
+  doc+='## '+(G?'§ 2. 設計順序: G→C→T→M→S':'§ 2. Design Order: G→C→T→M→S')+'\n\n';
+  doc+=(G
+    ?'**なぜこの順序か？** Gがなければ、エージェントが誤動作した時に止められません。\n\n'
+    :'**Why this order?** Without G, there\'s no way to stop a misbehaving agent.\n\n');
+  doc+=(G
+    ?'| ステップ | アクション | チェック項目 |\n|---------|---------|------------|\n| 1. Guard | 禁止コマンドと承認必須コマンドを定義 | `.claude/settings.json` の zones設定完了？ |\n| 2. Context | AI_BRIEF.md + .cursorrules + パス別ルールを整備 | コンテキスト過負荷になっていないか？ |\n| 3. Tool | MCPツールとスキルを最小権限で設定 | ツールスコープは最小限か？ |\n| 4. Memory | MEMORY.md テンプレートと更新ポリシーを設定 | メモリファイルのサイズは適切か？ |\n| 5. Supervision | ヒューマン・イン・ザ・ループポイントを定義 | 重要操作の承認フローはあるか？ |\n\n'
+    :'| Step | Action | Checklist |\n|------|--------|----------|\n| 1. Guard | Define forbidden + require-approval commands | zones configured in `.claude/settings.json`? |\n| 2. Context | Set up AI_BRIEF.md + .cursorrules + path rules | Is context overloaded? |\n| 3. Tool | Configure MCP tools with minimum privilege | Tool scope minimal? |\n| 4. Memory | Set up MEMORY.md template and update policy | Memory file size appropriate? |\n| 5. Supervision | Define human-in-the-loop checkpoints | Approval flow for critical ops? |\n\n');
+  doc+='## '+(G?'§ 3. 実装クロスリファレンスマップ':'§ 3. Implementation Cross-Reference Map')+'\n\n';
+  doc+=(G
+    ?'| 層 | 実装ファイル |\n|---|------------|\n| **G — Guard** | `docs/43_security_plan.md`, `docs/95_ai_safety_framework.md`, `docs/96_ai_guardrail_implementation.md`, `.claude/settings.json` |\n| **C — Context** | `AI_BRIEF.md`, `docs/40_ai_dev_runbook.md §4`, `.cursorrules` |\n| **T — Tool** | `mcp-config.json`, `.mcp/`, `docs/132_mcp_integration_guide.md`, `AGENTS.md` |\n| **M — Memory** | `docs/135_memory_architecture.md` |\n| **S — Supervision** | `docs/53_ops_runbook.md`, `docs/54_ops_checklist.md`, `docs/55_ops_plane_design.md`, `docs/103_observability_architecture.md` |\n\n'
+    :'| Layer | Implementation Files |\n|-------|--------------------|\n| **G — Guard** | `docs/43_security_plan.md`, `docs/95_ai_safety_framework.md`, `docs/96_ai_guardrail_implementation.md`, `.claude/settings.json` |\n| **C — Context** | `AI_BRIEF.md`, `docs/40_ai_dev_runbook.md §4`, `.cursorrules` |\n| **T — Tool** | `mcp-config.json`, `.mcp/`, `docs/132_mcp_integration_guide.md`, `AGENTS.md` |\n| **M — Memory** | `docs/135_memory_architecture.md` |\n| **S — Supervision** | `docs/53_ops_runbook.md`, `docs/54_ops_checklist.md`, `docs/55_ops_plane_design.md`, `docs/103_observability_architecture.md` |\n\n');
+  doc+='## '+(G?'§ 4. 3つの設計原則':'§ 4. Three Design Principles')+'\n\n';
+  doc+=(G
+    ?'### 原則1: 軽量性 (Lightweight)\n\n各層は最小限の設定で動作すること。過度な設定はエージェントの動作を遅くし、コンテキストを消費します。\n\n### 原則2: 多層防御 (Defense-in-Depth)\n\n1つの層が失敗しても、他の層が補完します。Guardが通過しても、SupervisionでHITLが機能します。\n\n### 原則3: ヒューマン・イン・ザ・ループ (Human-in-the-Loop)\n\n重要な判断は人間が行います。エージェントは人間の判断を補助する存在です。\n\n'
+    :'### Principle 1: Lightweight\n\nEach layer should work with minimal configuration. Over-configuration slows agents and consumes context.\n\n### Principle 2: Defense-in-Depth\n\nIf one layer fails, others compensate. If Guard passes, Supervision HITL still activates.\n\n### Principle 3: Human-in-the-Loop\n\nCritical decisions involve humans. Agents exist to assist human judgment, not replace it.\n\n');
+  doc+='## '+(G?'§ 5. GCTMSサイクル図':'§ 5. GCTMS Cycle Diagram')+'\n\n';
+  doc+='```mermaid\nflowchart TD\n';
+  doc+='    A['+(G?'エージェントタスク':'Agent Task')+'] --> G['+(G?'G: Guard 検証':'G: Guard Check')+'];\n';
+  doc+='    G -->|'+(G?'禁止':'Forbidden')+'| STOP['+(G?'🚫 即時停止':'🚫 Immediate Stop')+'];\n';
+  doc+='    G -->|'+(G?'承認必要':'Requires Approval')+'| HITL['+(G?'👤 人間確認':'👤 Human Review')+'];\n';
+  doc+='    G -->|'+(G?'自動実行OK':'Auto-Execute OK')+'| C['+(G?'C: Context 取得':'C: Context Load')+'];\n';
+  doc+='    HITL -->|'+(G?'承認':'Approved')+'| C;\n';
+  doc+='    HITL -->|'+(G?'却下':'Rejected')+'| STOP;\n';
+  doc+='    C --> T['+(G?'T: Tool 実行':'T: Tool Execute')+'];\n';
+  doc+='    T --> M['+(G?'M: Memory 更新':'M: Memory Update')+'];\n';
+  doc+='    M --> S['+(G?'S: Supervision 検査':'S: Supervision Check')+'];\n';
+  doc+='    S -->|'+(G?'次タスク':'Next Task')+'| A;\n';
+  doc+='    S -->|'+(G?'エスカレーション':'Escalate')+'| HITL;\n';
+  doc+='```\n\n';
+  if(isPro){
+    doc+='## '+(G?'§ 6. ハーネス成熟度評価 — Pro':'§ 6. Harness Maturity Assessment — Pro')+'\n\n';
+    doc+=(G?'各層を1-5段階で評価してください。\n\n':'Rate each layer on a 1-5 scale.\n\n');
+    doc+=(G
+      ?'| 層 | レベル1 (初期) | レベル3 (中級) | レベル5 (最適化) |\n|---|------------|------------|---------------|\n| G | 禁止コマンドリストのみ | zones分類あり | 動的ポリシー + 監査ログ |\n| C | 単一CLAUDE.md | AI_BRIEF + ルール分離 | フェーズ別コンテキスト + RAG |\n| T | 手動MCPセットアップ | スコープ制限あり | Circuit Breaker + キューイング |\n| M | なし | MEMORY.md基本テンプレート | 構造化スキーマ + RAG検索 |\n| S | 手動レビュー | HITLポイント定義 | SLO連動 + 自動エスカレーション |\n\n'
+      :'| Layer | Level 1 (Initial) | Level 3 (Intermediate) | Level 5 (Optimized) |\n|-------|-------------------|----------------------|--------------------|\n| G | Forbidden list only | zones classification | Dynamic policy + audit log |\n| C | Single CLAUDE.md | AI_BRIEF + rule separation | Phase-based context + RAG |\n| T | Manual MCP setup | Scope restrictions | Circuit Breaker + queuing |\n| M | None | Basic MEMORY.md template | Structured schema + RAG search |\n| S | Manual review | HITL points defined | SLO-linked + auto-escalation |\n\n');
+    doc+='### '+(G?'定量メトリクス':'Quantitative Metrics')+'\n\n';
+    doc+=(G
+      ?'- **コンテキスト効率**: `(タスク完了トークン) / (総消費トークン)` ≥ 0.7\n- **メモリ再利用率**: 過去のメモリエントリが使用された割合 ≥ 40%\n- **HITL発動率**: 全操作の10-30% (低すぎ=ガード不足、高すぎ=自動化不足)\n- **ガードブロック率**: 0.1-1% (低すぎ=設定漏れ、高すぎ=制限過剰)\n\n'
+      :'- **Context efficiency**: `(task completion tokens) / (total tokens consumed)` ≥ 0.7\n- **Memory reuse rate**: Fraction of past memory entries used ≥ 40%\n- **HITL activation rate**: 10-30% of all operations (too low=guard gap, too high=under-automated)\n- **Guard block rate**: 0.1-1% (too low=misconfigured, too high=over-restricted)\n\n');
+  }
+  doc+='---\n\n';
+  doc+=(G
+    ?'**関連ドキュメント**: `docs/43_security_plan.md`, `docs/135_memory_architecture.md`, `docs/40_ai_dev_runbook.md`, `docs/132_mcp_integration_guide.md`\n'
+    :'**Related**: `docs/43_security_plan.md`, `docs/135_memory_architecture.md`, `docs/40_ai_dev_runbook.md`, `docs/132_mcp_integration_guide.md`\n');
   return doc;
 }
 

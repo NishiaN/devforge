@@ -1024,6 +1024,11 @@ function genPillar14_OpsIntelligence(a, pn) {
     ? `### 安全境界\n\n**サンドボックス**: Dev Agent は \`src/\` 配下のみ編集可 (Ops Agent は全体)\n\n**パーミッション** (\`.claude/settings.json\`):\n- \`"disallowedCommands": ["rm -rf", "DROP TABLE", "git push --force main"]\`\n- \`"requireConfirmation": ["git push", "npm publish", "kubectl delete"]\`\n\n**危険コマンド確認リスト** (→ \`.claude/settings.json\` 参照):\n- git reset --hard\n- git clean -f\n- docker system prune -a\n\n`
     : `### Safety Boundaries\n\n**Sandbox**: Dev Agent can only edit \`src/\` (Ops Agent: full access)\n\n**Permissions** (\`.claude/settings.json\`):\n- \`"disallowedCommands": ["rm -rf", "DROP TABLE", "git push --force main"]\`\n- \`"requireConfirmation": ["git push", "npm publish", "kubectl delete"]\`\n\n**Dangerous Command Confirmation List** (→ see \`.claude/settings.json\`):\n- git reset --hard\n- git clean -f\n- docker system prune -a\n\n`;
 
+  // 3-zone permission model
+  opsPlane += G
+    ? `### 3ゾーン パーミッションモデル\n\n| ゾーン | 説明 | 例 |\n|-------|------|----|\n| 自動実行 (Auto-execute) | 事前承認不要 | \`npm test\`, \`eslint\`, \`prettier\`, \`jest\` |\n| 承認必要 (Require-approval) | 人間の確認が必要 | \`git push\`, \`prisma migrate\`, \`npm publish\`, \`kubectl apply\` |\n| 禁止 (Forbidden) | いかなる場合も実行不可 | \`DROP TABLE\`, \`git push --force main\`, \`rm -rf /\` |\n\n**設定場所**: \`.claude/settings.json\` の \`permissions.zones\` セクション\n\n`
+    : `### 3-Zone Permission Model\n\n| Zone | Description | Examples |\n|------|-------------|----------|\n| Auto-execute | Pre-approved, no confirmation needed | \`npm test\`, \`eslint\`, \`prettier\`, \`jest\` |\n| Require-approval | Needs human confirmation | \`git push\`, \`prisma migrate\`, \`npm publish\`, \`kubectl apply\` |\n| Forbidden | Never allowed under any condition | \`DROP TABLE\`, \`git push --force main\`, \`rm -rf /\` |\n\n**Config location**: \`permissions.zones\` section in \`.claude/settings.json\`\n\n`;
+
   // § 6. Admin Console Architecture
   opsPlane += `---\n\n## ${G ? '§ 6. Admin Console アーキテクチャ' : '§ 6. Admin Console Architecture'}\n\n`;
   opsPlane += G
