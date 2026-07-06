@@ -6,8 +6,8 @@ function _getTourSteps(){
     'Beginner / Intermediate / Pro の3段階。<br>💡 Beginner: Phase 2（技術質問）を自動スキップ＆⭐推奨技術をハイライト。<br>💡 Pro: 企業向けドキュメント・高度な監査ログ・RFC 2119セキュリティ分析を追加生成。<br>設定後もいつでも変更可能。変更時は回答が一部リセットされる場合があります。':
     'Three tiers: Beginner / Intermediate / Pro.<br>💡 Beginner: Phase 2 (tech questions) auto-skipped & ⭐ recommended tech highlighted.<br>💡 Pro: Adds enterprise docs, advanced audit logs, RFC 2119 security analysis.<br>You can change level anytime — some answers may reset on change.'},
   {title:_ja?'📝 テンプレート':'📝 Templates',desc:_ja?
-    '📦 標準257種 ＋ 🎓 分野別603種のプリセットを選択できます。<br>💡 「モード切替」で標準↔分野を切り替え。⚔️ 比較ボタンで2プリセットを並べて比較。<br>💡 「おすすめ」フィルターで選択肢を絞り込み。選ぶと25項目の回答が自動入力。<br>間違えて選んだ場合は Ctrl+Z（Cmd+Z）で直前のプリセット適用を取り消せます。':
-    '📦 257 standard + 🎓 603 field presets available.<br>💡 Use "Mode Toggle" to switch standard ↔ field. ⚔️ Compare button shows 2 presets side-by-side.<br>💡 "Recommended" filter narrows choices. Selecting auto-fills 25 answers.<br>Changed your mind? Ctrl+Z (Cmd+Z) undoes the last preset application.'},
+    '📦 標準257種 ＋ 🎓 分野別602種のプリセットを選択できます。<br>💡 「モード切替」で標準↔分野を切り替え。⚔️ 比較ボタンで2プリセットを並べて比較。<br>💡 「おすすめ」フィルターで選択肢を絞り込み。選ぶと25項目の回答が自動入力。<br>間違えて選んだ場合は Ctrl+Z（Cmd+Z）で直前のプリセット適用を取り消せます。':
+    '📦 257 standard + 🎓 602 field presets available.<br>💡 Use "Mode Toggle" to switch standard ↔ field. ⚔️ Compare button shows 2 presets side-by-side.<br>💡 "Recommended" filter narrows choices. Selecting auto-fills 25 answers.<br>Changed your mind? Ctrl+Z (Cmd+Z) undoes the last preset application.'},
   {title:_ja?'💬 質問フロー':'💬 Q&A Flow',desc:_ja?
     'Phase 1（プロジェクト定義）→ Phase 2（技術選定）→ Phase 3（機能・データ設計）の3段階。<br>💡 Enter キーで送信。「あとで」ボタンでスキップも可。<br>💡 互換性チェックはリアルタイムに自動実行。矛盾があれば赤いアラートで通知。<br>Lv2以上では全ERROR解消まで次フェーズに進めない保護モード（ガードレール）が有効。':
     'Three phases: Phase 1 (Project Definition) → Phase 2 (Tech Stack) → Phase 3 (Feature & Data Design).<br>💡 Press Enter to submit. Use "Skip" to answer later.<br>💡 Compatibility checks run automatically in real time — red alerts for conflicts.<br>Lv2+ enables guardrail mode: must resolve all ERRORs before proceeding.'},
@@ -24,8 +24,8 @@ function _getTourSteps(){
     '柱⑥ ではプロジェクトのコンテキスト可視化と技術DBを閲覧できます。<br>💡 TechDB: '+_TECH_COUNT+'以上の技術エントリーを15カテゴリに分類。フリーワード＋カテゴリでフィルタ可能。<br>💡 ドメイン・スコープ・ペルソナなどを一画面でレビュー。仕様書作成前の確認に最適。':
     'Pillar ⑥: Project context visualization + tech DB explorer.<br>💡 TechDB: '+_TECH_COUNT+'+ entries across 15 categories. Filter by free text + category.<br>💡 Review domain, scope, personas on one screen — ideal before writing specs.'},
   {title:_ja?'🤖 AIランチャー':'🤖 AI Launcher',desc:_ja?
-    'Pillar ⑧ の AIランチャーで仕様書をAIツールにワンクリック投入。<br>💡 109テンプレートをコード生成・レビュー・ドキュメント・ブレストなどのカテゴリで整理。<br>💡 あなたのスキルレベルに合わせたテンプレートを優先表示（スキル適応レコメンド）。<br>💡 トークン推定・モデル選択・出力プレビューも搭載。Claude / GPT-5 / Gemini に対応。':
-    'Pillar ⑧: Feed specs to AI tools in one click from AI Launcher.<br>💡 109 prompt templates organized by category: code-gen, review, docs, brainstorm & more.<br>💡 Templates are prioritized by your skill level (skill-adaptive recommendation).<br>💡 Token estimation, model selection, and output preview built in. Works with Claude / GPT-5 / Gemini.'},
+    'Pillar ⑧ の AIランチャーで仕様書をAIツールにワンクリック投入。<br>💡 116テンプレートをコード生成・レビュー・ドキュメント・ブレストなどのカテゴリで整理。<br>💡 あなたのスキルレベルに合わせたテンプレートを優先表示（スキル適応レコメンド）。<br>💡 トークン推定・モデル選択・出力プレビューも搭載。Claude / GPT-5 / Gemini に対応。':
+    'Pillar ⑧: Feed specs to AI tools in one click from AI Launcher.<br>💡 116 prompt templates organized by category: code-gen, review, docs, brainstorm & more.<br>💡 Templates are prioritized by your skill level (skill-adaptive recommendation).<br>💡 Token estimation, model selection, and output preview built in. Works with Claude / GPT-5 / Gemini.'},
   {title:_ja?'🎭 9人の専門家ブレスト':'🎭 9-Expert Brainstorm',desc:_ja?
     'AIランチャーの「🎭 9人の専門家ブレスト」テンプレートで多角的なアイデア発想。<br>💡 9つの視点の例: CTO（技術負債）/ PM（優先順位）/ UXデザイナー（体験摩擦）/ セキュリティ専門家（脅威モデル）など。<br>💡 生成仕様書を自動挿入した状態でプロンプト生成。仕様ベースの的確な質問が可能。<br>💡 各専門家の出力を連鎖させて深掘りするチェーンプロンプトも活用できます。':
     'Use "🎭 9-Expert Brainstorm" in AI Launcher for multi-perspective ideation.<br>💡 9 expert viewpoints: CTO (tech debt) / PM (priorities) / UX Designer (friction) / Security (threat model) / etc.<br>💡 Auto-inserts your generated specs into the prompt for spec-grounded questions.<br>💡 Chain prompts: use each expert\'s output to drill deeper with follow-up questions.'},

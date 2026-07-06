@@ -65,26 +65,26 @@ function showManual(sec){
       '<tr><td>⑤Explorer</td><td>Stack comparison + recommendation</td><td>UI</td></tr><tr><td>⑥Dashboard</td><td>Context visualization + Tech DB</td><td>UI</td></tr><tr><td>⑦Roadmap</td><td>Learning path (interactive)</td><td>9+UI</td></tr><tr><td>⑧AI Launcher</td><td>Prompt templates + token estimation</td><td>UI</td></tr><tr><td>⑨Design System</td><td>Design tokens + Sequence diagrams</td><td>2</td></tr><tr><td>⑩Reverse Eng</td><td>Goal-driven reverse planning</td><td>2</td></tr><tr><td>⑪Impl Guide</td><td>Domain-specific impl patterns + AI runbook</td><td>3</td></tr><tr><td>⑫Security</td><td>OWASP, STRIDE, Compliance</td><td>5</td></tr><tr><td>⑬Strategic Intelligence</td><td>Industry blueprint, Tech radar, Stakeholder strategy, Advanced scenarios</td><td>5</td></tr><tr><td>⑭Ops Intelligence</td><td>Ops Plane design, 12 Ops Capabilities, SLO/SLI</td><td>3</td></tr><tr><td>⑮Future Strategy</td><td>Market positioning, UX strategy, Ecosystem, Regulatory</td><td>4</td></tr><tr><td>⑯Dev IQ</td><td>Optimal methodology, AI brainstorm playbook, Industry deep dive, Next-gen UX</td><td>4</td></tr><tr><td>⑰Prompt Genome</td><td>CRITERIA 8-axis scoring, AI maturity, Synergy matrix, KPI dashboard</td><td>4</td></tr><tr><td>⑱Prompt Ops</td><td>ReAct workflow, LLMOps dashboard, Prompt CI/CD, [META] registry</td><td>4</td></tr><tr><td>⑲Enterprise SaaS</td><td>Multi-tenant design, Org model, Workflow engine, Enterprise UI components</td><td>4</td></tr><tr><td>⑳CI/CD Intelligence</td><td>Pipeline design, Deploy strategy, Quality gate matrix, Release engineering</td><td>4</td></tr><tr><td>㉑API Design</td><td>REST principles, OpenAPI spec, API security, testing strategy</td><td>4</td></tr><tr><td>㉒Database Design</td><td>Index strategy, naming conventions, migration, backup</td><td>4</td></tr><tr><td>㉓Test Intelligence</td><td>Test pyramid, coverage, E2E, Web Vitals</td><td>4</td></tr><tr><td>㉔AI Safety</td><td>Risk categories, guardrails, model evaluation, injection defense</td><td>4</td></tr><tr><td>㉕Performance</td><td>DB performance, cache strategy, APM, monitoring</td><td>4</td></tr><tr><td>㉖Observability</td><td>Structured logging, RED/USE metrics, OpenTelemetry tracing, Grafana dashboard</td><td>4</td></tr><tr><td>㉗Cost Optimization</td><td>Cloud cost architecture, FinOps cycle, budget alert automation, AI cost analysis</td><td>4</td></tr><tr><td>㉘XAI Intelligence</td><td>Fairness pipeline, AI governance, model lifecycle management, red team methodology</td><td>4-5</td></tr></table>'+
       '<p>+ docs (134 specs) + common (4) = <strong>227+ files</strong></p>'},
     {id:'start',title:_ja?'はじめ方':'Getting Started',body:_ja?
-      '<h2>はじめ方</h2><p>1. スキルレベルを選択（Beginner/Intermediate/Pro）<br>2. プロジェクト名を入力<br>3. テンプレート選択（任意・860種類）<br>4. Phase 1-3の質問に回答（スキップ＆後で回答可）<br>5. 生成ボタンで227+ファイル作成<br>6. ZIPダウンロードまたはPDF印刷</p>'+
+      '<h2>はじめ方</h2><p>1. スキルレベルを選択（Beginner/Intermediate/Pro）<br>2. プロジェクト名を入力<br>3. テンプレート選択（任意・859種類）<br>4. Phase 1-3の質問に回答（スキップ＆後で回答可）<br>5. 生成ボタンで227+ファイル作成<br>6. ZIPダウンロードまたはPDF印刷</p>'+
       '<h3>UX機能</h3>'+
-      '<p>• 🌱⚡🔥 スキルレベルで質問の選択肢が動的変化<br>• 🎯 860プリセット（257標準+603分野別）<br>• ✎ 回答の編集（✎ボタン）<br>• ⏭️ スキップ＆後で回答<br>• 📊 複雑度分析（0-100スコア）<br>• 📁 プロジェクト管理（Ctrl+M）<br>• 🎙️ 音声入力<br>• ? 質問ごとのヘルプアイコン<br>• 🔀 ドラッグ&ドロップ優先度ソート</p>'+
+      '<p>• 🌱⚡🔥 スキルレベルで質問の選択肢が動的変化<br>• 🎯 859プリセット（257標準+602分野別）<br>• ✎ 回答の編集（✎ボタン）<br>• ⏭️ スキップ＆後で回答<br>• 📊 複雑度分析（0-100スコア）<br>• 📁 プロジェクト管理（Ctrl+M）<br>• 🎙️ 音声入力<br>• ? 質問ごとのヘルプアイコン<br>• 🔀 ドラッグ&ドロップ優先度ソート</p>'+
       '<h3>V8 新機能</h3>'+
       '<p>• 📱 モバイル開発パス (Expo/React Native)<br>• 🤖 AI自律開発ガイド (Vibe Coding/マルチAgent)<br>• 💳 決済・CMS・EC統合ガイド<br>• ⚡ 並列スタック比較 (7パターン)<br>• 📊 技術マスターテーブル / Tech Master Table ('+_TECH_COUNT+' entries)<br>• 🗺️ インタラクティブロードマップ (進捗管理)</p>'+
       '<h3>V8.3 新機能</h3>'+
       '<p>• 📊 Mermaid図ライブレンダリング (ER図・画面遷移・ガント)<br>• 📝 OpenAPI準拠API仕様書<br>• ✅ テストケースマトリクス (機能×正常/異常)<br>• 📋 リリースチェックリスト (デプロイ先別動的生成)<br>• 🔨 WBS 3階層+工数見積り<br>• 🎯 プロンプトプレイブック (フェーズ別AI投入プロンプト集)<br>• 📎 GitHub Issues風タスク分解<br>• 📋 全ファイル結合コピー (AI一括投入用)</p>'+
       '<h3>V9 新機能</h3>'+
-      '<p>• 🧪 品質インテリジェンスエンジン (業種別QA戦略・テストマトリクス・インシデント対応)<br>• 🎨 デザインシステム自動生成 (デザイントークン・シーケンス図)<br>• 🔄 リバースエンジニアリング (ゴール逆算型プランニング・32ドメイン対応)<br>• 🏗️ 実装インテリジェンス (業種別実装パターン・AI運用手順書・擬似コード)<br>• 🧠 AI開発OS (コンテキスト圧縮・ファイル選択マトリクス・サブエージェント分離)<br>• 🌐 32ドメイン対応 (AI, IoT, 不動産, 法務, 人事, 金融, 製造, 物流, 農業, エネルギー, メディア, 行政, 旅行, 保険 等を追加)<br>• 📦 227+ファイル生成 (docs 134種, AIルール12+, スキル8+)<br>• 🎯 860プリセット (257標準+603分野別) (製造, 農業, エネルギー, メディア, 行政, 旅行, 保険 等追加)<br>• 🏗️ 未来戦略インテリジェンス (市場ポジショニング・UX戦略・エコシステム・規制フォーサイト)<br>• 📄 CLAUDE.md 3-layer分割 (薄いルート + パス別ルール + 設定)<br>• 🧬 開発IQインテリジェンス ⑯ (32ドメイン×12手法のポリモーフィック開発戦略)<br>• 🧩 プロンプトゲノムエンジン ⑰ (CRITERIA 8軸品質スコア付きプロンプトDNA自動生成)<br>• 🔧 Prompt Engineering OS ⑱ (ReAct自律ワークフロー・LLMOpsダッシュボード・Prompt CI/CD・[META]レジストリ)<br>• 🏢 エンタープライズSaaS Blueprint ⑲ (マルチテナント設計・組織モデル・ワークフローエンジン・エンタープライズUIコンポーネント)</p>'+
+      '<p>• 🧪 品質インテリジェンスエンジン (業種別QA戦略・テストマトリクス・インシデント対応)<br>• 🎨 デザインシステム自動生成 (デザイントークン・シーケンス図)<br>• 🔄 リバースエンジニアリング (ゴール逆算型プランニング・32ドメイン対応)<br>• 🏗️ 実装インテリジェンス (業種別実装パターン・AI運用手順書・擬似コード)<br>• 🧠 AI開発OS (コンテキスト圧縮・ファイル選択マトリクス・サブエージェント分離)<br>• 🌐 32ドメイン対応 (AI, IoT, 不動産, 法務, 人事, 金融, 製造, 物流, 農業, エネルギー, メディア, 行政, 旅行, 保険 等を追加)<br>• 📦 227+ファイル生成 (docs 134種, AIルール12+, スキル8+)<br>• 🎯 859プリセット (257標準+602分野別) (製造, 農業, エネルギー, メディア, 行政, 旅行, 保険 等追加)<br>• 🏗️ 未来戦略インテリジェンス (市場ポジショニング・UX戦略・エコシステム・規制フォーサイト)<br>• 📄 CLAUDE.md 3-layer分割 (薄いルート + パス別ルール + 設定)<br>• 🧬 開発IQインテリジェンス ⑯ (32ドメイン×12手法のポリモーフィック開発戦略)<br>• 🧩 プロンプトゲノムエンジン ⑰ (CRITERIA 8軸品質スコア付きプロンプトDNA自動生成)<br>• 🔧 Prompt Engineering OS ⑱ (ReAct自律ワークフロー・LLMOpsダッシュボード・Prompt CI/CD・[META]レジストリ)<br>• 🏢 エンタープライズSaaS Blueprint ⑲ (マルチテナント設計・組織モデル・ワークフローエンジン・エンタープライズUIコンポーネント)</p>'+
       '<p class="workflow-ref">📘 <strong>生成後の手順は <a href="#" onclick="event.preventDefault();showManual(\'workflow\')">生成後ワークフローガイド</a> を参照</strong></p>'
       :
-      '<h2>Getting Started</h2><p>1. Select your skill level (Beginner/Intermediate/Pro)<br>2. Enter project name<br>3. Choose a template (optional, 860 types)<br>4. Answer Phase 1-3 questions (skip & answer later OK)<br>5. Click Generate for 227+ files<br>6. Download ZIP or print PDF</p>'+
+      '<h2>Getting Started</h2><p>1. Select your skill level (Beginner/Intermediate/Pro)<br>2. Enter project name<br>3. Choose a template (optional, 859 types)<br>4. Answer Phase 1-3 questions (skip & answer later OK)<br>5. Click Generate for 227+ files<br>6. Download ZIP or print PDF</p>'+
       '<h3>UX Features</h3>'+
-      '<p>• 🌱⚡🔥 Dynamic options by skill level<br>• 🎯 860 presets (257 standard + 603 field)<br>• ✎ Edit answers (✎ button)<br>• ⏭️ Skip & answer later<br>• 📊 Complexity analysis (0-100 score)<br>• 📁 Project manager (Ctrl+M)<br>• 🎙️ Voice input<br>• ? Help icon per question<br>• 🔀 Drag & drop priority sort</p>'+
+      '<p>• 🌱⚡🔥 Dynamic options by skill level<br>• 🎯 859 presets (257 standard + 602 field)<br>• ✎ Edit answers (✎ button)<br>• ⏭️ Skip & answer later<br>• 📊 Complexity analysis (0-100 score)<br>• 📁 Project manager (Ctrl+M)<br>• 🎙️ Voice input<br>• ? Help icon per question<br>• 🔀 Drag & drop priority sort</p>'+
       '<h3>V8 Features</h3>'+
       '<p>• 📱 Mobile dev path (Expo/React Native)<br>• 🤖 AI autonomous guide (Vibe Coding/Multi-Agent)<br>• 💳 Payment/CMS/EC integration<br>• ⚡ Parallel stack comparison (7 patterns)<br>• 📊 Tech Master Table ('+_TECH_COUNT+' entries)<br>• 🗺️ Interactive roadmap (progress tracking)</p>'+
       '<h3>V8.3 Features</h3>'+
       '<p>• 📊 Mermaid diagram live rendering (ER/screen flow/Gantt)<br>• 📝 OpenAPI-compliant API specs<br>• ✅ Test case matrix (feature × normal/abnormal)<br>• 📋 Release checklist (per deploy target)<br>• 🔨 WBS 3-level + effort estimation<br>• 🎯 Prompt playbook (phase-specific AI prompts)<br>• 📎 GitHub Issues-style task breakdown<br>• 📋 Copy all files combined (for bulk AI input)</p>'+
       '<h3>V9 Features</h3>'+
-      '<p>• 🧪 Quality Intelligence Engine (industry-specific QA strategies, test matrix, incident response)<br>• 🎨 Design System generation (design tokens, sequence diagrams)<br>• 🔄 Reverse Engineering (goal-driven reverse planning, 32 domains)<br>• 🏗️ Implementation Intelligence (domain-specific impl patterns, AI runbook, pseudo-code)<br>• 🧠 AI Development OS (context compression, file selection matrix, sub-agent isolation)<br>• 🌐 32 domain support (AI, IoT, Real Estate, Legal, HR, FinTech, Manufacturing, Logistics, Agriculture, Energy, Media, Government, Travel, Insurance added)<br>• 📦 227+ file generation (134 docs, 12+ AI rules, 8+ skills)<br>• 🎯 860 presets (257 standard + 603 field) (Factory, Agriculture, Energy, Media, Gov Portal, Travel, Insurance, and more added)<br>• 🏗️ Future Strategy Intelligence (market positioning, UX strategy, ecosystem, regulatory foresight)<br>• 📄 CLAUDE.md 3-layer split (thin root + path-specific rules + settings)<br>• 🧬 Dev IQ Intelligence ⑯ (polymorphic development strategy for 32 domains × 12 approaches)<br>• 🧩 Prompt Genome Engine ⑰ (project-specific Prompt DNA with CRITERIA 8-axis quality scoring)<br>• 🔧 Prompt Engineering OS ⑱ (ReAct autonomous workflow, LLMOps dashboard, Prompt CI/CD, [META] registry)<br>• 🏢 Enterprise SaaS Blueprint ⑲ (multi-tenant design, org model, workflow engine, enterprise UI components)</p>'+
+      '<p>• 🧪 Quality Intelligence Engine (industry-specific QA strategies, test matrix, incident response)<br>• 🎨 Design System generation (design tokens, sequence diagrams)<br>• 🔄 Reverse Engineering (goal-driven reverse planning, 32 domains)<br>• 🏗️ Implementation Intelligence (domain-specific impl patterns, AI runbook, pseudo-code)<br>• 🧠 AI Development OS (context compression, file selection matrix, sub-agent isolation)<br>• 🌐 32 domain support (AI, IoT, Real Estate, Legal, HR, FinTech, Manufacturing, Logistics, Agriculture, Energy, Media, Government, Travel, Insurance added)<br>• 📦 227+ file generation (134 docs, 12+ AI rules, 8+ skills)<br>• 🎯 859 presets (257 standard + 602 field) (Factory, Agriculture, Energy, Media, Gov Portal, Travel, Insurance, and more added)<br>• 🏗️ Future Strategy Intelligence (market positioning, UX strategy, ecosystem, regulatory foresight)<br>• 📄 CLAUDE.md 3-layer split (thin root + path-specific rules + settings)<br>• 🧬 Dev IQ Intelligence ⑯ (polymorphic development strategy for 32 domains × 12 approaches)<br>• 🧩 Prompt Genome Engine ⑰ (project-specific Prompt DNA with CRITERIA 8-axis quality scoring)<br>• 🔧 Prompt Engineering OS ⑱ (ReAct autonomous workflow, LLMOps dashboard, Prompt CI/CD, [META] registry)<br>• 🏢 Enterprise SaaS Blueprint ⑲ (multi-tenant design, org model, workflow engine, enterprise UI components)</p>'+
       '<p class="workflow-ref">📘 <strong>For post-generation workflow, see <a href="#" onclick="event.preventDefault();showManual(\'workflow\')">Post-Gen Workflow Guide</a></strong></p>'
     },
     {id:'pillars',title:_ja?'28の柱':'28 Pillars',body:_ja?
@@ -103,7 +103,7 @@ function showManual(sec){
       '<h3>⑦ ロードマップ (9ファイル+UI)</h3>'+
       '<p>LEARNING_PATH / TECH_STACK_GUIDE / MOBILE_GUIDE / TOOLS_SETUP / RESOURCES / MILESTONES / AI_WORKFLOW / AI_AUTONOMOUS / SAAS_COMMERCE_GUIDE — インタラクティブUIで進捗管理可能。</p>'+
       '<h3>⑧ AIプロンプトランチャー (UI)</h3>'+
-      '<p>生成した仕様書をAIツールに一括投入。109のプロンプトテンプレート（レビュー・実装・テスト・リファクタ・セキュリティ・ドキュメント・QA・デバッグ・アーキテクチャ・パフォーマンス・API統合・アクセシビリティ・マイグレーション・メトリクス・i18n・グロース・リバースエンジニアリング・インシデント対応・Ops準備・戦略インテリジェンス・リスクコンプライアンス・オンボーディング・CI/CD設計・最適手法選定・9人の専門家ブレスト・UXジャーニー設計・AIモデル使い分け・業界特化分析・次世代UX・認知負荷分析・プロンプトゲノム分析・AI成熟度レビュー・ReActデバッグ・プロンプトOpsレビュー・エンタープライズアーキテクチャ・ワークフロー監査・UX監査・DBインテリジェンス・AI安全性インテリジェンス・テストインテリジェンス）。フォルダ別トークン推定・モデル適合度表示。<strong>詳細は「📋 プロンプトマニュアル」参照</strong>。</p>'+
+      '<p>生成した仕様書をAIツールに一括投入。116のプロンプトテンプレート（レビュー・実装・テスト・リファクタ・セキュリティ・ドキュメント・QA・デバッグ・アーキテクチャ・パフォーマンス・API統合・アクセシビリティ・マイグレーション・メトリクス・i18n・グロース・リバースエンジニアリング・インシデント対応・Ops準備・戦略インテリジェンス・リスクコンプライアンス・オンボーディング・CI/CD設計・最適手法選定・9人の専門家ブレスト・UXジャーニー設計・AIモデル使い分け・業界特化分析・次世代UX・認知負荷分析・プロンプトゲノム分析・AI成熟度レビュー・ReActデバッグ・プロンプトOpsレビュー・エンタープライズアーキテクチャ・ワークフロー監査・UX監査・DBインテリジェンス・AI安全性インテリジェンス・テストインテリジェンス）。フォルダ別トークン推定・モデル適合度表示。<strong>詳細は「📋 プロンプトマニュアル」参照</strong>。</p>'+
       '<h3>⑨ デザインシステム (2ファイル)</h3>'+
       '<p>design_system.md (デザイントークン・色・タイポ・コンポーネントカタログ) / sequence_diagrams.md (認証・CRUD・決済フローのMermaidシーケンス図) — フレームワーク別実装ガイド。</p>'+
       '<h3>⑩ リバースエンジニアリング (2ファイル)</h3>'+
@@ -158,7 +158,7 @@ function showManual(sec){
       '<h3>⑦ Roadmap (9 files + UI)</h3>'+
       '<p>LEARNING_PATH / TECH_STACK_GUIDE / MOBILE_GUIDE / TOOLS_SETUP / RESOURCES / MILESTONES / AI_WORKFLOW / AI_AUTONOMOUS / SAAS_COMMERCE_GUIDE — Interactive UI for progress tracking.</p>'+
       '<h3>⑧ AI Prompt Launcher (UI)</h3>'+
-      '<p>Bulk-feed generated specs to AI tools. 109 prompt templates (Review, Implement, Test, Refactor, Security, Docs, QA, Debug, Architecture, Performance, API, Accessibility, Migration, Metrics, i18n, Growth, Reverse Engineering, Incident Response, Ops Readiness, Strategic Intelligence, Risk & Compliance, Onboarding, CI/CD Design, Optimal Methodology, 9-Expert Brainstorm, UX Journey Design, AI Model Selection, Industry Deep Dive, Next-Gen UX, Cognitive Load, Prompt Genome Analysis, AI Maturity Review, ReAct Debug Loop, Prompt Ops Review, Enterprise Architecture Review, Workflow Process Audit, UX Process Audit, DB Intelligence, AI Safety Intelligence, Test Intelligence). Per-folder token estimation and model fit display. <strong>See "📋 Prompt Manual" for details</strong>.</p>'+
+      '<p>Bulk-feed generated specs to AI tools. 116 prompt templates (Review, Implement, Test, Refactor, Security, Docs, QA, Debug, Architecture, Performance, API, Accessibility, Migration, Metrics, i18n, Growth, Reverse Engineering, Incident Response, Ops Readiness, Strategic Intelligence, Risk & Compliance, Onboarding, CI/CD Design, Optimal Methodology, 9-Expert Brainstorm, UX Journey Design, AI Model Selection, Industry Deep Dive, Next-Gen UX, Cognitive Load, Prompt Genome Analysis, AI Maturity Review, ReAct Debug Loop, Prompt Ops Review, Enterprise Architecture Review, Workflow Process Audit, UX Process Audit, DB Intelligence, AI Safety Intelligence, Test Intelligence). Per-folder token estimation and model fit display. <strong>See "📋 Prompt Manual" for details</strong>.</p>'+
       '<h3>⑨ Design System (2 files)</h3>'+
       '<p>design_system.md (design tokens, colors, typography, component catalog) / sequence_diagrams.md (auth, CRUD, payment Mermaid sequence diagrams) — Framework-specific guides.</p>'+
       '<h3>⑩ Reverse Engineering (2 files)</h3>'+
@@ -243,7 +243,7 @@ function showManual(sec){
       '<h4>⭐⭐⭐ 高度な統合・自動化</h4>'+
       '<p><strong>Agent Teams並列開発:</strong> AGENTS.mdでエージェント役割を定義 → Claude Code Subagents / Antigravity Manager View で並列実行。tasks.mdがタスクキューとして機能。</p>'+
       '<p><strong>CI/CDゲート化:</strong> .ai/hooks.yml → GitHub Actions変換。docs/09_release_checklist.mdをデプロイゲートに。verification.mdを品質基準に。</p>'+
-      '<p><strong>109テンプレートパイプライン:</strong> 柱⑧の全テンプレート順次実行 → 📋レビュー→🔨実装→🧪テスト→♻️リファクタ→🔒セキュリティ→📝ドキュメント→🛡️Ops準備→🏢エンタープライズアーキテクチャ。仕様書が全工程の入力。<strong>（📖 詳細はプロンプトマニュアル参照）</strong></p>'+
+      '<p><strong>116テンプレートパイプライン:</strong> 柱⑧の全テンプレート順次実行 → 📋レビュー→🔨実装→🧪テスト→♻️リファクタ→🔒セキュリティ→📝ドキュメント→🛡️Ops準備→🏢エンタープライズアーキテクチャ。仕様書が全工程の入力。<strong>（📖 詳細はプロンプトマニュアル参照）</strong></p>'+
       '<h4>⭐⭐⭐ パフォーマンス最適化</h4>'+
       '<p>• <strong>CLAUDE.md 3-layer split</strong> — ルートCLAUDE.md（薄い ~1.5Kトークン） + .claude/rules/（パス別5ファイル） + .claude/settings.json でトークン消費を最小化<br>'+
       '• <strong>フォルダ選択最適化</strong> — デバッグ時: docs/25+37のみ、仕様確認時: .spec/のみ等、状況に応じて選択<br>'+
@@ -320,7 +320,7 @@ function showManual(sec){
       '<h4>⭐⭐⭐ Advanced Integration & Automation</h4>'+
       '<p><strong>Agent Teams Parallel Dev:</strong> AGENTS.md defines agent roles → Run with Claude Code Subagents / Antigravity Manager View in parallel. tasks.md serves as task queue.</p>'+
       '<p><strong>CI/CD Gates:</strong> .ai/hooks.yml → GitHub Actions conversion. docs/09_release_checklist.md as deploy gate. verification.md as quality baseline.</p>'+
-      '<p><strong>109-Template Pipeline:</strong> Pillar ⑧ full template sequential execution → 📋Review→🔨Implement→🧪Test→♻️Refactor→🔒Security→📝Docs→🛡️Ops Readiness→🏢Enterprise Arch. Specs feed all stages. <strong>(📖 See Prompt Manual for details)</strong></p>'+
+      '<p><strong>116-Template Pipeline:</strong> Pillar ⑧ full template sequential execution → 📋Review→🔨Implement→🧪Test→♻️Refactor→🔒Security→📝Docs→🛡️Ops Readiness→🏢Enterprise Arch. Specs feed all stages. <strong>(📖 See Prompt Manual for details)</strong></p>'+
       '<h4>⭐⭐⭐ Performance Optimization</h4>'+
       '<p>• <strong>CLAUDE.md 3-layer split</strong> — Root CLAUDE.md (thin ~1.5K tokens) + .claude/rules/ (path-specific 5 files) + .claude/settings.json minimizes token consumption<br>'+
       '• <strong>Folder Selection Optimization</strong> — Debugging: docs/25+37 only, Spec check: .spec/ only etc. Select by context<br>'+
@@ -457,7 +457,7 @@ function showManual(sec){
       '<h5>推奨ワークフロー</h5>'+
       '<ol class="workflow-level-steps">'+
       '<li>AGENTS.md でエージェント役割定義 → 並列開発</li>'+
-      '<li>109テンプレート全パイプライン: レビュー→実装→テスト→リファクタ→セキュリティ→Docs→Ops→エンタープライズ</li>'+
+      '<li>116テンプレート全パイプライン: レビュー→実装→テスト→リファクタ→セキュリティ→Docs→Ops→エンタープライズ</li>'+
       '<li>CLAUDE.md 3-layer (root ~1.5K + .claude/rules/ + settings.json)</li>'+
       '<li>mcp-config.json + skills/pipelines.md で自動化</li>'+
       '<li>docs/55 Circuit Breaker + Evidence-Based Ops</li>'+
@@ -472,7 +472,7 @@ function showManual(sec){
       '<h5>自動化チェック</h5>'+
       '<p class="workflow-level-checklist">'+
       '✅ .ai/hooks.yml → CI/CDゲート化<br>'+
-      '✅ 全109テンプレートパイプライン完走<br>'+
+      '✅ 全116テンプレートパイプライン完走<br>'+
       '✅ SLO 99.9%設計完了<br>'+
       '✅ Feature Flags全キルスイッチ設定</p>'+
       '</div>'+
@@ -659,7 +659,7 @@ function showManual(sec){
       '<h5>Recommended Workflow</h5>'+
       '<ol class="workflow-level-steps">'+
       '<li>AGENTS.md define agent roles → Parallel development</li>'+
-      '<li>Full 109-template pipeline: Review→Implement→Test→Refactor→Security→Docs→Ops</li>'+
+      '<li>Full 116-template pipeline: Review→Implement→Test→Refactor→Security→Docs→Ops</li>'+
       '<li>CLAUDE.md 3-layer (root ~1.5K + .claude/rules/ + settings.json)</li>'+
       '<li>mcp-config.json + skills/pipelines.md for automation</li>'+
       '<li>docs/55 Circuit Breaker + Evidence-Based Ops</li>'+
@@ -674,7 +674,7 @@ function showManual(sec){
       '<h5>Automation Checks</h5>'+
       '<p class="workflow-level-checklist">'+
       '✅ .ai/hooks.yml → CI/CD gate integration<br>'+
-      '✅ All 109 template pipeline complete<br>'+
+      '✅ All 116 template pipeline complete<br>'+
       '✅ SLO 99.9% design complete<br>'+
       '✅ Feature Flags all kill switches configured</p>'+
       '</div>'+
@@ -827,7 +827,7 @@ function showManual(sec){
       '<li><code>.spec/</code> + <code>docs/</code> を含めて包括的なコンテキストを提供</li>'+
       '<li>モデル適合度を確認し、80%以内に収める</li></ul>'+
       '<p><strong>⚡ Professional — パイプライン化</strong></p>'+
-      '<ul><li>全109テンプレートをパイプラインとして順次実行</li>'+
+      '<ul><li>全116テンプレートをパイプラインとして順次実行</li>'+
       '<li>フォルダ選択を最適化（デバッグ時は<code>docs/25</code>+<code>docs/37</code>のみ等）</li>'+
       '<li><code>docs/39_implementation_playbook.md</code> と <code>docs/40_ai_dev_runbook.md</code> も活用</li></ul>'+
       '<h3>📋 主要テンプレート早見表</h3>'+
@@ -912,7 +912,7 @@ function showManual(sec){
       '<li>Include <code>.spec/</code> + <code>docs/</code> for comprehensive context</li>'+
       '<li>Keep model fit under 80%</li></ul>'+
       '<p><strong>⚡ Professional — Full Pipeline</strong></p>'+
-      '<ul><li>Execute all 109 templates as a pipeline</li>'+
+      '<ul><li>Execute all 116 templates as a pipeline</li>'+
       '<li>Optimize folder selection (e.g., for debugging: only <code>docs/25</code>+<code>docs/37</code>)</li>'+
       '<li>Leverage <code>docs/39_implementation_playbook.md</code> and <code>docs/40_ai_dev_runbook.md</code></li></ul>'+
       '<h3>📋 Key Templates Quick Reference</h3>'+
@@ -1011,7 +1011,7 @@ function showManual(sec){
       '<h3>🔵 Other</h3>'+
       '<p>・ZIP export requires JSZip via CDN (use "Copy All" Ctrl+Shift+C offline)<br>・Switch to light mode before PDF export<br>・URL sharing may truncate on SNS for complex projects</p>'
     },
-    {id:'about',title:'About',body:'<h2>DevForge v9.39</h2><p>'+(_ja?'AI駆動開発 統合プラットフォーム':'AI-Driven Dev Platform')+'</p><p>Version 9.39.0 — 2026 Edition (Modular Architecture)</p><p>'+(_ja?''+_TECH_COUNT+'テクノロジー ・ 227+ファイル ・ 28の柱 ・ 860プリセット ・ Mermaid図 ・ プロンプトプレイブック':''+_TECH_COUNT+' technologies ・ 227+ files ・ 28 pillars ・ 860 presets ・ Mermaid diagrams ・ Prompt playbook')+'</p><p>'+(_ja?'© 2026 にしあん / エンジニアリングのタネ. All Rights Reserved.':'© 2026 Nishian / Engineering no Tane. All Rights Reserved.')+'</p>'},
+    {id:'about',title:'About',body:'<h2>DevForge v9.39</h2><p>'+(_ja?'AI駆動開発 統合プラットフォーム':'AI-Driven Dev Platform')+'</p><p>Version 9.39.0 — 2026 Edition (Modular Architecture)</p><p>'+(_ja?''+_TECH_COUNT+'テクノロジー ・ 227+ファイル ・ 28の柱 ・ 859プリセット ・ Mermaid図 ・ プロンプトプレイブック':''+_TECH_COUNT+' technologies ・ 227+ files ・ 28 pillars ・ 859 presets ・ Mermaid diagrams ・ Prompt playbook')+'</p><p>'+(_ja?'© 2026 にしあん / エンジニアリングのタネ. All Rights Reserved.':'© 2026 Nishian / Engineering no Tane. All Rights Reserved.')+'</p>'},
   ];
   const nav=$('helpNav');
   // Keep search input, clear nav links after it
