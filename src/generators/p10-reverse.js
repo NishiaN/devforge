@@ -824,7 +824,7 @@ function _genDoc41(G, domain, a, pn) {
   if(cw.length>0){
     doc+='### '+(G?'互換性アラート':'Compatibility Alerts')+'\n\n';
     cw.slice(0,8).forEach(r=>{
-      doc+='- '+(r.severity==='error'?'❌':'⚠️')+' **'+r.id+'**: '+(G?r.msg_ja:r.msg_en)+'\n';
+      doc+='- '+(r.level==='error'?'❌':r.level==='warn'?'⚠️':'ℹ️')+' **'+r.id+'**: '+(r.msg||'')+'\n';
     });
     doc+='\n';
   }

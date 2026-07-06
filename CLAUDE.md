@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ---
 
-# DevForge v9.25
+# DevForge v9.26
 
 **AI Development OS** — 86 JS modules in `src/` → single `devforge-v9.html` (~5886KB / 6500KB limit).
 Generates **227+ files** across **28 pillars** from a wizard-driven Q&A session.
@@ -21,7 +21,7 @@ Generates **227+ files** across **28 pillars** from a wizard-driven Q&A session.
 node build.js                          # → devforge-v9.html (~5886KB, limit 6500KB)
 node build.js --no-minify              # debug (skip minification)
 node build.js --report                 # build + size breakdown by module
-npm test                               # ~7433 tests, all passing (v9.25)
+npm test                               # ~7439 tests, all passing (v9.26)
 node --test test/gen-quality.test.js   # single test file
 npm run dev                            # build + live-server :3000
 npm run check                          # syntax-check extracted JS
@@ -189,7 +189,7 @@ After adding: update header comment totals, add tests to `test/compat.test.js`, 
 | Preset matching | phase-n (N-1〜N-9 + G-1〜G-7, 68 tests) | ~68 |
 | Other | i18n, state, techdb, utils, complexity, mermaid (30 tests, all 28 pillars), help-hints | ~62 |
 
-**Total: 7433 tests** | Test harness pattern: `eval(fs.readFileSync(...))` to load src files; global `S` mock at top.
+**Total: 7439 tests** | Test harness pattern: `eval(fs.readFileSync(...))` to load src files; global `S` mock at top.
 
 **When adding domains**, update: `test/data-coverage.test.js` (4 arrays), `test/gen-coherence.test.js`, `test/ops.test.js`.
 
