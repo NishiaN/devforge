@@ -46,7 +46,7 @@ function toggleSidebar(){
   const ib=$('sbIconbar');
   if(sb)sb.classList.toggle('collapsed',!S.sidebarOpen);
   if(ib)ib.style.display=S.sidebarOpen?'none':'flex';
-  save();
+  saveDebounced(); // UI nav state
 }
 
 function switchSidebarTab(tab){
@@ -90,25 +90,18 @@ function renderSidebarFiles(){
   }
   h+='<div class="sb-file-search"><input type="text" id="sbSearchInput" placeholder="'+(_ja?'🔍 検索':'🔍 Search')+'" oninput="filterSidebarTree(this.value)" aria-label="'+(_ja?'ファイル検索':'Search files')+'"></div>';
   h+='<ul class="sb-file-tree" id="sbFileList">';
-  // Pinned
+  // Pinned (sb-pin-dyn class = insertion anchor for light recent-rebuild)
   const pinned=S.pinnedFiles||[];
   const validPinned=pinned.filter(p=>files[p]);
   if(validPinned.length){
-    h+='<li class="ft-section-header">📌 '+(_ja?'ピン留め':'Pinned')+'</li>';
+    h+='<li class="ft-section-header sb-pin-dyn">📌 '+(_ja?'ピン留め':'Pinned')+'</li>';
     validPinned.forEach(p=>{
       const active=S.previewFile===p;
-      h+='<li class="ft-file'+(active?' active':'')+'" data-path="'+escAttr(p)+'"><a href="#" onclick="previewFile(\''+escAttr(p)+'\');return false;" title="'+escAttr(p)+'">'+esc(p.split('/').pop())+'</a></li>';
+      h+='<li class="ft-file sb-pin-dyn'+(active?' active':'')+'" data-path="'+escAttr(p)+'"><a href="#" onclick="previewFile(\''+escAttr(p)+'\');return false;" title="'+escAttr(p)+'">'+esc(p.split('/').pop())+'</a></li>';
     });
   }
-  // Recent
-  const recent=(S.recentFiles||[]).filter(p=>files[p]&&!validPinned.includes(p)).slice(0,5);
-  if(recent.length){
-    h+='<li class="ft-section-header">🕒 '+(_ja?'最近':'Recent')+'</li>';
-    recent.forEach(p=>{
-      const active=S.previewFile===p;
-      h+='<li class="ft-file'+(active?' active':'')+'" data-path="'+escAttr(p)+'"><a href="#" onclick="previewFile(\''+escAttr(p)+'\');return false;" title="'+escAttr(p)+'">'+esc(p.split('/').pop())+'</a></li>';
-    });
-  }
+  // Recent (sb-recent-dyn class = replaced in-place by renderSidebarFilesLight)
+  h+=_sbRecentHTML(files,validPinned,_ja);
   // All files grouped by folder (F7: Lv0-1 collapses to reduce visual noise)
   if(S.skillLv<=1){
     h+='<details class="sb-all-collapse"><summary class="ft-section-header">📁 '+(_ja?'全ファイル ('+keys.length+')':'All Files ('+keys.length+')')+'</summary>';
@@ -133,6 +126,40 @@ function renderSidebarFiles(){
   const activeEl=el.querySelector('.ft-file.active');
   if(activeEl)activeEl.scrollIntoView({block:'nearest',behavior:'smooth'});
   _sbScrUpdate();
+}
+
+// v9.24 P2: recent-section HTML (shared by full render + light update)
+function _sbRecentHTML(files,validPinned,_ja){
+  const recent=(S.recentFiles||[]).filter(p=>files[p]&&!validPinned.includes(p)).slice(0,5);
+  if(!recent.length)return '';
+  let h='<li class="ft-section-header sb-recent-dyn">🕒 '+(_ja?'最近':'Recent')+'</li>';
+  recent.forEach(p=>{
+    const active=S.previewFile===p;
+    h+='<li class="ft-file sb-recent-dyn'+(active?' active':'')+'" data-path="'+escAttr(p)+'"><a href="#" onclick="previewFile(\''+escAttr(p)+'\');return false;" title="'+escAttr(p)+'">'+esc(p.split('/').pop())+'</a></li>';
+  });
+  return h;
+}
+
+// v9.24 P2: light update on file click — toggles active classes + rebuilds only the Recent
+// section, instead of re-parsing the full 227-item list (renderSidebarFiles) every click.
+function renderSidebarFilesLight(path){
+  const list=$('sbFileList');
+  if(!list){if(typeof renderSidebarFiles==='function')renderSidebarFiles();return;}
+  const _ja=S.lang==='ja';
+  const files=S.files||{};
+  const validPinned=(S.pinnedFiles||[]).filter(p=>files[p]);
+  // rebuild recent block in place
+  list.querySelectorAll('.sb-recent-dyn').forEach(n=>n.remove());
+  const rh=_sbRecentHTML(files,validPinned,_ja);
+  if(rh){
+    const pins=list.querySelectorAll('.sb-pin-dyn');
+    const anchor=pins.length?pins[pins.length-1]:null;
+    if(anchor)anchor.insertAdjacentHTML('afterend',rh);
+    else list.insertAdjacentHTML('afterbegin',rh);
+  }
+  // active class toggle across all entries (pinned/recent/all + beginner key files)
+  const wrap=$('sbFiles')||list;
+  wrap.querySelectorAll('li.ft-file').forEach(li=>li.classList.toggle('active',li.getAttribute('data-path')===path));
 }
 
 function filterSidebarTree(q){
@@ -166,7 +193,7 @@ function renderCompatBadge(){
 }
 
 function goToQ(phase,step){
-  S.phase=phase;S.step=step;save();
+  S.phase=phase;S.step=step;saveDebounced();
   if(typeof showQ==='function')showQ();
   if(typeof updProgress==='function')updProgress();
 }
@@ -300,7 +327,7 @@ function renderPillarGrid(){
 function clickPillarIcon(genIdx){
   if(!Object.keys(S.files||{}).length)return;
   const p=GEN_TO_PILLAR[genIdx];
-  S.pillar=p;save();
+  S.pillar=p;saveDebounced();
   document.querySelectorAll('.piltab').forEach(function(t,i){
     t.classList.toggle('on',i===p);
     t.setAttribute('aria-selected',String(i===p));

@@ -4,8 +4,17 @@ function showHelp(id,e){
   const raw=HELP_DATA[id];if(!raw)return;const data=raw[S.lang]||raw.ja;
   const popup=$('helpPopup');
   popup.style.display='block';
+  // v9.24 P4: provisional position → re-clamp with measured height (content varies; 250px固定だと下端が切れる)
   popup.style.top=Math.min(e.clientY+10,window.innerHeight-250)+'px';
   popup.style.left=Math.max(0,Math.min(e.clientX-100,window.innerWidth-380))+'px';
+  requestAnimationFrame(()=>{
+    const h=popup.offsetHeight||250;
+    const maxTop=Math.max(8,window.innerHeight-h-8);
+    const want=e.clientY+10;
+    popup.style.top=Math.min(want,maxTop)+'px';
+    popup.style.maxHeight=(window.innerHeight-16)+'px';
+    popup.style.overflowY='auto';
+  });
   const safeLink=data.link&&(data.link.startsWith('https://')||data.link.startsWith('http://'))?data.link:'';
   var _dynHints=[];
   if(typeof raw.expertHintsFn==='function'){

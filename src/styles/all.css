@@ -341,7 +341,7 @@ mark{background:var(--accent-soft);color:var(--accent);padding:0 2px;border-radi
   .ws{gap:0;flex-direction:column;}.panel-p{width:100%;display:none;}.panel-p.show{display:flex;}
   .panel-c.hide{display:none;}
   /* Quick Action Bar mobile */
-  .qbar{flex-direction:column;bottom:auto;top:50%;left:auto;right:16px;transform:translateY(-50%) translateX(100px);}
+  .qbar{flex-direction:column;bottom:auto;top:50%;left:auto;right:16px;transform:translateY(-50%) translateX(100px);max-height:80vh;overflow-y:auto;overscroll-behavior:contain;}
   .qbar-visible{transform:translateY(-50%) translateX(0);}
   .qbar-hiding{animation:qbarSlideRight .2s ease-out;}
   @keyframes qbarSlideRight{from{transform:translateY(-50%) translateX(0);}to{transform:translateY(-50%) translateX(100px);}}

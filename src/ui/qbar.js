@@ -15,7 +15,7 @@ function _getRecommendedActions(){
       const compat=checkCompat(a);
       const errs=compat.filter(c=>c.level==='error');
       if(errs.length>0){
-        recs.push({pri:10,icon:'⚠️',label:_ja?'互換性エラーを修正':'Fix Compat Errors',action:'S.pillar=5;save();showDashboard();updateQbar()'});
+        recs.push({pri:10,icon:'⚠️',label:_ja?'互換性エラーを修正':'Fix Compat Errors',action:'S.pillar=5;saveDebounced();showDashboard();updateQbar()'});
       }
     }catch(e){}
   }
@@ -32,7 +32,7 @@ function _getRecommendedActions(){
 
   // Priority 5: pillar-specific context
   if(S.pillar===11){
-    recs.push({pri:5,icon:'🔒',label:_ja?'セキュリティ確認':'Security Check',action:'S.pillar=5;save();showDashboard();updateQbar()'});
+    recs.push({pri:5,icon:'🔒',label:_ja?'セキュリティ確認':'Security Check',action:'S.pillar=5;saveDebounced();showDashboard();updateQbar()'});
   }
   if(S.pillar===7){
     recs.push({pri:5,icon:'🎭',label:_ja?'専門家ブレスト':'Expert Brainstorm',action:'showAILauncher()'});
@@ -107,11 +107,11 @@ function createQbar(){
   // Navigate group
   if(hasFiles){
     html+=`<div class="qbar-group" data-group="navigate">`;
-    html+=`<button class="qbar-action" onclick="S.pillar=5;save();showFileTree();updateQbar()" title="${_ja?'ダッシュボード表示 (Ctrl+5)':'Show Dashboard (Ctrl+5)'}" aria-label="${_ja?'ダッシュボード':'Dashboard'}">
+    html+=`<button class="qbar-action" onclick="S.pillar=5;saveDebounced();showFileTree();updateQbar()" title="${_ja?'ダッシュボード表示 (Ctrl+5)':'Show Dashboard (Ctrl+5)'}" aria-label="${_ja?'ダッシュボード':'Dashboard'}">
       <span class="qbar-icon">📊</span><span class="qbar-label">${_ja?'Dashboard':'Dashboard'}</span>
       <span class="qbar-kb">Ctrl+5</span>
     </button>`;
-    html+=`<button class="qbar-action" onclick="S.pillar=6;save();showRoadmapUI();updateQbar()" title="${_ja?'ロードマップ表示 (Ctrl+6)':'Show Roadmap (Ctrl+6)'}" aria-label="${_ja?'ロードマップ':'Roadmap'}">
+    html+=`<button class="qbar-action" onclick="S.pillar=6;saveDebounced();showRoadmapUI();updateQbar()" title="${_ja?'ロードマップ表示 (Ctrl+6)':'Show Roadmap (Ctrl+6)'}" aria-label="${_ja?'ロードマップ':'Roadmap'}">
       <span class="qbar-icon">🗺️</span><span class="qbar-label">${_ja?'Roadmap':'Roadmap'}</span>
       <span class="qbar-kb">Ctrl+6</span>
     </button>`;

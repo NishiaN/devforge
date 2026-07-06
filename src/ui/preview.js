@@ -1,4 +1,5 @@
 /* ═══ PREVIEW SYSTEM ═══ */
+var _mmSvgCache={}; // v9.24 P1: mermaid SVG cache (theme|code → rendered innerHTML)
 let _prevHistory=[];
 let _prevHistIdx=-1;
 let _prevNavFlag=false;
@@ -215,7 +216,7 @@ function initPillarTabs(){
     const b=document.createElement('button');b.className='piltab'+(i===0?' on':'');
     b.setAttribute('role','tab');b.setAttribute('aria-selected',String(i===0));
     b.textContent=n;b.onclick=()=>{
-      S.pillar=i;save();
+      S.pillar=i;saveDebounced();
       document.querySelectorAll('.piltab').forEach(t=>{t.classList.remove('on');t.setAttribute('aria-selected','false');});
       b.classList.add('on');b.setAttribute('aria-selected','true');
       if(i===4) showExplorer();
@@ -611,7 +612,9 @@ function previewFile(path){
   if(S.recentFiles.length>10)S.recentFiles=S.recentFiles.slice(0,10); // Max 10
 
   saveDebounced(); // browse-only mutation — debounced to avoid multi-MB sync write per file click
-  if(typeof renderSidebarFiles==='function')renderSidebarFiles();
+  // v9.24 P2: light sidebar update (recent section + active class only) instead of full 227-item rebuild
+  if(typeof renderSidebarFilesLight==='function')renderSidebarFilesLight(path);
+  else if(typeof renderSidebarFiles==='function')renderSidebarFiles();
   // Update QBar to show file actions (Edit/Copy)
   if(typeof updateQbar==='function')updateQbar();
   document.querySelectorAll('.file-tree li').forEach(li=>{
@@ -632,10 +635,22 @@ function previewFile(path){
       loadMermaid(async ()=>{
         if(_mermaidReady){
           try{
-            const nodes=document.querySelectorAll('#mdRendered .mermaid');
-            if(nodes.length>0){
-              if(mermaid.run) await mermaid.run({nodes:nodes});
-              else if(mermaid.init) mermaid.init(undefined,nodes);
+            // v9.24 P1: SVG cache — same diagram code re-renders from cache (key includes theme)
+            const nodes=Array.from(document.querySelectorAll('#mdRendered .mermaid'));
+            const fresh=[];
+            nodes.forEach(el=>{
+              const key=(S.theme||'dark')+'|'+(el.getAttribute('data-mermaid-code')||'');
+              if(_mmSvgCache[key]){el.innerHTML=_mmSvgCache[key];el.setAttribute('data-processed','true');}
+              else fresh.push(el);
+            });
+            if(fresh.length>0){
+              if(mermaid.run) await mermaid.run({nodes:fresh});
+              else if(mermaid.init) mermaid.init(undefined,fresh);
+              if(Object.keys(_mmSvgCache).length>50)_mmSvgCache={}; // simple size cap
+              fresh.forEach(el=>{
+                const key=(S.theme||'dark')+'|'+(el.getAttribute('data-mermaid-code')||'');
+                if(el.querySelector('svg'))_mmSvgCache[key]=el.innerHTML;
+              });
             }
           }catch(e){console.warn('Mermaid render:',e);}
         }
@@ -815,7 +830,7 @@ function pushView(vs){
 
 function _restoreView(vs){
   _viewNavFlag=true;
-  S.pillar=vs.pillar;save();
+  S.pillar=vs.pillar;saveDebounced();
   document.querySelectorAll('.piltab').forEach((t,i)=>{
     t.classList.toggle('on',i===vs.pillar);
     t.setAttribute('aria-selected',String(i===vs.pillar));
