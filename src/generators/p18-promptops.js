@@ -928,4 +928,14 @@ function genPillar18_PromptOps(a, pn) {
   S.files['docs/70_react_workflow.md'] = gen70(G, domain, matLv, a, pn);
   S.files['docs/71_llmops_dashboard.md'] = gen71(G, matLv, a, pn);
   S.files['docs/72_prompt_registry.md'] = gen72(G, domain, meth, matLv, a, pn);
+
+  // v9.23 Pro: prompt regression testing in CI (ADD-only)
+  var _lv18 = S.skillLv != null ? S.skillLv : (S.skill === 'beginner' ? 1 : S.skill === 'pro' ? 5 : 3);
+  if (_lv18 >= 5) {
+    var pr = '\n---\n\n## ' + (G ? '🎓 Pro: プロンプト回帰テストCI' : '🎓 Pro: Prompt Regression Testing in CI') + '\n\n';
+    pr += (G
+      ? 'コードにテストがあるように、プロンプトにも回帰テストを。モデル更新・プロンプト編集の両方から守ります。\n\n### 回帰トリガーと対応\n\n| トリガー | 検出方法 | 対応 |\n|---------|---------|------|\n| プロンプト編集 | `prompts/**` へのPR | 評価スイート実行 → スコア低下でブロック |\n| モデルバージョン更新 | プロバイダのモデル名変更 | 旧新モデルでA/B評価 → 差分レポート |\n| サイレント挙動変化 | 夜間の定点評価 | ベースライン比 -5% でアラート |\n\n### スナップショット + 許容差分方式\n\n```yaml\n# .github/workflows/prompt-regression.yml\non:\n  pull_request:\n    paths: [\'prompts/**\']\n  schedule:\n    - cron: \'0 3 * * *\'   # 夜間定点観測\njobs:\n  eval:\n    steps:\n      - run: npx promptfoo eval -c eval/config.yaml -o results.json\n      - run: npx promptfoo compare results.json baselines/main.json --threshold 0.95\n```\n\n**運用ルール**:\n- ベースライン更新は意図的な操作のみ (`npm run eval:bless`) — 自動上書き禁止\n- 出力の揺らぎ対策: temperature=0 + 3回実行の多数決でフレーク抑制\n- 失敗時のレポートに「どのケースが・どの評価軸で・何点下がったか」を必ず含める (docs/68 KPIダッシュボードに集約)\n'
+      : 'Code has tests; prompts need regression tests too — protecting against both prompt edits and silent model updates.\n\n### Regression Triggers & Responses\n\n| Trigger | Detection | Response |\n|---------|-----------|----------|\n| Prompt edit | PR touching `prompts/**` | Run eval suite → block on score drop |\n| Model version update | Provider model-name change | A/B eval old vs new → diff report |\n| Silent behavior drift | Nightly fixed-point eval | Alert at −5% vs baseline |\n\n### Snapshot + Tolerance Approach\n\n```yaml\n# .github/workflows/prompt-regression.yml\non:\n  pull_request:\n    paths: [\'prompts/**\']\n  schedule:\n    - cron: \'0 3 * * *\'   # nightly fixed-point run\njobs:\n  eval:\n    steps:\n      - run: npx promptfoo eval -c eval/config.yaml -o results.json\n      - run: npx promptfoo compare results.json baselines/main.json --threshold 0.95\n```\n\n**Operating rules**:\n- Baseline updates are deliberate only (`npm run eval:bless`) — never auto-overwrite\n- Flake control: temperature=0 plus best-of-3 majority voting\n- Failure reports must say which case, which rubric, and how many points dropped (roll up into the docs/68 KPI dashboard)\n');
+    S.files['docs/69_prompt_ops_pipeline.md'] += pr;
+  }
 }

@@ -903,6 +903,20 @@ function genPillar10_ReverseEngineering(a,pn){
   const features=(a.mvp_features||'').split(/[,、\n]/).map(s=>s.trim()).filter(Boolean);
 
   S.files['docs/29_reverse_engineering.md']=_genDoc29(G,rf,domain,flowSteps,kpis,risks,a);
+
+  // v9.23: skill-level depth (ADD-only) — Beg intro prepended, Pro fitness functions appended
+  const _lv10=S.skillLv!=null?S.skillLv:(S.skill==='beginner'?1:S.skill==='pro'?5:3);
+  if(_lv10<=1){
+    S.files['docs/29_reverse_engineering.md']=(G
+      ?'> **🔰 リバースエンジニアリング（逆算設計）とは？**\n> 「作れるものから考える」のでなく「達成したいゴールから逆に辿る」計画法です。\n> 1. ゴールを1文で書く（例:「3ヶ月後に有料ユーザー10人」）\n> 2. その直前に必要な状態を考える（「無料ユーザー100人が使い続けている」）\n> 3. さらにその前を考える…を繰り返すと「今日やるべきこと」に辿り着きます\n> この文書はその逆算をAIが自動で行った結果です。順番に読んでください。\n\n'
+      :'> **🔰 What is Reverse Engineering (goal-driven planning)?**\n> Instead of "what can we build," you trace backwards from the goal you want.\n> 1. Write the goal in one sentence (e.g. "10 paying users in 3 months")\n> 2. Ask what must be true just before that ("100 free users retained")\n> 3. Keep stepping backwards — you arrive at "what to do today"\n> This document is that backward chain, generated for you. Read it top to bottom.\n\n')+S.files['docs/29_reverse_engineering.md'];
+  }
+  if(_lv10>=5){
+    S.files['docs/29_reverse_engineering.md']+='\n---\n\n## '+(G?'🎓 Pro: アーキテクチャ適応度関数 (Fitness Functions)':'🎓 Pro: Architecture Fitness Functions')+'\n\n';
+    S.files['docs/29_reverse_engineering.md']+=(G
+      ?'逆算した設計判断が時間とともに劣化しないよう、**アーキテクチャ特性を自動テスト化**します (Evolutionary Architecture)。\n\n| 守りたい特性 | 適応度関数 (自動チェック) | 実行タイミング |\n|-------------|------------------------|--------------|\n| レイヤー依存の一方向性 | dependency-cruiser: `ui → domain → infra` 逆流を禁止 | 毎PR |\n| モジュール結合度 | 循環依存ゼロ (`madge --circular`) | 毎PR |\n| 性能予算 | p95レイテンシ < 500ms (k6 smoke) | 毎デプロイ |\n| バンドルサイズ | main chunk < 250KB (size-limit) | 毎PR |\n| セキュリティ境界 | `service_role` はserver専用ディレクトリのみ (ESLintルール) | 毎PR |\n\n```js\n// .dependency-cruiser.cjs — レイヤー逆流の禁止例\nmodule.exports = { forbidden: [{\n  name: \'no-ui-from-domain\',\n  from: { path: \'^src/domain\' },\n  to:   { path: \'^src/ui\' },\n  severity: \'error\',\n}]};\n```\n\n**運用**: 適応度関数は「設計レビューの合意事項」をコード化したもの。合意が変わったら関数も更新し、コミット履歴を設計判断の記録 (ADR) と紐付けます。\n'
+      :'Keep the reverse-engineered design decisions from decaying: **encode architectural characteristics as automated tests** (Evolutionary Architecture).\n\n| Characteristic | Fitness function (automated) | When |\n|----------------|------------------------------|------|\n| One-way layering | dependency-cruiser: forbid `infra → domain → ui` reversals | every PR |\n| Module coupling | zero circular deps (`madge --circular`) | every PR |\n| Performance budget | p95 latency < 500ms (k6 smoke) | every deploy |\n| Bundle size | main chunk < 250KB (size-limit) | every PR |\n| Security boundary | `service_role` only in server-only dirs (ESLint rule) | every PR |\n\n```js\n// .dependency-cruiser.cjs — forbid layer reversal\nmodule.exports = { forbidden: [{\n  name: \'no-ui-from-domain\',\n  from: { path: \'^src/domain\' },\n  to:   { path: \'^src/ui\' },\n  severity: \'error\',\n}]};\n```\n\n**Operating note**: a fitness function is a design-review agreement, codified. When the agreement changes, update the function and link the commit to its ADR.\n');
+  }
   S.files['docs/30_goal_decomposition.md']=_genDoc30(G,rf,flowSteps,kpis,features,entities,a);
   if(a.payment&&!isNone(a.payment)){
     S.files['docs/38_business_model.md']=_genDoc38(G,domain,rf,a,pn);
