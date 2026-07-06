@@ -1550,7 +1550,7 @@ Steps:
       :'> Authorization controls "what an authenticated user is allowed to do".\n> Do not confuse with Authentication.\n\n'
     );
     var _sc119=a.scale||'medium';
-    var _ents119=(a.entities||a.data_entities||'User').split(',').filter(function(e){return e.trim();}).length;
+    var _ents119=(a.data_entities||'User').split(',').filter(function(e){return e.trim();}).length;
     var _isBaaS119=/Supabase|Firebase|Convex/i.test(be);
     doc119+='### '+(G?'モデル比較':'Model Comparison')+'\n\n';
     doc119+='| '+(G?'モデル':'Model')+' | '+(G?'判断基準':'Criteria')+' | '+(G?'メリット':'Pros')+' | '+(G?'デメリット':'Cons')+' |\n';
@@ -1675,7 +1675,7 @@ Steps:
       d+='| '+(G?'レイテンシ':'Latency')+' | '+(G?'高い（Follower確認待ち）':'High (waits for Follower ack)')+' | '+(G?'低い（Leader即レスポンス）':'Low (Leader responds immediately)')+' |\n';
       d+='| '+(G?'障害時データロス':'Data loss on failure')+' | '+(G?'なし':'None')+' | '+(G?'最大: レプリケーション遅延分':'Up to: replication lag')+' |\n';
       d+='| '+(G?'推奨用途':'Recommended For')+' | '+(G?'決済・金融・医療データ':'Payment, finance, healthcare')+' | '+(G?'ログ・解析・コンテンツ配信':'Logs, analytics, CDN')+' |\n\n';
-      var _entList120=(a.entities||a.data_entities||'User, Post').split(',').map(function(e){return e.trim();}).filter(Boolean);
+      var _entList120=(a.data_entities||'User, Post').split(',').map(function(e){return e.trim();}).filter(Boolean);
       var _shardCandidates=_entList120.filter(function(e){return /User|Order|Event|Log|Message|Record|Transaction/i.test(e);});
       var _shardKey=_shardCandidates.length>0?_shardCandidates[0]+'Id':'userId';
       d+='#### '+(G?'シャーディング戦略':'Sharding Strategy')+'\n\n';

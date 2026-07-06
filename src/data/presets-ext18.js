@@ -142,7 +142,7 @@ env_climate_ai:_fpd({name:'気候モニタリングAI',nameEn:'Climate Monitorin
 wlf_elder_care_ai:_fpd({name:'高齢者ケアAI・生活支援',nameEn:'Elder Care AI & Daily Living Support',icon:'🏠',field:'welfare',
   purpose:'在宅高齢者の生活活動パターン監視・転倒検知・認知機能モニタリング・家族・ケアチーム連携AIを提供する在宅介護支援SaaS',
   purposeEn:'Home care SaaS providing activity pattern monitoring, fall detection, cognitive monitoring & family-care team coordination AI for elderly living at home',
-  entities:'HomeElderProfile,ActivityPattern,FallDetectionEvent,CognitiveAssessment,CareTeamNote',
+  entities:'HomeElderProfile,ActivityPattern,FallDetectionEvent,CognitiveAssessment,CareTeamNote, AuditLog',
   features:['生活活動パターンAI分析','転倒検知・緊急通報','認知機能定期アセスメント','ケアプラン作成・更新','家族・ケアチームリアルタイム連絡','多要素認証（MFA）','ページネーション・無限スクロール'],
   featuresEn:['Living activity pattern AI analysis','Fall detection & emergency notification','Cognitive function periodic assessment','Care plan creation & updates','Family & care team real-time communication','Multi-Factor Authentication (MFA)','Cursor Pagination'],
   scaleHint:{solo:{ja:'個人介護支援員。FastAPI+Supabase+シンプルセンサー+LINE通知',en:'Solo care support worker. FastAPI+Supabase+simple sensors+LINE notifications'},small:{ja:'在宅介護事業所。Supabase+Claude見守りAI+家族アプリ+センサー統合',en:'Home care agency. Supabase+Claude monitoring AI+family app+sensor integration'},medium:{ja:'地域包括支援センター。Express+IoTセンサーネットワーク+AI健康予測+自治体連携',en:'Community care support center. Express+IoT sensor network+AI health prediction+municipal coordination'},large:{ja:'大手介護グループ・医療連携。NestJS+AI予後予測+多施設一元管理+電子介護記録',en:'Major care group & medical. NestJS+AI prognosis prediction+multi-facility management+electronic care records'}},

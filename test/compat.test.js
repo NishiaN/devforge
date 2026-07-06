@@ -863,8 +863,8 @@ const tests=[
   {name:'Medium+noCanary=noINFO',a:{purpose:'タスク管理アプリ',deploy:'Vercel',scale:'medium',mvp_features:'ユーザー認証 CRUD'},expect:'none',id:'ops-scale-no-staged-deploy'},
   {name:'Enterprise+featureFlag=noINFO',a:{purpose:'企業向けHRシステム',deploy:'AWS',scale:'enterprise',mvp_features:'feature flag ユーザー管理'},expect:'none',id:'ops-scale-no-staged-deploy'},
   // db-no-n1-guard (INFO)
-  {name:'Large+ORM+7ents+noN1=INFO',a:{database:'PostgreSQL',backend:'Node.js + Express',orm:'Prisma',scale:'large',entities:'User,Post,Comment,Tag,Category,Team,Role,Permission',mvp_features:'CRUD ユーザー管理'},expect:'info',id:'db-no-n1-guard'},
-  {name:'Large+ORM+7ents+hasInclude=noINFO',a:{database:'PostgreSQL',backend:'Node.js + Express',orm:'Prisma',scale:'large',entities:'User,Post,Comment,Tag,Category,Team,Role,Permission',mvp_features:'CRUD include eager load'},expect:'none',id:'db-no-n1-guard'},
+  {name:'Large+ORM+7ents+noN1=INFO',a:{database:'PostgreSQL',backend:'Node.js + Express',orm:'Prisma',scale:'large',data_entities:'User,Post,Comment,Tag,Category,Team,Role,Permission',mvp_features:'CRUD ユーザー管理'},expect:'info',id:'db-no-n1-guard'},
+  {name:'Large+ORM+7ents+hasInclude=noINFO',a:{database:'PostgreSQL',backend:'Node.js + Express',orm:'Prisma',scale:'large',data_entities:'User,Post,Comment,Tag,Category,Team,Role,Permission',mvp_features:'CRUD include eager load'},expect:'none',id:'db-no-n1-guard'},
   // be-mixed-auth-provider (INFO)
   {name:'Clerk+JWT+CustomBE=INFO',a:{auth:'Clerk JWT カスタムミドルウェア',backend:'Node.js + Express'},expect:'info',id:'be-mixed-auth-provider'},
   {name:'Supabase+JWT+BaaSBE=noINFO',a:{auth:'Supabase Auth JWT',backend:'Supabase'},expect:'none',id:'be-mixed-auth-provider'},
@@ -894,8 +894,8 @@ const tests=[
   {name:'AI+Express+hasGuardrail=noINFO',a:{ai_auto:'RAGベース回答',backend:'Express',mvp_features:'プロンプトインジェクション対策 ガードレール'},expect:'none',id:'ai-no-prompt-injection'},
   // ── v9.20: Theme Overlay & Modern Stack Rules (+24 tests) ──
   // compliance-no-audit-trail (WARN)
-  {name:'health+noAuditTrail=WARN',a:{purpose:'医療記録管理システム health clinic',entities:'Patient,Record'},expect:'warn',id:'compliance-no-audit-trail'},
-  {name:'health+hasAuditTrail=noWARN',a:{purpose:'医療記録管理システム health clinic',entities:'Patient,AuditTrail,Record'},expect:'none',id:'compliance-no-audit-trail'},
+  {name:'health+noAuditTrail=WARN',a:{purpose:'医療記録管理システム health clinic',data_entities:'Patient,Record'},expect:'warn',id:'compliance-no-audit-trail'},
+  {name:'health+hasAuditTrail=noWARN',a:{purpose:'医療記録管理システム health clinic',data_entities:'Patient,AuditTrail,Record'},expect:'none',id:'compliance-no-audit-trail'},
   // compliance-no-dpa (INFO)
   {name:'GDPRfeat+noDPA=INFO',a:{purpose:'EU向けサービス',mvp_features:'GDPR準拠対応'},expect:'info',id:'compliance-no-dpa'},
   {name:'GDPRfeat+hasDPA=noINFO',a:{purpose:'EU向けサービス',mvp_features:'GDPR準拠 DataProcessingRecord処理記録'},expect:'none',id:'compliance-no-dpa'},

@@ -37,21 +37,21 @@ const A_PG = {
   frontend: 'React + Next.js', backend: 'Express',
   database: 'PostgreSQL', deploy: 'Railway',
   scale: 'medium', orm: 'Prisma',
-  entities: 'User, Product, Order, Inventory, Category',
+  data_entities: 'User, Product, Order, Inventory, Category',
 };
 
 const A_SUPABASE = {
   purpose: 'SaaS管理プラットフォーム',
   frontend: 'React + Next.js', backend: 'Supabase',
   database: 'PostgreSQL', deploy: 'Vercel',
-  scale: 'large', entities: 'User, Team, Project, Subscription',
+  scale: 'large', data_entities: 'User, Team, Project, Subscription',
 };
 
 const A_FINTECH = {
   purpose: 'フィンテック取引管理',
   frontend: 'React + Next.js', backend: 'NestJS',
   database: 'PostgreSQL', deploy: 'Railway',
-  scale: 'large', entities: 'User, Transaction, AuditLog, Account',
+  scale: 'large', data_entities: 'User, Transaction, AuditLog, Account',
 };
 
 describe('P22 Database — file generation', () => {

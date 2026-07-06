@@ -276,7 +276,7 @@ function gen83(a,pn,G){
   }
 
   if(!isBaaS&&!isGRPC){
-    var _ents83=(a.entities||a.data_entities||'').split(',').map(function(e){return e.trim();}).filter(Boolean);
+    var _ents83=(a.data_entities||'').split(',').map(function(e){return e.trim();}).filter(Boolean);
     doc+='## '+(G?'ペイロード最適化 — Sparse Fieldsets':'Payload Optimization — Sparse Fieldsets')+'\n\n';
     doc+=(G
       ?'`?fields=name,email` クエリパラメータでレスポンスフィールドを選択し、不要データの転送を防ぎます。\n\n'
@@ -317,7 +317,7 @@ function gen83(a,pn,G){
   }
 
   if(!isBaaS){
-    const _feats83=(a.features||a.mvp_features||'').toLowerCase();
+    const _feats83=(a.mvp_features||'').toLowerCase();
     const _hasRT=/realtime|chat|notification|リアルタイム|チャット|通知|push/i.test(_feats83);
     const _hasPay=/payment|stripe|決済/i.test(a.payment||'');
     const _isLarge83=/large/i.test(a.scale||'');
@@ -396,7 +396,7 @@ function gen83(a,pn,G){
 // doc 84: OpenAPI Specification
 function gen84(a,pn,G){
   const be=a.backend||'';
-  const entities=(a.entities||a.data_entities||'User, Post').split(',').map(function(e){return e.trim();}).filter(Boolean);
+  const entities=(a.data_entities||'User, Post').split(',').map(function(e){return e.trim();}).filter(Boolean);
   var _authObj21=(typeof resolveAuth==='function')?resolveAuth(a):null;
   var hasAuth=_authObj21?(_authObj21.provider!=='none'):!/なし|None|public/i.test(a.auth||'JWT');
   const isPython=/Python|Django|FastAPI/i.test(be);

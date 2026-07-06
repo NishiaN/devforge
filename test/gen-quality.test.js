@@ -1184,7 +1184,7 @@ const apiAnswers = Object.assign({}, A25, {
   frontend: 'React + Vite',
   database: 'PostgreSQL (Neon)',
   auth: 'JWT',
-  entities: 'User, Post, Comment',
+  data_entities: 'User, Post, Comment',
   payment: 'なし',
   orm: 'Prisma ORM',
 });

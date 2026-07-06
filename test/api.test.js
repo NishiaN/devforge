@@ -37,14 +37,14 @@ const A_SAAS = {
   frontend: 'React + Next.js', backend: 'Supabase',
   database: 'PostgreSQL', deploy: 'Vercel',
   payment: 'Stripe', scale: 'medium',
-  entities: 'User, Team, Subscription',
+  data_entities: 'User, Team, Subscription',
 };
 
 const A_EXPRESS = {
   purpose: '在庫管理システム',
   frontend: 'React + Next.js', backend: 'Express',
   database: 'PostgreSQL', deploy: 'Railway',
-  scale: 'small', entities: 'User, Product, Order, Inventory',
+  scale: 'small', data_entities: 'User, Product, Order, Inventory',
   orm: 'Prisma', auth: 'JWT',
 };
 
@@ -53,7 +53,7 @@ const A_FINTECH = {
   frontend: 'React + Next.js', backend: 'NestJS',
   database: 'PostgreSQL', deploy: 'Railway',
   payment: 'Stripe', scale: 'large',
-  entities: 'User, Transaction, AuditLog, Account',
+  data_entities: 'User, Transaction, AuditLog, Account',
 };
 
 describe('P21 API — file generation', () => {

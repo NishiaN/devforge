@@ -36,14 +36,14 @@ const A_REACT = {
   purpose: 'SaaSサブスクリプション管理',
   frontend: 'React + Next.js', backend: 'Supabase',
   database: 'PostgreSQL', deploy: 'Vercel',
-  scale: 'medium', entities: 'User, Team, Subscription, Invoice',
+  scale: 'medium', data_entities: 'User, Team, Subscription, Invoice',
 };
 
 const A_VUE = {
   purpose: 'コミュニティフォーラム',
   frontend: 'Vue + Nuxt', backend: 'Express',
   database: 'PostgreSQL', deploy: 'Railway',
-  scale: 'small', entities: 'User, Post, Comment, Tag',
+  scale: 'small', data_entities: 'User, Post, Comment, Tag',
 };
 
 const A_FINTECH = {
@@ -51,7 +51,7 @@ const A_FINTECH = {
   frontend: 'React + Next.js', backend: 'NestJS',
   database: 'PostgreSQL', deploy: 'Railway',
   payment: 'Stripe', scale: 'large',
-  entities: 'User, Transaction, AuditLog, Account',
+  data_entities: 'User, Transaction, AuditLog, Account',
 };
 
 const A_EC = {
@@ -59,7 +59,7 @@ const A_EC = {
   frontend: 'React + Next.js', backend: 'Express',
   database: 'PostgreSQL', deploy: 'Railway',
   payment: 'Stripe', scale: 'medium',
-  entities: 'User, Product, Order, Inventory',
+  data_entities: 'User, Product, Order, Inventory',
 };
 
 describe('P23 Testing — file generation', () => {

@@ -235,11 +235,11 @@ const docWarns = [];
   const presetFiles = jsFiles.filter(f => f.includes('presets'));
   const actualPresets = presetFiles.reduce((n, f) => {
     const src = fs.existsSync(path.join(SRC, f)) ? fs.readFileSync(path.join(SRC, f), 'utf8') : '';
-    return n + (src.match(/_mp\(/g) || []).length;
+    return n + (src.match(/:_mp\(/g) || []).length;
   }, 0);
   const actualFieldPresets = presetFiles.reduce((n, f) => {
     const src = fs.existsSync(path.join(SRC, f)) ? fs.readFileSync(path.join(SRC, f), 'utf8') : '';
-    return n + (src.match(/_fpd\(/g) || []).length;
+    return n + (src.match(/:_fpd\(/g) || []).length;
   }, 0);
   // Count compat rules from compat-rules.js only
   const compatSrc = fs.existsSync(path.join(SRC, 'data/compat-rules.js')) ? fs.readFileSync(path.join(SRC, 'data/compat-rules.js'), 'utf8') : '';

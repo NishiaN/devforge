@@ -82,6 +82,7 @@ for (const key of Object.keys(PR_FIELD)) {
     for (const f of fields) { if (fp[f]) sb.S.answers[f] = fp[f]; }
     if (fp.features) sb.S.answers.mvp_features = Array.isArray(fp.features) ? fp.features.join(', ') : fp.features;
     if (fp.entities) sb.S.answers.data_entities = fp.entities;
+    if (fp.meta && fp.meta.regulation) sb.S.answers._meta_regulation = fp.meta.regulation;  // mirrors presets.js field apply
     sb._applyUniversalPostProcess(false);
     const results = sb.checkCompat(sb.S.answers);
     for (const r of results) {

@@ -348,7 +348,7 @@ function gen91(a,pn,G,feType,beType){
   }
 
   // Entity-specific test fixtures
-  var _p91ents=(a.entities||a.data_entities||'').split(',').map(function(e){return e.trim();}).filter(Boolean);
+  var _p91ents=(a.data_entities||'').split(',').map(function(e){return e.trim();}).filter(Boolean);
   if(_p91ents.length){
     var _p91ent=_p91ents[0];
     var _p91cols=getEntityColumns(_p91ent,G,_p91ents);

@@ -4,9 +4,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ---
 
-# DevForge v9.35
+# DevForge v9.36
 
-**AI Development OS** — 86 JS modules in `src/` → single `devforge-v9.html` (~5927KB / 6500KB limit).
+**AI Development OS** — 86 JS modules in `src/` → single `devforge-v9.html` (~5930KB / 6500KB limit).
 Generates **227+ files** across **28 pillars** from a wizard-driven Q&A session.
 
 ## Documentation Map
@@ -18,11 +18,11 @@ Generates **227+ files** across **28 pillars** from a wizard-driven Q&A session.
 ## Build & Test
 
 ```bash
-node build.js                          # → devforge-v9.html (~5927KB, limit 6500KB)
+node build.js                          # → devforge-v9.html (~5930KB, limit 6500KB)
 node build.js --no-minify              # debug (skip minification)
 node build.js --report                 # build + size breakdown by module
 node build.js --out=path               # write bundle to alternate path (used by build.test.js to avoid racing bundle readers)
-npm test                               # ~7493 tests, all passing (v9.35)
+npm test                               # ~7500 tests, all passing (v9.36)
 node --test test/gen-quality.test.js   # single test file
 npm run dev                            # build + live-server :3000
 npm run check                          # syntax-check extracted JS
@@ -90,6 +90,8 @@ Key helpers (all globally scoped): `save()`, `esc(s)`, `escAttr(s)`, `_jp(s,d)`,
 
 **Missing `+=`** — the most frequent error. `doc + 'text'` does nothing; always `doc += 'text'`. Empty generated files (especially Mermaid diagrams) almost always mean a missing `+=`.
 
+**Answer key misuse** — canonical keys are `a.data_entities` / `a.mvp_features` (NOT `a.entities` / `a.features` — those are never assigned). `test/answer-keys.test.js` statically rejects any `a.<key>` in generators/compat-rules (incl. `p:[...]` gates and `fix.f` targets) not in the valid key set (questions.js ids + `S.answers.<k>=` assignments). `a.scale` ('solo'|'small'|'medium'|'large') and `a._meta_regulation` are set only by field-preset apply — always read with fallback (`a.scale||'medium'`).
+
 **`_orm` detection in p7-roadmap.js** — checks all 5 ORMs: Prisma / Drizzle / TypeORM / SQLAlchemy / Kysely. Don't add new ORM checks without updating this chain.
 
 **Entity name collisions** — different presets may define the same entity name with different schemas. Use descriptive names (`ContactMessage` not `Contact`) and check `ENTITY_COLUMNS` before adding.
@@ -124,7 +126,7 @@ Key helpers (all globally scoped): `save()`, `esc(s)`, `escAttr(s)`, `_jp(s,d)`,
 - **G-3** `learning_goal` ← `deadline` answer
 - **G-4** `learning_path` ← backend/mobile/ai_auto/payment combination
 
-Field presets use a 4-layer merge: `_SCALE_DEFAULTS[scale]` → `FIELD_CAT_DEFAULTS[field]` → direct preset fields → meta inference.
+Field presets use a 4-layer merge: `_SCALE_DEFAULTS[scale]` → `FIELD_CAT_DEFAULTS[field]` → direct preset fields → meta inference. Field-preset apply also sets `S.answers.scale=_fieldScale` and `S.answers._meta_regulation=fp.meta.regulation` (v9.36) — standard presets/custom flow leave both unset (generators fall back to 'medium').
 
 **N-8 `scope_out` condition**: only explicitly-set `'none'`/`'なし'` values add to scope_out — empty/unset does NOT. (`_pa&&/none|なし/i.test(_pa)`, not `!_pa||...`)
 
@@ -189,9 +191,9 @@ After adding: update header comment totals, add tests to `test/compat.test.js`, 
 | Generator tests | airules, strategy, reverse, observability | ~75 |
 | Gen quality | gen-quality (Suites 1-400, ~6184 tests) | ~6184 |
 | Preset matching | phase-n (N-1〜N-9 + G-1〜G-7, 68 tests) | ~68 |
-| Other | i18n, state, techdb, utils, complexity, mermaid (30 tests, all 28 pillars), help-hints, ui-xref, en/kanji-purity, preset-integrity | ~92 |
+| Other | i18n, state, techdb, utils, complexity, mermaid (30 tests, all 28 pillars), help-hints, ui-xref, en/kanji-purity, preset-integrity, answer-keys | ~99 |
 
-**Total: 7493 tests** | Test harness pattern: `eval(fs.readFileSync(...))` to load src files; global `S` mock at top.
+**Total: 7500 tests** | Test harness pattern: `eval(fs.readFileSync(...))` to load src files; global `S` mock at top.
 Run `node build.js` before `npm test` — security.test.js reads the built bundle. build.test.js builds to a temp file (`--out=`), so the suite itself never rewrites `devforge-v9.html`.
 
 **When adding domains**, update: `test/data-coverage.test.js` (4 arrays), `test/gen-coherence.test.js`, `test/ops.test.js`.

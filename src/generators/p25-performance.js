@@ -264,7 +264,7 @@ function gen99(a,pn){
     var _isLargeScale=/large/i.test(a.scale||'');
     var _mau=_isLargeScale?'100,000':'10,000';
     var _qps=_isLargeScale?'60':'6';
-    var _ents99=(a.entities||a.data_entities||'User, Post').split(',').map(function(e){return e.trim();}).filter(Boolean);
+    var _ents99=(a.data_entities||'User, Post').split(',').map(function(e){return e.trim();}).filter(Boolean);
     doc+='\n## '+(G?'📐 キャパシティ見積り (Little\'s Law)':'📐 Capacity Planning (Little\'s Law)')+'\n\n';
     doc+=(G
       ?'> **Little\'s Law**: L = λ × W（システム内平均リクエスト数 = スループット × 平均応答時間）\n\n'

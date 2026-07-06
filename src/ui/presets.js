@@ -595,7 +595,9 @@ function start(){
     const fp=PR_FIELD[fk];
     const sd=_SCALE_DEFAULTS[_fieldScale]||_SCALE_DEFAULTS.small;
     if(fp){
-      // Layer 1: Apply scale defaults first
+      // Layer 1: Apply scale defaults first (scale itself feeds generators' a.scale + compat p:['scale'] rules)
+      S.answers.scale=_fieldScale;
+      if(fp.meta&&fp.meta.regulation)S.answers._meta_regulation=fp.meta.regulation;
       if(sd.frontend)S.answers.frontend=sd.frontend;
       if(sd.backend)S.answers.backend=sd.backend;
       if(sd.deploy)S.answers.deploy=sd.deploy;

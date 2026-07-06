@@ -46,7 +46,7 @@ const A_SAAS = {
   frontend: 'React + Next.js', backend: 'Supabase',
   database: 'PostgreSQL', deploy: 'Vercel',
   payment: 'Stripe', scale: 'medium',
-  entities: 'User, Team, Subscription, Invoice',
+  data_entities: 'User, Team, Subscription, Invoice',
 };
 
 const A_FINTECH = {
@@ -54,7 +54,7 @@ const A_FINTECH = {
   frontend: 'React + Next.js', backend: 'Express',
   database: 'PostgreSQL', deploy: 'AWS',
   payment: 'Stripe', scale: 'large',
-  entities: 'User, Transaction, AuditLog, Account',
+  data_entities: 'User, Transaction, AuditLog, Account',
 };
 
 const A_AI = {
@@ -62,7 +62,7 @@ const A_AI = {
   frontend: 'React + Next.js', backend: 'Supabase',
   database: 'PostgreSQL', deploy: 'Vercel',
   ai_auto: 'マルチAgent協調', scale: 'medium',
-  entities: 'User, Agent, Session, Message',
+  data_entities: 'User, Agent, Session, Message',
 };
 
 // ══════════════════════════════════════════

@@ -1678,7 +1678,7 @@ const COMPAT_RULES=[
   {id:'method-ddd-simple',p:['dev_methods'],lv:'info',
    t:a=>{
      if(!/(DDD|ドメイン駆動)/i.test(a.dev_methods||''))return false;
-     const ents=(a.data_entities||a.entities||'').split(',').map(function(e){return e.trim();}).filter(Boolean);
+     const ents=(a.data_entities||'').split(',').map(function(e){return e.trim();}).filter(Boolean);
      return ents.length>0&&ents.length<5;
    },
    ja:'DDD（ドメイン駆動設計）を選択していますが、エンティティ数が4件以下です。シンプルなシステムではDDDのオーバーヘッドが開発コストを増加させる場合があります',
@@ -2738,7 +2738,7 @@ const COMPAT_RULES=[
     var isRelDB=/PostgreSQL|MySQL|MariaDB/i.test(db);
     var hasORM=/Prisma|Drizzle|TypeORM|SQLAlchemy|Kysely/i.test(orm);
     var isLarge=/^(large|enterprise)$/.test(sc);
-    var ents=(a.entities||'').split(',').filter(function(e){return e.trim();});
+    var ents=(a.data_entities||'').split(',').filter(function(e){return e.trim();});
     var manyEnts=ents.length>=7;
     var feats=(a.mvp_features||'')+(a.dev_methods||'');
     var hasN1Guard=/N\+1|eager.?load|include|dataloader|バッチ|select_related/i.test(feats);
@@ -2864,27 +2864,32 @@ const COMPAT_RULES=[
    why_ja:'プロンプトインジェクションはAIシステムの重大な脆弱性です。ガードレールなしの本番運用はリスクが高すぎます。',
    why_en:'Prompt injection is a critical AI system vulnerability. Production operation without guardrails carries unacceptable risk.'},
   // ── Theme Overlay & Modern Stack Rules (v9.20) ──
-  {id:'compliance-no-audit-trail',p:['purpose','entities'],lv:'warn',
+  {id:'compliance-no-audit-trail',p:['purpose','data_entities'],lv:'warn',
    t:function(a){
+    var sc=a.scale||'medium';
+    if(sc==='solo')return false;
     var dom=typeof detectDomain==='function'?detectDomain(a.purpose||''):'';
-    var isHigh=/health|fintech|insurance|legal|government/.test(dom);
-    var feats=(a.mvp_features||'')+(a.entities||'');
+    var reg=a._meta_regulation||'';
+    var isHighReg=/high|strict|highest/.test(reg);
+    var isRegDom=/fintech|insurance|legal|government/.test(dom);
+    var isMedical=/health/.test(dom)&&(isHighReg||/診療|カルテ|処方|患者|臨床|医療機関|医療記録|clinic|patient|ehr|medical record|prescription/i.test(a.purpose||''));
+    var feats=(a.mvp_features||'')+(a.data_entities||'');
     var hasAudit=/AuditTrail|audit.?trail|監査証跡|audit.?log/i.test(feats);
-    return isHigh&&!hasAudit;},
+    return (isRegDom||isMedical||isHighReg)&&!hasAudit;},
    ja:'高規制ドメインですが監査証跡（AuditTrail）エンティティが確認されません。コンプライアンス要件として監査ログの実装が必要です',
    en:'High-regulation domain but no AuditTrail entity found. Audit log implementation is required for compliance',
-   fix:{f:'entities',s:'AuditTrail'},
+   fixFn:function(a){return {f:'data_entities',s:(a.data_entities||'')+(a.data_entities?', ':'')+'AuditTrail'};},
    why_ja:'金融・医療・法務等の高規制ドメインでは監査証跡が法定要件です。未実装は規制違反リスクとなります。',
    why_en:'In high-regulation domains like fintech/health/legal, audit trails are legally required. Missing implementation creates compliance risk.'},
   {id:'compliance-no-dpa',p:['purpose','mvp_features'],lv:'info',
    t:function(a){
-    var feats=(a.mvp_features||'')+(a.entities||'')+(a.dev_methods||'');
+    var feats=(a.mvp_features||'')+(a.data_entities||'')+(a.dev_methods||'');
     var hasGDPR=/GDPR|gdpr|個人情報保護|DPA|データ処理契約/.test(feats);
     var hasDPA=/DataProcessingRecord|data.?processing.?agreement|データ処理契約|処理記録/.test(feats);
     return hasGDPR&&!hasDPA;},
    ja:'GDPR対応を設定していますがデータ処理記録（DataProcessingRecord）が確認されません。EU規則第30条準拠のため処理活動記録が必要です',
    en:'GDPR compliance enabled but no DataProcessingRecord found. Records of processing activities required under GDPR Article 30',
-   fix:{f:'entities',s:'DataProcessingRecord'},
+   fixFn:function(a){return {f:'data_entities',s:(a.data_entities||'')+(a.data_entities?', ':'')+'DataProcessingRecord'};},
    why_ja:'GDPR第30条はデータ処理活動の記録を義務付けています。記録なしの運用はGDPR違反のリスクがあります。',
    why_en:'GDPR Article 30 mandates records of processing activities. Operation without records risks GDPR violations.'},
   {id:'offline-no-sw',p:['mvp_features'],lv:'info',
@@ -2933,7 +2938,7 @@ const COMPAT_RULES=[
    why_en:'Implementing CRDT from scratch is extremely difficult. Using a proven library like Yjs or Automerge is strongly recommended.'},
   {id:'tenant-no-rls',p:['purpose','database'],lv:'warn',
    t:function(a){
-    var feats=(a.mvp_features||'')+(a.entities||'')+(a.dev_methods||'');
+    var feats=(a.mvp_features||'')+(a.data_entities||'')+(a.dev_methods||'');
     var isMT=/マルチテナント|multi.?tenant|TenantConfig|テナント管理/i.test(feats);
     var hasRLS=/RLS|row.?level.?security|行レベルセキュリティ|tenant.?isolat/i.test(feats);
     var isPG=/PostgreSQL|Supabase/.test(a.database||'');
@@ -2945,7 +2950,7 @@ const COMPAT_RULES=[
    why_en:'Multi-tenant DB without RLS risks cross-tenant data leakage from a single bug. This is a critical security vulnerability.'},
   {id:'tenant-shared-db-large',p:['purpose','scale'],lv:'info',
    t:function(a){
-    var feats=(a.mvp_features||'')+(a.entities||'');
+    var feats=(a.mvp_features||'')+(a.data_entities||'');
     var isMT=/マルチテナント|multi.?tenant|TenantConfig/i.test(feats);
     var sc=a.scale||'medium';
     var isLarge=/^(large|enterprise)$/.test(sc);

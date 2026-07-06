@@ -36,7 +36,7 @@ const A_NEXT = {
   purpose: 'SaaSサブスクリプション管理',
   frontend: 'React + Next.js', backend: 'Supabase',
   database: 'PostgreSQL', deploy: 'Vercel',
-  scale: 'medium', entities: 'User, Team, Subscription',
+  scale: 'medium', data_entities: 'User, Team, Subscription',
 };
 
 const A_EC = {
@@ -44,14 +44,14 @@ const A_EC = {
   frontend: 'React + Next.js', backend: 'Express',
   database: 'PostgreSQL', deploy: 'Railway',
   payment: 'Stripe', scale: 'large',
-  entities: 'User, Product, Order, Inventory',
+  data_entities: 'User, Product, Order, Inventory',
 };
 
 const A_CONTENT = {
   purpose: 'コンテンツ配信プラットフォーム',
   frontend: 'React + Next.js', backend: 'Supabase',
   database: 'PostgreSQL', deploy: 'Vercel',
-  scale: 'medium', entities: 'User, Article, Category',
+  scale: 'medium', data_entities: 'User, Article, Category',
 };
 
 describe('P25 Performance — file generation', () => {
