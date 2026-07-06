@@ -294,6 +294,29 @@ techdb本体照査後、「その他の鮮度敏感箇所」を洗い出し4Tier
 
 ---
 
+### v9.42 — ドキュメント鮮度更新（README/技術リファレンス）+ CI/Pagesデプロイ二重起動レースの恒久修正
+
+ユーザー指示「README・技術仕様書・ヘルプを最新版に更新」→ 対象を実測特定し陳腐箇所のみ更新。その後のpushで露見したCI失敗（実体はGitHub Pagesデプロイのレース）を診断・恒久修正。
+
+- **ドキュメント鮮度更新（.mdのみ・src変更なし=バンドル/テスト不変）**:
+  - `README.md` 全面刷新: 数世代分の陳腐化を解消 — 27→**28柱**（㉘XAI Intelligence行を追加）/196+→**227+**ファイル/143→**257**標準・502→**602**分野別プリセット/395→**548**TechDB/53→**116**テンプレ/202→**332**ルール/73→**86**モジュール/6122→**7525**tests/4012KB・5000KB上限→**5958KB・6500KB**/著作権を新ブランド表記に/generators `p1-p27`→`p1-p28`
+  - `README_使い方と導入手順.md` ヘッダ: 28柱/227+/859プリセット
+  - `docs/CLAUDE-REFERENCE.md` 現行状態部: 6500KB上限・P1-P28・332ルール・257標準・PR_FIELD602/FIELD_TREND44/THEME_OVERLAYS10・7525tests・116テンプレ
+  - **更新不要と確認**: アプリ内About/Overview/28の柱/ヘルプ各タブ(`templates.js`)+`init.js`ヒーロー+`helpdata.js` は既に最新（v9.39a/v9.40で更新済）=変更なし。CLAUDE-REFERENCE 761行「v9.6.x brushup」の6122等は**史実注記のため意図的保持**
+  - 各カウントは実測で正値確定してから置換（v9.40教訓）: PR_FIELD=602/標準=257/THEME_OVERLAYS=10/FIELD_TREND=44 をテスト・ソースで確認
+- **CI「push失敗」の診断（実体はPagesデプロイのレース、gh CLI無しでGitHub REST API直叩き）**:
+  - **git pushは一度も失敗していなかった**。失敗していたのは "pages build and deployment"（GitHub旧式・ブランチ由来）の`deploy`ジョブのみ。エラー実文=`"Deployment failed, try again later."`
+  - 根本原因: リポジトリのPagesソースが「Deploy from a branch」のまま→旧式workflowが自動起動。**加えて** `ci.yml` にActions方式deployジョブもあり、**両者が同一`github-pages`環境へほぼ同時デプロイ→非決定的レース**（LICENSE push=両成功／v9.41バンドルpush=旧式が競り負けて❌／concurrencyガードpush=両成功、と結果が割れたのが決定的証拠）
+- **恒久修正（Actions方式に一本化、ユーザー選択）**:
+  - コード: `ci.yml` の`deploy`ジョブに `concurrency: {group: pages, cancel-in-progress: false}` を追加（GitHub公式Pages推奨パターン、自己重複の直列化）
+  - 設定: ユーザーが Settings→Pages→Source を**「GitHub Actions」**に変更→旧式 pages build and deployment が停止
+  - **検証（設定変更後の初push `8b16a72`）**: 旧式workflowが**実行リストから消失**（全過去commitでは同時刻に出ていた）+ `CI`の`Test & Build`/`Deploy to GitHub Pages`両ジョブsuccess。二重起動解消を実測確認
+- **副次発見（未対応・フォローアップ化）**: リポジトリ自身の `.github/workflows/ci.yml` が `checkout@v4`/`setup-node@v4`/Node20 の**非推奨世代**のまま（v9.40は生成物側CIをv5化したがリポ自身のci.ymlは対象外だった）。**Node20は2026-09-16にランナー削除**→それ以降CIが動かなくなる。`@v5`/Node22への更新を先送りリストに追加
+
+コミット: `0594e53`(docs) / `1892db8`(build: v9.41バンドル取りこぼし再生成) / `d8fd8f6`(ci: concurrencyガード) / `8b16a72`(検証用空コミット)。教訓「①『push失敗』の第一報はgit失敗とCI/デプロイ失敗を切り分ける（今回は後者・しかも旧式Pagesの競合）②gh CLI無しでもGitHub REST APIで run/jobs/annotations を追える③二重デプロイ機構は非決定的に失敗する—原因は設定(Pagesソース)、コードだけでは直せない④カウント更新は実測で正値確定してから」
+
+---
+
 ### v9.41 — 先送りリストの価値実測ドリブン消化（grep掃引で新バグ発掘 + 外部条件再確認）
 
 先送りリスト（v9.41+候補）を「着手前に価値を実測」（v9.26/v9.29教訓）で選別してから消化。実装が正当化された2件を修正し、外部条件依存の2件は2026-07再照会で判断確定。
@@ -345,12 +368,14 @@ ext5〜ext22（プリセット257/603到達）、P28 XAI（86番目モジュー�
 
 ---
 
-## 先送り事項（v9.42+ 候補）
+## 先送り事項（v9.43+ 候補）
+
+- **【期限あり・要対応】リポ自身の `.github/workflows/ci.yml` の非推奨アクション更新**: `checkout@v4`/`setup-node@v4`/`upload-artifact@v4`/Node20 のまま（v9.40は**生成物側**CIをv5化したが**リポ自身のci.yml**は対象外だった）。**Node20は2026-09-16にランナーから削除→それ以降このリポのCIが動かなくなる**。`@v5`世代（Node24）+ Node22/24へ更新推奨。upload-pages-artifact@v3/deploy-pages@v4/configure-pages@v5 の最新も要確認。※v9.42のPagesレース修正とは別件
 
 - **CDNライブラリ更新の再検討（v9.40 HOLD → v9.41 再確認でHOLD継続）**: marked 12.0.2/mermaid 10.9.1。2026-07再照会で cdnjs は marked=16.3.0(不変)/mermaid=**11.12.0のまま**（11.13+のラベル互換修正・v11破壊的`mermaid.default.*`API未配信、npmは11.16だがcdnjs未達）。**cdnjsがmermaid 11.13+を配信するか、jsDelivr等へ移行＋initialize/render書換え＋回帰テストを許容できる時に着手**。marked 16はファイル配置変更(`marked.min.js`→`lib/marked.umd.js`)＋SRI再計算必須でプレビュー専用の低価値。外部条件未解消のため据置。判断根拠=docs/plans/v940-freshness-update-plan.md + v9.41エントリ
 - **GitHub Actions最新化の余地（v9.41で低価値と確定・据置）**: 生成CIの`@v5`世代はNode24ベースで非推奨対象外・安全（v9.40の選択は正）。最新メジャーはcheckout=v6・setup-node=v6（※旧「v7」記述は誤り、v9.41で訂正）。v6化は1メジャーの限界的鮮度×11ファイル×複数actionの破壊的変更確認コストで低価値。着手するならNode24ランナー前提とcodecov/setup-node v6のキャッシュ既定変更を要確認
 - **launcher.js ja/en 圧縮**（527KB）: サイズ逼迫時（現在~542KB余裕で優先度低）。v9.22の共有ブロック方式の全面展開
 - **7アンチパターン明示チェックリスト**: 参考資料の残り題材（既存設計と重複多く保留中）
-- 完了済: ~~features空84件充填~~(v9.39) | ~~コピーライト刷新+版数統一~~(v9.39a) | ~~techdb鮮度刷新538→548~~(v9.40) | ~~techdb選択の影響機能照査(SSR修正)~~(v9.40) | ~~中身の鮮度Tier1-5~~(v9.40) | ~~why_ja 350B超3件トリム~~(v9.41) | ~~compat警告カウント217→332~~(v9.41・grep掃引で新発見) | ~~CDN/GH Actions外部条件再確認~~(v9.41・両者HOLD確定)
+- 完了済: ~~features空84件充填~~(v9.39) | ~~コピーライト刷新+版数統一~~(v9.39a) | ~~techdb鮮度刷新538→548~~(v9.40) | ~~techdb選択の影響機能照査(SSR修正)~~(v9.40) | ~~中身の鮮度Tier1-5~~(v9.40) | ~~why_ja 350B超3件トリム~~(v9.41) | ~~compat警告カウント217→332~~(v9.41・grep掃引で新発見) | ~~CDN/GH Actions外部条件再確認~~(v9.41・両者HOLD確定) | ~~README/技術リファレンス鮮度更新~~(v9.42) | ~~CI/Pagesデプロイ二重起動レース修正~~(v9.42・concurrencyガード+Actionsソース一本化)
 
-**次回セッションの開始点**: 鮮度の主要陳腐化は解消済（AIモデル・カウント・日付・techdb・カウント217）。CDN/GH Actionsは外部条件で据置確定。残る先送りは全て低価値/外部依存。この先の着手候補は**新規の価値実測（生成物のgrep掃引・実バンドルE2E）から探す**のが有効（v9.35/v9.41でgrep掃引が継続的にバグを産んだ実績）。着手前に価値を実測（v9.26/v9.29教訓）。
+**次回セッションの開始点**: 鮮度の主要陳腐化は解消済（AIモデル・カウント・日付・techdb・カウント217・README/リファレンス）。**期限あり最優先=リポ自身のci.ymlの非推奨アクション更新（Node20が2026-09-16削除、それ以降CI停止）**。それ以外の先送りは低価値/外部依存。着手候補は**新規の価値実測（生成物のgrep掃引・実バンドルE2E）から探す**のが有効（v9.35/v9.41でgrep掃引が継続的にバグを産んだ実績）。着手前に価値を実測（v9.26/v9.29教訓）。
