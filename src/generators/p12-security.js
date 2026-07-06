@@ -404,7 +404,7 @@ const STRIDE_PATTERNS={
   hasUserId:{S:'HIGH',T:'MED',R:'MED',I:'HIGH',D:'LOW',E:'HIGH'},
   isPayment:{S:'CRITICAL',T:'CRITICAL',R:'HIGH',I:'HIGH',D:'MED',E:'CRITICAL'},
   isPublic:{S:'LOW',T:'LOW',R:'LOW',I:'MED',D:'MED',E:'LOW'},
-  hasFile:{S:'MED',T:'HIGH',I:'HIGH',D:'MED',E:'MED'},
+  hasFile:{S:'MED',T:'HIGH',R:'MED',I:'HIGH',D:'MED',E:'MED'},
   default:{S:'MED',T:'MED',R:'LOW',I:'MED',D:'LOW',E:'MED'}
 };
 

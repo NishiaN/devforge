@@ -488,9 +488,11 @@ function genPillar14_OpsIntelligence(a, pn) {
   };
   const limits = rateLimits[domain] || rateLimits._default;
   const alertEn = (rateLimits[domain] && rateLimitAlertsEn[domain]) || rateLimitAlertsEn._default;
+  // each domain names its critical-op key differently (payment/booking/bid/…) — pick the non-api/alert key
+  const critOp = limits[Object.keys(limits).find(k => k !== 'api' && k !== 'alert')] || rateLimits._default.write;
   runbook += G
-    ? `- **API全体**: ${limits.api}\n- **重要操作**: ${limits.write || limits.payment || limits.diagnostic || limits.quiz || limits.checkout || limits.signup}\n- **アラート**: ${limits.alert}\n\n`
-    : `- **Overall API**: ${limits.api}\n- **Critical Operations**: ${limits.write || limits.payment || limits.diagnostic || limits.quiz || limits.checkout || limits.signup}\n- **Alerting**: ${alertEn}\n\n`;
+    ? `- **API全体**: ${limits.api}\n- **重要操作**: ${critOp}\n- **アラート**: ${limits.alert}\n\n`
+    : `- **Overall API**: ${limits.api}\n- **Critical Operations**: ${critOp}\n- **Alerting**: ${alertEn}\n\n`;
 
   if (!isBaaS) {
     runbook += '```typescript\n';
