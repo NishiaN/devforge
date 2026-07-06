@@ -150,7 +150,6 @@ const TECH_DB=[
 {name:'Codex App (OpenAI)',cat:'ai_auto',sub:'agentic',req:'optional',level:'pro',price:'$20'},
 {name:'FlutterFlow',cat:'ai_auto',sub:'no-code',req:'optional',level:'beg',price:'free-tier'},
 {name:'Adalo',cat:'ai_auto',sub:'no-code',req:'optional',level:'beg',price:'free-tier'},
-{name:'Architect',cat:'ai_auto',sub:'text-to-app',req:'optional',level:'int',price:'paid'},
 // ── Additional Languages (6) ──
 {name:'C#',cat:'lang',sub:'language',req:'optional',level:'dotnet',weeks:'6-12'},
 {name:'PHP',cat:'lang',sub:'language',req:'optional',level:'wp',weeks:'4-8'},
@@ -361,7 +360,7 @@ const TECH_DB=[
 {name:'CrewAI',cat:'ai_auto',sub:'agent-fw',req:'optional',level:'pro',price:'free-oss'},
 {name:'LangGraph',cat:'ai_auto',sub:'agent-fw',req:'optional',level:'pro',price:'free-oss'},
 {name:'OpenAI Agents SDK',cat:'ai_auto',sub:'agent-fw',req:'optional',level:'pro',price:'usage'},
-{name:'AutoGen',cat:'ai_auto',sub:'agent-fw',req:'optional',level:'pro',price:'free-oss'},
+{name:'Microsoft Agent Framework (旧AutoGen)',cat:'ai_auto',sub:'agent-fw',req:'optional',level:'pro',price:'free-oss'},
 // ── Mobile Health & Wearable (3) ──
 {name:'Apple HealthKit',cat:'mobile',sub:'health',req:'optional',level:'ios'},
 {name:'Google Fit API',cat:'mobile',sub:'health',req:'optional',level:'android'},
@@ -479,7 +478,6 @@ const TECH_DB=[
 {name:'Anthropic SDK',cat:'ai',sub:'sdk',req:'optional',level:'int',price:'usage'},
 {name:'Together AI',cat:'ai',sub:'sdk',req:'optional',level:'int',price:'free-tier'},
 // ── ext-de2: Auth (3) ──
-{name:'Lucia',cat:'back',sub:'auth',req:'optional',level:'int',price:'free-oss'},
 {name:'Kinde',cat:'payment',sub:'auth',req:'optional',level:'int',price:'free-tier'},
 {name:'WorkOS',cat:'payment',sub:'auth',req:'optional',level:'pro',price:'free-tier'},
 // ── ext-de2: Monitoring / Observability (3) ──
@@ -563,7 +561,7 @@ const TECH_DB=[
 {name:'tsdown',cat:'build',sub:'bundler',req:'optional',level:'int',price:'free-oss'},
 {name:'Motion One',cat:'front',sub:'animation',req:'optional',level:'int',price:'free-oss'},
 // Frontend Frameworks & Tools
-{name:'Remix',cat:'front',sub:'framework',req:'optional',level:'int',price:'free-oss'},
+{name:'React Router v7',cat:'front',sub:'framework',req:'optional',level:'int',price:'free-oss'},
 {name:'React Compiler',cat:'front',sub:'compiler',req:'optional',level:'pro',price:'free-oss'},
 {name:'StyleX',cat:'front',sub:'css',req:'optional',level:'int',price:'free-oss'},
 {name:'Lightning CSS',cat:'front',sub:'css',req:'optional',level:'int',price:'free-oss'},
@@ -598,7 +596,7 @@ const TECH_DB=[
 {name:'Argo CD',cat:'devops',sub:'gitops',req:'optional',level:'pro',price:'free-oss'},
 {name:'Traefik',cat:'devops',sub:'proxy',req:'optional',level:'int',price:'free-oss'},
 {name:'Portainer',cat:'devops',sub:'container',req:'optional',level:'int',price:'free-tier'},
-{name:'Garden',cat:'devops',sub:'cicd',req:'optional',level:'pro',price:'free-tier'},
+{name:'Garden (Incredibuild)',cat:'devops',sub:'cicd',req:'optional',level:'pro',price:'free-tier'},
 // Data & Streaming
 {name:'Apache Kafka',cat:'data',sub:'stream',req:'optional',level:'pro',price:'free-oss'},
 {name:'NATS',cat:'data',sub:'stream',req:'optional',level:'int',price:'free-oss'},
@@ -606,7 +604,6 @@ const TECH_DB=[
 {name:'Cube.js',cat:'data',sub:'analytics',req:'optional',level:'int',price:'free-oss'},
 {name:'Apache Druid',cat:'data',sub:'olap',req:'optional',level:'pro',price:'free-oss'},
 // Build Tools
-{name:'tsup',cat:'build',sub:'bundler',req:'optional',level:'int',price:'free-oss'},
 {name:'unbuild',cat:'build',sub:'bundler',req:'optional',level:'int',price:'free-oss'},
 {name:'pkgroll',cat:'build',sub:'bundler',req:'optional',level:'int',price:'free-oss'},
 // Testing
@@ -616,7 +613,7 @@ const TECH_DB=[
 // API
 {name:'ts-rest',cat:'api',sub:'rpc',req:'optional',level:'int',price:'free-oss'},
 {name:'Connect-RPC',cat:'api',sub:'rpc',req:'optional',level:'pro',price:'free-oss'},
-{name:'Zodios',cat:'api',sub:'client',req:'optional',level:'int',price:'free-oss'},
+{name:'@zodios/core',cat:'api',sub:'client',req:'optional',level:'int',price:'free-oss'},
 // Security
 {name:'Cosign',cat:'devops',sub:'security',req:'optional',level:'pro',price:'free-oss'},
 {name:'SOPS',cat:'devops',sub:'security',req:'optional',level:'int',price:'free-oss'},
