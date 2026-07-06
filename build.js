@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // build.js — DevForge v9 builder
-// Usage: node build.js [--no-minify] [--check-css] [--report]
+// Usage: node build.js [--no-minify] [--check-css] [--report] [--out=path]
 
 const fs = require('fs');
 const path = require('path');
@@ -9,6 +9,7 @@ const args = process.argv.slice(2);
 const NO_MINIFY = args.includes('--no-minify');
 const CHECK_CSS = args.includes('--check-css');
 const REPORT = args.includes('--report');
+const OUT_ARG = (args.find(a => a.startsWith('--out=')) || '').slice(6);
 
 // Try to load esbuild (fallback to legacy minifier if unavailable)
 let esbuild;
@@ -200,13 +201,13 @@ html = html.replace('/* __CSS__ */', () => NO_MINIFY ? css : minCSS(css));
 html = html.replace('/* __JS__ */', () => NO_MINIFY ? js : minJS(js));
 
 // Write output
-const outPath = path.join(__dirname, 'devforge-v9.html');
+const outPath = OUT_ARG ? path.resolve(OUT_ARG) : path.join(__dirname, 'devforge-v9.html');
 fs.writeFileSync(outPath, html);
 
 const sizeKB = (Buffer.byteLength(html) / 1024).toFixed(0);
 const moduleCount = jsFiles.length;
 const minifierInfo = NO_MINIFY ? ', unminified' : `, minified with ${MINIFIER}`;
-console.log(`✅ Built devforge-v9.html (${sizeKB}KB, ${moduleCount} modules${minifierInfo})`);
+console.log(`✅ Built ${path.basename(outPath)} (${sizeKB}KB, ${moduleCount} modules${minifierInfo})`);
 if (parseInt(sizeKB) > 6500) {
   console.error('❌ Build size exceeds 6500KB limit! (' + sizeKB + 'KB / 6500KB)');
   process.exit(1);

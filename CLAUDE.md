@@ -4,9 +4,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ---
 
-# DevForge v9.27
+# DevForge v9.33
 
-**AI Development OS** — 86 JS modules in `src/` → single `devforge-v9.html` (~5906KB / 6500KB limit).
+**AI Development OS** — 86 JS modules in `src/` → single `devforge-v9.html` (~5927KB / 6500KB limit).
 Generates **227+ files** across **28 pillars** from a wizard-driven Q&A session.
 
 ## Documentation Map
@@ -18,10 +18,11 @@ Generates **227+ files** across **28 pillars** from a wizard-driven Q&A session.
 ## Build & Test
 
 ```bash
-node build.js                          # → devforge-v9.html (~5906KB, limit 6500KB)
+node build.js                          # → devforge-v9.html (~5927KB, limit 6500KB)
 node build.js --no-minify              # debug (skip minification)
 node build.js --report                 # build + size breakdown by module
-npm test                               # ~7449 tests, all passing (v9.27)
+node build.js --out=path               # write bundle to alternate path (used by build.test.js to avoid racing bundle readers)
+npm test                               # ~7475 tests, all passing (v9.33)
 node --test test/gen-quality.test.js   # single test file
 npm run dev                            # build + live-server :3000
 npm run check                          # syntax-check extracted JS
@@ -187,9 +188,10 @@ After adding: update header comment totals, add tests to `test/compat.test.js`, 
 | Generator tests | airules, strategy, reverse, observability | ~75 |
 | Gen quality | gen-quality (Suites 1-400, ~6184 tests) | ~6184 |
 | Preset matching | phase-n (N-1〜N-9 + G-1〜G-7, 68 tests) | ~68 |
-| Other | i18n, state, techdb, utils, complexity, mermaid (30 tests, all 28 pillars), help-hints | ~62 |
+| Other | i18n, state, techdb, utils, complexity, mermaid (30 tests, all 28 pillars), help-hints, ui-xref, en/kanji-purity | ~84 |
 
-**Total: 7449 tests** | Test harness pattern: `eval(fs.readFileSync(...))` to load src files; global `S` mock at top.
+**Total: 7475 tests** | Test harness pattern: `eval(fs.readFileSync(...))` to load src files; global `S` mock at top.
+Run `node build.js` before `npm test` — security.test.js reads the built bundle. build.test.js builds to a temp file (`--out=`), so the suite itself never rewrites `devforge-v9.html`.
 
 **When adding domains**, update: `test/data-coverage.test.js` (4 arrays), `test/gen-coherence.test.js`, `test/ops.test.js`.
 

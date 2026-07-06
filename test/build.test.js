@@ -1,21 +1,26 @@
-const { describe, it } = require('node:test');
+const { describe, it, after } = require('node:test');
 const assert = require('node:assert');
 const fs = require('fs');
+const os = require('os');
 const path = require('path');
 const { execSync } = require('child_process');
 
 const ROOT = path.join(__dirname, '..');
-const OUTPUT = path.join(ROOT, 'devforge-v9.html');
+// Build to a temp file — writing the real devforge-v9.html here races with
+// parallel test files (security.test.js) that read it, causing chained failures
+const OUTPUT = path.join(os.tmpdir(), `devforge-v9.build-test-${process.pid}.html`);
+
+after(() => { try { fs.unlinkSync(OUTPUT); } catch (e) {} });
 
 describe('Build System', () => {
   it('builds successfully', () => {
-    const result = execSync('node build.js', { cwd: ROOT, encoding: 'utf-8' });
+    const result = execSync(`node build.js --out="${OUTPUT}"`, { cwd: ROOT, encoding: 'utf-8' });
     assert.ok(result.includes('Built'), 'Build should succeed');
     assert.ok(result.includes('All checks passed'), 'All checks should pass');
   });
 
   it('produces a valid HTML file', () => {
-    assert.ok(fs.existsSync(OUTPUT), 'devforge-v9.html should exist');
+    assert.ok(fs.existsSync(OUTPUT), 'built output should exist');
     const html = fs.readFileSync(OUTPUT, 'utf-8');
     assert.ok(html.startsWith('<!DOCTYPE html>'), 'Should start with DOCTYPE');
     assert.ok(html.includes('</html>'), 'Should end with closing html tag');
