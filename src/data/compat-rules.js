@@ -439,8 +439,8 @@ const COMPAT_RULES=[
    },
    ja:'ECドメインで決済未選択です。Stripe等の決済方式を検討してください',
    en:'EC domain without payment. Consider Stripe or other payment methods',
-   why_ja:'ECプロジェクトで決済を未設定のままにすると、docs/38_business_model.mdが生成されず、docs/45_compliance_matrix.mdにPCI-DSS要件・決済フロー・返金処理が含まれません。',
-   why_en:'Leaving payment unset in an EC project means docs/38_business_model.md is not generated and docs/45_compliance_matrix.md will lack PCI-DSS requirements, payment flows, and refund handling.'},
+   why_ja:'ECプロジェクトで決済を未設定のままにすると、決済設計書 docs/38_business_model.md が生成されず、決済フロー・返金処理・PCI-DSS対応方針のドキュメントが欠落します。',
+   why_en:'Leaving payment unset in an EC project means docs/38_business_model.md is not generated, so payment flows, refund handling, and the PCI-DSS approach go undocumented.'},
   {id:'dom-saas-nopay',p:['purpose','payment'],lv:'warn',
    t:a=>{
     if(!a.purpose||!a.payment)return false;
@@ -450,8 +450,8 @@ const COMPAT_RULES=[
    },
    ja:'SaaSドメインで決済未選択です。収益モデルの根幹であるStripe等の決済方式を選択してください',
    en:'SaaS domain without payment. Stripe or another payment method is core to SaaS revenue — please select one',
-   why_ja:'SaaSの収益モデルはサブスクリプション課金が基本です。決済を未設定のままにすると、docs/38_business_model.mdが生成されず、docs/45_compliance_matrix.mdにサブスク管理・プラン切替・解約フロー・インボイス発行が含まれません。',
-   why_en:'SaaS revenue is built on subscription billing. Leaving payment unset means generated docs lack subscription management, plan switching, cancellation flows, and invoice generation.'},
+   why_ja:'SaaSの収益モデルはサブスクリプション課金が基本です。決済を未設定のままにすると、docs/38_business_model.mdが生成されず、サブスク管理・プラン切替・解約フロー・インボイス発行の設計が欠落します。',
+   why_en:'SaaS revenue is built on subscription billing. Leaving payment unset means docs/38_business_model.md is not generated — no subscription management, plan switching, cancellation flow, or invoicing design.'},
   // ── Domain ↔ Backend/Infra (4 WARN) ──
   {id:'dom-health-firebase',p:['purpose','backend'],lv:'warn',
    t:a=>{
@@ -760,8 +760,8 @@ const COMPAT_RULES=[
    t:a=>(inc(a.scope_out,'決済')||inc(a.scope_out,'EC')||inc(a.scope_out,'payment')||inc(a.scope_out,'Payment'))&&a.payment&&!inc(a.payment,'なし')&&!inc(a.payment,'None')&&a.payment!=='none',
    ja:'スコープ外に「決済/EC」がありますが、決済方式が選択されています。仕様書のスコープ定義に矛盾が生じます',
    en:'Scope excludes "payment/EC" but a payment method is selected. Spec scope definition will conflict',
-   why_ja:'スコープ外（scope_out）に「決済」と記載すると、生成されるdocs/38_business_model.md・docs/45_compliance_matrix.mdに「このフェーズでは決済を実装しない」と明記されます。',
-   why_en:'Setting "payment" in scope_out causes generated docs (docs/38_business_model.md, docs/45_compliance_matrix.md) to state "payment will not be implemented this phase." Simultaneously selecting a payment method (Stripe, etc.'},
+   why_ja:'スコープ外の記載は docs/107_project_governance.md に対象外として記録されます。一方で決済方式を選ぶと決済設計書 docs/38_business_model.md も生成されるため、「対象外なのに決済実装を計画」という矛盾が仕様に残ります。',
+   why_en:'Scope-out entries are recorded as out-of-scope in docs/107_project_governance.md, yet selecting a payment method still generates docs/38_business_model.md — leaving a contradiction where excluded payment work is planned.'},
   // A3: scope_out「EC」 vs entities に Product/Order
   {id:'sem-scope-entities',p:['scope_out','data_entities'],lv:'warn',
    t:a=>(inc(a.scope_out,'EC')||inc(a.scope_out,'commerce')||inc(a.scope_out,'Commerce'))&&(inc(a.data_entities,'Product')||inc(a.data_entities,'Order')||inc(a.data_entities,'Cart')),
