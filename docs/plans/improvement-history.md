@@ -248,6 +248,18 @@ v9.38実測3で発見した features:[] のままの後期バッチ84件（eng5_
 
 検証: npm run check（構文OK）+ compat-check 0/0（2665組合せ）+ sweep 5330生成ゼロ + 7525 tests 全合格。5957KB（+22KB）。src変更は `presets-ext5.js` のみ（+テスト1件）
 
+### v9.39a — コピーライト刷新 + アプリ版数表示の統一（ユーザー要望・chore）
+
+制作委員会表記から新ブランド表記への刷新と、v9.22で止まっていた版数表示のv9.39統一。使用者目線で全表示面を照査（①ビルド→②ソース静的監査→③テスト→④実バンドル/実生成照合の順）。
+
+- **コピーライト**: `© 2026 エンジニアリングのタネ制作委員会 ｜ 作成者：にしあん` → `© 2026 にしあん / エンジニアリングのタネ. All Rights Reserved.`。アプリフッターには禁止条項（無断転載・無断複製・無断配信・AI学習目的での無断利用を禁じます）を追加。**EN側は必ずローマ字**（`Nishian / Engineering no Tane`）— かな混入は en-purity/kanji-purity が拒否するため。生成物側は © 行のみ（禁止条項なし＝ユーザー生成プロジェクトはMIT）
+- **反映箇所**: アプリUI（index.html title/badge/footer、init.js title/footer/CURRENT_VERSION、templates.js About/Overview）+ 生成物（docs.js文書フッター、common.js生成ファイルフッター、p11 impl guide、index.js メタコメント）+ **PDFエクスポートフッター（export.js）** + About版数（9.6.0残留も修正）
+- **照査で発見した取り残し**: 一括更新から漏れた `export.js` のPDFフッター旧コピーライトと `p11` の `DevForge v9.6` 表記を、徹底照査（ユーザー指示）で発見・修正
+- **版数**: v9.22 → v9.39（title/badge/About/Overview/CURRENT_VERSION）、生成メタ v9.22.0 → v9.39.0、impl guide v9.6 → v9.39。残存する `v9.22` は launcher.js の史実バッチ注記コメント（`v9.22 B-1`）のみ＝非表示・保持が正
+- CLAUDE.md ヘッダーも v9.38 → v9.39 / 5957KB / 7525 tests に整合（131/133の `(v9.38)` はUPP-H導入版の史実注記で保持）
+
+検証: 7525 tests 全合格（en-purity/kanji-purity含む）+ 実生成でimpl guide/README両言語の版数・著作権を実出力確認 + 旧版数/旧著作権の残存ゼロ
+
 ---
 
 ## 手法上の教訓（横断）
