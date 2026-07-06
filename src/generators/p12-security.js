@@ -1009,7 +1009,7 @@ function genPillar12_SecurityIntelligence(a,pn){
   // ─── Pro: サプライチェーンセキュリティ + セキュリティメトリクス ───
   if(isPro12){
     doc43+='\n---\n\n## '+(G?'⚙️ サプライチェーンセキュリティ (SLSA + SBOM)':'⚙️ Supply Chain Security (SLSA + SBOM)')+'\n\n';
-    doc43+='```yaml\n# .github/workflows/supply-chain.yml\nname: Supply Chain Security\non: [push]\njobs:\n  sbom:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - uses: anchore/sbom-action@v0\n        with:\n          artifact-name: sbom.spdx.json\n          output-file: sbom.spdx.json\n      - uses: anchore/scan-action@v5\n        with:\n          sbom: sbom.spdx.json\n          fail-build: true\n          severity-cutoff: high\n  slsa:\n    uses: slsa-framework/slsa-github-generator/.github/workflows/builder_nodejs_slsa3.yml@v2\n    with:\n      node-version: "22"\n```\n\n';
+    doc43+='```yaml\n# .github/workflows/supply-chain.yml\nname: Supply Chain Security\non: [push]\njobs:\n  sbom:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v5\n      - uses: anchore/sbom-action@v0\n        with:\n          artifact-name: sbom.spdx.json\n          output-file: sbom.spdx.json\n      - uses: anchore/scan-action@v5\n        with:\n          sbom: sbom.spdx.json\n          fail-build: true\n          severity-cutoff: high\n  slsa:\n    uses: slsa-framework/slsa-github-generator/.github/workflows/builder_nodejs_slsa3.yml@v2\n    with:\n      node-version: "22"\n```\n\n';
     doc43+='| '+(G?'SLSA レベル':'SLSA Level')+' | '+(G?'要件':'Requirements')+' | '+(G?'対象':'Target')+'|\n';
     doc43+='|------|------|------|\n';
     doc43+='| L1 | '+( G?'ビルドスクリプト文書化':'Build script documented')+' | '+( G?'個人プロジェクト':'Personal projects')+'|\n';
@@ -1727,7 +1727,7 @@ function genPillar12_SecurityIntelligence(a,pn){
   doc47+='  zap_scan:\n';
   doc47+='    runs-on: ubuntu-latest\n';
   doc47+='    steps:\n';
-  doc47+='      - uses: actions/checkout@v4\n';
+  doc47+='      - uses: actions/checkout@v5\n';
   doc47+='      - name: ZAP Scan\n';
   doc47+='        uses: zaproxy/action-baseline@v0.12.0\n';
   doc47+='        with:\n';

@@ -512,7 +512,7 @@ function gen102(a,pn){
   doc+='```json\n// lighthouserc.json\n{\n  "ci": {\n    "collect": { "startServerCommand": "npm start", "url": ["http://localhost:3000"], "numberOfRuns": 3 },\n    "assert": {\n      "assertions": {\n        "categories:performance": ["error", {"minScore": 0.8}],\n        "categories:accessibility": ["warn", {"minScore": 0.9}],\n        "first-contentful-paint": ["error", {"maxNumericValue": 2000}],\n        "interactive": ["error", {"maxNumericValue": 3500}],\n        "largest-contentful-paint": ["error", {"maxNumericValue": 2500}]\n      }\n    },\n    "upload": { "target": "temporary-public-storage" }\n  }\n}\n```\n\n';
 
   doc+='## '+(G?'GitHub Actions パフォーマンス検証':'GitHub Actions Performance Check')+'\n\n';
-  doc+='```yaml\n# .github/workflows/perf.yml\nname: Performance Budget\non: [pull_request]\njobs:\n  lighthouse:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - run: npm ci && npm run build\n      - uses: treosh/lighthouse-ci-action@v11\n        with:\n          configPath: ./lighthouserc.json\n          uploadArtifacts: true\n```\n\n';
+  doc+='```yaml\n# .github/workflows/perf.yml\nname: Performance Budget\non: [pull_request]\njobs:\n  lighthouse:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v5\n      - run: npm ci && npm run build\n      - uses: treosh/lighthouse-ci-action@v11\n        with:\n          configPath: ./lighthouserc.json\n          uploadArtifacts: true\n```\n\n';
 
   doc+='## '+(G?'パフォーマンスバジェット一覧':'Performance Budget Table')+'\n\n';
   doc+='| '+(G?'指標':'Metric')+' | '+(G?'目標':'Target')+' | '+(G?'警告':'Warning')+' | '+(G?'失敗':'Fail')+'|\n';

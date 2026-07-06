@@ -8119,19 +8119,19 @@ describe('Suite 84: P24 AI Safety — Claude/OpenAI providers, high-autonomy, RA
     backend: 'Python / FastAPI',
   });
 
-  it('docs/95 Claude provider: shows claude-opus-4-6 model reference', () => {
+  it('docs/95 Claude provider: shows claude-opus-4-8 model reference', () => {
     const f = gAISafety(s84_claude);
     const doc = f['docs/95_ai_safety_framework.md'] || '';
     assert.ok(
-      doc.includes('claude-opus-4-6') || doc.includes('claude'),
-      'docs/95 Claude provider must reference claude-opus-4-6 model'
+      doc.includes('claude-opus-4-8') || doc.includes('claude'),
+      'docs/95 Claude provider must reference claude-opus-4-8 model'
     );
   });
 
-  it('docs/95 OpenAI provider: shows gpt-4o and response_format json_object', () => {
+  it('docs/95 OpenAI provider: shows gpt-5.4 and response_format json_object', () => {
     const f = gAISafety(s84_openai);
     const doc = f['docs/95_ai_safety_framework.md'] || '';
-    assert.ok(doc.includes('gpt-4o') || doc.includes('GPT'), 'docs/95 OpenAI provider must reference gpt-4o');
+    assert.ok(doc.includes('gpt-5.4') || doc.includes('GPT'), 'docs/95 OpenAI provider must reference gpt-5.4');
     assert.ok(
       doc.includes('response_format') || doc.includes('json_object'),
       'docs/95 OpenAI must show JSON output enforcement for injection defense'

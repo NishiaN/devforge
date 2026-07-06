@@ -413,14 +413,14 @@ function gen92(a,pn,G,feType,beType){
 
   if(isPy){
     doc+='```ini\n# pytest.ini\n[pytest]\naddopts = --cov=app --cov-report=term-missing --cov-report=xml --cov-fail-under=80\ntestpaths = tests\n```\n\n';
-    doc+='```yaml\n# GitHub Actions\n- name: Run tests with coverage\n  run: pytest\n- name: Upload coverage to Codecov\n  uses: codecov/codecov-action@v4\n  with:\n    file: ./coverage.xml\n    fail_ci_if_error: true\n```\n\n';
+    doc+='```yaml\n# GitHub Actions\n- name: Run tests with coverage\n  run: pytest\n- name: Upload coverage to Codecov\n  uses: codecov/codecov-action@v5\n  with:\n    files: ./coverage.xml\n    fail_ci_if_error: true\n```\n\n';
   } else if(isJava){
     doc+='```kotlin\n// build.gradle.kts\ntasks.jacocoTestCoverageVerification {\n    violationRules {\n        rule {\n            limit {\n                minimum = "0.80".toBigDecimal()\n            }\n        }\n    }\n}\ntasks.check { dependsOn(tasks.jacocoTestCoverageVerification) }\n```\n\n';
   } else if(/vite|vue|svelte/i.test(a.frontend||'')){
     doc+='```typescript\n// vitest.config.ts\nimport { defineConfig } from \'vitest/config\';\n\nexport default defineConfig({\n  test: {\n    coverage: {\n      provider: \'v8\',\n      include: [\'src/**/*.{ts,tsx}\'],\n      exclude: [\'src/**/*.d.ts\', \'src/**/index.ts\'],\n      thresholds: { branches: 75, functions: 85, lines: 80, statements: 80 },\n      reporter: [\'text\', \'lcov\', \'html\'],\n    },\n  },\n});\n```\n\n';
   } else {
     doc+='```javascript\n// jest.config.js\nmodule.exports = {\n  coverageProvider: \'v8\',\n  collectCoverageFrom: [\'src/**/*.{ts,tsx}\', \'!src/**/*.d.ts\', \'!src/**/index.ts\'],\n  coverageThreshold: {\n    global: { branches: 75, functions: 85, lines: 80, statements: 80 }\n  },\n  coverageReporters: [\'text\', \'lcov\', \'html\'],\n};\n```\n\n';
-    doc+='```yaml\n# .github/workflows/ci.yml\n- name: Test with coverage\n  run: '+covTool.en_cmd+'\n- name: Upload coverage\n  uses: codecov/codecov-action@v4\n  with:\n    fail_ci_if_error: true\n```\n\n';
+    doc+='```yaml\n# .github/workflows/ci.yml\n- name: Test with coverage\n  run: '+covTool.en_cmd+'\n- name: Upload coverage\n  uses: codecov/codecov-action@v5\n  with:\n    fail_ci_if_error: true\n```\n\n';
   }
 
   // What NOT to test
@@ -524,7 +524,7 @@ function gen93(a,pn,G,feType,beType){
 
   // CI
   doc+='## CI '+(G?'統合':'Integration')+'\n\n';
-  doc+='```yaml\n# .github/workflows/e2e.yml\nname: E2E Tests\non: [push, pull_request]\njobs:\n  e2e:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - uses: actions/setup-node@v4\n        with: { node-version: \'20\' }\n      - run: npm ci\n      - run: npx playwright install --with-deps chromium\n      - name: Run E2E\n        run: npx playwright test\n        env:\n          BASE_URL: http://localhost:3000\n          CI: true\n      - uses: actions/upload-artifact@v4\n        if: failure()\n        with:\n          name: playwright-report\n          path: playwright-report/\n```\n\n';
+  doc+='```yaml\n# .github/workflows/e2e.yml\nname: E2E Tests\non: [push, pull_request]\njobs:\n  e2e:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v5\n      - uses: actions/setup-node@v5\n        with: { node-version: \'22\' }\n      - run: npm ci\n      - run: npx playwright install --with-deps chromium\n      - name: Run E2E\n        run: npx playwright test\n        env:\n          BASE_URL: http://localhost:3000\n          CI: true\n      - uses: actions/upload-artifact@v5\n        if: failure()\n        with:\n          name: playwright-report\n          path: playwright-report/\n```\n\n';
 
   S.files['docs/93_e2e_test_architecture.md']=doc;
 }

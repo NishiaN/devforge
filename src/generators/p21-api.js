@@ -698,7 +698,7 @@ function gen86(a,pn,G){
 
   // CI integration
   doc+='## '+(G?'CI統合':'CI Integration')+'\n\n';
-  doc+='```yaml\n# .github/workflows/api-tests.yml\nname: API Tests\non: [push, pull_request]\njobs:\n  api-test:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - name: '+(G?'依存関係インストール':'Install dependencies')+'\n        run: '+(isPython?'pip install -r requirements-test.txt':'npm ci')+'\n      - name: '+(G?'統合テスト実行':'Run integration tests')+'\n        run: '+(isPython?'pytest tests/ -v --cov=app --cov-report=xml':'jest --coverage --testPathPattern=integration')+'\n';
+  doc+='```yaml\n# .github/workflows/api-tests.yml\nname: API Tests\non: [push, pull_request]\njobs:\n  api-test:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v5\n      - name: '+(G?'依存関係インストール':'Install dependencies')+'\n        run: '+(isPython?'pip install -r requirements-test.txt':'npm ci')+'\n      - name: '+(G?'統合テスト実行':'Run integration tests')+'\n        run: '+(isPython?'pytest tests/ -v --cov=app --cov-report=xml':'jest --coverage --testPathPattern=integration')+'\n';
   if(!isBaaS){
     doc+='      - name: '+(G?'OpenAPIバリデーション':'OpenAPI validation')+'\n        run: '+(isPython?'schemathesis run openapi.yaml --url http://localhost:8000 --checks all':'npx redocly lint openapi.yaml')+'\n';
   }

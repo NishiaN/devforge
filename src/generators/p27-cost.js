@@ -43,8 +43,8 @@ var DOMAIN_COST_FACTORS={
     ja:['動画ストレージ・CDN転送が支出の60-80%を占める','エンコード (AWS MediaConvert $0.0075/min)','グローバルCDN帯域 ($0.01-0.085/GB)','オリジンサーバーはスケール可能に設計'],
     en:['Video storage & CDN transfer = 60-80% of spend','Encoding (AWS MediaConvert $0.0075/min)','Global CDN bandwidth ($0.01-0.085/GB)','Design origin for horizontal scale']},
   ai:{
-    ja:['LLM APIコスト (GPT-4o: $2.5/1M input tok)','ベクトルDB (Pinecone $70〜/月 or Supabase pgvector)','GPU推論 (A100: $3-5/h on demand)','リクエストキャッシュでAPI呼び出し30-50%削減'],
-    en:['LLM API cost (GPT-4o: $2.5/1M input tok)','Vector DB (Pinecone $70+/mo or pgvector free)','GPU inference (A100: $3-5/h on-demand)','Request caching reduces API calls 30-50%']},
+    ja:['LLM APIコスト (GPT-5.4: $2.5/1M input tok)','ベクトルDB (Pinecone $70〜/月 or Supabase pgvector)','GPU推論 (A100: $3-5/h on demand)','リクエストキャッシュでAPI呼び出し30-50%削減'],
+    en:['LLM API cost (GPT-5.4: $2.5/1M input tok)','Vector DB (Pinecone $70+/mo or pgvector free)','GPU inference (A100: $3-5/h on-demand)','Request caching reduces API calls 30-50%']},
   analytics:{
     ja:['データウェアハウス BigQuery: $5/TB クエリ','ストリーム処理 Kafka/Kinesis ($0.015/shard-h)','BI可視化 Metabase/Grafana Cloud (Free〜$500)','データ保持ポリシーでストレージ最適化'],
     en:['Data warehouse: BigQuery $5/TB queried','Stream processing: Kafka/Kinesis ($0.015/shard-h)','BI viz: Metabase/Grafana Cloud (Free-$500)','Data retention policy optimizes storage']},
@@ -380,8 +380,8 @@ function gen112(a,pn){
     doc+='| '+(G?'モデル':'Model')+' | '+(G?'入力単価':'Input')+' | '+(G?'出力単価':'Output')+' | '+(G?'キャッシュ割引':'Cache Discount')+'|\n|---|---|---|---|\n';
     doc+='| Claude Sonnet 5 | $3/1M tok | $15/1M tok | 90% (Prompt Cache) |\n';
     doc+='| Claude Haiku 4.5 | $1/1M tok | $5/1M tok | 90% (Prompt Cache) |\n';
-    doc+='| GPT-5.2 | $1.25/1M tok | $10/1M tok | 90% (cache) |\n';
-    doc+='| Gemini 2.5 Flash | $0.3/1M tok | $2.5/1M tok | 75% (implicit cache) |\n\n';
+    doc+='| GPT-5.4 | $2.5/1M tok | $15/1M tok | 90% (cache) |\n';
+    doc+='| Gemini 3.5 Flash | $1.5/1M tok | $9/1M tok | 75% (implicit cache) |\n\n';
     doc+=(G?'> ⚠️ 単価は改定されます。契約前に各社の公式料金ページで最新値を確認してください。\n\n':'> ⚠️ Rates change over time. Verify on each provider\'s official pricing page before committing.\n\n');
     doc+=G?'### AI APIコスト削減戦略\n\n':'### AI API Cost Reduction Strategies\n\n';
     doc+='1. '+(G?'**プロンプトキャッシュ有効化**: 反復プレフィックスのキャッシュで最大90%削減':'**Enable prompt caching**: Up to 90% cost reduction for repeated prefixes')+'\n';

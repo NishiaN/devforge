@@ -119,7 +119,7 @@ describe('P20: Generator Outputs (Japanese)', () => {
   it('gen77 includes GitHub Actions YAML', () => {
     const out = gen77(true, domain, dtCfg, a, pn);
     assert.ok(out.includes('```yaml'), 'Missing yaml block');
-    assert.ok(out.includes('actions/checkout@v4'), 'Missing checkout action');
+    assert.ok(out.includes('actions/checkout@v5'), 'Missing checkout action');
     assert.ok(out.includes('npm ci'), 'Missing install command');
   });
 

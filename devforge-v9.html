@@ -13741,11 +13741,11 @@ doc+='| DB '+(G?'読み取り':'read')+' | Low | No |\n';
 doc+='| DB '+(G?'更新・削除':'update/delete')+' | High | Yes |\n';
 doc+='| '+(G?'外部API呼び出し':'External API call')+' | Medium | Yes |\n\n';
 doc+='## §4 '+(G?'MCPデバッグ・テスト':'MCP Debug & Testing')+'\n\n';
-doc+='```bash\n# '+(G?'MCP Inspector でサーバーをテスト':'Test server with MCP Inspector')+'\nnpx @modelcontextprotocol/inspector\n\n# '+(G?'stdio接続テスト':'stdio connection test')+'\necho \'{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2024-11-05","capabilities":{}}}\' | node mcp-server.js\n\n# '+(G?'接続確認・デバッグ (Claude Code)':'Connection check & debugging (Claude Code)')+'\nclaude mcp list\nclaude --debug   # '+(G?'MCP接続ログを表示':'shows MCP connection logs')+'\n```\n\n';
+doc+='```bash\n# '+(G?'MCP Inspector でサーバーをテスト':'Test server with MCP Inspector')+'\nnpx @modelcontextprotocol/inspector\n\n# '+(G?'stdio接続テスト':'stdio connection test')+'\necho \'{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-11-25","capabilities":{}}}\' | node mcp-server.js\n\n# '+(G?'接続確認・デバッグ (Claude Code)':'Connection check & debugging (Claude Code)')+'\nclaude mcp list\nclaude --debug   # '+(G?'MCP接続ログを表示':'shows MCP connection logs')+'\n```\n\n';
 doc+='### '+(G?'よくあるトラブル':'Common Troubleshooting')+'\n';
 doc+=(G?'| 症状 | 原因 | 解決策 |\n|---|---|---|\n| サーバー起動しない | Node.jsバージョン不一致 | Node.js 18+ 確認 |\n| tools/list が空 | ハンドラ未登録 | setRequestHandler確認 |\n| 接続タイムアウト | stdio バッファリング | process.stdout.setBlocking(true) |\n| 権限エラー | ファイルパス制限 | allowedPaths設定確認 |':'| Symptom | Cause | Solution |\n|---|---|---|\n| Server does not start | Node.js version mismatch | Verify Node.js 18+ |\n| tools/list is empty | Handler not registered | Check setRequestHandler |\n| Connection timeout | stdio buffering | process.stdout.setBlocking(true) |\n| Permission error | File path restriction | Check allowedPaths config |')+'\n\n';
 doc+='## §5 MCP + CI/CD '+(G?'統合':'Integration')+'\n\n';
-doc+='```yaml\n# .github/workflows/mcp-test.yml\nname: MCP Server Tests\non: [push, pull_request]\njobs:\n  mcp-test:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - uses: actions/setup-node@v4\n        with: { node-version: "22" }\n      - run: npm ci\n      - name: '+(G?'MCPサーバー起動テスト':'Test MCP server startup')+'\n        run: timeout 5 node mcp-server.js <<< \'{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2024-11-05","capabilities":{}}}\' || true\n      - name: '+(G?'ツール一覧テスト':'Test tools list')+'\n        run: node test/mcp-integration.test.js\n```\n\n';
+doc+='```yaml\n# .github/workflows/mcp-test.yml\nname: MCP Server Tests\non: [push, pull_request]\njobs:\n  mcp-test:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v5\n      - uses: actions/setup-node@v5\n        with: { node-version: "22" }\n      - run: npm ci\n      - name: '+(G?'MCPサーバー起動テスト':'Test MCP server startup')+'\n        run: timeout 5 node mcp-server.js <<< \'{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-11-25","capabilities":{}}}\' || true\n      - name: '+(G?'ツール一覧テスト':'Test tools list')+'\n        run: node test/mcp-integration.test.js\n```\n\n';
 doc+='### '+(G?'MCPサーバー統合テスト例':'MCP Server Integration Test Example')+'\n```typescript\nimport { Client } from "@modelcontextprotocol/sdk/client/index.js";\nimport { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";\n\nconst transport = new StdioClientTransport({\n  command: "node", args: ["mcp-server.js"]\n});\nconst client = new Client({ name: "test-client", version: "1.0.0" }, { capabilities: {} });\nawait client.connect(transport);\nconst tools = await client.listTools();\nconsole.assert(tools.tools.length > 0, "Should have at least one tool");\nawait client.close();\n```\n\n';
 if(scale132!=='solo'){
 doc+='## §6 '+(G?'マルチエージェントMCPオーケストレーション':'Multi-Agent MCP Orchestration')+'\n\n';
@@ -17008,11 +17008,11 @@ if(isPro9){
 designDoc+=(G?'## Design Token CI Pipeline\n\n':'## Design Token CI Pipeline\n\n');
 designDoc+=(G?
 'Style Dictionaryを使ったトークンの自動配信パイプラインを構築することで、デザインとコードの乖離を防ぎます。\n\n'+
-'```yaml\n# .github/workflows/design-tokens.yml\njobs:\n  build-tokens:\n    steps:\n      - uses: actions/checkout@v4\n      - run: npm install style-dictionary\n      - run: style-dictionary build --config sd.config.json\n      - run: npm run tokens:lint\n      - uses: actions/upload-artifact@v4\n        with: {name: tokens, path: dist/tokens/}\n```\n\n'+
+'```yaml\n# .github/workflows/design-tokens.yml\njobs:\n  build-tokens:\n    steps:\n      - uses: actions/checkout@v5\n      - run: npm install style-dictionary\n      - run: style-dictionary build --config sd.config.json\n      - run: npm run tokens:lint\n      - uses: actions/upload-artifact@v5\n        with: {name: tokens, path: dist/tokens/}\n```\n\n'+
 '```json\n{"source":["tokens/**/*.json"],"platforms":{"css":{"transformGroup":"css","buildPath":"dist/tokens/","files":[{"destination":"variables.css","format":"css/variables"}]},"js":{"transformGroup":"js","buildPath":"dist/tokens/","files":[{"destination":"tokens.js","format":"javascript/esm"}]}}}\n```\n\n'
 :
 'Build an automated token delivery pipeline with Style Dictionary to prevent design-code drift.\n\n'+
-'```yaml\n# .github/workflows/design-tokens.yml\njobs:\n  build-tokens:\n    steps:\n      - uses: actions/checkout@v4\n      - run: npm install style-dictionary\n      - run: style-dictionary build --config sd.config.json\n      - run: npm run tokens:lint\n      - uses: actions/upload-artifact@v4\n        with: {name: tokens, path: dist/tokens/}\n```\n\n'+
+'```yaml\n# .github/workflows/design-tokens.yml\njobs:\n  build-tokens:\n    steps:\n      - uses: actions/checkout@v5\n      - run: npm install style-dictionary\n      - run: style-dictionary build --config sd.config.json\n      - run: npm run tokens:lint\n      - uses: actions/upload-artifact@v5\n        with: {name: tokens, path: dist/tokens/}\n```\n\n'+
 '```json\n{"source":["tokens/**/*.json"],"platforms":{"css":{"transformGroup":"css","buildPath":"dist/tokens/","files":[{"destination":"variables.css","format":"css/variables"}]},"js":{"transformGroup":"js","buildPath":"dist/tokens/","files":[{"destination":"tokens.js","format":"javascript/esm"}]}}}\n```\n\n'
 );
 designDoc+=(G?'## Visual Regression Testing\n\n':'## Visual Regression Testing\n\n');
@@ -19704,7 +19704,7 @@ doc43+=(G?'**Step 5: 認証設定を確認** — Supabase/FirebaseのRLSルー�
 // ─── Pro: サプライチェーンセキュリティ + セキュリティメトリクス ───
 if(isPro12){
 doc43+='\n---\n\n## '+(G?'⚙️ サプライチェーンセキュリティ (SLSA + SBOM)':'⚙️ Supply Chain Security (SLSA + SBOM)')+'\n\n';
-doc43+='```yaml\n# .github/workflows/supply-chain.yml\nname: Supply Chain Security\non: [push]\njobs:\n  sbom:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - uses: anchore/sbom-action@v0\n        with:\n          artifact-name: sbom.spdx.json\n          output-file: sbom.spdx.json\n      - uses: anchore/scan-action@v5\n        with:\n          sbom: sbom.spdx.json\n          fail-build: true\n          severity-cutoff: high\n  slsa:\n    uses: slsa-framework/slsa-github-generator/.github/workflows/builder_nodejs_slsa3.yml@v2\n    with:\n      node-version: "22"\n```\n\n';
+doc43+='```yaml\n# .github/workflows/supply-chain.yml\nname: Supply Chain Security\non: [push]\njobs:\n  sbom:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v5\n      - uses: anchore/sbom-action@v0\n        with:\n          artifact-name: sbom.spdx.json\n          output-file: sbom.spdx.json\n      - uses: anchore/scan-action@v5\n        with:\n          sbom: sbom.spdx.json\n          fail-build: true\n          severity-cutoff: high\n  slsa:\n    uses: slsa-framework/slsa-github-generator/.github/workflows/builder_nodejs_slsa3.yml@v2\n    with:\n      node-version: "22"\n```\n\n';
 doc43+='| '+(G?'SLSA レベル':'SLSA Level')+' | '+(G?'要件':'Requirements')+' | '+(G?'対象':'Target')+'|\n';
 doc43+='|------|------|------|\n';
 doc43+='| L1 | '+( G?'ビルドスクリプト文書化':'Build script documented')+' | '+( G?'個人プロジェクト':'Personal projects')+'|\n';
@@ -20337,7 +20337,7 @@ doc47+='jobs:\n';
 doc47+='  zap_scan:\n';
 doc47+='    runs-on: ubuntu-latest\n';
 doc47+='    steps:\n';
-doc47+='      - uses: actions/checkout@v4\n';
+doc47+='      - uses: actions/checkout@v5\n';
 doc47+='      - name: ZAP Scan\n';
 doc47+='        uses: zaproxy/action-baseline@v0.12.0\n';
 doc47+='        with:\n';
@@ -26921,7 +26921,7 @@ function _ps(id, name_ja, name_en, desc_ja, desc_en, tools, gate_ja, gate_en) {
 return {id, name_ja, name_en, desc_ja, desc_en, tools, gate_ja, gate_en};
 }
 var PIPELINE_STAGES = [
-_ps('checkout', 'チェックアウト', 'Checkout', 'ソースコード取得・ブランチ検証', 'Fetch source code, validate branch', 'actions/checkout@v4', 'ブランチ保護ルール', 'Branch protection rules'),
+_ps('checkout', 'チェックアウト', 'Checkout', 'ソースコード取得・ブランチ検証', 'Fetch source code, validate branch', 'actions/checkout@v5', 'ブランチ保護ルール', 'Branch protection rules'),
 _ps('install', 'インストール', 'Install', '依存関係のキャッシュ付きインストール', 'Install dependencies with cache', 'npm ci / pnpm i --frozen-lockfile', 'lockfileの整合性', 'lockfile integrity'),
 _ps('lint', 'Lint/型チェック', 'Lint & Type Check', 'ESLint・TypeScript・Prettier検査', 'ESLint, TypeScript, Prettier checks', 'eslint, tsc --noEmit, prettier --check', 'エラー0件', 'Zero errors'),
 _ps('test', 'テスト実行', 'Run Tests', 'ユニット・統合テスト並列実行', 'Unit & integration tests in parallel', 'vitest, jest, playwright', 'カバレッジ閾値達成', 'Coverage threshold met'),
@@ -27155,8 +27155,8 @@ doc += 'jobs:\n';
 doc += '  ci:\n';
 doc += '    runs-on: ubuntu-latest\n';
 doc += '    steps:\n';
-doc += '      - uses: actions/checkout@v4\n';
-doc += '      - uses: actions/setup-node@v4\n';
+doc += '      - uses: actions/checkout@v5\n';
+doc += '      - uses: actions/setup-node@v5\n';
 doc += '        with: { node-version: ${{ env.NODE_VERSION }}, cache: "' + pm + '" }\n';
 doc += '      - run: ' + isPM + '\n';
 doc += '      - run: ' + pm + ' run lint\n';
@@ -27170,7 +27170,7 @@ doc += '    needs: ci\n';
 doc += '    if: github.ref == \'refs/heads/develop\'\n';
 doc += '    runs-on: ubuntu-latest\n';
 doc += '    steps:\n';
-doc += '      - uses: actions/checkout@v4\n';
+doc += '      - uses: actions/checkout@v5\n';
 doc += '      - run: ' + dtCfg.preview + '\n\n';
 doc += '  deploy-prod:\n';
 doc += '    needs: [ci, deploy-staging]\n';
@@ -27182,7 +27182,7 @@ doc += '      # Required reviewers: set 2+ in GitHub repo settings\n';
 }
 doc += '    runs-on: ubuntu-latest\n';
 doc += '    steps:\n';
-doc += '      - uses: actions/checkout@v4\n';
+doc += '      - uses: actions/checkout@v5\n';
 doc += '      - run: ' + dtCfg.cmd + '\n';
 doc += '```\n\n';
 doc += '## ' + (G ? 'キャッシュ戦略' : 'Cache Strategy') + '\n\n';
@@ -27537,7 +27537,7 @@ doc += 'jobs:\n';
 doc += '  release:\n';
 doc += '    runs-on: ubuntu-latest\n';
 doc += '    steps:\n';
-doc += '      - uses: actions/checkout@v4\n';
+doc += '      - uses: actions/checkout@v5\n';
 doc += '        with: { fetch-depth: 0 }\n';
 doc += '      - uses: cycjimmy/semantic-release-action@v4\n';
 doc += '        env:\n';
@@ -27751,7 +27751,7 @@ doc+='- '+(G?'❌ 悪い例: AIに全部やってもらった結果を1コミッ
 doc+='- '+(G?'✅ 良い例: 機能単位でコミット分割、各コミットにテスト含む':'✅ Good: Split commits by feature, include tests in each')+'\n\n';
 if(isPro){
 doc+='### '+(G?'CI統合: コミット品質の自動検証':'CI Integration: Automated Commit Quality Checks')+'\n\n';
-doc+='```yaml\n# .github/workflows/commit-check.yml\nname: Commit Quality Check\non: [pull_request]\njobs:\n  commitlint:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - uses: wagoid/commitlint-github-action@v5\n```\n\n';
+doc+='```yaml\n# .github/workflows/commit-check.yml\nname: Commit Quality Check\non: [pull_request]\njobs:\n  commitlint:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v5\n      - uses: wagoid/commitlint-github-action@v5\n```\n\n';
 }
 }
 return doc;
@@ -28411,7 +28411,7 @@ doc+='## '+(G?'負荷テスト':'Load Testing')+'\n\n';
 doc+='```javascript\n// k6 load test example\nimport http from \'k6/http\';\nimport { check, sleep } from \'k6\';\n\nexport const options = {\n  stages: [\n    { duration: \'1m\', target: 50 },   // '+(G?'ウォームアップ':'warmup')+'\n    { duration: \'3m\', target: 200 },  // '+(G?'通常負荷':'normal load')+'\n    { duration: \'1m\', target: 0 },    // '+(G?'クールダウン':'cooldown')+'\n  ],\n  thresholds: {\n    http_req_duration: [\'p(95)<500\'],  // '+(G?'95%ile 500ms以下':'95%ile under 500ms')+'\n    http_req_failed: [\'rate<0.01\'],    // '+(G?'エラー率1%未満':'error rate under 1%')+'\n  },\n};\n\nexport default function() {\n  const res = http.get(\'https://api.example.com/v1/users\', {\n    headers: { Authorization: \'Bearer \' + __ENV.API_TOKEN },\n  });\n  check(res, { \'status is 200\': (r) => r.status === 200 });\n  sleep(1);\n}\n```\n\n';
 // CI integration
 doc+='## '+(G?'CI統合':'CI Integration')+'\n\n';
-doc+='```yaml\n# .github/workflows/api-tests.yml\nname: API Tests\non: [push, pull_request]\njobs:\n  api-test:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - name: '+(G?'依存関係インストール':'Install dependencies')+'\n        run: '+(isPython?'pip install -r requirements-test.txt':'npm ci')+'\n      - name: '+(G?'統合テスト実行':'Run integration tests')+'\n        run: '+(isPython?'pytest tests/ -v --cov=app --cov-report=xml':'jest --coverage --testPathPattern=integration')+'\n';
+doc+='```yaml\n# .github/workflows/api-tests.yml\nname: API Tests\non: [push, pull_request]\njobs:\n  api-test:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v5\n      - name: '+(G?'依存関係インストール':'Install dependencies')+'\n        run: '+(isPython?'pip install -r requirements-test.txt':'npm ci')+'\n      - name: '+(G?'統合テスト実行':'Run integration tests')+'\n        run: '+(isPython?'pytest tests/ -v --cov=app --cov-report=xml':'jest --coverage --testPathPattern=integration')+'\n';
 if(!isBaaS){
 doc+='      - name: '+(G?'OpenAPIバリデーション':'OpenAPI validation')+'\n        run: '+(isPython?'schemathesis run openapi.yaml --url http://localhost:8000 --checks all':'npx redocly lint openapi.yaml')+'\n';
 }
@@ -28842,7 +28842,7 @@ doc+='```bash\n# Drizzle migration workflow\nnpx drizzle-kit generate:pg        
 }
 // CI/CD integration
 doc+='## '+(G?'CI/CDへの統合':'CI/CD Integration')+'\n\n';
-doc+='```yaml\n# .github/workflows/migrate.yml\njobs:\n  migrate:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - name: '+(G?'マイグレーション実行':'Run migrations')+'\n        env:\n          DATABASE_URL: ${{ secrets.DATABASE_URL }}\n        run: |\n';
+doc+='```yaml\n# .github/workflows/migrate.yml\njobs:\n  migrate:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v5\n      - name: '+(G?'マイグレーション実行':'Run migrations')+'\n        env:\n          DATABASE_URL: ${{ secrets.DATABASE_URL }}\n        run: |\n';
 if(isPy)        doc+='          alembic upgrade head\n';
 else if(isBaaS) doc+='          supabase db push --linked\n';
 else if(orm.name==='Prisma ORM') doc+='          npx prisma migrate deploy\n';
@@ -29363,14 +29363,14 @@ doc+='\n';
 doc+='## '+(G?'ツール設定 ('+covTool.tool+')':'Tool Configuration ('+covTool.tool+')')+'\n\n';
 if(isPy){
 doc+='```ini\n# pytest.ini\n[pytest]\naddopts = --cov=app --cov-report=term-missing --cov-report=xml --cov-fail-under=80\ntestpaths = tests\n```\n\n';
-doc+='```yaml\n# GitHub Actions\n- name: Run tests with coverage\n  run: pytest\n- name: Upload coverage to Codecov\n  uses: codecov/codecov-action@v4\n  with:\n    file: ./coverage.xml\n    fail_ci_if_error: true\n```\n\n';
+doc+='```yaml\n# GitHub Actions\n- name: Run tests with coverage\n  run: pytest\n- name: Upload coverage to Codecov\n  uses: codecov/codecov-action@v5\n  with:\n    files: ./coverage.xml\n    fail_ci_if_error: true\n```\n\n';
 } else if(isJava){
 doc+='```kotlin\n// build.gradle.kts\ntasks.jacocoTestCoverageVerification {\n    violationRules {\n        rule {\n            limit {\n                minimum = "0.80".toBigDecimal()\n            }\n        }\n    }\n}\ntasks.check { dependsOn(tasks.jacocoTestCoverageVerification) }\n```\n\n';
 } else if(/vite|vue|svelte/i.test(a.frontend||'')){
 doc+='```typescript\n// vitest.config.ts\nimport { defineConfig } from \'vitest/config\';\n\nexport default defineConfig({\n  test: {\n    coverage: {\n      provider: \'v8\',\n      include: [\'src/**/*.{ts,tsx}\'],\n      exclude: [\'src/**/*.d.ts\', \'src/**/index.ts\'],\n      thresholds: { branches: 75, functions: 85, lines: 80, statements: 80 },\n      reporter: [\'text\', \'lcov\', \'html\'],\n    },\n  },\n});\n```\n\n';
 } else {
 doc+='```javascript\n// jest.config.js\nmodule.exports = {\n  coverageProvider: \'v8\',\n  collectCoverageFrom: [\'src/**/*.{ts,tsx}\', \'!src/**/*.d.ts\', \'!src/**/index.ts\'],\n  coverageThreshold: {\n    global: { branches: 75, functions: 85, lines: 80, statements: 80 }\n  },\n  coverageReporters: [\'text\', \'lcov\', \'html\'],\n};\n```\n\n';
-doc+='```yaml\n# .github/workflows/ci.yml\n- name: Test with coverage\n  run: '+covTool.en_cmd+'\n- name: Upload coverage\n  uses: codecov/codecov-action@v4\n  with:\n    fail_ci_if_error: true\n```\n\n';
+doc+='```yaml\n# .github/workflows/ci.yml\n- name: Test with coverage\n  run: '+covTool.en_cmd+'\n- name: Upload coverage\n  uses: codecov/codecov-action@v5\n  with:\n    fail_ci_if_error: true\n```\n\n';
 }
 // What NOT to test
 doc+='## '+(G?'テストしないもの (カバレッジ数値を上げるためだけに書かない)':'What NOT to Test (never write tests just to raise numbers)')+'\n\n';
@@ -29460,7 +29460,7 @@ doc+='\n';
 }
 // CI
 doc+='## CI '+(G?'統合':'Integration')+'\n\n';
-doc+='```yaml\n# .github/workflows/e2e.yml\nname: E2E Tests\non: [push, pull_request]\njobs:\n  e2e:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - uses: actions/setup-node@v4\n        with: { node-version: \'22\' }\n      - run: npm ci\n      - run: npx playwright install --with-deps chromium\n      - name: Run E2E\n        run: npx playwright test\n        env:\n          BASE_URL: http://localhost:3000\n          CI: true\n      - uses: actions/upload-artifact@v4\n        if: failure()\n        with:\n          name: playwright-report\n          path: playwright-report/\n```\n\n';
+doc+='```yaml\n# .github/workflows/e2e.yml\nname: E2E Tests\non: [push, pull_request]\njobs:\n  e2e:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v5\n      - uses: actions/setup-node@v5\n        with: { node-version: \'22\' }\n      - run: npm ci\n      - run: npx playwright install --with-deps chromium\n      - name: Run E2E\n        run: npx playwright test\n        env:\n          BASE_URL: http://localhost:3000\n          CI: true\n      - uses: actions/upload-artifact@v5\n        if: failure()\n        with:\n          name: playwright-report\n          path: playwright-report/\n```\n\n';
 S.files['docs/93_e2e_test_architecture.md']=doc;
 }
 // doc 94: Performance Testing
@@ -29673,8 +29673,8 @@ doc+=G?
 '### Claude (Anthropic)\n\n```python\nimport anthropic\nclient = anthropic.Anthropic()\n\nresponse = client.messages.create(\n    model="claude-opus-4-8",\n    max_tokens=1024,\n    system="""You are a specialized assistant for [domain].\nStrict constraints:\n- Never output personal information\n- Never give definitive medical/legal/financial advice\n- Always indicate "Needs verification" for uncertain information\n""",\n    messages=[{"role": "user", "content": sanitize(user_input)}]\n)\n```\n\n';
 }else if(provider==='openai'){
 doc+=G?
-'### OpenAI GPT\n\n```typescript\nimport OpenAI from \'openai\';\nconst openai = new OpenAI();\n\nconst completion = await openai.chat.completions.create({\n  model: \'gpt-5.2\',\n  max_tokens: 1024,\n  temperature: 0.2, // 低温で安定した出力\n  messages: [\n    { role: \'system\', content: SYSTEM_PROMPT },\n    { role: \'user\',   content: sanitize(userInput) }\n  ],\n  // JSON出力強制でインジェクション防御\n  response_format: { type: \'json_object\' },\n});\n```\n\n':
-'### OpenAI GPT\n\n```typescript\nimport OpenAI from \'openai\';\nconst openai = new OpenAI();\n\nconst completion = await openai.chat.completions.create({\n  model: \'gpt-5.2\',\n  max_tokens: 1024,\n  temperature: 0.2, // Low temperature for stable output\n  messages: [\n    { role: \'system\', content: SYSTEM_PROMPT },\n    { role: \'user\',   content: sanitize(userInput) }\n  ],\n  // Force JSON to prevent injection\n  response_format: { type: \'json_object\' },\n});\n```\n\n';
+'### OpenAI GPT\n\n```typescript\nimport OpenAI from \'openai\';\nconst openai = new OpenAI();\n\nconst completion = await openai.chat.completions.create({\n  model: \'gpt-5.4\',\n  max_tokens: 1024,\n  temperature: 0.2, // 低温で安定した出力\n  messages: [\n    { role: \'system\', content: SYSTEM_PROMPT },\n    { role: \'user\',   content: sanitize(userInput) }\n  ],\n  // JSON出力強制でインジェクション防御\n  response_format: { type: \'json_object\' },\n});\n```\n\n':
+'### OpenAI GPT\n\n```typescript\nimport OpenAI from \'openai\';\nconst openai = new OpenAI();\n\nconst completion = await openai.chat.completions.create({\n  model: \'gpt-5.4\',\n  max_tokens: 1024,\n  temperature: 0.2, // Low temperature for stable output\n  messages: [\n    { role: \'system\', content: SYSTEM_PROMPT },\n    { role: \'user\',   content: sanitize(userInput) }\n  ],\n  // Force JSON to prevent injection\n  response_format: { type: \'json_object\' },\n});\n```\n\n';
 }else{
 doc+=G?
 '### 汎用LLMクライアント\n\n```typescript\n// どのLLMプロバイダーでも適用できる安全パターン\nconst safeComplete = async (userInput: string) => {\n  const sanitized = sanitizeInput(userInput); // 入力検証\n  const response = await llmClient.complete({\n    systemPrompt: SYSTEM_PROMPT, // 信頼済みシステムプロンプト\n    userMessage: sanitized,      // サニタイズ済みユーザー入力\n    maxTokens: MAX_OUTPUT_TOKENS,\n    temperature: 0.2,\n  });\n  return validateOutput(response); // 出力検証\n};\n```\n\n':
@@ -29718,8 +29718,8 @@ doc=(G
 if(_lv24>=5){
 doc+='\n---\n\n## '+(G?'🎓 Pro: レッドチーム評価のCI自動化':'🎓 Pro: Automated Red-Team Evaluation in CI')+'\n\n';
 doc+=(G
-?'手動レッドチームは点、CI組込は線。プロンプト/モデル変更のたびに攻撃耐性を回帰させます。\n\n```yaml\n# .github/workflows/ai-redteam.yml\nname: AI Red Team\non:\n  pull_request:\n    paths: [\'prompts/**\', \'src/ai/**\']\njobs:\n  redteam:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - run: npx promptfoo@latest redteam run -c promptfooconfig.yaml\n      - run: npx promptfoo@latest redteam report --min-score 0.95\n```\n\n| ゲート | 閾値 (例) | 失敗時 |\n|--------|----------|--------|\n| インジェクション成功率 | < 5% | PRブロック |\n| システムプロンプト漏洩 | 0件 | PRブロック |\n| 有害出力 (毒性スコア) | < 0.1 | 警告コメント |\n\n- 攻撃コーパスは docs/131-2 のRED_TEAM_ATTACKS 8パターンを起点に、失敗事例を継続追加\n- 夜間フルスイート (数百攻撃) + PR時サブセット (20-30攻撃) の2段構成でCI時間を抑制\n'
-:'Manual red-teaming is a point-in-time check; CI integration makes it continuous. Regress attack resistance on every prompt/model change.\n\n```yaml\n# .github/workflows/ai-redteam.yml\nname: AI Red Team\non:\n  pull_request:\n    paths: [\'prompts/**\', \'src/ai/**\']\njobs:\n  redteam:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - run: npx promptfoo@latest redteam run -c promptfooconfig.yaml\n      - run: npx promptfoo@latest redteam report --min-score 0.95\n```\n\n| Gate | Threshold (example) | On failure |\n|------|--------------------|-----------|\n| Injection success rate | < 5% | Block PR |\n| System prompt leakage | 0 occurrences | Block PR |\n| Harmful output (toxicity) | < 0.1 | Warning comment |\n\n- Seed the attack corpus from the 8 RED_TEAM_ATTACKS patterns in docs/131-2; keep appending real failures\n- Two tiers to bound CI time: nightly full suite (hundreds of attacks) + PR subset (20-30 attacks)\n');
+?'手動レッドチームは点、CI組込は線。プロンプト/モデル変更のたびに攻撃耐性を回帰させます。\n\n```yaml\n# .github/workflows/ai-redteam.yml\nname: AI Red Team\non:\n  pull_request:\n    paths: [\'prompts/**\', \'src/ai/**\']\njobs:\n  redteam:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v5\n      - run: npx promptfoo@latest redteam run -c promptfooconfig.yaml\n      - run: npx promptfoo@latest redteam report --min-score 0.95\n```\n\n| ゲート | 閾値 (例) | 失敗時 |\n|--------|----------|--------|\n| インジェクション成功率 | < 5% | PRブロック |\n| システムプロンプト漏洩 | 0件 | PRブロック |\n| 有害出力 (毒性スコア) | < 0.1 | 警告コメント |\n\n- 攻撃コーパスは docs/131-2 のRED_TEAM_ATTACKS 8パターンを起点に、失敗事例を継続追加\n- 夜間フルスイート (数百攻撃) + PR時サブセット (20-30攻撃) の2段構成でCI時間を抑制\n'
+:'Manual red-teaming is a point-in-time check; CI integration makes it continuous. Regress attack resistance on every prompt/model change.\n\n```yaml\n# .github/workflows/ai-redteam.yml\nname: AI Red Team\non:\n  pull_request:\n    paths: [\'prompts/**\', \'src/ai/**\']\njobs:\n  redteam:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v5\n      - run: npx promptfoo@latest redteam run -c promptfooconfig.yaml\n      - run: npx promptfoo@latest redteam report --min-score 0.95\n```\n\n| Gate | Threshold (example) | On failure |\n|------|--------------------|-----------|\n| Injection success rate | < 5% | Block PR |\n| System prompt leakage | 0 occurrences | Block PR |\n| Harmful output (toxicity) | < 0.1 | Warning comment |\n\n- Seed the attack corpus from the 8 RED_TEAM_ATTACKS patterns in docs/131-2; keep appending real failures\n- Two tiers to bound CI time: nightly full suite (hundreds of attacks) + PR subset (20-30 attacks)\n');
 }
 S.files['docs/95_ai_safety_framework.md']=doc;
 }
@@ -30759,7 +30759,7 @@ doc+='```\n'+m.setup+'\n```\n\n';
 doc+='## Lighthouse CI '+(G?'設定':'Configuration')+'\n\n';
 doc+='```json\n// lighthouserc.json\n{\n  "ci": {\n    "collect": { "startServerCommand": "npm start", "url": ["http://localhost:3000"], "numberOfRuns": 3 },\n    "assert": {\n      "assertions": {\n        "categories:performance": ["error", {"minScore": 0.8}],\n        "categories:accessibility": ["warn", {"minScore": 0.9}],\n        "first-contentful-paint": ["error", {"maxNumericValue": 2000}],\n        "interactive": ["error", {"maxNumericValue": 3500}],\n        "largest-contentful-paint": ["error", {"maxNumericValue": 2500}]\n      }\n    },\n    "upload": { "target": "temporary-public-storage" }\n  }\n}\n```\n\n';
 doc+='## '+(G?'GitHub Actions パフォーマンス検証':'GitHub Actions Performance Check')+'\n\n';
-doc+='```yaml\n# .github/workflows/perf.yml\nname: Performance Budget\non: [pull_request]\njobs:\n  lighthouse:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - run: npm ci && npm run build\n      - uses: treosh/lighthouse-ci-action@v11\n        with:\n          configPath: ./lighthouserc.json\n          uploadArtifacts: true\n```\n\n';
+doc+='```yaml\n# .github/workflows/perf.yml\nname: Performance Budget\non: [pull_request]\njobs:\n  lighthouse:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v5\n      - run: npm ci && npm run build\n      - uses: treosh/lighthouse-ci-action@v11\n        with:\n          configPath: ./lighthouserc.json\n          uploadArtifacts: true\n```\n\n';
 doc+='## '+(G?'パフォーマンスバジェット一覧':'Performance Budget Table')+'\n\n';
 doc+='| '+(G?'指標':'Metric')+' | '+(G?'目標':'Target')+' | '+(G?'警告':'Warning')+' | '+(G?'失敗':'Fail')+'|\n';
 doc+='|'+(G?'----':'------')+'|--------|---------|------|\n';
@@ -31646,18 +31646,18 @@ if(provider==='claude'){
 doc+='```typescript\n';
 doc+='// lib/ai/cost-tracker.ts (Claude/Anthropic)\n';
 doc+='const CLAUDE_PRICING = {\n';
-doc+='  \'claude-opus-4-8\':  { input: 0.000015, output: 0.000075 },  // per token\n';
+doc+='  \'claude-opus-4-8\':  { input: 0.000005, output: 0.000025 },  // per token\n';
 doc+='  \'claude-sonnet-5\': { input: 0.000003, output: 0.000015 },\n';
-doc+='  \'claude-haiku-4-5\': { input: 0.00000025, output: 0.00000125 },\n';
+doc+='  \'claude-haiku-4-5\': { input: 0.000001, output: 0.000005 },\n';
 doc+='};\n\n';
 } else if(provider==='openai'){
 doc+='```typescript\n';
 doc+='// lib/ai/cost-tracker.ts (OpenAI)\n';
 doc+='// NOTE: '+(G?'単価は改定されるため公式料金ページで最新値を確認':'Verify latest rates on the official pricing page')+'\n';
 doc+='const OPENAI_PRICING = {\n';
-doc+='  \'gpt-5.2\':     { input: 0.00000125, output: 0.00001 },\n';
-doc+='  \'gpt-4o\':      { input: 0.0000025, output: 0.00001 },\n';
-doc+='  \'gpt-4o-mini\': { input: 0.00000015, output: 0.0000006 },\n';
+doc+='  \'gpt-5.5\':      { input: 0.000005, output: 0.00003 },\n';
+doc+='  \'gpt-5.4\':      { input: 0.0000025, output: 0.000015 },\n';
+doc+='  \'gpt-5.4-mini\': { input: 0.00000075, output: 0.0000045 },\n';
 doc+='};\n\n';
 } else {
 doc+='```typescript\n';
@@ -31880,8 +31880,8 @@ media:{
 ja:['動画ストレージ・CDN転送が支出の60-80%を占める','エンコード (AWS MediaConvert $0.0075/min)','グローバルCDN帯域 ($0.01-0.085/GB)','オリジンサーバーはスケール可能に設計'],
 en:['Video storage & CDN transfer = 60-80% of spend','Encoding (AWS MediaConvert $0.0075/min)','Global CDN bandwidth ($0.01-0.085/GB)','Design origin for horizontal scale']},
 ai:{
-ja:['LLM APIコスト (GPT-4o: $2.5/1M input tok)','ベクトルDB (Pinecone $70〜/月 or Supabase pgvector)','GPU推論 (A100: $3-5/h on demand)','リクエストキャッシュでAPI呼び出し30-50%削減'],
-en:['LLM API cost (GPT-4o: $2.5/1M input tok)','Vector DB (Pinecone $70+/mo or pgvector free)','GPU inference (A100: $3-5/h on-demand)','Request caching reduces API calls 30-50%']},
+ja:['LLM APIコスト (GPT-5.4: $2.5/1M input tok)','ベクトルDB (Pinecone $70〜/月 or Supabase pgvector)','GPU推論 (A100: $3-5/h on demand)','リクエストキャッシュでAPI呼び出し30-50%削減'],
+en:['LLM API cost (GPT-5.4: $2.5/1M input tok)','Vector DB (Pinecone $70+/mo or pgvector free)','GPU inference (A100: $3-5/h on-demand)','Request caching reduces API calls 30-50%']},
 analytics:{
 ja:['データウェアハウス BigQuery: $5/TB クエリ','ストリーム処理 Kafka/Kinesis ($0.015/shard-h)','BI可視化 Metabase/Grafana Cloud (Free〜$500)','データ保持ポリシーでストレージ最適化'],
 en:['Data warehouse: BigQuery $5/TB queried','Stream processing: Kafka/Kinesis ($0.015/shard-h)','BI viz: Metabase/Grafana Cloud (Free-$500)','Data retention policy optimizes storage']},
@@ -32187,8 +32187,8 @@ doc+='\n## '+(G?'LLM / AIコスト追跡':'LLM / AI Cost Tracking')+'\n\n';
 doc+='| '+(G?'モデル':'Model')+' | '+(G?'入力単価':'Input')+' | '+(G?'出力単価':'Output')+' | '+(G?'キャッシュ割引':'Cache Discount')+'|\n|---|---|---|---|\n';
 doc+='| Claude Sonnet 5 | $3/1M tok | $15/1M tok | 90% (Prompt Cache) |\n';
 doc+='| Claude Haiku 4.5 | $1/1M tok | $5/1M tok | 90% (Prompt Cache) |\n';
-doc+='| GPT-5.2 | $1.25/1M tok | $10/1M tok | 90% (cache) |\n';
-doc+='| Gemini 2.5 Flash | $0.3/1M tok | $2.5/1M tok | 75% (implicit cache) |\n\n';
+doc+='| GPT-5.4 | $2.5/1M tok | $15/1M tok | 90% (cache) |\n';
+doc+='| Gemini 3.5 Flash | $1.5/1M tok | $9/1M tok | 75% (implicit cache) |\n\n';
 doc+=(G?'> ⚠️ 単価は改定されます。契約前に各社の公式料金ページで最新値を確認してください。\n\n':'> ⚠️ Rates change over time. Verify on each provider\'s official pricing page before committing.\n\n');
 doc+=G?'### AI APIコスト削減戦略\n\n':'### AI API Cost Reduction Strategies\n\n';
 doc+='1. '+(G?'**プロンプトキャッシュ有効化**: 反復プレフィックスのキャッシュで最大90%削減':'**Enable prompt caching**: Up to 90% cost reduction for repeated prefixes')+'\n';
@@ -32623,7 +32623,7 @@ doc+='| Data Drift (PSI) | > 0.2 | '+(G?'高':'High')+' |\n';
 doc+='| '+(G?'精度低下':'Accuracy Drop')+' | > 5% | '+(G?'高':'High')+' |\n';
 doc+='| '+(G?'フェアネス劣化':'Fairness Degradation')+' | |ΔDP| > 0.05 | '+(G?'高':'High')+' |\n';
 doc+='| '+(G?'定期スケジュール':'Scheduled')+' | '+(scale==='large'?G?'週次':'Weekly':G?'月次':'Monthly')+' | '+(G?'低':'Low')+' |\n\n';
-doc+='```yaml\n# .github/workflows/model-retrain.yml\nname: Model Retraining\non:\n  schedule:\n    - cron: "'+(scale==='large'?'0 2 * * 1':'0 2 1 * *')+'"\n  workflow_dispatch:\n    inputs:\n      trigger_reason:\n        description: "Trigger reason (drift/accuracy/fairness/scheduled)"\n\njobs:\n  retrain:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - name: Validate Data\n        run: python scripts/validate_training_data.py\n      - name: Train Model\n        run: python src/train.py\n      - name: Evaluate Fairness\n        run: python scripts/fairness_check.py\n      - name: A/B Test Gate\n        run: python scripts/ab_test_compare.py --threshold 0.02\n      - name: Deploy if Approved\n        if: success()\n        run: python scripts/deploy_model.py --stage production\n```\n\n';
+doc+='```yaml\n# .github/workflows/model-retrain.yml\nname: Model Retraining\non:\n  schedule:\n    - cron: "'+(scale==='large'?'0 2 * * 1':'0 2 1 * *')+'"\n  workflow_dispatch:\n    inputs:\n      trigger_reason:\n        description: "Trigger reason (drift/accuracy/fairness/scheduled)"\n\njobs:\n  retrain:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v5\n      - name: Validate Data\n        run: python scripts/validate_training_data.py\n      - name: Train Model\n        run: python src/train.py\n      - name: Evaluate Fairness\n        run: python scripts/fairness_check.py\n      - name: A/B Test Gate\n        run: python scripts/ab_test_compare.py --threshold 0.02\n      - name: Deploy if Approved\n        if: success()\n        run: python scripts/deploy_model.py --stage production\n```\n\n';
 doc+='## '+(G?'§5 モデルA/Bテスト':'§5 A/B Testing for Models')+'\n\n';
 doc+='```python\nimport random\nfrom typing import Union\n\nclass ModelABRouter:\n    def __init__(self, model_a, model_b, traffic_split: float = 0.1):\n        self.model_a = model_a    # '+(G?'現行モデル':'Current model')+'\n        self.model_b = model_b    # '+(G?'新モデル':'New model (candidate)')+'\n        self.split = traffic_split  # '+(G?'新モデルへのトラフィック割合':'Traffic % to new model')+'\n\n    def predict(self, X, user_id: str):\n        # '+(G?'決定論的A/Bルーティング':'Deterministic A/B routing')+'\n        use_b = int(user_id.split(\'-\')[-1], 16) % 100 < self.split * 100\n        model = self.model_b if use_b else self.model_a\n        variant = \'B\' if use_b else \'A\'\n        prediction = model.predict(X)\n\n        # '+(G?'A/B実験メトリクスのログ':'Log A/B experiment metrics')+'\n        ab_experiment_results.labels(\n            variant=variant, model_version=model.version\n        ).inc()\n        return prediction\n```\n\n';
 doc+='| '+(G?'評価メトリクス':'Evaluation Metrics')+' | '+(G?'最小改善幅':'Min Improvement')+' | '+(G?'統計的有意性':'Statistical Significance')+'|\n';
@@ -32673,13 +32673,13 @@ doc+='\n';
 doc+='## '+(G?'§3 敵対的テストツール':'§3 Adversarial Testing Tools')+'\n\n';
 doc+='| '+(G?'ツール':'Tool')+' | '+(G?'用途':'Use Case')+' | '+(G?'ライセンス':'License')+' | '+(G?'設定':'Config')+'|\n';
 doc+='|---|---|---|---|\n';
-doc+='| **Garak** | LLM '+(G?'プローブ・脆弱性スキャン':'probe & vulnerability scan')+' | Apache-2.0 | `garak --model_type openai --model_name gpt-5.2` |\n';
+doc+='| **Garak** | LLM '+(G?'プローブ・脆弱性スキャン':'probe & vulnerability scan')+' | Apache-2.0 | `garak --model_type openai --model_name gpt-5.4` |\n';
 doc+='| **promptfoo** | '+(G?'プロンプトテスト・レッドチーム自動化':'Prompt testing & red team automation')+' | MIT | `promptfoo redteam run` |\n';
 doc+='| **Counterfit** | '+(G?'機械学習モデル攻撃フレームワーク':'ML model attack framework')+' | MIT | `cf target --name '+pn.toLowerCase()+'` |\n';
 doc+='| **ART** | '+(G?'敵対的ロバストネスツールキット':'Adversarial Robustness Toolbox')+' | MIT | `from art.attacks.evasion import FastGradientMethod` |\n';
 doc+='| **TextAttack** | NLP '+(G?'敵対的例生成':'adversarial example generation')+' | MIT | `textattack attack --model bert-base-cased` |\n\n';
 doc+='### Garak Config Example\n\n';
-doc+='```yaml\n# garak_config.yaml\nmodel:\n  type: "openai"\n  name: "gpt-5.2"\n  api_key_env: "OPENAI_API_KEY"\n\nprobes:\n  - promptinject\n  - knownbadsignatures\n  - continuation\n  - atkgen\n  - dan          # Do Anything Now jailbreak\n\ndetectors:\n  - always.Fail\n  - mitigation.MitigationBypass\n\nreport:\n  format: "html"\n  output: "reports/garak_report_'+new Date().toISOString().split('T')[0]+'.html"\n```\n\n';
+doc+='```yaml\n# garak_config.yaml\nmodel:\n  type: "openai"\n  name: "gpt-5.4"\n  api_key_env: "OPENAI_API_KEY"\n\nprobes:\n  - promptinject\n  - knownbadsignatures\n  - continuation\n  - atkgen\n  - dan          # Do Anything Now jailbreak\n\ndetectors:\n  - always.Fail\n  - mitigation.MitigationBypass\n\nreport:\n  format: "html"\n  output: "reports/garak_report_'+new Date().toISOString().split('T')[0]+'.html"\n```\n\n';
 doc+='## '+(G?'§4 レッドチームテスト計画テンプレート':'§4 Red Team Test Plan Template')+'\n\n';
 doc+='```markdown\n## '+(G?'AIレッドチームテスト計画':'AI Red Team Test Plan')+'\n\n**'+(G?'プロジェクト':'Project')+'**: '+pn+'\n**'+(G?'日付':'Date')+'**: '+new Date().toISOString().split('T')[0]+'\n**'+(G?'バージョン':'Version')+'**: 1.0\n\n### '+(G?'スコープ':'Scope')+'\n- '+(G?'対象エンドポイント':'Target Endpoints')+': \n- '+(G?'対象外':'Out of Scope')+': \n- '+(G?'テスト環境':'Test Environment')+': staging\n\n### '+(G?'ルール・倫理的制約':'Rules of Engagement')+'\n1. '+(G?'本番環境へのアクセス禁止':'No access to production environment')+'\n2. '+(G?'実際のユーザーデータを使用しない':'No use of real user data')+'\n3. '+(G?'発見した脆弱性は24時間以内に報告':'Report vulnerabilities within 24 hours')+'\n4. '+(G?'テスト活動のフルログを保持':'Maintain full logs of test activities')+'\n\n### '+(G?'優先テストシナリオ':'Priority Test Scenarios')+'\n| '+(G?'優先度':'Priority')+' | '+(G?'シナリオ':'Scenario')+' | OWASP ID |\n|---|---|---|\n| P1 | '+(G?'プロンプトインジェクションによるシステムプロンプト漏洩':'System prompt leakage via prompt injection')+' | LLM01 |\n| P1 | '+(G?'機密情報の抽出':'Sensitive information extraction')+' | LLM06 |\n| P2 | '+(G?'ジェイルブレイクによる安全フィルタ回避':'Safety filter bypass via jailbreak')+' | LLM01 |\n| P2 | '+(G?'DoSトークン消費攻撃':'DoS token consumption attack')+' | LLM04 |\n\n### '+(G?'スコアリングルーブリック':'Scoring Rubric')+'\n| '+(G?'深刻度':'Severity')+' | '+(G?'条件':'Criteria')+' | '+(G?'対応SLA':'Response SLA')+'|\n|---|---|---|\n| Critical | '+(G?'データ漏洩・権限昇格':'Data leakage, privilege escalation')+' | 24h |\n| High | '+(G?'ガードレール回避・安全フィルタ無効化':'Guardrail bypass, safety filter disable')+' | 72h |\n| Medium | '+(G?'情報漏洩・サービス品質低下':'Information disclosure, service degradation')+' | 1w |\n| Low | '+(G?'軽微な情報開示':'Minor information disclosure')+' | 2w |\n```\n\n';
 if(isAgent){
@@ -35300,8 +35300,8 @@ S.files['.github/workflows/ci.yml']=[
 '  ci:',
 '    runs-on: ubuntu-latest',
 '    steps:',
-'      - uses: actions/checkout@v4',
-'      - uses: actions/setup-node@v4',
+'      - uses: actions/checkout@v5',
+'      - uses: actions/setup-node@v5',
 '        with:',
 '          node-version: '+nodeV,
 '          cache: npm',
@@ -35314,7 +35314,7 @@ S.files['.github/workflows/ci.yml']=[
 '  security:',
 '    runs-on: ubuntu-latest',
 '    steps:',
-'      - uses: actions/checkout@v4',
+'      - uses: actions/checkout@v5',
 '        with:',
 '          fetch-depth: 0',
 '      # Secret Scanning',
@@ -35322,10 +35322,10 @@ S.files['.github/workflows/ci.yml']=[
 '        env:',
 '          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}',
 '      # Dependency Review',
-'      - uses: actions/dependency-review-action@v4',
+'      - uses: actions/dependency-review-action@v5',
 '        if: github.event_name == \'pull_request\'',
 '      # SLSA Build Provenance',
-'      - uses: actions/attest-build-provenance@v2',
+'      - uses: actions/attest-build-provenance@v4',
 '        with:',
 '          subject-path: \'dist/**\'',
 ''

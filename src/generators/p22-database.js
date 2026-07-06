@@ -433,7 +433,7 @@ function gen89(a,pn,G){
 
   // CI/CD integration
   doc+='## '+(G?'CI/CDへの統合':'CI/CD Integration')+'\n\n';
-  doc+='```yaml\n# .github/workflows/migrate.yml\njobs:\n  migrate:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - name: '+(G?'マイグレーション実行':'Run migrations')+'\n        env:\n          DATABASE_URL: ${{ secrets.DATABASE_URL }}\n        run: |\n';
+  doc+='```yaml\n# .github/workflows/migrate.yml\njobs:\n  migrate:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v5\n      - name: '+(G?'マイグレーション実行':'Run migrations')+'\n        env:\n          DATABASE_URL: ${{ secrets.DATABASE_URL }}\n        run: |\n';
   if(isPy)        doc+='          alembic upgrade head\n';
   else if(isBaaS) doc+='          supabase db push --linked\n';
   else if(orm.name==='Prisma ORM') doc+='          npx prisma migrate deploy\n';

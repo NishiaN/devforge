@@ -891,18 +891,18 @@ function gen106_2(a,pn){
     doc+='```typescript\n';
     doc+='// lib/ai/cost-tracker.ts (Claude/Anthropic)\n';
     doc+='const CLAUDE_PRICING = {\n';
-    doc+='  \'claude-opus-4-8\':  { input: 0.000015, output: 0.000075 },  // per token\n';
+    doc+='  \'claude-opus-4-8\':  { input: 0.000005, output: 0.000025 },  // per token\n';
     doc+='  \'claude-sonnet-5\': { input: 0.000003, output: 0.000015 },\n';
-    doc+='  \'claude-haiku-4-5\': { input: 0.00000025, output: 0.00000125 },\n';
+    doc+='  \'claude-haiku-4-5\': { input: 0.000001, output: 0.000005 },\n';
     doc+='};\n\n';
   } else if(provider==='openai'){
     doc+='```typescript\n';
     doc+='// lib/ai/cost-tracker.ts (OpenAI)\n';
     doc+='// NOTE: '+(G?'単価は改定されるため公式料金ページで最新値を確認':'Verify latest rates on the official pricing page')+'\n';
     doc+='const OPENAI_PRICING = {\n';
-    doc+='  \'gpt-5.2\':     { input: 0.00000125, output: 0.00001 },\n';
-    doc+='  \'gpt-4o\':      { input: 0.0000025, output: 0.00001 },\n';
-    doc+='  \'gpt-4o-mini\': { input: 0.00000015, output: 0.0000006 },\n';
+    doc+='  \'gpt-5.5\':      { input: 0.000005, output: 0.00003 },\n';
+    doc+='  \'gpt-5.4\':      { input: 0.0000025, output: 0.000015 },\n';
+    doc+='  \'gpt-5.4-mini\': { input: 0.00000075, output: 0.0000045 },\n';
     doc+='};\n\n';
   } else {
     doc+='```typescript\n';

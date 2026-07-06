@@ -11,7 +11,7 @@ function _ps(id, name_ja, name_en, desc_ja, desc_en, tools, gate_ja, gate_en) {
   return {id, name_ja, name_en, desc_ja, desc_en, tools, gate_ja, gate_en};
 }
 var PIPELINE_STAGES = [
-  _ps('checkout', 'チェックアウト', 'Checkout', 'ソースコード取得・ブランチ検証', 'Fetch source code, validate branch', 'actions/checkout@v4', 'ブランチ保護ルール', 'Branch protection rules'),
+  _ps('checkout', 'チェックアウト', 'Checkout', 'ソースコード取得・ブランチ検証', 'Fetch source code, validate branch', 'actions/checkout@v5', 'ブランチ保護ルール', 'Branch protection rules'),
   _ps('install', 'インストール', 'Install', '依存関係のキャッシュ付きインストール', 'Install dependencies with cache', 'npm ci / pnpm i --frozen-lockfile', 'lockfileの整合性', 'lockfile integrity'),
   _ps('lint', 'Lint/型チェック', 'Lint & Type Check', 'ESLint・TypeScript・Prettier検査', 'ESLint, TypeScript, Prettier checks', 'eslint, tsc --noEmit, prettier --check', 'エラー0件', 'Zero errors'),
   _ps('test', 'テスト実行', 'Run Tests', 'ユニット・統合テスト並列実行', 'Unit & integration tests in parallel', 'vitest, jest, playwright', 'カバレッジ閾値達成', 'Coverage threshold met'),
@@ -255,8 +255,8 @@ function gen77(G, domain, dtCfg, a, pn) {
   doc += '  ci:\n';
   doc += '    runs-on: ubuntu-latest\n';
   doc += '    steps:\n';
-  doc += '      - uses: actions/checkout@v4\n';
-  doc += '      - uses: actions/setup-node@v4\n';
+  doc += '      - uses: actions/checkout@v5\n';
+  doc += '      - uses: actions/setup-node@v5\n';
   doc += '        with: { node-version: ${{ env.NODE_VERSION }}, cache: "' + pm + '" }\n';
   doc += '      - run: ' + isPM + '\n';
   doc += '      - run: ' + pm + ' run lint\n';
@@ -270,7 +270,7 @@ function gen77(G, domain, dtCfg, a, pn) {
   doc += '    if: github.ref == \'refs/heads/develop\'\n';
   doc += '    runs-on: ubuntu-latest\n';
   doc += '    steps:\n';
-  doc += '      - uses: actions/checkout@v4\n';
+  doc += '      - uses: actions/checkout@v5\n';
   doc += '      - run: ' + dtCfg.preview + '\n\n';
   doc += '  deploy-prod:\n';
   doc += '    needs: [ci, deploy-staging]\n';
@@ -282,7 +282,7 @@ function gen77(G, domain, dtCfg, a, pn) {
   }
   doc += '    runs-on: ubuntu-latest\n';
   doc += '    steps:\n';
-  doc += '      - uses: actions/checkout@v4\n';
+  doc += '      - uses: actions/checkout@v5\n';
   doc += '      - run: ' + dtCfg.cmd + '\n';
   doc += '```\n\n';
 
@@ -671,7 +671,7 @@ function gen80(G, domain, dtCfg, a, pn) {
   doc += '  release:\n';
   doc += '    runs-on: ubuntu-latest\n';
   doc += '    steps:\n';
-  doc += '      - uses: actions/checkout@v4\n';
+  doc += '      - uses: actions/checkout@v5\n';
   doc += '        with: { fetch-depth: 0 }\n';
   doc += '      - uses: cycjimmy/semantic-release-action@v4\n';
   doc += '        env:\n';
@@ -896,7 +896,7 @@ function gen134(G,a){
     doc+='- '+(G?'✅ 良い例: 機能単位でコミット分割、各コミットにテスト含む':'✅ Good: Split commits by feature, include tests in each')+'\n\n';
     if(isPro){
       doc+='### '+(G?'CI統合: コミット品質の自動検証':'CI Integration: Automated Commit Quality Checks')+'\n\n';
-      doc+='```yaml\n# .github/workflows/commit-check.yml\nname: Commit Quality Check\non: [pull_request]\njobs:\n  commitlint:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - uses: wagoid/commitlint-github-action@v5\n```\n\n';
+      doc+='```yaml\n# .github/workflows/commit-check.yml\nname: Commit Quality Check\non: [pull_request]\njobs:\n  commitlint:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v5\n      - uses: wagoid/commitlint-github-action@v5\n```\n\n';
     }
   }
   return doc;

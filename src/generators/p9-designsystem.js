@@ -369,11 +369,11 @@ function genPillar9_DesignSystem(a,pn){
     designDoc+=(G?'## Design Token CI Pipeline\n\n':'## Design Token CI Pipeline\n\n');
     designDoc+=(G?
       'Style Dictionaryを使ったトークンの自動配信パイプラインを構築することで、デザインとコードの乖離を防ぎます。\n\n'+
-      '```yaml\n# .github/workflows/design-tokens.yml\njobs:\n  build-tokens:\n    steps:\n      - uses: actions/checkout@v4\n      - run: npm install style-dictionary\n      - run: style-dictionary build --config sd.config.json\n      - run: npm run tokens:lint\n      - uses: actions/upload-artifact@v4\n        with: {name: tokens, path: dist/tokens/}\n```\n\n'+
+      '```yaml\n# .github/workflows/design-tokens.yml\njobs:\n  build-tokens:\n    steps:\n      - uses: actions/checkout@v5\n      - run: npm install style-dictionary\n      - run: style-dictionary build --config sd.config.json\n      - run: npm run tokens:lint\n      - uses: actions/upload-artifact@v5\n        with: {name: tokens, path: dist/tokens/}\n```\n\n'+
       '```json\n{"source":["tokens/**/*.json"],"platforms":{"css":{"transformGroup":"css","buildPath":"dist/tokens/","files":[{"destination":"variables.css","format":"css/variables"}]},"js":{"transformGroup":"js","buildPath":"dist/tokens/","files":[{"destination":"tokens.js","format":"javascript/esm"}]}}}\n```\n\n'
       :
       'Build an automated token delivery pipeline with Style Dictionary to prevent design-code drift.\n\n'+
-      '```yaml\n# .github/workflows/design-tokens.yml\njobs:\n  build-tokens:\n    steps:\n      - uses: actions/checkout@v4\n      - run: npm install style-dictionary\n      - run: style-dictionary build --config sd.config.json\n      - run: npm run tokens:lint\n      - uses: actions/upload-artifact@v4\n        with: {name: tokens, path: dist/tokens/}\n```\n\n'+
+      '```yaml\n# .github/workflows/design-tokens.yml\njobs:\n  build-tokens:\n    steps:\n      - uses: actions/checkout@v5\n      - run: npm install style-dictionary\n      - run: style-dictionary build --config sd.config.json\n      - run: npm run tokens:lint\n      - uses: actions/upload-artifact@v5\n        with: {name: tokens, path: dist/tokens/}\n```\n\n'+
       '```json\n{"source":["tokens/**/*.json"],"platforms":{"css":{"transformGroup":"css","buildPath":"dist/tokens/","files":[{"destination":"variables.css","format":"css/variables"}]},"js":{"transformGroup":"js","buildPath":"dist/tokens/","files":[{"destination":"tokens.js","format":"javascript/esm"}]}}}\n```\n\n'
     );
     designDoc+=(G?'## Visual Regression Testing\n\n':'## Visual Regression Testing\n\n');
