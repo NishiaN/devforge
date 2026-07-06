@@ -831,6 +831,16 @@ function genPillar15(answers) {
   S.files['docs/57_user_experience_strategy.md'] = gen57UX(G, domain, personas, mkt);
   S.files['docs/58_ecosystem_strategy.md'] = gen58Ecosystem(G, domain, mkt, arch, deploy, answers);
   S.files['docs/59_regulatory_foresight.md'] = gen59Regulatory(G, domain, mkt, answers);
+
+  // v9.23 Pro: scenario planning 2x2 (ADD-only)
+  const _lv15 = S.skillLv != null ? S.skillLv : (S.skill === 'beginner' ? 1 : S.skill === 'pro' ? 5 : 3);
+  if (_lv15 >= 5) {
+    let sp = '\n---\n\n## ' + (G ? '🎓 Pro: シナリオプランニング (2×2マトリクス)' : '🎓 Pro: Scenario Planning (2×2 Matrix)') + '\n\n';
+    sp += (G
+      ? '予測が当たるかではなく、**どのシナリオでも死なない戦略**を選ぶための手法です。\n\n### 手順 (半日ワークショップ)\n\n1. **不確実性の抽出**: 事業に影響する外部要因を10個挙げる (規制・技術・競合・景気…)\n2. **2軸の選定**: 「影響が最大」かつ「最も予測不能」な2つを選ぶ\n3. **4シナリオの命名**: 各象限に記憶に残る名前を付け、その世界を3行で描写\n4. **戦略テスト**: 現在の戦略・ロードマップを4象限それぞれに当てはめ、破綻する象限を特定\n\n### 例: 軸A「AI規制 (強化⇔緩和)」× 軸B「AIコスト (急落⇔高止まり)」\n\n| | コスト急落 | コスト高止まり |\n|--|-----------|---------------|\n| **規制強化** | 「コンプラ勝負」: 監査証跡・説明可能性が差別化要因に | 「選択と集中」: 高価値ユースケースのみAI化 |\n| **規制緩和** | 「全面AI化競争」: スピードが全て | 「効率化競争」: キャッシュ・小型モデル活用が武器 |\n\n### アウトプット\n\n- **ロバスト戦略**: 4象限すべてで有効な施策 → 即実行 (例: 監査証跡は全シナリオで無駄にならない)\n- **オプション戦略**: 特定象限でのみ有効 → トリガー指標を定義し監視 (例: 「規制法案が委員会通過したら着手」)\n- 四半期ごとにトリガー指標をレビューし、象限の移動を検知\n'
+      : 'The goal is not to predict correctly but to pick a strategy that **survives every scenario**.\n\n### Procedure (half-day workshop)\n\n1. **List uncertainties**: 10 external forces affecting the business (regulation, tech, competitors, economy…)\n2. **Pick 2 axes**: the two forces that are both highest-impact and least predictable\n3. **Name 4 scenarios**: give each quadrant a memorable name + 3-line description of that world\n4. **Stress-test strategy**: run the current roadmap through all 4 quadrants; find where it breaks\n\n### Example: Axis A "AI regulation (tighten⇔loosen)" × Axis B "AI cost (collapse⇔stay high)"\n\n| | Cost collapses | Cost stays high |\n|--|---------------|----------------|\n| **Regulation tightens** | "Compliance wins": audit trails & explainability become the moat | "Focus": AI only for highest-value use cases |\n| **Regulation loosens** | "Full-AI race": speed is everything | "Efficiency race": caching & small models win |\n\n### Outputs\n\n- **Robust moves**: effective in all 4 quadrants → do now (e.g. audit trails are never wasted)\n- **Option moves**: valid in specific quadrants → define trigger indicators and watch (e.g. "start when the bill passes committee")\n- Review triggers quarterly to detect quadrant shifts\n');
+    S.files['docs/56_market_positioning.md'] += sp;
+  }
 }
 
 // ============================================================================

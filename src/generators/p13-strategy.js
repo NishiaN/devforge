@@ -882,6 +882,14 @@ function genPillar13_StrategicIntelligence(a, pn) {
   doc50 += (G ? '**成長:** ' : '**Growth:** ');
   doc50 += '[Growth Intelligence](./41_growth_intelligence.md)\n';
 
+  // v9.23 Pro: RICE scoring + tech investment portfolio (ADD-only)
+  const _lv13 = S.skillLv != null ? S.skillLv : (S.skill === 'beginner' ? 1 : S.skill === 'pro' ? 5 : 3);
+  if (_lv13 >= 5) {
+    doc50 += '\n---\n\n## ' + (G ? '🎓 Pro: RICE優先度スコアリング' : '🎓 Pro: RICE Priority Scoring') + '\n\n';
+    doc50 += (G
+      ? '機能要望を感覚でなく数値で並べます: **RICE = (Reach × Impact × Confidence) / Effort**\n\n| 要素 | 定義 | スケール |\n|------|------|---------|\n| Reach | 四半期に影響を受けるユーザー数 | 実数 (例: 800人/四半期) |\n| Impact | 1人あたりの効果 | 3=大 / 2=中 / 1=小 / 0.5=微 |\n| Confidence | 見積りの確信度 | 100% / 80% / 50% (それ未満は調査に戻す) |\n| Effort | 人月 | 実数 (例: 1.5人月) |\n\n**運用ルール**:\n- スコアの絶対値でなく**相対順位**で使う (四半期プランニングの叩き台)\n- Confidence 50%未満の項目はバックログでなく「調査タスク」に変換\n- 経営判断での順位変更はOK — ただし「RICE順位を何位動かしたか」を記録し翌四半期に検証\n\n### 技術投資ポートフォリオ (70-20-10)\n\n| 枠 | 配分 | 対象 | 例 |\n|----|------|------|----|\n| コア | 70% | 既存価値の強化・信頼性 | 機能改善・バグ・性能・セキュリティ |\n| 隣接 | 20% | 既存資産の新展開 | 新セグメント対応・API公開・連携 |\n| 変革 | 10% | 不確実だが破壊的な賭け | 新技術検証・PoC・新事業仮説 |\n\n- 技術的負債返済はコア枠に**最低15%**を明示的に確保 (「余ったら」では永遠に着手されない)\n- 四半期レビューで実績配分を計測し、意図した配分との乖離を可視化\n'
+      : 'Rank feature requests by numbers, not gut feel: **RICE = (Reach × Impact × Confidence) / Effort**\n\n| Factor | Definition | Scale |\n|--------|-----------|-------|\n| Reach | Users affected per quarter | Real count (e.g. 800/quarter) |\n| Impact | Effect per user | 3=massive / 2=high / 1=medium / 0.5=low |\n| Confidence | Estimate certainty | 100% / 80% / 50% (below 50% → back to research) |\n| Effort | Person-months | Real number (e.g. 1.5) |\n\n**Operating rules**:\n- Use **relative ranking**, not absolute scores (as the starting draft for quarterly planning)\n- Items under 50% confidence become research tasks, not backlog items\n- Executive overrides are fine — but record how many ranks moved, and review next quarter\n\n### Tech Investment Portfolio (70-20-10)\n\n| Bucket | Share | Scope | Examples |\n|--------|-------|-------|----------|\n| Core | 70% | Strengthen existing value & reliability | Improvements, bugs, performance, security |\n| Adjacent | 20% | New leverage on existing assets | New segments, public API, integrations |\n| Transformational | 10% | Uncertain but disruptive bets | New tech spikes, PoCs, new business hypotheses |\n\n- Explicitly reserve **≥15% of Core** for tech-debt paydown ("when we have time" means never)\n- Measure actual allocation quarterly; surface drift from the intended split\n');
+  }
   S.files['docs/50_stakeholder_strategy.md'] = doc50;
 
   // ═══ DOC 51: Operational Excellence ═══

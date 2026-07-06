@@ -1091,4 +1091,14 @@ function genPillar16_DevIQ(a, pn) {
   S.files['docs/62_industry_deep_dive.md'] = gen62(G, domain, indStrategy, a, pn);
   S.files['docs/63_next_gen_ux_strategy.md'] = gen63(G, domain, meth, a, pn);
   S.files['docs/63-2_continuous_improvement.md'] = gen63b(G, a, pn);
+
+  // v9.23 Pro: DORA four keys measurement guide (ADD-only)
+  const _lv16 = S.skillLv != null ? S.skillLv : (S.skill === 'beginner' ? 1 : S.skill === 'pro' ? 5 : 3);
+  if (_lv16 >= 5) {
+    let dm = '\n---\n\n## ' + (G ? '🎓 Pro: DORA 4メトリクス計測ガイド' : '🎓 Pro: DORA Four Keys Measurement Guide') + '\n\n';
+    dm += (G
+      ? '開発手法の効果を体感でなく数値で検証します。手法を変えたら、この4指標で前後比較してください。\n\n| メトリクス | 定義 | 計測ソース | Elite目安 |\n|-----------|------|-----------|----------|\n| デプロイ頻度 | 本番デプロイの頻度 | CI/CDのdeployイベント数 | 日次以上 |\n| 変更リードタイム | commit→本番稼働までの時間 | first commit時刻 − deploy完了時刻 | 1日未満 |\n| 変更障害率 | デプロイ起因の障害割合 | (ロールバック+hotfix回数) ÷ デプロイ数 | < 15% |\n| 復旧時間 (MTTR) | 障害発生→復旧までの時間 | インシデント開始 − 解決時刻 | 1時間未満 |\n\n### 最小実装 (GitHub Actions + 週次集計)\n\n```yaml\n# deploy成功時にメトリクスを記録\n- name: Record deploy metric\n  if: success()\n  run: |\n    echo "{\\"event\\":\\"deploy\\",\\"sha\\":\\"$GITHUB_SHA\\",\\"ts\\":\\"$(date -u +%FT%TZ)\\"}" >> metrics/deploys.jsonl\n```\n\n**運用の注意**:\n- 個人評価に使わない — チーム改善の指標であり、個人KPI化すると数字ゲームが始まる\n- 4指標はトレードオフ検知に使う: デプロイ頻度だけ上がって障害率も上がったら「小さく出す」が壊れている\n- 最初の3ヶ月はベースライン取得に徹し、目標設定は4ヶ月目から\n'
+      : 'Validate methodology changes with numbers, not feel. After changing your process, compare before/after on these four:\n\n| Metric | Definition | Source | Elite benchmark |\n|--------|-----------|--------|----------------|\n| Deploy frequency | How often you ship to production | CI/CD deploy events | Daily+ |\n| Lead time for changes | Commit → running in production | first-commit time − deploy-done time | < 1 day |\n| Change failure rate | Share of deploys causing incidents | (rollbacks + hotfixes) ÷ deploys | < 15% |\n| MTTR | Incident start → recovery | incident open − resolve time | < 1 hour |\n\n### Minimal implementation (GitHub Actions + weekly rollup)\n\n```yaml\n# record a metric on successful deploy\n- name: Record deploy metric\n  if: success()\n  run: |\n    echo "{\\"event\\":\\"deploy\\",\\"sha\\":\\"$GITHUB_SHA\\",\\"ts\\":\\"$(date -u +%FT%TZ)\\"}" >> metrics/deploys.jsonl\n```\n\n**Operating cautions**:\n- Never use for individual evaluation — these are team-improvement signals; individual KPIs turn them into games\n- Use the four together to detect trade-offs: if deploy frequency rises with failure rate, "ship small" is broken\n- Spend the first 3 months on baseline only; set targets from month 4\n');
+    S.files['docs/60_methodology_intelligence.md'] += dm;
+  }
 }
