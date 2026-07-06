@@ -193,7 +193,12 @@ ${coreRules}`;
   S.files['.claude/rules/test.md']=genTestRules(a.dev_methods||'TDD',G);
   S.files['.claude/rules/ops.md']=genOpsRules(G);
 
-  // Layer C: Settings
+  // Layer C: Settings — stack-adapted test/typecheck for the Loop hooks (v9.27)
+  const _isPy4=/python|fastapi|django|flask/i.test(be);
+  const _isRust4=/rust|axum|actix/i.test(be);
+  const _isVitest4=/vite|vue|svelte/i.test(a.frontend||'');
+  const _testCmd4=_isPy4?'pytest -q':_isRust4?'cargo test --quiet':_isVitest4?'npx vitest run':'npm test';
+  const _typeCmd4=_isPy4?'pyright 2>&1 | tail -10':_isRust4?'cargo check --quiet 2>&1 | head -10':'npx tsc --noEmit --pretty false 2>&1 | head -10';
   S.files['.claude/settings.json']=JSON.stringify({
     permissions:{
       allowedTools:['Read','Write','Edit','Bash','Glob','Grep','WebFetch'],
@@ -206,10 +211,15 @@ ${coreRules}`;
         forbidden:['DROP TABLE','git push --force main','rm -rf /','git reset --hard HEAD~','DELETE FROM production']
       }
     },
+    // Loop Engineering hooks (v9.27): PostToolUse=type-check on each edit; Stop=full tests before "done"
+    hooks:{
+      PostToolUse:[{matcher:'Write|Edit',hooks:[{type:'command',command:_typeCmd4}]}],
+      Stop:[{hooks:[{type:'command',command:_testCmd4+' 2>&1 | tail -20'}]}]
+    },
     context:{
       specDir:'.spec/',
       docsDir:'docs/',
-      testCommand:'npm test',
+      testCommand:_testCmd4,
       buildCommand:'npm run build'
     },
     rules:{
@@ -349,6 +359,11 @@ hooks:
   S.files['.claude/agents/review-agent.md']='---\nname: review-agent\ndescription: '+( G?'レビューエージェント。ワークスロップ防止チェック・セキュリティ監査・品質検証を実施する':'Review agent. Performs anti-workslop checks, security audit, and quality verification')+'\ntools: Read, Glob, Grep\n---\n\n# '+(G?'レビューエージェント':'Review Agent')+' — '+pn+'\n\n## '+(G?'責務':'Responsibilities')+'\n- '+( G?'docs/113_ai_collaboration_guide.md の6NG行為チェックをコードに適用':'Apply 6 NG-behavior checks from docs/113_ai_collaboration_guide.md to code')+'\n- '+( G?'docs/08_security.md のセキュリティチェックリスト確認':'Verify docs/08_security.md security checklist')+'\n- '+( G?'仕様書との乖離検出（ドリフト分析）':'Detect drift from specs (drift analysis)')+'\n- '+( G?'.spec/verification.md の受入基準との照合':'Verify against acceptance criteria in .spec/verification.md')+'\n\n## '+(G?'入力':'Inputs')+'\n- `.spec/verification.md`\n- `docs/08_security.md`\n- `docs/113_ai_collaboration_guide.md`\n- `docs/16_review.md`\n\n## '+(G?'出力':'Outputs')+'\n- '+(G?'レビュー結果レポート（P0/P1/P2の指摘リスト）':'Review report (P0/P1/P2 finding list)')+'\n\n## '+(G?'ワークスロップ防止チェック（必須）':'Anti-Workslop Checks (Required)')+'\n- [ ] NG-1 '+(G?'鵜呑み: 仕様書との照合済みか？':'Accept-All: Verified against specs?')+'\n- [ ] NG-2 '+(G?'丸投げ: タスクが1つに絞られているか？':'Full-Delegation: Task narrowed to one?')+'\n- [ ] NG-3 '+(G?'答え固執: エラー時に理由説明で修正依頼しているか？':'Answer-Lock: Requesting corrections with reason on errors?')+'\n- [ ] NG-4 '+(G?'コンテキスト不足: docs/13_glossary.mdを渡してから依頼しているか？':'Context-Starve: Providing docs/13_glossary.md before requesting?')+'\n- [ ] NG-5 '+(G?'見栄え罠: 具体的な数値・根拠を確認しているか？':'Aesthetic-Trap: Verifying concrete values and evidence?')+'\n- [ ] NG-6 '+(G?'反復欠如: 2回以上の対話を経ているか？':'No-Iteration: 2+ dialogue rounds completed?')+'\n\n## '+(G?'判断基準':'Judgment Criteria')+'\n- '+(G?'P0指摘ゼロで承認（P1は翌スプリント対応でOK）':'Zero P0 findings to approve (P1 can be addressed next sprint)')+'\n- '+(G?'6NG行為チェック全件パス':'All 6 NG-behavior checks pass')+'\n- '+(G?'受入基準（.spec/verification.md）の全テストパス':'All acceptance criteria in .spec/verification.md pass')+'\n';
 
   // ═══ AI_BRIEF.md — Condensed Single-File Spec for AI Agents ═══
+  // ═══ Loop Engineering: fixer sub-agent (v9.27) — stuck-breaker with a fresh context ═══
+  S.files['.claude/agents/fixer.md']='---\nname: fixer\ndescription: '+(G?'同じチェックが2回の修正試行後も失敗したときに使う、行き詰まり打破用エージェント。メインの失敗ログの記憶を持たずゼロから診断する':'Stuck-breaker agent for when the same check fails after 2 fix attempts. Diagnoses from scratch without the main context\'s failure-log memory')+'\ntools: Read, Edit, Grep, Glob, Bash\nmodel: opus\n---\n\n# fixer — '+pn+'\n\n'+(G
+    ?'あなたは失敗したチェックを直す。**推測は禁止**。\n\n1. 失敗したチェックを自分で実行し、エラー全文を読む\n2. 失敗パス上のファイルを、頭から終わりまで全部読む\n3. 一文で書く: **本当の原因は何か**\n4. その原因**だけ**直す。ついでのリファクタはしない\n5. チェックを再実行し、修正前後の出力を報告する\n\n**禁止**: テスト削除・アサーション緩和・try/catchでのエラー握りつぶし・テストのskip化\n\n> なぜ別エージェントか: 書いた本人は直前4回の失敗でコンテキストが失敗ログだらけになり思考がロックされている。まっさらなコンテキストが一発で通すことが多い（6パーツの Sub-agents = 生成役と評価役の分離）。'
+    :'You fix a failing check. **No guessing.**\n\n1. Run the failing check yourself and read the full error\n2. Read every file on the failing path, start to end\n3. Write in one sentence: **what is the real root cause**\n4. Fix **only** that cause. No incidental refactors\n5. Re-run the check and report before/after output\n\n**Forbidden**: deleting tests, weakening assertions, swallowing errors in try/catch, skipping tests\n\n> Why a separate agent: the original author\'s context is clogged with 4 rounds of failure logs and thinking is locked. A fresh context often passes in one shot (the Sub-agents part = separating generator from evaluator).')+'\n';
+
   // Goal: ~3000 tokens containing everything an AI needs to start coding
   const entities=(a.data_entities||'User').split(/[,、]\s*/).map(e=>e.trim()).filter(Boolean);
   const features=(a.mvp_features||'CRUD').split(', ').filter(Boolean);
@@ -967,6 +982,7 @@ CLAUDE.md        → ${G?'Claude Code用ルール':'Claude Code rules'}
   S.files['docs/133_ai_team_orchestration.md']=gen133(G,a);
   S.files['docs/135_memory_architecture.md']=gen135(G,a);
   S.files['docs/136_harness_engineering_guide.md']=gen136(G,a);
+  S.files['docs/137_loop_engineering_guide.md']=gen137(G,a);
 }
 
 // ═══ Phase 4: Helper Functions for CLAUDE.md 3-Layer Split ═══
@@ -1020,6 +1036,10 @@ ${G?'**パス別ルールの参照**: 該当パスで作業する際は `@.claud
 1. **${G?'機能':'Feature'}** → \`.spec/\` ${G?'確認':'check'} → ${G?'実装':'implement'} → ${G?'テスト':'test'} → ${G?'コミット':'commit'}
 2. **${G?'バグ':'Bug'}** → ${G?'再現':'reproduce'} → ${G?'修正':'fix'} → ${G?'テスト':'test'} → ${G?'コミット':'commit'}
 3. **${G?'常に':'Always'}** → ${G?'コミット前にテスト実行':'Run tests before commit'}
+
+## ${G?'ループ協議 (完了の再定義)':'Loop Protocol (redefine "done")'}
+${G?'各タスクは「直線」ではなく「ループ」として走らせる:\n1. 変更を書く 2. チェック実行 (テスト+型) 3. 失敗→原因特定→修正→2へ 4. 最大5回\n\n停止条件: 全チェック通過→出力を証拠に「完了」報告 / 5回使い切り→残課題を報告 / 同一エラー2連続→@fixer を呼ぶ\n\n**禁止**: チェック出力なしで「完了」報告 / アサーション削除・テスト弱体化で通すこと (直すのはコード、スコアボードではない)':'Run each task as a loop, not a line:\n1. Write change 2. Run checks (tests+types) 3. Fail→find cause→fix→back to 2 4. Max 5 rounds\n\nStop: all pass → report "done" with output as evidence / 5 rounds used → report what remains / same error twice → call @fixer\n\n**Forbidden**: reporting "done" without check output / deleting assertions or weakening tests to pass (fix the code, not the scoreboard)'}
+> ${G?'`.claude/settings.json` の Stop フックが「ダメと言える評価役」を担当。詳細は `docs/137_loop_engineering_guide.md`':'The Stop hook in `.claude/settings.json` is the evaluator that can say "no". See `docs/137_loop_engineering_guide.md`'}
 
 ## ${G?'反証チェック (提出前)':'Adversarial Check (pre-submit)'}
 ${G?'1.要件漏れ 2.依存見落とし 3.運用負荷 4.UI不明瞭 5.拡張破綻 → 反証点があれば指摘してから進める':'1.Missing req 2.Broken deps 3.Ops burden 4.UX unclear 5.Extensibility → Raise before proceeding'}
@@ -1563,8 +1583,61 @@ function gen136(G,a){
   }
   doc+='---\n\n';
   doc+=(G
-    ?'**関連ドキュメント**: `docs/43_security_intelligence.md`, `docs/135_memory_architecture.md`, `docs/40_ai_dev_runbook.md`, `docs/132_mcp_integration_guide.md`\n'
-    :'**Related**: `docs/43_security_intelligence.md`, `docs/135_memory_architecture.md`, `docs/40_ai_dev_runbook.md`, `docs/132_mcp_integration_guide.md`\n');
+    ?'**関連ドキュメント**: `docs/43_security_intelligence.md`, `docs/135_memory_architecture.md`, `docs/40_ai_dev_runbook.md`, `docs/132_mcp_integration_guide.md`, `docs/137_loop_engineering_guide.md`\n'
+    :'**Related**: `docs/43_security_intelligence.md`, `docs/135_memory_architecture.md`, `docs/40_ai_dev_runbook.md`, `docs/132_mcp_integration_guide.md`, `docs/137_loop_engineering_guide.md`\n');
+  return doc;
+}
+
+function gen137(G,a){
+  const isBeg=S.skillLv!=null?S.skillLv<=1:(S.skill==='beginner');
+  const isPro=S.skillLv!=null?S.skillLv>=5:(S.skill==='professional'||S.skill==='pro');
+  let doc='';
+  doc+='# '+(G?'ループエンジニアリングガイド':'Loop Engineering Guide')+'\n\n';
+  if(isBeg){
+    doc+='> '+(G?'**ループエンジニアリングとは？** 「指示する人」を仕組みに置き換える技術です。AIが自分で回して、自分で直すようにします。':'**What is Loop Engineering?** Replacing "the person who gives instructions" with a mechanism — the AI runs itself and fixes itself.')+'\n\n';
+    doc+='## '+(G?'はじめの3ステップ':'3-Step Getting Started')+'\n\n';
+    doc+='1. '+(G?'`CLAUDE.md` に「ループ協議」を書く（完了の再定義：チェック通過まで「完了」と言わせない）':'Write a "Loop Protocol" in `CLAUDE.md` (redefine done: never claim "done" until checks pass)')+'\n';
+    doc+='2. '+(G?'`.claude/settings.json` の Stop フックにテストコマンドを置く（自動で評価役になる）':'Put your test command in the Stop hook of `.claude/settings.json` (it becomes the auto-evaluator)')+'\n';
+    doc+='3. '+(G?'`.claude/agents/fixer.md` を置く（2回失敗したら別コンテキストで打破）':'Add `.claude/agents/fixer.md` (break stalls in a fresh context after 2 failures)')+'\n\n';
+    doc+='> '+(G?'この3つは本プロジェクトに既に生成済みです。実タスクを渡すだけで、ターミナルのエラーをコピペし直す作業が消えます。':'All three are already generated in this project. Just hand it a real task — no more copy-pasting terminal errors back in.')+'\n\n';
+  }
+  doc+='## '+(G?'§ 1. 積み上がる4層':'§ 1. The Four Stacking Layers')+'\n\n';
+  doc+=(G?'各「XXエンジニアリング」は置き換わるのでなく**積み上がり**ます。上ほど面倒を見る範囲が広い。\n\n':'Each "X engineering" **stacks** rather than replaces. Higher layers cover more.\n\n');
+  doc+=(G
+    ?'| 層 | 何を管理 | 中心の問い |\n|---|---------|----------|\n| Prompt | 一回の指示文 | モデルに何を伝えるか |\n| Context | ウィンドウの中身 | 何を検索・要約・破棄するか |\n| Harness (GCTMS) | 単発実行の装備 | どのツールを許し、何を完了とするか |\n| **Loop** | harnessの上で自動で回す | どうやって自分で何度も回すか |\n\n'
+    :'| Layer | Manages | Central question |\n|-------|---------|------------------|\n| Prompt | One instruction | What to tell the model |\n| Context | The window contents | What to retrieve, summarize, discard |\n| Harness (GCTMS) | Equipment for one run | Which tools are allowed, what counts as done |\n| **Loop** | Auto-running atop the harness | How to make it iterate on its own |\n\n');
+  doc+='> '+(G?'Loop は Harness (`docs/136`) の一つ上の階。下が「1回の実行」を装備し、上が「それを自動で何度も回す」。':'Loop sits one floor above the Harness (`docs/136`). The lower floor equips one run; the upper runs it repeatedly.')+'\n\n';
+  doc+='## '+(G?'§ 2. ループの5つのアクション':'§ 2. The Five Loop Actions')+'\n\n';
+  doc+=(G
+    ?'| 動作 | やること |\n|------|---------|\n| 発見 (discovery) | この1周で何をやるべきか自分で見つける |\n| 受け渡し (handoff) | タスクを隔離して作業役エージェントに渡す |\n| 検証 (verification) | **別の**エージェントが「これでいいか」を確認 |\n| 記憶 (persistence) | 状態を会話の外（ファイル等）に書き出す |\n| スケジューリング | タイマー等で放っておいても回り続けさせる |\n\n**これが無いとループにならない筆頭は「検証」**。ここが甘いと、ただ生成を垂れ流す装置になります。\n\n'
+    :'| Action | What it does |\n|--------|-------------|\n| Discovery | Find what to do this round, on its own |\n| Handoff | Isolate the task, pass it to a worker agent |\n| Verification | A **different** agent checks "is this OK" |\n| Persistence | Write state outside the conversation (files) |\n| Scheduling | Keep it running via timers, unattended |\n\n**The one you cannot omit is Verification.** Weaken it and you just have a firehose of generation.\n\n');
+  doc+='## '+(G?'§ 3. ループを組む6つのパーツ':'§ 3. The Six Loop Parts')+'\n\n';
+  doc+=(G
+    ?'| パーツ | 何か | 対応する動作 |\n|-------|------|------------|\n| Automations | 時間表・トリガーで自動起動 | スケジューリング |\n| Worktrees | 並行エージェントの作業ディレクトリ隔離 | 受け渡し |\n| Skills | 知識を `SKILL.md` に固定して再利用 | 発見 |\n| Connectors (MCP) | issue tracker・DB・Slack等 外部接続 | 記憶 / 発見 |\n| Sub-agents | 生成役と評価役を分ける | 検証 |\n| Memory | ファイルに残る状態 (`MEMORY.md`等) | 記憶 |\n\n> ファイルしか見えないループは小さい。**タスクチケット・DB・ブラウザ**に手が届いて初めて「代わりに働く」が成立。MCP/Skills は**ループのためのハーネス**です。\n\n'
+    :'| Part | What | Action |\n|------|------|--------|\n| Automations | Schedule/trigger auto-start | Scheduling |\n| Worktrees | Isolated working dirs for parallel agents | Handoff |\n| Skills | Knowledge pinned in `SKILL.md` for reuse | Discovery |\n| Connectors (MCP) | External: issue tracker, DB, Slack | Persistence / Discovery |\n| Sub-agents | Separate generator from evaluator | Verification |\n| Memory | File-persisted state (`MEMORY.md`) | Persistence |\n\n> A file-only loop is small. It only truly "works for you" once it can reach **task tickets, DBs, browsers**. MCP/Skills are the **harness for the loop**.\n\n');
+  doc+='## '+(G?'§ 4. 一番大事なのは「ダメと言える評価役」':'§ 4. The Most Important Part: An Evaluator That Can Say No')+'\n\n';
+  doc+=(G
+    ?'**コードを書いた本人は自分の作業に甘い**。自分の誤字に気づけないのと同じで、書いた本人に採点させると「いい感じ」と自分を説得します。だから**生成役と評価役を分け、評価役は別の指示・できれば別モデル**にします。\n\nClaude Code の `/goal`（条件成立まで回し続ける）の正体は **prompt ベースの Stop フック**。毎ターン最後に判定役が条件を確認し、通らなければ完了させずもう1周します。本プロジェクトの `.claude/settings.json` の Stop フックがこれを担います。\n\n'
+    :'**Authors are lenient on their own work.** Like missing your own typos, an author grading themselves talks themselves into "looks good." So **separate generator from evaluator, and make the evaluator a different prompt — ideally a different model.**\n\nClaude Code\'s `/goal` (loop until a condition holds) is really a **prompt-based Stop hook**: each turn a judge checks the condition, and if it fails the task is not marked done and loops once more. The Stop hook in this project\'s `.claude/settings.json` plays that role.\n\n');
+  doc+='### '+(G?'CLAUDE.md ループ協議テンプレート':'CLAUDE.md Loop Protocol Template')+'\n\n';
+  doc+='```markdown\n## '+(G?'ループ協議':'Loop Protocol')+'\n'+(G
+    ?'各タスクは「直線」でなく「ループ」で走らせる:\n1. 変更を書く 2. チェック実行(テスト+lint+型) 3. 失敗→原因特定→修正→2へ 4. 最大5回\n\n停止条件:\n- 全チェック通過 → 通過出力を証拠に「完了」報告\n- 5回使い切り → 止まって残課題を報告\n- 同一エラー2連続 → ループを止め @fixer を呼ぶ\n\n禁止: チェック出力なしの「完了」報告\n禁止: アサーション削除やテスト弱体化で通すこと（直すのはコード、スコアボードではない）'
+    :'Run each task as a loop, not a line:\n1. Write change 2. Run checks (test+lint+type) 3. Fail→find cause→fix→back to 2 4. Max 5 rounds\n\nStop conditions:\n- All pass → report "done" with passing output as evidence\n- 5 rounds used → stop and report what remains\n- Same error twice → stop the loop and call @fixer\n\nForbidden: reporting "done" without check output\nForbidden: deleting assertions or weakening tests to pass (fix the code, not the scoreboard)')+'\n```\n\n';
+  doc+='> '+(G?'この2つの「禁止」が最も効きます。評価基準を曖昧にすると、ループは平気でズルをします（3周目でアサーションを1行消してテストを通す等）。':'Those two "Forbidden" lines matter most. Vague criteria let the loop cheat freely (e.g. silently deleting an assertion on round 3 to make tests pass).')+'\n\n';
+  doc+='## '+(G?'§ 5. settings.json フック（硬い制約）':'§ 5. settings.json Hooks (Hard Constraints)')+'\n\n';
+  doc+=(G?'`CLAUDE.md` の規約は途中で忘れられ得ます。フックは「硬い制約」として強制します。本プロジェクトで生成済みの設定:\n\n':'CLAUDE.md conventions can be forgotten mid-task. Hooks enforce them as hard constraints. Already generated in this project:\n\n');
+  doc+='```json\n{\n  "hooks": {\n    "PostToolUse": [{ "matcher": "Write|Edit", "hooks": [{ "type": "command", "command": "<'+(G?'型チェック':'type-check')+'>" }] }],\n    "Stop": [{ "hooks": [{ "type": "command", "command": "<'+(G?'フルテスト':'full tests')+'>" }] }]\n  }\n}\n```\n\n';
+  doc+=(G?'- **PostToolUse**: 編集のたびに型チェック。書きながら即座に直させる\n- **Stop**: 「完了」と言おうとした瞬間にフルテスト。失敗すれば出力が会話に押し戻され強制的にもう1周\n\n':'- **PostToolUse**: type-check on every edit — fix as you write\n- **Stop**: full tests the moment it tries to say "done"; failure pushes output back into the conversation, forcing another round\n\n');
+  if(isPro){
+    doc+='## '+(G?'§ 6. 回しっぱなしの代価（Pro）':'§ 6. The Cost of Running Continuously (Pro)')+'\n\n';
+    doc+=(G
+      ?'自動ループは強力ですが無料ではありません。以下を必ず設計に含めます:\n\n| リスク | 対策 |\n|-------|------|\n| コスト暴走 | 1ループの上限回数 + 1日のトークン予算上限 + 予算超過で自動停止 |\n| 無限ループ | 「同一エラー2連続で停止」+ 最大周回数 (5) をハード制約に |\n| サイレント破壊 | 破壊的操作は Guard (`docs/136`) の forbidden/requireApproval で隔離 |\n| ドリフト蓄積 | 定期的に人間が diff レビュー（HITLポイント、`docs/136 §S`）|\n\n**判断基準**: 自動化を上げてよいのは「誤動作しても被害が可逆」かつ「同じ手順を過去3回以上人手で実行済み」のとき（`docs/53` ランブック自動化 L3 と同基準）。\n\n### 成熟度\n\n| レベル | 状態 |\n|-------|------|\n| L1 | 手動でエラーをコピペして貼り直す |\n| L2 | Stop フックで自動チェック、失敗時は手動修正 |\n| L3 | fixer 自動呼び出し + 評価役分離、diff だけ人間が見る |\n| L4 | Automations で夜間無人ループ + 予算ガード + SLO連動停止 |\n'
+      :'Auto-loops are powerful but not free. Always design in:\n\n| Risk | Mitigation |\n|------|-----------|\n| Cost runaway | Per-loop round cap + daily token budget + auto-stop on overage |\n| Infinite loop | "Stop on same error twice" + max rounds (5) as hard constraints |\n| Silent damage | Isolate destructive ops via Guard (`docs/136`) forbidden/requireApproval |\n| Drift buildup | Periodic human diff review (HITL point, `docs/136 §S`) |\n\n**Criterion**: raise automation only when "misfires are reversible" AND "the same procedure ran 3+ times by hand" (same bar as `docs/53` runbook automation L3).\n\n### Maturity\n\n| Level | State |\n|-------|-------|\n| L1 | Manually copy-paste errors back in |\n| L2 | Stop hook auto-checks, manual fix on failure |\n| L3 | Auto-invoke fixer + evaluator separation, human reviews diff only |\n| L4 | Overnight unattended loop via Automations + budget guard + SLO-linked stop |\n');
+  }
+  doc+='---\n\n';
+  doc+=(G
+    ?'**関連**: `docs/136_harness_engineering_guide.md` (下位層GCTMS), `CLAUDE.md` (ループ協議), `.claude/settings.json` (フック), `.claude/agents/fixer.md`, `docs/135_memory_architecture.md`\n'
+    :'**Related**: `docs/136_harness_engineering_guide.md` (lower layer GCTMS), `CLAUDE.md` (Loop Protocol), `.claude/settings.json` (hooks), `.claude/agents/fixer.md`, `docs/135_memory_architecture.md`\n');
   return doc;
 }
 

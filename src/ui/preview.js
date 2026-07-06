@@ -440,6 +440,7 @@ function buildFileTree(){
      'docs/133_ai_team_orchestration.md',
      'docs/135_memory_architecture.md',
      'docs/136_harness_engineering_guide.md',
+     'docs/137_loop_engineering_guide.md',
      '.ai/hooks.yml','.gemini/settings.json'
     ].forEach(f=>files.push({name:f,path:f}));
   } else if(pillar===4){ // Explorer
@@ -585,7 +586,7 @@ function buildFileTree(){
    '122_concurrency_consistency_guide','123_frontend_architecture_guide','124_test_quality_guide',
    '125_healthcare_compliance_guide','126_fintech_fraud_prevention','127_manufacturing_iot_guide',
    '133_ai_team_orchestration','134_git_ai_workflow',
-   '135_memory_architecture','136_harness_engineering_guide'].forEach(f=>
+   '135_memory_architecture','136_harness_engineering_guide','137_loop_engineering_guide'].forEach(f=>
     files.push({name:'  '+f+'.md',path:'docs/'+f+'.md'}));
   files.push({name:'───────────',path:''});
   ['README.md','.gitignore','package.json','LICENSE'].forEach(f=>files.push({name:f,path:f}));
