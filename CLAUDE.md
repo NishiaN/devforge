@@ -214,7 +214,7 @@ Key output structure:
 - `.spec/` — constitution, specification, technical-plan, tasks, verification
 - `.devcontainer/` — devcontainer.json, Dockerfile, docker-compose.yml, post-create.sh
 - `.claude/` — thin CLAUDE.md + 5 path-specific rules + settings.json
-- `docs/` — 127 documents (00_devforge_guide … 127_manufacturing_iot_guide)
+- `docs/` — 134 documents (00_devforge_guide … 137_loop_engineering_guide)
   - `docs/107_project_governance.md` — always generated; governance, decisions log, issue/CR management
   - `docs/108_uat_acceptance.md` — always generated; UAT scenarios (from features), Go/No-Go, defect mgmt
 - AI rules — AI_BRIEF.md, .cursor/rules/main.mdc, .cursorrules, .clinerules, .windsurfrules, AGENTS.md, skills/

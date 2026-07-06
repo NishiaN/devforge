@@ -155,7 +155,7 @@ function downloadHearingSheet(){
     md+='（ここに記入）\n\n';
     md+='## スケジュール\n';
     md+='> リリース目標日・マイルストーンを記入してください。\n\n';
-    md+='▶ 記入例: 2025年9月末MVP、2025年12月末本番リリース\n\n';
+    md+='▶ 記入例: 2026年12月末MVP、2027年3月末本番リリース\n\n';
     md+='（ここに記入）\n\n';
     md+='## スコープ外\n';
     md+='> 今回対応しない機能・範囲を記入してください（未定の場合は「なし」）。\n\n';
@@ -196,7 +196,7 @@ function downloadHearingSheet(){
     md+='(Fill here)\n\n';
     md+='## Schedule\n';
     md+='> Target release dates and milestones.\n\n';
-    md+='Example: MVP by Sep 2025, Production release by Dec 2025\n\n';
+    md+='Example: MVP by Dec 2026, Production release by Mar 2027\n\n';
     md+='(Fill here)\n\n';
     md+='## Scope Out\n';
     md+='> Features explicitly out of scope (write "none" if nothing excluded).\n\n';
