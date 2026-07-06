@@ -4413,7 +4413,7 @@ ${(a.dev_methods||'TDD').split(', ').join(' / ')}
 MIT
 
 ---
-${G?'© 2026 エンジニアリングのタネ制作委員会 ｜ 作成者：にしあん':'© 2026 Engineering no Tane Committee | by にしあん'}
+${G?'© 2026 にしあん / エンジニアリングのタネ. All Rights Reserved.':'© 2026 Nishian / Engineering no Tane. All Rights Reserved.'}
 `;
 
   const isNextFE=(a.frontend||'').includes('Next');

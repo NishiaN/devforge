@@ -143,7 +143,7 @@ function applyLang(){
   const mobtabs=document.querySelectorAll('.mobtab');
   if(mobtabs.length>=2){mobtabs[0].textContent=ja?'💬 チャット':'💬 Chat';mobtabs[1].textContent=ja?'📄 プレビュー':'📄 Preview';}
   // Footer
-  const footer=document.querySelector('.app-footer');if(footer)footer.textContent=ja?'© 2026 にしあん / エンジニアリングのタネ. All Rights Reserved. 無断転載・無断複製・無断配信・AI学習目的での無断利用を禁じます。':'© 2026 にしあん / エンジニアリングのタネ. All Rights Reserved. Unauthorized reproduction, duplication, redistribution, or use for AI training is prohibited.';
+  const footer=document.querySelector('.app-footer');if(footer)footer.textContent=ja?'© 2026 にしあん / エンジニアリングのタネ. All Rights Reserved. 無断転載・無断複製・無断配信・AI学習目的での無断利用を禁じます。':'© 2026 Nishian / Engineering no Tane. All Rights Reserved. Unauthorized reproduction, duplication, redistribution, or use for AI training is prohibited.';
   // Placeholder in prevBody
   const prevP=$('prevBody');if(prevP&&prevP.querySelector('p')&&!Object.keys(S.files||{}).length){
     const p=prevP.querySelector('p');if(p&&!S.previewFile)p.textContent=ja?'質問に回答するとリアルタイムでプレビューが更新されます':'Preview updates in real-time as you answer questions';
