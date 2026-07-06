@@ -274,6 +274,17 @@ v9.38実測3で発見した features:[] のままの後期バッチ84件（eng5_
 
 **影響機能の照査（改称の下流波及）**: techdb選択→回答の経路 `render.js _TECHDB_MAP`（11質問→8カテゴリ: front/back/mobile/ai_auto/payment/ai/devops/method）を精査。回答注入されうる旧名14件のロジック分岐を全grep→**Remixのみ該当**（common.jsのSSR判定2箇所 `fe.includes('Remix')`）。改称後'React Router v7'選択でSSRフレームワークがSPA誤判定される実バグを修正（両分岐に'React Router v7'追加、'Remix'も後方互換維持）。残る8カテゴリ外の改称/削除は質問非接続=表示のみでロジック無影響。カテゴリ空化なし（全16カテゴリ健在）。frontend=React Router v7実生成でSSR扱い確認。教訓「8カテゴリのtechdb改称は生成器の旧名分岐を必ずgrep確認」
 
+### v9.40 — techdb以外の中身の鮮度アップデート（4Tier, 計画: docs/plans/v940-freshness-update-plan.md）
+
+techdb本体照査後、「その他の鮮度敏感箇所」を洗い出し4Tierで更新。外部照会は3並列サブエージェント（AIモデル料金/CDN版数/GH Actions・MCP）。
+
+- **Tier1（権威情報・即実行）**: Claudeモデル ID `claude-opus-4-6→4-8` / `sonnet-4-5,4-6→sonnet-5`（生成物p24/p26/p17 + UI dashboard/launcher + p27; haiku-4-5=現行維持）。Node版数CI `20→22`（Docker node:22と整合、p3/p12/p20）
+- **Tier2（外部照会・料金）**: Claude料金 Opus 4.8 $5/$25・Haiku 4.5 $1/$5（Sonnet 5 $3/$15維持）。OpenAI `gpt-5.2/gpt-4o系→gpt-5.5/5.4/5.4-mini`。p27表 GPT-5.4 $2.5/$15・Gemini 3.5 Flash $1.5/$9（Gemini 2.5=前世代）
+- **Tier3（外部照会・ビルド影響）**: GH Actions `@v4→@v5`世代（checkout/setup-node/upload-artifact/codecov/dependency-review, attest `v2→v4`; 11生成file）+ codecov v5の `file:→files:` 入力改名。MCP protocolVersion `2024-11-05→2025-11-25`（最新確定spec）。**CDNはHOLD判断**: marked(cdnjs上限16.3)/mermaid(cdnjs 11.12=v11破壊的default.*API+ラベル修正11.13.0未達で高リスク)/jszip(既に最新)
+- **Tier4（prose選別）**: presets scaleHint 45箇所の `GPT-4→GPT-5`（GPT-4o先処理で誤変換回避）、`Claude 4.5/4.6→Opus 4.8/Sonnet 5`、UI/tour/common の GPT-4o→GPT-5。**test fixtureのGPT-4はユーザー入力シミュレーションのため意図的維持**
+
+テスト追随: cicd.test(checkout@v5)、gen-quality(claude-opus-4-8/gpt-5.4)。検証: 各Tierでbuild+7525 tests全合格、実生成で全反映確認。src全体でstale AIモデル残存ゼロ。教訓「①外部照会は3並列で領域分担 ②CDNはcdnjs配信上限と破壊的変更で"最新化せずHOLD"が正解のこともある ③旧値アサートするテストの追随を忘れない（cicd/gen-quality 3件）」。**別途観測: tour.jsの「109テンプレート」は実116で未更新（AIモデル鮮度と別カテゴリ=次回）**
+
 ---
 
 ## 手法上の教訓（横断）

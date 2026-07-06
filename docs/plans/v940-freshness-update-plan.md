@@ -46,3 +46,12 @@
 
 ## 現行モデルID（権威・システム既知）
 - Opus 4.8=`claude-opus-4-8` / Sonnet 5=`claude-sonnet-5` / Haiku 4.5=`claude-haiku-4-5` / Fable 5=`claude-fable-5`
+
+---
+## 実施結果（2026-07-06 完了）
+- **Tier1**: ✅ Claudeモデル4.6→4.8/sonnet-5、Node 20→22
+- **Tier2**: ✅ Claude/OpenAI/Gemini料金・モデルID現行化
+- **Tier3**: ✅ GH Actions v5世代+codecov file→files、MCP 2025-11-25。CDNは**HOLD**(cdnjs配信上限+mermaid v11破壊的変更で高リスク低便益)
+- **Tier4**: ✅ presets/UI prose の GPT-4→GPT-5、Claude 4.5/4.6→Opus 4.8/Sonnet 5
+- 検証: 全Tier build+7525 tests合格、実生成反映確認、src全体stale AIモデルゼロ
+- 積み残し観測: tour.js「109テンプレート」実116（AIモデル鮮度と別カテゴリ=次回）
