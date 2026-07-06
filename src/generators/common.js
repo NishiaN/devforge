@@ -89,7 +89,7 @@ function resolveAuth(a){
   let sot,tokenType,tokenVerify,provider;
 
   if(be.includes('Supabase')){
-    const isSPA=fe.includes('Vite')||fe.includes('SPA')||(!fe.includes('Next')&&!fe.includes('Nuxt')&&!fe.includes('Remix'));
+    const isSPA=fe.includes('Vite')||fe.includes('SPA')||(!fe.includes('Next')&&!fe.includes('Nuxt')&&!fe.includes('Remix')&&!fe.includes('React Router v7'));
     sot='Supabase Auth';tokenType='Supabase JWT (access_token)';
     tokenVerify=isSPA?'Supabase client library (client-side: supabase.auth.getUser()) + RLS':'Supabase client library (server-side: supabase.auth.getUser())';
     provider='supabase';
@@ -4740,7 +4740,7 @@ function detectAppType(a){
   if(fe.includes('PWA')||(a.mvp_features||'').includes('PWA')) return 'pwa';
 
   // SSR frameworks
-  if(fe.includes('Next')||fe.includes('Nuxt')||fe.includes('Remix')||fe.includes('SvelteKit')) return 'ssr';
+  if(fe.includes('Next')||fe.includes('Nuxt')||fe.includes('Remix')||fe.includes('React Router v7')||fe.includes('SvelteKit')) return 'ssr';
 
   // SPA default
   return 'spa';
