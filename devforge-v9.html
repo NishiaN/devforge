@@ -5681,8 +5681,8 @@ why_en:'Features listed in "scope out" are treated as "will not implement" acros
 t:a=>(inc(a.scope_out,'決済')||inc(a.scope_out,'EC')||inc(a.scope_out,'payment')||inc(a.scope_out,'Payment'))&&a.payment&&!inc(a.payment,'なし')&&!inc(a.payment,'None')&&a.payment!=='none',
 ja:'スコープ外に「決済/EC」がありますが、決済方式が選択されています。仕様書のスコープ定義に矛盾が生じます',
 en:'Scope excludes "payment/EC" but a payment method is selected. Spec scope definition will conflict',
-why_ja:'スコープ外の記載は docs/107_project_governance.md に対象外として記録されます。一方で決済方式を選ぶと決済設計書 docs/38_business_model.md も生成されるため、「対象外なのに決済実装を計画」という矛盾が仕様に残ります。',
-why_en:'Scope-out entries are recorded as out-of-scope in docs/107_project_governance.md, yet selecting a payment method still generates docs/38_business_model.md — leaving a contradiction where excluded payment work is planned.'},
+why_ja:'スコープ外の記載は .spec/constitution.md §7 と docs/107_project_governance.md に対象外として記録されます。一方で決済方式を選ぶと決済設計書 docs/38_business_model.md も生成され、「対象外なのに決済実装を計画」という矛盾が仕様に残ります。',
+why_en:'Scope-out entries are recorded in .spec/constitution.md §7 and docs/107_project_governance.md, yet selecting a payment method still generates docs/38_business_model.md — a contradiction where excluded payment work is planned.'},
 // A3: scope_out「EC」 vs entities に Product/Order
 {id:'sem-scope-entities',p:['scope_out','data_entities'],lv:'warn',
 t:a=>(inc(a.scope_out,'EC')||inc(a.scope_out,'commerce')||inc(a.scope_out,'Commerce'))&&(inc(a.data_entities,'Product')||inc(a.data_entities,'Order')||inc(a.data_entities,'Cart')),
@@ -14192,13 +14192,17 @@ const stack=[a.frontend,a.backend,a.database,a.deploy].filter(Boolean).join(' ')
 return all.filter(e=>stack.includes(e.split(':')[0].split(' ')[0])).join(', ');
 }).filter(Boolean).join(', ')):'';
 const briefTechRadar=_feRadar?(G?'\nTech Radar: '+_feRadar+'\n':'\nTech Radar: '+_feRadar+'\n'):'';
+const _soBrief=(a.scope_out||'').trim();
+const briefScopeOut=_soBrief&&!/^(なし|none)$/i.test(_soBrief)
+?'\n'+(G?'スコープ外: ':'Out of scope: ')+_soBrief
+:'';
 S.files['AI_BRIEF.md']=`# ${pn} — AI Implementation Brief
 > ${G?'このファイル1つで開発開始可能。':'Start coding with this single file.'} ~3K tokens.
 ## Stack
 ${fe} + ${be} + ${a.database||'PostgreSQL'} → ${deploy}
 Auth: ${auth.sot} (${auth.tokenType})
 ORM: ${orm}
-Pattern: ${archNote}
+Pattern: ${archNote}${briefScopeOut}
 ## Context Protocol
 1. Start: Read THIS file (AI_BRIEF.md)
 2. Deep dive: .spec/{constitution,specification}.md
@@ -14661,6 +14665,10 @@ S.files['docs/137_loop_engineering_guide.md']=gen137(G,a);
 }
 // ═══ Phase 4: Helper Functions for CLAUDE.md 3-Layer Split ═══
 function genThinCLAUDE(a,pn,auth,forbidden,G,arch,domainRisksMd){
+const _soT=(a.scope_out||'').trim();
+const scopeForbidden=_soT&&!/^(なし|none)$/i.test(_soT)
+?'\n'+(G?'- スコープ外機能の実装禁止: '+_soT+'（`.spec/constitution.md` §7 参照）':'- Do not implement out-of-scope features: '+_soT+' (see `.spec/constitution.md` §7)')
+:'';
 const fe=a.frontend||'React';
 const be=a.backend||'Node.js + Express';
 const db=a.database||'PostgreSQL';
@@ -14684,7 +14692,7 @@ return `# ${pn} ${G?'— 開発ルール':'— Development Rules'}
 - **${G?'開発手法':'Methods'}**: ${devMethods}
 ## ${G?'必須ルール':'Critical Rules'}
 ### ${G?'禁止事項':'Forbidden'}
-${forbidden}
+${forbidden}${scopeForbidden}
 ${domainRisksMd}
 ### ${G?'認証の唯一の情報源':'Auth Source of Truth'}
 ${G?`すべての認証状態は ${auth.sot} から取得すること。認証ロジックを重複させない。`:`All auth state MUST come from ${auth.sot}. Never duplicate auth logic.`}

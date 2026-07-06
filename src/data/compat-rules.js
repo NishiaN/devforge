@@ -760,8 +760,8 @@ const COMPAT_RULES=[
    t:a=>(inc(a.scope_out,'決済')||inc(a.scope_out,'EC')||inc(a.scope_out,'payment')||inc(a.scope_out,'Payment'))&&a.payment&&!inc(a.payment,'なし')&&!inc(a.payment,'None')&&a.payment!=='none',
    ja:'スコープ外に「決済/EC」がありますが、決済方式が選択されています。仕様書のスコープ定義に矛盾が生じます',
    en:'Scope excludes "payment/EC" but a payment method is selected. Spec scope definition will conflict',
-   why_ja:'スコープ外の記載は docs/107_project_governance.md に対象外として記録されます。一方で決済方式を選ぶと決済設計書 docs/38_business_model.md も生成されるため、「対象外なのに決済実装を計画」という矛盾が仕様に残ります。',
-   why_en:'Scope-out entries are recorded as out-of-scope in docs/107_project_governance.md, yet selecting a payment method still generates docs/38_business_model.md — leaving a contradiction where excluded payment work is planned.'},
+   why_ja:'スコープ外の記載は .spec/constitution.md §7 と docs/107_project_governance.md に対象外として記録されます。一方で決済方式を選ぶと決済設計書 docs/38_business_model.md も生成され、「対象外なのに決済実装を計画」という矛盾が仕様に残ります。',
+   why_en:'Scope-out entries are recorded in .spec/constitution.md §7 and docs/107_project_governance.md, yet selecting a payment method still generates docs/38_business_model.md — a contradiction where excluded payment work is planned.'},
   // A3: scope_out「EC」 vs entities に Product/Order
   {id:'sem-scope-entities',p:['scope_out','data_entities'],lv:'warn',
    t:a=>(inc(a.scope_out,'EC')||inc(a.scope_out,'commerce')||inc(a.scope_out,'Commerce'))&&(inc(a.data_entities,'Product')||inc(a.data_entities,'Order')||inc(a.data_entities,'Cart')),

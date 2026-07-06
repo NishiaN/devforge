@@ -91,7 +91,19 @@ MEMORY.md では完了記録があったが git 履歴から欠落していた�
 - **dom-ec-nopay / dom-saas-nopay**: 「docs/45にPCI等が含まれません」→ 実測では payment未設定でも45はPCIに言及（汎用行）。主張を検証済み事実（38未生成+決済設計の欠落）に限定
 - launcher CI/CDテンプレの出力例 `ci-cd.yml` → 実生成名 `ci.yml` に統一（ja+en）
 
-検証で判明した副産物: **scope_out は docs/107 にしか反映されない**（.spec/specification.md にスコープ外節がない）→ v9.30候補へ。
+検証で判明した副産物: scope_out の反映先が限定的 → v9.30候補へ。
+**訂正 (v9.30時)**: 「docs/107にしか反映されない」は誤り（検証出力のtail切り詰めによる見落とし）。実際は **.spec/constitution.md §7**（gen-quality Q3でテスト済みの設計挙動）+ docs/107 の2箇所。
+
+### v9.30 — scope_out のAI可視化 `e68bb8e後続`
+v9.29の副産物候補を精査し、前提を訂正した上で真のギャップを特定: scope_out は constitution §7 に届くが、**AIが自動で読む CLAUDE.md と、最初に読ませる AI_BRIEF.md には無かった** — AIツールがスコープ外機能を実装してしまう実害リスク。
+
+- **生成CLAUDE.md 禁止事項**: 「スコープ外機能の実装禁止: <値>（.spec/constitution.md §7 参照）」を条件付き追加
+- **AI_BRIEF.md Stack節**: 「スコープ外: <値>」1行を条件付き追加（トークン増 <10、上限1400に余裕）
+- どちらも `なし`/`none`/未設定では追加されない ADD-only
+- **v9.29 why文を再訂正**: sem-scope-payment に constitution §7 を明記（107のみ→2箇所）
+- test/v930-scopeout-ai.test.js 新設（4件: ja/en反映+トークン上限+なし/未設定の非追加）
+
+7463 tests / 5907KB。教訓: **検証出力を tail で切り詰めたまま結論を出さない**（v9.29の誤記の原因）。
 
 ---
 
@@ -117,9 +129,9 @@ ext5〜ext22（プリセット257/603到達）、P28 XAI（86番目モジュー�
 
 ---
 
-## 先送り事項（v9.30+ 候補）
+## 先送り事項（v9.31+ 候補）
 
-- **scope_out の .spec/specification.md 反映**: ウィザードN-8で収集した scope_out が docs/107 にしか出ない。仕様書に「スコープ外」節を追加（ADD-only）すると要求定義が行き届く — v9.29検証の副産物
+- ~~scope_out のAI可視化~~: v9.30で完了（CLAUDE.md禁止事項+AI_BRIEF Stack節）
 - **launcher.js ja/en 圧縮**（393KB）: サイズ逼迫時に着手。v9.22で確立した共有ブロック方式の全面展開
 - **7アンチパターン明示チェックリスト**: 参考資料の残り題材（既存設計と重複多く保留中）
 - **why_ja 350B超過3件のトリム**: Netlify Functions×2 + Python logging（387〜530B）。機能影響なし・低優先

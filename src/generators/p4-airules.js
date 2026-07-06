@@ -449,6 +449,10 @@ Admin routes: /admin/ → role=admin check`;
     return all.filter(e=>stack.includes(e.split(':')[0].split(' ')[0])).join(', ');
   }).filter(Boolean).join(', ')):'';
   const briefTechRadar=_feRadar?(G?'\nTech Radar: '+_feRadar+'\n':'\nTech Radar: '+_feRadar+'\n'):'';
+  const _soBrief=(a.scope_out||'').trim();
+  const briefScopeOut=_soBrief&&!/^(なし|none)$/i.test(_soBrief)
+    ?'\n'+(G?'スコープ外: ':'Out of scope: ')+_soBrief
+    :'';
 
   S.files['AI_BRIEF.md']=`# ${pn} — AI Implementation Brief
 > ${G?'このファイル1つで開発開始可能。':'Start coding with this single file.'} ~3K tokens.
@@ -457,7 +461,7 @@ Admin routes: /admin/ → role=admin check`;
 ${fe} + ${be} + ${a.database||'PostgreSQL'} → ${deploy}
 Auth: ${auth.sot} (${auth.tokenType})
 ORM: ${orm}
-Pattern: ${archNote}
+Pattern: ${archNote}${briefScopeOut}
 
 ## Context Protocol
 1. Start: Read THIS file (AI_BRIEF.md)
@@ -988,6 +992,10 @@ CLAUDE.md        → ${G?'Claude Code用ルール':'Claude Code rules'}
 // ═══ Phase 4: Helper Functions for CLAUDE.md 3-Layer Split ═══
 
 function genThinCLAUDE(a,pn,auth,forbidden,G,arch,domainRisksMd){
+  const _soT=(a.scope_out||'').trim();
+  const scopeForbidden=_soT&&!/^(なし|none)$/i.test(_soT)
+    ?'\n'+(G?'- スコープ外機能の実装禁止: '+_soT+'（`.spec/constitution.md` §7 参照）':'- Do not implement out-of-scope features: '+_soT+' (see `.spec/constitution.md` §7)')
+    :'';
   const fe=a.frontend||'React';
   const be=a.backend||'Node.js + Express';
   const db=a.database||'PostgreSQL';
@@ -1015,7 +1023,7 @@ function genThinCLAUDE(a,pn,auth,forbidden,G,arch,domainRisksMd){
 ## ${G?'必須ルール':'Critical Rules'}
 
 ### ${G?'禁止事項':'Forbidden'}
-${forbidden}
+${forbidden}${scopeForbidden}
 ${domainRisksMd}
 
 ### ${G?'認証の唯一の情報源':'Auth Source of Truth'}
